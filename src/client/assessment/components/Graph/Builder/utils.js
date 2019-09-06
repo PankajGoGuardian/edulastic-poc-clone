@@ -385,9 +385,7 @@ export function flat2nestedConfig(config) {
           apiLatex,
           dashed
         };
-        if (type === CONSTANT.TOOLS.AREA) {
-          acc[id].points = points;
-        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP) {
+        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP || type === CONSTANT.TOOLS.AREA) {
           acc[id].x = element.x;
           acc[id].y = element.y;
           acc[id].priorityColor = element.priorityColor || null;

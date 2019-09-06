@@ -7,7 +7,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var _api = require("@edulastic/api");
 
 var _constants = require("./constants");
 
@@ -204,39 +212,319 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
   return result;
 };
 
-var evaluator = function evaluator(_ref) {
-  var userResponse = _ref.userResponse,
-    validation = _ref.validation;
-  var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    ignore_repeated_shapes = validation.ignore_repeated_shapes,
-    ignoreLabels = validation.ignoreLabels;
-  var score = 0;
-  var maxScore = 1;
-  var evaluation = {};
-  var answers = [validResponse];
+var serialize = function serialize(shapes, lineTypes, points) {
+  var getShape = function getShape(shape) {
+    return shape[0] === "eqn"
+      ? "['eqn','".concat(shape[1], "']")
+      : "['".concat(shape[0], "',[").concat(shape[1].join(","), "]]");
+  };
 
-  if (altResponses) {
-    answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
-  }
+  return "["
+    .concat(shapes.map(getShape).join(","), "],[")
+    .concat(
+      lineTypes
+        .map(function(x) {
+          return "'".concat(x, "'");
+        })
+        .join(","),
+      "],["
+    )
+    .concat(points.join(","), "]");
+};
 
-  var result = {};
-  answers.forEach(function(answer, index) {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
-
-    if (result.commonResult) {
-      score = Math.max(answer.score, score);
+var buildGraphApiResponse = function buildGraphApiResponse() {
+  var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var allowedShapes = [
+    _constants.ShapeTypes.PARABOLA,
+    _constants.ShapeTypes.EQUATION,
+    _constants.ShapeTypes.POLYNOM,
+    _constants.ShapeTypes.SECANT,
+    _constants.ShapeTypes.TANGENT,
+    _constants.ShapeTypes.LOGARITHM,
+    _constants.ShapeTypes.EXPONENT,
+    _constants.ShapeTypes.HYPERBOLA,
+    _constants.ShapeTypes.ELLIPSE,
+    _constants.ShapeTypes.CIRCLE,
+    _constants.ShapeTypes.LINE,
+    _constants.ShapeTypes.POLYGON,
+    _constants.ShapeTypes.SINE,
+    _constants.ShapeTypes.AREA
+  ];
+  var more2PointShapes = [
+    _constants.ShapeTypes.POLYNOM,
+    _constants.ShapeTypes.HYPERBOLA,
+    _constants.ShapeTypes.ELLIPSE,
+    _constants.ShapeTypes.POLYGON
+  ];
+  var shapes = [];
+  var lineTypes = [];
+  var points = [];
+  elements.forEach(function(el) {
+    if (!allowedShapes.includes(el.type)) {
+      return;
     }
 
-    maxScore = Math.max(answer.score, maxScore);
-    evaluation[index] = result;
+    if (el.type === _constants.ShapeTypes.AREA) {
+      points.push("(".concat(+el.x.toFixed(4), ",").concat(+el.y.toFixed(4), ")"));
+      return;
+    }
+
+    if (el.type === _constants.ShapeTypes.EQUATION) {
+      shapes.push(["eqn", el.latex]);
+      lineTypes.push(el.latex.indexOf(">") > -1 || el.latex.indexOf("<") > -1 ? "dashed" : "solid");
+      return;
+    }
+
+    var shapePoints = [];
+
+    if (more2PointShapes.includes(el.type)) {
+      Object.values(el.subElementsIds).forEach(function(id) {
+        var point = elements.find(function(x) {
+          return x.id === id;
+        });
+
+        if (point) {
+          shapePoints.push("(".concat(+point.x.toFixed(4), ",").concat(+point.y.toFixed(4), ")"));
+        }
+      });
+    } else {
+      var startPoint = elements.find(function(x) {
+        return x.id === el.subElementsIds.startPoint;
+      });
+
+      if (startPoint) {
+        shapePoints.push("(".concat(+startPoint.x.toFixed(4), ",").concat(+startPoint.y.toFixed(4), ")"));
+      }
+
+      var endPoint = elements.find(function(x) {
+        return x.id === el.subElementsIds.endPoint;
+      });
+
+      if (endPoint) {
+        shapePoints.push("(".concat(+endPoint.x.toFixed(4), ",").concat(+endPoint.y.toFixed(4), ")"));
+      }
+    }
+
+    shapes.push([el.type, shapePoints]);
+    lineTypes.push(el.dashed ? "dashed" : "solid");
   });
-  return {
-    score: score,
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
+  return serialize(shapes, lineTypes, points);
 };
+
+var checkEquations =
+  /*#__PURE__*/
+  (function() {
+    var _ref = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee(answer, userResponse) {
+        var apiResult;
+        return _regenerator["default"].wrap(function _callee$(_context) {
+          while (1) {
+            switch ((_context.prev = _context.next)) {
+              case 0:
+                _context.next = 2;
+                return _api.graphEvaluateApi.evaluate({
+                  input: buildGraphApiResponse(userResponse),
+                  expected: buildGraphApiResponse(answer),
+                  checks: "evaluateGraphEquations"
+                });
+
+              case 2:
+                apiResult = _context.sent;
+
+                if (!(apiResult === "true")) {
+                  _context.next = 5;
+                  break;
+                }
+
+                return _context.abrupt("return", {
+                  commonResult: true,
+                  details: userResponse.map(function(x) {
+                    return {
+                      id: x.id,
+                      result: true
+                    };
+                  })
+                });
+
+              case 5:
+                return _context.abrupt("return", {
+                  commonResult: false,
+                  details: userResponse.map(function(x) {
+                    return {
+                      id: x.id,
+                      result: false
+                    };
+                  })
+                });
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      })
+    );
+
+    return function checkEquations(_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  })();
+
+var evaluator =
+  /*#__PURE__*/
+  (function() {
+    var _ref3 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee2(_ref2) {
+        var userResponse,
+          validation,
+          validResponse,
+          altResponses,
+          ignore_repeated_shapes,
+          ignoreLabels,
+          score,
+          maxScore,
+          evaluation,
+          answers,
+          result,
+          _iteratorNormalCompletion,
+          _didIteratorError,
+          _iteratorError,
+          _iterator,
+          _step,
+          _step$value,
+          index,
+          answer;
+
+        return _regenerator["default"].wrap(
+          function _callee2$(_context2) {
+            while (1) {
+              switch ((_context2.prev = _context2.next)) {
+                case 0:
+                  (userResponse = _ref2.userResponse), (validation = _ref2.validation);
+                  (validResponse = validation.validResponse),
+                    (altResponses = validation.altResponses),
+                    (ignore_repeated_shapes = validation.ignore_repeated_shapes),
+                    (ignoreLabels = validation.ignoreLabels);
+                  score = 0;
+                  maxScore = 1;
+                  evaluation = {};
+                  answers = [validResponse];
+
+                  if (altResponses) {
+                    answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
+                  }
+
+                  result = {};
+                  _iteratorNormalCompletion = true;
+                  _didIteratorError = false;
+                  _iteratorError = undefined;
+                  _context2.prev = 11;
+                  _iterator = answers.entries()[Symbol.iterator]();
+
+                case 13:
+                  if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
+                    _context2.next = 28;
+                    break;
+                  }
+
+                  (_step$value = (0, _slicedToArray2["default"])(_step.value, 2)),
+                    (index = _step$value[0]),
+                    (answer = _step$value[1]);
+
+                  if (
+                    !userResponse.some(function(x) {
+                      return x.type === _constants.ShapeTypes.AREA;
+                    })
+                  ) {
+                    _context2.next = 21;
+                    break;
+                  }
+
+                  _context2.next = 18;
+                  return checkEquations(answer.value, userResponse);
+
+                case 18:
+                  result = _context2.sent;
+                  _context2.next = 22;
+                  break;
+
+                case 21:
+                  result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
+
+                case 22:
+                  if (result.commonResult) {
+                    score = Math.max(answer.score, score);
+                  }
+
+                  maxScore = Math.max(answer.score, maxScore);
+                  evaluation[index] = result;
+
+                case 25:
+                  _iteratorNormalCompletion = true;
+                  _context2.next = 13;
+                  break;
+
+                case 28:
+                  _context2.next = 34;
+                  break;
+
+                case 30:
+                  _context2.prev = 30;
+                  _context2.t0 = _context2["catch"](11);
+                  _didIteratorError = true;
+                  _iteratorError = _context2.t0;
+
+                case 34:
+                  _context2.prev = 34;
+                  _context2.prev = 35;
+
+                  if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                    _iterator["return"]();
+                  }
+
+                case 37:
+                  _context2.prev = 37;
+
+                  if (!_didIteratorError) {
+                    _context2.next = 40;
+                    break;
+                  }
+
+                  throw _iteratorError;
+
+                case 40:
+                  return _context2.finish(37);
+
+                case 41:
+                  return _context2.finish(34);
+
+                case 42:
+                  return _context2.abrupt("return", {
+                    score: score,
+                    maxScore: maxScore,
+                    evaluation: evaluation
+                  });
+
+                case 43:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          },
+          _callee2,
+          null,
+          [[11, 30, 34, 42], [35, , 37, 41]]
+        );
+      })
+    );
+
+    return function evaluator(_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  })();
 
 var _default = evaluator;
 exports["default"] = _default;

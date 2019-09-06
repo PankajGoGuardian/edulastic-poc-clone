@@ -598,13 +598,8 @@ class Board {
   }
 
   removeObjectsUnderMouse(event) {
-    const coords = this.getCoords(event);
     const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
-    const elementsToDelete = this.elements.filter(
-      el =>
-        elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1 ||
-        (el.type === 100 && isInPolygon({ x: coords.usrCoords[1], y: coords.usrCoords[2] }, el.pointCoords))
-    );
+    const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
 
     if (elementsToDelete.length === 0) {
       return false;
@@ -834,7 +829,6 @@ class Board {
   loadFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(...config.map(element => this.loadObject(element)));
-    Area.setAreasForEquations(this);
   }
 
   loadSegments(elements) {
@@ -1097,7 +1091,7 @@ class Board {
         return Equation.create(this, object);
 
       case Area.jxgType:
-        return Area.renderElement(this, object);
+        return Area.create(this, object, { fixed });
 
       case DragDrop.jxgType:
         return DragDrop.create(this, object, {

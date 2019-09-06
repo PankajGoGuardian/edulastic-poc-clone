@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test, questionType } from "@edulastic/constants";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -27,7 +27,8 @@ import {
   getTestStatusSelector,
   setRegradeOldIdAction,
   getTestCreatedItemsSelector,
-  getDefaultTestSettingsAction
+  getDefaultTestSettingsAction,
+  updateDocBasedTestAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -35,7 +36,7 @@ import {
   getItemsSubjectAndGradeSelector
 } from "../AddItems/ducks";
 import { loadAssignmentsAction } from "../Assign/ducks";
-import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
+import { saveCurrentEditingTestIdAction, updateItemsDocBasedByIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -48,6 +49,9 @@ import Setting from "../Setting";
 
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
+import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
+import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -260,15 +264,23 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus } = this.props;
+    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus, questions, questionsById } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { params = {} } = match;
     const { current, editEnable } = this.state;
-    const { authors } = test;
+    const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+
+    const props = {
+      docUrl,
+      annotations,
+      questions,
+      questionsById,
+      pageStructure
+    };
 
     switch (current) {
       case "addItems":
@@ -296,7 +308,9 @@ class Container extends PureComponent {
           />
         );
       case "review":
-        return (
+        return isDocBased ? (
+          <Worksheet key="review" review {...props} />
+        ) : (
           <Review
             test={test}
             rows={rows}
@@ -318,6 +332,8 @@ class Container extends PureComponent {
             owner={owner}
           />
         );
+      case "worksheet":
+        return <Worksheet key="worksheet" {...props} />;
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -370,6 +386,15 @@ class Container extends PureComponent {
     } else {
       createTest(newTest);
     }
+  };
+
+  handleDocBasedSave = async () => {
+    const { questions: assessmentQuestions, test, updateDocBasedTest } = this.props;
+
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+      return;
+    }
+    updateDocBasedTest(test._id, test, true);
   };
 
   validateTest = test => {
@@ -466,7 +491,7 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, test, testStatus, userId, updated } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors, grades, subjects, testItems } = test;
+    const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
@@ -493,7 +518,8 @@ class Container extends PureComponent {
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}
-          onSave={this.handleSave}
+          isDocBased={isDocBased}
+          onSave={isDocBased ? this.handleDocBasedSave : this.handleSave}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
           title={test.title}
@@ -526,6 +552,8 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),
+      questions: getQuestionsArraySelector(state),
+      questionsById: getQuestionsSelector(state),
       createdItems: getTestCreatedItemsSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
@@ -538,11 +566,13 @@ const enhance = compose(
     {
       createTest: createTestAction,
       updateTest: updateTestAction,
+      updateDocBasedTest: updateDocBasedTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
+      updateItemsDocBasedById: updateItemsDocBasedByIdAction,
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,

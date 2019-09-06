@@ -1,6 +1,7 @@
 import { signUpState } from "@edulastic/constants";
-import { isUndefined, last } from "lodash";
+import { isUndefined, last, get, isEmpty } from "lodash";
 import { Partners } from "./static/partnerData";
+import { message } from "antd";
 
 export const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
@@ -186,4 +187,28 @@ export const getSignOutUrl = url => {
 
 export const removeSignOutUrl = () => {
   return sessionStorage.removeItem("signOutUrl");
+};
+
+export const validateQuestionsForDocBased = questions => {
+  if (!questions.length) {
+    message.warning("At least one question has to be created before saving assessment");
+    return false;
+  }
+
+  const correctAnswerPicked = questions
+    .filter(question => question.type !== "sectionLabel")
+    .every(question => {
+      const validationValue = get(question, "validation.validResponse.value");
+      if (question.type === "math") {
+        return validationValue.every(value => !isEmpty(value.value));
+      }
+      return !isEmpty(validationValue);
+    });
+
+  if (!correctAnswerPicked) {
+    message.warning("Correct answers have to be chosen for every question");
+    return false;
+  }
+
+  return true;
 };

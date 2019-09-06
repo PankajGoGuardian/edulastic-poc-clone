@@ -6,6 +6,7 @@ import { secondaryTextColor } from "@edulastic/colors";
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  padding: 15px;
 
   .ant-input-number-input {
     text-align: center;

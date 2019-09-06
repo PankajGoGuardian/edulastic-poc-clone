@@ -26,6 +26,7 @@ class AssessmentPlayerDocBased extends React.Component {
     docUrl: PropTypes.string,
     annotations: PropTypes.array,
     theme: PropTypes.object,
+    pageStructure: PropTypes.array.isRequired,
     history: PropTypes.object.isRequired,
     changeView: PropTypes.func.isRequired,
     questionsById: PropTypes.object.isRequired,
@@ -74,10 +75,10 @@ class AssessmentPlayerDocBased extends React.Component {
     saveProgress();
   };
 
-  get assessmentQuestions() {
+  assessmentQuestions() {
     const { items } = this.props;
     const itemData = items[0].data;
-    if (!itemData.length) return;
+    if (isEmpty(itemData)) return;
     const questionsWithSections = itemData.questions.concat(itemData.resources);
     return sortBy(questionsWithSections, item => item.qIndex);
   }
@@ -94,12 +95,14 @@ class AssessmentPlayerDocBased extends React.Component {
       answers,
       answersById,
       loading,
+      pageStructure = [],
       gotoSummary
     } = this.props;
 
     const dropdownOptions = items[0].data.questions.map((item, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
     const showSubmit = currentItem === dropdownOptions.length - 1;
+    const questions = this.assessmentQuestions();
 
     return (
       <ThemeProvider theme={theme}>
@@ -119,8 +122,9 @@ class AssessmentPlayerDocBased extends React.Component {
             <Worksheet
               docUrl={docUrl}
               annotations={annotations}
-              questions={this.assessmentQuestions}
+              questions={questions}
               questionsById={questionsById}
+              pageStructure={pageStructure}
               answersById={answersById}
               review
               noCheck

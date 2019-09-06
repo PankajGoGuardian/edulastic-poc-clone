@@ -651,7 +651,9 @@ function* updateTestDocBasedSaga({ payload }) {
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
     yield put(updateItemsDocBasedByIdAction(testItemId, updatedTestItem, true, false));
-    yield put(updateTestAction(payload.data._id, newAssessment, true));
+    return yield call(updateTestSaga, {
+      payload: { ...payload, data: newAssessment }
+    });
   } catch (err) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);

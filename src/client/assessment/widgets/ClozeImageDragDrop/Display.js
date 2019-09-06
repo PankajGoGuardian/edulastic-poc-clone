@@ -384,7 +384,8 @@ class Display extends Component {
       showBorder,
       isReviewTab,
       isExpressGrader,
-      setQuestionData
+      setQuestionData,
+      studentReport
     } = this.props;
 
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -736,7 +737,7 @@ class Display extends Component {
           </React.Fragment>
         )}
         {responseposition === "left" && (
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", overflow: "auto" }}>
             <div
               className="left responseboxContainer"
               style={{
@@ -756,7 +757,7 @@ class Display extends Component {
                 margin: "15px 0 15px 15px",
                 borderRadius: 10,
                 flex: 1,
-                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
+                width: studentReport ? null : `calc(100% - ${responseBoxContainerWidth + 30}px)`
               }}
             >
               {templateBoxLayout}
@@ -776,7 +777,7 @@ class Display extends Component {
                 flex: 1,
                 margin: smallSize ? 0 : "15px 15px 15px 0",
                 borderRadius: 10,
-                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
+                width: studentReport ? null : `calc(100% - ${responseBoxContainerWidth + 30}px)`
               }}
             >
               {templateBoxLayout}
@@ -824,6 +825,7 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
+  studentReport: PropTypes.bool,
   disableResponse: PropTypes.bool,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
@@ -842,6 +844,7 @@ Display.defaultProps = {
   changePreview: () => {},
   onChange: () => {},
   preview: true,
+  studentReport: false,
   disableResponse: false,
   showAnswer: false,
   evaluation: [],

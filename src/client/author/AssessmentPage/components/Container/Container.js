@@ -20,7 +20,6 @@ import {
   updateDocBasedTestAction
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
-import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
 import { changeViewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
 import Worksheet from "../Worksheet/Worksheet";
@@ -66,14 +65,12 @@ const buttons = [
 class Container extends React.Component {
   static propTypes = {
     receiveTestById: PropTypes.func.isRequired,
-    receiveItemDetailById: PropTypes.func.isRequired,
     assessment: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     match: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
-    updateItemDetailById: PropTypes.func.isRequired,
-    updateTest: PropTypes.func.isRequired,
+    updateDocBasedTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
   };
@@ -297,7 +294,6 @@ const enhance = compose(
     },
     {
       receiveTestById: receiveTestByIdAction,
-      receiveItemDetailById: getItemDetailByIdAction,
       setTestData: setTestDataAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateDocBasedTest: updateDocBasedTestAction,

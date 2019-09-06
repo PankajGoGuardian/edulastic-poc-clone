@@ -3,7 +3,16 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { greyDarken, greenDark } from "@edulastic/colors";
 
-import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, AnchorLink, ClassCode } from "./styled";
+import {
+  ContainerHeader,
+  LeftContent,
+  RightContent,
+  TitleWarapper,
+  StyledIcon,
+  AnchorLink,
+  ClassCode,
+  IconArchiveClass
+} from "./styled";
 import { message } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
@@ -106,7 +115,9 @@ const SubHeader = ({
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
         {/* <StyledIcon type="user" fill={greenDark} />*/}
         {active === 1 && (
-          <StyledIcon type="delete" title="Archive Class" fill={greyDarken} onClick={() => setShowModal(true)} />
+          <span onClick={() => setShowModal(true)}>
+            <IconArchiveClass width={20} height={20} />
+          </span>
         )}
         {showModal && (
           <ConfirmationModal

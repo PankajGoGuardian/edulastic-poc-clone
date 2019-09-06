@@ -110,6 +110,12 @@ class ClozeMathInput extends React.Component {
     if (!wrappedRef.current || !window.$) {
       return;
     }
+
+    // clicks scroll bar
+    if ($(target).outerWidth() < e.clientX && !$(target).hasClass("mq-root-block")) {
+      return;
+    }
+
     if (wrappedRef && !wrappedRef.current.contains(target) && !$(target).hasClass("ant-select-dropdown-menu-item")) {
       this.setState({ showKeyboard: false }, this.saveAnswer);
     }

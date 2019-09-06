@@ -52,6 +52,7 @@ export const reducer = createReducer(initialState, {
 });
 
 const defaultTestItem = {
+  isDocBased: true,
   columns: [],
   data: {
     questions: [],
@@ -134,6 +135,7 @@ function* createAssessmentSaga({ payload }) {
 
       const updatedAssessment = {
         ...assessment,
+        isDocBased: true,
         docUrl: fileURI,
         annotations: [],
         updatedDate: undefined,

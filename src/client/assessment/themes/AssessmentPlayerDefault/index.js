@@ -98,7 +98,8 @@ class AssessmentPlayerDefault extends React.Component {
     previewPlayer: PropTypes.bool.isRequired,
     saveScratchPad: PropTypes.func.isRequired,
     LCBPreviewModal: PropTypes.any.isRequired,
-    setUserAnswer: PropTypes.func.isRequired
+    setUserAnswer: PropTypes.func.isRequired,
+    userAnswers: PropTypes.object
   };
 
   static defaultProps = {
@@ -189,13 +190,16 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   saveHistory = data => {
-    const { saveScratchPad, items, currentItem, setUserAnswer } = this.props;
+    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveScratchPad({
       [items[currentItem]._id]: data
     });
-    setUserAnswer(items[currentItem].data.questions[0].id, { answered: true });
+    const qId = items[currentItem].data.questions[0].id;
+    if (!userAnswers[qId]) {
+      setUserAnswer(qId, []);
+    }
   };
 
   handleUndo = () => {
@@ -477,7 +481,8 @@ const enhance = compose(
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
-      currentGroupId: getCurrentGroupWithAllClasses(state)
+      currentGroupId: getCurrentGroupWithAllClasses(state),
+      userAnswers: state.answers
     }),
     {
       changePreview: changePreviewAction,

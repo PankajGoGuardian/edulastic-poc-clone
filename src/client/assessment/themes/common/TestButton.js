@@ -19,9 +19,15 @@ const TestButton = ({
   toggleBookmark,
   isBookmarked = false,
   items,
-  currentItem: currentItemIndex
+  currentItem: currentItemIndex,
+  handleClick
 }) => {
-  const showHintButton = get(items, [`${currentItemIndex}`, `data`, `questions`, `0`, `hints`], []).length > 0;
+  const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
+  const showHintButton = questions.reduce((acc, question) => {
+    // checking if the hints have an empty label, if so filtering them
+    acc = question.hints.filter(hint => hint.label.length > 0).length;
+    return acc;
+  }, 0);
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
@@ -37,15 +43,15 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {showHintButton && (
+      {showHintButton ? (
         <Tooltip placement="top" title={"Hint"}>
-          <StyledButton>
+          <StyledButton onClick={handleClick}>
             <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
               {t("common.test.hint")}
             </ButtonLink>
           </StyledButton>
         </Tooltip>
-      )}
+      ) : null}
       <Tooltip placement="top" title={"Bookmark"}>
         <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
           <ButtonLink

@@ -46,6 +46,7 @@ export const EditButton = styled.span`
   justify-content: space-between;
   padding: 8px 15px;
   padding-left: 0;
+  margin-left: 10px;
   width: 50px;
   height: 32px;
 

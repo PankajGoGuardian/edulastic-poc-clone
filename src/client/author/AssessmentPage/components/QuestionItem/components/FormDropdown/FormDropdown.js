@@ -28,15 +28,15 @@ export default class FormDropdown extends React.Component {
       question: { options }
     } = this.props;
 
-    const optionChunks = chunk(options[0], 4);
-
-    return optionChunks.map((items, chunkKey) => (
-      <QuestionChunk key={`form-dropdown-chunk-${chunkKey}`}>
-        {items.map((option, key) => (
-          <QuestionOption key={`dropdown-view-${option}-${key}`}>{option}</QuestionOption>
+    return (
+      <Dropdown onChange={this.handleChange}>
+        {options[0].map((option, key) => (
+          <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
+            {option}
+          </Select.Option>
         ))}
-      </QuestionChunk>
-    ));
+      </Dropdown>
+    );
   };
 
   renderForm = () => {

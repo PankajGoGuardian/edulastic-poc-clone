@@ -45,7 +45,7 @@ export default class QuestionDropdown extends React.Component {
 
   handleAdd = () => {
     const nextOptions = this.currentOptions;
-    nextOptions.push("New Choice");
+    nextOptions.push(`New Choice ${nextOptions.length + 1}`);
 
     this.updateOptions(nextOptions);
   };

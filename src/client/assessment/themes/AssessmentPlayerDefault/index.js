@@ -391,10 +391,12 @@ class AssessmentPlayerDefault extends React.Component {
                         }}
                       />
                     )}
-                    {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
+                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
                       <TestButton
                         answerChecksUsedForItem={answerChecksUsedForItem}
                         settings={settings}
+                        items={items}
+                        currentItem={currentItem}
                         isNonAutoGradable={isNonAutoGradable}
                         checkAnswer={() => this.changeTabItemState("check")}
                         toggleBookmark={() => toggleBookmark(item._id)}

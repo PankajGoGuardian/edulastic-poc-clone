@@ -25,11 +25,13 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true });
 
-  clickOnManageClass = () =>
+  clickOnManageClass = () => {
     this.menuItems()
       .eq(6)
       .click({ force: true })
       .click({ force: true });
+    cy.wait(2000); // UI renders slow
+  };
 
   clickOnItemLibrary = () =>
     this.menuItems()

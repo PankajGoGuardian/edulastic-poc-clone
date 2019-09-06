@@ -1,3 +1,5 @@
+import CypressHelper from "../../../util/cypressHelpers";
+
 export default class TestAssignPage {
   selectClass = className => {
     cy.get('[data-cy="selectClass"]').click();
@@ -21,29 +23,12 @@ export default class TestAssignPage {
 
   getCalenderOk = () => cy.get(".ant-calendar-ok-btn");
 
-  setDateInCalender = dateTime => {
-    console.log("time here", dateTime);
-    cy.wait(300);
-    const [date, time] = dateTime.toLocaleString().split(",");
-    const formattedDate = date
-      .split("/")
-      .reverse()
-      .join("-");
-    const datetimeToSet = `${formattedDate}${time}`;
-    cy.get(".ant-calendar-date-input-wrap")
-      .find("input")
-      .type(`${"{backspace}".repeat(datetimeToSet.substr(1).length)}${datetimeToSet.substr(1)}`);
-
-    this.getCalenderOk().click({ force: true });
-    cy.wait(300);
-  };
-
   // start , end => new Date() instance
   setStartAndCloseDate = (start, end) => {
     cy.get('[data-cy="startDate"]').click({ force: true });
-    this.setDateInCalender(start);
+    CypressHelper.setDateInCalender(start);
     // cy.get('[data-cy="closeDate"]').click({ force: true });
-    this.setDateInCalender(end);
+    CypressHelper.setDateInCalender(end);
   };
 
   clickOnAssign = () => {

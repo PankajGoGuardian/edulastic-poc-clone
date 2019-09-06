@@ -303,7 +303,7 @@ class InviteMultipleStudentModal extends Component {
               <SelUserKindDiv>
                 <Col span={8}>Add students by their:</Col>
                 <Col span={12} offset={1}>
-                  <Select onChange={this.handleChange} defaultValue="google">
+                  <Select data-cy="studentType" onChange={this.handleChange} defaultValue="google">
                     <Option value="google">Google Usernames</Option>
                     <Option value="mso">Office 365 Usernames</Option>
                     <Option value="fl">Frist Name and Last Name</Option>
@@ -367,7 +367,13 @@ class InviteMultipleStudentModal extends Component {
               ) : null}
               <Row type="flex" justify="end">
                 <Col>
-                  <ActionButton type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
+                  <ActionButton
+                    data-cy="addStudents"
+                    type="primary"
+                    shape="round"
+                    key="submit"
+                    onClick={this.onInviteStudents}
+                  >
                     Add Student
                   </ActionButton>
                 </Col>
@@ -407,6 +413,7 @@ class InviteMultipleStudentModal extends Component {
                   </Col>
                   <Col>
                     <ActionButton
+                      data-cy="addStudents"
                       type="primary"
                       shape="round"
                       key="submit"

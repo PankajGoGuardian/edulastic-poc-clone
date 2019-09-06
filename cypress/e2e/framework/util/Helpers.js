@@ -45,7 +45,7 @@ class Helpers {
     return shortName.toUpperCase();
   }
 
-  static getRamdomString(type, length = 16) {
+  static getRamdomString(length = 8, type = this.stringTypes().ALPHA) {
     let string = "";
     let possibleChars;
     switch (type) {
@@ -72,10 +72,10 @@ class Helpers {
     return string;
   }
 
-  static getRamdomEmail = (emailStringType = this.stringTypes.ALPHA_NUM, domain = "snapwiz.com") => {
-    const prefix = this.getRamdomString(emailStringType);
-    return `${prefix}@"${domain}`;
-  };
+  static getRamdomEmail(emailStringType = this.stringTypes().ALPHA_NUM, domain = "snapwiz.com") {
+    const prefix = this.getRamdomString(12, emailStringType);
+    return `${prefix}@${domain}`;
+  }
 }
 
 export default Helpers;

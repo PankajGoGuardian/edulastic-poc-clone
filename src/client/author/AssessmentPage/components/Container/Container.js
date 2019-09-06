@@ -90,11 +90,10 @@ class Container extends React.Component {
     getDefaultTestSettings();
   }
 
-  componentWillReceiveProps(next) {
+  componentDidUpdate(prevProps) {
     const { receiveItemDetailById, assessment } = this.props;
-
-    if (!assessment._id && next.assessment._id) {
-      const [testItem] = next.assessment.testItems;
+    if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
+      const [testItem] = assessment.testItems;
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
     }

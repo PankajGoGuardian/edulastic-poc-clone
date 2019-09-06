@@ -5,6 +5,7 @@ import { getLabelParameters } from "../settings";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 
 const defaultConfig = {
+  fillOpacity: 0.3,
   highlightFillOpacity: 0.3,
   hasInnerPoints: true
 };

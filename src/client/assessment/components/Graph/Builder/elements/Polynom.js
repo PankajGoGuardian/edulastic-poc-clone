@@ -149,5 +149,6 @@ export default {
   clean,
   flatConfigPoints,
   getTempPoints,
-  create
+  create,
+  makeCallback
 };

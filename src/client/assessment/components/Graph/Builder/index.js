@@ -39,7 +39,6 @@ import {
   flatConfig,
   getClosestTick,
   getImageCoordsByPercent,
-  isInPolygon,
   updateAxe,
   updateGrid,
   updatePointParameters
@@ -341,6 +340,7 @@ class Board {
 
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
         if (this.removeObjectsUnderMouse(event)) {
+          Area.updateShadingsForAreaPoints(this);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
         }
         return;
@@ -353,6 +353,7 @@ class Board {
       const newElement = this.creatingHandler(this, event);
       if (newElement) {
         this.elements.push(newElement);
+        Area.updateShadingsForAreaPoints(this);
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
       }
     });
@@ -625,6 +626,7 @@ class Board {
       if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
       if (obj.elType === "curve") this.$board.removeObject(obj);
     } else {
+      if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
       this.$board.removeObject(obj);
     }
   }
@@ -824,11 +826,13 @@ class Board {
         })
       )
     );
+    Area.updateShadingsForAreaPoints(this);
   }
 
   loadFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(...config.map(element => this.loadObject(element)));
+    Area.updateShadingsForAreaPoints(this);
   }
 
   loadSegments(elements) {

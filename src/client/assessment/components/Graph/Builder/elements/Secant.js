@@ -122,5 +122,6 @@ export default {
   getConfig,
   clean,
   getTempPoints,
-  create
+  create,
+  makeCallback
 };

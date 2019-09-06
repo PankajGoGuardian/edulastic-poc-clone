@@ -1,8 +1,8 @@
 import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
-import { Colors, CONSTANT } from "../config";
-import { fixLatex, isInPolygon, calcLineLatex } from "../utils";
+import { CONSTANT } from "../config";
+import { fixLatex, isInPolygon, calcLineLatex, calcCircleLatex } from "../utils";
 import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent } from ".";
 
 const jxgType = 100;
@@ -222,14 +222,128 @@ function getAreaByPoint({ usrX, usrY }, [xMin, yMax, xMax, yMin], funcs) {
   return resultAreaPoints;
 }
 
+function renderArea(board, points, opacity = 0.3, priorityColor = null) {
+  return board.$board.create("polygon", points.map(p => [p.x, p.y]), {
+    fillColor: priorityColor || "#00b2ff",
+    highlightFillColor: priorityColor || "#00b2ff",
+    highlightFillOpacity: opacity,
+    fillOpacity: opacity,
+    hasInnerPoints: false,
+    highlighted: false,
+    withLines: false,
+    vertices: {
+      visible: false
+    },
+    fixed: true
+  });
+}
+
+function updateShading(board, areaPoint) {
+  board.removeObject(areaPoint.shadingArea);
+
+  const usrX = rnd(areaPoint.X());
+  const usrY = rnd(areaPoint.Y());
+
+  const availableTypes = [
+    JXG.OBJECT_TYPE_CIRCLE,
+    JXG.OBJECT_TYPE_CONIC,
+    JXG.OBJECT_TYPE_LINE,
+    JXG.OBJECT_TYPE_POLYGON,
+    Exponent.jxgType,
+    Hyperbola.jxgType,
+    Logarithm.jxgType,
+    Parabola.jxgType,
+    Polynom.jxgType,
+    Secant.jxgType,
+    Sin.jxgType,
+    Tangent.jxgType,
+    Equation.jxgType
+  ];
+
+  const funcs = board.elements
+    .filter(el => availableTypes.includes(el.type) && !el.latexIsBroken)
+    .map(item => {
+      if (item.latex) {
+        const func = parse(item.fixedLatex.latexFunc);
+        return (x, y) => func.eval({ x, y }) > 0;
+      }
+
+      switch (item.type) {
+        case JXG.OBJECT_TYPE_CIRCLE: {
+          const points = Object.values(item.ancestors);
+          const lineLatex = calcCircleLatex(
+            { x: points[0].X(), y: points[0].Y() },
+            { x: points[1].X(), y: points[1].Y() }
+          );
+          const fixedLatex = fixLatex(lineLatex);
+          const func = parse(fixedLatex.latexFunc);
+          return (x, y) => func.eval({ x, y }) > 0;
+        }
+        case JXG.OBJECT_TYPE_CONIC:
+          return () => true;
+        case JXG.OBJECT_TYPE_LINE: {
+          const lineLatex = calcLineLatex(
+            { x: item.point1.X(), y: item.point1.Y() },
+            { x: item.point2.X(), y: item.point2.Y() }
+          );
+          const fixedLatex = fixLatex(lineLatex);
+          const func = parse(fixedLatex.latexFunc);
+          return (x, y) => func.eval({ x, y }) > 0;
+        }
+        case JXG.OBJECT_TYPE_POLYGON: {
+          const vertices = Object.values(item.ancestors).map(anc => ({ x: anc.X(), y: anc.Y() }));
+          return (x, y) => isInPolygon({ x, y }, vertices);
+        }
+        case Exponent.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Exponent.makeCallback(...points)(x);
+        }
+        case Hyperbola.jxgType:
+          return () => true;
+        case Logarithm.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Logarithm.makeCallback(...points)(x);
+        }
+        case Parabola.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => Parabola.makeCallbackY(...points)(x) > Parabola.makeCallbackX(...points)(y);
+        }
+        case Polynom.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Polynom.makeCallback(...points)(x);
+        }
+        case Secant.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Secant.makeCallback(...points)(x);
+        }
+        case Sin.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Sin.makeCallback(...points)(x);
+        }
+        case Tangent.jxgType: {
+          const points = Object.values(item.ancestors);
+          return (x, y) => y > Tangent.makeCallback(...points)(x);
+        }
+        default:
+          return () => true;
+      }
+    });
+
+  const points = getAreaByPoint({ usrX, usrY }, board.$board.getBoundingBox(), funcs);
+
+  const shadingArea = renderArea(board, points, 0.3, areaPoint.visProp.strokecolor);
+  areaPoint.addParents(shadingArea);
+  areaPoint.shadingArea = shadingArea;
+}
+
 function create(board, object, settings = {}) {
   const { fixed = false } = settings;
   const { x, y, id = null, priorityColor } = object;
 
   const areaPoint = board.$board.create("point", [x, y], {
-    ...getColorParams(priorityColor || "#000"),
+    ...getColorParams(priorityColor || "#00b2ff"),
     showInfoBox: false,
-    size: 5,
+    size: 7,
     snapToGrid: false,
     label: {
       visible: false
@@ -242,6 +356,7 @@ function create(board, object, settings = {}) {
     areaPoint.on("up", () => {
       if (areaPoint.dragged) {
         areaPoint.dragged = false;
+        updateShading(board, areaPoint);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });
@@ -254,107 +369,10 @@ function create(board, object, settings = {}) {
       board.dragged = true;
     });
   }
-
   areaPoint.type = jxgType;
 
   return areaPoint;
 }
-
-// function create(board, object) {
-//   const newElement = board.$board.create("polygon", el.points.map(p => [p.x, p.y]), {
-//     ...Colors.default[CONSTANT.TOOLS.AREA],
-//     highlightFillOpacity: 0.3,
-//     hasInnerPoints: false,
-//     highlighted: false,
-//     withLines: false,
-//     vertices: {
-//       visible: false
-//     },
-//     fixed: true
-//   });
-//   newElement.type = jxgType;
-//   newElement.pointCoords = el.points;
-//   return newElement;
-// }
-
-// function onHandler() {
-//   return (board, event) => {
-//     const coords = board.getCoords(event);
-//     const usrX = rnd(coords.usrCoords[1]);
-//     const usrY = rnd(coords.usrCoords[2]);
-//
-//     if (board.elements.findIndex(el => el.type === jxgType && isInPolygon({ x: usrX, y: usrY }, el.pointCoords)) > -1) {
-//       return;
-//     }
-//
-//     const availableTypes = [
-//       JXG.OBJECT_TYPE_CIRCLE,
-//       JXG.OBJECT_TYPE_CONIC,
-//       JXG.OBJECT_TYPE_LINE,
-//       JXG.OBJECT_TYPE_POLYGON,
-//       Exponent.jxgType,
-//       Hyperbola.jxgType,
-//       Logarithm.jxgType,
-//       Parabola.jxgType,
-//       Polynom.jxgType,
-//       Secant.jxgType,
-//       Sin.jxgType,
-//       Tangent.jxgType,
-//       Equation.jxgType
-//     ];
-//
-//     const funcs = board.elements
-//       .filter(el => availableTypes.includes(el.type) && !el.latexIsBroken)
-//       .map(item => {
-//         if (item.latex) {
-//           const func = parse(item.fixedLatex.latexFunc);
-//           return (x, y) => func.eval({ x, y }) > 0;
-//         }
-//
-//         switch (item.type) {
-//           case JXG.OBJECT_TYPE_CIRCLE:
-//             return () => true;
-//           case JXG.OBJECT_TYPE_CONIC:
-//             return () => true;
-//           case JXG.OBJECT_TYPE_LINE: {
-//             const lineLatex = calcLineLatex(
-//               { x: item.point1.X(), y: item.point1.Y() },
-//               { x: item.point2.X(), y: item.point2.Y() }
-//             );
-//             const fixedLatex = fixLatex(lineLatex);
-//             const func = parse(fixedLatex.latexFunc);
-//             return (x, y) => func.eval({ x, y }) > 0;
-//           }
-//           case JXG.OBJECT_TYPE_POLYGON: {
-//             const vertices = Object.values(item.ancestors).map(anc => ({ x: anc.X(), y: anc.Y() }));
-//             return (x, y) => isInPolygon({ x, y }, vertices);
-//           }
-//           case Exponent.jxgType:
-//             return () => true;
-//           case Hyperbola.jxgType:
-//             return () => true;
-//           case Logarithm.jxgType:
-//             return () => true;
-//           case Parabola.jxgType:
-//             return () => true;
-//           case Polynom.jxgType:
-//             return () => true;
-//           case Secant.jxgType:
-//             return () => true;
-//           case Sin.jxgType:
-//             return () => true;
-//           case Tangent.jxgType:
-//             return () => true;
-//           default:
-//             return () => true;
-//         }
-//       });
-//
-//     const points = getAreaByPoint({ usrX, usrY }, board.$board.getBoundingBox(), funcs);
-//
-//     return renderElement(board, { points });
-//   };
-// }
 
 function onHandler() {
   return (board, event) => {
@@ -424,13 +442,66 @@ function setAreasForEquations(board) {
     }
   }
 
-  const areaElements = areas.map(points => renderElement(board, { points }));
+  const areaElements = areas.map(points => renderArea(board, points, 0.1));
   inequalities[0].addParents(areaElements);
+}
+
+function setAreaForEquation(board, equation) {
+  if (equation.fixedLatex.compSign === "=") {
+    return;
+  }
+  const funcs = [equation].map(el => {
+    const func = parse(el.fixedLatex.latexFunc);
+    if (el.fixedLatex.compSign === ">" || el.fixedLatex.compSign === ">=") {
+      return (x, y) => func.eval({ x, y }) > 0;
+    }
+    return (x, y) => func.eval({ x, y }) < 0;
+  });
+
+  // add common shaded areas
+  const areas = [];
+  const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
+  const stepX = (xMax - xMin) / 50;
+  const stepY = (yMax - yMin) / 50;
+  for (let x = rnd(xMin + stepX); x < xMax; x = rnd(x + stepX)) {
+    for (let y = rnd(yMin + stepY); y < yMax; y = rnd(y + stepY)) {
+      if (!isEqual(funcs.map(func => func(x, y)), funcs.map(() => true))) {
+        continue;
+      }
+
+      let areaIsExist = false;
+      for (let i = 0; i < areas.length; i++) {
+        if (isInPolygon({ x, y }, areas[i])) {
+          areaIsExist = true;
+          break;
+        }
+      }
+      if (areaIsExist) {
+        continue;
+      }
+
+      const points = getAreaByPoint({ usrX: x, usrY: y }, [xMin, yMax, xMax, yMin], funcs);
+      if (points) {
+        areas.push(points);
+      }
+    }
+  }
+
+  const areaElements = areas.map(points => renderArea(board, points, 0.1, "#FFFF99"));
+  equation.addParents(areaElements);
+}
+
+function updateShadingsForAreaPoints(board) {
+  const areaPoints = board.elements.filter(el => el.type === jxgType);
+  areaPoints.forEach(areaPoint => updateShading(board, areaPoint));
 }
 
 export default {
   jxgType,
   onHandler,
   getConfig,
-  create
+  create,
+  setAreasForEquations, // used to find area for all equations, now not used
+  setAreaForEquation,
+  updateShadingsForAreaPoints
 };

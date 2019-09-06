@@ -3,7 +3,7 @@ import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
-import { EditButton } from "./elements";
+import { Area, EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
@@ -148,6 +148,7 @@ export const handleSnap = (line, points, board) => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());
       line.dragged = false;
+      Area.updateShadingsForAreaPoints(board);
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
@@ -162,6 +163,7 @@ export const handleSnap = (line, points, board) => {
     point.on("up", () => {
       if (point.dragged) {
         point.dragged = false;
+        Area.updateShadingsForAreaPoints(board);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });
@@ -595,6 +597,15 @@ export function calcLineLatex(point1, point2) {
 
   const right = `${part1}${part2}`;
   return `y=${right.length !== 0 ? right : 0}`;
+}
+
+export function calcCircleLatex(point1, point2) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const r = (y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1);
+  return `(x-(${x1}))^2+(y-(${y1}))^2=${r}`;
 }
 
 export function isInPolygon(testPoint, vertices) {

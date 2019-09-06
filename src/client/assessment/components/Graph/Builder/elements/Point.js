@@ -3,6 +3,7 @@ import { CONSTANT } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 import EditButton from "./EditButton";
 import { setLabel, nameGen, colorGenerator } from "../utils";
+import { Area } from ".";
 
 function getColorParams(color) {
   return {
@@ -41,6 +42,7 @@ function create(board, object, settings = {}) {
       if (point.dragged) {
         point.dragged = false;
         if (!point.isTemp) {
+          Area.updateShadingsForAreaPoints(board);
           board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
         }
       }

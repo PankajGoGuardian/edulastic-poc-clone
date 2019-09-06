@@ -1,5 +1,6 @@
 import { CONSTANT } from "../config";
 import { fixApiLatex } from "../utils";
+import { Area } from ".";
 
 const jxgType = 98;
 
@@ -632,6 +633,9 @@ function create(board, object) {
   line.type = jxgType;
   line.subType = null;
   line.apiLatex = apiLatex;
+
+  Area.setAreaForEquation(board, line);
+
   return line;
 }
 

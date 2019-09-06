@@ -54,6 +54,16 @@ export default function Tools(props) {
 
   const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName.toLowerCase(), options);
 
+  // todo: delete this after equations developing
+  const areaToolIsEnabled = () => {
+    if (tools.includes("ellipse")) return false;
+    if (tools.includes("hyperbola")) return false;
+    if (tools.includes("segment")) return false;
+    if (tools.includes("ray")) return false;
+    if (tools.includes("vector")) return false;
+    return true;
+  };
+
   return (
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
       {toolsAreVisible && (
@@ -62,9 +72,12 @@ export default function Tools(props) {
             (uiTool, i) =>
               !uiTool.group && (
                 <ToolBtn
-                  style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
+                  style={{
+                    width: bgShapes ? 70 : fontSize > 20 ? 105 : 93,
+                    backgroundColor: uiTool.name === "area" && !areaToolIsEnabled() ? "#f5f5f5" : undefined
+                  }}
                   className={isActive(uiTool) ? "active" : ""}
-                  onClick={() => onSelect(uiTool)}
+                  onClick={uiTool.name === "area" && !areaToolIsEnabled() ? () => {} : () => onSelect(uiTool)}
                   key={`tool-btn-${i}`}
                 >
                   <ToolbarItem>

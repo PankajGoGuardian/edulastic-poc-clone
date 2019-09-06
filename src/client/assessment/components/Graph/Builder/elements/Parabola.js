@@ -151,5 +151,7 @@ export default {
   clean,
   getTempPoints,
   create,
-  getColorParams
+  getColorParams,
+  makeCallbackX,
+  makeCallbackY
 };

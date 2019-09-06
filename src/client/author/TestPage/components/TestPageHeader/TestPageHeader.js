@@ -72,12 +72,35 @@ export const playlistNavButtons = [
     text: "Settings"
   }
 ];
+export const docBasedButtons = [
+  {
+    icon: <IconDescription color={white} width={16} height={16} />,
+    value: "description",
+    text: "Description"
+  },
+  {
+    icon: <IconAddItems color={white} width={16} height={16} />,
+    value: "worksheet",
+    text: "Worksheet"
+  },
+  {
+    icon: <IconReview color={white} width={16} height={16} />,
+    value: "review",
+    text: "Review"
+  },
+  {
+    icon: <IconSettings color={white} width={16} height={16} />,
+    value: "settings",
+    text: "Settings"
+  }
+];
 // TODO mobile look
 const TestPageHeader = ({
   onChangeNav,
   current,
   onSave,
   buttons,
+  isDocBased = false,
   title,
   creating,
   onShare,
@@ -100,7 +123,8 @@ const TestPageHeader = ({
   test,
   updated
 }) => {
-  let navButtons = buttons || (isPlaylist ? [...playlistNavButtons] : [...navButtonsTest]);
+  let navButtons =
+    buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");

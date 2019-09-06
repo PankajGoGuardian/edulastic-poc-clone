@@ -3,7 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
@@ -25,34 +25,40 @@ const TestButton = ({
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-        <StyledButton
-          onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
-          data-cy="checkAnswer"
-          title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
-        >
-          <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
-            {t("common.test.checkanswer")}
-          </ButtonLink>
-        </StyledButton>
+        <Tooltip placement="top" title={"Check Answer"}>
+          <StyledButton
+            onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
+            data-cy="checkAnswer"
+            title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
+          >
+            <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
+              {t("common.test.checkanswer")}
+            </ButtonLink>
+          </StyledButton>
+        </Tooltip>
       )}
       {showHintButton && (
-        <StyledButton>
-          <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
-            {t("common.test.hint")}
+        <Tooltip placement="top" title={"Hint"}>
+          <StyledButton>
+            <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
+              {t("common.test.hint")}
+            </ButtonLink>
+          </StyledButton>
+        </Tooltip>
+      )}
+      <Tooltip placement="top" title={"Bookmark"}>
+        <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
+          <ButtonLink
+            color={isBookmarked ? "success" : "primary"}
+            isBookmarked={isBookmarked}
+            onClick={toggleBookmark}
+            icon={<IconBookmark color={isBookmarked ? "#f8c165" : "white"} width={10} height={16} />}
+            style={{ color: isBookmarked ? "#f8c165" : "white" }}
+          >
+            {t("common.test.bookmark")}
           </ButtonLink>
         </StyledButton>
-      )}
-      <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
-        <ButtonLink
-          color={isBookmarked ? "success" : "primary"}
-          isBookmarked={isBookmarked}
-          onClick={toggleBookmark}
-          icon={<IconBookmark color={isBookmarked ? "#f8c165" : "white"} width={10} height={16} />}
-          style={{ color: isBookmarked ? "#f8c165" : "white" }}
-        >
-          {t("common.test.bookmark")}
-        </ButtonLink>
-      </StyledButton>
+      </Tooltip>
     </Container>
   );
 };

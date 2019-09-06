@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 
 import { test } from "@edulastic/constants";
 import { white } from "@edulastic/colors";
@@ -37,37 +37,50 @@ class ToolBar extends Component {
 
     return (
       <Container>
-        <StyledButton enable={tool === 0} onClick={() => this.toolbarHandler(0)}>
-          <CursorIcon />
-        </StyledButton>
-
-        <StyledButton enable={tool === 1} onClick={() => this.toolbarHandler(1)}>
-          <InRulerIcon />
-        </StyledButton>
-        {calcType !== calculatorTypes.NONE && (
-          <StyledButton enable={tool === 2} onClick={() => this.toolbarHandler(2)}>
-            <CaculatorIcon />
-            {tool === 2 && (
-              <CalculatorMenu
-                changeCaculateMode={this.handleCalculateMode}
-                calcType={calcType}
-                calculatorTypes={calculatorTypes}
-                calcBrands={calcBrands}
-              />
-            )}
+        <Tooltip placement="top" title={"Pointer"}>
+          <StyledButton enable={tool === 0} onClick={() => this.toolbarHandler(0)}>
+            <CursorIcon />
           </StyledButton>
+        </Tooltip>
+
+        <Tooltip placement="top" title={"Ruler"}>
+          <StyledButton enable={tool === 1} onClick={() => this.toolbarHandler(1)}>
+            <InRulerIcon />
+          </StyledButton>
+        </Tooltip>
+        {calcType !== calculatorTypes.NONE && (
+          <Tooltip placement="top" title={"Calculator"}>
+            <StyledButton enable={tool === 2} onClick={() => this.toolbarHandler(2)}>
+              <CaculatorIcon />
+              {tool === 2 && (
+                <CalculatorMenu
+                  changeCaculateMode={this.handleCalculateMode}
+                  calcType={calcType}
+                  calculatorTypes={calculatorTypes}
+                  calcBrands={calcBrands}
+                />
+              )}
+            </StyledButton>
+          </Tooltip>
         )}
 
-        <StyledButton enable={tool === 3} onClick={() => this.toolbarHandler(3)}>
-          <CloseIcon />
-        </StyledButton>
+        <Tooltip placement="top" title={"Close"}>
+          <StyledButton enable={tool === 3} onClick={() => this.toolbarHandler(3)}>
+            <CloseIcon />
+          </StyledButton>
+        </Tooltip>
 
-        <StyledButton enable={tool === 4} onClick={() => this.toolbarHandler(4)}>
-          <ProtactorIcon />
-        </StyledButton>
-        <StyledButton enable={tool === 5} onClick={() => this.toolbarHandler(5)}>
-          <ScratchPadIcon />
-        </StyledButton>
+        <Tooltip placement="top" title={"Protactor"}>
+          <StyledButton enable={tool === 4} onClick={() => this.toolbarHandler(4)}>
+            <ProtactorIcon />
+          </StyledButton>
+        </Tooltip>
+
+        <Tooltip placement="top" title={"Scratch Pad"}>
+          <StyledButton enable={tool === 5} onClick={() => this.toolbarHandler(5)}>
+            <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
       </Container>
     );
   }

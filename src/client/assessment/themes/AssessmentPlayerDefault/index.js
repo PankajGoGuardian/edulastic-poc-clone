@@ -297,6 +297,8 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const scratchPadMode = tool === 5;
+    const hasCollapseButtons =
+      itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     return (
       <ThemeProvider theme={theme}>
         <Container innerRef={this.scrollElementRef} data-cy="assessment-player-default-wrapper">
@@ -427,13 +429,14 @@ class AssessmentPlayerDefault extends React.Component {
             </Header>
           </Affix>
           <Main skin>
-            <MainWrapper>
+            <MainWrapper hasCollapseButtons={hasCollapseButtons}>
               {testItemState === "" && (
                 <TestItemPreview
                   LCBPreviewModal={LCBPreviewModal}
                   cols={itemRows}
                   questions={questions}
                   showCollapseBtn
+                  viewComponent="studentPlayer"
                 />
               )}
               {testItemState === "check" && (
@@ -447,6 +450,7 @@ class AssessmentPlayerDefault extends React.Component {
                   questions={questions}
                   LCBPreviewModal={LCBPreviewModal}
                   showCollapseBtn
+                  viewComponent="studentPlayer"
                 />
               )}
             </MainWrapper>

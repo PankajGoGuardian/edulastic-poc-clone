@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const MainWrapper = styled.section`
   width: 100%;
-  background-color: ${props => props.theme.mainContentBgColor};
+  background-color: ${props => (props.hasCollapseButtons ? "transparent" : props.theme.mainContentBgColor)};
   color: ${props => props.theme.mainContentTextColor};
   min-height: 100vh;
   margin: auto;
@@ -11,7 +11,7 @@ const MainWrapper = styled.section`
   text-align: left;
   font-size: 18px;
   border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: ${props => (props.hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
   max-width: 100%;
   width: 100%;
 

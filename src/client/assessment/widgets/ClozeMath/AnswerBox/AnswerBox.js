@@ -210,6 +210,7 @@ const Title = styled.div`
 const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.div`

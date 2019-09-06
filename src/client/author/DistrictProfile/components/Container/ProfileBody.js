@@ -192,7 +192,7 @@ class ProfileBody extends React.Component {
         <Icon
           type="close"
           onClick={e => {
-            this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
+            if (user.orgData.schools.length > 1) this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
           }}
         />
       </StyledTag>

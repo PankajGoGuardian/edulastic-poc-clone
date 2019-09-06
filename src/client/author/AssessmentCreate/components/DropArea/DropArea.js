@@ -14,7 +14,7 @@ const DropArea = ({ onUpload, onCreateBlank, loading }) => (
         <CreateUpload />
       </FlexContainer>
     </UploadDragger>
-    <CreateBlank onCreate={onCreateBlank} disabled={loading} />
+    <CreateBlank onCreate={onCreateBlank} loading={loading} />
   </DropAreaContainer>
 );
 

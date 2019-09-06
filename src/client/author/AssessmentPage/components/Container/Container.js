@@ -20,6 +20,7 @@ import {
   updateDocBasedTestAction
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
+import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
 import { changeViewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
 import Worksheet from "../Worksheet/Worksheet";
@@ -65,6 +66,7 @@ const buttons = [
 class Container extends React.Component {
   static propTypes = {
     receiveTestById: PropTypes.func.isRequired,
+    receiveItemDetailById: PropTypes.func.isRequired,
     assessment: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     match: PropTypes.object.isRequired,
@@ -86,6 +88,16 @@ class Container extends React.Component {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
+  }
+
+  componentWillReceiveProps(next) {
+    const { receiveItemDetailById, assessment } = this.props;
+
+    if (!assessment._id && next.assessment._id) {
+      const [testItem] = next.assessment.testItems;
+      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+      receiveItemDetailById(testItemId);
+    }
   }
 
   handleChangeCurrentTab = tab => () => {
@@ -295,6 +307,7 @@ const enhance = compose(
     {
       receiveTestById: receiveTestByIdAction,
       setTestData: setTestDataAction,
+      receiveItemDetailById: getItemDetailByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,

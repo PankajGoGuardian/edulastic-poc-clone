@@ -1,6 +1,17 @@
 import { Popconfirm, Switch, Button, Menu } from "antd";
 import styled, { css } from "styled-components";
-import { white, mobileWidth, mediumDesktopWidth, extraDesktopWidth, themeColor, fadedBlue } from "@edulastic/colors";
+import {
+  white,
+  mobileWidth,
+  mediumDesktopWidth,
+  extraDesktopWidth,
+  themeColor,
+  fadedBlue,
+  tabletWidth,
+  largeDesktopWidth,
+  smallDesktopWidth,
+  mobileWidthMax
+} from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../student/themes";
 import { StyledTable as Table } from "../../../Reports/common/styled";
@@ -11,8 +22,12 @@ export const RightSideButtonWrapper = styled.div`
   height: 45px;
   display: flex;
   margin-left: auto;
+
   @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    order: 2;
   }
 `;
 
@@ -27,12 +42,13 @@ export const Container = styled.div`
   &:hover {
     background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
   }
+
   @media (max-width: ${mediumDesktopWidth}) {
     height: 60px;
   }
-  @media (max-width: ${mobileWidth}) {
-    height: 150px;
-    padding: 0 20px;
+  @media (max-width: ${mobileWidthMax}) {
+    height: auto;
+    padding: 10px 20px 15px;
     flex-wrap: wrap;
     border-radius: 0px;
   }
@@ -44,12 +60,18 @@ export const StyledTitle = styled.h1`
   font-weight: bold;
   margin: 20px 0;
   padding: 0;
+
   @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
     margin: 0px;
   }
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${tabletWidth}) {
+    display: flex;
+    align-items: center;
+  }
+  @media (max-width: ${mobileWidthMax}) {
     margin: 5px 0;
+    order: 1;
   }
 `;
 
@@ -57,6 +79,10 @@ export const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   text-transform: uppercase;
+
+  @media (max-width: ${mobileWidthMax}) {
+    flex-basis: 100%;
+  }
 `;
 
 export const StyledParaFirst = styled.p`
@@ -74,6 +100,10 @@ export const LinkLabel = styled.div`
   padding: 0px 18px;
   color: ${props => (props.color ? props.color : white)};
   font-size: 10px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0px 10px;
+  }
 `;
 
 export const StyledParaSecond = styled.p`
@@ -117,6 +147,11 @@ export const StyledDiv = styled.div`
 
 export const StyledTabContainer = styled.div`
   width: 100%;
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin-top: 15px;
+    order: 3;
+  }
 `;
 
 export const StyledTabs = styled.div`
@@ -124,8 +159,12 @@ export const StyledTabs = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
   @media (max-width: ${mediumDesktopWidth}) {
     min-width: 480px;
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    min-width: 300px;
   }
 `;
 
@@ -163,6 +202,9 @@ export const StyledAnchor = styled.div`
     svg {
       display: none;
     }
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    flex-basis: 100%;
   }
 `;
 
@@ -264,6 +306,11 @@ export const HeaderMenuIcon = styled(Button)`
   ${commonButtonsCSS}
   width: 45px;
 `;
+
+export const OpenCloseWrapper = styled.div`
+  white-space: nowrap;
+`;
+
 export const OpenCloseButton = styled(Button)`
   ${commonButtonsCSS}
   margin-right: 5px;

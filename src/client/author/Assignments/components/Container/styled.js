@@ -43,6 +43,10 @@ export const LeftWrapper = styled.div`
     height: calc(100vh - 50px);
     z-index: 1;
   }
+
+  @media (max-width: ${tabletWidth}) {
+    left: 0px;
+  }
 `;
 
 export const FixedWrapper = styled.div`

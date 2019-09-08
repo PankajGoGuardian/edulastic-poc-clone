@@ -13,7 +13,12 @@ import Title from "../common/Title";
 import CreationOptions from "../CreationOptions/CreationOptions";
 import DropArea from "../DropArea/DropArea";
 import { receiveTestByIdAction, getTestsLoadingSelector } from "../../../TestPage/ducks";
-import { createAssessmentRequestAction, getAssessmentCreatingSelector, percentageUploadedSelector } from "../../ducks";
+import {
+  createAssessmentRequestAction,
+  getAssessmentCreatingSelector,
+  percentageUploadedSelector,
+  setPercentUploadedAction
+} from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
 
 const breadcrumbStyle = {
@@ -68,13 +73,18 @@ class Container extends React.Component {
     this.setState({ method });
   };
 
+  handleUploadProgress = progressEvent => {
+    var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    this.props.setPercentUploaded(percentCompleted);
+  };
+
   handleUploadPDF = debounce(({ file }) => {
     const { location, createAssessment } = this.props;
     const { assessmentId } = qs.parse(location.search);
     if (file.size / 1024000 > 15) {
       return message.error("File size exceeds 15 MB MB limit.");
     }
-    createAssessment({ file, assessmentId });
+    createAssessment({ file, assessmentId, progressCallback: this.handleUploadProgress });
   }, 1000);
 
   handleCreateBlankAssessment = event => {
@@ -130,7 +140,8 @@ const enhance = compose(
     }),
     {
       createAssessment: createAssessmentRequestAction,
-      receiveTestById: receiveTestByIdAction
+      receiveTestById: receiveTestByIdAction,
+      setPercentUploaded: setPercentUploadedAction
     }
   )
 );

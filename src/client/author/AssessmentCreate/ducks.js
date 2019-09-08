@@ -39,7 +39,8 @@ const createAssessmentRequest = state => ({
 
 const createAssessmentSuccess = state => ({
   ...state,
-  creating: false
+  creating: false,
+  percentageUpload: 0
 });
 
 const createAssessmentError = (state, { payload: { error } }) => ({
@@ -86,36 +87,29 @@ function* createAssessmentSaga({ payload }) {
   let testItem;
   let amountOfPDFPages = 0;
   let pageStructure = [];
-  //TODO find a better way to show the progress
-  yield put(setPercentUploadedAction(0));
+
   try {
     if (payload.file) {
-      yield put(setPercentUploadedAction(20));
-      fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS);
+      fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS, null, payload.progressCallback);
     }
   } catch (error) {
     const errorMessage = "Upload PDF is failing";
-    yield put(setPercentUploadedAction(0));
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
-  yield put(setPercentUploadedAction(70));
   try {
     if (!payload.assessmentId) {
       testItem = yield call(testItemsApi.create, defaultTestItem);
     }
   } catch (error) {
     const errorMessage = "Create test item is failing";
-
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
-    yield put(setPercentUploadedAction(0));
     return;
   }
 
   try {
-    yield put(setPercentUploadedAction(90));
     if (fileURI) {
       const pdfLoadingTask = pdfjs.getDocument(fileURI);
 
@@ -132,7 +126,6 @@ function* createAssessmentSaga({ payload }) {
         }));
     }
 
-    yield put(setPercentUploadedAction(100));
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
 
@@ -195,10 +188,8 @@ function* createAssessmentSaga({ payload }) {
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     }
-    yield put(setPercentUploadedAction(0));
   } catch (error) {
     const errorMessage = "Create assessment is failing";
-    yield put(setPercentUploadedAction(0));
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }

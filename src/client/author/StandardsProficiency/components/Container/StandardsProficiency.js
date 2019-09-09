@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
@@ -27,7 +27,8 @@ import {
   updateStandardsProficiencyAction,
   deleteStandardsProficiencyAction,
   receiveStandardsProficiencyAction,
-  setEditingIndexAction
+  setEditingIndexAction,
+  setStandardsProficiencyProfileNameAction
 } from "../../ducks";
 import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 
@@ -73,8 +74,10 @@ const defaultData = {
 function ProfileRow(props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleteText, setDeleteText] = useState("");
+  const proficiencyTableInstance = useRef();
 
-  const { _id, index, deleteRow, setEditing, active, readOnly } = props;
+  const { _id, index, deleteRow, setEditing, active, readOnly, setName } = props;
+  const profileName = get(props, "profile.name", "");
   return (
     <ListItemStyled>
       <ProfileModal
@@ -105,7 +108,21 @@ function ProfileRow(props) {
       </ProfileModal>
 
       <StyledProfileRow type="flex">
-        <Col span={12}>{get(props, "profile.name", "Untitled")}</Col>
+        <Col span={12}>
+          {active ? (
+            <Input
+              value={profileName}
+              onChange={e => {
+                setName({ _id, name: e.target.value });
+                if (proficiencyTableInstance.current) {
+                  proficiencyTableInstance.current.setChanged(true);
+                }
+              }}
+            />
+          ) : (
+            profileName
+          )}
+        </Col>
         <StyledProfileCol span={12}>
           {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditing(index)} />}
           <Icon type="copy" onClick={() => {}} />
@@ -118,6 +135,7 @@ function ProfileRow(props) {
         <RowStyled>
           <Col span={24}>
             <StandardsProficiencyTable
+              wrappedComponentRef={proficiencyTableInstance}
               readOnly={readOnly}
               name={get(props, "profile.name", "Untitled")}
               index={index}
@@ -131,7 +149,19 @@ function ProfileRow(props) {
 }
 
 function StandardsProficiency(props) {
-  const { loading, updating, creating, history, list, create, update, remove, editingIndex, setEditingIndex } = props;
+  const {
+    loading,
+    updating,
+    creating,
+    history,
+    list,
+    create,
+    update,
+    remove,
+    editingIndex,
+    setEditingIndex,
+    setName
+  } = props;
   const showSpin = loading || updating || creating;
   const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
@@ -205,6 +235,7 @@ function StandardsProficiency(props) {
             renderItem={(profile, index) => (
               <ProfileRow
                 readOnly={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
+                setName={setName}
                 setEditing={setEditingIndex}
                 index={index}
                 profile={profile}
@@ -237,7 +268,8 @@ const enhance = connect(
     update: updateStandardsProficiencyAction,
     list: receiveStandardsProficiencyAction,
     remove: deleteStandardsProficiencyAction,
-    setEditingIndex: setEditingIndexAction
+    setEditingIndex: setEditingIndexAction,
+    setName: setStandardsProficiencyProfileNameAction
   }
 );
 

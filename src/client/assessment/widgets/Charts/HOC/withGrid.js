@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
+import { DOT_PLOT, LINE_PLOT } from "@edulastic/constants/const/questionType";
 
 import { getYAxis, getPadding } from "../helpers";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
+import { Spacing } from "../styled/Spacing";
 
 const withGrid = WrappedComponent => {
   const hocComponent = props => {
@@ -39,11 +41,6 @@ const withGrid = WrappedComponent => {
         </FlexContainer>
         <div style={{ position: "relative" }}>
           <AnnotationRnd
-            style={{
-              backgroundColor: "transparent",
-              boxShadow: "none",
-              border: view === EDIT ? "1px solid lightgray" : "none"
-            }}
             question={item}
             setQuestionData={setQuestionData}
             disableDragging={view !== EDIT}
@@ -65,6 +62,7 @@ const withGrid = WrappedComponent => {
           >
             {xAxisLabel}
           </FlexContainer>
+          {(item.type === LINE_PLOT || item.type === DOT_PLOT) && <Spacing />}
         </div>
       </FlexContainer>
     );

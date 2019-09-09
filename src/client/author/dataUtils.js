@@ -47,12 +47,15 @@ export const getQuestionType = item => {
   const resources = get(item, ["data", "resources"], []);
   const hasPassage = resources.some(item => item.type === PASSAGE);
   if (hasPassage) {
-    return PASSAGE.toUpperCase();
+    //All questions that are linked to passage should show type as passage and question type attached to passage
+    return questions.length > 1
+      ? [PASSAGE.toUpperCase(), "MULTIPART"]
+      : [PASSAGE.toUpperCase(), questions[0] && questions[0].title];
   }
   if (questions.length > 1 || resources.length) {
-    return "MULTIPART";
+    return ["MULTIPART"];
   }
-  return questions[0] && questions[0].title;
+  return questions[0] && questions[0].title ? [questions[0].title] : [];
 };
 
 /**

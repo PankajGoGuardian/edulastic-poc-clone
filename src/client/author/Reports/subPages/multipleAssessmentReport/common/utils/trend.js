@@ -87,6 +87,7 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
   const parsedGroupedMetric = map(groupedMetric, (value, metricId) => {
     const groupByTests = groupBy(value, "testId");
     const tests = {};
+    const assessmentDate = value[0].assessmentDate;
 
     forEach(groupByTests, (value, key) => {
       const maxStudents = maxBy(value, item => parseInt(item.studentCount || 0)) || {};
@@ -102,15 +103,17 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
     return {
       tests,
       studentCount: maxBy(values(tests), "studentCount").studentCount,
-      id: metricId
+      id: metricId,
+      assessmentDate: assessmentDate
     };
   });
 
   const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric);
   const augmentedData = augmentWithData(dataWithTrend, compareBy, orgData);
   const filteredTrendData = filter(augmentedData, record => (selectedTrend ? record.trend === selectedTrend : true));
+  const sortedFilteredTrendData = orderBy(filteredTrendData, ["assessmentDate"], ["asc"]);
 
-  return [filteredTrendData, trendCount];
+  return [sortedFilteredTrendData, trendCount];
 };
 
 export const calculateTrend = groupedData => {

@@ -6,6 +6,7 @@ import { get, keyBy, isEmpty } from "lodash";
 import { SimpleStackedBarWithLineChartContainer } from "./componenets/charts/simpleStackedBarWithLineChartContainer";
 import { QuestionAnalysisTable } from "./componenets/table/questionAnalysisTable";
 import { Placeholder } from "../../../common/components/loader";
+import { EmptyData } from "../../../common/components/emptyData";
 import { StyledH3 } from "../../../common/styled";
 import { StyledCard, UpperContainer, TableContainer } from "./componenets/styled";
 import { getChartData, getTableData } from "./utils/transformers";
@@ -68,6 +69,14 @@ const QuestionAnalysis = ({
   const onResetClickCB = () => {
     setChartFilter({});
   };
+
+  if (isEmpty(questionAnalysis) && !loading) {
+    return (
+      <>
+        <EmptyData />
+      </>
+    );
+  }
 
   return (
     <div>

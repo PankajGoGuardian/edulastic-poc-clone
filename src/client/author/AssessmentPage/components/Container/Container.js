@@ -14,15 +14,14 @@ import {
   getTestEntitySelector,
   getTestsLoadingSelector,
   setTestDataAction,
-  updateTestAction,
   publishTestAction,
   getDefaultTestSettingsAction,
-  getTestsCreatingSelector
+  getTestsCreatingSelector,
+  updateDocBasedTestAction
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
-import { getItemDetailByIdAction, updateItemDetailByIdAction } from "../../../src/actions/itemDetail";
+import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
 import { changeViewAction } from "../../../src/actions/view";
-import { getItemDetailSelector } from "../../../src/selectors/itemDetail";
 import { getViewSelector } from "../../../src/selectors/view";
 import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
@@ -30,6 +29,7 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
+import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 
 const { statusConstants } = test;
 
@@ -63,14 +63,6 @@ const buttons = [
   }
 ];
 
-const createWidget = ({ id, type, title }) => ({
-  widgetType: type === "sectionLabel" ? "resource" : "question",
-  type,
-  title,
-  reference: id,
-  tabIndex: 0
-});
-
 class Container extends React.Component {
   static propTypes = {
     receiveTestById: PropTypes.func.isRequired,
@@ -80,9 +72,7 @@ class Container extends React.Component {
     match: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
-    updateItemDetailById: PropTypes.func.isRequired,
-    currentTestItem: PropTypes.object.isRequired,
-    updateTest: PropTypes.func.isRequired,
+    updateDocBasedTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
   };
@@ -96,16 +86,14 @@ class Container extends React.Component {
 
   componentDidMount() {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
-
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
   }
 
-  componentWillReceiveProps(next) {
+  componentDidUpdate(prevProps) {
     const { receiveItemDetailById, assessment } = this.props;
-
-    if (!assessment._id && next.assessment._id) {
-      const [testItem] = next.assessment.testItems;
+    if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
+      const [testItem] = assessment.testItems;
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
     }
@@ -116,52 +104,12 @@ class Container extends React.Component {
     changeView(tab);
   };
 
-  handleSave = (status = "draft") => {
-    const {
-      questions: assessmentQuestions,
-      assessment,
-      currentTestItem,
-      updateItemDetailById,
-      updateTest
-    } = this.props;
-
-    if (!this.validateQuestions(assessmentQuestions)) {
+  handleSave = async () => {
+    const { questions: assessmentQuestions, assessment, updateDocBasedTest } = this.props;
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
       return;
     }
-
-    const [testItem] = assessment.testItems;
-    const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-
-    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
-    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
-
-    const updatedTestItem = {
-      ...currentTestItem,
-      authors: undefined,
-      public: undefined,
-      data: {
-        ...currentTestItem.data,
-        questions,
-        resources
-      },
-      rows: [
-        {
-          tabs: [],
-          dimension: "100%",
-          widgets: assessmentQuestions.map(createWidget)
-        }
-      ],
-      itemLevelScoring: false
-    };
-
-    const newAssessment = {
-      ...assessment,
-      status
-    };
-
-    updateTest(assessment._id, newAssessment, true);
-    updateItemDetailById(testItemId, updatedTestItem, true, false);
+    updateDocBasedTest(assessment._id, assessment, true);
     this.setState({ saved: true, published: false });
   };
 
@@ -214,12 +162,16 @@ class Container extends React.Component {
   };
 
   handleAssign = () => {
-    const { assessment, history, match } = this.props;
-    const { published } = this.state;
-    if (published && this.validateTest(assessment)) {
-      const { assessmentId } = match.params;
-      if (assessmentId) {
-        history.push(`/author/assignments/${assessmentId}`);
+    const { assessment, history, match, updated } = this.props;
+    const { status } = assessment;
+    if (this.validateTest(test)) {
+      if (status !== statusConstants.PUBLISHED || updated) {
+        this.handlePublishTest(true);
+      } else {
+        const { id } = match.params;
+        if (id) {
+          history.push(`/author/assignments/${id}`);
+        }
       }
     }
   };
@@ -228,30 +180,6 @@ class Container extends React.Component {
     this.setState({
       showShareModal: !this.state.showShareModal
     });
-  };
-
-  validateQuestions = questions => {
-    if (!questions.length) {
-      message.warning("At least one question has to be created before saving assessment");
-      return false;
-    }
-
-    const correctAnswerPicked = questions
-      .filter(question => question.type !== "sectionLabel")
-      .every(question => {
-        const validationValue = get(question, "validation.validResponse.value");
-        if (question.type === "math") {
-          return validationValue.every(value => !isEmpty(value.value));
-        }
-        return !isEmpty(validationValue);
-      });
-
-    if (!correctAnswerPicked) {
-      message.warning("Correct answers have to be chosen for every question");
-      return false;
-    }
-
-    return true;
   };
 
   onEnableEdit = () => {
@@ -365,7 +293,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => {
-      console.log("state in container", state);
       return {
         assessment: getTestEntitySelector(state),
         userId: get(state, "user.user._id", ""),
@@ -373,17 +300,15 @@ const enhance = compose(
         questions: getQuestionsArraySelector(state),
         creating: getTestsCreatingSelector(state),
         questionsById: getQuestionsSelector(state),
-        currentTestItem: getItemDetailSelector(state),
         currentTab: getViewSelector(state)
       };
     },
     {
       receiveTestById: receiveTestByIdAction,
-      receiveItemDetailById: getItemDetailByIdAction,
-      updateItemDetailById: updateItemDetailByIdAction,
       setTestData: setTestDataAction,
+      receiveItemDetailById: getItemDetailByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
-      updateTest: updateTestAction,
+      updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,
       publishTest: publishTestAction
     }

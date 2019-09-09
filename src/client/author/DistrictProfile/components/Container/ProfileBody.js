@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import produce from "immer";
+import { omit, map, isEqual } from "lodash";
 import { Layout, Form, Input, Button, Icon, Select, Tag } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -45,8 +47,19 @@ class ProfileBody extends React.Component {
     showDeleteSchoolModal: false,
     showStandardSetsModal: false,
     showEmailConfirmModal: false,
-    showSaveStandSetsBtn: false
+    showSaveStandSetsBtn: false,
+    interestedCurriculums: []
   };
+
+  static getDerivedStateFromProps(props, state) {
+    const { interestedCurriculums } = props.user.orgData;
+    if (!state.showSaveStandSetsBtn && !isEqual(interestedCurriculums, state.interestedCurriculums)) {
+      return {
+        interestedCurriculums: interestedCurriculums
+      };
+    }
+    return null;
+  }
 
   handleSubmit = e => {
     const { form, user } = this.props;
@@ -163,19 +176,29 @@ class ProfileBody extends React.Component {
 
   handleSaveStandardSets = () => {
     const { updateInterestedCurriculums, user } = this.props;
+    const { interestedCurriculums } = this.state;
+
+    const updatedInterestedCurriculums = map(interestedCurriculums, obj => omit(obj, ["orgType"]));
+
     const standardsData = {
       orgId: user._id,
       orgType: "teacher",
-      curriculums: user.orgData.interestedCurriculums
+      curriculums: updatedInterestedCurriculums
     };
+
     updateInterestedCurriculums(standardsData);
     this.setState({ showSaveStandSetsBtn: false });
   };
 
   removeStandardSet = id => {
-    const { removeInterestedCurriculum } = this.props;
-    removeInterestedCurriculum(id);
     this.setState({ showSaveStandSetsBtn: true });
+
+    const updatedState = produce(this.state, draft => {
+      draft.interestedCurriculums = draft.interestedCurriculums.filter(e => e._id != id);
+    });
+
+    const updatedInterestedCurriculums = updatedState.interestedCurriculums;
+    this.setState({ interestedCurriculums: updatedInterestedCurriculums });
   };
 
   deleteProfile = () => {
@@ -192,7 +215,7 @@ class ProfileBody extends React.Component {
         <Icon
           type="close"
           onClick={e => {
-            this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
+            if (user.orgData.schools.length > 1) this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
           }}
         />
       </StyledTag>
@@ -202,7 +225,8 @@ class ProfileBody extends React.Component {
 
   getStandardSets = () => {
     const { user } = this.props;
-    const curriculums = user.orgData.interestedCurriculums.map(curriculum => (
+    const { interestedCurriculums } = this.state;
+    const curriculums = interestedCurriculums.map(curriculum => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
         <Icon type="close" onClick={() => this.removeStandardSet(curriculum._id)} />

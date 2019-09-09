@@ -95,7 +95,14 @@ class TestItemCol extends Component {
     const { col, style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
     return (
-      <Container value={value} style={style} width={col.dimension || "auto"}>
+      <Container
+        value={value}
+        style={style}
+        width={col.dimension || "auto"}
+        hasCollapseButtons={
+          ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
+        }
+      >
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
           <Tabs value={value} onChange={this.handleTabChange}>
             {col.tabs.map((tab, tabIndex) => (

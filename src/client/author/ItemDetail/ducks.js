@@ -51,6 +51,7 @@ export const RECEIVE_ITEM_DETAIL_SUCCESS = "[itemDetail] receive success";
 export const RECEIVE_ITEM_DETAIL_ERROR = "[itemDetail] receive error";
 export const SET_ITEM_QIDS = "[itemDetail] set qids";
 
+export const UPDATE_ITEM_DOC_BASED_REQUEST = "[itemDetail] update doc based by id request";
 export const UPDATE_ITEM_DETAIL_REQUEST = "[itemDetail] update by id request";
 export const UPDATE_ITEM_DETAIL_SUCCESS = "[itemDetail] update by id success";
 export const UPDATE_ITEM_DETAIL_ERROR = "[itemDetail] update by id error";
@@ -108,6 +109,11 @@ export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PAS
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
   payload: { id, params }
+});
+
+export const updateItemsDocBasedByIdAction = (id, data, keepData, redirect = true) => ({
+  type: UPDATE_ITEM_DOC_BASED_REQUEST,
+  payload: { id, data, keepData, redirect }
 });
 
 export const receiveItemDetailSuccess = item => ({
@@ -515,6 +521,7 @@ export function reducer(state = initialState, { type, payload }) {
     case UPDATE_ITEM_DETAIL_DIMENSION:
       return updateDimension(state, payload);
     case UPDATE_ITEM_DETAIL_REQUEST:
+    case UPDATE_ITEM_DOC_BASED_REQUEST:
       return { ...state, updating: true };
     case UPDATE_ITEM_DETAIL_SUCCESS:
       return { ...state, item: payload.item, updating: false };
@@ -788,6 +795,46 @@ export function* updateItemSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
+    const errorMessage = "Item save is failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: UPDATE_ITEM_DETAIL_ERROR,
+      payload: { error: errorMessage }
+    });
+  }
+}
+
+export function* updateItemDocBasedSaga({ payload }) {
+  try {
+    if (!payload.keepData) {
+      // avoid data part being put into db
+      delete payload.data.data;
+    }
+    const data = _omit(payload.data, ["authors", "__v"]);
+    if (payload.testId) {
+      data.testId = testId;
+    }
+
+    const questions = get(payload.data, ["data", "questions"], []);
+    const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    // on update, if there is only question.. set it as the questionId, since we are changing the view
+    // to singleQuestionView!
+    if (questions.length === 1) {
+      yield put(changeCurrentQuestionAction(questions[0].id));
+    }
+
+    let test = yield select(getTestEntitySelector);
+    test = { ...test, testItems: [item] };
+    yield put(setTestDataAction(test));
+    const alignments = yield select(getDictionariesAlignmentsSelector);
+    const { standards = [] } = alignments[0];
+    // to update recent standards used in local storage and store
+    let recentStandardsList = yield select(getRecentStandardsListSelector);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+    yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+    yield call(message.success, "Item is saved as draft", 2);
+  } catch (err) {
     const errorMessage = "Item save is failing";
     yield call(message.error, errorMessage);
     yield put({
@@ -1081,6 +1128,7 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
     yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield takeEvery(UPDATE_ITEM_DOC_BASED_REQUEST, updateItemDocBasedSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),
     yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga),

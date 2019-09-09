@@ -36,7 +36,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             disabledDate={disabledStartDate}
             showTime
             format="YYYY-MM-DD HH:mm:ss"
-            value={moment(startDate)}
+            value={startDate}
             placeholder="Open Date"
             onChange={changeField("startDate")}
           />
@@ -50,7 +50,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             disabledDate={disabledEndDate}
             showTime
             format="YYYY-MM-DD HH:mm:ss"
-            value={moment(endDate)}
+            value={endDate}
             placeholder="Close Date"
             showToday={false}
             onChange={changeField("endDate")}

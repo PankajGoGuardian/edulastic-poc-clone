@@ -1,5 +1,6 @@
 import { takeEvery, put, all, select, call } from "redux-saga/effects";
 import { message } from "antd";
+import { isEmpty, values } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 
@@ -32,6 +33,11 @@ function* evaluateAnswers() {
       }
     });
 
+    const validResponses = values(userResponse).filter(item => !!item);
+    //if user response is empty show toaster msg.
+    if (isEmpty(validResponses)) {
+      return message.warn("Attempt the question to check answer");
+    }
     const { items, currentItem } = yield select(state => state.test);
     const testItemId = items[currentItem]._id;
     const shuffledOptions = yield select(state => state.shuffledOptions);

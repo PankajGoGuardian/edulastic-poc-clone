@@ -45,7 +45,7 @@ export default class QuestionDropdown extends React.Component {
 
   handleAdd = () => {
     const nextOptions = this.currentOptions;
-    nextOptions.push("New Choice");
+    nextOptions.push(`New Choice ${nextOptions.length + 1}`);
 
     this.updateOptions(nextOptions);
   };
@@ -144,7 +144,7 @@ export default class QuestionDropdown extends React.Component {
             <Select
               value={value[0]}
               onChange={this.handleValueChange}
-              style={{ marginRight: "20px" }}
+              style={{ marginRight: "20px", minWidth: "200px" }}
               getPopupContainer={trigger => trigger.parentNode}
             >
               {this.currentOptions.map((option, key) => (

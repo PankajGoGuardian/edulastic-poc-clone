@@ -2,8 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 
-const CommonInput = ({ onChange, value, size, type }) => (
-  <Input onChange={e => onChange(e.target.value)} type={type} value={value} size={size} />
+const CommonInput = ({ onChange, value, size, type, shadedCellsCount = 0 }) => (
+  <Input
+    onChange={e => onChange(e.target.value > shadedCellsCount ? e.target.value : shadedCellsCount)}
+    type={type}
+    value={value}
+    size={size}
+    min={shadedCellsCount}
+  />
 );
 
 CommonInput.propTypes = {

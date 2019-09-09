@@ -7,7 +7,7 @@ import { CorrectAnswersContainer, Paper, Stimulus, QuestionNumberLabel, AnswerCo
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-
+import { getFontSize } from "../../utils/helpers";
 import { ContentArea } from "../../styled/ContentArea";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
@@ -276,6 +276,15 @@ class Graph extends Component {
       setQuestionData,
       ...restProps
     } = this.props;
+
+    const mapFontName = {
+      extra_large: "xlarge",
+      huge: "xxlarge",
+      large: "large",
+      small: "small",
+      normal: "normal"
+    };
+
     let previewTab = _previewTab;
     let compact = false;
     if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
@@ -295,7 +304,6 @@ class Graph extends Component {
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
-
     return (
       <React.Fragment>
         {view === "edit" && (
@@ -308,6 +316,7 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
+                fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
               />
               <Question
                 section="main"
@@ -347,7 +356,15 @@ class Graph extends Component {
           <Wrapper className={compact ? "toolbar-compact" : ""}>
             <QuestionTitleWrapper>
               {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
-              <StyledStimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
+              <StyledStimulus
+                data-cy="questionHeader"
+                dangerouslySetInnerHTML={{ __html: stimulus }}
+                fontSize={
+                  item.numberlineAxis
+                    ? item.numberlineAxis.fontSize + "px"
+                    : getFontSize(mapFontName[item.uiStyle.currentFontSize])
+                }
+              />
             </QuestionTitleWrapper>
             {item.canvas && item.uiStyle && (
               <GraphDisplay

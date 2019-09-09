@@ -5,7 +5,7 @@ import { Container, Title, MenuIcon } from "./styled";
 
 const Header = ({ title, toggleSideBar, renderExtra }) => (
   <Container>
-    <FlexContainer alignItems="flex-start">
+    <FlexContainer flexWrap="nowrap">
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <Title>{title}</Title>
     </FlexContainer>

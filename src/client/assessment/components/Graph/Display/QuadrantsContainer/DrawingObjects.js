@@ -24,7 +24,7 @@ class DrawingObjects extends Component {
     }
 
     if (drawingObject.pointLabels) {
-      const pointLabels = drawingObject.pointLabels.map(item => striptags(item)).join("");
+      const pointLabels = drawingObject.pointLabels.map(item => striptags(item.label)).join("");
       if (pointLabels) {
         return `${type} ${pointLabels}`;
       }

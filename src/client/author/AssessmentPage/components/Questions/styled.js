@@ -44,7 +44,8 @@ export const AnswerAction = styled(Button)`
     color: ${({ active }) => (active ? white : themeColorLight)};
   }
 
-  &:first-child {
-    margin-right: 25px;
+  margin-right: 25px;
+  &:last-child {
+    margin-right: 0;
   }
 `;

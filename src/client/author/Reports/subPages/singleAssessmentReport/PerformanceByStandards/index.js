@@ -12,6 +12,7 @@ import PerformanceAnalysisTable from "./components/table/performanceAnalysisTabl
 import CardHeader, { CardTitle, CardDropdownWrapper } from "./common/CardHeader/CardHeader";
 import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
 import { Placeholder } from "../../../common/components/loader";
+import { EmptyData } from "../../../common/components/emptyData";
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
@@ -231,6 +232,14 @@ const PerformanceByStandards = ({
     analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE
       ? SimpleStackedBarChartContainer
       : SignedStackedBarChartContainer;
+
+  if (!report.metricInfo.length || !report.studInfo.length) {
+    return (
+      <>
+        <EmptyData />
+      </>
+    );
+  }
 
   return (
     <>

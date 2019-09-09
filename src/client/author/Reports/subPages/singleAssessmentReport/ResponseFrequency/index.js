@@ -10,6 +10,7 @@ import { StackedBarChartContainer } from "./components/charts/stackedBarChartCon
 import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
 import { StyledSlider, StyledH3 } from "../../../common/styled";
 import { Placeholder } from "../../../common/components/loader";
+import { EmptyData } from "../../../common/components/emptyData";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
 
@@ -84,6 +85,14 @@ const ResponseFrequency = props => {
   const onResetClickCB = () => {
     setFilter({});
   };
+
+  if (isEmpty(res) && !props.loading) {
+    return (
+      <>
+        <EmptyData />
+      </>
+    );
+  }
 
   return (
     <div>

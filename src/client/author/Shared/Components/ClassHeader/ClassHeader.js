@@ -8,6 +8,8 @@ import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { IconDeskTopMonitor, IconBookMarkButton, IconNotes } from "@edulastic/icons";
 import { assignmentPolicyOptions } from "@edulastic/constants";
+import { MenuIcon } from "@edulastic/common";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import {
   Container,
@@ -27,10 +29,10 @@ import {
   DropMenu,
   MenuItems,
   CaretUp,
-  StudentStatusDetails
+  StudentStatusDetails,
+  OpenCloseWrapper
 } from "./styled";
-import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
-import { StudentReportCardModal } from "./components/studentReportCardModal";
+
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
@@ -49,13 +51,12 @@ import {
   inProgressStudentsSelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
-import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
-import { themeColor } from "@edulastic/colors";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
+const desktopWidth = 992;
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -216,7 +217,8 @@ class ClassHeader extends Component {
       toggleReleaseGradePopUp,
       userRole,
       notStartedStudents,
-      inProgressStudents
+      inProgressStudents,
+      toggleSideBar
     } = this.props;
 
     const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -238,6 +240,25 @@ class ClassHeader extends Component {
         : closed
         ? "DONE"
         : assignmentStatus;
+
+    const renderOpenClose = (
+      <OpenCloseWrapper>
+        {canOpen ? (
+          <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
+        ) : (
+          assignmentStatusForDisplay !== "DONE" &&
+          canPause && (
+            <OpenCloseButton
+              onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
+            >
+              {isPaused ? "OPEN" : "PAUSE"}
+            </OpenCloseButton>
+          )
+        )}
+        {canClose ? <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton> : ""}
+      </OpenCloseWrapper>
+    );
+
     const menu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
@@ -253,6 +274,8 @@ class ClassHeader extends Component {
         <MenuItems key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
           Release Score
         </MenuItems>
+        {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
+
         {/* TODO temp hiding for UAT */}
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
@@ -263,14 +286,17 @@ class ClassHeader extends Component {
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-            {additionalData.className || "loading..."}
-          </StyledParaFirst>
-          <StyledParaSecond>
-            {assignmentStatusForDisplay}
-            {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-            <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("D MMMM YYYY")})`}</div>
-          </StyledParaSecond>
+          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
+          <div>
+            <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
+              {additionalData.className || "loading..."}
+            </StyledParaFirst>
+            <StyledParaSecond>
+              {assignmentStatusForDisplay}
+              {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
+              <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("D MMMM YYYY")})`}</div>
+            </StyledParaSecond>
+          </div>
         </StyledTitle>
         <StyledTabContainer>
           <StyledTabs>
@@ -312,21 +338,7 @@ class ClassHeader extends Component {
           </StyledTabs>
         </StyledTabContainer>
         <RightSideButtonWrapper>
-          {canOpen ? (
-            <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
-          ) : (
-            <>
-              {assignmentStatusForDisplay !== "DONE" && canPause && (
-                <OpenCloseButton
-                  onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
-                >
-                  {" "}
-                  {isPaused ? "OPEN" : "PAUSE"}
-                </OpenCloseButton>
-              )}
-              {canClose ? <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton> : ""}
-            </>
-          )}
+          {window.innerWidth > desktopWidth && renderOpenClose}
           <Dropdown overlay={menu} placement={"bottomRight"}>
             <HeaderMenuIcon>
               <i class="fa fa-ellipsis-v" />
@@ -430,7 +442,8 @@ const enhance = compose(
       setMarkAsDone: markAsDoneAction,
       openAssignment: openAssignmentAction,
       closeAssignment: closeAssignmentAction,
-      toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction
+      toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
+      toggleSideBar: toggleSideBarAction
     }
   )
 );

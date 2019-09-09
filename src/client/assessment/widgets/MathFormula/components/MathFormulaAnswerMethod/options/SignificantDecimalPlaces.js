@@ -36,6 +36,7 @@ const SignificantDecimalPlacesPure = ({ options, onChange, t }) => {
         value={options.significantDecimalPlaces}
         readOnly={!allowSignificantDecimalPlaces}
         onChange={e => onChange("significantDecimalPlaces", e.target.value)}
+        min={0}
       />
     </FlexContainer>
   );

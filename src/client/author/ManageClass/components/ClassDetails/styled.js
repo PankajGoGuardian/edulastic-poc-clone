@@ -15,6 +15,7 @@ import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
 import { IconManage } from "@edulastic/icons";
 
 import { Paper } from "@edulastic/common";
+import IconArchive from "@edulastic/icons/src/IconArchive";
 
 export const StudentsTable = styled(Table)`
   .ant-table-tbody > tr > td {
@@ -56,6 +57,12 @@ export const Title = styled.div`
 export const IconManageClass = styled(IconManage)`
   margin-top: 5px;
   margin-right: 10px;
+`;
+
+export const IconArchiveClass = styled(IconArchive)`
+  margin-top: 5px;
+  margin-left: 10px;
+  cursor: pointer;
 `;
 
 const ShareButtonStyle = css`

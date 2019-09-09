@@ -127,9 +127,7 @@ const methodOptions = {
     "inverseResult",
     "isMixedFraction",
     "isSimpleFraction",
-    "isUnit",
     "tolerance",
-    "allowedUnits",
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
@@ -141,7 +139,7 @@ const methodOptions = {
   ],
 
   [methods.SET_EVALUATION]: [],
-  [methods.EQUIV_SYNTAX]: ["syntax", "ignoreAlphabeticCharacters", "argument", "rule"],
+  [methods.EQUIV_SYNTAX]: ["noExpeced", "syntax", "ignoreAlphabeticCharacters", "argument", "rule"],
   [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],

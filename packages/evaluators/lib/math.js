@@ -85,6 +85,8 @@ var getChecks = function getChecks(answer) {
         acc += options.argument === undefined ? fieldVal : "".concat(fieldVal, "=").concat(options.argument);
       } else if (key === "field") {
         acc += "".concat(fieldVal);
+      } else if (key === "tolerance") {
+        acc += "".concat(key, "=").concat(fieldVal);
       } else {
         acc += "".concat(key);
       }

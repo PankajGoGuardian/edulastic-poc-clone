@@ -19,18 +19,19 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
   const resources = keyBy(get(item, "data.resources", []), "id");
 
   let allWidgets = { ...questions, ...resources };
-  let itemRows = item.rows;
-  if (item.passageId) {
+  let itemRows = get(item, "rows", []);
+  if (item.passageId && passages.length) {
     const passage = passages.find(p => p._id === item.passageId) || {};
     itemRows = [passage.structure, ...itemRows];
     allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
   }
   const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "clear";
   const closeModal = () => setModal(false);
-
+  const hasCollapseButtons =
+    itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
   return (
-    <AssignmentsContent flag={flag}>
-      <AssignmentContentWrapper>
+    <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
+      <AssignmentContentWrapper hasCollapseButtons={hasCollapseButtons}>
         <Wrapper>
           {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -46,6 +47,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
               showCollapseBtn
               disableResponse
               isStudentReport
+              viewComponent="studentReport"
             />
           </AnswerContext.Provider>
         </Wrapper>
@@ -87,7 +89,7 @@ const AssignmentsContent = styled.div`
   z-index: 0;
   position: relative;
   @media (min-width: 1200px) {
-    margin: 30px 30px;
+    margin: ${props => (props.hasCollapseButtons ? "0px 30px 30px 30px" : "30px 30px")};
   }
   @media (max-width: 1060px) {
     padding: 1.3rem 2rem 5rem 2rem;

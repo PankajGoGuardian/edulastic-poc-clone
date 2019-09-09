@@ -59,7 +59,7 @@ export default class AddBulkModal extends React.Component {
             <FormInline>
               <FormGroup>
                 <FormLabel>Number</FormLabel>
-                <NumberInput value={number} onChange={this.handleChange("number")} />
+                <NumberInput min={0} value={number} onChange={this.handleChange("number")} />
               </FormGroup>
               <TypeOfQuestion>
                 <FormLabel>Type of Question</FormLabel>

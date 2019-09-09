@@ -227,7 +227,9 @@ class ListItem extends Component {
                     </TestStatus>
                   </>
                 )}
-                {collectionName === "edulastic_certified" && <EdulasticVerified bottom width={30} height={30} />}
+                {(collectionName === "edulastic_certified" || collectionName === "engage_ny") && (
+                  <EdulasticVerified bottom width={30} height={30} />
+                )}
               </TagsWrapper>
 
               <ItemInformation span={12}>

@@ -72,12 +72,35 @@ export const playlistNavButtons = [
     text: "Settings"
   }
 ];
+export const docBasedButtons = [
+  {
+    icon: <IconDescription color={white} width={16} height={16} />,
+    value: "description",
+    text: "Description"
+  },
+  {
+    icon: <IconAddItems color={white} width={16} height={16} />,
+    value: "worksheet",
+    text: "Worksheet"
+  },
+  {
+    icon: <IconReview color={white} width={16} height={16} />,
+    value: "review",
+    text: "Review"
+  },
+  {
+    icon: <IconSettings color={white} width={16} height={16} />,
+    value: "settings",
+    text: "Settings"
+  }
+];
 // TODO mobile look
 const TestPageHeader = ({
   onChangeNav,
   current,
   onSave,
   buttons,
+  isDocBased = false,
   title,
   creating,
   onShare,
@@ -100,7 +123,8 @@ const TestPageHeader = ({
   test,
   updated
 }) => {
-  let navButtons = buttons || (isPlaylist ? [...playlistNavButtons] : [...navButtonsTest]);
+  let navButtons =
+    buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
@@ -173,7 +197,7 @@ const TestPageHeader = ({
             showPublishButton={!showShareButton || showPublishButton}
           />
 
-          <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
+          <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ flexBasis: "400px" }}>
             {showShareButton && false && (
               <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
                 <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />

@@ -18,20 +18,9 @@ export default class FormDropdown extends React.Component {
     answer: ""
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentValue: props.answer
-    };
-  }
-
   handleChange = value => {
     const { saveAnswer } = this.props;
-
-    this.setState({ currentValue: value }, () => {
-      saveAnswer([value]);
-    });
+    saveAnswer([{ value }]);
   };
 
   renderView = () => {
@@ -39,25 +28,25 @@ export default class FormDropdown extends React.Component {
       question: { options }
     } = this.props;
 
-    const optionChunks = chunk(options[0], 4);
-
-    return optionChunks.map((items, chunkKey) => (
-      <QuestionChunk key={`form-dropdown-chunk-${chunkKey}`}>
-        {items.map((option, key) => (
-          <QuestionOption key={`dropdown-view-${option}-${key}`}>{option}</QuestionOption>
+    return (
+      <Dropdown onChange={this.handleChange}>
+        {options[0].map((option, key) => (
+          <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
+            {option}
+          </Select.Option>
         ))}
-      </QuestionChunk>
-    ));
+      </Dropdown>
+    );
   };
 
   renderForm = () => {
-    const { currentValue } = this.state;
     const {
-      question: { options }
+      question: { options },
+      answer
     } = this.props;
 
     return (
-      <Dropdown value={currentValue} onChange={this.handleChange}>
+      <Dropdown onChange={this.handleChange}>
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}

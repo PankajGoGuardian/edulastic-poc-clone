@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { test, roleuser } from "@edulastic/constants";
+import { test, roleuser, questionType } from "@edulastic/constants";
 import { call, put, all, takeEvery, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
@@ -16,7 +16,7 @@ import {
   CHANGE_PREVIEW,
   CHANGE_VIEW
 } from "../src/constants/actions";
-import { loadQuestionsAction } from "../sharedDucks/questions";
+import { loadQuestionsAction, getQuestionsArraySelector } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
@@ -24,6 +24,7 @@ import { helpers } from "@edulastic/common";
 import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
+import { updateItemsDocBasedByIdAction } from "../ItemDetail/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -31,6 +32,13 @@ const testItemStatusConstants = {
   PUBLISHED: "published",
   ARCHIVED: "archived"
 };
+export const createWidget = ({ id, type, title }) => ({
+  widgetType: type === "sectionLabel" ? "resource" : "question",
+  type,
+  title,
+  reference: id,
+  tabIndex: 0
+});
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
@@ -38,6 +46,7 @@ export const CREATE_TEST_SUCCESS = "[tests] create test success";
 export const CREATE_TEST_ERROR = "[tests] create test error";
 
 export const UPDATE_TEST_REQUEST = "[tests] update test request";
+export const UPDATE_TEST_DOC_BASED_REQUEST = "[tests] update doc based test request";
 export const UPDATE_TEST_SUCCESS = "[tests] update test success";
 export const UPDATE_TEST_ERROR = "[tests] update test error";
 
@@ -128,6 +137,11 @@ export const updateTestAction = (id, data, updateLocal) => ({
   payload: { id, data, updateLocal }
 });
 
+export const updateDocBasedTestAction = (id, data, updateLocal) => ({
+  type: UPDATE_TEST_DOC_BASED_REQUEST,
+  payload: { id, data, updateLocal }
+});
+
 export const updateTestSuccessAction = entity => ({
   type: UPDATE_TEST_SUCCESS,
   payload: { entity }
@@ -198,6 +212,7 @@ export const createBlankTest = () => ({
   maxAnswerChecks: 0,
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
+  isDocBased: false,
   status: "draft",
   thumbnail: defaultImage,
   createdBy: {
@@ -299,6 +314,7 @@ export const reducer = (state = initialState, { type, payload }) => {
 
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:
+    case UPDATE_TEST_DOC_BASED_REQUEST:
       return { ...state, creating: true };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
@@ -594,10 +610,50 @@ function* updateTestSaga({ payload }) {
         yield call(message.success, "Test saved as Draft");
       }
     }
+  } catch (err) {
+    const errorMessage = "Update test is failing";
+    yield call(message.error, errorMessage);
+    yield put(updateTestErrorAction(errorMessage));
+  }
+}
 
-    if (payload.updateLocal) {
-      yield put(setTestDataAction(payload.data));
-    }
+function* updateTestDocBasedSaga({ payload }) {
+  try {
+    const assessmentQuestions = yield select(getQuestionsArraySelector);
+    const [testItem] = payload.data.testItems;
+    const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+
+    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
+    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
+    const updatedTestItem = {
+      ...testItem,
+      public: undefined,
+      authors: undefined,
+      version: testItem.version,
+      isDocBased: true,
+      data: {
+        questions,
+        resources
+      },
+      rows: [
+        {
+          tabs: [],
+          dimension: "100%",
+          widgets: assessmentQuestions.map(createWidget)
+        }
+      ],
+      itemLevelScoring: false
+    };
+
+    const newAssessment = {
+      ...payload.data,
+      testItems: [{ _id: testItemId, ...updatedTestItem }]
+    };
+    yield put(updateItemsDocBasedByIdAction(testItemId, updatedTestItem, true, false));
+    return yield call(updateTestSaga, {
+      payload: { ...payload, data: newAssessment }
+    });
   } catch (err) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
@@ -632,7 +688,9 @@ function* publishTestSaga({ payload }) {
     let { _id: id, test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
-    yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
+    yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
+      payload: { id, data: test, assignFlow: true }
+    });
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     if (!assignFlow) {
@@ -909,6 +967,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
+    yield takeEvery(UPDATE_TEST_DOC_BASED_REQUEST, updateTestDocBasedSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),

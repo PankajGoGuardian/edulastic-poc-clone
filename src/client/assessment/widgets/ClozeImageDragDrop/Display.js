@@ -745,7 +745,8 @@ class Display extends Component {
                 borderRadius: 10,
                 background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                 display: "flex",
-                justifyContent: "center"
+                justifyContent: "center",
+                minWidth: "240px"
               }}
               ref={this.responseBoxContainerRef}
             >

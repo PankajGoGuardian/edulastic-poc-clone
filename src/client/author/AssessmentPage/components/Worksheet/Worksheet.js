@@ -286,12 +286,12 @@ class Worksheet extends React.Component {
   };
 
   saveHistory = data => {
-    console.log("data after drawing", data);
-    const { saveScratchPad, itemDetail } = this.props;
+    const { currentPage } = this.state;
+    const { saveScratchPad, itemDetail, scratchPad = {} } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
     const id = itemDetail["item"]["_id"];
     saveScratchPad({
-      [id]: data
+      [id]: { ...(scratchPad || {}), [currentPage]: data }
     });
   };
 
@@ -361,7 +361,7 @@ class Worksheet extends React.Component {
         }
         {
           <Fragment>
-            <div style={{ display: "flex", width: "calc(100% - 513px)" }}>
+            <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
               <PDFPreview
                 page={selectedPage}
                 currentPage={currentPage + 1}
@@ -384,19 +384,19 @@ class Worksheet extends React.Component {
                 redo={this.handleRedo}
                 onColorChange={this.handleColorChange}
               />
+              <SvgDraw
+                activeMode={activeMode}
+                scratchPadMode={true}
+                lineColor={currentColor}
+                deleteMode={deleteMode}
+                lineWidth={lineWidth}
+                fillColor={fillColor}
+                saveHistory={this.saveHistory}
+                history={scratchPad && scratchPad[currentPage]}
+                height={"auto"}
+                top={0}
+              />
             </div>
-            <SvgDraw
-              activeMode={activeMode}
-              scratchPadMode={true}
-              lineColor={currentColor}
-              deleteMode={deleteMode}
-              lineWidth={lineWidth}
-              fillColor={fillColor}
-              saveHistory={this.saveHistory}
-              history={scratchPad}
-              height={560}
-              top={0}
-            />
           </Fragment>
         }
         <Questions

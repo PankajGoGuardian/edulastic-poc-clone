@@ -2076,6 +2076,9 @@ span.token.active-word {
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
 }
+.ant-affix {
+  z-index: 50;
+}
 
 iframe {
   display: block;

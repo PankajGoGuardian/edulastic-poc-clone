@@ -89,61 +89,6 @@ class SchoolAdminTable extends Component {
       ],
       currentPage: 1
     };
-    this.columns = [
-      {
-        title: "Name",
-        dataIndex: "_source.firstName",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => {
-          const prev = get(a, "_source.firstName", "");
-          const next = get(b, "_source.firstName", "");
-          return next.localeCompare(prev);
-        },
-        render: (text, record, index) => {
-          let name = getFullNameFromAsString(record._source);
-          return name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
-        },
-        width: 200
-      },
-      {
-        title: "Username",
-        dataIndex: "_source.email",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => {
-          const prev = get(a, "_source.email", "");
-          const next = get(b, "_source.email", "");
-          return next.localeCompare(prev);
-        },
-        width: 200
-      },
-      {
-        title: "SSO",
-        dataIndex: "_source.lastSigninSSO",
-        render: (sso = "N/A") => sso,
-        width: 100
-      },
-      {
-        title: "School",
-        dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name).join(", "),
-        width: 200
-      },
-      {
-        dataIndex: "_id",
-        render: id => (
-          <React.Fragment>
-            <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
-              <Icon type="edit" theme="twoTone" />
-            </OnHoverButton>
-            <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
-              <Icon type="delete" theme="twoTone" />
-            </OnHoverButton>
-          </React.Fragment>
-        ),
-        width: 100
-      }
-    ];
-
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
@@ -472,13 +417,71 @@ class SchoolAdminTable extends Component {
       removeFilter
     } = this.props;
 
+    const columns = [
+      {
+        title: "Name",
+        dataIndex: "_source.firstName",
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.firstName", "");
+          const next = get(b, "_source.firstName", "");
+          return next.localeCompare(prev);
+        },
+        render: (text, record, index) => {
+          let name = getFullNameFromAsString(record._source);
+          return name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
+        },
+        width: 200
+      },
+      {
+        title: "Username",
+        dataIndex: "_source.email",
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.email", "");
+          const next = get(b, "_source.email", "");
+          return next.localeCompare(prev);
+        },
+        width: 200
+      },
+      {
+        title: "SSO",
+        dataIndex: "_source.lastSigninSSO",
+        render: (sso = "N/A") => sso,
+        width: 100
+      },
+      {
+        title: "School",
+        dataIndex: "_source.institutionDetails",
+        render: (schools = []) => schools.map(school => school.name).join(", "),
+        width: 200
+      },
+      {
+        dataIndex: "_id",
+        render: id => (
+          <React.Fragment>
+            {role === roleuser.DISTRICT_ADMIN && (
+              <>
+                <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
+                  <Icon type="edit" theme="twoTone" />
+                </OnHoverButton>
+                <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                  <Icon type="delete" theme="twoTone" />
+                </OnHoverButton>
+              </>
+            )}
+          </React.Fragment>
+        ),
+        width: 100
+      }
+    ];
+
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
       </Menu>
     );
-
     return (
       <StyledTableContainer>
         <StyledFilterDiv>
@@ -591,12 +594,12 @@ class SchoolAdminTable extends Component {
             </StyledControlDiv>
           );
         })}
+
         <StyledTable
-          role={role}
           rowKey={record => record._id}
           rowSelection={rowSelection}
           dataSource={Object.values(result)}
-          columns={this.columns}
+          columns={columns}
           pagination={false}
           scroll={{ y: 500 }}
         />

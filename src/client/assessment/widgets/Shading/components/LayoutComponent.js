@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { get } from "lodash";
+import { get, size } from "lodash";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
@@ -91,7 +91,7 @@ class LayoutComponent extends Component {
                   changeItem("maxSelection", +val);
                 }}
                 value={item.maxSelection}
-                shadedCellsCount={item.validation.validResponse.value.value.length}
+                shadedCellsCount={size(get(item, "validation.validResponse.value.value", 0))}
               />
             </Col>
           </Row>

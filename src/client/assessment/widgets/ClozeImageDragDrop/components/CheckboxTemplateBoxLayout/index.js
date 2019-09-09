@@ -51,8 +51,7 @@ const CheckboxTemplateBox = ({
     top: responseContainer.top,
     left: responseContainer.left,
     position: "absolute",
-    borderRadius: 5,
-    visibility: isNull(hideIndexBox) && isChecked ? "collapse" : "visible"
+    borderRadius: 5
   };
 
   if (responseBtnStyle && responseBtnStyle) {

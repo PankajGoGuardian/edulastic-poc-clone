@@ -650,16 +650,16 @@ const SvgDraw = ({
       <svg
         ref={svg}
         {...getSvgHandlers()}
-        width="100%"
-        height={!height ? document.body.scrollHeight + 28 : height}
+        width={"calc(100% - 50px)"}
         style={{
+          height: !height ? document.body.scrollHeight + 28 : height,
           background: "transparent",
           position: "absolute",
           top: `${top === 0 ? 0 : 62}`,
-          left: 0,
+          left: 50,
           display: scratchPadMode ? "block" : "none",
           pointerEvents: activeMode === "" ? "none" : "all",
-          zIndex: mouseClicked || dragStart || activeMode === "" ? 100000 : 10000
+          zIndex: mouseClicked || dragStart || activeMode === "" ? 40 : 40
         }}
       >
         {figures.length > 0 &&

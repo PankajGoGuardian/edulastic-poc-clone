@@ -59,6 +59,7 @@ const AssessmentContainer = ({
   answers,
   answersById,
   loading,
+  pageStructure,
   passages,
   preview,
   LCBPreviewModal
@@ -146,6 +147,7 @@ const AssessmentContainer = ({
     itemRows,
     evaluate,
     view,
+    pageStructure,
     finishTest,
     history,
     previewPlayer: preview,
@@ -208,6 +210,7 @@ const enhance = compose(
       title: state.test.title,
       docUrl: state.test.docUrl,
       annotations: state.test.annotations,
+      pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),

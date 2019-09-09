@@ -36,7 +36,11 @@ import {
   getItemsSubjectAndGradeSelector
 } from "../AddItems/ducks";
 import { loadAssignmentsAction } from "../Assign/ducks";
-import { saveCurrentEditingTestIdAction, updateItemsDocBasedByIdAction } from "../../../ItemDetail/ducks";
+import {
+  saveCurrentEditingTestIdAction,
+  updateItemsDocBasedByIdAction,
+  getItemDetailByIdAction
+} from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -137,6 +141,15 @@ class Container extends PureComponent {
       return this.beforeUnload();
     };
     getDefaultTestSettings();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { receiveItemDetailById, test } = this.props;
+    if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
+      const [testItem] = test.testItems;
+      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+      receiveItemDetailById(testItemId);
+    }
   }
 
   beforeUnload = () => {
@@ -576,6 +589,7 @@ const enhance = compose(
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
+      receiveItemDetailById: getItemDetailByIdAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
       getDefaultTestSettings: getDefaultTestSettingsAction

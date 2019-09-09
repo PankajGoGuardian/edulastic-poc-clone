@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
-import { get } from "lodash";
+import get from "lodash/get";
 import { withWindowSizes } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import { playersTheme } from "../assessmentPlayersTheme";
@@ -19,6 +19,9 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
+import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
+
+import Hints from "@edulastic/common/src/components/Hints";
 
 import {
   ControlBtn,
@@ -69,7 +72,8 @@ class AssessmentPlayerDefault extends React.Component {
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       calculateMode: `${settings.calcType}_DESMOS`,
       changeMode: 0,
-      tool: 0
+      tool: 0,
+      showHints: false
     };
 
     this.scrollElementRef = React.createRef();
@@ -107,6 +111,13 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   changeTool = val => this.setState({ tool: val });
+
+  showHideHints = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      showHints: !prevState.showHints
+    }));
+  };
 
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings } = this.props;
@@ -263,13 +274,11 @@ class AssessmentPlayerDefault extends React.Component {
       LCBPreviewModal,
       preview
     } = this.props;
-
     const {
       testItemState,
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
-
       activeMode,
       currentColor,
       deleteMode,
@@ -277,7 +286,8 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor,
       changeMode,
       calculateMode,
-      tool
+      tool,
+      showHints
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -413,6 +423,7 @@ class AssessmentPlayerDefault extends React.Component {
                         checkAnswer={() => this.changeTabItemState("check")}
                         toggleBookmark={() => toggleBookmark(item._id)}
                         isBookmarked={isBookmarked}
+                        handleClick={this.showHideHints}
                       />
                     )}
                     {windowWidth >= SMALL_DESKTOP_WIDTH && (
@@ -460,6 +471,11 @@ class AssessmentPlayerDefault extends React.Component {
                   showCollapseBtn
                   viewComponent="studentPlayer"
                 />
+              )}
+              {showHints && (
+                <PaddingDiv>
+                  <Hints questions={get(item, [`data`, `questions`], [])} />
+                </PaddingDiv>
               )}
             </MainWrapper>
           </Main>

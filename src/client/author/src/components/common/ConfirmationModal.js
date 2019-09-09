@@ -47,6 +47,12 @@ export const ConfirmationModal = styled(Modal)`
         background: ${themeColor};
         border-color: ${themeColor};
         color: ${white};
+        &[disabled],
+        &[disabled]:hover,
+        &[disabled]:active {
+          background-color: grey;
+          border-color: grey;
+        }
         &.ant-btn-background-ghost {
           color: ${themeColor};
           background: transparent;

@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 import { debounce } from "lodash";
 import qs from "query-string";
 
@@ -13,7 +13,12 @@ import Title from "../common/Title";
 import CreationOptions from "../CreationOptions/CreationOptions";
 import DropArea from "../DropArea/DropArea";
 import { receiveTestByIdAction, getTestsLoadingSelector } from "../../../TestPage/ducks";
-import { createAssessmentRequestAction, getAssessmentCreatingSelector } from "../../ducks";
+import {
+  createAssessmentRequestAction,
+  getAssessmentCreatingSelector,
+  percentageUploadedSelector,
+  setPercentUploadedAction
+} from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
 
 const breadcrumbStyle = {
@@ -68,11 +73,18 @@ class Container extends React.Component {
     this.setState({ method });
   };
 
+  handleUploadProgress = progressEvent => {
+    var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    this.props.setPercentUploaded(percentCompleted);
+  };
+
   handleUploadPDF = debounce(({ file }) => {
     const { location, createAssessment } = this.props;
     const { assessmentId } = qs.parse(location.search);
-
-    createAssessment({ file, assessmentId });
+    if (file.size / 1024000 > 15) {
+      return message.error("File size exceeds 15 MB MB limit.");
+    }
+    createAssessment({ file, assessmentId, progressCallback: this.handleUploadProgress });
   }, 1000);
 
   handleCreateBlankAssessment = event => {
@@ -87,7 +99,7 @@ class Container extends React.Component {
   render() {
     let { method } = this.state;
     let newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading } = this.props;
+    const { creating, location, assessmentLoading, percentageUploaded } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);
@@ -98,18 +110,32 @@ class Container extends React.Component {
 
     return (
       <>
+        {creating && (
+          <div
+            style={{
+              height: "calc(100vh - 96px)",
+              position: "absolute",
+              width: "calc(100vw - 100px)",
+              top: "96px",
+              zIndex: "1",
+              backgroundColor: "rgb(0,0,0,0.5)"
+            }}
+          >
+            <Spin />
+          </div>
+        )}
         <HeaderWrapper>
           <Title>New Test</Title>
         </HeaderWrapper>
         <ContainerWrapper>
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
-          {creating && <Spin />}
           {!method && <CreationOptions />}
           {method === creationMethods.PDF && (
             <DropArea
               loading={creating}
               onUpload={this.handleUploadPDF}
               onCreateBlank={this.handleCreateBlankAssessment}
+              percent={percentageUploaded}
             />
           )}
         </ContainerWrapper>
@@ -123,11 +149,13 @@ const enhance = compose(
   connect(
     state => ({
       creating: getAssessmentCreatingSelector(state),
-      assessmentLoading: getTestsLoadingSelector(state)
+      assessmentLoading: getTestsLoadingSelector(state),
+      percentageUploaded: percentageUploadedSelector(state)
     }),
     {
       createAssessment: createAssessmentRequestAction,
-      receiveTestById: receiveTestByIdAction
+      receiveTestById: receiveTestByIdAction,
+      setPercentUploaded: setPercentUploadedAction
     }
   )
 );

@@ -41,7 +41,14 @@ const getQuestions = (testItems = []) => {
 };
 
 function* loadTest({ payload }) {
-  const { testActivityId, testId, preview = false, demo = false, test: testData = {} } = payload;
+  const {
+    testActivityId,
+    testId,
+    preview = false,
+    demo = false,
+    test: testData = {},
+    groupId: groupIdFromUrl
+  } = payload;
 
   try {
     yield put({
@@ -61,7 +68,8 @@ function* loadTest({ payload }) {
       }
     });
 
-    const groupId = yield select(getCurrentGroupWithAllClasses);
+    // for urls that doesnt have groupId, fallback
+    const groupId = groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses));
 
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
@@ -215,6 +223,7 @@ function* loadTest({ payload }) {
         title: test.title,
         annotations: test.annotations,
         docUrl: test.docUrl,
+        pageStructure: test.pageStructure,
         settings,
         answerCheckByItemId
       }

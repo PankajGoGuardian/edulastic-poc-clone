@@ -651,8 +651,8 @@ const SvgDraw = ({
         ref={svg}
         {...getSvgHandlers()}
         width={"calc(100% - 50px)"}
-        height={!height ? document.body.scrollHeight + 28 : height}
         style={{
+          height: !height ? document.body.scrollHeight + 28 : height,
           background: "transparent",
           position: "absolute",
           top: `${top === 0 ? 0 : 62}`,

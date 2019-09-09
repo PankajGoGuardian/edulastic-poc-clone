@@ -30,6 +30,16 @@ import {
 } from "./styled";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
+function Ellipsify({ children: text, limit }) {
+  //needed to handle multibyte chars(unicode,emojis)
+  const chars = [...text];
+  if (chars.length <= limit) {
+    return text;
+  } else {
+    return `${chars.slice(0, limit - 3).join("")}...`;
+  }
+}
+
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -225,7 +235,7 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "Band Name",
         dataIndex: "name",
-        width: "15%",
+        width: "20%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
@@ -235,7 +245,10 @@ export class PerformanceBandTable extends React.Component {
                 value={record.color}
                 onChange={c => this.changeColor(c, record.key)}
               />{" "}
-              {record.name}&nbsp;
+              <span title={record.name}>
+                <Ellipsify limit={20}>{record.name}</Ellipsify>
+              </span>
+              &nbsp;
             </React.Fragment>
           );
         }
@@ -260,7 +273,7 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "From",
         dataIndex: "from",
-        width: "25%",
+        width: "22%",
         render: (text, record) => {
           return (
             <StyledColFromTo>
@@ -287,7 +300,7 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "To",
         dataIndex: "to",
-        width: "25%",
+        width: "22%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (

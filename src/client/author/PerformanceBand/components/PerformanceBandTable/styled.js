@@ -27,6 +27,9 @@ export const StyledTableContainer = styled.div`
   }
   .ant-table-tbody {
     tr {
+      & > td:first-child div {
+        white-space: nowrap;
+      }
       & > td {
         padding: 10px;
         border: 0;

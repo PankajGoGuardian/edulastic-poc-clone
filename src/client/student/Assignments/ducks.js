@@ -151,7 +151,7 @@ function* startAssignment({ payload }) {
     const assignment = assignmentsById[assignmentId];
     const classIds = yield select(getClassIds);
     const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
-    console.warn("actualgroupId", actualGroupId);
+
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
     const { _id: testActivityId } = yield testActivityApi.create({
@@ -162,7 +162,13 @@ function* startAssignment({ payload }) {
       testId
     });
     // set Activity id
-    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(
+        `/student/${
+          testType === COMMON ? ASSESSMENT : testType
+        }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+      )
+    );
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -179,9 +185,23 @@ function* resumeAssignment({ payload }) {
     if (!assignmentId || !testId || !testActivityId) {
       throw new Error("insufficient data");
     }
+
+    // get the class id for the assignment
+    const groupId = yield select(getCurrentGroup);
+    const assignmentsById = yield select(assignmentsSelector);
+    const assignment = assignmentsById[assignmentId];
+    const classIds = yield select(getClassIds);
+    const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
+
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(
+        `/student/${
+          testType === COMMON ? ASSESSMENT : testType
+        }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+      )
+    );
   } catch (e) {
     console.log(e);
   }

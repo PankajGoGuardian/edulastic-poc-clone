@@ -2,8 +2,8 @@ import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { CONSTANT } from "../config";
-import { fixLatex, isInPolygon, calcLineLatex, calcCircleLatex } from "../utils";
-import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent } from ".";
+import { fixLatex, isInPolygon, calcLineLatex, calcCircleLatex, calcEllipseLatex } from "../utils";
+import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent, Circle, Ellipse } from ".";
 
 const jxgType = 100;
 
@@ -270,17 +270,23 @@ function updateShading(board, areaPoint) {
 
       switch (item.type) {
         case JXG.OBJECT_TYPE_CIRCLE: {
-          const points = Object.values(item.ancestors);
-          const lineLatex = calcCircleLatex(
-            { x: points[0].X(), y: points[0].Y() },
-            { x: points[1].X(), y: points[1].Y() }
+          const { points } = Circle.getConfig(item);
+          const lineLatex = calcCircleLatex({ x: points[0].x, y: points[0].y }, { x: points[1].x, y: points[1].y });
+          const fixedLatex = fixLatex(lineLatex);
+          const func = parse(fixedLatex.latexFunc);
+          return (x, y) => func.eval({ x, y }) > 0;
+        }
+        case JXG.OBJECT_TYPE_CONIC: {
+          const { points } = Ellipse.getConfig(item);
+          const lineLatex = calcEllipseLatex(
+            { x: points[0].x, y: points[0].y },
+            { x: points[1].x, y: points[1].y },
+            { x: points[2].x, y: points[2].y }
           );
           const fixedLatex = fixLatex(lineLatex);
           const func = parse(fixedLatex.latexFunc);
           return (x, y) => func.eval({ x, y }) > 0;
         }
-        case JXG.OBJECT_TYPE_CONIC:
-          return () => true;
         case JXG.OBJECT_TYPE_LINE: {
           const lineLatex = calcLineLatex(
             { x: item.point1.X(), y: item.point1.Y() },

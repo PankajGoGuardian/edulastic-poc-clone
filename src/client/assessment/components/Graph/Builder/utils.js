@@ -604,8 +604,32 @@ export function calcCircleLatex(point1, point2) {
   const y1 = point1.y;
   const x2 = point2.x;
   const y2 = point2.y;
-  const r = (y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1);
+
+  const r = (y2 - y1) ** 2 + (x2 - x1) ** 2;
+
   return `(x-(${x1}))^2+(y-(${y1}))^2=${r}`;
+}
+
+export function calcEllipseLatex(point1, point2, point3) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const x3 = point3.x;
+  const y3 = point3.y;
+
+  const cX = (x1 + x2) / 2;
+  const cY = (y1 + y2) / 2;
+  const rff = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const r1 = Math.sqrt((y3 - y1) ** 2 + (x3 - x1) ** 2);
+  const r2 = Math.sqrt((y3 - y2) ** 2 + (x3 - x2) ** 2);
+  const aPow2 = ((r1 + r2) / 2) ** 2;
+  const bPow2 = aPow2 - (rff / 2) ** 2;
+
+  const cos = (x2 - x1) / rff;
+  const sin = (y1 - y2) / rff;
+
+  return `((((x-${cX})*(${cos})-(y-${cY})*(${sin})))^2)/${aPow2}+((((x-${cX})*(${sin})+(y-${cY})*(${cos})))^2)/${bPow2}=1`;
 }
 
 export function isInPolygon(testPoint, vertices) {

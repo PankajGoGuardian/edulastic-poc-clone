@@ -56,7 +56,6 @@ export default function Tools(props) {
 
   // todo: delete this after equations developing
   const areaToolIsEnabled = () => {
-    if (tools.includes("ellipse")) return false;
     if (tools.includes("hyperbola")) return false;
     if (tools.includes("segment")) return false;
     if (tools.includes("ray")) return false;

@@ -23,8 +23,29 @@ const TestButton = ({
   handleClick
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
+  /**
+   * input
+   * questions: [
+   * {
+   *  ...restProps,
+   *  hints: [{label: "", value: ""}]
+   * },
+   * {
+   *  ...restProps,
+   *  hints: [{label: "", value: ""}]
+   * }
+   * ]
+   *
+   * output: a number >= 0
+   *
+   * logic:
+   * for all questions, check if there are hints
+   * for all hints check if the label is not empty
+   * empty label is possible when a user entered something in the hint and then cleared it (obj is not removed)
+   *
+   * a number > 0 would indicate the current item has hints which have non empty label
+   */
   const showHintButton = questions.reduce((acc, question) => {
-    // checking if the hints have an empty label, if so filtering them
     acc = question.hints.filter(hint => hint.label.length > 0).length;
     return acc;
   }, 0);

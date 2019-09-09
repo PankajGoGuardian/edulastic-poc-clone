@@ -44,7 +44,14 @@ export { default as withWindowScroll } from "./src/HOC/withWindowScroll";
 export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";
-export { default as helpers, beforeUpload, uploadToS3 } from "./src/helpers";
+export {
+  default as helpers,
+  beforeUpload,
+  uploadToS3,
+  getSelection,
+  clearSelection,
+  highlightSelectedText
+} from "./src/helpers";
 
 // contexts
 export { default as AnswerContext } from "./src/contexts/AnswerContext";

@@ -176,3 +176,11 @@ export const borders = {
   primary: "#b1b1b1",
   secondary: "#e6e6e6"
 };
+
+export const highlightColors = {
+  blue: "#99c2ff",
+  green: "#99ff99",
+  orange: "#ff8533",
+  yellow: "#ffff80",
+  pink: "#ff99bb"
+};

@@ -10,6 +10,10 @@ const Stimulus = withTheme(
     font-size: ${props => props.fontSize};
     font-weight: ${fonts.previewFontWeight};
 
+    & * {
+      user-select: ${props => (props.userSelect ? "text !important" : "none")};
+    }
+
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};
     }

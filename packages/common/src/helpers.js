@@ -307,6 +307,56 @@ const getQuestionLevelScore = (questions, totalMaxScore, newMaxScore) => {
   return questionScore;
 };
 
+export const getSelection = () => {
+  let sel = "";
+  if (window.getSelection) {
+    sel = window.getSelection();
+  } else if (document.getSelection) {
+    sel = document.getSelection();
+  } else if (document.selection) {
+    sel = document.selection.createRange();
+  }
+  return sel;
+};
+
+export const clearSelection = () => {
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+  } else if (document.selection) {
+    document.selection.empty();
+  }
+};
+
+export const highlightSelectedText = (className = "token active-word") => {
+  const selection = getSelection();
+  const range = selection.getRangeAt(0);
+  const { endContainer, endOffset, startContainer, startOffset } = range;
+  if (startOffset === endOffset) {
+    clearSelection();
+    return;
+  }
+
+  if (
+    (endContainer && endContainer.parentNode.className === className) ||
+    (startContainer && startContainer.parentNode.className === className)
+  ) {
+    message.error("You are highlighting already selected text. Please select a distinct text and try again.");
+    clearSelection();
+    return;
+  }
+
+  try {
+    const newNode = document.createElement("span");
+    newNode.setAttribute("class", className);
+    range.surroundContents(newNode);
+    clearSelection();
+    return true;
+  } catch (err) {
+    message.error("Something went wrong. Please select a text and try again.");
+    clearSelection();
+  }
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,

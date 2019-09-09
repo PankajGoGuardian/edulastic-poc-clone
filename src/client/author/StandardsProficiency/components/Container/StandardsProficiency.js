@@ -8,6 +8,8 @@ import AdminSubHeader from "../../../src/components/common/AdminSubHeader/Settin
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 
+import styled from "styled-components";
+
 import {
   CreateProfile,
   ModalInput,
@@ -32,6 +34,9 @@ import {
 } from "../../ducks";
 import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 
+const BlueBold = styled.b`
+  color: #1774f0;
+`;
 const title = "Manage District";
 
 const defaultData = {
@@ -100,8 +105,8 @@ function ProfileRow(props) {
       >
         <div className="content">
           <p>
-            <b>{props.profile.name}</b> will be removed permanently and can’t be used in future tests. This action can
-            NOT be undone. If you are sure, please type DELETE in the space below.
+            <BlueBold>{props.profile.name}</BlueBold> will be removed permanently and can’t be used in future tests.
+            This action can NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
           </p>
         </div>
         <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
@@ -185,6 +190,7 @@ function StandardsProficiency(props) {
       }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
       setConfirmVisible(false);
+      setProfileName("");
     }
   };
 

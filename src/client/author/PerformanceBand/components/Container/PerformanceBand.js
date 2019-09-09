@@ -6,7 +6,7 @@ import { compose } from "redux";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
+import { ConfirmationModal as ProfileModal, Ellipsify } from "../../../src/components/common/ConfirmationModal";
 import {
   createPerformanceBandAction,
   deletePerformanceBandAction,
@@ -31,8 +31,12 @@ import {
   StyledProfileCol,
   StyledList
 } from "./styled";
+import styled from "styled-components";
 
 const title = "Manage District";
+const BlueBold = styled.b`
+  color: #1774f0;
+`;
 
 function ProfileRow({
   name,
@@ -78,8 +82,8 @@ function ProfileRow({
       >
         <div className="content">
           <p>
-            <b>{name}</b> will be removed permanently and can’t be used in future tests. This action can NOT be undone.
-            If you are sure, please type DELETE in the space below.
+            <BlueBold>{name}</BlueBold> will be removed permanently and can’t be used in future tests. This action can
+            NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
           </p>
         </div>
         <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
@@ -181,16 +185,31 @@ export function PerformanceBandAlt(props) {
         orgType: "district",
         performanceBand: [
           {
-            color: "#ffffff",
+            color: "#3DB04E",
             name: "Proficient",
             aboveOrAtStandard: true,
             from: 100,
+            to: 70
+          },
+          {
+            color: "#576BA9",
+            name: "Basic",
+            aboveOrAtStandard: true,
+            from: 70,
+            to: 50
+          },
+          {
+            color: "#F39300",
+            name: "Below Basic",
+            aboveOrAtStandard: true,
+            from: 50,
             to: 0
           }
         ]
       };
       create(initialObj);
       setConfirmVisible(false);
+      setProfileName("");
     } else {
       message.error("name can't be empty");
     }

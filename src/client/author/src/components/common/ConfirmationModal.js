@@ -2,6 +2,16 @@ import { Modal } from "antd";
 import { white, themeColor, title, titleColor, lightGreySecondary } from "@edulastic/colors";
 import styled from "styled-components";
 
+export function Ellipsify({ children: text, limit }) {
+  //needed to handle multibyte chars(unicode,emojis)
+  const chars = [...text];
+  if (chars.length <= limit) {
+    return text;
+  } else {
+    return `${chars.slice(0, limit - 3).join("")}...`;
+  }
+}
+
 export const ConfirmationModal = styled(Modal)`
   min-width: ${props => (props.modalWidth ? props.modalWidth : "600px")};
   top: ${props => (props.top ? props.top : "100px")};
@@ -47,6 +57,12 @@ export const ConfirmationModal = styled(Modal)`
         background: ${themeColor};
         border-color: ${themeColor};
         color: ${white};
+        &[disabled],
+        &[disabled]:hover,
+        &[disabled]:active {
+          background-color: grey;
+          border-color: grey;
+        }
         &.ant-btn-background-ghost {
           color: ${themeColor};
           background: transparent;

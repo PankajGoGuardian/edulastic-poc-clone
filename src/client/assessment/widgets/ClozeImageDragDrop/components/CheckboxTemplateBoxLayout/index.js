@@ -89,7 +89,7 @@ const CheckboxTemplateBox = ({
     textOverflow: "ellipsis",
     width: "max-content",
     minWidth: response.minWidth,
-    maxWidth: response.maxWidth,
+    maxWidth: "80%", // adjusting content(mainly images) alongwith the padding
     overflow: "hidden"
   };
 

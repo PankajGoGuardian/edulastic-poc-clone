@@ -215,6 +215,7 @@ function* loadTest({ payload }) {
         title: test.title,
         annotations: test.annotations,
         docUrl: test.docUrl,
+        pageStructure: test.pageStructure,
         settings,
         answerCheckByItemId
       }

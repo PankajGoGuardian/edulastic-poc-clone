@@ -32,14 +32,15 @@ const CardImage = ({ data, history }) => {
           <Col span={18}>
             <Row>
               <Tooltip title={name} placement="topLeft">
-                <TextDiv>{name}</TextDiv>
+                <TextDiv data-cy="name">{name}</TextDiv>
               </Tooltip>
             </Row>
             <RowWrapperGrade>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 {grades.length ? (
                   <>
-                    <SpanRightMargin>Grades</SpanRightMargin> {grades.join(", ").replace(/O/i, " Other ")}
+                    <SpanRightMargin data-cy="grades">Grades</SpanRightMargin>{" "}
+                    {grades.join(", ").replace(/O/i, " Other ")}
                   </>
                 ) : (
                   ""
@@ -49,7 +50,7 @@ const CardImage = ({ data, history }) => {
                   <>
                     {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ""}
                     <Tooltip title={subject} placement="topLeft">
-                      <SpanLeftMargin>{subject}</SpanLeftMargin>
+                      <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
                     </Tooltip>
                   </>
                 ) : (
@@ -58,7 +59,7 @@ const CardImage = ({ data, history }) => {
               </TextWrapper>
             </RowWrapperGrade>
             <RowWrapperSTudentCount>
-              <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
+              <TextWrapper data-cy="studentCount" color="#FFFFFF" size="12px" fw="SemiBold">
                 {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
             </RowWrapperSTudentCount>

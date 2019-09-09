@@ -32,7 +32,7 @@ export const CardTextContent = ({ data, history }) => {
         <LeftCol>
           <Link to="/author/assignments">
             <IconWrapper>
-              <OverlayText>{totalAssignment || 0}</OverlayText>
+              <OverlayText data-cy="totalAssignment">{totalAssignment || 0}</OverlayText>
             </IconWrapper>
           </Link>
         </LeftCol>
@@ -65,11 +65,11 @@ export const CardTextContent = ({ data, history }) => {
             <CenterCol>
               <Row>
                 <Tooltip title={asgnTitle} placement="topLeft">
-                  <TextDiv>{asgnTitle}</TextDiv>
+                  <TextDiv data-cy="assignmentTitle">{asgnTitle}</TextDiv>
                 </Tooltip>
               </Row>
               <Row>
-                <TextWrapper color={cardTitleColor} size="11px" fw="bold">
+                <TextWrapper data-cy="assignmentStatus" color={cardTitleColor} size="11px" fw="bold">
                   {asgnStatus}
                 </TextWrapper>
               </Row>
@@ -81,7 +81,7 @@ export const CardTextContent = ({ data, history }) => {
         ) : (
           <Col span={16} style={{ cursor: "default" }}>
             <Row>
-              <TextWrapper color={cardTitleColor} size="12px" mb="22px">
+              <TextWrapper data-cy="assignmentTitle" color={cardTitleColor} size="12px" mb="22px">
                 No Recent Assignments
               </TextWrapper>
             </Row>

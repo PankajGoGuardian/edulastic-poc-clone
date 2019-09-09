@@ -38,15 +38,6 @@ const BlueBold = styled.b`
   color: #1774f0;
 `;
 
-function Ellipsify({ children: text, limit }) {
-  //needed to handle multibyte chars(unicode,emojis)
-  const chars = [...text];
-  if (chars.length <= limit) {
-    return text;
-  } else {
-    return `${chars.slice(0, limit - 3).join("")}...`;
-  }
-}
 
 function ProfileRow({
   name,

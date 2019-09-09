@@ -100,7 +100,8 @@ export const StyledProfileRow = styled(Row)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  h3 {
+  h3,
+  input {
     font-weight: 500;
     font-size: 15px;
     margin: 0px;

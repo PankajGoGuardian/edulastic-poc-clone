@@ -1,6 +1,6 @@
-import { Button, Col, Icon, message, Row } from "antd";
+import { Button, Col, Icon, message, Row, Input } from "antd";
 import { get } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -12,7 +12,9 @@ import {
   deletePerformanceBandAction,
   receivePerformanceBandAction,
   setPerformanceBandLocalAction,
-  updatePerformanceBandAction
+  updatePerformanceBandAction,
+  setPerformanceBandNameAction,
+  setPerformanceBandChangesAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
@@ -42,13 +44,15 @@ function ProfileRow({
   remove,
   update: updateToServer,
   readOnly,
-  loading
+  loading,
+  setName
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
   };
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleteText, setDeleteText] = useState("");
+  const performanceBandInstance = useRef();
 
   return (
     <ListItemStyled>
@@ -58,10 +62,13 @@ function ProfileRow({
         onCancel={() => setConfirmVisible(false)}
         textAlign="left"
         footer={[
-          <Button ghost onClick={() => {
+          <Button
+            ghost
+            onClick={() => {
               setConfirmVisible(false);
               setDeleteText("");
-            }}>
+            }}
+          >
             NO, CANCEL
           </Button>,
           <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
@@ -79,7 +86,20 @@ function ProfileRow({
       </ProfileModal>
       <StyledProfileRow type="flex">
         <Col span={12}>
-          <h3>{name}</h3>
+          {active ? (
+            <Input
+              type="text"
+              value={name}
+              onChange={e => {
+                setName({ name: e.target.value, _id });
+                if (performanceBandInstance.current) {
+                  performanceBandInstance.current.setChanged(true);
+                }
+              }}
+            />
+          ) : (
+            <h3>{name}</h3>
+          )}
         </Col>
         <StyledProfileCol span={12}>
           {readOnly ? null : (
@@ -101,6 +121,7 @@ function ProfileRow({
         <RowStyled>
           <Col span={24}>
             <PerformanceBandTableDumb
+              ref={performanceBandInstance}
               performanceBandId={_id}
               dataSource={performanceBand}
               createPerformanceband={() => {}}
@@ -120,7 +141,19 @@ function ProfileRow({
 export function PerformanceBandAlt(props) {
   const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
-  const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
+  const {
+    loading,
+    updating,
+    creating,
+    history,
+    list,
+    create,
+    update,
+    remove,
+    profiles,
+    currentUserId,
+    setName
+  } = props;
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
@@ -210,6 +243,7 @@ export function PerformanceBandAlt(props) {
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
+                setName={setName}
                 savePerformance={({ _id: id, performanceBand, ...rest }) => {
                   props.updateLocal({ id, data: performanceBand });
                 }}
@@ -238,7 +272,8 @@ const enhance = compose(
       create: createPerformanceBandAction,
       update: updatePerformanceBandAction,
       remove: deletePerformanceBandAction,
-      updateLocal: setPerformanceBandLocalAction
+      updateLocal: setPerformanceBandLocalAction,
+      setName: setPerformanceBandNameAction
     }
   )
 );

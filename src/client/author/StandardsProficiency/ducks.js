@@ -17,6 +17,7 @@ const CREATE_STANDARDS_PROFICIENCY_SUCCESS = "[Standards Proficiency] create dat
 const CREATE_STANDARDS_PROFICIENCY_ERROR = "[Standards Proficiency] create data error";
 
 const SET_STANDARDS_SCALE_DATA = "[Standards Proficiency] set scale data";
+const SET_STANDARDS_PROFILE_NAME = "[Standards Proficiency] set profile name";
 const SET_STANDARDS_CALCTYPE = "[Standards Proficiency] set calctype";
 const SET_STANDARDS_DECAYINGATTR = "[Standards Proficiency] set decaying attribute value";
 const SET_STANDARDS_MOVINGAVRATTR = "[Standards Proficiency] set moving average value value";
@@ -32,6 +33,8 @@ export const updateStandardsProficiencyErrorAction = createAction(UPDATE_STANDAR
 export const createStandardsProficiencyAction = createAction(CREATE_STANDARDS_PROFICIENCY_REQUEST);
 export const createStandardsProficiencySuccessAction = createAction(CREATE_STANDARDS_PROFICIENCY_SUCCESS);
 export const createStandardsProficiencyErrorAction = createAction(CREATE_STANDARDS_PROFICIENCY_ERROR);
+
+export const setStandardsProficiencyProfileNameAction = createAction(SET_STANDARDS_PROFILE_NAME);
 
 export const setEditingIndexAction = createAction(SET_EDITING_INDEX);
 
@@ -133,6 +136,10 @@ export const reducer = createReducer(initialState, {
   [SET_STANDARDS_CALCTYPE]: (state, { payload }) => {
     const { _id, data } = payload;
     state.data.find(x => x._id === _id).calcType = data;
+  },
+  [SET_STANDARDS_PROFILE_NAME]: (state, { payload }) => {
+    const { _id, name } = payload;
+    state.data.find(x => x._id === _id).name = name;
   },
   [SET_STANDARDS_DECAYINGATTR]: (state, { payload }) => {
     const { _id, data } = payload;

@@ -344,6 +344,8 @@ export class PerformanceBandTable extends React.Component {
     return { dataSource: nextProps.dataSource, performanceBandId: nextProps.performanceBandId };
   }
 
+  setChanged = v => this.setState({ isChangeState: v });
+
   onClickFromTo = (e, key, keyName, value) => {
     const dataSource = [...this.state.dataSource];
     if (key == 0 && keyName === "from") return;

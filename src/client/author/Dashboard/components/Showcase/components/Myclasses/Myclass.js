@@ -16,7 +16,7 @@ import { compose } from "redux";
 
 const Card = ({ data }) => {
   return (
-    <CardBox>
+    <CardBox data-cy={data.name}>
       <Row>
         <CardImage data={data} />
       </Row>

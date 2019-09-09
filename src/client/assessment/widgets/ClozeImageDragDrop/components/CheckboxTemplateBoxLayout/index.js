@@ -48,10 +48,8 @@ const CheckboxTemplateBox = ({
 
   const btnStyle = {
     widthpx: responseContainer.width,
-    width: responseContainer.width,
     top: responseContainer.top,
     left: responseContainer.left,
-    height: responseContainer.height,
     position: "absolute",
     borderRadius: 5,
     visibility: isNull(hideIndexBox) && isChecked ? "collapse" : "visible"
@@ -98,6 +96,8 @@ const CheckboxTemplateBox = ({
 
   const dropContainerStyle = {
     ...btnStyle,
+    width: responseContainer.width,
+    height: responseContainer.height,
     minWidth: response.minWidth,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
@@ -148,7 +148,16 @@ const CheckboxTemplateBox = ({
         dropContainerWidth={dropContainerStyle.width}
         indexBoxRef={indexBoxRef}
         onHideIndexBox={updateIndexBoxVisibility}
-        style={hideIndexBox || checkAnswer ? { borderRadius: 5, justifyContent: hideIndexBox && "center" } : {}}
+        style={
+          hideIndexBox || checkAnswer
+            ? {
+                borderRadius: 5,
+                justifyContent: hideIndexBox && "center",
+                width: responseContainer.width,
+                height: responseContainer.height
+              }
+            : { width: responseContainer.width, height: responseContainer.height }
+        }
       />
       {isSnapFitValues && icons}
     </DropContainer>

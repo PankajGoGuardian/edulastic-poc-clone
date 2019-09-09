@@ -310,7 +310,7 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: get(user, "user.firstName", ""),
+      firstName: user?.user?.firstName || "",
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed,

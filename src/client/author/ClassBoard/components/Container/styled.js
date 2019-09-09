@@ -4,17 +4,17 @@ import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import {
   mobileWidth,
+  mobileWidthLarge,
+  mobileWidthMax,
   mediumDesktopWidth,
   themeColor,
   white,
   linkColor,
   tabGrey,
-  grey,
   mainTextColor,
   title,
   green,
   red,
-  greyishDarker2,
   black,
   cardTitleColor
 } from "@edulastic/colors";
@@ -45,7 +45,8 @@ export const PaginationInfo = styled(Col)`
   max-width: 100%;
   font-size: 11px;
   color: ${linkColor};
-  @media (max-width: ${mobileWidth}) {
+
+  @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
 `;
@@ -102,7 +103,12 @@ export const StyledCard = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
     padding: 20px 30px;
-    padding-top: ${({ paddingTop }) => paddingTop}px;
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    .ant-card-body {
+      padding: 15px;
+    }
   }
 `;
 
@@ -134,7 +140,14 @@ const StyledTabButton = styled.a`
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 6px 30px;
   }
+  @media (max-width: ${mobileWidthLarge}) {
+    padding: 6px 15px;
+    width: 100%;
+    text-align: center;
+    margin: 0 !important;
+  }
 `;
+
 export const BothButton = styled(StyledTabButton)`
   border-radius: 4px 0px 0px 4px;
 `;
@@ -182,6 +195,13 @@ export const RedirectButton = styled(StyledTabButton)`
 
   @media (max-width: ${mediumDesktopWidth}) {
     width: 130px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: auto;
+    padding: 6px 12px;
+    svg {
+      display: none;
+    }
   }
 `;
 

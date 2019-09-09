@@ -388,13 +388,10 @@ class Display extends Component {
     } = this.props;
 
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses } = this.state;
-    const cAnswers = get(item, "validation.validResponse.value", []);
+    const { userAnswers, possibleResponses } = this.state;
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
-
-    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);

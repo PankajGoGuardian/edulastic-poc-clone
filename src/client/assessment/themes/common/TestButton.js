@@ -45,6 +45,8 @@ const TestButton = ({
    *
    * a number > 0 would indicate the current item has hints which have non empty label
    */
+
+  //  TODO :  need to remove the object if the hint is cleared
   const showHintButton = questions.reduce((acc, question) => {
     acc += question.hints.filter(hint => hint.label.length > 0).length;
     return acc;

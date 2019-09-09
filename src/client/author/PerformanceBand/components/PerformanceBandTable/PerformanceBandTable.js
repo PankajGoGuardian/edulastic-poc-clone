@@ -29,7 +29,16 @@ import {
   PercentText
 } from "./styled";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
-import { Ellipsify } from "../../../src/components/common/ConfirmationModal";
+
+function Ellipsify({ children: text, limit }) {
+  //needed to handle multibyte chars(unicode,emojis)
+  const chars = [...text];
+  if (chars.length <= limit) {
+    return text;
+  } else {
+    return `${chars.slice(0, limit - 3).join("")}...`;
+  }
+}
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();

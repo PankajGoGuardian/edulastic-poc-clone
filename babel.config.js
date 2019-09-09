@@ -8,6 +8,7 @@ module.exports = {
       },
       "antd"
     ],
-    "lodash"
+    "lodash",
+    "@babel/plugin-proposal-optional-chaining"
   ]
 };

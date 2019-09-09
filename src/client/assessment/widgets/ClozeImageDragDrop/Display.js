@@ -413,7 +413,7 @@ class Display extends Component {
 
     const dragItemStyle = {
       border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-      margin: 5,
+      margin: "0 5px",
       display: "flex",
       alignItems: "center",
       width: "max-content",
@@ -592,7 +592,6 @@ class Display extends Component {
                   borderStyle: smallSize ? "dashed" : "solid",
                   height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
                   width: responseContainer.width || "auto",
-                  minHeight: response.minHeight || "auto",
                   minWidth: response.minWidth || "auto",
                   maxWidth: response.maxWidth,
                   ...btnStyle

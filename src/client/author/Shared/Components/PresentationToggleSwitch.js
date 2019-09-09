@@ -3,6 +3,7 @@ import { Switch, message } from "antd";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import styled from "styled-components";
+import { mobileWidthLarge } from "@edulastic/colors";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { togglePresentationModeAction } from "../../src/actions/testActivity";
 
@@ -45,5 +46,9 @@ const SwitchBox = styled.span`
       width: 12px;
       height: 12px;
     }
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    display: none;
   }
 `;

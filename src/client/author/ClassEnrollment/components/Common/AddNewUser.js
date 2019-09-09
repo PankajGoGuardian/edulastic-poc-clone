@@ -134,11 +134,11 @@ class AddNewUserForm extends React.Component {
 
     const footer = (
       <FooterDiv>
-        <ActionButton ghost type="primary" onClick={() => closeModal()}>
+        <ActionButton data-cy="cancel" ghost type="primary" onClick={() => closeModal()}>
           No, Cancel
         </ActionButton>
 
-        <ActionButton type="primary" onClick={() => addNewUser()} disabled={!isValidClassCode}>
+        <ActionButton data-cy="addUser" type="primary" onClick={() => addNewUser()} disabled={!isValidClassCode}>
           {role === "student" ? "Yes, Add Student" : "Yes, Add User"}
           <Icon type="right" />
         </ActionButton>
@@ -195,6 +195,7 @@ class AddNewUserForm extends React.Component {
                     rules: [{ validator: this.validateEmailValue }]
                   })(
                     <Input
+                      data-cy="username"
                       prefix={<img src={mailIcon} alt="" />}
                       placeholder="Enter Username/email"
                       onChange={e => this.setUsername(e.target.value)}

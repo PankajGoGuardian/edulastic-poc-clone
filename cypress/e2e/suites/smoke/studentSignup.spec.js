@@ -20,7 +20,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Signup`, () =>
 
   it("> signup using existing school", () => {
     const { name, email, password, classCode } = signupData;
-    const random = Helpers.getRamdomString(Helpers.stringTypes().ALPHA, 8);
+    const random = Helpers.getRamdomString();
     signupPage.clickOnSignupLink();
     signupPage.clickOnStudent();
     signupPage.fillStudentSignupForm(classCode, name, `${random}.${email}`, password);

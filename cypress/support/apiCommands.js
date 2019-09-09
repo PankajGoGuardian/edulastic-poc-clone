@@ -205,6 +205,14 @@ Cypress.Commands.add("deleteTestData", () => {
           });
           delete testData.users;
         }
+
+        // archive classs
+        if (testData.classs) {
+          testData.classs.forEach(clazz => {
+            cy.deleteClazz({ authToken: getAccessToken(), deleteBody: clazz });
+          });
+          delete testData.classs;
+        }
       });
       // TODO : add other collections API
     } else testData = {};
@@ -233,12 +241,38 @@ Cypress.Commands.add("deleteUsers", users => {
       Authorization: users.authToken,
       "Content-Type": "application/json"
     },
-    body: users.deleteBody,
-    failOnStatusCode: false
+    body: users.deleteBody
   }).then(({ status }) => {
     if (status !== 403) {
       expect(status).to.eq(200);
       console.log("users deleted with _id :", users.deleteBody.userIds);
     } else console.log("API forbidden , for users ", JSON.stringify(users));
   });
+});
+
+Cypress.Commands.add("deleteClazz", group => {
+  cy.request({
+    url: `${BASE_URL}/group`,
+    method: "DELETE",
+    headers: {
+      Authorization: group.authToken,
+      "Content-Type": "application/json"
+    },
+    body: group.deleteBody
+  }).then(({ status }) => {
+    if (status !== 403) {
+      expect(status).to.eq(200);
+      console.log("groups deleted with _id :", group.deleteBody);
+    } else console.log("API forbidden , for groups ", JSON.stringify(group));
+  });
+});
+
+Cypress.Commands.add("saveClassDetailToDelete", classJson => {
+  if (classJson) {
+    cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.classs) json.classs = [];
+      json.classs.push(classJson);
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
 });

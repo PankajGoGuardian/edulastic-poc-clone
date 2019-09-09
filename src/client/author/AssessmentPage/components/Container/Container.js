@@ -72,8 +72,7 @@ class Container extends React.Component {
     match: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
-    updateItemDetailById: PropTypes.func.isRequired,
-    updateTest: PropTypes.func.isRequired,
+    updateDocBasedTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
   };
@@ -89,6 +88,15 @@ class Container extends React.Component {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { receiveItemDetailById, assessment } = this.props;
+    if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
+      const [testItem] = assessment.testItems;
+      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+      receiveItemDetailById(testItemId);
+    }
   }
 
   handleChangeCurrentTab = tab => () => {
@@ -297,8 +305,8 @@ const enhance = compose(
     },
     {
       receiveTestById: receiveTestByIdAction,
-      receiveItemDetailById: getItemDetailByIdAction,
       setTestData: setTestDataAction,
+      receiveItemDetailById: getItemDetailByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,

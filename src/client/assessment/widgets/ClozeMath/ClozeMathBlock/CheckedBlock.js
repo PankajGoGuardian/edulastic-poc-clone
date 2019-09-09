@@ -35,7 +35,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
   let { unit = "" } = userAnswer || {};
-  if (unit.search("f") !== -1) {
+  if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
     unit = `\\text{${unit}}`;
   }
   let checkBoxClass = "";

@@ -12,6 +12,7 @@ import QuestionText from "./components/QuestionText/QuestionText";
 import QuestionDropdown from "./components/QuestionDropdown/QuestionDropdown";
 import QuestionMath from "./components/QuestionMath/QuestionMath";
 import StandardSet from "./common/StandardSet/StandardSet";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
@@ -24,6 +25,7 @@ const modalStyles = {
   modal: {
     background: "#f8f8f8",
     borderRadius: "4px 4px 0 0",
+    height: "70vh",
     padding: "19px 28px 40px 28px"
   }
 };
@@ -84,7 +86,9 @@ export default class QuestionEditModal extends React.Component {
             <QuestionNumber>{qIndex || index + 1}</QuestionNumber>
             <ModalTitle>{questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
-          {this.renderForm(type)}
+          <div style={{ height: "calc(70vh - 290px)", overflow: "auto" }}>
+            <PerfectScrollbar>{this.renderForm(type)}</PerfectScrollbar>
+          </div>
           <StandardSet alignment={question.alignment} onUpdate={onUpdate} />
           <ModalFooter>
             <Button onClick={onCurrentChange(index - 1)}>Previous</Button>

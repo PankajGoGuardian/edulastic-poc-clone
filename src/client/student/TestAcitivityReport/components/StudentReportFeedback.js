@@ -64,6 +64,7 @@ const ScoreWrapper = styled.div`
 
 const FeedbackContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   margin-top: 14px;
   background: #f8f8f8;
   padding: 26px 21px;

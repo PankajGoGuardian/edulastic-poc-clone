@@ -303,6 +303,7 @@ const ActionContainer = ({
           {active ? (
             <Tooltip placement="bottomLeft" title="Add Student">
               <CircleIconButton
+                data-cy="addStudent"
                 type="primary"
                 shape="circle"
                 icon="plus"
@@ -323,7 +324,9 @@ const ActionContainer = ({
           ) : null}
 
           {active ? (
-            <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+            <AddStudentButton data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              Add Multiple Students
+            </AddStudentButton>
           ) : null}
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

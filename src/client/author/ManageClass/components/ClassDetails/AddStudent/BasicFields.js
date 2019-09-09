@@ -115,6 +115,7 @@ const BasicFields = ({
               rules: [{ required: true, message: "Please input the destination class" }]
             })(
               <Input
+                data-cy="classCode"
                 prefix={<img src={hashIcon} alt="" />}
                 onBlur={evt => {
                   const classCode = evt.target.value.trim();
@@ -138,7 +139,7 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator("email", {
               rules: [{ validator: checkUser }, ...commonEmailValidations]
-            })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
+            })(<Input data-cy="username" prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
           </Form.Item>
         </Field>
       ) : (
@@ -150,6 +151,7 @@ const BasicFields = ({
               initialValue: email || username
             })(
               <Input
+                data-cy="username"
                 prefix={<img src={mailIcon} alt="" />}
                 placeholder="Enter Username"
                 disabled={googleId || canvasId || cliId || cleverId}
@@ -175,6 +177,7 @@ const BasicFields = ({
               ]
             })(
               <Input
+                data-cy="fullName"
                 prefix={<img src={userIcon} alt="" />}
                 placeholder="Enter the name of the user"
                 disabled={enroll}
@@ -194,7 +197,13 @@ const BasicFields = ({
                   { max: 128, message: "Must less than 128 characters!" }
                 ],
                 initialValue: firstName || ""
-              })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the first name of the user" />)}
+              })(
+                <Input
+                  data-cy="fname"
+                  prefix={<img src={userIcon} alt="" />}
+                  placeholder="Enter the first name of the user"
+                />
+              )}
             </Form.Item>
           </Field>
           <Field name="lastName">
@@ -202,7 +211,13 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("lastName", {
                 initialValue: lastName || ""
-              })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the last name of the user" />)}
+              })(
+                <Input
+                  data-cy="lname"
+                  prefix={<img src={userIcon} alt="" />}
+                  placeholder="Enter the last name of the user"
+                />
+              )}
             </Form.Item>
           </Field>
         </>
@@ -220,6 +235,7 @@ const BasicFields = ({
                 ]
               })(
                 <Input
+                  data-cy="password"
                   prefix={<img src={keyIcon} alt="" />}
                   type="password"
                   placeholder="Enter Password"
@@ -235,6 +251,7 @@ const BasicFields = ({
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
               })(
                 <Input
+                  data-cy="confirmPassword"
                   prefix={<img src={keyIcon} alt="" />}
                   type="password"
                   placeholder="Confirm Password"

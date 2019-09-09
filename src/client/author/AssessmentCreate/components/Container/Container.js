@@ -98,12 +98,25 @@ class Container extends React.Component {
 
     return (
       <>
+        {creating && (
+          <div
+            style={{
+              height: "calc(100vh - 96px)",
+              position: "absolute",
+              width: "calc(100vw - 100px)",
+              top: "96px",
+              zIndex: "1",
+              backgroundColor: "rgb(0,0,0,0.5)"
+            }}
+          >
+            <Spin />
+          </div>
+        )}
         <HeaderWrapper>
           <Title>New Test</Title>
         </HeaderWrapper>
         <ContainerWrapper>
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
-          {creating && <Spin />}
           {!method && <CreationOptions />}
           {method === creationMethods.PDF && (
             <DropArea

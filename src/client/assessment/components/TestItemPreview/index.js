@@ -8,6 +8,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { themes } from "../../themes";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
+import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -33,7 +34,6 @@ class TestItemPreview extends Component {
   };
 
   state = {
-    collapsed: [],
     collapseDirection: ""
   };
   getStyle = first => {
@@ -54,21 +54,26 @@ class TestItemPreview extends Component {
     return style;
   };
 
-  setCollapseView = (index, dir) => {
-    const { cols } = this.props;
-    const { collapsed } = this.state;
-    if (collapsed.length) {
-      return this.setState({ collapsed: [], collapseDirection: "" });
-    }
+  setCollapseView = dir => {
+    this.setState(prevState => ({
+      collapseDirection: prevState.collapseDirection ? "" : dir
+    }));
+  };
 
-    const collapseLength = dir === "left" ? index : cols.length - index;
-    const setNewCollapseArray = [...new Array(collapseLength)].map((_, i) =>
-      dir === "left" ? i : cols.length - i - 1
+  renderCollapseButtons = i => {
+    const { collapseDirection } = this.state;
+    return (
+      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
+        <div>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
+            <IconArrowLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
+            <IconArrowRight />
+          </CollapseBtn>
+        </div>
+      </Divider>
     );
-    this.setState({
-      collapsed: setNewCollapseArray,
-      collapseDirection: dir
-    });
   };
 
   render() {
@@ -89,11 +94,11 @@ class TestItemPreview extends Component {
       showCollapseBtn = false,
       ...restProps
     } = this.props;
-    const { collapsed, collapseDirection } = this.state;
+    const { collapseDirection } = this.state;
     let questionCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
-      .forEach(({ widgets }) => {
+      .forEach(({ widgets = [] }) => {
         questionCount += widgets.length;
       });
     if (questionCount === 0) {
@@ -101,30 +106,24 @@ class TestItemPreview extends Component {
     }
 
     //show collapse button only in student player or in author preview mode.
-    const hasResourceTypeQuestion = cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
-    const showCollapseButtons = !collapseDirection && hasResourceTypeQuestion && showCollapseBtn;
+    const hasResourceTypeQuestion =
+      cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
+    const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     return (
       <ThemeProvider theme={themes.default}>
-        <Container width={windowWidth} style={style}>
-          {cols
-            .filter((_, i) => !collapsed.includes(i))
-            .map((col, i) => (
+        <Container width={windowWidth} style={style} isCollapsed={!!collapseDirection}>
+          {cols.map((col, i) => {
+            const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+            if (hideColumn && showCollapseButtons) return "";
+            return (
               <>
-                {i > 0 && showCollapseButtons && (
-                  <Divider>
-                    <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
-                    <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
-                  </Divider>
-                )}
-                {collapseDirection === "left" && (
-                  <CollapseBtn className="fa fa-arrow-right" onClick={this.setCollapseView} />
-                )}
+                {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
                 <TestItemCol
                   {...restProps}
-                  showCollapseBtn
+                  showCollapseBtn={showCollapseButtons}
                   evaluation={evaluation}
                   key={i}
-                  col={col}
+                  col={!!collapseDirection ? { ...col, dimension: "90%" } : col}
                   view="preview"
                   metaData={metaData}
                   preview={preview}
@@ -138,11 +137,10 @@ class TestItemPreview extends Component {
                   disableResponse={disableResponse}
                   LCBPreviewModal={LCBPreviewModal}
                 />
-                {collapseDirection === "right" && (
-                  <CollapseBtn className="fa fa-arrow-left" onClick={this.setCollapseView} />
-                )}
+                {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
               </>
-            ))}
+            );
+          })}
         </Container>
       </ThemeProvider>
     );

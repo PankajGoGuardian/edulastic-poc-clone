@@ -31,7 +31,10 @@ const Hints = ({ questions = [] }) => {
 
   //  TODO :  need to remove the object if the hint is cleared
   const validHints = questions.reduce((acc, question) => {
-    acc += question.hints.filter(hint => hint.label.length > 0).length;
+    if (question.hints) {
+      // handling cases when hints are undefined
+      acc += question.hints.filter(hint => hint.label.length > 0).length;
+    }
     return acc;
   }, 0);
   if (!validHints) return null;

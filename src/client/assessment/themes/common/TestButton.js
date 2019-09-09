@@ -19,9 +19,38 @@ const TestButton = ({
   toggleBookmark,
   isBookmarked = false,
   items,
-  currentItem: currentItemIndex
+  currentItem: currentItemIndex,
+  handleClick
 }) => {
-  const showHintButton = get(items, [`${currentItemIndex}`, `data`, `questions`, `0`, `hints`], []).length > 0;
+  const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
+  /**
+   * input
+   * questions: [
+   * {
+   *  ...restProps,
+   *  hints: [{label: "", value: ""}]
+   * },
+   * {
+   *  ...restProps,
+   *  hints: [{label: "", value: ""}]
+   * }
+   * ]
+   *
+   * output: a number >= 0
+   *
+   * logic:
+   * for all questions, check if there are hints
+   * for all hints check if the label is not empty
+   * empty label is possible when a user entered something in the hint and then cleared it (obj is not removed)
+   *
+   * a number > 0 would indicate the current item has hints which have non empty label
+   */
+
+  //  TODO :  need to remove the object if the hint is cleared
+  const showHintButton = questions.reduce((acc, question) => {
+    acc += question.hints.filter(hint => hint.label.length > 0).length;
+    return acc;
+  }, 0);
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
@@ -37,15 +66,15 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {showHintButton && (
+      {showHintButton ? (
         <Tooltip placement="top" title={"Hint"}>
-          <StyledButton>
+          <StyledButton onClick={handleClick}>
             <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
               {t("common.test.hint")}
             </ButtonLink>
           </StyledButton>
         </Tooltip>
-      )}
+      ) : null}
       <Tooltip placement="top" title={"Bookmark"}>
         <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
           <ButtonLink

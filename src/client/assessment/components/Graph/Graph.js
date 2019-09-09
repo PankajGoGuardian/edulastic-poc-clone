@@ -356,7 +356,7 @@ class Graph extends Component {
           <Wrapper className={compact ? "toolbar-compact" : ""}>
             <QuestionTitleWrapper>
               {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
-              <Stimulus
+              <StyledStimulus
                 data-cy="questionHeader"
                 dangerouslySetInnerHTML={{ __html: stimulus }}
                 fontSize={
@@ -484,3 +484,8 @@ const enhance = compose(
 const GraphComponent = enhance(Graph);
 
 export default GraphComponent;
+
+const StyledStimulus = styled(Stimulus)`
+  word-break: break-all;
+  white-space: pre-wrap;
+`;

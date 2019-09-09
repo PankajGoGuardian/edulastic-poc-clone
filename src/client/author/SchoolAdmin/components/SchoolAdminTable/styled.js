@@ -17,9 +17,9 @@ export const StyledTableContainer = styled.div`
 
 export const StyledTable = styled(Table)`
   .ant-table-row {
-    &: hover {
+    &:hover {
       button#onHoverVisible {
-        opacity: ${props => (props.role === "school-admin" ? "0" : "100")};
+        opacity: 100;
       }
     }
   }

@@ -24,9 +24,9 @@ const AssessmentPlayer = ({
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
-    const { utaId: testActivityId } = match.params;
+    const { utaId: testActivityId, groupId } = match.params;
 
-    loadTest({ testId, testActivityId, preview, demo, test });
+    loadTest({ testId, testActivityId, preview, demo, test, groupId });
   }, [testId]);
 
   const confirmBeforeQuitting = e => {

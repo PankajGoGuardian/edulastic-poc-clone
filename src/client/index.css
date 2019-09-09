@@ -646,7 +646,7 @@ table.quill-table td {
   padding: 0 !important;
   height: 100%;
   /* max-height: calc(100vh - 300px); */
-  overflow-y: hidden;
+  padding-bottom: 15px !important;
 }
 
 .imagedropdown_template_box.small {
@@ -1916,10 +1916,6 @@ span.token.active-word {
   }
 }
 
-#docBasedModalOverlay {
-  z-index: 1000000;
-}
-
 .fr-view table {
   margin: 8px 0;
 }
@@ -2079,6 +2075,9 @@ span.token.active-word {
 
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
+}
+.ant-affix {
+  z-index: 50;
 }
 
 iframe {

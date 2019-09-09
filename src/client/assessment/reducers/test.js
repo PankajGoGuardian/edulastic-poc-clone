@@ -43,6 +43,7 @@ const test = (state = initialState, { payload, type }) => {
         annotations: payload.annotations,
         docUrl: payload.docUrl,
         answerCheckByItemId: payload.answerCheckByItemId,
+        pageStructure: payload.pageStructure,
         settings: {
           ...state.settings,
           ...payload.settings

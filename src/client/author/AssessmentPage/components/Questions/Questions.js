@@ -20,6 +20,7 @@ import QuestionEditModal from "../QuestionEditModal/QuestionEditModal";
 import Section from "../Section/Section";
 import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
+import { deleteAnnotationAction } from "../../../TestPage/ducks";
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
@@ -233,7 +234,8 @@ class Questions extends React.Component {
   };
 
   handleDeleteQuestion = questionId => () => {
-    const { deleteQuestion } = this.props;
+    const { deleteQuestion, deleteAnnotation } = this.props;
+    deleteAnnotation(questionId);
     deleteQuestion(questionId);
   };
 
@@ -429,6 +431,7 @@ const enhance = compose(
       addQuestion: addQuestionAction,
       updateQuestion: updateQuestionAction,
       deleteQuestion: deleteQuestionAction,
+      deleteAnnotation: deleteAnnotationAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
       removeUserAnswer: clearAnswersAction

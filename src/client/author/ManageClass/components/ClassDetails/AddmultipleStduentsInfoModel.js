@@ -41,7 +41,7 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
       onCancel={handleCancel}
       width={700}
       footer={
-        <ThemeButton type="primary" onClick={handleCancel}>
+        <ThemeButton data-cy="done" type="primary" onClick={handleCancel}>
           Done
         </ThemeButton>
       }

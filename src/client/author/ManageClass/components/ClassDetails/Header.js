@@ -17,7 +17,7 @@ const Header = ({ onEdit, activeClass, selectedClassName }) => (
     </Title>
 
     {activeClass ? (
-      <ButtonsWrapper>
+      <ButtonsWrapper data-cy="editClass">
         <EditButton onClick={onEdit}>Edit Class</EditButton>
       </ButtonsWrapper>
     ) : null}

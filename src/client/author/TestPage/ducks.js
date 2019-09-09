@@ -83,6 +83,7 @@ export const ADD_NEW_TAG = "[test] add new tag";
 export const RECEIVE_DEFAULT_TEST_SETTINGS = "[tests] receive default test settings";
 export const SET_DEFAULT_TEST_TYPE_PROFILES = "[tests] set default test type profiles";
 export const PUBLISH_FOR_REGRADE = "[tests] publish test for regrade";
+export const DELETE_ANNOTATION = "[tests] delete annotations from test";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -190,6 +191,7 @@ export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST)
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 export const addNewTagAction = createAction(ADD_NEW_TAG);
 export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
+export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 
 export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
@@ -312,6 +314,17 @@ export const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
 
+    case DELETE_ANNOTATION: {
+      const { entity = {} } = state;
+      const { annotations = [] } = entity;
+      return {
+        ...state,
+        entity: {
+          ...entity,
+          annotations: annotations.filter(o => o.questionId !== payload)
+        }
+      };
+    }
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:
     case UPDATE_TEST_DOC_BASED_REQUEST:
@@ -651,7 +664,9 @@ function* updateTestDocBasedSaga({ payload }) {
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
     yield put(updateItemsDocBasedByIdAction(testItemId, updatedTestItem, true, false));
-    yield put(updateTestAction(payload.data._id, newAssessment, true));
+    return yield call(updateTestSaga, {
+      payload: { ...payload, data: newAssessment }
+    });
   } catch (err) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);

@@ -4,9 +4,9 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { Affix } from "antd";
+import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
-import { get } from "lodash";
+import get from "lodash/get";
 import { withWindowSizes } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import { playersTheme } from "../assessmentPlayersTheme";
@@ -19,6 +19,9 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
+import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
+
+import Hints from "@edulastic/common/src/components/Hints";
 
 import {
   ControlBtn,
@@ -69,7 +72,8 @@ class AssessmentPlayerDefault extends React.Component {
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       calculateMode: `${settings.calcType}_DESMOS`,
       changeMode: 0,
-      tool: 0
+      tool: 0,
+      showHints: false
     };
 
     this.scrollElementRef = React.createRef();
@@ -108,6 +112,13 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   changeTool = val => this.setState({ tool: val });
+
+  showHideHints = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      showHints: !prevState.showHints
+    }));
+  };
 
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings } = this.props;
@@ -265,13 +276,11 @@ class AssessmentPlayerDefault extends React.Component {
       LCBPreviewModal,
       preview
     } = this.props;
-
     const {
       testItemState,
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
-
       activeMode,
       currentColor,
       deleteMode,
@@ -279,7 +288,8 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor,
       changeMode,
       calculateMode,
-      tool
+      tool,
+      showHints
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -299,6 +309,8 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const scratchPadMode = tool === 5;
+    const hasCollapseButtons =
+      itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     return (
       <ThemeProvider theme={theme}>
         <Container innerRef={this.scrollElementRef} data-cy="assessment-player-default-wrapper">
@@ -374,37 +386,46 @@ class AssessmentPlayerDefault extends React.Component {
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
-                    <ControlBtn
-                      prev
-                      skin
-                      data-cy="prev"
-                      type="primary"
-                      icon="left"
-                      disabled={isFirst()}
-                      onClick={moveToPrev}
-                    />
-                    <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
-                    {windowWidth < LARGE_DESKTOP_WIDTH && (
-                      <ToolButton
-                        next
+                    <Tooltip placement="top" title={"Previous"}>
+                      <ControlBtn
+                        prev
                         skin
-                        size="large"
+                        data-cy="prev"
                         type="primary"
-                        icon="tool"
-                        data-cy="setting"
-                        onClick={() => {
-                          this.setState({ isToolbarModalVisible: true });
-                        }}
+                        icon="left"
+                        disabled={isFirst()}
+                        onClick={moveToPrev}
                       />
+                    </Tooltip>
+                    <Tooltip placement="top" title={"Next"}>
+                      <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
+                    </Tooltip>
+                    {windowWidth < LARGE_DESKTOP_WIDTH && (
+                      <Tooltip placement="top" title={"Tool"}>
+                        <ToolButton
+                          next
+                          skin
+                          size="large"
+                          type="primary"
+                          icon="tool"
+                          data-cy="setting"
+                          onClick={() => {
+                            this.setState({ isToolbarModalVisible: true });
+                          }}
+                        />
+                      </Tooltip>
                     )}
-                    {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
+                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
                       <TestButton
                         answerChecksUsedForItem={answerChecksUsedForItem}
                         settings={settings}
+                        items={items}
+                        currentItem={currentItem}
                         isNonAutoGradable={isNonAutoGradable}
                         checkAnswer={() => this.changeTabItemState("check")}
                         toggleBookmark={() => toggleBookmark(item._id)}
                         isBookmarked={isBookmarked}
+                        handleClick={this.showHideHints}
                       />
                     )}
                     {windowWidth >= SMALL_DESKTOP_WIDTH && (
@@ -429,7 +450,7 @@ class AssessmentPlayerDefault extends React.Component {
             </Header>
           </Affix>
           <Main skin>
-            <MainWrapper>
+            <MainWrapper hasCollapseButtons={hasCollapseButtons}>
               {testItemState === "" && (
                 <TestItemPreview
                   LCBPreviewModal={LCBPreviewModal}
@@ -438,6 +459,7 @@ class AssessmentPlayerDefault extends React.Component {
                   showCollapseBtn
                   setHighlights={this.saveHistory("resourceId")}
                   highlights={highlights}
+                  viewComponent="studentPlayer"
                 />
               )}
               {testItemState === "check" && (
@@ -453,7 +475,13 @@ class AssessmentPlayerDefault extends React.Component {
                   setHighlights={this.saveHistory("resourceId")}
                   highlights={highlights}
                   showCollapseBtn
+                  viewComponent="studentPlayer"
                 />
+              )}
+              {showHints && (
+                <PaddingDiv>
+                  <Hints questions={get(item, [`data`, `questions`], [])} />
+                </PaddingDiv>
               )}
             </MainWrapper>
           </Main>

@@ -388,13 +388,10 @@ class Display extends Component {
     } = this.props;
 
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses } = this.state;
-    const cAnswers = get(item, "validation.validResponse.value", []);
+    const { userAnswers, possibleResponses } = this.state;
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
-
-    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
@@ -413,7 +410,7 @@ class Display extends Component {
 
     const dragItemStyle = {
       border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-      margin: 5,
+      margin: "0 5px",
       display: "flex",
       alignItems: "center",
       width: "max-content",
@@ -592,7 +589,6 @@ class Display extends Component {
                   borderStyle: smallSize ? "dashed" : "solid",
                   height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
                   width: responseContainer.width || "auto",
-                  minHeight: response.minHeight || "auto",
                   minWidth: response.minWidth || "auto",
                   maxWidth: response.maxWidth,
                   ...btnStyle
@@ -746,7 +742,8 @@ class Display extends Component {
                 borderRadius: 10,
                 background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                 display: "flex",
-                justifyContent: "center"
+                justifyContent: "center",
+                minWidth: "240px"
               }}
               ref={this.responseBoxContainerRef}
             >

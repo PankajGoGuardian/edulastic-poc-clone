@@ -50,9 +50,11 @@ const AnswerBox = ({
   mathUnitAnswers.map(ans => {
     const { index } = find(mathUnits, d => d.id === ans.id) || { index: 0 };
     let { unit = "" } = ans.options;
-    if (unit.search("f") !== -1) {
+
+    if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
       unit = `\\text{${unit}}`;
     }
+
     return validAnswers.push({
       index,
       value: ans.value.search("=") === -1 ? `${ans.value}\\ ${unit}` : ans.value.replace(/=/gm, `\\ ${unit}=`),
@@ -108,7 +110,8 @@ const AnswerBox = ({
       altMathUnitAnswers[altIndex].map(answer => {
         const { index } = find(mathUnits, d => d.id === answer.id) || { index: 0 };
         let { unit = "" } = answer.options;
-        if (unit.search("f") !== -1) {
+
+        if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
           unit = `\\text{${unit}}`;
         }
         if (answer.value) {
@@ -210,6 +213,7 @@ const Title = styled.div`
 const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.div`

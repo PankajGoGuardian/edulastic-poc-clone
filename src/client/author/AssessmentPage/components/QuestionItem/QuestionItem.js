@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
-import { isArray, isUndefined, isNull } from "lodash";
+import { isArray, isUndefined, isNull, isEmpty } from "lodash";
 
 import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
 import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
@@ -85,7 +85,9 @@ class QuestionItem extends React.Component {
       evaluation
     } = this.props;
 
-    const allCorrect = isArray(evaluation) ? evaluation.filter(v => !isNull(v)).every(v => v) : evaluation;
+    const allCorrect = isArray(evaluation)
+      ? !isEmpty(evaluation) && evaluation.filter(v => !isNull(v)).every(v => v)
+      : !isEmpty(evaluation);
 
     if (allCorrect) return null;
 
@@ -157,7 +159,9 @@ class QuestionItem extends React.Component {
       return null;
     }
 
-    const correct = isArray(evaluation) ? evaluation.every(value => value) : evaluation;
+    const correct = isArray(evaluation)
+      ? !isEmpty(evaluation) && evaluation.every(value => value)
+      : !isEmpty(evaluation);
 
     return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
   };

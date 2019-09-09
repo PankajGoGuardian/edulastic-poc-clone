@@ -50,17 +50,15 @@ const Option = props => {
 
   if (showAnswer) {
     let validAnswers = [];
-
     if (!isEmpty(validation)) {
-      validAnswers = [validation.validResponse, ...validation.altResponses];
+      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(item => item.value));
     }
 
-    if (flatten(validAnswers.map(v => v.value)).includes(item.value) && !answerContext.isAnswerModifiable) {
+    if (validAnswers.includes(item.value)) {
       className = "right";
-    } else if (isSelected) {
-      if (validAnswers.some(ans => ans.value.includes(item.value))) {
-        className = "right";
-      } else {
+    }
+    if (isSelected) {
+      if (!validAnswers.includes(item.value)) {
         className = "wrong";
       }
     }

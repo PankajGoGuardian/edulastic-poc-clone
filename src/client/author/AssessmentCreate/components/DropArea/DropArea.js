@@ -7,11 +7,11 @@ import { DropAreaContainer, UploadDragger } from "./styled";
 import CreateUpload from "../CreateUpload/CreateUpload";
 import CreateBlank from "../CreateBlank/CreateBlank";
 
-const DropArea = ({ onUpload, onCreateBlank, loading }) => (
+const DropArea = ({ onUpload, onCreateBlank, loading, percent }) => (
   <DropAreaContainer>
     <UploadDragger name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false} accept=".pdf">
       <FlexContainer childMarginRight="0" style={{ height: "100%" }}>
-        <CreateUpload />
+        <CreateUpload creating={loading} percent={percent} />
       </FlexContainer>
     </UploadDragger>
     <CreateBlank onCreate={onCreateBlank} loading={loading} />

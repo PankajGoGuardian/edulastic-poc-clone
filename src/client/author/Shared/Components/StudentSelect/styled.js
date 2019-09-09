@@ -45,10 +45,4 @@ export const StyledSelect = styled(Select)`
       box-shadow: unset;
     }
   }
-  @media (max-width: 550px) {
-    display: none;
-  }
-  @media (max-width: 1000px) {
-    display: none;
-  }
 `;

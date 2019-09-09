@@ -2,26 +2,28 @@ import styled from "styled-components";
 
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, mediumDesktopWidth, white, themeColor, tabGrey } from "@edulastic/colors";
+import { mobileWidthMax, mediumDesktopWidth, white, themeColor, tabGrey, desktopWidth } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 0px;
-  @media (max-width: ${mobileWidth}) {
-    flex: none;
-    overflow: auto;
+
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
   }
 `;
 
 export const StudentButtonDiv = styled.div`
-  margin-right: 20px !important;
   display: flex;
   .ant-btn-primary {
     background-color: #0e93dc;
   }
-  @media (max-width: ${mobileWidth}) {
-    display: flex;
-    flex: none;
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+    padding-bottom: 10px;
+    margin-right: 0px;
+    overflow: auto;
   }
 `;
 
@@ -43,6 +45,16 @@ const StyledStudentTabButton = styled.a`
     height: 30px;
     padding: 8px 12px;
     font-size: 10px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding: 8px 5px;
+    height: auto;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    flex-basis: 100%;
+    white-space: nowrap;
+    text-align: center;
+    padding: 6px 15px;
   }
 `;
 
@@ -92,10 +104,18 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     min-width: 250px;
     padding: 15px 10px;
   }
-  @media (max-width: ${mobileWidth}) {
-    padding: 20px 20px;
-    min-width: 175px;
+  @media (max-width: ${desktopWidth}) {
+    min-width: auto;
     justify-content: center;
+    svg {
+      display: none;
+    }
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    min-width: 100%;
+    svg {
+      display: block;
+    }
   }
 `;
 

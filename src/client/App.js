@@ -195,11 +195,17 @@ class App extends Component {
             />
 
             <PrivateRoute path={`/student/:assessmentType/:id/uta/:utaId/test-summary`} component={TestAttemptReview} />
-            <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
+            <Route
+              path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP />}
+            />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
             <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
-            <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
+            <Route
+              path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP={false} />}
+            />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />

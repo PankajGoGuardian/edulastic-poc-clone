@@ -537,7 +537,7 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue, toolbar } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, toolbar } = this.props;
     const { drawingPrompt } = toolbar;
 
     // correct answers blocks
@@ -573,7 +573,6 @@ class GraphContainer extends PureComponent {
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(elements);
-      setValue(this._graph.getConfig());
     }
   };
 

@@ -220,7 +220,7 @@ const enhance = compose(
         creating: get(state, "manageClass.creating"),
         error: get(state, "manageClass.error"),
         entity: get(state, "manageClass.entity"),
-        allTagsData: getAllTagsSelector(state),
+        allTagsData: getAllTagsSelector(state, "group"),
         filteredCurriculums: getFormattedCurriculumsSelector(state, {
           subject: selectedSubject
         }),

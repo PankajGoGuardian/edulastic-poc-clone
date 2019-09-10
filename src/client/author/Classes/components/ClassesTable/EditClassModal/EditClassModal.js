@@ -73,7 +73,7 @@ class EditClassModal extends Component {
     if (id === searchValue) {
       const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
       newTag = { _id, tagName };
-      addNewTag(newTag);
+      addNewTag({ tag: newTag, tagType: "group" });
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

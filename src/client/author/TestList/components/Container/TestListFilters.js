@@ -11,8 +11,9 @@ import filterData from "./FilterData";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import { test as testsConstants } from "@edulastic/constants";
+import { getAllTagsSelector } from "../../../TestPage/ducks";
 
-const filtersTitle = ["Grades", "Subject", "Status", "Tags"];
+const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
   isPlaylist,
   onChange,
@@ -22,6 +23,7 @@ const TestListFilters = ({
   formattedCuriculums,
   curriculumStandards,
   collections,
+  allTagsData = [],
   searchFilterOption,
   filterMenuItems
 }) => {
@@ -99,6 +101,14 @@ const TestListFilters = ({
         }
       ]
     );
+    filterData1.push({
+      mode: "multiple",
+      size: "large",
+      title: "Tags",
+      placeholder: "Please select",
+      onChange: "tags",
+      data: allTagsData.map(o => ({ value: o._id, text: o.tagName }))
+    });
     return filterData1;
   };
   const handleApply = standardIds => {
@@ -183,6 +193,7 @@ export default connect(
   (state, { search = {} }) => ({
     curriculumStandards: getStandardsListSelector(state),
     collections: getCollectionsSelector(state),
+    allTagsData: getAllTagsSelector(state, "test"),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}

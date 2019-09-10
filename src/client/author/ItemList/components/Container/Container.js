@@ -32,7 +32,13 @@ import {
   getSelectedItemSelector,
   clearSelectedItemsAction
 } from "../../../TestPage/components/AddItems/ducks";
-import { setDefaultTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
+import {
+  setDefaultTestDataAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction,
+  getAllTagsAction,
+  getAllTagsSelector
+} from "../../../TestPage/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
@@ -69,6 +75,7 @@ export const getClearSearchState = () => ({
   collectionName: "",
   status: "",
   grades: [],
+  tags: [],
   filter: filterMenuItems[0].filter
 });
 
@@ -93,6 +100,7 @@ class Contaier extends Component {
       defaultSubject,
       clearSelectedItems,
       interestedGrades,
+      getAllTags,
       interestedSubjects,
       clearDictStandards
     } = this.props;
@@ -100,6 +108,7 @@ class Contaier extends Component {
     setDefaultTestData();
     clearSelectedItems();
     clearDictStandards();
+    getAllTags({ type: "testitem" });
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -347,7 +356,16 @@ class Contaier extends Component {
   renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
   render() {
-    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
+    const {
+      windowWidth,
+      creating,
+      t,
+      getCurriculumStandards,
+      curriculumStandards,
+      loading,
+      count,
+      allTagsData
+    } = this.props;
 
     const { search, isShowFilter, modalCreateTestVisible } = this.state;
 
@@ -370,6 +388,7 @@ class Contaier extends Component {
               onLabelSearch={this.handleLabelSearch}
               windowWidth={windowWidth}
               search={search}
+              allTagsData={allTagsData}
               getCurriculumStandards={getCurriculumStandards}
               curriculumStandards={curriculumStandards}
               items={filterMenuItems}
@@ -473,6 +492,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: getUserId(state),
+      allTagsData: getAllTagsSelector(state, "testitem"),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
@@ -487,6 +507,7 @@ const enhance = compose(
       clearSelectedItems: clearSelectedItemsAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
+      getAllTags: getAllTagsAction,
       addItemToCart: addItemToCartAction
     }
   )

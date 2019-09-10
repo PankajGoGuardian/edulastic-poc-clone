@@ -92,7 +92,9 @@ class ViewModal extends React.Component {
             <Description>{description}</Description>
 
             <TagsLabel>Tags</TagsLabel>
-            <TagsConatiner>{tags && tags.map((tag, index) => <TagGrade key={index}>{tag}</TagGrade>)}</TagsConatiner>
+            <TagsConatiner>
+              {tags && tags.map(({ tagName }, index) => <TagGrade key={index}>{tagName}</TagGrade>)}
+            </TagsConatiner>
 
             <GradeLabel>Grade</GradeLabel>
             <GradeConatiner>

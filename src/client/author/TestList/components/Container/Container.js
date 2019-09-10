@@ -35,7 +35,13 @@ import {
   getTestsLimitSelector,
   getTestsPageSelector
 } from "../../ducks";
-import { getTestsCreatingSelector, clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
+import {
+  getTestsCreatingSelector,
+  clearTestDataAction,
+  clearCreatedItemsAction,
+  getDefaultTestSettingsAction,
+  getAllTagsAction
+} from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
@@ -154,6 +160,7 @@ class TestList extends Component {
       getCurriculumStandards,
       clearCreatedItems,
       clearSelectedItems,
+      getAllTags,
       clearDictStandards
     } = this.props;
     const { search } = this.state;
@@ -244,6 +251,7 @@ class TestList extends Component {
         });
         receiveTests({ page: 1, limit, search: { ...search, grades, subject } });
       }
+      getAllTags({ type: "test" });
     }
     if (parsedQueryData.curriculumId) {
       const { curriculumId, grades } = parsedQueryData;
@@ -785,6 +793,7 @@ const enhance = compose(
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,
+      getAllTags: getAllTagsAction,
       clearTestData: clearTestDataAction
     }
   )

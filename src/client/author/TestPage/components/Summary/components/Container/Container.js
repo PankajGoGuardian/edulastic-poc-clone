@@ -167,7 +167,7 @@ const enhance = compose(
       summary: getSummarySelector(state),
       currentUser: getUser(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
-      allTagsData: getAllTagsSelector(state),
+      allTagsData: getAllTagsSelector(state, "test"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {

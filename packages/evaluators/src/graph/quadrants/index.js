@@ -155,6 +155,31 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
   return result;
 };
 
+const getParabolaThirdPoint = (startPoint, endPoint) => {
+  if (startPoint.x < endPoint.x && startPoint.y <= endPoint.y) {
+    return {
+      x: endPoint.x - (endPoint.x - startPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+  if (startPoint.x >= endPoint.x && startPoint.y < endPoint.y) {
+    return {
+      x: endPoint.x,
+      y: endPoint.y - (endPoint.y - startPoint.y) * 2
+    };
+  }
+  if (startPoint.x > endPoint.x && startPoint.y >= endPoint.y) {
+    return {
+      x: endPoint.x + (startPoint.x - endPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+  return {
+    x: endPoint.x,
+    y: endPoint.y + (startPoint.y - endPoint.y) * 2
+  };
+};
+
 const serialize = (shapes, lineTypes, points) => {
   const getShape = shape => (shape[0] === "eqn" ? `['eqn','${shape[1]}']` : `['${shape[0]}',[${shape[1].join(",")}]]`);
 
@@ -217,6 +242,10 @@ const buildGraphApiResponse = (elements = []) => {
       const endPoint = elements.find(x => x.id === el.subElementsIds.endPoint);
       if (endPoint) {
         shapePoints.push(`(${+endPoint.x.toFixed(4)},${+endPoint.y.toFixed(4)})`);
+      }
+      if (el.type === ShapeTypes.PARABOLA) {
+        const thirdPoint = getParabolaThirdPoint(startPoint, endPoint);
+        shapePoints.push(`(${+thirdPoint.x.toFixed(4)},${+thirdPoint.y.toFixed(4)})`);
       }
     }
 

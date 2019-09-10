@@ -212,6 +212,34 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
   return result;
 };
 
+var getParabolaThirdPoint = function getParabolaThirdPoint(startPoint, endPoint) {
+  if (startPoint.x < endPoint.x && startPoint.y <= endPoint.y) {
+    return {
+      x: endPoint.x - (endPoint.x - startPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+
+  if (startPoint.x >= endPoint.x && startPoint.y < endPoint.y) {
+    return {
+      x: endPoint.x,
+      y: endPoint.y - (endPoint.y - startPoint.y) * 2
+    };
+  }
+
+  if (startPoint.x > endPoint.x && startPoint.y >= endPoint.y) {
+    return {
+      x: endPoint.x + (startPoint.x - endPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+
+  return {
+    x: endPoint.x,
+    y: endPoint.y + (startPoint.y - endPoint.y) * 2
+  };
+};
+
 var serialize = function serialize(shapes, lineTypes, points) {
   var getShape = function getShape(shape) {
     return shape[0] === "eqn"
@@ -302,6 +330,11 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
 
       if (endPoint) {
         shapePoints.push("(".concat(+endPoint.x.toFixed(4), ",").concat(+endPoint.y.toFixed(4), ")"));
+      }
+
+      if (el.type === _constants.ShapeTypes.PARABOLA) {
+        var thirdPoint = getParabolaThirdPoint(startPoint, endPoint);
+        shapePoints.push("(".concat(+thirdPoint.x.toFixed(4), ",").concat(+thirdPoint.y.toFixed(4), ")"));
       }
     }
 

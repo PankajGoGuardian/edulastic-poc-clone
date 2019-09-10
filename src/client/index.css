@@ -2096,6 +2096,7 @@ iframe {
 
 /* Passage type  */
 .selected-text-heighlight {
+  position: relative;
   cursor: pointer;
   z-index: 900;
 }

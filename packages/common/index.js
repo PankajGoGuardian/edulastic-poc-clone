@@ -50,7 +50,8 @@ export {
   uploadToS3,
   getSelection,
   clearSelection,
-  highlightSelectedText
+  highlightSelectedText,
+  decodeHTML
 } from "./src/helpers";
 
 // contexts

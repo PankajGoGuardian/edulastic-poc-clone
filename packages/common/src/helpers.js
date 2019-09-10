@@ -357,6 +357,16 @@ export const highlightSelectedText = (className = "token active-word") => {
   }
 };
 
+export const decodeHTML = str => {
+  if (!window.$) {
+    return str;
+  }
+  const jQuery = window.$;
+  return jQuery("<div>")
+    .html(str)
+    .html();
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,

@@ -5,8 +5,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
-// import produce from "immer";
-import { Stimulus, QuestionNumberLabel, highlightSelectedText, WithResources } from "@edulastic/common";
+import produce from "immer";
+import { Stimulus, highlightSelectedText, WithResources, decodeHTML } from "@edulastic/common";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -26,19 +26,10 @@ const hexc = orig => {
 
 let startedSelectingText = false;
 
-const PassageView = ({ item, preview, showQuestionNumber, flowLayout, setHighlights, highlights }) => {
+const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = [] }) => {
   const mainContentsRef = useRef();
   const [page, setPage] = useState(1);
   const [selected, toggleColorPicker] = useState(null);
-  console.log(highlights);
-  useEffect(() => {
-    if (preview) {
-      const editors = document.getElementsByClassName("ql-editor");
-      if (isArray(editors) && editors.length) {
-        editors[0].contentEditable = false;
-      }
-    }
-  }, []);
 
   const addEventToSelectedText = () => {
     if (window.$) {
@@ -64,25 +55,35 @@ const PassageView = ({ item, preview, showQuestionNumber, flowLayout, setHighlig
 
   const clickHighligter = color => {
     if (mainContentsRef.current) {
-      let { innerHTML: updatedContent } = mainContentsRef.current;
-      const regex = new RegExp('<span(.*?)class="selected-text-heighlight(.*?)"(.*?)>(.*?)</span>', "g");
-      let matchs = updatedContent.match(regex);
-      if (matchs && matchs[selected.index]) {
-        const matchString = matchs[selected.index];
-        matchs = regex.exec(matchString);
-        if (matchs) {
-          const highlightStyle = `style="background-color:${color}"`;
-          const replaceStr = color
-            ? `<span ${highlightStyle} class="selected-text-heighlight active">${matchs.slice(4)}</span>`
-            : matchs.slice(4);
-          updatedContent = updatedContent.replace(new RegExp(matchString, "g"), replaceStr);
-        }
-        if (!color) {
-          toggleColorPicker(null);
-        }
-        if (setHighlights) {
-          setHighlights([{ value: "asdfasdf", color: "#33333" }]);
-        }
+      const { innerHTML: content } = mainContentsRef.current;
+      const regex = new RegExp('<span(.*?)class="selected-text-heighlight(.*?)">(.*?)</span>', "g");
+      const matchs = [];
+      let match = regex.exec(content);
+
+      while (match) {
+        matchs.push({
+          text: match.slice(3)[0],
+          style: match.slice(1)[0]
+        });
+        match = regex.exec(content);
+      }
+
+      if (setHighlights) {
+        setHighlights(
+          produce(matchs, draft => {
+            if (color === "remove") {
+              draft = draft.splice(selected.index, 1);
+            } else {
+              draft[selected.index].color = color;
+              if (!color) {
+                delete draft[selected.index].color;
+              }
+            }
+          })
+        );
+      }
+      if (color === "remove") {
+        toggleColorPicker(null);
       }
     }
   };
@@ -91,11 +92,46 @@ const PassageView = ({ item, preview, showQuestionNumber, flowLayout, setHighlig
     startedSelectingText = true;
   };
 
+  const getContent = () => {
+    let { content } = item;
+    content = decodeHTML(content);
+    if (highlights) {
+      for (let i = 0; i < highlights.length; i++) {
+        if (highlights[i]) {
+          const { color, style, text } = highlights[i];
+          const highlightStyle = color ? `style="background-color:${color}"` : style;
+          const className = color
+            ? 'class="selected-text-heighlight active"'
+            : 'class="selected-text-heighlight unsaved"';
+          const replaceStr = `<span ${highlightStyle} ${className}>${text}</span>`;
+          content = content.replace(new RegExp(highlights[i].text), replaceStr);
+        }
+      }
+    }
+    return content;
+  };
+
+  const loadInit = () => {
+    // need to wait for rendering content at first time.
+    setTimeout(() => {
+      addEventToSelectedText();
+    }, 10);
+  };
+
+  useEffect(() => {
+    if (preview) {
+      const editors = document.getElementsByClassName("ql-editor");
+      if (isArray(editors) && editors.length) {
+        editors[0].contentEditable = false;
+      }
+    }
+  }, []);
+
   return (
     <WithResources
       resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
       fallBack={<div />}
-      onLoaded={addEventToSelectedText}
+      onLoaded={loadInit}
     >
       {item.instructorStimulus && !flowLayout && (
         <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructorStimulus }} />
@@ -109,11 +145,11 @@ const PassageView = ({ item, preview, showQuestionNumber, flowLayout, setHighlig
       {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
       {!item.paginated_content && item.content && (
         <Stimulus
-          id="mainContents-ooooo"
+          id="mainContents"
           innerRef={mainContentsRef}
           onMouseUp={handleHighlight}
           onMouseDown={handleMouseDown}
-          dangerouslySetInnerHTML={{ __html: item.content }}
+          dangerouslySetInnerHTML={{ __html: getContent() }}
           userSelect
         />
       )}
@@ -145,16 +181,14 @@ const PassageView = ({ item, preview, showQuestionNumber, flowLayout, setHighlig
 
 PassageView.propTypes = {
   setHighlights: PropTypes.func.isRequired,
-  highlights: PropTypes.any.isRequired,
+  highlights: PropTypes.array.isRequired,
   item: PropTypes.object.isRequired,
   preview: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool
 };
 
 PassageView.defaultProps = {
   preview: false,
-  showQuestionNumber: false,
   flowLayout: false
 };
 

@@ -12,7 +12,7 @@ const ColorPicker = ({ selectColor, bg }) => {
   };
   return (
     <FlexContainer>
-      <ColorButton onClick={chooseColor()}>
+      <ColorButton onClick={chooseColor("remove")}>
         <BackSlashIcon type="minus" />
       </ColorButton>
       <ColorButton onClick={chooseColor(highlightBlue)} color={highlightBlue} active={bg === highlightBlue} />

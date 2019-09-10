@@ -24,7 +24,8 @@ const ItemsTable = ({
   handlePreview,
   isEditable,
   owner,
-  onChangePoints
+  onChangePoints,
+  isCollapse
 }) => {
   const [expandedRows, setExpandedRows] = useState(-1);
 
@@ -73,6 +74,7 @@ const ItemsTable = ({
               index={data.key}
               setExpandedRows={setExpandedRows}
               onChangePoints={onChangePoints}
+              isCollapse={isCollapse}
             />
             <MetaInfoCell data={data.meta} />
           </>

@@ -10,7 +10,7 @@ export const withMathFormula = WrappedComponent => {
     /**
      * this whole component needs rethinking.
      */
-    const { dangerouslySetInnerHTML } = props;
+    const { dangerouslySetInnerHTML, isCollapse = false } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
 
@@ -20,7 +20,7 @@ export const withMathFormula = WrappedComponent => {
         return;
       }
       setNewInnerHtml(replaceLatexesWithMathHtml(dangerouslySetInnerHTML.__html));
-      if (!!newInnerHtml && newInnerHtml.includes("iframe")) {
+      if (isCollapse && !!newInnerHtml && newInnerHtml.includes("iframe")) {
         setNewInnerHtml(newInnerHtml.replace("<iframe", '<iframe style="display:none" '));
       }
     }, [dangerouslySetInnerHTML, loaded]);

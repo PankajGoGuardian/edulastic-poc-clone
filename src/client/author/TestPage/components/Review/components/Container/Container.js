@@ -367,6 +367,7 @@ class Review extends PureComponent {
                   mobile={!isSmallSize}
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
+                  isCollapse={isCollapse}
                 />
               ) : (
                 <List

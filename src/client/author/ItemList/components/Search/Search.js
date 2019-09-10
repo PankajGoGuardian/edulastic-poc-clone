@@ -9,6 +9,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import StandardsSearchModal from "./StandardsSearchModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { test as testsConstants } from "@edulastic/constants";
+import { getAllTagsSelector } from "../../../TestPage/ducks";
 class Search extends Component {
   state = {
     showModal: false
@@ -273,6 +274,7 @@ Search.propTypes = {
 
 export default connect(
   (state, { search = {} }) => ({
+    allTagsData: getAllTagsSelector(state, "testitem"),
     collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),

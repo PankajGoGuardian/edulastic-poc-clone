@@ -356,16 +356,7 @@ class Contaier extends Component {
   renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
   render() {
-    const {
-      windowWidth,
-      creating,
-      t,
-      getCurriculumStandards,
-      curriculumStandards,
-      loading,
-      count,
-      allTagsData
-    } = this.props;
+    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
 
     const { search, isShowFilter, modalCreateTestVisible } = this.state;
 
@@ -388,7 +379,6 @@ class Contaier extends Component {
               onLabelSearch={this.handleLabelSearch}
               windowWidth={windowWidth}
               search={search}
-              allTagsData={allTagsData}
               getCurriculumStandards={getCurriculumStandards}
               curriculumStandards={curriculumStandards}
               items={filterMenuItems}
@@ -492,7 +482,6 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: getUserId(state),
-      allTagsData: getAllTagsSelector(state, "testitem"),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {

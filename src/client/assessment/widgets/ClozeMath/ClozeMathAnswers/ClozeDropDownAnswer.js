@@ -41,7 +41,7 @@ class ClozeDropDownAnswer extends Component {
 
   render() {
     const { answers, item } = this.props;
-    const { options, responseContainers } = item;
+    const { options, responseContainers = [] } = item;
 
     return (
       <AnswerContainer>

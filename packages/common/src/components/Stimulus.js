@@ -9,6 +9,7 @@ const Stimulus = withTheme(
     margin-bottom: 15px;
     font-size: ${props => props.fontSize};
     font-weight: ${fonts.previewFontWeight};
+    user-select: ${props => (props.userSelect ? "text !important" : "none")};
 
     & * {
       user-select: ${props => (props.userSelect ? "text !important" : "none")};

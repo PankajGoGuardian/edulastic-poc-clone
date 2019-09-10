@@ -386,9 +386,11 @@ class CoursesTable extends React.Component {
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
-      order: sortedInfo.order,
-      active: showActive ? 1 : 0
+      order: sortedInfo.order
     };
+    if (showActive) {
+      loadListJsonData.active = 1;
+    }
 
     // TO DO: remove this line after further investigation
     this.setState({ searchData: loadListJsonData });

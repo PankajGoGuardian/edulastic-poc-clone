@@ -47,7 +47,7 @@ const TextContainer = ({
               ? answer.replace("<p>", "<p class='clipText'>") || ""
               : "";
           return (
-            <div title={title} ref={answerContainer}>
+            <div title={title} ref={answerContainer} style={style}>
               <DragItem
                 key={user_select_index}
                 index={user_select_index}

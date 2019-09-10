@@ -1,6 +1,6 @@
-import { Button, Col, Icon, message, Row } from "antd";
+import { Button, Col, Icon, message, Row, Input } from "antd";
 import { get } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -12,7 +12,9 @@ import {
   deletePerformanceBandAction,
   receivePerformanceBandAction,
   setPerformanceBandLocalAction,
-  updatePerformanceBandAction
+  updatePerformanceBandAction,
+  setPerformanceBandNameAction,
+  setPerformanceBandChangesAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
@@ -29,8 +31,12 @@ import {
   StyledProfileCol,
   StyledList
 } from "./styled";
+import styled from "styled-components";
 
 const title = "Manage District";
+const BlueBold = styled.b`
+  color: #1774f0;
+`;
 
 function ProfileRow({
   name,
@@ -42,13 +48,15 @@ function ProfileRow({
   remove,
   update: updateToServer,
   readOnly,
-  loading
+  loading,
+  setName
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
   };
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleteText, setDeleteText] = useState("");
+  const performanceBandInstance = useRef();
 
   return (
     <ListItemStyled>
@@ -74,15 +82,28 @@ function ProfileRow({
       >
         <div className="content">
           <p>
-            <b>{name}</b> will be removed permanently and can’t be used in future tests. This action can NOT be undone.
-            If you are sure, please type DELETE in the space below.
+            <BlueBold>{name}</BlueBold> will be removed permanently and can’t be used in future tests. This action can
+            NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
           </p>
         </div>
         <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </ProfileModal>
       <StyledProfileRow type="flex">
         <Col span={12}>
-          <h3>{name}</h3>
+          {active ? (
+            <Input
+              type="text"
+              value={name}
+              onChange={e => {
+                setName({ name: e.target.value, _id });
+                if (performanceBandInstance.current) {
+                  performanceBandInstance.current.setChanged(true);
+                }
+              }}
+            />
+          ) : (
+            <h3>{name}</h3>
+          )}
         </Col>
         <StyledProfileCol span={12}>
           {readOnly ? null : (
@@ -104,6 +125,7 @@ function ProfileRow({
         <RowStyled>
           <Col span={24}>
             <PerformanceBandTableDumb
+              ref={performanceBandInstance}
               performanceBandId={_id}
               dataSource={performanceBand}
               createPerformanceband={() => {}}
@@ -123,7 +145,19 @@ function ProfileRow({
 export function PerformanceBandAlt(props) {
   const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
-  const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
+  const {
+    loading,
+    updating,
+    creating,
+    history,
+    list,
+    create,
+    update,
+    remove,
+    profiles,
+    currentUserId,
+    setName
+  } = props;
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
@@ -151,16 +185,31 @@ export function PerformanceBandAlt(props) {
         orgType: "district",
         performanceBand: [
           {
-            color: "#ffffff",
+            color: "#3DB04E",
             name: "Proficient",
             aboveOrAtStandard: true,
             from: 100,
+            to: 70
+          },
+          {
+            color: "#576BA9",
+            name: "Basic",
+            aboveOrAtStandard: true,
+            from: 70,
+            to: 50
+          },
+          {
+            color: "#F39300",
+            name: "Below Basic",
+            aboveOrAtStandard: true,
+            from: 50,
             to: 0
           }
         ]
       };
       create(initialObj);
       setConfirmVisible(false);
+      setProfileName("");
     } else {
       message.error("name can't be empty");
     }
@@ -213,6 +262,7 @@ export function PerformanceBandAlt(props) {
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
+                setName={setName}
                 savePerformance={({ _id: id, performanceBand, ...rest }) => {
                   props.updateLocal({ id, data: performanceBand });
                 }}
@@ -241,7 +291,8 @@ const enhance = compose(
       create: createPerformanceBandAction,
       update: updatePerformanceBandAction,
       remove: deletePerformanceBandAction,
-      updateLocal: setPerformanceBandLocalAction
+      updateLocal: setPerformanceBandLocalAction,
+      setName: setPerformanceBandNameAction
     }
   )
 );

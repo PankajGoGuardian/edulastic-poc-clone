@@ -800,7 +800,7 @@ const enhance = compose(
       teacherList: getTeachersListSelector(state),
       schoolsData: getSchoolsSelector(state),
       bulkEditData: getBulkEditSelector(state),
-      allTagsData: getAllTagsSelector(state)
+      allTagsData: getAllTagsSelector(state, "group")
     }),
     {
       createClass: createClassAction,

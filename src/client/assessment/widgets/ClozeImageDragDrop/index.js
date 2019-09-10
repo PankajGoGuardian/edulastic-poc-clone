@@ -30,6 +30,7 @@ import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div`
   overflow-x: auto;
+  padding-bottom: 10px;
 `;
 
 class ClozeImageDragDrop extends Component {

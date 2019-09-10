@@ -14,7 +14,7 @@ const Header = styled.div`
   left: 0;
   right: 0;
   background: ${props => props.theme.default.headerBgColor};
-  z-index: 9;
+  z-index: 50;
 
   @media (max-width: 768px) {
     flex-direction: column;

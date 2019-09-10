@@ -231,7 +231,7 @@ const enhance = compose(
         updating: get(state, "manageClass.updating"),
         selctedClass: get(state, "manageClass.entity", {}),
         classLoaded: get(state, "manageClass.classLoaded"),
-        allTagsData: getAllTagsSelector(state),
+        allTagsData: getAllTagsSelector(state, "group"),
         filteredCurriculums: getFormattedCurriculumsSelector(state, { subject: selectedSubject }),
         selectedSubject
       };

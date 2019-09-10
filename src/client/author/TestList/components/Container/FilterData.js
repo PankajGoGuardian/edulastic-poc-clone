@@ -72,14 +72,6 @@ const filterData = [
     title: "Status",
     onChange: "status",
     data: [{ value: "", text: "All" }, { value: "published", text: "Published" }, { value: "draft", text: "Draft" }]
-  },
-  {
-    mode: "multiple",
-    size: "large",
-    title: "Tags",
-    placeholder: "Please select",
-    onChange: "tags",
-    data: [{ value: "tag1", text: "Tag1" }, { value: "tag2", text: "Tag2" }]
   }
 ];
 

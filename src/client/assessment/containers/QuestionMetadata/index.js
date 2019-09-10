@@ -218,7 +218,7 @@ const enhance = compose(
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculumStandards: getStandardsListSelector(state),
       questionData: getQuestionDataSelector(state),
-      allTagsData: getAllTagsSelector(state),
+      allTagsData: getAllTagsSelector(state, "testitem"),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state)
     }),

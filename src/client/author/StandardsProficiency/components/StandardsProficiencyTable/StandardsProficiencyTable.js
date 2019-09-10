@@ -134,6 +134,8 @@ class StandardsProficiencyTable extends React.Component {
     ];
   }
 
+  setChanged = v => this.setState({ isChangeState: v });
+
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       data: nextProps.standardsProficiency,

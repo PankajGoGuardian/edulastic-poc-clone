@@ -203,6 +203,11 @@ class Template extends Component {
         // math input alternate responses
         if (_validation.validResponse.value) {
           _validation.altResponses.map(alt_res => {
+            if (!alt_res.value) {
+              alt_res.value = {
+                value: []
+              };
+            }
             if (_validation.validResponse.value.length > alt_res.value.length) {
               alt_res.value.push(last(_validation.validResponse.value));
             }
@@ -217,6 +222,11 @@ class Template extends Component {
         // textinput alternate responses
         if (_validation.validResponse.textinput) {
           _validation.altResponses.map(alt_res => {
+            if (!alt_res.textinput) {
+              alt_res.textinput = {
+                value: []
+              };
+            }
             if (_validation.validResponse.textinput.value.length > alt_res.textinput.value.length) {
               alt_res.textinput.value.push(last(_validation.validResponse.textinput.value));
             }
@@ -231,6 +241,11 @@ class Template extends Component {
         // dropdown alternate responses
         if (_validation.validResponse.dropdown) {
           _validation.altResponses.map(alt_res => {
+            if (!alt_res.dropdown) {
+              alt_res.dropdown = {
+                value: []
+              };
+            }
             if (_validation.validResponse.dropdown.value.length > alt_res.dropdown.value.length) {
               alt_res.dropdown.value.push(last(_validation.validResponse.dropdown.value));
             }
@@ -245,6 +260,11 @@ class Template extends Component {
         // Math Unit alternate responses
         if (_validation.validResponse.mathUnits) {
           _validation.altResponses.map(alt_res => {
+            if (!alt_res.mathUnits) {
+              alt_res.mathUnits = {
+                value: []
+              };
+            }
             if (_validation.validResponse.mathUnits.value.length > alt_res.mathUnits.value.length) {
               alt_res.mathUnits.value.push(last(_validation.validResponse.mathUnits.value));
             }

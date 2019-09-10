@@ -62,7 +62,7 @@ const Sidebar = ({
         tagType: isPlaylist ? "playlist" : "test"
       });
       newTag = { _id, tagName };
-      addNewTag(newTag);
+      addNewTag({ tag: newTag, tagType: "test" });
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

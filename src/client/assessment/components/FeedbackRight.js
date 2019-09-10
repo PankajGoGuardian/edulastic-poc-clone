@@ -9,7 +9,7 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, mediumDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
+import { mobileWidthMax, mediumDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -278,10 +278,9 @@ const enhance = compose(
 export default enhance(FeedbackRight);
 
 const StyledCardTwo = styled(Card)`
-  visibility: ${props => (props.disabled ? "hidden" : "visible")};
+  display: ${props => (props.disabled ? "none" : "flex")};
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
   flex-direction: column;
   margin: 0px 0px 0px 15px;
   min-width: 250px;
@@ -304,8 +303,12 @@ const StyledCardTwo = styled(Card)`
   @media (max-width: ${mediumDesktopWidth}) {
     max-width: 250px;
   }
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${mobileWidthMax}) {
     margin-left: 0px;
+    min-width: 100%;
+    .ant-card-body {
+      height: 200px;
+    }
   }
 `;
 

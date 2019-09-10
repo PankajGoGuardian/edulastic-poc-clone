@@ -17,6 +17,7 @@ const CREATE_PERFORMANCE_BAND_SUCCESS = "[Performance Band] create data success"
 const CREATE_PERFORMANCE_BAND_ERROR = "[Performance Band] create data error";
 const SET_LOADING = "[Performance Band] set loading";
 const DELETE_PERFORMANCE_BAND_REQUEST = "[Performance Band] delete request";
+const SET_PERFORMANCE_BAND_NAME = "[Performance Band] set name";
 
 const SET_PERFORMANCE_BAND_CHANGES = "[Performance Band] set data changes";
 const SET_PERFORMANCE_BAND_DATA_LOCAL = "[Performance Band] set data local";
@@ -36,6 +37,7 @@ export const setPerformanceBandChangesAction = createAction(SET_PERFORMANCE_BAND
 
 const setLoadingAction = createAction(SET_LOADING);
 export const deletePerformanceBandAction = createAction(DELETE_PERFORMANCE_BAND_REQUEST);
+export const setPerformanceBandNameAction = createAction(SET_PERFORMANCE_BAND_NAME);
 
 const statePerformanceBandSelector = state => state.performanceBandReducer;
 export const getPerformanceBandList = createSelector(
@@ -121,6 +123,13 @@ export const reducer = createReducer(initialState, {
     const { _id, data } = payload;
     const ind = state.profiles.findIndex(x => x._id === _id);
     state.profiles[ind].performanceBand = data;
+  },
+  [SET_PERFORMANCE_BAND_NAME]: (state, { payload }) => {
+    const { _id, name } = payload;
+    const ind = state.profiles.findIndex(x => x._id === _id);
+    if (ind > -1) {
+      state.profiles[ind].name = name;
+    }
   }
 });
 

@@ -24,7 +24,7 @@ const SecondBlock = ({
     if (id === searchValue) {
       const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "testitem" });
       newTag = { _id, tagName };
-      addNewTag(newTag);
+      addNewTag({ tag: newTag, tagType: "testitem" });
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

@@ -14,7 +14,7 @@ const Tags = ({ tags = [], labelStyle, type, show }) => {
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {tag}
+          {tag.tagName}
         </Label>
       ))}
     </PopupContainer>

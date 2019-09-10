@@ -108,7 +108,8 @@ const sanitizeSelfClosingTags = inputString => {
     _inputString
       .replace(/<hr>/g, "<hr/>")
       .replace(/<br>/g, "<br/>")
-      .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+      .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
+      .replace(/allowfullscreen="true"><\/iframe>/, "allowfullscreen=''></iframe>");
 
   return sanitizedString;
 };

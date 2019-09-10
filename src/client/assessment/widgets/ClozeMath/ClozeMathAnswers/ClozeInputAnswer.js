@@ -34,7 +34,7 @@ class ClozeInputAnswer extends Component {
   render() {
     const {
       answers,
-      item: { uiStyle, responseContainers }
+      item: { uiStyle, responseContainers = [] }
     } = this.props;
 
     return (

@@ -329,6 +329,10 @@ export const clearSelection = () => {
 
 export const highlightSelectedText = (className = "token active-word") => {
   const selection = getSelection();
+  if (!selection.rangeCount) {
+    console.log("Unable to find a native DOM range from the current selection.");
+    return;
+  }
   const range = selection.getRangeAt(0);
   const { endContainer, endOffset, startContainer, startOffset } = range;
   if (startOffset === endOffset) {

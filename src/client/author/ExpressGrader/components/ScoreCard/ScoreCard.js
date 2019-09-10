@@ -45,9 +45,9 @@ export default class ScoreCard extends Component {
     return (
       <React.Fragment>
         <StyledFlexContainer>
-          <TableTitle>Score Grid</TableTitle>
+          <TableTitle>Question & Standard</TableTitle>
         </StyledFlexContainer>
-        <StyledFlexContainer flexWrap>
+        <StyledFlexContainer justify="space-between" flexWrap>
           {questions.map((question, i) => (
             <StyledCard key={i}>
               <StyledDivMid>

@@ -14,34 +14,39 @@ import {
   secondaryTextColor,
   lightGreySecondary,
   greenThird,
-  tabletWidth,
-  mobileWidth
+  smallDesktopWidth,
+  mobileWidth,
+  mobileWidthMax
 } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
 import HeaderWrapper from "../../src/mainContent/headerWrapper";
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 20px auto;
-  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const MoblieFlexContainer = styled(FlexContainer)`
-  margin: 10px;
+  width: 100%;
+  display: flex;
   overflow: auto;
-  width: 95%;
+  flex-wrap: ${({ flexWrap }) => (flexWrap ? "wrap" : "nowrap")};
+  justify-content: ${({ justify }) => justify || "flex-start"};
+  margin-bottom: 10px;
+  margin-right: 0px;
 `;
 
 export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   justify-content: space-around;
   flex-direction: ${props => (props.column ? "column" : "row")};
+  margin-bottom: 15px;
   label {
     text-transform: uppercase;
     color: ${cardTitleColor};
     font-size: 12px;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
   }
   img {
     transform: rotate(-270deg);
@@ -73,9 +78,13 @@ export const StyledCard = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
     padding: 30px 24px;
-    @media (max-width: ${mobileWidth}) {
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin-right: 5px;
+    .ant-card-body {
       padding: 18px;
-      width: 320px;
+      width: 300px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -96,13 +105,17 @@ export const DetailCard = styled(StyledCard)`
   width: 48%;
   .ant-card-body {
     padding: 0px;
-    @media (max-width: ${mobileWidth}) {
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 100%;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+    margin-top: 10px;
+    .ant-card-body {
       width: 100%;
     }
-  }
-  @media (max-width: ${mobileWidth}) {
-    width: 95%;
-    margin: 10px;
   }
 `;
 
@@ -379,9 +392,6 @@ export const TableData = styled(Table)`
     border-bottom: 10px solid ${white};
     padding: 10px 16px;
   }
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-  }
   .ant-table-row-expand-icon {
     display: none;
   }
@@ -416,8 +426,19 @@ export const TableData = styled(Table)`
 export const DivWrapper = styled(StyledFlexContainer)`
   display: flex;
   align-items: flex-start;
-  @media (max-width: ${mobileWidth}) {
-    flex-direction: column;
+  justify-content: flex-start;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    overflow: auto;
+  }
+`;
+
+export const BodyContainer = styled.div`
+  width: 100%;
+  padding: 20px 30px;
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 20px;
   }
 `;
 
@@ -434,14 +455,14 @@ export const StandardCell = styled.div`
 
 export const StandardsMobile = styled.div`
   width: 150px;
-  height: 29px;
+  height: 30px;
   background-color: ${lightGreen1};
   border-radius: 5px;
   color: white;
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 export const QuestionCell = styled.div`

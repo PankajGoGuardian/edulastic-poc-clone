@@ -5,17 +5,19 @@ import { IconChevronLeft } from "@edulastic/icons";
 import { themeColor, secondaryTextColor, lightGreySecondary, cardTitleColor } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
+  width: 100%;
   margin: 15px auto;
   flex-wrap: ${({ flexWrap }) => (flexWrap ? "wrap" : "nowrap")};
+  justify-content: ${({ justify }) => justify || "flex-start"};
   overflow: auto;
   align-items: baseline;
 `;
 
 export const StyledCard = styled(Card)`
-  width: calc(50% - 10px);
+  width: calc(50% - 5px);
   border-radius: 10px;
   margin-bottom: 10px;
+  margin-right: 0px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
     padding: 30px 24px 24px;
@@ -42,7 +44,7 @@ export const StudentsCardRow = styled.div`
 
 export const TableTitle = styled.div`
   color: ${secondaryTextColor};
-  font-size: 21px;
+  font-size: 20px;
   line-height: 30px;
   font-weight: bold;
 `;
@@ -60,7 +62,7 @@ export const StyledDivColor = styled.span`
 `;
 
 export const StyledDivMid = styled.div`
-  font-size: 16px;
+  font-size: 18px;
   color: ${secondaryTextColor};
   font-weight: 800;
   text-align: center;
@@ -96,7 +98,7 @@ export const QuestionLabel = styled.div`
 export const StyledText = styled.div`
   font-family: Open Sans;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 18px;
   color: ${props => props.color};
 `;
 

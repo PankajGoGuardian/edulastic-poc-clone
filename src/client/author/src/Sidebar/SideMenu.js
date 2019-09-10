@@ -212,7 +212,7 @@ class SideMenu extends Component {
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;
-    const isMobile = windowWidth < 770;
+    const isMobile = windowWidth < 769;
     const defaultSelectedMenu = this.MenuItems.findIndex(menuItem =>
       menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false))
     );

@@ -2,7 +2,7 @@ import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { CONSTANT } from "../config";
-import { fixLatex, isInPolygon, calcLineLatex, calcCircleLatex, calcEllipseLatex } from "../utils";
+import { isInPolygon, getLineFunc, getCircleFunc, getEllipseFunc, getHyperbolaFunc } from "../utils";
 import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent, Circle, Ellipse } from ".";
 
 const jxgType = 100;
@@ -271,30 +271,24 @@ function updateShading(board, areaPoint) {
       switch (item.type) {
         case JXG.OBJECT_TYPE_CIRCLE: {
           const { points } = Circle.getConfig(item);
-          const lineLatex = calcCircleLatex({ x: points[0].x, y: points[0].y }, { x: points[1].x, y: points[1].y });
-          const fixedLatex = fixLatex(lineLatex);
-          const func = parse(fixedLatex.latexFunc);
-          return (x, y) => func.eval({ x, y }) > 0;
+          const func = getCircleFunc({ x: points[0].x, y: points[0].y }, { x: points[1].x, y: points[1].y });
+          return (x, y) => func(x, y) > 0;
         }
         case JXG.OBJECT_TYPE_CONIC: {
           const { points } = Ellipse.getConfig(item);
-          const lineLatex = calcEllipseLatex(
+          const func = getEllipseFunc(
             { x: points[0].x, y: points[0].y },
             { x: points[1].x, y: points[1].y },
             { x: points[2].x, y: points[2].y }
           );
-          const fixedLatex = fixLatex(lineLatex);
-          const func = parse(fixedLatex.latexFunc);
-          return (x, y) => func.eval({ x, y }) > 0;
+          return (x, y) => func(x, y) > 0;
         }
         case JXG.OBJECT_TYPE_LINE: {
-          const lineLatex = calcLineLatex(
+          const func = getLineFunc(
             { x: item.point1.X(), y: item.point1.Y() },
             { x: item.point2.X(), y: item.point2.Y() }
           );
-          const fixedLatex = fixLatex(lineLatex);
-          const func = parse(fixedLatex.latexFunc);
-          return (x, y) => func.eval({ x, y }) > 0;
+          return (x, y) => func(x, y) > 0;
         }
         case JXG.OBJECT_TYPE_POLYGON: {
           const vertices = Object.values(item.ancestors).map(anc => ({ x: anc.X(), y: anc.Y() }));
@@ -304,8 +298,15 @@ function updateShading(board, areaPoint) {
           const points = Object.values(item.ancestors);
           return (x, y) => y > Exponent.makeCallback(...points)(x);
         }
-        case Hyperbola.jxgType:
-          return () => true;
+        case Hyperbola.jxgType: {
+          const { points } = Hyperbola.getConfig(item);
+          const func = getHyperbolaFunc(
+            { x: points[0].x, y: points[0].y },
+            { x: points[1].x, y: points[1].y },
+            { x: points[2].x, y: points[2].y }
+          );
+          return (x, y) => func(x, y) > 0;
+        }
         case Logarithm.jxgType: {
           const points = Object.values(item.ancestors);
           return (x, y) => y > Logarithm.makeCallback(...points)(x);

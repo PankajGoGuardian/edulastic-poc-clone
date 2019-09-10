@@ -579,7 +579,7 @@ export function fixApiLatex(latex) {
   };
 }
 
-export function calcLineLatex(point1, point2) {
+export function getLineFunc(point1, point2) {
   const x1 = point1.x;
   const y1 = point1.y;
   const x2 = point2.x;
@@ -587,19 +587,16 @@ export function calcLineLatex(point1, point2) {
 
   // vertical line
   if (x1 === x2) {
-    return `x=${x1}`;
+    return (x, y) => x - x1;
   }
 
   const a = (y2 - y1) / (x2 - x1);
   const c = (x2 * y1 - x1 * y2) / (x2 - x1);
-  const part1 = a === 1 ? "x" : a === 0 ? "" : `${a}x`;
-  const part2 = c === 0 ? "" : c > 0 && part1.length !== 0 ? `+${c}` : c;
 
-  const right = `${part1}${part2}`;
-  return `y=${right.length !== 0 ? right : 0}`;
+  return (x, y) => y - a * x - c;
 }
 
-export function calcCircleLatex(point1, point2) {
+export function getCircleFunc(point1, point2) {
   const x1 = point1.x;
   const y1 = point1.y;
   const x2 = point2.x;
@@ -607,10 +604,10 @@ export function calcCircleLatex(point1, point2) {
 
   const r = (y2 - y1) ** 2 + (x2 - x1) ** 2;
 
-  return `(x-(${x1}))^2+(y-(${y1}))^2=${r}`;
+  return (x, y) => (x - x1) ** 2 + (y - y1) ** 2 - r;
 }
 
-export function calcEllipseLatex(point1, point2, point3) {
+export function getEllipseFunc(point1, point2, point3) {
   const x1 = point1.x;
   const y1 = point1.y;
   const x2 = point2.x;
@@ -629,7 +626,29 @@ export function calcEllipseLatex(point1, point2, point3) {
   const cos = (x2 - x1) / rff;
   const sin = (y1 - y2) / rff;
 
-  return `((((x-${cX})*(${cos})-(y-${cY})*(${sin})))^2)/${aPow2}+((((x-${cX})*(${sin})+(y-${cY})*(${cos})))^2)/${bPow2}=1`;
+  return (x, y) => ((x - cX) * cos - (y - cY) * sin) ** 2 / aPow2 + ((x - cX) * sin + (y - cY) * cos) ** 2 / bPow2 - 1;
+}
+
+export function getHyperbolaFunc(point1, point2, point3) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const x3 = point3.x;
+  const y3 = point3.y;
+
+  const cX = (x1 + x2) / 2;
+  const cY = (y1 + y2) / 2;
+  const rff = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const r1 = Math.sqrt((y3 - y1) ** 2 + (x3 - x1) ** 2);
+  const r2 = Math.sqrt((y3 - y2) ** 2 + (x3 - x2) ** 2);
+  const aPow2 = ((r1 - r2) / 2) ** 2;
+  const bPow2 = (rff / 2) ** 2 - aPow2;
+
+  const cos = (x2 - x1) / rff;
+  const sin = (y1 - y2) / rff;
+
+  return (x, y) => ((x - cX) * cos - (y - cY) * sin) ** 2 / aPow2 - ((x - cX) * sin + (y - cY) * cos) ** 2 / bPow2 - 1;
 }
 
 export function isInPolygon(testPoint, vertices) {

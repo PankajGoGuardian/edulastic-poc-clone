@@ -98,6 +98,7 @@ class AssessmentPlayerDefault extends React.Component {
     questions: PropTypes.object.isRequired,
     undoScratchPad: PropTypes.func.isRequired,
     redoScratchPad: PropTypes.func.isRequired,
+    userWork: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
@@ -202,11 +203,11 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   saveHistory = sourceId => data => {
-    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers } = this.props;
+    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveScratchPad({
-      [items[currentItem]._id]: { [sourceId]: data }
+      [items[currentItem]._id]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
     if (!userAnswers[qId]) {
@@ -386,7 +387,7 @@ class AssessmentPlayerDefault extends React.Component {
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
-                    <Tooltip placement="top" title={"Previous"}>
+                    <Tooltip placement="top" title="Previous">
                       <ControlBtn
                         prev
                         skin
@@ -397,11 +398,11 @@ class AssessmentPlayerDefault extends React.Component {
                         onClick={moveToPrev}
                       />
                     </Tooltip>
-                    <Tooltip placement="top" title={"Next"}>
+                    <Tooltip placement="top" title="Next">
                       <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                     </Tooltip>
                     {windowWidth < LARGE_DESKTOP_WIDTH && (
-                      <Tooltip placement="top" title={"Tool"}>
+                      <Tooltip placement="top" title="Tool">
                         <ToolButton
                           next
                           skin
@@ -509,6 +510,7 @@ const enhance = compose(
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
+      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),

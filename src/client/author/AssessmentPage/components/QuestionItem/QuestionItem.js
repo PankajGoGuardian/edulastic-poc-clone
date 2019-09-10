@@ -69,7 +69,7 @@ class QuestionItem extends React.Component {
 
   renderShortTextAnswer = value => value;
 
-  renderDropDownAnswer = value => value.join(", ");
+  renderDropDownAnswer = value => value[0].value;
 
   renderMathAnswer = value => value.map(answer => answer.value).join(", ");
 
@@ -85,10 +85,13 @@ class QuestionItem extends React.Component {
       evaluation
     } = this.props;
 
-    const allCorrect = isArray(evaluation)
+    let allCorrect = isArray(evaluation)
       ? !isEmpty(evaluation) && evaluation.filter(v => !isNull(v)).every(v => v)
       : !isEmpty(evaluation);
 
+    if (type === CLOZE_DROP_DOWN) {
+      allCorrect = evaluation && evaluation["0"];
+    }
     if (allCorrect) return null;
 
     let answerRenderer;
@@ -152,24 +155,25 @@ class QuestionItem extends React.Component {
     );
   };
 
-  renderAnswerIndicator = () => {
+  renderAnswerIndicator = type => {
     const { evaluation } = this.props;
 
     if (isUndefined(evaluation)) {
       return null;
     }
 
-    const correct = isArray(evaluation)
-      ? !isEmpty(evaluation) && evaluation.every(value => value)
-      : !isEmpty(evaluation);
+    let correct = isArray(evaluation) ? !isEmpty(evaluation) && evaluation.every(value => value) : !isEmpty(evaluation);
 
+    if (type === CLOZE_DROP_DOWN) {
+      correct = evaluation && evaluation["0"];
+    }
     return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
   };
 
   render() {
     const { dragging } = this.state;
     const {
-      data: { id, qIndex },
+      data: { id, qIndex, type },
       index,
       viewMode,
       previewMode,
@@ -193,7 +197,7 @@ class QuestionItem extends React.Component {
           </Draggable>
           <QuestionForm>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
-          {review && previewMode !== "clear" && this.renderAnswerIndicator()}
+          {review && previewMode !== "clear" && this.renderAnswerIndicator(type)}
         </AnswerForm>
         {review && previewMode === "show" && this.renderCorrectAnswer()}
       </QuestionItemWrapper>

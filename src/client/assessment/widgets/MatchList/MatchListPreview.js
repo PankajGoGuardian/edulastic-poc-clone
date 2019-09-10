@@ -65,6 +65,7 @@ const MatchListPreview = ({
   disableResponse,
   changePreviewTab,
   changePreview,
+  evaluation,
   isReviewTab
 }) => {
   const {
@@ -142,21 +143,21 @@ const MatchListPreview = ({
   const onDrop = (itemCurrent, itemTo) => {
     const answers = cloneDeep(ans);
     const dItems = cloneDeep(dragItems);
-    const { item, sourceFlag, sourceIndex } = itemCurrent;
+    const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
     if (itemTo.flag === "ans") {
-      if (dItems.includes(item)) {
-        dItems.splice(dItems.indexOf(item), 1);
+      if (dItems.includes(_item)) {
+        dItems.splice(dItems.indexOf(_item), 1);
       }
-      if (answers[itemTo.index] && answers[itemTo.index] !== item) {
+      if (answers[itemTo.index] && answers[itemTo.index] !== _item) {
         dItems.push(ans[itemTo.index]);
       }
       if (sourceFlag === "ans") {
         answers[sourceIndex] = null;
-      } else if (!duplicatedResponses && answers.includes(item)) {
-        answers[answers.indexOf(item)] = null;
+      } else if (!duplicatedResponses && answers.includes(_item)) {
+        answers[answers.indexOf(_item)] = null;
       }
-      answers[itemTo.index] = item;
-    } else if (answers.includes(item)) {
+      answers[itemTo.index] = _item;
+    } else if (answers.includes(_item)) {
       answers[sourceIndex] = null;
       dItems.push(itemCurrent.item);
     }
@@ -196,14 +197,13 @@ const MatchListPreview = ({
     width: width || "auto",
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "center",
-    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
+    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
     background: _preview
       ? correct
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
     border: showBorder ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
-    // padding: _preview ? 0 : "0 40px",
     cursor: "pointer",
     alignSelf: "stretch",
     borderRadius: 4,
@@ -293,7 +293,7 @@ const MatchListPreview = ({
               >
                 <DragItem
                   preview={preview}
-                  correct={altAnswers.includes(ans[i])}
+                  correct={evaluation[i]}
                   flag="ans"
                   renderIndex={i}
                   displayIndex={getStemNumeration(i)}
@@ -495,6 +495,7 @@ MatchListPreview.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
+  evaluation: PropTypes.array,
   isReviewTab: PropTypes.bool
 };
 
@@ -502,6 +503,7 @@ MatchListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   userAnswer: [],
+  evaluation: [],
   showQuestionNumber: false,
   showBorder: false,
   disableResponse: false,

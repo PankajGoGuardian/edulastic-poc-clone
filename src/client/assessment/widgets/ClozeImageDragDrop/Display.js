@@ -31,6 +31,16 @@ import { IconWrapper } from "./components/CheckboxTemplateBoxLayout/styled/IconW
 import { RightIcon } from "./components/CheckboxTemplateBoxLayout/styled/RightIcon";
 import { WrongIcon } from "./components/CheckboxTemplateBoxLayout/styled/WrongIcon";
 
+import {
+  StyledContainer,
+  LeftContainer,
+  LeftTemplateContainer,
+  LeftResponseContainer,
+  RightContainer,
+  RightTemplateContainer,
+  RightResponseContainer
+} from "./styled/layout";
+
 const isColliding = (responseContainer, answer) => {
   const { height, width, left: responseLeft, top: responseTop } = responseContainer;
   const responseRect = {
@@ -384,7 +394,8 @@ class Display extends Component {
       showBorder,
       isReviewTab,
       isExpressGrader,
-      setQuestionData
+      setQuestionData,
+      studentReport
     } = this.props;
 
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -718,83 +729,44 @@ class Display extends Component {
         </QuestionTitleWrapper>
         {responseposition === "top" && (
           <React.Fragment>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>
+            <StyledContainer>
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </div>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+            </StyledContainer>
+            <StyledContainer>{templateBoxLayout}</StyledContainer>
           </React.Fragment>
         )}
         {responseposition === "bottom" && (
           <React.Fragment>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>
+            <StyledContainer>
               <RelativeContainer>{templateBoxLayout}</RelativeContainer>
-            </div>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+            </StyledContainer>
+            <StyledContainer>{responseBoxLayout}</StyledContainer>
           </React.Fragment>
         )}
         {responseposition === "left" && (
-          <div style={{ display: "flex" }}>
-            <div
-              className="left responseboxContainer"
-              style={{
-                margin: 15,
-                height: "auto",
-                borderRadius: 10,
-                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                display: "flex",
-                justifyContent: "center",
-                minWidth: "240px"
-              }}
-              ref={this.responseBoxContainerRef}
-            >
+          <LeftContainer>
+            <LeftResponseContainer innerRef={this.responseBoxContainerRef}>
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </div>
-            <div
-              style={{
-                margin: "15px 0 15px 15px",
-                borderRadius: 10,
-                flex: 1,
-                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
-              }}
-            >
+            </LeftResponseContainer>
+            <LeftTemplateContainer studentReport={studentReport} responseBoxContainerWidth={responseBoxContainerWidth}>
               {templateBoxLayout}
-            </div>
-          </div>
+            </LeftTemplateContainer>
+          </LeftContainer>
         )}
         {responseposition === "right" && (
-          <div
-            style={{
-              display: "flex",
-              height: smallSize ? 190 : "100%",
-              margin: smallSize ? "-30px -40px" : 0
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                margin: smallSize ? 0 : "15px 15px 15px 0",
-                borderRadius: 10,
-                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
-              }}
+          <RightContainer smallSize={smallSize}>
+            <RightTemplateContainer
+              smallSize={smallSize}
+              studentReport={studentReport}
+              responseBoxContainerWidth={responseBoxContainerWidth}
             >
               {templateBoxLayout}
-            </div>
-            <div
-              className={`right responseboxContainer ${smallSize ? "small" : ""}`}
-              style={{
-                height: "auto",
-                width: smallSize ? "120px" : "100%",
-                margin: smallSize ? 0 : 15,
-                borderRadius: smallSize ? 0 : 10,
-                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                display: "flex",
-                justifyContent: "center"
-              }}
-              ref={this.responseBoxContainerRef}
-            >
+            </RightTemplateContainer>
+
+            <RightResponseContainer smallSize={smallSize} innerRef={this.responseBoxContainerRef}>
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </div>
-          </div>
+            </RightResponseContainer>
+          </RightContainer>
         )}
         {answerBox}
       </div>
@@ -822,6 +794,7 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
+  studentReport: PropTypes.bool,
   disableResponse: PropTypes.bool,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
@@ -840,6 +813,7 @@ Display.defaultProps = {
   changePreview: () => {},
   onChange: () => {},
   preview: true,
+  studentReport: false,
   disableResponse: false,
   showAnswer: false,
   evaluation: [],

@@ -364,7 +364,7 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 style={{
-                  width: "-webkit-fill-available",
+                  width: studentReportFeedbackVisible ? "75%" : "-webkit-fill-available",
                   display: "flex",
                   boxShadow: "none",
                   paddingRight: layoutType === COMPACT ? "100px" : null
@@ -394,6 +394,7 @@ class QuestionWrapper extends Component {
                     showQuestionNumber={showQuestionNumber}
                     flowLayout={flowLayout}
                     disableResponse={disableResponse}
+                    studentReport={studentReportFeedbackVisible}
                     {...userAnswerProps}
                   />
                   {showFeedback && timeSpent ? (

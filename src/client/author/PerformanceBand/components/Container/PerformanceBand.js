@@ -38,7 +38,6 @@ const BlueBold = styled.b`
   color: #1774f0;
 `;
 
-
 function ProfileRow({
   name,
   performanceBand,

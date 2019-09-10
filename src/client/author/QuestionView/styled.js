@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth, themeColor, themeColorTagsBg } from "@edulastic/colors";
+import { mobileWidthMax, mobileWidth, themeColor, themeColorTagsBg } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { Card } from "antd";
 
@@ -56,6 +56,14 @@ export const ResponseCard = styled(Card)`
     display: flex;
     align-items: center;
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    white-space: nowrap;
+    overflow: auto;
+    .ant-card-body {
+      padding: 7px 20px;
+    }
+  }
 `;
 
 export const ResponseCardTitle = styled.span`
@@ -68,6 +76,7 @@ export const ResponseCardTitle = styled.span`
 
 export const CircularDiv = styled.div`
   background-color: ${themeColorTagsBg};
+  min-width: 34px;
   width: 34px;
   height: 34px;
   line-height: 34px;
@@ -113,13 +122,19 @@ export const OptionDiv = styled.div`
 export const LegendContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  @media (max-width: ${mobileWidth}) {
+
+  @media (max-width: ${mobileWidthMax}) {
     margin-bottom: 10px;
+    flex-direction: column;
   }
 `;
 
 export const LegendItems = styled.div`
   display: flex;
+
+  @media (max-width: ${mobileWidthMax}) {
+    order: 2;
+  }
   @media (max-width: ${mobileWidth}) {
     flex-wrap: wrap;
     justify-content: center;
@@ -133,6 +148,7 @@ export const LegendItem = styled.div`
   &:last-child {
     margin-right: 0px;
   }
+
   @media (max-width: ${mobileWidth}) {
     margin-top: 10px;
   }
@@ -149,6 +165,7 @@ export const LegendLabel = styled.div`
   text-transform: uppercase;
   font-weight: 600;
   font-size: 8px;
+  white-space: nowrap;
 `;
 
 export const TooltipContainer = styled(Card)`

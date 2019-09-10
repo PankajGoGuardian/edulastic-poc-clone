@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, desktopWidth, themeColor } from "@edulastic/colors";
+import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -58,7 +58,8 @@ import { getFontSize } from "../utils/helpers";
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
-  @media (max-width: ${mobileWidth}) {
+
+  @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
   .ql-indent-1:not(.ql-direction-rtl) {

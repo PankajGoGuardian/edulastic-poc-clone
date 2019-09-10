@@ -69,6 +69,14 @@ FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-
 const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
 const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
 
+FroalaEditor.VIDEO_PROVIDERS.push({
+  test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
+  url_regex: "",
+  url_text: "",
+  html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
+  provider: "screencast"
+});
+
 const DEFAULT_TOOLBAR_BUTTONS = {
   STD: {
     moreText: {

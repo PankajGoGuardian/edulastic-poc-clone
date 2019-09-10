@@ -1,9 +1,9 @@
 import { delay } from "redux-saga";
-import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
+import { takeEvery, call, put, all, takeLatest, select } from "redux-saga/effects";
 import { classResponseApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
-
+import { keyBy, identity } from "lodash";
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
@@ -54,11 +54,19 @@ function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
 
+    // sort question ACtivity
+    let questionActivities = keyBy(studentResponse.questionActivities, "qid");
+    const testItems = yield select(state => state?.classResponse?.data?.testItems || []);
+    const qIds = testItems.flatMap(item => (item?.data?.questions || []).map(i => i.id) || []);
+
+    questionActivities = qIds.map(id => questionActivities[id]).filter(identity);
+    studentResponse.questionActivities = questionActivities;
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_SUCCESS,
       payload: studentResponse
     });
   } catch (err) {
+    console.log("err is", err);
     const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({

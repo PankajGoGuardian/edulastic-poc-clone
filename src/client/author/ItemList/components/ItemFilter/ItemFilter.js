@@ -40,7 +40,6 @@ class ItemFilter extends Component {
       onSearchInputChange,
       curriculumStandards,
       t,
-      allTagsData,
       items
     } = this.props;
 
@@ -62,7 +61,6 @@ class ItemFilter extends Component {
                   search={search}
                   showStatus={search.filter !== items[0].filter}
                   curriculums={curriculums}
-                  allTagsData={allTagsData}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
                 />

@@ -8,4 +8,5 @@ export const Wrapper = styled.div.attrs({
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 12px;
 `;

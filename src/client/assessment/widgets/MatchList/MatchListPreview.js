@@ -214,7 +214,8 @@ const MatchListPreview = ({
 
   const centerContent = {
     width: "unset",
-    margin: "auto"
+    margin: "auto",
+    overflowWrap: "initial"
   };
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 

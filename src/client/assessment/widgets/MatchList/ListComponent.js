@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
@@ -79,18 +80,20 @@ class ListComponent extends Component {
         cleanSections={cleanSections}
       >
         <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
-        <List
-          buttonText={t("component.matchList.addNew")}
-          items={item.list}
-          onAdd={handleAdd}
-          firstFocus={item.firstMount}
-          onSortEnd={handleSortEnd}
-          onChange={handleChange}
-          onRemove={handleRemove}
-          useDragHandle
-          columns={1}
-          imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
-        />
+        <ListContainer>
+          <List
+            buttonText={t("component.matchList.addNew")}
+            items={item.list}
+            onAdd={handleAdd}
+            firstFocus={item.firstMount}
+            onSortEnd={handleSortEnd}
+            onChange={handleChange}
+            onRemove={handleRemove}
+            useDragHandle
+            columns={1}
+            imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
+          />
+        </ListContainer>
       </Question>
     );
   }
@@ -115,3 +118,10 @@ export default withNamespaces("assessment")(
     { setQuestionData: setQuestionDataAction }
   )(ListComponent)
 );
+
+const ListContainer = styled.div`
+  & .katex .base {
+    white-space: normal;
+    width: fit-content;
+  }
+`;

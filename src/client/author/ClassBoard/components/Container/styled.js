@@ -45,6 +45,7 @@ export const PaginationInfo = styled(Col)`
   max-width: 100%;
   font-size: 11px;
   color: ${linkColor};
+  white-space: nowrap;
 
   @media (max-width: ${mobileWidthMax}) {
     display: none;
@@ -79,6 +80,10 @@ export const ButtonGroup = styled.div`
 export const CardDetailsContainer = styled.div`
   width: 100%;
   padding: 20px 30px;
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 20px;
+  }
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
@@ -326,4 +331,19 @@ export const ScoreChangeWrapper = styled.div`
 export const ScoreWrapper = styled.div`
   font-size: 30px;
   color: ${black};
+`;
+
+export const GraphWrapper = styled.div`
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+`;
+
+export const InfoWrapper = styled.div`
+  @media (max-width: ${mobileWidthMax}) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+  }
 `;

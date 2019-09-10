@@ -9,6 +9,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import StandardsSearchModal from "./StandardsSearchModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { test as testsConstants } from "@edulastic/constants";
+import { getAllTagsSelector } from "../../../TestPage/ducks";
 class Search extends Component {
   state = {
     showModal: false
@@ -31,6 +32,7 @@ class Search extends Component {
       search: {
         grades,
         status,
+        tags,
         subject,
         collectionName = "",
         curriculumId,
@@ -39,6 +41,7 @@ class Search extends Component {
         depthOfKnowledge,
         authorDifficulty
       },
+      allTagsData,
       onSearchFieldChange,
       curriculumStandards,
       showStatus = false,
@@ -153,7 +156,6 @@ class Search extends Component {
                 size="large"
                 optionFilterProp={"children"}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                size="large"
                 onSelect={onSearchFieldChange("questionType")}
                 value={questionType}
               >
@@ -221,7 +223,7 @@ class Search extends Component {
             <Item>
               <ItemHeader>Status</ItemHeader>
               <ItemBody>
-                <Select data-cy="selectStatus" ssize="large" onSelect={onSearchFieldChange("status")} value={status}>
+                <Select data-cy="selectStatus" size="large" onSelect={onSearchFieldChange("status")} value={status}>
                   {selectsData.allStatus.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}
@@ -231,6 +233,24 @@ class Search extends Component {
               </ItemBody>
             </Item>
           )}
+          <Item>
+            <ItemHeader>Tags</ItemHeader>
+            <ItemBody>
+              <Select
+                mode="multiple"
+                data-cy="selectTags"
+                size="large"
+                onChange={onSearchFieldChange("tags")}
+                value={tags}
+              >
+                {allTagsData.map(el => (
+                  <Select.Option key={el._id} value={el._id}>
+                    {el.tagName}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Item>
         </Container>
       </MainFilterItems>
     );
@@ -254,6 +274,7 @@ Search.propTypes = {
 
 export default connect(
   (state, { search = {} }) => ({
+    allTagsData: getAllTagsSelector(state, "testitem"),
     collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),

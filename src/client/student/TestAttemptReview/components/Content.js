@@ -54,13 +54,13 @@ class SummaryTest extends Component {
 
   goToQuestion = (testId, testActivityId, q) => () => {
     const { history, items, match } = this.props;
-    const { assessmentType } = match.params;
+    const { assessmentType, groupId } = match.params;
     const targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index;
       return acc;
     }, null);
 
-    history.push(`/student/${assessmentType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`, {
+    history.push(`/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`, {
       fromSummary: true
     });
   };

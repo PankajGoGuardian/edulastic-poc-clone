@@ -370,12 +370,12 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_ALL_TAGS:
       return {
         ...state,
-        tagsList: payload
+        tagsList: { ...state.tagsList, [payload.tagType]: payload.tags }
       };
     case ADD_NEW_TAG:
       return {
         ...state,
-        tagsList: [...state.tagsList, payload]
+        tagsList: { ...state.tagsList, [payload.tagType]: [...state.tagsList[payload.tagType], payload.tag] }
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -940,7 +940,7 @@ function* getAllTagsSaga({ payload }) {
     const tags = yield call(tagsApi.getAll, payload.type);
     yield put({
       type: SET_ALL_TAGS,
-      payload: tags
+      payload: { tags, tagType: payload.type }
     });
   } catch (e) {
     yield call(message.error("Get All Tags failed"));
@@ -1111,7 +1111,7 @@ export const getTestCreatedItemsSelector = createSelector(
   state => get(state, "createdItems", [])
 );
 
-export const getAllTagsSelector = createSelector(
-  stateSelector,
-  state => get(state, "tagsList", [])
-);
+export const getAllTagsSelector = (state, tagType) => {
+  const stat = stateSelector(state);
+  return get(stat, ["tagsList", tagType], []);
+};

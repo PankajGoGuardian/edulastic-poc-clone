@@ -99,7 +99,9 @@ import {
   CardDetailsContainer,
   ScoreHeader,
   ScoreChangeWrapper,
-  ScoreWrapper
+  ScoreWrapper,
+  GraphWrapper,
+  InfoWrapper
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import AddStudentsPopup from "../AddStudentsPopup";
@@ -811,7 +813,7 @@ class ClassBoard extends Component {
                     }}
                     isPresentationMode={isPresentationMode}
                   />
-                  <div style={{ width: "100%", display: "flex" }}>
+                  <GraphWrapper style={{ width: "100%", display: "flex" }}>
                     <BarGraph
                       gradebook={gradebook}
                       testActivity={testActivity}
@@ -819,7 +821,7 @@ class ClassBoard extends Component {
                       studentview
                       studentResponse={studentResponse}
                     />
-                    <div>
+                    <InfoWrapper>
                       {allTestActivitiesForStudent.length > 1 && (
                         <Select
                           style={{ width: "200px" }}
@@ -899,8 +901,8 @@ class ClassBoard extends Component {
                           {moment(studentTestActivity.endDate).format("d MMMM, YYYY")}
                         </span>
                       </ScoreHeader>
-                    </div>
-                  </div>
+                    </InfoWrapper>
+                  </GraphWrapper>
                 </StyledCard>
               </StudentGrapContainer>
               <StudentContainer

@@ -47,10 +47,5 @@ const Container = styled.div`
   }
 `;
 const StyledSelect = styled(Select)`
-  display:inline-block @media (max-width: 550px) {
-    display: none;
-  }
-  @media (max-width: 1000px) {
-    display: none;
-  }
+  display: inline-block;
 `;

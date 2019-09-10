@@ -95,7 +95,7 @@ export const ItemBody = styled.div`
   height: 40px;
 
   .ant-select-selection {
-    height: 40px;
+    min-height: 40px;
     background: ${white};
     padding-top: 0;
     border: 0;

@@ -34,7 +34,8 @@ import {
   setAndSavePassageItemsAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  setTestDataAndUpdateAction
+  setTestDataAndUpdateAction,
+  getAllTagsAction
 } from "../../ducks";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
@@ -96,7 +97,7 @@ class AddItems extends PureComponent {
 
   componentDidMount() {
     const { search } = this.state;
-    const { getCurriculums, receiveTestItems, limit, test, curriculums } = this.props;
+    const { getCurriculums, receiveTestItems, limit, test, curriculums, getAllTags } = this.props;
     const selectedSubjects = test.subjects.filter(item => !!item);
     const newSearch = {
       ...search,
@@ -108,6 +109,7 @@ class AddItems extends PureComponent {
     });
     if (!curriculums.length) getCurriculums();
     receiveTestItems(newSearch, 1, limit);
+    getAllTags({ type: "testitem" });
   }
 
   handleSearch = () => {
@@ -447,6 +449,7 @@ const enhance = compose(
     }),
     {
       receiveTestItems: receiveTestItemsAction,
+      getAllTags: getAllTagsAction,
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,

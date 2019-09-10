@@ -20,7 +20,7 @@ export default class FormDropdown extends React.Component {
 
   handleChange = value => {
     const { saveAnswer } = this.props;
-    saveAnswer([{ value }]);
+    saveAnswer([{ value, index: 0, id: "0" }]);
   };
 
   renderView = () => {

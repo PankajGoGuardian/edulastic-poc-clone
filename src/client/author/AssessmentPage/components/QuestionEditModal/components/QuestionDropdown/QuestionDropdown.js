@@ -14,6 +14,10 @@ export default class QuestionDropdown extends React.Component {
     question: PropTypes.object,
     onUpdate: PropTypes.func.isRequired
   };
+  state = {
+    value: "",
+    score: 1
+  };
 
   static defaultProps = {
     question: {
@@ -78,25 +82,17 @@ export default class QuestionDropdown extends React.Component {
   };
 
   handleValueChange = value => {
-    const {
-      question: { validation }
-    } = this.props;
-    const {
-      validResponse: { score }
-    } = validation;
-
-    this.updateValidation(value, score);
+    const { score } = this.state;
+    this.setState({ value }, () => {
+      this.updateValidation(value, score);
+    });
   };
 
   handleScoreChange = score => {
-    const {
-      question: { validation }
-    } = this.props;
-    const {
-      validResponse: { value }
-    } = validation;
-
-    this.updateValidation(value, score);
+    const { value } = this.state;
+    this.setState({ score }, () => {
+      this.updateValidation(value, score);
+    });
   };
 
   updateValidation = (value, score) => {
@@ -106,7 +102,7 @@ export default class QuestionDropdown extends React.Component {
       validation: {
         scoringType: EXACT_MATCH,
         validResponse: {
-          value: [value],
+          value: [{ id: "0", value }],
           score
         },
         altResponses: []
@@ -142,7 +138,7 @@ export default class QuestionDropdown extends React.Component {
           <FormGroup>
             <FormLabel>Correct Answer</FormLabel>
             <Select
-              value={value[0]}
+              value={value[0] && value[0].value}
               onChange={this.handleValueChange}
               style={{ marginRight: "20px", minWidth: "200px" }}
               getPopupContainer={trigger => trigger.parentNode}

@@ -345,9 +345,7 @@ const MathFormulaAnswerMethod = ({
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
-  const thousandsSeperatorFlag = options.setThousandsSeparator ? options.setThousandsSeparator[0] : {};
-  const decimalSeperatorFlag = options.setDecimalSeparator ? options.setDecimalSeparator[0] : {};
-  const warningFlag = decimalSeperatorFlag === thousandsSeperatorFlag;
+  const warningFlag =  !!options.setThousandsSeparator && !!options.setDecimalSeparator && options.setThousandsSeparator[0] === options.setDecimalSeparator[0] //decimalSeperatorFlag === thousandsSeperatorFlag;
   const studentTemplate = item.template && item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
   const innerValues = getInnerValuesForStatic(studentTemplate, value);
   const mathInputProps = {

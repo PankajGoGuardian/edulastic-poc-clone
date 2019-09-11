@@ -44,6 +44,7 @@ import {
   setPassageItemsAction
 } from "../../../TestPage/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
+import Tags from "../../../src/components/common/Tags";
 
 // render single item
 class Item extends Component {
@@ -302,6 +303,7 @@ class Item extends Component {
         <Detail>
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
+            {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
             <CategoryContent>
               {itemTypes.map(itemType => (
                 <Label>

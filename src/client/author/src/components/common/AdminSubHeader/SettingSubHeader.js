@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { SubHeaderWrapper, StyledTabPane, StyledSubMenu } from "./styled";
 import { getUserRole } from "../../../selectors/user";
+import { get } from "lodash";
 
 class AdminSubHeader extends Component {
   static propTypes = {
@@ -35,12 +36,15 @@ class AdminSubHeader extends Component {
   };
 
   render() {
-    const { active, role } = this.props;
+    const { active, role, schoolLevelAdminSettings } = this.props;
     return (
       <SubHeaderWrapper>
         {active.mainMenu === "Settings" && (
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
             {role === "district-admin" ? <StyledTabPane tab="District Policies" key="District Policies" /> : null}
+            {role === "school-admin" && schoolLevelAdminSettings ? (
+              <StyledTabPane tab="School Policies" key="District Policies" />
+            ) : null}
             <StyledTabPane tab="Test Settings" key="Test Settings" />
             <StyledTabPane tab="Term" key="Term" />
             <StyledTabPane tab="Interested Standards" key="Interested Standards" />
@@ -55,7 +59,8 @@ class AdminSubHeader extends Component {
 
 export default connect(
   state => ({
-    role: getUserRole(state)
+    role: getUserRole(state),
+    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false)
   }),
   {}
 )(AdminSubHeader);

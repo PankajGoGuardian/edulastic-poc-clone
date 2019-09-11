@@ -61,6 +61,11 @@ export const StyledLabel = styled.label`
   width: 240px;
 `;
 
+export const Break = styled.div`
+  height: 0;
+  flex-basis: 100%;
+`;
+
 export const SaveButton = styled(Button)`
   margin-left: auto;
 `;

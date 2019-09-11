@@ -102,7 +102,7 @@ export const reducer = createReducer(initialState, {
 // saga
 function* receiveDistrictPolicySaga({ payload }) {
   try {
-    const schoolLevel = payload.orgType === "school";
+    const schoolLevel = payload.orgType === "institution";
     const districtPolicy = yield call(settingsApi.getDistrictPolicy, payload);
     yield put(receiveDistrictPolicySuccessAction({ ...districtPolicy, schoolLevel }));
   } catch (err) {

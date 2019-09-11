@@ -2093,3 +2093,14 @@ iframe {
     max-height: 383px;
   }
 }
+
+/* Passage type  */
+.selected-text-heighlight {
+  position: relative;
+  cursor: pointer;
+  z-index: 900;
+}
+
+.selected-text-heighlight.unsaved {
+  background: #1890ff40;
+}

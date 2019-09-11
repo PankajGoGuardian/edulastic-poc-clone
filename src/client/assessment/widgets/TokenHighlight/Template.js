@@ -1,10 +1,9 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { message } from "antd";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab, MathSpan } from "@edulastic/common";
+import { Tabs, Tab, MathSpan, highlightSelectedText } from "@edulastic/common";
 
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
@@ -80,26 +79,6 @@ const Template = ({
     }
   };
 
-  const getSelected = () => {
-    let sel = "";
-    if (window.getSelection) {
-      sel = window.getSelection();
-    } else if (document.getSelection) {
-      sel = document.getSelection();
-    } else if (document.selection) {
-      sel = document.selection.createRange();
-    }
-    return sel;
-  };
-
-  const clearSelection = () => {
-    if (window.getSelection) {
-      window.getSelection().removeAllRanges();
-    } else if (document.selection) {
-      document.selection.empty();
-    }
-  };
-
   // if element is custom token, this will return true.
   const isCustomToken = elem => elem.className === "token active-word" && !!elem.getAttribute("sequence");
 
@@ -124,31 +103,8 @@ const Template = ({
   };
 
   const handleCustomTokenize = () => {
-    const selection = getSelected();
-    const range = selection.getRangeAt(0);
-    const { endContainer, endOffset, startContainer, startOffset } = range;
-    if (startOffset === endOffset) {
-      clearSelection();
-      return;
-    }
-
-    if (
-      (endContainer && endContainer.parentNode.className === "token active-word") ||
-      (startContainer && startContainer.parentNode.className === "token active-word")
-    ) {
-      message.error("You are highlighting already selected text. Please select a distinct text and try again.");
-      clearSelection();
-      return;
-    }
-    try {
-      const newNode = document.createElement("span");
-      newNode.setAttribute("class", "token active-word");
-      range.surroundContents(newNode);
-      clearSelection();
+    if (highlightSelectedText()) {
       updateCount(customTokenCount + 1);
-    } catch (err) {
-      message.error("Something went wrong. Please select a text and try again.");
-      clearSelection();
     }
   };
 

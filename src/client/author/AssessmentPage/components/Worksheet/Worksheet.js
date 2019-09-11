@@ -40,6 +40,7 @@ class Worksheet extends React.Component {
     docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
+    userWork: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
@@ -287,11 +288,11 @@ class Worksheet extends React.Component {
 
   saveHistory = data => {
     const { currentPage } = this.state;
-    const { saveScratchPad, itemDetail, scratchPad = {} } = this.props;
+    const { saveScratchPad, itemDetail, scratchPad = {}, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
-    const id = itemDetail["item"]["_id"];
+    const id = itemDetail.item._id;
     saveScratchPad({
-      [id]: { ...(scratchPad || {}), [currentPage]: data }
+      [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
     });
   };
 
@@ -417,15 +418,14 @@ class Worksheet extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    (state, ownProps) => {
-      return {
-        scratchPad: state["itemDetail"]["item"]
-          ? state.userWork.present[state["itemDetail"]["item"]["_id"]] || null
-          : null,
-        itemDetail: state["itemDetail"],
-        answersById: state.answers
-      };
-    },
+    (state, ownProps) => ({
+      scratchPad: state.itemDetail.item
+        ? get(state, `userWork.present[${state.itemDetail.item._id}].scratchpad`, null)
+        : null,
+      userWork: get(state, `userWork.present[${state.itemDetail.item._id}]`, {}),
+      itemDetail: state.itemDetail,
+      answersById: state.answers
+    }),
     {
       saveScratchPad: saveScratchPadAction,
       undoScratchPad: ActionCreators.undo,

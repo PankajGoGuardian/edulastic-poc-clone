@@ -198,6 +198,7 @@ const MatchListPreview = ({
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "center",
     padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
+    margin: flag === "dragItems" ? "4px" : "0px",
     background: _preview
       ? correct
         ? theme.widgets.matchList.dragItemCorrectBgColor

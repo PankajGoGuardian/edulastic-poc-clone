@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Tooltip } from "antd";
 import PropTypes from "prop-types";
 import { isUndefined, find } from "lodash";
 import { getStemNumeration } from "../../../../utils/helpers";
@@ -6,6 +7,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
+import { response } from "@edulastic/constants";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -67,12 +69,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${showAnswer ? "show-answer" : ""}`}
             style={{
               ...btnStyle,
-              minWidth: `${btnStyle.widthpx}px`
+              minWidth: response.minWidthShowAnswer
             }}
             onClick={handleClick}
           >
             <span className="index">{indexStr}</span>
-            <span className="text">{userSelection && userSelection.value}</span>
+            <Tooltip title={userSelection?.value}>
+              <span className="text clipText">{userSelection && userSelection.value}</span>
+            </Tooltip>
 
             <IconWrapper>
               {choiceAttempted && status === "right" && <RightIcon />}
@@ -89,12 +93,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${showAnswer ? "show-answer" : ""}`}
             style={{
               ...btnStyle,
-              minWidth: `${btnStyle.widthpx}px`
+              minWidth: response.minWidthShowAnswer
             }}
             onClick={handleClick}
           >
             <span className="index">{indexStr}</span>
-            <span className="text">{userSelection && userSelection.value}</span>
+            <Tooltip title={userSelection?.value}>
+              <span className="text clipText">{userSelection && userSelection.value}</span>
+            </Tooltip>
 
             <IconWrapper>
               {choiceAttempted && status === "right" && <RightIcon />}
@@ -111,6 +117,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         >
           {!showAnswer && hasGroupResponses && (
             <span
+              title={userSelection?.value}
               className={`
                 response-btn 
                 ${choiceAttempted ? "check-answer" : ""} 
@@ -121,7 +128,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               }}
             >
               {showIndex && <span className="index">{indexStr}</span>}
-              <span className="text">{userSelection && userSelection.value}</span>
+              <span className="text clipText">{userSelection && userSelection.value}</span>
 
               <IconWrapper>
                 {choiceAttempted && status === "right" && <RightIcon />}
@@ -131,6 +138,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           )}
           {!showAnswer && !hasGroupResponses && (
             <span
+              title={userSelection?.value}
               className={`
                 response-btn 
                 ${choiceAttempted ? "check-answer" : ""} 
@@ -141,7 +149,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               }}
             >
               {showIndex && <span className="index">{indexStr}</span>}
-              <span className="text">{userSelection && userSelection.value}</span>
+              <span className="text clipText">{userSelection && userSelection.value}</span>
 
               <IconWrapper>
                 {choiceAttempted && status === "right" && <RightIcon />}

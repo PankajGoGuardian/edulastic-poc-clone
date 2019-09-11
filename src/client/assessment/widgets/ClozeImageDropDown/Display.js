@@ -274,8 +274,9 @@ class Display extends Component {
         checkAnswer={checkAnswer}
         options={newOptions}
         maxHeight={canvasHeight}
-        maxWidth={maxWidth}
+        maxWidth={response.maxWidth}
         minWidth={response.minWidth}
+        minWidthShowAnswer={response.minWidthShowAnswer}
         minHeight={response.minHeight}
         userSelections={
           item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections

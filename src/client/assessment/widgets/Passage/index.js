@@ -22,6 +22,7 @@ const PassageWrapper = styled(Paper)`
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
   padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px")};
   box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+  position: relative;
 `;
 
 const Passage = ({
@@ -42,7 +43,12 @@ const Passage = ({
   if (view === "edit") {
     return (
       <ContentArea>
-        <Details item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        <Details
+          item={item}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          setQuestionData={setQuestionData}
+        />
       </ContentArea>
     );
   }
@@ -50,7 +56,13 @@ const Passage = ({
   if (view === "preview") {
     return (
       <Wrapper flowLayout={flowLayout}>
-        <PassageView preview item={itemForPreview} flowLayout={flowLayout} {...restProps} />
+        <PassageView
+          preview
+          item={itemForPreview}
+          flowLayout={flowLayout}
+          setQuestionData={setQuestionData}
+          {...restProps}
+        />
       </Wrapper>
     );
   }

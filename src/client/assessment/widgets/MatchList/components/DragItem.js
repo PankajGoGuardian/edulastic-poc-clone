@@ -66,7 +66,7 @@ const DragItem = ({
       <div
         className="drag-drop-item-match-list"
         data-cy={`drag-drop-item-${renderIndex}`}
-        style={getStyles({ isDragging, flag, preview, correct, width })}
+        style={getStyles({ isDragging, flag, _preview: preview, correct, width })}
       >
         <DragPreview isDragging={isDragging} {...restProps}>
           {itemView}

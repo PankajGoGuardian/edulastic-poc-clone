@@ -13,7 +13,7 @@ import {
   ClassCode,
   IconArchiveClass
 } from "./styled";
-import { message } from "antd";
+import { message, Tooltip } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import ConfirmationModal from "../../../.././common/components/ConfirmationModal";
@@ -115,9 +115,11 @@ const SubHeader = ({
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
         {/* <StyledIcon type="user" fill={greenDark} />*/}
         {active === 1 && (
-          <span onClick={() => setShowModal(true)}>
-            <IconArchiveClass width={20} height={20} />
-          </span>
+          <Tooltip placement="top" title={"Archive Class"}>
+            <span onClick={() => setShowModal(true)}>
+              <IconArchiveClass width={20} height={20} />
+            </span>
+          </Tooltip>
         )}
         {showModal && (
           <ConfirmationModal

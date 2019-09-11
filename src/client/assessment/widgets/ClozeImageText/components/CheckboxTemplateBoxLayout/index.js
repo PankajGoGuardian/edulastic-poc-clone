@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Tooltip } from "antd";
+
 import { helpers } from "@edulastic/common";
 
 import { response } from "@edulastic/constants";
@@ -111,7 +113,7 @@ const CheckboxTemplateBoxLayout = ({
                   height: `${parseInt(responseContainer.height, 10)}px`,
                   width: `${parseInt(responseContainer.width, 10)}px`,
                   minHeight: `${response.minHeight}px`,
-                  minWidth: `${response.minWidth}px`
+                  minWidth: `${response.minWidthShowAnswer}px`
                 }}
                 className={`
                     imagelabeldragdrop-droppable 
@@ -122,19 +124,24 @@ const CheckboxTemplateBoxLayout = ({
                 onClick={onClickHandler}
               >
                 {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div className="text container" title={userSelections[dropTargetIndex]}>
-                  <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
-                    {userSelections[dropTargetIndex]}
+                <div className="text container">
+                  <Tooltip title={userSelections?.[dropTargetIndex]}>
+                    <div className="clipText" style={{ minWidth: "100%", maxWidth: `${uiStyle.widthpx}px` }}>
+                      {userSelections[dropTargetIndex]}
+                    </div>
+                  </Tooltip>
+
+                  <div>
+                    <IconWrapper rightPosition="0">
+                      {userSelections.length > 0 && status === "right" && <RightIcon />}
+                      {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
+                    </IconWrapper>
+                    <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                      <Point />
+                      <Triangle />
+                    </Pointer>
                   </div>
                 </div>
-                <IconWrapper>
-                  {userSelections.length > 0 && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
               </div>
             )}
           </React.Fragment>

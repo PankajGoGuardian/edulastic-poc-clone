@@ -274,6 +274,7 @@ class AssessmentPlayerDefault extends React.Component {
       LCBPreviewModal,
       preview
     } = this.props;
+    console.log();
     const {
       testItemState,
       isToolbarModalVisible,
@@ -432,6 +433,7 @@ class AssessmentPlayerDefault extends React.Component {
                         changeCaculateMode={this.handleModeCaculate}
                         settings={settings}
                         calcBrands={calcBrands}
+                        qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
                         tool={tool}
                         changeTool={this.changeTool}
                       />

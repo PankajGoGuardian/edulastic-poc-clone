@@ -16,7 +16,8 @@ import {
   green,
   red,
   black,
-  cardTitleColor
+  cardTitleColor,
+  desktopWidth
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
@@ -145,8 +146,10 @@ const StyledTabButton = styled.a`
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 6px 30px;
   }
-  @media (max-width: ${mobileWidthLarge}) {
+  @media (max-width: ${desktopWidth}) {
     padding: 6px 15px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
     text-align: center;
     margin: 0 !important;

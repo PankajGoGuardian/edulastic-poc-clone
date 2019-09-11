@@ -16,7 +16,14 @@ import {
   getClassResponseSelector,
   getQLabelsSelector
 } from "../ClassBoard/ducks";
-import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
+import {
+  Anchor,
+  AnchorLink,
+  PaginationInfo,
+  StyledFlexContainer,
+  DivWrapper,
+  BodyContainer
+} from "./components/styled";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
 class StandardsBasedReport extends Component {
@@ -62,23 +69,24 @@ class StandardsBasedReport extends Component {
             testActivityId={testActivityId}
           />
           <HooksContainer classId={classId} assignmentId={assignmentId} />
+          <BodyContainer>
+            <StyledFlexContainer justifyContent="space-between">
+              <PaginationInfo>
+                &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
+                <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
+              </PaginationInfo>
+              <PresentationToggleSwitch groupId={classId} />
+            </StyledFlexContainer>
 
-          <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
-              &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-              <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
-            </PaginationInfo>
-            <PresentationToggleSwitch groupId={classId} />
-          </StyledFlexContainer>
-
-          <DivWrapper>
-            <TableDisplay
-              testActivities={testActivity}
-              labels={this.props.labels}
-              additionalData={additionalData}
-              qids={this.props.testQIds}
-            />
-          </DivWrapper>
+            <DivWrapper>
+              <TableDisplay
+                testActivities={testActivity}
+                labels={this.props.labels}
+                additionalData={additionalData}
+                qids={this.props.testQIds}
+              />
+            </DivWrapper>
+          </BodyContainer>
         </React.Fragment>
       </FeaturesSwitch>
     );

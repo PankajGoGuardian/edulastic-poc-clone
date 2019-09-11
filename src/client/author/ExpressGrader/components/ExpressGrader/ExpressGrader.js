@@ -103,7 +103,7 @@ class ExpressGrader extends Component {
     });
   };
 
-  isMobile = () => window.innerWidth < 480;
+  isMobile = () => window.innerWidth < 768;
 
   render() {
     const {

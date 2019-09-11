@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Button } from "antd";
 import Modal from "react-responsive-modal";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT
+} from "@edulastic/constants/const/questionType";
 
 import { QuestionNumber } from "../QuestionItem/styled";
 import { ModalWrapper, ModalTitle, ModalHeader, ModalFooter } from "../../common/Modal";
@@ -11,6 +17,7 @@ import QuestionChoice from "./components/QuestionChoice/QuestionChoice";
 import QuestionText from "./components/QuestionText/QuestionText";
 import QuestionDropdown from "./components/QuestionDropdown/QuestionDropdown";
 import QuestionMath from "./components/QuestionMath/QuestionMath";
+import QuestionEssay from "./components/QuestionEssay/QuestionEssay";
 import StandardSet from "./common/StandardSet/StandardSet";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
@@ -18,6 +25,7 @@ const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
   [MATH]: "Math",
   [CLOZE_DROP_DOWN]: "Question Dropdown",
+  [ESSAY_PLAIN_TEXT]: "Question Essay",
   [SHORT_TEXT]: "Text Entry"
 };
 
@@ -65,6 +73,8 @@ export default class QuestionEditModal extends React.Component {
         return <QuestionDropdown {...props} />;
       case MATH:
         return <QuestionMath {...props} />;
+      case ESSAY_PLAIN_TEXT:
+        return <QuestionEssay {...props} />;
       default:
         return null;
     }

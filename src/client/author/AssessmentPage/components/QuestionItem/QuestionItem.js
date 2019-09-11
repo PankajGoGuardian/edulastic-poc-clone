@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
 import { isArray, isUndefined, isNull, isEmpty } from "lodash";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT
+} from "@edulastic/constants/const/questionType";
 import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
 
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
@@ -11,6 +17,7 @@ import FormChoice from "./components/FormChoice/FormChoice";
 import FormText from "./components/FormText/FormText";
 import FormDropdown from "./components/FormDropdown/FormDropdown";
 import FormMath from "./components/FormMath/FormMath";
+import FormEssay from "./components/FormEssay/FormEssay";
 import {
   QuestionItemWrapper,
   QuestionNumber,
@@ -140,6 +147,8 @@ class QuestionItem extends React.Component {
         return <FormDropdown {...props} />;
       case MATH:
         return <FormMath {...props} />;
+      case ESSAY_PLAIN_TEXT:
+        return <FormEssay {...props} />;
       default:
         return null;
     }

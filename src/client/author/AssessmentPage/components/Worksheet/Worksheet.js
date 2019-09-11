@@ -329,6 +329,7 @@ class Worksheet extends React.Component {
       docUrl,
       annotations,
       review,
+      viewMode,
       noCheck,
       questions,
       questionsById,
@@ -402,6 +403,7 @@ class Worksheet extends React.Component {
         <Questions
           noCheck={noCheck}
           list={questions}
+          viewMode={viewMode}
           questionsById={questionsById}
           answersById={answersById}
           centered={!shouldRenderDocument}

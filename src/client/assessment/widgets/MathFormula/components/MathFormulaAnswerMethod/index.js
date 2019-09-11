@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -69,10 +69,6 @@ const MathFormulaAnswerMethod = ({
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
-
-  const [decimalFlag, setDecimalFlag] = useState(false);
-  const [thousandsFlag, setThousandsFlag] = useState(false);
-
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
@@ -86,22 +82,6 @@ const MathFormulaAnswerMethod = ({
   }, [method]);
 
   const changeOptions = (prop, val) => {
-    if (prop === "setDecimalSeparator") {
-      if ((Array.isArray(val) && val[0] === ".") || val === ".") {
-        setDecimalFlag(true);
-      } else {
-        setDecimalFlag(false);
-      }
-    }
-
-    if (prop === "setThousandsSeparator") {
-      if ((Array.isArray(val) && val[0] === ".") || val === ".") {
-        setThousandsFlag(true);
-      } else {
-        setThousandsFlag(false);
-      }
-    }
-
     const newOptions = {
       ...options,
       [prop]: val
@@ -365,7 +345,9 @@ const MathFormulaAnswerMethod = ({
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
-  const warningFlag = decimalFlag && thousandsFlag;
+  const thousandsSeperatorFlag = options.setThousandsSeparator ? options.setThousandsSeparator[0] : {};
+  const decimalSeperatorFlag = options.setDecimalSeparator ? options.setDecimalSeparator[0] : {};
+  const warningFlag = decimalSeperatorFlag === thousandsSeperatorFlag;
   const studentTemplate = item.template && item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
   const innerValues = getInnerValuesForStatic(studentTemplate, value);
   const mathInputProps = {

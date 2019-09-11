@@ -38,7 +38,6 @@ const BlueBold = styled.b`
   color: #1774f0;
 `;
 
-
 function ProfileRow({
   name,
   performanceBand,
@@ -202,7 +201,7 @@ export function PerformanceBandAlt(props) {
           {
             color: "#F39300",
             name: "Below Basic",
-            aboveOrAtStandard: true,
+            aboveOrAtStandard: false,
             from: 50,
             to: 0
           }

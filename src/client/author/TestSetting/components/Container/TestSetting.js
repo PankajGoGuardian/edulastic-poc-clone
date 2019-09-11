@@ -6,7 +6,8 @@ import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import { Radio } from "antd";
+import { Radio, Row, Col, Select } from "antd";
+import styled from "styled-components";
 
 import {
   TestSettingDiv,
@@ -17,7 +18,8 @@ import {
   StyledRow,
   StyledLabel,
   SaveButton,
-  StyledRdioGroup
+  StyledRdioGroup,
+  Break
 } from "./styled";
 
 // actions
@@ -25,8 +27,12 @@ import {
   receiveTestSettingAction,
   updateTestSettingAction,
   createTestSettingAction,
-  setTestSettingValueAction
+  setTestSettingValueAction,
+  setTestSettingDefaultProfileAction
 } from "../../ducks";
+
+import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
+import { receiveStandardsProficiencyAction } from "../../../StandardsProficiency/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -45,8 +51,10 @@ class TestSetting extends Component {
   }
 
   componentDidMount() {
-    const { loadTestSetting, userOrgId } = this.props;
+    const { loadTestSetting, userOrgId, loadPerformanceBand, loadStandardsProficiency } = this.props;
     loadTestSetting({ orgId: userOrgId });
+    loadPerformanceBand({ orgId: userOrgId });
+    loadStandardsProficiency({ orgId: userOrgId });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -79,7 +87,8 @@ class TestSetting extends Component {
       orgId: this.props.userOrgId,
       orgType: "district",
       partialScore: testSetting.partialScore,
-      timer: testSetting.timer
+      timer: testSetting.timer,
+      testTypesProfile: testSetting.testTypesProfile
     };
     if (testSetting.hasOwnProperty("_id")) {
       updateTestSetting(updateData);
@@ -89,9 +98,31 @@ class TestSetting extends Component {
   };
 
   render() {
-    const { loading, updating, creating, history } = this.props;
+    const {
+      loading,
+      updating,
+      creating,
+      history,
+      standardsProficiencyProfiles,
+      performanceBandProfiles,
+      standardsProficiencyLoading,
+      performanceBandLoading,
+      setDefaultProfile
+    } = this.props;
+
     const { testSetting } = this.state;
     const btnSaveStr = testSetting.hasOwnProperty("_id") ? "Save" : "Create";
+    const PerformanceBandOptions = performanceBandProfiles.map(x => (
+      <Select.Option key={x._id} value={x._id}>
+        {x.name}
+      </Select.Option>
+    ));
+
+    const StandardsProficiencyOptions = standardsProficiencyProfiles.map(x => (
+      <Select.Option key={x._id} value={x._id}>
+        {x.name}
+      </Select.Option>
+    ));
 
     return (
       <TestSettingDiv>
@@ -131,6 +162,101 @@ class TestSetting extends Component {
               </React.Fragment>
             </StyledRow>
             <StyledRow>
+              <React.Fragment>
+                <StyledLabel>Default Performance Band Profiles </StyledLabel>
+              </React.Fragment>
+              <FlexingRow>
+                <Col span={8}>
+                  <p>Common Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.performanceBand.common")}
+                    onChange={value => setDefaultProfile({ value, profileType: "performanceBand", testType: "common" })}
+                    loading={performanceBandLoading}
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {PerformanceBandOptions}
+                  </StyledSelect>
+                </Col>
+                <Col span={8}>
+                  <p>Class Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.performanceBand.class")}
+                    onChange={value => setDefaultProfile({ value, profileType: "performanceBand", testType: "class" })}
+                    loading={performanceBandLoading}
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {PerformanceBandOptions}
+                  </StyledSelect>
+                </Col>
+                <Col span={8}>
+                  <p>Practice Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.performanceBand.practice")}
+                    onChange={value =>
+                      setDefaultProfile({ value, profileType: "performanceBand", testType: "practice" })
+                    }
+                    loading={performanceBandLoading}
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {PerformanceBandOptions}
+                  </StyledSelect>
+                </Col>
+              </FlexingRow>
+            </StyledRow>
+            <StyledRow>
+              <React.Fragment>
+                <StyledLabel>Default Standard Proficiency Profiles </StyledLabel>
+              </React.Fragment>
+              <FlexingRow>
+                <Col span={8}>
+                  <p>Common Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.standardProficiency.common")}
+                    onChange={value =>
+                      setDefaultProfile({ value, profileType: "standardProficiency", testType: "common" })
+                    }
+                    loading={standardsProficiencyLoading}
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {StandardsProficiencyOptions}
+                  </StyledSelect>
+                </Col>
+                <Col span={8}>
+                  <p>Class Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.standardProficiency.class")}
+                    onChange={value =>
+                      setDefaultProfile({ value, profileType: "standardProficiency", testType: "class" })
+                    }
+                    loading={standardsProficiencyLoading}
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {StandardsProficiencyOptions}
+                  </StyledSelect>
+                </Col>
+                <Col span={8}>
+                  <p>Practice Test</p>
+                  <StyledSelect
+                    value={get(testSetting, "testTypesProfile.standardProficiency.practice")}
+                    loading={standardsProficiencyLoading}
+                    onChange={value =>
+                      setDefaultProfile({ value, profileType: "standardProficiency", testType: "practice" })
+                    }
+                    placeholder="select one option"
+                    size="large"
+                  >
+                    {StandardsProficiencyOptions}
+                  </StyledSelect>
+                </Col>
+              </FlexingRow>
+            </StyledRow>
+
+            <StyledRow>
               <SaveButton type="primary" onClick={this.updateValue}>
                 {btnSaveStr}
               </SaveButton>
@@ -149,16 +275,37 @@ const enhance = compose(
       loading: get(state, ["testSettingReducer", "loading"], false),
       updating: get(state, ["testSettingReducer", "updating"], false),
       creating: get(state, ["testSettingReducer", "creating"], false),
+      standardsProficiencyLoading: get(state, ["standardsProficiencyReducer", "loading"], false),
+      performanceBandLoading: get(state, ["performanceBandReducer", "loading"], false),
+      performanceBandProfiles: get(state, ["performanceBandReducer", "profiles"], []),
+      standardsProficiencyProfiles: get(state, ["standardsProficiencyReducer", "data"], []),
       userOrgId: getUserOrgId(state)
     }),
     {
       loadTestSetting: receiveTestSettingAction,
       createTestSetting: createTestSettingAction,
       updateTestSetting: updateTestSettingAction,
-      setTestSettingValue: setTestSettingValueAction
+      setTestSettingValue: setTestSettingValueAction,
+      loadPerformanceBand: receivePerformanceBandAction,
+      loadStandardsProficiency: receiveStandardsProficiencyAction,
+      setDefaultProfile: setTestSettingDefaultProfileAction
     }
   )
 );
+
+const StyledSelect = styled(Select)`
+  width: 100%;
+  box-sizing: border-box;
+  margin: 3px;
+`;
+
+const FlexingRow = styled(Row)`
+  flex: 1 1;
+  & > .ant-col {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+`;
 
 export default enhance(TestSetting);
 

@@ -255,7 +255,7 @@ const initialState = {
   createdItems: [],
   sharedUsersList: [],
   passageItems: [],
-  tagsList: [],
+  tagsList: { playlist: [], test: [], group: [], testitem: [] },
   defaultTestTypeProfiles: {}
 };
 
@@ -375,7 +375,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case ADD_NEW_TAG:
       return {
         ...state,
-        tagsList: { ...state.tagsList, [payload.tagType]: [...state.tagsList[payload.tagType], payload.tag] }
+        tagsList: { ...state.tagsList, [payload.tagType]: [...(state.tagsList[payload.tagType] || []), payload.tag] }
       };
     case SET_MAX_ATTEMPT:
       return {

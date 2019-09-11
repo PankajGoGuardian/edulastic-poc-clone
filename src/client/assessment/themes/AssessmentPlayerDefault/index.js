@@ -82,6 +82,7 @@ class AssessmentPlayerDefault extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
     scratchPad: PropTypes.any.isRequired,
+    highlights: PropTypes.any.isRequired,
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
@@ -97,6 +98,7 @@ class AssessmentPlayerDefault extends React.Component {
     questions: PropTypes.object.isRequired,
     undoScratchPad: PropTypes.func.isRequired,
     redoScratchPad: PropTypes.func.isRequired,
+    userWork: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
@@ -200,12 +202,12 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
-  saveHistory = data => {
-    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers } = this.props;
+  saveHistory = sourceId => data => {
+    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveScratchPad({
-      [items[currentItem]._id]: data
+      [items[currentItem]._id]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
     if (!userAnswers[qId]) {
@@ -265,6 +267,7 @@ class AssessmentPlayerDefault extends React.Component {
       settings,
       previewPlayer,
       scratchPad,
+      highlights,
       toggleBookmark,
       isBookmarked,
       answerChecksUsedForItem,
@@ -320,7 +323,7 @@ class AssessmentPlayerDefault extends React.Component {
             deleteMode={deleteMode}
             lineWidth={lineWidth}
             fillColor={fillColor}
-            saveHistory={this.saveHistory}
+            saveHistory={this.saveHistory("scratchpad")}
             history={scratchPad}
           />
           {scratchPadMode && !previewPlayer && (
@@ -385,7 +388,7 @@ class AssessmentPlayerDefault extends React.Component {
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
-                    <Tooltip placement="top" title={"Previous"}>
+                    <Tooltip placement="top" title="Previous">
                       <ControlBtn
                         prev
                         skin
@@ -396,11 +399,11 @@ class AssessmentPlayerDefault extends React.Component {
                         onClick={moveToPrev}
                       />
                     </Tooltip>
-                    <Tooltip placement="top" title={"Next"}>
+                    <Tooltip placement="top" title="Next">
                       <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                     </Tooltip>
                     {windowWidth < LARGE_DESKTOP_WIDTH && (
-                      <Tooltip placement="top" title={"Tool"}>
+                      <Tooltip placement="top" title="Tool">
                         <ToolButton
                           next
                           skin
@@ -457,6 +460,8 @@ class AssessmentPlayerDefault extends React.Component {
                   cols={itemRows}
                   questions={questions}
                   showCollapseBtn
+                  setHighlights={this.saveHistory("resourceId")}
+                  highlights={highlights}
                   viewComponent="studentPlayer"
                 />
               )}
@@ -470,6 +475,8 @@ class AssessmentPlayerDefault extends React.Component {
                   scrolling={item.scrolling}
                   questions={questions}
                   LCBPreviewModal={LCBPreviewModal}
+                  setHighlights={this.saveHistory("resourceId")}
+                  highlights={highlights}
                   showCollapseBtn
                   viewComponent="studentPlayer"
                 />
@@ -503,9 +510,9 @@ const enhance = compose(
       evaluation: state.evaluation,
       preview: state.view.preview,
       questions: state.assessmentplayerQuestions.byId,
-      scratchPad: ownProps.items[ownProps.currentItem]
-        ? state.userWork.present[ownProps.items[ownProps.currentItem]._id] || null
-        : null,
+      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
+      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
+      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),

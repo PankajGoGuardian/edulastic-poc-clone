@@ -246,7 +246,7 @@ export const CategoryName = styled.span`
 `;
 
 export const CategoryContent = styled.div`
-  margin-left: 0;
+  margin-left: 10px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;

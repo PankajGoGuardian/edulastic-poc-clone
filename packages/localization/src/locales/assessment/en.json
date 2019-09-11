@@ -207,7 +207,8 @@
       "explanation": "Explanation",
       "display": "Display",
       "enterDistractorRationaleQuestion": "Enter distractor rationale for the question",
-      "enterSampleAnswer": "Enter sample answer"
+      "enterSampleAnswer": "Enter sample answer",
+      "hints": "Hints"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

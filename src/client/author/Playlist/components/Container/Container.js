@@ -40,7 +40,7 @@ import {
   receiveRecentPlayListsAction
 } from "../../ducks";
 
-import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
+import { getTestsCreatingSelector, clearTestDataAction, getAllTagsAction } from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
@@ -70,6 +70,7 @@ export const getClearSearchState = () => ({
   searchString: "",
   type: "",
   status: "",
+  tags: [],
   collectionName: ""
 });
 
@@ -121,6 +122,7 @@ class TestList extends Component {
       limit,
       location,
       interestedGrades,
+      getAllTags,
       interestedSubjects,
       defaultGrades = [],
       defaultSubject = [],
@@ -131,6 +133,7 @@ class TestList extends Component {
     const parsedQueryData = qs.parse(location.search);
     const { filterType } = params;
     receivePublishers();
+    getAllTags({ type: "playlist" });
     if (filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -534,6 +537,7 @@ const enhance = compose(
       receivePlaylists: receivePlaylistsAction,
       receivePublishers: receivePublishersAction,
       clearTestData: clearTestDataAction,
+      getAllTags: getAllTagsAction,
       updateDefaultGrades: updateDefaultGradesAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       receiveRecentPlayLists: receiveRecentPlayListsAction

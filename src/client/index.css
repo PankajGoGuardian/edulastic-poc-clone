@@ -782,7 +782,6 @@ input[type="checkbox"] {
 }
 
 .check-answer .text {
-  display: inline-flex;
   flex: 1;
   text-align: left;
   color: #878282;
@@ -804,7 +803,6 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-flex;
 }
 
 .check-answer.right .index {

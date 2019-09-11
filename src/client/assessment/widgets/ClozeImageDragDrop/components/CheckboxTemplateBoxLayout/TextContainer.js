@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { Tooltip } from "antd";
 import PropTypes from "prop-types";
 import striptags from "striptags";
 import { MathSpan } from "@edulastic/common";
@@ -47,7 +48,7 @@ const TextContainer = ({
               ? answer.replace("<p>", "<p class='clipText'>") || ""
               : "";
           return (
-            <div title={title} ref={answerContainer} style={style}>
+            <div ref={answerContainer} style={style}>
               <DragItem
                 key={user_select_index}
                 index={user_select_index}
@@ -58,7 +59,9 @@ const TextContainer = ({
                 disable={!isSnapFitValues}
                 disableResponse={disableResponse}
               >
-                <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
+                <Tooltip title={title}>
+                  <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
+                </Tooltip>
               </DragItem>
             </div>
           );

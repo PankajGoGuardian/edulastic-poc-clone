@@ -129,7 +129,7 @@ const CheckboxTemplateBox = ({
   return (
     <DropContainer
       index={index}
-      style={dropContainerStyle}
+      style={{ ...dropContainerStyle, minWidth: response.minWidthShowAnswer }}
       className={containerClassName}
       drop={drop}
       disableResponse={disableResponse}

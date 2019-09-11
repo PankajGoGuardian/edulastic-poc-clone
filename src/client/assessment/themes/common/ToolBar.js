@@ -11,14 +11,8 @@ import CalculatorMenu from "./CalculatorMenu";
 const { calculatorTypes } = test;
 class ToolBar extends Component {
   toolbarHandler = value => {
-    const { changeMode, changeTool } = this.props;
-
+    const { changeTool } = this.props;
     changeTool(value);
-    if (value === 5) {
-      changeMode(value);
-    } else {
-      changeMode(value);
-    }
   };
 
   handleCalculateMode = value => {
@@ -91,7 +85,6 @@ class ToolBar extends Component {
 }
 
 ToolBar.propTypes = {
-  changeMode: PropTypes.func.isRequired,
   changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.number.isRequired,
   changeTool: PropTypes.func.isRequired,

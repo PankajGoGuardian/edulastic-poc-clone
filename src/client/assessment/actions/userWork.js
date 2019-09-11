@@ -1,7 +1,7 @@
-import { SAVE_SCRATCH_PAD, LOAD_SCRATCH_PAD } from "../constants/actions";
+import { SAVE_USER_WORK, LOAD_SCRATCH_PAD } from "../constants/actions";
 
-export const saveScratchPadAction = payload => ({
-  type: SAVE_SCRATCH_PAD,
+export const saveUserWorkAction = payload => ({
+  type: SAVE_USER_WORK,
   payload
 });
 

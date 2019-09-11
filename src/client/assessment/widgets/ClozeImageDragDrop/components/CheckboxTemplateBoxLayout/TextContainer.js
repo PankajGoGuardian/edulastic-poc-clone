@@ -42,7 +42,6 @@ const TextContainer = ({
     <div className="text container" style={showAnswer || checkAnswer ? { ...style, padding: "0px" } : {}}>
       {userSelections[dropTargetIndex] &&
         userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
-          const title = striptags(answer) || null;
           const userAnswer =
             userSelections[dropTargetIndex].responseBoxID && isSnapFitValues
               ? answer.replace("<p>", "<p class='clipText'>") || ""
@@ -59,7 +58,7 @@ const TextContainer = ({
                 disable={!isSnapFitValues}
                 disableResponse={disableResponse}
               >
-                <Tooltip title={title}>
+                <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />}>
                   <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
                 </Tooltip>
               </DragItem>

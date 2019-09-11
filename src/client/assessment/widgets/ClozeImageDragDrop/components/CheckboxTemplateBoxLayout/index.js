@@ -120,7 +120,7 @@ const CheckboxTemplateBox = ({
 
   const indexBoxRef = useRef();
 
-  const responseBoxIndex = !hideIndexBox && showAnswer && (
+  const responseBoxIndex = showAnswer && (
     <div style={{ alignSelf: "stretch", height: "auto" }} className="index index-box" ref={indexBoxRef}>
       {indexStr}
     </div>
@@ -134,7 +134,7 @@ const CheckboxTemplateBox = ({
       drop={drop}
       disableResponse={disableResponse}
     >
-      {!isSnapFitValues ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex : responseBoxIndex}
+      {responseBoxIndex}
       <TextContainer
         dropTargetIndex={index}
         userSelections={userSelections}

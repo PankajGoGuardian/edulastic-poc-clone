@@ -102,7 +102,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               style={{ ...btnStyle, minWidth: dimensions.minWidthShowAnswer }}
             >
               {showAnswer && <span className="index">{indexStr}</span>}
-              <Tooltip title={getFormulaLabel() || null}>
+              <Tooltip title={getLabel(dropTargetIndex)}>
                 <span className="text">{getLabel(dropTargetIndex)}</span>
               </Tooltip>
 
@@ -130,7 +130,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               style={{ ...btnStyle, minWidth: dimensions.minWidthShowAnswer }}
             >
               {showAnswer && <span className="index">{indexStr}</span>}
-              <Tooltip title={getFormulaLabel() || null}>
+              <Tooltip title={getLabel(dropTargetIndex)}>
                 <span className="text">{getLabel(dropTargetIndex)}</span>
               </Tooltip>
               <IconWrapper>

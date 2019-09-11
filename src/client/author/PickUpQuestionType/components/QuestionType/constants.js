@@ -101,27 +101,33 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 0,
+              onlyByHover: false
             }
           ],
           name: "Chart title"
@@ -190,27 +196,33 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 0,
+              onlyByHover: false
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 0,
+              onlyByHover: false
             }
           ],
           name: "Chart title"

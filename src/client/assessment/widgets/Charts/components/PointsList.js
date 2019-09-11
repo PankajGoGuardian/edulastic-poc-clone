@@ -12,7 +12,7 @@ import { IconTrash } from "../styled";
 
 class PointsList extends Component {
   render() {
-    const { points, handleChange, handleDelete, t, fillSections, cleanSections } = this.props;
+    const { points, handleChange, handleDelete, t, fillSections, cleanSections, onlyByHoverSetting } = this.props;
 
     return (
       <Fragment>
@@ -41,6 +41,11 @@ class PointsList extends Component {
             >
               {t("component.chart.interactive")}
             </Checkbox>
+            {onlyByHoverSetting && (
+              <Checkbox checked={dot.onlyByHover} onChange={() => handleChange(index)("onlyByHover", !dot.onlyByHover)}>
+                Label only by hover
+              </Checkbox>
+            )}
           </Question>
         ))}
       </Fragment>

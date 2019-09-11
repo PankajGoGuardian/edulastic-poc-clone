@@ -26,6 +26,7 @@ const Circles = ({
   const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [showLabel, handleLabelVisibility] = useState(null);
 
   const handleMouseAction = value => () => {
     if (activeIndex === null) {
@@ -67,6 +68,16 @@ const Circles = ({
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
+          <rect
+            fill="transparent"
+            stroke="transparent"
+            x={getCenterX(index)}
+            y={0}
+            onMouseEnter={() => handleLabelVisibility(index)}
+            onMouseLeave={() => handleLabelVisibility(null)}
+            width={step - 2}
+            height={height + margin}
+          />
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
@@ -109,7 +120,7 @@ const Circles = ({
             </Fragment>
           )}
           <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height / 2 + 20}>
-            {dot.x}
+            {dot.onlyByHover ? showLabel === index && dot.x : dot.x}
           </Text>
         </Fragment>
       ))}

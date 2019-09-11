@@ -25,7 +25,8 @@ const OptionsList = withPoints(ChartPreview);
 
 const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const {
-    uiStyle: { yAxisMax, yAxisMin, snapTo }
+    uiStyle: { yAxisMax, yAxisMin, snapTo },
+    type
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -63,7 +64,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         ) {
           initValue = yAxisMax;
         }
-        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue };
+        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue, onlyByHover: false };
 
         draft.chart_data.data.push({ ...newPoint });
 
@@ -98,6 +99,14 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
           }
           case "value": {
             draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
+            break;
+          }
+          case "onlyByHover": {
+            draft.chart_data.data[index].onlyByHover = value;
+            draft.validation.altResponses.forEach(altResp => {
+              altResp.value[index].onlyByHover = value;
+            });
+            draft.validation.validResponse.value[index].onlyByHover = value;
             break;
           }
           default:
@@ -204,6 +213,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       />
 
       <PointsList
+        onlyByHoverSetting={type === "linePlot" || type === "dots"}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

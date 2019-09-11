@@ -45,8 +45,9 @@ import {
   resetUploadModalStatusAction
 } from "../../ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+import { roleuser } from "@edulastic/constants";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -456,7 +457,7 @@ class CoursesTable extends React.Component {
       defaultText
     } = this.state;
 
-    const { totalCourseCount, userOrgId } = this.props;
+    const { totalCourseCount, userOrgId, role } = this.props;
 
     const columnsInfo = [
       {
@@ -545,14 +546,19 @@ class CoursesTable extends React.Component {
         dataIndex: "operation",
         width: 100,
         render: (text, record) => {
+          console.log(record);
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
-                <Icon type="edit" theme="twoTone" />
-              </StyledTableButton>
-              <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
-                <Icon type="delete" theme="twoTone" />
-              </StyledTableButton>
+              {role === roleuser.DISTRICT_ADMIN && !!record.active && (
+                <>
+                  <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
+                    <Icon type="edit" theme="twoTone" />
+                  </StyledTableButton>
+                  <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
+                    <Icon type="delete" theme="twoTone" />
+                  </StyledTableButton>
+                </>
+              )}
             </React.Fragment>
           );
         }
@@ -735,7 +741,8 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
       selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
-      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0)
+      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0),
+      role: getUserRole(state)
     }),
     {
       createCourse: createCourseAction,

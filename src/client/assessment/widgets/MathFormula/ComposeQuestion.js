@@ -20,15 +20,12 @@ class ComposeQuestion extends Component {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleItemChangeChange = (prop, stimulus) => {
-      // eslint-disable-next-line no-extra-boolean-cast
-      if (!!stimulus) {
-        setQuestionData(
-          produce(item, draft => {
-            draft[prop] = stimulus;
-            updateVariables(draft, latexKeys);
-          })
-        );
-      }
+      setQuestionData(
+        produce(item, draft => {
+          draft[prop] = stimulus;
+          updateVariables(draft, latexKeys);
+        })
+      );
     };
 
     return (

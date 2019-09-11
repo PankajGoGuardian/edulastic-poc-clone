@@ -13,6 +13,7 @@ import QuillSortableList from "../QuillSortableList";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { ALPHABET } from "../../widgets/MultipleChoice/constants/alphabet";
 import { updateVariables } from "../../utils/variables";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 class QuillSortableHintsList extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -75,6 +76,7 @@ class QuillSortableHintsList extends Component {
     return (
       item.hints && (
         <Fragment>
+          <Label data-cy="hints">{t("component.options.hints")}</Label>
           <QuillSortableList
             items={item.hints.map(o => o.label)}
             onSortEnd={this.onSortEnd}

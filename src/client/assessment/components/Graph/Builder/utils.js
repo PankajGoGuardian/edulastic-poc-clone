@@ -148,7 +148,7 @@ export const handleSnap = (line, points, board) => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());
       line.dragged = false;
-      Area.updateShadingsForAreaPoints(board);
+      Area.updateShadingsForAreaPoints(board, board.elements);
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
@@ -163,7 +163,7 @@ export const handleSnap = (line, points, board) => {
     point.on("up", () => {
       if (point.dragged) {
         point.dragged = false;
-        Area.updateShadingsForAreaPoints(board);
+        Area.updateShadingsForAreaPoints(board, board.elements);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });

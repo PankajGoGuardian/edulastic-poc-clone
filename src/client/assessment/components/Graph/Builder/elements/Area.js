@@ -222,6 +222,150 @@ function getAreaByPoint({ usrX, usrY }, [xMin, yMax, xMax, yMin], funcs) {
   return resultAreaPoints;
 }
 
+function getAreaLinesByPoint({ usrX, usrY }, board, funcs) {
+  const result = [];
+  const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
+
+  // horizontal lines
+  // const stepX = rnd(0.002 * Math.abs(xMax - xMin));
+  // const stepY = rnd(0.02 * Math.abs(yMax - yMin));
+  //
+  // function calc(x, y) {
+  //   if (x < xMin - stepX || x > xMax + stepX || y < yMin - stepY || y > yMax + stepY) {
+  //     return null;
+  //   }
+  //   return funcs.map(func => func(x, y));
+  // }
+  //
+  // const usrPointResult = calc(usrX, usrY);
+  //
+  // for (let y = yMax; y >= yMin; y = rnd(y - stepY)) {
+  //   let curPointResult = calc(xMin, y);
+  //   let xStart = isEqual(curPointResult, usrPointResult) ? xMin : null;
+  //
+  //   for (let x = rnd(xMin + stepX); x <= xMax; x = rnd(x + stepX)) {
+  //     curPointResult = calc(x, y);
+  //     if (isEqual(curPointResult, usrPointResult) && xStart !== null) {
+  //       continue;
+  //     }
+  //     if (!isEqual(curPointResult, usrPointResult) && xStart !== null) {
+  //       result.push({
+  //         p1: { x: xStart, y },
+  //         p2: { x: rnd(x - stepX), y }
+  //       });
+  //       xStart = null;
+  //       continue;
+  //     }
+  //     if (!isEqual(curPointResult, usrPointResult) && xStart === null) {
+  //       continue;
+  //     }
+  //     if (isEqual(curPointResult, usrPointResult) && xStart === null) {
+  //       xStart = x;
+  //     }
+  //   }
+  //
+  //   if (xStart !== null) {
+  //     result.push({
+  //       p1: { x: xStart, y },
+  //       p2: { x: xMax, y }
+  //     });
+  //   }
+  // }
+
+  // 45 deg lines
+  const step = 18; // px
+  const width = board.$board.canvasWidth;
+  const height = board.$board.canvasHeight;
+
+  function calc(x, y) {
+    if (x < xMin || x > xMax || y < yMin || y > yMax) {
+      return null;
+    }
+    return funcs.map(func => func(x, y));
+  }
+
+  const usrPointResult = calc(usrX, usrY);
+
+  let i;
+  for (i = step; i <= height; i += step) {
+    let y = i;
+    let x = 0;
+    let xStart = null;
+    let yStart = null;
+
+    while (x < width && y > 0) {
+      const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board.$board);
+      const curPointResult = calc(coords.usrCoords[1], coords.usrCoords[2]);
+
+      if (isEqual(curPointResult, usrPointResult) && xStart !== null && yStart !== null) {
+      } else if (!isEqual(curPointResult, usrPointResult) && xStart !== null && yStart !== null) {
+        const resCoords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x - 1, y + 1], board.$board);
+        result.push({
+          p1: { x: rnd(xStart), y: rnd(yStart) },
+          p2: { x: rnd(resCoords.usrCoords[1]), y: rnd(resCoords.usrCoords[2]) }
+        });
+        xStart = null;
+        yStart = null;
+      } else if (!isEqual(curPointResult, usrPointResult) && xStart === null && yStart === null) {
+      } else if (isEqual(curPointResult, usrPointResult) && xStart === null && yStart === null) {
+        xStart = coords.usrCoords[1];
+        yStart = coords.usrCoords[2];
+      }
+
+      x += 2;
+      y -= 2;
+    }
+
+    if (xStart !== null && yStart !== null) {
+      const resCoords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board.$board);
+      result.push({
+        p1: { x: rnd(xStart), y: rnd(yStart) },
+        p2: { x: rnd(resCoords.usrCoords[1]), y: rnd(resCoords.usrCoords[2]) }
+      });
+    }
+  }
+
+  for (i -= height; i <= width; i += step) {
+    let y = height;
+    let x = i;
+    let xStart = null;
+    let yStart = null;
+
+    while (x < width && y > 0) {
+      const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board.$board);
+      const curPointResult = calc(coords.usrCoords[1], coords.usrCoords[2]);
+
+      if (isEqual(curPointResult, usrPointResult) && xStart !== null && yStart !== null) {
+      } else if (!isEqual(curPointResult, usrPointResult) && xStart !== null && yStart !== null) {
+        const resCoords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x - 1, y + 1], board.$board);
+        result.push({
+          p1: { x: rnd(xStart), y: rnd(yStart) },
+          p2: { x: rnd(resCoords.usrCoords[1]), y: rnd(resCoords.usrCoords[2]) }
+        });
+        xStart = null;
+        yStart = null;
+      } else if (!isEqual(curPointResult, usrPointResult) && xStart === null && yStart === null) {
+      } else if (isEqual(curPointResult, usrPointResult) && xStart === null && yStart === null) {
+        xStart = coords.usrCoords[1];
+        yStart = coords.usrCoords[2];
+      }
+
+      x += 2;
+      y -= 2;
+    }
+
+    if (xStart !== null && yStart !== null) {
+      const resCoords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board.$board);
+      result.push({
+        p1: { x: rnd(xStart), y: rnd(yStart) },
+        p2: { x: rnd(resCoords.usrCoords[1]), y: rnd(resCoords.usrCoords[2]) }
+      });
+    }
+  }
+
+  return result;
+}
+
 function renderArea(board, points, opacity = 0.3, priorityColor = null) {
   return board.$board.create("polygon", points.map(p => [p.x, p.y]), {
     fillColor: priorityColor || "#00b2ff",
@@ -238,8 +382,25 @@ function renderArea(board, points, opacity = 0.3, priorityColor = null) {
   });
 }
 
-function updateShading(board, areaPoint) {
-  board.removeObject(areaPoint.shadingArea);
+function renderAreaByLines(board, lines, priorityColor = null) {
+  return lines.map(({ p1, p2 }) =>
+    board.$board.create("line", [[p1.x, p1.y], [p2.x, p2.y]], {
+      strokeColor: priorityColor || "#00b2ff",
+      highlightStrokeColor: priorityColor || "#00b2ff",
+      firstarrow: false,
+      lastarrow: false,
+      straightfirst: false,
+      straightlast: false,
+      strokewidth: 1,
+      highlightstrokewidth: 1,
+      fixed: true
+    })
+  );
+}
+
+function updateShading(board, areaPoint, shapes) {
+  // board.removeObject(areaPoint.shadingArea);
+  board.removeObject(areaPoint.shadingAreaLines);
 
   const usrX = rnd(areaPoint.X());
   const usrY = rnd(areaPoint.Y());
@@ -260,7 +421,7 @@ function updateShading(board, areaPoint) {
     Equation.jxgType
   ];
 
-  const funcs = board.elements
+  const funcs = shapes
     .filter(el => availableTypes.includes(el.type) && !el.latexIsBroken)
     .map(item => {
       if (item.latex) {
@@ -336,11 +497,14 @@ function updateShading(board, areaPoint) {
       }
     });
 
-  const points = getAreaByPoint({ usrX, usrY }, board.$board.getBoundingBox(), funcs);
-
-  const shadingArea = renderArea(board, points, 0.3, areaPoint.visProp.strokecolor);
-  areaPoint.addParents(shadingArea);
-  areaPoint.shadingArea = shadingArea;
+  // const points = getAreaByPoint({ usrX, usrY }, board.$board.getBoundingBox(), funcs);
+  const lines = getAreaLinesByPoint({ usrX, usrY }, board, funcs);
+  // const shadingArea = renderArea(board, points, 0.3, areaPoint.visProp.strokecolor);
+  const shadingAreaLines = renderAreaByLines(board, lines, areaPoint.visProp.strokecolor);
+  // areaPoint.addParents(shadingArea);
+  areaPoint.addParents(shadingAreaLines);
+  // areaPoint.shadingArea = shadingArea;
+  areaPoint.shadingAreaLines = shadingAreaLines;
 }
 
 function create(board, object, settings = {}) {
@@ -363,7 +527,7 @@ function create(board, object, settings = {}) {
     areaPoint.on("up", () => {
       if (areaPoint.dragged) {
         areaPoint.dragged = false;
-        updateShading(board, areaPoint);
+        updateShading(board, areaPoint, board.elements);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });
@@ -498,9 +662,9 @@ function setAreaForEquation(board, equation) {
   equation.addParents(areaElements);
 }
 
-function updateShadingsForAreaPoints(board) {
-  const areaPoints = board.elements.filter(el => el.type === jxgType);
-  areaPoints.forEach(areaPoint => updateShading(board, areaPoint));
+function updateShadingsForAreaPoints(board, shapes) {
+  const areaPoints = shapes.filter(el => el.type === jxgType);
+  areaPoints.forEach(areaPoint => updateShading(board, areaPoint, shapes));
 }
 
 export default {

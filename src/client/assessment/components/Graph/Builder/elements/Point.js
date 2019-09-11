@@ -42,7 +42,7 @@ function create(board, object, settings = {}) {
       if (point.dragged) {
         point.dragged = false;
         if (!point.isTemp) {
-          Area.updateShadingsForAreaPoints(board);
+          Area.updateShadingsForAreaPoints(board, board.elements);
           board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
         }
       }

@@ -340,7 +340,7 @@ class Board {
 
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
         if (this.removeObjectsUnderMouse(event)) {
-          Area.updateShadingsForAreaPoints(this);
+          Area.updateShadingsForAreaPoints(this, this.elements);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
         }
         return;
@@ -353,7 +353,7 @@ class Board {
       const newElement = this.creatingHandler(this, event);
       if (newElement) {
         this.elements.push(newElement);
-        Area.updateShadingsForAreaPoints(this);
+        Area.updateShadingsForAreaPoints(this, this.elements);
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
       }
     });
@@ -618,17 +618,21 @@ class Board {
     if (!obj) {
       return;
     }
-    if (typeof obj === "string") {
+
+    if (obj.type === Equation.jxgType) {
       this.$board.removeObject(obj);
-    } else if (obj.elType !== "point" && obj.elType !== "text") {
-      if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
-      if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
-      if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
-      if (obj.elType === "curve") this.$board.removeObject(obj);
-    } else {
-      if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
-      this.$board.removeObject(obj);
+      return;
     }
+
+    if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
+    if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
+    if (obj.type === Area.jxgType) {
+      this.removeObject(obj.shadingAreaLines);
+    }
+    if (obj.getParents && obj.elType !== "point" && obj.elType !== "text") {
+      this.removeObject(obj.getParents());
+    }
+    this.$board.removeObject(obj);
   }
 
   /**
@@ -826,13 +830,13 @@ class Board {
         })
       )
     );
-    Area.updateShadingsForAreaPoints(this);
+    Area.updateShadingsForAreaPoints(this, this.answers);
   }
 
   loadFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(...config.map(element => this.loadObject(element)));
-    Area.updateShadingsForAreaPoints(this);
+    Area.updateShadingsForAreaPoints(this, this.elements);
   }
 
   loadSegments(elements) {

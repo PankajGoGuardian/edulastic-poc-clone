@@ -4,7 +4,7 @@ import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { FlexContainer, EduButton } from "@edulastic/common";
+import { EduButton, MenuIcon } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import {
   IconAddItems,
@@ -17,7 +17,18 @@ import {
   IconSend,
   IconPencilEdit
 } from "@edulastic/icons";
-import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus, TitleWrapper } from "./styled";
+import {
+  MobileHeader,
+  RightWrapper,
+  MainContainer,
+  ShareIcon,
+  Title,
+  MenuIconWrapper,
+  TestStatus,
+  TitleWrapper,
+  RightFlexContainer,
+  AssignButton
+} from "./styled";
 
 import TestPageNav from "../TestPageNav/TestPageNav";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -180,8 +191,9 @@ const TestPageHeader = ({
         onOk={onRegradeConfirm}
         onCancelRegrade={onCancelRegrade}
       />
-      {windowWidth > 993 ? (
+      {windowWidth > 767 ? (
         <HeaderWrapper>
+          <MenuIcon className="hamburger" onClick={toggleSideBar} />
           <TitleWrapper>
             <Title title={title}>{title || "Untitled Test"} </Title>
             <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
@@ -197,7 +209,7 @@ const TestPageHeader = ({
             showPublishButton={!showShareButton || showPublishButton}
           />
 
-          <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ flexBasis: "400px" }}>
+          <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
             {showShareButton && false && (
               <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
                 <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
@@ -243,49 +255,34 @@ const TestPageHeader = ({
               </EduButton>
             )}
             {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
-              <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={handleAssign}>
+              <AssignButton data-cy="assign" size="large" onClick={handleAssign}>
                 Assign
-              </EduButton>
+              </AssignButton>
             )}
-          </FlexContainer>
+          </RightFlexContainer>
         </HeaderWrapper>
       ) : (
-        <Container>
-          <FlexContainer
-            flexDirection="column"
-            style={{
-              width: "100%",
-              justifyContent: "space-between"
-            }}
-          >
-            <FlexContainer
-              style={{
-                width: "100%",
-                justifyContent: "space-between",
-                padding: "0 25px"
-              }}
-            >
-              {" "}
-              <MenuIconWrapper>
-                <MenuIcon type="bars" onClick={toggleSideBar} />
-                <Title>{title}</Title>
-              </MenuIconWrapper>
-              <FlexContainer justifyContent="space-between">
-                {owner && (
-                  <EduButton size="large" onClick={onShare}>
-                    <ShareIcon />
-                  </EduButton>
-                )}
-                {owner && (
-                  <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-                    {creating ? "Saving..." : "Save"}
-                  </EduButton>
-                )}
-              </FlexContainer>
-            </FlexContainer>
+        <MobileHeader>
+          <MainContainer flexDirection="column">
+            <MenuIconWrapper>
+              <MenuIcon className="hamburger" onClick={toggleSideBar} />
+              <Title>{title}</Title>
+            </MenuIconWrapper>
+            <RightWrapper>
+              {owner && (
+                <EduButton size="large" onClick={onShare}>
+                  <ShareIcon />
+                </EduButton>
+              )}
+              {owner && (
+                <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+                  {creating ? "Saving..." : "Save"}
+                </EduButton>
+              )}
+            </RightWrapper>
             <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
-          </FlexContainer>
-        </Container>
+          </MainContainer>
+        </MobileHeader>
       )}
     </>
   );

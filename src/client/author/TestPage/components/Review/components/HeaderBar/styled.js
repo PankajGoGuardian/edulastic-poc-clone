@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Checkbox, Button } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
-import { secondaryTextColor, themeColor } from "@edulastic/colors";
+import { secondaryTextColor, themeColor, mobileWidthMax, desktopWidth } from "@edulastic/colors";
 
 export const Item = styled(FlexContainer)`
   cursor: pointer;
@@ -13,7 +13,15 @@ export const Item = styled(FlexContainer)`
 
 export const Container = styled(FlexContainer)`
   justify-content: space-between;
-  margin-top: ${props => (props.windowWidth > 468 ? "0px" : "15px")};
+  margin: 0px;
+
+  @media (max-width: ${desktopWidth}) {
+    margin-top: 15px;
+    justify-content: space-between;
+    .fixed-second-header {
+      margin-top: 0px;
+    }
+  }
 `;
 
 export const SelectAllCheckbox = styled(Checkbox)`
@@ -21,9 +29,13 @@ export const SelectAllCheckbox = styled(Checkbox)`
   font-weight: 600;
   color: ${secondaryTextColor};
   text-transform: uppercase;
+  white-space: nowrap;
 
   .ant-checkbox {
-    margin-right: 13px;
+    margin-right: 10px;
+    & + span {
+      padding: 0px;
+    }
   }
 
   .ant-checkbox-inner {
@@ -36,14 +48,17 @@ export const ActionButton = styled(Button)`
   padding: 0;
   border: 1px solid ${themeColor};
   border-radius: 4px;
+  margin-left: 10px;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 40px;
-    height: 40px !important;
-
+    min-height: 40px;
+    margin-left: 5px;
     button {
       flex-direction: column;
       margin: 0 auto;
     }
   }
 `;
+
+export const MobileButtomContainer = styled.div``;

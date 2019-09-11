@@ -7,7 +7,7 @@ import { IconClose, IconMoveTo, IconCollapse, IconEye } from "@edulastic/icons";
 
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
-import { Item, Container, SelectAllCheckbox, ActionButton } from "./styled";
+import { Item, Container, SelectAllCheckbox, ActionButton, MobileButtomContainer } from "./styled";
 
 const HeaderBar = ({
   onSelectAll,
@@ -54,53 +54,55 @@ const HeaderBar = ({
           </SelectAllCheckbox>
         </Item>
       )}
-      <ActionButton style={{ marginLeft: 0 }}>
-        <ButtonLink
-          onClick={onShowTestPreview}
-          color="primary"
-          icon={<IconEye color={themeColor} width={12} height={12} />}
-        >
-          {windowWidth > 468 && <span>View as Student</span>}
-        </ButtonLink>
-      </ActionButton>
-      {owner && isEditable && (
-        <ActionButton data-cy="removeSelected" style={{ marginLeft: 0 }}>
+      <MobileButtomContainer>
+        <ActionButton>
           <ButtonLink
-            onClick={onRemoveSelected}
+            onClick={onShowTestPreview}
             color="primary"
-            icon={<IconClose color={themeColor} width={12} height={12} />}
+            icon={<IconEye color={themeColor} width={12} height={12} />}
           >
-            {windowWidth > 468 && <span>Remove Selected</span>}
+            {windowWidth > 767 && <span>View as Student</span>}
           </ButtonLink>
         </ActionButton>
-      )}
-      {owner && isEditable && (
-        <ActionButton data-cy="moveto" style={{ marginLeft: 0 }}>
+        {owner && isEditable && (
+          <ActionButton data-cy="removeSelected">
+            <ButtonLink
+              onClick={onRemoveSelected}
+              color="primary"
+              icon={<IconClose color={themeColor} width={12} height={12} />}
+            >
+              {windowWidth > 767 && <span>Remove Selected</span>}
+            </ButtonLink>
+          </ActionButton>
+        )}
+        {owner && isEditable && (
+          <ActionButton data-cy="moveto">
+            <ButtonLink
+              onClick={handleMoveTo}
+              color="primary"
+              icon={<IconMoveTo color={themeColor} width={12} height={12} />}
+            >
+              {windowWidth > 767 && <span>Move to</span>}
+            </ButtonLink>
+            {showPrompt && (
+              <Prompt
+                style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }}
+                maxValue={itemTotal}
+                onSuccess={handleSuccess}
+              />
+            )}
+          </ActionButton>
+        )}
+        <ActionButton data-cy="expandCollapseRow">
           <ButtonLink
-            onClick={handleMoveTo}
+            onClick={onCollapse}
             color="primary"
-            icon={<IconMoveTo color={themeColor} width={12} height={12} />}
+            icon={<IconCollapse color={themeColor} width={12} height={12} />}
           >
-            {windowWidth > 468 && <span>Move to</span>}
+            {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
           </ButtonLink>
-          {showPrompt && (
-            <Prompt
-              style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }}
-              maxValue={itemTotal}
-              onSuccess={handleSuccess}
-            />
-          )}
         </ActionButton>
-      )}
-      <ActionButton data-cy="expandCollapseRow" style={{ marginLeft: 0 }}>
-        <ButtonLink
-          onClick={onCollapse}
-          color="primary"
-          icon={<IconCollapse color={themeColor} width={12} height={12} />}
-        >
-          {windowWidth > 468 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
-        </ButtonLink>
-      </ActionButton>
+      </MobileButtomContainer>
     </Container>
   );
 };

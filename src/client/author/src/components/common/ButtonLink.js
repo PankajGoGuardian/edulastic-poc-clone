@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { themeColor, textColor, green, greenDark, darkGrey } from "@edulastic/colors";
+import { themeColor, textColor, green, greenDark, darkGrey, desktopWidth } from "@edulastic/colors";
 
 const getColors = ({ color, active }) => {
   const colors = {};
@@ -66,6 +66,10 @@ const Icon = styled.span`
   align-items: center;
   margin-right: 21px;
   font-size: 10px;
+
+  @media (max-width: ${desktopWidth}) {
+    margin-right: 10px;
+  }
 `;
 
 const Container = styled.button`

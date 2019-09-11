@@ -31,6 +31,7 @@ const ReleaseScoreSettingsModal = ({
           Cancel
         </Button>,
         <Button
+          data-cy="apply"
           key="submit"
           type="primary"
           onClick={() => updateReleaseScoreSettings(releaseScoreRef.current.state.value)}
@@ -42,7 +43,7 @@ const ReleaseScoreSettingsModal = ({
       <Radio.Group defaultValue={releaseScore} ref={releaseScoreRef}>
         {_releaseGradeKeys.map((item, index) => (
           <Row key={index}>
-            <Radio value={item} key={item}>
+            <Radio data-cy={item} value={item} key={item}>
               {releaseGradeTypes[item]}
             </Radio>
           </Row>

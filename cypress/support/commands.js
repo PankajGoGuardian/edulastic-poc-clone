@@ -181,13 +181,13 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("deleteAllAssignments", (student, teacher) => {
+Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snapwiz") => {
   const asgnIds = [];
 
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: student ? { username: student, password: "snapwiz" } : DEFAULT_USERS.student
+    body: student ? { username: student, password } : DEFAULT_USERS.student
   }).then(({ body }) => {
     cy.request({
       url: `${BASE_URL}/assignments`,
@@ -202,23 +202,24 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher) => {
       });
       console.log("All Assignments = ", asgnIds);
     });
-  });
 
-  cy.request({
-    url: `${BASE_URL}/auth/login`,
-    method: "POST",
-    body: teacher ? { username: teacher, password: "snapwiz" } : DEFAULT_USERS.teacher
-  }).then(({ body }) => {
-    asgnIds.forEach(asgnId => {
-      cy.request({
-        url: `${BASE_URL}/assignments/${asgnId}`,
-        method: "DELETE",
-        headers: {
-          authorization: body.result.token,
-          "Content-Type": "application/json"
-        }
-      }).then(({ body }) => {
-        console.log(`${asgnId} :: `, body.result);
+    cy.request({
+      url: `${BASE_URL}/auth/login`,
+      method: "POST",
+      body: teacher ? { username: teacher, password } : DEFAULT_USERS.teacher
+    }).then(({ body }) => {
+      const auth = body.result.token;
+      asgnIds.forEach(asgnId => {
+        cy.request({
+          url: `${BASE_URL}/assignments/${asgnId}`,
+          method: "DELETE",
+          headers: {
+            authorization: auth,
+            "Content-Type": "application/json"
+          }
+        }).then(({ body }) => {
+          console.log(`${asgnId} :: `, body.result);
+        });
       });
     });
   });

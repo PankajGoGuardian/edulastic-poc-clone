@@ -28,10 +28,10 @@ const PlayerFooter = ({
         )}
       </FlexContainer>
       <FlexContainer>
-        <PrevButton disabled={isFirst()} onClick={moveToPrev}>
+        <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
           <i className="fa fa-angle-left" />
         </PrevButton>
-        <ControlBtn onClick={moveToNext}>
+        <ControlBtn data-cy="next" onClick={moveToNext}>
           <i className="fa fa-angle-right" />
           <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
         </ControlBtn>

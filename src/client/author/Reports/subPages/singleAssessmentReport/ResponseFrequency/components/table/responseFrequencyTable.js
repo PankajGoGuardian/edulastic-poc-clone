@@ -267,10 +267,10 @@ export class ResponseFrequencyTable extends Component {
         })
         .join(", ");
 
-      return csvRow.join(";");
+      return csvRow.join(",");
     });
 
-    const csvData = [rawData[0].join(";"), ...modifiedCsvRows].join("\n");
+    const csvData = [rawData[0].join(","), ...modifiedCsvRows].join("\n");
     downloadCSV(`Response Frequency.csv`, csvData);
   };
 

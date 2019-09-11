@@ -24,6 +24,7 @@ const TestListFilters = ({
   curriculumStandards,
   collections,
   allTagsData = [],
+  allPlaylistsTagsData = [],
   searchFilterOption,
   filterMenuItems
 }) => {
@@ -45,6 +46,14 @@ const TestListFilters = ({
           size: "large",
           data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collectionName"
+        },
+        {
+          mode: "multiple",
+          size: "large",
+          title: "Tags",
+          placeholder: "Please select",
+          onChange: "tags",
+          data: allPlaylistsTagsData.map(o => ({ value: o._id, text: o.tagName }))
         }
       ];
     }
@@ -194,6 +203,7 @@ export default connect(
     curriculumStandards: getStandardsListSelector(state),
     collections: getCollectionsSelector(state),
     allTagsData: getAllTagsSelector(state, "test"),
+    allPlaylistsTagsData: getAllTagsSelector(state, "playlist"),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}

@@ -187,7 +187,17 @@ class Container extends React.Component {
   };
 
   renderContent() {
-    const { currentTab, assessment, questions, match, questionsById, userId, setTestData } = this.props;
+    const {
+      currentTab,
+      assessment,
+      questions,
+      match,
+      questionsById,
+      userId,
+      setTestData,
+      viewMode,
+      previewMode
+    } = this.props;
 
     const { params = {} } = match;
     const { docUrl, annotations, pageStructure } = assessment;
@@ -198,6 +208,7 @@ class Container extends React.Component {
 
     const props = {
       docUrl,
+      viewMode: currentTab,
       annotations,
       questions,
       questionsById,

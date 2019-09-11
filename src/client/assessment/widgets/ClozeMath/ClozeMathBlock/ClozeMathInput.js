@@ -50,6 +50,7 @@ class ClozeMathInput extends React.Component {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         textarea.addEventListener("keypress", this.handleKeypress);
+        textarea.addEventListener("blur", this.saveAnswer);
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
@@ -167,7 +168,7 @@ class ClozeMathInput extends React.Component {
 
   saveAnswer = () => {
     const { resprops = {}, id } = this.props;
-    const { latex, showKeyboard } = this.state;
+    const { latex } = this.state;
     const { save, item, answers = {} } = resprops;
     const { maths: _userAnwers = [] } = answers;
 
@@ -176,7 +177,7 @@ class ClozeMathInput extends React.Component {
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
 
-    if (!showKeyboard && latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
       save({ value: latex, index }, "maths", id);
     }
   };

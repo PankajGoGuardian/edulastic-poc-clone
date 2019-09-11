@@ -104,10 +104,8 @@ const StaticMath = ({
       mathField.innerFields[i].el().addEventListener("click", () => {
         onFocus(mathField.innerFields[i]);
       });
-      mathField.innerFields[i].el().addEventListener("keydown", () => {
-        setTimeout(() => {
-          onInput(getLatex());
-        }, 0);
+      mathField.innerFields[i].el().addEventListener("keyup", () => {
+        onInput(getLatex());
       });
     }
 

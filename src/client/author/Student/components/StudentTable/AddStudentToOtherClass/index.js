@@ -131,7 +131,7 @@ function AddStudentsToOtherClass({
         bodyText={
           "Are you sure you want to move the selected user(s) ? Once moved, existing assessment data will no longer be available for the selected users."
         }
-        okText="Yes,Move"
+        okText="Yes, Move"
         canUndone
       />
 

@@ -1,8 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
-import { IconNewList, IconPencilEdit, IconCaretDown, IconMath } from "@edulastic/icons";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT
+} from "@edulastic/constants/const/questionType";
+import { IconNewList, IconPencilEdit, IconCaretDown, IconMath, IconSummary } from "@edulastic/icons";
 
 import AddBulkModal from "../AddBulkModal/AddBulkModal";
 import { AddQuestionWrapper, AddQuestionIcon, QuestionTypes, ContentWrapper, AddButton } from "./styled";
@@ -48,6 +54,9 @@ class AddQuestion extends React.Component {
             </AddQuestionIcon>
             <AddQuestionIcon onClick={onAddQuestion(MATH)}>
               <IconMath />
+            </AddQuestionIcon>
+            <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+              <IconSummary />
             </AddQuestionIcon>
           </QuestionTypes>
           <QuestionTypes>

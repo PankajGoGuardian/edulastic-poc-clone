@@ -332,6 +332,7 @@ function* deactivateCourseSaga({ payload }) {
   try {
     yield call(courseApi.deactivateCourse, payload);
     yield put(deactivateCourseSuccessAction(payload));
+    message.success("Course(s) has been successfully deactivated");
   } catch (err) {
     const errorMessage = "Deactivate course is failing";
     yield call(message.error, errorMessage);

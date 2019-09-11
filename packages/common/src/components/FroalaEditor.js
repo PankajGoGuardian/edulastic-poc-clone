@@ -514,7 +514,9 @@ const CustomEditor = ({
         focus: function() {
           if (initOnClick) {
             this.hasFocus = true;
-            this.toolbar.show();
+            if (this.toolbar) {
+              this.toolbar.show();
+            }
           }
         },
         blur: function() {

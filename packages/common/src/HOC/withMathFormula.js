@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { WithResources } from "./withResources";
 import { withTheme } from "styled-components";
+import { WithResources } from "./withResources";
 
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
 
@@ -10,7 +10,7 @@ export const withMathFormula = WrappedComponent => {
     /**
      * this whole component needs rethinking.
      */
-    const { dangerouslySetInnerHTML, isCollapse = false } = props;
+    const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {} } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
 
@@ -41,20 +41,25 @@ export const withMathFormula = WrappedComponent => {
           {...props}
           data-cy="styled-wrapped-component"
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-          style={{ fontSize: props.fontSize || props.theme.fontSize }}
+          style={{ ...style, fontSize: fontSize || theme.fontSize }}
         />
       </WithResources>
     );
   };
 
   MathFormulaWrapped.propTypes = {
-    dangerouslySetInnerHTML: PropTypes.object
+    dangerouslySetInnerHTML: PropTypes.object,
+    isCollapse: PropTypes.bool.isRequired,
+    fontSize: PropTypes.number.isRequired,
+    theme: PropTypes.object.isRequired,
+    style: PropTypes.object
   };
 
   MathFormulaWrapped.defaultProps = {
     dangerouslySetInnerHTML: {
       __html: ""
-    }
+    },
+    style: {}
   };
 
   return withTheme(MathFormulaWrapped);

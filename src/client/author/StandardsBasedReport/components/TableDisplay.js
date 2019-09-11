@@ -86,7 +86,7 @@ class TableDisplay extends Component {
     }
   };
 
-  isMobile = () => window.innerWidth < 480;
+  isMobile = () => window.innerWidth < 768;
 
   filteredData = data => {
     const { testActivities: testActivity } = this.props;

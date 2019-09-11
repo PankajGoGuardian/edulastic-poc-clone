@@ -6,7 +6,13 @@ import uuid from "uuid/v4";
 import PropTypes from "prop-types";
 import { sortBy, maxBy } from "lodash";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT
+} from "@edulastic/constants/const/questionType";
 import { methods } from "@edulastic/constants/const/math";
 
 import { getPreviewSelector, getViewSelector } from "../../../src/selectors/view";
@@ -85,6 +91,14 @@ const multipleChoiceData = {
   uiStyle: { type: "horizontal" }
 };
 
+const essayData = {
+  uiStyle: {
+    minHeight: 15
+  },
+  showWordCount: true,
+  title: "Essay with plain text"
+};
+
 const createQuestion = (type, index) => ({
   id: uuid(),
   qIndex: index,
@@ -104,7 +118,8 @@ const createQuestion = (type, index) => ({
   smallSize: true,
   alignment: [],
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
-  ...(type === MATH ? mathData : {})
+  ...(type === MATH ? mathData : {}),
+  ...(type === ESSAY_PLAIN_TEXT ? essayData : {})
 });
 
 const createSection = (qIndex = 0, title = "") => ({
@@ -424,8 +439,7 @@ class Questions extends React.Component {
 const enhance = compose(
   connect(
     state => ({
-      previewMode: getPreviewSelector(state),
-      viewMode: getViewSelector(state)
+      previewMode: getPreviewSelector(state)
     }),
     {
       addQuestion: addQuestionAction,

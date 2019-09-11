@@ -51,7 +51,8 @@ export {
   getSelection,
   clearSelection,
   highlightSelectedText,
-  decodeHTML
+  decodeHTML,
+  rgbToHexc
 } from "./src/helpers";
 
 // contexts

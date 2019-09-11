@@ -8,7 +8,7 @@ import { ThemeProvider } from "styled-components";
 import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
@@ -71,7 +71,8 @@ class AssessmentPlayerDefault extends React.Component {
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       calculateMode: `${settings.calcType}_DESMOS`,
       currentToolMode: 0,
-      showHints: false
+      showHints: false,
+      enableCrossAction: false
     };
 
     this.scrollElementRef = React.createRef();
@@ -150,22 +151,9 @@ class AssessmentPlayerDefault extends React.Component {
     history.push("/home/assignments");
   };
 
-  hexToRGB = (hex, alpha) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-
-    const g = parseInt(hex.slice(3, 5), 16);
-
-    const b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
   onFillColorChange = obj => {
     this.setState({
-      fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
@@ -189,7 +177,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   handleColorChange = obj => {
     this.setState({
-      currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 

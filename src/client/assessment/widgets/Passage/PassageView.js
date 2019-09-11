@@ -6,7 +6,7 @@ import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import produce from "immer";
-import { Stimulus, highlightSelectedText, WithResources, decodeHTML } from "@edulastic/common";
+import { Stimulus, highlightSelectedText, WithResources, decodeHTML, rgbToHexc } from "@edulastic/common";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -14,16 +14,6 @@ import ColorPicker from "./ColorPicker";
 import { ColorPickerContainer, Overlay } from "./styled/ColorPicker";
 
 const ContentsTitle = Heading;
-
-const hexc = orig => {
-  const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
-  return rgb && rgb.length === 4
-    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
-        -2
-      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
-    : orig;
-};
-
 let startedSelectingText = false;
 
 const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = [] }) => {
@@ -39,7 +29,7 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
           if (!selected && !startedSelectingText) {
             const top = this.offsetTop + this.offsetHeight + 1; // 1px is for the arrow point
             const left = this.offsetLeft;
-            const bg = hexc(jQuery(this).css("backgroundColor"));
+            const bg = rgbToHexc(jQuery(this).css("backgroundColor"));
             toggleColorPicker({ top, left, bg, index });
           }
         });

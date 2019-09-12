@@ -33,6 +33,20 @@
           "grade": "Kindergarten"
         }
       ]
+    },
+    "3": {
+      "quetext": "This is MCQ_STD.3 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
+      "setAns": { "correct": "right-1", "points": 2 },
+      "attemptData": { "right": "right-1", "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["HSA.APR.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 10"
+        }
+      ]
     }
   },
   "MCQ_MULTI": {
@@ -55,6 +69,20 @@
           "grade": "Kindergarten"
         }
       ]
+    },
+    "2": {
+      "quetext": "This is MCQ_MULTI.2 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
+      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1", "partialCorrect": ["right-2"] },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["HSA.APR.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 10"
+        }
+      ]
     }
   },
   "MCQ_TF": {
@@ -75,6 +103,20 @@
           "standard": ["K.CC.A.1"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
+        }
+      ]
+    },
+    "2": {
+      "quetext": "This is MCQ_TF.2 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["HSA.APR.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 10"
         }
       ]
     }

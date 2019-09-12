@@ -161,8 +161,6 @@ class Worksheet extends React.Component {
 
     updatedPageStructure.splice(pageNumber, 1);
 
-    const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
-
     const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
     const updatedAssessment = {

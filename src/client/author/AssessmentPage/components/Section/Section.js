@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty, debounce } from "lodash";
+import { isEmpty } from "lodash";
 
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 

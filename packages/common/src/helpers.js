@@ -372,6 +372,28 @@ export const decodeHTML = str => {
     .html();
 };
 
+export const rgbToHexc = orig => {
+  const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
+  return rgb && rgb.length === 4
+    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
+        -2
+      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+    : orig;
+};
+
+export const hexToRGB = (hex, alpha) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+
+  const g = parseInt(hex.slice(3, 5), 16);
+
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  if (alpha) {
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,

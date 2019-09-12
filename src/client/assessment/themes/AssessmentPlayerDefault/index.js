@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
@@ -7,8 +8,10 @@ import { ThemeProvider } from "styled-components";
 import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
+import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
+import Hints from "@edulastic/common/src/components/Hints";
 import { playersTheme } from "../assessmentPlayersTheme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
@@ -19,9 +22,6 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
-import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
-
-import Hints from "@edulastic/common/src/components/Hints";
 
 import {
   ControlBtn,
@@ -40,7 +40,6 @@ import DragScrollContainer from "../../components/DragScrollContainer";
 import {
   LARGE_DESKTOP_WIDTH,
   SMALL_DESKTOP_WIDTH,
-  MEDIUM_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH
 } from "../../constants/others";
@@ -48,11 +47,11 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
-import { saveScratchPadAction } from "../../actions/userWork";
+import { saveUserWorkAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
-import { setUserAnswerAction } from "../../actions/answers.js";
+import { setUserAnswerAction } from "../../actions/answers";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -71,9 +70,9 @@ class AssessmentPlayerDefault extends React.Component {
       isSavePauseModalVisible: false,
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       calculateMode: `${settings.calcType}_DESMOS`,
-      changeMode: 0,
-      tool: 0,
-      showHints: false
+      currentToolMode: 0,
+      showHints: false,
+      enableCrossAction: false
     };
 
     this.scrollElementRef = React.createRef();
@@ -92,7 +91,6 @@ class AssessmentPlayerDefault extends React.Component {
     itemRows: PropTypes.array.isRequired,
     evaluation: PropTypes.any.isRequired,
     checkAnswer: PropTypes.func.isRequired,
-    changePreview: PropTypes.func.isRequired,
     history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     questions: PropTypes.object.isRequired,
@@ -102,17 +100,17 @@ class AssessmentPlayerDefault extends React.Component {
     settings: PropTypes.object.isRequired,
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
-    saveScratchPad: PropTypes.func.isRequired,
+    saveUserWork: PropTypes.func.isRequired,
     LCBPreviewModal: PropTypes.any.isRequired,
     setUserAnswer: PropTypes.func.isRequired,
-    userAnswers: PropTypes.object
+    userAnswers: PropTypes.object.isRequired
   };
 
   static defaultProps = {
     theme: playersTheme
   };
 
-  changeTool = val => this.setState({ tool: val });
+  changeTool = val => this.setState({ currentToolMode: val });
 
   showHideHints = () => {
     this.setState(prevState => ({
@@ -153,28 +151,9 @@ class AssessmentPlayerDefault extends React.Component {
     history.push("/home/assignments");
   };
 
-  hexToRGB = (hex, alpha) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-
-    const g = parseInt(hex.slice(3, 5), 16);
-
-    const b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
   onFillColorChange = obj => {
     this.setState({
-      fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
-
-  handleModeChange = value => {
-    this.setState({
-      changeMode: value
+      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
@@ -198,15 +177,17 @@ class AssessmentPlayerDefault extends React.Component {
 
   handleColorChange = obj => {
     this.setState({
-      currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
+  // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
+  // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveHistory = sourceId => data => {
-    const { saveScratchPad, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
+    const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
-    saveScratchPad({
+    saveUserWork({
       [items[currentItem]._id]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
@@ -241,12 +222,12 @@ class AssessmentPlayerDefault extends React.Component {
 
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
-      const tool = next.scratchPad ? 5 : 0;
-      return { tool, cloneCurrentItem: next.currentItem, history: 0, activeMode: "" };
+      const currentToolMode = next.scratchPad ? 5 : 0;
+      return { currentToolMode, cloneCurrentItem: next.currentItem, history: 0, activeMode: "" };
     }
 
-    if (next.scratchPad && prevState.tool !== 5) {
-      return { tool: 5, history: 0, activeMode: "" };
+    if (next.scratchPad && prevState.currentToolMode !== 5) {
+      return { currentToolMode: 5, history: 0, activeMode: "" };
     }
     return null;
   }
@@ -287,9 +268,8 @@ class AssessmentPlayerDefault extends React.Component {
       deleteMode,
       lineWidth,
       fillColor,
-      changeMode,
       calculateMode,
-      tool,
+      currentToolMode,
       showHints
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
@@ -309,15 +289,16 @@ class AssessmentPlayerDefault extends React.Component {
       });
     }
 
-    const scratchPadMode = tool === 5;
+    const scratchPadMode = currentToolMode === 5;
     const hasCollapseButtons =
-      itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
+      itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
+
     return (
       <ThemeProvider theme={theme}>
         <Container innerRef={this.scrollElementRef} data-cy="assessment-player-default-wrapper">
           <SvgDraw
             activeMode={activeMode}
-            scratchPadMode={tool === 5}
+            scratchPadMode={scratchPadMode}
             lineColor={currentColor}
             deleteMode={deleteMode}
             lineWidth={lineWidth}
@@ -431,12 +412,12 @@ class AssessmentPlayerDefault extends React.Component {
                     )}
                     {windowWidth >= SMALL_DESKTOP_WIDTH && (
                       <ToolBar
-                        changeMode={this.handleModeChange}
-                        changeCaculateMode={this.handleModeCaculate}
                         settings={settings}
                         calcBrands={calcBrands}
-                        tool={tool}
+                        tool={currentToolMode}
+                        changeCaculateMode={this.handleModeCaculate}
                         changeTool={this.changeTool}
+                        qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
                       />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
@@ -486,13 +467,8 @@ class AssessmentPlayerDefault extends React.Component {
               )}
             </MainWrapper>
           </Main>
-          {changeMode === 2 && (
-            <CalculatorContainer
-              changeMode={this.handleModeChange}
-              changeTool={this.changeTool}
-              calculateMode={calculateMode}
-              calcBrands={calcBrands}
-            />
+          {currentToolMode === 2 && (
+            <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
           )}
         </Container>
       </ThemeProvider>
@@ -521,7 +497,7 @@ const enhance = compose(
     }),
     {
       changePreview: changePreviewAction,
-      saveScratchPad: saveScratchPadAction,
+      saveUserWork: saveUserWorkAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       toggleBookmark: toggleBookmarkAction,

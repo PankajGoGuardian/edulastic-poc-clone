@@ -3,22 +3,16 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Tooltip } from "antd";
 
-import { test } from "@edulastic/constants";
+import { test, questionType } from "@edulastic/constants";
 import { white } from "@edulastic/colors";
+import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
 import CalculatorMenu from "./CalculatorMenu";
 
-import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
 const { calculatorTypes } = test;
 class ToolBar extends Component {
   toolbarHandler = value => {
-    const { changeMode, changeTool } = this.props;
-
+    const { changeTool } = this.props;
     changeTool(value);
-    if (value === 5) {
-      changeMode(value);
-    } else {
-      changeMode(value);
-    }
   };
 
   handleCalculateMode = value => {
@@ -32,24 +26,25 @@ class ToolBar extends Component {
   componentDidMount() {}
 
   render() {
-    const { settings, calcBrands, tool } = this.props;
+    const { settings, calcBrands, tool, qType } = this.props;
     const { calcType } = settings;
+    const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
     return (
       <Container>
-        <Tooltip placement="top" title={"Pointer"}>
+        <Tooltip placement="top" title="Pointer">
           <StyledButton enable={tool === 0} onClick={() => this.toolbarHandler(0)}>
             <CursorIcon />
           </StyledButton>
         </Tooltip>
 
-        <Tooltip placement="top" title={"Ruler"}>
+        <Tooltip placement="top" title="Ruler">
           <StyledButton enable={tool === 1} onClick={() => this.toolbarHandler(1)}>
             <InRulerIcon />
           </StyledButton>
         </Tooltip>
         {calcType !== calculatorTypes.NONE && (
-          <Tooltip placement="top" title={"Calculator"}>
+          <Tooltip placement="top" title="Calculator">
             <StyledButton enable={tool === 2} onClick={() => this.toolbarHandler(2)}>
               <CaculatorIcon />
               {tool === 2 && (
@@ -64,19 +59,22 @@ class ToolBar extends Component {
           </Tooltip>
         )}
 
-        <Tooltip placement="top" title={"Close"}>
-          <StyledButton enable={tool === 3} onClick={() => this.toolbarHandler(3)}>
+        <Tooltip
+          placement="top"
+          title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
+        >
+          <StyledButton enable={tool === 3} disabled={isDisableCrossBtn} onClick={() => this.toolbarHandler(3)}>
             <CloseIcon />
           </StyledButton>
         </Tooltip>
 
-        <Tooltip placement="top" title={"Protactor"}>
+        <Tooltip placement="top" title="Protactor">
           <StyledButton enable={tool === 4} onClick={() => this.toolbarHandler(4)}>
             <ProtactorIcon />
           </StyledButton>
         </Tooltip>
 
-        <Tooltip placement="top" title={"Scratch Pad"}>
+        <Tooltip placement="top" title="Scratch Pad">
           <StyledButton enable={tool === 5} onClick={() => this.toolbarHandler(5)}>
             <ScratchPadIcon />
           </StyledButton>
@@ -87,10 +85,12 @@ class ToolBar extends Component {
 }
 
 ToolBar.propTypes = {
-  changeMode: PropTypes.func.isRequired,
   changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.number.isRequired,
-  changeTool: PropTypes.func.isRequired
+  changeTool: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
+  calcBrands: PropTypes.array.isRequired,
+  qType: PropTypes.string.isRequired
 };
 
 export default ToolBar;
@@ -120,6 +120,10 @@ const StyledButton = styled(Button)`
   &:active {
     background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
+  }
+  :disabled {
+    opacity: 0.4;
+    background: transparent;
   }
 `;
 

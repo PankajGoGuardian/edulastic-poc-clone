@@ -15,7 +15,7 @@ import { WorksheetWrapper } from "./styled";
 import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
-import { saveScratchPadAction } from "../../../../assessment/actions/userWork";
+import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -286,12 +286,14 @@ class Worksheet extends React.Component {
     }
   };
 
+  // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
+  // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveHistory = data => {
     const { currentPage } = this.state;
-    const { saveScratchPad, itemDetail, scratchPad = {}, userWork } = this.props;
+    const { saveUserWork, itemDetail, scratchPad = {}, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
     const id = itemDetail.item._id;
-    saveScratchPad({
+    saveUserWork({
       [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
     });
   };
@@ -427,7 +429,7 @@ const enhance = compose(
       answersById: state.answers
     }),
     {
-      saveScratchPad: saveScratchPadAction,
+      saveUserWork: saveUserWorkAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction

@@ -196,7 +196,7 @@ export const validateQuestionsForDocBased = questions => {
   }
 
   const correctAnswerPicked = questions
-    .filter(question => question.type !== "sectionLabel")
+    .filter(question => question.type !== "sectionLabel" && question.type !== "essayPlainText")
     .every(question => {
       const validationValue = get(question, "validation.validResponse.value");
       if (question.type === "math") {

@@ -153,8 +153,11 @@ class Container extends React.Component {
   };
 
   handlePublishTest = (assignFlow = false) => {
-    const { publishTest, assessment, match } = this.props;
+    const { questions: assessmentQuestions, publishTest, assessment, match } = this.props;
     const { _id } = assessment;
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+      return;
+    }
     if (this.validateTest(assessment)) {
       publishTest({ _id, oldId: match.params.oldId, test: assessment, assignFlow });
       this.setState({ editEnable: false, saved: false, published: true });
@@ -162,9 +165,12 @@ class Container extends React.Component {
   };
 
   handleAssign = () => {
-    const { assessment, history, match, updated } = this.props;
+    const { questions: assessmentQuestions, assessment, history, match, updated } = this.props;
     const { status } = assessment;
-    if (this.validateTest(test)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+      return;
+    }
+    if (this.validateTest(assessment)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true);
       } else {

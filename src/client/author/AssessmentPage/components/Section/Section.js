@@ -78,7 +78,13 @@ export default class Section extends React.Component {
     const { title } = this.state;
     return (
       <SectionWrapper>
-        <SectionForm autoFocus value={title} onChange={this.handleChangeTitle} onPressEnter={this.handleSetTitle} />
+        <SectionForm
+          autoFocus
+          value={title}
+          onChange={this.handleChangeTitle}
+          onBlur={this.handleSetTitle}
+          onPressEnter={this.handleSetTitle}
+        />
         <SectionFormConfirmButton onClick={this.handleSetTitle} />
       </SectionWrapper>
     );

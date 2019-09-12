@@ -83,9 +83,10 @@ const SingleAssessmentReportFilters = ({
       const search = queryString.parse(location.search, { arrayFormat: "index" });
 
       dropDownData = getDropDownData(MARFilterData, user);
-
+      const defaultTermId = get(user, "orgData.defaultTermId", "");
       const urlSchoolYear =
         schoolYear.find((item, index) => item.key === search.termId) ||
+        schoolYear.find((item, index) => item.key === defaultTermId) ||
         (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
       const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
         key: "All",

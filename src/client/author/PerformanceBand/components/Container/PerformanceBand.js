@@ -90,7 +90,7 @@ function ProfileRow({
       </ProfileModal>
       <StyledProfileRow type="flex">
         <Col span={12}>
-          {active ? (
+          {active && !readOnly ? (
             <Input
               type="text"
               value={name}

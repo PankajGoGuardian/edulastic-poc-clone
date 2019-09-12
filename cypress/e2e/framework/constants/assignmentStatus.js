@@ -16,3 +16,17 @@ export const studentSide = {
   GRADES_HELD: "Grades Held",
   GRADED: "Graded"
 };
+
+export const testTypes = {
+  PRACTICE_ASSESSMENT: "Practice Assessment",
+  COMMON_ASSESSMENT: "Common Assessment",
+  CLASS_ASSESSMENT: "Class Assessment",
+  PRACTICE: "Practice"
+};
+
+export const releaseGradeTypes = {
+  DONT_RELEASE: "DONT_RELEASE",
+  SCORE_ONLY: "SCORE_ONLY",
+  WITH_RESPONSE: "WITH_RESPONSE",
+  WITH_ANSWERS: "WITH_ANSWERS"
+};

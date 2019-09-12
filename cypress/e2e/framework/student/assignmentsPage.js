@@ -33,22 +33,33 @@ class AssignmentsPage {
     return cy.get('[data-cy="percentage"]');
   }
 
+  clickOnAllAssignments = () => cy.get('[data-cy="ALL"]').click();
+
+  clickOnNotStarted = () => cy.get('[data-cy="NOT_STARTED"]').click();
+
+  clickOnInProgress = () => cy.get('[data-cy="IN_PROGRESS"]').click();
+
   // common actions on AssignmentPage
 
   clickOnAssignmentButton() {
     cy.server();
-    cy.route("GET", "**/test-activity/**").as("test-start");
+    // cy.route("POST", "**/test-activity").as("startTest");
+    cy.route("GET", "**/test/**").as("gettest");
+    cy.route("POST", "**/test-activity/**").as("saved");
 
     this.getAssignmentButton()
       .should("be.visible")
       .click({ force: true });
 
-    return cy.wait("@test-start").then(() => new StudentTestPage());
+    // cy.wait("@startTest");
+    cy.wait("@gettest");
+    return cy.wait("@saved").then(() => new StudentTestPage());
   }
 
-  validateAssignment(name, status, assignmentButtonValue) {
+  validateAssignment(name, status, assignmentButtonValue, assessmentType) {
     cy.contains("div", name).should("be.visible");
-    this.getStatus().should("have.text", status);
+    cy.get('[data-cy="testType"]').should("have.text", assessmentType);
+    this.getStatus().should("contain.text", status);
     this.getAssignmentButton().should("have.text", assignmentButtonValue);
   }
 

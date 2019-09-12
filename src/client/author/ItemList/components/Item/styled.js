@@ -400,7 +400,7 @@ export const LabelStandard = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     margin-left: 0;
-    width: 26.6%;
+    width: auto;
     margin-top: 8px;
     height: 26px;
     padding: 4px;

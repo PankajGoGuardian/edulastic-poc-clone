@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { Icon } from "antd";
 
-import { mobileWidth, darkBlueSecondary, white } from "@edulastic/colors";
+import { mobileWidth, themeColor, white } from "@edulastic/colors";
 import { FlexContainer, Tabs, Paper } from "@edulastic/common";
 import ItemDetailWidget from "./ItemDetailWidget";
 import ItemDetailDropTarget from "./ItemDetailDropTarget";
@@ -157,7 +157,7 @@ const MobileRightSide = styled.div`
   justify-content: center;
   height: calc(100vh - 220px);
   right: 0;
-  background: ${darkBlueSecondary};
+  background: ${themeColor};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;
@@ -171,7 +171,7 @@ const MobileLeftSide = styled.div`
   justify-content: center;
   height: calc(100vh - 220px);
   left: 0;
-  background: ${darkBlueSecondary};
+  background: ${themeColor};
   width: 25px;
   bottom: 20px;
   border-top-right-radius: 10px;

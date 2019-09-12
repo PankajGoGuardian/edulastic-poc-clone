@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import * as moment from "moment";
 import { get } from "lodash";
+import { roleuser } from "@edulastic/constants";
 
 import { Table, Input, Form, Icon, DatePicker, Modal, Button } from "antd";
 import {
@@ -18,7 +19,7 @@ import EditTermModal from "./EditTermModal/EditTermModal";
 // selectors
 import { receiveTermAction, updateTermAction, createTermAction, deleteTermAction } from "../../ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -208,8 +209,13 @@ class TermTable extends React.Component {
         cell: EditableCell
       }
     };
+    const readOnly = this.props.role === roleuser.SCHOOL_ADMIN;
 
-    const columns = this.columns.map(col => {
+    const colLength = this.columns.length;
+    /**
+     * excluding the last Column if readOnly
+     */
+    const columns = this.columns.slice(0, readOnly ? colLength - 1 : colLength).map(col => {
       if (!col.editable) {
         return col;
       }
@@ -316,6 +322,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
       termSetting: get(state, ["termReducer", "data"], []),
       loading: get(state, ["termReducer", "loading"], false),
       updating: get(state, ["termReducer", "updating"], false),

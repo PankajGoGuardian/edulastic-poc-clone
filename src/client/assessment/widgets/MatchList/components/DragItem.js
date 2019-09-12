@@ -56,7 +56,7 @@ const DragItem = ({
 }) => {
   const itemView = (
     <Wrapper>
-      <MathFormulaDisplay centerContent={centerContent} dangerouslySetInnerHTML={{ __html: item }} />
+      <MathFormulaDisplay centerContent={centerContent} dangerouslySetInnerHTML={{ __html: item?.label || "" }} />
     </Wrapper>
   );
 

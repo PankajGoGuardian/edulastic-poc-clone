@@ -297,7 +297,8 @@ class AssessmentPlayerDefault extends React.Component {
       skippedInOrder,
       currentGroupId,
       LCBPreviewModal,
-      preview
+      preview,
+      closeTestPreviewModal
     } = this.props;
     const {
       testItemState,
@@ -464,6 +465,10 @@ class AssessmentPlayerDefault extends React.Component {
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
+                    )}
+
+                    {previewPlayer && (
+                      <SaveAndExit previewPlayer={previewPlayer} finishTest={() => closeTestPreviewModal()} />
                     )}
                   </FlexContainer>
                 </FlexContainer>

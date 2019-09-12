@@ -100,6 +100,7 @@ const StandardsFilters = ({
     }
 
     _domains = _domains.concat(arr);
+
     setDomains(_domains);
     // check if domainId in url is in the array if not select the first one
 
@@ -132,7 +133,7 @@ const StandardsFilters = ({
     const search = qs.parse(location.search.substring(1));
     setPrevStandardsFilters(standardsFilters);
 
-    let tempArr = get(standardsFilters, "result.testData", []);
+    let tempArr = get(standardsFilters, "data.result.testData", []);
     let arr = [{ key: "All", title: "All Assessments" }];
     tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
     tempArr = tempArr.map((item, index) => {
@@ -177,8 +178,10 @@ const StandardsFilters = ({
   if (firstRender.current === true) {
     const search = qs.parse(location.search.substring(1));
 
+    const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
+      schoolYear.find((item, index) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject =
       curriculums.find((item, index) => item.key === search.subject) ||
@@ -198,7 +201,7 @@ const StandardsFilters = ({
     });
 
     let q = {
-      curriculumId: urlSubject.key,
+      curriculumId: urlSubject.key || undefined,
       grades: urlGrade.map((item, index) => item.key)
     };
     getStandardsBrowseStandardsRequestAction(q);
@@ -231,7 +234,7 @@ const StandardsFilters = ({
     setFiltersAction(obj);
 
     let q = {
-      curriculumId: selected.key,
+      curriculumId: selected.key || undefined,
       grades: obj.grade
     };
     getStandardsBrowseStandardsRequestAction(q);
@@ -244,7 +247,7 @@ const StandardsFilters = ({
     setFiltersAction(obj);
 
     let q = {
-      curriculumId: obj.subject,
+      curriculumId: obj.subject || undefined,
       grades: [selected.key]
     };
     getStandardsBrowseStandardsRequestAction(q);
@@ -253,6 +256,7 @@ const StandardsFilters = ({
     if (selected.key === "All") {
       let tempArr = domains.filter((item, index) => index > 0);
       tempArr = tempArr.map(item => item.key);
+
       let obj = {
         ...filters,
         domainIds: tempArr
@@ -334,7 +338,7 @@ const StandardsFilters = ({
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <AutocompleteDropDown
               prefix="Domain"
-              by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0]}
+              by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
               selectCB={updateDomainDropDownCB}
               data={domains}
             />

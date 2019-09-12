@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled, { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider, withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
@@ -370,6 +370,7 @@ class QuestionWrapper extends Component {
                   paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}
+                twoColLayout={this.props.theme?.twoColLayout}
               >
                 {view === "edit" && (
                   <QuestionMenu
@@ -413,7 +414,13 @@ class QuestionWrapper extends Component {
                 </FlexContainer>
               </PaperWrapper>
               {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
-                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} {...presentationModeProps} />
+                <FeedbackRight
+                  twoColLayout={this.props.theme?.twoColLayout}
+                  disabled={disabled}
+                  widget={data}
+                  studentName={studentName}
+                  {...presentationModeProps}
+                />
               )}
               {/* STUDENT REPORT PAGE FEEDBACK */}
               {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
@@ -477,6 +484,7 @@ const enhance = compose(
   React.memo,
   withWindowSizes,
   withAnswerSave,
+  withTheme,
   withNamespaces("assessment"),
   connect(
     state => ({

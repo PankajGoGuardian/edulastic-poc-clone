@@ -44,12 +44,21 @@ class MetadataPage {
   selectDropDownoption = (selector, option) => {
     const selectby = `[data-cy="${selector}"]`;
     cy.get(selectby)
+      .click()
       .then(() => {
         if (selector === "gradeSelect") {
-          cy.focused().clear();
+          cy.get(selectby).then($ele => {
+            if (Cypress.$($ele).find(".ant-select-selection__choice__content").length > 0) {
+              cy.wrap($ele)
+                .find(".ant-select-selection__choice__content")
+                .its("length")
+                .then(len => {
+                  cy.xpath(`//div[@data-cy='${selector}']//input`).type("{backspace}".repeat(len));
+                });
+            }
+          });
         }
-      })
-      .click();
+      });
     this.getDropDownMenu()
       .contains(option)
       .click();
@@ -83,7 +92,7 @@ class MetadataPage {
 
   mapStandards = standardMaps => {
     cy.server();
-    cy.route("POST", "**/search/**").as("searchStandard");
+    cy.route("POST", "**/search/browseStandards").as("searchStandard");
     standardMaps.forEach(standards => {
       console.log("standards", standards);
       const { subject, standard, standardSet, grade } = standards;
@@ -91,7 +100,7 @@ class MetadataPage {
       this.clickOnStandardSearchOption();
       this.selectSubject(subject);
       this.selectStandardSet(standardSet);
-      // this.selectGrade(grade);
+      this.selectGrade(grade);
       this.clickOnStandardSearchOption();
       cy.get('[data-cy="searchStandardSelect"]').click();
       standard.forEach(std => this.setStandard(std));

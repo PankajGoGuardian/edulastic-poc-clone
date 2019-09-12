@@ -1,71 +1,81 @@
 import styled from "styled-components";
-import { Icon } from "antd";
+import { FlexContainer, EduButton } from "@edulastic/common";
 
 import {
   themeColor,
   white,
-  darkBlueSecondary,
-  tabletWidth,
   textColor,
   draftColor,
   publishedColor,
-  mediumDesktopWidth
+  mediumDesktopWidth,
+  desktopWidth,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
 import { Status } from "../../../AssessmentPage/components/Header/styled";
 
-export const Container = styled.div`
-  height: 130px;
+export const MobileHeader = styled.div`
+  height: auto;
   display: flex;
   align-items: center;
-  flex-direction: column;
-  background: ${darkBlueSecondary};
-  align-items: center;
+  background: ${themeColor};
+  padding: 15px 20px;
 `;
 
-export const Title = styled.div`
-  font-size: 22px;
-  margin: 0;
-  word-break: break-all;
+export const MainContainer = styled(FlexContainer)`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+
+export const RightWrapper = styled(FlexContainer)``;
+
+export const Title = styled.h1`
+  font-size: ${props => props.theme.header.headerTitleFontSize};
+  color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
-  max-width: 330px;
+  line-height: normal
+  margin: 0px;
+  max-width: 250px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  color: ${white};
-  align-items: center;
+  word-break: break-all;
 
   @media screen and (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
     max-width: 170px;
+  }
+  @media screen and (max-width: ${mobileWidthLarge}) {
+    max-width: 140px;
   }
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex-basis: 450px;
+  flex-basis: 20%;
+`;
+
+export const RightFlexContainer = styled(FlexContainer)`
+  flex-basis: 30%;
+`;
+
+export const AssignButton = styled(EduButton)`
+  width: 120px;
+
+  @media (max-width: ${desktopWidth}) {
+    width: auto;
+  }
 `;
 
 export const ShareIcon = styled(IconShare)`
   width: 16px;
   height: 16px;
   fill: ${themeColor};
-`;
-
-export const MenuIcon = styled(Icon)`
-  display: none;
-  @media (max-width: ${tabletWidth}) {
-    display: block;
-    color: #fff;
-    font-size: 20px;
-    margin-right: 8px;
-  }
 `;
 
 export const MenuIconWrapper = styled.div`

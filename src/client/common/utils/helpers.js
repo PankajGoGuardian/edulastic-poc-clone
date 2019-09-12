@@ -195,8 +195,19 @@ export const validateQuestionsForDocBased = questions => {
     return false;
   }
 
+  const sectionTitle = questions
+    .filter(question => question.type === "sectionLabel")
+    .every(question => {
+      return !!question.title.trim();
+    });
+
+  if (!sectionTitle) {
+    message.error("Section name can not be empty");
+    return false;
+  }
+
   const correctAnswerPicked = questions
-    .filter(question => question.type !== "sectionLabel")
+    .filter(question => question.type !== "sectionLabel" && question.type !== "essayPlainText")
     .every(question => {
       const validationValue = get(question, "validation.validResponse.value");
       if (question.type === "math") {
@@ -209,6 +220,5 @@ export const validateQuestionsForDocBased = questions => {
     message.warning("Correct answers have to be chosen for every question");
     return false;
   }
-
   return true;
 };

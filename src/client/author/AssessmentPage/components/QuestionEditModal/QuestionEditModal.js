@@ -40,6 +40,7 @@ const modalStyles = {
 
 export default class QuestionEditModal extends React.Component {
   static propTypes = {
+    totalQuestions: PropTypes.number,
     visible: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     question: PropTypes.object,
@@ -81,7 +82,7 @@ export default class QuestionEditModal extends React.Component {
   };
 
   render() {
-    const { visible, onClose, question, index, onCurrentChange, onUpdate } = this.props;
+    const { visible, onClose, question, index, onCurrentChange, onUpdate, totalQuestions = 1 } = this.props;
 
     if (!question) {
       return null;
@@ -101,8 +102,12 @@ export default class QuestionEditModal extends React.Component {
           </div>
           <StandardSet alignment={question.alignment} onUpdate={onUpdate} />
           <ModalFooter>
-            <Button onClick={onCurrentChange(index - 1)}>Previous</Button>
-            <Button onClick={onCurrentChange(index + 1)}>Next</Button>
+            <Button onClick={onCurrentChange(index - 1)} disabled={index === 0}>
+              Previous
+            </Button>
+            <Button onClick={onCurrentChange(index + 1)} disabled={totalQuestions - 1 === index}>
+              Next
+            </Button>
           </ModalFooter>
         </ModalWrapper>
       </Modal>

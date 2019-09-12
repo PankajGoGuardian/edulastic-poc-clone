@@ -52,7 +52,7 @@ const AssessmentDetails = ({
       <CardDetails>
         <CardTitle>
           {title}
-          <TestType type={testType}>
+          <TestType data-cy="testType" type={testType}>
             {testType === PRACTICE
               ? t("common.practice")
               : testType === ASSESSMENT

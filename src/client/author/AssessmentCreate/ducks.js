@@ -62,6 +62,7 @@ export const reducer = createReducer(initialState, {
 
 const defaultTestItem = {
   isDocBased: true,
+  itemLevelScoring: false,
   columns: [],
   data: {
     questions: [],

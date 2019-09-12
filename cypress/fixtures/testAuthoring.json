@@ -24,5 +24,11 @@
     "grade": ["Grade 10"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_STD.default", "MCQ_STD.default"]
+  },
+  "SMOKE_1": {
+    "name": "Smoke Test 1",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1"]
   }
 }

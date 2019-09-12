@@ -13,8 +13,8 @@ const StudentFeedback = ({ question, qId, qLabel }) => {
       </FeedbackText>
       <FeedbackContainer>
         <ScoreWrapper>
-          <Score>{score || score === 0 ? parseFloat(score.toFixed(2)) : "-"}</Score>
-          <Total>{maxScore}</Total>
+          <Score data-cy="score">{score || score === 0 ? parseFloat(score.toFixed(2)) : "-"}</Score>
+          <Total data-cy="maxscore">{maxScore}</Total>
         </ScoreWrapper>
         <Feedback>
           <FeedbackGiven>{feedback && feedback.text}</FeedbackGiven>

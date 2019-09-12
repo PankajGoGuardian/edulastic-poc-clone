@@ -43,13 +43,13 @@ class StudentTestPage {
   getNext = () => cy.get("[data-cy=next]");
 
   clickOnNext = () => {
-    cy.server();
-    cy.route("POST", "**/test-activity/**").as("saved");
+    // cy.server();
+    // cy.route("POST", "**/test-activity/**").as("saved");
     cy.wait(500);
     this.getNext()
       .should("be.visible")
       .click();
-    cy.wait("@saved");
+    // cy.wait("@saved");
   };
 
   getPrevious = () => cy.get("[data-cy=prev]");
@@ -567,9 +567,9 @@ class StudentTestPage {
 
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
-  attemptAssignment = (email, status, attempt, questionTypeMap) => {
+  attemptAssignment = (email, status, attempt, questionTypeMap, password) => {
     if (status !== studentSide.NOT_STARTED) {
-      cy.login("student", email);
+      cy.login("student", email, password);
       this.assignmentPage.clickOnAssignmentButton();
       Object.keys(attempt).forEach(queNum => {
         const [queType] = questionTypeMap[queNum].queKey.split(".");

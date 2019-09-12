@@ -3,10 +3,28 @@ import CypressHelper from "../../../util/cypressHelpers";
 export default class TestAssignPage {
   selectClass = className => {
     cy.get('[data-cy="selectClass"]').click();
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(className)
-      .click();
+
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      $ele
+        // eslint-disable-next-line func-names
+        .filter(function() {
+          return Cypress.$(this).text() === className;
+        })
+        .click();
+    });
     cy.focused().blur();
+  };
+
+  selectTestType = type => {
+    cy.get('[data-cy="testType"]').click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      $ele
+        // eslint-disable-next-line func-names
+        .filter(function() {
+          return Cypress.$(this).text() === type;
+        })
+        .click();
+    });
   };
 
   selectStudent = student => {

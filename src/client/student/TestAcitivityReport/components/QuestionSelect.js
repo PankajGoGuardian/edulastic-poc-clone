@@ -12,6 +12,7 @@ const { Option } = Select;
 const QuestionSelect = ({ count, current, setCurrentItem }) => (
   <QuestionListWrapper>
     <Select
+      data-cy="questionNumber"
       value={current}
       onChange={val => {
         setCurrentItem(val);
@@ -25,14 +26,14 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
     </Select>
     <Navcontainer>
       {current > 0 ? (
-        <PreviousBtn onClick={() => setCurrentItem(current - 1)}>
+        <PreviousBtn data-cy="previousItem" onClick={() => setCurrentItem(current - 1)}>
           <i class="fa fa-angle-left" />
         </PreviousBtn>
       ) : (
         ""
       )}
       {current < count - 1 ? (
-        <NextBtn onClick={() => setCurrentItem(current + 1)}>
+        <NextBtn data-cy="nextItem" onClick={() => setCurrentItem(current + 1)}>
           <i class="fa fa-angle-right" />
         </NextBtn>
       ) : (

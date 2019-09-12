@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useRef, useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
@@ -650,7 +651,7 @@ const SvgDraw = ({
       <svg
         ref={svg}
         {...getSvgHandlers()}
-        width={"calc(100% - 50px)"}
+        width="calc(100% - 50px)"
         style={{
           height: !height ? document.body.scrollHeight + 28 : height,
           background: "transparent",
@@ -713,17 +714,15 @@ const SvgDraw = ({
           )}
 
         {pathes.length > 0 &&
-          pathes.map((path, i) => {
-            return (
-              <Path
-                key={i}
-                onClick={deleteMode ? handleDeletePath(i) : undefined}
-                stroke={path[0].color}
-                strokeWidth={path[0].lineWidth}
-                d={getPointsForDrawingPath(path)}
-              />
-            );
-          })}
+          pathes.map((path, i) => (
+            <Path
+              key={i}
+              onClick={deleteMode ? handleDeletePath(i) : undefined}
+              stroke={path[0].color}
+              strokeWidth={path[0].lineWidth}
+              d={getPointsForDrawingPath(path)}
+            />
+          ))}
 
         {points.length > 0 && (
           <Path

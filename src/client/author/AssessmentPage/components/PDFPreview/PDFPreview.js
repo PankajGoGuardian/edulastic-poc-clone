@@ -1,12 +1,12 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
 import { Droppable } from "react-drag-and-drop";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { QuestionNumber } from "../QuestionItem/styled";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -36,9 +36,9 @@ const PDFPreview = ({
   onDocumentLoad,
   onDropAnnotation,
   onHighlightQuestion,
-  questions,
   questionsById,
-  answersById
+  answersById,
+  renderExtra = ""
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -58,6 +58,7 @@ const PDFPreview = ({
                 <Page pageNumber={page.pageNo} renderTextLayer={false} />
               </Document>
             )}
+            {renderExtra}
           </Preview>
         </Droppable>
         {annotations

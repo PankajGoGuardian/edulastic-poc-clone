@@ -170,7 +170,7 @@ class Container extends React.Component {
     if (!validateQuestionsForDocBased(assessmentQuestions)) {
       return;
     }
-    if (this.validateTest(test)) {
+    if (this.validateTest(assessment)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true);
       } else {

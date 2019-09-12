@@ -439,7 +439,6 @@ class ClassBoard extends Component {
 
   handleMarkSubmitted = () => {
     const { markSubmitted, match, studentUnselectAll, selectedStudents } = this.props;
-    console.log({ selectedStudents });
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) return message.warn("No students selected");

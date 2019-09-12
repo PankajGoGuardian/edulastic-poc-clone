@@ -6,6 +6,9 @@ import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
+import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
+import { roleuser } from "@edulastic/constants";
+
 import { Radio, Row, Col, Select } from "antd";
 import styled from "styled-components";
 
@@ -34,7 +37,7 @@ import {
 import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
 import { receiveStandardsProficiencyAction } from "../../../StandardsProficiency/ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Test Settings" };
@@ -51,10 +54,24 @@ class TestSetting extends Component {
   }
 
   componentDidMount() {
-    const { loadTestSetting, userOrgId, loadPerformanceBand, loadStandardsProficiency } = this.props;
-    loadTestSetting({ orgId: userOrgId });
+    const { loadTestSetting, userOrgId, loadPerformanceBand, loadStandardsProficiency, schoolId, role } = this.props;
+    if (role === roleuser.SCHOOL_ADMIN) {
+      loadTestSetting({ orgType: "institution", orgId: schoolId });
+    } else {
+      loadTestSetting({ orgId: userOrgId });
+    }
+
     loadPerformanceBand({ orgId: userOrgId });
     loadStandardsProficiency({ orgId: userOrgId });
+  }
+
+  componentDidUpdate(prevProps) {
+    /**
+     * school selection is changed
+     */
+    if (prevProps.schoolId != this.props.schoolId && this.props.schoolId) {
+      loadTestSetting({ orgType: "institution", orgId: this.props.schoolId });
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -71,21 +88,21 @@ class TestSetting extends Component {
   changePartialScore = e => {
     const testSetting = { ...this.state.testSetting };
     testSetting.partialScore = e.target.value;
-    this.props.setTestSettingValue(testSetting);
+    this.props.setTestSettingValue(testSetting, this.props.role === roleuser.SCHOOL_ADMIN);
   };
 
   changeTimerScore = e => {
     const testSetting = { ...this.state.testSetting };
     testSetting.timer = e.target.value;
-    this.props.setTestSettingValue(testSetting);
+    this.props.setTestSettingValue(testSetting, this.props.role === roleuser.SCHOOL_ADMIN);
   };
 
   updateValue = () => {
     const { testSetting } = this.state;
-    const { createTestSetting, updateTestSetting } = this.props;
+    const { createTestSetting, updateTestSetting, schoolId, role } = this.props;
     const updateData = {
-      orgId: this.props.userOrgId,
-      orgType: "district",
+      orgId: role === roleuser.SCHOOL_ADMIN ? schoolId : this.props.userOrgId,
+      orgType: role === roleuser.SCHOOL_ADMIN ? "institution" : "district",
       partialScore: testSetting.partialScore,
       timer: testSetting.timer,
       testTypesProfile: testSetting.testTypesProfile
@@ -112,17 +129,21 @@ class TestSetting extends Component {
 
     const { testSetting } = this.state;
     const btnSaveStr = testSetting.hasOwnProperty("_id") ? "Save" : "Create";
-    const PerformanceBandOptions = performanceBandProfiles.map(x => (
+
+    const performanceBandOptions = performanceBandProfiles.map(x => (
       <Select.Option key={x._id} value={x._id}>
         {x.name}
       </Select.Option>
     ));
 
-    const StandardsProficiencyOptions = standardsProficiencyProfiles.map(x => (
+    const standardsProficiencyOptions = standardsProficiencyProfiles.map(x => (
       <Select.Option key={x._id} value={x._id}>
         {x.name}
       </Select.Option>
     ));
+
+    const performanceBand1 = performanceBandProfiles[0];
+    const standardProficiency1 = standardsProficiencyProfiles[0];
 
     return (
       <TestSettingDiv>
@@ -135,6 +156,7 @@ class TestSetting extends Component {
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
+            <SaSchoolSelect />
             <StyledRow>
               <React.Fragment>
                 <StyledLabel>Allow Partial Score </StyledLabel>
@@ -175,7 +197,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {PerformanceBandOptions}
+                    {performanceBandOptions}
                   </StyledSelect>
                 </Col>
                 <Col span={8}>
@@ -187,7 +209,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {PerformanceBandOptions}
+                    {performanceBandOptions}
                   </StyledSelect>
                 </Col>
                 <Col span={8}>
@@ -201,7 +223,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {PerformanceBandOptions}
+                    {performanceBandOptions}
                   </StyledSelect>
                 </Col>
               </FlexingRow>
@@ -222,7 +244,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {StandardsProficiencyOptions}
+                    {standardsProficiencyOptions}
                   </StyledSelect>
                 </Col>
                 <Col span={8}>
@@ -236,7 +258,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {StandardsProficiencyOptions}
+                    {standardsProficiencyOptions}
                   </StyledSelect>
                 </Col>
                 <Col span={8}>
@@ -250,7 +272,7 @@ class TestSetting extends Component {
                     placeholder="select one option"
                     size="large"
                   >
-                    {StandardsProficiencyOptions}
+                    {standardsProficiencyOptions}
                   </StyledSelect>
                 </Col>
               </FlexingRow>
@@ -270,7 +292,7 @@ class TestSetting extends Component {
 
 const enhance = compose(
   connect(
-    state => ({
+    (state, props) => ({
       testSetting: get(state, ["testSettingReducer", "data"], {}),
       loading: get(state, ["testSettingReducer", "loading"], false),
       updating: get(state, ["testSettingReducer", "updating"], false),
@@ -279,7 +301,9 @@ const enhance = compose(
       performanceBandLoading: get(state, ["performanceBandReducer", "loading"], false),
       performanceBandProfiles: get(state, ["performanceBandReducer", "profiles"], []),
       standardsProficiencyProfiles: get(state, ["standardsProficiencyReducer", "data"], []),
-      userOrgId: getUserOrgId(state)
+      userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
+      schoolId: get(state, "user.saSettingsSchool")
     }),
     {
       loadTestSetting: receiveTestSettingAction,

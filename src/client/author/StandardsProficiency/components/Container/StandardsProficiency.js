@@ -114,7 +114,7 @@ function ProfileRow(props) {
 
       <StyledProfileRow type="flex">
         <Col span={12}>
-          {active ? (
+          {active & !readOnly ? (
             <Input
               value={profileName}
               onChange={e => {

@@ -14,7 +14,7 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
 
     let currentEvaluation = answer.map((item, index) => {
       let resp = userResponse?.[index]?.value;
-      if (!resp) return null;
+      if (!item?.value && !resp) return true;
       return item?.value === resp;
     });
 
@@ -50,6 +50,7 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
 
     maxScore = Math.max(possibleMaxScore || 0, maxScore);
 
+    const answerLength = answer.filter(identity).length;
     let currentEvaluation = answer.map((item, index) => {
       let resp = userResponse?.[index]?.value;
       if (!resp) return null;
@@ -57,7 +58,7 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
     });
 
     const correctCount = currentEvaluation.filter(identity).length;
-    const currentScore = (possibleMaxScore / answer.length) * correctCount;
+    const currentScore = (possibleMaxScore / answerLength) * correctCount;
 
     if (currentScore > score) {
       evaluation = currentEvaluation;

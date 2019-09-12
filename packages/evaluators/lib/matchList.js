@@ -43,7 +43,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
             : (_userResponse$index = userResponse[index]) === null || _userResponse$index === void 0
             ? void 0
             : _userResponse$index.value;
-        if (!resp) return null;
+        if (!(item === null || item === void 0 ? void 0 : item.value) && !resp) return true;
         return (item === null || item === void 0 ? void 0 : item.value) === resp;
       });
       if (currentEvaluation.every(_identity2["default"])) score = possibleMaxScore;
@@ -111,6 +111,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
         possibleMaxScore = validAnswer.score;
       if (!Array.isArray(answer)) continue;
       maxScore = Math.max(possibleMaxScore || 0, maxScore);
+      var answerLength = answer.filter(_identity2["default"]).length;
       var currentEvaluation = answer.map(function(item, index) {
         var _userResponse$index2;
 
@@ -124,7 +125,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
         return (item === null || item === void 0 ? void 0 : item.value) === resp;
       });
       var correctCount = currentEvaluation.filter(_identity2["default"]).length;
-      var currentScore = (possibleMaxScore / answer.length) * correctCount;
+      var currentScore = (possibleMaxScore / answerLength) * correctCount;
 
       if (currentScore > score) {
         evaluation = currentEvaluation;

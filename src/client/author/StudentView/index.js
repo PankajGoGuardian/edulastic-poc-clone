@@ -6,6 +6,7 @@ import { findIndex, isUndefined, get, keyBy } from "lodash";
 import produce, { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
 import { Modal, Button, Input, message, Tooltip } from "antd";
+import { ThemeProvider } from "styled-components";
 import {
   StyledFlexContainer,
   AllButton,
@@ -239,15 +240,17 @@ class StudentViewContainer extends Component {
         </StyledFlexContainer>
         {!loading && (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            <ClassQuestions
-              currentStudent={currentStudent || {}}
-              questionActivities={studentResponse.questionActivities || []}
-              classResponse={classResponseProcessed}
-              testItemsOrder={testItemsOrder}
-              studentViewFilter={filter}
-              labels={_getquestionLabels(classResponse.testItems, testItemIds)}
-              isPresentationMode={isPresentationMode}
-            />
+            <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
+              <ClassQuestions
+                currentStudent={currentStudent || {}}
+                questionActivities={studentResponse.questionActivities || []}
+                classResponse={classResponseProcessed}
+                testItemsOrder={testItemsOrder}
+                studentViewFilter={filter}
+                labels={_getquestionLabels(classResponse.testItems, testItemIds)}
+                isPresentationMode={isPresentationMode}
+              />
+            </ThemeProvider>
           </AnswerContext.Provider>
         )}
       </React.Fragment>

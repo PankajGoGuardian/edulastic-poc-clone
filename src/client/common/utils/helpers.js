@@ -202,7 +202,7 @@ export const validateQuestionsForDocBased = questions => {
     });
 
   if (!sectionTitle) {
-    message.errord("Section name can not be empty");
+    message.error("Section name can not be empty");
     return false;
   }
 

@@ -17,7 +17,8 @@ export const SelectContainer = styled.div`
   .ant-select-selection {
     display: flex;
     align-items: center;
-    padding-left: 10px;
+    padding-left: 5px;
+    justify-content: center;
     border: 1px solid;
     border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
     background: ${props => props.backgroundColor};
@@ -26,6 +27,11 @@ export const SelectContainer = styled.div`
       border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
     }
   }
+
+  .ant-select-selection__rendered {
+    width: 100%;
+  }
+
   .ant-select-selection-selected-value {
     font-size: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
     font-weight: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};

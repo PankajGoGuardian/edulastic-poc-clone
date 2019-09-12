@@ -26,6 +26,7 @@ const Thumbnails = ({
   onMovePageUp,
   onMovePageDown,
   onInsertBlankPage,
+  setDeleteConfirmation,
   onRotate,
   review,
   currentPage
@@ -52,8 +53,9 @@ const Thumbnails = ({
               key={key}
               index={key}
               page={item.pageNo}
+              setDeleteConfirmation={setDeleteConfirmation}
               onClick={onChangePage(key)}
-              onDelete={onDeletePage(key)}
+              onDelete={() => onDeletePage(key)}
               onMoveUp={onMovePageUp(key)}
               onMoveDown={onMovePageDown(key)}
               onInsertBlankPage={onInsertBlankPage(key)}
@@ -84,6 +86,7 @@ Thumbnails.propTypes = {
   onAddBlankPage: PropTypes.func.isRequired,
   onDeletePage: PropTypes.func.isRequired,
   onDeleteSelectedBlankPage: PropTypes.func.isRequired,
+  setDeleteConfirmation: PropTypes.func.isRequired,
   onMovePageUp: PropTypes.func.isRequired,
   onMovePageDown: PropTypes.func.isRequired,
   onInsertBlankPage: PropTypes.func.isRequired,

@@ -8,6 +8,7 @@ import { withRouter } from "react-router";
 import { isEmpty, get } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB } from "@edulastic/common";
+import { Modal } from "antd";
 
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
@@ -69,6 +70,8 @@ class Worksheet extends React.Component {
     fillColor: "#ff0000",
     activeMode: "",
     history: 0,
+    selected: 0,
+    deleteConfirmation: false,
     deleteMode: false,
     lineWidth: 6
   };
@@ -140,46 +143,42 @@ class Worksheet extends React.Component {
 
   handleDeleteSelectedBlankPage = () => {
     const { currentPage } = this.state;
-    this.deleteBlankPage(currentPage);
+    const { pageStructure } = this.props;
+    if (pageStructure[currentPage] && pageStructure[currentPage].URL) {
+      this.setDeleteConfirmation(true, currentPage);
+    } else {
+      this.deleteBlankPage(currentPage);
+    }
   };
 
-  handleDeletePage = pageNumber => () => {
+  handleDeletePage = pageNumber => {
     this.deleteBlankPage(pageNumber);
   };
 
   deleteBlankPage = pageNumber => {
     const { pageStructure, setTestData, annotations } = this.props;
-
     if (pageStructure.length < 2) return;
 
-    const page = pageStructure[pageNumber];
+    const updatedPageStructure = [...pageStructure];
 
-    if (page && page.URL === "blank") {
-      const updatedPageStructure = [...pageStructure];
+    updatedPageStructure.splice(pageNumber, 1);
 
-      updatedPageStructure.splice(pageNumber, 1);
+    const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
-      const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
+    const updatedAssessment = {
+      pageStructure: updatedPageStructure.map((item, index) => {
+        if (item.URL !== "blank") return item;
 
-      const updatedAnnotations = [...annotations];
+        return {
+          ...item,
+          pageNo: index + 1
+        };
+      }),
+      annotations: updatedAnnotations
+    };
 
-      updatedAnnotations.splice(annotationIndex, 1);
-
-      const updatedAssessment = {
-        pageStructure: updatedPageStructure.map((item, index) => {
-          if (item.URL !== "blank") return item;
-
-          return {
-            ...item,
-            pageNo: index + 1
-          };
-        }),
-        annotations: updatedAnnotations
-      };
-
-      this.handleChangePage(pageNumber - 1);
-      setTestData(updatedAssessment);
-    }
+    this.handleChangePage(pageNumber - 1);
+    setTestData(updatedAssessment);
   };
 
   handleMovePageUp = pageIndex => () => {
@@ -309,9 +308,24 @@ class Worksheet extends React.Component {
     this.setState({ activeMode: "" });
   };
 
+  setDeleteConfirmation = (deleteConfirmation, selected = 0) => {
+    this.setState({ deleteConfirmation, selected });
+  };
+  // setup for scratchpad ends
+
   // setup for scratchpad ends
   render() {
-    const { currentPage, highlightedQuestion, currentColor, fillColor, activeMode, deleteMode, lineWidth } = this.state;
+    const {
+      currentPage,
+      highlightedQuestion,
+      currentColor,
+      fillColor,
+      activeMode,
+      deleteConfirmation,
+      deleteMode,
+      selected,
+      lineWidth
+    } = this.state;
     const {
       docUrl,
       annotations,
@@ -346,51 +360,61 @@ class Worksheet extends React.Component {
 
     return (
       <WorksheetWrapper>
-        {
-          <Thumbnails
-            list={pageStructure}
-            currentPage={currentPage}
-            onReupload={this.handleReupload}
-            onPageChange={this.handleChangePage}
-            onAddBlankPage={this.handleAppendBlankPage}
-            onDeletePage={this.handleDeletePage}
-            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-            onMovePageUp={this.handleMovePageUp}
-            onMovePageDown={this.handleMovePageDown}
-            onInsertBlankPage={this.handleInsertBlankPage}
-            onRotate={this.handleRotate}
-            review={review}
-          />
-        }
-        {
-          <Fragment>
-            <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
-              <PDFPreview
-                page={selectedPage}
-                currentPage={currentPage + 1}
-                annotations={annotations}
-                onDropAnnotation={this.handleAddAnnotation}
-                onHighlightQuestion={this.handleHighlightQuestion}
-                questions={questions}
-                questionsById={questionsById}
-                answersById={answersById}
-                renderExtra={svgContainer}
-              />
-              <Tools
-                isWorksheet
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-              />
-            </div>
-          </Fragment>
-        }
+        <Modal
+          visible={deleteConfirmation}
+          onOk={() => {
+            this.handleDeletePage(selected);
+            this.setDeleteConfirmation(false);
+          }}
+          onCancel={() => this.setDeleteConfirmation(false)}
+          title="Confirm Page Deletion"
+          okText="Yes"
+          cancelText="No"
+        >
+          {"Are you sure that you want to delete this page?"}
+        </Modal>
+        <Thumbnails
+          list={pageStructure}
+          currentPage={currentPage}
+          onReupload={this.handleReupload}
+          onPageChange={this.handleChangePage}
+          onAddBlankPage={this.handleAppendBlankPage}
+          onDeletePage={this.handleDeletePage}
+          setDeleteConfirmation={this.setDeleteConfirmation}
+          onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+          onMovePageUp={this.handleMovePageUp}
+          onMovePageDown={this.handleMovePageDown}
+          onInsertBlankPage={this.handleInsertBlankPage}
+          onRotate={this.handleRotate}
+          review={review}
+        />
+        <Fragment>
+          <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
+            <PDFPreview
+              page={selectedPage}
+              currentPage={currentPage + 1}
+              annotations={annotations}
+              onDropAnnotation={this.handleAddAnnotation}
+              onHighlightQuestion={this.handleHighlightQuestion}
+              questions={questions}
+              questionsById={questionsById}
+              answersById={answersById}
+              renderExtra={svgContainer}
+            />
+            <Tools
+              isWorksheet
+              onFillColorChange={this.onFillColorChange}
+              fillColor={fillColor}
+              deleteMode={deleteMode}
+              currentColor={currentColor}
+              onToolChange={this.handleToolChange}
+              activeMode={activeMode}
+              undo={this.handleUndo}
+              redo={this.handleRedo}
+              onColorChange={this.handleColorChange}
+            />
+          </div>
+        </Fragment>
         <Questions
           noCheck={noCheck}
           list={questions}

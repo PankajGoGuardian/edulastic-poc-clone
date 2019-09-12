@@ -20,7 +20,8 @@ const AssessmentPlayer = ({
   isPasswordValidated,
   testActivityLoading,
   test,
-  LCBPreviewModal
+  LCBPreviewModal,
+  closeTestPreviewModal
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -48,7 +49,14 @@ const AssessmentPlayer = ({
   }, []);
 
   if (preview) {
-    return <ThemeContainer LCBPreviewModal={LCBPreviewModal} defaultAP preview />;
+    return (
+      <ThemeContainer
+        closeTestPreviewModal={closeTestPreviewModal}
+        LCBPreviewModal={LCBPreviewModal}
+        defaultAP
+        preview
+      />
+    );
   }
   if (testActivityLoading) {
     return <Spin />;

@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
-import { isArray, isUndefined, isNull, isEmpty } from "lodash";
+import { isArray, isUndefined, isNull, isEmpty, isObject } from "lodash";
 
 import {
   SHORT_TEXT,
@@ -99,9 +99,9 @@ class QuestionItem extends React.Component {
       evaluation
     } = this.props;
 
-    let allCorrect = isArray(evaluation)
-      ? !isEmpty(evaluation) && evaluation.filter(v => !isNull(v)).every(v => v)
-      : !isEmpty(evaluation);
+    let allCorrect = isObject(evaluation)
+      ? !isEmpty(evaluation) && isArray(evaluation) && evaluation.filter(v => !isNull(v)).every(v => v)
+      : evaluation;
 
     if (type === CLOZE_DROP_DOWN) {
       allCorrect = evaluation && evaluation["0"];
@@ -178,7 +178,9 @@ class QuestionItem extends React.Component {
       return null;
     }
 
-    let correct = isArray(evaluation) ? !isEmpty(evaluation) && evaluation.every(value => value) : !isEmpty(evaluation);
+    let correct = isObject(evaluation)
+      ? !isEmpty(evaluation) && isArray(evaluation) && evaluation.every(value => value)
+      : evaluation;
 
     if (type === CLOZE_DROP_DOWN) {
       correct = evaluation && evaluation["0"];

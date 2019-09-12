@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import { roleuser } from "@edulastic/constants";
 
 import { Row, Col, Button, Icon, Checkbox } from "antd";
 import {
@@ -33,7 +34,7 @@ import {
 
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Interested Standards" };
@@ -131,7 +132,8 @@ class InterestedStandards extends Component {
   };
 
   render() {
-    const { loading, updating, saving, history, curriculums, interestedStaData } = this.props;
+    const { loading, updating, saving, history, curriculums, interestedStaData, role } = this.props;
+    const readOnly = role === roleuser.SCHOOL_ADMIN;
     const showSpin = loading || updating || saving;
 
     const { standardSetsModalVisible } = this.state;
@@ -156,9 +158,11 @@ class InterestedStandards extends Component {
         for (let j = 0; j < selectedStandards[i].length; j++) {
           subjectStandards.push(
             <StyledSubjectLine>
-              <StyledSubjectCloseButton onClick={e => this.closeCurriculum(e, selectedStandards[i][j]._id)}>
-                <Icon type="close" />
-              </StyledSubjectCloseButton>
+              {readOnly ? null : (
+                <StyledSubjectCloseButton onClick={e => this.closeCurriculum(e, selectedStandards[i][j]._id)}>
+                  <Icon type="close" />
+                </StyledSubjectCloseButton>
+              )}
               <p>{selectedStandards[i][j].name}</p>
             </StyledSubjectLine>
           );
@@ -186,30 +190,40 @@ class InterestedStandards extends Component {
             )}
             <Row>
               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
+                <StyledCheckbox
+                  disabled={readOnly}
+                  onChange={this.updatePreferences}
+                  name="showAllStandards"
+                  checked={showAllStandards}
+                >
                   Show all standards to the users
                 </StyledCheckbox>
                 <StyledCheckbox
+                  disabled={readOnly}
                   onChange={this.updatePreferences}
                   name="includeOtherStandards"
                   checked={includeOtherStandards}
                 >
                   Include other standards opted by the users
                 </StyledCheckbox>
-                <Button
-                  style={{ width: "260px" }}
-                  type="primary"
-                  onClick={this.showMyStandardSetsModal}
-                  shape="round"
-                  ghost
-                >
-                  Select your standard sets
-                </Button>
+                {readOnly ? null : (
+                  <Button
+                    style={{ width: "260px" }}
+                    type="primary"
+                    onClick={this.showMyStandardSetsModal}
+                    shape="round"
+                    ghost
+                  >
+                    Select your standard sets
+                  </Button>
+                )}
               </Col>
               <Col span={12}>
-                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
-                  Save
-                </StyledSaveButton>
+                {readOnly ? null : (
+                  <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
+                    Save
+                  </StyledSaveButton>
+                )}
               </Col>
             </Row>
 
@@ -238,7 +252,8 @@ const enhance = compose(
       saving: get(state, ["interestedStandardsReducer", "saving"], false),
       updating: get(state, ["interestedStandardsReducer", "updating"], false),
       userOrgId: getUserOrgId(state),
-      curriculums: getCurriculumsListSelector(state)
+      curriculums: getCurriculumsListSelector(state),
+      role: getUserRole(state)
     }),
     {
       loadInterestedStandards: receiveInterestedStandardsAction,

@@ -86,8 +86,14 @@ const Crosses = ({
           ))}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => {
+              handleLabelVisibility(index);
+              setHoveredIndex(index);
+            }}
+            onMouseLeave={() => {
+              handleLabelVisibility(null);
+              setHoveredIndex(null);
+            }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
             width={step - 2}

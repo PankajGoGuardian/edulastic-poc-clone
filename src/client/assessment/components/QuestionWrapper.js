@@ -9,6 +9,7 @@ import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
+import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -52,7 +53,6 @@ import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
-import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { getFontSize } from "../utils/helpers";
 
 const QuestionContainer = styled.div`

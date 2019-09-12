@@ -52,6 +52,7 @@ export {
   clearSelection,
   highlightSelectedText,
   decodeHTML,
+  hexToRGB,
   rgbToHexc
 } from "./src/helpers";
 

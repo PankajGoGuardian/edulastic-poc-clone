@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-
+import uuid from "uuid/v4";
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -38,7 +38,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleAddResp = () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possibleResponses.push("");
+        draft.possibleResponses.push({ value: uuid(), label: "" });
       })
     );
   };
@@ -84,7 +84,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
           }
         });
 
-        draft.possibleResponses[index] = value;
+        draft.possibleResponses[index].label = value;
       })
     );
   };
@@ -184,7 +184,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onAddInner = index => () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possibleResponseGroups[index].responses.push("");
+        draft.possibleResponseGroups[index].responses.push({ value: uuid(), label: "" });
       })
     );
   };
@@ -263,7 +263,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
           }
         });
 
-        draft.possibleResponseGroups[ind].responses[index] = value;
+        draft.possibleResponseGroups[ind].responses[index].label = value;
       })
     );
   };
@@ -305,8 +305,8 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
+        <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
       </Paper>
-      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </ContentArea>
   );
 };

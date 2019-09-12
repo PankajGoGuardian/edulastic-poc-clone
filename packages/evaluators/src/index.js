@@ -18,3 +18,4 @@ export { default as clozeDragDrop } from "./clozeDragDrop";
 export { default as essayRichText } from "./essayRichText";
 export { default as charts } from "./charts";
 export { default as fractionEditor } from "./fractionEditor";
+export { default as matchList } from "./matchList";

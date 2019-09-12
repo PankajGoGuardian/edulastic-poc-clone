@@ -21,7 +21,8 @@ import {
   charts,
   graph,
   // clozeMath,
-  fractionEditor
+  fractionEditor,
+  matchList
 } from "@edulastic/evaluators";
 
 const mathEvaluate = async (data, type) => {
@@ -48,7 +49,7 @@ const evaluators = {
   [questionType.ESSAY_PLAIN_TEXT]: essayRichText,
   [questionType.CLASSIFICATION]: classification,
   [questionType.CHOICE_MATRIX]: choiceMatrix,
-  [questionType.MATCH_LIST]: sortList,
+  [questionType.MATCH_LIST]: matchList,
   [questionType.SORT_LIST]: sortList,
   [questionType.LINE_CHART]: charts,
   [questionType.DOT_PLOT]: charts,

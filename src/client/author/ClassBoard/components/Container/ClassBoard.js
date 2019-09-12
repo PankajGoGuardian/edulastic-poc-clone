@@ -586,6 +586,7 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
+    const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
     return (
       <div>
         {showMarkSubmittedPopup && (
@@ -747,8 +748,8 @@ class ClassBoard extends Component {
                         overlay={
                           <DropMenu>
                             <CaretUp className="fa fa-caret-up" />
-                            <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsSubmittedModal}>
-                              <IconMarkAsAbsent />
+                            <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
+                              <i className="fa fa-check-square-o" style={{ fontSize: "15px" }} aria-hidden="true" />
                               <span>Mark as Submitted</span>
                             </MenuItems>
                             <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>

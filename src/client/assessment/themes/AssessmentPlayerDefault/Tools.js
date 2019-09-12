@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
@@ -61,14 +61,14 @@ const SquareTriangleIcon = customizeIcon(IconSquareTriangle);
 const SelectedIcon = customizeIcon(IconSelected);
 
 const buttonsList = [
-  { mode: drawTools.FREE_DRAW, icon: <Pencil /> },
-  { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon /> },
-  { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon /> },
-  { mode: drawTools.DRAW_SQUARE, icon: <SquareIcon /> },
-  { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon /> },
-  { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon /> },
-  { mode: drawTools.DRAW_TEXT, icon: <LettersIcon /> },
-  { mode: "none", icon: <RootIcon /> },
+  { mode: drawTools.FREE_DRAW, icon: <Pencil />, label: "Pencil" },
+  { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon />, label: "Draw Line" },
+  { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon />, label: "Draw Breaking Line" },
+  { mode: drawTools.DRAW_SQUARE, icon: <SquareIcon />, label: "Draw Square" },
+  { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon />, label: "Draw Triangle" },
+  { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon />, label: "Draw Circle" },
+  { mode: drawTools.DRAW_TEXT, icon: <LettersIcon />, label: "Text" },
+  { mode: "none", icon: <RootIcon />, label: "Math Equation" },
   { mode: "none", icon: <SquareTriangleIcon /> },
   { mode: "none", icon: <SelectedIcon /> }
 ];
@@ -102,9 +102,11 @@ const Tools = ({
       {activeMode === "" && (
         <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
           {buttonsList.map((button, i) => (
-            <StyledButton key={i} onClick={onToolChange(button.mode)} enable={activeMode === button.mode}>
-              {button.icon}
-            </StyledButton>
+            <Tooltip placement="right" title={button.label}>
+              <StyledButton key={i} onClick={onToolChange(button.mode)} enable={activeMode === button.mode}>
+                {button.icon}
+              </StyledButton>
+            </Tooltip>
           ))}
         </FlexContainer>
       )}

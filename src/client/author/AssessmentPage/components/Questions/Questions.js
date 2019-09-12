@@ -423,6 +423,7 @@ class Questions extends React.Component {
         </QuestionsWrapper>
         {shouldModalBeVisibile && (
           <QuestionEditModal
+            totalQuestions={list.length}
             visible={shouldModalBeVisibile}
             question={this.currentQuestion}
             index={currentEditQuestionIndex}

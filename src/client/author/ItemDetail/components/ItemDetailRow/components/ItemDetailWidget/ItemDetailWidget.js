@@ -43,14 +43,14 @@ const ItemDetailWidget = ({
     if (flowLayout) setShowButtons(false);
   };
   const showPoints = rowIndex === 0 && itemData.rows.length > 1 ? false : true;
-
+  const isPointsBlockVisible = itemData.itemLevelScoring && widgetIndex === 0 && showPoints;
   return (
     connectDragPreview &&
     connectDragSource &&
     connectDragPreview(
       <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <div style={{ flex: "10", maxWidth: "100%" }}>
+          <div style={{ flex: "10", maxWidth: "100%", paddingRight: isPointsBlockVisible ? "30px" : "" }}>
             {(widget.widgetType === "question" || widget.widgetType === "resource") && (
               <QuestionWrapper
                 testItem
@@ -69,7 +69,7 @@ const ItemDetailWidget = ({
           {(!flowLayout || showButtons) && (
             <div style={{ flex: "1" }}>
               <Buttons>
-                {itemData.itemLevelScoring && widgetIndex === 0 && showPoints && (
+                {isPointsBlockVisible && (
                   <div className="points">
                     Points :{" "}
                     <input

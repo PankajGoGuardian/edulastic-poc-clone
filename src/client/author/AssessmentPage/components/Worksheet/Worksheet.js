@@ -420,9 +420,9 @@ const enhance = compose(
   connect(
     (state, ownProps) => ({
       scratchPad: state.itemDetail.item
-        ? get(state, `userWork.present[${state.itemDetail.item._id}].scratchpad`, null)
+        ? get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}].scratchpad`, null)
         : null,
-      userWork: get(state, `userWork.present[${state.itemDetail.item._id}]`, {}),
+      userWork: get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}]`, {}),
       itemDetail: state.itemDetail,
       answersById: state.answers
     }),

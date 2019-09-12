@@ -152,32 +152,30 @@ class Worksheet extends React.Component {
 
     const page = pageStructure[pageNumber];
 
-    if (page && page.URL === "blank") {
-      const updatedPageStructure = [...pageStructure];
+    // if (page && page.URL === "blank") {
+    const updatedPageStructure = [...pageStructure];
 
-      updatedPageStructure.splice(pageNumber, 1);
+    updatedPageStructure.splice(pageNumber, 1);
 
-      const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
+    const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
 
-      const updatedAnnotations = [...annotations];
+    const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
-      updatedAnnotations.splice(annotationIndex, 1);
+    const updatedAssessment = {
+      pageStructure: updatedPageStructure.map((item, index) => {
+        if (item.URL !== "blank") return item;
 
-      const updatedAssessment = {
-        pageStructure: updatedPageStructure.map((item, index) => {
-          if (item.URL !== "blank") return item;
+        return {
+          ...item,
+          pageNo: index + 1
+        };
+      }),
+      annotations: updatedAnnotations
+    };
 
-          return {
-            ...item,
-            pageNo: index + 1
-          };
-        }),
-        annotations: updatedAnnotations
-      };
-
-      this.handleChangePage(pageNumber - 1);
-      setTestData(updatedAssessment);
-    }
+    this.handleChangePage(pageNumber - 1);
+    setTestData(updatedAssessment);
+    // }
   };
 
   handleMovePageUp = pageIndex => () => {

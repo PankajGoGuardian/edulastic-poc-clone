@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Modal } from "antd";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
 
-const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onInsertBlankPage, onRotate, url }) => (
+const createContextMenu = ({
+  index,
+  total,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  onInsertBlankPage,
+  onRotate,
+  url,
+  setDeleteConfirmation
+}) => (
   <Menu>
     <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
     <Menu.Divider />
@@ -19,9 +29,7 @@ const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onIns
     <Menu.Item onClick={onRotate("clockwise")}>Rotate clockwise</Menu.Item>
     <Menu.Item onClick={onRotate("counterclockwise")}>Rotate counterclockwise</Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={onDelete} disabled={url}>
-      Delete
-    </Menu.Item>
+    <Menu.Item onClick={url ? () => setDeleteConfirmation(true) : onDelete}>Delete</Menu.Item>
   </Menu>
 );
 
@@ -39,6 +47,7 @@ const ThumbnailsItem = ({
   rotate,
   total
 }) => {
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const contextMenu = createContextMenu({
     index,
     onDelete,
@@ -47,22 +56,38 @@ const ThumbnailsItem = ({
     onInsertBlankPage,
     onRotate,
     total,
+    setDeleteConfirmation,
     url
   });
 
   return (
-    <Dropdown overlay={contextMenu} trigger={["contextMenu"]}>
-      <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
-        <PagePreview rotate={rotate}>
-          {url && (
-            <Document file={url} renderMode="canvas">
-              <Page pageNumber={page} renderTextLayer={false} />
-            </Document>
-          )}
-        </PagePreview>
-        <PageNumber>{index + 1}</PageNumber>
-      </ThumbnailsItemWrapper>
-    </Dropdown>
+    <>
+      <Modal
+        visible={deleteConfirmation}
+        onOk={() => {
+          onDelete();
+          setDeleteConfirmation(false);
+        }}
+        onCancel={() => setDeleteConfirmation(false)}
+        title="Confirm Page Deletion"
+        okText="Yes"
+        cancelText="No"
+      >
+        {"Are you sure that you want to delete this page?"}
+      </Modal>
+      <Dropdown overlay={contextMenu} trigger={["contextMenu"]}>
+        <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
+          <PagePreview rotate={rotate}>
+            {url && (
+              <Document file={url} renderMode="canvas">
+                <Page pageNumber={page} renderTextLayer={false} />
+              </Document>
+            )}
+          </PagePreview>
+          <PageNumber>{index + 1}</PageNumber>
+        </ThumbnailsItemWrapper>
+      </Dropdown>
+    </>
   );
 };
 

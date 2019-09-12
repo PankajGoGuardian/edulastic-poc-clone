@@ -280,6 +280,10 @@ class Review extends PureComponent {
     }
   };
 
+  closeTestPreviewModal = () => {
+    this.setState({ isTestPreviewModalVisible: false });
+  };
+
   render() {
     const {
       test,
@@ -427,6 +431,7 @@ class Review extends PureComponent {
           testId={currentTestId}
           test={test}
           hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.closeTestPreviewModal}
         />
       </ReviewPageContainer>
     );

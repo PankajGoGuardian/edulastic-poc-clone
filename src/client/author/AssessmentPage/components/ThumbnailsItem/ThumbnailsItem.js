@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
 import { Dropdown, Menu } from "antd";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
 
-const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onInsertBlankPage, onRotate, url }) => (
+const createContextMenu = ({
+  index,
+  total,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  onInsertBlankPage,
+  onRotate,
+  url,
+  setDeleteConfirmation
+}) => (
   <Menu>
     <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
     <Menu.Divider />
@@ -19,9 +29,7 @@ const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onIns
     <Menu.Item onClick={onRotate("clockwise")}>Rotate clockwise</Menu.Item>
     <Menu.Item onClick={onRotate("counterclockwise")}>Rotate counterclockwise</Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={onDelete} disabled={url}>
-      Delete
-    </Menu.Item>
+    <Menu.Item onClick={url ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
   </Menu>
 );
 
@@ -36,6 +44,7 @@ const ThumbnailsItem = ({
   onRotate,
   url,
   current,
+  setDeleteConfirmation,
   rotate,
   total
 }) => {
@@ -47,6 +56,7 @@ const ThumbnailsItem = ({
     onInsertBlankPage,
     onRotate,
     total,
+    setDeleteConfirmation,
     url
   });
 
@@ -73,6 +83,7 @@ ThumbnailsItem.propTypes = {
   url: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   rotate: PropTypes.number,
   onClick: PropTypes.func.isRequired,
+  setDeleteConfirmation: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onMoveUp: PropTypes.func.isRequired,
   onMoveDown: PropTypes.func.isRequired,

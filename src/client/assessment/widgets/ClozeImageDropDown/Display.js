@@ -194,11 +194,9 @@ class Display extends Component {
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
-              const { widthpx: individualW, heightpx: individualH } =
-                responsecontainerindividuals[dropTargetIndex] || {};
               const btnStyle = {
-                widthpx: topAndLeftRatio(fromStringToNumberPx(individualW), imagescale, fontsize, smallSize),
-                heightpx: topAndLeftRatio(fromStringToNumberPx(individualH), imagescale, fontsize, smallSize),
+                height: responseContainer.height,
+                width: responseContainer.width,
                 top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
                 border: showDropItemBorder
@@ -209,18 +207,6 @@ class Display extends Component {
                 position: "absolute",
                 borderRadius: 5
               };
-
-              if (!btnStyle.widthpx) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-
-              if (!btnStyle.heightpx) {
-                btnStyle.height = responseBtnStyle.heightpx;
-              } else {
-                btnStyle.height = btnStyle.heightpx;
-              }
 
               return (
                 <div

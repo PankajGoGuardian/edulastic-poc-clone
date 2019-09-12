@@ -326,7 +326,6 @@ class Review extends PureComponent {
     ];
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
-    const isMobileSize = windowWidth > 468 ? 1 : 0;
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     return (
@@ -334,7 +333,7 @@ class Review extends PureComponent {
         <Row>
           <Col span={owner && isEditable ? 24 : 18}>
             <div ref={this.secondHeaderRef}>
-              <SecondHeader isMobileSize={isMobileSize}>
+              <SecondHeader>
                 <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
                 <HeaderBar
                   onSelectAll={this.handleSelectAll}
@@ -352,7 +351,7 @@ class Review extends PureComponent {
               </SecondHeader>
             </div>
           </Col>
-          <Col span={isSmallSize ? 18 : 24}>
+          <Col xs={24} lg={18}>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
@@ -389,7 +388,7 @@ class Review extends PureComponent {
               )}
             </Paper>
           </Col>
-          <ReviewSummaryWrapper span={isSmallSize ? 6 : 24}>
+          <ReviewSummaryWrapper xs={24} lg={6}>
             <ReviewSummary
               tableData={this.tableData}
               questionsCount={questionsCount}

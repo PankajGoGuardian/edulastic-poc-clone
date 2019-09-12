@@ -155,7 +155,6 @@ class Worksheet extends React.Component {
 
   deleteBlankPage = pageNumber => {
     const { pageStructure, setTestData, annotations } = this.props;
-    console.log("pag", pageNumber);
     if (pageStructure.length < 2) return;
 
     const updatedPageStructure = [...pageStructure];

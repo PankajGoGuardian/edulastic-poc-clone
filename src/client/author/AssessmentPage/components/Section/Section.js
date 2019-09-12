@@ -68,7 +68,7 @@ export default class Section extends React.Component {
 
     return (
       <SectionWrapper>
-        <SectionTitle>{title}</SectionTitle>
+        <SectionTitle title={title}>{title}</SectionTitle>
         {!review && this.renderActions()}
       </SectionWrapper>
     );

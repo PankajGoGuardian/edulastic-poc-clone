@@ -9,6 +9,7 @@ export const SectionWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
+  width: 240px;
   margin: 17px 20px 17px 13px;
 `;
 
@@ -16,6 +17,11 @@ export const SectionTitle = styled.p`
   margin: 0;
   font-size: 20px;
   font-weight: bold;
+  padding: 5px;
+  width: 205px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   color: ${secondaryTextColor};
 `;
 
@@ -32,8 +38,6 @@ export const SectionForm = styled(Input)`
 `;
 
 export const SectionFormConfirmButton = styled(IconCheck)`
-  position: absolute;
-  bottom: 14px;
   right: 0;
   fill: ${greenDark};
   cursor: pointer;

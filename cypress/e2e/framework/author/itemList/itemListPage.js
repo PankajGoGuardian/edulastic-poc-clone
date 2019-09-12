@@ -9,14 +9,15 @@ import MetadataPage from "./itemDetail/metadataPage";
 
 class ItemListPage {
   clickOnCreate = () => {
-    cy.server();
-    cy.route("POST", "**/testitem").as("saveItem");
-    cy.route("GET", "**/testitem/**").as("reload");
+    // cy.server();
+    // cy.route("POST", "**/testitem").as("saveItem");
+    //  cy.route("GET", "**/testitem/**").as("reload");
 
     cy.contains("Create")
       .should("be.visible")
       .click();
-    cy.wait("@saveItem").then(xhr => {
+
+    /*  cy.wait("@saveItem").then(xhr => {
       assert(xhr.status === 200, "Creating item failed");
       const itemId = xhr.response.body.result._id;
       console.log("Item created with _id : ", itemId);
@@ -25,7 +26,8 @@ class ItemListPage {
     // const xhr = await promisify(cy.wait("@reload"));
     cy.wait(
       "@reload"
-    ); /* .then(xhr => {
+    );  */
+    /* .then(xhr => {
       assert(xhr.status === 200, "GET item failed,writing item details failed");
       const itemId = xhr.response.body.result._id;
       console.log("Item created with _id : ", itemId);
@@ -34,7 +36,7 @@ class ItemListPage {
     // return itemId;
   };
 
-  createItem = (itemKey, queIndex = 0) => {
+  createItem = (itemKey, queIndex = 0, publish = true) => {
     const editItem = new EditItemPage();
     const metadataPage = new MetadataPage();
     return cy.fixture("questionAuthoring").then(itemData => {
@@ -72,18 +74,18 @@ class ItemListPage {
             queType
           ) > -1
         ) {
-          question.createQuestion(queType, queKey, queIndex);
-        } else question.createQuestion(queKey, queIndex);
+          question.createQuestion(queType, queKey, queIndex, publish);
+        } else question.createQuestion(queKey, queIndex, publish);
 
         if (itemData[queType][queKey].standards) {
           // editItem.getEditButton().click();
           editItem.header.metadata();
           metadataPage.mapStandards(itemData[queType][queKey].standards);
           // metadataPage.header.edit();
-          editItem.header.save();
         }
 
-        return editItem.header.clickOnPublishItem();
+        editItem.header.save(!publish);
+        if (publish) return editItem.header.clickOnPublishItem();
       }
     });
   };

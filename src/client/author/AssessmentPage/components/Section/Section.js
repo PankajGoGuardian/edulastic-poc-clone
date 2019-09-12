@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
+import { isEmpty, debounce } from "lodash";
 
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
@@ -77,6 +77,7 @@ export default class Section extends React.Component {
 
   renderForm() {
     const { title } = this.state;
+    const { onDelete } = this.props;
     return (
       <SectionWrapper>
         <SectionForm
@@ -86,7 +87,8 @@ export default class Section extends React.Component {
           onBlur={this.handleSetTitle}
           onPressEnter={this.handleSetTitle}
         />
-        <SectionFormConfirmButton onClick={this.handleSetTitle} />
+        <SectionFormConfirmButton style={{ marginLeft: "5px" }} onClick={this.handleSetTitle} />
+        <IconTrash onClick={onDelete} style={{ marginLeft: "5px", cursor: "pointer" }} />
       </SectionWrapper>
     );
   }

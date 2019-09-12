@@ -43,19 +43,19 @@ class AddQuestion extends React.Component {
       <AddQuestionWrapper>
         <ContentWrapper>
           <QuestionTypes>
-            <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+            <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
               <IconNewList />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
+            <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
               <IconPencilEdit />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+            <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
               <IconCaretDown />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(MATH)}>
+            <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
               <IconMath />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+            <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
               <IconSummary />
             </AddQuestionIcon>
           </QuestionTypes>

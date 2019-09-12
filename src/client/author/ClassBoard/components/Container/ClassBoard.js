@@ -14,7 +14,9 @@ import {
   IconPrint,
   IconAddStudents,
   IconRemove,
-  IconInfo
+  IconInfo,
+  IconMarkAsSubmitted,
+  IconDownload
 } from "@edulastic/icons";
 // actions
 import {
@@ -748,7 +750,7 @@ class ClassBoard extends Component {
                           <DropMenu>
                             <CaretUp className="fa fa-caret-up" />
                             <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
-                              <i className="fa fa-check-square-o" style={{ fontSize: "15px" }} aria-hidden="true" />
+                              <IconMarkAsSubmitted width={12} />
                               <span>Mark as Submitted</span>
                             </MenuItems>
                             <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
@@ -762,6 +764,14 @@ class ClassBoard extends Component {
                             <MenuItems onClick={this.handleShowRemoveStudentsModal}>
                               <IconRemove />
                               <span>Remove Students</span>
+                            </MenuItems>
+                            <MenuItems>
+                              <IconDownload />
+                              <span>Download Grades</span>
+                            </MenuItems>
+                            <MenuItems>
+                              <IconDownload />
+                              <span>Download Response</span>
                             </MenuItems>
                             <MenuItems onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />

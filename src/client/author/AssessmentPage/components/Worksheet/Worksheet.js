@@ -390,6 +390,7 @@ class Worksheet extends React.Component {
               questions={questions}
               questionsById={questionsById}
               answersById={answersById}
+              viewMode={viewMode}
             />
             <Tools
               isWorksheet={true}

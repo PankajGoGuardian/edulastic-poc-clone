@@ -5,6 +5,7 @@ import { isEmpty } from "lodash";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
 import { SectionWrapper, SectionTitle, SectionForm, SectionFormConfirmButton, Actions } from "./styled";
+import { message } from "antd";
 
 export default class Section extends React.Component {
   static propTypes = {
@@ -37,7 +38,7 @@ export default class Section extends React.Component {
       section: { id }
     } = this.props;
 
-    if (isEmpty(title)) return;
+    if (isEmpty(title)) return message.error("Section name can not be empty");
 
     this.handleSetEdit(false);
     onUpdate(id, title);

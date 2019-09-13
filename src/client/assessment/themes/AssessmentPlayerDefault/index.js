@@ -171,7 +171,7 @@ class AssessmentPlayerDefault extends React.Component {
     } else if (activeMode === value) {
       this.setState({ activeMode: "" });
     } else {
-      this.setState({ activeMode: value });
+      this.setState({ activeMode: value, deleteMode: false });
     }
   };
 

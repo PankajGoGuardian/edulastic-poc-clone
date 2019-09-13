@@ -40,6 +40,7 @@ export const StyledTable = styled(Table)`
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
+        min-width: 110px;
       }
       td div {
         padding: 5px;

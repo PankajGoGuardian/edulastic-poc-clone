@@ -53,12 +53,14 @@ const Sidebar = ({
   isEditable
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
+      const tempSearchValue = searchValue;
+      setSearchValue("");
       const { _id, tagName } = await tagsApi.create({
-        tagName: searchValue,
+        tagName: tempSearchValue,
         tagType: isPlaylist ? "playlist" : "test"
       });
       newTag = { _id, tagName };
@@ -68,7 +70,7 @@ const Sidebar = ({
     }
     const newTags = [...tags, newTag];
     onChangeField("tags", newTags);
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -77,8 +79,8 @@ const Sidebar = ({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -194,11 +196,11 @@ const Sidebar = ({
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
         >
-          {!!searchValue ? (
+          {!!searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
-              {`${searchValue} (Create new Tag )`}
+              {`${searchValue} (Create new Tag)`}
             </Select.Option>
           ) : (
             ""

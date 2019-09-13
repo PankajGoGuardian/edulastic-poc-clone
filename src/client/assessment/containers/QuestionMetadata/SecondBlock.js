@@ -18,11 +18,13 @@ const SecondBlock = ({
   allTagsData,
   addNewTag
 }) => {
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "testitem" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "testitem" });
       newTag = { _id, tagName };
       addNewTag({ tag: newTag, tagType: "testitem" });
     } else {
@@ -30,7 +32,7 @@ const SecondBlock = ({
     }
     const newTags = [...tags, newTag];
     onChangeTags(newTags);
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -40,7 +42,7 @@ const SecondBlock = ({
 
   const searchTags = async value => {
     if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -118,9 +120,9 @@ const SecondBlock = ({
               onDeselect={deselectTags}
               filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
             >
-              {!!searchValue ? (
+              {!!searchValue.trim() ? (
                 <Select.Option key={0} value={searchValue} title={searchValue}>
-                  {`${searchValue} (Create new Tag )`}
+                  {`${searchValue} (Create new Tag)`}
                 </Select.Option>
               ) : (
                 ""

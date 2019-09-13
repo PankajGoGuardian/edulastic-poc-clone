@@ -9,11 +9,13 @@ import { tagsApi } from "@edulastic/api";
 const LeftField = props => {
   const { thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
   const [thumbnail, setThumbnail] = useState(thumbnailUri);
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
       newTag = { _id, tagName };
       addNewTag({ tag: newTag, tagType: "group" });
     } else {
@@ -22,7 +24,7 @@ const LeftField = props => {
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
     setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -32,8 +34,8 @@ const LeftField = props => {
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -54,11 +56,11 @@ const LeftField = props => {
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
         >
-          {!!searchValue ? (
+          {!!searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
-              {`${searchValue} (Create new Tag )`}
+              {`${searchValue} (Create new Tag)`}
             </Select.Option>
           ) : (
             ""

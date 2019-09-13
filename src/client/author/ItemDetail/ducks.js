@@ -646,12 +646,17 @@ function* receiveItemSaga({ payload }) {
     }
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
+    let msg = "Receive item by id is failing";
+    if (err.status === 404) {
+      msg = "Item not found";
+      yield put(push("/author/items"));
+    }
     console.log("err is", err);
-    const errorMessage = "Receive item by id is failing";
-    yield call(message.error, errorMessage);
+
+    yield call(message.error, msg);
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
-      payload: { error: errorMessage }
+      payload: { error: msg }
     });
   }
 }

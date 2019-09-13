@@ -14,6 +14,8 @@ const SET_REPORTS_PREV_SPR_FILTER_DATA = "[reports] set reports prev spr filter 
 
 const SET_FILTERS = "[reports] set spr filters";
 const SET_STUDENT_ID = "[reports] set spr student";
+const SET_PB_ID = "[reports] set performance band id";
+const SET_SP_ID = "[reports] set standards proficiency id";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -23,6 +25,8 @@ export const setPrevSPRFilterDataAction = createAction(SET_REPORTS_PREV_SPR_FILT
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setStudentAction = createAction(SET_STUDENT_ID);
+export const setSpIdAction = createAction(SET_SP_ID);
+export const setPbIdAction = createAction(SET_PB_ID);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -35,6 +39,21 @@ export const stateSelector = state => state.reportSPRFilterDataReducer;
 export const getReportsSPRFilterData = createSelector(
   stateSelector,
   state => state.SPRFilterData
+);
+
+export const selectedPerformanceBand = createSelector(
+  stateSelector,
+  state => state?.filters?.performanceBandProfileId || ""
+);
+
+export const getBandInfoSelected = createSelector(
+  getReportsSPRFilterData,
+  selectedPerformanceBand,
+  (SPRFData, selected) => {
+    const bands = SPRFData?.data?.result?.bandInfo || [];
+    console.log("bands", { selected, SPRFData, bands });
+    return (bands.find(x => x._id === selected) || bands[0])?.performanceBand;
+  }
 );
 
 export const getFiltersSelector = createSelector(
@@ -69,7 +88,9 @@ const initialState = {
   prevSPRFilterData: null,
   filters: {
     termId: "",
-    courseId: ""
+    courseId: "",
+    performanceBandProfileId: "",
+    standardsProficiencyProfileId: ""
   },
   student: {
     key: "5d11b3a138a00c59ea7be6db"
@@ -99,7 +120,12 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_STUDENT_ID]: setStudentReducer,
-
+  [SET_PB_ID]: (state, { payload }) => {
+    state.filters.performanceBandProfileId = payload;
+  },
+  [SET_SP_ID]: (state, { payload }) => {
+    state.filters.standardsProficiencyProfileId = payload;
+  },
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload;
   },

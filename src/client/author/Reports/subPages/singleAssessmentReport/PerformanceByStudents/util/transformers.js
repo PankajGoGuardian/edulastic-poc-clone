@@ -89,6 +89,7 @@ const getLeastProficiency = (bandInfo = []) =>
   orderBy(bandInfo, "threshold", ["desc"])[bandInfo.length - 1] || { name: "" };
 
 export const getProficiency = (item, bandInfo) => {
+  console.log("bandInfo", bandInfo);
   for (const obj of bandInfo) {
     if ((item.totalScore / item.maxScore) * 100 >= obj.threshold) {
       return obj.name || getLeastProficiency(bandInfo).name;

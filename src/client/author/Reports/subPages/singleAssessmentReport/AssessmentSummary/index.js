@@ -26,7 +26,9 @@ const AssessmentSummary = props => {
     if (props.settings.selectedTest && props.settings.selectedTest.key) {
       let q = {};
       q.testId = props.settings.selectedTest.key;
-      q.requestFilters = { ...props.settings.requestFilters };
+      const { performanceBandProfile, ...requestFilters } = props.settings.requestFilters;
+      q.requestFilters = { ...requestFilters, profileId: performanceBandProfile };
+
       props.getAssessmentSummaryRequestAction(q);
     }
   }, [props.settings]);

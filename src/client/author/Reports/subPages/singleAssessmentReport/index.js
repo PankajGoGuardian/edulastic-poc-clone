@@ -79,6 +79,11 @@ const SingleAssessmentReportContainer = props => {
           history={props.history}
           location={props.location}
           match={props.match}
+          performanceBandRequired={[
+            "/author/reports/assessment-summary",
+            "/author/reports/peer-performance",
+            "/author/reports/performance-by-students"
+          ].find(x => window.location.pathname.startsWith(x))}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
         <Route

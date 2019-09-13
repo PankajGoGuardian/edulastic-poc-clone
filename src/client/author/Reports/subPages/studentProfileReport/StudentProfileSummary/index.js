@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
-import { getReportsSPRFilterData } from "../common/filterDataDucks";
+import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
@@ -44,16 +44,19 @@ const StudentProfileSummary = ({
   isCsvDownloading,
   SARFilterData,
   studentProfileSummary,
-  getStudentProfileSummaryRequestAction
+  getStudentProfileSummaryRequestAction,
+  bandInfoSelected
 }) => {
+  console.log("bandinfoselected", bandInfoSelected);
   const { selectedStudent } = settings;
+  const bandInfo = bandInfoSelected;
 
   const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
     studentProfileSummary,
     "data.result",
     {}
   );
-  const { bandInfo = [], scaleInfo = [] } = get(SARFilterData, "data.result", {});
+  const { scaleInfo = [] } = get(SARFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
@@ -134,7 +137,8 @@ const enhance = connect(
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
     SARFilterData: getReportsSPRFilterData(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    bandInfoSelected: getBandInfoSelected(state)
   }),
   {
     getStudentProfileSummaryRequestAction

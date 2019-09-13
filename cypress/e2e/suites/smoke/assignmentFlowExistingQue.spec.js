@@ -1,12 +1,8 @@
 import TestLibrary from "../../framework/author/tests/testLibraryPage";
-import AssignmentsPage from "../../framework/student/assignmentsPage";
-import StudentTestPage from "../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../framework/author/assignments/LiveClassboardPage";
-import AuthorAssignmentPage from "../../framework/author/assignments/AuthorAssignmentPage";
 import TeacherSideBar from "../../framework/author/SideBarPage";
 import FileHelper from "../../framework/util/fileHelper";
-import { testTypes, releaseGradeTypes } from "../../framework/constants/assignmentStatus";
-import ReportsPage from "../../framework/student/reportsPage";
+import { testTypes } from "../../framework/constants/assignmentStatus";
 import { testRunner } from "../../framework/common/smokeAssignmentFlowRunner";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
@@ -51,11 +47,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   const statsMap = {};
   const { attemptsData, student, teacher, password, className } = testdata;
   const assessmentType = ["CLASS_ASSESSMENT", "PRACTICE_ASSESSMENT"];
-  const report = new ReportsPage();
-  const studentAssignment = new AssignmentsPage();
-  const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
-  const authorAssignmentPage = new AuthorAssignmentPage();
   const teacherSideBar = new TeacherSideBar();
 
   before("> create questionTypeMap", () => {

@@ -67,7 +67,7 @@ export const reducer = createReducer(initialState, {
   },
   [UPDATE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.updating = false;
-    state.data = {
+    state[payload.orgType === "institution" ? "schoolData" : "data"] = {
       ...payload,
       allowedDomainForStudents: get(payload, ["allowedDomainForStudents"], "").toString(),
       allowedDomainForTeachers: get(payload, ["allowedDomainForTeachers"], "").toString(),
@@ -95,7 +95,12 @@ export const reducer = createReducer(initialState, {
     state.createError = payload.error;
   },
   [CHANGE_DISTRICT_POLICY_ACTION]: (state, { payload }) => {
-    state.data = { ...payload };
+    const { schoolLevel, ...data } = payload;
+    if (schoolLevel) {
+      state.schoolData = data;
+    } else {
+      state.data = data;
+    }
   }
 });
 

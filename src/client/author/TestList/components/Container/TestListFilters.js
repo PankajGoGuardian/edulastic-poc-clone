@@ -116,6 +116,7 @@ const TestListFilters = ({
       title: "Tags",
       placeholder: "Please select",
       onChange: "tags",
+      filterOption: searchFilterOption,
       data: allTagsData.map(o => ({ value: o._id, text: o.tagName }))
     });
     return filterData1;

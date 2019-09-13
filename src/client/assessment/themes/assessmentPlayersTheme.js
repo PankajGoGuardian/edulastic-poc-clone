@@ -84,5 +84,34 @@ export const playersTheme = {
   PracticePlayer: {
     logoColor: "0eb08d",
     "": ""
+  },
+  widgets: {
+    classification: {
+      subtitleFontSize: "13px",
+      subtitleColor: "#434b5d", // secondaryTextColor
+      previewSubtitleColor: "#4aac8b", // greenDark
+      previewItemFontWeight: "600",
+      separatorBorderColor: "#d6d0d0", // separatorColor
+      boxBgColor: "#fff", // white
+      boxBorderColor: "#dfdfdf", // grey
+      indexBoxFontSize: "14px",
+      indexBoxFontWeight: "600",
+      indexBoxColor: "#fff", // white
+      indexBoxBgColor: themeColorLight,
+      indexBoxValidBgColor: "#1fe3a1", // green
+      indexBoxNotValidBgColor: "#ee1658", // red
+      dragItemBgColor: "#fff", // white
+      dragItemValidBgColor: "#e1fbf2", // lightGreen
+      dragItemNotValidBgColor: "#fbdfe7", // lightRed
+      dragItemBorderColor: "#dfdfdf", // grey
+      dragItemValidBorderColor: "#e1fbf2", // lightGreen
+      dragItemNotValidBorderColor: "#fbdfe7", // lightRed
+      dragItemFontWeight: "600",
+      iconCheckColor: "#1fe3a1", // green
+      iconCloseColor: "#ee1658", // red
+      iconTrashColor: themeColor, // greenDark
+      iconTrashHoverColor: "#ee1658", // red
+      dropContainerBgColor: "#fff" // white
+    }
   }
 };

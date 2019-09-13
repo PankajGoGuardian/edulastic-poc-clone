@@ -1,13 +1,10 @@
 import TestLibrary from "../../framework/author/tests/testLibraryPage";
-import AssignmentsPage from "../../framework/student/assignmentsPage";
-import StudentTestPage from "../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../framework/author/assignments/LiveClassboardPage";
-import AuthorAssignmentPage from "../../framework/author/assignments/AuthorAssignmentPage";
 import TeacherSideBar from "../../framework/author/SideBarPage";
 import FileHelper from "../../framework/util/fileHelper";
-import { testTypes, releaseGradeTypes } from "../../framework/constants/assignmentStatus";
-import ReportsPage from "../../framework/student/reportsPage";
+import { testTypes } from "../../framework/constants/assignmentStatus";
 import ItemListPage from "../../framework/author/itemList/itemListPage";
+import { testRunner } from "../../framework/common/smokeAssignmentFlowRunner";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
   const testLibrary = new TestLibrary();
@@ -16,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     teacher: "teacher1.smoke.automation@snapwiz.com",
     student: "student1.smoke.automation@snapwiz.com",
     password: "automation",
-    assignmentName: "Smoke Test Assignment",
+    assignmentName: "Smoke Test 3",
     attemptsData: [
       {
         email: "student1.smoke.automation@snapwiz.com",
@@ -51,11 +48,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   const statsMap = {};
   const { attemptsData, student, teacher, password, className } = testdata;
   const assessmentType = ["CLASS_ASSESSMENT", "PRACTICE_ASSESSMENT"];
-  const report = new ReportsPage();
-  const studentAssignment = new AssignmentsPage();
-  const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
-  const authorAssignmentPage = new AuthorAssignmentPage();
   const teacherSideBar = new TeacherSideBar();
   const itemListPage = new ItemListPage();
 
@@ -148,130 +141,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         }
       });
 
-      context("> verify student dashboard", () => {
-        it("> verify assignment entry on student dashboard", () => {
-          const { email } = attemptsData[0];
-          cy.login("student", email, password);
-          studentAssignment.validateAssignment(
-            testData.name,
-            "NOT STARTED",
-            "START ASSIGNMENT",
-            aType === "CLASS_ASSESSMENT" ? "A" : "P"
-          );
-        });
-
-        it("> verify assignment filters", () => {
-          studentAssignment.clickOnAllAssignments();
-          studentAssignment.getAssignmentButton().should("be.visible");
-
-          studentAssignment.clickOnNotStarted();
-          studentAssignment.getAssignmentButton().should("be.visible");
-
-          studentAssignment.clickOnInProgress();
-          studentAssignment.getAssignmentButton().should("not.be.visible");
-
-          /*  // inprogress
-          studentAssignment.clickOnAllAssignments();
-          studentAssignment.getAssignmentButton().click({ force: true });
-          test.clickOnExitTest();
-          test.clickOnProceed();
-  
-          studentAssignment.validateAssignment(testData.name, "IN PROGRESS", "RESUME", "A");
-  
-          studentAssignment.clickOnAllAssignments();
-          studentAssignment.getAssignmentButton().should("be.visible");
-  
-          studentAssignment.clickOnNotStarted();
-          studentAssignment.getAssignmentButton().should("not.be.visible");
-  
-          studentAssignment.clickOnInProgress();
-          studentAssignment.getAssignmentButton().should("be.visible"); */
-        });
-      });
-
-      context("> scoring policy - 'Do not release scores or responses'", () => {
-        const { email, status, attempt, stuName } = attemptsData[0];
-
-        it(`> attempt by ${stuName}`, () => {
-          test.attemptAssignment(email, status, attempt, questionTypeMap, password);
-        });
-
-        it("> verify stats on report page", () => {
-          report.validateAssignment(testData.name, "GRADED");
-          report.validateStats("1", "1/1");
-        });
-      });
-
-      context("> scoring policy - 'Release scores only'", () => {
-        const { email, status, attempt, stuName } = attemptsData[1];
-
-        it(`> teacher update release grade policy - ${releaseGradeTypes.SCORE_ONLY}`, () => {
-          cy.login("teacher", teacher, password);
-          teacherSideBar.clickOnAssignment();
-          authorAssignmentPage.setReleaseGradeOption(releaseGradeTypes.SCORE_ONLY);
-        });
-
-        it(`> attempt by ${stuName}`, () => {
-          test.attemptAssignment(email, status, attempt, questionTypeMap, password);
-        });
-
-        it("> verify stats on report page", () => {
-          const { perfValue } = statsMap[stuName];
-          report.validateAssignment(testData.name, "GRADED");
-          report.validateStats("1", "1/1", undefined, perfValue);
-        });
-      });
-
-      context("> scoring policy - 'Release scores and student responses'", () => {
-        const { email, status, attempt, stuName } = attemptsData[2];
-
-        it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_RESPONSE}`, () => {
-          cy.login("teacher", teacher, password);
-          teacherSideBar.clickOnAssignment();
-          authorAssignmentPage.setReleaseGradeOption(releaseGradeTypes.WITH_RESPONSE);
-        });
-
-        it(`> attempt by ${stuName}`, () => {
-          test.attemptAssignment(email, status, attempt, questionTypeMap, password);
-        });
-
-        it("> verify stats on report page", () => {
-          const { perfValue } = statsMap[stuName];
-          report.validateAssignment(testData.name, "GRADED", "REVIEW");
-          report.validateStats("1", "1/1", undefined, perfValue);
-        });
-
-        it("> review assignment", () => {
-          report.clickOnReviewButtonButton();
-          report.verifyQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_RESPONSE);
-        });
-      });
-
-      context("> scoring policy - 'Release scores,student responses and correct answers'", () => {
-        const { email, status, attempt, stuName } = attemptsData[3];
-
-        it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_ANSWERS}`, () => {
-          // cy.login("student", email, password);
-          cy.login("teacher", teacher, password);
-          teacherSideBar.clickOnAssignment();
-          authorAssignmentPage.setReleaseGradeOption(releaseGradeTypes.WITH_ANSWERS);
-        });
-
-        it(`> attempt by ${stuName}`, () => {
-          test.attemptAssignment(email, status, attempt, questionTypeMap, password);
-        });
-
-        it("> verify stats on report page", () => {
-          const { score, perfValue } = statsMap[stuName];
-          report.validateAssignment(testData.name, "GRADED", "REVIEW");
-          report.validateStats("1", "1/1", score, perfValue);
-        });
-
-        it("> review assignment", () => {
-          report.clickOnReviewButtonButton();
-          report.verifyQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_ANSWERS);
-        });
-      });
+      // attempt and verify student side with 4 release grade options
+      testRunner(testdata.assignmentName, aType, statsMap, questionTypeMap, testdata);
     });
   });
 });

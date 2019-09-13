@@ -12,7 +12,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     teacher: "teacher1.smoke.automation@snapwiz.com",
     student: "student1.smoke.automation@snapwiz.com",
     password: "automation",
-    assignmentName: "Smoke Test 1",
+    assignmentName: "Smoke Test 2",
     attemptsData: [
       {
         email: "student1.smoke.automation@snapwiz.com",
@@ -50,13 +50,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   const lcb = new LiveClassboardPage();
   const teacherSideBar = new TeacherSideBar();
 
-  before(" > create new assessment and assign", () => {
+  before("> create questionTypeMap", () => {
     cy.fixture("questionAuthoring").then(queData => {
       questionData = queData;
     });
 
-    cy.fixture("testAuthoring").then(({ SMOKE_1 }) => {
-      testData = SMOKE_1;
+    cy.fixture("testAuthoring").then(({ SMOKE_2 }) => {
+      testData = SMOKE_2;
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
@@ -68,7 +68,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     });
   });
 
-  before("calculate student scores", () => {
+  before("> calculate student scores", () => {
     attemptsData.forEach(attempts => {
       const { attempt, stuName, status } = attempts;
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
@@ -77,19 +77,62 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     });
   });
 
-  assessmentType.forEach(aType => {
+  assessmentType.forEach((aType, aIndex) => {
     context(`> assigned as - ${aType}`, () => {
       before("delete old assignment and assigned new", () => {
         cy.deleteAllAssignments(student, teacher, password);
         cy.login("teacher", teacher, password);
-        teacherSideBar.clickOnTestLibrary();
-        testLibrary.searchFilters.clearAll();
-        testLibrary.searchFilters.getAuthoredByMe();
-        cy.contains(testData.name).click({ force: true });
-        testLibrary.clickOnAssign();
-        testLibrary.assignPage.selectClass(className);
-        testLibrary.assignPage.selectTestType(testTypes[aType]);
-        testLibrary.assignPage.clickOnAssign();
+        if (aIndex === 0) {
+          cy.fixture("testAuthoring").then(testData => {
+            const test = testData["SMOKE_2"];
+            const { itemKeys } = test;
+            // create new test
+            testLibrary.sidebar.clickOnTestLibrary();
+            testLibrary.clickOnAuthorTest();
+
+            // test description
+            if (test.name) testLibrary.testSummary.setName(test.name);
+            if (test.grade) {
+              test.grade.forEach(grade => {
+                testLibrary.testSummary.selectGrade(grade);
+              });
+            }
+            if (test.subject) {
+              test.subject.forEach(subject => {
+                testLibrary.testSummary.selectSubject(subject);
+              });
+            }
+            // add items
+            testLibrary.header.clickOnAddItems();
+            testLibrary.searchFilters.clearAll();
+            cy.route("POST", "**api/test").as("createTest");
+            testLibrary.testAddItem.authoredByMe().then(() => {
+              itemKeys.forEach((itemKey, index) => {
+                testLibrary.testAddItem.addItemByQuestionContent(itemKey);
+                if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+                cy.wait(500);
+              });
+            });
+
+            testLibrary.header.clickOnReview();
+            cy.wait(2000);
+            testLibrary.header.clickOnSaveButton(true);
+            testLibrary.header.clickOnPublishButton();
+            testLibrary.clickOnAssign();
+            testLibrary.assignPage.selectClass(className);
+            testLibrary.assignPage.selectTestType(testTypes[aType]);
+            testLibrary.assignPage.clickOnAssign();
+          });
+        } else {
+          teacherSideBar.clickOnTestLibrary();
+          testLibrary.searchFilters.clearAll();
+          testLibrary.searchFilters.getAuthoredByMe();
+          cy.contains(testData.name).click({ force: true });
+          testLibrary.clickOnAssign();
+          testLibrary.assignPage.selectClass(className);
+          testLibrary.assignPage.selectTestType(testTypes[aType]);
+          testLibrary.assignPage.clickOnAssign();
+        }
       });
 
       // attempt and verify student side with 4 release grade options

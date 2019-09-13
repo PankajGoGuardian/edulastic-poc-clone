@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { white } from "@edulastic/colors";
-import { WithMathFormula } from "@edulastic/common";
+import { withMathFormula } from "../../HOC/withMathFormula";
 
 const Text = styled.div`
   padding: 0 20px;
@@ -14,4 +14,4 @@ const Text = styled.div`
   border-bottom-right-radius: 5px;
 `;
 
-export default WithMathFormula(Text);
+export default withMathFormula(Text);

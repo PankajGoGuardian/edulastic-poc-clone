@@ -74,14 +74,15 @@ class MetadataPage {
   };
 
   setStandard = standard => {
-    // cy.get('[data-cy="searchStandardSelect"]').click();
+    cy.get('[data-cy="searchStandardSelect"]').click();
     cy.focused()
-      .type(standard.substr(0, standard.length - 1))
+      // TODO : remove backspace once application bug gets fixed
+      .type(`{backspace}${standard.substr(0, standard.length - 1)}`)
       // .then(() => standard.split("").forEach(() => cy.wait("@searchStandard")))
       .then(ele => {
         cy.wait(500);
         cy.wrap(ele).type(standard.substr(standard.length - 1));
-        cy.wait("@searchStandard");
+        cy.wait("@searchStandard.all");
         cy.wait(3000); // UI renders list slow even after api responsed
         this.getDropDownMenu()
           .contains(standard)

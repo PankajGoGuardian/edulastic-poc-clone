@@ -9,14 +9,14 @@ export default class TestHeader {
 
   clickOnAddItems = () => {
     cy.server();
-    cy.route("POST", "**/search/**").as("searchItem");
+    cy.route("POST", "**/search/**").as("search");
     return cy
       .get('[data-cy="addItems"]')
       .click()
-      .then(() => cy.wait("@searchItem").then(() => new TestAddItemTab()));
+      .then(() => cy.wait("@search").then(() => new TestAddItemTab()));
   };
 
-  clickOnReview = () => cy.wait(500).then(() => cy.get('[data-cy="review"]').click());
+  clickOnReview = () => cy.wait(2000).then(() => cy.get('[data-cy="review"]').click());
 
   clickOnSettings = () => cy.get('[data-cy="settings"]').click();
 
@@ -31,8 +31,10 @@ export default class TestHeader {
     return cy.wait("@saveTest").then(xhr => {
       assert(xhr.status === 200, "saving test");
       const testId = xhr.response.body.result._id;
-      console.log("test created with _id : ", testId);
-      cy.saveTestDetailToDelete(testId);
+      if (!edited) {
+        console.log("test created with _id : ", testId);
+        cy.saveTestDetailToDelete(testId);
+      }
       return cy.wait(100).then(() => testId);
     });
   };

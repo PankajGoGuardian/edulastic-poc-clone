@@ -244,8 +244,7 @@ class Questions extends React.Component {
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
 
-    const questionIdToOpen = modalQuestionId - 1 || questions.length;
-
+    const questionIdToOpen = modalQuestionId - 1 || list.length;
     this.handleOpenEditModal(questionIdToOpen)();
   };
 

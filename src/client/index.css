@@ -1087,13 +1087,6 @@ textinput::before {
   max-width: 15vw;
 }
 
-.imagelabeldragdrop-droppable img,
-.main img,
-.responses_box img,
-img.fr-fic {
-  width: auto;
-}
-
 .controls-bar .ant-select-selection {
   display: none;
 }

@@ -19,6 +19,7 @@ import {
   SAVE_OVERALL_FEEDBACK,
   UPDATE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
+  MARK_AS_SUBMITTED,
   TOGGLE_PAUSE_ASSIGNMENT,
   SET_IS_PAUSED,
   UPDATE_STUDENT_ACTIVITY,
@@ -31,7 +32,8 @@ import {
   UPDATE_CLASS_STUDENTS_LIST,
   FETCH_STUDENTS,
   ADD_STUDENTS,
-  SET_STUDENTS_GRADEBOOK
+  SET_STUDENTS_GRADEBOOK,
+  UPDATE_SUBMITTED_STUDENTS
 } from "../constants/actions";
 import { createAction } from "redux-starter-kit";
 
@@ -104,8 +106,18 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
   payload: { assignmentId, classId, students }
 });
 
+export const markSubmittedAction = (assignmentId, classId, students) => ({
+  type: MARK_AS_SUBMITTED,
+  payload: { assignmentId, classId, students }
+});
+
 export const updateStudentActivityAction = payload => ({
   type: UPDATE_REMOVED_STUDENTS_LIST,
+  payload
+});
+
+export const updateSubmittedStudentsAction = payload => ({
+  type: UPDATE_SUBMITTED_STUDENTS,
   payload
 });
 

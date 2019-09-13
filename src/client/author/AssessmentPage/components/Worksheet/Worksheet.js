@@ -374,6 +374,7 @@ class Worksheet extends React.Component {
           {"Are you sure that you want to delete this page?"}
         </Modal>
         <Thumbnails
+          annotations={annotations}
           list={pageStructure}
           currentPage={currentPage}
           onReupload={this.handleReupload}
@@ -400,6 +401,7 @@ class Worksheet extends React.Component {
               questionsById={questionsById}
               answersById={answersById}
               renderExtra={svgContainer}
+              viewMode={viewMode}
             />
             <Tools
               isWorksheet

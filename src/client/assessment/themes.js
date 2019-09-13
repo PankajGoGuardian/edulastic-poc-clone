@@ -205,8 +205,8 @@ export const themes = {
     },
     testItemPreview: {
       itemColBorderColor: "#f3f3f3", // mainBgColor
-      mobileLeftSideBgColor: "#0288d1", // darkBlueSecondary
-      mobileRightSideBgColor: "#0288d1", // darkBlueSecondary
+      mobileLeftSideBgColor: themeColor,
+      mobileRightSideBgColor: themeColor,
       iconArrowColor: "#fff" // white
     },
     wordLimitAndCount: {

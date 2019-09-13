@@ -1,8 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
-import { IconNewList, IconPencilEdit, IconCaretDown, IconMath } from "@edulastic/icons";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT
+} from "@edulastic/constants/const/questionType";
+import { IconNewList, IconPencilEdit, IconCaretDown, IconMath, IconSummary } from "@edulastic/icons";
 
 import AddBulkModal from "../AddBulkModal/AddBulkModal";
 import { AddQuestionWrapper, AddQuestionIcon, QuestionTypes, ContentWrapper, AddButton } from "./styled";
@@ -37,17 +43,20 @@ class AddQuestion extends React.Component {
       <AddQuestionWrapper>
         <ContentWrapper>
           <QuestionTypes>
-            <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+            <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
               <IconNewList />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
+            <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
               <IconPencilEdit />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+            <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
               <IconCaretDown />
             </AddQuestionIcon>
-            <AddQuestionIcon onClick={onAddQuestion(MATH)}>
+            <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
               <IconMath />
+            </AddQuestionIcon>
+            <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+              <IconSummary />
             </AddQuestionIcon>
           </QuestionTypes>
           <QuestionTypes>

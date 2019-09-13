@@ -16,8 +16,8 @@ const itemReport = ({ question, index, releaseScore, disableResponse }) => (
           </FeedbackText>
           <FeedbackContainer>
             <ScoreWrapper>
-              <Score>{question.feedback && question.feedback.score}</Score>
-              <Total>{question.feedback && question.feedback.maxScore}</Total>
+              <Score data-cy="score">{question.feedback && question.feedback.score}</Score>
+              <Total data-cy="maxscore">{question.feedback && question.feedback.maxScore}</Total>
             </ScoreWrapper>
             <Feedback>
               <FeedbackGiven>{question.feedback && question.feedback.text}</FeedbackGiven>

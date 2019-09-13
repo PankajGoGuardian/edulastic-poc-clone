@@ -24,5 +24,29 @@
     "grade": ["Grade 10"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_STD.default", "MCQ_STD.default"]
+  },
+  "SMOKE_1": {
+    "name": "Smoke Test 1",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1"]
+  },
+  "SMOKE_2": {
+    "name": "Smoke Test 2",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1"]
+  },
+  "SMOKE_3": {
+    "name": "Smoke Test 3",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.3", "MCQ_MULTI.2", "MCQ_TF.2"]
+  },
+  "SMOKE_4": {
+    "name": "Smoke Test 4",
+    "grade": ["Kindergarten", "Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1", "MCQ_STD.3", "MCQ_MULTI.2", "MCQ_TF.2"]
   }
 }

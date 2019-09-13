@@ -109,12 +109,12 @@ function ProfileRow(props) {
             This action can NOT be undone. If you are sure, please type <BlueBold>DELETE</BlueBold> in the space below.
           </p>
         </div>
-        <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+        <ModalInput autoFocus value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </ProfileModal>
 
       <StyledProfileRow type="flex">
         <Col span={12}>
-          {active ? (
+          {active & !readOnly ? (
             <Input
               value={profileName}
               onChange={e => {
@@ -212,6 +212,7 @@ function StandardsProficiency(props) {
 
           <Row type="flex" justify="end">
             <ProfileModal
+              destroyOnClose
               title="Create New Profile"
               visible={confirmVisible}
               onCancel={() => setConfirmVisible(false)}

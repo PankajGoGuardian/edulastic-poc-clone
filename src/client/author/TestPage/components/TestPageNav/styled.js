@@ -1,19 +1,20 @@
 import styled from "styled-components";
-import { white, desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { white, desktopWidth, mediumDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
   height: 60px;
-  overflow-y: hidden;
-  overflow-x: scroll;
+  overflow: hidden;
   justify-content: center;
-  flex-basis:600px;
+  flex-basis: 50%;
 
-  @media screen and (min-width: ${desktopWidth}) {
-    height: 60px
-    overflow-y: unset;
-    overflow-x: unset;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    flex-basis: 100%;
+    height: auto;
+    margin-top: 10px;
+    justify-content: space-between;
+    overflow: auto;
   }
 `;
 
@@ -60,6 +61,16 @@ export const Link = styled.div`
     height: 36px;
     svg {
       display: none;
+    }
+  }
+  @media screen and (max-width: ${desktopWidth}) {
+    padding: 0 10px;
+  }
+  @media screen and (max-width: ${mobileWidthMax}) {
+    flex-basis: 24%;
+    margin: 0px;
+    &:last-child {
+      margin-right: 0px;
     }
   }
 `;

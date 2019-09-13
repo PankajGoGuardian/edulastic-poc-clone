@@ -8,7 +8,8 @@ const MathFormulaDisplay = withTheme(
   withMathFormula(styled.div.attrs({
     className: "math-formula-display"
   })`
-    width: 100%;
+    width: ${props => !props.centerContent && "100%"};
+    overflowwrap: ${props => props.centerContent && "initial"};
     font-size: ${props => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
 

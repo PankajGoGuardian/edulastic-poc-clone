@@ -161,6 +161,8 @@ function* loadTest({ payload }) {
 
       let lastAttemptedQuestion = questionActivities[0] || {};
 
+      const testItemIds = testItems.map(i => i._id);
+
       const scratchPadData = {};
       questionActivities.forEach(item => {
         allAnswers = {
@@ -170,7 +172,9 @@ function* loadTest({ payload }) {
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = item.scratchPad;
         }
-        if (item.updatedAt > lastAttemptedQuestion.updatedAt) {
+        // land on the testItems which is next to testItem that is attempted and has the highest index
+        // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
+        if (testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId)) {
           lastAttemptedQuestion = item;
         }
       });

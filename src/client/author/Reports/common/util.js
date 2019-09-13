@@ -191,7 +191,7 @@ export const convertTableToCSV = refComponent => {
       data = data.replace(/"/g, '""');
       row.push('"' + data + '"');
     }
-    csv.push(row.join(";"));
+    csv.push(row.join(","));
     csvRawData.push(row);
   }
   return {

@@ -113,7 +113,7 @@ class AdvancedOptons extends React.Component {
           />
           <StyledRowLabel gutter={16}>
             <Col>
-              <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
+              <SettingsBtn data-cy="override" onClick={this.toggleSettings} isVisible={showSettings}>
                 OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
               </SettingsBtn>
             </Col>

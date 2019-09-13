@@ -322,7 +322,7 @@ class Container extends PureComponent {
         );
       case "review":
         return isDocBased ? (
-          <Worksheet key="review" review {...props} />
+          <Worksheet key="review" review {...props} viewMode="review" />
         ) : (
           <Review
             test={test}
@@ -346,7 +346,7 @@ class Container extends PureComponent {
           />
         );
       case "worksheet":
-        return <Worksheet key="worksheet" {...props} />;
+        return <Worksheet key="worksheet" {...props} viewMode="edit" />;
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:

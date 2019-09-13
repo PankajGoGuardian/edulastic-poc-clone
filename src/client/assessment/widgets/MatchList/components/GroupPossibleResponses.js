@@ -59,7 +59,7 @@ class GroupPossibleResponses extends Component {
               <Col>
                 <List
                   prefix="group"
-                  items={items}
+                  items={items.map(i => i.label)}
                   onAdd={onAdd}
                   firstFocus={firstFocus}
                   onSortEnd={restProps.onSortEnd}

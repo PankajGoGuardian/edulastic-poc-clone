@@ -57,18 +57,19 @@ const deleteQuestion = (state, { payload }) => {
 
   const questions = sortBy(_values(newState.byId), ["qIndex"]);
   const questionIndex = questions.findIndex(q => q.id === payload);
-
-  const updatedQuestions = questions.map((question, index) =>
-    index < questionIndex
-      ? question
-      : {
-          ...question,
-          qIndex: question.qIndex - 1
-        }
-  );
-
+  let updatedQuestions = questions;
+  const { type } = questions[questionIndex];
+  if (type !== "sectionLabel") {
+    updatedQuestions = questions.map((question, index) =>
+      index < questionIndex
+        ? question
+        : {
+            ...question,
+            qIndex: question.qIndex - 1
+          }
+    );
+  }
   updatedQuestions.splice(questionIndex, 1);
-
   const byId = updatedQuestions.reduce(
     (total, question) => ({
       ...total,

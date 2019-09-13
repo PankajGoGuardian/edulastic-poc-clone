@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Button, Select, Checkbox, Pagination, Icon } from "antd";
 import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+import { grey } from "@edulastic/colors";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -89,4 +90,19 @@ export const StyledSortIcon = styled(Icon)`
   font-size: 11px;
   margin-top: 0.125em;
   color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
+`;
+
+export const UserNameContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px ${grey} solid;
+  padding-bottom: 4px;
+`;
+
+export const UserName = styled.div`
+  background: ${grey};
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 2px;
+  margin-bottom: 2px;
 `;

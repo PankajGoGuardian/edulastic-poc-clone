@@ -125,6 +125,12 @@ Object.defineProperty(exports, "fractionEditor", {
     return _fractionEditor["default"];
   }
 });
+Object.defineProperty(exports, "matchList", {
+  enumerable: true,
+  get: function get() {
+    return _matchList["default"];
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -165,3 +171,5 @@ var _essayRichText = _interopRequireDefault(require("./essayRichText"));
 var _charts = _interopRequireDefault(require("./charts"));
 
 var _fractionEditor = _interopRequireDefault(require("./fractionEditor"));
+
+var _matchList = _interopRequireDefault(require("./matchList"));

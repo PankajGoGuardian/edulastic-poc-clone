@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Modal } from "antd";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
 
-const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onInsertBlankPage, onRotate, url }) => (
+const createContextMenu = ({
+  index,
+  total,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  onInsertBlankPage,
+  onRotate,
+  url,
+  hasAnnotations,
+  setRotateDirection,
+  setConfirmRotate,
+  setDeleteConfirmation
+}) => (
   <Menu>
     <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
     <Menu.Divider />
@@ -16,12 +29,32 @@ const createContextMenu = ({ index, total, onDelete, onMoveUp, onMoveDown, onIns
       Move Down
     </Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={onRotate("clockwise")}>Rotate clockwise</Menu.Item>
-    <Menu.Item onClick={onRotate("counterclockwise")}>Rotate counterclockwise</Menu.Item>
-    <Menu.Divider />
-    <Menu.Item onClick={onDelete} disabled={url}>
-      Delete
+    <Menu.Item
+      onClick={
+        hasAnnotations
+          ? () => {
+              setConfirmRotate(true);
+              setRotateDirection("clockwise");
+            }
+          : onRotate("clockwise")
+      }
+    >
+      Rotate clockwise
     </Menu.Item>
+    <Menu.Item
+      onClick={
+        hasAnnotations
+          ? () => {
+              setConfirmRotate(true);
+              setRotateDirection("counterclockwise");
+            }
+          : onRotate("counterclockwise")
+      }
+    >
+      Rotate counterclockwise
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item onClick={url ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
   </Menu>
 );
 
@@ -36,9 +69,13 @@ const ThumbnailsItem = ({
   onRotate,
   url,
   current,
+  hasAnnotations,
+  setDeleteConfirmation,
   rotate,
   total
 }) => {
+  const [confirmRotate, setConfirmRotate] = useState(false);
+  const [rotateDirection, setRotateDirection] = useState("clockwise");
   const contextMenu = createContextMenu({
     index,
     onDelete,
@@ -47,22 +84,40 @@ const ThumbnailsItem = ({
     onInsertBlankPage,
     onRotate,
     total,
+    hasAnnotations,
+    setConfirmRotate,
+    setRotateDirection,
+    setDeleteConfirmation,
     url
   });
 
   return (
-    <Dropdown overlay={contextMenu} trigger={["contextMenu"]}>
-      <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
-        <PagePreview rotate={rotate}>
-          {url && (
-            <Document file={url} renderMode="canvas">
-              <Page pageNumber={page} renderTextLayer={false} />
-            </Document>
-          )}
-        </PagePreview>
-        <PageNumber>{index + 1}</PageNumber>
-      </ThumbnailsItemWrapper>
-    </Dropdown>
+    <>
+      <Modal
+        visible={confirmRotate}
+        onOk={() => {
+          onRotate(rotateDirection)();
+          setConfirmRotate(false);
+        }}
+        onCancel={() => setConfirmRotate(false)}
+      >
+        {
+          "These pages contain one or more questions or annotations. Rotating the page may result this content positioned incorrectly."
+        }
+      </Modal>
+      <Dropdown overlay={contextMenu} trigger={["contextMenu"]}>
+        <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
+          <PagePreview rotate={rotate}>
+            {url && (
+              <Document file={url} renderMode="canvas">
+                <Page pageNumber={page} renderTextLayer={false} />
+              </Document>
+            )}
+          </PagePreview>
+          <PageNumber>{index + 1}</PageNumber>
+        </ThumbnailsItemWrapper>
+      </Dropdown>
+    </>
   );
 };
 
@@ -73,6 +128,7 @@ ThumbnailsItem.propTypes = {
   url: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   rotate: PropTypes.number,
   onClick: PropTypes.func.isRequired,
+  setDeleteConfirmation: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onMoveUp: PropTypes.func.isRequired,
   onMoveDown: PropTypes.func.isRequired,

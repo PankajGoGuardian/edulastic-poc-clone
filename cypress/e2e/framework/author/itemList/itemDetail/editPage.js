@@ -2,20 +2,22 @@
 import Header from "./header";
 import ItemListPage from "../itemListPage";
 import TeacherSideBar from "../../SideBarPage";
+import TestAddItemTab from "../../tests/testDetail/testAddItemTab";
 
 class EditItemPage {
   constructor() {
     this.sideBar = new TeacherSideBar();
     this.header = new Header();
-    this.header.save = () => {
-      cy.server();
-      cy.route("PUT", "**/testitem/**").as("saveItem");
-      cy.get('[data-cy="saveButton"]')
-        .should("be.visible")
-        .click();
-      cy.wait("@saveItem");
-    };
+    // this.header.save = () => {
+    //   cy.server();
+    //   cy.route("PUT", "**/testitem/**").as("saveItem");
+    //   cy.get('[data-cy="saveButton"]')
+    //     .should("be.visible")
+    //     .click();
+    //   cy.wait("@saveItem");
+    // };
     this.itemList = new ItemListPage();
+    this.testAddItem = new TestAddItemTab();
   }
 
   clickAdvancedOptionsButton() {
@@ -132,9 +134,11 @@ class EditItemPage {
     cy.wait("@getItem");
   }
 
-  createNewItem = () => {
-    this.sideBar.clickOnItemLibrary();
-    this.itemList.clickOnCreate();
+  createNewItem = onlyItem => {
+    if (onlyItem) {
+      this.sideBar.clickOnItemLibrary();
+      this.itemList.clickOnCreate();
+    } else this.testAddItem.clickOnCreateNewItem();
   };
 
   deleteAllQuestion() {

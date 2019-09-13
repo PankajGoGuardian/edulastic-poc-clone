@@ -288,14 +288,18 @@ class SideMenu extends Component {
                 onClick={item => this.handleMenu(item)}
               >
                 {this.MenuItems.map((menu, index) => {
-                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
-                  const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
-                  return (
-                    <MenuItem key={index.toString()} onClick={this.toggleMenu} visible={isItemVisible}>
-                      <MenuIcon />
-                      {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
-                    </MenuItem>
-                  );
+                  // to hide Dashboard from side menu if a user is DA or SA.
+                  if (["district-admin", "school-admin"].includes(userRole) && menu.label === "Dashboard") return null;
+                  else {
+                    const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
+                    const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+                    return (
+                      <MenuItem key={index.toString()} onClick={this.toggleMenu} visible={isItemVisible}>
+                        <MenuIcon />
+                        {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
+                      </MenuItem>
+                    );
+                  }
                 })}
               </Menu>
               <MenuFooter className="footerBottom">

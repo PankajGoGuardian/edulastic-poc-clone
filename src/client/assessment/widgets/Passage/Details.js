@@ -1,13 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { compose } from "redux";
-import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
 import { Checkbox, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
@@ -250,12 +246,4 @@ Details.defaultProps = {
   cleanSections: () => {}
 };
 
-export default compose(
-  withNamespaces("assessment"),
-  connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
-  )
-)(Details);
+export default withNamespaces("assessment")(Details);

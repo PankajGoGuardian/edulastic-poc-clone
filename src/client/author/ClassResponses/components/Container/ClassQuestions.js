@@ -257,7 +257,13 @@ export default connect(
 )(ClassQuestions);
 
 ClassQuestions.propTypes = {
+  /**
+   *
+   */
   classResponse: PropTypes.object.isRequired,
+  /**
+   *
+   */
   questionActivities: PropTypes.array.isRequired,
   currentStudent: PropTypes.object.isRequired,
   testItemsOrder: PropTypes.any.isRequired,

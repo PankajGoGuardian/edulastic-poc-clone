@@ -62,7 +62,8 @@ const AssessmentContainer = ({
   pageStructure,
   passages,
   preview,
-  LCBPreviewModal
+  LCBPreviewModal,
+  closeTestPreviewModal
 }) => {
   const qid = preview ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -151,7 +152,8 @@ const AssessmentContainer = ({
     finishTest,
     history,
     previewPlayer: preview,
-    LCBPreviewModal
+    LCBPreviewModal,
+    closeTestPreviewModal
   };
 
   if (loading) {

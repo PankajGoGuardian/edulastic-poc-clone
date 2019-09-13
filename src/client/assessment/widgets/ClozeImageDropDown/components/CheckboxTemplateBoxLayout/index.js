@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Tooltip } from "antd";
+
 import { clozeImage } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
@@ -25,13 +27,15 @@ const CheckboxTemplateBoxLayout = ({
   responsecontainerindividuals,
   responseBtnStyle,
   fontSize,
-  userSelections,
+  userSelections = [],
   stemNumeration,
   // uiStyle,
   // imagescale,
   evaluation,
   maxHeight,
+  maxWidth,
   minWidth,
+  minWidthShowAnswer,
   minHeight,
   imageOptions,
   canvasHeight,
@@ -59,23 +63,13 @@ const CheckboxTemplateBoxLayout = ({
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
-          width: `${parseInt(responseContainer.width, 10)}px`,
+          position: "absolute",
           top: responseContainer.top,
           left: responseContainer.left,
-          height: `${parseInt(responseContainer.height, 10)}px`,
-          position: "absolute",
+          height: responseContainer.height,
+          width: responseContainer.width,
           borderRadius: 5
         };
-        if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-          const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-          btnStyle.width = widthpx;
-          btnStyle.widthpx = widthpx;
-        }
-        if (btnStyle && btnStyle.width === 0) {
-          btnStyle.width = responseBtnStyle.widthpx;
-        } else {
-          btnStyle.width = btnStyle.widthpx;
-        }
         let indexStr = "";
         switch (stemNumeration) {
           case "lowercase": {
@@ -93,43 +87,19 @@ const CheckboxTemplateBoxLayout = ({
         if (userSelections[dropTargetIndex]) {
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
+        const hasAnswered = userSelections?.[dropTargetIndex];
         return (
           <React.Fragment key={index}>
-            {!showAnswer && !checkAnswer && (
-              <div
-                style={{
-                  ...btnStyle,
-                  // height: `${parseInt(responseContainer.height, 10)}px`,
-                  // width: `${parseInt(responseContainer.width, 10)}px`,
-                  minWidth,
-                  minHeight
-                }}
-                className={`
-                imagelabeldragdrop-droppable 
-                active 
-                check-answer
-                ${status}`}
-                onClick={onClickHandler}
-              >
-                <div className="text container">{userSelections[dropTargetIndex]}</div>
-                <IconWrapper>
-                  {status === "right" && <RightIcon />}
-                  {status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </div>
-            )}
             {(showAnswer || checkAnswer) && (
               <div
                 style={{
                   ...btnStyle,
-                  minWidth,
-                  minHeight
+                  minWidth: minWidthShowAnswer,
+                  minHeight,
+                  background: !hasAnswered ? "rgba(225,225,225,0.75)" : null
                 }}
                 className={`
+                testing
                 imagelabeldragdrop-droppable 
                 active
                 ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 
@@ -138,15 +108,23 @@ const CheckboxTemplateBoxLayout = ({
                 onClick={onClickHandler}
               >
                 {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div className="text container">{userSelections[dropTargetIndex]}</div>
-                <IconWrapper>
-                  {userSelections.length > 0 && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
+                <div className="text container" style={{ minwidth: "100%", maxWidth }}>
+                  <Tooltip title={userSelections?.[dropTargetIndex]}>
+                    <div className="clipText" style={{ minwidth: "100%" }}>
+                      {userSelections[dropTargetIndex]}
+                    </div>
+                  </Tooltip>
+                  <div>
+                    <IconWrapper>
+                      {userSelections.length > 0 && status === "right" && <RightIcon />}
+                      {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
+                    </IconWrapper>
+                    <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                      <Point />
+                      <Triangle />
+                    </Pointer>
+                  </div>
+                </div>
               </div>
             )}
           </React.Fragment>

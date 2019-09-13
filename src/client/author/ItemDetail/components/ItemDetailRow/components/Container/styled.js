@@ -1,5 +1,5 @@
 import { FlexContainer, Paper } from "@edulastic/common";
-import { darkBlueSecondary, mobileWidth, themeColor } from "@edulastic/colors";
+import { themeColor, mobileWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -62,7 +62,7 @@ export const MobileSide = styled.div`
   height: calc(100vh - 220px);
   right: ${props => (props.type === "right" ? "0" : "unset")};
   left: ${props => (props.type === "left" ? "0" : "unset")};
-  background: ${darkBlueSecondary};
+  background: ${themeColor};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;

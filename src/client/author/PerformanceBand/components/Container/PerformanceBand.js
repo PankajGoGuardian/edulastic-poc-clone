@@ -90,7 +90,7 @@ function ProfileRow({
       </ProfileModal>
       <StyledProfileRow type="flex">
         <Col span={12}>
-          {active ? (
+          {active && !readOnly ? (
             <Input
               type="text"
               value={name}
@@ -201,7 +201,7 @@ export function PerformanceBandAlt(props) {
           {
             color: "#F39300",
             name: "Below Basic",
-            aboveOrAtStandard: true,
+            aboveOrAtStandard: false,
             from: 50,
             to: 0
           }
@@ -228,6 +228,7 @@ export function PerformanceBandAlt(props) {
           ) : null}
           <Row type="flex" justify="end">
             <ProfileModal
+              destroyOnClose
               title="Create New Profile"
               visible={confirmVisible}
               onCancel={() => setConfirmVisible(false)}
@@ -243,7 +244,7 @@ export function PerformanceBandAlt(props) {
               ]}
             >
               <h4>NAME OF THE PROFILE</h4>
-              <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
+              <ModalInput autoFocus value={profileName} onChange={e => setProfileName(e.target.value)} />
             </ProfileModal>
             <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
               <i>+</i> Create new Profile

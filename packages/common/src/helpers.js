@@ -308,6 +308,92 @@ const getQuestionLevelScore = (questions, totalMaxScore, newMaxScore) => {
   return questionScore;
 };
 
+export const getSelection = () => {
+  let sel = "";
+  if (window.getSelection) {
+    sel = window.getSelection();
+  } else if (document.getSelection) {
+    sel = document.getSelection();
+  } else if (document.selection) {
+    sel = document.selection.createRange();
+  }
+  return sel;
+};
+
+export const clearSelection = () => {
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+  } else if (document.selection) {
+    document.selection.empty();
+  }
+};
+
+export const highlightSelectedText = (className = "token active-word") => {
+  const selection = getSelection();
+  if (!selection.rangeCount) {
+    console.log("Unable to find a native DOM range from the current selection.");
+    return;
+  }
+  const range = selection.getRangeAt(0);
+  const { endContainer, endOffset, startContainer, startOffset } = range;
+  if (startOffset === endOffset) {
+    clearSelection();
+    return;
+  }
+
+  if (
+    (endContainer && endContainer.parentNode.className === className) ||
+    (startContainer && startContainer.parentNode.className === className)
+  ) {
+    message.error("You are highlighting already selected text. Please select a distinct text and try again.");
+    clearSelection();
+    return;
+  }
+
+  try {
+    const newNode = document.createElement("span");
+    newNode.setAttribute("class", className);
+    range.surroundContents(newNode);
+    clearSelection();
+    return true;
+  } catch (err) {
+    message.error("Something went wrong. Please select a text and try again.");
+    clearSelection();
+  }
+};
+
+export const decodeHTML = str => {
+  if (!window.$) {
+    return str;
+  }
+  const jQuery = window.$;
+  return jQuery("<div>")
+    .html(str)
+    .html();
+};
+
+export const rgbToHexc = orig => {
+  const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
+  return rgb && rgb.length === 4
+    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
+        -2
+      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+    : orig;
+};
+
+export const hexToRGB = (hex, alpha) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+
+  const g = parseInt(hex.slice(3, 5), 16);
+
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  if (alpha) {
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,

@@ -37,8 +37,8 @@ const Container = styled.div`
     ${({ imageStyle }) => {
       return imageStyle
         ? `
-        width: 220px;
-        z-index: 100;
+        width: unset;
+        z-index: 1;
         position: relative;
       `
         : null;

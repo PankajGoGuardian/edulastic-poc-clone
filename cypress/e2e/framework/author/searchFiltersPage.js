@@ -14,7 +14,18 @@ export default class SearchFilters {
     this.waitForSearchResponse();
   };
 
-  clearAll = () => cy.get('[data-cy="clearAll"]').click({ force: true });
+  clearAll = () => {
+    this.routeSearch();
+    cy.get('[data-cy="clearAll"]').click({ force: true });
+    return cy.wait("@search");
+  };
+
+  setGrades = grades => {
+    grades.forEach(grade => {
+      CypressHelper.selectDropDownByAttribute("selectGrades", grade);
+      cy.wait("@search");
+    });
+  };
 
   setCollection = collection => {
     CypressHelper.selectDropDownByAttribute("Collections", collection);

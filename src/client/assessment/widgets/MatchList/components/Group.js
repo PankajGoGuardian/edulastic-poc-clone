@@ -48,7 +48,7 @@ const Group = ({
       </div>
       <List
         prefix={prefix}
-        items={item.responses}
+        items={item.responses.map(i => i.label)}
         onAdd={onAddInner(index)}
         firstFocus={firstFocus}
         onSortEnd={onSortEnd(index)}

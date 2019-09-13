@@ -125,8 +125,9 @@ class AdvancedTable extends Component {
         dataIndex: "action",
         width: "14%",
         render: (_, row) => (
-          <ActionDiv>
+          <ActionDiv data-cy="testActions">
             <Dropdown
+              data-cy="actionDropDown"
               overlay={ActionMenu(
                 this.props.onOpenReleaseScoreSettings,
                 row,
@@ -137,7 +138,7 @@ class AdvancedTable extends Component {
               placement="bottomCenter"
               trigger={["click"]}
             >
-              <BtnAction>ACTIONS</BtnAction>
+              <BtnAction data-cy="testActions">ACTIONS</BtnAction>
             </Dropdown>
           </ActionDiv>
         ),

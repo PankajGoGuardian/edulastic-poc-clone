@@ -26,6 +26,27 @@ class AuthorAssignmentPage {
       .click();
     cy.wait("@assignment");
   };
+
+  clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
+
+  clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });
+
+  clickOnApply = () => cy.get('[data-cy="apply"]').click({ force: true });
+
+  setReleaseGradeOption = releaseGradeType => {
+    cy.server();
+    cy.route("PUT", "**/assignments/**").as("assignmentUpdate");
+    this.clickOnActions();
+    this.clickOnReleaseGrade();
+    cy.get(`[data-cy='${releaseGradeType}']`).click({ force: true });
+    this.clickOnApply({ force: true });
+    cy.wait("@assignmentUpdate").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      // waiting for sqs to process
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(5000);
+    });
+  };
 }
 
 export default AuthorAssignmentPage;

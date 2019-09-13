@@ -29,7 +29,9 @@ import {
   StyledPagination,
   StyledHeaderColumn,
   StyledSortIconDiv,
-  StyledSortIcon
+  StyledSortIcon,
+  UserNameContainer,
+  UserName
 } from "./styled";
 
 import {
@@ -43,7 +45,9 @@ import {
   resetUploadModalStatusAction
 } from "../../ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+import { roleuser } from "@edulastic/constants";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -69,7 +73,10 @@ class CoursesTable extends React.Component {
       },
       currentPage: 1,
       showActive: true,
-      searchData: {}
+      searchData: {},
+      isVisible: false,
+      confirmText: "",
+      defaultText: "DEACTIVATE"
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
@@ -128,11 +135,18 @@ class CoursesTable extends React.Component {
     });
   };
 
-  handleDelete = key => {
-    const data = [...this.state.dataSource];
-    const selectedCourse = data.filter(item => item.key == key);
+  confirmDeactivate = () => {
+    const { selectedRowKeys } = this.state;
     const { deactivateCourse } = this.props;
-    deactivateCourse([{ id: selectedCourse[0]._id }]);
+    const selectedCourses = selectedRowKeys.map(id => {
+      return {
+        id
+      };
+    });
+    deactivateCourse(selectedCourses);
+    this.setState({
+      isVisible: false
+    });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -160,15 +174,9 @@ class CoursesTable extends React.Component {
       }
     } else if (e.key === "deactivate course") {
       if (selectedRowKeys.length > 0) {
-        const data = [...this.state.dataSource];
-
-        const selectedCourse = [];
-        for (let i = 0; i < selectedRowKeys.length; i++) {
-          const checkedRow = data.filter(item => item.key === selectedRowKeys[i]);
-          if (checkedRow.length > 0) selectedCourse.push({ id: checkedRow[0]._id });
-        }
-        const { deactivateCourse } = this.props;
-        deactivateCourse(selectedCourse);
+        this.setState({
+          isVisible: true
+        });
       } else {
         message.error("Please select course to delete.");
       }
@@ -252,6 +260,33 @@ class CoursesTable extends React.Component {
   closeUploadCourseModal = () => {
     this.setState({ uploadCourseModalVisible: false });
     this.props.resetUploadModal();
+  };
+
+  renderCourseNames() {
+    const { dataSource, selectedRowKeys } = this.state;
+    const selectedCourses = dataSource.filter(item => selectedRowKeys.includes(item._id));
+    return (
+      <UserNameContainer>
+        {selectedCourses.map(item => {
+          const { _id, name } = item;
+          return <UserName key={_id}>{name}</UserName>;
+        })}
+      </UserNameContainer>
+    );
+  }
+  onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
+
+  deactivateSingleCourse = ({ _id }) => {
+    this.props.setSelectedRowKeys([_id]);
+    this.setState({
+      isVisible: true
+    });
+  };
+
+  onCancelConfirmModal = () => {
+    this.setState({
+      isVisible: false
+    });
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -386,9 +421,11 @@ class CoursesTable extends React.Component {
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
-      order: sortedInfo.order,
-      active: showActive ? 1 : 0
+      order: sortedInfo.order
     };
+    if (showActive) {
+      loadListJsonData.active = 1;
+    }
 
     // TO DO: remove this line after further investigation
     this.setState({ searchData: loadListJsonData });
@@ -414,10 +451,13 @@ class CoursesTable extends React.Component {
       sortedInfo,
       currentPage,
       showActive,
-      searchData
+      searchData,
+      isVisible,
+      confirmText,
+      defaultText
     } = this.state;
 
-    const { totalCourseCount, userOrgId } = this.props;
+    const { totalCourseCount, userOrgId, role } = this.props;
 
     const columnsInfo = [
       {
@@ -506,14 +546,19 @@ class CoursesTable extends React.Component {
         dataIndex: "operation",
         width: 100,
         render: (text, record) => {
+          console.log(record);
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
-                <Icon type="edit" theme="twoTone" />
-              </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-                <Icon type="delete" theme="twoTone" />
-              </StyledTableButton>
+              {role === roleuser.DISTRICT_ADMIN && !!record.active && (
+                <>
+                  <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
+                    <Icon type="edit" theme="twoTone" />
+                  </StyledTableButton>
+                  <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
+                    <Icon type="delete" theme="twoTone" />
+                  </StyledTableButton>
+                </>
+              )}
             </React.Fragment>
           );
         }
@@ -668,6 +713,23 @@ class CoursesTable extends React.Component {
             searchData={searchData}
           />
         )}
+        <ConfirmationModal
+          title="Deactivate course(s)"
+          show={isVisible}
+          onOk={this.confirmDeactivate}
+          onCancel={this.onCancelConfirmModal}
+          inputVal={confirmText}
+          onInputChange={this.onInputChangeHandler}
+          expectedVal={defaultText}
+          canUndone
+          bodyText={
+            <>
+              {this.renderCourseNames()}
+              <div> Are you sure you want to deactivate the course(s)? </div>
+            </>
+          }
+          okText="Yes, Deactivate"
+        />
       </StyledTableContainer>
     );
   }
@@ -679,7 +741,8 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
       selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
-      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0)
+      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0),
+      role: getUserRole(state)
     }),
     {
       createCourse: createCourseAction,

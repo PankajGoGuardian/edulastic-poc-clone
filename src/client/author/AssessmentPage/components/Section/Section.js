@@ -5,6 +5,7 @@ import { isEmpty } from "lodash";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
 import { SectionWrapper, SectionTitle, SectionForm, SectionFormConfirmButton, Actions } from "./styled";
+import { message } from "antd";
 
 export default class Section extends React.Component {
   static propTypes = {
@@ -37,7 +38,7 @@ export default class Section extends React.Component {
       section: { id }
     } = this.props;
 
-    if (isEmpty(title)) return;
+    if (isEmpty(title)) return message.error("Section name can not be empty");
 
     this.handleSetEdit(false);
     onUpdate(id, title);
@@ -68,7 +69,7 @@ export default class Section extends React.Component {
 
     return (
       <SectionWrapper>
-        <SectionTitle>{title}</SectionTitle>
+        <SectionTitle title={title}>{title}</SectionTitle>
         {!review && this.renderActions()}
       </SectionWrapper>
     );
@@ -76,10 +77,18 @@ export default class Section extends React.Component {
 
   renderForm() {
     const { title } = this.state;
+    const { onDelete } = this.props;
     return (
       <SectionWrapper>
-        <SectionForm autoFocus value={title} onChange={this.handleChangeTitle} onPressEnter={this.handleSetTitle} />
-        <SectionFormConfirmButton onClick={this.handleSetTitle} />
+        <SectionForm
+          autoFocus
+          value={title}
+          onChange={this.handleChangeTitle}
+          onBlur={this.handleSetTitle}
+          onPressEnter={this.handleSetTitle}
+        />
+        <SectionFormConfirmButton style={{ marginLeft: "5px" }} onClick={this.handleSetTitle} />
+        <IconTrash onClick={onDelete} style={{ marginLeft: "5px", cursor: "pointer" }} />
       </SectionWrapper>
     );
   }

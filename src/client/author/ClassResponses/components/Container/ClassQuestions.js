@@ -12,10 +12,16 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 import { StyledFlexContainer } from "./styled";
 import { AnswerContext } from "@edulastic/common";
 
-function Preview({ item, qIndex, studentId, evaluation, showStudentWork }) {
+function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
   const rows = getRows(item);
-  const questions = (item.data && item.data.questions) || [];
-  const questionsKeyed = _keyBy(questions, "id");
+  const questions = get(item, ["data", "questions"], []);
+  const resources = get(item, ["data", "resources"], []);
+  let questionsKeyed = { ..._keyBy(questions, "id"), ..._keyBy(resources, "id") };
+  if (item.passageId && passages.length) {
+    const passage = passages.find(p => p._id === item.passageId) || {};
+    questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
+  }
+
   const answerContextConfig = useContext(AnswerContext);
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
@@ -203,7 +209,7 @@ class ClassQuestions extends Component {
 
   render() {
     const { showPlayerModal, selectedTestItem } = this.state;
-    const { questionActivities } = this.props;
+    const { questionActivities, passages = [] } = this.props;
     const testItems = this.getTestItems();
     const userWork = {};
 
@@ -226,6 +232,7 @@ class ClassQuestions extends Component {
           studentId={(currentStudent || {}).studentId}
           key={index}
           item={item}
+          passages={passages}
           qIndex={qIndex || index}
           evaluation={evaluation}
           showStudentWork={showStudentWork}
@@ -249,7 +256,8 @@ class ClassQuestions extends Component {
 
 export default connect(
   state => ({
-    testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], [])
+    testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
+    passages: get(state, ["author_classboard_testActivity", "data", "passageData"], [])
   }),
   {
     loadScratchPad: loadScratchPadAction

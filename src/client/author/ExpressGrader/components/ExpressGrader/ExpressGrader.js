@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
+import { ThemeProvider } from "styled-components";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -149,15 +150,17 @@ class ExpressGrader extends Component {
             {isMobile && <ScoreCard testActivity={testActivity} />}
 
             {isVisibleModal && (
-              <QuestionModal
-                record={record}
-                tableData={tableData}
-                isVisibleModal={isVisibleModal}
-                showQuestionModal={this.showQuestionModal}
-                hideQuestionModal={this.hideQuestionModal}
-                isPresentationMode={isPresentationMode}
-                groupId={classId}
-              />
+              <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
+                <QuestionModal
+                  record={record}
+                  tableData={tableData}
+                  isVisibleModal={isVisibleModal}
+                  showQuestionModal={this.showQuestionModal}
+                  hideQuestionModal={this.hideQuestionModal}
+                  isPresentationMode={isPresentationMode}
+                  groupId={classId}
+                />
+              </ThemeProvider>
             )}
           </ExpressGraderDetailContainer>
         </div>

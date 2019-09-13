@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
-import { cloneDeep, isEqual, get, shuffle } from "lodash";
+import { cloneDeep, isEqual, get, shuffle, identity } from "lodash";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 import {
@@ -132,9 +132,11 @@ const MatchListPreview = ({
     setDragItems(
       duplicatedResponses
         ? getPossibleResponses()
-        : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+        : getPossibleResponses().filter(
+            answer => Array.isArray(userAnswer) && !userAnswer.some(i => i?.value === answer.value)
+          )
     );
-  }, [userAnswer, posResponses, possibleResponseGroups]);
+  }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
@@ -142,6 +144,7 @@ const MatchListPreview = ({
 
   const onDrop = (itemCurrent, itemTo) => {
     const answers = cloneDeep(ans);
+    const answerIds = answers.map(i => i?.value).filter(identity);
     const dItems = cloneDeep(dragItems);
     const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
     if (itemTo.flag === "ans") {
@@ -157,7 +160,7 @@ const MatchListPreview = ({
         answers[answers.indexOf(_item)] = null;
       }
       answers[itemTo.index] = _item;
-    } else if (answers.includes(_item)) {
+    } else if (answerIds.includes(_item.value)) {
       answers[sourceIndex] = null;
       dItems.push(itemCurrent.item);
     }
@@ -213,11 +216,6 @@ const MatchListPreview = ({
     opacity: isDragging ? 0.5 : 1
   });
 
-  const centerContent = {
-    width: "unset",
-    margin: "auto",
-    overflowWrap: "initial"
-  };
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
   let altAnswers = [...validAnswers];
@@ -283,7 +281,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -302,7 +300,7 @@ const MatchListPreview = ({
                   onDrop={onDrop}
                   item={ans[i]}
                   width="100%"
-                  centerContent={centerContent}
+                  centerContent
                   getStyles={getStyles}
                   disableResponse={disableResponse}
                   changePreviewTab={changePreviewTab}
@@ -453,7 +451,7 @@ const MatchListPreview = ({
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={getStemNumeration(i)}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
@@ -467,7 +465,7 @@ const MatchListPreview = ({
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
-                    <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: list[i] }} />
+                    <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
                   <CorItem index={getStemNumeration(i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />

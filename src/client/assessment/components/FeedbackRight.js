@@ -9,7 +9,14 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, mediumDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
+import {
+  mobileWidthMax,
+  desktopWidth,
+  mediumDesktopWidth,
+  themeColor,
+  themeColorTagsBg,
+  tabGrey
+} from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -177,7 +184,8 @@ class FeedbackRight extends Component {
       widget: { activity },
       isPresentationMode,
       color,
-      icon
+      icon,
+      twoColLayout
     } = this.props;
     const { score, maxScore, feedback, submitted } = this.state;
     const isError = maxScore < score;
@@ -201,7 +209,12 @@ class FeedbackRight extends Component {
     }
 
     return (
-      <StyledCardTwo bordered={isStudentName} disabled={this.props.disabled || !activity} title={title}>
+      <StyledCardTwo
+        twoColLayout={twoColLayout}
+        bordered={isStudentName}
+        disabled={this.props.disabled || !activity}
+        title={title}
+      >
         <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput
@@ -283,7 +296,6 @@ const StyledCardTwo = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   flex-direction: column;
   margin: 0px 0px 0px 15px;
-  min-width: 250px;
   min-height: 100%;
   .ant-card-head {
     height: 60px;
@@ -298,6 +310,10 @@ const StyledCardTwo = styled(Card)`
     .ant-input-disabled {
       padding: 4px 22px;
     }
+  }
+
+  @media screen and (min-width: ${desktopWidth}) {
+    width: ${({ twoColLayout }) => twoColLayout?.second || "25%"};
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

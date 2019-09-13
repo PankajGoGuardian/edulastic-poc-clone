@@ -15,7 +15,8 @@ import {
   updateClassStudentsAction,
   setCurrentTestActivityIdAction,
   setStudentsGradeBookAction,
-  setAllTestActivitiesForStudentAction
+  setAllTestActivitiesForStudentAction,
+  updateSubmittedStudentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -38,7 +39,8 @@ import {
   REMOVE_STUDENTS,
   FETCH_STUDENTS,
   ADD_STUDENTS,
-  GET_ALL_TESTACTIVITIES_FOR_STUDENT
+  GET_ALL_TESTACTIVITIES_FOR_STUDENT,
+  MARK_AS_SUBMITTED
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 
@@ -155,6 +157,16 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+function* markAsSubmittedSaga({ payload }) {
+  try {
+    yield call(classBoardApi.markSubmitted, payload);
+    yield put(updateSubmittedStudentsAction(payload.students));
+    yield call(message.success, "Successfully marked as submitted");
+  } catch (err) {
+    yield call(message.error, "Mark as submit failed");
+  }
+}
+
 function* togglePauseAssignment({ payload }) {
   try {
     yield call(classBoardApi.togglePause, payload);
@@ -219,6 +231,7 @@ export function* watcherSaga() {
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
     yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
+    yield takeEvery(MARK_AS_SUBMITTED, markAsSubmittedSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
     yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),

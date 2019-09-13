@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
-import { map, debounce } from "lodash";
+import { map, debounce, isEmpty } from "lodash";
 import { AutoComplete, Input, Icon } from "antd";
 import {
   receiveStudentsListAction,
@@ -24,13 +24,21 @@ const StudentAutoComplete = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
+  const [text, setText] = useState("");
+  const [prevStudentList, setPrevStudentList] = useState([]);
 
-  const studentOptions = map(studentList, student => ({
-    key: student._id,
-    title: `${student.firstName || ""} ${student.lastName || ""}`
-  }));
+  const studentOptions = useMemo(() => {
+    return map(studentList, student => ({
+      key: student._id,
+      title: `${student.firstName || ""} ${student.lastName || ""}`
+    }));
+  }, [studentList]);
 
   const searchUser = (searchTerm, orgData) => {
+    if (!searchTerm) {
+      return;
+    }
+
     const { districtId, institutionIds } = orgData;
 
     const q = {
@@ -49,18 +57,26 @@ const StudentAutoComplete = ({
   const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
 
   useEffect(() => {
-    if (selectedStudent.title !== searchTerm) {
-      setSelectedValue(selectedStudent.title);
+    searchUser("a", orgData);
+  }, []);
+
+  if (studentList !== prevStudentList && !isEmpty(studentList) && isEmpty(prevStudentList)) {
+    // first Render
+    setPrevStudentList(studentList);
+    if (!selectedStudent.key) {
+      // select a default student if no student is present in url
+      setSelectedValue(studentOptions[0].title);
+      setText(studentOptions[0].title);
+      selectCB({ key: studentOptions[0].key, title: studentOptions[0].title });
     }
-  }, [selectedStudent]);
+  }
 
   useEffect(() => {
-    setSelectedValue(searchTerm);
-
-    if (searchTerm) {
-      debouncedSearchUser(searchTerm, orgData);
+    if (selectedStudent.title !== searchTerm) {
+      setSelectedValue(selectedStudent.title);
+      setText(selectedStudent.title);
     }
-  }, [searchTerm]);
+  }, [selectedStudent]);
 
   const buildDropDownData = datum => {
     let arr = [
@@ -77,8 +93,18 @@ const StudentAutoComplete = ({
     return arr;
   };
 
+  const onSearchTermChange = value => {
+    debouncedSearchUser(value, orgData);
+    setText(value);
+  };
+
+  const onBlur = key => {
+    setText(selectedValue);
+  };
+
   const onSelect = (key, item) => {
     setSelectedValue(item.props.title);
+    setText(item.props.title);
     selectCB({ key: key, title: item.props.title });
   };
 
@@ -86,7 +112,7 @@ const StudentAutoComplete = ({
   options = options.length ? options : [selectedStudent];
 
   return (
-    <AutoComplete value={selectedValue} onSearch={setSearchTerm} dataSource={options} onSelect={onSelect}>
+    <AutoComplete value={text} onSearch={onSearchTermChange} dataSource={options} onSelect={onSelect} onBlur={onBlur}>
       <Input suffix={<Icon type={loading ? "loading" : "search"} />} />
     </AutoComplete>
   );

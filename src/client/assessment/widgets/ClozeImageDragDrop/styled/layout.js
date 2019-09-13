@@ -55,6 +55,7 @@ export const LeftResponseContainer = styled.div.attrs({
   background: ${({ theme }) => theme.widgets.clozeImageDragDrop.responseBoxBgColor};
   display: flex;
   justify-content: center;
+  width: 20%;
 `;
 
 export const StyledContainer = styled.div`

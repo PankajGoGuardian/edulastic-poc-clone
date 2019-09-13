@@ -233,7 +233,8 @@ export const MenuItems = styled(Menu.Item)`
       }
     }
   }
-  svg {
+  svg,
+  i {
     fill: ${mainTextColor};
     height: 12px;
     margin-right: 10px;

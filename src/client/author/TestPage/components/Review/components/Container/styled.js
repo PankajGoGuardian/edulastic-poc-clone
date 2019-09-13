@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mediumDesktopWidth, mainBgColor } from "@edulastic/colors";
+import { mediumDesktopWidth, mainBgColor, mobileWidthMax, tabletWidth, desktopWidth } from "@edulastic/colors";
 import { Col } from "antd";
 
 export const ReviewPageContainer = styled.div`
@@ -23,19 +23,33 @@ export const ReviewPageContainer = styled.div`
     @media (max-width: ${mediumDesktopWidth}) {
       top: 59px;
     }
+    @media (max-width: ${desktopWidth}) {
+      padding: 10px;
+      top: 45px;
+    }
+    @media (max-width: ${tabletWidth}) {
+      left: 0px;
+    }
+    @media (max-width: ${mobileWidthMax}) {
+      top: 0px;
+    }
   }
 `;
 
 export const ReviewSummaryWrapper = styled(Col)`
   padding-left: 20px;
+
+  @media (max-width: 991px) {
+    padding-left: 0px;
+    margin-top: 15px;
+  }
 `;
 
 export const SecondHeader = styled.div`
   display: flex;
-  flex-direction: ${props => (props.isMobileSize ? "row" : "column")}
   justify-content: space-between;
   margin-bottom: 10px;
-  
+
   & > div > .ant-btn {
     background: transparent;
     height: 24px;
@@ -44,5 +58,9 @@ export const SecondHeader = styled.div`
       height: 24px;
       margin-top: -1px;
     }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    flex-direction: column;
   }
 `;

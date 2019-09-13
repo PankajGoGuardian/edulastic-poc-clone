@@ -940,10 +940,18 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         possibleResponseGroups: [
           {
             title: "",
-            responses: ["Choice B", "Choice C", "Choice A"]
+            responses: [
+              { value: uuid(), label: "Choice B" },
+              { value: uuid(), label: "Choice C" },
+              { value: uuid(), label: "Choice A" }
+            ]
           }
         ],
-        possibleResponses: ["Choice A", "Choice B", "Choice C"],
+        possibleResponses: [
+          { value: uuid(), label: "Choice A" },
+          { value: uuid(), label: "Choice B" },
+          { value: uuid(), label: "Choice C" }
+        ],
         type: questionType.MATCH_LIST,
         stimulus: "<p>This is the stem.</p>",
         list: ["Stem 1", "Stem 2", "Stem 3"],

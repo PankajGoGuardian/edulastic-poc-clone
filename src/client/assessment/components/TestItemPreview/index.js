@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider, withTheme } from "styled-components";
 
 import { withWindowSizes } from "@edulastic/common";
 
@@ -104,20 +104,19 @@ class TestItemPreview extends Component {
     if (questionCount === 0) {
       return null;
     }
-
     //show collapse button only in student player or in author preview mode.
     const hasResourceTypeQuestion =
       cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     return (
-      <ThemeProvider theme={themes.default}>
+      <ThemeProvider theme={{ ...themes.default, twoColLayout: this.props.theme?.twoColLayout }}>
         <Container width={windowWidth} style={style} isCollapsed={!!collapseDirection}>
           {cols.map((col, i) => {
             const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
             if (hideColumn && showCollapseButtons) return "";
             return (
               <>
-                {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
+                {(i > 0 || collapseDirection === "le,ft") && showCollapseButtons && this.renderCollapseButtons(i)}
                 <TestItemCol
                   {...restProps}
                   showCollapseBtn={showCollapseButtons}
@@ -147,6 +146,9 @@ class TestItemPreview extends Component {
   }
 }
 
-const enhance = compose(withWindowSizes);
+const enhance = compose(
+  withWindowSizes,
+  withTheme
+);
 
 export default enhance(TestItemPreview);

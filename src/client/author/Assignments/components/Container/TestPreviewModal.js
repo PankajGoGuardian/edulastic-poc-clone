@@ -4,7 +4,16 @@ import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, test, testLoadingStatus, error }) => {
+const TestPreviewModal = ({
+  isModalVisible,
+  LCBPreviewModal,
+  hideModal,
+  testId,
+  test,
+  testLoadingStatus,
+  error,
+  closeTestPreviewModal
+}) => {
   useEffect(() => {
     if (error) {
       hideModal();
@@ -24,7 +33,13 @@ const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, 
       wrapClassName="test-preview-modal"
       centered
     >
-      <AssessmentPlayer LCBPreviewModal={LCBPreviewModal} testId={testId} test={test} preview />
+      <AssessmentPlayer
+        closeTestPreviewModal={closeTestPreviewModal}
+        LCBPreviewModal={LCBPreviewModal}
+        testId={testId}
+        test={test}
+        preview
+      />
     </StyledModal>
   );
 };

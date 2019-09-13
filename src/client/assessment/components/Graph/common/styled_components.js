@@ -7,6 +7,7 @@ import {
   greenDarkSecondary,
   secondaryTextColor,
   mobileWidthMax,
+  desktopWidth,
   themeColor,
   white,
   green
@@ -375,6 +376,9 @@ export const PaperWrapper = styled(Paper)`
   @media (max-width: ${mobileWidthMax}) {
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "20px;")};
     margin-bottom: 15px;
+  }
+  @media screen and (min-width: ${desktopWidth}) {
+    width: ${({ twoColLayout }) => twoColLayout?.first};
   }
 `;
 

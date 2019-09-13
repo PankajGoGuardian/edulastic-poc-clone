@@ -5,9 +5,9 @@ import { Button } from "antd";
 import { white } from "@edulastic/colors";
 import { IconSave, IconPause, IconLogout } from "@edulastic/icons";
 
-const SaveAndExit = ({ finishTest }) => (
+const SaveAndExit = ({ finishTest, previewPlayer }) => (
   <Container>
-    <StyledButton title={"Save & Exit"} data-cy="finishTest" onClick={finishTest}>
+    <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
       <LogoutIcon />
     </StyledButton>
   </Container>

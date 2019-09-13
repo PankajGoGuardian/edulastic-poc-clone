@@ -77,7 +77,7 @@ export const FILE_UPLOAD_SUCCESS = "[test] upload file success";
 export const FILE_UPLOAD_ERROR = "[test] upload file error";
 
 // scratchPad
-export const SAVE_SCRATCH_PAD = "[userWork] save scratchPad draw";
+export const SAVE_USER_WORK = "[userWork] save userWork";
 export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
 
 // shuffled options

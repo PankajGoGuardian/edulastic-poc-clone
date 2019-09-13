@@ -18,12 +18,13 @@ import {
   getReportsSPRFilterData
 } from "../../filterDataDucks";
 import { getFilterOptions } from "../../utils/transformers";
+import { getFullNameFromAsString } from "../../../../../../../common/utils/helpers";
 
 const StudentProfileReportsFilters = ({
   style,
   className,
   onGoClick,
-  SARFilterData,
+  SPRFilterData,
   location,
   loading,
   orgData,
@@ -31,14 +32,17 @@ const StudentProfileReportsFilters = ({
   getSPRFilterDataRequestAction,
   receiveStudentsListAction
 }) => {
+  const splittedPath = location.pathname.split("/");
+  const studentId = splittedPath[splittedPath.length - 1];
+
   const [termId, setTermId] = useState(orgData.defaultTermId);
   const [courseId, setCourseId] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState({ key: "" });
+  const [selectedStudent, setSelectedStudent] = useState({ key: studentId || "" });
 
-  const { studentClassData = [] } = get(SARFilterData, "data.result", {});
+  const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const { terms = [] } = orgData;
   const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
-    SARFilterData,
+    SPRFilterData,
     terms
   ]);
   const studentOptions = useMemo(() => map(studentList, student => `${student.firstName} ${student.lastName}`), [
@@ -56,16 +60,12 @@ const StudentProfileReportsFilters = ({
   );
 
   useEffect(() => {
-    const splittedPath = location.pathname.split("/");
-    const studentId = splittedPath[splittedPath.length - 1];
-
     const parsedQuery = qs.parse(location.search);
     const { termId, courseId } = parsedQuery;
 
     if (studentId) {
       setTermId(termId);
       setCourseId(courseId);
-      setSelectedStudent({ key: studentId });
     }
   }, []);
 
@@ -139,11 +139,11 @@ const StudentProfileReportsFilters = ({
 
 const enhance = connect(
   state => ({
-    SARFilterData: getReportsSPRFilterData(state),
+    SPRFilterData: getReportsSPRFilterData(state),
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
     role: getUserRole(state),
-    prevSARFilterData: getReportsPrevSPRFilterData(state),
+    prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
     orgData: getOrgDataSelector(state),
     studentList: getStudentsListSelector(state)

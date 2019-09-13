@@ -23,7 +23,7 @@ const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanc
 
       <Row gutter={32}>
         <Col span={!isAdvanceView ? 12 : 24}>
-          <StyledSelect defaultValue={testType} onChange={onAssignmentTypeChange}>
+          <StyledSelect data-cy="testType" defaultValue={testType} onChange={onAssignmentTypeChange}>
             {Object.keys(testTypes).map(key => (
               <Select.Option key={key} value={key}>
                 {testTypes[key]}

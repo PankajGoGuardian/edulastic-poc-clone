@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Select, InputNumber, Button } from "antd";
+import { Input, Select, InputNumber, Button, message } from "antd";
 import { throttle } from "lodash";
 import produce from "immer";
 
@@ -119,7 +119,10 @@ export default class QuestionText extends React.Component {
   };
 
   handleCreateAltResponse = () => {
-    const { altResponses, score, allow } = this.state;
+    const { altResponses, score, allow, answer } = this.state;
+    if (!answer) {
+      return message.error("Answer choice should not be empty.");
+    }
     altResponses.push({
       value: "",
       score,

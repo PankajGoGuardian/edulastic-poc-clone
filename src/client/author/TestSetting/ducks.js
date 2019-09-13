@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { set } from "lodash";
 import { createAction, createReducer } from "redux-starter-kit";
 
 const RECEIVE_TEST_SETTING_REQUEST = "[testSetting] receive data request";
@@ -15,6 +16,7 @@ const CREATE_TEST_SETTING_SUCCESS = "[testSetting] create data success";
 const CREATE_TEST_SETTING_ERROR = "[testSetting] create data error";
 
 const SET_TEST_SETTING_VALUE_REQUEST = "[testSetting] set test setting value";
+const SET_TEST_SETTING_DEFAULT_PROFILE = "[testSetting] set test setting default profile";
 
 export const receiveTestSettingAction = createAction(RECEIVE_TEST_SETTING_REQUEST);
 export const receiveTestSettingSuccessAction = createAction(RECEIVE_TEST_SETTING_SUCCESS);
@@ -27,6 +29,7 @@ export const createTestSettingSuccessAction = createAction(CREATE_TEST_SETTING_S
 export const createTestSettingErrorAction = createAction(CREATE_TEST_SETTING_ERROR);
 
 export const setTestSettingValueAction = createAction(SET_TEST_SETTING_VALUE_REQUEST);
+export const setTestSettingDefaultProfileAction = createAction(SET_TEST_SETTING_DEFAULT_PROFILE);
 
 // reducers
 const initialState = {
@@ -73,6 +76,10 @@ export const reducer = createReducer(initialState, {
   },
   [SET_TEST_SETTING_VALUE_REQUEST]: (state, { payload }) => {
     state.data = payload;
+  },
+  [SET_TEST_SETTING_DEFAULT_PROFILE]: (state, { payload }) => {
+    const { value, profileType, testType } = payload;
+    set(state, ["data", "testTypesProfile", profileType, testType], value);
   }
 });
 

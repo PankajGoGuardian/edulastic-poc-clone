@@ -13,11 +13,13 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true });
 
-  clickOnAssignment = () =>
+  clickOnAssignment = () => {
     this.menuItems()
       .eq(1)
       .click({ force: true })
       .click({ force: true });
+    cy.wait("@assignment");
+  };
 
   clickOnReport = () =>
     this.menuItems()
@@ -40,10 +42,13 @@ export default class TeacherSideBar {
       .click({ force: true });
 
   clickOnTestLibrary = () => {
+    cy.server();
+    cy.route("POST", "**/search/tests").as("searchTest");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     this.menuItems()
       .eq(3)
       .click({ force: true })
       .click({ force: true });
+    cy.wait("@searchTest");
   };
 }

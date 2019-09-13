@@ -6,9 +6,9 @@ import { secondaryTextColor, greenDark } from "@edulastic/colors";
 
 export const SectionWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   position: relative;
+  width: 240px;
   margin: 17px 20px 17px 13px;
 `;
 
@@ -16,6 +16,11 @@ export const SectionTitle = styled.p`
   margin: 0;
   font-size: 20px;
   font-weight: bold;
+  padding: 5px;
+  width: 205px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   color: ${secondaryTextColor};
 `;
 
@@ -26,14 +31,15 @@ export const SectionForm = styled(Input)`
   color: ${secondaryTextColor};
   background: transparent;
   border-radius: unset;
-  border: none;
-  border-bottom: 1px solid #cbcbcb;
+  border: 1px solid red;
+  &:focus {
+    border: none;
+    border-bottom: 1px solid #cbcbcb;
+  }
   box-shadow: none !important;
 `;
 
 export const SectionFormConfirmButton = styled(IconCheck)`
-  position: absolute;
-  bottom: 14px;
   right: 0;
   fill: ${greenDark};
   cursor: pointer;

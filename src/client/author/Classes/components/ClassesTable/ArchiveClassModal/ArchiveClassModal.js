@@ -47,7 +47,7 @@ class ArchiveClassModal extends Component {
           <span>Are you sure you want to archive the following class(es)?</span>
           {classNames}
           <span>
-            If Yes, type <LightGreenSpan>ARCHIVE</LightGreenSpan> in the space given below and proceed.
+            If Yes, type <LightGreenspan>ARCHIVE</LightGreenspan> in the space given below and proceed.
           </span>
           <FormItem>
             <TextInput
@@ -65,7 +65,7 @@ class ArchiveClassModal extends Component {
 
 export default ArchiveClassModal;
 
-const LightGreenSpan = styled.span`
+const LightGreenspan = styled.span`
   color: ${themeColor};
 `;
 

@@ -211,6 +211,9 @@ const Sidebar = ({
             </Select.Option>
           ))}
         </SummarySelect>
+        {!!searchValue.length && !searchValue.trim().length && (
+          <p style={{ color: "red" }}>Please enter valid characters.</p>
+        )}
         {/* to be done later */}
         {false && (
           <>

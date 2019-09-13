@@ -291,20 +291,22 @@ const MatchListPreview = ({
                 flag="ans"
                 style={styles.dropContainerStyle(smallSize)}
               >
-                <DragItem
-                  preview={preview}
-                  correct={evaluation[i]}
-                  flag="ans"
-                  renderIndex={i}
-                  displayIndex={getStemNumeration(i)}
-                  onDrop={onDrop}
-                  item={ans[i]}
-                  width="100%"
-                  centerContent
-                  getStyles={getStyles}
-                  disableResponse={disableResponse}
-                  changePreviewTab={changePreviewTab}
-                />
+                {!disableResponse && !isReviewTab && (
+                  <DragItem
+                    preview={preview}
+                    correct={evaluation[i]}
+                    flag="ans"
+                    renderIndex={i}
+                    displayIndex={getStemNumeration(i)}
+                    onDrop={onDrop}
+                    item={ans[i]}
+                    width="100%"
+                    centerContent
+                    getStyles={getStyles}
+                    disableResponse={disableResponse}
+                    changePreviewTab={changePreviewTab}
+                  />
+                )}
               </DropContainer>
             </AnswerItem>
           ))}

@@ -430,9 +430,9 @@ class ChoiceMatrixStandardPage {
     return Helpers.getElement("dividersCheckbox");
   }
 
-  createQuestion(queType, queKey = "default", queIndex = 0) {
+  createQuestion(queType, queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
-    item.createNewItem();
+    item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.MCQ, questionType[queType]);
     cy.fixture("questionAuthoring").then(authoringData => {
       const { quetext, choices, setAns, steams } = authoringData[queType][queKey];
@@ -510,7 +510,7 @@ class ChoiceMatrixStandardPage {
           this.selectScoringType(evaluation);
         }
 
-        this.header.save();
+        // this.header.save();
         /*  item.updateItemLevelScore(points);
         item.header.save(true); */
       }

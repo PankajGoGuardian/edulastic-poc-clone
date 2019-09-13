@@ -123,7 +123,13 @@ const Crosses = ({
               />
             </Fragment>
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height + 20}>
+          <Text
+            onMouseEnter={() => handleLabelVisibility(index)}
+            onMouseLeave={() => handleLabelVisibility(null)}
+            textAnchor="middle"
+            x={getCenterX(index) + step / 2}
+            y={height + 20}
+          >
             {dot.onlyByHover ? showLabel === index && dot.x : dot.x}
           </Text>
         </Fragment>

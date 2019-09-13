@@ -103,10 +103,6 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
           }
           case "onlyByHover": {
             draft.chart_data.data[index].onlyByHover = value;
-            draft.validation.altResponses.forEach(altResp => {
-              altResp.value[index].onlyByHover = value;
-            });
-            draft.validation.validResponse.value[index].onlyByHover = value;
             break;
           }
           default:
@@ -213,7 +209,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       />
 
       <PointsList
-        onlyByHoverSetting={type === "linePlot" || type === "dots"}
+        onlyByHoverSetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

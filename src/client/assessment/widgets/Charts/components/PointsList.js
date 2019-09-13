@@ -43,7 +43,7 @@ class PointsList extends Component {
             </Checkbox>
             {onlyByHoverSetting && (
               <Checkbox checked={dot.onlyByHover} onChange={() => handleChange(index)("onlyByHover", !dot.onlyByHover)}>
-                Label only by hover
+                {t("component.chart.showLabelOnlyByHover")}
               </Checkbox>
             )}
           </Question>

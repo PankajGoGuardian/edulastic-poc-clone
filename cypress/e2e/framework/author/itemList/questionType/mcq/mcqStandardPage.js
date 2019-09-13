@@ -1,6 +1,6 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
-import EditPage from "../../itemDetail/editPage";
+import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class MCQStandardPage {
@@ -282,9 +282,9 @@ class MCQStandardPage {
   getCancel = () => cy.contains("Cancel").should("be.visible");
 
   // default question
-  createQuestion(queKey = "default", queIndex = 0) {
-    const item = new EditPage();
-    item.createNewItem();
+  createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
+    const item = new EditItemPage();
+    item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_STD);
     cy.fixture("questionAuthoring").then(authoringData => {
       const { quetext, choices, setAns } = authoringData.MCQ_STD[queKey];
@@ -330,7 +330,7 @@ class MCQStandardPage {
           .clear({ force: true })
           .type(`{selectAll}${points}`);
 
-        this.header.save();
+        // this.header.save();
         // item.updateItemLevelScore(points).then(() => item.header.save(true));
       }
     });

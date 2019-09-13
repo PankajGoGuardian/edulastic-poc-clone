@@ -41,7 +41,8 @@ const PDFPreview = ({
   questions,
   questionsById,
   answersById,
-  previewMode
+  previewMode,
+  viewMode
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -72,8 +73,8 @@ const PDFPreview = ({
                 index={qIndex}
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
-                viewMode="review"
                 previewMode={previewMode}
+                viewMode={viewMode}
               />
             </div>
           ))}

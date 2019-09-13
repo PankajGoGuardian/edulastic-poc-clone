@@ -5,8 +5,9 @@ import LiveClassboardPage from "../../framework/author/assignments/LiveClassboar
 import AuthorAssignmentPage from "../../framework/author/assignments/AuthorAssignmentPage";
 import TeacherSideBar from "../../framework/author/SideBarPage";
 import FileHelper from "../../framework/util/fileHelper";
-import { studentSide, testTypes, releaseGradeTypes } from "../../framework/constants/assignmentStatus";
+import { testTypes, releaseGradeTypes } from "../../framework/constants/assignmentStatus";
 import ReportsPage from "../../framework/student/reportsPage";
+import ItemListPage from "../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
   const testLibrary = new TestLibrary();
@@ -20,25 +21,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
       {
         email: "student1.smoke.automation@snapwiz.com",
         stuName: "student1 smoke",
-        attempt: { Q1: "right", Q2: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student2.smoke.automation@snapwiz.com",
         stuName: "student2 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student3.smoke.automation@snapwiz.com",
         stuName: "student3 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student4.smoke.automation@snapwiz.com",
         stuName: "student4 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "right", Q2: "partialCorrect", Q3: "wrong" },
         status: "Submitted"
       }
     ]
@@ -56,14 +57,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const teacherSideBar = new TeacherSideBar();
+  const itemListPage = new ItemListPage();
 
-  before(" > create new assessment and assign", () => {
+  before("> create questionTypeMap", () => {
     cy.fixture("questionAuthoring").then(queData => {
       questionData = queData;
     });
 
-    cy.fixture("testAuthoring").then(({ SMOKE_1 }) => {
-      testData = SMOKE_1;
+    cy.fixture("testAuthoring").then(({ SMOKE_3 }) => {
+      testData = SMOKE_3;
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
@@ -75,7 +77,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     });
   });
 
-  before("calculate student scores", () => {
+  before("> calculate student scores", () => {
     attemptsData.forEach(attempts => {
       const { attempt, stuName, status } = attempts;
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
@@ -84,19 +86,66 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     });
   });
 
-  assessmentType.forEach(aType => {
+  assessmentType.forEach((aType, aIndex) => {
     context(`> assigned as - ${aType}`, () => {
       before("delete old assignment and assigned new", () => {
         cy.deleteAllAssignments(student, teacher, password);
         cy.login("teacher", teacher, password);
-        teacherSideBar.clickOnTestLibrary();
-        testLibrary.searchFilters.clearAll();
-        testLibrary.searchFilters.getAuthoredByMe();
-        cy.contains(testData.name).click({ force: true });
-        testLibrary.clickOnAssign();
-        testLibrary.assignPage.selectClass(className);
-        testLibrary.assignPage.selectTestType(testTypes[aType]);
-        testLibrary.assignPage.clickOnAssign();
+        if (aIndex === 0) {
+          cy.fixture("testAuthoring").then(testData => {
+            const test = testData.SMOKE_3;
+            const { itemKeys, grade } = test;
+            // create new test
+            testLibrary.sidebar.clickOnTestLibrary();
+            testLibrary.clickOnAuthorTest();
+
+            // test description
+            testLibrary.testSummary.setName(test.name);
+            test.grade.forEach(grd => {
+              testLibrary.testSummary.selectGrade(grd);
+            });
+            test.subject.forEach(subject => {
+              testLibrary.testSummary.selectSubject(subject);
+            });
+
+            // create new items
+            testLibrary.header.clickOnAddItems();
+            testLibrary.searchFilters.routeSearch();
+
+            cy.route("POST", "**api/test").as("createTest");
+            test.itemKeys.forEach(async (itemKey, index) => {
+              itemListPage.createItem(itemKey, index, false);
+              if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+              testLibrary.searchFilters.waitForSearchResponse();
+            });
+
+            testLibrary.searchFilters.clearAll();
+            testLibrary.testAddItem.authoredByMe().then(() => {
+              testLibrary.searchFilters.setGrades(grade);
+              itemKeys.forEach(itemKey => {
+                testLibrary.testAddItem.verifyAddedItemByQuestionContent(itemKey);
+              });
+            });
+
+            testLibrary.header.clickOnReview();
+            cy.wait(2000);
+            testLibrary.header.clickOnSaveButton(true);
+            testLibrary.header.clickOnPublishButton();
+            testLibrary.clickOnAssign();
+            testLibrary.assignPage.selectClass(className);
+            testLibrary.assignPage.selectTestType(testTypes[aType]);
+            testLibrary.assignPage.clickOnAssign();
+          });
+        } else {
+          teacherSideBar.clickOnTestLibrary();
+          testLibrary.searchFilters.clearAll();
+          testLibrary.searchFilters.getAuthoredByMe();
+          cy.contains(testData.name).click({ force: true });
+          testLibrary.clickOnAssign();
+          testLibrary.assignPage.selectClass(className);
+          testLibrary.assignPage.selectTestType(testTypes[aType]);
+          testLibrary.assignPage.clickOnAssign();
+        }
       });
 
       context("> verify student dashboard", () => {
@@ -140,7 +189,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         });
       });
 
-      context("scoring policy - 'Do not release scores or responses'", () => {
+      context("> scoring policy - 'Do not release scores or responses'", () => {
         const { email, status, attempt, stuName } = attemptsData[0];
 
         it(`> attempt by ${stuName}`, () => {
@@ -153,7 +202,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         });
       });
 
-      context("scoring policy - 'Release scores only'", () => {
+      context("> scoring policy - 'Release scores only'", () => {
         const { email, status, attempt, stuName } = attemptsData[1];
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.SCORE_ONLY}`, () => {
@@ -167,13 +216,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         });
 
         it("> verify stats on report page", () => {
-          const { score, perfValue } = statsMap[stuName];
+          const { perfValue } = statsMap[stuName];
           report.validateAssignment(testData.name, "GRADED");
           report.validateStats("1", "1/1", undefined, perfValue);
         });
       });
 
-      context("scoring policy - 'Release scores and student responses'", () => {
+      context("> scoring policy - 'Release scores and student responses'", () => {
         const { email, status, attempt, stuName } = attemptsData[2];
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_RESPONSE}`, () => {
@@ -187,7 +236,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         });
 
         it("> verify stats on report page", () => {
-          const { score, perfValue } = statsMap[stuName];
+          const { perfValue } = statsMap[stuName];
           report.validateAssignment(testData.name, "GRADED", "REVIEW");
           report.validateStats("1", "1/1", undefined, perfValue);
         });
@@ -198,7 +247,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         });
       });
 
-      context("scoring policy - 'Release scores,student responses and correct answers'", () => {
+      context("> scoring policy - 'Release scores,student responses and correct answers'", () => {
         const { email, status, attempt, stuName } = attemptsData[3];
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_ANSWERS}`, () => {

@@ -25,17 +25,28 @@ class Header {
   }
 
   save(onlyPointChange = false) {
-    cy.server();
-    cy.route("PUT", "**/testitem/**").as("saveItem");
-    cy.route("GET", "**/testitem/**").as("reload");
-
-    cy.get('[data-cy="saveButton"]')
-      .should("be.visible")
-      .click();
-
-    cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
-    if (!onlyPointChange) cy.wait("@reload");
-    // return new EditItemPage();
+    cy.url().then(url => {
+      cy.server();
+      cy.route("POST", "**/testitem").as("createItem");
+      cy.route("PUT", "**/testitem/**").as("saveItem");
+      cy.route("GET", "**/testitem/**").as("reload");
+      const isNew = url.includes("questions/create");
+      cy.get('[data-cy="saveButton"]')
+        .should("be.visible")
+        .click();
+      if (isNew) {
+        cy.wait("@createItem").then(xhr => {
+          assert(xhr.status === 200, "Creating item failed");
+          const itemId = xhr.response.body.result._id;
+          console.log("Item created with _id : ", itemId);
+          cy.saveItemDetailToDelete(itemId);
+        });
+      } else {
+        cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
+      }
+      if (!onlyPointChange) cy.wait("@reload");
+      // return new EditItemPage();
+    });
   }
 
   clickOnPublishItem = () => {

@@ -15,7 +15,8 @@ import {
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST,
   SET_STUDENTS_GRADEBOOK,
-  SET_ALL_TESTACTIVITIES_FOR_STUDENT
+  SET_ALL_TESTACTIVITIES_FOR_STUDENT,
+  UPDATE_SUBMITTED_STUDENTS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -241,7 +242,7 @@ const reducer = (state = initialState, { type, payload }) => {
           classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
         }
       };
-    case UPDATE_REMOVED_STUDENTS_LIST:
+    case UPDATE_REMOVED_STUDENTS_LIST: {
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
           return { ...item, status: "absent" };
@@ -252,6 +253,19 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entities: updatedStudents
       };
+    }
+    case UPDATE_SUBMITTED_STUDENTS: {
+      const updatedStudents = state.entities.map(item => {
+        if (payload.includes(item.studentId)) {
+          return { ...item, status: "submitted" };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        entities: updatedStudents
+      };
+    }
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,

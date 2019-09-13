@@ -80,7 +80,11 @@ class DistrictProfileForm extends React.Component {
           announcement: ""
         }
       };
-    } else return { districtProfile: nextProps.districtProfile };
+    } else
+      return {
+        districtProfile: nextProps.districtProfile,
+        districtUrl: `${window.location.origin}/district/${nextProps.districtProfile.shortName}`
+      };
   }
 
   handleSubmit = event => {
@@ -200,143 +204,147 @@ class DistrictProfileForm extends React.Component {
         <p>Share this URL with users of your disctrict.</p>
       </React.Fragment>
     );
+
     return (
       <StyledFormDiv>
-        <Form onSubmit={this.handleSubmit}>
-          <StyledDivBg>
-            <ImageUpload
-              imgSrc={districtProfile.pageBackground}
-              updateImgUrl={this.updateImgSrc}
-              keyName={"pageBackground"}
-              width={"100%"}
-              height={"180px"}
-              labelStr={"page background"}
-              ref={this.childRefArr[6].component}
-              requiredStatus={false}
-              form={this.props.form}
-            />
-          </StyledDivBg>
-          <StyledDivMain>
-            <StyledRow>
-              <EditableNameLabel
-                value={districtProfile.name}
-                setProfileName={this.updateProfileName}
-                updateEditing={this.setEditing}
-                requiredStatus={true}
-                ref={this.childRefArr[0].component}
-                form={this.props.form}
-              />
-            </StyledRow>
-            <StyledRow>
-              <EditableLabel
-                value={districtProfile.shortName}
-                valueName={"District Short Name"}
-                maxLength={10}
-                requiredStatus={true}
-                setProfileValue={this.updateProfileValue}
-                updateEditing={this.setEditing}
-                type={"text"}
-                ref={this.childRefArr[1].component}
-                isSpaceEnable={false}
-                form={this.props.form}
-              />
-              <Popover
-                trigger="click"
-                visible={popoverVisible}
-                content={popoverContent}
-                onVisibleChange={this.handleVisibleChange}
-              >
-                <StyledUrlButton type="primary" ghost>
-                  (District Url)
-                </StyledUrlButton>
-              </Popover>
-            </StyledRow>
-            <StyledRow>
-              <EditableLabel
-                value={districtProfile.city}
-                valueName={"City"}
-                maxLength={40}
-                requiredStatus={false}
-                setProfileValue={this.updateProfileValue}
-                updateEditing={this.setEditing}
-                type={"text"}
-                ref={this.childRefArr[2].component}
-                isSpaceEnable={true}
-                form={this.props.form}
-              />
-            </StyledRow>
-            <StyledRow>
-              <EditableLabel
-                value={districtProfile.state}
-                valueName={"State"}
-                maxLength={40}
-                requiredStatus={false}
-                setProfileValue={this.updateProfileValue}
-                updateEditing={this.setEditing}
-                type={"text"}
-                ref={this.childRefArr[3].component}
-                isSpaceEnable={true}
-                form={this.props.form}
-              />
-            </StyledRow>
-            <StyledRow>
-              <EditableLabel
-                value={districtProfile.zip}
-                valueName={"Zip"}
-                maxLength={20}
-                requiredStatus={false}
-                setProfileValue={this.updateProfileValue}
-                updateEditing={this.setEditing}
-                type={"text"}
-                ref={this.childRefArr[4].component}
-                isSpaceEnable={true}
-                form={this.props.form}
-              />
-            </StyledRow>
-            <StyledRow>
-              <EditableLabel
-                value={districtProfile.nces}
-                valueName={"NCES Code"}
-                maxLength={100}
-                requiredStatus={false}
-                setProfileValue={this.updateProfileValue}
-                updateEditing={this.setEditing}
-                type={"text"}
-                ref={this.childRefArr[5].component}
-                isSpaceEnable={true}
-                form={this.props.form}
-              />
-            </StyledRow>
-            <StyledRowLogo>
-              <StyledLabel>District Logo:</StyledLabel>
+        {!this.props.districtProfile ||
+        (this.props.districtProfile && Object.keys(this.props.districtProfile).length === 0) ? null : (
+          <Form onSubmit={this.handleSubmit}>
+            <StyledDivBg>
               <ImageUpload
-                width={"150px"}
-                height={"80px"}
-                imgSrc={districtProfile.logo}
-                keyName={"logo"}
+                imgSrc={districtProfile.pageBackground}
                 updateImgUrl={this.updateImgSrc}
-                labelStr={"logo image"}
-                ref={this.childRefArr[7].component}
+                keyName={"pageBackground"}
+                width={"100%"}
+                height={"180px"}
+                labelStr={"page background"}
+                ref={this.childRefArr[6].component}
                 requiredStatus={false}
                 form={this.props.form}
               />
-            </StyledRowLogo>
-            <StyledRowAnn>
-              <StyledLabel>District Announcement:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("announcement", {
-                  initialValue: districtProfile.announcement,
-                  rules: [{ required: false, message: "Please input your announcement" }]
-                })(<StyledTextArea rows={6} onChange={this.changeAnnouncement} />)}
-              </FormItem>
-            </StyledRowAnn>
-            <StyledRow>
-              <SaveButton type="primary" htmlType="submit">
-                {btnTitle}
-              </SaveButton>
-            </StyledRow>
-          </StyledDivMain>
-        </Form>
+            </StyledDivBg>
+            <StyledDivMain>
+              <StyledRow>
+                <EditableNameLabel
+                  value={districtProfile.name}
+                  setProfileName={this.updateProfileName}
+                  updateEditing={this.setEditing}
+                  requiredStatus={true}
+                  ref={this.childRefArr[0].component}
+                  form={this.props.form}
+                />
+              </StyledRow>
+              <StyledRow>
+                <EditableLabel
+                  value={districtProfile.shortName}
+                  valueName={"District Short Name"}
+                  maxLength={10}
+                  requiredStatus={true}
+                  setProfileValue={this.updateProfileValue}
+                  updateEditing={this.setEditing}
+                  type={"text"}
+                  ref={this.childRefArr[1].component}
+                  isSpaceEnable={false}
+                  form={this.props.form}
+                />
+                <Popover
+                  trigger="click"
+                  visible={popoverVisible}
+                  content={popoverContent}
+                  onVisibleChange={this.handleVisibleChange}
+                >
+                  <StyledUrlButton type="primary" ghost>
+                    (District Url)
+                  </StyledUrlButton>
+                </Popover>
+              </StyledRow>
+              <StyledRow>
+                <EditableLabel
+                  value={districtProfile.city}
+                  valueName={"City"}
+                  maxLength={40}
+                  requiredStatus={false}
+                  setProfileValue={this.updateProfileValue}
+                  updateEditing={this.setEditing}
+                  type={"text"}
+                  ref={this.childRefArr[2].component}
+                  isSpaceEnable={true}
+                  form={this.props.form}
+                />
+              </StyledRow>
+              <StyledRow>
+                <EditableLabel
+                  value={districtProfile.state}
+                  valueName={"State"}
+                  maxLength={40}
+                  requiredStatus={false}
+                  setProfileValue={this.updateProfileValue}
+                  updateEditing={this.setEditing}
+                  type={"text"}
+                  ref={this.childRefArr[3].component}
+                  isSpaceEnable={true}
+                  form={this.props.form}
+                />
+              </StyledRow>
+              <StyledRow>
+                <EditableLabel
+                  value={districtProfile.zip}
+                  valueName={"Zip"}
+                  maxLength={20}
+                  requiredStatus={false}
+                  setProfileValue={this.updateProfileValue}
+                  updateEditing={this.setEditing}
+                  type={"text"}
+                  ref={this.childRefArr[4].component}
+                  isSpaceEnable={true}
+                  form={this.props.form}
+                />
+              </StyledRow>
+              <StyledRow>
+                <EditableLabel
+                  value={districtProfile.nces}
+                  valueName={"NCES Code"}
+                  maxLength={100}
+                  requiredStatus={false}
+                  setProfileValue={this.updateProfileValue}
+                  updateEditing={this.setEditing}
+                  type={"text"}
+                  ref={this.childRefArr[5].component}
+                  isSpaceEnable={true}
+                  form={this.props.form}
+                />
+              </StyledRow>
+              <StyledRowLogo>
+                <StyledLabel>District Logo:</StyledLabel>
+                <ImageUpload
+                  width={"150px"}
+                  height={"80px"}
+                  imgSrc={districtProfile.logo}
+                  keyName={"logo"}
+                  updateImgUrl={this.updateImgSrc}
+                  labelStr={"logo image"}
+                  ref={this.childRefArr[7].component}
+                  requiredStatus={false}
+                  form={this.props.form}
+                />
+              </StyledRowLogo>
+              <StyledRowAnn>
+                <StyledLabel>District Announcement:</StyledLabel>
+                <FormItem>
+                  {getFieldDecorator("announcement", {
+                    initialValue: districtProfile.announcement,
+                    rules: [{ required: false, message: "Please input your announcement" }]
+                  })(<StyledTextArea rows={6} onChange={this.changeAnnouncement} />)}
+                </FormItem>
+              </StyledRowAnn>
+              <StyledRow>
+                <SaveButton type="primary" htmlType="submit">
+                  {btnTitle}
+                </SaveButton>
+              </StyledRow>
+            </StyledDivMain>
+          </Form>
+        )}
       </StyledFormDiv>
     );
   }

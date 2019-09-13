@@ -19,6 +19,7 @@ const menu = (onReupload, onAddBlank, onDeleteBlank) => (
 const Thumbnails = ({
   list,
   onPageChange,
+  annotations,
   onReupload,
   onAddBlankPage,
   onDeleteSelectedBlankPage,
@@ -53,6 +54,7 @@ const Thumbnails = ({
               key={key}
               index={key}
               page={item.pageNo}
+              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo)}
               setDeleteConfirmation={setDeleteConfirmation}
               onClick={onChangePage(key)}
               onDelete={() => onDeletePage(key)}

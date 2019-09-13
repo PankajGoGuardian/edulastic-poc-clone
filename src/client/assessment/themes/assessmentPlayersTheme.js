@@ -112,6 +112,20 @@ export const playersTheme = {
       iconTrashColor: themeColor, // greenDark
       iconTrashHoverColor: "#ee1658", // red
       dropContainerBgColor: "#fff" // white
+    },
+    essayRichText: {
+      wordCountLimitedColor: "#ee1658", // red
+      quillBgColor: "transparent",
+      quillLimitedBgColor: "#fbdfe7", // lightRed
+      qlBlocksFontFamily: "Arial",
+      qlBlocksBgColor: "#fff", // white
+      qlBlocksBgActiveColor: themeColorLight,
+      qlBlocksColor: "#000", // black
+      qlBlocksActiveColor: "#fff", // white
+      flexConBorderColor: "#e6e6e6", // dashBorderColor
+      dragHandleFontSize: "14px",
+      dragHandleColor: "#1fe3a1", // green
+      sortableItemFontSize: "16px"
     }
   }
 };

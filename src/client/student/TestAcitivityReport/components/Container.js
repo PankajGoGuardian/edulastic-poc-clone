@@ -4,13 +4,12 @@ import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { AnswerContext, PaddingDiv } from "@edulastic/common";
+import { AnswerContext, PaddingDiv, Hints } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
 import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/TestItem";
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
-import Hints from "@edulastic/common/src/components/Hints";
 const { releaseGradeLabels } = testConstants;
 
 const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, passages = [] }) => {

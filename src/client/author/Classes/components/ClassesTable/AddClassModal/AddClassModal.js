@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
-import { Form, Input, Row, Col, Select, Modal, Spin } from "antd";
+import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
@@ -139,9 +139,13 @@ class AddClassModal extends Component {
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       this.setState({ searchValue: "" });
-      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
+import { Form, Input, Row, Col, Select, Button, Modal, DatePicker, message } from "antd";
 import moment from "moment";
 import { debounce } from "lodash";
 const Option = Select.Option;
@@ -73,9 +73,13 @@ class EditClassModal extends Component {
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       this.setState({ searchValue: "" });
-      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

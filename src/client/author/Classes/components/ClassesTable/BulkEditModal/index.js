@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form } from "antd";
+import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message } from "antd";
 import { StyledComponents } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
@@ -83,9 +83,13 @@ function BulkEditModal({
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       setSearchValue("");
-      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

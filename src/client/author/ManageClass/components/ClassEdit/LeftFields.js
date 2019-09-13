@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
-import { uniq } from "lodash";
+import { Select, message } from "antd";
 import { FieldLabel } from "./components";
 import Uploader from "./Uploader";
 import { tagsApi } from "@edulastic/api";
@@ -15,9 +14,13 @@ const LeftField = props => {
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       setSearchValue("");
-      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

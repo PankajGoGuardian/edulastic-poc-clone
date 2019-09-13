@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Select, Col } from "antd";
+import { Select, Col, message } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -59,12 +59,16 @@ const Sidebar = ({
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       setSearchValue("");
-      const { _id, tagName } = await tagsApi.create({
-        tagName: tempSearchValue,
-        tagType: isPlaylist ? "playlist" : "test"
-      });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "test" });
+      try {
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: isPlaylist ? "playlist" : "test"
+        });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "test" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

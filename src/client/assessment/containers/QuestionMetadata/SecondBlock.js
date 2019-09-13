@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Select } from "antd";
+import { Row, Col, Select, message } from "antd";
 
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
@@ -24,9 +24,13 @@ const SecondBlock = ({
     if (id === searchValue) {
       const tempSearchValue = searchValue;
       setSearchValue("");
-      const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "testitem" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "testitem" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "testitem" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "testitem" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }

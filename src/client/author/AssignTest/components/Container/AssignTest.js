@@ -134,6 +134,8 @@ class AssignTest extends React.Component {
       message.error("Please select at least one class to assign.");
     } else if (saveAssignment && assignment.endDate < Date.now()) {
       message.error("Please Enter a future end date. ");
+    } else if (saveAssignment && assignment?.class[0]?.specificStudents && !assignment.class[0].students) {
+      message.error("Please select the student");
     } else {
       saveAssignment(assignment);
     }

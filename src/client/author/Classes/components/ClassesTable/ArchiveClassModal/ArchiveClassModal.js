@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Row, Col, Button, Modal } from "antd";
-import { StyledCol, StyledP, StyledInput, LightBlueSpan } from "./styled";
+import { Button, Form } from "antd";
+import { StyledInput } from "./styled";
+import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
+import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
+import styled from "styled-components";
 
 class ArchiveClassModal extends Component {
   constructor(props) {
@@ -25,7 +28,7 @@ class ArchiveClassModal extends Component {
     const { textArchive } = this.state;
 
     return (
-      <Modal
+      <ConfirmationModal
         visible={modalVisible}
         title="Archive Class(es)"
         onOk={this.onArchiveClass}
@@ -35,33 +38,63 @@ class ArchiveClassModal extends Component {
           <Button onClick={this.onCloseModal} ghost type="primary">
             No, Cancel
           </Button>,
-          <Button type="primary" onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
+          <YesButton onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
             Yes, Archive >
-          </Button>
+          </YesButton>
         ]}
       >
-        <Row>
-          <Col span={24}>
-            <StyledP>Are you sure you want to archive the following class(es)?</StyledP>
-            {classNames}
-            <StyledP>
-              If Yes type <LightBlueSpan>ARCHIVE</LightBlueSpan> in the space given below and proceed.
-            </StyledP>
-          </Col>
-        </Row>
-        <Row>
-          <StyledCol span={24}>
-            <StyledInput
+        <ModalBody>
+          <span>Are you sure you want to archive the following class(es)?</span>
+          {classNames}
+          <span>
+            If Yes, type <LightGreenSpan>ARCHIVE</LightGreenSpan> in the space given below and proceed.
+          </span>
+          <FormItem>
+            <TextInput
               value={textArchive}
               onChange={this.onChangeInput}
               // here paste is not allowed, and user has to manually type in ARCHIVE
               onPaste={evt => evt.preventDefault()}
             />
-          </StyledCol>
-        </Row>
-      </Modal>
+          </FormItem>
+        </ModalBody>
+      </ConfirmationModal>
     );
   }
 }
 
 export default ArchiveClassModal;
+
+const LightGreenSpan = styled.span`
+  color: ${themeColor};
+`;
+
+const YesButton = styled(Button)`
+  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
+  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
+  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
+`;
+
+const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const FormItem = styled(Form.Item)`
+  width: 80%;
+  display: inline-block;
+  margin: 10px;
+  .ant-input {
+    height: 33px;
+    background: ${backgrounds.primary};
+    border: 1px solid ${borders.secondary};
+    padding: 10px 24px;
+  }
+`;
+
+const TextInput = styled(StyledInput)`
+  text-align: center;
+  width: 100% !important;
+`;

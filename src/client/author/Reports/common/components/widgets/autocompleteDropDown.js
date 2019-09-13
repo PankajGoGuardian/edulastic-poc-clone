@@ -168,4 +168,33 @@ const AutocompleteDropDown = ({
   );
 };
 
-export { AutocompleteDropDown };
+const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
+  .ant-select-dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    .ant-select-dropdown-menu-item-group {
+      display: flex;
+      flex-direction: column;
+      .ant-select-dropdown-menu-item-group-title {
+        font-weight: 900;
+        font-size: 14px;
+        color: ${black};
+        cursor: default;
+      }
+      .ant-select-dropdown-menu-item-group-list {
+        flex: 1;
+        overflow: auto;
+        > .ant-select-dropdown-menu-item {
+          padding-left: 12px;
+        }
+      }
+    }
+  }
+  .ant-select-dropdown-menu-item-disabled {
+    font-weight: 900;
+    color: ${black};
+    cursor: default;
+  }
+`;
+
+export { StyledAutocompleteDropDown as AutocompleteDropDown };

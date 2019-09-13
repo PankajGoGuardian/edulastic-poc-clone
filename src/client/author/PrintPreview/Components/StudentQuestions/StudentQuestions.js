@@ -1,15 +1,21 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import { keyBy as _keyBy } from "lodash";
+import { keyBy as _keyBy, get } from "lodash";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 import { QuestionDiv, Content } from "./styled";
 
-function Preview({ item }) {
+function Preview({ item, passages }) {
   const rows = getRows(item);
-  const questions = (item.data && item.data.questions) || [];
-  const questionsKeyed = _keyBy(questions, "id");
+  const questions = get(item, ["data", "questions"], []);
+  const resources = get(item, ["data", "resources"], []);
+  let questionsKeyed = { ..._keyBy(questions, "id"), ..._keyBy(resources, "id") };
+  if (item.passageId && passages.length) {
+    const passage = passages.find(p => p._id === item.passageId) || {};
+    questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
+  }
+
   return (
     <Content key={item._id}>
       <TestItemPreview
@@ -84,7 +90,8 @@ class StudentQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
-    let testItemsRender = testItems.map(item => <Preview item={item} />);
+    const { passages = [] } = this.props.classResponse;
+    let testItemsRender = testItems.map(item => <Preview item={item} passages={passages} />);
     return (
       <QuestionDiv
         ref={ref => {

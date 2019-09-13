@@ -5,8 +5,7 @@ import { withMathFormula } from "../../HOC/withMathFormula";
 
 const Text = styled.div`
   padding: 0 20px;
-  display: flex;
-  flex-direction: column;
+  display: block;
   align-items: center;
   justify-content: center;
   background: ${white};

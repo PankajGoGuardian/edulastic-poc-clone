@@ -26,7 +26,7 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
               </AnswerAndScore>
             )}
             <AnswerAndScore>
-              <span data-cy="percentage">{Math.floor(percentage * 100) / 100}%</span>
+              <span data-cy="percentage">{Math.round(percentage)}%</span>
             </AnswerAndScore>
           </React.Fragment>
         )}

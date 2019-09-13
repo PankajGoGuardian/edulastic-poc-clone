@@ -76,6 +76,13 @@ class Worksheet extends React.Component {
     lineWidth: 6
   };
 
+  componentDidMount() {
+    const { saveUserWork, itemDetail } = this.props;
+    if (itemDetail?.item?._id) {
+      saveUserWork({ [itemDetail.item._id]: {} });
+    }
+  }
+
   handleHighlightQuestion = questionId =>
     this.setState({
       highlightedQuestion: questionId
@@ -311,7 +318,6 @@ class Worksheet extends React.Component {
   setDeleteConfirmation = (deleteConfirmation, selected = 0) => {
     this.setState({ deleteConfirmation, selected });
   };
-  // setup for scratchpad ends
 
   // setup for scratchpad ends
   render() {

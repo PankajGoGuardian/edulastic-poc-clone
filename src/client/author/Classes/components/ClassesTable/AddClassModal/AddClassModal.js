@@ -23,6 +23,7 @@ class AddClassModal extends Component {
     this.fetchTeacher = debounce(this._fetchTeacher, 1000);
     this.fetchCoursesForDistrict = debounce(this.fetchCoursesForDistrict, 1000);
   }
+  selectTeacherRef = React.createRef();
 
   onAddClass = () => {
     this.props.form.validateFieldsAndScroll((err, user) => {
@@ -127,6 +128,7 @@ class AddClassModal extends Component {
       teacherList: [],
       fetchingTeacher: false
     });
+    this.selectTeacherRef.current.blur();
   };
 
   selectTags = async id => {
@@ -288,7 +290,6 @@ class AddClassModal extends Component {
                 ]
               })(
                 <Select
-                  mode="multiple"
                   labelInValue
                   placeholder="Search by Username - Please enter 3 or more characters"
                   notFoundContent={fetchingTeacher ? <Spin size="small" /> : null}
@@ -296,6 +297,7 @@ class AddClassModal extends Component {
                   onSearch={this.fetchTeacher}
                   onFocus={this.fetchTeacher}
                   onChange={this.handleTeacherChange}
+                  ref={this.selectTeacherRef}
                 >
                   {teacherList.map(teacher => (
                     <Option key={teacher._id} value={teacher._id}>

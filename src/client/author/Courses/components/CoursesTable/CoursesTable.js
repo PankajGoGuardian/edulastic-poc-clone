@@ -728,7 +728,7 @@ class CoursesTable extends React.Component {
               <div> Are you sure you want to deactivate the course(s)? </div>
             </>
           }
-          okText="Yes, Remove"
+          okText="Yes, Deactivate"
         />
       </StyledTableContainer>
     );

@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
+import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
 
+import { getPreviewSelector } from "../../../src/selectors/view";
 import { QuestionNumber } from "../QuestionItem/styled";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
@@ -39,6 +41,7 @@ const PDFPreview = ({
   questions,
   questionsById,
   answersById,
+  previewMode,
   viewMode
 }) => {
   const handleHighlight = questionId => () => {
@@ -70,6 +73,7 @@ const PDFPreview = ({
                 index={qIndex}
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
+                previewMode={previewMode}
                 viewMode={viewMode}
               />
             </div>
@@ -92,4 +96,4 @@ PDFPreview.defaultProps = {
   annotations: []
 };
 
-export default PDFPreview;
+export default connect(state => ({ previewMode: getPreviewSelector(state) }))(PDFPreview);

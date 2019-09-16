@@ -10,6 +10,13 @@ const { Option } = Select;
 const SelectWrapper = styled.span`
   margin: 0px 4px;
   display: inline-flex;
+  .ant-select-dropdown-menu-item {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    display: block;
+  }
 `;
 
 const ChoicesBox = ({ resprops, id }) => {
@@ -71,7 +78,7 @@ const ChoicesBox = ({ resprops, id }) => {
         {options &&
           options[id] &&
           options[id].map((response, respID) => (
-            <Option value={response} key={respID}>
+            <Option title={response} value={response} key={respID}>
               {response}
             </Option>
           ))}

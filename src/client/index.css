@@ -820,7 +820,6 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-flex;
 }
 
 .check-answer.showanswer .index {

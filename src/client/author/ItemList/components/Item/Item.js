@@ -4,10 +4,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
-import { message } from "antd";
+import { message, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question } from "@edulastic/constants";
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
+import { themeColor, red } from "@edulastic/colors";
+import { testItemsApi } from "@edulastic/api";
 import { getTestItemAuthorName, getQuestionType } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -36,8 +38,6 @@ import {
 } from "./styled";
 import PreviewModal from "../../../src/components/common/PreviewModal";
 import { StyledButton } from "../../../TestPage/components/AddItems/styled";
-import { themeColor } from "@edulastic/colors";
-import { testItemsApi } from "@edulastic/api";
 import {
   setAndSavePassageItemsAction,
   getPassageItemsCountSelector,
@@ -289,8 +289,8 @@ class Item extends Component {
                 loading={selectedId === item._id}
                 onClick={() => this.handleSelection(item)}
                 style={{
-                  border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
-                  color: this.isAddOrRemove ? themeColor : "#ff0099",
+                  border: `1px solid ${this.isAddOrRemove ? themeColor : red}`,
+                  color: this.isAddOrRemove ? themeColor : red,
                   marginTop: 15,
                   justifyContent: "center",
                   width: "120px"
@@ -300,49 +300,51 @@ class Item extends Component {
               </StyledButton>
             ))}
         </Question>
-        <Detail>
-          <TypeCategory>
-            {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
-            {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
-            <CategoryContent>
-              {itemTypes.map(itemType => (
-                <Label>
-                  <LabelText>{itemType}</LabelText>
-                </Label>
-              ))}
-            </CategoryContent>
-          </TypeCategory>
-          {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
-        </Detail>
-        {windowWidth < MAX_TAB_WIDTH &&
-          (page === "itemList" ? (
-            <ViewButton>
-              <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
-                <IconDown />
-              </MoreInfo>
-              <ViewButtonStyled onClick={this.moveToItem}>
-                {t("component.item.view")}
-                <IconEye />
-              </ViewButtonStyled>
-              <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
-                {selectedToCart ? "Remove" : <IconPlus />}
-              </AddButtonStyled>
-            </ViewButton>
-          ) : (
-            <StyledButton
-              loading={selectedId === item._id}
-              onClick={() => this.handleSelection(item)}
-              style={{
-                border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
-                color: this.isAddOrRemove ? themeColor : "#ff0099",
-                marginTop: 15,
-                width: "100%"
-              }}
-            >
-              {this.isAddOrRemove ? "ADD" : "REMOVE"}
-            </StyledButton>
-          ))}
-        {windowWidth < MAX_TAB_WIDTH && (
+        <Row type="flex" align="center">
+          <Detail>
+            <TypeCategory>
+              {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
+              {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
+              <CategoryContent>
+                {itemTypes.map(itemType => (
+                  <Label>
+                    <LabelText>{itemType}</LabelText>
+                  </Label>
+                ))}
+              </CategoryContent>
+            </TypeCategory>
+            {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
+          </Detail>
+          {windowWidth <= MAX_TAB_WIDTH &&
+            (page === "itemList" ? (
+              <ViewButton>
+                <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+                  <IconDown />
+                </MoreInfo>
+                <ViewButtonStyled onClick={this.moveToItem}>
+                  {t("component.item.view")}
+                  <IconEye />
+                </ViewButtonStyled>
+                <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                  {selectedToCart ? "Remove" : <IconPlus />}
+                </AddButtonStyled>
+              </ViewButton>
+            ) : (
+              <StyledButton
+                loading={selectedId === item._id}
+                onClick={() => this.handleSelection(item)}
+                style={{
+                  border: `1px solid ${this.isAddOrRemove ? themeColor : red}`,
+                  color: this.isAddOrRemove ? themeColor : red,
+                  marginTop: 15,
+                  width: "100%"
+                }}
+              >
+                {this.isAddOrRemove ? "ADD" : "REMOVE"}
+              </StyledButton>
+            ))}
+        </Row>
+        {windowWidth <= MAX_TAB_WIDTH && (
           <Details isOpenedDetails={isOpenedDetails}>
             {<Standards item={item} search={search} />}
             <Categories>{this.renderDetails()}</Categories>

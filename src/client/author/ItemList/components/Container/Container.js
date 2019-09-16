@@ -2,15 +2,25 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
-import { debounce, uniq } from "lodash";
+import { debounce } from "lodash";
 
-import { Paper, withWindowSizes } from "@edulastic/common";
+import { withWindowSizes } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { IconFilter } from "@edulastic/icons";
-import { Container, Element, ListItems, SpinContainer, PaginationContainer, ShowLeftFilterButton } from "./styled";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import {
+  Container,
+  Element,
+  ListItems,
+  SpinContainer,
+  PaginationContainer,
+  MobileLeftFilterButton,
+  MobileFilterIcon,
+  ContentWrapper,
+  ScrollbarContainer
+} from "./styled";
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
@@ -36,14 +46,12 @@ import {
   setDefaultTestDataAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  getAllTagsAction,
-  getAllTagsSelector
+  getAllTagsAction
 } from "../../../TestPage/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
-import FilterButton from "../FilterButton/FilterButton";
-import { SMALL_DESKTOP_WIDTH, MEDIUM_DESKTOP_WIDTH } from "../../../src/constants/others";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
@@ -52,7 +60,6 @@ import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector
 } from "../../../src/selectors/user";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
@@ -355,6 +362,12 @@ class Contaier extends Component {
 
   renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
+  renderFilterIcon = isShowFilter => (
+    <MobileLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
+      <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+    </MobileLeftFilterButton>
+  );
+
   render() {
     const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
 
@@ -368,9 +381,10 @@ class Contaier extends Component {
           windowWidth={windowWidth}
           title={t("component.itemlist.header.itemlist")}
           renderExtra={this.renderCartButton}
+          renderFilterIcon={this.renderFilterIcon}
         />
         <Container>
-          {isShowFilter && (
+          {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
             <ItemFilter
               onSearchFieldChange={this.handleSearchFieldChange}
               onSearchInputChange={this.handleSearchInputChange}
@@ -382,17 +396,14 @@ class Contaier extends Component {
               getCurriculumStandards={getCurriculumStandards}
               curriculumStandards={curriculumStandards}
               items={filterMenuItems}
+              toggleFilter={this.toggleFilter}
               t={t}
             />
           )}
           <ListItems isShowFilter={isShowFilter}>
             <Element>
-              {windowWidth < MEDIUM_DESKTOP_WIDTH && (
-                <ShowLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
-                  <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-                </ShowLeftFilterButton>
-              )}
-              <Paper borderRadius="0px" padding="0px">
+              <MobileFilterIcon> {this.renderFilterIcon()} </MobileFilterIcon>
+              <ContentWrapper borderRadius="0px" padding="0px">
                 <SpinContainer
                   ref={e => {
                     this.spinner = e;
@@ -404,20 +415,15 @@ class Contaier extends Component {
                 <ItemsMenu>
                   <QuestionsFound>{count} questions found</QuestionsFound>
                 </ItemsMenu>
-                <PerfectScrollbar
+                <ScrollbarContainer
                   ref={e => {
                     this.itemsScrollBar = e;
                   }}
-                  style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
                 >
                   {this.renderItems()}
-                  {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}
-                </PerfectScrollbar>
-              </Paper>
-
-              {windowWidth < SMALL_DESKTOP_WIDTH && (
-                <PaginationContainer>{this.renderPagination()}</PaginationContainer>
-              )}
+                  <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                </ScrollbarContainer>
+              </ContentWrapper>
             </Element>
           </ListItems>
         </Container>

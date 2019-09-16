@@ -82,7 +82,7 @@ const CheckboxTemplateBox = ({
 
   const dragItemStyle = {
     border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-    padding: 5,
+    padding: "0px 5px",
     display: "inline-flex",
     alignItems: "center",
     whiteSpace: "nowrap",
@@ -90,7 +90,8 @@ const CheckboxTemplateBox = ({
     width: "max-content",
     minWidth: response.minWidth,
     maxWidth: "80%", // adjusting content(mainly images) alongwith the padding
-    overflow: "hidden"
+    overflow: "hidden",
+    height: "100%"
   };
 
   const dropContainerStyle = {

@@ -53,6 +53,7 @@ const TestListFilters = ({
           title: "Tags",
           placeholder: "Please select",
           onChange: "tags",
+          filterOption: searchFilterOption,
           data: allPlaylistsTagsData.map(o => ({ value: o._id, text: o.tagName }))
         }
       ];

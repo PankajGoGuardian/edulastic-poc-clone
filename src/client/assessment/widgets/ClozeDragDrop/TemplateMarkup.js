@@ -104,7 +104,7 @@ class TemplateMarkup extends Component {
         <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
 
         <QuestionTextArea
-          placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
+          placeholder={t("component.cloze.dragDrop.thisisstem")}
           onChange={this.onChangeMarkUp}
           additionalToolbarOptions={["response"]}
           toolbarId="template-markup-area"

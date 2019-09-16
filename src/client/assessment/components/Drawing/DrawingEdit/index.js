@@ -60,7 +60,7 @@ const DrawingEdit = ({ item, setQuestionData, t }) => {
       <Paper style={{ marginBottom: 30 }}>
         <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder="Enter question"
+          placeholder="Enter your question"
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />

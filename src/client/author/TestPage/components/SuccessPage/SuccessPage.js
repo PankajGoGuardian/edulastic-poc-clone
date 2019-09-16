@@ -121,7 +121,7 @@ class SuccessPage extends React.Component {
   render() {
     const { test, isPlaylist, playlist, isAssignSuccess, isRegradeSuccess, assignment = {}, userId } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [], summary } = isPlaylist
+    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [], summary = {} } = isPlaylist
       ? playlist
       : test;
     const totalPoints = isPlaylist ? scoring.total : summary.totalPoints;

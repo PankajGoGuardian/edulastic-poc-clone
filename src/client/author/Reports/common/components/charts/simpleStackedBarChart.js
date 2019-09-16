@@ -239,8 +239,14 @@ export const SimpleStackedBarChart = ({
           {lineChartDataKey ? (
             <Line
               activeDot={{
-                onMouseOver: () => setDotActive(true),
-                onMouseLeave: () => setDotActive(false),
+                onMouseOver: o => {
+                  setDotActive(true);
+                  setBarIndex(o.index);
+                },
+                onMouseLeave: o => {
+                  setDotActive(false);
+                  setBarIndex(null);
+                },
                 r: 5,
                 ...lineDotProps
               }}

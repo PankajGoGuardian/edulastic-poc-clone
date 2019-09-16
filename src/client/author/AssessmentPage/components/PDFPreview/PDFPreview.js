@@ -1,12 +1,14 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
+import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { QuestionNumber } from "../QuestionItem/styled";
+import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -36,9 +38,11 @@ const PDFPreview = ({
   onDocumentLoad,
   onDropAnnotation,
   onHighlightQuestion,
-  questions,
   questionsById,
-  answersById
+  answersById,
+  renderExtra = "",
+  previewMode,
+  viewMode
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -58,6 +62,7 @@ const PDFPreview = ({
                 <Page pageNumber={page.pageNo} renderTextLayer={false} />
               </Document>
             )}
+            {renderExtra}
           </Preview>
         </Droppable>
         {annotations
@@ -69,7 +74,8 @@ const PDFPreview = ({
                 index={qIndex}
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
-                viewMode="review"
+                previewMode={previewMode}
+                viewMode={viewMode}
               />
             </div>
           ))}
@@ -91,4 +97,4 @@ PDFPreview.defaultProps = {
   annotations: []
 };
 
-export default PDFPreview;
+export default connect(state => ({ previewMode: getPreviewSelector(state) }))(PDFPreview);

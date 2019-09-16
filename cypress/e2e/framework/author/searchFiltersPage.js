@@ -20,9 +20,11 @@ export default class SearchFilters {
     return cy.wait("@search");
   };
 
-  setGrades = grade => {
-    CypressHelper.selectDropDownByAttribute("selectGrades", grade);
-    cy.wait("@search");
+  setGrades = grades => {
+    grades.forEach(grade => {
+      CypressHelper.selectDropDownByAttribute("selectGrades", grade);
+      cy.wait("@search");
+    });
   };
 
   setCollection = collection => {

@@ -14,7 +14,9 @@ import {
   IconPrint,
   IconAddStudents,
   IconRemove,
-  IconInfo
+  IconInfo,
+  IconMarkAsSubmitted,
+  IconDownload
 } from "@edulastic/icons";
 // actions
 import {
@@ -26,7 +28,8 @@ import {
   removeStudentAction,
   setCurrentTestActivityIdAction,
   getAllTestActivitiesForStudentAction,
-  receiveStudentResponseAction
+  receiveStudentResponseAction,
+  markSubmittedAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -136,6 +139,7 @@ class ClassBoard extends Component {
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
+      showMarkSubmittedPopup: false,
       modalInputVal: "",
       selectedNotStartedStudents: []
     };
@@ -354,6 +358,30 @@ class ClassBoard extends Component {
     this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
   };
 
+  handleShowMarkAsSubmittedModal = () => {
+    const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
+      return message.warn("Assignment is not opened yet");
+    }
+
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to be Marked as Submitted");
+    }
+    const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const selectedSubmittedStudents = selectedStudentKeys.filter(
+      item => mapTestActivityByStudId[item].status === "submitted" || mapTestActivityByStudId[item].status === "graded"
+    );
+    if (selectedSubmittedStudents.length) {
+      return message.warn(
+        `${
+          selectedSubmittedStudents.length
+        } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
+      );
+    }
+    this.setState({ showMarkSubmittedPopup: true, modalInputVal: "" });
+  };
+
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
     if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
@@ -411,6 +439,16 @@ class ClassBoard extends Component {
     this.setState({ showMarkAbsentPopup: false });
   };
 
+  handleMarkSubmitted = () => {
+    const { markSubmitted, match, studentUnselectAll, selectedStudents } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) return message.warn("No students selected");
+    markSubmitted(assignmentId, classId, selectedStudentKeys);
+    studentUnselectAll();
+    this.setState({ showMarkSubmittedPopup: false });
+  };
+
   handleShowAddStudentsPopup = () => {
     const { assignmentStatus, additionalData, testActivity } = this.props;
     if (assignmentStatus === "DONE") {
@@ -429,6 +467,11 @@ class ClassBoard extends Component {
   handleHideAddStudentsPopup = () => {
     this.setState({ showAddStudentsPopup: false });
   };
+
+  handleCancelMarkSubmitted = () => {
+    this.setState({ showMarkSubmittedPopup: false });
+  };
+
   handleCancelMarkAbsent = () => {
     this.setState({ showMarkAbsentPopup: false });
   };
@@ -514,7 +557,8 @@ class ClassBoard extends Component {
       modalInputVal,
       showMarkAbsentPopup,
       showRemoveStudentsPopup,
-      showAddStudentsPopup
+      showAddStudentsPopup,
+      showMarkSubmittedPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
     const classname = additionalData ? additionalData.classes : [];
@@ -543,9 +587,24 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
+    const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
     return (
       <div>
-        {showMarkAbsentPopup ? (
+        {showMarkSubmittedPopup && (
+          <ConfirmationModal
+            title="Mark As Submitted"
+            show={showMarkSubmittedPopup}
+            onOk={this.handleMarkSubmitted}
+            onCancel={this.handleCancelMarkSubmitted}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="SUBMIT"
+            bodyText={`The assignment for selected student(s) will be marked as "Submitted". Once you proceed, these students will not be able to take the assignment online. If the students have answered any questions, their responses will be saved.`}
+            okText="Yes,Submit"
+            canUndone
+          />
+        )}
+        {showMarkAbsentPopup && (
           <ConfirmationModal
             title="Absent"
             show={showMarkAbsentPopup}
@@ -559,10 +618,8 @@ class ClassBoard extends Component {
             }
             okText="Yes,Absent"
           />
-        ) : (
-          ""
         )}
-        {showRemoveStudentsPopup ? (
+        {showRemoveStudentsPopup && (
           <ConfirmationModal
             title="Remove"
             show={showRemoveStudentsPopup}
@@ -576,8 +633,6 @@ class ClassBoard extends Component {
             }
             okText="Yes,Remove"
           />
-        ) : (
-          ""
         )}
         <HooksContainer classId={classId} assignmentId={assignmentId} />
         <ClassHeader
@@ -694,6 +749,10 @@ class ClassBoard extends Component {
                         overlay={
                           <DropMenu>
                             <CaretUp className="fa fa-caret-up" />
+                            <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
+                              <IconMarkAsSubmitted width={12} />
+                              <span>Mark as Submitted</span>
+                            </MenuItems>
                             <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
@@ -705,6 +764,14 @@ class ClassBoard extends Component {
                             <MenuItems onClick={this.handleShowRemoveStudentsModal}>
                               <IconRemove />
                               <span>Remove Students</span>
+                            </MenuItems>
+                            <MenuItems>
+                              <IconDownload />
+                              <span>Download Grades</span>
+                            </MenuItems>
+                            <MenuItems>
+                              <IconDownload />
+                              <span>Download Response</span>
                             </MenuItems>
                             <MenuItems onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />
@@ -990,7 +1057,8 @@ const enhance = compose(
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
       markAbsent: markAbsentAction,
-      removeStudent: removeStudentAction
+      removeStudent: removeStudentAction,
+      markSubmitted: markSubmittedAction
     }
   )
 );

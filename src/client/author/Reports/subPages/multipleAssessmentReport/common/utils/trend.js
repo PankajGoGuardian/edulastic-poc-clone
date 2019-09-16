@@ -90,16 +90,16 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
     const assessmentDate = value[0].assessmentDate;
 
     forEach(groupByTests, (value, key) => {
-      const maxStudents = maxBy(value, item => parseInt(item.studentCount || 0)) || {};
+      const studentCountKey = compareBy === "group" ? "studentCount" : "totalStudentCount";
+      const maxStudents = maxBy(value, item => parseInt(item[studentCountKey] || 0)) || {};
       const sanitizedRecords = sanitizeNullNumberFields(value, ["totalScore", "maxScore"]);
       tests[key] = {
         records: value,
         score: getOverallScore(sanitizedRecords),
         rawScore: `${round(sumBy(sanitizedRecords, "totalScore"), 2)} / ${sumBy(sanitizedRecords, "maxScore")}`,
-        studentCount: parseInt(maxStudents.studentCount) || 0
+        studentCount: parseInt(maxStudents[studentCountKey]) || 0
       };
     });
-
     return {
       tests,
       studentCount: maxBy(values(tests), "studentCount").studentCount,

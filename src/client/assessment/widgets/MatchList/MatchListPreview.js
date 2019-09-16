@@ -85,8 +85,8 @@ const MatchListPreview = ({
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        if (alt && alt !== "") {
-          alternateAnswers[index + 1].push(alt);
+        if (alt?.label && alt?.label !== "") {
+          alternateAnswers[index + 1].push(alt.label);
         }
       });
     });
@@ -454,7 +454,7 @@ const MatchListPreview = ({
                   <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={getStemNumeration(i)}>
-                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i]?.label || "" }} />
                 </CorItem>
               </FlexContainer>
             ))}

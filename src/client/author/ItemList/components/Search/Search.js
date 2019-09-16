@@ -242,6 +242,7 @@ class Search extends Component {
                 size="large"
                 onChange={onSearchFieldChange("tags")}
                 value={tags}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {allTagsData.map(el => (
                   <Select.Option key={el._id} value={el._id}>

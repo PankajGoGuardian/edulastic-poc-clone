@@ -43,7 +43,7 @@ import {
   Container,
   ListItems,
   Element,
-  ShowLeftFilterButton,
+  MobileLeftFilterButton,
   SpinContainer,
   PaginationContainer
 } from "../../../ItemList/components/Container/styled";
@@ -378,9 +378,9 @@ class AddItems extends PureComponent {
           <ListItems isShowFilter={isShowFilter}>
             <Element>
               {windowWidth < MEDIUM_DESKTOP_WIDTH && (
-                <ShowLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
+                <MobileLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
                   <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-                </ShowLeftFilterButton>
+                </MobileLeftFilterButton>
               )}
               <Paper borderRadius="0px" padding="0px">
                 <SpinContainer

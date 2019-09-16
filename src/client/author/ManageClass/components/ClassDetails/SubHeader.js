@@ -136,7 +136,7 @@ const SubHeader = ({
                 <span style={{ color: "#4ca4e8", fontSize: "16px" }}>{code}</span>{" "}
               </div>
             }
-            okText="Yes,Archive"
+            okText="Yes, Archive"
           />
         )}
         <ClassCode>

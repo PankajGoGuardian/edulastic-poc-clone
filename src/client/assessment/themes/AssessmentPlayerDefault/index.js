@@ -4,7 +4,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
@@ -191,7 +191,7 @@ class AssessmentPlayerDefault extends React.Component {
     } else if (activeMode === value) {
       this.setState({ activeMode: "" });
     } else {
-      this.setState({ activeMode: value });
+      this.setState({ activeMode: value, deleteMode: false });
     }
   };
 
@@ -512,9 +512,9 @@ class AssessmentPlayerDefault extends React.Component {
                 />
               )}
               {showHints && (
-                <PaddingDiv>
+                <StyledPaddingDiv>
                   <Hints questions={get(item, [`data`, `questions`], [])} />
-                </PaddingDiv>
+                </StyledPaddingDiv>
               )}
             </MainWrapper>
           </Main>
@@ -560,3 +560,7 @@ const enhance = compose(
 );
 
 export default enhance(AssessmentPlayerDefault);
+
+const StyledPaddingDiv = styled(PaddingDiv)`
+  padding: 0px 35px;
+`;

@@ -1,6 +1,16 @@
-import { mobileWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
+import {
+  mobileWidth,
+  mediumDesktopWidth,
+  white,
+  themeColor,
+  largeDesktopWidth,
+  desktopWidth,
+  mobileWidthLarge
+} from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
+import { Paper } from "@edulastic/common";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 export const Container = styled.div`
   padding: 0;
@@ -24,7 +34,22 @@ export const Container = styled.div`
   }
 `;
 
-export const ShowLeftFilterButton = styled(Button)`
+export const ContentWrapper = styled(Paper)`
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding-bottom: 40px;
+
+  @media (max-width: ${mobileWidth}) {
+    height: initial;
+    overflow-y: initial;
+    overflow-x: initial;
+    border-radius: 10px;
+    padding: 0 0 28px 0;
+  }
+`;
+
+export const MobileLeftFilterButton = styled(Button)`
   min-width: 35px;
   min-height: 25px;
   padding: 2px;
@@ -36,6 +61,7 @@ export const ShowLeftFilterButton = styled(Button)`
   z-index: 100;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${props => (props.isShowFilter ? themeColor : white)} !important;
+
   &:focus,
   &:hover {
     outline: unset;
@@ -43,29 +69,37 @@ export const ShowLeftFilterButton = styled(Button)`
   }
 `;
 
+export const MobileFilterIcon = styled.div`
+  display: none;
+  @media (max-width: ${largeDesktopWidth}) {
+    display: block;
+  }
+  @media (max-width: ${desktopWidth}) {
+    display: none;
+  }
+`;
+
 export const ListItems = styled.div`
   flex: 1;
   padding-left: ${props => (props.isShowFilter ? "0px" : "30px")};
+
+  @media (max-width: ${desktopWidth}) {
+    padding-left: 0px;
+  }
+`;
+
+export const ScrollbarContainer = styled(PerfectScrollbar)`
+  padding: 0px 30px;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    padding: 0px 15px;
+  }
 `;
 
 export const Element = styled.div`
   margin: 0;
   height: 100%;
 
-  > div {
-    position: relative;
-    height: 100%;
-    overflow: hidden;
-    padding-bottom: 40px;
-
-    @media (max-width: ${mobileWidth}) {
-      height: initial;
-      overflow-y: initial;
-      overflow-x: initial;
-      border-radius: 10px;
-      padding: 0 0 28px 0;
-    }
-  }
   .ant-pagination {
     padding: 30px 0 0 0;
     background: ${white};
@@ -110,9 +144,8 @@ export const SpinContainer = styled.div`
 
 export const PaginationContainer = styled.div`
   .ant-pagination {
-    padding: 0;
+    padding: 20px 0px;
     background: transparent;
-    margin-top: 42px;
     display: flex;
     align-items: center;
     justify-content: center;

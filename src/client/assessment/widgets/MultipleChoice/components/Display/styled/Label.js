@@ -118,6 +118,9 @@ export const Label = styled.label`
 
 export const QuestionTitleWrapper = styled.div`
   display: flex;
+  img {
+    padding: 0px 10px;
+  }
 `;
 
 export const OptionsLabel = styled.span`

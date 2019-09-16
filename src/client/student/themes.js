@@ -1,5 +1,6 @@
 import { themeColor, themeColorLighter, themeColorLight, themeColorBreadcrumb, title } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
+import { questionTheme } from "@edulastic/common";
 
 export const themeColorsMap = {
   MGLG: {
@@ -310,7 +311,8 @@ const defaultTheme = {
     submitButtonTextSize: "11px",
     submitButtonBgColor: themeColor,
     submitButtonTextColor: "#ffffff"
-  }
+  },
+  widgets: questionTheme.widgets
 };
 
 export const themes = {

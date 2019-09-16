@@ -78,7 +78,7 @@ export const getChecks = answer => {
 // exact match evaluator
 const exactMatchEvaluator = async (userResponse = "", answers) => {
   let score = 0;
-  let maxScore = 1;
+  let maxScore = 0;
   let evaluation = [];
   try {
     const getAnswerCorrectMethods = answer => {

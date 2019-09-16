@@ -6,9 +6,9 @@ import CypressHelper from "../../../../util/cypressHelpers";
 
 class MCQMultiplePage extends MCQStandardPage {
   // default question
-  createQuestion(queKey = "default", queIndex = 0) {
+  createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
-    item.createNewItem();
+    item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_MULTI);
     cy.fixture("questionAuthoring").then(authoringData => {
       const { quetext, choices, setAns } = authoringData.MCQ_MULTI[queKey];
@@ -64,7 +64,7 @@ class MCQMultiplePage extends MCQStandardPage {
           CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
         }
 
-        this.header.save();
+        // this.header.save();
         /* 
         item.updateItemLevelScore(points);
         item.header.save(true); */

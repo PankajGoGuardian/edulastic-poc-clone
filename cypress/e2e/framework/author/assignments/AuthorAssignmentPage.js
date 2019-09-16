@@ -40,7 +40,12 @@ class AuthorAssignmentPage {
     this.clickOnReleaseGrade();
     cy.get(`[data-cy='${releaseGradeType}']`).click({ force: true });
     this.clickOnApply({ force: true });
-    cy.wait("@assignmentUpdate").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@assignmentUpdate").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      // waiting for sqs to process
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(5000);
+    });
   };
 }
 

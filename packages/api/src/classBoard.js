@@ -62,6 +62,15 @@ const markAbsent = ({ assignmentId, classId, students }) =>
     })
     .then(result => result.data);
 
+const markSubmitted = ({ assignmentId, classId, students }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${assignmentId}/mark-as-submitted`,
+      data: { groupId: classId, students }
+    })
+    .then(result => result.data);
+
 const togglePause = ({ assignmentId, classId, value }) =>
   api
     .callApi({
@@ -106,6 +115,7 @@ export default {
   openAssignment,
   closeAssignment,
   markAbsent,
+  markSubmitted,
   removeStudents,
   addStudents
 };

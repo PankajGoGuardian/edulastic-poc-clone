@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Select, Col } from "antd";
+import { Select, Col, message } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -53,22 +53,28 @@ const Sidebar = ({
   isEditable
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({
-        tagName: searchValue,
-        tagType: isPlaylist ? "playlist" : "test"
-      });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "test" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      try {
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: isPlaylist ? "playlist" : "test"
+        });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "test" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
     const newTags = [...tags, newTag];
     onChangeField("tags", newTags);
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -77,8 +83,8 @@ const Sidebar = ({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -194,11 +200,11 @@ const Sidebar = ({
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
         >
-          {!!searchValue ? (
+          {!!searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
-              {`${searchValue} (Create new Tag )`}
+              {`${searchValue} (Create new Tag)`}
             </Select.Option>
           ) : (
             ""
@@ -209,6 +215,9 @@ const Sidebar = ({
             </Select.Option>
           ))}
         </SummarySelect>
+        {!!searchValue.length && !searchValue.trim().length && (
+          <p style={{ color: "red" }}>Please enter valid characters.</p>
+        )}
         {/* to be done later */}
         {false && (
           <>

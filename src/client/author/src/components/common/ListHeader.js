@@ -5,7 +5,15 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button, MenuIcon } from "@edulastic/common";
-import { mobileWidth, desktopWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
+import {
+  mobileWidth,
+  desktopWidth,
+  mediumDesktopWidth,
+  white,
+  themeColor,
+  mobileWidthMax,
+  mobileWidthLarge
+} from "@edulastic/colors";
 import { IconPlusCircle } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
@@ -20,6 +28,7 @@ const ListHeader = ({
   toggleSideBar,
   renderExtra,
   renderFilter,
+  renderFilterIcon,
   isAdvancedView,
   hasButton,
   renderButton,
@@ -38,13 +47,20 @@ const ListHeader = ({
     )}
 
     <RightButtonWrapper>
+      <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
       {renderFilter(isAdvancedView)}
       {hasButton &&
         !createAssignment &&
         (renderButton ? (
           renderButton()
         ) : (
-          <CreateButton onClick={onCreate} color="secondary" variant="create" shadow="none">
+          <CreateButton
+            onClick={onCreate}
+            color="secondary"
+            variant="create"
+            shadow="none"
+            icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+          >
             {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
           </CreateButton>
         ))}
@@ -74,6 +90,7 @@ ListHeader.propTypes = {
   btnTitle: PropTypes.string,
   renderExtra: PropTypes.func,
   renderFilter: PropTypes.func,
+  renderFilterIcon: PropTypes.func,
   isAdvancedView: PropTypes.bool,
   hasButton: PropTypes.bool,
   renderButton: PropTypes.func,
@@ -84,6 +101,7 @@ ListHeader.defaultProps = {
   btnTitle: "",
   renderExtra: () => null,
   renderFilter: () => null,
+  renderFilterIcon: () => null,
   onCreate: () => {},
   createAssignment: false,
   renderButton: null,
@@ -174,16 +192,32 @@ const CreateButton = styled(Button)`
   border-color: ${props => props.theme.themeColor};
   justify-content: space-around;
   margin-left: 20px;
+  border-radius: 4px;
   &:hover,
   &:focus {
     color: ${props => props.theme.themeColor};
     border-color: ${props => props.theme.themeColor};
+  }
+  svg {
+    display: none;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
     min-height: 36px;
     margin-left: 10px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    span {
+      display: none;
+    }
+    svg {
+      display: block;
+    }
+    padding: 0px;
+    width: 45px;
+    min-height: 40px;
+    justify-content: center;
   }
 `;
 
@@ -210,4 +244,39 @@ const RightButtonWrapper = styled.div`
 const MidTitleWrapper = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
+  }
+`;
+
+export const MobileHeaderFilterIcon = styled.div`
+  display: none;
+  button {
+    position: relative;
+    margin: 0px;
+    box-shadow: none;
+    width: 45px;
+    border-radius: 4px;
+    border-color: ${themeColor};
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: ${desktopWidth}) {
+      height: 36px;
+      svg {
+        height: 25px;
+        width: 25px;
+      }
+    }
+    @media (max-width: ${mobileWidthLarge}) {
+      height: 40px;
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
+  }
 `;

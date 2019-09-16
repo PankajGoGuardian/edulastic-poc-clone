@@ -1,4 +1,5 @@
 import { themeColor, themeColorLight } from "@edulastic/colors";
+import { questionTheme } from "@edulastic/common";
 
 export const playersTheme = {
   default: {
@@ -84,5 +85,6 @@ export const playersTheme = {
   PracticePlayer: {
     logoColor: "0eb08d",
     "": ""
-  }
+  },
+  widgets: questionTheme.widgets
 };

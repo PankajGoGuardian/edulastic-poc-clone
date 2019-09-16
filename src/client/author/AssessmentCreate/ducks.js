@@ -31,23 +31,20 @@ const initialState = {
 
 const initialTestState = createBlankTest();
 
-const createAssessmentRequest = state => ({
-  ...state,
-  creating: true,
-  error: undefined
-});
+const createAssessmentRequest = state => {
+  state.creating = true;
+  state.error = undefined;
+};
 
-const createAssessmentSuccess = state => ({
-  ...state,
-  creating: false,
-  percentageUpload: 0
-});
+const createAssessmentSuccess = state => {
+  state.creating = false;
+  state.percentageUpload = 0;
+};
 
-const createAssessmentError = (state, { payload: { error } }) => ({
-  ...state,
-  creating: false,
-  error
-});
+const createAssessmentError = (state, { payload: { error } }) => {
+  state.creating = false;
+  state.error = error;
+};
 
 const setPercentageLoaded = (state, { payload }) => {
   state.percentageUpload = payload;

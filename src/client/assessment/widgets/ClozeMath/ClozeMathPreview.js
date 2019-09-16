@@ -217,10 +217,7 @@ ClozeMathPreview.defaultProps = {
 export default withCheckAnswerButton(ClozeMathPreview);
 
 const QuestionWrapper = styled.div`
-  font-size: ${props => {
-    console.log("uiStyles", props.uiStyles);
-    return props.uiStyles.fontSize || "16px";
-  }};
+  font-size: ${props => props.uiStyles.fontSize || "16px"};
   font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
   li {
     margin: 4px 0;

@@ -1,13 +1,9 @@
-import React, { Component } from "react";
-import { Row, Col, Button, Modal } from "antd";
-import {
-  StyledCol,
-  StyledP,
-  StyledClassName,
-  StyledInput,
-  LightBlueSpan
-} from "../../../../Classes/components/ClassesTable/ArchiveClassModal/styled";
-
+import React from "react";
+import { Form, Button } from "antd";
+import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
+import styled from "styled-components";
+import { StyledClassName, StyledInput } from "../../../../Classes/components/ClassesTable/ArchiveClassModal/styled";
+import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 class DeactivateSchoolModal extends React.Component {
   constructor(props) {
     super(props);
@@ -31,7 +27,7 @@ class DeactivateSchoolModal extends React.Component {
     const schoolName = schoolData.map(row => <StyledClassName>{row.name}</StyledClassName>);
 
     return (
-      <Modal
+      <ConfirmationModal
         visible={modalVisible}
         title="Deactivate School(s)"
         onOk={this.onDeactivateSchool}
@@ -41,32 +37,59 @@ class DeactivateSchoolModal extends React.Component {
           <Button onClick={this.onCloseModal} ghost type="primary">
             No, Cancel
           </Button>,
-          <Button
-            type="primary"
-            onClick={this.onDeactivateSchool}
-            disabled={textDeactivate.toLowerCase() !== "deactivate"}
-          >
+          <YesButton onClick={this.onDeactivateSchool} disabled={textDeactivate.toLowerCase() !== "deactivate"}>
             Yes, Deactivate >
-          </Button>
+          </YesButton>
         ]}
       >
-        <Row>
-          <Col span={24}>
-            <StyledP>Are you sure you want to deactivate the following school(s)?</StyledP>
-            {schoolName}
-            <StyledP>
-              If Yes type <LightBlueSpan>DEACTIVATE</LightBlueSpan> in the space given below and proceed.
-            </StyledP>
-          </Col>
-        </Row>
-        <Row>
-          <StyledCol span={24}>
-            <StyledInput value={textDeactivate} onChange={this.onChangeInput} />
-          </StyledCol>
-        </Row>
-      </Modal>
+        <ModalBody>
+          <span>Are you sure you want to deactivate the following school(s)?</span>
+          {schoolName}
+          <span>
+            If Yes type <LightGreenSpan>DEACTIVATE</LightGreenSpan> in the space given below and proceed.
+          </span>
+          <FormItem>
+            <TextInput value={textDeactivate} onChange={this.onChangeInput} />
+          </FormItem>
+        </ModalBody>
+      </ConfirmationModal>
     );
   }
 }
 
 export default DeactivateSchoolModal;
+
+const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const FormItem = styled(Form.Item)`
+  width: 80%;
+  display: inline-block;
+  margin: 10px;
+  .ant-input {
+    height: 33px;
+    background: ${backgrounds.primary};
+    border: 1px solid ${borders.secondary};
+    padding: 10px 24px;
+  }
+`;
+
+const TextInput = styled(StyledInput)`
+  text-align: center;
+  width: 100%;
+`;
+
+const YesButton = styled(Button)`
+  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
+  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
+  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
+`;
+
+export const LightGreenSpan = styled.span`
+  color: ${themeColor};
+  font-weight: bold;
+`;

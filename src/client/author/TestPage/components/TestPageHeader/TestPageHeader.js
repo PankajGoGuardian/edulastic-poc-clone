@@ -193,7 +193,6 @@ const TestPageHeader = ({
       />
       {windowWidth > 767 ? (
         <HeaderWrapper>
-          <MenuIcon className="hamburger" onClick={toggleSideBar} />
           <TitleWrapper>
             <Title title={title}>{title || "Untitled Test"} </Title>
             <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>

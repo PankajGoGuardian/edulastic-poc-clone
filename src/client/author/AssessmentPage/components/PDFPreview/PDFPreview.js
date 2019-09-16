@@ -75,7 +75,7 @@ const PDFPreview = ({
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
                 previewMode={previewMode}
-                viewMode={viewMode}
+                viewMode="review"
               />
             </div>
           ))}

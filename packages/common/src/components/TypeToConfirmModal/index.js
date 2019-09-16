@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Button, Modal } from "antd";
 import PropTypes from "prop-types";
-import { StyledCol, StyledP, StyledInput, LightBlueSpan } from "./styled";
+import { StyledCol, StyledP, StyledInput, LightGreenSpan, StyledModal, YesButton } from "./styled";
 
 class TypeToConfirmModal extends Component {
   state = {
@@ -22,24 +22,24 @@ class TypeToConfirmModal extends Component {
     const { textValue } = this.state;
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title={title}
         onOk={handleOnOkClick}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        modalWidth="max-content"
         footer={[
           <Button key="cancelButton" onClick={this.onCloseModal} ghost type="primary">
             No, Cancel
           </Button>,
-          <Button
+          <YesButton
             key="okButton"
-            type="primary"
             onClick={handleOnOkClick}
             disabled={textValue.toLowerCase() !== wordToBeTyped.toLowerCase()}
           >
             {`Yes, ${title} >`}
-          </Button>
+          </YesButton>
         ]}
       >
         <Row>
@@ -47,7 +47,7 @@ class TypeToConfirmModal extends Component {
             <StyledP>{primaryLabel}</StyledP>
             {secondaryLabel}
             <StyledP>
-              If Yes type <LightBlueSpan>{wordToBeTyped}</LightBlueSpan> in the space given below and proceed.
+              If Yes type <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space given below and proceed.
             </StyledP>
           </Col>
         </Row>
@@ -61,7 +61,7 @@ class TypeToConfirmModal extends Component {
             />
           </StyledCol>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

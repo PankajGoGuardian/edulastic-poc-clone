@@ -1,7 +1,8 @@
 import { createSelector } from "reselect";
 import { message } from "antd";
-import { call, put, all, takeEvery } from "redux-saga/effects";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { testItemsApi } from "@edulastic/api";
+import { getAllTagsSelector } from "../../ducks";
 
 // constants
 
@@ -122,8 +123,11 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
+    const allTagsData = yield select(state => getAllTagsSelector(state, "testitem"));
+    const { tags = [] } = search;
+    const searchTags = tags.map(tagId => (allTagsData.find(tag => tag._id === tagId) || { tagName: "" }).tagName);
     const { items, count } = yield call(testItemsApi.getAll, {
-      search,
+      search: { ...search, tags: searchTags },
       page,
       limit
     });

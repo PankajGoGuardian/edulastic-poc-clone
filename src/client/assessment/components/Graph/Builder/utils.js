@@ -481,62 +481,6 @@ export function getAvailablePositions(board, element, isStacked) {
   return result;
 }
 
-export function fixLatex(latex) {
-  const expr = latex
-    .trim()
-    .replace(/\\frac{([^}]+)}{([^}]+)}/g, "($1)/($2)") // fractions
-    .replace(/\\left\(/g, "(") // open parenthesis
-    .replace(/\\right\)/g, ")") // close parenthesis
-    .replace(/\\cdot/g, "*")
-    .replace(/\\le/g, "<=")
-    .replace(/\\ge/g, ">=")
-    .replace(/[^\(](floor|ceil|(sin|cos|tan|sec|csc|cot)h?)\(([^\(\)]+)\)[^\)]/g, "($&)") // functions
-    .replace(/([^(floor|ceil|(sin|cos|tan|sec|csc|cot)h?|\+|\-|\*|\/)])\(/g, "$1*(")
-    .replace(/\)([\w])/g, ")*$1")
-    .replace(/([0-9])([A-Za-z])/g, "$1*$2")
-    .replace("\\", "");
-
-  let splitExpr = expr.split("<=");
-  if (splitExpr.length === 2) {
-    const latexFunc = `${splitExpr[0]}-(${splitExpr[1]})`;
-    const compSign = "<=";
-    return { latexFunc, compSign };
-  }
-
-  splitExpr = expr.split(">=");
-  if (splitExpr.length === 2) {
-    const latexFunc = `${splitExpr[0]}-(${splitExpr[1]})`;
-    const compSign = ">=";
-    return { latexFunc, compSign };
-  }
-
-  splitExpr = expr.split("<");
-  if (splitExpr.length === 2) {
-    const latexFunc = `${splitExpr[0]}-(${splitExpr[1]})`;
-    const compSign = "<";
-    return { latexFunc, compSign };
-  }
-
-  splitExpr = expr.split(">");
-  if (splitExpr.length === 2) {
-    const latexFunc = `${splitExpr[0]}-(${splitExpr[1]})`;
-    const compSign = ">";
-    return { latexFunc, compSign };
-  }
-
-  splitExpr = expr.split("=");
-  if (splitExpr.length === 2) {
-    const latexFunc = `${splitExpr[0]}-(${splitExpr[1]})`;
-    const compSign = "=";
-    return { latexFunc, compSign };
-  }
-
-  return {
-    latexFunc: expr,
-    compSign: "="
-  };
-}
-
 export function fixApiLatex(latex) {
   let splitExpr = latex.split("<=");
   if (splitExpr.length === 2) {

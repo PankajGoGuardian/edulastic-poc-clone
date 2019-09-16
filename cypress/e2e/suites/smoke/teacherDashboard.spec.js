@@ -15,7 +15,9 @@ const classDetail = {
   grades: "K",
   subject: "Mathematics",
   students: 4,
-  assignments: 0
+  assignments: 1,
+  assignmentTitle: "Smoke Test",
+  asgnStatus: "IN"
 };
 
 const create = {
@@ -37,7 +39,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Dashboard`, () => {
       classDetail.grades,
       classDetail.subject,
       classDetail.students,
-      classDetail.assignments
+      classDetail.assignments,
+      classDetail.assignmentTitle,
+      classDetail.asgnStatus
     );
   });
 

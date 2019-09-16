@@ -26,11 +26,12 @@ export default class TeacherDashBoardPage {
 
     cy.get("@classCard")
       .find('[data-cy="assignmentTitle"]')
-      .should("have.text", assignmentCount > 1 ? assignmentTitle : "No Recent Assignments");
+      .should("contain.text", assignmentCount > 0 ? assignmentTitle : "No Recent Assignments");
 
-    if (assignmentCount > 1)
+    if (assignmentCount > 0) {
       cy.get("@classCard")
         .find('[data-cy="assignmentStatus"]')
-        .should("have.text", asgnStatus);
+        .should("contain.text", asgnStatus);
+    }
   };
 }

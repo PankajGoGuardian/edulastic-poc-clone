@@ -89,12 +89,12 @@ class ReportsPage {
   }
 
   verifyQuetionCard = (studentName, studentAttempts, questionTypeMap, releasePolicy) => {
-    const correcAns = releasePolicy === releaseGradeTypes.WITH_ANSWERS;
+    const correctAns = releasePolicy === releaseGradeTypes.WITH_ANSWERS;
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
       this.selectQuestion(queNum);
       const { queKey, attemptData, points } = questionTypeMap[queNum];
-      this.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, correcAns);
+      this.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, correctAns);
     });
   };
 

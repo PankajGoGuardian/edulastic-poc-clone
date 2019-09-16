@@ -241,7 +241,7 @@ export const SimpleStackedBarChart = ({
               activeDot={{
                 onMouseOver: o => {
                   setDotActive(true);
-                  setBarIndex(o.index);
+                  setBarIndex(1);
                 },
                 onMouseLeave: o => {
                   setDotActive(false);

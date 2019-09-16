@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Row, Col, Button, Modal } from "antd";
+import { Row, Col, Button } from "antd";
 import PropTypes from "prop-types";
-import { StyledCol, StyledP, StyledInput, LightGreenSpan, StyledModal, YesButton } from "./styled";
+import { StyledCol, StyledP, StyledInput, LightGreenSpan, YesButton, StyledModal } from "./styled";
 
 class TypeToConfirmModal extends Component {
   state = {

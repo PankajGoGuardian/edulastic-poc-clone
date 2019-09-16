@@ -69,4 +69,5 @@ export { MenuIcon } from "./src/components/MenuIcon";
 // Math Utils
 export { getInnerValuesForStatic } from "./src/utils/mathUtils";
 
+export { default as ItemDetailContext, COMPACT, DEFAULT } from "./src/contexts/ItemDetailContext";
 export { default as questionTheme } from "./src/themes/questionTheme";

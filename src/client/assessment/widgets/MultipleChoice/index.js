@@ -10,7 +10,7 @@ import produce from "immer";
 
 import { PaddingDiv, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { white, boxShadowDefault } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
@@ -160,6 +160,16 @@ class MultipleChoice extends Component {
     }
   };
 
+  handleRemoveAnswer = opIndex => {
+    const { saveAnswer, userAnswer } = this.props;
+    const newAnswer = cloneDeep(userAnswer);
+    const removeIndex = newAnswer.findIndex(el => el === opIndex);
+    if (removeIndex !== -1) {
+      newAnswer.splice(removeIndex, 1);
+    }
+    saveAnswer(newAnswer);
+  };
+
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item, saveAnswer } = this.props;
     setQuestionData(
@@ -217,6 +227,7 @@ class MultipleChoice extends Component {
     const isV1Multipart = get(col, "isV1Multipart", false);
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
+    const qId = item.id;
     // const multi_response = this.props.item.multipleResponses;
     return (
       <React.Fragment>
@@ -291,7 +302,9 @@ class MultipleChoice extends Component {
                   evaluation={evaluation}
                   validation={item.validation}
                   onChange={!disableResponse ? this.handleAddAnswer : () => {}}
+                  onRemove={this.handleRemoveAnswer}
                   qIndex={qIndex}
+                  qId={qId}
                   instructorStimulus={item.instructorStimulus}
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
@@ -322,13 +335,14 @@ MultipleChoice.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  changePreviewTab: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   flowLayout: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  col: PropTypes.object,
+  col: PropTypes.object.isRequired,
   changeView: PropTypes.func.isRequired
 };
 

@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
-
+import produce from "immer";
 import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 
 import { ALPHABET } from "../../../constants/alphabet";
@@ -12,7 +12,6 @@ import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 import { getFontSize } from "../../../../../utils/helpers";
-import { AnswerContext } from "@edulastic/common";
 
 const Option = props => {
   const {
@@ -21,6 +20,7 @@ const Option = props => {
     showAnswer,
     userSelections,
     onChange,
+    onRemove,
     smallSize,
     uiStyle,
     correct = [],
@@ -30,15 +30,19 @@ const Option = props => {
     multipleResponses,
     isReviewTab,
     testItem,
-    maxWidth
+    maxWidth,
+    setCrossAction,
+    qId,
+    crossAction
   } = props;
-  const answerContext = useContext(AnswerContext);
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
     const altResponses = validation.altResponses.length > 0 ? validation.altResponses.map(ar => ar.value) : [];
     correctAnswers = flatten([validation.validResponse.value, ...altResponses]);
   }
+
+  const [hovered, toggleHover] = useState(false);
 
   const isSelected =
     isReviewTab || testItem ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
@@ -48,10 +52,12 @@ const Option = props => {
 
   const fontSize = getFontSize(uiStyle.fontsize);
 
+  const isCrossAction = crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
+
   if (showAnswer) {
     let validAnswers = [];
     if (!isEmpty(validation)) {
-      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(item => item.value));
+      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(_item => _item.value));
     }
 
     if (validAnswers.includes(item.value)) {
@@ -73,6 +79,33 @@ const Option = props => {
       className = "";
     }
   }
+
+  useEffect(() => {
+    toggleHover(isCrossAction);
+  }, [isCrossAction]);
+
+  const onChangeHandler = () => {
+    if (setCrossAction) {
+      setCrossAction(
+        produce(crossAction, draft => {
+          if (!draft[qId]) {
+            draft[qId] = [];
+          }
+          const i = draft[qId].indexOf(item.value);
+          if (i !== -1) {
+            draft[qId].splice(i, 1);
+          } else {
+            draft[qId].push(item.value);
+          }
+        })
+      );
+      if (!isCrossAction && isSelected) {
+        onRemove();
+      }
+    } else if (!isCrossAction) {
+      onChange();
+    }
+  };
 
   const getLabel = inx => {
     if (uiStyle.type === "block") {
@@ -111,7 +144,7 @@ const Option = props => {
         styleType={styleType}
         multipleResponses={multipleResponses}
       >
-        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
+        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChangeHandler} />
         <span
           style={{
             display: "flex",
@@ -132,7 +165,12 @@ const Option = props => {
       case "radioBelow":
         return (
           <FlexContainer flexDirection="column" justifyContent="center">
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} style={{ marginBottom: 17 }}>
+            <MultiChoiceContent
+              fontSize={fontSize}
+              smallSize={smallSize}
+              style={{ marginBottom: 17 }}
+              isCrossAction={isCrossAction || hovered}
+            >
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
@@ -142,7 +180,7 @@ const Option = props => {
         return (
           <FlexContainer alignItems="center">
             {container}
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
+            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </FlexContainer>
@@ -152,7 +190,7 @@ const Option = props => {
         return (
           <React.Fragment>
             {container}
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
+            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </React.Fragment>
@@ -173,6 +211,17 @@ const Option = props => {
       styleType={styleType}
       selected={isSelected}
       checkAnswer={checkAnswer}
+      userSelect={!!setCrossAction}
+      onMouseEnter={() => {
+        if (setCrossAction) {
+          toggleHover(true);
+        }
+      }}
+      onMouseLeave={() => {
+        if (setCrossAction) {
+          toggleHover(false);
+        }
+      }}
     >
       <PaddingDiv top={0} bottom={0}>
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
@@ -192,22 +241,32 @@ Option.propTypes = {
   showAnswer: PropTypes.bool,
   item: PropTypes.any.isRequired,
   userSelections: PropTypes.array,
+  onRemove: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool.isRequired,
   validation: PropTypes.any.isRequired,
   uiStyle: PropTypes.object.isRequired,
+  maxWidth: PropTypes.string.isRequired,
   correct: PropTypes.any.isRequired,
+  qId: PropTypes.string.isRequired,
   styleType: PropTypes.string,
+  testItem: PropTypes.bool,
+  crossAction: PropTypes.object,
   multipleResponses: PropTypes.bool,
-  isReviewTab: PropTypes.bool.isRequired
+  isReviewTab: PropTypes.bool.isRequired,
+  setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 };
 
 Option.defaultProps = {
   showAnswer: false,
+  multipleResponses: false,
+  testItem: false,
   smallSize: false,
   userSelections: [],
-  styleType: "default"
+  styleType: "default",
+  setCrossAction: false,
+  crossAction: {}
 };
 
 export default React.memo(Option);

@@ -37,6 +37,8 @@ const AssessmentSummary = props => {
     metricInfo: []
   });
 
+  const assessmentName = get(props.settings, "selectedTest.title", "");
+
   return (
     <div>
       {props.loading ? (
@@ -54,7 +56,7 @@ const AssessmentSummary = props => {
           <UpperContainer type="flex">
             <Col className="sub-container district-statistics" xs={24} sm={24} md={18} lg={18} xl={18}>
               <StyledCard>
-                <Stats name={state.assessmentName} data={state.metricInfo} role={props.role} />
+                <Stats name={assessmentName} data={state.metricInfo} role={props.role} />
               </StyledCard>
             </Col>
             <Col className="sub-container chart-container" xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -69,7 +71,7 @@ const AssessmentSummary = props => {
               <StyledCard>
                 {props.role ? (
                   <StyledAssessmentStatisticTable
-                    name={state.assessmentName}
+                    name={assessmentName}
                     data={state.metricInfo}
                     role={props.role}
                     isPrinting={props.isPrinting}

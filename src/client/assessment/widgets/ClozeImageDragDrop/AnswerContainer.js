@@ -63,6 +63,7 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
   return (
     <Container height={imageHeight} containerH={height} width={imageWidth} isWrapText={isWrapText}>
       <Tooltip
+        overlayClassName="customTooltip"
         placement="bottomLeft"
         title={() => (
           <MathSpan

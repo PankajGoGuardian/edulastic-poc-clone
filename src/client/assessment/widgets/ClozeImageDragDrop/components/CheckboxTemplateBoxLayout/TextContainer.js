@@ -62,7 +62,7 @@ const TextContainer = ({
               >
                 <Container width="100%">
                   <Container width="100%" height="100%">
-                    <Tooltip placement="right" title={title}>
+                    <Tooltip overlayClassName="customTooltip" placement="right" title={title}>
                       <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
                     </Tooltip>
                   </Container>

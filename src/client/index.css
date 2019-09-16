@@ -2082,3 +2082,7 @@ span.token.active-word {
 .selected-text-heighlight.unsaved {
   background: #1890ff40;
 }
+
+.customTooltip div.ant-tooltip-inner {
+  width: max-content;
+}

@@ -4,12 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_PERFORMANCE_BY_STUDENTS = "[reports] reset reports performance by students";
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST = "[reports] get reports performance by students request";
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS = "[reports] get reports performance by students success";
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR = "[reports] get reports performance by students error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetPerformanceByStudentsAction = createAction(RESET_REPORTS_PERFORMANCE_BY_STUDENTS);
 export const getPerformanceByStudentsRequestAction = createAction(GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -42,6 +44,10 @@ const initialState = {
 };
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
+  [RESET_REPORTS_PERFORMANCE_BY_STUDENTS]: (state, { payload }) => {
+    state.loading = false;
+    state.performanceByStudents = {};
+  },
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

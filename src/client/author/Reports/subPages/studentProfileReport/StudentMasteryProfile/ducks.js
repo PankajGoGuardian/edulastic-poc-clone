@@ -4,12 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_STUDENT_MASTERY_PROFILE = "[reports] reset reports student mastery profile";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST = "[reports] get reports student mastery profile request";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS = "[reports] get reports student mastery profile success";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR = "[reports] get reports student mastery profile error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetStudentMasteryProfileAction = createAction(RESET_REPORTS_STUDENT_MASTERY_PROFILE);
 export const getStudentMasteryProfileRequestAction = createAction(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -42,6 +44,10 @@ const initialState = {
 };
 
 export const reportStudentMasteryProfileReducer = createReducer(initialState, {
+  [RESET_REPORTS_STUDENT_MASTERY_PROFILE]: (state, { payload }) => {
+    state.loading = false;
+    state.studentMasteryProfile = {};
+  },
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

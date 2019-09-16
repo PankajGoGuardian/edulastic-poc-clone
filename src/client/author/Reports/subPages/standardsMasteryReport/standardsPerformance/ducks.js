@@ -4,6 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY = "[reports] reset reports standards performance summary";
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST = "[reports] get reports standards performance summary request";
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS =
   "[reports] get reports standards performance summary success";
@@ -12,6 +13,7 @@ const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR =
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetStandardsPerformanceSummaryAction = createAction(RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY);
 export const getStandardsPerformanceSummaryRequestAction = createAction(
   GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST
 );
@@ -46,6 +48,10 @@ const initialState = {
 };
 
 export const reportStandardsPerformanceSummaryReducer = createReducer(initialState, {
+  [RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY]: (state, { payload }) => {
+    state.loading = false;
+    state.standardsPerformanceSummary = {};
+  },
   [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

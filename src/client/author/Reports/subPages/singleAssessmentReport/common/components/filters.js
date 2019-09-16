@@ -81,6 +81,9 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    console.log("SARFilterData", SARFilterData);
+    console.log("prevSARFilterData", prevSARFilterData);
+    console.log("filters", filters);
     if (SARFilterData !== prevSARFilterData) {
       const search = queryString.parse(location.search);
       const termId =
@@ -176,6 +179,7 @@ const SingleAssessmentReportFilters = ({
     });
 
     setPrevSARFilterDataAction(SARFilterData);
+    console.log("SARFilterData", SARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);

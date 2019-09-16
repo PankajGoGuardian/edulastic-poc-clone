@@ -26,6 +26,29 @@ import {
   getCsvDownloadingState
 } from "./ducks";
 
+import { resetAssessmentSummaryAction } from "./subPages/singleAssessmentReport/AssessmentSummary/ducks";
+import { resetPeerPerformanceAction } from "./subPages/singleAssessmentReport/PeerPerformance/ducks";
+import { resetQuestionAnalysisAction } from "./subPages/singleAssessmentReport/QuestionAnalysis/ducks";
+import { resetResponseFrequencyAction } from "./subPages/singleAssessmentReport/ResponseFrequency/ducks";
+import { resetPerformanceByStandardsAction } from "./subPages/singleAssessmentReport/PerformanceByStandards/ducks";
+import { resetPerformanceByStudentsAction } from "./subPages/singleAssessmentReport/PerformanceByStudents/ducks";
+
+import { resetPeerProgressAnalysisAction } from "./subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
+import { resetPerformanceOverTimeAction } from "./subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
+import { resetStudentProgressAction } from "./subPages/multipleAssessmentReport/StudentProgress/ducks";
+
+import { resetStandardsGradebookAction } from "./subPages/standardsMasteryReport/standardsGradebook/ducks";
+import { resetStandardsPerformanceSummaryAction } from "./subPages/standardsMasteryReport/standardsPerformance/ducks";
+
+import { resetStudentAssessmentProfileAction } from "./subPages/studentProfileReport/StudentAssessmentProfile/ducks";
+import { resetStudentMasteryProfileAction } from "./subPages/studentProfileReport/StudentMasteryProfile/ducks";
+import { resetStudentProfileSummaryAction } from "./subPages/studentProfileReport/StudentProfileSummary/ducks";
+
+import { resetSARFiltersAction } from "./subPages/singleAssessmentReport/common/filterDataDucks";
+import { resetMARFiltersAction } from "./subPages/multipleAssessmentReport/common/filterDataDucks";
+import { resetSMRFiltersAction } from "./subPages/standardsMasteryReport/common/filterDataDucks";
+import { resetSPRFiltersAction } from "./subPages/studentProfileReport/common/filterDataDucks";
+
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
   const [navigationItems, setNavigationItems] = useState([]);
@@ -257,7 +280,63 @@ const Container = props => {
   );
 };
 
-const Reports = props => {
+const Reports = connect(
+  state => {},
+  {
+    resetSARFiltersAction,
+    resetSPRFiltersAction,
+    resetMARFiltersAction,
+    resetSMRFiltersAction,
+    resetAssessmentSummaryAction,
+    resetPeerPerformanceAction,
+    resetQuestionAnalysisAction,
+    resetResponseFrequencyAction,
+    resetPerformanceByStandardsAction,
+    resetPerformanceByStudentsAction,
+    resetStudentAssessmentProfileAction,
+    resetStudentMasteryProfileAction,
+    resetStudentProfileSummaryAction,
+    resetPeerProgressAnalysisAction,
+    resetPerformanceOverTimeAction,
+    resetStudentProgressAction,
+    resetSMRFiltersAction,
+    resetStandardsGradebookAction,
+    resetStandardsPerformanceSummaryAction
+  }
+)(props => {
+  const onLinkClick = reportType => {
+    debugger;
+    console.log("reportType", reportType);
+    if (reportType === "singleAssessmentReport") {
+      console.log("reportType", reportType);
+      // console.log("props.resetSARFiltersAction", props.resetSARFiltersAction());
+      props.resetSARFiltersAction();
+      // props.resetAssessmentSummaryAction();
+      // props.resetPeerPerformanceAction();
+      // props.resetQuestionAnalysisAction();
+      // props.resetResponseFrequencyAction();
+      // props.resetPerformanceByStandardsAction();
+      // props.resetPerformanceByStudentsAction();
+    } else if (reportType === "studentProfileReport") {
+      console.log("reportType", reportType);
+      props.resetSPRFiltersAction();
+      // props.resetStudentAssessmentProfileAction();
+      // props.resetStudentMasteryProfileAction();
+      // props.resetStudentProfileSummaryAction();
+    } else if (reportType === "multipleAssessmentReport") {
+      console.log("reportType", reportType);
+      props.resetMARFiltersAction();
+      // props.resetPeerProgressAnalysisAction();
+      // props.resetPerformanceOverTimeAction();
+      // props.resetStudentProgressAction();
+    } else if (reportType === "standardsMasteryReport") {
+      console.log("reportType", reportType);
+      props.resetSMRFiltersAction();
+      // props.resetStandardsGradebookAction();
+      // props.resetStandardsPerformanceSummaryAction();
+    }
+  };
+
   return (
     <StyledContainer>
       <Row gutter={20}>
@@ -269,12 +348,12 @@ const Reports = props => {
           <Col md={12} xs={24}>
             <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                <SingleAssessmentReport />
+                <SingleAssessmentReport onClickCB={onLinkClick} />
               </StyledCard>
             </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
-                <StudentProfileReport />
+                <StudentProfileReport onClickCB={onLinkClick} />
               </StyledCard>
             </FeaturesSwitch>
           </Col>
@@ -282,17 +361,17 @@ const Reports = props => {
         <Col md={12} xs={24}>
           <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
             <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
-              <MultipleAssessmentReport />
+              <MultipleAssessmentReport onClickCB={onLinkClick} />
             </StyledCard>
           </FeaturesSwitch>
           <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-            <StandardsMasteryReport />
+            <StandardsMasteryReport onClickCB={onLinkClick} />
           </StyledCard>
         </Col>
       </Row>
     </StyledContainer>
   );
-};
+});
 
 const enhance = connect(
   state => ({

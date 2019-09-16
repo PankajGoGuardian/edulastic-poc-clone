@@ -4,12 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_STANDARDS_GRADEBOOK_REQUEST = "[reports] reset reports standards gradebook";
 const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST = "[reports] get reports standards gradebook request";
 const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS = "[reports] get reports standards gradebook success";
 const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR = "[reports] get reports standards gradebook error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetStandardsGradebookAction = createAction(RESET_REPORTS_STANDARDS_GRADEBOOK_REQUEST);
 // export const getStandardsGradebookProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_GRADEBOOK_PROCESS_REQUESTS);
 export const getStandardsGradebookRequestAction = createAction(GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST);
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -51,6 +53,19 @@ const initialState = {
 };
 
 export const reportStandardsGradebookReducer = createReducer(initialState, {
+  [RESET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state, { payload }) => {
+    state.loading = false;
+    state.standardsGradebook = {};
+    state.filters = {
+      termId: "",
+      subject: "All",
+      grades: ["K"],
+      domainIds: ["All"]
+      // classSectionId: "All",
+      // assessmentType: "All"
+    };
+    state.testId = "";
+  },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

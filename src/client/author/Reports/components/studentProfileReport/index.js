@@ -32,7 +32,7 @@ export const StudentProfileReport = props => {
       </StyledP>
       <LinksWrapper>
         {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
+          return <LinkItem key={data.title} data={data} onClick={() => props.onClickCB("studentProfileReport")} />;
         })}
       </LinksWrapper>
     </div>

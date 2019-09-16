@@ -16,12 +16,16 @@ const GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR = "[reports] get reports stand
 const SET_FILTERS = "[reports] set standards filters";
 const SET_TEST_ID = "[reports] set standards testId";
 
+const RESET_REPORTS_SMR_FILTERS = "[reports] reset reports smr filters";
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 // export const getStandardsProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_PROCESS_REQUESTS);
 export const getStandardsBrowseStandardsRequestAction = createAction(GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST);
 
 export const getStandardsFiltersRequestAction = createAction(GET_REPORTS_STANDARDS_FILTERS_REQUEST);
+
+export const resetSMRFiltersAction = createAction(RESET_REPORTS_SMR_FILTERS);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -105,7 +109,11 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
     state.error = payload.error;
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer
+  [SET_TEST_ID]: setTestIdReducer,
+  [RESET_REPORTS_SMR_FILTERS]: (state, { payload }) => {
+    state = initialState;
+    return state;
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

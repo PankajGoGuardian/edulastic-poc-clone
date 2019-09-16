@@ -99,10 +99,11 @@ class GraphAnswers extends Component {
 
     const shapes = value.filter(elem => allowedTypes.includes(elem.type) && !elem.subElement);
     return shapes.map(elem => {
-      const { id, type, label, baseColor } = elem;
+      const { id, type, label, baseColor, dashed } = elem;
       const result = { id, type, label, baseColor };
 
       if (type !== "point") {
+        result.dashed = dashed;
         result.pointLabels = Object.values(elem.subElementsIds).map(pointId => {
           const point = value.find(item => item.id === pointId);
           return {

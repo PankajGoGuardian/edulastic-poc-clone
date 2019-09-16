@@ -18,7 +18,8 @@ export const ShapeTypes = {
   LOGARITHM: "logarithm",
   POLYNOM: "polynom",
   DRAG_DROP: "drag_drop",
-  EQUATION: "equation"
+  EQUATION: "equation",
+  AREA: "area"
 };
 
 export const IgnoreRepeatedShapes = {

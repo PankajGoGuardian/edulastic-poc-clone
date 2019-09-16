@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { cloneDeep } from "lodash";
 
 import { CLEAR } from "../../../constants/constantsForQuestions";
 import { QuadrantsContainer } from "./QuadrantsContainer";

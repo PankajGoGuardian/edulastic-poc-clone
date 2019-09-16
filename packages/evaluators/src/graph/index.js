@@ -3,7 +3,7 @@ import quadrantsEvaluator from "./quadrants";
 import axisLabelsEvaluator from "./axisLabels";
 import axisSegmentsEvaluator from "./axisSegments";
 
-const evaluator = ({ userResponse = [], validation }) => {
+const evaluator = async ({ userResponse = [], validation }) => {
   const { graphType } = validation;
 
   switch (graphType) {
@@ -14,7 +14,7 @@ const evaluator = ({ userResponse = [], validation }) => {
     case GraphTypes.QUADRANTS:
     case GraphTypes.FIRST_QUADRANT:
     default:
-      return quadrantsEvaluator({ userResponse, validation });
+      return await quadrantsEvaluator({ userResponse, validation });
   }
 };
 

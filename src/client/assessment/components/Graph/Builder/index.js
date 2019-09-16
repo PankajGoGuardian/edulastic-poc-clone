@@ -24,7 +24,8 @@ import {
   Secant,
   Sin,
   Tangent,
-  Title
+  Title,
+  Dashed
 } from "./elements";
 import {
   fillConfigDefaultParameters,
@@ -38,7 +39,6 @@ import {
   flatConfig,
   getClosestTick,
   getImageCoordsByPercent,
-  isInPolygon,
   updateAxe,
   updateGrid,
   updatePointParameters
@@ -241,6 +241,9 @@ class Board {
       case CONSTANT.TOOLS.AREA:
         this.creatingHandler = Area.onHandler();
         return;
+      case CONSTANT.TOOLS.DASHED:
+        this.creatingHandler = Dashed.onHandler();
+        return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.creatingHandler = NumberlinePoint.onHandler;
         return;
@@ -337,6 +340,7 @@ class Board {
 
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
         if (this.removeObjectsUnderMouse(event)) {
+          Area.updateShadingsForAreaPoints(this, this.elements);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
         }
         return;
@@ -349,6 +353,7 @@ class Board {
       const newElement = this.creatingHandler(this, event);
       if (newElement) {
         this.elements.push(newElement);
+        Area.updateShadingsForAreaPoints(this, this.elements);
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
       }
     });
@@ -594,13 +599,8 @@ class Board {
   }
 
   removeObjectsUnderMouse(event) {
-    const coords = this.getCoords(event);
     const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
-    const elementsToDelete = this.elements.filter(
-      el =>
-        elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1 ||
-        (el.type === 100 && isInPolygon({ x: coords.usrCoords[1], y: coords.usrCoords[2] }, el.pointCoords))
-    );
+    const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
 
     if (elementsToDelete.length === 0) {
       return false;
@@ -618,16 +618,21 @@ class Board {
     if (!obj) {
       return;
     }
-    if (typeof obj === "string") {
+
+    if (obj.type === Equation.jxgType) {
       this.$board.removeObject(obj);
-    } else if (obj.elType !== "point" && obj.elType !== "text") {
-      if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
-      if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
-      if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
-      if (obj.elType === "curve") this.$board.removeObject(obj);
-    } else {
-      this.$board.removeObject(obj);
+      return;
     }
+
+    if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
+    if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
+    if (obj.type === Area.jxgType) {
+      this.removeObject(obj.shadingAreaLines);
+    }
+    if (obj.getParents && obj.elType !== "point" && obj.elType !== "text") {
+      this.removeObject(obj.getParents());
+    }
+    this.$board.removeObject(obj);
   }
 
   /**
@@ -825,11 +830,13 @@ class Board {
         })
       )
     );
+    Area.updateShadingsForAreaPoints(this, this.answers);
   }
 
   loadFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(...config.map(element => this.loadObject(element)));
+    Area.updateShadingsForAreaPoints(this, this.elements);
   }
 
   loadSegments(elements) {
@@ -1089,27 +1096,10 @@ class Board {
         );
 
       case Equation.jxgType:
-        return Equation.create(
-          this,
-          object,
-          object.points
-            ? object.points.map(point =>
-                Point.create(this, point, {
-                  pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-                  labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-                  fixed,
-                  snapToGrid: false
-                })
-              )
-            : null,
-          {
-            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
-          }
-        );
+        return Equation.create(this, object);
 
       case Area.jxgType:
-        return Area.renderElement(this, object);
+        return Area.create(this, object, { fixed });
 
       case DragDrop.jxgType:
         return DragDrop.create(this, object, {

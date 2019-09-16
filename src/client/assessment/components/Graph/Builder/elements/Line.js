@@ -24,7 +24,7 @@ function getColorParams(color) {
 function create(board, object, linePoints, type, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("line", linePoints, {
     ...getPropsByLineType(type),
@@ -33,11 +33,13 @@ function create(board, object, linePoints, type, settings = {}) {
       ...getLabelParameters(JXG.OBJECT_TYPE_LINE),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   if (!fixed) {
     handleSnap(newLine, Object.values(newLine.ancestors), board);
@@ -87,6 +89,7 @@ function getConfig(line) {
     label: line.labelHTML || false,
     labelIsVisible: line.labelIsVisible,
     baseColor: line.baseColor,
+    dashed: line.dashed,
     points: Object.keys(line.ancestors)
       .sort()
       .map(n => Point.getConfig(line.ancestors[n]))

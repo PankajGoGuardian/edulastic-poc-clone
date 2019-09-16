@@ -40,7 +40,7 @@ const Container = styled.div`
 `;
 
 const Items = styled.div`
-  background: ${props => (props.fillColor ? props.theme.progressFill : props.theme.headerIconBgColor)};
+  background: ${props => (props.fillColor ? props.theme.progressFill : props.theme.progressTrailColor)};
   height: 8px;
   margin-right: 5px;
   width: 50px;

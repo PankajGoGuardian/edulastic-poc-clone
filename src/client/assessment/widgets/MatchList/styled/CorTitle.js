@@ -10,4 +10,10 @@ export const CorTitle = styled.div`
   align-items: center;
   background-color: #fff;
   margin-right: 44px;
+  padding: 4px;
+
+  & .katex .base {
+    white-space: normal;
+    width: fit-content;
+  }
 `;

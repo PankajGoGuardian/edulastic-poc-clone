@@ -7,7 +7,7 @@ import { get } from "lodash";
 import { Tabs } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
-import { getItemDetailDraggingSelector, useTabsAction } from "../../../../ducks";
+import { getItemDetailDraggingSelector, useTabsAction, addTabsAction } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
 import {
@@ -142,7 +142,7 @@ class Container extends Component {
       isPassageQuestion,
       handleAddToPassage,
       hideColumn,
-      useTabs,
+      addTabs,
       isCollapsed,
       useTabsLeft
     } = this.props;
@@ -196,8 +196,8 @@ class Container extends Component {
             <Button onClick={() => handleAddToPassage("passage", tabIndex)}>
               <PlusIcon>+</PlusIcon>ADD PASSAGE
             </Button>
-            <Button tabsBtn onClick={() => useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft })}>
-              {useTabsLeft ? "REMOVE TABS" : "ADD TABS"}
+            <Button tabsBtn onClick={() => addTabs()}>
+              {"ADD TABS"}
             </Button>
           </AddPassageBtnContainer>
         )}
@@ -213,7 +213,7 @@ const enhance = compose(
     }),
     {
       setItemLevelScore: setItemLevelScoreAction,
-      useTabs: useTabsAction
+      addTabs: addTabsAction
     }
   )
 );

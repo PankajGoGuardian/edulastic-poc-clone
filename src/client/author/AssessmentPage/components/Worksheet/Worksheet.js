@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
@@ -6,6 +7,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { isEmpty, get } from "lodash";
 import { ActionCreators } from "redux-undo";
+import { hexToRGB } from "@edulastic/common";
+import { Modal } from "antd";
 
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
@@ -31,7 +34,7 @@ const defaultPage = {
 
 const createPage = (pageNumber, url) => ({
   ...defaultPage,
-  URL: url ? url : "blank",
+  URL: url || "blank",
   pageNo: pageNumber
 });
 
@@ -67,9 +70,18 @@ class Worksheet extends React.Component {
     fillColor: "#ff0000",
     activeMode: "",
     history: 0,
+    selected: 0,
+    deleteConfirmation: false,
     deleteMode: false,
     lineWidth: 6
   };
+
+  componentDidMount() {
+    const { saveUserWork, itemDetail } = this.props;
+    if (itemDetail?.item?._id) {
+      saveUserWork({ [itemDetail.item._id]: {} });
+    }
+  }
 
   handleHighlightQuestion = questionId =>
     this.setState({
@@ -138,46 +150,42 @@ class Worksheet extends React.Component {
 
   handleDeleteSelectedBlankPage = () => {
     const { currentPage } = this.state;
-    this.deleteBlankPage(currentPage);
+    const { pageStructure } = this.props;
+    if (pageStructure[currentPage] && pageStructure[currentPage].URL) {
+      this.setDeleteConfirmation(true, currentPage);
+    } else {
+      this.deleteBlankPage(currentPage);
+    }
   };
 
-  handleDeletePage = pageNumber => () => {
+  handleDeletePage = pageNumber => {
     this.deleteBlankPage(pageNumber);
   };
 
   deleteBlankPage = pageNumber => {
     const { pageStructure, setTestData, annotations } = this.props;
-
     if (pageStructure.length < 2) return;
 
-    const page = pageStructure[pageNumber];
+    const updatedPageStructure = [...pageStructure];
 
-    if (page && page.URL === "blank") {
-      const updatedPageStructure = [...pageStructure];
+    updatedPageStructure.splice(pageNumber, 1);
 
-      updatedPageStructure.splice(pageNumber, 1);
+    const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
-      const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
+    const updatedAssessment = {
+      pageStructure: updatedPageStructure.map((item, index) => {
+        if (item.URL !== "blank") return item;
 
-      const updatedAnnotations = [...annotations];
+        return {
+          ...item,
+          pageNo: index + 1
+        };
+      }),
+      annotations: updatedAnnotations
+    };
 
-      updatedAnnotations.splice(annotationIndex, 1);
-
-      const updatedAssessment = {
-        pageStructure: updatedPageStructure.map((item, index) => {
-          if (item.URL !== "blank") return item;
-
-          return {
-            ...item,
-            pageNo: index + 1
-          };
-        }),
-        annotations: updatedAnnotations
-      };
-
-      this.handleChangePage(pageNumber - 1);
-      setTestData(updatedAssessment);
-    }
+    this.handleChangePage(pageNumber - 1);
+    setTestData(updatedAssessment);
   };
 
   handleMovePageUp = pageIndex => () => {
@@ -241,23 +249,9 @@ class Worksheet extends React.Component {
   };
 
   // Set up for scratchpad
-
-  hexToRGB = (hex, alpha) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-
-    const g = parseInt(hex.slice(3, 5), 16);
-
-    const b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
   onFillColorChange = obj => {
     this.setState({
-      fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
@@ -290,12 +284,14 @@ class Worksheet extends React.Component {
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveHistory = data => {
     const { currentPage } = this.state;
-    const { saveUserWork, itemDetail, scratchPad = {}, userWork } = this.props;
+    const { saveUserWork, itemDetail, scratchPad = {}, userWork, setTestData } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
     const id = itemDetail.item._id;
     saveUserWork({
       [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
     });
+
+    setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
   };
 
   handleRedo = () => {
@@ -311,12 +307,19 @@ class Worksheet extends React.Component {
 
   handleColorChange = obj => {
     this.setState({
-      currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  // setup for scratchpad ends
+  onDragStart = () => {
+    this.setState({ activeMode: "" });
+  };
 
+  setDeleteConfirmation = (deleteConfirmation, selected = 0) => {
+    this.setState({ deleteConfirmation, selected });
+  };
+
+  // setup for scratchpad ends
   render() {
     const {
       currentPage,
@@ -324,8 +327,9 @@ class Worksheet extends React.Component {
       currentColor,
       fillColor,
       activeMode,
-      history,
+      deleteConfirmation,
       deleteMode,
+      selected,
       lineWidth
     } = this.state;
     const {
@@ -345,64 +349,80 @@ class Worksheet extends React.Component {
 
     const selectedPage = pageStructure[currentPage] || defaultPage;
 
+    const svgContainer = (
+      <SvgDraw
+        activeMode={activeMode}
+        scratchPadMode
+        lineColor={currentColor}
+        deleteMode={deleteMode}
+        lineWidth={lineWidth}
+        fillColor={fillColor}
+        saveHistory={this.saveHistory}
+        history={scratchPad && scratchPad[currentPage]}
+        height="100%"
+        top={0}
+      />
+    );
+
     return (
       <WorksheetWrapper>
-        {
-          <Thumbnails
-            list={pageStructure}
-            currentPage={currentPage}
-            onReupload={this.handleReupload}
-            onPageChange={this.handleChangePage}
-            onAddBlankPage={this.handleAppendBlankPage}
-            onDeletePage={this.handleDeletePage}
-            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-            onMovePageUp={this.handleMovePageUp}
-            onMovePageDown={this.handleMovePageDown}
-            onInsertBlankPage={this.handleInsertBlankPage}
-            onRotate={this.handleRotate}
-            review={review}
-          />
-        }
-        {
-          <Fragment>
-            <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
-              <PDFPreview
-                page={selectedPage}
-                currentPage={currentPage + 1}
-                annotations={annotations}
-                onDropAnnotation={this.handleAddAnnotation}
-                onHighlightQuestion={this.handleHighlightQuestion}
-                questions={questions}
-                questionsById={questionsById}
-                answersById={answersById}
-              />
-              <Tools
-                isWorksheet={true}
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-              />
-              <SvgDraw
-                activeMode={activeMode}
-                scratchPadMode={true}
-                lineColor={currentColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
-                saveHistory={this.saveHistory}
-                history={scratchPad && scratchPad[currentPage]}
-                height={"auto"}
-                top={0}
-              />
-            </div>
-          </Fragment>
-        }
+        <Modal
+          visible={deleteConfirmation}
+          onOk={() => {
+            this.handleDeletePage(selected);
+            this.setDeleteConfirmation(false);
+          }}
+          onCancel={() => this.setDeleteConfirmation(false)}
+          title="Confirm Page Deletion"
+          okText="Yes"
+          cancelText="No"
+        >
+          {"Are you sure that you want to delete this page?"}
+        </Modal>
+        <Thumbnails
+          annotations={annotations}
+          list={pageStructure}
+          currentPage={currentPage}
+          onReupload={this.handleReupload}
+          onPageChange={this.handleChangePage}
+          onAddBlankPage={this.handleAppendBlankPage}
+          onDeletePage={this.handleDeletePage}
+          setDeleteConfirmation={this.setDeleteConfirmation}
+          onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+          onMovePageUp={this.handleMovePageUp}
+          onMovePageDown={this.handleMovePageDown}
+          onInsertBlankPage={this.handleInsertBlankPage}
+          onRotate={this.handleRotate}
+          review={review}
+        />
+        <Fragment>
+          <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
+            <PDFPreview
+              page={selectedPage}
+              currentPage={currentPage + 1}
+              annotations={annotations}
+              onDropAnnotation={this.handleAddAnnotation}
+              onHighlightQuestion={this.handleHighlightQuestion}
+              questions={questions}
+              questionsById={questionsById}
+              answersById={answersById}
+              renderExtra={svgContainer}
+              viewMode={viewMode}
+            />
+            <Tools
+              isWorksheet
+              onFillColorChange={this.onFillColorChange}
+              fillColor={fillColor}
+              deleteMode={deleteMode}
+              currentColor={currentColor}
+              onToolChange={this.handleToolChange}
+              activeMode={activeMode}
+              undo={this.handleUndo}
+              redo={this.handleRedo}
+              onColorChange={this.handleColorChange}
+            />
+          </div>
+        </Fragment>
         <Questions
           noCheck={noCheck}
           list={questions}
@@ -411,6 +431,7 @@ class Worksheet extends React.Component {
           answersById={answersById}
           centered={!shouldRenderDocument}
           highlighted={highlightedQuestion}
+          onDragStart={this.onDragStart}
         />
       </WorksheetWrapper>
     );
@@ -420,10 +441,12 @@ class Worksheet extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    (state, ownProps) => ({
-      scratchPad: state.itemDetail.item
-        ? get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}].scratchpad`, null)
-        : null,
+    state => ({
+      scratchPad: get(
+        state,
+        `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}].scratchpad`,
+        null
+      ),
       userWork: get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}]`, {}),
       itemDetail: state.itemDetail,
       answersById: state.answers

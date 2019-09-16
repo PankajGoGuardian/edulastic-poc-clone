@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useRef, useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
@@ -429,84 +430,6 @@ const SvgDraw = ({
     }
   };
 
-  const renderActiveFigure = () => {
-    let rects;
-    if (!figures[active].cx && !figures[active].points) {
-      rects = [
-        { x: figures[active].x - 10, y: figures[active].y - 10 },
-        {
-          x: figures[active].x + figures[active].width - 10,
-          y: figures[active].y - 10
-        },
-        {
-          x: figures[active].x + figures[active].width - 10,
-          y: figures[active].y + figures[active].height - 10
-        },
-        {
-          x: figures[active].x - 10,
-          y: figures[active].y + figures[active].height - 10
-        }
-      ];
-    } else if (figures[active].cx !== undefined) {
-      rects = [
-        {
-          x: figures[active].cx - figures[active].rx - 10,
-          y: figures[active].cy - figures[active].ry - 10
-        },
-        {
-          x: figures[active].cx + figures[active].rx - 10,
-          y: figures[active].cy - figures[active].ry - 10
-        },
-        {
-          x: figures[active].cx + figures[active].rx - 10,
-          y: figures[active].cy + figures[active].ry - 10
-        },
-        {
-          x: figures[active].cx - figures[active].rx - 10,
-          y: figures[active].cy + figures[active].ry - 10
-        }
-      ];
-    } else {
-      const trianglePoints = figures[active].points.split(" ").map(item => {
-        const point = item.split(",");
-        return { x: point[0] - 10, y: point[1] - 10 };
-      });
-
-      return trianglePoints.map((point, i) => (
-        <Rect
-          key={i}
-          onMouseDown={mouseUpAndDownControl(true, i)}
-          onMouseUp={mouseUpAndDownControl(false)}
-          fill="blue"
-          {...point}
-          height={20}
-          width={20}
-        />
-      ));
-    }
-    return (
-      <Fragment>
-        <polygon
-          points={rects.map(point => `${point.x + 10},${point.y + 10}`).join(" ")}
-          fill="none"
-          stroke="black"
-          style={{ strokDashoffset: 0, strokeDasharray: 5 }}
-        />
-        {rects.map((point, i) => (
-          <Rect
-            key={i}
-            onMouseDown={mouseUpAndDownControl(true, i)}
-            onMouseUp={mouseUpAndDownControl(false)}
-            fill="blue"
-            {...point}
-            height={20}
-            width={20}
-          />
-        ))}
-      </Fragment>
-    );
-  };
-
   const handleDragStart = i => e => {
     e.preventDefault();
     e.stopPropagation();
@@ -636,6 +559,100 @@ const SvgDraw = ({
   const getDeleteTextHandler = index =>
     deleteMode ? handleDeleteText(index) : activeMode ? handleActive(index) : undefined;
 
+  const renderFigure = (path, i) =>
+    path.x ? (
+      <Rect
+        key={i}
+        onMouseDown={getMouseDownHandler(drawTools.DRAW_SQUARE, i)}
+        onMouseUp={getMouseUpHandler(drawTools.DRAW_SQUARE, i)}
+        onClick={getOnClickHandler(drawTools.DRAW_SQUARE, i)}
+        {...path}
+      />
+    ) : path.points ? (
+      <Polygon
+        key={i}
+        onMouseDown={getMouseDownHandler(drawTools.DRAW_TRIANGLE, i)}
+        onMouseUp={getMouseUpHandler(drawTools.DRAW_TRIANGLE, i)}
+        onClick={getOnClickHandler(drawTools.DRAW_TRIANGLE, i)}
+        {...path}
+      />
+    ) : (
+      <Ellipse
+        key={i}
+        onMouseDown={getMouseDownHandler(drawTools.DRAW_CIRCLE, i)}
+        onMouseUp={getMouseUpHandler(drawTools.DRAW_CIRCLE, i)}
+        onClick={getOnClickHandler(drawTools.DRAW_CIRCLE, i)}
+        {...path}
+      />
+    );
+
+  const renderActiveFigure = () => {
+    let rects;
+    if (!figures[active].cx && !figures[active].points) {
+      rects = [
+        { x: figures[active].x - 10, y: figures[active].y - 10 },
+        {
+          x: figures[active].x + figures[active].width - 10,
+          y: figures[active].y - 10
+        },
+        {
+          x: figures[active].x + figures[active].width - 10,
+          y: figures[active].y + figures[active].height - 10
+        },
+        {
+          x: figures[active].x - 10,
+          y: figures[active].y + figures[active].height - 10
+        }
+      ];
+    } else if (figures[active].cx !== undefined) {
+      rects = [
+        {
+          x: figures[active].cx - figures[active].rx - 10,
+          y: figures[active].cy - figures[active].ry - 10
+        },
+        {
+          x: figures[active].cx + figures[active].rx - 10,
+          y: figures[active].cy - figures[active].ry - 10
+        },
+        {
+          x: figures[active].cx + figures[active].rx - 10,
+          y: figures[active].cy + figures[active].ry - 10
+        },
+        {
+          x: figures[active].cx - figures[active].rx - 10,
+          y: figures[active].cy + figures[active].ry - 10
+        }
+      ];
+    } else {
+      rects = figures[active].points.split(" ").map(item => {
+        const point = item.split(",");
+        return { x: point[0] - 10, y: point[1] - 10 };
+      });
+    }
+    return (
+      <Fragment>
+        <polygon
+          points={rects.map(point => `${point.x + 10},${point.y + 10}`).join(" ")}
+          fill="none"
+          stroke="black"
+          style={{ strokDashoffset: 0, strokeDasharray: 5 }}
+        />
+        {renderFigure(figures[active], active)}
+        {rects.map((point, i) => (
+          <Rect
+            key={i}
+            onMouseDown={mouseUpAndDownControl(true, i)}
+            onMouseUp={mouseUpAndDownControl(false)}
+            fill="blue"
+            {...point}
+            height={20}
+            width={20}
+          />
+        ))}
+      </Fragment>
+    );
+  };
+
   return (
     <Fragment>
       <ControlInput
@@ -650,7 +667,7 @@ const SvgDraw = ({
       <svg
         ref={svg}
         {...getSvgHandlers()}
-        width={"calc(100% - 50px)"}
+        width="calc(100% - 50px)"
         style={{
           height: !height ? document.body.scrollHeight + 28 : height,
           background: "transparent",
@@ -662,34 +679,11 @@ const SvgDraw = ({
           zIndex: mouseClicked || dragStart || activeMode === "" ? 40 : 40
         }}
       >
-        {figures.length > 0 &&
-          figures.map((path, i) =>
-            path.x ? (
-              <Rect
-                key={i}
-                onMouseDown={getMouseDownHandler(drawTools.DRAW_SQUARE, i)}
-                onMouseUp={getMouseUpHandler(drawTools.DRAW_SQUARE, i)}
-                onClick={getOnClickHandler(drawTools.DRAW_SQUARE, i)}
-                {...path}
-              />
-            ) : path.points ? (
-              <Polygon
-                key={i}
-                onMouseDown={getMouseDownHandler(drawTools.DRAW_TRIANGLE, i)}
-                onMouseUp={getMouseUpHandler(drawTools.DRAW_TRIANGLE, i)}
-                onClick={getOnClickHandler(drawTools.DRAW_TRIANGLE, i)}
-                {...path}
-              />
-            ) : (
-              <Ellipse
-                key={i}
-                onMouseDown={getMouseDownHandler(drawTools.DRAW_CIRCLE, i)}
-                onMouseUp={getMouseUpHandler(drawTools.DRAW_CIRCLE, i)}
-                onClick={getOnClickHandler(drawTools.DRAW_CIRCLE, i)}
-                {...path}
-              />
-            )
-          )}
+        {active !== null && figures[active] && !deleteMode && activeMode !== drawTools.DRAW_TEXT && (
+          <Fragment>{renderActiveFigure()}</Fragment>
+        )}
+
+        {figures.length > 0 && figures.map((path, i) => i !== active && renderFigure(path, i))}
 
         {texts.length > 0 &&
           texts.map(
@@ -713,17 +707,15 @@ const SvgDraw = ({
           )}
 
         {pathes.length > 0 &&
-          pathes.map((path, i) => {
-            return (
-              <Path
-                key={i}
-                onClick={deleteMode ? handleDeletePath(i) : undefined}
-                stroke={path[0].color}
-                strokeWidth={path[0].lineWidth}
-                d={getPointsForDrawingPath(path)}
-              />
-            );
-          })}
+          pathes.map((path, i) => (
+            <Path
+              key={i}
+              onClick={deleteMode ? handleDeletePath(i) : undefined}
+              stroke={path[0].color}
+              strokeWidth={path[0].lineWidth}
+              d={getPointsForDrawingPath(path)}
+            />
+          ))}
 
         {points.length > 0 && (
           <Path
@@ -732,10 +724,6 @@ const SvgDraw = ({
             strokeWidth={points[0].lineWidth}
             d={getPointsForDrawingPath(points)}
           />
-        )}
-
-        {active !== null && figures[active] && !deleteMode && activeMode !== drawTools.DRAW_TEXT && (
-          <Fragment>{renderActiveFigure()}</Fragment>
         )}
       </svg>
     </Fragment>

@@ -85,8 +85,8 @@ const MatchListPreview = ({
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        if (alt && alt !== "") {
-          alternateAnswers[index + 1].push(alt);
+        if (alt?.label && alt?.label !== "") {
+          alternateAnswers[index + 1].push(alt.label);
         }
       });
     });
@@ -291,20 +291,22 @@ const MatchListPreview = ({
                 flag="ans"
                 style={styles.dropContainerStyle(smallSize)}
               >
-                <DragItem
-                  preview={preview}
-                  correct={evaluation[i]}
-                  flag="ans"
-                  renderIndex={i}
-                  displayIndex={getStemNumeration(i)}
-                  onDrop={onDrop}
-                  item={ans[i]}
-                  width="100%"
-                  centerContent
-                  getStyles={getStyles}
-                  disableResponse={disableResponse}
-                  changePreviewTab={changePreviewTab}
-                />
+                {!disableResponse && !isReviewTab && (
+                  <DragItem
+                    preview={preview}
+                    correct={evaluation[i]}
+                    flag="ans"
+                    renderIndex={i}
+                    displayIndex={getStemNumeration(i)}
+                    onDrop={onDrop}
+                    item={ans[i]}
+                    width="100%"
+                    centerContent
+                    getStyles={getStyles}
+                    disableResponse={disableResponse}
+                    changePreviewTab={changePreviewTab}
+                  />
+                )}
               </DropContainer>
             </AnswerItem>
           ))}
@@ -454,7 +456,7 @@ const MatchListPreview = ({
                   <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={getStemNumeration(i)}>
-                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i]?.label || "" }} />
                 </CorItem>
               </FlexContainer>
             ))}

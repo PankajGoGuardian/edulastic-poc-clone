@@ -1,4 +1,4 @@
-import { Icon, Row } from "antd";
+import { Icon, Row, Affix } from "antd";
 import {
   boxShadowDefault,
   desktopWidth,
@@ -6,7 +6,9 @@ import {
   textColor,
   greenDark,
   dropZoneTitleColor,
-  mediumDesktopWidth
+  mediumDesktopWidth,
+  lightGreySecondary,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
@@ -20,6 +22,49 @@ export const Container = styled.div`
   @media (max-width: ${mediumDesktopWidth}) {
     width: 235px;
   }
+
+  @media (max-width: ${desktopWidth}) {
+    background: ${lightGreySecondary};
+    width: 450px;
+    height: calc(100vh - 60px);
+    position: fixed;
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 300px;
+  }
+`;
+
+export const AffixContainer = styled(Affix)``;
+
+export const CloseIcon = styled(Icon)`
+  display: none;
+
+  @media (max-width: ${desktopWidth}) {
+    font-size: 24px;
+    width: 100%;
+    padding: 15px 25px 0px;
+    text-align: right;
+    display: block;
+    cursor: pointer;
+  }
+`;
+
+export const Backdrop = styled.div`
+  display: none;
+
+  @media (max-width: ${desktopWidth}) {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.6);
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1;
+  }
 `;
 
 export const FixedFilters = styled.div`
@@ -29,17 +74,15 @@ export const FixedFilters = styled.div`
     width: 100%;
     position: relative;
     top: auto;
-    padding-right: 0;
-    padding-left: 0;
+    padding: 0px;
   }
 `;
 
-export const Header = styled.div`
+export const SearchWrapper = styled.div`
   display: flex;
 
   @media (max-width: ${desktopWidth}) {
-    margin-top: 20px;
-    margin-bottom: 10px;
+    padding: 25px 25px 0px 19px;
   }
 `;
 

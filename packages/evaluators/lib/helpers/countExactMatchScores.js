@@ -28,7 +28,7 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
     }
 
     var score = 0;
-    var maxScore = 1;
+    var maxScore = 0;
     var matchCount = 0;
     var rightLen = 0;
     var rightIndex = 0;

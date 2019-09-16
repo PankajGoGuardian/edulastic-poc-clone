@@ -27,7 +27,7 @@ const CheckboxTemplateBoxLayout = ({
   responsecontainerindividuals,
   responseBtnStyle,
   fontSize,
-  userSelections,
+  userSelections = [],
   stemNumeration,
   // uiStyle,
   // imagescale,
@@ -63,23 +63,13 @@ const CheckboxTemplateBoxLayout = ({
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
-          width: `${parseInt(responseContainer.width, 10)}px`,
+          position: "absolute",
           top: responseContainer.top,
           left: responseContainer.left,
-          height: `${parseInt(responseContainer.height, 10)}px`,
-          position: "absolute",
+          height: responseContainer.height,
+          width: responseContainer.width,
           borderRadius: 5
         };
-        if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-          const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-          btnStyle.width = widthpx;
-          btnStyle.widthpx = widthpx;
-        }
-        if (btnStyle && btnStyle.width === 0) {
-          btnStyle.width = responseBtnStyle.widthpx;
-        } else {
-          btnStyle.width = btnStyle.widthpx;
-        }
         let indexStr = "";
         switch (stemNumeration) {
           case "lowercase": {
@@ -97,43 +87,19 @@ const CheckboxTemplateBoxLayout = ({
         if (userSelections[dropTargetIndex]) {
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
+        const hasAnswered = userSelections?.[dropTargetIndex];
         return (
           <React.Fragment key={index}>
-            {!showAnswer && !checkAnswer && (
-              <div
-                style={{
-                  ...btnStyle,
-                  // height: `${parseInt(responseContainer.height, 10)}px`,
-                  // width: `${parseInt(responseContainer.width, 10)}px`,
-                  minWidth,
-                  minHeight
-                }}
-                className={`
-                imagelabeldragdrop-droppable 
-                active 
-                check-answer
-                ${status}`}
-                onClick={onClickHandler}
-              >
-                <div className="text container">{userSelections[dropTargetIndex]}</div>
-                <IconWrapper>
-                  {status === "right" && <RightIcon />}
-                  {status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </div>
-            )}
             {(showAnswer || checkAnswer) && (
               <div
                 style={{
                   ...btnStyle,
                   minWidth: minWidthShowAnswer,
-                  minHeight
+                  minHeight,
+                  background: !hasAnswered ? "rgba(225,225,225,0.75)" : null
                 }}
                 className={`
+                testing
                 imagelabeldragdrop-droppable 
                 active
                 ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 

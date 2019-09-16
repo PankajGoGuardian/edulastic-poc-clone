@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import { findDOMNode } from "react-dom";
 import { compose } from "redux";
@@ -243,8 +244,7 @@ class Questions extends React.Component {
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
 
-    const questionIdToOpen = modalQuestionId - 1 || questions.length;
-
+    const questionIdToOpen = modalQuestionId - 1 || list.length;
     this.handleOpenEditModal(questionIdToOpen)();
   };
 
@@ -360,7 +360,7 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, centered, highlighted, list } = this.props;
+    const { previewMode, viewMode, noCheck, answersById, centered, highlighted, list, onDragStart } = this.props;
 
     const review = viewMode === "review";
 
@@ -394,6 +394,7 @@ class Questions extends React.Component {
                   viewMode={viewMode}
                   answer={answersById[question.id]}
                   centered={centered}
+                  onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                 />
               )

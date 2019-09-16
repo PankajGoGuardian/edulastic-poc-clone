@@ -117,7 +117,6 @@ export default class TestLibrary {
     cy.route("POST", "**/group/search").as("groups");
     cy.contains("ASSIGN").click({ force: true });
     cy.wait("@groups");
-    cy.wait("@assignment");
   };
 
   verifyVersionedURL = (oldTestId, newTestId) =>
@@ -127,4 +126,11 @@ export default class TestLibrary {
         expect(newUrl).to.include(`tests/${newTestId}/versioned/old/${oldTestId}`);
       })
     );
+
+  saveTestId = xhr => {
+    assert(xhr.status === 200, "saving test");
+    const testId = xhr.response.body.result._id;
+    console.log("test created with _id : ", testId);
+    cy.saveTestDetailToDelete(testId);
+  };
 }

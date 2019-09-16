@@ -28,7 +28,7 @@ var countPartialMatchScores = function countPartialMatchScores(compareFunction) 
     }
 
     var score = 0;
-    var maxScore = 1;
+    var maxScore = 0;
     var rightLen = 0;
     var rightIndex = 0;
     answers.forEach(function(_ref2, ind) {

@@ -73,21 +73,30 @@ class MetadataPage {
     this.selectDropDownoption("gradeSelect", grade);
   };
 
+  getSearchStandardSelect = () => cy.get('[data-cy="searchStandardSelect"]');
+
   setStandard = standard => {
-    // cy.get('[data-cy="searchStandardSelect"]').click();
+    this.getSearchStandardSelect().click();
+    cy.wait("@searchStandard");
+    // TODO : remove backspace once application bug gets fixed
     cy.focused()
-      .type(standard.substr(0, standard.length - 1))
-      // .then(() => standard.split("").forEach(() => cy.wait("@searchStandard")))
-      .then(ele => {
-        cy.wait(500);
-        cy.wrap(ele).type(standard.substr(standard.length - 1));
-        cy.wait("@searchStandard");
+      .as("searchInput")
+      .type(`${"{backspace}".repeat(3)}`);
+
+    cy.get("@searchInput").then($ele => {
+      standard.forEach(std => {
+        // TODO : optimise below when standard search needed
+        /* std.split("").forEach(ch => {
+          cy.get("@searchInput").type(ch);
+          cy.wait("@searchStandard");
+        }); 
         cy.wait(3000); // UI renders list slow even after api responsed
+       */
         this.getDropDownMenu()
-          .contains(standard)
+          .contains(std)
           .click({ force: true });
-        // cy.focused().blur();
       });
+    });
   };
 
   mapStandards = standardMaps => {
@@ -102,8 +111,7 @@ class MetadataPage {
       this.selectStandardSet(standardSet);
       this.selectGrade(grade);
       this.clickOnStandardSearchOption();
-      cy.get('[data-cy="searchStandardSelect"]').click();
-      standard.forEach(std => this.setStandard(std));
+      this.setStandard(standard);
       cy.focused().blur();
     });
   };

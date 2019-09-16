@@ -113,12 +113,12 @@ class ClozeMathWithUnit extends React.Component {
   };
 
   showKeyboardModal = () => {
-    const { mathRef } = this;
-    if (!mathRef.current) {
+    const { currentMathQuill } = this.state;
+    if (!currentMathQuill) {
       return;
     }
     this.setState({ showKeyboard: true });
-    mathRef.current.focus();
+    currentMathQuill.focus();
   };
 
   closeMathBoard = () => {
@@ -127,7 +127,6 @@ class ClozeMathWithUnit extends React.Component {
 
   onInput = (key, command = "cmd") => {
     const { currentMathQuill } = this.state;
-    const { mathRef } = this;
     if (!currentMathQuill) return;
 
     const innerField = currentMathQuill;
@@ -153,7 +152,7 @@ class ClozeMathWithUnit extends React.Component {
     } else {
       innerField[command](key);
     }
-    mathRef.current.focus();
+    currentMathQuill.focus();
   };
 
   saveAnswer = fromUnit => {

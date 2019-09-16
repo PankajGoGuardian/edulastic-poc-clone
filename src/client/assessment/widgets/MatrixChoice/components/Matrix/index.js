@@ -273,6 +273,7 @@ const Matrix = props => {
       columns={getColumns()}
       dataSource={data}
       pagination={false}
+      maxWidth={uiStyle.maxWidth}
       hasOptionRow={!helpers.isEmpty(uiStyle.optionRowTitle)}
     />
   );

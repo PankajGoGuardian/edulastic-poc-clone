@@ -30,6 +30,7 @@ export const SelectContainer = styled.div`
 
   .ant-select-selection__rendered {
     width: 100%;
+    margin: 0;
   }
 
   .ant-select-selection-selected-value {
@@ -37,6 +38,8 @@ export const SelectContainer = styled.div`
     font-weight: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};
     letter-spacing: 0.2px;
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
+    padding: 0 0 0 5px;
+    max-width: calc(100% - 20px);
   }
   .anticon-down {
     svg {

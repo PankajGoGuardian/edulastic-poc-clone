@@ -7,7 +7,7 @@ const BY_COUNT_METHOD = "byCount";
 
 const exactCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;
-  let maxScore = 1;
+  let maxScore = 0;
 
   let rightIndex = 0;
 
@@ -67,7 +67,7 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
 
 const partialCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;
-  let maxScore = 1;
+  let maxScore = 0;
 
   let rightIndex = 0;
 

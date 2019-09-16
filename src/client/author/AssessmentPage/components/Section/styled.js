@@ -6,7 +6,6 @@ import { secondaryTextColor, greenDark } from "@edulastic/colors";
 
 export const SectionWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   position: relative;
   width: 240px;
@@ -32,8 +31,11 @@ export const SectionForm = styled(Input)`
   color: ${secondaryTextColor};
   background: transparent;
   border-radius: unset;
-  border: none;
-  border-bottom: 1px solid #cbcbcb;
+  border: 1px solid red;
+  &:focus {
+    border: none;
+    border-bottom: 1px solid #cbcbcb;
+  }
   box-shadow: none !important;
 `;
 

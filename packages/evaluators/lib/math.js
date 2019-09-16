@@ -146,7 +146,7 @@ var exactMatchEvaluator =
                   userResponse = _args.length > 0 && _args[0] !== undefined ? _args[0] : "";
                   answers = _args.length > 1 ? _args[1] : undefined;
                   score = 0;
-                  maxScore = 1;
+                  maxScore = 0;
                   evaluation = [];
                   _context.prev = 5;
 

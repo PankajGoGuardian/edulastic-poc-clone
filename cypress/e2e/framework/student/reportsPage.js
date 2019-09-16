@@ -54,7 +54,7 @@ class ReportsPage {
           .join("/")
       );
     } else this.getScore().should("not.be.visible");
-    if (percent) this.getPercent().should("have.text", percent);
+    if (percent) this.getPercent().should("have.text", `${Math.round(percent)}%`);
     else this.getPercent().should("not.be.visible");
     this.validateAttemptLinkStats(attemptNum, attemptNum, score, percent);
   }
@@ -80,7 +80,7 @@ class ReportsPage {
     if (percent)
       this.getPercentage()
         .eq(attemptNum - 1)
-        .should("have.text", percent);
+        .should("have.text", `${Math.round(percent)}%`);
     this.getAttempts()
       .should("be.visible")
       .click();
@@ -122,7 +122,8 @@ class ReportsPage {
       case queTypes.TRUE_FALSE:
         switch (attemptType) {
           case attemptTypes.RIGHT:
-            if (Cypress._.isArray(right)) right.forEach(choice => this.verifyLabelChecked(cy.get("@quecard"), choice));
+            if (Cypress._.isArray(right))
+              right.forEach(choice => this.qrp.verifyLabelChecked(cy.get("@quecard"), choice));
             else {
               this.qrp.verifyLabelChecked(cy.get("@quecard"), right);
             }

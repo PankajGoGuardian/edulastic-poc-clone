@@ -145,7 +145,6 @@ const StyledControlDropDown = styled(ControlDropDown)`
   overflow: auto;
 
   .ant-dropdown-menu-item {
-    font-weight: bold;
   }
 
   .ant-dropdown-menu-item-selected,

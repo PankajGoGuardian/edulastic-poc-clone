@@ -13,11 +13,13 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true });
 
-  clickOnAssignment = () =>
+  clickOnAssignment = () => {
     this.menuItems()
       .eq(1)
       .click({ force: true })
       .click({ force: true });
+    cy.wait("@assignment");
+  };
 
   clickOnReport = () =>
     this.menuItems()

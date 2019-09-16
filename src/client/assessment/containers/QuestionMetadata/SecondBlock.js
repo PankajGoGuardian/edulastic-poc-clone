@@ -111,32 +111,48 @@ const SecondBlock = ({
             <div className="label">
               <b>{t("component.options.tags")}</b>
             </div>
-            <Select
-              data-cy="tagsSelect"
-              mode="multiple"
-              className="tagsSelect"
-              style={{ marginBottom: 0, width: "100%" }}
-              optionLabelProp="title"
-              placeholder="Please select"
-              value={tags.map(t => t._id)}
-              onSearch={searchTags}
-              onSelect={selectTags}
-              onDeselect={deselectTags}
-              filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-            >
-              {!!searchValue.trim() ? (
-                <Select.Option key={0} value={searchValue} title={searchValue}>
-                  {`${searchValue} (Create new Tag)`}
+            {searchValue.length && !searchValue.trim().length ? (
+              <Select
+                mode="multiple"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                className="tagsSelect"
+                placeholder="Please select"
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+                onSearch={searchTags}
+              >
+                <Select.Option key={0} value={"invalid"} title={"invalid"} disabled>
+                  {"Please enter valid characters"}
                 </Select.Option>
-              ) : (
-                ""
-              )}
-              {allTagsData.map(({ tagName, _id }, index) => (
-                <Select.Option key={_id} value={_id} title={tagName}>
-                  {tagName}
-                </Select.Option>
-              ))}
-            </Select>
+              </Select>
+            ) : (
+              <Select
+                data-cy="tagsSelect"
+                mode="multiple"
+                className="tagsSelect"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                placeholder="Please select"
+                value={tags.map(t => t._id)}
+                onSearch={searchTags}
+                onSelect={selectTags}
+                onDeselect={deselectTags}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              >
+                {!!searchValue.trim() ? (
+                  <Select.Option key={0} value={searchValue} title={searchValue}>
+                    {`${searchValue} (Create new Tag)`}
+                  </Select.Option>
+                ) : (
+                  ""
+                )}
+                {allTagsData.map(({ tagName, _id }, index) => (
+                  <Select.Option key={_id} value={_id} title={tagName}>
+                    {tagName}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </ItemBody>
         </Col>
       </Row>

@@ -14,6 +14,7 @@ export const attemptSummarySelector = createSelector(
   (items, answers, bookmarks) => {
     const blocks = {};
     const allQids = [];
+    let itemWiseQids = {};
     const nonQuestionTypes = [questionType.VIDEO, questionType.PASSAGE];
     for (const item of items) {
       const qids = get(item, "data.questions", [])
@@ -24,16 +25,30 @@ export const attemptSummarySelector = createSelector(
       /**
        * considering attempted if any one question in an item attempted
        */
-      const attempted = qids.some(x => answers[x]);
-      if (bookmarked) {
-        blocks[firstQid] = 2;
+      if (item.itemLevelScoring) {
+        const attempted = qids.some(x => answers[x]);
+        if (bookmarked) {
+          blocks[firstQid] = 2;
+        } else {
+          blocks[firstQid] = attempted ? 1 : 0;
+        }
+        //to ensure the order
+        allQids.push(firstQid);
+        itemWiseQids[item._id] = [firstQid];
       } else {
-        blocks[firstQid] = attempted ? 1 : 0;
+        qids.forEach(qid => {
+          const attempted = !!answers[qid];
+          if (bookmarked) {
+            blocks[qid] = 2;
+          } else {
+            blocks[qid] = attempted ? 1 : 0;
+          }
+        });
+        allQids.push(...qids);
+        itemWiseQids[item._id] = qids;
       }
-      //to ensure the order
-      allQids.push(firstQid);
     }
     // eslint-enable
-    return { allQids, blocks };
+    return { allQids, blocks, itemWiseQids };
   }
 );

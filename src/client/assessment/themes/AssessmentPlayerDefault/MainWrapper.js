@@ -9,7 +9,6 @@ const MainWrapper = styled.section`
   box-sizing: border-box;
   padding: 0px;
   text-align: left;
-  font-size: 18px;
   border-radius: 4px;
   box-shadow: ${props => (props.hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
   max-width: 100%;

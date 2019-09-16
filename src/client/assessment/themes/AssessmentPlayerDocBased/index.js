@@ -126,6 +126,7 @@ class AssessmentPlayerDocBased extends React.Component {
               questionsById={questionsById}
               pageStructure={pageStructure}
               answersById={answersById}
+              viewMode="review"
               review
               noCheck
             />

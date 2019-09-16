@@ -14,4 +14,5 @@ export const Preview = styled.div`
   min-width: 600px;
   min-height: 700px;
   background: ${white};
+  position: relative;
 `;

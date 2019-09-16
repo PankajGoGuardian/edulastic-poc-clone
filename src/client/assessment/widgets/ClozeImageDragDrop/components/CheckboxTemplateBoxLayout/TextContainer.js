@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import { Tooltip } from "antd";
 import PropTypes from "prop-types";
 import striptags from "striptags";
 import { MathSpan } from "@edulastic/common";
+import { Tooltip } from "antd";
 
 import DragItem from "../DragItem";
+import Container from "./styled/Container";
 
 const TextContainer = ({
   dropTargetIndex,
@@ -37,7 +38,6 @@ const TextContainer = ({
       }
     });
   }, []);
-
   return (
     <div className="text container" style={showAnswer || checkAnswer ? { ...style, padding: "0px" } : {}}>
       {userSelections[dropTargetIndex] &&
@@ -46,8 +46,10 @@ const TextContainer = ({
             userSelections[dropTargetIndex].responseBoxID && isSnapFitValues
               ? answer.replace("<p>", "<p class='clipText'>") || ""
               : "";
+          const title = <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />;
+
           return (
-            <div ref={answerContainer} style={style}>
+            <div ref={answerContainer} style={{ ...style, width: "100%" }}>
               <DragItem
                 key={user_select_index}
                 index={user_select_index}
@@ -58,9 +60,13 @@ const TextContainer = ({
                 disable={!isSnapFitValues}
                 disableResponse={disableResponse}
               >
-                <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />}>
-                  <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-                </Tooltip>
+                <Container width="100%">
+                  <Container width="100%" height="100%">
+                    <Tooltip overlayClassName="customTooltip" placement="right" title={title}>
+                      <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
+                    </Tooltip>
+                  </Container>
+                </Container>
               </DragItem>
             </div>
           );

@@ -53,12 +53,11 @@ const specSource = {
 
 class DragItem extends React.Component {
   render() {
-    const { connectDragSource, data, children, style, title, disableResponse, ...restProps } = this.props;
+    const { connectDragSource, data, children, style, disableResponse, ...restProps } = this.props;
     return (
       data &&
       connectDragSource(
         <div
-          title={!title ? null : title}
           style={{
             ...style
           }}

@@ -3,7 +3,7 @@
     "title": "Question",
     "dataIndex": "qLabel",
     "key": "qLabel",
-    "width": 210
+    "width": 75
   },
   {
     "title": "Standards",
@@ -15,12 +15,12 @@
     "title": "Points",
     "dataIndex": "points",
     "key": "points",
-    "width": 100
+    "width": 75
   },
   {
     "title": "District(Avg. Score %)",
     "dataIndex": "districtAvg",
     "key": "districtAvg",
-    "width": 100
+    "width": 150
   }
 ]

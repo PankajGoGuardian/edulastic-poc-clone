@@ -379,7 +379,7 @@ function* receiveAddStudentRequest({ payload }) {
       const newStudent = {
         ...student,
         _id: student.userId,
-        enrollmentStatus: "1"
+        enrollmentStatus: 1
       };
       yield put(addStudentSuccessAction(newStudent));
       const successMsg = "Student added to class successfully.";

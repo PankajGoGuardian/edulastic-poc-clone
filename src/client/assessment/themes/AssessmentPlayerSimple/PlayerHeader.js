@@ -25,7 +25,7 @@ const PlayerHeader = ({
     <Fragment>
       <HeaderPracticePlayer>
         <HeaderLeftMenu skinb={"true"}>
-          <LogoCompact />
+          <LogoCompact color={"#fff"} />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
           <FlexContainer>
@@ -95,6 +95,7 @@ const PlayerTitle = styled.h1`
   font-size: 20px;
   font-weight: bold;
   margin: 0;
+  color: #fff;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     overflow: hidden;
     text-overflow: ellipsis;

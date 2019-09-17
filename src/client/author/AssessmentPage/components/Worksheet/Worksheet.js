@@ -43,7 +43,6 @@ class Worksheet extends React.Component {
   static propTypes = {
     docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired,
     userWork: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
@@ -78,9 +77,9 @@ class Worksheet extends React.Component {
   };
 
   componentDidMount() {
-    const { saveUserWork, itemDetail } = this.props;
+    const { saveUserWork, itemDetail, freeFormNotes } = this.props;
     if (itemDetail?.item?._id) {
-      saveUserWork({ [itemDetail.item._id]: {} });
+      saveUserWork({ [itemDetail.item._id]: { scratchpad: freeFormNotes || {} } });
     }
   }
 

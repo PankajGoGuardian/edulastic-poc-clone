@@ -36,7 +36,6 @@ export const LinkItem = props => {
       <Link
         to={props.data.location}
         onClick={e => {
-          event.preventDefault();
           props.onClick(e.currentTarget.href);
         }}
       >

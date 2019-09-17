@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { Row, Col } from "antd";
-import { push } from "connected-react-router";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
@@ -313,10 +312,7 @@ const Reports = connect(
   }
 )(props => {
   const onLinkClick = (clickedLink, reportType) => {
-    debugger;
-    console.log("reportType", reportType);
     if (reportType === "singleAssessmentReport") {
-      console.log("reportType", reportType);
       props.resetSARFiltersAction(clickedLink);
       props.resetSARSettingsAction();
 
@@ -326,23 +322,18 @@ const Reports = connect(
       props.resetResponseFrequencyAction();
       props.resetPerformanceByStandardsAction();
       props.resetPerformanceByStudentsAction();
-
-      push(clickedLink);
     } else if (reportType === "studentProfileReport") {
-      console.log("reportType", reportType);
       props.resetSPRFiltersAction();
       props.resetSPRSettingsAction();
       // props.resetStudentAssessmentProfileAction();
       // props.resetStudentMasteryProfileAction();
       // props.resetStudentProfileSummaryAction();
     } else if (reportType === "multipleAssessmentReport") {
-      console.log("reportType", reportType);
       props.resetMARFiltersAction();
       // props.resetPeerProgressAnalysisAction();
       // props.resetPerformanceOverTimeAction();
       // props.resetStudentProgressAction();
     } else if (reportType === "standardsMasteryReport") {
-      console.log("reportType", reportType);
       props.resetSMRFiltersAction();
       // props.resetStandardsGradebookAction();
       // props.resetStandardsPerformanceSummaryAction();

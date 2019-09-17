@@ -107,7 +107,7 @@ const ChartPreview = ({
   };
 
   if (answerIsActual() || view === EDIT) {
-    passData.data = [...userAnswer];
+    passData.data = userAnswer.map((answer, index) => ({ ...answer, onlyByHover: passData.data[index].onlyByHover }));
   }
 
   const answerData = validation ? validation.validResponse.value : [];

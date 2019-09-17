@@ -55,7 +55,7 @@ const StudentProfileSummary = ({
     "data.result",
     {}
   );
-  const { scaleInfo = [] } = get(SPRFilterData, "data.result", {});
+  const { scaleInfo = [], studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
@@ -108,7 +108,7 @@ const StudentProfileSummary = ({
             </p>
           </Col>
           <Col xs={24} sm={24} md={19} lg={19} xl={19}>
-            <AssessmentChart data={data} />
+            <AssessmentChart data={data} studentClassData={studentClassData} />
           </Col>
         </Row>
       </StyledCard>

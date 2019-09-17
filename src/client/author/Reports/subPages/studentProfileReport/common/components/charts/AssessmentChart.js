@@ -5,7 +5,7 @@ import { addColors } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
-const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB }) => {
+const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB, studentClassData }) => {
   const xDataKey = "uniqId";
 
   const dataWithColors = addColors(data, selectedTests, xDataKey, "score");
@@ -28,6 +28,7 @@ const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB }) 
       return (
         <div>
           <BarTooltipRow title="Assessment : " value={record.testName || "N/A"} />
+          <BarTooltipRow title="Subject : " value={studentClassData[0].standardSet || "N/A"} />
           <BarTooltipRow title="Type : " value={record.testType} />
           <BarTooltipRow title="Performance Band : " value={record.band.name} />
           <BarTooltipRow title="Student Performance : " value={`${record.score}%`} />

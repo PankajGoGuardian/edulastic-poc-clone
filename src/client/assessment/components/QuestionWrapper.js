@@ -328,7 +328,7 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
-    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType);
+    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
     return (
       <WithResources
         resources={[

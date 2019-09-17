@@ -184,6 +184,15 @@ class MathFormulaAnswers extends React.Component {
               ans.value = ans.value.replace(new RegExp(diffVar[0]), "");
             }
           });
+          if (draft.validation.altResponses) {
+            draft.validation.altResponses.forEach(altAns => {
+              altAns.value.forEach(ans => {
+                if (ans.value) {
+                  ans.value = ans.value.replace(new RegExp(diffVar[0]), "");
+                }
+              });
+            });
+          }
         }
         draft[option] = variables;
         updateVariables(draft, latexKeys);

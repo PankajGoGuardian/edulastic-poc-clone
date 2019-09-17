@@ -67,8 +67,8 @@ class SummaryTest extends Component {
 
   render() {
     const { questionList: questionsAndOrder, t, test } = this.props;
-    const { blocks: questionList, allQids } = questionsAndOrder;
-    const questions = allQids;
+    const { blocks: questionList, itemWiseQids } = questionsAndOrder;
+    const itemIds = Object.keys(itemWiseQids);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (
@@ -128,16 +128,30 @@ class SummaryTest extends Component {
                   </Col>
                 </Row>
                 <QuestionBlock>
-                  {questions.map((q, index) => (
-                    <QuestionColorBlock
-                      key={index}
-                      type={questionList[q]}
-                      isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                      onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
-                    >
-                      <span> {index + 1} </span>
-                    </QuestionColorBlock>
-                  ))}
+                  {itemIds.map((item, index) => {
+                    let returnObj = [];
+                    returnObj = [
+                      ...returnObj,
+                      ...itemWiseQids[item].map((q, qIndex) => (
+                        <QuestionColorBlock
+                          key={index * 100 + qIndex}
+                          type={questionList[q]}
+                          isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                          onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                        >
+                          <span>
+                            {" "}
+                            {`${index + 1}${
+                              itemWiseQids[item].length > 1
+                                ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
+                                : ""
+                            }`}{" "}
+                          </span>
+                        </QuestionColorBlock>
+                      ))
+                    ];
+                    return returnObj;
+                  })}
                 </QuestionBlock>
               </Questions>
             </MainContent>

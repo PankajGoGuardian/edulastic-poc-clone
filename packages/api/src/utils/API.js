@@ -45,7 +45,7 @@ const getLoggedOutUrl = () => {
 };
 
 export default class API {
-  constructor(baseURL = config.api) {
+  constructor(baseURL = config.api, defaultToken = false) {
     this.baseURL = baseURL;
 
     this.instance = axios.create({
@@ -55,7 +55,7 @@ export default class API {
       }
     });
     this.instance.interceptors.request.use(config => {
-      let token = getAccessToken();
+      let token = defaultToken || getAccessToken();
       if (token) {
         config.headers["Authorization"] = token;
       }

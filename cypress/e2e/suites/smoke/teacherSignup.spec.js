@@ -60,7 +60,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     const random = Helpers.getRamdomString();
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
-    signupPage.fillTeacherSignupForm(name, `${Helpers.getRamdomString()}.${email}`, password);
+    signupPage.fillTeacherSignupForm(name, `${random}.${email}`, password);
     // request new school
     signupPage.clickOnRequestNewSchoolLink();
     signupPage.fillSchoolDetails(`${schoolName}-${random}`, district, address, zip, city, state, country);
@@ -77,14 +77,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
   it("> signup using new district and new school", () => {
     const { name, email, password, grade, standardSet, subject, newSchool, newDistrict } = signupData;
     const { schoolName, zip, city, country, address, state } = newSchool;
-    const random = Helpers.getRamdomString(Helpers.stringTypes().ALPHA, 8);
+    const random = Helpers.getRamdomString();
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
-    signupPage.fillTeacherSignupForm(
-      name,
-      `${Helpers.getRamdomString(Helpers.stringTypes().ALPHA, 8)}.${email}`,
-      password
-    );
+    signupPage.fillTeacherSignupForm(name, `${random}.${email}`, password);
     // request new school and district
 
     signupPage.clickOnRequestNewSchoolLink();

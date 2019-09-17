@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
+import { Form, Input, Row, Col, Select, Button, Modal, DatePicker, message } from "antd";
 import moment from "moment";
 import { debounce } from "lodash";
 const Option = Select.Option;
@@ -11,7 +11,7 @@ class EditClassModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchValue: undefined
+      searchValue: ""
     };
   }
 
@@ -71,16 +71,22 @@ class EditClassModal extends Component {
     const { allTagsData, addNewTag } = this.props;
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      const tempSearchValue = searchValue;
+      this.setState({ searchValue: "" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
     setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
-    this.setState({ searchValue: undefined });
+    this.setState({ searchValue: "" });
   };
 
   deselectTags = id => {
@@ -92,8 +98,8 @@ class EditClassModal extends Component {
 
   searchTags = async value => {
     const { allTagsData } = this.props;
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      this.setState({ searchValue: undefined });
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      this.setState({ searchValue: "" });
     } else {
       this.setState({ searchValue: value });
     }
@@ -228,11 +234,13 @@ class EditClassModal extends Component {
                   onSearch={this.searchTags}
                   onSelect={this.selectTags}
                   onDeselect={this.deselectTags}
-                  filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                  filterOption={(input, option) =>
+                    option.props.title.toLowerCase().includes(input.trim().toLowerCase())
+                  }
                 >
-                  {!!searchValue ? (
+                  {!!searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
-                      {`${searchValue} (Create new Tag )`}
+                      {`${searchValue} (Create new Tag)`}
                     </Select.Option>
                   ) : (
                     ""

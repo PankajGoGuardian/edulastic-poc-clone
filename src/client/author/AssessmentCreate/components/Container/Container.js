@@ -118,11 +118,9 @@ class Container extends React.Component {
               width: "calc(100vw - 100px)",
               top: "96px",
               zIndex: "1",
-              backgroundColor: "rgb(0,0,0,0.5)"
+              backgroundColor: "transparent"
             }}
-          >
-            <Spin />
-          </div>
+          />
         )}
         <HeaderWrapper>
           <Title>New Test</Title>

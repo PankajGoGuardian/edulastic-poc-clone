@@ -77,6 +77,7 @@ export const Label = styled.label`
   box-shadow: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "none" : "none")};
   display: flex;
   align-items: center;
+  user-select: ${({ userSelect }) => (userSelect ? "initial" : "none")};
 
   &.checked {
     background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};

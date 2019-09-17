@@ -113,7 +113,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
         title: `All ${compareByToPluralName[compareBy]} (Score %)`,
         dataIndex: "avgPerformance",
         key: "avgPerformance",
-        width: 100,
+        width: 150,
         render: (text, record, _index) => {
           return text + "%";
         }

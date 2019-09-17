@@ -10,19 +10,19 @@ import {
   themeLightGrayBgColor,
   themeColorTagsBg,
   themeColor,
-  red
+  red,
+  lightGreySecondary
 } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
-  padding: 30px 0 15px;
-  border-bottom: 1px solid #f6f6f6;
+  padding: 25px 0px;
+  border-bottom: 1px solid ${lightGreySecondary};
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
-    padding: 28px 28px 0 28px;
 
     &:not(:first-child) {
       border-top: 0;
@@ -35,7 +35,7 @@ export const Container = styled.div`
         left: 28px;
         right: 28px;
         height: 1px;
-        background: #f6f6f6;
+        background: ${lightGreySecondary};
       }
     }
   }
@@ -55,9 +55,8 @@ export const Question = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 15px;
     text-align: center;
-    margin-top: -0.5em;
   }
 `;
 
@@ -79,24 +78,74 @@ export const ViewButton = styled.div`
     width: 50%;
     display: inline-flex;
     justify-content: flex-end;
-    margin-top: 13px;
     padding-right: 5px;
   }
 `;
 
-export const ViewButtonStyled = styled(Button)`
+const ButtonStyle = styled(Button)`
   height: 40px;
   border-radius: 4px;
-  background: ${white};
   box-shadow: 0px 1px 1px 1px ${themeColor}05;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  color: ${themeColor};
-  padding: 5px 30px 5px 20px;
-  line-height: 17px;
   display: flex;
   align-items: center;
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: ${themeColor};
+    &:hover {
+      fill: ${themeColor};
+    }
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
+  }
+  @media (max-width: ${tabletWidth}) {
+    &.ant-btn {
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      span {
+        display: none;
+      }
+      svg {
+        margin: 0px;
+      }
+    }
+  }
+`;
+
+export const MoreInfo = styled(ButtonStyle)`
+  background: ${props => (props.isOpenedDetails ? themeColor : white)};
+  color: ${props => (props.isOpenedDetails ? white : themeColor)};
+  margin-right: 10px;
+  transition: all 0.3s ease;
+  &:focus,
+  &:hover {
+    background: ${props => (props.isOpenedDetails ? themeColor : white)};
+    svg {
+      fill: ${props => (props.isOpenedDetails ? white : themeColor)};
+    }
+  }
+  svg {
+    fill: ${props => (props.isOpenedDetails ? white : themeColor)};
+    transition: all 0.3s ease;
+    transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};
+  }
+`;
+
+export const ViewButtonStyled = styled(ButtonStyle)`
+  background: ${white};
+  color: ${themeColor};
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 15px;
+  }
   &:hover,
   &:focus {
     background: ${lightGrey};
@@ -105,76 +154,32 @@ export const ViewButtonStyled = styled(Button)`
       fill: ${themeColor};
     }
   }
-  svg {
-    fill: ${themeColor};
-    margin-right: 20px;
-    width: 20px;
-  }
-
-  @media (max-width: ${tabletWidth}) {
-    width: 40px;
-    height: 40px;
-    border-radius: 3px;
-    padding: 0;
-
-    span {
-      font-size: 0;
-      display: none;
-    }
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
-  }
 `;
 
-export const AddButtonStyled = styled(Button)`
-  height: 40px;
-  border-radius: 4px;
-  background: ${white};
-  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
+export const AddButtonStyled = styled(ButtonStyle)`
   margin-left: 10px;
+  background: ${white};
   color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
   border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
-  padding: 0 15px;
-
-  &.ant-btn {
-    &:hover,
-    &:focus,
-    &:active {
-      color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-    }
+  &:hover,
+  &:focus {
+    color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
   }
-
-  svg {
-    max-width: 13px;
-    max-height: 13px;
-    fill: ${themeColor};
-  }
-
   @media (max-width: ${tabletWidth}) {
-    width: 40px;
-    height: 40px;
-    border-radius: 3px;
-    padding: 0;
-
-    svg {
-      margin-top: 4px;
-      stroke: ${themeColor};
+    &.ant-btn:before {
+      content: ${({ selectedToCart }) => (selectedToCart ? `"_"` : "")};
+      font-size: 30px;
+      display: inline-block;
+      line-height: 10px;
     }
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
   }
 `;
 
 export const Detail = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   margin-top: 15px;
   min-height: 40px;
@@ -194,11 +199,10 @@ export const TypeCategory = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     display: block;
-    margin-right: 0px;
     width: 100%;
     margin: 0;
     position: relative;
-    top: -4px;
+    top: 0px;
   }
 `;
 
@@ -206,7 +210,6 @@ export const DetailCategory = styled.div`
   display: flex;
   align-items: center;
   margin-left: 20px;
-
   svg {
     max-width: 16px;
     max-height: 14px;
@@ -215,16 +218,17 @@ export const DetailCategory = styled.div`
       fill: ${themeLightGrayColor};
     }
   }
+
   @media (max-width: ${tabletWidth}) {
     width: auto;
     margin-right: 0px;
-    margin-top: 17px;
+    margin-top: 15px;
     margin-left: 0px;
     flex-wrap: wrap;
     justify-content: center;
     text-align: center;
-
-    > div {
+    flex-basis: 25%;
+    & > div {
       justify-content: center;
     }
   }
@@ -254,6 +258,7 @@ export const CategoryContent = styled.div`
   @media (max-width: ${tabletWidth}) {
     justify-content: flex-start;
     width: 100%;
+    margin: 0px;
   }
 `;
 
@@ -262,7 +267,7 @@ export const Label = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  height: 24px;
+  min-height: 26px;
   padding: 6px 14px;
   margin-right: 10px;
   border-radius: 5px;
@@ -275,15 +280,6 @@ export const Label = styled.div`
     letter-spacing: 0.2px;
     text-transform: uppercase;
     color: ${greyDarken};
-  }
-
-  @media (max-width: ${tabletWidth}) {
-    margin-left: 0;
-    width: auto;
-    margin-top: 8px;
-    height: 26px;
-    padding-left: 18px;
-    padding-right: 18px;
   }
 `;
 
@@ -336,10 +332,10 @@ export const Categories = styled.div`
   @media (max-width: ${tabletWidth}) {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     flex-wrap: nowrap;
-    width: calc(100% + 15px);
-    margin-top: 0;
-    margin: 0 -7.5px;
+    width: 100%;
+    margin: 0;
   }
 `;
 
@@ -401,7 +397,6 @@ export const LabelStandard = styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-left: 0;
     width: auto;
-    margin-top: 8px;
     height: 26px;
     padding: 4px;
   }
@@ -431,46 +426,12 @@ export const CountGreen = styled.div`
   color: ${greenPrimary};
 `;
 
-export const MoreInfo = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: ${props => (props.isOpenedDetails ? themeColor : white)};
-  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
-  border: 0;
-  color: ${themeColor};
-  width: 40px;
-  height: 40px;
-  border-radius: 3px;
-  padding: 0;
-  margin-right: 10px;
-  transition: all 0.3s ease;
-
-  &:focus,
-  &:hover {
-    svg {
-      fill: ${props => (props.isOpenedDetails ? white : themeColor)};
-    }
-  }
-
-  svg {
-    display: initial;
-    width: 18px;
-    height: 15px;
-    margin-bottom: -3px;
-    fill: ${props => (props.isOpenedDetails ? white : themeColor)};
-    position: relative;
-    transition: all 0.3s ease;
-    transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};
-  }
-`;
-
 export const Details = styled.div`
-  background: #f8f8f8;
+  background: ${lightGreySecondary};
   border-radius: 3px;
-  margin-top: 17px;
+  margin-top: ${props => (props.isOpenedDetails ? "15px" : "0")};
   padding: ;
-  padding: ${props => (props.isOpenedDetails ? "22px 20px 20px" : "0 20px 0")};
+  padding: ${props => (props.isOpenedDetails ? "20px" : "0 20px 0")};
   transition: all 0.3s ease;
   max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};
   position: relative;

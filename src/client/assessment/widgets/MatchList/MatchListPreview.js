@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
-import { cloneDeep, isEqual, get, shuffle, identity } from "lodash";
+import { cloneDeep, isEqual, get, shuffle, identity, keyBy } from "lodash";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 import {
@@ -79,21 +79,6 @@ const MatchListPreview = ({
     duplicatedResponses = false
   } = item;
 
-  const alternateAnswers = {};
-  if (validation && validation.altResponses && validation.altResponses.length > 0) {
-    const { altResponses: altAnswers } = validation;
-    altAnswers.forEach(altAnswer => {
-      altAnswer.value.forEach((alt, index) => {
-        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        if (alt?.label && alt?.label !== "") {
-          alternateAnswers[index + 1].push(alt.label);
-        }
-      });
-    });
-  }
-
-  const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
-
   const itemValidation = item.validation || {};
   let validArray = itemValidation.validResponse && itemValidation.validResponse.value;
   validArray = validArray || [];
@@ -120,7 +105,7 @@ const MatchListPreview = ({
   const [dragItems, setDragItems] = useState(
     duplicatedResponses
       ? getPossibleResponses()
-      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value))
   );
 
   useEffect(() => {
@@ -133,7 +118,7 @@ const MatchListPreview = ({
       duplicatedResponses
         ? getPossibleResponses()
         : getPossibleResponses().filter(
-            answer => Array.isArray(userAnswer) && !userAnswer.some(i => i?.value === answer.value)
+            answer => Array.isArray(userAnswer) && !userAnswer.some(i => i === answer.value)
           )
     );
   }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses]);
@@ -144,7 +129,7 @@ const MatchListPreview = ({
 
   const onDrop = (itemCurrent, itemTo) => {
     const answers = cloneDeep(ans);
-    const answerIds = answers.map(i => i?.value).filter(identity);
+    const answerIds = answers.map(i => i).filter(identity);
     const dItems = cloneDeep(dragItems);
     const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
     if (itemTo.flag === "ans") {
@@ -159,7 +144,7 @@ const MatchListPreview = ({
       } else if (!duplicatedResponses && answers.includes(_item)) {
         answers[answers.indexOf(_item)] = null;
       }
-      answers[itemTo.index] = _item;
+      answers[itemTo.index] = _item.value;
     } else if (answerIds.includes(_item.value)) {
       answers[sourceIndex] = null;
       dItems.push(itemCurrent.item);
@@ -254,6 +239,24 @@ const MatchListPreview = ({
     return i + 1;
   };
 
+  const allItemsById = keyBy(getPossibleResponses(), "value");
+
+  const alternateAnswers = {};
+  if (validation && validation.altResponses && validation.altResponses.length > 0) {
+    const { altResponses: altAnswers } = validation;
+    altAnswers.forEach(altAnswer => {
+      altAnswer.value.forEach((alt, index) => {
+        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
+        const altResp = allItemsById[alt];
+        if (altResp?.label && altResp?.label !== "") {
+          alternateAnswers[index + 1].push(altResp.label);
+        }
+      });
+    });
+  }
+
+  const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
+
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -291,22 +294,20 @@ const MatchListPreview = ({
                 flag="ans"
                 style={styles.dropContainerStyle(smallSize)}
               >
-                {!disableResponse && !isReviewTab && (
-                  <DragItem
-                    preview={preview}
-                    correct={evaluation[i]}
-                    flag="ans"
-                    renderIndex={i}
-                    displayIndex={getStemNumeration(i)}
-                    onDrop={onDrop}
-                    item={ans[i]}
-                    width="100%"
-                    centerContent
-                    getStyles={getStyles}
-                    disableResponse={disableResponse}
-                    changePreviewTab={changePreviewTab}
-                  />
-                )}
+                <DragItem
+                  preview={preview}
+                  correct={evaluation[i]}
+                  flag="ans"
+                  renderIndex={i}
+                  displayIndex={getStemNumeration(i)}
+                  onDrop={onDrop}
+                  item={(ans[i] && allItemsById[ans[i]]) || null}
+                  width="100%"
+                  centerContent
+                  getStyles={getStyles}
+                  disableResponse={disableResponse}
+                  changePreviewTab={changePreviewTab}
+                />
               </DropContainer>
             </AnswerItem>
           ))}
@@ -456,7 +457,10 @@ const MatchListPreview = ({
                   <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={getStemNumeration(i)}>
-                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i]?.label || "" }} />
+                  <MathFormulaDisplay
+                    choice
+                    dangerouslySetInnerHTML={{ __html: allItemsById?.[validArray?.[i]]?.label || "" }}
+                  />
                 </CorItem>
               </FlexContainer>
             ))}

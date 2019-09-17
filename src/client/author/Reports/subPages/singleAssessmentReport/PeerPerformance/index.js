@@ -146,6 +146,8 @@ const PeerPerformance = ({
     setChartFilter({});
   };
 
+  const assessmentName = get(settings, "selectedTest.title", "");
+
   return (
     <div>
       {loading || performanceBandLoading ? (
@@ -165,7 +167,7 @@ const PeerPerformance = ({
                 <Row type="flex" justify="start">
                   <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                     <StyledH3>
-                      Assessment Performance by {idToName[ddfilter.compareBy]} | {res.assessmentName}
+                      Assessment Performance by {idToName[ddfilter.compareBy]} | {assessmentName}
                     </StyledH3>
                   </Col>
                   <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -191,7 +193,7 @@ const PeerPerformance = ({
                       analyseBy={ddfilter.analyseBy}
                       compareBy={ddfilter.compareBy}
                       filter={chartFilter}
-                      assessmentName={res.assessmentName}
+                      assessmentName={assessmentName}
                       onBarClickCB={onBarClickCB}
                       onResetClickCB={onResetClickCB}
                       bandInfo={bandInfo}
@@ -203,7 +205,7 @@ const PeerPerformance = ({
                       analyseBy={ddfilter.analyseBy}
                       compareBy={ddfilter.compareBy}
                       filter={chartFilter}
-                      assessmentName={res.assessmentName}
+                      assessmentName={assessmentName}
                       onBarClickCB={onBarClickCB}
                       onResetClickCB={onResetClickCB}
                       bandInfo={bandInfo}
@@ -224,7 +226,7 @@ const PeerPerformance = ({
                 filter={chartFilter}
                 analyseBy={ddfilter.analyseBy}
                 compareBy={ddfilter.compareBy}
-                assessmentName={res.assessmentName}
+                assessmentName={assessmentName}
                 bandInfo={bandInfo}
                 role={role}
               />

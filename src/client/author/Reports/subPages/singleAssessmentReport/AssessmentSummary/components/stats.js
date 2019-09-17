@@ -74,7 +74,7 @@ export const Stats = props => {
       </StyledH3>
       <StyledInnerRow type="flex" justify="start" className="average-stats">
         <StatItem heading="Average Score" value={`${state.avgScore}/${Math.round(state.total)}`} />
-        <StatItem heading="Average Student Score" value={state.avgStudentScore} />
+        <StatItem heading="Average Student Score" value={`${state.avgStudentScore}%`} />
       </StyledInnerRow>
       <StyledInnerRow type="flex" justify="start" className="average-stats">
         <StatItem heading="Students Assigned" value={state.studentsAssigned} />

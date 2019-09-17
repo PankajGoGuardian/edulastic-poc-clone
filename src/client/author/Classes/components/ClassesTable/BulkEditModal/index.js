@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form } from "antd";
+import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message } from "antd";
 import { StyledComponents } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
@@ -34,7 +34,7 @@ function BulkEditModal({
   addNewTag
 }) {
   const [value, setValue] = useState("");
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const radioStyle = {
     display: "block",
     height: "30px",
@@ -81,16 +81,22 @@ function BulkEditModal({
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
     setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -100,8 +106,8 @@ function BulkEditModal({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -142,11 +148,11 @@ function BulkEditModal({
                 onSearch={searchTags}
                 onSelect={selectTags}
                 onDeselect={deselectTags}
-                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
               >
-                {!!searchValue ? (
+                {!!searchValue.trim() ? (
                   <Select.Option key={0} value={searchValue} title={searchValue}>
-                    {`${searchValue} (Create new Tag )`}
+                    {`${searchValue} (Create new Tag)`}
                   </Select.Option>
                 ) : (
                   ""

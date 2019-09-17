@@ -40,7 +40,7 @@ class ComposeQuestion extends Component {
 
         <QuestionTextArea
           inputId="stimulusInput"
-          placeholder="Enter question"
+          placeholder="Enter your question"
           onChange={stimulus => _itemChange("stimulus", stimulus)}
           value={item.stimulus}
           border="border"

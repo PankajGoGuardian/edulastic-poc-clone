@@ -48,8 +48,10 @@ const StudentAssessmentProfile = ({
     }
   }, [settings]);
 
+  const title = get(settings, "selectedStudent.title", "");
+
   const onTestSelect = item => setSelectedTests(toggleItem(selectedTests, item.uniqId));
-  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${selectedStudent.title}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${title}.csv`, data);
 
   if (loading) {
     return (
@@ -63,7 +65,7 @@ const StudentAssessmentProfile = ({
   return (
     <>
       <StyledCard>
-        <StyledH3>Assessment Performance Details of {selectedStudent.title}</StyledH3>
+        <StyledH3>Assessment Performance Details of {title}</StyledH3>
         <AssessmentChart
           data={chartData}
           selectedTests={selectedTests}
@@ -76,7 +78,7 @@ const StudentAssessmentProfile = ({
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
           data={tableData}
-          studentName={selectedStudent.title}
+          studentName={title}
           selectedTests={selectedTests}
         />
       </StyledCard>

@@ -98,6 +98,8 @@ const PerformanceByStudents = ({
 
   const _columns = getColumns(columns, res && res.testName, role);
 
+  const testName = get(settings, "selectedTest.title", "");
+
   return (
     <>
       {loading ? (
@@ -110,7 +112,7 @@ const PerformanceByStudents = ({
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student score distribution | {res && res.testName}</StyledH3>
+                <StyledH3>Student score distribution | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
@@ -125,7 +127,7 @@ const PerformanceByStudents = ({
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student Performance | {res && res.testName}</StyledH3>
+                <StyledH3>Student Performance | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <StyledDropDownContainer>

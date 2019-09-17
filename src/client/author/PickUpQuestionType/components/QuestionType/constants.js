@@ -96,7 +96,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Line plot",
         firstMount: true,
         type: "linePlot",
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         chart_data: {
           data: [
             {
@@ -185,7 +185,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Dot plot",
         firstMount: true,
         type: "dots",
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         chart_data: {
           data: [
             {
@@ -274,7 +274,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Histogram",
         firstMount: true,
         type: "histogram",
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         chart_data: {
           data: [
             {
@@ -365,7 +365,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Bar chart",
         firstMount: true,
         type: questionType.BAR_CHART,
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         chart_data: {
           data: [
             {
@@ -455,7 +455,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Line chart",
         firstMount: true,
         type: questionType.LINE_CHART,
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         chart_data: {
           data: [
             {
@@ -551,7 +551,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altText: ""
         },
         line_color: [themeColor],
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.HIGHLIGHT_IMAGE,
         validation: {
           validResponse: {
@@ -575,7 +575,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           shaded: [],
           read_only_author_cells: false
         },
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.SHADING,
         validation: {
           scoringType: EXACT_MATCH,
@@ -597,7 +597,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: HLHotspot,
       data: {
         title: "Hotspot",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.HOTSPOT,
         image: {
           source: "https://assets.learnosity.com/organisations/1/bead7655-fb71-41af-aeea-9e08a47eac68.png",
@@ -632,7 +632,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: HLTokenHighlight,
       data: {
         title: "Token highlight",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         template:
           '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
         templeWithTokens: templateWithTokens,
@@ -655,7 +655,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: WSEssayRichText,
       data: {
         title: "Essay with rich text",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.ESSAY_RICH_TEXT,
         showWordCount: true,
         maxWord: 1000,
@@ -697,7 +697,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: WSEssayPlainText,
       data: {
         title: "Essay with plain text",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.ESSAY_PLAIN_TEXT,
         showCopy: true,
         showCut: true,
@@ -716,7 +716,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: WSShortText,
       data: {
         title: "Short text",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "<p>Enter your question</p>",
         type: questionType.SHORT_TEXT,
         validation: {
           scoringType: EXACT_MATCH,
@@ -835,7 +835,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Sort List",
         firstMount: true,
         type: questionType.SORT_LIST,
-        stimulus: "Sort the sine and cosine values from lower to higher.",
+        stimulus: "Enter your question",
         uiStyle: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
         validation: {
@@ -898,7 +898,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: "Choice D"
           }
         ],
-        stimulus: "Your question is here",
+        stimulus: "Enter your question",
         type: questionType.CLASSIFICATION,
         uiStyle: {
           columnCount: 2,
@@ -941,7 +941,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { value: uuid(), label: "Choice C" }
         ],
         type: questionType.MATCH_LIST,
-        stimulus: "<p>This is the stem.</p>",
+        stimulus: "<p>Enter your question</p>",
         list: ["Stem 1", "Stem 2", "Stem 3"],
         validation: {
           scoringType: EXACT_MATCH,
@@ -961,7 +961,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "OrderList",
         type: questionType.ORDER_LIST,
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "Enter your question",
         list: ["Item A", "Item B", "Item C"],
         validation: {
           scoringType: EXACT_MATCH,
@@ -982,7 +982,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Choice matrix - standard",
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
-        stimulus: "This is the stem.",
+        stimulus: "Enter your question",
         uiStyle: {
           type: "table",
           horizontalLines: false
@@ -1010,7 +1010,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
-        stimulus: "This is the stem.",
+        stimulus: "Enter your question",
         type: questionType.CHOICE_MATRIX,
         uiStyle: {
           type: "inline",
@@ -1036,7 +1036,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
-        stimulus: "This is the stem.",
+        stimulus: "Enter your question",
         type: questionType.CHOICE_MATRIX,
         uiStyle: {
           stemNumeration: "upper-alpha",
@@ -1294,7 +1294,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Graphing",
         type: questionType.GRAPH,
         graphType: "quadrants",
-        stimulus: "[This is the stem]",
+        stimulus: "Enter your question",
         firstMount: true,
         canvas: {
           xMax: 10.4,
@@ -1374,7 +1374,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Graphing in the 1st quadrant",
         type: questionType.GRAPH,
         graphType: "firstQuadrant",
-        stimulus: "[This is the stem]",
+        stimulus: "Enter your question",
         firstMount: true,
         canvas: {
           xMax: 10.4,
@@ -1454,7 +1454,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Graph Placement",
         type: questionType.GRAPH,
         graphType: "quadrantsPlacement",
-        stimulus: "[This is the stem]",
+        stimulus: "Enter your question",
         firstMount: true,
         canvas: {
           xMax: 10.4,
@@ -1544,7 +1544,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Number line with plot",
         type: questionType.GRAPH,
-        stimulus: "[This is the stem]",
+        stimulus: "Enter your question",
         firstMount: true,
         graphType: "axisSegments",
         canvas: {
@@ -1667,7 +1667,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         type: questionType.GRAPH,
         firstMount: true,
         graphType: "axisLabels",
-        stimulus: "[This is the stem]",
+        stimulus: "Enter your question",
         list: [
           {
             text: "Option 1",

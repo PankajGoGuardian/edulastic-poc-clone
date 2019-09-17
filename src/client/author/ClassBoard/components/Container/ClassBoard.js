@@ -944,7 +944,7 @@ class ClassBoard extends Component {
                       </div>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
-                        {`TIME (min) `}{" "}
+                        {`TIME (min) : `}{" "}
                         <span style={{ color: black, textTransform: "capitalize" }}>
                           {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
                             ""}
@@ -952,7 +952,7 @@ class ClassBoard extends Component {
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
-                        {`STATUS  `}{" "}
+                        {`STATUS : `}{" "}
                         <span style={{ color: black, textTransform: "capitalize" }}>
                           {studentTestActivity.status === 2
                             ? "Absent"
@@ -964,9 +964,9 @@ class ClassBoard extends Component {
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
-                        {`SUBMITTED ON  `}
+                        {`SUBMITTED ON : `}
                         <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("d MMMM, YYYY")}
+                          {moment(studentTestActivity.endDate).format("DD MMMM, YYYY")}
                         </span>
                       </ScoreHeader>
                     </InfoWrapper>

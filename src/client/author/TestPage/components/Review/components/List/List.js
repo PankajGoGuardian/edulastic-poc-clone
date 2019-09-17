@@ -58,7 +58,7 @@ export const SortableItem = ({
   let items = testItem.itemLevelScoring
     ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
     : splitItems(item, testItem);
-  if (testItem.passageId) {
+  if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
   }
   return (

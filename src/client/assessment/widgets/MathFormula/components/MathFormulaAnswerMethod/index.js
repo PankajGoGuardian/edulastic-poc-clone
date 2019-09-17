@@ -355,14 +355,10 @@ const MathFormulaAnswerMethod = ({
     style
   };
 
-  const unitsStyle = ["isRationalized", "isExpanded", "isFactorised", "isSimplified", "isTrue", "equivSyntax"].includes(
-    method
-  );
-
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <ExpectAnswer>
-        {!methodOptions.includes("noExpeced") && method !== "isRationalized" && (
+        {!methodOptions.includes("noExpeced") && (
           <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
@@ -388,7 +384,7 @@ const MathFormulaAnswerMethod = ({
             onChange={changeOptions}
             keypadOffset={keypadOffset}
             onChangeShowDropdown={onChangeShowDropdown}
-            unitsStyle={unitsStyle}
+            unitsStyle={methodOptions.includes("noExpeced")}
           />
         )}
       </ExpectAnswer>

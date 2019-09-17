@@ -142,7 +142,7 @@ const methodOptions = {
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
-  [methods.IS_RATIONALIZED]: [],
+  [methods.IS_RATIONALIZED]: ["noExpeced"],
   [methods.CHECK_IF_TRUE]: ["noExpeced"]
 };
 

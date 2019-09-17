@@ -145,23 +145,7 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SAR_FILTER_DATA]: (state, { payload }) => {
     state.SARFilterData = {};
   },
-  [RESET_REPORTS_SAR_FILTERS]: (state, { payload }) => {
-    // state = initialState;
-    // return state;
-    state.SARFilterData = {};
-    state.prevSARFilterData = null;
-    state.filters = {
-      termId: "",
-      subject: "All",
-      grade: "All",
-      courseId: "All",
-      groupId: "All",
-      schoolId: "All",
-      teacherId: "All",
-      assessmentType: "All"
-    };
-    state.testId = "";
-  }
+  [RESET_REPORTS_SAR_FILTERS]: (state, { payload }) => (state = initialState)
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
@@ -189,19 +173,8 @@ function* getReportsSARFilterDataRequest({ payload }) {
   }
 }
 
-function* resetReportsSARFiltersSaga({ payload }) {
-  try {
-    console.log("payload", payload);
-    yield put({ type: "_" + RESET_REPORTS_SAR_FILTERS });
-    yield put(push(payload));
-  } catch (error) {}
-}
-
 export function* reportSARFilterDataSaga() {
-  yield all([
-    yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)
-    // yield takeEvery(RESET_REPORTS_SAR_FILTERS, resetReportsSARFiltersSaga)
-  ]);
+  yield all([yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

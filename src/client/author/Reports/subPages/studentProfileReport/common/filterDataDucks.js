@@ -109,10 +109,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SPR_FILTER_DATA]: (state, { payload }) => {
     state.SPRFilterData = {};
   },
-  [RESET_REPORTS_SPR_FILTERS]: (state, { payload }) => {
-    state = initialState;
-    return state;
-  }
+  [RESET_REPORTS_SPR_FILTERS]: (state, { payload }) => (state = initialState)
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

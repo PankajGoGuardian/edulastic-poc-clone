@@ -119,10 +119,7 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_REPORTS_MAR_FILTERS]: (state, { payload }) => {
-    state = initialState;
-    return state;
-  }
+  [RESET_REPORTS_MAR_FILTERS]: (state, { payload }) => (state = initialState)
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

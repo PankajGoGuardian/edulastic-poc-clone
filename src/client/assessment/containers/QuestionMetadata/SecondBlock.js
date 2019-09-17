@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select, message } from "antd";
+import { uniqBy } from "lodash";
 
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
@@ -18,6 +19,7 @@ const SecondBlock = ({
   allTagsData,
   addNewTag
 }) => {
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
@@ -32,7 +34,7 @@ const SecondBlock = ({
         message.error("Saving tag failed");
       }
     } else {
-      newTag = allTagsData.find(tag => tag._id === id);
+      newTag = newAllTagsData.find(tag => tag._id === id);
     }
     const newTags = [...tags, newTag];
     onChangeTags(newTags);
@@ -45,7 +47,7 @@ const SecondBlock = ({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
+    if (newAllTagsData.some(tag => tag.tagName === value)) {
       setSearchValue("");
     } else {
       setSearchValue(value);
@@ -146,7 +148,7 @@ const SecondBlock = ({
                 ) : (
                   ""
                 )}
-                {allTagsData.map(({ tagName, _id }, index) => (
+                {newAllTagsData.map(({ tagName, _id }, index) => (
                   <Select.Option key={_id} value={_id} title={tagName}>
                     {tagName}
                   </Select.Option>

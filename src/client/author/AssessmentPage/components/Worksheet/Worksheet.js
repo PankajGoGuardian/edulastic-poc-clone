@@ -19,6 +19,7 @@ import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
+import { getTestEntitySelector } from "../../../AssignTest/duck";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -239,13 +240,8 @@ class Worksheet extends React.Component {
   };
 
   handleReupload = () => {
-    const {
-      match: {
-        params: { assessmentId }
-      },
-      history
-    } = this.props;
-    history.push(`/author/assessments/create?assessmentId=${assessmentId}`);
+    const { test = {}, history } = this.props;
+    history.push(`/author/tests/snapquiz?assessmentId=${test._id}`);
   };
 
   // Set up for scratchpad
@@ -447,6 +443,7 @@ const enhance = compose(
         `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}].scratchpad`,
         null
       ),
+      test: getTestEntitySelector(state),
       userWork: get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}]`, {}),
       itemDetail: state.itemDetail,
       answersById: state.answers

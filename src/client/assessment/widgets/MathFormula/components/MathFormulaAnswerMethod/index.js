@@ -65,7 +65,7 @@ const MathFormulaAnswerMethod = ({
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
   containerHeight,
-  allowNumericOnly,
+  allowNumericOnly = null,
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);

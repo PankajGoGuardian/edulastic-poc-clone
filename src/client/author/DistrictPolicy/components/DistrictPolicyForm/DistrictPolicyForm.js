@@ -105,7 +105,7 @@ class DistrictPolicyForm extends Component {
     return {
       districtPolicy: {
         ...defaultDistrictPolicy,
-        ...nextProps.districtPolicy
+        ...(nextProps.role === "school-admin" ? nextProps.schoolPolicy : nextProps.districtPolicy)
       }
     };
   }
@@ -113,7 +113,7 @@ class DistrictPolicyForm extends Component {
   change = (e, keyName) => {
     const districtPolicyData = { ...this.state.districtPolicy };
     districtPolicyData[keyName] = e.target.checked;
-    this.props.changeDistrictPolicyData(districtPolicyData);
+    this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
 
   handleTagTeacherChange = e => {
@@ -125,7 +125,7 @@ class DistrictPolicyForm extends Component {
     });
 
     districtPolicyData.allowedDomainForTeachers = e.target.value;
-    this.props.changeDistrictPolicyData(districtPolicyData);
+    this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
 
   handleTagStudentChange = e => {
@@ -137,7 +137,7 @@ class DistrictPolicyForm extends Component {
     });
 
     districtPolicyData.allowedDomainForStudents = e.target.value;
-    this.props.changeDistrictPolicyData(districtPolicyData);
+    this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
 
   handleTagSchoolChange = e => {
@@ -149,7 +149,7 @@ class DistrictPolicyForm extends Component {
     });
 
     districtPolicyData.allowedDomainsForDistrict = e.target.value;
-    this.props.changeDistrictPolicyData(districtPolicyData);
+    this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
 
   thirdpartyIntegration = e => {
@@ -161,7 +161,7 @@ class DistrictPolicyForm extends Component {
       districtPolicyData.googleClassroom = false;
       districtPolicyData.canvas = true;
     }
-    this.props.changeDistrictPolicyData(districtPolicyData);
+    this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
 
   onSave = () => {
@@ -390,7 +390,8 @@ class DistrictPolicyForm extends Component {
 const enhance = compose(
   connect(
     (state, { role }) => ({
-      districtPolicy: get(state, ["districtPolicyReducer", role === "school-admin" ? "schoolData" : "data"], []),
+      districtPolicy: get(state, ["districtPolicyReducer", "data"], []),
+      schoolPolicy: get(state, "districtPolicyReducer.schoolData"),
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
       schoolId: get(state, "user.saSettingsSchool")

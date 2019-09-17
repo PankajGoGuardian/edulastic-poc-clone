@@ -55,8 +55,14 @@ const PeerPerformance = ({
   role,
   settings,
   loading,
-  isCsvDownloading
+  isCsvDownloading,
+  performanceBandProfiles,
+  performanceBandSelected
 }) => {
+  const bandInfo =
+    performanceBandProfiles.find(profile => profile._id === performanceBandSelected)?.performanceBand ||
+    performanceBandProfiles[0]?.performanceBand;
+
   const [ddfilter, setDdFilter] = useState({
     analyseBy: "score(%)",
     compareBy: role === "teacher" ? "groupId" : "schoolId",
@@ -90,7 +96,8 @@ const PeerPerformance = ({
     return columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
   };
 
-  const res = get(peerPerformance, "data.result", false);
+  let res = get(peerPerformance, "data.result", false);
+  res = res ? { ...res, bandInfo } : res;
 
   const denormData = useMemo(() => {
     return denormalizeData(res);
@@ -189,7 +196,7 @@ const PeerPerformance = ({
                       assessmentName={assessmentName}
                       onBarClickCB={onBarClickCB}
                       onResetClickCB={onResetClickCB}
-                      bandInfo={res.bandInfo}
+                      bandInfo={bandInfo}
                       role={role}
                     />
                   ) : (
@@ -201,7 +208,7 @@ const PeerPerformance = ({
                       assessmentName={assessmentName}
                       onBarClickCB={onBarClickCB}
                       onResetClickCB={onResetClickCB}
-                      bandInfo={res.bandInfo}
+                      bandInfo={bandInfo}
                       role={role}
                     />
                   )}
@@ -220,7 +227,7 @@ const PeerPerformance = ({
                 analyseBy={ddfilter.analyseBy}
                 compareBy={ddfilter.compareBy}
                 assessmentName={assessmentName}
-                bandInfo={res.bandInfo}
+                bandInfo={bandInfo}
                 role={role}
               />
             </StyledCard>
@@ -237,7 +244,9 @@ const enhance = compose(
       peerPerformance: getReportsPeerPerformance(state),
       loading: getReportsPeerPerformanceLoader(state),
       role: getUserRole(state),
-      isCsvDownloading: getCsvDownloadingState(state)
+      isCsvDownloading: getCsvDownloadingState(state),
+      performanceBandSelected: get(state, "reportSARFilterDataReducer.filters.performanceBandProfile", ""),
+      performanceBandProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.bandInfo", [])
     }),
     {
       getPeerPerformanceRequestAction: getPeerPerformanceRequestAction

@@ -4,7 +4,7 @@ import { get, includes, filter } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import AssessmentTable from "./common/components/table/AssessmentTable";
 import AssessmentChart from "../common/components/charts/AssessmentChart";
-import { getReportsSPRFilterData } from "../common/filterDataDucks";
+import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
 import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
@@ -23,14 +23,14 @@ const StudentAssessmentProfile = ({
   SARFilterData,
   studentAssessmentProfile,
   getStudentAssessmentProfileRequestAction,
-  isCsvDownloading
+  isCsvDownloading,
+  bandInfoSelected: bandInfo
 }) => {
   const { selectedStudent } = settings;
 
   const [selectedTests, setSelectedTests] = useState([]);
 
   const rawData = get(studentAssessmentProfile, "data.result", {});
-  const { bandInfo = [] } = get(SARFilterData, "data.result", {});
 
   const [chartData, tableData] = useMemo(() => {
     const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo);
@@ -91,7 +91,8 @@ const enhance = connect(
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
     SARFilterData: getReportsSPRFilterData(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    bandInfoSelected: getBandInfoSelected(state)
   }),
   {
     getStudentAssessmentProfileRequestAction

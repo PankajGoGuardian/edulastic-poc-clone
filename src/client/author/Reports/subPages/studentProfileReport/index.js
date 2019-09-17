@@ -62,6 +62,10 @@ const StudentProfileReportContainer = props => {
           location={props.location}
           match={props.match}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
+          performanceBandRequired={[
+            "/author/reports/student-profile-summary",
+            "/author/reports/student-assessment-profile"
+          ].find(x => window.location.pathname.startsWith(x))}
         />
         <Route
           exact

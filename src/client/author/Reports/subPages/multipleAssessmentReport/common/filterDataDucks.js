@@ -60,7 +60,11 @@ const initialState = {
     groupId: "All",
     schoolId: "All",
     teacherId: "All",
-    assessmentType: "All"
+    assessmentType: "All",
+    /**
+     * performanceBandProfile
+     */
+    profileId: ""
   },
   testId: ""
 };

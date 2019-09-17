@@ -86,7 +86,7 @@ const ControlDropDown = ({
     [selectCB]
   );
 
-  const title = selected.title || prefix;
+  const title = (selected && selected.title) || prefix;
 
   return (
     <StyledDiv className={`${containerClassName} control-dropdown`}>

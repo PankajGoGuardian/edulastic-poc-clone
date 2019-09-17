@@ -30,8 +30,14 @@ const PerformanceByStudents = ({
   getPerformanceByStudentsRequestAction,
   settings,
   isCsvDownloading,
-  loading
+  loading,
+  performanceBandProfiles,
+  performanceBandSelected
 }) => {
+  const bandInfo =
+    performanceBandProfiles.find(profile => profile._id === performanceBandSelected)?.performanceBand ||
+    performanceBandProfiles[0]?.performanceBand;
+
   const [ddfilter, setDdFilter] = useState({
     gender: "all",
     frlStatus: "all",
@@ -63,7 +69,9 @@ const PerformanceByStudents = ({
     setPagination({ ...pagination, current: 0 });
   }, [range.left, range.right]);
 
-  const res = get(performanceByStudents, "data.result", false);
+  let res = get(performanceByStudents, "data.result", false);
+  res = res ? { ...res, bandInfo } : res;
+
   const proficiencyBandData = getProficiencyBandData(res && res.bandInfo);
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0]);
 
@@ -159,7 +167,9 @@ const enhance = connect(
     performanceByStudents: getReportsPerformanceByStudents(state),
     loading: getReportsPerformanceByStudentsLoader(state),
     role: getUserRole(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    performanceBandSelected: get(state, "reportSARFilterDataReducer.filters.performanceBandProfile", ""),
+    performanceBandProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.bandInfo", [])
   }),
   {
     getPerformanceByStudentsRequestAction

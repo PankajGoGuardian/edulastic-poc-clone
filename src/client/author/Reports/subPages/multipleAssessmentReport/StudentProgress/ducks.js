@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportStudentProgressReducer = createReducer(initialState, {
-  [RESET_REPORTS_STUDENT_PROGRESS]: (state, { payload }) => {
-    state.loading = false;
-    state.studentProgress = {};
-  },
+  [RESET_REPORTS_STUDENT_PROGRESS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

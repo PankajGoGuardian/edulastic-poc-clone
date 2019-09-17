@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
-  [RESET_REPORTS_PERFORMANCE_OVER_TIME]: (state, { payload }) => {
-    state.loading = true;
-    state.performanceOverTime = {};
-  },
+  [RESET_REPORTS_PERFORMANCE_OVER_TIME]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

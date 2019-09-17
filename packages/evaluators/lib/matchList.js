@@ -35,16 +35,9 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       if (!Array.isArray(answer)) continue;
       maxScore = Math.max(possibleMaxScore || 0, maxScore);
       var currentEvaluation = answer.map(function(item, index) {
-        var _userResponse$index;
-
-        var resp =
-          userResponse === null || userResponse === void 0
-            ? void 0
-            : (_userResponse$index = userResponse[index]) === null || _userResponse$index === void 0
-            ? void 0
-            : _userResponse$index.value;
-        if (!(item === null || item === void 0 ? void 0 : item.value) && !resp) return true;
-        return (item === null || item === void 0 ? void 0 : item.value) === resp;
+        var resp = userResponse === null || userResponse === void 0 ? void 0 : userResponse[index];
+        if (!item && !resp) return true;
+        return item === resp;
       });
       if (currentEvaluation.every(_identity2["default"])) score = possibleMaxScore;
     }
@@ -70,16 +63,8 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 
     var correctAnswer = ((_answers$ = answers[0]) === null || _answers$ === void 0 ? void 0 : _answers$.value) || [];
     evaluation = userResponse.map(function(item, index) {
-      var _correctAnswer$index;
-
-      var value = item === null || item === void 0 ? void 0 : item.value;
-      if (!value) return null;
-      return (
-        value ===
-        ((_correctAnswer$index = correctAnswer[index]) === null || _correctAnswer$index === void 0
-          ? void 0
-          : _correctAnswer$index.value)
-      );
+      if (!item) return null;
+      return item === correctAnswer[index];
     });
   }
 
@@ -113,16 +98,9 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       maxScore = Math.max(possibleMaxScore || 0, maxScore);
       var answerLength = answer.filter(_identity2["default"]).length;
       var currentEvaluation = answer.map(function(item, index) {
-        var _userResponse$index2;
-
-        var resp =
-          userResponse === null || userResponse === void 0
-            ? void 0
-            : (_userResponse$index2 = userResponse[index]) === null || _userResponse$index2 === void 0
-            ? void 0
-            : _userResponse$index2.value;
+        var resp = userResponse === null || userResponse === void 0 ? void 0 : userResponse[index];
         if (!resp) return null;
-        return (item === null || item === void 0 ? void 0 : item.value) === resp;
+        return item === resp;
       });
       var correctCount = currentEvaluation.filter(_identity2["default"]).length;
       var currentScore = (possibleMaxScore / answerLength) * correctCount;
@@ -152,16 +130,8 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
 
     var correctAnswer = ((_answers$2 = answers[0]) === null || _answers$2 === void 0 ? void 0 : _answers$2.value) || [];
     evaluation = userResponse.map(function(item, index) {
-      var _correctAnswer$index2;
-
-      var value = item === null || item === void 0 ? void 0 : item.value;
-      if (!value) return null;
-      return (
-        value ===
-        ((_correctAnswer$index2 = correctAnswer[index]) === null || _correctAnswer$index2 === void 0
-          ? void 0
-          : _correctAnswer$index2.value)
-      );
+      if (!item) return null;
+      return item === correctAnswer[index];
     });
   }
 

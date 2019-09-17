@@ -193,6 +193,14 @@ const fetchStudentProfileSummaryReport = params => {
   });
 };
 
+const fetchStudentList = params => {
+  return api.callApi({
+    url: `/report/students`,
+    method: "POST",
+    data: params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -217,5 +225,6 @@ export default {
   fetchPerformanceOverTimeReport,
   fetchStudentMasteryProfileReport,
   fetchStudentAssessmentProfileReport,
-  fetchStudentProfileSummaryReport
+  fetchStudentProfileSummaryReport,
+  fetchStudentList
 };

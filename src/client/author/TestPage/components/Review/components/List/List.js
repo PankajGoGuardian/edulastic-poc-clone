@@ -47,6 +47,7 @@ export const SortableItem = ({
   onPreview,
   questions,
   setQuestionNumber,
+  passagesKeyed,
   mobile
 }) => {
   // const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
@@ -54,9 +55,12 @@ export const SortableItem = ({
   /**
    * @type {{item:Object,question:Object}[]}
    */
-  const items = testItem.itemLevelScoring
+  let items = testItem.itemLevelScoring
     ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
     : splitItems(item, testItem);
+  if (testItem.passageId) {
+    items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
+  }
   return (
     <TestItemWrapper data-cy={metaInfoData.id}>
       {mobile ? (
@@ -180,6 +184,7 @@ const List = SortableContainer(
     onPreview,
     owner,
     questions,
+    passagesKeyed = {},
     mobile
   }) => {
     const handleCheckboxChange = (index, checked) => {
@@ -235,6 +240,7 @@ const List = SortableContainer(
             onPreview={onPreview}
             selected={selected}
             questions={questions}
+            passagesKeyed={passagesKeyed}
             mobile={mobile}
           />
         ))}

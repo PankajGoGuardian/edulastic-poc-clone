@@ -47,7 +47,6 @@ const StudentProfileSummary = ({
   getStudentProfileSummaryRequestAction,
   bandInfoSelected
 }) => {
-  console.log("bandinfoselected", bandInfoSelected);
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
 

@@ -29,7 +29,6 @@ export const SimplePieChart = props => {
   const chartData = useMemo(() => {
     let arr = [];
     if (props.data) {
-      console.log("props.data", props.data);
       const sum = sumBy(props.data, o => {
         return o.bandPerf;
       });

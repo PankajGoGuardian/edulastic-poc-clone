@@ -68,7 +68,6 @@ export const reportQuestionAnalysisReducer = createReducer(initialState, {
 function* getReportsQuestionAnalysisRequest({ payload }) {
   try {
     const questionAnalysis = yield call(reportsApi.fetchQuestionAnalysisReport, payload);
-    console.log("questionAnalysis", questionAnalysis);
     yield put({
       type: GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS,
       payload: { questionAnalysis }

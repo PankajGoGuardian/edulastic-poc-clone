@@ -60,7 +60,6 @@ export const getBandInfoSelected = createSelector(
   selectedPerformanceBand,
   (SPRFData, selected) => {
     const bands = SPRFData?.data?.result?.bandInfo || [];
-    console.log("bands", { selected, SPRFData, bands });
     return (bands.find(x => x._id === selected) || bands[0])?.performanceBand;
   }
 );

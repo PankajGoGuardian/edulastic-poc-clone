@@ -139,7 +139,6 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
 };
 
 const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
-  console.log("rawData", rawData);
   const threshold = minBy(rawData.bandInfo, o => {
     if (o.aboveStandard === 1) {
       return o.threshold;

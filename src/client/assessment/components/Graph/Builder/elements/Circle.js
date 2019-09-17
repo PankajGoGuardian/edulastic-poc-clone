@@ -23,7 +23,7 @@ function getColorParams(color) {
 function create(board, object, circlePoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("circle", circlePoints, {
     ...defaultConfig,
@@ -32,11 +32,13 @@ function create(board, object, circlePoints, settings = {}) {
       ...getLabelParameters(JXG.OBJECT_TYPE_CIRCLE),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   if (!fixed) {
     handleSnap(newLine, Object.values(newLine.ancestors), board);
@@ -86,6 +88,7 @@ function getConfig(circle) {
     label: circle.labelHTML || false,
     labelIsVisible: circle.labelIsVisible,
     baseColor: circle.baseColor,
+    dashed: circle.dashed,
     points: Object.keys(circle.ancestors)
       .sort()
       .map(n => Point.getConfig(circle.ancestors[n]))

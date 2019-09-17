@@ -138,6 +138,7 @@ const BasicFields = ({
           {enroll && "user exists and will be enrolled"}
           <Form.Item>
             {getFieldDecorator("email", {
+              validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
             })(<Input data-cy="username" prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
           </Form.Item>

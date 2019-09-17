@@ -98,7 +98,7 @@ const MainContent = styled.div`
   background-color: ${props => props.theme.mainContentBgColor};
   color: ${props => props.theme.mainContentTextColor};
   border-radius: 10px;
-  height: 600px;
+  height: 67vh;
   padding: 40px;
   text-align: left;
   font-size: 18px;

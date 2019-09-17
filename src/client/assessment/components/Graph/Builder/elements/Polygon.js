@@ -5,6 +5,7 @@ import { getLabelParameters } from "../settings";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 
 const defaultConfig = {
+  fillOpacity: 0.3,
   highlightFillOpacity: 0.3,
   hasInnerPoints: true
 };
@@ -33,7 +34,7 @@ let lines = [];
 function create(board, object, polygonPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newPolygon = board.$board.create("polygon", polygonPoints, {
     ...defaultConfig,
@@ -44,13 +45,15 @@ function create(board, object, polygonPoints, settings = {}) {
     },
     borders: {
       ...bordersDefaultConfig,
-      ...getColorParams(priorityColor || board.priorityColor || baseColor)
+      ...getColorParams(priorityColor || board.priorityColor || baseColor),
+      dash: dashed ? 2 : 0
     },
     fixed,
     id
   });
   newPolygon.labelIsVisible = object.labelIsVisible;
   newPolygon.baseColor = object.baseColor;
+  newPolygon.dashed = object.dashed;
 
   if (!fixed) {
     handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
@@ -148,6 +151,7 @@ function getConfig(polygon) {
     id: polygon.id,
     label: polygon.labelHTML || false,
     baseColor: polygon.baseColor,
+    dashed: polygon.dashed,
     labelIsVisible: polygon.labelIsVisible,
     points: Object.keys(polygon.ancestors)
       .sort()

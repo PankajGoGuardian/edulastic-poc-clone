@@ -121,10 +121,10 @@ class SuccessPage extends React.Component {
   render() {
     const { test, isPlaylist, playlist, isAssignSuccess, isRegradeSuccess, assignment = {}, userId } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [] } = isPlaylist
+    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [], summary = {} } = isPlaylist
       ? playlist
       : test;
-
+    const totalPoints = isPlaylist ? scoring.total : summary.totalPoints;
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const currentClass = (assignment.class && assignment.class[0]) || {};
     const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "IN PROGRESS" : "NOT OPEN";
@@ -185,7 +185,7 @@ class SuccessPage extends React.Component {
               <FlexContainerWrapperLeft>
                 <ImageWrapper imgUrl={thumbnail} />
                 <FlexShareWithBox width={"100%"}>
-                  <b>Total Points</b> &nbsp; {scoring.total}
+                  <b>Total Points</b> &nbsp; {totalPoints}
                 </FlexShareWithBox>
               </FlexContainerWrapperLeft>
             )}

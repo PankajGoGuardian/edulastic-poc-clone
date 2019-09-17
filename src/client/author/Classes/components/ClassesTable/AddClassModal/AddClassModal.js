@@ -30,17 +30,14 @@ class AddClassModal extends Component {
       if (!err) {
         const { teacher, name, institutionId, subject, tags, courseId, grades } = user;
         const { allTagsData } = this.props;
-        const teacherArr = [];
-        for (let i = 0; i < teacher.length; i++) {
-          teacherArr.push(teacher[i].key);
-        }
+
         const createClassData = {
           name,
           type: "class",
-          owners: teacherArr,
+          owners: [teacher.key],
           institutionId: institutionId.key,
           subject: subject ? subject : "Other Subjects",
-          tags: tags.map(t => allTagsData.find(o => o._id === t)),
+          tags: tags && tags.map(t => allTagsData.find(o => o._id === t)),
           courseId,
           // here multiple grades has to be sent as a comma separated string
           grades: grades,

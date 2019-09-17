@@ -47,6 +47,7 @@ const Sidebar = ({
   backgroundColor,
   onChangeColor,
   allTagsData,
+  allPlaylistTagsData,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   windowWidth,
@@ -65,12 +66,12 @@ const Sidebar = ({
           tagType: isPlaylist ? "playlist" : "test"
         });
         newTag = { _id, tagName };
-        addNewTag({ tag: newTag, tagType: "test" });
+        addNewTag({ tag: newTag, tagType: isPlaylist ? "playlist" : "test" });
       } catch (e) {
         message.error("Saving tag failed");
       }
     } else {
-      newTag = allTagsData.find(tag => tag._id === id);
+      newTag = (isPlaylist ? allPlaylistTagsData : allTagsData).find(tag => tag._id === id);
     }
     const newTags = [...tags, newTag];
     onChangeField("tags", newTags);
@@ -83,7 +84,11 @@ const Sidebar = ({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+    if (
+      (isPlaylist ? allPlaylistTagsData : allTagsData).some(
+        tag => tag.tagName === value || tag.tagName === value.trim()
+      )
+    ) {
       setSearchValue("");
     } else {
       setSearchValue(value);
@@ -209,7 +214,7 @@ const Sidebar = ({
           ) : (
             ""
           )}
-          {allTagsData.map(({ tagName, _id }, index) => (
+          {(isPlaylist ? allPlaylistTagsData : allTagsData).map(({ tagName, _id }, index) => (
             <Select.Option key={_id} value={_id} title={tagName}>
               {tagName}
             </Select.Option>

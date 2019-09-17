@@ -12,6 +12,7 @@ import { aws } from "@edulastic/constants";
 import { uploadToS3 } from "../src/utils/upload";
 import { createBlankTest, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
 import { getUserSelector } from "../src/selectors/user";
+import { helpers } from "@edulastic/common";
 
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
 export const CREATE_ASSESSMENT_SUCCESS = "[assessmentPage] create assessment success";
@@ -31,23 +32,20 @@ const initialState = {
 
 const initialTestState = createBlankTest();
 
-const createAssessmentRequest = state => ({
-  ...state,
-  creating: true,
-  error: undefined
-});
+const createAssessmentRequest = state => {
+  state.creating = true;
+  state.error = undefined;
+};
 
-const createAssessmentSuccess = state => ({
-  ...state,
-  creating: false,
-  percentageUpload: 0
-});
+const createAssessmentSuccess = state => {
+  state.creating = false;
+  state.percentageUpload = 0;
+};
 
-const createAssessmentError = (state, { payload: { error } }) => ({
-  ...state,
-  creating: false,
-  error
-});
+const createAssessmentError = (state, { payload: { error } }) => {
+  state.creating = false;
+  state.error = error;
+};
 
 const setPercentageLoaded = (state, { payload }) => {
   state.percentageUpload = payload;
@@ -130,7 +128,7 @@ function* createAssessmentSaga({ payload }) {
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
-
+      const { scoring } = assessment;
       const assessmentPageStructure = get(assessment, "pageStructure", [])
         .filter(page => page.URL === "blank") // delete old pdf
         .concat(pageStructure)
@@ -138,19 +136,32 @@ function* createAssessmentSaga({ payload }) {
           ...page,
           _id: undefined
         }));
-
       const newPageStructure = assessmentPageStructure.length ? assessmentPageStructure : defaultPageStructure;
-
       const updatedAssessment = {
         ...assessment,
+        testItems: [],
         isDocBased: true,
         docUrl: fileURI,
         annotations: [],
         updatedDate: undefined,
         createdDate: undefined,
         assignments: undefined,
+        authors: undefined,
+        createdBy: undefined,
+        passages: undefined,
+        isUsed: undefined,
+        scoring: undefined,
+        sharedType: undefined,
         pageStructure: newPageStructure
       };
+
+      updatedAssessment.testItems =
+        assessment.testItems &&
+        assessment.testItems.map(o => ({
+          itemId: o._id,
+          maxScore: scoring[o._id] || helpers.getPoints(o),
+          questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
+        }));
 
       const updatePayload = {
         id: assessment._id,

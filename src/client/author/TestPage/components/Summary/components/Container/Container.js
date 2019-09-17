@@ -41,6 +41,7 @@ const Summary = ({
   textColor,
   getAllTags,
   allTagsData,
+  allPlaylistTagsData,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
@@ -112,6 +113,7 @@ const Summary = ({
               addNewTag={addNewTag}
               owner={owner}
               allTagsData={allTagsData}
+              allPlaylistTagsData={allPlaylistTagsData}
               isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
@@ -168,6 +170,7 @@ const enhance = compose(
       currentUser: getUser(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
       allTagsData: getAllTagsSelector(state, "test"),
+      allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {

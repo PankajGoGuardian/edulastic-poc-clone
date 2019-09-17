@@ -215,7 +215,8 @@ export const getQuestionsSelector = state => state[module].byId;
 
 export const getQuestionsSelectorForReview = state => {
   const testItems = get(state, "tests.entity.testItems", []);
-  return testItems.reduce((acc, item) => {
+  const passages = get(state, "tests.entity.passages", []);
+  const questionsKeyed = testItems.reduce((acc, item) => {
     const questions = get(item, "data.questions", []);
     const resources = get(item, "data.resources", []);
     for (const question of questions) {
@@ -226,6 +227,13 @@ export const getQuestionsSelectorForReview = state => {
     }
     return acc;
   }, {});
+  const passagesKeyed = passages.reduce((acc, passage) => {
+    for (const data of passage.data) {
+      acc[data.id] = { ...data, isPassage: true };
+    }
+    return acc;
+  }, {});
+  return { ...questionsKeyed, ...passagesKeyed };
 };
 
 // get current Question

@@ -1,3 +1,4 @@
+import { graphEvaluateApi } from "@edulastic/api";
 import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
 
@@ -154,7 +155,134 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
   return result;
 };
 
-const evaluator = ({ userResponse, validation }) => {
+const getParabolaThirdPoint = (startPoint, endPoint) => {
+  if (startPoint.x < endPoint.x && startPoint.y <= endPoint.y) {
+    return {
+      x: endPoint.x - (endPoint.x - startPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+  if (startPoint.x >= endPoint.x && startPoint.y < endPoint.y) {
+    return {
+      x: endPoint.x,
+      y: endPoint.y - (endPoint.y - startPoint.y) * 2
+    };
+  }
+  if (startPoint.x > endPoint.x && startPoint.y >= endPoint.y) {
+    return {
+      x: endPoint.x + (startPoint.x - endPoint.x) * 2,
+      y: endPoint.y
+    };
+  }
+  return {
+    x: endPoint.x,
+    y: endPoint.y + (startPoint.y - endPoint.y) * 2
+  };
+};
+
+const serialize = (shapes, lineTypes, points) => {
+  const getShape = shape => (shape[0] === "eqn" ? `['eqn','${shape[1]}']` : `['${shape[0]}',[${shape[1].join(",")}]]`);
+
+  return `[${shapes.map(getShape).join(",")}],[${lineTypes.map(x => `'${x}'`).join(",")}],[${points.join(",")}]`;
+};
+
+const buildGraphApiResponse = (elements = []) => {
+  const allowedShapes = [
+    ShapeTypes.PARABOLA,
+    ShapeTypes.EQUATION,
+    ShapeTypes.POLYNOM,
+    ShapeTypes.SECANT,
+    ShapeTypes.TANGENT,
+    ShapeTypes.LOGARITHM,
+    ShapeTypes.EXPONENT,
+    ShapeTypes.HYPERBOLA,
+    ShapeTypes.ELLIPSE,
+    ShapeTypes.CIRCLE,
+    ShapeTypes.LINE,
+    ShapeTypes.POLYGON,
+    ShapeTypes.SINE,
+    ShapeTypes.AREA
+  ];
+
+  const more2PointShapes = [ShapeTypes.POLYNOM, ShapeTypes.HYPERBOLA, ShapeTypes.ELLIPSE, ShapeTypes.POLYGON];
+
+  const shapes = [];
+  const lineTypes = [];
+  const points = [];
+
+  elements.forEach(el => {
+    if (!allowedShapes.includes(el.type)) {
+      return;
+    }
+
+    if (el.type === ShapeTypes.AREA) {
+      points.push(`(${+el.x.toFixed(4)},${+el.y.toFixed(4)})`);
+      return;
+    }
+
+    if (el.type === ShapeTypes.EQUATION) {
+      shapes.push(["eqn", el.latex]);
+      lineTypes.push(el.latex.indexOf(">") > -1 || el.latex.indexOf("<") > -1 ? "dashed" : "solid");
+      return;
+    }
+
+    const shapePoints = [];
+    if (more2PointShapes.includes(el.type)) {
+      Object.values(el.subElementsIds).forEach(id => {
+        const point = elements.find(x => x.id === id);
+        if (point) {
+          shapePoints.push(`(${+point.x.toFixed(4)},${+point.y.toFixed(4)})`);
+        }
+      });
+    } else {
+      const startPoint = elements.find(x => x.id === el.subElementsIds.startPoint);
+      if (startPoint) {
+        shapePoints.push(`(${+startPoint.x.toFixed(4)},${+startPoint.y.toFixed(4)})`);
+      }
+      const endPoint = elements.find(x => x.id === el.subElementsIds.endPoint);
+      if (endPoint) {
+        shapePoints.push(`(${+endPoint.x.toFixed(4)},${+endPoint.y.toFixed(4)})`);
+      }
+      if (el.type === ShapeTypes.PARABOLA) {
+        const thirdPoint = getParabolaThirdPoint(startPoint, endPoint);
+        shapePoints.push(`(${+thirdPoint.x.toFixed(4)},${+thirdPoint.y.toFixed(4)})`);
+      }
+    }
+
+    shapes.push([el.type, shapePoints]);
+    lineTypes.push(el.dashed ? "dashed" : "solid");
+  });
+
+  return serialize(shapes, lineTypes, points);
+};
+
+const checkEquations = async (answer, userResponse) => {
+  // const apiResult = await graphEvaluateApi.evaluate({
+  //   input: "[['line',[(2.0,2.0),(0.0,4.0)]]],['dashed'],[(6.0,0.0)]",
+  //   expected: "[['eqn','x+y \\gt 4']],['dashed'],[(5,0)]",
+  //   checks: "evaluateGraphEquations"
+  // });
+
+  const apiResult = await graphEvaluateApi.evaluate({
+    input: buildGraphApiResponse(userResponse),
+    expected: buildGraphApiResponse(answer),
+    checks: "evaluateGraphEquations"
+  });
+
+  if (apiResult === "true") {
+    return {
+      commonResult: true,
+      details: userResponse.map(x => ({ id: x.id, result: true }))
+    };
+  }
+
+  return {
+    commonResult: false,
+    details: userResponse.map(x => ({ id: x.id, result: false }))
+  };
+};
+
+const evaluator = async ({ userResponse, validation }) => {
   const { validResponse, altResponses, ignore_repeated_shapes, ignoreLabels } = validation;
 
   let score = 0;
@@ -169,14 +297,19 @@ const evaluator = ({ userResponse, validation }) => {
 
   let result = {};
 
-  answers.forEach((answer, index) => {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
+  for (const [index, answer] of answers.entries()) {
+    if (userResponse.some(x => x.type === ShapeTypes.AREA)) {
+      result = await checkEquations(answer.value, userResponse);
+    } else {
+      result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
+    }
+
     if (result.commonResult) {
       score = Math.max(answer.score, score);
     }
     maxScore = Math.max(answer.score, maxScore);
     evaluation[index] = result;
-  });
+  }
 
   return {
     score,

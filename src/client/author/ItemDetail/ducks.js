@@ -465,9 +465,7 @@ const removeTab = (state, payload) => {
 };
 
 const changeTabTitle = (state, payload) => {
-  console.log("Payload is", payload);
   const { index, value } = payload;
-  console.log("Payload is", payload);
   return produce(state, newState => {
     const { passage } = newState;
     if (passage.structure?.tabs?.length) {

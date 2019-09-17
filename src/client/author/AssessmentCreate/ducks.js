@@ -129,16 +129,6 @@ function* createAssessmentSaga({ payload }) {
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
       const { scoring } = assessment;
-      delete assessment.updatedDate;
-      delete assessment.createdDate;
-      delete assessment.assignments;
-      delete assessment.authors;
-      delete assessment.createdBy;
-      delete assessment.passages;
-      delete assessment.isUsed;
-      delete assessment.scoring;
-      delete assessment.sharedType;
-
       const assessmentPageStructure = get(assessment, "pageStructure", [])
         .filter(page => page.URL === "blank") // delete old pdf
         .concat(pageStructure)
@@ -153,6 +143,15 @@ function* createAssessmentSaga({ payload }) {
         isDocBased: true,
         docUrl: fileURI,
         annotations: [],
+        updatedDate: undefined,
+        createdDate: undefined,
+        assignments: undefined,
+        authors: undefined,
+        createdBy: undefined,
+        passages: undefined,
+        isUsed: undefined,
+        scoring: undefined,
+        sharedType: undefined,
         pageStructure: newPageStructure
       };
 

@@ -200,10 +200,8 @@ const BasicFields = ({
             <legend>First Name</legend>
             <Form.Item>
               {getFieldDecorator("firstName", {
-                rules: [
-                  { required: true, message: "Please provide user first name" },
-                  { max: 128, message: "Must less than 128 characters!" }
-                ],
+                validateTrigger: ["onBlur"],
+                rules: [{ validator: checkFirstName }],
                 initialValue: firstName || ""
               })(
                 <Input

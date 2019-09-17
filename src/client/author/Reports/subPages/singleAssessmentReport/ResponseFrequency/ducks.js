@@ -4,12 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_RESPONSE_FREQUENCY = "[reports] reset reports response frequency";
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST = "[reports] get reports response frequency request";
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS = "[reports] get reports response frequency request success";
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR = "[reports] get reports response frequency request error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetResponseFrequencyAction = createAction(RESET_REPORTS_RESPONSE_FREQUENCY);
 export const getResponseFrequencyRequestAction = createAction(GET_REPORTS_RESPONSE_FREQUENCY_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -42,6 +44,7 @@ const initialState = {
 };
 
 export const reportResponseFrequencyReducer = createReducer(initialState, {
+  [RESET_REPORTS_RESPONSE_FREQUENCY]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

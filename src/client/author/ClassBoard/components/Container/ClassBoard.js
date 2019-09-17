@@ -185,9 +185,10 @@ class ClassBoard extends Component {
     const { testId } = additionalData;
     const { assignmentId, classId } = match.params;
     const { testId: prevTestId } = prevState;
+    const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
     if (testId !== prevTestId) {
       loadClassResponses({ testId });
-      const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
+      const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
   }

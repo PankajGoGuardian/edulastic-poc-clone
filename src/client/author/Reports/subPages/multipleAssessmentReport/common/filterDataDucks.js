@@ -8,6 +8,7 @@ import { groupBy } from "lodash";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST = "[reports] get reports mar filter data request";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports mar filter data request success";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports mar filter data request error";
+const RESET_REPORTS_MAR_FILTERS = "[reports] reset reports mar filters";
 
 const SET_FILTERS = "[reports] set mar filters";
 const SET_TEST_ID = "[reports] set mar testId";
@@ -15,6 +16,7 @@ const SET_TEST_ID = "[reports] set mar testId";
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getMARFilterDataRequestAction = createAction(GET_REPORTS_MAR_FILTER_DATA_REQUEST);
+export const resetMARFiltersAction = createAction(RESET_REPORTS_MAR_FILTERS);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -120,7 +122,8 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
     state.error = payload.error;
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer
+  [SET_TEST_ID]: setTestIdReducer,
+  [RESET_REPORTS_MAR_FILTERS]: (state, { payload }) => (state = initialState)
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

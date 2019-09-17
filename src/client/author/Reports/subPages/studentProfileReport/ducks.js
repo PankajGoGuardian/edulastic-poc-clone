@@ -6,8 +6,10 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
 const SET_SPR_SETTINGS = "[SPR settings] get spr settings";
+const RESET_SPR_SETTINGS = "[SPR settings] reset spr settings";
 
 export const setSPRSettingsAction = createAction(SET_SPR_SETTINGS);
+export const resetSPRSettingsAction = createAction(RESET_SPR_SETTINGS);
 
 export const stateSelector = state => state.reportSPRSettingsReducer;
 
@@ -25,5 +27,9 @@ const initialState = {
 };
 
 export const reportSPRSettingsReducer = createReducer(initialState, {
-  [SET_SPR_SETTINGS]: (state, { payload }) => (state = { ...payload })
+  [SET_SPR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+  [RESET_SPR_SETTINGS]: (state, { payload }) => {
+    state = initialState;
+    return state;
+  }
 });

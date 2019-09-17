@@ -3,12 +3,17 @@ import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy } from "lodash";
+import { groupBy, get } from "lodash";
 
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST = "[reports] get reports spr filter data request";
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports spr filter data request success";
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports spr filter data request error";
 const RESET_REPORTS_SPR_FILTER_DATA = "[reports] reset reports spr filter data";
+const RESET_REPORTS_SPR_FILTERS = "[reports] reset reports spr filters";
+
+const GET_REPORTS_SPR_STUDENT_DATA_REQUEST = "[reports] get reports spr student data request";
+const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS = "[reports] get reports spr student data request success";
+const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR = "[reports] get reports spr student data request error";
 
 const SET_REPORTS_PREV_SPR_FILTER_DATA = "[reports] set reports prev spr filter data";
 
@@ -23,10 +28,14 @@ export const getSPRFilterDataRequestAction = createAction(GET_REPORTS_SPR_FILTER
 
 export const setPrevSPRFilterDataAction = createAction(SET_REPORTS_PREV_SPR_FILTER_DATA);
 
+export const resetSPRFiltersAction = createAction(RESET_REPORTS_SPR_FILTERS);
+
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setStudentAction = createAction(SET_STUDENT_ID);
 export const setSpIdAction = createAction(SET_SP_ID);
 export const setPbIdAction = createAction(SET_PB_ID);
+
+export const getSPRStudentDataRequestAction = createAction(GET_REPORTS_SPR_STUDENT_DATA_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -131,6 +140,18 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [RESET_REPORTS_SPR_FILTER_DATA]: (state, { payload }) => {
     state.SPRFilterData = {};
+  },
+  [RESET_REPORTS_SPR_FILTERS]: (state, { payload }) => (state = initialState),
+  [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: state => {
+    state.loading = true;
+  },
+  [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.studentList = payload.studentList;
+  },
+  [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
   }
 });
 
@@ -159,8 +180,37 @@ function* getReportsSPRFilterDataRequest({ payload }) {
   }
 }
 
+const stateStudentSelector = state => state.reportSPRFilterDataReducer;
+export const getStudentsListSelector = createSelector(
+  stateStudentSelector,
+  state => state.studentList
+);
+
+export const getStudentsLoading = createSelector(
+  stateStudentSelector,
+  state => state.loading
+);
+
+function* receiveStudentsListSaga({ payload }) {
+  try {
+    const result = yield call(reportsApi.fetchStudentList, payload);
+    yield put({
+      type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
+      payload: { studentList: get(result, "data.result", []) }
+    });
+  } catch (err) {
+    const msg = "Receive Students is failing!";
+    yield call(message.error, msg);
+    yield put({
+      type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR,
+      payload: { error: msg }
+    });
+  }
+}
+
 export function* reportSPRFilterDataSaga() {
   yield all([yield takeEvery(GET_REPORTS_SPR_FILTER_DATA_REQUEST, getReportsSPRFilterDataRequest)]);
+  yield all([yield takeEvery(GET_REPORTS_SPR_STUDENT_DATA_REQUEST, receiveStudentsListSaga)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

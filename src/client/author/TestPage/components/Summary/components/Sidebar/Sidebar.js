@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Select, Col, message } from "antd";
+import { uniqBy } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -33,7 +34,7 @@ const Sidebar = ({
   subjects,
   onChangeSubjects,
   onChangeField,
-  tags,
+  tags = [],
   owner,
   analytics,
   grades,
@@ -53,6 +54,7 @@ const Sidebar = ({
   windowWidth,
   isEditable
 }) => {
+  const newAllTagsData = uniqBy([...(isPlaylist ? allPlaylistTagsData : allTagsData), ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
@@ -71,7 +73,7 @@ const Sidebar = ({
         message.error("Saving tag failed");
       }
     } else {
-      newTag = (isPlaylist ? allPlaylistTagsData : allTagsData).find(tag => tag._id === id);
+      newTag = newAllTagsData.find(tag => tag._id === id);
     }
     const newTags = [...tags, newTag];
     onChangeField("tags", newTags);
@@ -84,11 +86,7 @@ const Sidebar = ({
   };
 
   const searchTags = async value => {
-    if (
-      (isPlaylist ? allPlaylistTagsData : allTagsData).some(
-        tag => tag.tagName === value || tag.tagName === value.trim()
-      )
-    ) {
+    if (newAllTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
       setSearchValue("");
     } else {
       setSearchValue(value);
@@ -214,7 +212,7 @@ const Sidebar = ({
           ) : (
             ""
           )}
-          {(isPlaylist ? allPlaylistTagsData : allTagsData).map(({ tagName, _id }, index) => (
+          {newAllTagsData.map(({ tagName, _id }, index) => (
             <Select.Option key={_id} value={_id} title={tagName}>
               {tagName}
             </Select.Option>

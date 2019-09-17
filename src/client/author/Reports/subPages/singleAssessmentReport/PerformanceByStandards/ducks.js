@@ -6,10 +6,12 @@ import { isEmpty } from "lodash";
 
 import { reportsApi } from "@edulastic/api";
 
+const RESET_PERFORMANCE_BY_STANDARDS = "[reports] reset performance by standards";
 const GET_PERFORMANCE_BY_STANDARDS_REQUEST = "[reports] get performance by standards request";
 const GET_PERFORMANCE_BY_STANDARDS_SUCCESS = "[reports] get performance by standards success";
 const GET_PERFORMANCE_BY_STANDARDS_ERROR = "[reports] get performance by standards error";
 
+export const resetPerformanceByStandardsAction = createAction(RESET_PERFORMANCE_BY_STANDARDS);
 export const getPerformanceByStandardsAction = createAction(GET_PERFORMANCE_BY_STANDARDS_REQUEST);
 export const getPerformanceByStandardsSuccessAction = createAction(GET_PERFORMANCE_BY_STANDARDS_SUCCESS);
 export const getPerformanceByStandardsErrorAction = createAction(GET_PERFORMANCE_BY_STANDARDS_ERROR);
@@ -31,6 +33,7 @@ const initialState = {
 };
 
 export const reportPerformanceByStandardsReducer = createReducer(initialState, {
+  [RESET_PERFORMANCE_BY_STANDARDS]: (state, { payload }) => (state = initialState),
   [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

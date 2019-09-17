@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportStudentMasteryProfileReducer = createReducer(initialState, {
-  [RESET_REPORTS_STUDENT_MASTERY_PROFILE]: (state, { payload }) => {
-    state.loading = false;
-    state.studentMasteryProfile = {};
-  },
+  [RESET_REPORTS_STUDENT_MASTERY_PROFILE]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

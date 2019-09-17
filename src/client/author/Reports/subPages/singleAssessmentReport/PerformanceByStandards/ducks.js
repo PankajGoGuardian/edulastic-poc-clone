@@ -33,19 +33,7 @@ const initialState = {
 };
 
 export const reportPerformanceByStandardsReducer = createReducer(initialState, {
-  [RESET_PERFORMANCE_BY_STANDARDS]: (state, { payload }) => {
-    state.loading = false;
-    state.performanceByStandards = {
-      teacherInfo: [],
-      scaleInfo: [],
-      skillInfo: [],
-      metricInfo: [],
-      studInfo: [],
-      standardsMap: {},
-      defaultStandardId: 0
-    };
-    state.error = undefined;
-  },
+  [RESET_PERFORMANCE_BY_STANDARDS]: (state, { payload }) => (state = initialState),
   [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

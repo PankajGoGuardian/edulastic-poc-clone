@@ -45,10 +45,7 @@ const initialState = {
 };
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
-  [RESET_REPORTS_PEER_PERFORMANCE]: (state, { payload }) => {
-    state.loading = false;
-    state.peerPerformance = {};
-  },
+  [RESET_REPORTS_PEER_PERFORMANCE]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

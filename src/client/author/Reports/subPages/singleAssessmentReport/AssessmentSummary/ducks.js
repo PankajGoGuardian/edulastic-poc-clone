@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {
-  [RESET_REPORTS_ASSESSMENT_SUMMARY]: (state, { payload }) => {
-    state.loading = false;
-    state.assessmentSummary = {};
-  },
+  [RESET_REPORTS_ASSESSMENT_SUMMARY]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

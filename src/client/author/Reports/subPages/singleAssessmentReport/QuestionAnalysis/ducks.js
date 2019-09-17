@@ -45,10 +45,7 @@ const initialState = {
 };
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
-  [RESET_REPORTS_QUESTION_ANALYSIS]: (state, { payload }) => {
-    state.loading = false;
-    state.questionAnalysis = {};
-  },
+  [RESET_REPORTS_QUESTION_ANALYSIS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

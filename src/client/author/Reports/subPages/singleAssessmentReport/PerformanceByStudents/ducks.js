@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
-  [RESET_REPORTS_PERFORMANCE_BY_STUDENTS]: (state, { payload }) => {
-    state.loading = false;
-    state.performanceByStudents = {};
-  },
+  [RESET_REPORTS_PERFORMANCE_BY_STUDENTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

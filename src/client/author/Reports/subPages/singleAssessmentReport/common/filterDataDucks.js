@@ -4,6 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
+import { push } from "connected-react-router";
 
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST = "[reports] get reports sar filter data request";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports sar filter data request success";
@@ -188,8 +189,19 @@ function* getReportsSARFilterDataRequest({ payload }) {
   }
 }
 
+function* resetReportsSARFiltersSaga({ payload }) {
+  try {
+    console.log("payload", payload);
+    yield put({ type: "_" + RESET_REPORTS_SAR_FILTERS });
+    yield put(push(payload));
+  } catch (error) {}
+}
+
 export function* reportSARFilterDataSaga() {
-  yield all([yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
+  yield all([
+    yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)
+    // yield takeEvery(RESET_REPORTS_SAR_FILTERS, resetReportsSARFiltersSaga)
+  ]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

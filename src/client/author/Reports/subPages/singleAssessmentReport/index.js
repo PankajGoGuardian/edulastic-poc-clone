@@ -39,6 +39,7 @@ const SingleAssessmentReportContainer = props => {
   };
 
   useEffect(() => {
+    debugger;
     if (settings.selectedTest.key) {
       let arr = Object.keys(settings.requestFilters);
       let obj = {};
@@ -55,6 +56,7 @@ const SingleAssessmentReportContainer = props => {
   }, [props.settings]);
 
   const onGoClick = _settings => {
+    debugger;
     if (_settings.selectedTest.key) {
       let obj = {};
       let arr = Object.keys(_settings.filters);

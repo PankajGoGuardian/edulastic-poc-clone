@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { Row, Col } from "antd";
+import { push } from "connected-react-router";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
@@ -48,6 +49,11 @@ import { resetSARFiltersAction } from "./subPages/singleAssessmentReport/common/
 import { resetMARFiltersAction } from "./subPages/multipleAssessmentReport/common/filterDataDucks";
 import { resetSMRFiltersAction } from "./subPages/standardsMasteryReport/common/filterDataDucks";
 import { resetSPRFiltersAction } from "./subPages/studentProfileReport/common/filterDataDucks";
+
+import { resetSARSettingsAction } from "./subPages/singleAssessmentReport/ducks";
+// import {  } from "./subPages/multipleAssessmentReport";
+// import {  } from "./subPages/standardsMasteryReport/";
+import { resetSPRSettingsAction } from "./subPages/studentProfileReport/ducks";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -287,6 +293,8 @@ const Reports = connect(
     resetSPRFiltersAction,
     resetMARFiltersAction,
     resetSMRFiltersAction,
+    resetSARSettingsAction,
+    resetSPRSettingsAction,
     resetAssessmentSummaryAction,
     resetPeerPerformanceAction,
     resetQuestionAnalysisAction,
@@ -304,22 +312,26 @@ const Reports = connect(
     resetStandardsPerformanceSummaryAction
   }
 )(props => {
-  const onLinkClick = reportType => {
+  const onLinkClick = (clickedLink, reportType) => {
     debugger;
     console.log("reportType", reportType);
     if (reportType === "singleAssessmentReport") {
       console.log("reportType", reportType);
-      // console.log("props.resetSARFiltersAction", props.resetSARFiltersAction());
-      props.resetSARFiltersAction();
-      // props.resetAssessmentSummaryAction();
-      // props.resetPeerPerformanceAction();
-      // props.resetQuestionAnalysisAction();
-      // props.resetResponseFrequencyAction();
-      // props.resetPerformanceByStandardsAction();
-      // props.resetPerformanceByStudentsAction();
+      props.resetSARFiltersAction(clickedLink);
+      props.resetSARSettingsAction();
+
+      props.resetAssessmentSummaryAction();
+      props.resetPeerPerformanceAction();
+      props.resetQuestionAnalysisAction();
+      props.resetResponseFrequencyAction();
+      props.resetPerformanceByStandardsAction();
+      props.resetPerformanceByStudentsAction();
+
+      push(clickedLink);
     } else if (reportType === "studentProfileReport") {
       console.log("reportType", reportType);
       props.resetSPRFiltersAction();
+      props.resetSPRSettingsAction();
       // props.resetStudentAssessmentProfileAction();
       // props.resetStudentMasteryProfileAction();
       // props.resetStudentProfileSummaryAction();

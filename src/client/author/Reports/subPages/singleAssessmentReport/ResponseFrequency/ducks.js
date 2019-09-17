@@ -44,10 +44,7 @@ const initialState = {
 };
 
 export const reportResponseFrequencyReducer = createReducer(initialState, {
-  [RESET_REPORTS_RESPONSE_FREQUENCY]: (state, { payload }) => {
-    state.loading = false;
-    state.responseFrequency = {};
-  },
+  [RESET_REPORTS_RESPONSE_FREQUENCY]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

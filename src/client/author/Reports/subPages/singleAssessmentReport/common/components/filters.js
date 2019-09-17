@@ -100,8 +100,10 @@ const SingleAssessmentReportFilters = ({
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
-
+    debugger;
+    console.log("search", search);
     dropDownData = getDropDownData(SARFilterData, user);
+    console.log("dropDownData", dropDownData);
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
@@ -173,6 +175,10 @@ const SingleAssessmentReportFilters = ({
     setFiltersAction(urlParams);
     setTestIdAction(filteredUrlTestId);
 
+    console.log("_onGoClick", {
+      selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
+      filters: urlParams
+    });
     _onGoClick({
       selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
       filters: urlParams

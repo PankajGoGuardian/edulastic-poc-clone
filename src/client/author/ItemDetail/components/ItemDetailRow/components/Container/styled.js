@@ -1,6 +1,7 @@
 import { FlexContainer, Paper } from "@edulastic/common";
 import { themeColor, mobileWidth } from "@edulastic/colors";
 import styled from "styled-components";
+import { Button } from "antd";
 
 export const Content = styled(Paper)`
   width: 100%;
@@ -51,6 +52,27 @@ export const AddPassageBtnContainer = styled.div`
         position: relative;
       }
     }
+  }
+`;
+
+export const AddTabButton = styled(Button)`
+  color: #00ad50;
+  height: 45px;
+  width: 170px;
+  font-size: 11px;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  width: max-content;
+  align-items: center;
+  padding: 0px 15px;
+  &:focus > span {
+    position: unset;
+    color: #00ad50;
+  }
+  &:active > span {
+    position: unset;
+    color: #00ad50;
   }
 `;
 
@@ -109,4 +131,10 @@ export const PlusIcon = styled.span`
   top: 12px;
   font-size: 18px;
   line-height: 1;
+`;
+
+export const GreenPlusIcon = styled(PlusIcon)`
+  color: #fff;
+  background: ${themeColor};
+  position: unset;
 `;

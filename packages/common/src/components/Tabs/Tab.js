@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { themeColor, white, mobileWidth, title, mediumDesktopWidth } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
+import { Button } from "antd";
 
 const Tab = ({
   IconPosition,
@@ -16,7 +17,9 @@ const Tab = ({
   onChange,
   data_cy,
   type,
-  borderRadius
+  borderRadius,
+  addTabs,
+  isAddTab
 }) => {
   const inputTab = (
     <EditableTab>
@@ -32,6 +35,15 @@ const Tab = ({
   );
 
   const labelBar = <span data-cy={data_cy || null}>{label}</span>;
+
+  if (isAddTab) {
+    return (
+      <AddTabButton tabsBtn onClick={() => addTabs()}>
+        <GreenPlusIcon>+</GreenPlusIcon>
+        ADD TAB
+      </AddTabButton>
+    );
+  }
 
   return (
     <Container active={active} style={style} type={type} borderRadius={borderRadius} onClick={onClick}>
@@ -101,8 +113,8 @@ const Container = styled.div`
   }
 
   svg {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     fill: ${({ active }) => (active ? themeColor : title)};
   }
 
@@ -136,4 +148,44 @@ const EditableTab = styled.div`
 const CloseIcon = styled.span`
   margin-left: 14px;
   float: ${props => (props.IconPosition ? props.IconPosition : "none")};
+`;
+
+export const AddTabButton = styled(Button)`
+  color: #00ad50;
+  height: 45px;
+  width: 170px;
+  font-size: 11px;
+  border: none;
+  display: flex !important;
+  flex-direction: row;
+  width: max-content;
+  align-items: center;
+  padding: 0px 15px;
+  span:last-child {
+    color: ${themeColor};
+  }
+  &:focus > span {
+    position: unset;
+  }
+  &:active > span {
+    position: unset;
+  }
+  &:focus {
+    color: #00ad50;
+  }
+`;
+
+export const GreenPlusIcon = styled.span`
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 1px solid ${themeColor};
+  left: 10px;
+  top: 12px;
+  font-size: 18px;
+  line-height: 1;
+  color: #fff !important;
+  background: ${themeColor};
 `;

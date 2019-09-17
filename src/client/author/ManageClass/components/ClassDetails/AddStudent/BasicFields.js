@@ -105,6 +105,15 @@ const BasicFields = ({
     }
   };
 
+  const checkFirstName = (rule, value, callback) => {
+    const firstName = value.split(" ")[0];
+    if (firstName.length < 3) {
+      callback("Name must contains atleast 3 characters");
+    } else {
+      callback();
+    }
+  };
+
   return (
     <FormBody>
       {showClassCodeField && (
@@ -172,10 +181,8 @@ const BasicFields = ({
           <legend>Name of User</legend>
           <Form.Item>
             {getFieldDecorator("fullName", {
-              rules: [
-                { required: true, message: "Please provide user full name" },
-                { max: 128, message: "Must less than 128 characters!" }
-              ]
+              validateTrigger: ["onBlur"],
+              rules: [{ validator: checkFirstName }]
             })(
               <Input
                 data-cy="fullName"

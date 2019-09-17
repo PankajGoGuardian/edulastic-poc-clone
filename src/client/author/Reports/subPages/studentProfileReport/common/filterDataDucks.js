@@ -9,6 +9,7 @@ const GET_REPORTS_SPR_FILTER_DATA_REQUEST = "[reports] get reports spr filter da
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports spr filter data request success";
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports spr filter data request error";
 const RESET_REPORTS_SPR_FILTER_DATA = "[reports] reset reports spr filter data";
+const RESET_REPORTS_SPR_FILTERS = "[reports] reset reports spr filters";
 
 const GET_REPORTS_SPR_STUDENT_DATA_REQUEST = "[reports] get reports spr student data request";
 const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS = "[reports] get reports spr student data request success";
@@ -24,6 +25,8 @@ const SET_STUDENT_ID = "[reports] set spr student";
 export const getSPRFilterDataRequestAction = createAction(GET_REPORTS_SPR_FILTER_DATA_REQUEST);
 
 export const setPrevSPRFilterDataAction = createAction(SET_REPORTS_PREV_SPR_FILTER_DATA);
+
+export const resetSPRFiltersAction = createAction(RESET_REPORTS_SPR_FILTERS);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setStudentAction = createAction(SET_STUDENT_ID);
@@ -112,6 +115,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SPR_FILTER_DATA]: (state, { payload }) => {
     state.SPRFilterData = {};
   },
+  [RESET_REPORTS_SPR_FILTERS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: state => {
     state.loading = true;
   },

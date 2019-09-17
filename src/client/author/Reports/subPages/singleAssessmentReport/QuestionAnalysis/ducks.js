@@ -5,12 +5,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_QUESTION_ANALYSIS = "[reports] reset reports question analysis";
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST = "[reports] get reports question analysis request";
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports question analysis success";
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR = "[reports] get reports question analysis error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetQuestionAnalysisAction = createAction(RESET_REPORTS_QUESTION_ANALYSIS);
 export const getQuestionAnalysisRequestAction = createAction(GET_REPORTS_QUESTION_ANALYSIS_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -43,6 +45,7 @@ const initialState = {
 };
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
+  [RESET_REPORTS_QUESTION_ANALYSIS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

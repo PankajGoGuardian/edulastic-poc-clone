@@ -29,7 +29,8 @@ import {
   setCurrentTestActivityIdAction,
   getAllTestActivitiesForStudentAction,
   receiveStudentResponseAction,
-  markSubmittedAction
+  markSubmittedAction,
+  downloadGradesResponseAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -508,6 +509,16 @@ class ClassBoard extends Component {
     }
   };
 
+  handleDownloadGrades = isResponseRequired => {
+    const { downloadGradesResponse, match, selectedStudents } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to download grades.");
+    }
+    downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
+  };
+
   render() {
     const {
       gradebook,
@@ -588,6 +599,8 @@ class ClassBoard extends Component {
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
+    const enableDownload = testActivity.some(item => item.status === "submitted");
+
     return (
       <div>
         {showMarkSubmittedPopup && (
@@ -765,11 +778,11 @@ class ClassBoard extends Component {
                               <IconRemove />
                               <span>Remove Students</span>
                             </MenuItems>
-                            <MenuItems>
+                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(false)}>
                               <IconDownload />
                               <span>Download Grades</span>
                             </MenuItems>
-                            <MenuItems>
+                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(true)}>
                               <IconDownload />
                               <span>Download Response</span>
                             </MenuItems>
@@ -1058,7 +1071,8 @@ const enhance = compose(
       setMarkAsDone: markAsDoneAction,
       markAbsent: markAbsentAction,
       removeStudent: removeStudentAction,
-      markSubmitted: markSubmittedAction
+      markSubmitted: markSubmittedAction,
+      downloadGradesResponse: downloadGradesResponseAction
     }
   )
 );

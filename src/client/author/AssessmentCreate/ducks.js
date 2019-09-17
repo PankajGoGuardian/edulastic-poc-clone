@@ -205,7 +205,6 @@ function* createAssessmentSaga({ payload }) {
     }
   } catch (error) {
     const errorMessage = "Create assessment is failing";
-    console.log(error);
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }

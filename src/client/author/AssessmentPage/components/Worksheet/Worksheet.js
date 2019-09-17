@@ -77,9 +77,9 @@ class Worksheet extends React.Component {
   };
 
   componentDidMount() {
-    const { saveUserWork, itemDetail } = this.props;
+    const { saveUserWork, itemDetail, freeFormNotes } = this.props;
     if (itemDetail?.item?._id) {
-      saveUserWork({ [itemDetail.item._id]: {} });
+      saveUserWork({ [itemDetail.item._id]: freeFormNotes });
     }
   }
 
@@ -285,13 +285,16 @@ class Worksheet extends React.Component {
   saveHistory = data => {
     const { currentPage } = this.state;
     const { saveUserWork, itemDetail, scratchPad = {}, userWork, setTestData } = this.props;
-    this.setState(({ history }) => ({ history: history + 1 }));
-    const id = itemDetail.item._id;
-    saveUserWork({
-      [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
-    });
+    const id = itemDetail?.item?._id;
+    if (id) {
+      this.setState(({ history }) => ({ history: history + 1 }));
 
-    setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
+      });
+
+      setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
+    }
   };
 
   handleRedo = () => {
@@ -342,12 +345,13 @@ class Worksheet extends React.Component {
       questionsById,
       answersById,
       pageStructure,
-      scratchPad
+      scratchPad,
+      freeFormNotes
     } = this.props;
 
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
-
     const selectedPage = pageStructure[currentPage] || defaultPage;
+    const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
 
     const svgContainer = (
       <SvgDraw
@@ -358,7 +362,7 @@ class Worksheet extends React.Component {
         lineWidth={lineWidth}
         fillColor={fillColor}
         saveHistory={this.saveHistory}
-        history={scratchPad && scratchPad[currentPage]}
+        history={userHistory}
         height="100%"
         top={0}
       />

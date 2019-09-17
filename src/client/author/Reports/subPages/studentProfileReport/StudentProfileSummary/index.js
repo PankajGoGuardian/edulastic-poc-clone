@@ -83,6 +83,7 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {};
+  const studentClassInfo = studentClassData[0] || {};
   const onCsvConvert = data =>
     downloadCSV(`Student Profile Report-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
 
@@ -104,7 +105,7 @@ const StudentProfileSummary = ({
               <b>School</b>: {studentInformation.school || "N/A"}
             </p>
             <p>
-              <b>Subject</b>: {studentClassData[0].standardSet}
+              <b>Subject</b>: {studentClassInfo.standardSet || "N/A"}
             </p>
           </Col>
           <Col xs={24} sm={24} md={19} lg={19} xl={19}>

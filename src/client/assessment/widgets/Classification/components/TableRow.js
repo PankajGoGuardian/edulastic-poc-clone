@@ -139,7 +139,8 @@ const TableRow = ({
   }
 
   for (let index = startIndex; index < startIndex + colCount; index++) {
-    if (arrayOfRows.has(index) && rowTitles.length > 0) {
+    const hasRowTitle = rowTitles.length > 0;
+    if (hasRowTitle) {
       cols.push(
         <Rnd
           enableResizing={{
@@ -182,7 +183,7 @@ const TableRow = ({
       );
     }
     cols.push(
-      <ResponseRnd question={item} index={index} isResizable={isResizable}>
+      <ResponseRnd hasRowTitle={hasRowTitle} question={item} index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}

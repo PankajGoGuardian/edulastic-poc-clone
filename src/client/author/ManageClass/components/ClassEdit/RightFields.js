@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { debounce, concat, find, isEmpty } from "lodash";
+import { debounce, concat, find, isEmpty, filter } from "lodash";
 
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
@@ -11,6 +11,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StandardsValidationMSG } from "../ClassCreate/styled";
 
 const { allGrades, allSubjects } = selectsData;
+const subjects = filter(allSubjects, el => el.value !== "");
 
 const classStartDate = moment();
 const classEndDate = moment(); // .add("days", 7);
@@ -116,7 +117,7 @@ const RightFields = ({
         </FieldLabel>
         <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject}>
           <Select placeholder="Select Subject" onSelect={updateSubject}>
-            {allSubjects.map(el => (
+            {subjects.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
               </Select.Option>

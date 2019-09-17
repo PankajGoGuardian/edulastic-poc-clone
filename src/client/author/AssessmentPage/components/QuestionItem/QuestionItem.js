@@ -165,8 +165,8 @@ class QuestionItem extends React.Component {
     const { onOpenEdit, onDelete } = this.props;
     return (
       <EditButton>
-        <IconPencilEdit onClick={onOpenEdit} />
-        <IconTrash onClick={onDelete} />
+        <IconPencilEdit onClick={onOpenEdit} title="Edit" />
+        <IconTrash onClick={onDelete} title="Delete" />
       </EditButton>
     );
   };

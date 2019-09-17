@@ -55,8 +55,8 @@ export default class Section extends React.Component {
 
     return (
       <Actions>
-        <IconPencilEdit onClick={handleEditClick} />
-        <IconTrash onClick={onDelete} />
+        <IconPencilEdit onClick={handleEditClick} title="Edit" />
+        <IconTrash onClick={onDelete} title="Delete" />
       </Actions>
     );
   };
@@ -91,10 +91,12 @@ export default class Section extends React.Component {
         <SectionFormConfirmButton
           onMouseDown={() => this.setState({ shouldBlur: false })}
           style={{ marginLeft: "5px" }}
+          title="Save"
           onClick={this.handleSetTitle}
         />
         <IconTrash
           onClick={onDelete}
+          title="Delete"
           onMouseDown={() => this.setState({ shouldBlur: false })}
           style={{ marginLeft: "5px", cursor: "pointer" }}
         />

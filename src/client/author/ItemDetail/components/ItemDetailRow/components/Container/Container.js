@@ -200,7 +200,7 @@ class Container extends Component {
                   isAddTab={false}
                 />
               ))}
-              {isPassageQuestion && (
+              {isPassageQuestion && row.tabs.length < 5 &&(
                 <Tabs.Tab
                   key={row.length}
                   label={"ADD TAB"}

@@ -101,7 +101,7 @@ const initialState = {
     standardsProficiencyProfileId: ""
   },
   student: {
-    key: "5d11b3a138a00c59ea7be6db"
+    key: ""
   },
   loading: false
 };

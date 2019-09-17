@@ -150,7 +150,7 @@ const PeerPerformance = ({
 
   return (
     <div>
-      {loading || performanceBandLoading ? (
+      {loading ? (
         <div>
           <Row type="flex">
             <Placeholder />

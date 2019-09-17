@@ -45,8 +45,8 @@ const StudentProfileReportsFilters = ({
   const [courseId, setCourseId] = useState("");
   const [selectedStudent, setSelectedStudent] = useState({ key: studentId || "" });
 
-  const { studentClassData = [] } = get(SARFilterData, "data.result", {});
-  const profiles = get(SARFilterData, "data.result.bandInfo", []);
+  const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const profiles = get(SPRFilterData, "data.result.bandInfo", []);
 
   const { terms = [] } = orgData;
   const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [

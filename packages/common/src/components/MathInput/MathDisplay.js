@@ -12,7 +12,7 @@ const MathDisplayWrapper = styled.span`
     border: 1px solid #d9d9d9;
     margin-top: 2px;
     margin-bottom: 2px;
-    display: inline-block;
+    display: inline-flex;
     min-width: ${({ styles }) => (styles.width ? styles.width : "auto")};
     height: ${({ styles }) => styles.height || "auto"};
     vertical-align: middle;

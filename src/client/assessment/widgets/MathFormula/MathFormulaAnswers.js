@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { cloneDeep, isNull } from "lodash";
+import { cloneDeep, isNull, difference } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { MathKeyboard } from "@edulastic/common";
@@ -173,6 +173,18 @@ class MathFormulaAnswers extends React.Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
+        if (option === "allowedVariables") {
+          const prevAllowedVarStr = draft[option] || "";
+          const prevAllowedVars = prevAllowedVarStr.split(",").map(segment => segment.trim());
+          const newAllowedVars = variables.split(",").map(segment => segment.trim());
+          const diffVar = difference(prevAllowedVars, newAllowedVars);
+          const correctAns = draft.validation.validResponse.value || [];
+          correctAns.forEach(ans => {
+            if (ans.value) {
+              ans.value = ans.value.replace(new RegExp(diffVar[0]), "");
+            }
+          });
+        }
         draft[option] = variables;
         updateVariables(draft, latexKeys);
       })

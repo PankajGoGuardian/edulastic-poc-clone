@@ -227,7 +227,10 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div ref={this.wrappedRef} style={{ margin: "0 4px", display: "inline-block" }}>
+      <div
+        ref={this.wrappedRef}
+        style={{ margin: "0 4px", display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -239,7 +242,9 @@ class ClozeMathWithUnit extends React.Component {
             marginRight: 0,
             borderRight: 0,
             borderTopRightRadius: 0,
-            borderBottomRightRadius: 0
+            borderBottomRightRadius: 0,
+            display: "flex",
+            alignItems: "center"
           }}
         />
         <SelectUnit

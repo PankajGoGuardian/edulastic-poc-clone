@@ -43,7 +43,7 @@ const DotPlot = ({
       .map(
         (dot, index) =>
           `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, {
-            height: height / 2,
+            height,
             margin,
             yAxisMax,
             yAxisMin,
@@ -109,17 +109,17 @@ const DotPlot = ({
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <Line x1={0} y1={height / 2 - margin + 20} x2={width - margin} y2={height / 2 - margin + 20} strokeWidth={1} />
+      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 
       <Circles
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         saveAnswer={active => saveAnswer(localData, active)}
-        deleteMode={deleteMode}
         activeIndex={activeIndex}
+        deleteMode={deleteMode}
         onPointOver={setActive}
         previewTab={previewTab}
         bars={localData}
         view={view}
-        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />

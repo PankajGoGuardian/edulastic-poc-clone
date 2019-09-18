@@ -14,6 +14,7 @@ const createContextMenu = ({
   onInsertBlankPage,
   onRotate,
   url,
+  disableDelete,
   hasAnnotations,
   setRotateDirection,
   setConfirmRotate,
@@ -54,7 +55,12 @@ const createContextMenu = ({
       Rotate counterclockwise
     </Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
+    <Menu.Item
+      disabled={disableDelete}
+      onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
+    >
+      Delete
+    </Menu.Item>
   </Menu>
 );
 
@@ -70,6 +76,7 @@ const ThumbnailsItem = ({
   url,
   viewMode,
   current,
+  disableDelete = false,
   hasAnnotations,
   setDeleteConfirmation,
   rotate,
@@ -85,6 +92,7 @@ const ThumbnailsItem = ({
     onMoveDown,
     onInsertBlankPage,
     onRotate,
+    disableDelete,
     total,
     hasAnnotations,
     setConfirmRotate,

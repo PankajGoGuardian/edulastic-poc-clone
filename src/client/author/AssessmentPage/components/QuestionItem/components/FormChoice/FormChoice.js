@@ -51,7 +51,13 @@ export default class FormChoice extends React.Component {
 
   renderView = () => {
     const {
-      question: { options, multipleResponses: multipleResponses }
+      question: {
+        options,
+        multipleResponses: multipleResponses,
+        validation: {
+          validResponse: { value }
+        }
+      }
     } = this.props;
 
     if (!options.length) return this.renderOptionsCreateForm();
@@ -60,8 +66,8 @@ export default class FormChoice extends React.Component {
 
     return optionChunks.map((items, chunkKey) => (
       <QuestionChunk key={`form-choice-chunk-${chunkKey}`}>
-        {items.map(({ label }, key) => (
-          <QuestionOption key={label + key} multipleResponses={multipleResponses}>
+        {items.map(({ label, value: v }, key) => (
+          <QuestionOption key={label + key} selected={value.includes(v)} multipleResponses={multipleResponses}>
             {label}
           </QuestionOption>
         ))}

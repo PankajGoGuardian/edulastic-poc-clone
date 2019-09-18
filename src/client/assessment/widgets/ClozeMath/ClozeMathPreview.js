@@ -46,6 +46,7 @@ const ClozeMathPreview = ({
   testItem,
   options,
   responseIds,
+  isExpressGrader,
   changePreviewTab, // Question level
   changePreview // Item level
 }) => {
@@ -177,7 +178,7 @@ const ClozeMathPreview = ({
         jsx={newHtml}
       />
 
-      {type === SHOW && (
+      {(isExpressGrader || type === SHOW) && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
@@ -205,12 +206,14 @@ ClozeMathPreview.propTypes = {
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
   changePreview: PropTypes.func,
-  testItem: PropTypes.bool
+  testItem: PropTypes.bool,
+  isExpressGrader: PropTypes.bool
 };
 
 ClozeMathPreview.defaultProps = {
   changePreview: () => {},
-  testItem: false
+  testItem: false,
+  isExpressGrader: false
 };
 
 export default withCheckAnswerButton(ClozeMathPreview);

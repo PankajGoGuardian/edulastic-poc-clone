@@ -215,6 +215,7 @@ export const ClassListTable = styled(Table)`
             max-width: 150px;
             text-overflow: ellipsis;
             white-space: nowrap;
+            padding-left: 5px;
           }
           font-weight: bold;
           padding: 10px 10px;

@@ -345,7 +345,7 @@ class Worksheet extends React.Component {
       answersById,
       pageStructure,
       scratchPad,
-      freeFormNotes
+      freeFormNotes = {}
     } = this.props;
 
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;

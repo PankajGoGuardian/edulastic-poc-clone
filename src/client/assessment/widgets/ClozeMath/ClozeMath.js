@@ -9,7 +9,7 @@ import produce from "immer";
 import { get, cloneDeep } from "lodash";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
-import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, EDIT, SHOW } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
 import ClozeMathPreview from "./ClozeMathPreview";
 import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
@@ -47,7 +47,7 @@ const ClozeMath = ({
   const answerContextConfig = useContext(AnswerContext);
   let actualPreviewMode = previewTab;
   if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
-    actualPreviewMode = "check";
+    actualPreviewMode = "show";
   } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
     actualPreviewMode = "clear";
   }

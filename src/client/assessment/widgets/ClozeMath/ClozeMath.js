@@ -47,7 +47,7 @@ const ClozeMath = ({
   const answerContextConfig = useContext(AnswerContext);
   let actualPreviewMode = previewTab;
   if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
-    actualPreviewMode = "show";
+    actualPreviewMode = "check";
   } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
     actualPreviewMode = "clear";
   }

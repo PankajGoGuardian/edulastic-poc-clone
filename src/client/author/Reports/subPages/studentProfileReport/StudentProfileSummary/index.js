@@ -109,7 +109,7 @@ const StudentProfileSummary = ({
             </p>
           </Col>
           <Col xs={24} sm={24} md={19} lg={19} xl={19}>
-            <AssessmentChart data={data} />
+            <AssessmentChart data={data} studentClassData={studentClassData} />
           </Col>
         </Row>
       </StyledCard>

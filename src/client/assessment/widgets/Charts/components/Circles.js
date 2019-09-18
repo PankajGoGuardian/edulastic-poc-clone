@@ -55,11 +55,7 @@ const Circles = ({
         convertUnitToPx(y, { height: height, margin, yAxisMax, yAxisMin, stepSize })
     );
 
-  const getLength = y =>
-    Math.floor(
-      (height - margin - convertUnitToPx(y, { height: height, margin, yAxisMax, yAxisMin, stepSize })) /
-        (yAxisStep / 2.5)
-    );
+  const getLength = y => Math.floor((height - margin - convertUnitToPx(y, gridParams)) / yAxisStep);
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
@@ -71,8 +67,8 @@ const Circles = ({
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               cx={getCenterX(index) + step / 2}
-              cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 30}
-              r={yAxisStep / 3.5 - 5}
+              cy={height - margin - 17 - ind * yAxisStep - yAxisStep / 2 + 30}
+              r={yAxisStep / 2.8 - 5}
             />
           ))}
           <Bar

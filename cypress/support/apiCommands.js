@@ -3,6 +3,7 @@
 import uuidv4 from "uuid/v4";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
+const { _ } = Cypress;
 const BASE_URL = Cypress.config("API_URL");
 const fixtureFolderPath = "cypress/fixtures";
 const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData.json`;
@@ -227,7 +228,8 @@ Cypress.Commands.add("saveUserDetailToDelete", userJson => {
     cy.readFile(`${deleteTestDataFile}`).then(json => {
       if (!json.users) json.users = {};
       if (!json.users[userJson.role]) json.users[userJson.role] = [];
-      json.users[userJson.role].push(userJson._id);
+      if (!_.isArray(userJson._id)) json.users[userJson.role].push(userJson._id);
+      else json.users[userJson.role] = _.union(json.users[userJson.role], userJson._id);
       cy.writeFile(`${deleteTestDataFile}`, json);
     });
   }

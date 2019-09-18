@@ -17,9 +17,11 @@ const Header = () => (
     </Title>
     <ButtonsWrapper>
       <Link to={"/author/manageClass"}>
-        <CancelClassBtn>Cancel</CancelClassBtn>
+        <CancelClassBtn data-cy="cancel">Cancel</CancelClassBtn>
       </Link>
-      <SaveClassBtn htmlType="submit">Save Class</SaveClassBtn>
+      <SaveClassBtn data-cy="saveClass" htmlType="submit">
+        Save Class
+      </SaveClassBtn>
     </ButtonsWrapper>
   </HeaderWrapper>
 );

@@ -267,7 +267,7 @@ const JoinSchool = ({
                   <SchoolSelected>
                     <SelectedTag>
                       <span>{selected.schoolName || ""}</span>
-                      <IconClose color={themeColor} onClick={() => setSchool(null)} />
+                      <IconClose data-cy="removeSelected" color={themeColor} onClick={() => setSchool(null)} />
                     </SelectedTag>
                   </SchoolSelected>
                 ) : (
@@ -292,7 +292,7 @@ const JoinSchool = ({
                     <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
                   ) : null}
                   {selected && selected.districtName ? (
-                    <DistrictName>
+                    <DistrictName data-cy="districtName">
                       <span>{t("common.district")}: </span>
                       {selected.districtName}
                     </DistrictName>

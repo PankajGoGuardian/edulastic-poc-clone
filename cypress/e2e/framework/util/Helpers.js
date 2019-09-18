@@ -72,7 +72,7 @@ class Helpers {
     return string;
   }
 
-  static getRamdomEmail(emailStringType = this.stringTypes().ALPHA_NUM, domain = "snapwiz.com") {
+  static getRamdomEmail(domain = "snapwiz.com", emailStringType = this.stringTypes().ALPHA_NUM) {
     const prefix = this.getRamdomString(12, emailStringType);
     return `${prefix}@${domain}`;
   }

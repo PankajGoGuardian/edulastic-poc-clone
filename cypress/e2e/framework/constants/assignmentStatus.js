@@ -29,6 +29,7 @@ export const grades = {
   GRADE_1: "Grade 1",
   GRADE_2: "Grade 2",
   GRADE_3: "Grade 3",
+  GRADE_4: "Grade 4",
   GRADE_5: "Grade 5",
   GRADE_6: "Grade 6",
   GRADE_7: "Grade 7",
@@ -38,6 +39,14 @@ export const grades = {
   GRADE_11: "Grade 11",
   GRADE_12: "Grade 12",
   OTHER: "Other"
+};
+
+export const subject = {
+  MATH: "Mathematics",
+  ELA: "ELA",
+  SCIENCE: "Science",
+  SOCIAL_STUDIES: "Social Studies",
+  OTHER: "Other Subjects"
 };
 
 export const releaseGradeTypes = {

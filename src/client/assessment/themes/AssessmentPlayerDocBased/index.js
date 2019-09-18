@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -96,6 +97,7 @@ class AssessmentPlayerDocBased extends React.Component {
       answersById,
       loading,
       pageStructure = [],
+      freeFormNotes,
       gotoSummary
     } = this.props;
 
@@ -123,6 +125,7 @@ class AssessmentPlayerDocBased extends React.Component {
               docUrl={docUrl}
               annotations={annotations}
               questions={questions}
+              freeFormNotes={freeFormNotes}
               questionsById={questionsById}
               pageStructure={pageStructure}
               answersById={answersById}

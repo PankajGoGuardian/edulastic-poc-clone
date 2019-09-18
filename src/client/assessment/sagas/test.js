@@ -228,6 +228,7 @@ function* loadTest({ payload }) {
         annotations: test.annotations,
         docUrl: test.docUrl,
         pageStructure: test.pageStructure,
+        freeFormNotes: test.freeFormNotes,
         settings,
         answerCheckByItemId
       }

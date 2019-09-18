@@ -39,24 +39,36 @@ const ClassList = ({
     {
       title: "Class Name",
       dataIndex: "name",
-      render: classname => (
-        <Tooltip title={classname} placement="bottom">
-          {classname}
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: _classname => (
+        <Tooltip title={_classname} placement="bottom">
+          {_classname}
         </Tooltip>
-      )
+      ),
+      width: 300
     },
     {
       title: "Class Code",
       dataIndex: "code",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.code.localeCompare(b.code),
       render: classcode => (
         <Tooltip title={classcode} placement="bottom">
           {classcode}
         </Tooltip>
-      )
+      ),
+      width: 150
     },
     {
       title: "Grades",
       dataIndex: "grades",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => {
+        const prevGrades = findGrade(a.grades).join(" ");
+        const nextGrades = findGrade(b.grades).join(" ");
+        return prevGrades.localeCompare(nextGrades);
+      },
       render: (_, row) => {
         const grades = findGrade(row.grades);
         const gradeValue = grades.value || grades.text;
@@ -65,11 +77,18 @@ const ClassList = ({
             {` ${grades}`}
           </Tooltip>
         );
-      }
+      },
+      width: 200
     },
     {
       title: "Subject",
       dataIndex: "subject",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => {
+        const prevSubject = get(a, "subject", "");
+        const nextSubject = get(b, "subject", "");
+        return prevSubject.localeCompare(nextSubject);
+      },
       render: (_, row) => {
         const subject = findSubject(row.subject);
         return (
@@ -77,25 +96,32 @@ const ClassList = ({
             {subject.text}
           </Tooltip>
         );
-      }
+      },
+      width: 100
     },
     {
       title: "Students",
       dataIndex: "studentCount",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => Number(a.studentCount) - Number(b.studentCount),
       render: (studentCount = 0) => (
         <Tooltip title={studentCount} placement="bottom">
           {studentCount}
         </Tooltip>
-      )
+      ),
+      width: 100
     },
     {
       title: "Assignments",
       dataIndex: "assignmentCount",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => Number(a.assignmentCount) - Number(b.assignmentCount),
       render: (assignmentCount = 0) => (
         <Tooltip title={assignmentCount} placement="bottom">
           {assignmentCount}
         </Tooltip>
-      )
+      ),
+      width: 100
     }
   ];
 

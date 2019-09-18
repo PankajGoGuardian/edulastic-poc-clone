@@ -124,18 +124,10 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
   };
 
   const { uiStyle: uiStyles = {} } = item;
-  const { responsecontainerindividuals = {} } = uiStyles;
 
   return item.responses.map((response, i) => {
-    let responseHeight = uiStyles.heightpx || response.height;
-    let responseWidth = uiStyles.widthpx || response.width;
-    responseWidth = responsecontainerindividuals[i]
-      ? responsecontainerindividuals[i].widthpx || responseWidth
-      : responseWidth;
-
-    responseHeight = responsecontainerindividuals[i]
-      ? responsecontainerindividuals[i].heightpx || responseHeight
-      : responseHeight;
+    let responseHeight = response.height || uiStyles.heightpx || "auto";
+    let responseWidth = response.width || uiStyles.widthpx || "auto";
 
     return (
       <Draggable

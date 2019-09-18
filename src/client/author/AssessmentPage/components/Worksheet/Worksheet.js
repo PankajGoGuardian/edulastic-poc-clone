@@ -150,8 +150,11 @@ class Worksheet extends React.Component {
 
   handleDeleteSelectedBlankPage = () => {
     const { currentPage } = this.state;
-    const { pageStructure } = this.props;
-    if (pageStructure[currentPage] && pageStructure[currentPage].URL) {
+    const { pageStructure, annotations = [] } = this.props;
+    if (
+      (pageStructure[currentPage] && pageStructure[currentPage].URL) ||
+      annotations.some(annotation => annotation.page === currentPage + 1)
+    ) {
       this.setDeleteConfirmation(true, currentPage);
     } else {
       this.deleteBlankPage(currentPage);
@@ -192,26 +195,36 @@ class Worksheet extends React.Component {
     if (pageIndex === 0) return;
 
     const nextIndex = pageIndex - 1;
-    const { pageStructure, setTestData } = this.props;
+    const { pageStructure, setTestData, annotations } = this.props;
 
+    const newAnnotations = annotations.map(annotation => ({
+      ...annotation,
+      page: annotation.page === pageIndex + 1 ? nextIndex + 1 : annotation.page
+    }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({
+      annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);
   };
 
   handleMovePageDown = pageIndex => () => {
-    const { pageStructure, setTestData } = this.props;
+    const { pageStructure, setTestData, annotations = [] } = this.props;
 
     if (pageIndex === pageStructure.length - 1) return;
 
     const nextIndex = pageIndex + 1;
 
+    const newAnnotations = annotations.map(annotation => ({
+      ...annotation,
+      page: annotation.page === pageIndex + 1 ? nextIndex + 1 : annotation.page
+    }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({
+      annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);
@@ -280,13 +293,16 @@ class Worksheet extends React.Component {
   saveHistory = data => {
     const { currentPage } = this.state;
     const { saveUserWork, itemDetail, scratchPad = {}, userWork, setTestData } = this.props;
-    this.setState(({ history }) => ({ history: history + 1 }));
-    const id = itemDetail.item._id;
-    saveUserWork({
-      [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
-    });
+    const id = itemDetail?.item?._id;
+    if (id) {
+      this.setState(({ history }) => ({ history: history + 1 }));
 
-    setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
+      });
+
+      setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
+    }
   };
 
   handleRedo = () => {
@@ -337,12 +353,13 @@ class Worksheet extends React.Component {
       questionsById,
       answersById,
       pageStructure,
-      scratchPad
+      scratchPad,
+      freeFormNotes = {}
     } = this.props;
 
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
-
     const selectedPage = pageStructure[currentPage] || defaultPage;
+    const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
 
     const svgContainer = (
       <SvgDraw
@@ -353,7 +370,7 @@ class Worksheet extends React.Component {
         lineWidth={lineWidth}
         fillColor={fillColor}
         saveHistory={this.saveHistory}
-        history={scratchPad && scratchPad[currentPage]}
+        history={userHistory}
         height="100%"
         top={0}
       />
@@ -388,6 +405,7 @@ class Worksheet extends React.Component {
           onMovePageDown={this.handleMovePageDown}
           onInsertBlankPage={this.handleInsertBlankPage}
           onRotate={this.handleRotate}
+          viewMode={viewMode}
           review={review}
         />
         <Fragment>

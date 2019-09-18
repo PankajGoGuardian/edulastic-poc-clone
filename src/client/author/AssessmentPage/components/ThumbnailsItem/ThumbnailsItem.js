@@ -54,7 +54,7 @@ const createContextMenu = ({
       Rotate counterclockwise
     </Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={url ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
+    <Menu.Item onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
   </Menu>
 );
 
@@ -68,6 +68,7 @@ const ThumbnailsItem = ({
   onInsertBlankPage,
   onRotate,
   url,
+  viewMode,
   current,
   hasAnnotations,
   setDeleteConfirmation,
@@ -78,6 +79,7 @@ const ThumbnailsItem = ({
   const [rotateDirection, setRotateDirection] = useState("clockwise");
   const contextMenu = createContextMenu({
     index,
+    viewMode,
     onDelete,
     onMoveUp,
     onMoveDown,
@@ -105,7 +107,7 @@ const ThumbnailsItem = ({
           "These pages contain one or more questions or annotations. Rotating the page may result this content positioned incorrectly."
         }
       </Modal>
-      <Dropdown overlay={contextMenu} trigger={["contextMenu"]}>
+      <Dropdown overlay={contextMenu} disabled={viewMode !== "edit"} trigger={["contextMenu"]}>
         <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
             {url && (

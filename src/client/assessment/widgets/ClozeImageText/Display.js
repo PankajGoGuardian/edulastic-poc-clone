@@ -205,12 +205,11 @@ class Display extends Component {
           />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
-            const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex] || {};
 
             const btnStyle = {
               fontSize,
-              width: individualW || uiStyle.widthpx || responseContainer.width,
-              height: individualH || uiStyle.height || responseContainer.height,
+              width: responseContainer.width || uiStyle.widthpx || "auto",
+              height: responseContainer.height || uiStyle.height || "auto",
               top: uiStyle.top || responseContainer.top,
               left: uiStyle.left || responseContainer.left,
               border: showDropItemBorder
@@ -223,9 +222,6 @@ class Display extends Component {
               borderRadius: 5,
               display: "inline-flex"
             };
-            if (btnStyle && btnStyle.width === 0) {
-              btnStyle.width = responseBtnStyle.width;
-            }
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemNumeration);
             const responseWidth = parseInt(responseContainer.width, 10);
             return (

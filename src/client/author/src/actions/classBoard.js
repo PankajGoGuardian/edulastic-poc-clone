@@ -20,6 +20,7 @@ import {
   UPDATE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
   MARK_AS_SUBMITTED,
+  DOWNLOAD_GRADES_RESPONSES,
   TOGGLE_PAUSE_ASSIGNMENT,
   SET_IS_PAUSED,
   UPDATE_STUDENT_ACTIVITY,
@@ -109,6 +110,11 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
 export const markSubmittedAction = (assignmentId, classId, students) => ({
   type: MARK_AS_SUBMITTED,
   payload: { assignmentId, classId, students }
+});
+
+export const downloadGradesResponseAction = (assignmentId, classId, students, isResponseRequired) => ({
+  type: DOWNLOAD_GRADES_RESPONSES,
+  payload: { assignmentId, classId, students, isResponseRequired }
 });
 
 export const updateStudentActivityAction = payload => ({

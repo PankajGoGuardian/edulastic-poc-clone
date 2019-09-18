@@ -104,6 +104,7 @@ const ClozeMath = ({
             <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
               <ClozeMathPreview
                 type={actualPreviewMode}
+                isExpressGrader={answerContextConfig.expressGrader}
                 item={itemForPreview}
                 stimulus={item.stimulus}
                 options={item.options || {}}

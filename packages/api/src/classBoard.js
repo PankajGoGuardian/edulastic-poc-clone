@@ -105,6 +105,15 @@ const testActivitiesForStudent = ({ studentId, assignmentId, groupId }) =>
     })
     .then(response => response.data.result);
 
+const downloadGrades = ({ assignmentId, classId, students, isResponseRequired }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${assignmentId}/group/${classId}/download-grades-and-response`,
+      data: { studentIds: students, isResponseRequired }
+    })
+    .then(response => response.data);
+
 export default {
   gradebook,
   testActivity,
@@ -117,5 +126,6 @@ export default {
   markAbsent,
   markSubmitted,
   removeStudents,
-  addStudents
+  addStudents,
+  downloadGrades
 };

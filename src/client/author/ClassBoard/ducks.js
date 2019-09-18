@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
@@ -40,9 +40,12 @@ import {
   FETCH_STUDENTS,
   ADD_STUDENTS,
   GET_ALL_TESTACTIVITIES_FOR_STUDENT,
-  MARK_AS_SUBMITTED
+  MARK_AS_SUBMITTED,
+  DOWNLOAD_GRADES_RESPONSES
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
+import { downloadCSV } from "../Reports/common/util";
+import { getUserNameSelector } from "../src/selectors/user";
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -220,6 +223,18 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
   }
 }
 
+function* downloadGradesAndResponseSaga({ payload }) {
+  try {
+    const data = yield call(classBoardApi.downloadGrades, payload);
+    const userName = yield select(getUserNameSelector);
+    const testName = yield select(testNameSelector);
+    const fileName = `${testName}_${userName}.csv`;
+    downloadCSV(fileName, data);
+  } catch (e) {
+    yield call(message.error, e?.data?.message || "Download failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -235,7 +250,8 @@ export function* watcherSaga() {
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
     yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),
-    yield takeEvery(ADD_STUDENTS, addStudentsSaga)
+    yield takeEvery(ADD_STUDENTS, addStudentsSaga),
+    yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga)
   ]);
 }
 
@@ -413,6 +429,11 @@ export const inProgressStudentsSelector = createSelector(
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   state => state.additionalData
+);
+
+export const testNameSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.additionalData.testName
 );
 
 export const getCanMarkAssignmentSelector = createSelector(

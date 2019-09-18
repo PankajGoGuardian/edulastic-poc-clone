@@ -298,4 +298,7 @@ export default ClozeTextDisplay;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  iframe {
+    max-width: 100%;
+  }
 `;

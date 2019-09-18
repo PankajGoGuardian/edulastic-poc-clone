@@ -539,7 +539,6 @@ class Display extends Component {
           )}
         </DropContainer>
       );
-
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
@@ -578,19 +577,19 @@ class Display extends Component {
               // overflow: "hidden"
             };
 
-            if (responseBtnStyle && responseBtnStyle.widthpx) {
-              btnStyle.width = responseBtnStyle.widthpx;
-            } else {
-              btnStyle.width = btnStyle.widthpx;
-            }
+            // if (responseBtnStyle && responseBtnStyle.widthpx) {
+            //   btnStyle.width = responseBtnStyle.widthpx;
+            // } else {
+            //   btnStyle.width = btnStyle.widthpx;
+            // }
 
-            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-              const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
-              btnStyle.width = individualW || btnStyle.width;
-              btnStyle.widthpx = individualW || btnStyle.widthpx;
-              btnStyle.height = individualH || btnStyle.height;
-              btnStyle.heightpx = individualH || btnStyle.heightpx;
-            }
+            // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+            //   const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
+            //   btnStyle.width = individualW || btnStyle.width;
+            //   btnStyle.widthpx = individualW || btnStyle.widthpx;
+            //   btnStyle.height = individualH || btnStyle.height;
+            //   btnStyle.heightpx = individualH || btnStyle.heightpx;
+            // }
 
             return (
               <DropContainer

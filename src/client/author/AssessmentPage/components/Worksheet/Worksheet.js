@@ -151,8 +151,11 @@ class Worksheet extends React.Component {
 
   handleDeleteSelectedBlankPage = () => {
     const { currentPage } = this.state;
-    const { pageStructure } = this.props;
-    if (pageStructure[currentPage] && pageStructure[currentPage].URL) {
+    const { pageStructure, annotations = [] } = this.props;
+    if (
+      (pageStructure[currentPage] && pageStructure[currentPage].URL) ||
+      annotations.some(annotation => annotation.page === currentPage + 1)
+    ) {
       this.setDeleteConfirmation(true, currentPage);
     } else {
       this.deleteBlankPage(currentPage);

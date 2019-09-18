@@ -196,26 +196,34 @@ class Worksheet extends React.Component {
     if (pageIndex === 0) return;
 
     const nextIndex = pageIndex - 1;
-    const { pageStructure, setTestData } = this.props;
+    const { pageStructure, setTestData, annotations } = this.props;
 
+    const newAnnotations = annotations.map(annotation => {
+      return { ...annotation, page: annotation.page === pageIndex + 1 ? nextIndex + 1 : annotation.page };
+    });
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({
+      annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);
   };
 
   handleMovePageDown = pageIndex => () => {
-    const { pageStructure, setTestData } = this.props;
+    const { pageStructure, setTestData, annotations = [] } = this.props;
 
     if (pageIndex === pageStructure.length - 1) return;
 
     const nextIndex = pageIndex + 1;
 
+    const newAnnotations = annotations.map(annotation => {
+      return { ...annotation, page: annotation.page === pageIndex + 1 ? nextIndex + 1 : annotation.page };
+    });
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({
+      annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);

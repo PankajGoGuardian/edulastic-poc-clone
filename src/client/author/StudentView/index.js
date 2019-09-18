@@ -240,7 +240,7 @@ class StudentViewContainer extends Component {
         </StyledFlexContainer>
         {!loading && (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
+            <ThemeProvider theme={{ twoColLayout: { first: "calc(75% - 15px) !important", second: "25% !important" } }}>
               <ClassQuestions
                 currentStudent={currentStudent || {}}
                 questionActivities={studentResponse.questionActivities || []}

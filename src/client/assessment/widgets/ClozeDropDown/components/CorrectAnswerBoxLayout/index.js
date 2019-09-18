@@ -6,7 +6,7 @@ import { getStemNumeration } from "../../../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds, t, stemNumeration }) => {
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds = [], t, stemNumeration }) => {
   const getLabel = id => {
     if (isEmpty(altResponses)) {
       const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);

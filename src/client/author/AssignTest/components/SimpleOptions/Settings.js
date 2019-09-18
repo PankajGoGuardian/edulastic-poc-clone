@@ -57,7 +57,7 @@ const Settings = ({
       });
       return;
     } else {
-      let validationMessage = "Password is too short";
+      let validationMessage = "Password is too short - must be at least 6 characters";
       if (assignmentPassword.length > 25) validationMessage = "Password is too long";
       setPasswordStatus({
         color: red,

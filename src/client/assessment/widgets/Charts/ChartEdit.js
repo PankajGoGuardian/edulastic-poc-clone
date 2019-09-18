@@ -101,8 +101,8 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
             draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
             break;
           }
-          case "onlyByHover": {
-            draft.chart_data.data[index].onlyByHover = value;
+          case "hoverSetting": {
+            draft.chart_data.data[index].hoverSetting = value;
             break;
           }
           default:

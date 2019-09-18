@@ -132,7 +132,8 @@ const Circles = ({
             x={getCenterX(index) + step / 2}
             y={height / 2 + 20}
           >
-            {dot.onlyByHover ? showLabel === index && dot.x : dot.x}
+            {(dot.hoverSetting === "onlyByHover" && showLabel === index && dot.x) ||
+              ((dot.hoverSetting === "showAlways" || !dot.hoverSetting) && dot.x)}
           </Text>
         </Fragment>
       ))}

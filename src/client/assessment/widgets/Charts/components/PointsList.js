@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
+import { Checkbox, Select } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -11,6 +11,12 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
 
 class PointsList extends Component {
+  hoverSettings = [
+    { label: "Show always", value: "showAlways" },
+    { label: "Show by hover", value: "onlyByHover" },
+    { label: "Hidden", value: "hidden" }
+  ];
+
   render() {
     const { points, handleChange, handleDelete, t, fillSections, cleanSections, onlyByHoverSetting } = this.props;
 
@@ -42,9 +48,17 @@ class PointsList extends Component {
               {t("component.chart.interactive")}
             </Checkbox>
             {onlyByHoverSetting && (
-              <Checkbox checked={dot.onlyByHover} onChange={() => handleChange(index)("onlyByHover", !dot.onlyByHover)}>
-                {t("component.chart.showLabelOnlyByHover")}
-              </Checkbox>
+              <Select
+                value={dot.hoverSetting || "showAlways"}
+                style={{ width: "150px" }}
+                onSelect={value => handleChange(index)("hoverSetting", value)}
+              >
+                {this.hoverSettings.map((setting, index) => (
+                  <Select.Option key={`setting-${index}`} value={setting.value}>
+                    {setting.label}
+                  </Select.Option>
+                ))}
+              </Select>
             )}
           </Question>
         ))}

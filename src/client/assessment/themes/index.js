@@ -74,7 +74,8 @@ const AssessmentContainer = ({
 
   // start assessment
   useEffect(() => {
-    startAssessment();
+    // if its from a modal that maybe showing the answer, then dont reset the answer.
+    if (!LCBPreviewModal) startAssessment();
   }, []);
 
   const lastTime = useRef(Date.now());

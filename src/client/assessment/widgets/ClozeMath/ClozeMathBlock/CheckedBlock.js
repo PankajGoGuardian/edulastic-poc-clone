@@ -75,7 +75,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
                   ? `${userAnswer.value}\\ ${unit}`
                   : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
               }
-              style={{ height, width, minWidth: "unset", display: "block" }}
+              style={{ height, width, minWidth: "unset", display: "flex", alignItems: "center" }}
             />
           ) : (
             userAnswer && userAnswer.value

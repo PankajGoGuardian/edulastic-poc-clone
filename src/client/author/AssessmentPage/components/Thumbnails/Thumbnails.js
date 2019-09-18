@@ -29,6 +29,7 @@ const Thumbnails = ({
   onInsertBlankPage,
   setDeleteConfirmation,
   onRotate,
+  viewMode,
   review,
   currentPage
 }) => {
@@ -52,9 +53,10 @@ const Thumbnails = ({
           {list.map((item, key) => (
             <ThumbnailsItem
               key={key}
+              viewMode={viewMode}
               index={key}
               page={item.pageNo}
-              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo)}
+              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo + 1)}
               setDeleteConfirmation={setDeleteConfirmation}
               onClick={onChangePage(key)}
               onDelete={() => onDeletePage(key)}

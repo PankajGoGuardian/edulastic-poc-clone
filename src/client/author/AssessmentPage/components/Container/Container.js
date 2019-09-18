@@ -9,6 +9,7 @@ import { isEmpty, get } from "lodash";
 import { white } from "@edulastic/colors";
 import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
 import { questionType, test } from "@edulastic/constants";
+import { withWindowSizes } from "@edulastic/common";
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -27,7 +28,6 @@ import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
 import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
-import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 
@@ -76,7 +76,9 @@ class Container extends React.Component {
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
   };
+
   sebPasswordRef = React.createRef();
+
   state = {
     saved: false,
     editEnable: false,
@@ -196,7 +198,7 @@ class Container extends React.Component {
     const { currentTab, assessment, questions, match, questionsById, userId, setTestData } = this.props;
 
     const { params = {} } = match;
-    const { docUrl, annotations, pageStructure } = assessment;
+    const { docUrl, annotations, pageStructure, freeFormNotes } = assessment;
     const { editEnable } = this.state;
     const { authors, status } = assessment;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
@@ -208,7 +210,8 @@ class Container extends React.Component {
       annotations,
       questions,
       questionsById,
-      pageStructure
+      pageStructure,
+      freeFormNotes
     };
 
     switch (currentTab) {
@@ -299,17 +302,15 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => {
-      return {
-        assessment: getTestEntitySelector(state),
-        userId: get(state, "user.user._id", ""),
-        loading: getTestsLoadingSelector(state),
-        questions: getQuestionsArraySelector(state),
-        creating: getTestsCreatingSelector(state),
-        questionsById: getQuestionsSelector(state),
-        currentTab: getViewSelector(state)
-      };
-    },
+    state => ({
+      assessment: getTestEntitySelector(state),
+      userId: get(state, "user.user._id", ""),
+      loading: getTestsLoadingSelector(state),
+      questions: getQuestionsArraySelector(state),
+      creating: getTestsCreatingSelector(state),
+      questionsById: getQuestionsSelector(state),
+      currentTab: getViewSelector(state)
+    }),
     {
       receiveTestById: receiveTestByIdAction,
       setTestData: setTestDataAction,

@@ -44,6 +44,7 @@ const test = (state = initialState, { payload, type }) => {
         docUrl: payload.docUrl,
         answerCheckByItemId: payload.answerCheckByItemId,
         pageStructure: payload.pageStructure,
+        freeFormNotes: payload.freeFormNotes,
         settings: {
           ...state.settings,
           ...payload.settings

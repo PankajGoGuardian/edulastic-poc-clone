@@ -2069,7 +2069,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           type: "floating-keyboard",
-          minWidth: 100
+          minWidth: 140
         },
         options: {},
         validation: {

@@ -396,6 +396,7 @@ class Worksheet extends React.Component {
           onMovePageDown={this.handleMovePageDown}
           onInsertBlankPage={this.handleInsertBlankPage}
           onRotate={this.handleRotate}
+          viewMode={viewMode}
           review={review}
         />
         <Fragment>

@@ -54,7 +54,8 @@ export {
   highlightSelectedText,
   decodeHTML,
   hexToRGB,
-  rgbToHexc
+  rgbToHexc,
+  formatBytes
 } from "./src/helpers";
 
 // contexts

@@ -161,6 +161,7 @@ export const LabelMyClasses = styled.span`
 `;
 export const ClassListTable = styled(Table)`
   .ant-table {
+    overflow: auto;
     &-thead {
       & > tr > th {
         border-bottom: none;
@@ -181,6 +182,16 @@ export const ClassListTable = styled(Table)`
         cursor: pointer;
         border-bottom: 15px solid white;
         & > td {
+          &.ant-table-column-sort {
+            background: ${lightGreySecondary};
+          }
+          & > span {
+            overflow: hidden;
+            display: block;
+            width: 150px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
           font-weight: bold;
           padding: 10px 10px;
         }

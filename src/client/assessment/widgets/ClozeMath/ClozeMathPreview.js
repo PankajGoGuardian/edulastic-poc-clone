@@ -93,9 +93,8 @@ const ClozeMathPreview = ({
   const getStyles = () => {
     const uiStyles = {};
     const { uiStyle = {} } = item;
-    if (uiStyle.fontsize) {
-      uiStyles.fontSize = getFontSize(uiStyle.fontsize);
-    }
+
+    uiStyles.fontSize = getFontSize(uiStyle.fontsize);
 
     if (uiStyle.heightpx) {
       uiStyles.height = `${uiStyle.heightpx}px`;

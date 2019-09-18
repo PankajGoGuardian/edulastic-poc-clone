@@ -45,8 +45,7 @@ const ClassList = ({
         <Tooltip title={_classname} placement="bottom">
           {_classname}
         </Tooltip>
-      ),
-      width: 300
+      )
     },
     {
       title: "Class Code",
@@ -57,8 +56,7 @@ const ClassList = ({
         <Tooltip title={classcode} placement="bottom">
           {classcode}
         </Tooltip>
-      ),
-      width: 150
+      )
     },
     {
       title: "Grades",
@@ -77,8 +75,7 @@ const ClassList = ({
             {` ${grades}`}
           </Tooltip>
         );
-      },
-      width: 200
+      }
     },
     {
       title: "Subject",
@@ -96,8 +93,7 @@ const ClassList = ({
             {subject.text}
           </Tooltip>
         );
-      },
-      width: 150
+      }
     },
     {
       title: "Students",
@@ -108,8 +104,7 @@ const ClassList = ({
         <Tooltip title={studentCount} placement="bottom">
           {studentCount}
         </Tooltip>
-      ),
-      width: 100
+      )
     },
     {
       title: "Assignments",
@@ -120,8 +115,7 @@ const ClassList = ({
         <Tooltip title={assignmentCount} placement="bottom">
           {assignmentCount}
         </Tooltip>
-      ),
-      width: 100
+      )
     }
   ];
 

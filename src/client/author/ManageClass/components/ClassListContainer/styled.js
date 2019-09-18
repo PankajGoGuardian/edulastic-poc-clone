@@ -170,6 +170,30 @@ export const ClassListTable = styled(Table)`
         text-transform: uppercase;
         color: ${cardTitleColor};
         background: white;
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+        & .ant-table-header-column .ant-table-column-sorters::before {
+          background: ${white};
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-filters
+          &.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: center;
+        }
+        .ant-table-column-sorters {
+          display: flex;
+          justify-content: center;
+
+          .ant-table-column-sorter-inner {
+            &.ant-table-column-sorter-inner-full {
+              margin-top: 0em;
+            }
+            .ant-table-column-sorter {
+              &-up,
+              &-down {
+                font-size: 10px;
+              }
+            }
+          }
+        }
       }
     }
     &-tbody {
@@ -183,12 +207,12 @@ export const ClassListTable = styled(Table)`
         border-bottom: 15px solid white;
         & > td {
           &.ant-table-column-sort {
-            background: ${lightGreySecondary};
+            background: none;
           }
           & > span {
             overflow: hidden;
             display: block;
-            width: 150px;
+            max-width: 150px;
             text-overflow: ellipsis;
             white-space: nowrap;
           }

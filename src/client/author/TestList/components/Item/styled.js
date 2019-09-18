@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
+import { darkGrey, lightGrey, extraDesktopWidth } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -12,6 +12,13 @@ export const Container = styled(Card)`
     padding: 16px;
     box-shadow: 1px 1px 7px 3px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    @media (max-width: ${extraDesktopWidth}) {
+      min-height: 300px;
+    }
   }
 
   .ant-card-head {
@@ -236,6 +243,7 @@ export const StyledLink = styled.a`
 export const Question = styled.div`
   padding: 15px 0px 4px;
   text-align: center;
+  margin-bottom: auto;
 `;
 
 export const DraftIconWrapper = styled.div`

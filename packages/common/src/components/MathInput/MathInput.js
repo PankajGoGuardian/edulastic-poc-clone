@@ -20,16 +20,14 @@ class MathInput extends React.PureComponent {
   mathFieldRef = React.createRef();
 
   componentWillUnmount() {
-    const { onBlur } = this.props;
     // make sure you remove the listener when the component is destroyed
     document.removeEventListener("click", this.handleClick, false);
     document.removeEventListener("click", this.handleChangeField, false);
     this.setState({ mathFieldFocus: false });
-    onBlur();
   }
 
   handleClick = e => {
-    const { onFocus, onBlur } = this.props;
+    const { onFocus } = this.props;
 
     if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
       return;
@@ -37,7 +35,6 @@ class MathInput extends React.PureComponent {
     if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
       onFocus(false);
       this.setState({ mathFieldFocus: false });
-      onBlur();
     }
   };
 
@@ -79,6 +76,7 @@ class MathInput extends React.PureComponent {
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         textarea.addEventListener("keyup", this.handleChangeField);
         textarea.addEventListener("keypress", this.handleKeypress);
+        textarea.addEventListener("blur", this.handleBlur);
         document.addEventListener("click", this.handleClick, false);
       }
     );
@@ -106,6 +104,13 @@ class MathInput extends React.PureComponent {
           e.stopPropagation();
         }
       }
+    }
+  };
+
+  handleBlur = () => {
+    const { onBlur } = this.props;
+    if (onBlur) {
+      onBlur();
     }
   };
 
@@ -148,12 +153,6 @@ class MathInput extends React.PureComponent {
     this.handleChangeField();
   };
 
-  onClose = () => {
-    const { onBlur } = this.props;
-    this.setState({ mathFieldFocus: false });
-    onBlur();
-  };
-
   onClickMathField = () => {
     const { mathFieldFocus } = this.state;
     if (!mathFieldFocus) {
@@ -170,6 +169,7 @@ class MathInput extends React.PureComponent {
     const { mathFieldFocus } = this.state;
     const {
       alwaysShowKeyboard,
+      alwaysHideKeyboard,
       onChangeKeypad,
       showResponse,
       showDropdown,
@@ -215,21 +215,23 @@ class MathInput extends React.PureComponent {
           >
             <span className="input__math__field" ref={this.mathFieldRef} />
           </div>
-          <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
-            {(alwaysShowKeyboard || mathFieldFocus) && (
-              <MathKeyboard
-                symbols={symbols}
-                numberPad={numberPad}
-                hideKeypad={hideKeypad}
-                restrictKeys={restrictKeys}
-                customKeys={customKeys}
-                showResponse={showResponse}
-                showDropdown={showDropdown}
-                onChangeKeypad={onChangeKeypad}
-                onInput={(key, command) => this.onInput(key, command)}
-              />
-            )}
-          </div>
+          {!alwaysHideKeyboard && (
+            <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
+              {(alwaysShowKeyboard || mathFieldFocus) && (
+                <MathKeyboard
+                  symbols={symbols}
+                  numberPad={numberPad}
+                  hideKeypad={hideKeypad}
+                  restrictKeys={restrictKeys}
+                  customKeys={customKeys}
+                  showResponse={showResponse}
+                  showDropdown={showDropdown}
+                  onChangeKeypad={onChangeKeypad}
+                  onInput={(key, command) => this.onInput(key, command)}
+                />
+              )}
+            </div>
+          )}
         </div>
       </MathInputStyles>
     );
@@ -238,6 +240,7 @@ class MathInput extends React.PureComponent {
 
 MathInput.propTypes = {
   alwaysShowKeyboard: PropTypes.bool,
+  alwaysHideKeyboard: PropTypes.bool,
   defaultFocus: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
@@ -261,6 +264,7 @@ MathInput.propTypes = {
 
 MathInput.defaultProps = {
   alwaysShowKeyboard: false,
+  alwaysHideKeyboard: false,
   defaultFocus: false,
   value: "",
   allowNumericOnly: false,

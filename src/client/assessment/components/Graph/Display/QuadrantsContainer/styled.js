@@ -1,11 +1,17 @@
 import styled from "styled-components";
 import { white } from "@edulastic/colors";
-import { WithMathFormula } from "@edulastic/common";
+import { WithMathFormula, Button } from "@edulastic/common";
 
 export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
+`;
+
+export const IconButton = styled(Button)`
+  min-width: 30px;
+  border-radius: 4px;
+  margin-left: 4px;
 `;
 
 export const PrevColor = styled.div`

@@ -9,7 +9,7 @@ const MathFormulaDisplay = withTheme(
     className: "math-formula-display"
   })`
     width: ${props => !props.centerContent && "100%"};
-    overflowwrap: ${props => props.centerContent && "initial"};
+    overflow-wrap: ${props => props.centerContent && "initial"};
     font-size: ${props => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
 

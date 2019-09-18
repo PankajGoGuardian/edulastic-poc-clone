@@ -9,7 +9,7 @@ import produce from "immer";
 import { get, cloneDeep } from "lodash";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
-import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, EDIT, SHOW } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
 import ClozeMathPreview from "./ClozeMathPreview";
 import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";

@@ -105,12 +105,11 @@ const ClozeMathPreview = ({
     }
 
     if (uiStyle.minWidth) {
-      uiStyles.width = `${uiStyle.minWidth}px`;
-      if (parseInt(uiStyle.minWidth, 10) < 25) {
-        uiStyles.padding = "4px 2px";
-      }
-    } else {
-      uiStyles.width = 80;
+      uiStyles.minWidth = `${uiStyle.minWidth}px`;
+    }
+
+    if (parseInt(uiStyle.minWidth, 10) < 25) {
+      uiStyles.padding = "4px 2px";
     }
 
     return uiStyles;
@@ -178,7 +177,7 @@ const ClozeMathPreview = ({
         jsx={newHtml}
       />
 
-      {!testItem && type === SHOW && (
+      {type === SHOW && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}

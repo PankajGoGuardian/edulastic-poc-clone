@@ -106,7 +106,7 @@ const CheckboxTemplateBox = ({
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
   containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
-  const icons = !hideIndexBox && (
+  const icons = (
     <>
       <IconWrapper>
         {isChecked && status === "right" && <RightIcon />}

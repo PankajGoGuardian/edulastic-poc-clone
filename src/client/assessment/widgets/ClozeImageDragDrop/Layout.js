@@ -95,9 +95,6 @@ class Layout extends Component {
         const index = findIndex(responses, res => res.id === _response.id);
         responsecontainerindividuals[index] = {
           index,
-          widthpx: 0,
-          heightpx: 0,
-          placeholder: "",
           id: _response.id
         };
         onChange("uiStyle", {
@@ -107,14 +104,16 @@ class Layout extends Component {
       }
     };
 
-    const changeIndividualUiStyle = (prop, value, index) => {
-      const item = responsecontainerindividuals[index];
-      item[prop] = value;
-      responsecontainerindividuals[index] = item;
-      onChange("uiStyle", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+    const changeIndividualUiStyle = (prop, value, id) => {
+      onChange(
+        "responses",
+        responses.map(resp => {
+          if (resp.id === id) {
+            resp[prop] = value;
+          }
+          return resp;
+        })
+      );
     };
 
     const removeIndividual = index => {
@@ -224,6 +223,8 @@ class Layout extends Component {
                 return null;
               }
               const resIndex = responsecontainerindividual.index;
+              const resId = responsecontainerindividual.id;
+              const response = responses.find(resp => resp.id === resId);
               return (
                 <IndividualContainer key={resIndex}>
                   <Row gutter={20}>
@@ -242,8 +243,8 @@ class Layout extends Component {
                         size="large"
                         disabled={false}
                         containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, resIndex)}
-                        value={responsecontainerindividual.widthpx}
+                        onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
+                        value={parseInt(response.width, 10)}
                       />
                     </Col>
                     <Col md={8}>
@@ -253,8 +254,8 @@ class Layout extends Component {
                         size="large"
                         disabled={false}
                         containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, resIndex)}
-                        value={responsecontainerindividual.heightpx}
+                        onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
+                        value={parseInt(response.height, 10)}
                       />
                     </Col>
                     <Col md={8}>
@@ -263,8 +264,8 @@ class Layout extends Component {
                         size="large"
                         disabled={false}
                         containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resIndex)}
-                        value={responsecontainerindividual.placeholder}
+                        onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resId)}
+                        value={response.placeholder}
                       />
                     </Col>
                   </Row>

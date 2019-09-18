@@ -4,7 +4,18 @@ import { Modal } from "antd";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
 
-const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, showDropdown, show, onSave, onClose }) => {
+const MathModal = ({
+  value,
+  symbols,
+  isEditable,
+  numberPad,
+  showResponse,
+  showDropdown,
+  show,
+  onSave,
+  onClose,
+  width
+}) => {
   const mathInputRef = useRef(null);
   const [latex, setLatex] = useState(value || "");
 
@@ -35,7 +46,7 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, showDr
       maskClosable={false}
       onOk={() => onSave(latex)}
       onCancel={() => onClose()}
-      width="785px"
+      width={width || "785px"}
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
       {isEditable && (
@@ -61,6 +72,7 @@ MathModal.propTypes = {
   isEditable: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
+  width: PropTypes.string,
   showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
   value: PropTypes.string,
@@ -72,6 +84,7 @@ MathModal.defaultProps = {
   show: false,
   isEditable: true,
   value: "",
+  width: null,
   showDropdown: false,
   showResponse: false,
   onSave: () => {},

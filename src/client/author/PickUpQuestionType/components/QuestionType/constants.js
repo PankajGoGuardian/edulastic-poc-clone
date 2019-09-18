@@ -88,7 +88,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
-  let cards = [
+  const cards = [
     {
       type: "charts",
       cardImage: LinePlot,

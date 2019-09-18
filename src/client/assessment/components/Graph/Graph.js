@@ -18,7 +18,7 @@ import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
-import { InstructorStimulus, QuestionTitleWrapper } from "./common/styled_components";
+import { QuestionTitleWrapper } from "./common/styled_components";
 import Annotations from "../Annotations/Annotations";
 
 import Question from "../Question";
@@ -361,7 +361,7 @@ class Graph extends Component {
                 dangerouslySetInnerHTML={{ __html: stimulus }}
                 fontSize={
                   item.numberlineAxis
-                    ? item.numberlineAxis.fontSize + "px"
+                    ? `${item.numberlineAxis.fontSize}px`
                     : getFontSize(mapFontName[item.uiStyle.currentFontSize])
                 }
               />

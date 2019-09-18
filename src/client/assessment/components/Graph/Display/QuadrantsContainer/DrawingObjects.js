@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import striptags from "striptags";
 
-import { secondaryTextColor, white, whiteSmoke, fadedBlack } from "@edulastic/colors";
+import { secondaryTextColor, whiteSmoke, fadedBlack } from "@edulastic/colors";
 
 import utils from "../../common/utils";
 

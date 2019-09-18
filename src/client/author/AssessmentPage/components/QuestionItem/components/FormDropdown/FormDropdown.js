@@ -25,11 +25,16 @@ export default class FormDropdown extends React.Component {
 
   renderView = () => {
     const {
-      question: { options }
+      question: {
+        options,
+        validation: {
+          validResponse: { value = [{}] }
+        }
+      }
     } = this.props;
 
     return (
-      <Dropdown onChange={this.handleChange}>
+      <Dropdown value={(value[0] && value[0].value) || ""} onChange={this.handleChange} disabled>
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}

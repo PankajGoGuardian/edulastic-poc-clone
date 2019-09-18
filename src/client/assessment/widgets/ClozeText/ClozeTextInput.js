@@ -169,7 +169,7 @@ const ClozeTextInput = ({ resprops, id }) => {
           width: `${width}px` || "auto",
           height: `${height}px` || "auto"
         }}
-        placeholder={placeholder}
+        placeholder={responsecontainerindividuals[index]?.placeholder || placeholder}
       />
       {item.character_map && (
         <NumberPad

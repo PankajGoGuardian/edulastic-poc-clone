@@ -1,22 +1,14 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({
-  isModalVisible,
-  LCBPreviewModal,
-  hideModal,
-  testId,
-  test,
-  testLoadingStatus,
-  error,
-  closeTestPreviewModal
-}) => {
+const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, testId, test, error, closeTestPreviewModal }) => {
   useEffect(() => {
     if (error) {
-      hideModal();
+      closeTestPreviewModal();
     }
   }, [error]);
 
@@ -24,8 +16,8 @@ const TestPreviewModal = ({
     <StyledModal
       visible={isModalVisible}
       title="Test Preview"
-      onCancel={hideModal}
-      onOk={hideModal}
+      onCancel={closeTestPreviewModal}
+      onOk={closeTestPreviewModal}
       width="100%"
       destroyOnClose
       footer={null}
@@ -48,7 +40,6 @@ TestPreviewModal.propTypes = {
   isModalVisible: PropTypes.bool,
   LCBPreviewModal: PropTypes.bool,
   test: PropTypes.object,
-  hideModal: PropTypes.func.isRequired,
   testId: PropTypes.string.isRequired
 };
 

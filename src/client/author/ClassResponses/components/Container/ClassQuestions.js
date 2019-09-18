@@ -1,8 +1,10 @@
+/* eslint-disable react/prop-types */
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
+import { AnswerContext } from "@edulastic/common";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { loadScratchPadAction } from "../../../../assessment/actions/userWork.js";
 
@@ -10,7 +12,6 @@ import AssessmentPlayerModal from "../../../Assignments/components/Container/Tes
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
-import { AnswerContext } from "@edulastic/common";
 
 function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
   const rows = getRows(item);
@@ -26,7 +27,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
       <TestItemPreview
-        showCollapseBtn={true}
+        showCollapseBtn
         showFeedback
         cols={rows}
         preview="show"
@@ -74,6 +75,7 @@ class ClassQuestions extends Component {
 
     loadScratchPad(userWork);
   }
+
   // show AssessmentPlayerModal
   showPlayerModal = () => {
     this.setState({
@@ -207,6 +209,13 @@ class ClassQuestions extends Component {
     });
   };
 
+  hideStudentWork = () => {
+    this.setState({
+      showPlayerModal: false,
+      selectedTestItem: []
+    });
+  };
+
   render() {
     const { showPlayerModal, selectedTestItem } = this.state;
     const { questionActivities, passages = [] } = this.props;
@@ -226,7 +235,7 @@ class ClassQuestions extends Component {
     const { qIndex, currentStudent } = this.props;
 
     const testItemsPreview = testItems.map((item, index) => {
-      const showStudentWork = userWork[item._id] ? this.showStudentWork.bind(null, item) : null;
+      const showStudentWork = userWork[item._id] ? () => this.showStudentWork(item) : null;
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
@@ -244,7 +253,7 @@ class ClassQuestions extends Component {
       <>
         <AssessmentPlayerModal
           isModalVisible={showPlayerModal}
-          hideModal={() => this.setState({ showPlayerModal: false })}
+          closeTestPreviewModal={this.hideStudentWork}
           test={{ testItems: [selectedTestItem] }}
           LCBPreviewModal
         />

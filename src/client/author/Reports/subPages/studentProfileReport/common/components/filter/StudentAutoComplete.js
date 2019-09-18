@@ -2,11 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { map, debounce, isEmpty } from "lodash";
 import { AutoComplete, Input, Icon } from "antd";
-import {
-  receiveStudentsListAction,
-  getStudentsListSelector,
-  getStudentsLoading
-} from "../../../../../../Student/ducks.js";
+import { getSPRStudentDataRequestAction, getStudentsListSelector, getStudentsLoading } from "../../filterDataDucks";
 import { getOrgDataSelector } from "../../../../../../src/selectors/user";
 
 const Option = AutoComplete.Option;
@@ -20,7 +16,7 @@ const StudentAutoComplete = ({
   selectCB,
   loading,
   selectedStudent,
-  receiveStudentsListAction
+  getSPRStudentDataRequestAction
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -45,20 +41,18 @@ const StudentAutoComplete = ({
       page: 0,
       limit: 20,
       search: {
-        username: [{ type: "cont", value: searchTerm }]
+        searchString: searchTerm,
+        role: "student"
       },
+      type: "DISTRICT",
       districtId,
-      role: "student"
+      institutionIds
     };
 
-    receiveStudentsListAction(q);
+    getSPRStudentDataRequestAction(q);
   };
 
   const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
-
-  useEffect(() => {
-    searchUser("a", orgData);
-  }, []);
 
   if (studentList !== prevStudentList && !isEmpty(studentList) && isEmpty(prevStudentList)) {
     // first Render
@@ -125,7 +119,7 @@ const enchance = connect(
     loading: getStudentsLoading(state)
   }),
   {
-    receiveStudentsListAction
+    getSPRStudentDataRequestAction
   }
 );
 

@@ -2,23 +2,9 @@ import FileHelper from "../../framework/util/fileHelper";
 import Helpers from "../../framework/util/Helpers";
 import TeacherSideBar from "../../framework/author/SideBarPage";
 import TeacherManageClassPage from "../../framework/author/manageClassPage";
+import { grades } from "../../framework/constants/assignmentStatus";
 
-const posibleGrades = [
-  "Kindergarten",
-  "Grade 1",
-  "Grade 2",
-  "Grade 3",
-  "Grade 5",
-  "Grade 6",
-  "Grade 7",
-  "Grade 8",
-  "Grade 9",
-  "Grade 10",
-  "Grade 11",
-  "Grade 12",
-  "Other"
-];
-
+const posibleGrades = Cypress._.values(grades);
 const sideBar = new TeacherSideBar();
 const manageClass = new TeacherManageClassPage();
 
@@ -28,13 +14,13 @@ const classNameEdit = "Smoke Automation Class - Edit";
 const testData = {
   create: {
     className: `smoke create new class-${random}`,
-    grade: "Grade 10",
+    grade: grades.GRADE_10,
     subject: "Mathematics",
     standardSet: "Math - Common Core"
   },
   edit: {
     className: `smoke edit new class-${random}`,
-    grade: "Grade 5",
+    grade: grades.GRADE_5,
     subject: "ELA",
     standardSet: "ELA - Common Core"
   }
@@ -47,6 +33,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
   });
 
   beforeEach(() => {
+    cy.server();
+    cy.route("GET", "**mygroups?active**").as("mygroups");
     sideBar.clickOnManageClass();
   });
 
@@ -59,6 +47,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     manageClass.fillClassDetails(className, startDate, endDate, grade, subject, standardSet);
     manageClass.clickOnSaveClass();
     sideBar.clickOnManageClass();
+    cy.wait("@mygroups");
     manageClass.getClassRowDetails(className).then(cls => {
       expect(cls.name).to.eq(className);
       expect(cls.grades).to.contain(grade);
@@ -79,6 +68,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     manageClass.fillClassDetails(className, startDate, endDate, grade, subject, standardSet, true);
     manageClass.clickOnUpdateClass();
     sideBar.clickOnManageClass();
+    cy.wait("@mygroups");
+
     manageClass.getClassRowDetails(className).then(cls => {
       expect(cls.name).to.eq(className);
       expect(cls.grades).to.contain(grade);
@@ -98,6 +89,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     manageClass.fillClassDetails(undefined, undefined, undefined, grade, subject, standardSet, true);
     manageClass.clickOnUpdateClass();
     sideBar.clickOnManageClass();
+    cy.wait("@mygroups");
     manageClass.getClassRowDetails(classNameEdit).then(cls => {
       expect(cls.name).to.eq(classNameEdit);
       expect(cls.grades).to.contain(grade);
@@ -117,6 +109,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.fillStudentDetails(username, name, user.password);
       manageClass.clickOnAddUserButton().then(() => {
         sideBar.clickOnManageClass();
+        cy.wait("@mygroups");
         manageClass.getClassRowDetails(testData.edit.className).then(cls => {
           expect(cls.students).to.eq("1");
         });
@@ -135,6 +128,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         manageClass.clickOnAddStudents();
         manageClass.addStudentByFirstNameLastName(users).then(() => {
           sideBar.clickOnManageClass();
+          cy.wait("@mygroups");
           manageClass.getClassRowDetails(testData.edit.className).then(cls => {
             expect(cls.students).to.eq(`${previousCount + 2}`);
           });

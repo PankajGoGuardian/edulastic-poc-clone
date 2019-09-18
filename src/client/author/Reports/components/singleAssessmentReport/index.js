@@ -48,7 +48,13 @@ export const SingleAssessmentReport = props => {
       </StyledP>
       <LinksWrapper>
         {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
+          return (
+            <LinkItem
+              key={data.title}
+              data={data}
+              onClick={clickedLink => props.onClickCB(clickedLink, "singleAssessmentReport")}
+            />
+          );
         })}
       </LinksWrapper>
     </div>

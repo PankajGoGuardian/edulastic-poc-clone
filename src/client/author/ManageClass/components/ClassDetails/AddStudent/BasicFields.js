@@ -105,6 +105,15 @@ const BasicFields = ({
     }
   };
 
+  const checkFirstName = (rule, value, callback) => {
+    const firstName = value.split(" ")[0];
+    if (firstName.length < 3) {
+      callback("Name must contains atleast 3 characters");
+    } else {
+      callback();
+    }
+  };
+
   return (
     <FormBody>
       {showClassCodeField && (
@@ -138,6 +147,7 @@ const BasicFields = ({
           {enroll && "user exists and will be enrolled"}
           <Form.Item>
             {getFieldDecorator("email", {
+              validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
             })(<Input data-cy="username" prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
           </Form.Item>
@@ -171,10 +181,8 @@ const BasicFields = ({
           <legend>Name of User</legend>
           <Form.Item>
             {getFieldDecorator("fullName", {
-              rules: [
-                { required: true, message: "Please provide user full name" },
-                { max: 128, message: "Must less than 128 characters!" }
-              ]
+              validateTrigger: ["onBlur"],
+              rules: [{ validator: checkFirstName }]
             })(
               <Input
                 data-cy="fullName"
@@ -192,10 +200,8 @@ const BasicFields = ({
             <legend>First Name</legend>
             <Form.Item>
               {getFieldDecorator("firstName", {
-                rules: [
-                  { required: true, message: "Please provide user first name" },
-                  { max: 128, message: "Must less than 128 characters!" }
-                ],
+                validateTrigger: ["onBlur"],
+                rules: [{ validator: checkFirstName }],
                 initialValue: firstName || ""
               })(
                 <Input

@@ -17,6 +17,15 @@ const PlayerFooter = ({
   return (
     <MainFooter>
       <FlexContainer>
+        <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
+          <i className="fa fa-angle-left" />
+        </PrevButton>
+        <ControlBtn data-cy="next" onClick={moveToNext}>
+          <i className="fa fa-angle-right" />
+          <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
+        </ControlBtn>
+      </FlexContainer>
+      <FlexContainer>
         {settings.maxAnswerChecks && (
           <CheckAnswerBtn
             onClick={onCheckAnswer}
@@ -26,15 +35,6 @@ const PlayerFooter = ({
             <span>{t("pagination.checkanswer")} </span>
           </CheckAnswerBtn>
         )}
-      </FlexContainer>
-      <FlexContainer>
-        <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
-          <i className="fa fa-angle-left" />
-        </PrevButton>
-        <ControlBtn data-cy="next" onClick={moveToNext}>
-          <i className="fa fa-angle-right" />
-          <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
-        </ControlBtn>
       </FlexContainer>
     </MainFooter>
   );
@@ -106,6 +106,6 @@ const PrevButton = styled(ControlBtn)`
 `;
 
 const CheckAnswerBtn = styled(ControlBtn)`
-  background-color: ${props => props.theme.headerIconHoverColor};
+  background-color: ${props => props.theme.controlBtnSecondaryColor};
   border-color: ${props => props.theme.headerIconHoverColor};
 `;

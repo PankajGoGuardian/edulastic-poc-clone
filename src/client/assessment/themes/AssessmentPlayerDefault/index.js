@@ -4,7 +4,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
@@ -70,7 +70,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSavePauseModalVisible: false,
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       calculateMode: `${settings.calcType}_DESMOS`,
-      currentToolMode: 0,
+      currentToolMode: [0],
       showHints: false,
       enableCrossAction: false
     };
@@ -110,7 +110,27 @@ class AssessmentPlayerDefault extends React.Component {
     theme: playersTheme
   };
 
-  changeTool = val => this.setState({ currentToolMode: val });
+  changeTool = val => {
+    let { currentToolMode, enableCrossAction } = this.state;
+    if (val === 3 || val === 5) {
+      const index = currentToolMode.indexOf(val);
+      if (index !== -1) {
+        currentToolMode.splice(index, 1);
+      } else {
+        currentToolMode.push(val);
+      }
+      currentToolMode = currentToolMode.filter(m => m === 3 || m === 5);
+    } else {
+      currentToolMode = [val];
+    }
+
+    if (val === 3) {
+      enableCrossAction = !enableCrossAction;
+      this.setState({ currentToolMode, enableCrossAction });
+    } else {
+      this.setState({ currentToolMode });
+    }
+  };
 
   showHideHints = () => {
     this.setState(prevState => ({
@@ -171,7 +191,7 @@ class AssessmentPlayerDefault extends React.Component {
     } else if (activeMode === value) {
       this.setState({ activeMode: "" });
     } else {
-      this.setState({ activeMode: value });
+      this.setState({ activeMode: value, deleteMode: false });
     }
   };
 
@@ -222,13 +242,33 @@ class AssessmentPlayerDefault extends React.Component {
 
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
-      const currentToolMode = next.scratchPad ? 5 : 0;
-      return { currentToolMode, cloneCurrentItem: next.currentItem, history: 0, activeMode: "" };
+      const qId = get(next.items, `[${next.currentItem}].data.questions[0].id`, null);
+      const currentToolMode = [];
+      if (next.scratchPad) {
+        currentToolMode.push(5);
+      }
+      if (next.crossAction && next.crossAction[qId]) {
+        currentToolMode.push(3);
+      }
+      if (!next.crossAction && !next.scratchPad) {
+        currentToolMode.push(0);
+      }
+
+      const nextState = {
+        currentToolMode,
+        cloneCurrentItem: next.currentItem,
+        history: 0,
+        activeMode: "",
+        enableCrossAction: currentToolMode.indexOf(3) !== -1
+      };
+
+      return nextState;
     }
 
-    if (next.scratchPad && prevState.currentToolMode !== 5) {
-      return { currentToolMode: 5, history: 0, activeMode: "" };
+    if (next.scratchPad && prevState.currentToolMode.indexOf(5) === -1) {
+      return { currentToolMode: [5], history: 0, activeMode: "" };
     }
+
     return null;
   }
 
@@ -249,6 +289,7 @@ class AssessmentPlayerDefault extends React.Component {
       previewPlayer,
       scratchPad,
       highlights,
+      crossAction,
       toggleBookmark,
       isBookmarked,
       answerChecksUsedForItem,
@@ -271,7 +312,8 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor,
       calculateMode,
       currentToolMode,
-      showHints
+      showHints,
+      enableCrossAction
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -290,7 +332,7 @@ class AssessmentPlayerDefault extends React.Component {
       });
     }
 
-    const scratchPadMode = currentToolMode === 5;
+    const scratchPadMode = currentToolMode.indexOf(5) !== -1;
     const hasCollapseButtons =
       itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
 
@@ -444,9 +486,11 @@ class AssessmentPlayerDefault extends React.Component {
                   cols={itemRows}
                   questions={questions}
                   showCollapseBtn
-                  setHighlights={this.saveHistory("resourceId")}
                   highlights={highlights}
+                  crossAction={crossAction || {}}
                   viewComponent="studentPlayer"
+                  setHighlights={this.saveHistory("resourceId")}
+                  setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
                 />
               )}
               {testItemState === "check" && (
@@ -459,20 +503,22 @@ class AssessmentPlayerDefault extends React.Component {
                   scrolling={item.scrolling}
                   questions={questions}
                   LCBPreviewModal={LCBPreviewModal}
-                  setHighlights={this.saveHistory("resourceId")}
                   highlights={highlights}
+                  crossAction={crossAction || {}}
                   showCollapseBtn
                   viewComponent="studentPlayer"
+                  setHighlights={this.saveHistory("resourceId")} // this needs only for passage type
+                  setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
                 />
               )}
               {showHints && (
-                <PaddingDiv>
+                <StyledPaddingDiv>
                   <Hints questions={get(item, [`data`, `questions`], [])} />
-                </PaddingDiv>
+                </StyledPaddingDiv>
               )}
             </MainWrapper>
           </Main>
-          {currentToolMode === 2 && (
+          {currentToolMode.indexOf(2) !== -1 && (
             <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
           )}
         </Container>
@@ -491,6 +537,7 @@ const enhance = compose(
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
+      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
@@ -513,3 +560,7 @@ const enhance = compose(
 );
 
 export default enhance(AssessmentPlayerDefault);
+
+const StyledPaddingDiv = styled(PaddingDiv)`
+  padding: 0px 35px;
+`;

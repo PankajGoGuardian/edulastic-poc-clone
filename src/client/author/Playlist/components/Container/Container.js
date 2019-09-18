@@ -339,7 +339,7 @@ class TestList extends Component {
     );
   }
 
-  searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
     const { loading, windowWidth, history, match, playlists } = this.props;
@@ -457,7 +457,7 @@ class TestList extends Component {
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
                 clearFilter={this.handleClearFilter}
-                searchCurriculum={this.searchCurriculum}
+                searchFilterOption={this.searchFilterOption}
                 handleStandardSearch={this.handleStandardSearch}
                 filterMenuItems={filterMenuItems}
               />
@@ -481,7 +481,7 @@ class TestList extends Component {
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
                         clearFilter={this.handleClearFilter}
-                        searchCurriculum={this.searchCurriculum}
+                        searchFilterOption={this.searchFilterOption}
                         handleStandardSearch={this.handleStandardSearch}
                         filterMenuItems={filterMenuItems}
                       />

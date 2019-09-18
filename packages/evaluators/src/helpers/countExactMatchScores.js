@@ -10,7 +10,7 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
   }
 
   let score = 0;
-  let maxScore = 1;
+  let maxScore = 0;
   let matchCount = 0;
 
   let rightLen = 0;

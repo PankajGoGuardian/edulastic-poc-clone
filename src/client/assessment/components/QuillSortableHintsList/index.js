@@ -73,26 +73,26 @@ class QuillSortableHintsList extends Component {
   render() {
     const { t, item } = this.props;
 
-    return (
-      item.hints && (
-        <Fragment>
-          <Label data-cy="hints">{t("component.options.hints")}</Label>
-          <QuillSortableList
-            items={item.hints.map(o => o.label)}
-            onSortEnd={this.onSortEnd}
-            useDragHandle
-            placeholder={t("component.enterHintForTheProblem")}
-            defaultLabel={false}
-            firstFocus={item.firstMount}
-            onRemove={this.remove}
-            onChange={this.editOptions}
-          />
+    if (!item.hints) return "";
 
-          <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
-            {t("component.addANewHint")}
-          </AddNewChoiceBtn>
-        </Fragment>
-      )
+    return (
+      <Fragment>
+        <Label data-cy="hints">{t("component.options.hints")}</Label>
+        <QuillSortableList
+          items={item.hints.map(o => o.label)}
+          onSortEnd={this.onSortEnd}
+          useDragHandle
+          placeholder={t("component.enterHintForTheProblem")}
+          defaultLabel={false}
+          firstFocus={item.firstMount}
+          onRemove={this.remove}
+          onChange={this.editOptions}
+        />
+
+        <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+          {t("component.addANewHint")}
+        </AddNewChoiceBtn>
+      </Fragment>
     );
   }
 }

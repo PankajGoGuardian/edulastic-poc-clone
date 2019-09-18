@@ -5,10 +5,10 @@ import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isUndefined, round } from "lodash";
+import { get, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
-import { withWindowSizes, WithResources } from "@edulastic/common";
+import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -43,7 +43,6 @@ import { Video } from "../widgets/Video";
 import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
-import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { toggleAdvancedSections } from "../actions/questions";
@@ -52,7 +51,6 @@ import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
-import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { getFontSize } from "../utils/helpers";
 
 const QuestionContainer = styled.div`
@@ -330,7 +328,7 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
-    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType);
+    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
     return (
       <WithResources
         resources={[

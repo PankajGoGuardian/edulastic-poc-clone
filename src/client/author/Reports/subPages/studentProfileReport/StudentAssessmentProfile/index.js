@@ -4,7 +4,7 @@ import { get, includes, filter } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import AssessmentTable from "./common/components/table/AssessmentTable";
 import AssessmentChart from "../common/components/charts/AssessmentChart";
-import { getReportsSPRFilterData } from "../common/filterDataDucks";
+import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
 import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
@@ -23,14 +23,14 @@ const StudentAssessmentProfile = ({
   SARFilterData,
   studentAssessmentProfile,
   getStudentAssessmentProfileRequestAction,
-  isCsvDownloading
+  isCsvDownloading,
+  bandInfoSelected: bandInfo
 }) => {
   const { selectedStudent } = settings;
 
   const [selectedTests, setSelectedTests] = useState([]);
 
   const rawData = get(studentAssessmentProfile, "data.result", {});
-  const { bandInfo = [] } = get(SARFilterData, "data.result", {});
 
   const [chartData, tableData] = useMemo(() => {
     const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo);
@@ -48,8 +48,10 @@ const StudentAssessmentProfile = ({
     }
   }, [settings]);
 
+  const title = get(settings, "selectedStudent.title", "");
+
   const onTestSelect = item => setSelectedTests(toggleItem(selectedTests, item.uniqId));
-  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${selectedStudent.title}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${title}.csv`, data);
 
   if (loading) {
     return (
@@ -63,7 +65,7 @@ const StudentAssessmentProfile = ({
   return (
     <>
       <StyledCard>
-        <StyledH3>Assessment Performance Details of {selectedStudent.title}</StyledH3>
+        <StyledH3>Assessment Performance Details of {title}</StyledH3>
         <AssessmentChart
           data={chartData}
           selectedTests={selectedTests}
@@ -76,7 +78,7 @@ const StudentAssessmentProfile = ({
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
           data={tableData}
-          studentName={selectedStudent.title}
+          studentName={title}
           selectedTests={selectedTests}
         />
       </StyledCard>
@@ -89,7 +91,8 @@ const enhance = connect(
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
     SARFilterData: getReportsSPRFilterData(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    bandInfoSelected: getBandInfoSelected(state)
   }),
   {
     getStudentAssessmentProfileRequestAction

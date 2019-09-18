@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Affix, Input } from "antd";
+import { Input } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Container, Title, Clear, FixedFilters, Header, HeaderRow, MainFilter, MainFilterHeader } from "./styled";
-
+import {
+  Container,
+  Backdrop,
+  CloseIcon,
+  Title,
+  Clear,
+  FixedFilters,
+  SearchWrapper,
+  HeaderRow,
+  MainFilter,
+  MainFilterHeader,
+  AffixContainer
+} from "./styled";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
-import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class ItemFilter extends Component {
   renderFullTextSearch = () => {
@@ -16,7 +26,7 @@ class ItemFilter extends Component {
     } = this.props;
 
     return (
-      <Header>
+      <SearchWrapper>
         <HeaderRow>
           <Input.Search
             placeholder="Search by skills and keywords"
@@ -25,7 +35,7 @@ class ItemFilter extends Component {
             value={searchString}
           />
         </HeaderRow>
-      </Header>
+      </SearchWrapper>
     );
   };
 
@@ -40,35 +50,40 @@ class ItemFilter extends Component {
       onSearchInputChange,
       curriculumStandards,
       t,
-      items
+      items,
+      toggleFilter
     } = this.props;
 
     return (
-      <Container>
-        <PerfectScrollbar>
-          <FixedFilters>
-            {windowWidth > SMALL_DESKTOP_WIDTH ? this.renderFullTextSearch() : null}
-            <MainFilter>
-              <Affix>
-                <MainFilterHeader>
-                  <Title>{t("component.itemlist.filter.filters")}</Title>
-                  <Clear data-cy="clearAll" onClick={onClearSearch}>
-                    {t("component.itemlist.filter.clearAll")}
-                  </Clear>
-                </MainFilterHeader>
-                <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
-                <Search
-                  search={search}
-                  showStatus={search.filter !== items[0].filter}
-                  curriculums={curriculums}
-                  onSearchFieldChange={onSearchFieldChange}
-                  curriculumStandards={curriculumStandards}
-                />
-              </Affix>
-            </MainFilter>
-          </FixedFilters>
-        </PerfectScrollbar>
-      </Container>
+      <>
+        <Backdrop />
+        <Container>
+          <CloseIcon type="close" onClick={toggleFilter} />
+          <PerfectScrollbar>
+            <FixedFilters>
+              {this.renderFullTextSearch()}
+              <MainFilter>
+                <AffixContainer>
+                  <MainFilterHeader>
+                    <Title>{t("component.itemlist.filter.filters")}</Title>
+                    <Clear data-cy="clearAll" onClick={onClearSearch}>
+                      {t("component.itemlist.filter.clearAll")}
+                    </Clear>
+                  </MainFilterHeader>
+                  <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
+                  <Search
+                    search={search}
+                    showStatus={search.filter !== items[0].filter}
+                    curriculums={curriculums}
+                    onSearchFieldChange={onSearchFieldChange}
+                    curriculumStandards={curriculumStandards}
+                  />
+                </AffixContainer>
+              </MainFilter>
+            </FixedFilters>
+          </PerfectScrollbar>
+        </Container>
+      </>
     );
   }
 }

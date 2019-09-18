@@ -78,6 +78,8 @@ const QuestionAnalysis = ({
     );
   }
 
+  const assessmentName = get(settings, "selectedTest.title", "");
+
   return (
     <div>
       {loading ? (
@@ -93,7 +95,7 @@ const QuestionAnalysis = ({
         <>
           <UpperContainer>
             <StyledCard>
-              <StyledH3>Question Performance Analysis | {questionAnalysis.assessmentName}</StyledH3>
+              <StyledH3>Question Performance Analysis | {assessmentName}</StyledH3>
               <SimpleStackedBarWithLineChartContainer
                 chartData={chartData}
                 onBarClickCB={onBarClickCB}
@@ -110,7 +112,7 @@ const QuestionAnalysis = ({
                     <Col>
                       <StyledH3>
                         Detailed Performance Analysis {role !== "teacher" ? "By " + dropDownKeyToLabel[compareBy] : ""}{" "}
-                        | {questionAnalysis.assessmentName}
+                        | {assessmentName}
                       </StyledH3>
                     </Col>
                     <Col>

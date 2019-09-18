@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
-import { getReportsSPRFilterData } from "../common/filterDataDucks";
+import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
@@ -42,18 +42,20 @@ const StudentProfileSummary = ({
   loading,
   settings,
   isCsvDownloading,
-  SARFilterData,
+  SPRFilterData,
   studentProfileSummary,
-  getStudentProfileSummaryRequestAction
+  getStudentProfileSummaryRequestAction,
+  bandInfoSelected
 }) => {
   const { selectedStudent } = settings;
+  const bandInfo = bandInfoSelected;
 
   const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
     studentProfileSummary,
     "data.result",
     {}
   );
-  const { bandInfo = [], scaleInfo = [] } = get(SARFilterData, "data.result", {});
+  const { scaleInfo = [], studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
@@ -81,6 +83,7 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {};
+  const studentClassInfo = studentClassData[0] || {};
   const onCsvConvert = data =>
     downloadCSV(`Student Profile Report-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
 
@@ -102,11 +105,11 @@ const StudentProfileSummary = ({
               <b>School</b>: {studentInformation.school || "N/A"}
             </p>
             <p>
-              <b>Subject</b>: {studentInformation.subject}
+              <b>Subject</b>: {studentClassInfo.standardSet || "N/A"}
             </p>
           </Col>
           <Col xs={24} sm={24} md={19} lg={19} xl={19}>
-            <AssessmentChart data={data} />
+            <AssessmentChart data={data} studentClassData={studentClassData} />
           </Col>
         </Row>
       </StyledCard>
@@ -133,8 +136,9 @@ const enhance = connect(
   state => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
-    SARFilterData: getReportsSPRFilterData(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    SPRFilterData: getReportsSPRFilterData(state),
+    isCsvDownloading: getCsvDownloadingState(state),
+    bandInfoSelected: getBandInfoSelected(state)
   }),
   {
     getStudentProfileSummaryRequestAction

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
-import { uniq } from "lodash";
+import { Select, message } from "antd";
 import { FieldLabel } from "./components";
 import Uploader from "./Uploader";
 import { tagsApi } from "@edulastic/api";
@@ -9,20 +8,26 @@ import { tagsApi } from "@edulastic/api";
 const LeftField = props => {
   const { thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
   const [thumbnail, setThumbnail] = useState(thumbnailUri);
-  const [searchValue, setSearchValue] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
     setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -32,8 +37,8 @@ const LeftField = props => {
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -45,30 +50,45 @@ const LeftField = props => {
         <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
       <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(t => t._id)}>
-        <Select
-          data-cy="tagsSelect"
-          mode="multiple"
-          style={{ marginBottom: 0 }}
-          optionLabelProp="title"
-          placeholder="Select Tags"
-          onSearch={searchTags}
-          onSelect={selectTags}
-          onDeselect={deselectTags}
-          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-        >
-          {!!searchValue ? (
-            <Select.Option key={0} value={searchValue} title={searchValue}>
-              {`${searchValue} (Create new Tag )`}
+        {searchValue.length && !searchValue.trim().length ? (
+          <Select
+            mode="multiple"
+            style={{ marginBottom: 0 }}
+            optionLabelProp="title"
+            placeholder="Select Tags"
+            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+            onSearch={searchTags}
+          >
+            <Select.Option key={0} value={"invalid"} title={"invalid"} disabled>
+              {`Please enter valid characters`}
             </Select.Option>
-          ) : (
-            ""
-          )}
-          {allTagsData.map(({ tagName, _id }) => (
-            <Select.Option key={_id} value={_id} title={tagName}>
-              {tagName}
-            </Select.Option>
-          ))}
-        </Select>
+          </Select>
+        ) : (
+          <Select
+            data-cy="tagsSelect"
+            mode="multiple"
+            style={{ marginBottom: 0 }}
+            optionLabelProp="title"
+            placeholder="Select Tags"
+            onSearch={searchTags}
+            onSelect={selectTags}
+            onDeselect={deselectTags}
+            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+          >
+            {!!searchValue.trim() ? (
+              <Select.Option key={0} value={searchValue} title={searchValue}>
+                {`${searchValue} (Create new Tag)`}
+              </Select.Option>
+            ) : (
+              ""
+            )}
+            {allTagsData.map(({ tagName, _id }) => (
+              <Select.Option key={_id} value={_id} title={tagName}>
+                {tagName}
+              </Select.Option>
+            ))}
+          </Select>
+        )}
       </FieldLabel>
     </>
   );

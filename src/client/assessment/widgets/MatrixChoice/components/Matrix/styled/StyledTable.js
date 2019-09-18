@@ -5,7 +5,8 @@ import { fonts } from "@edulastic/constants";
 
 export const StyledTable = styled(Table)`
   table {
-    width: 100%;
+    max-width: ${props => props.maxWidth && `${props.maxWidth}px !important`};
+    width: ${props => (props.maxWidth ? "max-content" : "100%")};
     font-size: ${props => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
@@ -40,6 +41,7 @@ export const StyledTable = styled(Table)`
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
+        min-width: 110px;
       }
       td div {
         padding: 5px;

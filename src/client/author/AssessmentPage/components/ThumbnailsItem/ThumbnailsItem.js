@@ -54,7 +54,7 @@ const createContextMenu = ({
       Rotate counterclockwise
     </Menu.Item>
     <Menu.Divider />
-    <Menu.Item onClick={url ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
+    <Menu.Item onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}>Delete</Menu.Item>
   </Menu>
 );
 

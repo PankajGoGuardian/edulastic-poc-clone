@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mobileWidth, desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { white, mobileWidth, themeColor, mediumDesktopWidth, mobileWidthLarge } from "@edulastic/colors";
 
 import iconCart from "./shopping-cart.svg";
 
@@ -23,38 +23,32 @@ export const Container = styled.div`
 
 export const CartButtonWrapper = styled(Button)`
   height: 44px;
-  width: 160px;
-  padding-left: 60px;
+  width: 140px;
+  padding-left: 40px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  background: url(${iconCart}) -20% center no-repeat, ${white};
+  background: ${white} url(${iconCart}) -20px center no-repeat;
   background-size: 60% 50%;
-  color: #00ad50;
-  border-color: #00ad50;
+  color: ${themeColor};
+  border-color: ${themeColor};
 
   &:hover,
   &:focus,
   &:active {
-    background: url(${iconCart}) -20% center no-repeat, ${white};
-    background-size: 60% 50%;
-    color: #00ad50;
-    border-color: #00ad50;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    background-size: 50%;
+    background: ${white} url(${iconCart});
+    color: ${themeColor};
+    border-color: ${themeColor};
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     height: 40px;
     width: 45px;
     border-radius: 3px;
-    background-size: 40%;
     font-size: 0;
     background-position: center;
     padding: 0;

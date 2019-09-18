@@ -3,7 +3,7 @@ import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
-import { EditButton } from "./elements";
+import { Area, EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
@@ -143,29 +143,12 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}, enableSnapTo = false) => {
-  if (enableSnapTo) {
-    line.on("down", () => {
-      points.forEach(point => {
-        if (!point.visProp.snaptogrid) {
-          point.setAttribute({ snapToGrid: true });
-        }
-      });
-    });
-    points.forEach(point => {
-      point.on("down", () => {
-        if (!point.visProp.snaptogrid) {
-          point.setAttribute({ snapToGrid: true });
-        }
-      });
-    });
-  }
-
+export const handleSnap = (line, points, board) => {
   line.on("up", () => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());
-      beforeEmitMoveEventCallback();
       line.dragged = false;
+      Area.updateShadingsForAreaPoints(board, board.elements);
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
@@ -179,8 +162,8 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
   points.forEach(point => {
     point.on("up", () => {
       if (point.dragged) {
-        beforeEmitMoveEventCallback();
         point.dragged = false;
+        Area.updateShadingsForAreaPoints(board, board.elements);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });
@@ -323,11 +306,10 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
-    const { id, type, points, latex, subType } = element;
+    const { id, type, points, latex, subType, apiLatex } = element;
     if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.AREA || type === CONSTANT.TOOLS.DRAG_DROP) {
       if (!acc[id]) {
         acc[id] = element;
-        acc[id].priorityColor = element.priorityColor || null;
       }
       if (isSub) {
         acc[id].subElement = true;
@@ -342,11 +324,13 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       labelIsVisible: element.labelIsVisible,
       baseColor: element.baseColor,
       priorityColor: element.priorityColor || null,
-      text: element.text
+      text: element.text,
+      dashed: element.dashed
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
       acc[id].subType = subType;
+      acc[id].apiLatex = apiLatex;
       if (points && points[0] && points[1]) {
         acc[id].subElementsIds = {
           startPoint: points[0].id,
@@ -376,7 +360,17 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, latex = null, subType = null, points, text = null } = element;
+      const {
+        id,
+        type,
+        subElement = false,
+        latex = null,
+        subType = null,
+        points,
+        text = null,
+        apiLatex = null,
+        dashed = false
+      } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -389,11 +383,11 @@ export function flat2nestedConfig(config) {
           baseColor: element.baseColor,
           latex,
           subType,
-          text
+          text,
+          apiLatex,
+          dashed
         };
-        if (type === CONSTANT.TOOLS.AREA) {
-          acc[id].points = points;
-        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP) {
+        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP || type === CONSTANT.TOOLS.AREA) {
           acc[id].x = element.x;
           acc[id].y = element.y;
           acc[id].priorityColor = element.priorityColor || null;
@@ -401,7 +395,6 @@ export function flat2nestedConfig(config) {
             acc[id].pointIsVisible = element.pointIsVisible;
             acc[id].labelIsVisible = element.labelIsVisible;
             acc[id].baseColor = element.baseColor;
-            acc[id].priorityColor = element.priorityColor || null;
           }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
@@ -488,18 +481,118 @@ export function getAvailablePositions(board, element, isStacked) {
   return result;
 }
 
-export function fixLatex(latex) {
-  return latex
-    .trim()
-    .replace(/\\frac{([^}]+)}{([^}]+)}/g, "($1)/($2)") // fractions
-    .replace(/\\left\(/g, "(") // open parenthesis
-    .replace(/\\right\)/g, ")") // close parenthesis
-    .replace(/\\cdot/g, "*")
-    .replace(/[^\(](floor|ceil|(sin|cos|tan|sec|csc|cot)h?)\(([^\(\)]+)\)[^\)]/g, "($&)") // functions
-    .replace(/([^(floor|ceil|(sin|cos|tan|sec|csc|cot)h?|\+|\-|\*|\/)])\(/g, "$1*(")
-    .replace(/\)([\w])/g, ")*$1")
-    .replace(/([0-9])([A-Za-z])/g, "$1*$2")
-    .replace("\\", "");
+export function fixApiLatex(latex) {
+  let splitExpr = latex.split("<=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "<=";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split(">=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = ">=";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split("<");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "<";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split(">");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = ">";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split("=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "=";
+    return { latexFunc, compSign };
+  }
+
+  return {
+    latexFunc: latex,
+    compSign: "="
+  };
+}
+
+export function getLineFunc(point1, point2) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+
+  // vertical line
+  if (x1 === x2) {
+    return (x, y) => x - x1;
+  }
+
+  const a = (y2 - y1) / (x2 - x1);
+  const c = (x2 * y1 - x1 * y2) / (x2 - x1);
+
+  return (x, y) => y - a * x - c;
+}
+
+export function getCircleFunc(point1, point2) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+
+  const r = (y2 - y1) ** 2 + (x2 - x1) ** 2;
+
+  return (x, y) => (x - x1) ** 2 + (y - y1) ** 2 - r;
+}
+
+export function getEllipseFunc(point1, point2, point3) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const x3 = point3.x;
+  const y3 = point3.y;
+
+  const cX = (x1 + x2) / 2;
+  const cY = (y1 + y2) / 2;
+  const rff = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const r1 = Math.sqrt((y3 - y1) ** 2 + (x3 - x1) ** 2);
+  const r2 = Math.sqrt((y3 - y2) ** 2 + (x3 - x2) ** 2);
+  const aPow2 = ((r1 + r2) / 2) ** 2;
+  const bPow2 = aPow2 - (rff / 2) ** 2;
+
+  const cos = (x2 - x1) / rff;
+  const sin = (y1 - y2) / rff;
+
+  return (x, y) => ((x - cX) * cos - (y - cY) * sin) ** 2 / aPow2 + ((x - cX) * sin + (y - cY) * cos) ** 2 / bPow2 - 1;
+}
+
+export function getHyperbolaFunc(point1, point2, point3) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const x3 = point3.x;
+  const y3 = point3.y;
+
+  const cX = (x1 + x2) / 2;
+  const cY = (y1 + y2) / 2;
+  const rff = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const r1 = Math.sqrt((y3 - y1) ** 2 + (x3 - x1) ** 2);
+  const r2 = Math.sqrt((y3 - y2) ** 2 + (x3 - x2) ** 2);
+  const aPow2 = ((r1 - r2) / 2) ** 2;
+  const bPow2 = (rff / 2) ** 2 - aPow2;
+
+  const cos = (x2 - x1) / rff;
+  const sin = (y1 - y2) / rff;
+
+  return (x, y) => ((x - cX) * cos - (y - cY) * sin) ** 2 / aPow2 - ((x - cX) * sin + (y - cY) * cos) ** 2 / bPow2 - 1;
 }
 
 export function isInPolygon(testPoint, vertices) {

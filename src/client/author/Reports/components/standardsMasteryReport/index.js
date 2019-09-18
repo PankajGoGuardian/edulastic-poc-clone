@@ -28,7 +28,7 @@ export const StandardsMasteryReport = props => {
       </StyledP>
       <LinksWrapper>
         {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
+          return <LinkItem key={data.title} data={data} onClick={() => props.onClickCB("standardsMasteryReport")} />;
         })}
       </LinksWrapper>
     </div>

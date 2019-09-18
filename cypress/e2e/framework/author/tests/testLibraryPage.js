@@ -117,7 +117,6 @@ export default class TestLibrary {
     cy.route("POST", "**/group/search").as("groups");
     cy.contains("ASSIGN").click({ force: true });
     cy.wait("@groups");
-    cy.wait("@assignment");
   };
 
   verifyVersionedURL = (oldTestId, newTestId) =>

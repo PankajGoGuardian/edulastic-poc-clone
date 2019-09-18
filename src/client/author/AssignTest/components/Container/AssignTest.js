@@ -130,10 +130,15 @@ class AssignTest extends React.Component {
     ) {
       return message.error("Please add a valid password.");
     }
-    if (saveAssignment && isEmpty(assignment.class)) {
+    if (isEmpty(assignment.class)) {
       message.error("Please select at least one class to assign.");
-    } else if (saveAssignment && assignment.endDate < Date.now()) {
+    } else if (assignment.endDate < Date.now()) {
       message.error("Please Enter a future end date. ");
+    } else if (
+      assignment?.class[0]?.specificStudents &&
+      (!assignment.class[0].students || assignment.class[0].students.length === 0)
+    ) {
+      message.error("Please select the student");
     } else {
       saveAssignment(assignment);
     }

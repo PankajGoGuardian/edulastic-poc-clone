@@ -1,13 +1,11 @@
-import JXG from "jsxgraph";
-import { parse, derivative } from "mathjs";
 import { CONSTANT } from "../config";
-import { defaultPointParameters, getLabelParameters } from "../settings";
-import { Point, Line, Parabola } from ".";
-import { colorGenerator, fixLatex, getPropsByLineType, handleSnap, setLabel } from "../utils";
+import { fixApiLatex } from "../utils";
+import { Area } from ".";
 
 const jxgType = 98;
 
 const defaultConfig = {
+  fixed: true,
   strokeWidth: 2,
   highlightStrokeWidth: 2
 };
@@ -21,299 +19,575 @@ function getColorParams(color) {
   };
 }
 
-function isLine(xMin, xMax, equationLeft, equationRight) {
-  // check vertical line
-  if (equationLeft === "x" && !Number.isNaN(Number.parseFloat(equationRight))) {
-    return true;
+const EMPTY = 0;
+const FINISHED = -1;
+const VALID = 1;
+const MAX_SPLIT = 32;
+const RES_COARSE = 8;
+const MAX_DEPTH = 4;
+const T0101 = 5;
+
+const equals = (x, y, eps) => {
+  if (x === y) return true;
+  return x - eps < y && y < x + eps;
+};
+
+class Node {
+  constructor(elem, next, prev) {
+    this.elem = elem;
+    this.next = next;
+    this.prev = prev;
   }
 
-  // check horizontal line
-  if (equationLeft === "y" && !Number.isNaN(Number.parseFloat(equationRight))) {
-    return true;
+  detach() {
+    this.next.prev = this.prev;
+    this.prev.next = this.next;
+    this.next = null;
+    this.prev = null;
+    this.elem = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = new Node(null, null, null);
+    this.head.next = this.head;
+    this.head.prev = this.head;
   }
 
-  const func = parse(equationRight);
-  const step = (xMax - xMin) / 5;
-  for (let i = 0; i < 3; i++) {
-    const x1 = xMin + step * i;
-    const x2 = xMin + step * (i + 1);
-    const x3 = xMin + step * (i + 2);
-    const y1 = func.eval({ x: x1 });
-    const y2 = func.eval({ x: x2 });
-    const y3 = func.eval({ x: x3 });
-    const left = (y1 - y2) / (x1 - x2);
-    const right = (y1 - y3) / (x1 - x3);
-    if (left.toFixed(3) !== right.toFixed(3)) {
-      return false;
+  shift = () => {
+    this.head.next.detach();
+  };
+
+  pop = () => {
+    this.head.prev.detach();
+  };
+
+  push = e => {
+    const node = new Node(e, this.head, this.head.prev);
+    this.head.prev.next = node;
+    this.head.prev = node;
+  };
+
+  unshift = e => {
+    const node = new Node(e, this.head.next, this.head);
+    this.head.next.prev = node;
+    this.head.next = node;
+  };
+
+  merge = list => {
+    if (list.isEmpty()) return;
+    this.head.prev.next = list.head.next;
+    list.head.next.prev = this.head.prev;
+    list.head.prev.next = this.head;
+    this.head.prev = list.head.prev;
+    list.destroy();
+  };
+
+  isEmpty = () => this.head === this.head.next;
+
+  destroy = () => {
+    this.head = new Node(null, null, null);
+  };
+
+  toArray = () => {
+    let node = this.head.next;
+    const array = [];
+    while (node !== this.head) {
+      array.push(node.elem);
+      node = node.next;
     }
+    return array;
+  };
+
+  remove = current => {
+    if (current instanceof Node) current.detach();
+  };
+
+  forEach = callback => {
+    let current = this.head.next;
+    let next;
+    while (current !== this.head) {
+      next = current.next;
+      callback(current.elem, current);
+      current = next;
+    }
+  };
+}
+
+class Point {
+  constructor(x, y, lineTo) {
+    this.x = x;
+    this.y = y;
+    this.lineTo = lineTo;
   }
-  return true;
+
+  equals = p => equals(this.x, p.x, 1e-6) && equals(this.y, p.y, 1e-6);
 }
 
-function isParabola(equationRight) {
-  return (
-    (equationRight.match(/x/gi) || []).length === 1 &&
-    equationRight.match(/(\([0-9\+\-\*\.]*x[0-9\+\-\*\.]*\)\^2)|(x\^2)/gi)
-  );
+class PointList {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.start.lineTo = false;
+    this.end.lineTo = true;
+    this.points = new LinkedList();
+  }
+
+  merge = list => {
+    this.points.push(this.end);
+    list.start.lineTo = true;
+    this.points.push(list.start);
+    this.end = list.end;
+    if (list.points.length === 0) return;
+    this.points.merge(list.points);
+  };
+
+  push = point => {
+    point.lineTo = true;
+    this.points.push(this.end);
+    this.end = point;
+  };
+
+  unshift = point => {
+    point.lineTo = false;
+    this.start.lineTo = true;
+    this.points.unshift(this.start);
+    this.start = point;
+  };
 }
 
-function calculateNewLineLatex(line, points) {
-  return () => {
-    const x1 = points[0].coords.usrCoords[1];
-    const y1 = points[0].coords.usrCoords[2];
-    const x2 = points[1].coords.usrCoords[1];
-    const y2 = points[1].coords.usrCoords[2];
+class Rectangle {
+  constructor(func) {
+    this.eval = [0, 0, 0, 0];
+    this.rect = [0, 0, 0, 0];
+    this.x = 0;
+    this.y = 0;
+    this.children = null;
+    this.status = null;
+    this.singular = false;
+    this.func = func;
+  }
 
-    // vertical line
-    if (x1 === x2) {
-      line.latex = `x=${x1}`;
+  copy = r => {
+    for (let i = 0; i < 4; i++) {
+      this.eval[i] = r.eval[i];
+      this.rect[i] = r.rect[i];
+    }
+    this.x = r.x;
+    this.y = r.y;
+    this.singular = r.singular;
+  };
+
+  set = (x, y, fx, fy, singular) => {
+    this.x = x;
+    this.y = y;
+    this.rect[2] = fx;
+    this.rect[3] = fy;
+    this.singular = singular;
+  };
+
+  split = () => {
+    if (this.children === null) {
+      this.children = [];
+      for (let i = 0; i < 4; i++) {
+        this.children.push(new Rectangle(this.func));
+      }
+    }
+    const r = this.children;
+    const w2 = this.rect[2] * 0.5;
+    const h2 = this.rect[3] * 0.5;
+    for (let i = 0; i < 4; i++) {
+      r[i].copy(this);
+      r[i].rect[2] = w2;
+      r[i].rect[3] = h2;
+    }
+    r[1].rect[0] += w2;
+    r[2].rect[0] += w2;
+    r[2].rect[1] += h2;
+    r[3].rect[1] += h2;
+    r[0].eval[1] = this.func(r[1].rect[0], r[1].rect[1]);
+    r[0].eval[2] = this.func(r[2].rect[0], r[2].rect[1]);
+    r[0].eval[3] = this.func(r[3].rect[0], r[3].rect[1]);
+    r[1].eval[2] = this.func(r[2].rect[0] + w2, r[2].rect[1]);
+    r[2].eval[3] = this.func(r[2].rect[0], r[2].rect[1] + h2);
+    r[1].eval[0] = r[0].eval[1];
+    r[1].eval[3] = r[0].eval[2];
+    r[2].eval[0] = r[0].eval[2];
+    r[2].eval[1] = r[1].eval[2];
+    r[3].eval[0] = r[0].eval[3];
+    r[3].eval[1] = r[0].eval[2];
+    r[3].eval[2] = r[2].eval[3];
+    return r;
+  };
+
+  x1 = () => this.rect[0];
+
+  y1 = () => this.rect[1];
+
+  x2 = () => this.rect[0] + this.rect[2];
+
+  y2 = () => this.rect[1] + this.rect[3];
+}
+
+class Implicit {
+  constructor(func, finish) {
+    this.func = func;
+    this.finish = finish;
+    this.grid = null;
+    this.temp = null;
+    this.plotDepth = 0;
+    this.segmentCheckDepth = 0;
+    this.openList = [];
+    this.segments = [];
+    this.sw = 0;
+    this.sh = 0;
+    this.pts = [null, null];
+    this.listThreshold = 16;
+  }
+
+  buildStatus = r => {
+    let z = 0;
+    let p = 0;
+    let n = 0;
+    let k = true;
+    for (let i = 0; i < 4; i++) {
+      if (!Number.isFinite(r.eval[i]) || Number.isNaN(r.eval[i])) {
+        k = false;
+        break;
+      }
+      if (r.eval[i] < 0.0) n++;
+      else if (r.eval[i] > 0.0) p++;
+      else z++;
+    }
+    r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4 };
+  };
+
+  interpolate = (p1, p2, fa, fb) => {
+    const r = -fb / (fa - fb);
+    if (r >= 0 && r <= 1) {
+      return r * (p1 - p2) + p2;
+    }
+    return (p1 + p2) * 0.5;
+  };
+
+  createLine = (x1, y1, x2, y2) => {
+    this.pts[0] = new Point(x1, y1, false);
+    this.pts[1] = new Point(x2, y2, true);
+    return VALID;
+  };
+
+  oppSign = (x, y) => x * y < 0.0;
+
+  abortList = () => {
+    for (let i = 0; i < this.openList.length; i++) {
+      this.segments.push(this.openList[i].start);
+      this.segments = this.segments.concat(this.openList[i].points.toArray());
+      this.segments.push(this.openList[i].end);
+    }
+    this.openList = [];
+  };
+
+  create = r => {
+    if (r.status.empty) return EMPTY;
+    const zer = r.status.zero;
+    const { neg } = r.status;
+    const { pos } = r.status;
+    if (((zer + 1) | neg | pos) >= 4) {
+      return EMPTY;
+    }
+
+    const x1 = r.x1();
+    const x2 = r.x2();
+    const y1 = r.y1();
+    const y2 = r.y2();
+    const tl = r.eval[0];
+    const tr = r.eval[1];
+    const br = r.eval[2];
+    const bl = r.eval[3];
+    let k = 0;
+
+    switch (zer) {
+      case 0:
+        if (neg === pos && !this.oppSign(tl, br)) return T0101;
+        if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0);
+        if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0);
+        if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0);
+        if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0);
+        return VALID;
+      case 1:
+        if (neg === 3 || pos === 3) {
+          if (tl === 0.0) return this.createLine(x1, y1, x1, y1);
+          if (tr === 0.0) return this.createLine(x2, y1, x2, y1);
+          if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
+          if (br === 0.0) return this.createLine(x2, y2, x2, y2);
+        }
+        if (tl === 0.0) {
+          if (this.oppSign(bl, br)) return this.createLine(x1, y1, this.interpolate(x1, x2, bl, br), y2);
+          if (this.oppSign(tr, br)) return this.createLine(x1, y1, x2, this.interpolate(y1, y1, tr, br));
+          return EMPTY;
+        }
+        if (tr === 0.0) {
+          if (this.oppSign(bl, br)) return this.createLine(this.interpolate(x1, x2, bl, br), y2, x2, y1);
+          if (this.oppSign(bl, tl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y1);
+          return EMPTY;
+        }
+        if (br === 0.0) {
+          if (this.oppSign(tl, tr)) return this.createLine(this.interpolate(x1, x2, tl, tr), y1, x2, y2);
+          if (this.oppSign(tl, bl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y2);
+          return EMPTY;
+        }
+        if (bl === 0.0) {
+          if (this.oppSign(tl, tr)) return this.createLine(x1, y2, this.interpolate(x1, x2, tl, tr), y1);
+          if (this.oppSign(tr, br)) return this.createLine(x1, y2, x2, this.interpolate(y1, y2, tr, br));
+          return EMPTY;
+        }
+        return EMPTY;
+      case 2:
+        if (pos === 2 || neg === 2) {
+          if (tl === 0.0) {
+            if (tr === 0.0) return this.createLine(x1, y1, x2, y1);
+            if (bl === 0.0) return this.createLine(x1, y1, x1, y2);
+          } else if (br === 0.0) {
+            if (tr === 0.0) return this.createLine(x2, y1, x2, y2);
+            if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
+          }
+        } else {
+          if (tr === 0.0 && bl === 0.0) return this.createLine(x1, y2, x2, y1);
+          if (tl === 0.0 && br === 0.0) return this.createLine(x1, y1, x2, y2);
+        }
+        return EMPTY;
+      default:
+        return EMPTY;
+    }
+  };
+
+  append = r => {
+    const cfg = this.create(r);
+    if (cfg === VALID) {
+      if (this.pts[0].x > this.pts[1].x) {
+        const temp = this.pts[0];
+        this.pts[0] = this.pts[1];
+        this.pts[1] = temp;
+      }
+      let inx1 = -1;
+      let inx2 = -1;
+
+      for (let i = 0; i < this.openList.length; i++) {
+        if (this.pts[1].equals(this.openList[i].start)) {
+          inx1 = i;
+          break;
+        }
+      }
+
+      for (let i = 0; i < this.openList.length; i++) {
+        if (this.pts[0].equals(this.openList[i].end)) {
+          inx2 = i;
+          break;
+        }
+      }
+
+      if (inx1 !== -1 && inx2 !== -1) {
+        this.openList[inx2].merge(this.openList[inx1]);
+        this.openList.splice(inx1, 1);
+      } else if (inx1 !== -1) {
+        this.openList[inx1].unshift(this.pts[0]);
+      } else if (inx2 !== -1) {
+        this.openList[inx2].push(this.pts[1]);
+      } else {
+        this.openList.push(new PointList(this.pts[0], this.pts[1]));
+      }
+      if (this.openList.length > this.listThreshold) {
+        this.abortList();
+      }
+    }
+    return cfg;
+  };
+
+  update = (x1, y1, x2, y2, px, py, fast) => {
+    x1 -= (0.25 * Math.PI) / px;
+    if (fast) {
+      this.sw = 8;
+      this.sh = 8;
+    } else {
+      this.sw = Math.min(MAX_SPLIT, Math.floor(px / RES_COARSE));
+      this.sh = Math.min(MAX_SPLIT, Math.floor(py / RES_COARSE));
+    }
+    if (this.sw === 0 || this.sh === 0) {
       return;
     }
+    if (this.grid === null || this.grid.length !== this.sh || this.grid[0].length !== this.sw) {
+      this.grid = [];
+      for (let i = 0; i < this.sh; i++) {
+        const col = [];
+        for (let j = 0; j < this.sw; j++) {
+          col.push(new Rectangle(this.func));
+        }
+        this.grid.push(col);
+      }
+    }
 
-    const a = (y2 - y1) / (x2 - x1);
-    const c = (x2 * y1 - x1 * y2) / (x2 - x1);
-    const part1 = a === 1 ? "x" : a === 0 ? "" : `${a}x`;
-    const part2 = c === 0 ? "" : c > 0 && part1.length !== 0 ? `+${c}` : c;
+    if (this.temp === null) {
+      this.temp = new Rectangle(this.func);
+    }
 
-    const right = `${part1}${part2}`;
-    line.latex = `y=${right.length !== 0 ? right : 0}`;
+    const w = x2 - x1;
+    const h = y2 - y1;
+    let cur;
+    let prev;
+    const frx = w / this.sw;
+    const fry = h / this.sh;
+    const vertices = [];
+    const xcoords = [];
+    const ycoords = [];
+
+    for (let i = 0; i <= this.sw; i++) {
+      xcoords.push(x1 + i * frx);
+    }
+
+    for (let i = 0; i <= this.sh; i++) {
+      ycoords.push(y1 + i * fry);
+    }
+
+    for (let i = 0; i <= this.sw; i++) {
+      vertices.push(this.func(xcoords[i], ycoords[0]));
+    }
+
+    let i;
+    let j;
+
+    for (i = 1; i <= this.sh; i++) {
+      prev = this.func(xcoords[0], ycoords[i]);
+      for (j = 1; j <= this.sw; j++) {
+        cur = this.func(xcoords[j], ycoords[i]);
+        const rect = this.grid[i - 1][j - 1];
+        rect.set(j - 1, i - 1, frx, fry, false);
+        rect.rect[0] = xcoords[j - 1];
+        rect.rect[1] = ycoords[i - 1];
+        rect.eval[0] = vertices[j - 1];
+        rect.eval[1] = vertices[j];
+        rect.eval[2] = cur;
+        rect.eval[3] = prev;
+        rect.status = this.buildStatus(rect);
+        vertices[j - 1] = prev;
+        prev = cur;
+      }
+      vertices[this.sw] = prev;
+    }
+
+    this.plotDepth = 2;
+    this.segmentCheckDepth = 1;
+    this.listThreshold = 48;
+
+    for (i = 0; i < this.sh; i++) {
+      for (j = 0; j < this.sw; j++) {
+        if (!this.grid[i][j].singular && this.grid[i][j].status !== EMPTY) {
+          this.temp.copy(this.grid[i][j]);
+          this.plot(this.temp, 0);
+          this.grid[i][j].status = FINISHED;
+        }
+      }
+    }
+
+    for (let k = 0; k < 4; k++) {
+      for (i = 0; i < this.sh; i++) {
+        for (j = 0; j < this.sw; j++) {
+          if (this.grid[i][j].singular && this.grid[i][j].status !== FINISHED) {
+            this.temp.copy(this.grid[i][j]);
+            this.plot(this.temp, 0);
+            this.grid[i][j].status = FINISHED;
+          }
+        }
+      }
+    }
+    this.abortList();
+    this.finish(this.segments);
   };
-}
 
-function calculateNewParabolaLatex(line, points) {
-  return () => {
-    const x1 = points[0].coords.usrCoords[1];
-    const y1 = points[0].coords.usrCoords[2];
-    const x2 = points[1].coords.usrCoords[1];
-    const y2 = points[1].coords.usrCoords[2];
+  makeTree = (r, d) => {
+    const children = r.split();
+    this.plot(children[0], d);
+    this.plot(children[1], d);
+    this.plot(children[2], d);
+    this.plot(children[3], d);
+  };
 
-    if (x1 === x2) {
-      line.latex = "error";
+  plot = (r, d) => {
+    if (d < this.segmentCheckDepth) {
+      this.makeTree(r, d + 1);
       return;
     }
-
-    const koefX = (y2 - y1) / (x2 - x1) ** 2;
-    const base = x1 === 0 ? "x" : Math.sign(x1) > 0 ? `(x-${Math.abs(x1)})` : `(x+${Math.abs(x1)})`;
-    const offsetAbs = Math.abs(y1);
-    const offsetSign = Math.sign(y1) < 0 ? "-" : Math.sign(y1) > 0 ? "+" : "";
-
-    line.latex =
-      koefX === 0
-        ? `y=${offsetSign === "+" ? "" : offsetSign}${offsetAbs}`
-        : `y=${koefX === 1 ? "" : koefX === -1 ? "-" : koefX}${base}^2${offsetSign}${offsetAbs === 0 ? "" : offsetAbs}`;
+    this.buildStatus(r);
+    if (!r.status.empty) {
+      if (d >= this.plotDepth) {
+        if (this.append(r, d === MAX_DEPTH) === T0101 && d < MAX_DEPTH) {
+          this.makeTree(r, d + 1);
+        }
+      } else {
+        this.makeTree(r, d + 1);
+      }
+    }
   };
 }
 
-function createPoint(board, coords, object) {
-  const { baseColor = colorGenerator(board.elements.length) } = object;
+class CanvasPlotter {
+  constructor(board, latex, params) {
+    this.board = board;
 
-  const point = board.$board.create("point", coords, {
-    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    ...Point.getColorParams(board.priorityColor || baseColor),
-    label: {
-      ...getLabelParameters(JXG.OBJECT_TYPE_POINT)
-    },
-    fixed: false,
-    snapToGrid: false
-  });
-  point.labelIsVisible = true;
-  point.pointIsVisible = true;
-  point.baseColor = baseColor;
+    this.func = this.board.jc.snippet(latex, true, ["x", "y"], false); // (x,y) => Math.abs(x) + Math.abs(y) - 6;
+    this.params = params;
 
-  point.on("mouseover", event => board.handleElementMouseOver(point, event));
-  point.on("mouseout", () => board.handleElementMouseOut(point));
-
-  return point;
-}
-
-function createLine(board, points, object, settings = {}) {
-  const { labelIsVisible = true, fixed = false } = settings;
-
-  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor } = object;
-
-  const newLine = board.$board.create("line", points, {
-    ...getPropsByLineType(CONSTANT.TOOLS.LINE),
-    ...Line.getColorParams(priorityColor || board.priorityColor || baseColor),
-    label: {
-      ...getLabelParameters(JXG.OBJECT_TYPE_LINE),
-      visible: labelIsVisible
-    },
-    fixed,
-    id
-  });
-
-  newLine.labelIsVisible = object.labelIsVisible;
-  newLine.baseColor = object.baseColor;
-
-  if (!fixed) {
-    handleSnap(
-      newLine,
-      Object.values(newLine.ancestors),
-      board,
-      calculateNewLineLatex(newLine, Object.values(newLine.ancestors)),
-      true
-    );
-    board.handleStackedElementsMouseEvents(newLine);
+    const [xMin, yMax, xMax, yMin] = this.board.getBoundingBox();
+    this.x1 = xMin;
+    this.x2 = xMax;
+    this.y1 = yMin;
+    this.y2 = yMax;
+    this.px = 300;
+    this.py = 300;
+    this.tx = 0;
+    this.ty = 0;
+    this.working = false;
+    this.result = null;
   }
 
-  if (labelIsVisible) {
-    setLabel(newLine, label);
-  }
+  finish = segments => {
+    this.board.create("transform", [-this.x1 * this.tx, this.y2 * this.ty], { type: "translate" });
+    this.board.create("transform", [this.tx, -this.ty], { type: "scale" });
 
-  return newLine;
-}
+    let xs = [];
+    let ys = [];
+    let s = null;
+    const parents = [];
 
-function createParabola(board, points, object, settings = {}) {
-  const { labelIsVisible = true, fixed = false } = settings;
+    for (let i = 0; i < segments.length; i++) {
+      s = segments[i];
+      if (!s.lineTo && xs.length) {
+        parents.push(this.board.create("curve", [xs, ys], this.params));
+        xs = [];
+        ys = [];
+      }
 
-  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor } = object;
-
-  const makeCallback = (p1, p2) => x => {
-    const a = (1 / (p2.X() - p1.X()) ** 2) * (p2.Y() - p1.Y());
-    return a * (x - p1.X()) ** 2 + p1.Y();
+      xs.push(segments[i].x);
+      ys.push(segments[i].y);
+    }
+    if (xs.length) {
+      this.result = this.board.create("curve", [xs, ys], this.params);
+      this.result.addParents(parents);
+    }
   };
 
-  const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
-    ...defaultConfig,
-    ...Parabola.getColorParams(priorityColor || board.priorityColor || baseColor),
-    label: {
-      ...getLabelParameters(Parabola.jxgType),
-      visible: labelIsVisible
-    },
-    fixed,
-    id
-  });
-  newLine.labelIsVisible = object.labelIsVisible;
-  newLine.baseColor = object.baseColor;
-
-  newLine.addParents(points);
-  newLine.ancestors = {
-    [points[0].id]: points[0],
-    [points[1].id]: points[1]
+  update = (fast = false) => {
+    this.px = this.board.canvasWidth;
+    this.py = this.board.canvasHeight;
+    this.tx = this.px / (this.x2 - this.x1);
+    this.ty = this.py / (this.y2 - this.y1);
+    this.plot = new Implicit(this.func, this.finish);
+    this.plot.update(this.x1, this.y1, this.x2, this.y2, this.px, this.py, fast);
   };
-
-  if (!fixed) {
-    handleSnap(
-      newLine,
-      Object.values(newLine.ancestors),
-      board,
-      calculateNewParabolaLatex(newLine, Object.values(newLine.ancestors)),
-      true
-    );
-    board.handleStackedElementsMouseEvents(newLine);
-  }
-
-  if (labelIsVisible) {
-    setLabel(newLine, label);
-  }
-
-  return newLine;
 }
 
-function findLinePointsCoords(gridParams, equationLeft, equationRight) {
-  const { xMin, yMax, xMax, yMin, stepX, stepY } = gridParams;
-
-  const rightNumber = Number.parseFloat(equationRight);
-
-  // vertical line
-  if (equationLeft === "x" && !Number.isNaN(rightNumber)) {
-    return [[rightNumber, yMin + stepY], [rightNumber, yMax - stepY]];
-  }
-  // horizontal line
-  if (equationLeft === "y" && !Number.isNaN(rightNumber)) {
-    return [[xMin + stepX, rightNumber], [xMax - stepX, rightNumber]];
-  }
-
-  const func = parse(equationRight);
-  const result = [];
-
-  let x = xMin + stepX;
-  while (x < xMax) {
-    const y = func.eval({ x });
-    if (y < yMax && y > yMin && y % stepY === 0) {
-      result.push([x, y]);
-      break;
-    }
-    x += stepX;
-  }
-
-  x = xMax - stepX;
-  while (x > xMin) {
-    const y = func.eval({ x });
-    if (y < yMax && y > yMin && y % stepY === 0) {
-      result.push([x, y]);
-      break;
-    }
-    x -= stepX;
-  }
-
-  return result;
-}
-
-function findParabolaPointsCoords(gridParams, equationRight) {
-  const { xMin, yMax, xMax, yMin, stepX, stepY } = gridParams;
-
-  const func = parse(equationRight);
-  const deriv = derivative(equationRight, "x");
-  const result = [];
-
-  let x = xMin + stepX;
-  while (x < xMax) {
-    if (deriv.eval({ x }) === 0) {
-      break;
-    }
-    x += stepX;
-  }
-
-  let y = func.eval({ x });
-
-  if (y > yMax || y < yMin || y % stepY !== 0) {
-    return result;
-  }
-
-  result.push([x, y]);
-
-  x += stepX;
-  while (x < xMax) {
-    y = func.eval({ x });
-    if (y < yMax && y > yMin && y % stepY === 0) {
-      result.push([x, y]);
-      return result;
-    }
-    x += stepX;
-  }
-
-  [[x]] = result;
-  x -= stepX;
-  while (x > xMin) {
-    y = func.eval({ x });
-    if (y < yMax && y > yMin && y % stepY === 0) {
-      result.push([x, y]);
-      return result;
-    }
-    x -= stepX;
-  }
-
-  return result;
-}
-
-function getGridParams(board) {
-  const stepX = +board.parameters.pointParameters.snapSizeX;
-  const stepY = +board.parameters.pointParameters.snapSizeY;
-  let [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
-  xMin -= +(xMin % stepX).toFixed(8);
-  xMax -= +(xMax % stepX).toFixed(8);
-  yMin -= +(yMin % stepY).toFixed(8);
-  yMax -= +(yMax % stepY).toFixed(8);
-  return { xMin, xMax, yMin, yMax, stepX, stepY };
-}
-
-function create(board, object, points, settings = {}) {
-  const { labelIsVisible = true } = settings;
-
-  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor, latex } = object;
-
-  let { subType } = object;
+function create(board, object) {
+  const { latex, id, label, apiLatex, priorityColor } = object;
 
   const elementWithErrorLatex = {
     type: jxgType,
@@ -321,100 +595,48 @@ function create(board, object, points, settings = {}) {
     latex,
     labelHTML: label,
     subType: null,
-    latexIsBroken: true
+    latexIsBroken: true,
+    apiLatex: null
   };
 
-  // get left and right parts of equation
-  const splitLatex = latex.split("=");
-  if (splitLatex.length !== 2) {
-    return elementWithErrorLatex;
-  }
-
-  // clear latex string and check equation parts
-  const equationLeft = splitLatex[0];
-  const equationRight = fixLatex(splitLatex[1]);
-  if ((equationLeft !== "x" && equationLeft !== "y") || !equationRight) {
+  if (!apiLatex) {
     return elementWithErrorLatex;
   }
 
   let line = null;
 
-  // if points exist, then the equation has already been parsed
-  if (points) {
-    switch (subType) {
-      case CONSTANT.TOOLS.LINE:
-        line = createLine(board, points, object, settings);
-        break;
-      case CONSTANT.TOOLS.PARABOLA:
-        line = createParabola(board, points, object, settings);
-        break;
-      default:
-        break;
-    }
+  const fixedLatex = fixApiLatex(apiLatex);
+
+  let dash;
+  if (fixedLatex.compSign === "<" || fixedLatex.compSign === ">") {
+    dash = 2;
   }
 
-  // if equation is new, we try parse equation
+  try {
+    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, {
+      ...defaultConfig,
+      ...getColorParams(priorityColor || "#00b2ff"),
+      dash
+    });
+    cv.update();
+    line = cv.result;
+  } catch (ex) {
+    return elementWithErrorLatex;
+  }
+
   if (!line) {
-    try {
-      const gridParams = getGridParams(board);
-
-      // if equation is parabola
-      if (isParabola(equationRight)) {
-        // find anchor points and create parabola by this points
-        const coords = findParabolaPointsCoords(gridParams, equationRight);
-        if (coords.length === 2) {
-          const point1 = createPoint(board, coords[0], object);
-          const point2 = createPoint(board, coords[1], object);
-          line = createParabola(board, [point1, point2], object);
-          subType = CONSTANT.TOOLS.PARABOLA;
-        }
-        // if equation is line
-      } else if (isLine(gridParams.xMin, gridParams.xMax, equationLeft, equationRight)) {
-        // find anchor points and create line by this points
-        const coords = findLinePointsCoords(gridParams, equationLeft, equationRight);
-        if (coords.length === 2) {
-          const point1 = createPoint(board, coords[0], object);
-          const point2 = createPoint(board, coords[1], object);
-
-          line = createLine(board, [point1, point2], object);
-          subType = CONSTANT.TOOLS.LINE;
-        }
-      }
-    } catch (e) {
-      return elementWithErrorLatex;
-    }
+    return elementWithErrorLatex;
   }
 
-  // if equation not parsed, we try create object by latex via jsxgraph functiongraph
-  if (!line) {
-    try {
-      line = board.$board.create("functiongraph", [equationRight], {
-        ...defaultConfig,
-        ...getColorParams(priorityColor || board.priorityColor || baseColor),
-        label: {
-          ...getLabelParameters(jxgType),
-          visible: labelIsVisible
-        },
-        fixed: true
-      });
-      subType = null;
-    } catch (e) {
-      return elementWithErrorLatex;
-    }
-  }
+  line.latex = latex;
+  line.fixedLatex = fixedLatex;
+  line.type = jxgType;
+  line.subType = null;
+  line.apiLatex = apiLatex;
 
-  // if jsxgraph object built successfully, we return it
-  // otherwise we believe that latex with an error
-  if (line) {
-    line.latex = latex;
-    line.type = jxgType;
-    line.subType = subType;
-    line.labelIsVisible = object.labelIsVisible;
-    line.baseColor = baseColor;
-    return line;
-  }
+  Area.setAreaForEquation(board, line);
 
-  return elementWithErrorLatex;
+  return line;
 }
 
 function getConfig(equation) {
@@ -432,6 +654,7 @@ function getConfig(equation) {
     latex: equation.latex,
     label: equation.labelHTML || false,
     subType: equation.subType,
+    apiLatex: equation.apiLatex,
     points
   };
 }

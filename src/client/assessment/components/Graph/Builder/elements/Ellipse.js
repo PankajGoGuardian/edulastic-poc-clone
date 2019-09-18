@@ -24,7 +24,7 @@ function getColorParams(color) {
 function create(board, object, ellipsePoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("ellipse", ellipsePoints, {
     ...defaultConfig,
@@ -33,11 +33,13 @@ function create(board, object, ellipsePoints, settings = {}) {
       ...getLabelParameters(JXG.OBJECT_TYPE_CONIC),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   if (!fixed) {
     handleSnap(newLine, Object.values(newLine.ancestors), board);
@@ -87,6 +89,7 @@ function getConfig(ellipse) {
     label: ellipse.labelHTML || false,
     labelIsVisible: ellipse.labelIsVisible,
     baseColor: ellipse.baseColor,
+    dashed: ellipse.dashed,
     points: Object.values(ellipse.ancestors)
       .filter(a => a.type === JXG.OBJECT_TYPE_POINT)
       .sort((a, b) => a.id > b.id)

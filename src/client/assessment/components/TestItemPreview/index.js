@@ -116,7 +116,7 @@ class TestItemPreview extends Component {
             if (hideColumn && showCollapseButtons) return "";
             return (
               <>
-                {(i > 0 || collapseDirection === "le,ft") && showCollapseButtons && this.renderCollapseButtons(i)}
+                {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
                 <TestItemCol
                   {...restProps}
                   showCollapseBtn={showCollapseButtons}

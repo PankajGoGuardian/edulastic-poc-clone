@@ -11,6 +11,7 @@ export const StyledTable = styled(Table)`
     table {
       thead {
         tr {
+          white-space: nowrap;
           th:nth-child(n + 3) {
             text-align: right;
           }

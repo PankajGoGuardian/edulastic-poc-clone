@@ -5,7 +5,7 @@ import { getLabelParameters } from "../settings";
 
 const jxgType = 94;
 
-export const defaultConfig = {
+const defaultConfig = {
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
@@ -33,7 +33,7 @@ function getColorParams(color) {
 function create(board, object, logPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...logPoints)], {
     ...defaultConfig,
@@ -42,12 +42,14 @@ function create(board, object, logPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(logPoints);
   newLine.ancestors = {
@@ -103,6 +105,7 @@ function getConfig(logarithm) {
     label: logarithm.labelHTML || false,
     labelIsVisible: logarithm.labelIsVisible,
     baseColor: logarithm.baseColor,
+    dashed: logarithm.dashed,
     points: Object.keys(logarithm.ancestors)
       .sort()
       .map(n => Point.getConfig(logarithm.ancestors[n]))
@@ -119,5 +122,6 @@ export default {
   getConfig,
   clean,
   getTempPoints,
-  create
+  create,
+  makeCallback
 };

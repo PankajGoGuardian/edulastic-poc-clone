@@ -17,6 +17,7 @@ export default class Section extends React.Component {
 
   state = {
     title: "",
+    shouldBlur: true,
     edit: false
   };
 
@@ -54,8 +55,8 @@ export default class Section extends React.Component {
 
     return (
       <Actions>
-        <IconPencilEdit onClick={handleEditClick} />
-        <IconTrash onClick={onDelete} />
+        <IconPencilEdit onClick={handleEditClick} title="Edit" />
+        <IconTrash onClick={onDelete} title="Delete" />
       </Actions>
     );
   };
@@ -76,7 +77,7 @@ export default class Section extends React.Component {
   }
 
   renderForm() {
-    const { title } = this.state;
+    const { title, shouldBlur } = this.state;
     const { onDelete } = this.props;
     return (
       <SectionWrapper>
@@ -84,11 +85,21 @@ export default class Section extends React.Component {
           autoFocus
           value={title}
           onChange={this.handleChangeTitle}
-          onBlur={this.handleSetTitle}
+          onBlur={shouldBlur ? this.handleSetTitle : ""}
           onPressEnter={this.handleSetTitle}
         />
-        <SectionFormConfirmButton style={{ marginLeft: "5px" }} onClick={this.handleSetTitle} />
-        <IconTrash onClick={onDelete} style={{ marginLeft: "5px", cursor: "pointer" }} />
+        <SectionFormConfirmButton
+          onMouseDown={() => this.setState({ shouldBlur: false })}
+          style={{ marginLeft: "5px" }}
+          title="Save"
+          onClick={this.handleSetTitle}
+        />
+        <IconTrash
+          onClick={onDelete}
+          title="Delete"
+          onMouseDown={() => this.setState({ shouldBlur: false })}
+          style={{ marginLeft: "5px", cursor: "pointer" }}
+        />
       </SectionWrapper>
     );
   }

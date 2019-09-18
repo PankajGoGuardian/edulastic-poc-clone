@@ -38,6 +38,7 @@ export { default as MathModal } from "./src/components/MathModal";
 export { StyledComponents };
 export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmModal";
 export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
+export { default as Hints } from "./src/components/Hints";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { default as withWindowScroll } from "./src/HOC/withWindowScroll";
@@ -67,3 +68,6 @@ export { MenuIcon } from "./src/components/MenuIcon";
 
 // Math Utils
 export { getInnerValuesForStatic } from "./src/utils/mathUtils";
+
+export { default as ItemDetailContext, COMPACT, DEFAULT } from "./src/contexts/ItemDetailContext";
+export { default as questionTheme } from "./src/themes/questionTheme";

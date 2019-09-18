@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { get, head, capitalize } from "lodash";
 import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getReportsMARFilterData, getFiltersSelector } from "../common/filterDataDucks";
 import { getUserRole } from "../../../../src/selectors/user";
 import { getCsvDownloadingState } from "../../../ducks";
 
@@ -51,14 +51,22 @@ const StudentProgress = ({
   isCsvDownloading,
   settings,
   loading,
-  role
+  role,
+  filters
 }) => {
+  const profiles = MARFilterData?.data?.result?.bandInfo || [];
+
+  const bandInfo =
+    profiles.find(profile => profile._id === filters.profileId)?.performanceBand ||
+    profiles[0]?.performanceBand ||
+    DefaultBandInfo;
+
   usefetchProgressHook(settings, getStudentProgressRequestAction);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [selectedTrend, setSelectedTrend] = useState("");
 
   const { metricInfo = [] } = get(studentProgress, "data.result", {});
-  const { orgData = [], testData = [], bandInfo = DefaultBandInfo } = get(MARFilterData, "data.result", {});
+  const { orgData = [], testData = [] } = get(MARFilterData, "data.result", {});
   const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
 
   if (loading) {
@@ -118,6 +126,7 @@ const enhance = connect(
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
     MARFilterData: getReportsMARFilterData(state),
+    filters: getFiltersSelector(state),
     role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),

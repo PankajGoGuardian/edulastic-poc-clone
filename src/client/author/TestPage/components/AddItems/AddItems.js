@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { debounce } from "lodash";
 import { Pagination, Spin, message } from "antd";
 
-import { Paper, withWindowSizes, FlexContainer } from "@edulastic/common";
+import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconFilter } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
@@ -43,11 +43,12 @@ import {
   Container,
   ListItems,
   Element,
-  ShowLeftFilterButton,
+  MobileLeftFilterButton,
   SpinContainer,
-  PaginationContainer
+  PaginationContainer,
+  ContentWrapper,
+  ScrollbarContainer
 } from "../../../ItemList/components/Container/styled";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { white } from "ansi-colors";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import { MEDIUM_DESKTOP_WIDTH } from "../../../../assessment/constants/others";
@@ -361,28 +362,30 @@ class AddItems extends PureComponent {
     return (
       <>
         <Container>
-          <ItemFilter
-            onSearchFieldChange={this.handleSearchFieldChange}
-            onSearchInputChange={this.handleSearchInputChange}
-            onSearch={this.handleSearch}
-            onClearSearch={this.handleClearSearch}
-            onLabelSearch={this.handleLabelSearch}
-            windowWidth={windowWidth}
-            search={search}
-            curriculums={curriculums}
-            getCurriculumStandards={getCurriculumStandards}
-            curriculumStandards={curriculumStandards}
-            items={filterMenuItems}
-            t={t}
-          />
+          {isShowFilter && (
+            <ItemFilter
+              onSearchFieldChange={this.handleSearchFieldChange}
+              onSearchInputChange={this.handleSearchInputChange}
+              onSearch={this.handleSearch}
+              onClearSearch={this.handleClearSearch}
+              onLabelSearch={this.handleLabelSearch}
+              windowWidth={windowWidth}
+              search={search}
+              curriculums={curriculums}
+              getCurriculumStandards={getCurriculumStandards}
+              curriculumStandards={curriculumStandards}
+              items={filterMenuItems}
+              t={t}
+            />
+          )}
           <ListItems isShowFilter={isShowFilter}>
             <Element>
               {windowWidth < MEDIUM_DESKTOP_WIDTH && (
-                <ShowLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
+                <MobileLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
                   <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-                </ShowLeftFilterButton>
+                </MobileLeftFilterButton>
               )}
-              <Paper borderRadius="0px" padding="0px">
+              <ContentWrapper borderRadius="0px" padding="0px">
                 <SpinContainer
                   ref={e => {
                     this.spinner = e;
@@ -406,7 +409,7 @@ class AddItems extends PureComponent {
                     </StyledButton>
                   </FlexContainer>
                 </ItemsMenu>
-                <PerfectScrollbar
+                <ScrollbarContainer
                   ref={e => {
                     this.itemsScrollBar = e;
                   }}
@@ -414,8 +417,8 @@ class AddItems extends PureComponent {
                 >
                   {this.renderItems()}
                   {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}
-                </PerfectScrollbar>
-              </Paper>
+                </ScrollbarContainer>
+              </ContentWrapper>
 
               {windowWidth < SMALL_DESKTOP_WIDTH && (
                 <PaginationContainer>{this.renderPagination()}</PaginationContainer>

@@ -20,10 +20,14 @@ import {
   setTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
+  setPerformanceBandProfileFilterAction,
+  setStandardsProficiencyProfileFilterAction,
   getReportsSARFilterLoadingState
 } from "../filterDataDucks";
-import { getUserRole } from "../../../../../src/selectors/user";
+import { getUserRole, getUserOrgId } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
+import { receivePerformanceBandAction } from "../../../../../PerformanceBand/ducks";
+import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 
 import staticDropDownData from "../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
@@ -57,8 +61,19 @@ const SingleAssessmentReportFilters = ({
   history,
   setPrevSARFilterDataAction,
   prevSARFilterData,
-  loading
+  loading,
+  loadPerformanceBand,
+  loadStandardProficiency,
+  districtId,
+  performanceBandLoading,
+  standardProficiencyLoading,
+  setPerformanceBand,
+  setStandardsProficiency,
+  performanceBandRequired,
+  standardProficiencyRequired = true
 }) => {
+  const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
+  const standardProficiencyProfiles = get(SARFilterData, "data,result.scaleInfo", []);
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -97,8 +112,8 @@ const SingleAssessmentReportFilters = ({
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
-
     dropDownData = getDropDownData(SARFilterData, user);
+
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
@@ -226,6 +241,7 @@ const SingleAssessmentReportFilters = ({
     };
     setFiltersAction(obj);
   };
+
   const updateGradeDropDownCB = selected => {
     let obj = {
       filters: {
@@ -311,6 +327,18 @@ const SingleAssessmentReportFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
+          {performanceBandRequired ? (
+            <Col xs={12} sm={12} md={10} lg={6} xl={6}>
+              <PrintablePrefix>Performance Band Profile </PrintablePrefix>
+              <ControlDropDown
+                by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
+                selectCB={({ key }) => setPerformanceBand(key)}
+                data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
+                prefix="Performance Band profile"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          ) : null}
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <PrintablePrefix>Grade</PrintablePrefix>
             <AutocompleteDropDown
@@ -402,15 +430,24 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
+      districtId: getUserOrgId(state),
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
-      loading: getReportsSARFilterLoadingState(state)
+      loading: getReportsSARFilterLoadingState(state),
+      performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
+      performanceBandLoading: state?.performanceBandReducer?.loading || false,
+      standardProficiencyProfiles: state?.standardsProficiencyReducer?.data || [],
+      standardProficiencyLoading: state?.standardsProficiencyReducer?.loading || []
     }),
     {
       getSARFilterDataRequestAction: getSARFilterDataRequestAction,
+      loadPerformanceBand: receivePerformanceBandAction,
+      loadStandardProficiency: receiveStandardsProficiencyAction,
       setFiltersAction: setFiltersAction,
       setTestIdAction: setTestIdAction,
-      setPrevSARFilterDataAction
+      setPrevSARFilterDataAction,
+      setPerformanceBand: setPerformanceBandProfileFilterAction,
+      setStandardsProficiency: setStandardsProficiencyProfileFilterAction
     }
   )
 );

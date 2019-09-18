@@ -15,7 +15,9 @@ import {
   getReportsSPRFilterLoadingState,
   setFiltersAction,
   getSPRFilterDataRequestAction,
-  getReportsSPRFilterData
+  getReportsSPRFilterData,
+  setPbIdAction,
+  setSpIdAction
 } from "../../filterDataDucks";
 import { getFilterOptions } from "../../utils/transformers";
 import { getFullNameFromAsString } from "../../../../../../../common/utils/helpers";
@@ -30,7 +32,11 @@ const StudentProfileReportsFilters = ({
   orgData,
   studentList,
   getSPRFilterDataRequestAction,
-  receiveStudentsListAction
+  receiveStudentsListAction,
+  filters,
+  performanceBandRequired,
+  standardProciencyRequired,
+  ...props
 }) => {
   const splittedPath = location.pathname.split("/");
   const studentId = splittedPath[splittedPath.length - 1];
@@ -40,6 +46,8 @@ const StudentProfileReportsFilters = ({
   const [selectedStudent, setSelectedStudent] = useState({ key: studentId || "" });
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const profiles = get(SPRFilterData, "data.result.bandInfo", []);
+
   const { terms = [] } = orgData;
   const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
     SPRFilterData,
@@ -96,6 +104,8 @@ const StudentProfileReportsFilters = ({
   const onFilterApply = () => onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
   const onUpdateTerm = ({ key }) => setTermId(key);
   const onUpdateCourse = ({ key }) => setCourseId(key);
+  const onChangePerformanceBand = ({ key }) => props.setPerformanceBand(key);
+  const onChangeStandardsProficiency = ({ key }) => props.setStandardsProficiency(key);
   const onStudentSelect = item => setSelectedStudent(item);
 
   return (
@@ -126,6 +136,17 @@ const StudentProfileReportsFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
+          {performanceBandRequired ? (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                by={{ key: filters.performanceBandProfileId }}
+                selectCB={onChangePerformanceBand}
+                data={profiles.map(p => ({ key: p._id, title: p.name }))}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          ) : null}
           <Col xs={12} sm={12} md={1} lg={1} xl={1}>
             <StyledGoButton type="primary" onClick={onFilterApply}>
               Go
@@ -151,7 +172,9 @@ const enhance = connect(
   {
     getSPRFilterDataRequestAction,
     receiveStudentsListAction,
-    setFiltersAction
+    setFiltersAction,
+    setPerformanceBand: setPbIdAction,
+    setStandardsProficiency: setSpIdAction
   }
 );
 

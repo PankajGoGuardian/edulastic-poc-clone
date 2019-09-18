@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
@@ -58,7 +59,13 @@ class QuestionItem extends React.Component {
     dragging: false
   };
 
-  handleDragStart = () => this.setState({ dragging: true });
+  handleDragStart = () => {
+    const { onDragStart } = this.props;
+    this.setState({ dragging: true });
+    if (onDragStart) {
+      onDragStart();
+    }
+  };
 
   handleDragEnd = () => this.setState({ dragging: false });
 
@@ -158,8 +165,8 @@ class QuestionItem extends React.Component {
     const { onOpenEdit, onDelete } = this.props;
     return (
       <EditButton>
-        <IconPencilEdit onClick={onOpenEdit} />
-        <IconTrash onClick={onDelete} />
+        <IconPencilEdit onClick={onOpenEdit} title="Edit" />
+        <IconTrash onClick={onDelete} title="Delete" />
       </EditButton>
     );
   };

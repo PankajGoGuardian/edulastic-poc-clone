@@ -29,7 +29,8 @@ import {
   setCurrentTestActivityIdAction,
   getAllTestActivitiesForStudentAction,
   receiveStudentResponseAction,
-  markSubmittedAction
+  markSubmittedAction,
+  downloadGradesResponseAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -185,9 +186,10 @@ class ClassBoard extends Component {
     const { testId } = additionalData;
     const { assignmentId, classId } = match.params;
     const { testId: prevTestId } = prevState;
+    const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
     if (testId !== prevTestId) {
       loadClassResponses({ testId });
-      const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
+      const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
   }
@@ -508,6 +510,16 @@ class ClassBoard extends Component {
     }
   };
 
+  handleDownloadGrades = isResponseRequired => {
+    const { downloadGradesResponse, match, selectedStudents } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to download grades.");
+    }
+    downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
+  };
+
   render() {
     const {
       gradebook,
@@ -588,6 +600,8 @@ class ClassBoard extends Component {
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
+    const enableDownload = testActivity.some(item => item.status === "submitted");
+
     return (
       <div>
         {showMarkSubmittedPopup && (
@@ -765,11 +779,11 @@ class ClassBoard extends Component {
                               <IconRemove />
                               <span>Remove Students</span>
                             </MenuItems>
-                            <MenuItems>
+                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(false)}>
                               <IconDownload />
                               <span>Download Grades</span>
                             </MenuItems>
-                            <MenuItems>
+                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(true)}>
                               <IconDownload />
                               <span>Download Response</span>
                             </MenuItems>
@@ -943,7 +957,7 @@ class ClassBoard extends Component {
                       </div>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
-                        {`TIME (min) `}{" "}
+                        {`TIME (min) : `}{" "}
                         <span style={{ color: black, textTransform: "capitalize" }}>
                           {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
                             ""}
@@ -951,7 +965,7 @@ class ClassBoard extends Component {
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
-                        {`STATUS  `}{" "}
+                        {`STATUS : `}{" "}
                         <span style={{ color: black, textTransform: "capitalize" }}>
                           {studentTestActivity.status === 2
                             ? "Absent"
@@ -963,9 +977,9 @@ class ClassBoard extends Component {
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
-                        {`SUBMITTED ON  `}
+                        {`SUBMITTED ON : `}
                         <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("d MMMM, YYYY")}
+                          {moment(studentTestActivity.endDate).format("DD MMMM, YYYY")}
                         </span>
                       </ScoreHeader>
                     </InfoWrapper>
@@ -1058,7 +1072,8 @@ const enhance = compose(
       setMarkAsDone: markAsDoneAction,
       markAbsent: markAbsentAction,
       removeStudent: removeStudentAction,
-      markSubmitted: markSubmittedAction
+      markSubmitted: markSubmittedAction,
+      downloadGradesResponse: downloadGradesResponseAction
     }
   )
 );

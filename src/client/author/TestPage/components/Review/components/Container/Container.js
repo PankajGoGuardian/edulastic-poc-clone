@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, flatMap, flatten, map, groupBy, some, sumBy } from "lodash";
+import { cloneDeep, get, uniq as _uniq, flatMap, flatten, map, groupBy, some, sumBy, keyBy } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -332,6 +332,8 @@ class Review extends PureComponent {
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
+    const passages = get(test, "passages", []);
+    const passagesKeyed = keyBy(passages, "_id");
     return (
       <ReviewPageContainer>
         <Row>
@@ -387,6 +389,7 @@ class Review extends PureComponent {
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
+                  passagesKeyed={passagesKeyed}
                   useDragHandle
                 />
               )}

@@ -4,12 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+const RESET_REPORTS_PERFORMANCE_OVER_TIME = "[reports] reset reports performance over time";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST = "[reports] get reports performance over time request";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS = "[reports] get reports performance over time success";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR = "[reports] get reports performance over time error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const resetPerformanceOverTimeAction = createAction(RESET_REPORTS_PERFORMANCE_OVER_TIME);
 export const getPerformanceOverTimeRequestAction = createAction(GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -42,6 +44,7 @@ const initialState = {
 };
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
+  [RESET_REPORTS_PERFORMANCE_OVER_TIME]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

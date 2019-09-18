@@ -25,7 +25,7 @@ const PlayerHeader = ({
     <Fragment>
       <HeaderPracticePlayer>
         <HeaderLeftMenu skinb={"true"}>
-          <LogoCompact />
+          <LogoCompact color={"#fff"} />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
           <FlexContainer>
@@ -34,15 +34,15 @@ const PlayerHeader = ({
             <ContainerRight>
               <FlexDisplay>
                 {showSubmit && (
-                  <Save onClick={onSubmit}>
+                  <Save onClick={onSubmit} title="Submit">
                     <IconSend color={theme.headerIconColor} />
                   </Save>
                 )}
-                <Save onClick={onSaveProgress}>
+                <Save onClick={onSaveProgress} title="Save">
                   <IconSave color={theme.headerIconColor} />
                 </Save>
                 {onPause && (
-                  <Save onClick={onPause}>
+                  <Save onClick={onPause} title="Pause">
                     <IconPause color={theme.headerIconColor} />
                   </Save>
                 )}
@@ -51,7 +51,7 @@ const PlayerHeader = ({
                     <IconPause color={theme.headerIconColor} />
                   </StyledLink>
                 )}
-                <Save onClick={onOpenExitPopup}>
+                <Save onClick={onOpenExitPopup} title="Exit">
                   <IconLogout color={theme.headerIconColor} />
                 </Save>
               </FlexDisplay>
@@ -95,6 +95,7 @@ const PlayerTitle = styled.h1`
   font-size: 20px;
   font-weight: bold;
   margin: 0;
+  color: #fff;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { AnswerContext } from "@edulastic/common";
+import { AnswerContext, PaddingDiv, Hints } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
@@ -49,6 +49,9 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
               isStudentReport
               viewComponent="studentReport"
             />
+            <PaddingDiv>
+              <Hints questions={get(item, [`data`, `questions`], [])} />
+            </PaddingDiv>
           </AnswerContext.Provider>
         </Wrapper>
       </AssignmentContentWrapper>

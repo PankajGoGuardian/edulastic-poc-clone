@@ -30,8 +30,14 @@ const PerformanceByStudents = ({
   getPerformanceByStudentsRequestAction,
   settings,
   isCsvDownloading,
-  loading
+  loading,
+  performanceBandProfiles,
+  performanceBandSelected
 }) => {
+  const bandInfo =
+    performanceBandProfiles.find(profile => profile._id === performanceBandSelected)?.performanceBand ||
+    performanceBandProfiles[0]?.performanceBand;
+
   const [ddfilter, setDdFilter] = useState({
     gender: "all",
     frlStatus: "all",
@@ -63,7 +69,9 @@ const PerformanceByStudents = ({
     setPagination({ ...pagination, current: 0 });
   }, [range.left, range.right]);
 
-  const res = get(performanceByStudents, "data.result", false);
+  let res = get(performanceByStudents, "data.result", false);
+  res = res ? { ...res, bandInfo } : res;
+
   const proficiencyBandData = getProficiencyBandData(res && res.bandInfo);
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0]);
 
@@ -90,6 +98,8 @@ const PerformanceByStudents = ({
 
   const _columns = getColumns(columns, res && res.testName, role);
 
+  const testName = get(settings, "selectedTest.title", "");
+
   return (
     <>
       {loading ? (
@@ -102,7 +112,7 @@ const PerformanceByStudents = ({
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student score distribution | {res && res.testName}</StyledH3>
+                <StyledH3>Student score distribution | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
@@ -117,7 +127,7 @@ const PerformanceByStudents = ({
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student Performance | {res && res.testName}</StyledH3>
+                <StyledH3>Student Performance | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <StyledDropDownContainer>
@@ -157,7 +167,9 @@ const enhance = connect(
     performanceByStudents: getReportsPerformanceByStudents(state),
     loading: getReportsPerformanceByStudentsLoader(state),
     role: getUserRole(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    performanceBandSelected: get(state, "reportSARFilterDataReducer.filters.performanceBandProfile", ""),
+    performanceBandProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.bandInfo", [])
   }),
   {
     getPerformanceByStudentsRequestAction

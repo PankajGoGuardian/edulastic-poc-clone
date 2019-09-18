@@ -96,6 +96,14 @@ const ClozeMathPreview = ({
       uiStyles.fontSize = getFontSize(uiStyle.fontsize);
     }
 
+    if (uiStyle.heightpx) {
+      uiStyles.height = `${uiStyle.heightpx}px`;
+    }
+
+    if (uiStyle.responseFontScale) {
+      uiStyles.responseFontScale = uiStyle.responseFontScale;
+    }
+
     if (uiStyle.minWidth) {
       uiStyles.width = `${uiStyle.minWidth}px`;
       if (parseInt(uiStyle.minWidth, 10) < 25) {
@@ -143,7 +151,7 @@ const ClozeMathPreview = ({
   }
 
   return (
-    <QuestionWrapper>
+    <QuestionWrapper uiStyles={uiStyles}>
       <JsxParser
         bindings={{
           resProps: {
@@ -209,6 +217,8 @@ ClozeMathPreview.defaultProps = {
 export default withCheckAnswerButton(ClozeMathPreview);
 
 const QuestionWrapper = styled.div`
+  font-size: ${props => props.uiStyles.fontSize || "16px"};
+  font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
   li {
     margin: 4px 0;
   }

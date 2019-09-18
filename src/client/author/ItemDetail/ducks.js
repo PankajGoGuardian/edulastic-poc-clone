@@ -69,6 +69,9 @@ export const SET_DRAGGING = "[itemDetail] set dragging";
 export const DELETE_ITEM_DETAIL_WIDGET = "[itemDetail] delete widget";
 export const UPDATE_TAB_TITLE = "[itemDetail] update tab title";
 export const USE_TABS = "[itemDetail] is use tabs";
+export const ADD_TAB = "[itemDetail] add new tab";
+export const CHANGE_TAB_TITLE = "[itemDetail] change tab title";
+export const REMOVE_TAB = "[itemDetail] remove tab";
 export const USE_FLOW_LAYOUT = "[itemDetail] is use flow layout";
 export const MOVE_WIDGET = "[itemDetail] move widget";
 export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
@@ -169,6 +172,24 @@ export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
 export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
   type: USE_TABS,
   payload: { rowIndex, isUseTabs }
+});
+
+export const addTabsAction = payload => ({
+  type: ADD_TAB,
+  payload
+});
+
+export const removeTabAction = payload => ({
+  type: REMOVE_TAB,
+  payload
+});
+
+export const changeTabTitleAction = (index, value) => ({
+  type: CHANGE_TAB_TITLE,
+  payload: {
+    index,
+    value
+  }
 });
 
 export const useFlowLayoutAction = ({ rowIndex, isUseFlowLayout }) => ({
@@ -419,6 +440,41 @@ const useTabs = (state, { rowIndex, isUseTabs }) => {
   });
 };
 
+const addTabs = state => {
+  return produce(state, newState => {
+    const { passage } = newState;
+    if (passage.structure.tabs.length === 0) {
+      passage.structure.tabs = ["Tab 1", "Tab 2"];
+    } else {
+      passage.structure.tabs.push(`Tab ${passage.structure.tabs.length + 1}`);
+    }
+    return newState;
+  });
+};
+
+const removeTab = (state, payload) => {
+  return produce(state, newState => {
+    const { passage } = newState;
+    if (passage.structure.tabs.length === 2) {
+      passage.structure.tabs = [];
+    } else if (passage.structure.tabs.length >= payload) {
+      passage.structure.tabs.splice(payload, 1);
+    }
+    return newState;
+  });
+};
+
+const changeTabTitle = (state, payload) => {
+  const { index, value } = payload;
+  return produce(state, newState => {
+    const { passage } = newState;
+    if (passage.structure?.tabs?.length) {
+      passage.structure.tabs[index] = value;
+    }
+    return newState;
+  });
+};
+
 const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
   const newState = cloneDeep(state);
   newState.item.rows[rowIndex].flowLayout = isUseFlowLayout;
@@ -511,7 +567,12 @@ export function reducer(state = initialState, { type, payload }) {
 
     case USE_TABS:
       return useTabs(state, payload);
-
+    case ADD_TAB:
+      return addTabs(state, payload);
+    case REMOVE_TAB:
+      return removeTab(state, payload);
+    case CHANGE_TAB_TITLE:
+      return changeTabTitle(state, payload);
     case USE_FLOW_LAYOUT:
       return useFlowLayout(state, payload);
 

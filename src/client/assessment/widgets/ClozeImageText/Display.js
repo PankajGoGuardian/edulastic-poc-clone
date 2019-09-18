@@ -158,11 +158,8 @@ class Display extends Component {
       isReviewTab,
       isExpressGrader
     } = this.props;
-    const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const { userAnswers: _uAnswers } = this.state;
-
-    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
+    const { userAnswers } = this.state;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemNumeration, responsecontainerindividuals = [] } = uiStyle;

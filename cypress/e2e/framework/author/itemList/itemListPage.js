@@ -81,7 +81,7 @@ class ItemListPage {
           // editItem.getEditButton().click();
           editItem.header.metadata();
           metadataPage.mapStandards(itemData[queType][queKey].standards);
-          // metadataPage.header.edit();
+          metadataPage.header.edit();
         }
 
         editItem.header.save(!publish);

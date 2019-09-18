@@ -54,7 +54,7 @@ const Thumbnails = ({
               key={key}
               index={key}
               page={item.pageNo}
-              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo)}
+              hasAnnotations={annotations.some(annotation => annotation.page === item.pageNo + 1)}
               setDeleteConfirmation={setDeleteConfirmation}
               onClick={onChangePage(key)}
               onDelete={() => onDeletePage(key)}

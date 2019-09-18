@@ -33,7 +33,7 @@ class ToolBar extends Component {
     return (
       <Container>
         <Tooltip placement="top" title="Pointer">
-          <StyledButton enable={tool === 0} onClick={() => this.toolbarHandler(0)}>
+          <StyledButton enable={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)}>
             <CursorIcon />
           </StyledButton>
         </Tooltip>
@@ -45,9 +45,9 @@ class ToolBar extends Component {
         </Tooltip>
         {calcType !== calculatorTypes.NONE && (
           <Tooltip placement="top" title="Calculator">
-            <StyledButton enable={tool === 2} onClick={() => this.toolbarHandler(2)}>
+            <StyledButton enable={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
               <CaculatorIcon />
-              {tool === 2 && (
+              {tool.indexOf(2) !== -1 && (
                 <CalculatorMenu
                   changeCaculateMode={this.handleCalculateMode}
                   calcType={calcType}
@@ -63,19 +63,23 @@ class ToolBar extends Component {
           placement="top"
           title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
         >
-          <StyledButton enable={tool === 3} disabled={isDisableCrossBtn} onClick={() => this.toolbarHandler(3)}>
+          <StyledButton
+            enable={tool.indexOf(3) !== -1}
+            disabled={isDisableCrossBtn}
+            onClick={() => this.toolbarHandler(3)}
+          >
             <CloseIcon />
           </StyledButton>
         </Tooltip>
 
         <Tooltip placement="top" title="Protactor">
-          <StyledButton enable={tool === 4} onClick={() => this.toolbarHandler(4)}>
+          <StyledButton enable={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)}>
             <ProtactorIcon />
           </StyledButton>
         </Tooltip>
 
         <Tooltip placement="top" title="Scratch Pad">
-          <StyledButton enable={tool === 5} onClick={() => this.toolbarHandler(5)}>
+          <StyledButton enable={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
             <ScratchPadIcon />
           </StyledButton>
         </Tooltip>
@@ -86,7 +90,7 @@ class ToolBar extends Component {
 
 ToolBar.propTypes = {
   changeCaculateMode: PropTypes.func.isRequired,
-  tool: PropTypes.number.isRequired,
+  tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   calcBrands: PropTypes.array.isRequired,

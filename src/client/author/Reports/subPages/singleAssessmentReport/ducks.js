@@ -6,10 +6,12 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
 const SET_SAR_SETTINGS = "[SAR settings] get sar settings";
+const RESET_SAR_SETTINGS = "[SAR settings] reset sar settings";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setSARSettingsAction = createAction(SET_SAR_SETTINGS);
+export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -45,7 +47,11 @@ const initialState = {
 };
 
 export const reportSARSettingsReducer = createReducer(initialState, {
-  [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload })
+  [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+  [RESET_SAR_SETTINGS]: (state, { payload }) => {
+    state = initialState;
+    return state;
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

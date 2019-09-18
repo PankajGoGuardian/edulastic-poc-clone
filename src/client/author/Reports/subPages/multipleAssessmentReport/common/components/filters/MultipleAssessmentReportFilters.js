@@ -41,9 +41,12 @@ const SingleAssessmentReportFilters = ({
   location,
   className,
   history,
-  style
+  style,
+  performanceBandRequired
 }) => {
   const [prevMARFilterData, setPrevMARFilterData] = useState(null);
+  const profiles = MARFilterData?.data?.result?.bandInfo || [];
+
   const getTitleByTestId = testId => {
     let arr = get(MARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -207,6 +210,18 @@ const SingleAssessmentReportFilters = ({
     };
     setFiltersAction(obj);
   };
+
+  const onChangePerformanceBand = selected => {
+    let obj = {
+      filters: {
+        ...filters,
+        profileId: selected.key
+      },
+      orgDataArr: dropDownData.orgDataArr
+    };
+    setFiltersAction(obj);
+  };
+
   const updateGradeDropDownCB = selected => {
     let obj = {
       filters: {
@@ -297,6 +312,17 @@ const SingleAssessmentReportFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
+          {performanceBandRequired ? (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                by={{ key: filters.profileId }}
+                selectCB={onChangePerformanceBand}
+                data={profiles.map(p => ({ key: p._id, title: p.name }))}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          ) : null}
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <AutocompleteDropDown
               prefix="Grade"

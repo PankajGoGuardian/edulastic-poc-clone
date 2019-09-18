@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Select } from "antd";
+import { Row, Col, Select, message } from "antd";
+import { uniqBy } from "lodash";
 
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
@@ -18,19 +19,26 @@ const SecondBlock = ({
   allTagsData,
   addNewTag
 }) => {
-  const [searchValue, setSearchValue] = useState(undefined);
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
+  const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "testitem" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "testitem" });
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "testitem" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "testitem" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
-      newTag = allTagsData.find(tag => tag._id === id);
+      newTag = newAllTagsData.find(tag => tag._id === id);
     }
     const newTags = [...tags, newTag];
     onChangeTags(newTags);
-    setSearchValue(undefined);
+    setSearchValue("");
   };
 
   const deselectTags = id => {
@@ -39,8 +47,8 @@ const SecondBlock = ({
   };
 
   const searchTags = async value => {
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      setSearchValue(undefined);
+    if (newAllTagsData.some(tag => tag.tagName === value)) {
+      setSearchValue("");
     } else {
       setSearchValue(value);
     }
@@ -105,32 +113,48 @@ const SecondBlock = ({
             <div className="label">
               <b>{t("component.options.tags")}</b>
             </div>
-            <Select
-              data-cy="tagsSelect"
-              mode="multiple"
-              className="tagsSelect"
-              style={{ marginBottom: 0, width: "100%" }}
-              optionLabelProp="title"
-              placeholder="Please select"
-              value={tags.map(t => t._id)}
-              onSearch={searchTags}
-              onSelect={selectTags}
-              onDeselect={deselectTags}
-              filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-            >
-              {!!searchValue ? (
-                <Select.Option key={0} value={searchValue} title={searchValue}>
-                  {`${searchValue} (Create new Tag )`}
+            {searchValue.length && !searchValue.trim().length ? (
+              <Select
+                mode="multiple"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                className="tagsSelect"
+                placeholder="Please select"
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+                onSearch={searchTags}
+              >
+                <Select.Option key={0} value={"invalid"} title={"invalid"} disabled>
+                  {"Please enter valid characters"}
                 </Select.Option>
-              ) : (
-                ""
-              )}
-              {allTagsData.map(({ tagName, _id }, index) => (
-                <Select.Option key={_id} value={_id} title={tagName}>
-                  {tagName}
-                </Select.Option>
-              ))}
-            </Select>
+              </Select>
+            ) : (
+              <Select
+                data-cy="tagsSelect"
+                mode="multiple"
+                className="tagsSelect"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                placeholder="Please select"
+                value={tags.map(t => t._id)}
+                onSearch={searchTags}
+                onSelect={selectTags}
+                onDeselect={deselectTags}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              >
+                {!!searchValue.trim() ? (
+                  <Select.Option key={0} value={searchValue} title={searchValue}>
+                    {`${searchValue} (Create new Tag)`}
+                  </Select.Option>
+                ) : (
+                  ""
+                )}
+                {newAllTagsData.map(({ tagName, _id }, index) => (
+                  <Select.Option key={_id} value={_id} title={tagName}>
+                    {tagName}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </ItemBody>
         </Col>
       </Row>

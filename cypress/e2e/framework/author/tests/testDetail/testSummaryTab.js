@@ -16,11 +16,13 @@ export default class TestSummayTab {
   getTestTagsSelect = () => cy.get('[data-cy="tagsSelect"]');
 
   selectGrade = grade => {
-    this.getTestGradeSelect().click();
+    this.getTestGradeSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(grade)
-      .click();
-    cy.focused().blur();
+      .click({ force: true });
+    this.getTestGradeSelect()
+      .find("input")
+      .type("{esc}", { force: true });
   };
 
   verifyName = name => this.getTestName().should("have.value", name);
@@ -38,10 +40,10 @@ export default class TestSummayTab {
   };
 
   selectSubject = subject => {
-    this.getTestSubjectSelect().click();
+    this.getTestSubjectSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(subject)
-      .click();
+      .click({ force: true });
     cy.focused().blur();
   };
 

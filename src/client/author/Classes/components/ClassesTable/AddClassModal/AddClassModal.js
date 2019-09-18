@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
-import { Form, Input, Row, Col, Select, Modal, Spin } from "antd";
+import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
@@ -17,7 +17,7 @@ class AddClassModal extends Component {
       fetchingSchool: false,
       teacherList: [],
       fetchingTeacher: [],
-      searchValue: undefined
+      searchValue: ""
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
     this.fetchTeacher = debounce(this._fetchTeacher, 1000);
@@ -30,17 +30,14 @@ class AddClassModal extends Component {
       if (!err) {
         const { teacher, name, institutionId, subject, tags, courseId, grades } = user;
         const { allTagsData } = this.props;
-        const teacherArr = [];
-        for (let i = 0; i < teacher.length; i++) {
-          teacherArr.push(teacher[i].key);
-        }
+
         const createClassData = {
           name,
           type: "class",
-          owners: teacherArr,
+          owners: [teacher.key],
           institutionId: institutionId.key,
           subject: subject ? subject : "Other Subjects",
-          tags: tags.map(t => allTagsData.find(o => o._id === t)),
+          tags: tags && tags.map(t => allTagsData.find(o => o._id === t)),
           courseId,
           // here multiple grades has to be sent as a comma separated string
           grades: grades,
@@ -137,16 +134,22 @@ class AddClassModal extends Component {
     const { allTagsData, addNewTag } = this.props;
     let newTag = {};
     if (id === searchValue) {
-      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
-      newTag = { _id, tagName };
-      addNewTag({ tag: newTag, tagType: "group" });
+      const tempSearchValue = searchValue;
+      this.setState({ searchValue: "" });
+      try {
+        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "group" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
     setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
-    this.setState({ searchValue: undefined });
+    this.setState({ searchValue: "" });
   };
 
   deselectTags = id => {
@@ -158,8 +161,8 @@ class AddClassModal extends Component {
 
   searchTags = async value => {
     const { allTagsData } = this.props;
-    if (allTagsData.some(tag => tag.tagName === value)) {
-      this.setState({ searchValue: undefined });
+    if (allTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      this.setState({ searchValue: "" });
     } else {
       this.setState({ searchValue: value });
     }
@@ -259,11 +262,13 @@ class AddClassModal extends Component {
                   onSearch={this.searchTags}
                   onSelect={this.selectTags}
                   onDeselect={this.deselectTags}
-                  filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                  filterOption={(input, option) =>
+                    option.props.title.toLowerCase().includes(input.trim().toLowerCase())
+                  }
                 >
-                  {!!searchValue ? (
+                  {!!searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
-                      {`${searchValue} (Create new Tag )`}
+                      {`${searchValue} (Create new Tag)`}
                     </Select.Option>
                   ) : (
                     ""

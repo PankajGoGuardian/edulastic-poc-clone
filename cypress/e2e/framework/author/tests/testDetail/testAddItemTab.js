@@ -44,7 +44,7 @@ export default class TestAddItemTab {
       .closest("div")
       .next()
       .contains("REMOVE")
-      .should("be.visible");
+      .should("be.exist");
 
   removeItemById = itemId =>
     cy

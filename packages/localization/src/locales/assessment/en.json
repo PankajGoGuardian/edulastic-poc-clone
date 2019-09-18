@@ -19,7 +19,7 @@
     },
     "question": {
       "composeQuestion": "Question",
-      "questionPlaceholder": "Enter the question stem here"
+      "questionPlaceholder": "Enter your question"
     }
   },
   "component": {
@@ -224,14 +224,14 @@
       "lineColorLabel": "Line color",
       "addButtonText": "Add new color",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "undo": "Undo",
       "redo": "Redo",
       "clear": "Clear"
     },
     "shading": {
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "canvasSubtitle": "Canvas option",
       "rowsCountSubtitle": "Row count",
       "colsCountSubtitle": "Column count",
@@ -245,7 +245,7 @@
     },
     "chart": {
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "chartMainBlockTitle": "Chart",
       "width": "Width (px)",
       "height": "Height (px)",
@@ -292,11 +292,11 @@
       "multipleResponses": "Multiple responses",
       "areaSelectLabel": "Select Area",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question"
+      "enterQuestion": "Enter your question"
     },
     "tokenHighlight": {
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "paragraph": "Paragraph",
       "sentence": "Sentence",
       "word": "Word",
@@ -314,7 +314,7 @@
       "possibleRespTitle": "Possible responses",
       "addNewGroup": "ADD NEW GROUP",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "list": "List",
       "addNew": "Add new",
       "duplicatedResponses": "Duplicated responses",
@@ -327,7 +327,7 @@
       "alternateAnswer": "Alternate Answer",
       "deleteBackImage": "Delete Background Image",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "dragItemsTitle": "Drag & Drop the answer",
       "correctAnswers": "Correct Answers",
       "editColListSubtitle": "Column titles",
@@ -357,7 +357,7 @@
       "cut": "Cut",
       "submitOverLimit": "Submit over limit",
       "composequestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "plain": {
         "templateText": "The United States of America, is a federal republic composed of 50 states, a federal district, five major territories and various possessions.",
         "formattingOptions": "Action formatting options"
@@ -369,7 +369,7 @@
     },
     "shortText": {
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "smallSizeTitle": "How many states are there in America?",
       "smallSizePar": "Write your answer in the text field below.",
       "selectLabel": "Allow",
@@ -383,7 +383,7 @@
       "composequestion": "Question",
       "enteryourquestion": "Enter your question",
       "addnewchoicebtn": "Add New Choice",
-      " ": "[This is the stem.]",
+      " ": "Enter your question",
       "correctanswer": "Correct Answer:",
       "alternateAnswer": "Alternate Answer",
       "composeQuestion": "Question",
@@ -396,15 +396,15 @@
       "alternateAnswer": "Alternate Answer",
       "list": "List",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter question"
+      "enterQuestion": "Enter your question"
     },
     "multiplechoice": {
-      "thisisstem": "[This is the stem.]",
+      "thisisstem": "Enter your question",
       "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
       "composequestion": "Question",
-      "questionPlaceholder": "Enter the question stem here",
+      "questionPlaceholder": "Enter your question",
       "optionPlaceholder": "Option",
       "multipleResponses": "Multiple Responses",
       "shuffleOptions": "Shuffle options",
@@ -416,7 +416,7 @@
       "moveBackgroundImage": "Move Background Image",
       "dragDrop": {
         "templatemarkup": "Template Markup",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "setcorrectanswers": "Set Correct Answer(s)",
         "addnewchoice": "Add New Choice",
         "multiplechoiceoptions": "Multiple Choice Options",
@@ -434,7 +434,7 @@
       },
       "text": {
         "templatemarkup": "Template Markup",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "setcorrectanswers": "Set Correct Answer(s)",
         "composequestion": "Question",
         "templatemarkupplaceholder": "[This is the template markup]"
@@ -442,7 +442,7 @@
       "imageDragDrop": {
         "composequestion": "Question",
         "response": "Response",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "addimage": "Add image",
         "imagepreview": "Image preview",
         "imagealtertext": "Image alternative text",
@@ -484,7 +484,7 @@
       "imageDropDown": {
         "composequestion": "Question",
         "response": "Response",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "addimage": "Add image",
         "imagepreview": "Image preview",
         "imagealtertext": "Image alternative text",
@@ -526,7 +526,7 @@
         "response": "Response",
         "deleteImageButtonText": "Delete Image",
         "updateImageButtonText": "Update Image",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "widthpx": "Width (px)",
         "heightpx": "Height (px)",
         "positionX": "Left (px)",
@@ -557,7 +557,7 @@
       },
       "dropDown": {
         "templatemarkup": "Template Markup",
-        "thisisstem": "[This is the stem.]",
+        "thisisstem": "Enter your question",
         "ignorecase": "Ignore Case",
         "allowsinglelettermistake": "Allow single letter mistake",
         "setcorrectanswers": "Set Correct Answer(s)",
@@ -675,7 +675,7 @@
       "shuffleAnswerChoices": "Shuffle Answer Choices"
     },
     "math": {
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "bold": "Bold",
       "italic": "Italic",
       "underline": "Underline",
@@ -768,7 +768,7 @@
     "matrix": {
       "matrixStyle": "Matrix style",
       "multipleResponses": "Multiple responses",
-      "enterQuestion": "Enter question",
+      "enterQuestion": "Enter your question",
       "multipleChoiceOptions": "Multiple Choice Options",
       "steams": "Steams"
     },
@@ -824,8 +824,8 @@
     },
     "multipart": {
       "composequestion": "Question",
-      "enterQuestion": "Enter Question",
-      "enterContent": "Enter Question Contents",
+      "enterQuestion": "Enter your question",
+      "enterContent": "Enter your question",
       "content": "Content",
       "ignoreCase": "Ignore Case",
       "mixNmatch": "Mix-n-Match alternative answers",

@@ -820,7 +820,6 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-flex;
 }
 
 .check-answer.showanswer .index {
@@ -1040,7 +1039,9 @@ textinput::before {
   color: white;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   height: 100%;
+  width: 40px;
   background: #878282;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -1085,13 +1086,6 @@ textinput::before {
 
 .responseboxContainer {
   max-width: 15vw;
-}
-
-.imagelabeldragdrop-droppable img,
-.main img,
-.responses_box img,
-img.fr-fic {
-  width: auto;
 }
 
 .controls-bar .ant-select-selection {
@@ -2087,4 +2081,8 @@ span.token.active-word {
 
 .selected-text-heighlight.unsaved {
   background: #1890ff40;
+}
+
+.customTooltip div.ant-tooltip-inner {
+  width: max-content;
 }

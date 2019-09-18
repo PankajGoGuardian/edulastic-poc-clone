@@ -55,6 +55,7 @@ Display.propTypes = {
   question: PropTypes.string.isRequired,
   instructorStimulus: PropTypes.string,
   uiStyle: PropTypes.object,
+  qLabel: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   qIndex: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,

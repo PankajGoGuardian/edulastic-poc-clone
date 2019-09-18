@@ -7,7 +7,13 @@ import { get } from "lodash";
 import { Tabs } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
-import { getItemDetailDraggingSelector, useTabsAction } from "../../../../ducks";
+import {
+  getItemDetailDraggingSelector,
+  useTabsAction,
+  addTabsAction,
+  changeTabTitleAction,
+  removeTabAction
+} from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
 import {
@@ -17,7 +23,9 @@ import {
   WidgetContainer,
   AddPassageBtnContainer,
   CollapseBtn,
-  PlusIcon
+  PlusIcon,
+  AddTabButton,
+  GreenPlusIcon
 } from "./styled";
 // src/client/author/ItemDetail/ducks.js
 import { setItemLevelScoreAction } from "../../../../ducks";
@@ -135,16 +143,17 @@ class Container extends Component {
   render() {
     const {
       row,
-      onEditTabTitle,
+      changeTabTitle,
       rowIndex,
       dragging,
       count,
       isPassageQuestion,
       handleAddToPassage,
       hideColumn,
-      useTabs,
+      addTabs,
       isCollapsed,
-      useTabsLeft
+      useTabsLeft,
+      removeTab
     } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
@@ -159,6 +168,12 @@ class Container extends Component {
         }}
         hide={hideColumn}
       >
+        {isPassageQuestion && row.tabs?.length === 0 && (
+          <AddTabButton tabsBtn onClick={() => addTabs()}>
+            <GreenPlusIcon>+</GreenPlusIcon>
+            ADD TABS
+          </AddTabButton>
+        )}
         {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
             <Tabs value={tabIndex} onChange={ind => this.handleTabChange(ind)}>
@@ -166,15 +181,37 @@ class Container extends Component {
                 <Tabs.Tab
                   key={key}
                   label={tab}
+                  style={
+                    isPassageQuestion
+                      ? {
+                          textAlign: "center",
+                          padding: "20px 15px"
+                        }
+                      : {
+                          textAlign: "center",
+                          padding: "20px 15px",
+                          width: "50%"
+                        }
+                  }
+                  onChange={e => changeTabTitle(tabIndex, e.target.value)}
+                  editable
+                  close
+                  onClose={e => removeTab(tabIndex)}
+                  isAddTab={false}
+                />
+              ))}
+              {isPassageQuestion && row.tabs.length < 5 &&(
+                <Tabs.Tab
+                  key={row.length}
+                  label={"ADD TAB"}
                   style={{
-                    width: "50%",
                     textAlign: "center",
                     padding: "20px 15px"
                   }}
-                  onChange={e => onEditTabTitle(tabIndex, e.target.value)}
-                  editable
+                  addTabs={addTabs}
+                  isAddTab={true}
                 />
-              ))}
+              )}
             </Tabs>
           </TabContainer>
         )}
@@ -196,9 +233,6 @@ class Container extends Component {
             <Button onClick={() => handleAddToPassage("passage", tabIndex)}>
               <PlusIcon>+</PlusIcon>ADD PASSAGE
             </Button>
-            <Button tabsBtn onClick={() => useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft })}>
-              {useTabsLeft ? "REMOVE TABS" : "ADD TABS"}
-            </Button>
           </AddPassageBtnContainer>
         )}
       </Content>
@@ -213,7 +247,9 @@ const enhance = compose(
     }),
     {
       setItemLevelScore: setItemLevelScoreAction,
-      useTabs: useTabsAction
+      addTabs: addTabsAction,
+      changeTabTitle: changeTabTitleAction,
+      removeTab: removeTabAction
     }
   )
 );

@@ -44,13 +44,13 @@ const StudentMasteryProfile = ({
   match,
   settings,
   loading,
-  SARFilterData,
+  SPRFilterData,
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequestAction
 }) => {
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
-  const { scaleInfo = [] } = get(SARFilterData, "data.result", {});
+  const { scaleInfo = [] } = get(SPRFilterData, "data.result", {});
   const { selectedStudent = {} } = settings;
 
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
@@ -146,7 +146,7 @@ const StudentMasteryProfile = ({
 const enhance = connect(
   state => ({
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
-    SARFilterData: getReportsSPRFilterData(state),
+    SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),

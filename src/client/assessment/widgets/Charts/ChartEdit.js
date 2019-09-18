@@ -102,11 +102,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
             break;
           }
           case "onlyByHover": {
-            if (draft.chart_data.data[index].onlyByHover === undefined) {
-              draft.chart_data.data[index].onlyByHover = true;
-            } else {
-              draft.chart_data.data[index].onlyByHover = value;
-            }
+            draft.chart_data.data[index].onlyByHover = value;
             break;
           }
           default:

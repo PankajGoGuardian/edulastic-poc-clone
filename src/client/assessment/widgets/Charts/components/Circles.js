@@ -63,7 +63,7 @@ const Circles = ({
     );
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
-  // console.log(bars)
+
   return (
     <Fragment>
       {bars.map((dot, index) => (

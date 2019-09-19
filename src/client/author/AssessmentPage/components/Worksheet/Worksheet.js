@@ -43,7 +43,6 @@ class Worksheet extends React.Component {
   static propTypes = {
     docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired,
     userWork: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
@@ -80,7 +79,7 @@ class Worksheet extends React.Component {
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props;
     if (itemDetail?.item?._id) {
-      saveUserWork({ [itemDetail.item._id]: freeFormNotes });
+      saveUserWork({ [itemDetail.item._id]: { scratchpad: freeFormNotes || {} } });
     }
   }
 
@@ -198,8 +197,7 @@ class Worksheet extends React.Component {
     const nextIndex = pageIndex - 1;
     const { pageStructure, setTestData, annotations } = this.props;
 
-    const newAnnotations = annotations.map(annotation => {
-      return {
+    const newAnnotations = annotations.map(annotation => ({
         ...annotation,
         page:
           annotation.page === pageIndex + 1
@@ -208,7 +206,7 @@ class Worksheet extends React.Component {
             ? pageIndex + 1
             : annotation.page
       };
-    });
+    }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({
@@ -225,8 +223,7 @@ class Worksheet extends React.Component {
 
     const nextIndex = pageIndex + 1;
 
-    const newAnnotations = annotations.map(annotation => {
-      return {
+    const newAnnotations = annotations.map(annotation => ({
         ...annotation,
         page:
           annotation.page === pageIndex + 1
@@ -235,7 +232,7 @@ class Worksheet extends React.Component {
             ? pageIndex + 1
             : annotation.page
       };
-    });
+    }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
     setTestData({

@@ -301,4 +301,7 @@ const QuestionTitleWrapper = styled.div`
   iframe {
     max-width: 100%;
   }
+  .jsx-parser {
+    width: 100%;
+  }
 `;

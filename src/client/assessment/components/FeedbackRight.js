@@ -185,7 +185,8 @@ class FeedbackRight extends Component {
       isPresentationMode,
       color,
       icon,
-      twoColLayout
+      twoColLayout,
+      showCollapseBtn
     } = this.props;
     const { score, maxScore, feedback, submitted } = this.state;
     const isError = maxScore < score;
@@ -213,6 +214,7 @@ class FeedbackRight extends Component {
         twoColLayout={twoColLayout}
         bordered={isStudentName}
         disabled={this.props.disabled || !activity}
+        showCollapseBtn={showCollapseBtn}
         title={title}
       >
         <StyledDivSec>
@@ -313,7 +315,7 @@ const StyledCardTwo = styled(Card)`
   }
 
   @media screen and (min-width: ${desktopWidth}) {
-    width: ${({ twoColLayout }) => twoColLayout?.second || "25%"};
+    width: ${({ twoColLayout, showCollapseBtn }) => (showCollapseBtn ? "auto" : twoColLayout?.second || "25%")};
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

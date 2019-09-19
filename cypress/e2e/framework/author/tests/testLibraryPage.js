@@ -119,6 +119,15 @@ export default class TestLibrary {
     cy.wait("@groups");
   };
 
+  clickOnDuplicate = () => {
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    cy.route("GET", "**/test/**").as("getTest");
+    cy.contains("DUPLICATE").click({ force: true });
+    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+    cy.wait("@getTest");
+    cy.wait("@getTest");
+  };
+
   verifyVersionedURL = (oldTestId, newTestId) =>
     // URL changes after ~4 sec after API response, could not watch this event, hence wait
     cy.wait(5000).then(() =>

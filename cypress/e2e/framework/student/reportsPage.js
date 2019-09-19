@@ -111,6 +111,10 @@ class ReportsPage {
     cy.get('[data-cy="maxscore"]').should("have.text", points.toString());
   };
 
+  verifyFeedBackComment = feedback => {
+    cy.get('[data-cy="feedback"]').should("contain", feedback);
+  };
+
   verifyQuestionResponseCard = (points, queTypeKey, attemptType, attemptData, correcAns) => {
     cy.get('[data-cy="question-container"]').as("quecard");
     const { right, wrong, partialCorrect } = attemptData;

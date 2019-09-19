@@ -133,7 +133,7 @@ class StudentTestPage {
     cy
       .contains(ch)
       .should("be.visible")
-      .click();
+      .click({ force: true });
 
   checkHighLightUncheckedByAnswer = answer => {
     cy.contains(answer)
@@ -161,7 +161,7 @@ class StudentTestPage {
           cy.wrap(ele)
             .find("input")
             .eq(steams.indexOf(answer[chKey]))
-            .click();
+            .click({ force: true });
         });
     });
   };

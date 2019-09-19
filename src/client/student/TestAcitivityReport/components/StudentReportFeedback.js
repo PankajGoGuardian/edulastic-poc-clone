@@ -17,7 +17,7 @@ const StudentFeedback = ({ question, qId, qLabel }) => {
           <Total data-cy="maxscore">{maxScore}</Total>
         </ScoreWrapper>
         <Feedback>
-          <FeedbackGiven>{feedback && feedback.text}</FeedbackGiven>
+          <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>
         </Feedback>
       </FeedbackContainer>
     </FeedbackWrapper>

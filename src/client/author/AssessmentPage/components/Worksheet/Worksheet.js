@@ -198,14 +198,13 @@ class Worksheet extends React.Component {
     const { pageStructure, setTestData, annotations } = this.props;
 
     const newAnnotations = annotations.map(annotation => ({
-        ...annotation,
-        page:
-          annotation.page === pageIndex + 1
-            ? nextIndex + 1
-            : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
-      };
+      ...annotation,
+      page:
+        annotation.page === pageIndex + 1
+          ? nextIndex + 1
+          : annotation.page === nextIndex + 1
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -224,14 +223,13 @@ class Worksheet extends React.Component {
     const nextIndex = pageIndex + 1;
 
     const newAnnotations = annotations.map(annotation => ({
-        ...annotation,
-        page:
-          annotation.page === pageIndex + 1
-            ? nextIndex + 1
-            : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
-      };
+      ...annotation,
+      page:
+        annotation.page === pageIndex + 1
+          ? nextIndex + 1
+          : annotation.page === nextIndex + 1
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 

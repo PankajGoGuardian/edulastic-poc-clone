@@ -368,7 +368,7 @@ class QuestionWrapper extends Component {
                   paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}
-                twoColLayout={this.props.theme?.twoColLayout}
+                twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
               >
                 {view === "edit" && (
                   <QuestionMenu
@@ -414,6 +414,7 @@ class QuestionWrapper extends Component {
               {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
                 <FeedbackRight
                   twoColLayout={this.props.theme?.twoColLayout}
+                  showCollapseBtn={showCollapseBtn}
                   disabled={disabled}
                   widget={data}
                   studentName={studentName}

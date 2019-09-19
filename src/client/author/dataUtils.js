@@ -92,7 +92,7 @@ export const markQuestionLabel = questions => {
     const rowQuestions = {};
     const allQreferences = _item.flatMap(item => item.widgets.map(item => item.reference));
     allQreferences.forEach(ref => {
-      if (questions[ref].isPassage) {
+      if (questions[ref]?.isPassage) {
         rowQuestions[ref] = questions[ref];
       } else {
         questionNumber++;

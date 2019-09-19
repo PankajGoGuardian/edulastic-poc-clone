@@ -107,13 +107,6 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
-    let questions = getQuestions(test.testItems);
-    if (test.passages) {
-      const passageItems = test.passages.map(passage => passage.data || []);
-      questions = [...flatten(passageItems), ...questions];
-    }
-
-    yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     let { testItems, passages } = test;
 
@@ -156,7 +149,6 @@ function* loadTest({ payload }) {
         [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
         yield put(setShuffledOptions(shuffles));
       }
-      markQuestionLabel(testItems);
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }
@@ -240,6 +232,13 @@ function* loadTest({ payload }) {
         });
       }
     }
+    markQuestionLabel(testItems);
+    let questions = getQuestions(testItems);
+    if (test.passages) {
+      const passageItems = test.passages.map(passage => passage.data || []);
+      questions = [...flatten(passageItems), ...questions];
+    }
+    yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!

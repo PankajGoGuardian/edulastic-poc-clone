@@ -100,10 +100,14 @@ class ClozeMathWithUnit extends React.Component {
       return;
     }
 
-    const scrollbrWidth = target.offsetWidth - target.clientWidth;
-    if (scrollbrWidth && !$(target).hasClass("mq-root-block")) {
-      return;
+    if (target.clientHeight < target.scrollHeight) {
+      const scrollBarWidth = target.offsetWidth - target.clientWidth;
+      const clickPos = target.scrollWidth - e.offsetX;
+      if (scrollBarWidth > 0 && clickPos < 0) {
+        return;
+      }
     }
+
     if (
       wrappedRef &&
       !wrappedRef.current.contains(target) &&

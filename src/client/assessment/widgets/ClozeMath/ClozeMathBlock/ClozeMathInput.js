@@ -112,8 +112,8 @@ class ClozeMathInput extends React.Component {
       return;
     }
 
-    // clicks scroll bar
-    if ($(target).outerWidth() < e.clientX && !$(target).hasClass("mq-root-block")) {
+    const scrollbrWidth = target.offsetWidth - target.clientWidth;
+    if (scrollbrWidth && !$(target).hasClass("mq-root-block")) {
       return;
     }
 

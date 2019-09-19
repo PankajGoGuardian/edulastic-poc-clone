@@ -20,29 +20,29 @@ const SpecialCharacters = ({ item, setQuestionData, t }) => {
 
   const _characterMapChange = e => {
     const { value } = e.target;
-    _change("character_map", value.split(""));
+    _change("characterMap", value.split(""));
   };
 
   return (
     <Row gutter={36}>
       <Col md={12}>
         <Checkbox
-          checked={!!item.character_map}
+          checked={!!item.characterMap}
           onChange={e => {
             if (e.target.checked) {
-              _change("character_map", []);
+              _change("characterMap", []);
             } else {
-              _change("character_map", undefined);
+              _change("characterMap", undefined);
             }
           }}
         >
           {t("component.options.specialcharacters")}
         </Checkbox>
       </Col>
-      {item.character_map && (
+      {item.characterMap && (
         <Col md={12}>
           <Label>{t("component.options.charactersToDisplay")}</Label>
-          <Input value={item.character_map.join("")} size="large" onChange={_characterMapChange} />
+          <Input value={item.characterMap.join("")} size="large" onChange={_characterMapChange} />
         </Col>
       )}
     </Row>

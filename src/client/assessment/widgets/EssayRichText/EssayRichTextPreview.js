@@ -63,7 +63,7 @@ const EssayRichTextPreview = ({
 
   const minHeight = get(item, "uiStyle.minHeight", 200);
   const maxHeight = get(item, "uiStyle.max_height", 300);
-  const characterMap = get(item, "character_map", []);
+  const characterMap = get(item, "characterMap", []);
   const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {

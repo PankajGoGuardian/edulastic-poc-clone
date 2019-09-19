@@ -145,7 +145,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   return (
     <CustomInput
       key={`input_${index}`}
-      style={{ ...style, width: "max-content", height: "auto" }}
+      style={{ ...style, width: "max-content", height: "auto", marginBottom: "4px" }}
       title={value.length ? value : null}
     >
       <MInput

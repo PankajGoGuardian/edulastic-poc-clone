@@ -153,7 +153,7 @@ class Worksheet extends React.Component {
     const { currentPage } = this.state;
     const { pageStructure, annotations = [] } = this.props;
     if (
-      (pageStructure[currentPage] && pageStructure[currentPage].URL) ||
+      (pageStructure[currentPage] && pageStructure[currentPage].URL !== "blank") ||
       annotations.some(annotation => annotation.page === currentPage + 1)
     ) {
       this.setDeleteConfirmation(true, currentPage);

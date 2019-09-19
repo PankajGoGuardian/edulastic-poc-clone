@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { themeColorLight, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+import { EDIT, CLEAR, CHECK, SHOW, SHOW_ALWAYS, SHOW_BY_HOVER } from "../../../constants/constantsForQuestions";
 
 import { Bar, ActiveBar, Text, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
@@ -130,8 +130,8 @@ const Crosses = ({
             x={getCenterX(index) + step / 2}
             y={height + 20}
           >
-            {(dot.hoverSetting === "onlyByHover" && showLabel === index && dot.x) ||
-              ((dot.hoverSetting === "showAlways" || !dot.hoverSetting) && dot.x)}
+            {(dot.labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
+              ((dot.labelVisibility === SHOW_ALWAYS || !dot.labelVisibility) && dot.x)}
           </Text>
         </Fragment>
       ))}

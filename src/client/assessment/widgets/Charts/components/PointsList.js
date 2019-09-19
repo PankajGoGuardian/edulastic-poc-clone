@@ -9,12 +9,13 @@ import UiInputGroup from "./UiInputGroup";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
+import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../../../constants/constantsForQuestions";
 
 class PointsList extends Component {
   hoverSettings = [
-    { label: "Show always", value: "showAlways" },
-    { label: "Show by hover", value: "onlyByHover" },
-    { label: "Hidden", value: "hidden" }
+    { label: this.props.t("component.chart.labelOptions.showAlways"), value: SHOW_ALWAYS },
+    { label: this.props.t("component.chart.labelOptions.showByHover"), value: SHOW_BY_HOVER },
+    { label: this.props.t("component.chart.labelOptions.hidden"), value: HIDDEN }
   ];
 
   render() {
@@ -49,9 +50,9 @@ class PointsList extends Component {
             </Checkbox>
             {onlyByHoverSetting && (
               <Select
-                value={dot.hoverSetting || "showAlways"}
+                value={dot.labelVisibility || SHOW_ALWAYS}
                 style={{ width: "150px" }}
-                onSelect={value => handleChange(index)("hoverSetting", value)}
+                onSelect={value => handleChange(index)("labelVisibility", value)}
               >
                 {this.hoverSettings.map((setting, index) => (
                   <Select.Option key={`setting-${index}`} value={setting.value}>

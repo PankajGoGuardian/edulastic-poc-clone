@@ -272,6 +272,11 @@
         "x_only": "Display X axes gridlines only (Vertical)",
         "y_only": "Display Y axes gridlines only (Horizontal)",
         "none": "Don't display gridlines"
+      },
+      "labelOptions": {
+        "showAlways": "Show always",
+        "hidden": "Hidden",
+        "showByHover": "Show by hover"
       }
     },
     "hotspot": {

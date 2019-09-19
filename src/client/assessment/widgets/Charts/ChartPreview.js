@@ -107,7 +107,10 @@ const ChartPreview = ({
   };
 
   if (answerIsActual() || view === EDIT) {
-    passData.data = userAnswer.map((answer, index) => ({ ...answer, hoverSetting: passData.data[index].hoverSetting }));
+    passData.data = userAnswer.map((answer, index) => ({
+      ...answer,
+      labelVisibility: passData.data[index].labelVisibility
+    }));
   }
 
   const answerData = validation ? validation.validResponse.value : [];

@@ -63,17 +63,18 @@ class ClassQuestions extends Component {
 
   static contextType = AnswerContext;
 
-  componentDidMount() {
+  componentDidUpdate(prevProps) {
     const { loadScratchPad, questionActivities } = this.props;
-    const userWork = {};
-    // load scratchpad data to store.
-    questionActivities.forEach(curr => {
-      if (curr.scratchPad && !userWork[curr.testItemId]) {
-        userWork[curr.testItemId] = curr.scratchPad;
-      }
-    });
+    if (prevProps.questionActivities !== questionActivities) {
+      const userWork = {};
+      questionActivities.forEach(curr => {
+        if (curr.scratchPad && !userWork[curr.testItemId]) {
+          userWork[curr.testItemId] = curr.scratchPad;
+        }
+      });
 
-    loadScratchPad(userWork);
+      loadScratchPad(userWork);
+    }
   }
 
   // show AssessmentPlayerModal

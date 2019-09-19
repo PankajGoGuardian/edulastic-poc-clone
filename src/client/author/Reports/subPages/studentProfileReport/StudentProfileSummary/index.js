@@ -108,7 +108,7 @@ const StudentProfileSummary = ({
               <b>Grade</b>: {getGrades(studentInformation.grades)}
             </p>
             <p>
-              <b>School</b>: {studentInformation.school || "N/A"}
+              <b>School</b>: {studentClassInfo.schoolName || "N/A"}
             </p>
             <p>
               <b>Subject</b>: {studentClassInfo.standardSet || "N/A"}

@@ -6,9 +6,10 @@ import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
 import { replaceTestItemsAction } from "../../author/TestPage/ducks";
-// types
-export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 
+const alphabets = "abcdefghijklmnopqrstuvwxyz";
+
+export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
 export const SET_FEEDBACK = "[studentItems] set feedback";
 
@@ -28,12 +29,16 @@ function* loadTestActivityReport({ payload }) {
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
 
-    let count = 0;
     const testItems = get(test, "testItems", []);
-    testItems.forEach(item => {
+    testItems.forEach((item, i) => {
       const questions = get(item, "data.questions", []);
-      questions.forEach(q => {
-        q.qLabel = `Q${++count}`;
+      const isMultipart = questions.length > 1;
+      questions.forEach((q, j) => {
+        if (isMultipart) {
+          q.qLabel = `Q${i + 1}${alphabets[j]}`;
+        } else {
+          q.qLabel = `Q${i + 1}`;
+        }
       });
     });
 

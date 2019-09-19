@@ -34,6 +34,15 @@ export const getReportsMARFilterData = createSelector(
   state => state.MARFilterData
 );
 
+export const getReportsMARSelectedPerformanceBandProfile = createSelector(
+  stateSelector,
+  state => {
+    const availableProfiles = state?.MARFilterData?.data?.result?.bandInfo || [];
+    const selectedProfileId = state?.filters?.profileId;
+    return availableProfiles.find(x => x._id === selectedProfileId) || availableProfiles[0];
+  }
+);
+
 export const getFiltersSelector = createSelector(
   stateSelector,
   state => state.filters

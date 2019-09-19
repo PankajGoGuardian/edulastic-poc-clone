@@ -5,7 +5,7 @@ import { addColors } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
-const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB, studentClassInfo }) => {
+const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB, studentClassInfo = {} }) => {
   const xDataKey = "uniqId";
 
   const dataWithColors = addColors(data, selectedTests, xDataKey, "score");

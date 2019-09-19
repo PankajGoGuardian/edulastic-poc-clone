@@ -75,7 +75,7 @@ export default class TestLibrary {
       testAddItem.authoredByMe().then(() => {
         this.items.forEach((itemKey, index) => {
           testAddItem.addItemById(itemKey);
-          if (index === 0) cy.wait("@createTest");
+          if (index === 0) cy.wait("@createTest").then(xhr => this.saveTestId(xhr));
           cy.wait(500);
         });
       });

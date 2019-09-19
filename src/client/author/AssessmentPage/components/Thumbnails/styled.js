@@ -9,7 +9,7 @@ export const ThumbnailsWrapper = styled.div`
   height: calc(100vh - 62px);
   overflow-y: auto;
   padding: 30px 28px;
-  padding-right: ${({ review }) => (review ? "64px" : "28px")};
+  padding-right: ${({ review }) => (review ? "28px" : "13px")};
   padding-bottom: 0;
   background: #ebebeb;
   margin-left: ${({ minimized }) => (minimized ? "-183px" : 0)};
@@ -18,6 +18,7 @@ export const ThumbnailsWrapper = styled.div`
 
 export const ThumbnailsList = styled.div`
   margin-bottom: 70px;
+  padding-right: 15px;
 `;
 
 export const ReuploadButtonWrapper = styled.div`

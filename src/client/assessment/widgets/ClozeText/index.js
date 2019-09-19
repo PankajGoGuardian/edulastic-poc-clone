@@ -292,7 +292,7 @@ class ClozeText extends Component {
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
-                  characterMap={item.character_map}
+                  characterMap={item.characterMap}
                   multipleLine={item.multiple_line}
                   advancedAreOpen={advancedAreOpen}
                   cleanSections={cleanSections}

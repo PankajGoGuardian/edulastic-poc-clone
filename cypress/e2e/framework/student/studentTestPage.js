@@ -1,6 +1,6 @@
 import ReportsPage from "./reportsPage";
 import MathEditor from "./mathEditor";
-import { attemptTypes, questionTypeKey as questionType } from "../constants/questionTypes";
+import { attemptTypes, questionTypeKey as questionType, queColor } from "../constants/questionTypes";
 import AssignmentsPage from "./assignmentsPage";
 import { studentSide } from "../constants/assignmentStatus";
 
@@ -86,9 +86,9 @@ class StudentTestPage {
       .as("submit")
       .should("be.visible")
       .click();
-    this.clickOnCancel();
+    /* this.clickOnCancel();
 
-    cy.get("@submit").click();
+    cy.get("@submit").click(); */
     cy.get("[data-cy=submit]")
       .should("be.visible")
       .click();
@@ -567,13 +567,25 @@ class StudentTestPage {
 
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
-  attemptAssignment = (email, status, attempt, questionTypeMap, password) => {
+  verifySideBar = qIndex => {
+    cy.get(`[data-cy="queCircle-${qIndex + 1}"]`).should("have.css", "background-color", queColor.GREEN_1);
+  };
+
+  verifyTopProgress = (qIndex, total) => {
+    cy.get('[data-cy="progressItem"]').should("contain.text", `${qIndex + 1} / ${total} Completed`);
+  };
+
+  attemptAssignment = (email, status, attempt, questionTypeMap, password, aType = "CLASS_ASSESSMENT") => {
     if (status !== studentSide.NOT_STARTED) {
       cy.login("student", email, password);
       this.assignmentPage.clickOnAssignmentButton();
-      Object.keys(attempt).forEach(queNum => {
+      Object.keys(attempt).forEach((queNum, index, att) => {
         const [queType] = questionTypeMap[queNum].queKey.split(".");
         const { attemptData } = questionTypeMap[queNum];
+        if (aType === "PRACTICE_ASSESSMENT") {
+          this.verifySideBar(index);
+          this.verifyTopProgress(index, att.length);
+        }
         this.attemptQuestion(queType, attempt[queNum], attemptData);
         this.clickOnNext();
       });

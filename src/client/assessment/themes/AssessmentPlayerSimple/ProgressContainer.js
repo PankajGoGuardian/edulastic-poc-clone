@@ -7,7 +7,7 @@ import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 const ProgressContainer = ({ questions, current, desktop }) => {
   return (
     <Container desktop={desktop}>
-      <CompletedItems>
+      <CompletedItems data-cy="progressItem">
         {current} / {questions.length} Completed
       </CompletedItems>
       <QIndicationContainer>

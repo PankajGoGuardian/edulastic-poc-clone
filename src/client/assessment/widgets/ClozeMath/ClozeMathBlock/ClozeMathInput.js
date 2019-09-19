@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find, isEqual, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
+import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "./CheckedBlock";
 
@@ -112,8 +113,8 @@ class ClozeMathInput extends React.Component {
       return;
     }
 
-    // clicks scroll bar
-    if ($(target).outerWidth() < e.clientX && !$(target).hasClass("mq-root-block")) {
+    const scrollbrWidth = target.offsetWidth - target.clientWidth;
+    if (scrollbrWidth && !$(target).hasClass("mq-root-block")) {
       return;
     }
 
@@ -208,7 +209,7 @@ class ClozeMathInput extends React.Component {
     const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-    const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+    const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
 
@@ -220,8 +221,8 @@ class ClozeMathInput extends React.Component {
             onClick={this.showKeyboardModal}
             style={{
               ...btnStyle,
-              width: width || "auto",
-              height: height || "auto",
+              width,
+              height,
               padding: "5px 11px 4px"
             }}
           />

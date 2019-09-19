@@ -58,7 +58,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
     const { email, status, attempt, stuName } = attemptsData[0];
 
     it(`> attempt by ${stuName}`, () => {
-      test.attemptAssignment(email, status, attempt, questionTypeMap, password);
+      test.attemptAssignment(email, status, attempt, questionTypeMap, password, aType);
     });
 
     it("> verify stats on report page", () => {
@@ -77,7 +77,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
     });
 
     it(`> attempt by ${stuName}`, () => {
-      test.attemptAssignment(email, status, attempt, questionTypeMap, password);
+      test.attemptAssignment(email, status, attempt, questionTypeMap, password, aType);
     });
 
     it("> verify stats on report page", () => {
@@ -97,7 +97,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
     });
 
     it(`> attempt by ${stuName}`, () => {
-      test.attemptAssignment(email, status, attempt, questionTypeMap, password);
+      test.attemptAssignment(email, status, attempt, questionTypeMap, password, aType);
     });
 
     it("> verify stats on report page", () => {
@@ -122,7 +122,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
     });
 
     it(`> attempt by ${stuName}`, () => {
-      test.attemptAssignment(email, status, attempt, questionTypeMap, password);
+      test.attemptAssignment(email, status, attempt, questionTypeMap, password, aType);
     });
 
     it("> verify stats on report page", () => {

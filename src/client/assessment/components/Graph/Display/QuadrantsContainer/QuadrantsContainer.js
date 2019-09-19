@@ -6,7 +6,6 @@ import { cloneDeep, isEqual } from "lodash";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
-  IconGraphLabel as IconLabel,
   IconGraphPoint as IconPoint,
   IconGraphSine as IconSine,
   IconGraphParabola as IconParabola,

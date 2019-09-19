@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr, capitalize, find } from "lodash";
+import { indexOf, filter as filterArr, capitalize, find, get } from "lodash";
 import { Form, Select, Radio, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
@@ -42,8 +42,19 @@ const PerformanceByStandards = ({
   match,
   settings,
   role,
-  isCsvDownloading
+  isCsvDownloading,
+  selectedStandardProficiencyProfile,
+  standardProficiencyProfiles
 }) => {
+  const scaleInfo = useMemo(
+    () =>
+      (
+        standardProficiencyProfiles.find(s => s._id === selectedStandardProficiencyProfile) ||
+        standardProficiencyProfiles[0]
+      )?.scale,
+    [selectedStandardProficiencyProfile, standardProficiencyProfiles]
+  );
+
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
@@ -57,8 +68,9 @@ const PerformanceByStandards = ({
   const reportWithFilteredSkills = useMemo(() => {
     return next(report, draftReport => {
       draftReport.skillInfo = filterArr(draftReport.skillInfo, skill => skill.curriculumId === standardId);
+      draftReport.scaleInfo = scaleInfo;
     });
-  }, [report, standardId]);
+  }, [report, standardId, scaleInfo]);
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
@@ -347,7 +359,13 @@ const enhance = connect(
     loading: getPerformanceByStandardsLoadingSelector(state),
     role: getUserRole(state),
     report: getPerformanceByStandardsReportSelector(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    selectedStandardProficiencyProfile: get(
+      state,
+      "reportSARFilterDataReducer.filters.standardsProficiencyProfile",
+      ""
+    ),
+    standardProficiencyProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.scaleInfo", [])
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction

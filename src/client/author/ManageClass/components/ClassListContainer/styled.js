@@ -1,6 +1,16 @@
 import styled, { css } from "styled-components";
 
-import { white, themeColor, boxShadowDefault, themeColorLight, mediumDesktopWidth } from "@edulastic/colors";
+import {
+  white,
+  themeColor,
+  boxShadowDefault,
+  themeColorLight,
+  mediumDesktopWidth,
+  darkGrey,
+  lightGreySecondary,
+  secondaryTextColor,
+  cardTitleColor
+} from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
@@ -150,14 +160,69 @@ export const LabelMyClasses = styled.span`
   margin-right: 10px;
 `;
 export const ClassListTable = styled(Table)`
-  .ant-table-tbody > tr {
-    cursor: pointer;
-  }
   .ant-table {
-    &-tbody,
+    overflow: auto;
     &-thead {
-      & > tr :nth-last-of-type(-n + 2) {
-        text-align: end;
+      & > tr > th {
+        border-bottom: none;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: ${cardTitleColor};
+        background: white;
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+        & .ant-table-header-column .ant-table-column-sorters::before {
+          background: ${white};
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-filters
+          &.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: center;
+        }
+        .ant-table-column-sorters {
+          display: flex;
+          justify-content: center;
+
+          .ant-table-column-sorter-inner {
+            &.ant-table-column-sorter-inner-full {
+              margin-top: 0em;
+            }
+            .ant-table-column-sorter {
+              &-up,
+              &-down {
+                font-size: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+    &-tbody {
+      & > tr {
+        background: ${lightGreySecondary};
+        font-family: Open Sans, SemiBold;
+        letter-spacing: 0.26px;
+        color: ${secondaryTextColor};
+        font-size: 14px;
+        cursor: pointer;
+        border-bottom: 15px solid white;
+        & > td {
+          &.ant-table-column-sort {
+            background: none;
+          }
+          & > span {
+            overflow: hidden;
+            display: block;
+            max-width: 150px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-left: 5px;
+          }
+          font-weight: bold;
+          padding: 10px 10px;
+        }
+        & > :nth-last-of-type(-n + 2) {
+          text-align: center;
+        }
       }
     }
   }

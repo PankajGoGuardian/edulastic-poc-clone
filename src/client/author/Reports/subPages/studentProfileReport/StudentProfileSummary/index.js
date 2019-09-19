@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
-import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
+import {
+  getReportsSPRFilterData,
+  getBandInfoSelected,
+  getSelectedStandardProficiency
+} from "../common/filterDataDucks";
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
@@ -45,17 +49,19 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequestAction,
-  bandInfoSelected
+  bandInfoSelected,
+  selectedStandardProficiency
 }) => {
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
+  const scaleInfo = selectedStandardProficiency;
 
   const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
     studentProfileSummary,
     "data.result",
     {}
   );
-  const { scaleInfo = [], studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
@@ -138,7 +144,8 @@ const enhance = connect(
     loading: getReportsStudentProfileSummaryLoader(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state)
+    bandInfoSelected: getBandInfoSelected(state),
+    selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
     getStudentProfileSummaryRequestAction

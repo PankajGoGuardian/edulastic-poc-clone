@@ -55,7 +55,6 @@ export const TestStatus = styled.span`
   color: ${props => (props.status === "draft" ? "#979BA1" : "#798CA8")};
   text-transform: uppercase;
   font-weight: bold;
-  margin-bottom: ${props => (props.view === "tile" ? "10px" : 0)};
 `;
 
 export const EdulasticVerified = styled(IconELogo)`

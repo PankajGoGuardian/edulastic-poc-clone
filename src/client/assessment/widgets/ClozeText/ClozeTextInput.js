@@ -115,11 +115,11 @@ const ClozeTextInput = ({ resprops, id }) => {
   };
 
   const _makeCharactersMap = () => {
-    const { character_map } = item;
+    const { characterMap } = item;
     const make = arr => arr.map(character => ({ value: character, label: character }));
 
-    if (Array.isArray(character_map) && character_map.length > 0) {
-      return make(character_map);
+    if (Array.isArray(characterMap) && characterMap.length > 0) {
+      return make(characterMap);
     }
 
     return make(characterMapButtons);
@@ -145,7 +145,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   return (
     <CustomInput
       key={`input_${index}`}
-      style={{ ...style, width: "max-content", height: "auto" }}
+      style={{ ...style, width: "max-content", height: "auto", marginBottom: "4px" }}
       title={value.length ? value : null}
     >
       <MInput
@@ -171,7 +171,7 @@ const ClozeTextInput = ({ resprops, id }) => {
         }}
         placeholder={responsecontainerindividuals[index]?.placeholder || placeholder}
       />
-      {item.character_map && (
+      {item.characterMap && (
         <NumberPad
           buttonStyle={{ height: "100%", width: 30 }}
           onChange={(_, val) => {

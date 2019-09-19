@@ -58,6 +58,15 @@ export const getTestIdSelector = createSelector(
   state => state.testId
 );
 
+export const getSelectedStandardProficiency = createSelector(
+  getFiltersSelector,
+  getReportsStandardsFilters,
+  (filters, filtersData) => {
+    const scales = filtersData?.data?.result?.scaleInfo || [];
+    return (scales.find(s => s._id === filters.profileId) || scales[0])?.scale;
+  }
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -71,7 +80,8 @@ const initialState = {
     termId: "",
     subject: "All",
     grades: ["K"],
-    domainIds: ["All"]
+    domainIds: ["All"],
+    profileId: ""
   },
   testId: ""
 };

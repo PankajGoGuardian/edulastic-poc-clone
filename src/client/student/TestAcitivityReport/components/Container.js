@@ -31,10 +31,11 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
     itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
-      <AssignmentContentWrapper hasCollapseButtons={hasCollapseButtons}>
-        <Wrapper>
-          {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
-          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+      <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+        <AssignmentContentWrapper hasCollapseButtons={hasCollapseButtons}>
+          <Wrapper>
+            {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
+
             <TestItemPreview
               view="preview"
               preview={preview}
@@ -52,15 +53,15 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
             <PaddingDiv>
               <Hints questions={get(item, [`data`, `questions`], [])} />
             </PaddingDiv>
-          </AnswerContext.Provider>
-        </Wrapper>
-      </AssignmentContentWrapper>
-      <TestPreviewModal
-        isModalVisible={showModal}
-        hideModal={closeModal}
-        test={{ testItems: [item] }}
-        LCBPreviewModal
-      />
+          </Wrapper>
+        </AssignmentContentWrapper>
+        <TestPreviewModal
+          isModalVisible={showModal}
+          hideModal={closeModal}
+          test={{ testItems: [item] }}
+          LCBPreviewModal
+        />
+      </AnswerContext.Provider>
     </AssignmentsContent>
   );
 };

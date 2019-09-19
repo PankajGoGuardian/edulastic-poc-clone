@@ -34,11 +34,11 @@ const initialState = {
 
 const initialTestState = createBlankTest();
 
-const createAssessmentRequest = (state, { payload: { file } }) => {
+const createAssessmentRequest = (state, { payload: { file = {} } }) => {
   state.creating = true;
   state.error = undefined;
-  state.fileName = file.name;
-  state.fileSize = file.size;
+  state.fileName = file.name || null;
+  state.fileSize = file.size || 0;
 };
 
 const createAssessmentSuccess = state => {

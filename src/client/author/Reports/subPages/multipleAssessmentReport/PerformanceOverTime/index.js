@@ -8,7 +8,7 @@ import { StyledCard, StyledH3 } from "../../../common/styled";
 import { parseData, augmentTestData } from "./utils/transformers";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 
-import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getReportsPerformanceOverTime,
@@ -28,14 +28,15 @@ const PerformanceOverTime = ({
   isCsvDownloading,
   MARFilterData,
   settings,
-  loading
+  loading,
+  selectedProfile
 }) => {
   usefetchProgressHook(settings, getPerformanceOverTimeRequestAction);
 
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0]);
   const [selectedTests, setSelectedTests] = useState([]);
 
-  const rawData = get(performanceOverTime, "data.result", {});
+  const rawData = { ...get(performanceOverTime, "data.result", {}), bandInfo: selectedProfile?.performanceBand || [] };
   const { testData = [] } = get(MARFilterData, "data.result", {});
   const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
   const filteredTableData = filter(dataWithTestInfo, test => {
@@ -81,7 +82,8 @@ const enhance = connect(
     loading: getReportsPerformanceOverTimeLoader(state),
     MARFilterData: getReportsMARFilterData(state),
     role: getUserRole(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    selectedProfile: getReportsMARSelectedPerformanceBandProfile(state)
   }),
   {
     getPerformanceOverTimeRequestAction

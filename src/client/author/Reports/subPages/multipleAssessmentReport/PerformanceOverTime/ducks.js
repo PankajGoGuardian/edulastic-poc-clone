@@ -3,6 +3,8 @@ import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
+import { keyBy } from "lodash";
+import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 
 const RESET_REPORTS_PERFORMANCE_OVER_TIME = "[reports] reset reports performance over time";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST = "[reports] get reports performance over time request";
@@ -24,7 +26,15 @@ export const stateSelector = state => state.reportPerformanceOverTimeReducer;
 
 export const getReportsPerformanceOverTime = createSelector(
   stateSelector,
-  state => state.performanceOverTime
+  getReportsMARSelectedPerformanceBandProfile,
+  (state, selectedProfile) => {
+    const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
+    const metricInfo = (state?.performanceOverTime?.data?.result?.metricInfo || []).map(x => ({
+      ...x,
+      bandName: thresholdNameIndexed[x.bandScore].name
+    }));
+    return { data: { result: { metricInfo } } };
+  }
 );
 
 export const getReportsPerformanceOverTimeLoader = createSelector(
@@ -67,6 +77,7 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
     const performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, payload);
+    const metricInfo = performanceOverTime?.data?.result?.metricInfo || [];
 
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS,

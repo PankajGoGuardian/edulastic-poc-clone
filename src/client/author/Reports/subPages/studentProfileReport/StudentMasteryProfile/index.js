@@ -17,7 +17,7 @@ import {
   getStudentMasteryProfileRequestAction
 } from "./ducks";
 import { getCsvDownloadingState } from "../../../ducks";
-import { getReportsSPRFilterData } from "../common/filterDataDucks";
+import { getReportsSPRFilterData, getSelectedStandardProficiency } from "../common/filterDataDucks";
 import { augmentStandardMetaInfo } from "../common/utils/transformers.js";
 import { useGetStudentMasteryData } from "../common/hooks";
 import { getDomainOptions } from "./common/utils/transformers";
@@ -47,10 +47,11 @@ const StudentMasteryProfile = ({
   SPRFilterData,
   isCsvDownloading,
   studentMasteryProfile,
-  getStudentMasteryProfileRequestAction
+  getStudentMasteryProfileRequestAction,
+  selectedStandardProficiency
 }) => {
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
-  const { scaleInfo = [] } = get(SPRFilterData, "data.result", {});
+  const scaleInfo = selectedStandardProficiency;
   const { selectedStudent = {} } = settings;
 
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
@@ -148,7 +149,8 @@ const enhance = connect(
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
     getStudentMasteryProfileRequestAction

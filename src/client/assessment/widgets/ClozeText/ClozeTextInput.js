@@ -150,7 +150,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     >
       <MInput
         ref={ref}
-        type={type}
+        type={responsecontainerindividuals[index]?.inputtype || type}
         onChange={e => handleInputChange({ value: e.target.value, id })}
         onBlur={() => onChange(input)}
         disabled={disableResponse}

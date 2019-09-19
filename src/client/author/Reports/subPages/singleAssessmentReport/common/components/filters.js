@@ -333,12 +333,12 @@ const SingleAssessmentReportFilters = ({
           </Col>
           {performanceBandRequired ? (
             <Col xs={12} sm={12} md={10} lg={6} xl={6}>
-              <PrintablePrefix>Performance Band Profile </PrintablePrefix>
+              <PrintablePrefix>Performance Band </PrintablePrefix>
               <ControlDropDown
                 by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
                 selectCB={({ key }) => setPerformanceBand(key)}
                 data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
-                prefix="Performance Band profile"
+                prefix="Performance Band"
                 showPrefixOnSelected={false}
               />
             </Col>

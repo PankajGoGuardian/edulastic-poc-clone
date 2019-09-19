@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -26,15 +26,7 @@ export const stateSelector = state => state.reportPerformanceOverTimeReducer;
 
 export const getReportsPerformanceOverTime = createSelector(
   stateSelector,
-  getReportsMARSelectedPerformanceBandProfile,
-  (state, selectedProfile) => {
-    const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
-    const metricInfo = (state?.performanceOverTime?.data?.result?.metricInfo || []).map(x => ({
-      ...x,
-      bandName: thresholdNameIndexed[x.bandScore].name
-    }));
-    return { data: { result: { metricInfo } } };
-  }
+  state => state.performanceOverTime
 );
 
 export const getReportsPerformanceOverTimeLoader = createSelector(
@@ -76,8 +68,16 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
-    const performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, payload);
-    const metricInfo = performanceOverTime?.data?.result?.metricInfo || [];
+    let performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, payload);
+    const selectedProfile = yield select(getReportsMARSelectedPerformanceBandProfile);
+    const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
+    const metricInfo = (performanceOverTime?.data?.result?.metricInfo || []).map(x => ({
+      ...x,
+      bandName: thresholdNameIndexed[x.bandScore].name
+    }));
+
+    performanceOverTime.data.result.bandInfo = selectedProfile?.performanceBand || [];
+    performanceOverTime.data.result.metricInfo = metricInfo;
 
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS,

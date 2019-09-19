@@ -28,15 +28,14 @@ const PerformanceOverTime = ({
   isCsvDownloading,
   MARFilterData,
   settings,
-  loading,
-  selectedProfile
+  loading
 }) => {
   usefetchProgressHook(settings, getPerformanceOverTimeRequestAction);
 
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0]);
   const [selectedTests, setSelectedTests] = useState([]);
 
-  const rawData = { ...get(performanceOverTime, "data.result", {}), bandInfo: selectedProfile?.performanceBand || [] };
+  const rawData = get(performanceOverTime, "data.result", {});
   const { testData = [] } = get(MARFilterData, "data.result", {});
   const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
   const filteredTableData = filter(dataWithTestInfo, test => {
@@ -82,8 +81,7 @@ const enhance = connect(
     loading: getReportsPerformanceOverTimeLoader(state),
     MARFilterData: getReportsMARFilterData(state),
     role: getUserRole(state),
-    isCsvDownloading: getCsvDownloadingState(state),
-    selectedProfile: getReportsMARSelectedPerformanceBandProfile(state)
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPerformanceOverTimeRequestAction

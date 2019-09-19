@@ -77,15 +77,26 @@ class SignupPage {
     cy.wait("@schoolSearch");
   };
 
+  // set school
+
+  getSchoolSearch = () => cy.get('[placeholder="Search school by Zip, name or City"]');
+
+  removeSelected = () => {
+    if (Cypress.$('[data-cy="removeSelected"]').length > 0) {
+      cy.get('[data-cy="removeSelected"]').click({ force: true });
+    }
+  };
+
   searchAndSelectSchool = school => {
-    cy.get('[placeholder="Search school by Zip, name or City"]').type(school);
+    this.getSchoolSearch().type(school);
     cy.wait("@schoolSearch");
     cy.get(".ant-select-dropdown-menu-item")
       .contains(school)
       .click({ force: true });
-
-    this.clickOnProceed();
+    return cy.wait("@userSearch");
   };
+
+  verifyDistrict = dist => cy.get('[data-cy="districtName"]').should("contain.text", dist);
 
   clickOnProceed = () => cy.contains("Proceed").click();
 

@@ -6,6 +6,7 @@ import Helpers from "../../framework/util/Helpers";
 const signupPage = new SignupPage();
 const loginPage = new LoginPage();
 const signupData = {
+  zip: "123456789",
   name: "smoke signupteacher",
   email: "smoke.signupteacher@snapwiz.com",
   password: "snapwiz",
@@ -22,7 +23,8 @@ const signupData = {
     state: "KA",
     country: "India"
   },
-  newDistrict: "smoke signup district"
+  newDistrict: "smoke signup district",
+  district: "Automation District"
 };
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () => {
@@ -35,15 +37,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     cy.route("POST", "**districts").as("district");
     cy.route("GET", "**curriculum").as("curriculam");
     cy.route("PUT", "**/user/**").as("user");
+    cy.route("POST", "**/user/search").as("userSearch");
     cy.visit("/");
   });
 
   it("> signup using existing school", () => {
-    const { name, email, password, school, grade, standardSet, subject } = signupData;
+    const { name, email, password, school, grade, standardSet, subject, district, zip } = signupData;
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
     signupPage.fillTeacherSignupForm(name, `${Helpers.getRamdomString()}.${email}`, password);
+    // search by zip
+    signupPage.searchAndSelectSchool(zip).then(() => {
+      signupPage.removeSelected();
+    });
+    // search by name
     signupPage.searchAndSelectSchool(school);
+    signupPage.verifyDistrict(district);
     signupPage.clickOnProceed();
     cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
@@ -54,7 +63,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
   });
 
-  it("> signup using new school and existing district", () => {
+  it.skip("> signup using new school and existing district", () => {
     const { name, email, password, grade, standardSet, subject, newSchool } = signupData;
     const { schoolName, district, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();
@@ -74,7 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
   });
 
-  it("> signup using new district and new school", () => {
+  it.skip("> signup using new district and new school", () => {
     const { name, email, password, grade, standardSet, subject, newSchool, newDistrict } = signupData;
     const { schoolName, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();

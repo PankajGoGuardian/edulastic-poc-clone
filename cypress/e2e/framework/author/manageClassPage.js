@@ -1,6 +1,11 @@
 import CypressHelper from "../util/cypressHelpers";
+import TeacherSideBar from "./SideBarPage";
 
 export default class TeacherManageClassPage {
+  constructor() {
+    this.sideBar = new TeacherSideBar();
+  }
+
   clickOnCreateClass = () => cy.get('[data-cy="createClass"]').click({});
 
   clickOnEditClass = () => cy.get("[data-cy='editClass']").click();
@@ -39,8 +44,8 @@ export default class TeacherManageClassPage {
   selectOption = option => {
     cy.get(".ant-select-dropdown-menu-item")
       .contains(option)
-      .click();
-    cy.focused().blur();
+      .click({ force: true });
+    return cy.focused().blur();
   };
 
   clearSelections = id => {
@@ -72,7 +77,7 @@ export default class TeacherManageClassPage {
 
   selectSubject = subject => {
     this.getSubjectSelect().click();
-    this.selectOption(subject);
+    return this.selectOption(subject);
   };
 
   verifySubject = subject => {
@@ -156,7 +161,7 @@ export default class TeacherManageClassPage {
   clickOnSaveClass = () => {
     cy.server();
     cy.route("POST", "**/group").as("createClass");
-    cy.contains("Save Class").click();
+    cy.get('[data-cy="saveClass"]').click();
     cy.wait("@createClass").then(xhr => {
       expect(xhr.status).to.eq(200);
       const { _id, institutionId, districtId } = xhr.responseBody.result;
@@ -208,7 +213,11 @@ export default class TeacherManageClassPage {
   clickOnAddUserButton = () => {
     cy.route("POST", "**/enrollment/**").as("newenrollment");
     cy.get('[data-cy="addButton"]').click();
-    return cy.wait("@newenrollment").then(xhr => expect(xhr.status).to.eq(200));
+    return cy.wait("@newenrollment").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      const { role, userId } = xhr.responseBody.result;
+      cy.saveUserDetailToDelete({ role, _id: userId });
+    });
   };
 
   setUsername = username =>
@@ -254,21 +263,27 @@ export default class TeacherManageClassPage {
   clickOnAddStudentsButton = () => {
     cy.get("[data-cy='addStudents']").click();
     cy.wait("@newenrollment").then(xhr => expect(xhr.status).to.eq(200));
-    return cy.wait("@enrollment").then(xhr => expect(xhr.status).to.eq(200));
+    return cy.wait("@enrollment").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      const res = xhr.responseBody;
+      const _id = [];
+      res.result.students.forEach(stu => {
+        const { _id: stuId } = stu;
+        _id.push(stuId);
+      });
+      cy.saveUserDetailToDelete({ role: "student", _id });
+    });
   };
 
   getStudentTextArea = () => cy.get("#students");
 
-  addStudentByFirstNameLastName(users) {
+  addMultipleStudent(users, uType) {
     cy.route("POST", "**/enrollment/**").as("newenrollment");
     cy.route("GET", "**/enrollment/**").as("enrollment");
-    this.selectStudenttype("Frist Name and Last Name");
-
+    this.selectStudenttype(uType);
     return this.getStudentTextArea().then($area => {
-      console.log("users", users);
       cy.wrap($area).as("studentlist");
       users.forEach(student => cy.get("@studentlist").type(`${student}{enter}`));
-
       this.clickOnAddStudentsButton();
       return this.clickOnDone();
     });

@@ -6,7 +6,7 @@ import next from "immer";
 
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import { StyledTable } from "../styled";
+import { StyledTable, StyledDropDownContainer } from "../styled";
 import { StyledH3, StyledCard } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 
@@ -218,27 +218,35 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <ControlDropDown
-              data={masteryLevelDropDownData}
-              by={masteryLevelDropDownData[0]}
-              prefix="Mastery Level"
-              selectCB={tableFilterDropDownCB}
-              comData={"masteryLevel"}
-            />
-            <ControlDropDown
-              data={compareByDropDownData}
-              by={compareByDropDownData[0]}
-              prefix="Compare By"
-              selectCB={tableFilterDropDownCB}
-              comData={"compareBy"}
-            />
-            <ControlDropDown
-              data={dropDownFormat.analyseByDropDownData}
-              by={dropDownFormat.analyseByDropDownData[0]}
-              prefix="Analyse By"
-              selectCB={tableFilterDropDownCB}
-              comData={"analyseBy"}
-            />
+            <Row>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={masteryLevelDropDownData}
+                  by={masteryLevelDropDownData[0]}
+                  prefix="Mastery Level"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"masteryLevel"}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={compareByDropDownData}
+                  by={compareByDropDownData[0]}
+                  prefix="Compare By"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"compareBy"}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={dropDownFormat.analyseByDropDownData}
+                  by={dropDownFormat.analyseByDropDownData[0]}
+                  prefix="Analyse By"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"analyseBy"}
+                />
+              </StyledDropDownContainer>
+            </Row>
           </Col>
         </Row>
         <Row>

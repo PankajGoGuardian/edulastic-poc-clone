@@ -63,6 +63,8 @@ const StandardsFilters = ({
     return "";
   };
 
+  const scaleInfo = get(standardsFilters, "data.result.scaleInfo", []);
+
   const schoolYear = useMemo(() => {
     let schoolYear = [];
     let arr = get(user, "orgData.terms", []);
@@ -252,6 +254,15 @@ const StandardsFilters = ({
     };
     getStandardsBrowseStandardsRequestAction(q);
   };
+
+  const updateStandardProficiencyDropDownCB = selected => {
+    let obj = {
+      ...filters,
+      profileId: selected.key
+    };
+    setFiltersAction(obj);
+  };
+
   const updateDomainDropDownCB = selected => {
     if (selected.key === "All") {
       let tempArr = domains.filter((item, index) => index > 0);
@@ -304,6 +315,8 @@ const StandardsFilters = ({
 
   firstRender.current = false;
 
+  const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
+
   return (
     <div className={className} style={style}>
       <StyledFilterWrapper>
@@ -341,6 +354,15 @@ const StandardsFilters = ({
               by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
               selectCB={updateDomainDropDownCB}
               data={domains}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={filters.profileId}
+              selectCB={updateStandardProficiencyDropDownCB}
+              data={standardProficiencyList}
+              prefix="Standard Proficiency"
+              showPrefixOnSelected={false}
             />
           </Col>
           {/* // IMPORTANT: To be implemented later */}

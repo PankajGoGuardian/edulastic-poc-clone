@@ -142,7 +142,7 @@ const EssayPlainTextPreview = ({
           {item.showCopy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
           {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
           {item.showPaste && <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>}
-          {Array.isArray(item.character_map) && (
+          {Array.isArray(item.characterMap) && (
             <Character
               onSelect={char => {
                 setSelection({
@@ -151,7 +151,7 @@ const EssayPlainTextPreview = ({
                 });
                 setText(text.slice(0, selection.start) + char + text.slice(selection.end));
               }}
-              characters={item.character_map}
+              characters={item.characterMap}
             />
           )}
         </FlexContainer>

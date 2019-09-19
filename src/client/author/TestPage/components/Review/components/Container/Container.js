@@ -28,6 +28,7 @@ import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./style
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
+import { markQuestionLabel } from "../../../../../../assessment/Transformer";
 
 const getTotalScore = ({ testItems = [], scoring = {} }) =>
   testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
@@ -334,6 +335,7 @@ class Review extends PureComponent {
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
+    markQuestionLabel(test.testItems);
     return (
       <ReviewPageContainer>
         <Row>

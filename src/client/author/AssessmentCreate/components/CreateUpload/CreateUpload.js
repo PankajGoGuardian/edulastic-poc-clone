@@ -26,7 +26,7 @@ const CreateUpload = ({ creating, percent, fileInfo, cancelUpload }) => {
       <IconUpload style={iconStyles} />
       <PaperTitle>Upload Files to Get Started</PaperTitle>
       <UploadDescription>Drag and drop any .pdf or browse and select your file</UploadDescription>
-      {creating && (
+      {creating && !!fileInfo.name && (
         <>
           <FileInfoCont>
             <FileName>

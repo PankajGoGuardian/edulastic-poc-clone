@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { message } from "antd";
+import { isEqual } from "lodash";
 
 import { graphEvaluateApi } from "@edulastic/api";
 import { Button, MathModal, MathInput } from "@edulastic/common";
@@ -23,38 +24,64 @@ const emptyEquation = {
 };
 
 class Equations extends Component {
-  state = {
-    showMathModal: false,
-    selectedEqIndex: null,
-    eqs: [],
-    plots: {}
-  };
+  constructor(props) {
+    super(props);
 
-  handleUpdateEquation = (oldValue, newValue, index) => {
-    const { equations, setEquations } = this.props;
-    if (oldValue === newValue) {
-      return;
+    const plots = {};
+    props.equations.forEach((val, i) => {
+      plots[i] = false;
+    });
+    this.state = {
+      showMathModal: false,
+      selectedEqIndex: null,
+      eqs: props.equations.map(e => e.latex),
+      plots
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { equations } = this.props;
+
+    if (!isEqual(equations, prevProps.equations)) {
+      this.updateState();
     }
-    setEquations(
-      produce(equations, draft => {
-        draft[index].latex = newValue;
-        draft[index].apiLatex = null;
-      })
-    );
-    this.setState({ showMathModal: false });
-    this.setApiLatex(newValue, index);
+  }
+
+  updateState = () => {
+    const { equations } = this.props;
+    const plots = {};
+    equations.forEach((val, i) => {
+      plots[i] = false;
+    });
+
+    this.setState({ eqs: equations.map(e => e.latex), plots });
   };
 
-  setApiLatex = (latex, index) => {
+  setApiLatex = (latex, index = null) => {
     graphEvaluateApi
       .convert({ latex })
       .then(result => {
         const { equations, setEquations } = this.props;
+        if (index === null) {
+          setEquations(
+            produce(equations, draft => {
+              draft.push({
+                ...emptyEquation,
+                id: `jxgEq-${Math.random()
+                  .toString(36)
+                  .substr(2, 9)}`,
+                apiLatex: result
+              });
+            })
+          );
+          return;
+        }
         if (!equations[index]) {
           return;
         }
         setEquations(
           produce(equations, draft => {
+            draft[index].latex = latex;
             draft[index].apiLatex = result;
           })
         );
@@ -65,29 +92,20 @@ class Equations extends Component {
   };
 
   handleAddEquation = () => {
-    const { equations, setEquations } = this.props;
-    setEquations(
-      produce(equations, draft => {
-        draft.push({
-          ...emptyEquation,
-          id: `jxgEq-${Math.random().toString(36)}`
-        });
-      })
-    );
+    const { eqs, plots } = this.state;
+    eqs.push(emptyEquation.latex);
+    this.setState({ eqs, plots: { ...plots, [eqs.length]: true } });
 
-    this.setApiLatex(emptyEquation.latex, equations.length);
+    this.setApiLatex(emptyEquation.latex);
   };
 
   handleDeleteEquation = index => {
     const { equations, setEquations } = this.props;
-    const { eqs } = this.state;
     setEquations(
       produce(equations, draft => {
         draft.splice(index, 1);
       })
     );
-    eqs.splice(index, 1);
-    this.setState({ eqs });
   };
 
   toggleMathModal = (open, index = null) => () => {
@@ -96,13 +114,9 @@ class Equations extends Component {
 
   handleBlurInput = index => () => {
     const { eqs } = this.state;
-    const { equations, setEquations } = this.props;
+    const { equations } = this.props;
     if (eqs[index] && equations[index] && equations[index].latex !== eqs[index]) {
-      setEquations(
-        produce(equations, draft => {
-          draft[index].latex = eqs[index];
-        })
-      );
+      this.setApiLatex(eqs[index], index);
     }
   };
 
@@ -120,22 +134,27 @@ class Equations extends Component {
       eqs,
       plots: { ...plots, [selectedEqIndex]: false }
     });
-    this.handleUpdateEquation(equations[selectedEqIndex]?.latex, latex, selectedEqIndex);
+    if (
+      eqs[selectedEqIndex] &&
+      equations[selectedEqIndex] &&
+      equations[selectedEqIndex].latex !== eqs[selectedEqIndex]
+    ) {
+      this.setApiLatex(eqs[selectedEqIndex], selectedEqIndex);
+    }
+    this.toggleMathModal(false)();
   };
 
   handleClickPlot = index => () => {
-    const { plots, eqs } = this.state;
+    const { plots } = this.state;
     this.setState({ plots: { ...plots, [index]: false } });
-    this.setApiLatex(eqs[index], index);
   };
 
   render() {
-    const { equations } = this.props;
     const { showMathModal, selectedEqIndex, eqs, plots } = this.state;
 
     return (
       <Container>
-        {equations.map((eq, index) => (
+        {eqs.map((eq, index) => (
           <Wrapper key={`equation-wrapper-${index}`}>
             <MathInput
               fullWidth
@@ -143,7 +162,7 @@ class Equations extends Component {
               alwaysHideKeyboard
               symbols={symbols}
               numberPad={numberPad}
-              value={eqs[index] || eq.latex}
+              value={eq}
               onInput={latex => this.handleInput(latex, index)}
               onBlur={this.handleBlurInput(index)}
             />
@@ -180,7 +199,7 @@ class Equations extends Component {
           showDropdown
           showResposnse={false}
           width="max-content"
-          value={eqs[selectedEqIndex] || equations[selectedEqIndex]?.latex}
+          value={eqs[selectedEqIndex]}
           onSave={latex => this.handleModalSave(latex)}
           onClose={this.toggleMathModal(false)}
         />

@@ -1,4 +1,5 @@
 import JXG from "jsxgraph";
+import { isNumber } from "lodash";
 import getDefaultConfig, { CONSTANT } from "./config";
 import {
   Area,
@@ -615,22 +616,35 @@ class Board {
   }
 
   removeObject(obj) {
-    if (!obj) {
+    if (!obj || isNumber(obj)) {
+      return;
+    }
+
+    if (Array.isArray(obj)) {
+      obj.forEach(el => {
+        if (isNumber(obj)) return;
+        this.$board.removeObject(el);
+      });
       return;
     }
 
     if (obj.type === Equation.jxgType) {
-      this.$board.removeObject(obj);
-      return;
+      (obj.areas || []).forEach(el => {
+        this.$board.removeObject(el);
+      });
     }
 
     if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
     if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
     if (obj.type === Area.jxgType) {
-      this.removeObject(obj.shadingAreaLines);
+      (obj.shadingAreaLines || []).forEach(el => {
+        this.$board.removeObject(el);
+      });
     }
     if (obj.getParents && obj.elType !== "point" && obj.elType !== "text") {
-      this.removeObject(obj.getParents());
+      obj.getParents().forEach(el => {
+        this.removeObject(el);
+      });
     }
     this.$board.removeObject(obj);
   }

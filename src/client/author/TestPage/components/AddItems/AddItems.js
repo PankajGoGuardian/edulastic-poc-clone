@@ -8,7 +8,7 @@ import { Pagination, Spin, message } from "antd";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconPlusCircle, IconFilter } from "@edulastic/icons";
+import { IconPlusCircle } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { StyledButton, ItemsMenu, QuestionsFound, ItemsPagination } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
@@ -20,6 +20,7 @@ import {
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
 import { createTestItemAction } from "../../../src/actions/testItem";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -43,15 +44,13 @@ import {
   Container,
   ListItems,
   Element,
-  MobileLeftFilterButton,
   SpinContainer,
   PaginationContainer,
   ContentWrapper,
-  ScrollbarContainer
+  ScrollbarContainer,
+  MobileFilterIcon
 } from "../../../ItemList/components/Container/styled";
-import { white } from "ansi-colors";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import { MEDIUM_DESKTOP_WIDTH } from "../../../../assessment/constants/others";
 import { getInterestedCurriculumsSelector, getUserId } from "../../../src/selectors/user";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
@@ -92,8 +91,7 @@ class AddItems extends PureComponent {
 
   state = {
     search: getClearSearchState(),
-    questionCreateType: "Duplicate",
-    isShowFilter: true
+    questionCreateType: "Duplicate"
   };
 
   componentDidMount() {
@@ -273,14 +271,6 @@ class AddItems extends PureComponent {
     }));
   };
 
-  toggleFilter = () => {
-    const { isShowFilter } = this.state;
-
-    this.setState({
-      isShowFilter: !isShowFilter
-    });
-  };
-
   handlePaginationChange = page => {
     const { search } = this.state;
     const { receiveTestItems, limit } = this.props;
@@ -355,14 +345,16 @@ class AddItems extends PureComponent {
       loading,
       t,
       count,
-      test
+      test,
+      toggleFilter,
+      isShowFilter
     } = this.props;
 
-    const { search, isShowFilter } = this.state;
+    const { search } = this.state;
     return (
       <>
         <Container>
-          {isShowFilter && (
+          {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
             <ItemFilter
               onSearchFieldChange={this.handleSearchFieldChange}
               onSearchInputChange={this.handleSearchInputChange}
@@ -375,16 +367,16 @@ class AddItems extends PureComponent {
               getCurriculumStandards={getCurriculumStandards}
               curriculumStandards={curriculumStandards}
               items={filterMenuItems}
+              toggleFilter={toggleFilter}
+              isShowFilter={isShowFilter}
               t={t}
             />
           )}
           <ListItems isShowFilter={isShowFilter}>
             <Element>
-              {windowWidth < MEDIUM_DESKTOP_WIDTH && (
-                <MobileLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
-                  <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-                </MobileLeftFilterButton>
-              )}
+              <MobileFilterIcon>
+                <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
+              </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 <SpinContainer
                   ref={e => {
@@ -413,16 +405,11 @@ class AddItems extends PureComponent {
                   ref={e => {
                     this.itemsScrollBar = e;
                   }}
-                  style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
                 >
                   {this.renderItems()}
-                  {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}
+                  <PaginationContainer>{this.renderPagination()}</PaginationContainer>
                 </ScrollbarContainer>
               </ContentWrapper>
-
-              {windowWidth < SMALL_DESKTOP_WIDTH && (
-                <PaginationContainer>{this.renderPagination()}</PaginationContainer>
-              )}
             </Element>
           </ListItems>
         </Container>

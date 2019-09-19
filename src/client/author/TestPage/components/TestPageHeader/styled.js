@@ -31,8 +31,6 @@ export const MainContainer = styled(FlexContainer)`
   flex-wrap: wrap;
 `;
 
-export const RightWrapper = styled(FlexContainer)``;
-
 export const Title = styled.h1`
   font-size: ${props => props.theme.header.headerTitleFontSize};
   color: ${props => props.theme.header.headerTitleTextColor};
@@ -50,7 +48,7 @@ export const Title = styled.h1`
     max-width: 170px;
   }
   @media screen and (max-width: ${mobileWidthLarge}) {
-    max-width: 140px;
+    max-width: 120px;
   }
 `;
 
@@ -72,6 +70,14 @@ export const AssignButton = styled(EduButton)`
   }
 `;
 
+export const SaveBtn = styled(EduButton)`
+  width: 80px;
+
+  @media screen and (max-width: ${mobileWidthLarge}) {
+    width: auto;
+  }
+`;
+
 export const ShareIcon = styled(IconShare)`
   width: 16px;
   height: 16px;
@@ -80,8 +86,16 @@ export const ShareIcon = styled(IconShare)`
 
 export const MenuIconWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  flex-basis: 50%;
+  margin: 0px;
+`;
+
+export const RightWrapper = styled(FlexContainer)`
+  flex-basis: 50%;
+  justify-content: flex-end;
+  margin: 0px;
 `;
 
 export const TestStatus = styled(Status)`
@@ -97,5 +111,33 @@ export const TestStatus = styled(Status)`
   &.published {
     background: ${publishedColor};
     color: white;
+  }
+`;
+
+export const MobileHeaderFilterIcon = styled.div`
+  display: none;
+  button {
+    position: relative;
+    margin: 0px;
+    box-shadow: none;
+    width: 45px;
+    border-radius: 4px;
+    border-color: ${themeColor};
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      height: 25px;
+      width: 25px;
+    }
+
+    @media (max-width: ${desktopWidth}) {
+      height: 40px;
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
   }
 `;

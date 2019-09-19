@@ -17,6 +17,7 @@ import {
   IconSend,
   IconPencilEdit
 } from "@edulastic/icons";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import {
   MobileHeader,
   RightWrapper,
@@ -27,7 +28,9 @@ import {
   TestStatus,
   TitleWrapper,
   RightFlexContainer,
-  AssignButton
+  AssignButton,
+  MobileHeaderFilterIcon,
+  SaveBtn
 } from "./styled";
 
 import TestPageNav from "../TestPageNav/TestPageNav";
@@ -132,7 +135,9 @@ const TestPageHeader = ({
   history,
   publishForRegrade,
   test,
-  updated
+  updated,
+  toggleFilter,
+  isShowFilter
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -191,7 +196,7 @@ const TestPageHeader = ({
         onOk={onRegradeConfirm}
         onCancelRegrade={onCancelRegrade}
       />
-      {windowWidth > 767 ? (
+      {windowWidth > 992 ? (
         <HeaderWrapper>
           <TitleWrapper>
             <Title title={title}>{title || "Untitled Test"} </Title>
@@ -268,15 +273,20 @@ const TestPageHeader = ({
               <Title>{title}</Title>
             </MenuIconWrapper>
             <RightWrapper>
+              {current === "addItems" && (
+                <MobileHeaderFilterIcon>
+                  <FilterToggleBtn header="true" isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
+                </MobileHeaderFilterIcon>
+              )}
               {owner && (
                 <EduButton size="large" onClick={onShare}>
                   <ShareIcon />
                 </EduButton>
               )}
               {owner && (
-                <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+                <SaveBtn disabled={creating} size="large" type="secondary" onClick={onSave}>
                   {creating ? "Saving..." : "Save"}
-                </EduButton>
+                </SaveBtn>
               )}
             </RightWrapper>
             <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />

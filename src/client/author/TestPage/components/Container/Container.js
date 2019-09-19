@@ -4,10 +4,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
+import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test, questionType } from "@edulastic/constants";
+import { test } from "@edulastic/constants";
+import { testsApi } from "@edulastic/api";
+import { themeColor } from "@edulastic/colors";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -51,8 +53,6 @@ import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
 
-import { testsApi } from "@edulastic/api";
-import { themeColor } from "@edulastic/colors";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
@@ -88,7 +88,8 @@ class Container extends PureComponent {
     current: "review",
     showModal: false,
     editEnable: false,
-    showShareModal: false
+    showShareModal: false,
+    isShowFilter: true
   };
 
   componentDidMount() {
@@ -282,7 +283,7 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { params = {} } = match;
-    const { current, editEnable } = this.state;
+    const { current, editEnable, isShowFilter } = this.state;
     const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
@@ -305,6 +306,8 @@ class Container extends PureComponent {
             onSaveTestId={this.handleSaveTestId}
             test={test}
             gotoSummary={this.handleNavChange("description")}
+            toggleFilter={this.toggleFilter}
+            isShowFilter={isShowFilter}
           />
         );
       case "description":
@@ -501,9 +504,17 @@ class Container extends PureComponent {
     }
   };
 
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
+
   render() {
     const { creating, windowWidth, test, testStatus, userId, updated } = this.props;
-    const { showShareModal, current, editEnable } = this.state;
+    const { showShareModal, current, editEnable, isShowFilter } = this.state;
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
@@ -549,6 +560,8 @@ class Container extends PureComponent {
           onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}
           updated={updated}
+          toggleFilter={this.toggleFilter}
+          isShowFilter={isShowFilter}
         />
         <Content>{this.renderContent()}</Content>
       </>

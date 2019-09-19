@@ -15,7 +15,7 @@ const iconStyles = {
   marginBottom: "20px"
 };
 
-const CreateUpload = ({ creating, percent, fileInfo, cancelUpload }) => {
+const CreateUpload = ({ creating, percent, fileInfo, cancelUpload, isDragging }) => {
   const onCancel = () => {
     if (cancelUpload) {
       cancelUpload("Cancelled by user");
@@ -24,9 +24,9 @@ const CreateUpload = ({ creating, percent, fileInfo, cancelUpload }) => {
   return (
     <CreateUploadContainer childMarginRight="0">
       <IconUpload style={iconStyles} />
-      <PaperTitle>Upload Files to Get Started</PaperTitle>
+      <PaperTitle>{isDragging ? "Drop File To Upload" : "Upload Files to Get Started"}</PaperTitle>
       <UploadDescription>Drag and drop any .pdf or browse and select your file</UploadDescription>
-      {creating && !!fileInfo.name && (
+      {creating && !isDragging && !!fileInfo.name && (
         <>
           <FileInfoCont>
             <FileName>

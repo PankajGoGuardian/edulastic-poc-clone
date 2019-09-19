@@ -6,7 +6,7 @@ const s3Folders = Object.values(aws.s3Folders);
  * upload a file to s3 using signed url
  * @param {file} file
  */
-export const uploadToS3 = async (file, folder, subFolder, progressCallback) => {
+export const uploadToS3 = async (file, folder, subFolder, progressCallback, cancelUpload) => {
   if (!file) {
     throw new Error("file is missing");
   }
@@ -27,6 +27,9 @@ export const uploadToS3 = async (file, folder, subFolder, progressCallback) => {
   if (!progressCallback) {
     progressCallback = () => {};
   }
-  await fileApi.uploadBySignedUrl(url, formData, progressCallback);
+  if (!cancelUpload) {
+    cancelUpload = () => {};
+  }
+  await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload);
   return `${url}/${fields.key}`;
 };

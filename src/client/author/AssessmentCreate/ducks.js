@@ -7,12 +7,12 @@ import pdfjs from "pdfjs-dist";
 import { get, without } from "lodash";
 import moment from "moment";
 
-import { testsApi, testItemsApi } from "@edulastic/api";
+import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
+import { helpers } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";
 import { createBlankTest, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
 import { getUserSelector } from "../src/selectors/user";
-import { helpers } from "@edulastic/common";
 
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
 export const CREATE_ASSESSMENT_SUCCESS = "[assessmentPage] create assessment success";
@@ -27,14 +27,18 @@ export const setPercentUploadedAction = createAction(SET_PERCENT_LOADED);
 const initialState = {
   creating: false,
   error: undefined,
-  percentageUpload: 0
+  percentageUpload: 0,
+  fileName: null,
+  fileSize: 0
 };
 
 const initialTestState = createBlankTest();
 
-const createAssessmentRequest = state => {
+const createAssessmentRequest = (state, { payload: { file } }) => {
   state.creating = true;
   state.error = undefined;
+  state.fileName = file.name;
+  state.fileSize = file.size;
 };
 
 const createAssessmentSuccess = state => {
@@ -45,6 +49,9 @@ const createAssessmentSuccess = state => {
 const createAssessmentError = (state, { payload: { error } }) => {
   state.creating = false;
   state.error = error;
+  state.percentageUpload = 0;
+  state.fileName = null;
+  state.fileSize = 0;
 };
 
 const setPercentageLoaded = (state, { payload }) => {
@@ -90,10 +97,17 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
-      fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS, null, payload.progressCallback);
+      fileURI = yield call(
+        uploadToS3,
+        payload.file,
+        aws.s3Folders.DOCS,
+        null,
+        payload.progressCallback,
+        payload.cancelUpload
+      );
     }
   } catch (error) {
-    const errorMessage = "Upload PDF is failing";
+    const errorMessage = error.message || "Upload PDF is failing";
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
@@ -172,7 +186,7 @@ function* createAssessmentSaga({ payload }) {
 
       yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure }));
       yield put(createAssessmentSuccessAction());
-      yield put(push(`/author/assessments/${assessment._id}`));
+      // yield put(push(`/author/assessments/${assessment._id}`));
     } else {
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
@@ -228,4 +242,9 @@ export const getAssessmentErrorSelector = createSelector(
 export const percentageUploadedSelector = createSelector(
   getStateSelector,
   state => state.percentageUpload
+);
+
+export const fileInfoSelector = createSelector(
+  getStateSelector,
+  state => ({ fileName: state.fileName, fileSize: state.fileSize })
 );

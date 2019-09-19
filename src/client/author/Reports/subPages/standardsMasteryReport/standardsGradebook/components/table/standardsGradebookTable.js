@@ -218,27 +218,33 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <ControlDropDown
-              data={masteryLevelDropDownData}
-              by={masteryLevelDropDownData[0]}
-              prefix="Mastery Level"
-              selectCB={tableFilterDropDownCB}
-              comData={"masteryLevel"}
-            />
-            <ControlDropDown
-              data={compareByDropDownData}
-              by={compareByDropDownData[0]}
-              prefix="Compare By"
-              selectCB={tableFilterDropDownCB}
-              comData={"compareBy"}
-            />
-            <ControlDropDown
-              data={dropDownFormat.analyseByDropDownData}
-              by={dropDownFormat.analyseByDropDownData[0]}
-              prefix="Analyse By"
-              selectCB={tableFilterDropDownCB}
-              comData={"analyseBy"}
-            />
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                data={masteryLevelDropDownData}
+                by={masteryLevelDropDownData[0]}
+                prefix="Mastery Level"
+                selectCB={tableFilterDropDownCB}
+                comData={"masteryLevel"}
+              />
+            </Col>
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                data={compareByDropDownData}
+                by={compareByDropDownData[0]}
+                prefix="Compare By"
+                selectCB={tableFilterDropDownCB}
+                comData={"compareBy"}
+              />
+            </Col>
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                data={dropDownFormat.analyseByDropDownData}
+                by={dropDownFormat.analyseByDropDownData[0]}
+                prefix="Analyse By"
+                selectCB={tableFilterDropDownCB}
+                comData={"analyseBy"}
+              />
+            </Col>
           </Col>
         </Row>
         <Row>

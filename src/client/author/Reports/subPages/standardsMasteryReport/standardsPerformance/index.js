@@ -53,7 +53,7 @@ const StandardsPerformance = ({
   selectedStandardProficiency
 }) => {
   const filterData = get(standardsFilters, "data.result", []);
-  const scaleInfo = selectedStandardProficiency;
+  const scaleInfo = selectedStandardProficiency || [];
   const rawDomainData = get(browseStandards, "data.result", []);
   const maxMasteryScore = getMaxMasteryScore(scaleInfo);
   const masteryLevelData = getMasteryLevelOptions(scaleInfo);

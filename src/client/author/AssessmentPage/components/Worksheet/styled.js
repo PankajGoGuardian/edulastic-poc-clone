@@ -4,5 +4,6 @@ export const WorksheetWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
-  height: 100%;
+  height: calc(100% - 96px);
+  overflow: hidden;
 `;

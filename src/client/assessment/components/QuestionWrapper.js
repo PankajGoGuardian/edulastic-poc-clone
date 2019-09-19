@@ -290,6 +290,7 @@ class QuestionWrapper extends Component {
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
+      displayFeedback = true,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -422,7 +423,9 @@ class QuestionWrapper extends Component {
                 />
               )}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
+              {studentReportFeedbackVisible && displayFeedback && (
+                <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
+              )}
             </QuestionContainer>
           </>
         </ThemeProvider>
@@ -454,7 +457,8 @@ QuestionWrapper.propTypes = {
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
-  LCBPreviewModal: PropTypes.any
+  LCBPreviewModal: PropTypes.any,
+  displayFeedback: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -476,7 +480,8 @@ QuestionWrapper.defaultProps = {
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
   disableResponse: false,
-  isPresentationMode: false
+  isPresentationMode: false,
+  displayFeedback: true
 };
 
 const enhance = compose(

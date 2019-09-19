@@ -50,6 +50,7 @@ class TestItemCol extends Component {
       qIndex,
       evaluation,
       previewTab,
+      col,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -66,7 +67,8 @@ class TestItemCol extends Component {
     if (question.activity && question.activity.filtered) {
       return <div />;
     }
-
+    // For Multipart with item level scoring display only one feedback else allow for question level scoring
+    const displayFeedback = col.isV1Multipart && !multiple && index > 0 ? false : true;
     return (
       <Tabs.TabContainer>
         <QuestionWrapper
@@ -85,6 +87,7 @@ class TestItemCol extends Component {
           isFlex
           flowLayout={flowLayout}
           LCBPreviewModal={LCBPreviewModal}
+          displayFeedback={displayFeedback}
           {...restProps}
         />
       </Tabs.TabContainer>

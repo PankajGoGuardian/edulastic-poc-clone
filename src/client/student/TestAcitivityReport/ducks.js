@@ -1,13 +1,11 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all } from "redux-saga/effects";
-import { get } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
-import { replaceTestItemsAction } from "../../author/TestPage/ducks";
-
-const alphabets = "abcdefghijklmnopqrstuvwxyz";
+import { receiveTestByIdSuccess } from "../../author/TestPage/ducks";
+import { markQuestionLabel } from "../../assessment/Transformer";
 
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
@@ -28,28 +26,10 @@ function* loadTestActivityReport({ payload }) {
       call(testsApi.getById, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
-
-    const testItems = get(test, "testItems", []);
-    testItems.forEach((item, i) => {
-      const questions = get(item, "data.questions", []);
-      const isMultipart = questions.length > 1;
-      questions.forEach((q, j) => {
-        if (isMultipart) {
-          q.qLabel = `Q${i + 1}${alphabets[j]}`;
-        } else {
-          q.qLabel = `Q${i + 1}`;
-        }
-      });
-    });
-
-    yield put(
-      replaceTestItemsAction({
-        ...test,
-        testItems
-      })
-    );
+    yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
+    markQuestionLabel(test.testItems);
     yield put(setTestItemsAction(test.testItems));
     yield put(setPassagesDataAction(test.passages || []));
 

@@ -51,13 +51,41 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
+  let isBoxSizeSmall = false;
   const responseStyle = find(responsecontainerindividuals, resp => resp.id === id);
   if (uiStyle.globalSettings) {
-    btnStyle.width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    const width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
+    btnStyle.width = width;
+    if (parseInt(width, 10) < response.minWidthShowAnswer) {
+      btnStyle.minWidth = parseInt(width, 10) + 15;
+      isBoxSizeSmall = true;
+    }
     btnStyle.height = style.height || "auto";
   } else {
-    btnStyle.width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    const width = (responseStyle && responseStyle.widthpx) || style.widthpx;
+    btnStyle.width = width;
+    if (parseInt(width, 10) < response.minWidthShowAnswer) {
+      btnStyle.minWidth = parseInt(width, 10) + 15;
+      isBoxSizeSmall = true;
+    }
     btnStyle.height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
+  }
+
+  const indexStyle = { alignSelf: "stretch", height: "auto" };
+  const textStyle = {
+    width: btnStyle.width,
+    height: btnStyle.height,
+    display: "block",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    overflow: "hidden"
+  };
+
+  if (isBoxSizeSmall) {
+    indexStyle.minWidth = "50%";
+    indexStyle.width = "20px";
+    indexStyle.maxWidth = response.indexSizeSmallBox;
+    textStyle.padding = "8px 0px";
   }
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
@@ -72,26 +100,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-            style={{ ...btnStyle, height: "auto", minWidth: response.minWidthShowAnswer, margin: 0 }}
+            style={{ ...btnStyle, height: "auto", margin: 0 }}
             onClick={handleClick}
           >
-            <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+            <span className="index" style={indexStyle}>
               {indexStr}
             </span>
-            <span
-              className="text"
-              style={{
-                width: btnStyle.width,
-                height: btnStyle.height,
-                display: "block",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden"
-              }}
-            >
+            <span className="text" style={textStyle}>
               {userSelections[index] && userSelections[index].value}&nbsp;
             </span>
-            <IconWrapper>
+            <IconWrapper rightPosition={isBoxSizeSmall ? "1" : "10"}>
               {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
               {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
             </IconWrapper>
@@ -109,25 +127,15 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         >
           {showAnswer && (
             <Fragment>
-              <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+              <span className="index" style={indexStyle}>
                 {indexStr}
               </span>
             </Fragment>
           )}
-          <span
-            style={{
-              width: btnStyle.width,
-              height: btnStyle.height,
-              display: "block",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              overflow: "hidden"
-            }}
-            className="text"
-          >
+          <span style={textStyle} className="text">
             {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
-          <IconWrapper>
+          <IconWrapper rightPosition={isBoxSizeSmall ? "1" : "10"}>
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
             {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
           </IconWrapper>

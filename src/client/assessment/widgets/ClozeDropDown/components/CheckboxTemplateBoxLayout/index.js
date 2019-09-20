@@ -57,6 +57,15 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.wordwrap = responseBtnStyle.wordwrap;
   }
 
+  const _btnStyle = { ...btnStyle };
+  let isBoxSizeSmall = false;
+  if (showAnswer && btnStyle.width < response.minWidthShowAnswer) {
+    isBoxSizeSmall = true;
+    _btnStyle.minWidth = btnStyle.width + response.indexSizeSmallBox;
+  }
+
+  const indexStyle = isBoxSizeSmall ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
+  const textStyle = isBoxSizeSmall ? { padding: "8px 0" } : {};
   return (
     <Fragment>
       <span className="template_box" style={{ fontSize, padding: 20 }}>
@@ -67,18 +76,19 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-            style={{
-              ...btnStyle,
-              minWidth: response.minWidthShowAnswer
-            }}
+            style={_btnStyle}
             onClick={handleClick}
           >
-            <span className="index">{indexStr}</span>
+            <span className="index" style={indexStyle}>
+              {indexStr}
+            </span>
             <Tooltip title={userSelection?.value}>
-              <span className="text clipText">{userSelection && userSelection.value}</span>
+              <span className="text clipText" style={textStyle}>
+                {userSelection && userSelection.value}
+              </span>
             </Tooltip>
 
-            <IconWrapper>
+            <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
               {choiceAttempted && status === "right" && <RightIcon />}
               {choiceAttempted && status === "wrong" && <WrongIcon />}
             </IconWrapper>
@@ -91,18 +101,19 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-            style={{
-              ...btnStyle,
-              minWidth: response.minWidthShowAnswer
-            }}
+            style={_btnStyle}
             onClick={handleClick}
           >
-            <span className="index">{indexStr}</span>
+            <span className="index" style={indexStyle}>
+              {indexStr}
+            </span>
             <Tooltip title={userSelection?.value}>
-              <span className="text clipText">{userSelection && userSelection.value}</span>
+              <span className="text clipText" style={textStyle}>
+                {userSelection && userSelection.value}
+              </span>
             </Tooltip>
 
-            <IconWrapper>
+            <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
               {choiceAttempted && status === "right" && <RightIcon />}
               {choiceAttempted && status === "wrong" && <WrongIcon />}
             </IconWrapper>
@@ -130,7 +141,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               {showIndex && <span className="index">{indexStr}</span>}
               <span className="text clipText">{userSelection && userSelection.value}</span>
 
-              <IconWrapper>
+              <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
                 {choiceAttempted && status === "right" && <RightIcon />}
                 {choiceAttempted && status === "wrong" && <WrongIcon />}
               </IconWrapper>
@@ -151,7 +162,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               {showIndex && <span className="index">{indexStr}</span>}
               <span className="text clipText">{userSelection && userSelection.value}</span>
 
-              <IconWrapper>
+              <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
                 {choiceAttempted && status === "right" && <RightIcon />}
                 {choiceAttempted && status === "wrong" && <WrongIcon />}
               </IconWrapper>

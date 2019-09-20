@@ -5,6 +5,18 @@ import striptags from "striptags";
 
 import { secondaryTextColor, fadedBlack, greyDarken } from "@edulastic/colors";
 
+import {
+  IconGraphRay as IconRay,
+  IconGraphLine as IconLine,
+  IconGraphPoint as IconPoint,
+  IconGraphSine as IconSine,
+  IconGraphParabola as IconParabola,
+  IconGraphCircle as IconCircle,
+  IconGraphVector as IconVector,
+  IconGraphSegment as IconSegment,
+  IconGraphPolygon as IconPolygon
+} from "@edulastic/icons";
+
 import utils from "../../common/utils";
 
 class DrawingObjects extends Component {
@@ -33,6 +45,35 @@ class DrawingObjects extends Component {
     return type;
   };
 
+  getIconByToolName = (toolName, options) => {
+    if (!toolName) {
+      return "";
+    }
+
+    const iconsByToolName = {
+      point: () => <IconPoint {...options} />,
+      line: () => <IconLine {...options} />,
+      ray: () => <IconRay {...options} />,
+      segment: () => <IconSegment {...options} />,
+      vector: () => <IconVector {...options} />,
+      circle: () => <IconCircle {...options} />,
+      ellipse: () => <IconLine {...options} />,
+      hyperbola: () => <IconLine {...options} />,
+      tangent: () => <IconLine {...options} />,
+      secant: () => <IconLine {...options} />,
+      exponent: () => <IconLine {...options} />,
+      logarithm: () => <IconLine {...options} />,
+      polynom: () => <IconLine {...options} />,
+      parabola: () => <IconParabola {...options} />,
+      sine: () => <IconSine {...options} />,
+      polygon: () => <IconPolygon {...options} />,
+      area: () => <IconLine {...options} />,
+      dashed: () => <IconLine {...options} />
+    };
+
+    return iconsByToolName[toolName]();
+  };
+
   render() {
     const { drawingObjects } = this.props;
     return (
@@ -47,6 +88,14 @@ class DrawingObjects extends Component {
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
           >
+            <span style={{ padding: "0 5px" }}>
+              {this.getIconByToolName(drawingObject.type, {
+                width: 10,
+                height: 10,
+                color: "#00b2ff",
+                stroke: "#00b2ff"
+              })}
+            </span>
             {this.getLabel(drawingObject)}
           </Button>
         ))}

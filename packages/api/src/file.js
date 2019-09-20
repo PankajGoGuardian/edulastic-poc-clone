@@ -44,7 +44,9 @@ const uploadBySignedUrl = (url, data, progressCallback, cancelUpload) =>
     },
     onUploadProgress: progressCallback,
     cancelToken: new CancelToken(_cancel => {
-      cancelUpload(_cancel);
+      if (cancelUpload) {
+        cancelUpload(_cancel);
+      }
     })
   });
 

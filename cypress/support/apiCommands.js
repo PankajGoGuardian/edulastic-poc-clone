@@ -3,10 +3,12 @@
 import uuidv4 from "uuid/v4";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
-const { _ } = Cypress;
+const ENV = Cypress.env("ENVIRONMENT") || "local";
 const BASE_URL = Cypress.config("API_URL");
+
+const { _ } = Cypress;
 const fixtureFolderPath = "cypress/fixtures";
-const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData.json`;
+const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}.json`;
 const daCredential = { username: "da.automation@snapwiz.com", password: "automation" };
 
 Cypress.Commands.add("createTestData", () => {

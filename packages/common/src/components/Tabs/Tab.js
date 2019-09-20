@@ -19,13 +19,20 @@ const Tab = ({
   type,
   borderRadius,
   addTabs,
-  isAddTab
+  isAddTab,
+  isPassageQuestion
 }) => {
   const textWidth = useMemo(() => label?.length * 10 + 10, [label]);
 
   const inputTab = (
     <EditableTab>
-      <Input type="text" style={{ width: `${textWidth}px` }} value={label} onChange={onChange} />
+      <Input
+        isPassageQuestion={isPassageQuestion}
+        type="text"
+        style={{ width: `${textWidth}px` }}
+        value={label}
+        onChange={onChange}
+      />
       <IconPencilEdit color={themeColor} width={16} height={16} />
     </EditableTab>
   );
@@ -136,7 +143,7 @@ const Container = styled.div`
 const Input = styled.input`
   border: 0;
   width: 100%;
-  text-align: center;
+  text-align: ${({ isPassageQuestion }) => (isPassageQuestion ? "left" : "center")};
   outline: none;
   background: transparent;
 `;

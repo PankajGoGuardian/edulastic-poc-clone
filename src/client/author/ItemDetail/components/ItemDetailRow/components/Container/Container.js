@@ -200,6 +200,7 @@ class Container extends Component {
                   close
                   onClose={e => removeTab(key)}
                   isAddTab={false}
+                  isPassageQuestion
                 />
               ))}
               {isPassageQuestion && row.tabs.length < 5 && (

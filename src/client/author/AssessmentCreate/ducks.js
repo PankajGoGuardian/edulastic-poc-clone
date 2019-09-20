@@ -217,7 +217,12 @@ function* createAssessmentSaga({ payload }) {
       yield put(push(`/author/assessments/${assessment._id}`));
     }
   } catch (error) {
-    const errorMessage = "Create assessment is failing";
+    let errorMessage;
+    if (error.code === 1) {
+      errorMessage = "Password protected PDF files are not supported";
+    } else {
+      errorMessage = "Create assessment is failing";
+    }
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }

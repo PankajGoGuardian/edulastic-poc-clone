@@ -5,8 +5,7 @@ const path = require("path");
 
 function getConfigurationByFile(file) {
   const pathToConfigFile = path.resolve("cypress", "config", `${file}.json`);
-
-  return fs.readJson(pathToConfigFile);
+  return fs.readFileSync(pathToConfigFile);
 }
 
 module.exports = (on, config) => {
@@ -39,6 +38,12 @@ module.exports = (on, config) => {
     }
   });
 
-  const file = config.env.configFile || "production";
-  return getConfigurationByFile(file);
+  // build env configuration
+  const confFile = config.env.configFile || "common";
+  const commonConfig = JSON.parse(getConfigurationByFile("common"));
+  const envConfig = JSON.parse(getConfigurationByFile(confFile));
+  if (confFile !== "common") envConfig.API_URL = `${envConfig.baseUrl}/api`;
+  const configuration = { ...commonConfig, ...envConfig };
+
+  return configuration;
 };

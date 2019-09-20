@@ -1,0 +1,6 @@
+{
+  "baseUrl": "https://edulasticv2.snapwiz.net",
+  "env": {
+    "ENVIRONMENT": "prod"
+  }
+}

@@ -26,7 +26,7 @@ const CreateUpload = ({ creating, percent, fileInfo, cancelUpload, isDragging })
       <IconUpload style={iconStyles} />
       <PaperTitle>{isDragging ? "Drop File To Upload" : "Upload Files to Get Started"}</PaperTitle>
       <UploadDescription>Drag and drop any .pdf or browse and select your file</UploadDescription>
-      {creating && !isDragging && !!fileInfo.name && (
+      {creating && !isDragging && !!fileInfo.fileName && (
         <>
           <FileInfoCont>
             <FileName>

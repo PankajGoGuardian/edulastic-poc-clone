@@ -84,7 +84,9 @@ export const MultipleAssessmentReportContainer = props => {
         history={props.history}
         location={props.location}
         match={props.match}
-        performanceBandRequired={["/author/reports/student-progress"].find(x => window.location.pathname.startsWith(x))}
+        performanceBandRequired={["/author/reports/student-progress", "/author/reports/performance-over-time"].find(x =>
+          window.location.pathname.startsWith(x)
+        )}
         style={props.showFilter ? { display: "block" } : { display: "none" }}
       />
       <Route

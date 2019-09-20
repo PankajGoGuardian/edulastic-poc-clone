@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find, isEqual, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
+import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "../CheckedBlock";
 import SelectUnit from "../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
@@ -98,10 +99,15 @@ class ClozeMathWithUnit extends React.Component {
     if (!wrappedRef.current || !window.$) {
       return;
     }
-    // clicks scroll bar
-    if ($(target).outerWidth() < e.clientX && !$(target).hasClass("mq-root-block")) {
-      return;
+
+    if (target.clientHeight < target.scrollHeight) {
+      const scrollBarWidth = target.offsetWidth - target.clientWidth;
+      const clickPos = target.scrollWidth - e.offsetX;
+      if (scrollBarWidth > 0 && clickPos < 0) {
+        return;
+      }
     }
+
     if (
       wrappedRef &&
       !wrappedRef.current.contains(target) &&
@@ -222,12 +228,21 @@ class ClozeMathWithUnit extends React.Component {
     // styling response box based on settings.
     const response = find(responseContainers, cont => cont.id === id);
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-    const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+    const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div ref={this.wrappedRef} style={{ margin: "0 4px", display: "inline-block" }}>
+      <div
+        ref={this.wrappedRef}
+        style={{
+          margin: "0 4px",
+          display: "inline-flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative"
+        }}
+      >
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -239,7 +254,9 @@ class ClozeMathWithUnit extends React.Component {
             marginRight: 0,
             borderRight: 0,
             borderTopRightRadius: 0,
-            borderBottomRightRadius: 0
+            borderBottomRightRadius: 0,
+            display: "flex",
+            alignItems: "center"
           }}
         />
         <SelectUnit
@@ -252,7 +269,7 @@ class ClozeMathWithUnit extends React.Component {
           height={height || "auto"}
         />
         {showKeyboard && (
-          <KeyboardWrapper innerRef={this.mathKeyboardRef}>
+          <KeyboardWrapper innerRef={this.mathKeyboardRef} height={height}>
             <MathKeyboard
               onInput={this.onInput}
               onClose={() => {}}
@@ -304,5 +321,7 @@ export default MathWithUnit;
 const KeyboardWrapper = styled.div`
   width: 40%;
   position: absolute;
+  left: 0px;
+  top: ${({ height }) => height};
   z-index: 100;
 `;

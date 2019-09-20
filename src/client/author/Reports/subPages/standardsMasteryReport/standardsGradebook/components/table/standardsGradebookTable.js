@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { isEmpty } from "lodash";
@@ -6,7 +7,7 @@ import next from "immer";
 
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import { StyledTable } from "../styled";
+import { StyledTable, StyledDropDownContainer } from "../styled";
 import { StyledH3, StyledCard } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 
@@ -23,7 +24,14 @@ import {
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 
-export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartFilter, isCsvDownloading, role }) => {
+export const StandardsGradebookTable = ({
+  denormalizedData,
+  masteryScale,
+  chartFilter,
+  isCsvDownloading,
+  role,
+  filters = {}
+}) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
     analyseBy: "score(%)",
@@ -73,7 +81,7 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
 
   const filteredTableData = getFilteredTableData();
 
-  const getDisplayValue = (item, _analyseBy, data, record) => {
+  const getDisplayValue = (item = {}, _analyseBy, data, record) => {
     let printData;
     if (item.scorePercent === 0 || item.rawScore === 0 || item.masteryScore === 0) {
       return "N/A";
@@ -154,7 +162,13 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
         render: (data, record) => {
-          return record.compareByLabel;
+          return record.compareBy === "studentId" ? (
+            <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
+              {record.compareByLabel}
+            </Link>
+          ) : (
+            record.compareByLabel
+          );
         }
       },
       {
@@ -218,27 +232,35 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <ControlDropDown
-              data={masteryLevelDropDownData}
-              by={masteryLevelDropDownData[0]}
-              prefix="Mastery Level"
-              selectCB={tableFilterDropDownCB}
-              comData={"masteryLevel"}
-            />
-            <ControlDropDown
-              data={compareByDropDownData}
-              by={compareByDropDownData[0]}
-              prefix="Compare By"
-              selectCB={tableFilterDropDownCB}
-              comData={"compareBy"}
-            />
-            <ControlDropDown
-              data={dropDownFormat.analyseByDropDownData}
-              by={dropDownFormat.analyseByDropDownData[0]}
-              prefix="Analyse By"
-              selectCB={tableFilterDropDownCB}
-              comData={"analyseBy"}
-            />
+            <Row>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={masteryLevelDropDownData}
+                  by={masteryLevelDropDownData[0]}
+                  prefix="Mastery Level"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"masteryLevel"}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={compareByDropDownData}
+                  by={compareByDropDownData[0]}
+                  prefix="Compare By"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"compareBy"}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  data={dropDownFormat.analyseByDropDownData}
+                  by={dropDownFormat.analyseByDropDownData[0]}
+                  prefix="Analyse By"
+                  selectCB={tableFilterDropDownCB}
+                  comData={"analyseBy"}
+                />
+              </StyledDropDownContainer>
+            </Row>
           </Col>
         </Row>
         <Row>

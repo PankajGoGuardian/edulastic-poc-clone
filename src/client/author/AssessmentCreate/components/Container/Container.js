@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { withRouter } from "react-router";
 import { compose } from "redux";
@@ -17,6 +18,7 @@ import {
   createAssessmentRequestAction,
   getAssessmentCreatingSelector,
   percentageUploadedSelector,
+  fileInfoSelector,
   setPercentUploadedAction
 } from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
@@ -59,6 +61,8 @@ class Container extends React.Component {
     method: undefined
   };
 
+  cancelUpload;
+
   componentDidMount() {
     const { location, receiveTestById } = this.props;
     const { assessmentId } = qs.parse(location.search);
@@ -74,8 +78,13 @@ class Container extends React.Component {
   };
 
   handleUploadProgress = progressEvent => {
-    var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    this.props.setPercentUploaded(percentCompleted);
+    const { setPercentUploaded } = this.props;
+    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    setPercentUploaded(percentCompleted);
+  };
+
+  setCancelFn = _cancelFn => {
+    this.cancelUpload = _cancelFn;
   };
 
   handleUploadPDF = debounce(({ file }) => {
@@ -84,7 +93,12 @@ class Container extends React.Component {
     if (file.size / 1024000 > 15) {
       return message.error("File size exceeds 15 MB MB limit.");
     }
-    createAssessment({ file, assessmentId, progressCallback: this.handleUploadProgress });
+    createAssessment({
+      file,
+      assessmentId,
+      progressCallback: this.handleUploadProgress,
+      cancelUpload: this.setCancelFn
+    });
   }, 1000);
 
   handleCreateBlankAssessment = event => {
@@ -98,8 +112,8 @@ class Container extends React.Component {
 
   render() {
     let { method } = this.state;
-    let newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading, percentageUploaded } = this.props;
+    const newBreadcrumb = [...testBreadcrumbs];
+    const { creating, location, assessmentLoading, percentageUploaded, fileInfo } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);
@@ -134,6 +148,8 @@ class Container extends React.Component {
               onUpload={this.handleUploadPDF}
               onCreateBlank={this.handleCreateBlankAssessment}
               percent={percentageUploaded}
+              fileInfo={fileInfo}
+              cancelUpload={this.cancelUpload}
             />
           )}
         </ContainerWrapper>
@@ -148,7 +164,8 @@ const enhance = compose(
     state => ({
       creating: getAssessmentCreatingSelector(state),
       assessmentLoading: getTestsLoadingSelector(state),
-      percentageUploaded: percentageUploadedSelector(state)
+      percentageUploaded: percentageUploadedSelector(state),
+      fileInfo: fileInfoSelector(state)
     }),
     {
       createAssessment: createAssessmentRequestAction,

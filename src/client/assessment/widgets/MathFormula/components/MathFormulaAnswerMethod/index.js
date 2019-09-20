@@ -61,6 +61,7 @@ const MathFormulaAnswerMethod = ({
   allowedVariables,
   toggleAdditional,
   showDefaultMode,
+  labelValue,
   renderExtra,
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
@@ -360,7 +361,7 @@ const MathFormulaAnswerMethod = ({
       <ExpectAnswer>
         {!methodOptions.includes("noExpeced") && (
           <div>
-            <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
+            <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
                 <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />
@@ -483,6 +484,7 @@ MathFormulaAnswerMethod.propTypes = {
   customUnits: PropTypes.string,
   showDefaultMode: PropTypes.bool,
   containerHeight: PropTypes.any,
+  labelValue: PropTypes.string,
   renderExtra: PropTypes.any
 };
 

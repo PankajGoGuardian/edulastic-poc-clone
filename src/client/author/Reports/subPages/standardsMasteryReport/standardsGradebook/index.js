@@ -13,7 +13,11 @@ import { Placeholder } from "../../../common/components/loader";
 
 import { UpperContainer, TableContainer } from "./components/styled";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
-import { getStandardsFiltersRequestAction, getReportsStandardsFilters } from "../common/filterDataDucks";
+import {
+  getStandardsFiltersRequestAction,
+  getReportsStandardsFilters,
+  getSelectedStandardProficiency
+} from "../common/filterDataDucks";
 
 import {
   getStandardsGradebookRequestAction,
@@ -42,7 +46,9 @@ const StandardsGradebook = ({
   history,
   location,
   match,
-  loading
+  loading,
+  selectedStandardProficiency,
+  filters
 }) => {
   const [ddfilter, setDdFilter] = useState({
     schoolId: "all",
@@ -100,7 +106,7 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter);
   };
 
-  const masteryScale = get(standardsFilters, "data.result.scaleInfo", []);
+  const masteryScale = selectedStandardProficiency;
 
   return (
     <div>
@@ -144,6 +150,7 @@ const StandardsGradebook = ({
               chartFilter={chartFilter}
               isCsvDownloading={isCsvDownloading}
               role={role}
+              filters={filters}
             />
           </TableContainer>
         </>
@@ -161,7 +168,9 @@ const enhance = compose(
       role: getUserRole(state),
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
-      isCsvDownloading: getCsvDownloadingState(state)
+      isCsvDownloading: getCsvDownloadingState(state),
+      selectedStandardProficiency: getSelectedStandardProficiency(state),
+      filters: get(state, "reportStandardsFilterDataReducer.filters", {})
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,

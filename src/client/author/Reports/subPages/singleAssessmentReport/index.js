@@ -84,6 +84,9 @@ const SingleAssessmentReportContainer = props => {
             "/author/reports/peer-performance",
             "/author/reports/performance-by-students"
           ].find(x => window.location.pathname.startsWith(x))}
+          isStandardProficiencyRequired={["/author/reports/performance-by-standards"].find(x =>
+            window.location.pathname.startsWith(x)
+          )}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
         <Route

@@ -8,7 +8,7 @@ import { StyledCard, StyledH3 } from "../../../common/styled";
 import { parseData, augmentTestData } from "./utils/transformers";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 
-import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getReportsPerformanceOverTime,

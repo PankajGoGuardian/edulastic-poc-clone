@@ -70,10 +70,10 @@ const SingleAssessmentReportFilters = ({
   setPerformanceBand,
   setStandardsProficiency,
   performanceBandRequired,
-  standardProficiencyRequired = true
+  isStandardProficiencyRequired = false
 }) => {
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
-  const standardProficiencyProfiles = get(SARFilterData, "data,result.scaleInfo", []);
+  const standardProficiencyProfiles = get(SARFilterData, "data.result.scaleInfo", []);
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -303,6 +303,10 @@ const SingleAssessmentReportFilters = ({
     _onGoClick(settings);
   };
 
+  const standardProficiencyList = useMemo(() => standardProficiencyProfiles.map(s => ({ key: s._id, title: s.name })), [
+    standardProficiencyProfiles
+  ]);
+
   return (
     <div className={className} style={style}>
       <StyledFilterWrapper>
@@ -329,16 +333,28 @@ const SingleAssessmentReportFilters = ({
           </Col>
           {performanceBandRequired ? (
             <Col xs={12} sm={12} md={10} lg={6} xl={6}>
-              <PrintablePrefix>Performance Band Profile </PrintablePrefix>
+              <PrintablePrefix>Performance Band </PrintablePrefix>
               <ControlDropDown
                 by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
                 selectCB={({ key }) => setPerformanceBand(key)}
                 data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
-                prefix="Performance Band profile"
+                prefix="Performance Band"
                 showPrefixOnSelected={false}
               />
             </Col>
           ) : null}
+          {isStandardProficiencyRequired && (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
+              <ControlDropDown
+                by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
+                selectCB={({ key }) => setStandardsProficiency(key)}
+                data={standardProficiencyList}
+                prefix="Standard Proficiency"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          )}
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <PrintablePrefix>Grade</PrintablePrefix>
             <AutocompleteDropDown

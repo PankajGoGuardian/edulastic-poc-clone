@@ -228,7 +228,7 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const data = yield call(classBoardApi.downloadGrades, payload);
     const userName = yield select(getUserNameSelector);
     const testName = yield select(testNameSelector);
-    const fileName = `${testName}_${userName}`;
+    const fileName = `${testName}_${userName}.csv`;
     downloadCSV(fileName, data);
   } catch (e) {
     yield call(message.error, e?.data?.message || "Download failed");

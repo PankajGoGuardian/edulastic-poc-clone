@@ -3,7 +3,7 @@ import TestSummayTab from "./testSummaryTab";
 
 export default class TestHeader {
   clickOnDescription = () => {
-    cy.get('[data-cy="summary"]').click();
+    cy.get('[data-cy="description"]').click();
     return new TestSummayTab();
   };
 

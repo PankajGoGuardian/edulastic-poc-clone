@@ -364,10 +364,10 @@ class LiveClassboardPage {
     });
   };
 
-  updateScore = (studentName, score) => {
+  updateScore = (studentName, score, feedback) => {
     Object.keys(score).forEach(queNum => {
       this.questionResponsePage.selectQuestion(queNum);
-      this.questionResponsePage.updateScoreForStudent(studentName, score[queNum]);
+      this.questionResponsePage.updateScoreForStudent(studentName, score[queNum], feedback);
     });
   };
 

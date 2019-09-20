@@ -14,7 +14,8 @@ import {
 import {
   getReportsStandardsBrowseStandards,
   getStandardsFiltersRequestAction,
-  getReportsStandardsFilters
+  getReportsStandardsFilters,
+  getSelectedStandardProficiency
 } from "../common/filterDataDucks";
 
 import { getCsvDownloadingState } from "../../../ducks";
@@ -48,10 +49,11 @@ const StandardsPerformance = ({
   isCsvDownloading,
   settings,
   role,
-  loading
+  loading,
+  selectedStandardProficiency
 }) => {
   const filterData = get(standardsFilters, "data.result", []);
-  const { scaleInfo = [] } = filterData;
+  const scaleInfo = selectedStandardProficiency || [];
   const rawDomainData = get(browseStandards, "data.result", []);
   const maxMasteryScore = getMaxMasteryScore(scaleInfo);
   const masteryLevelData = getMasteryLevelOptions(scaleInfo);
@@ -178,7 +180,8 @@ const enhance = connect(
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
     getStandardsPerformanceSummaryRequestAction,

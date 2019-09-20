@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -29,8 +30,8 @@ const shouldAutoSave = itemRows => {
     essayPlainText: 1,
     formulaessay: 1
   };
-  for (let row of itemRows) {
-    for (let widget of row.widgets || []) {
+  for (const row of itemRows) {
+    for (const widget of row.widgets || []) {
       if (widget.widgetType === "question" && autoSavableTypes[widget.type]) {
         return true;
       }
@@ -60,6 +61,7 @@ const AssessmentContainer = ({
   answersById,
   loading,
   pageStructure,
+  freeFormNotes,
   passages,
   preview,
   LCBPreviewModal,
@@ -74,7 +76,8 @@ const AssessmentContainer = ({
 
   // start assessment
   useEffect(() => {
-    startAssessment();
+    // if its from a modal that maybe showing the answer, then dont reset the answer.
+    if (!LCBPreviewModal) startAssessment();
   }, []);
 
   const lastTime = useRef(Date.now());
@@ -124,7 +127,7 @@ const AssessmentContainer = ({
   const testItem = items[currentItem] || {};
   let itemRows = testItem.rows;
   if (testItem.passageId) {
-    let passage = passages.find(p => p._id === testItem.passageId);
+    const passage = passages.find(p => p._id === testItem.passageId);
     itemRows = [passage.structure, ...itemRows];
   }
 
@@ -149,6 +152,7 @@ const AssessmentContainer = ({
     evaluate,
     view,
     pageStructure,
+    freeFormNotes,
     finishTest,
     history,
     previewPlayer: preview,
@@ -211,6 +215,7 @@ const enhance = compose(
       passages: state.test.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
+      freeFormNotes: state?.test?.freeFormNotes,
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),

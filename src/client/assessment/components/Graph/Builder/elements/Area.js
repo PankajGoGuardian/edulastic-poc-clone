@@ -658,8 +658,7 @@ function setAreaForEquation(board, equation) {
     }
   }
 
-  const areaElements = areas.map(points => renderArea(board, points, 0.1, "#FFFF99"));
-  equation.addParents(areaElements);
+  equation.areas = areas.map(points => renderArea(board, points, 0.1, "#FFFF99"));
 }
 
 function updateShadingsForAreaPoints(board, shapes) {

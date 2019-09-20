@@ -5,7 +5,8 @@ import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, round } from "lodash";
+import { get, isUndefined, round, isEmpty } from "lodash";
+
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
@@ -52,6 +53,7 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
+import FeedBackContainer from "./FeedBackContainer";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -287,11 +289,21 @@ class QuestionWrapper extends Component {
       disableResponse,
       isStudentReport,
       showStudentWork,
+      prevQActivityForQuestion = {},
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
+      displayFeedback = true,
       ...restProps
     } = this.props;
+    const {
+      score: prevScore,
+      maxScore: prevMaxScore,
+      feedback: prevFeedback,
+      correct,
+      incorrect,
+      partiallyCorrect
+    } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -368,7 +380,7 @@ class QuestionWrapper extends Component {
                   paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}
-                twoColLayout={this.props.theme?.twoColLayout}
+                twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
               >
                 {view === "edit" && (
                   <QuestionMenu
@@ -414,14 +426,27 @@ class QuestionWrapper extends Component {
               {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
                 <FeedbackRight
                   twoColLayout={this.props.theme?.twoColLayout}
+                  showCollapseBtn={showCollapseBtn}
                   disabled={disabled}
                   widget={data}
                   studentName={studentName}
                   {...presentationModeProps}
                 />
               )}
+              {!isEmpty(prevQActivityForQuestion) && (
+                <FeedBackContainer
+                  correct={correct}
+                  partiallCorrect={partiallyCorrect}
+                  prevScore={prevScore}
+                  prevMaxScore={prevMaxScore}
+                  prevFeedback={prevFeedback}
+                  itemId={data.id}
+                />
+              )}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
+              {studentReportFeedbackVisible && displayFeedback && (
+                <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
+              )}
             </QuestionContainer>
           </>
         </ThemeProvider>
@@ -453,7 +478,8 @@ QuestionWrapper.propTypes = {
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
-  LCBPreviewModal: PropTypes.any
+  LCBPreviewModal: PropTypes.any,
+  displayFeedback: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -475,7 +501,8 @@ QuestionWrapper.defaultProps = {
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
   disableResponse: false,
-  isPresentationMode: false
+  isPresentationMode: false,
+  displayFeedback: true
 };
 
 const enhance = compose(

@@ -531,11 +531,12 @@ class Implicit {
 }
 
 class CanvasPlotter {
-  constructor(board, latex, params) {
+  constructor(board, latex, id, params) {
     this.board = board;
 
     this.func = this.board.jc.snippet(latex, true, ["x", "y"], false); // (x,y) => Math.abs(x) + Math.abs(y) - 6;
     this.params = params;
+    this.id = id;
 
     const [xMin, yMax, xMax, yMin] = this.board.getBoundingBox();
     this.x1 = xMin;
@@ -571,7 +572,7 @@ class CanvasPlotter {
       ys.push(segments[i].y);
     }
     if (xs.length) {
-      this.result = this.board.create("curve", [xs, ys], this.params);
+      this.result = this.board.create("curve", [xs, ys], { ...this.params, id: this.id });
       this.result.addParents(parents);
     }
   };
@@ -594,7 +595,6 @@ function create(board, object) {
     id,
     latex,
     labelHTML: label,
-    subType: null,
     latexIsBroken: true,
     apiLatex: null
   };
@@ -613,7 +613,7 @@ function create(board, object) {
   }
 
   try {
-    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, {
+    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, id, {
       ...defaultConfig,
       ...getColorParams(priorityColor || "#00b2ff"),
       dash
@@ -631,7 +631,6 @@ function create(board, object) {
   line.latex = latex;
   line.fixedLatex = fixedLatex;
   line.type = jxgType;
-  line.subType = null;
   line.apiLatex = apiLatex;
 
   Area.setAreaForEquation(board, line);
@@ -640,22 +639,13 @@ function create(board, object) {
 }
 
 function getConfig(equation) {
-  let points = null;
-  if (equation.ancestors && Object.keys(equation.ancestors).length > 0) {
-    points = Object.keys(equation.ancestors)
-      .sort()
-      .map(n => Point.getConfig(equation.ancestors[n]));
-  }
-
   return {
     _type: equation.type,
     type: CONSTANT.TOOLS.EQUATION,
     id: equation.id,
     latex: equation.latex,
     label: equation.labelHTML || false,
-    subType: equation.subType,
-    apiLatex: equation.apiLatex,
-    points
+    apiLatex: equation.apiLatex
   };
 }
 

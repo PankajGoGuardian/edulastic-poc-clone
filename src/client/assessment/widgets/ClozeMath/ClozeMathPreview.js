@@ -46,6 +46,7 @@ const ClozeMathPreview = ({
   testItem,
   options,
   responseIds,
+  isExpressGrader,
   changePreviewTab, // Question level
   changePreview // Item level
 }) => {
@@ -92,9 +93,8 @@ const ClozeMathPreview = ({
   const getStyles = () => {
     const uiStyles = {};
     const { uiStyle = {} } = item;
-    if (uiStyle.fontsize) {
-      uiStyles.fontSize = getFontSize(uiStyle.fontsize);
-    }
+
+    uiStyles.fontSize = getFontSize(uiStyle.fontsize);
 
     if (uiStyle.heightpx) {
       uiStyles.height = `${uiStyle.heightpx}px`;
@@ -105,12 +105,11 @@ const ClozeMathPreview = ({
     }
 
     if (uiStyle.minWidth) {
-      uiStyles.width = `${uiStyle.minWidth}px`;
-      if (parseInt(uiStyle.minWidth, 10) < 25) {
-        uiStyles.padding = "4px 2px";
-      }
-    } else {
-      uiStyles.width = 80;
+      uiStyles.minWidth = `${uiStyle.minWidth}px`;
+    }
+
+    if (parseInt(uiStyle.minWidth, 10) < 25) {
+      uiStyles.padding = "4px 2px";
     }
 
     return uiStyles;
@@ -178,7 +177,7 @@ const ClozeMathPreview = ({
         jsx={newHtml}
       />
 
-      {!testItem && type === SHOW && (
+      {(isExpressGrader || type === SHOW) && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
@@ -206,12 +205,14 @@ ClozeMathPreview.propTypes = {
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
   changePreview: PropTypes.func,
-  testItem: PropTypes.bool
+  testItem: PropTypes.bool,
+  isExpressGrader: PropTypes.bool
 };
 
 ClozeMathPreview.defaultProps = {
   changePreview: () => {},
-  testItem: false
+  testItem: false,
+  isExpressGrader: false
 };
 
 export default withCheckAnswerButton(ClozeMathPreview);

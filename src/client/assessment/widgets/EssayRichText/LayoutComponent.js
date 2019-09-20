@@ -64,20 +64,20 @@ class LayoutComponent extends Component {
                 disabled
                 onChange={checked => {
                   if (checked) {
-                    changeItem("character_map", []);
+                    changeItem("characterMap", []);
                   } else {
-                    changeItem("character_map", undefined);
+                    changeItem("characterMap", undefined);
                   }
                 }}
-                checked={!!item.character_map}
+                checked={!!item.characterMap}
               />
             </Col>
-            {Array.isArray(item.character_map) && (
+            {Array.isArray(item.characterMap) && (
               <Col md={12}>
                 <CharactersToDisplayOption
                   disabled
-                  onChange={val => changeItem("character_map", val.split(""))}
-                  value={item.character_map.join("")}
+                  onChange={val => changeItem("characterMap", val.split(""))}
+                  value={item.characterMap.join("")}
                 />
               </Col>
             )}

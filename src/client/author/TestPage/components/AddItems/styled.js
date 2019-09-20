@@ -92,6 +92,7 @@ export const StyledButton = styled(EduButton)`
   align-items: center;
   border: 1px solid ${themeColor};
   border-radius: 5px;
+  margin-left: 10px;
 
   &:hover,
   &:active {
@@ -138,7 +139,7 @@ export const StyledSelect = styled(Select)`
 
 export const ItemsPagination = styled(FlexContainer)`
   justify-content: flex-end;
-  padding: 20px;
+  padding: 20px 0px;
 `;
 
 export const ListWrapper = styled(Paper)`

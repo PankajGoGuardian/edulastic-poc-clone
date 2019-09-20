@@ -252,7 +252,7 @@ class MainSetting extends Component {
       if (assignmentPassword.length >= 6 && assignmentPassword.length <= 25) {
         return green;
       } else {
-        validationMessage = "Password is too short";
+        validationMessage = "Password is too short - must be at least 6 characters";
         if (assignmentPassword.length > 25) validationMessage = "Password is too long";
         return red;
       }

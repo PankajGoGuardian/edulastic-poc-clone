@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
-import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
+import {
+  getReportsSPRFilterData,
+  getBandInfoSelected,
+  getSelectedStandardProficiency
+} from "../common/filterDataDucks";
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
@@ -45,17 +49,19 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequestAction,
-  bandInfoSelected
+  bandInfoSelected,
+  selectedStandardProficiency
 }) => {
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
+  const scaleInfo = selectedStandardProficiency;
 
   const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
     studentProfileSummary,
     "data.result",
     {}
   );
-  const { scaleInfo = [], studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
@@ -102,14 +108,14 @@ const StudentProfileSummary = ({
               <b>Grade</b>: {getGrades(studentInformation.grades)}
             </p>
             <p>
-              <b>School</b>: {studentInformation.school || "N/A"}
+              <b>School</b>: {studentClassInfo.schoolName || "N/A"}
             </p>
             <p>
               <b>Subject</b>: {studentClassInfo.standardSet || "N/A"}
             </p>
           </Col>
           <Col xs={24} sm={24} md={19} lg={19} xl={19}>
-            <AssessmentChart data={data} studentClassData={studentClassData} />
+            <AssessmentChart data={data} studentClassInfo={studentClassInfo} />
           </Col>
         </Row>
       </StyledCard>
@@ -138,7 +144,8 @@ const enhance = connect(
     loading: getReportsStudentProfileSummaryLoader(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state)
+    bandInfoSelected: getBandInfoSelected(state),
+    selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
     getStudentProfileSummaryRequestAction

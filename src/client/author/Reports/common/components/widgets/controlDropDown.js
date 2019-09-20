@@ -96,7 +96,7 @@ const ControlDropDown = ({
         trigger={trigger}
       >
         <Button title={title}>
-          {(showPrefixOnSelected ? prefix + " " : "") + selected.title}
+          {(showPrefixOnSelected ? prefix + " " : "") + selected?.title}
           {isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
         </Button>
       </Dropdown>

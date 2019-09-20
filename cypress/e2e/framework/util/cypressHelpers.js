@@ -29,6 +29,16 @@ export default class CypressHelper {
       .should("contain", selectedItem);
   };
 
+  static getDropDownList = () => {
+    const options = [];
+    return cy
+      .get(".ant-select-dropdown-menu-item")
+      .each(ele => {
+        options.push(ele.text());
+      })
+      .then(() => options);
+  };
+
   // datetime => new Date() instance
   static setDateInCalender = (dateTime, time = true) => {
     console.log("time here", dateTime);

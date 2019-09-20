@@ -55,12 +55,26 @@ export const selectedPerformanceBand = createSelector(
   state => state?.filters?.performanceBandProfileId || ""
 );
 
+export const selectedStandardProficiency = createSelector(
+  stateSelector,
+  state => state?.filters?.standardsProficiencyProfileId || ""
+);
+
 export const getBandInfoSelected = createSelector(
   getReportsSPRFilterData,
   selectedPerformanceBand,
   (SPRFData, selected) => {
     const bands = SPRFData?.data?.result?.bandInfo || [];
     return (bands.find(x => x._id === selected) || bands[0])?.performanceBand;
+  }
+);
+
+export const getSelectedStandardProficiency = createSelector(
+  getReportsSPRFilterData,
+  selectedStandardProficiency,
+  (SPRFData, selected) => {
+    const scales = SPRFData?.data?.result?.scaleInfo || [];
+    return (scales.find(x => x._id === selected) || scales[0])?.scale;
   }
 );
 

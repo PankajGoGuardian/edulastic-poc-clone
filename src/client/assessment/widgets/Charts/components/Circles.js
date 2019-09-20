@@ -36,7 +36,7 @@ const Circles = ({
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, { height: height / 2, margin, yAxisMax, yAxisMin, stepSize }) + 20;
+  const getCenterY = dot => convertUnitToPx(dot.y, { height: height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
@@ -50,17 +50,9 @@ const Circles = ({
     setHoveredIndex(index);
   };
 
-  const getBarHeight = y =>
-    Math.abs(
-      convertUnitToPx(yAxisMin, { height: height / 2, margin, yAxisMax, yAxisMin, stepSize }) -
-        convertUnitToPx(y, { height: height / 2, margin, yAxisMax, yAxisMin, stepSize })
-    );
+  const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
 
-  const getLength = y =>
-    Math.floor(
-      (height / 2 - margin - convertUnitToPx(y, { height: height / 2, margin, yAxisMax, yAxisMin, stepSize })) /
-        (yAxisStep / 2.5)
-    );
+  const getLength = y => Math.floor((height - margin - convertUnitToPx(y, gridParams)) / yAxisStep);
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
@@ -82,8 +74,8 @@ const Circles = ({
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               cx={getCenterX(index) + step / 2}
-              cy={height / 2 - margin - ind * (yAxisStep * 0.4) - yAxisStep / 2 + 30}
-              r={yAxisStep / 3.5 - 5}
+              cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 20}
+              r={yAxisStep / 2 - 5}
             />
           ))}
           <Bar
@@ -130,7 +122,7 @@ const Circles = ({
             onMouseLeave={() => handleLabelVisibility(null)}
             textAnchor="middle"
             x={getCenterX(index) + step / 2}
-            y={height / 2 + 20}
+            y={height + 20}
           >
             {(dot.labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
               ((dot.labelVisibility === SHOW_ALWAYS || !dot.labelVisibility) && dot.x)}

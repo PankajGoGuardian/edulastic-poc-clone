@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find, isEqual, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
+import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "./CheckedBlock";
 
@@ -112,9 +113,12 @@ class ClozeMathInput extends React.Component {
       return;
     }
 
-    // clicks scroll bar
-    if ($(target).outerWidth() < e.clientX && !$(target).hasClass("mq-root-block")) {
-      return;
+    if (target.clientHeight < target.scrollHeight) {
+      const scrollBarWidth = target.offsetWidth - target.clientWidth;
+      const clickPos = target.scrollWidth - e.offsetX;
+      if (scrollBarWidth > 0 && clickPos < 0) {
+        return;
+      }
     }
 
     if (wrappedRef && !wrappedRef.current.contains(target) && !$(target).hasClass("ant-select-dropdown-menu-item")) {
@@ -208,25 +212,28 @@ class ClozeMathInput extends React.Component {
     const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-    const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+    const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px", display: "inline-block" }}>
+      <div
+        ref={this.wrappedRef}
+        style={{ ...btnStyle, margin: "0 4px", display: "inline-block", position: "relative" }}
+      >
         <Wrapper>
           <span
             ref={this.mathRef}
             onClick={this.showKeyboardModal}
             style={{
               ...btnStyle,
-              width: width || "auto",
-              height: height || "auto",
+              width,
+              height,
               padding: "5px 11px 4px"
             }}
           />
           {showKeyboard && (
-            <KeyboardWrapper innerRef={this.mathKeyboardRef}>
+            <KeyboardWrapper innerRef={this.mathKeyboardRef} height={height}>
               <MathKeyboard
                 onInput={this.onInput}
                 onClose={() => {}}
@@ -278,6 +285,8 @@ export default MathInput;
 
 const KeyboardWrapper = styled.div`
   width: 40%;
+  left: 0px;
+  top: ${({ height }) => height};
   position: absolute;
   z-index: 100;
 `;

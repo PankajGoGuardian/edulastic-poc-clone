@@ -88,7 +88,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
-  let cards = [
+  const cards = [
     {
       type: "charts",
       cardImage: LinePlot,
@@ -2081,7 +2081,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           type: "floating-keyboard",
-          minWidth: 100
+          minWidth: 140
         },
         options: {},
         validation: {

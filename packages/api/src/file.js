@@ -2,6 +2,7 @@ import axios from "axios";
 import API from "./utils/API";
 
 const api = new API();
+const { CancelToken } = axios;
 const prefix = "/file";
 
 const upload = ({ file }) => {
@@ -33,7 +34,7 @@ const getSignedUrl = (filename, folder, subFolder) =>
     })
     .then(result => result.data.result);
 
-const uploadBySignedUrl = (url, data, progressCallback) =>
+const uploadBySignedUrl = (url, data, progressCallback, cancelUpload) =>
   axios({
     method: "post",
     url,
@@ -41,7 +42,12 @@ const uploadBySignedUrl = (url, data, progressCallback) =>
     config: {
       headers: { "Content-Type": "multipart/form-data" }
     },
-    onUploadProgress: progressCallback
+    onUploadProgress: progressCallback,
+    cancelToken: new CancelToken(_cancel => {
+      if (cancelUpload) {
+        cancelUpload(_cancel);
+      }
+    })
   });
 
 export default {

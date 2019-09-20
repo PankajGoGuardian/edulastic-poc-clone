@@ -83,7 +83,7 @@ const ShortTextPreview = ({
       : {})
   };
 
-  const isCharacterMap = Array.isArray(item.character_map) && !!item.character_map.length;
+  const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -117,7 +117,7 @@ const ShortTextPreview = ({
         {isCharacterMap && <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>}
         {isCharacterMap && showCharacterMap && (
           <CharacterMap
-            characters={item.character_map}
+            characters={item.characterMap}
             onSelect={char => {
               setSelection({
                 start: selection.start + char.length,

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, isEqual, get, findIndex } from "lodash";
+import { cloneDeep, isEqual, get, findIndex, clamp } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
@@ -35,19 +35,28 @@ class ClozeText extends Component {
     } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
       let maxLength = 0;
-
-      newItem.validation.validResponse.value.forEach(resp => {
-        maxLength = Math.max(maxLength, resp.length);
-      });
-
-      newItem.validation.altResponses.forEach(arr => {
-        arr.value.forEach(resp => {
-          maxLength = Math.max(maxLength, resp.length);
+      const previousWidth = prevProps?.item?.uiStyle?.widthpx;
+      let calculated = false;
+      // if all the responses are deleted, do not recalculate width
+      if (newItem?.responseIds?.length) {
+        newItem.validation.validResponse.value.forEach(resp => {
+          if (resp.value.length) {
+            maxLength = Math.max(maxLength, resp.value.length);
+            calculated = true;
+          }
         });
-      });
-      const finalWidth = 30 + maxLength * 7;
-      newItem.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
 
+        newItem.validation.altResponses.forEach(arr => {
+          arr.value.forEach(resp => {
+            if (resp.value.length) {
+              maxLength = Math.max(maxLength, resp.value.length);
+              calculated = true;
+            }
+          });
+        });
+      }
+      const finalWidth = calculated ? 30 + maxLength * 7 : previousWidth;
+      newItem.uiStyle.widthpx = clamp(finalWidth, 140, 400);
       setQuestionData(newItem);
     }
     if (globalSettings && responses.length) {
@@ -283,7 +292,7 @@ class ClozeText extends Component {
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
-                  characterMap={item.character_map}
+                  characterMap={item.characterMap}
                   multipleLine={item.multiple_line}
                   advancedAreOpen={advancedAreOpen}
                   cleanSections={cleanSections}

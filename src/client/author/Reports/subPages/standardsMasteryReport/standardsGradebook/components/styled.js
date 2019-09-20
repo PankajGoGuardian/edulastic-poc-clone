@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { StyledTable as Table } from "../../../../common/styled";
+import { Col } from "antd";
 
 export const UpperContainer = styled.div`
   .dropdown-container {
@@ -50,5 +51,16 @@ export const StyledTable = styled(Table)`
         }
       }
     }
+  }
+`;
+
+export const StyledDropDownContainer = styled(Col)`
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin-bottom: 25px;
   }
 `;

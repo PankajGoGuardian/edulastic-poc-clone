@@ -166,6 +166,7 @@ class Display extends Component {
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
     }
+    const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -270,6 +271,7 @@ class Display extends Component {
         evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
         imageOptions={imageOptions}
         onClickHandler={this.onClickCheckboxHandler}
+        largestResponseWidth={largestResponseWidth}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

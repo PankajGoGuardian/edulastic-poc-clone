@@ -61,25 +61,16 @@ const CheckboxTemplateBoxLayout = ({
           backgroundColor,
           borderRadius: 5
         };
-        if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-          const { width } = responsecontainerindividuals[dropTargetIndex];
-          btnStyle.width = width;
-        }
-        if (btnStyle && btnStyle.width === 0) {
-          btnStyle.width = responseBtnStyle.width;
-        } else {
-          btnStyle.width = btnStyle.width;
-        }
+
         const indexStr = helpers.getNumeration(dropTargetIndex, stemNumeration);
         const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
         return (
           <React.Fragment key={index}>
             {!showAnswer && (
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`,
                   minHeight: `${response.minHeight}px`,
                   minWidth: `${response.minWidth}px`
                 }}
@@ -91,12 +82,16 @@ const CheckboxTemplateBoxLayout = ({
                 onClick={onClickHandler}
               >
                 {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div className="text container" title={userSelections[dropTargetIndex]}>
+                <div
+                  className="text container"
+                  style={{ padding: lessMinWidth ? "0 2px" : null }}
+                  title={userSelections[dropTargetIndex]}
+                >
                   <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
                     {userSelections[dropTargetIndex]}
                   </div>
                 </div>
-                <IconWrapper rightPosition={20}>
+                <IconWrapper rightPosition={lessMinWidth ? 2 : 20}>
                   {status === "right" && <RightIcon />}
                   {status === "wrong" && <WrongIcon />}
                 </IconWrapper>
@@ -110,10 +105,10 @@ const CheckboxTemplateBoxLayout = ({
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`,
                   minHeight: `${response.minHeight}px`,
-                  minWidth: `${response.minWidthShowAnswer}px`
+                  minWidth: lessMinWidth
+                    ? parseInt(responseContainer.width, 10) + response.indexSizeSmallBox
+                    : `${response.minWidthShowAnswer}px`
                 }}
                 className={`
                     imagelabeldragdrop-droppable 
@@ -123,16 +118,26 @@ const CheckboxTemplateBoxLayout = ({
                     show-answer`}
                 onClick={onClickHandler}
               >
-                {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div className="text container">
+                {showAnswer && (
+                  <span className="index index-box" style={{ width: lessMinWidth ? "20px" : null }}>
+                    {indexStr}
+                  </span>
+                )}
+                <div className="text container" style={{ padding: lessMinWidth ? "0 0 0 4px" : null }}>
                   <Tooltip title={userSelections?.[dropTargetIndex]}>
-                    <div className="clipText" style={{ minWidth: "100%", maxWidth: `${uiStyle.widthpx}px` }}>
+                    <div
+                      className="clipText"
+                      style={{
+                        minWidth: "100%",
+                        maxWidth: lessMinWidth ? "50%" : `${uiStyle.widthpx}px`
+                      }}
+                    >
                       {userSelections[dropTargetIndex]}
                     </div>
                   </Tooltip>
 
                   <div>
-                    <IconWrapper rightPosition="0">
+                    <IconWrapper rightPosition={lessMinWidth ? "2" : "20"}>
                       {userSelections.length > 0 && status === "right" && <RightIcon />}
                       {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
                     </IconWrapper>

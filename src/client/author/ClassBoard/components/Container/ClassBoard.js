@@ -754,55 +754,68 @@ class ClassBoard extends Component {
                       </ButtonIconWrap>
                       REDIRECT
                     </RedirectButton>
-                    <FeaturesSwitch
-                      inputFeatures="assessmentSuperPowersMarkAsDone"
-                      actionOnInaccessible="hidden"
-                      groupId={classId}
-                    >
-                      <Dropdown
-                        overlay={
-                          <DropMenu>
+                    <Dropdown
+                      overlay={
+                        <DropMenu>
+                          <FeaturesSwitch
+                            inputFeatures="LCBmarkAsSubmitted"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
                             <CaretUp className="fa fa-caret-up" />
                             <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
                               <IconMarkAsSubmitted width={12} />
                               <span>Mark as Submitted</span>
                             </MenuItems>
+                          </FeaturesSwitch>
+                          <FeaturesSwitch
+                            inputFeatures="LCBmarkAsAbsent"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
                             <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>
-                            <MenuItems onClick={this.handleShowAddStudentsPopup}>
-                              <IconAddStudents />
-                              <span>Add Students</span>
-                            </MenuItems>
-                            <MenuItems onClick={this.handleShowRemoveStudentsModal}>
-                              <IconRemove />
-                              <span>Remove Students</span>
-                            </MenuItems>
-                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(false)}>
-                              <IconDownload />
-                              <span>Download Grades</span>
-                            </MenuItems>
-                            <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(true)}>
-                              <IconDownload />
-                              <span>Download Response</span>
-                            </MenuItems>
+                          </FeaturesSwitch>
+
+                          <MenuItems onClick={this.handleShowAddStudentsPopup}>
+                            <IconAddStudents />
+                            <span>Add Students</span>
+                          </MenuItems>
+                          <MenuItems onClick={this.handleShowRemoveStudentsModal}>
+                            <IconRemove />
+                            <span>Remove Students</span>
+                          </MenuItems>
+                          <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(false)}>
+                            <IconDownload />
+                            <span>Download Grades</span>
+                          </MenuItems>
+                          <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(true)}>
+                            <IconDownload />
+                            <span>Download Response</span>
+                          </MenuItems>
+                          <FeaturesSwitch
+                            inputFeatures="LCBstudentReportCard"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
                             <MenuItems onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />
                               <span>Student Report Cards</span>
                             </MenuItems>
-                          </DropMenu>
-                        }
-                        placement="bottomRight"
-                      >
-                        <RedirectButton last={true}>
-                          <ButtonIconWrap>
-                            <IconMoreHorizontal />
-                          </ButtonIconWrap>
-                          MORE
-                        </RedirectButton>
-                      </Dropdown>
-                    </FeaturesSwitch>
+                          </FeaturesSwitch>
+                        </DropMenu>
+                      }
+                      placement="bottomRight"
+                    >
+                      <RedirectButton last={true}>
+                        <ButtonIconWrap>
+                          <IconMoreHorizontal />
+                        </ButtonIconWrap>
+                        MORE
+                      </RedirectButton>
+                    </Dropdown>
                   </ClassBoardFeats>
                 </StyledFlexContainer>
               }

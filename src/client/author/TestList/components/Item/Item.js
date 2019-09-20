@@ -175,10 +175,10 @@ class Item extends Component {
             </Header>
           }
         >
+          <Question>
+            <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
+          </Question>
           <Inner>
-            <Question>
-              <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-            </Question>
             <CardDescription title={isPlaylist ? _source.description : description}>
               <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
             </CardDescription>

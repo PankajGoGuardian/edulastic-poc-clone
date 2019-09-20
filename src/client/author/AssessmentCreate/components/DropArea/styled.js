@@ -20,6 +20,10 @@ export const UploadDragger = styled(Dragger)`
   margin-right: 40px;
   width: 100%;
 
+  .ant-upload-drag-hover {
+    background-color: rgb(0, 0, 0, 0.25);
+  }
+
   .ant-upload-drag {
     padding: 0;
     height: 65vh;

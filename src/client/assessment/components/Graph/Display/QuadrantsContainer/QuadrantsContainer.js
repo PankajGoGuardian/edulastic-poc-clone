@@ -1,12 +1,11 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, sortBy } from "lodash";
 
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
-  IconGraphLabel as IconLabel,
   IconGraphPoint as IconPoint,
   IconGraphSine as IconSine,
   IconGraphParabola as IconParabola,
@@ -566,7 +565,7 @@ class GraphContainer extends PureComponent {
     }
 
     if (
-      !isEqual(elements, this._graph.getConfig()) ||
+      !isEqual(sortBy(elements), sortBy(this._graph.getConfig())) ||
       (prevProps.toolbar && prevProps.toolbar.drawingPrompt !== drawingPrompt) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {

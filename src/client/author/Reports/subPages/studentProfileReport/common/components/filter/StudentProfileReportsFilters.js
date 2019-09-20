@@ -35,7 +35,7 @@ const StudentProfileReportsFilters = ({
   receiveStudentsListAction,
   filters,
   performanceBandRequired,
-  standardProciencyRequired,
+  standardProficiencyRequired,
   ...props
 }) => {
   const splittedPath = location.pathname.split("/");
@@ -47,6 +47,7 @@ const StudentProfileReportsFilters = ({
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const profiles = get(SPRFilterData, "data.result.bandInfo", []);
+  const scales = get(SPRFilterData, "data.result.scaleInfo", []);
 
   const { terms = [] } = orgData;
   const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
@@ -101,6 +102,8 @@ const StudentProfileReportsFilters = ({
     }
   }, [selectedStudent]);
 
+  const standardProficiencyList = useMemo(() => scales.map(s => ({ key: s._id, title: s.name })), [scales]);
+
   const onFilterApply = () => onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
   const onUpdateTerm = ({ key }) => setTermId(key);
   const onUpdateCourse = ({ key }) => setCourseId(key);
@@ -147,6 +150,18 @@ const StudentProfileReportsFilters = ({
               />
             </Col>
           ) : null}
+          {standardProficiencyRequired && (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
+              <ControlDropDown
+                by={filters.standardsProficiencyProfileId}
+                selectCB={onChangeStandardsProficiency}
+                data={standardProficiencyList}
+                prefix="Standard Proficiency"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          )}
           <Col xs={12} sm={12} md={1} lg={1} xl={1}>
             <StyledGoButton type="primary" onClick={onFilterApply}>
               Go

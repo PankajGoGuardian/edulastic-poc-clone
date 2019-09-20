@@ -75,7 +75,7 @@ export default class TestLibrary {
       testAddItem.authoredByMe().then(() => {
         this.items.forEach((itemKey, index) => {
           testAddItem.addItemById(itemKey);
-          if (index === 0) cy.wait("@createTest");
+          if (index === 0) cy.wait("@createTest").then(xhr => this.saveTestId(xhr));
           cy.wait(500);
         });
       });
@@ -117,6 +117,15 @@ export default class TestLibrary {
     cy.route("POST", "**/group/search").as("groups");
     cy.contains("ASSIGN").click({ force: true });
     cy.wait("@groups");
+  };
+
+  clickOnDuplicate = () => {
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    cy.route("GET", "**/test/**").as("getTest");
+    cy.contains("DUPLICATE").click({ force: true });
+    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+    cy.wait("@getTest");
+    cy.wait("@getTest");
   };
 
   verifyVersionedURL = (oldTestId, newTestId) =>

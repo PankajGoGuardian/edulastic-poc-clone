@@ -59,12 +59,12 @@ class LayoutComponent extends Component {
               <SpecialCharactersOption
                 onChange={checked => {
                   if (checked) {
-                    _change("character_map", []);
+                    _change("characterMap", []);
                   } else {
-                    _change("character_map", undefined);
+                    _change("characterMap", undefined);
                   }
                 }}
-                checked={!!item.character_map}
+                checked={!!item.characterMap}
               />
             </Col>
             <Col md={12}>
@@ -75,12 +75,12 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          {Array.isArray(item.character_map) && (
+          {Array.isArray(item.characterMap) && (
             <Row gutter={36}>
               <Col md={12}>
                 <CharactersToDisplayOption
-                  onChange={val => _change("character_map", val.split(""))}
-                  value={item.character_map.join("")}
+                  onChange={val => _change("characterMap", val.split(""))}
+                  value={item.characterMap.join("")}
                 />
               </Col>
             </Row>

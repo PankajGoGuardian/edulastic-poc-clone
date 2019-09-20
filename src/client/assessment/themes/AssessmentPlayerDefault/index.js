@@ -296,6 +296,7 @@ class AssessmentPlayerDefault extends React.Component {
       bookmarksInOrder,
       skippedInOrder,
       currentGroupId,
+      previousQuestionActivities,
       LCBPreviewModal,
       preview,
       closeTestPreviewModal
@@ -322,6 +323,7 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
+    const previousQuestionActivity = previousQuestionActivities[item._id];
     let isNonAutoGradable = false;
 
     if (item.data && item.data.questions) {
@@ -484,6 +486,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <TestItemPreview
                   LCBPreviewModal={LCBPreviewModal}
                   cols={itemRows}
+                  previousQuestionActivity={previousQuestionActivity}
                   questions={questions}
                   showCollapseBtn
                   highlights={highlights}
@@ -498,6 +501,7 @@ class AssessmentPlayerDefault extends React.Component {
                   cols={itemRows}
                   previewTab="check"
                   preview={preview}
+                  previousQuestionActivity={previousQuestionActivity}
                   evaluation={evaluation}
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
@@ -545,6 +549,7 @@ const enhance = compose(
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
       currentGroupId: getCurrentGroupWithAllClasses(state),
+      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       userAnswers: state.answers
     }),
     {

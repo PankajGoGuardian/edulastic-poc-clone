@@ -19,7 +19,7 @@ const createShowAnswerResult = async (questions, answers) => {
           answer = expression.replace(/=/gm, `${unit}=`);
         }
       }
-      const { evaluation } = await evaluator({ userResponse: answer, validation: question.validation });
+      const { evaluation } = await evaluator({ userResponse: answer, validation: question.validation }, question.type);
       results[id] = evaluation;
     }
   }

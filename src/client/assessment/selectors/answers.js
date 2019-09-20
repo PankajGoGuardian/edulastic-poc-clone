@@ -2,6 +2,8 @@ import { createSelector } from "reselect";
 import { values, get } from "lodash";
 
 export const getAnswersListSelector = state => state.answers;
+export const getPreviousAnswersListSelector = state => state.previousAnswers;
+
 export const getAnswersArraySelector = createSelector(
   getAnswersListSelector,
   answers => values(answers)
@@ -27,8 +29,13 @@ const getQuestionSelector = (state, props) => {
 const getQuestionId = questionId => questionId || "tmp";
 
 export const getUserAnswerSelector = createSelector(
-  [getActivityFromPropsSelector, getQuestionIdFromPropsSelector, getAnswersListSelector],
-  (activity, questionId, answers) => {
+  [
+    getActivityFromPropsSelector,
+    getQuestionIdFromPropsSelector,
+    getAnswersListSelector,
+    getPreviousAnswersListSelector
+  ],
+  (activity, questionId, answers, previousAnswers) => {
     if (!questionId) return undefined;
 
     let userAnswer;
@@ -36,7 +43,7 @@ export const getUserAnswerSelector = createSelector(
       userAnswer = activity.userResponse;
     } else {
       const qId = getQuestionId(questionId);
-      userAnswer = getAnswerByQuestionIdSelector(qId)(answers);
+      userAnswer = getAnswerByQuestionIdSelector(qId)(answers) || getAnswerByQuestionIdSelector(qId)(previousAnswers);
     }
     return userAnswer;
   }

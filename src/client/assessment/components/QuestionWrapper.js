@@ -5,7 +5,8 @@ import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, round } from "lodash";
+import { get, isUndefined, round, isEmpty } from "lodash";
+
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
@@ -52,6 +53,7 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
+import FeedBackContainer from "./FeedBackContainer";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -287,12 +289,21 @@ class QuestionWrapper extends Component {
       disableResponse,
       isStudentReport,
       showStudentWork,
+      prevQActivityForQuestion = {},
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
       displayFeedback = true,
       ...restProps
     } = this.props;
+    const {
+      score: prevScore,
+      maxScore: prevMaxScore,
+      feedback: prevFeedback,
+      correct,
+      incorrect,
+      partiallyCorrect
+    } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -420,6 +431,16 @@ class QuestionWrapper extends Component {
                   widget={data}
                   studentName={studentName}
                   {...presentationModeProps}
+                />
+              )}
+              {!isEmpty(prevQActivityForQuestion) && (
+                <FeedBackContainer
+                  correct={correct}
+                  partiallCorrect={partiallyCorrect}
+                  prevScore={prevScore}
+                  prevMaxScore={prevMaxScore}
+                  prevFeedback={prevFeedback}
+                  itemId={data.id}
                 />
               )}
               {/* STUDENT REPORT PAGE FEEDBACK */}

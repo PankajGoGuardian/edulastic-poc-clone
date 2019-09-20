@@ -19,7 +19,9 @@ import {
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   TEST_ACTIVITY_LOADING,
-  SET_TEST_LOADING_ERROR
+  SET_TEST_LOADING_ERROR,
+  LOAD_PREVIOUS_ANSWERS,
+  LOAD_PREVIOUS_RESPONSES_REQUEST
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
@@ -130,9 +132,10 @@ function* loadTest({ payload }) {
 
     // if testActivity is present.
     if (!preview) {
-      let allAnswers = {};
+      let allAnswers = {},
+        allPrevAnswers = {};
 
-      const { testActivity: activity, questionActivities = [] } = testActivity;
+      const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
       // if questions are shuffled !!!
       if (activity.shuffleQuestions) {
         const itemsByKey = _keyBy(testItems, "_id");
@@ -160,10 +163,31 @@ function* loadTest({ payload }) {
       });
 
       let lastAttemptedQuestion = questionActivities[0] || {};
+      let previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
+      const scratchPadData = {},
+        prevScratchPadData = {};
+      previousQuestionActivities.forEach(item => {
+        allPrevAnswers = {
+          ...allPrevAnswers,
+          [item.qid]: item.userResponse
+        };
+
+        if (item.scratchPad) {
+          prevScratchPadData[item.testItemId] = item.scratchPad;
+        }
+      });
+
+      yield put({
+        type: LOAD_PREVIOUS_ANSWERS,
+        payload: allPrevAnswers
+      });
+
+      yield put({
+        type: LOAD_PREVIOUS_RESPONSES,
+        payload: previousQActivitiesById
+      });
 
       const testItemIds = testItems.map(i => i._id);
-
-      const scratchPadData = {};
       questionActivities.forEach(item => {
         allAnswers = {
           ...allAnswers,
@@ -252,13 +276,12 @@ function* loadTest({ payload }) {
 }
 
 // load users previous responses for a particular test
-function* loadPreviousResponses() {
+function* loadPreviousResponses(payload) {
   try {
-    const testActivityId = yield select(state => state.test && state.test.testActivityId);
-    const answers = yield testActivityApi.previousResponses(testActivityId);
+    const { previousQuestionActivities } = payload;
     yield put({
-      type: LOAD_ANSWERS,
-      payload: { ...answers }
+      type: LOAD_PREVIOUS_RESPONSES,
+      payload: { previousQuestionActivities }
     });
   } catch (err) {
     console.log(err);
@@ -300,6 +323,6 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
     yield takeEvery(FINISH_TEST, submitTest),
-    yield takeEvery(LOAD_PREVIOUS_RESPONSES, loadPreviousResponses)
+    yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses)
   ]);
 }

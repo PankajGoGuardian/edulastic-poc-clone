@@ -49,6 +49,7 @@ class TestItemCol extends Component {
       questions,
       qIndex,
       evaluation,
+      previousQuestionActivity = [],
       previewTab,
       col,
       ...restProps
@@ -60,6 +61,7 @@ class TestItemCol extends Component {
       questions[widget.reference] && questions[widget.reference].qLabel
         ? questions[widget.reference]
         : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
+    const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;
     }
@@ -86,6 +88,7 @@ class TestItemCol extends Component {
           noBoxShadow
           isFlex
           flowLayout={flowLayout}
+          prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
           displayFeedback={displayFeedback}
           {...restProps}

@@ -22,7 +22,7 @@ const Tab = ({
   isAddTab,
   isPassageQuestion
 }) => {
-  const textWidth = useMemo(() => label?.length * 10 + 10, [label]);
+  const textWidth = useMemo(() => (label?.length || 0) * 10 + 10, [label]);
 
   const inputTab = (
     <EditableTab>

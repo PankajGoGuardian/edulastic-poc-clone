@@ -50,7 +50,7 @@ class Container extends Component {
   handleTabChange = tabIndex => {
     const { row } = this.props;
     this.setState({
-      tabIndex: row?.tabs?.length - 1 < tabIndex ? row?.tabs?.length - 1 : tabIndex
+      tabIndex: row.tabs.length - 1 < tabIndex ? row.tabs.length - 1 : tabIndex
     });
   };
 

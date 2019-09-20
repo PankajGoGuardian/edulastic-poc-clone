@@ -119,6 +119,31 @@ const ButtonStyle = styled(Button)`
   }
 `;
 
+export const AddRemoveBtn = styled(ButtonStyle)`
+  &.ant-btn {
+    border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)};
+    color: ${props => (props.isAddOrRemove ? themeColor : red)};
+    margin-top: 15px;
+    justify-content: center;
+    width: 120px;
+
+    @media (max-width: ${tabletWidth}) {
+      margin: 0px;
+      width: auto;
+      padding: 0px 15px;
+      span {
+        display: block;
+      }
+      &:hover,
+      &:focus,
+      &:active {
+        border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)} !important;
+        color: ${props => (props.isAddOrRemove ? themeColor : red)};
+      }
+    }
+  }
+`;
+
 export const MoreInfo = styled(ButtonStyle)`
   background: ${props => (props.isOpenedDetails ? themeColor : white)};
   color: ${props => (props.isOpenedDetails ? white : themeColor)};
@@ -227,7 +252,12 @@ export const DetailCategory = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     text-align: center;
-    flex-basis: 25%;
+    flex-basis: 20%;
+    & > span {
+      color: ${themeLightGrayColor};
+      line-height: 14px;
+      font-weight: bold;
+    }
     & > div {
       justify-content: center;
     }
@@ -250,7 +280,6 @@ export const CategoryName = styled.span`
 `;
 
 export const CategoryContent = styled.div`
-  margin-left: 10px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -269,7 +298,7 @@ export const Label = styled.div`
   border-radius: 5px;
   min-height: 26px;
   padding: 6px 14px;
-  margin-right: 10px;
+  margin-right: 8px;
   border-radius: 5px;
   background: ${themeLightGrayBgColor};
 
@@ -381,7 +410,7 @@ export const LabelStandard = styled.div`
   border-radius: 5px;
   height: 24px;
   padding: 6px 14px;
-  margin-right: 10px;
+  margin-right: 8px;
   border-radius: 5px;
   background: ${themeColorTagsBg};
 
@@ -430,10 +459,14 @@ export const Details = styled.div`
   background: ${lightGreySecondary};
   border-radius: 3px;
   margin-top: ${props => (props.isOpenedDetails ? "15px" : "0")};
-  padding: ;
   padding: ${props => (props.isOpenedDetails ? "20px" : "0 20px 0")};
   transition: all 0.3s ease;
   max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};
   position: relative;
   overflow: hidden;
+
+  @media (max-width: ${tabletWidth}) {
+    display: flex;
+    flex-wrap: wrap;
+  }
 `;

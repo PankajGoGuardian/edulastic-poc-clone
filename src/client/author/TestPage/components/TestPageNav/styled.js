@@ -9,7 +9,7 @@ export const Container = styled.div`
   justify-content: center;
   flex-basis: 50%;
 
-  @media screen and (max-width: ${mobileWidthMax}) {
+  @media screen and (max-width: ${desktopWidth}) {
     flex-basis: 100%;
     height: auto;
     margin-top: 10px;
@@ -65,8 +65,6 @@ export const Link = styled.div`
   }
   @media screen and (max-width: ${desktopWidth}) {
     padding: 0 10px;
-  }
-  @media screen and (max-width: ${mobileWidthMax}) {
     flex-basis: 24%;
     margin: 0px;
     &:last-child {

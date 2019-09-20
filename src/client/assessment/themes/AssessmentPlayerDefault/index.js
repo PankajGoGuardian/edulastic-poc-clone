@@ -338,7 +338,11 @@ class AssessmentPlayerDefault extends React.Component {
 
     return (
       <ThemeProvider theme={theme}>
-        <Container innerRef={this.scrollElementRef} data-cy="assessment-player-default-wrapper">
+        <Container
+          scratchPadMode={scratchPadMode}
+          innerRef={this.scrollElementRef}
+          data-cy="assessment-player-default-wrapper"
+        >
           <SvgDraw
             activeMode={activeMode}
             scratchPadMode={scratchPadMode}

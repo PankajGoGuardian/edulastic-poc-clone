@@ -15,7 +15,6 @@ class ClozeMathInput extends React.Component {
   };
 
   state = {
-    latex: "",
     showKeyboard: false,
     currentMathQuill: null
   };
@@ -32,21 +31,9 @@ class ClozeMathInput extends React.Component {
     const { answers = {} } = resprops;
     const { maths: userAnswers = [] } = answers;
 
-    const _this = this;
-
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
-      const config = {
-        handlers: {
-          edit(editingMathField) {
-            const _latex = editingMathField.latex();
-            _this.setState({ latex: _latex });
-          }
-        },
-        restrictMismatchedBrackets: true
-      };
-
-      const mQuill = MQ.MathField(this.mathRef.current, config);
+      const mQuill = MQ.MathField(this.mathRef.current, window.MathQuill);
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
@@ -142,7 +129,6 @@ class ClozeMathInput extends React.Component {
   onInput = (key, command = "cmd") => {
     const { currentMathQuill } = this.state;
     if (!currentMathQuill) return;
-
     const innerField = currentMathQuill;
 
     if (key === "in") {
@@ -171,16 +157,16 @@ class ClozeMathInput extends React.Component {
 
   saveAnswer = () => {
     const { resprops = {}, id } = this.props;
-    const { latex } = this.state;
+    const { currentMathQuill, showKeyboard } = this.state;
     const { save, item, answers = {} } = resprops;
     const { maths: _userAnwers = [] } = answers;
-
+    const latex = currentMathQuill.latex();
     const {
       responseIds: { maths }
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
 
-    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") && !showKeyboard) {
       save({ value: latex, index }, "maths", id);
     }
   };
@@ -191,7 +177,7 @@ class ClozeMathInput extends React.Component {
       btnStyle.fontSize = uiStyles.fontSize;
     }
     if (uiStyles.width) {
-      btnStyle.width = uiStyles.width;
+      btnStyle.minWidth = uiStyles.width;
     }
     return uiStyles;
   };
@@ -211,7 +197,6 @@ class ClozeMathInput extends React.Component {
     const { responseContainers, item, uiStyles = {} } = resprops;
     const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
@@ -227,8 +212,7 @@ class ClozeMathInput extends React.Component {
             onClick={this.showKeyboardModal}
             style={{
               ...btnStyle,
-              width,
-              height,
+              minHeight: height,
               padding: "5px 11px 4px"
             }}
           />

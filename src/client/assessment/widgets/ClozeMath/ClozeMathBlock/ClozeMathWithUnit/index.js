@@ -30,22 +30,9 @@ class ClozeMathWithUnit extends React.Component {
     const { resprops = {}, id } = this.props;
     const { answers = {} } = resprops;
     const { mathUnits: userAnswers = [] } = answers;
-
-    const _this = this;
-
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
-      const config = {
-        handlers: {
-          edit(editingMathField) {
-            const _latex = editingMathField.latex();
-            _this.setState({ latex: _latex });
-          }
-        },
-        restrictMismatchedBrackets: true
-      };
-
-      const mQuill = MQ.MathField(this.mathRef.current, config);
+      const mQuill = MQ.MathField(this.mathRef.current, window.MathQuill);
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
@@ -163,16 +150,16 @@ class ClozeMathWithUnit extends React.Component {
 
   saveAnswer = fromUnit => {
     const { resprops = {}, id } = this.props;
-    const { latex } = this.state;
+    const { currentMathQuill, showKeyboard } = this.state;
     const { save, item, answers = {} } = resprops;
     const { mathUnits: _userAnwers = [] } = answers;
-
+    const latex = currentMathQuill.latex();
     const {
       responseIds: { mathUnits }
     } = item;
     const { index } = find(mathUnits, res => res.id === id) || {};
 
-    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") || fromUnit) {
+    if ((latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") || fromUnit) && !showKeyboard) {
       save({ ..._userAnwers[id], value: latex, index }, "mathUnits", id);
     }
   };
@@ -182,12 +169,13 @@ class ClozeMathWithUnit extends React.Component {
       resprops: { save },
       id
     } = this.props;
-    save({ ...this.userAnswer, unit }, "mathUnits", id);
+    const { currentMathQuill } = this.state;
+    const latex = currentMathQuill.latex();
+    save({ ...this.userAnswer, value: latex, unit }, "mathUnits", id);
   };
 
   onDropdownVisibleChange = () => {
     this.closeMathBoard();
-    this.saveAnswer(true);
   };
 
   getStyles = uiStyles => {
@@ -248,8 +236,8 @@ class ClozeMathWithUnit extends React.Component {
           onClick={this.showKeyboardModal}
           style={{
             ...btnStyle,
-            width: width || "auto",
-            height: height || "auto",
+            minWidth: width || "auto",
+            minHeight: height || "auto",
             padding: "5px 11px",
             marginRight: 0,
             borderRight: 0,

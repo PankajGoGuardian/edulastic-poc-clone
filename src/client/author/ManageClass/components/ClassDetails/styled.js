@@ -32,6 +32,7 @@ export const TableWrapper = styled.div`
   padding: 10px 30px;
   border-radius: 10px;
   box-shadow: ${boxShadowDefault};
+  margin-bottom: 30px;
 `;
 
 export const StudentsTable = styled(Table)`

@@ -65,7 +65,7 @@ const TableRow = ({
   };
 
   const getChangedContainerHeight = h =>
-    Math.max(h, item?.imageOriginalHeight, item?.imageOptions?.height + item?.imageOptions?.y);
+    Math.max(h,item?.imageOptions?.height + item?.imageOptions?.y);
 
   const changeWrapperH = () => {
     const { responseOptions = [] } = item;

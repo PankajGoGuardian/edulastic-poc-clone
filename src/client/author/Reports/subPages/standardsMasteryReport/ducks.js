@@ -1,19 +1,13 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy } from "lodash";
 
 import { RESET_ALL_REPORTS } from "../../ducks";
 
-const SET_SAR_SETTINGS = "[SAR settings] get sar settings";
-const RESET_SAR_SETTINGS = "[SAR settings] reset sar settings";
+const SET_SMR_SETTINGS = "[SMR settings] get smr settings";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setSARSettingsAction = createAction(SET_SAR_SETTINGS);
-export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
+export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -21,9 +15,9 @@ export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARSettingsReducer;
+export const stateSelector = state => state.reportSMRSettingsReducer;
 
-export const getReportsSARSettings = createSelector(
+export const getReportsSMRSettings = createSelector(
   stateSelector,
   state => state
 );
@@ -39,17 +33,15 @@ const initialState = {
   requestFilters: {
     termId: "",
     subject: "",
-    grade: "",
-    courseId: "",
-    groupId: "",
-    schoolId: "",
-    teacherId: "",
-    assessmentType: ""
+    grades: ["K"],
+    domainIds: ["All"]
+    // classSectionId: "",
+    // assessmentType: ""
   }
 };
 
-export const reportSARSettingsReducer = createReducer(initialState, {
-  [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+export const reportSMRSettingsReducer = createReducer(initialState, {
+  [SET_SMR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState)
 });
 

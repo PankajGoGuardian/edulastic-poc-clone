@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
+import { connect } from "react-redux";
 
 import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
@@ -17,10 +18,17 @@ import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
-import { connect } from "react-redux";
+import { resetAllReportsAction } from "../../ducks";
 
 const SingleAssessmentReportContainer = props => {
   const { settings, setSARSettingsAction } = props;
+
+  useEffect(() => {
+    return () => {
+      console.log("Single Assessment Reports Component Unmount");
+      props.resetAllReportsAction();
+    };
+  }, []);
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[props.loc]) {
@@ -126,7 +134,10 @@ const SingleAssessmentReportContainer = props => {
 
 const ConnectedSingleAssessmentReportContainer = connect(
   state => ({ settings: getReportsSARSettings(state) }),
-  { setSARSettingsAction }
+  {
+    setSARSettingsAction,
+    resetAllReportsAction
+  }
 )(SingleAssessmentReportContainer);
 
 export { ConnectedSingleAssessmentReportContainer as SingleAssessmentReportContainer };

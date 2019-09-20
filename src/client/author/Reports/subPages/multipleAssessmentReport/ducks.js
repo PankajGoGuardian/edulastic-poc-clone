@@ -1,19 +1,13 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy } from "lodash";
 
 import { RESET_ALL_REPORTS } from "../../ducks";
 
-const SET_SAR_SETTINGS = "[SAR settings] get sar settings";
-const RESET_SAR_SETTINGS = "[SAR settings] reset sar settings";
+const SET_MAR_SETTINGS = "[MAR settings] get mar settings";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setSARSettingsAction = createAction(SET_SAR_SETTINGS);
-export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
+export const setMARSettingsAction = createAction(SET_MAR_SETTINGS);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -21,9 +15,9 @@ export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARSettingsReducer;
+export const stateSelector = state => state.reportMARSettingsReducer;
 
-export const getReportsSARSettings = createSelector(
+export const getReportsMARSettings = createSelector(
   stateSelector,
   state => state
 );
@@ -35,7 +29,7 @@ export const getReportsSARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: { key: "", title: "" },
+  selectedTest: [{ key: "", title: "" }],
   requestFilters: {
     termId: "",
     subject: "",
@@ -44,12 +38,13 @@ const initialState = {
     groupId: "",
     schoolId: "",
     teacherId: "",
-    assessmentType: ""
+    assessmentType: "",
+    testIds: ""
   }
 };
 
-export const reportSARSettingsReducer = createReducer(initialState, {
-  [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+export const reportMARSettingsReducer = createReducer(initialState, {
+  [SET_MAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState)
 });
 

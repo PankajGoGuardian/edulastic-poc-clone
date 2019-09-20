@@ -6,6 +6,9 @@ import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
 import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
 import { reportSARSettingsReducer } from "../../Reports/subPages/singleAssessmentReport/ducks";
+import { reportMARSettingsReducer } from "../../Reports/subPages/multipleAssessmentReport/ducks";
+import { reportSMRSettingsReducer } from "../../Reports/subPages/standardsMasteryReport/ducks";
+import { reportSPRSettingsReducer } from "../../Reports/subPages/studentProfileReport/ducks";
 import { reportSARFilterDataReducer } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportMARFilterDataReducer } from "../../Reports/subPages/multipleAssessmentReport/common/filterDataDucks";
 import { reportSPRFilterDataReducer } from "../../Reports/subPages/studentProfileReport/common/filterDataDucks";
@@ -24,7 +27,6 @@ import { reportStudentProgressReducer } from "../../Reports/subPages/multipleAss
 import { reportPerformanceOverTimeReducer } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
 import { reportStudentMasteryProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
 import { reportStudentAssessmentProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
-import { reportSPRSettingsReducer } from "../../Reports/subPages/studentProfileReport/ducks";
 import { reportStudentProfileSummaryReducer } from "../../Reports/subPages/studentProfileReport/StudentProfileSummary/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
@@ -83,6 +85,8 @@ const authorReducers = {
   author_assignments,
   reportAssignmentsReducer,
   reportSARSettingsReducer,
+  reportMARSettingsReducer,
+  reportSMRSettingsReducer,
   reportSPRSettingsReducer,
   reportSARFilterDataReducer,
   reportMARFilterDataReducer,

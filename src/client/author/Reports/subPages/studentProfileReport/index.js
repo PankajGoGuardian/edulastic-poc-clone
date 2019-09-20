@@ -14,9 +14,17 @@ import StudentProfileSummary from "./StudentProfileSummary";
 import StudentProfileReportsFilters from "./common/components/filter/StudentProfileReportsFilters";
 
 import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
+import { resetAllReportsAction } from "../../ducks";
 
 const StudentProfileReportContainer = props => {
   const { settings, setSPRSettingsAction } = props;
+
+  useEffect(() => {
+    return () => {
+      console.log("Student Profile Reports Component Unmount");
+      props.resetAllReportsAction();
+    };
+  }, []);
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[props.loc]) {
@@ -48,8 +56,11 @@ const StudentProfileReportContainer = props => {
     props.updateNavigation(computedChartNavigatorLinks);
   }, [settings]);
 
-  const onGoClick = filters => {
-    props.setSPRSettingsAction(filters);
+  const onGoClick = _settings => {
+    props.setSPRSettingsAction({
+      requestFilters: _settings.filters,
+      selectedStudent: _settings.selectedStudent
+    });
   };
 
   return (
@@ -96,7 +107,8 @@ const enhance = connect(
     settings: getReportsSPRSettings(state)
   }),
   {
-    setSPRSettingsAction
+    setSPRSettingsAction,
+    resetAllReportsAction
   }
 );
 

@@ -29,7 +29,7 @@ export const getFilterOptions = (classData = [], terms = []) => {
   };
 };
 
-export const augementAssessmentChartData = (metricInfo = [], bandInfo = []) => {
+export const augementAssessmentChartData = (metricInfo = [], bandInfo = [], studentClassData = []) => {
   if (!metricInfo.length) {
     return [];
   }
@@ -50,7 +50,7 @@ export const augementAssessmentChartData = (metricInfo = [], bandInfo = []) => {
     const { testType, testId } = assignment;
     const scoreAvg = round(percentage(sumBy(assignments, "score"), sumBy(assignments, "maxScore")));
     const band = getProficiencyBand(scoreAvg, bandInfo);
-
+    const { standardSet, subject } = studentClassData.find(s => s.studentId === assignment.studentId) || {};
     return {
       ...assignment,
       score: scoreAvg,
@@ -58,7 +58,9 @@ export const augementAssessmentChartData = (metricInfo = [], bandInfo = []) => {
       testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
       diffScore: 100 - scoreAvg,
       band,
-      assignments
+      assignments,
+      standardSet,
+      subject
     };
   });
 

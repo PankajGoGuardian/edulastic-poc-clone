@@ -34,10 +34,10 @@ import {
   UserIcon,
   IdIcon,
   MoreInfo,
-  Details
+  Details,
+  AddRemoveBtn
 } from "./styled";
 import PreviewModal from "../../../src/components/common/PreviewModal";
-import { StyledButton } from "../../../TestPage/components/AddItems/styled";
 import {
   setAndSavePassageItemsAction,
   getPassageItemsCountSelector,
@@ -284,20 +284,14 @@ class Item extends Component {
                 </AddButtonStyled>
               </ViewButton>
             ) : (
-              <StyledButton
+              <AddRemoveBtn
                 data-cy={item._id}
                 loading={selectedId === item._id}
                 onClick={() => this.handleSelection(item)}
-                style={{
-                  border: `1px solid ${this.isAddOrRemove ? themeColor : red}`,
-                  color: this.isAddOrRemove ? themeColor : red,
-                  marginTop: 15,
-                  justifyContent: "center",
-                  width: "120px"
-                }}
+                isAddOrRemove={this.isAddOrRemove}
               >
                 {this.isAddOrRemove ? "ADD" : "REMOVE"}
-              </StyledButton>
+              </AddRemoveBtn>
             ))}
         </Question>
         <Row type="flex" align="center">
@@ -330,23 +324,24 @@ class Item extends Component {
                 </AddButtonStyled>
               </ViewButton>
             ) : (
-              <StyledButton
-                loading={selectedId === item._id}
-                onClick={() => this.handleSelection(item)}
-                style={{
-                  border: `1px solid ${this.isAddOrRemove ? themeColor : red}`,
-                  color: this.isAddOrRemove ? themeColor : red,
-                  marginTop: 15,
-                  width: "100%"
-                }}
-              >
-                {this.isAddOrRemove ? "ADD" : "REMOVE"}
-              </StyledButton>
+              <ViewButton>
+                <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+                  <IconDown />
+                </MoreInfo>
+                <AddRemoveBtn
+                  loading={selectedId === item._id}
+                  onClick={() => this.handleSelection(item)}
+                  isAddOrRemove={this.isAddOrRemove}
+                >
+                  {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                </AddRemoveBtn>
+              </ViewButton>
             ))}
         </Row>
         {windowWidth <= MAX_TAB_WIDTH && (
           <Details isOpenedDetails={isOpenedDetails}>
-            {<Standards item={item} search={search} />}
+            <Standards item={item} search={search} />
+            <Tags tags={item.tags} key="tags" />
             <Categories>{this.renderDetails()}</Categories>
           </Details>
         )}

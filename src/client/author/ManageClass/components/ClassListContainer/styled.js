@@ -217,7 +217,7 @@ export const ClassListTable = styled(Table)`
             white-space: nowrap;
             padding-left: 5px;
           }
-          font-weight: bold;
+          font-weight: 550;
           padding: 10px 10px;
         }
         & > :nth-last-of-type(-n + 2) {

@@ -47,7 +47,8 @@ const StandardsGradebook = ({
   location,
   match,
   loading,
-  selectedStandardProficiency
+  selectedStandardProficiency,
+  filters
 }) => {
   const [ddfilter, setDdFilter] = useState({
     schoolId: "all",
@@ -149,6 +150,7 @@ const StandardsGradebook = ({
               chartFilter={chartFilter}
               isCsvDownloading={isCsvDownloading}
               role={role}
+              filters={filters}
             />
           </TableContainer>
         </>
@@ -167,7 +169,8 @@ const enhance = compose(
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      selectedStandardProficiency: getSelectedStandardProficiency(state)
+      selectedStandardProficiency: getSelectedStandardProficiency(state),
+      filters: get(state, "reportStandardsFilterDataReducer.filters", {})
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,

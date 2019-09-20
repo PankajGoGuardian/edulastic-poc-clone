@@ -8,7 +8,8 @@ import {
   dropZoneTitleColor,
   mediumDesktopWidth,
   lightGreySecondary,
-  mobileWidthLarge
+  mobileWidthLarge,
+  themeColor
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
@@ -26,9 +27,10 @@ export const Container = styled.div`
   @media (max-width: ${desktopWidth}) {
     background: ${lightGreySecondary};
     width: 450px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 80px);
     position: fixed;
     left: 50%;
+    top: 70px;
     z-index: 1;
     transform: translateX(-50%);
   }
@@ -117,10 +119,10 @@ export const TextFieldSearch = styled(TextField)`
   }
 
   .ant-input-search-icon {
-    color: #00ad50;
+    color: ${themeColor};
     font-size: 15px;
     &:hover {
-      color: #00ad50;
+      color: ${themeColor};
     }
   }
 
@@ -130,7 +132,7 @@ export const TextFieldSearch = styled(TextField)`
 `;
 
 export const SearchIcon = styled(Icon)`
-  color: #00ad50;
+  color: ${themeColor};
   font-size: 15px;
 `;
 
@@ -211,7 +213,7 @@ export const Title = styled.span`
 export const Clear = styled.div`
   font-size: 12px;
   font-weight: 600;
-  color: #00ad50;
+  color: ${themeColor};
   border: none;
   background: transparent;
   cursor: pointer;
@@ -234,6 +236,6 @@ export const StyledModalContainer = styled.div`
 
 export const StyledModalTitle = styled.div`
   font-size: 22px;
-  color: #00ad50;
+  color: ${themeColor};
   font-weight: 600;
 `;

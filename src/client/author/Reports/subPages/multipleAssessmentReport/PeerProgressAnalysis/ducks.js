@@ -4,14 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-const RESET_REPORTS_PEER_PROGRESS_ANALYSIS = "[reports] reset reports peer progress analysis";
+import { RESET_ALL_REPORTS } from "../../../ducks";
+
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST = "[reports] get reports peer progress analysis request";
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports peer progress analysis success";
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR = "[reports] get reports peer progress analysis error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const resetPeerProgressAnalysisAction = createAction(RESET_REPORTS_PEER_PROGRESS_ANALYSIS);
 export const getPeerProgressAnalysisRequestAction = createAction(GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -44,7 +44,7 @@ const initialState = {
 };
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
-  [RESET_REPORTS_PEER_PROGRESS_ANALYSIS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

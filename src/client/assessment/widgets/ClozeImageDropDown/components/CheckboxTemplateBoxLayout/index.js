@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Tooltip } from "antd";
 
-import { clozeImage } from "@edulastic/constants";
+import { clozeImage, response } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
 import { Triangle } from "../../../../styled/Triangle";
@@ -88,13 +88,20 @@ const CheckboxTemplateBoxLayout = ({
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
         const hasAnswered = userSelections?.[dropTargetIndex];
+
+        const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
+        const indexStyle = {};
+        if (lessMinWidth) {
+          indexStyle["width"] = "20px";
+        }
+
         return (
           <React.Fragment key={index}>
             {(showAnswer || checkAnswer) && (
               <div
                 style={{
                   ...btnStyle,
-                  minWidth: minWidthShowAnswer,
+                  minWidth: lessMinWidth ? responseContainer.width + response.indexSizeSmallBox : minWidthShowAnswer,
                   minHeight,
                   background: !hasAnswered ? "rgba(225,225,225,0.75)" : null
                 }}
@@ -107,8 +114,15 @@ const CheckboxTemplateBoxLayout = ({
                 show-answer`}
                 onClick={onClickHandler}
               >
-                {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div className="text container" style={{ minwidth: "100%", maxWidth }}>
+                {showAnswer && (
+                  <span className="index index-box" style={indexStyle}>
+                    {indexStr}
+                  </span>
+                )}
+                <div
+                  className="text container"
+                  style={{ minwidth: "100%", maxWidth, padding: lessMinWidth ? "0 0 0 4px" : null }}
+                >
                   <Tooltip title={userSelections?.[dropTargetIndex]}>
                     <div className="clipText" style={{ minwidth: "100%" }}>
                       {userSelections[dropTargetIndex]}

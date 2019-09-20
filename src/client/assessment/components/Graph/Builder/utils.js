@@ -306,7 +306,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
-    const { id, type, points, latex, subType, apiLatex } = element;
+    const { id, type, points } = element;
     if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.AREA || type === CONSTANT.TOOLS.DRAG_DROP) {
       if (!acc[id]) {
         acc[id] = element;
@@ -316,6 +316,11 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       }
       return acc;
     }
+    if (type === CONSTANT.TOOLS.EQUATION) {
+      acc[id] = element;
+      return acc;
+    }
+
     acc[id] = {
       type,
       _type: element._type,
@@ -327,20 +332,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       text: element.text,
       dashed: element.dashed
     };
-    if (type === CONSTANT.TOOLS.EQUATION) {
-      acc[id].latex = latex;
-      acc[id].subType = subType;
-      acc[id].apiLatex = apiLatex;
-      if (points && points[0] && points[1]) {
-        acc[id].subElementsIds = {
-          startPoint: points[0].id,
-          endPoint: points[1].id
-        };
-      } else {
-        acc[id].subElementsIds = null;
-        return acc;
-      }
-    } else if (
+    if (
       type !== CONSTANT.TOOLS.POLYGON &&
       type !== CONSTANT.TOOLS.ELLIPSE &&
       type !== CONSTANT.TOOLS.HYPERBOLA &&
@@ -360,17 +352,12 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const {
-        id,
-        type,
-        subElement = false,
-        latex = null,
-        subType = null,
-        points,
-        text = null,
-        apiLatex = null,
-        dashed = false
-      } = element;
+      const { id, type, subElement = false, text = null, dashed = false } = element;
+
+      if (type === CONSTANT.TOOLS.EQUATION) {
+        acc[id] = element;
+        return acc;
+      }
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -381,10 +368,7 @@ export function flat2nestedConfig(config) {
           label: element.label,
           labelIsVisible: element.labelIsVisible,
           baseColor: element.baseColor,
-          latex,
-          subType,
           text,
-          apiLatex,
           dashed
         };
         if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP || type === CONSTANT.TOOLS.AREA) {

@@ -123,7 +123,7 @@ class ClassQuestions extends Component {
             if (filter === "correct" && firstQAct.maxScore !== firstQAct.score) {
               return false;
             }
-            if (filter === "wrong" && firstQAct.score > 0) {
+            if (filter === "wrong" && (firstQAct.score > 0 || firstQAct.skipped)) {
               return false;
             }
             if (filter === "partial" && !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)) {
@@ -159,7 +159,7 @@ class ClassQuestions extends Component {
               if (filter === "correct" && qActivities[0].score < qActivities[0].maxScore) {
                 return false;
               }
-              if (filter === "wrong" && qActivities[0].score > 0) {
+              if (filter === "wrong" && (qActivities[0].score > 0 || qActivities[0].skipped)) {
                 return false;
               }
               if (filter === "skipped" && !(qActivities[0].skipped && qActivities[0].score === 0)) {

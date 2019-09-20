@@ -9,7 +9,17 @@ import {
   greenDark,
   darkGrey,
   titleColor,
-  mediumDesktopWidth
+  mediumDesktopWidth,
+  desktopWidth,
+  mobileWidthLarge,
+  tabGrey,
+  mainTextColor,
+  title,
+  cardTitleColor,
+  lightGreySecondary,
+  secondaryTextColor,
+  boxShadowDefault,
+  themeColorLighter
 } from "@edulastic/colors";
 import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
 import { IconManage } from "@edulastic/icons";
@@ -17,25 +27,83 @@ import { IconManage } from "@edulastic/icons";
 import { Paper } from "@edulastic/common";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 
+export const TableWrapper = styled.div`
+  background: ${white};
+  padding: 10px 30px;
+  border-radius: 10px;
+  box-shadow: ${boxShadowDefault};
+  margin-bottom: 30px;
+`;
+
 export const StudentsTable = styled(Table)`
-  .ant-table-tbody > tr > td {
-    text-align: center;
-  }
-  .ant-table-thead > tr > th {
-    text-align: center;
+  .ant-table {
+    overflow: auto;
+    &-thead {
+      & > tr > th {
+        border: none;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: ${cardTitleColor};
+        background: white;
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+        & .ant-table-header-column .ant-table-column-sorters::before {
+          background: ${white};
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-filters
+          &.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: center;
+        }
+        .ant-table-column-sorters {
+          display: flex;
+          justify-content: center;
+
+          .ant-table-column-sorter-inner {
+            &.ant-table-column-sorter-inner-full {
+              margin-top: 0em;
+            }
+            .ant-table-column-sorter {
+              &-up,
+              &-down {
+                font-size: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+    &-tbody {
+      & > tr {
+        background: ${lightGreySecondary};
+        letter-spacing: 0.26px;
+        color: ${secondaryTextColor};
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        border-bottom: 15px solid white;
+        & > td {
+          border: none;
+          &.ant-table-column-sort {
+            background: none;
+          }
+          & > span {
+            overflow: hidden;
+            display: block;
+            max-width: 150px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-left: 5px;
+          }
+          font-weight: 550;
+          padding: 10px 10px;
+        }
+        & > :nth-last-of-type(-n + 3) {
+          text-align: start;
+        }
+      }
+    }
   }
 `;
-
-export const CheckboxShowStudents = styled(Checkbox)`
-  margin-bottom: 1rem;
-  .ant-checkbox .ant-checkbox-inner {
-    padding: 0.5rem;
-  }
-  .ant-checkbox + span {
-    font-size: 15px;
-  }
-`;
-
 export const Title = styled.div`
   font-size: 22px;
   font-weight: bold;
@@ -124,17 +192,18 @@ export const ButtonsWrapper = styled.div`
 `;
 
 export const StyledDivider = styled(Divider)`
-  margin-top: 10px;
+  margin: 10px 0px;
 `;
 
 export const Container = styled(Paper)`
   margin: 15px auto 0 auto;
-  padding: 30px 15px;
   border-radius: 0px;
   width: 90%;
+  background: none;
 `;
 
 export const ContainerHeader = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
 `;
@@ -172,29 +241,39 @@ export const AnchorLink = styled(Link)`
   font-size: 14px;
   font-weight: 600;
   color: ${themeColor};
+  margin-right: 15px;
 `;
 
 export const ClassCode = styled.div`
   font-size: 14px;
   font-weight: 600;
   margin-left: 8px;
-  color: ${textColor};
+  color: ${cardTitleColor};
+  text-transform: uppercase;
   span {
     font-size: 18px;
-    text-transform: uppercase;
-    color: ${greenDark};
+    color: ${themeColorLighter};
+    margin-left: 50px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding-right: 0px;
   }
 `;
 
 export const MainContainer = styled.div`
   display: flex;
-  margin-bottom: 16px;
+  justify-content: space-between;
+  max-height: 260px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
 `;
 
 export const AddStudentDivider = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin: 15px 0px;
+  justify-content: flex-end;
 `;
 
 export const LeftWrapper = styled.div`
@@ -212,32 +291,29 @@ export const DividerDiv = styled.div`
 
 export const Image = styled.img`
   width: 100%;
-  height: 140px;
+  height: 50%;
   border-radius: 5px;
 `;
 
-export const MidWrapper = styled.div`
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex-shrink: 1;
-  margin: 0px 16px;
-`;
+export const MidWrapper = styled.div``;
 
 export const RightWrapper = styled.div`
-  flex: 1;
+  text-align: start;
+  min-width: 200px;
+  @media (max-width: ${desktopWidth}) {
+    padding-right: 0px;
+  }
 `;
 
 export const FieldValue = styled.div`
   font-size: 14px;
-  font-weight: 600;
-  color: ${titleColor};
+  font-weight: 550;
+  color: ${cardTitleColor};
   margin-top: 12px;
   display: flex;
-
   div {
-    min-width: 120px;
+    min-width: 100px;
+    text-transform: uppercase;
   }
 
   &:first-child {
@@ -245,14 +321,13 @@ export const FieldValue = styled.div`
   }
   span {
     margin-left: 5px;
-    color: ${darkGrey};
+    color: ${secondaryTextColor};
   }
 `;
 
 export const FieldLabel = styled.section`
-  min-width: 150px;
+  min-width: 180px;
   text-align: right;
-  margin-right: 15px;
 `;
 
 export const StudentContent = styled.div``;
@@ -301,5 +376,153 @@ export const StyledButton = styled(Button)`
   &:active {
     color: ${props => (props.type === "primary" ? white : themeColorLight)};
     border-color: ${themeColorLight};
+  }
+`;
+
+const StyledTabButton = styled.a`
+  height: 28px;
+  padding: 6px 35px;
+  font-size: 10px;
+  font-weight: 600;
+  background-color: ${white};
+  color: ${themeColor};
+  &:hover {
+    background-color: ${themeColor};
+    color: ${white};
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 6px 30px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding: 6px 15px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    text-align: center;
+    margin: 0 !important;
+  }
+`;
+
+export const RedirectButton = styled(StyledTabButton)`
+  border-radius: 4px;
+  display: flex;
+  width: 150px;
+  color: ${themeColor};
+  margin-right: 5px;
+  position: relative;
+  justify-content: center;
+  &:nth-child(1) {
+    border-radius: 4px 0 0 4px;
+  }
+  &:nth-last-child(1) {
+    margin-right: 0px;
+  }
+  &:hover {
+    svg {
+      fill: ${white};
+      path,
+      circle {
+        fill: ${white};
+      }
+    }
+  }
+  svg {
+    fill: ${themeColor};
+    path,
+    circle {
+      fill: ${themeColor};
+    }
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    width: 130px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: auto;
+    padding: 6px 12px;
+    svg {
+      display: none;
+    }
+  }
+`;
+
+export const ButtonIconWrap = styled.span`
+  display: block;
+  left: 10px;
+  position: absolute;
+`;
+
+export const DropMenu = styled(Menu)`
+  margin-top: 10px;
+  width: 190px;
+`;
+
+export const MenuItems = styled(Menu.Item)`
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  color: ${title};
+  font-weight: 600;
+  &:hover {
+    svg {
+      fill: ${white};
+      path {
+        fill: ${white};
+        stroke: ${white};
+      }
+    }
+  }
+  svg,
+  i {
+    fill: ${mainTextColor};
+    height: 12px;
+    margin-right: 10px;
+    path {
+      fill: ${mainTextColor};
+    }
+  }
+  &:not(.ant-dropdown-menu-item-disabled):hover {
+    color: ${white};
+    background-color: ${themeColor};
+  }
+`;
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  right: 60px;
+  font-size: 30px;
+`;
+
+export const ImageContainer = styled.div`
+  width: 20%;
+`;
+
+export const ClassInfoContainer = styled.div`
+  width: 79%;
+  padding: 0 1.2rem;
+`;
+
+export const FlexDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const SwitchBox = styled.span`
+  font-size: 10px;
+  padding-bottom: 10px;
+  .ant-switch {
+    min-width: 32px;
+    height: 16px;
+    margin: 0px 0px 0px 5px;
+    &:after {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    display: none;
   }
 `;

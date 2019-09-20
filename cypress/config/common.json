@@ -1,0 +1,14 @@
+{
+  "baseUrl": "http://localhost:3001",
+  "API_URL": "https://edulastic-poc.snapwiz.net/api",
+  "defaultCommandTimeout": 10000,
+  "viewportHeight": 900,
+  "viewportWidth": 1600,
+  "video": false,
+  "integrationFolder": "cypress/e2e/suites",
+  "modifyObstructiveCode": false,
+  "requestTimeout": 30000,
+  "env": {
+    "ENVIRONMENT": "local"
+  }
+}

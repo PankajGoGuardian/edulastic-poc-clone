@@ -18,18 +18,26 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
 import {
-  DividerDiv,
-  TitleWarapper,
   ButtonsWrapper,
   AddStudentDivider,
-  AddStudentButton,
-  CircleIconButton,
-  ActionButton,
-  StyledIcon,
-  MenuItem
+  RedirectButton,
+  ButtonIconWrap,
+  DropMenu,
+  MenuItems,
+  CaretUp
 } from "./styled";
+import {
+  IconPrint,
+  IconPlusCircle,
+  IconRemove,
+  IconVolumeUp,
+  IconNoVolume,
+  IconCircle,
+  IconPencilEdit,
+  IconPlus
+} from "@edulastic/icons";
+import { white, themeColor } from "@edulastic/colors";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { FaTruckMonster } from "react-icons/fa";
 
 const modalStatus = {};
 
@@ -47,7 +55,8 @@ const ActionContainer = ({
   selectedStudent,
   changeTTS,
   loadStudents,
-  features
+  features,
+  history
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -223,41 +232,6 @@ const ActionContainer = ({
     }
   };
 
-  const actionMenu = (
-    <Menu onClick={handleActionMenuClick}>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech" groupId={classId}>
-        <MenuItem key="enableSpeech">
-          <Icon type="caret-right" />
-          Enable Text To Speech
-        </MenuItem>
-      </FeaturesSwitch>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech" groupId={classId}>
-        <MenuItem key="disableSpeech">
-          <Icon type="sound" />
-          Disable Text To Speech
-        </MenuItem>
-      </FeaturesSwitch>
-      <MenuItem key="deleteStudent">
-        <Icon type="delete" />
-        Remove Selected Student(s)
-      </MenuItem>
-      <MenuItem key="resetPwd">
-        <Icon type="key" />
-        Reset Password
-      </MenuItem>
-      <MenuItem key="editStudent">
-        <Icon type="edit" />
-        Edit Student
-      </MenuItem>
-      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher" groupId={classId}>
-        <MenuItem key="addCoTeacher">
-          <Icon type="switcher" />
-          Add a Co-Teacher
-        </MenuItem>
-      </FeaturesSwitch>
-    </Menu>
-  );
-
   return (
     <>
       {infoModelVisible && (
@@ -297,37 +271,77 @@ const ActionContainer = ({
       />
 
       <AddStudentDivider>
-        <TitleWarapper>Students</TitleWarapper>
-        <DividerDiv />
         <ButtonsWrapper>
           {active ? (
-            <Tooltip placement="bottomLeft" title="Add Student">
-              <CircleIconButton
-                data-cy="addStudent"
-                type="primary"
-                shape="circle"
-                icon="plus"
-                size="large"
-                onClick={() => toggleModal("add")}
-              />
-            </Tooltip>
-          ) : null}
-          <Link to={"/author/manageClass/printPreview"}>
-            <CircleIconButton type="primary" shape="circle" icon="printer" size="large" disabled={!studentLoaded} />
-          </Link>
-          {studentsList.length > 0 && active ? (
-            <Dropdown overlay={actionMenu} trigger={["click"]}>
-              <ActionButton type="primary" ghost>
-                Actions <StyledIcon type="caret-down" theme="filled" size={16} />
-              </ActionButton>
-            </Dropdown>
+            <RedirectButton first={true} data-cy="addStudent" onClick={() => toggleModal("add")}>
+              <ButtonIconWrap>
+                <IconPlusCircle />
+              </ButtonIconWrap>
+              ADD STUDENT
+            </RedirectButton>
           ) : null}
 
+          <RedirectButton
+            first={true}
+            data-cy="printRoster"
+            onClick={() => history.push(`/author/manageClass/printPreview`)}
+          >
+            <ButtonIconWrap>
+              <IconPrint />
+            </ButtonIconWrap>
+            PRINT
+          </RedirectButton>
+
+          <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" groupId={classId}>
+            <Dropdown
+              overlay={
+                <DropMenu onClick={handleActionMenuClick}>
+                  <CaretUp className="fa fa-caret-up" />
+                  <MenuItems key="enableSpeech">
+                    <IconVolumeUp width={12} />
+                    <span>Enable Text to Speech</span>
+                  </MenuItems>
+                  <MenuItems key="disableSpeech">
+                    <IconNoVolume />
+                    <span>Disable Text to Speech</span>
+                  </MenuItems>
+                  <MenuItems key="deleteStudent">
+                    <IconRemove />
+                    <span>Remove Students</span>
+                  </MenuItems>
+                  <MenuItems key="resetPwd">
+                    <IconCircle />
+                    <span>Reset Password</span>
+                  </MenuItems>
+                  <MenuItems key="editStudent">
+                    <IconPencilEdit />
+                    <span>Edit Stduent</span>
+                  </MenuItems>
+                  <MenuItems key="addCoTeacher">
+                    <IconPlus />
+                    <span>Add a Co-Teacher</span>
+                  </MenuItems>
+                </DropMenu>
+              }
+              placement="bottomRight"
+            >
+              <RedirectButton last={true} style={{ background: themeColor, color: white }}>
+                ACTIONS
+              </RedirectButton>
+            </Dropdown>
+          </FeaturesSwitch>
+
           {active ? (
-            <AddStudentButton data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
-              Add Multiple Students
-            </AddStudentButton>
+            <RedirectButton
+              first={true}
+              data-cy="addMultiStu"
+              onClick={handleAddMultipleStudent}
+              style={{ whiteSpace: "nowrap", width: "180px", background: themeColor, color: white }}
+            >
+              ADD MULTIPLE STUDENTS
+            </RedirectButton>
           ) : null}
+
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal
               modalVisible={isAddMultipleStudentsModal}

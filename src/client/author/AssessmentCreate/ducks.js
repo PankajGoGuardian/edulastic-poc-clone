@@ -182,11 +182,11 @@ function* createAssessmentSaga({ payload }) {
         data: updatedAssessment
       };
 
-      yield call(testsApi.update, updatePayload);
+      const newTest = yield call(testsApi.update, updatePayload);
 
-      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure }));
+      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure, version: newTest.version }));
       yield put(createAssessmentSuccessAction());
-      // yield put(push(`/author/assessments/${assessment._id}`));
+      yield put(push(`/author/assessments/${assessment._id}`));
     } else {
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
@@ -217,7 +217,12 @@ function* createAssessmentSaga({ payload }) {
       yield put(push(`/author/assessments/${assessment._id}`));
     }
   } catch (error) {
-    const errorMessage = "Create assessment is failing";
+    let errorMessage;
+    if (error.code === 1) {
+      errorMessage = "Password protected PDF files are not supported";
+    } else {
+      errorMessage = "Create assessment is failing";
+    }
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }

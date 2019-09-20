@@ -103,7 +103,6 @@ class AssessmentPlayerDocBased extends React.Component {
 
     const dropdownOptions = items[0].data.questions.map((item, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
-    const showSubmit = currentItem === dropdownOptions.length - 1;
     const questions = this.assessmentQuestions();
 
     return (
@@ -117,7 +116,7 @@ class AssessmentPlayerDocBased extends React.Component {
             onPause={this.handlePause}
             onSaveProgress={this.handleSaveProgress}
             onSubmit={gotoSummary}
-            showSubmit={showSubmit}
+            showSubmit
             t={t}
           />
           {!loading && (

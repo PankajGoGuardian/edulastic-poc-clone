@@ -5,18 +5,16 @@ import { Pagination, Spin } from "antd";
 import { debounce } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
-import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { IconFilter } from "@edulastic/icons";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import {
   Container,
   Element,
   ListItems,
   SpinContainer,
   PaginationContainer,
-  MobileLeftFilterButton,
   MobileFilterIcon,
   ContentWrapper,
   ScrollbarContainer
@@ -362,11 +360,7 @@ class Contaier extends Component {
 
   renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
-  renderFilterIcon = isShowFilter => (
-    <MobileLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
-      <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-    </MobileLeftFilterButton>
-  );
+  renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
   render() {
     const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
@@ -402,7 +396,7 @@ class Contaier extends Component {
           )}
           <ListItems isShowFilter={isShowFilter}>
             <Element>
-              <MobileFilterIcon> {this.renderFilterIcon()} </MobileFilterIcon>
+              <MobileFilterIcon> {this.renderFilterIcon(isShowFilter)} </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 <SpinContainer
                   ref={e => {

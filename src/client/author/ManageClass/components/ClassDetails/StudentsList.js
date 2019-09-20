@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Icon, Spin } from "antd";
+import { Icon, Spin, Switch } from "antd";
 import { get, isEmpty, size, pullAt } from "lodash";
 import { lightBlue3 } from "@edulastic/colors";
-import { StudentContent, NoStudents, NoConentDesc, StyledIcon, CheckboxShowStudents, StudentsTable } from "./styled";
+import { IconClose, IconCorrect } from "@edulastic/icons";
+import { StudentContent, NoStudents, NoConentDesc, StyledIcon, StudentsTable, TableWrapper, SwitchBox } from "./styled";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
@@ -43,39 +44,31 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
     {
       title: "Username",
       dataIndex: "username",
-      width: "12%",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.username > b.username
     },
     {
       title: "TTS Enabled",
       dataIndex: "tts",
-      width: "20%",
       render: tts => (
-        <span>
-          {tts === "yes" ? <Icon type="check-circle" theme="filled" /> : <Icon type="close-circle" theme="filled" />}
+        <span style={{ textAlign: "center", paddingRight: "30px" }}>
+          {tts === "yes" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}
         </span>
       )
     },
     {
       title: "Google User",
       dataIndex: "lastSigninSSO",
-      width: "20%",
       defaultSortOrder: "descend",
       render: lastSigninSSO => (
-        <span>
-          {lastSigninSSO === "google" ? (
-            <Icon type="check-circle" theme="filled" />
-          ) : (
-            <Icon type="close-circle" theme="filled" />
-          )}
+        <span style={{ textAlign: "center", paddingRight: "30px" }}>
+          {lastSigninSSO === "google" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}
         </span>
       )
     },
     {
       title: "Status",
       dataIndex: "enrollmentStatus",
-      width: "30%",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
@@ -98,34 +91,33 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
 
   return (
     <div style={{ textAlign: "end" }}>
-      {!!students.length && (
-        <CheckboxShowStudents defaultChecked={showCurrentStudents} onChange={showStudentsHandler}>
-          Show current students only
-        </CheckboxShowStudents>
-      )}
-      <Spin tip="Loading..." spinning={!loaded}>
-        <StudentContent>
-          {empty && (
-            <NoStudents>
-              <StyledIcon type="user-add" fill={lightBlue3} size={45} />
-              <NoConentDesc>
-                <div> There are no students in your class.</div>
-                <p>Add students to your class and begin assigning work</p>
-              </NoConentDesc>
-            </NoStudents>
-          )}
-          {loaded && !empty && (
+      {!loaded ? (
+        <Spin />
+      ) : empty ? (
+        <NoStudents>
+          <StyledIcon type="user-add" fill={lightBlue3} size={45} />
+          <NoConentDesc>
+            <div> There are no students in your class.</div>
+            <p>Add students to your class and begin assigning work</p>
+          </NoConentDesc>
+        </NoStudents>
+      ) : (
+        <TableWrapper>
+          <>
+            <SwitchBox style={{ fontSize: "10px" }}>
+              {showCurrentStudents ? "ACTIVE" : "ALL"}
+              <Switch checked={showCurrentStudents} onClick={showStudentsHandler} />
+            </SwitchBox>
             <StudentsTable
               columns={columns}
-              bordered
               rowSelection={rowSelection}
               dataSource={filteredStudents}
               rowKey={rowKey}
-              pagination={size(students) > 10 ? students : false}
+              pagination={false}
             />
-          )}
-        </StudentContent>
-      </Spin>
+          </>
+        </TableWrapper>
+      )}
     </div>
   );
 };

@@ -54,6 +54,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.maxWidth = "400px";
   }
 
+  let isBoxSizeSmall = parseInt(btnStyle.width, 10) < dimensions.minWidthShowAnswer;
+  const indexStyle = {};
+  if (isBoxSizeSmall) {
+    btnStyle.minWidth = parseInt(btnStyle.width, 10) + 15;
+    indexStyle.width = "10px";
+    indexStyle.minWidth = "unset";
+  }
+
   const getFormulaLabel = () => {
     let formulaLabel = "";
     if (!hasGroupResponses && userSelections[dropTargetIndex]) {
@@ -87,7 +95,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   return (
     <CheckBoxTemplateBox>
       {showAnswer && hasGroupResponses && (
-        <Droppable style={{ minWidth: dimensions.minWidthShowAnswer }} drop={() => ({ dropTargetIndex })}>
+        <Droppable drop={() => ({ dropTargetIndex })}>
           <Draggable
             onDrop={onDropHandler}
             data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
@@ -99,14 +107,20 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${choiceAttempted ? "check-answer" : ""}
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-              style={{ ...btnStyle, minWidth: dimensions.minWidthShowAnswer }}
+              style={btnStyle}
             >
-              {showAnswer && <span className="index">{indexStr}</span>}
+              {showAnswer && (
+                <span style={indexStyle} className="index">
+                  {indexStr}
+                </span>
+              )}
               <Tooltip title={getLabel(dropTargetIndex)}>
-                <span className="text">{getLabel(dropTargetIndex)}</span>
+                <span style={{ padding: isBoxSizeSmall ? "8px 0px" : null }} className="text">
+                  {getLabel(dropTargetIndex)}
+                </span>
               </Tooltip>
 
-              <IconWrapper>
+              <IconWrapper rightPosition={isBoxSizeSmall ? "0" : "8"}>
                 {choiceAttempted && status === "right" && <RightIcon />}
                 {choiceAttempted && status === "wrong" && <WrongIcon />}
               </IconWrapper>
@@ -127,13 +141,19 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-              style={{ ...btnStyle, minWidth: dimensions.minWidthShowAnswer }}
+              style={btnStyle}
             >
-              {showAnswer && <span className="index">{indexStr}</span>}
+              {showAnswer && (
+                <span style={indexStyle} className="index">
+                  {indexStr}
+                </span>
+              )}
               <Tooltip title={getLabel(dropTargetIndex)}>
-                <span className="text">{getLabel(dropTargetIndex)}</span>
+                <span className="text" style={{ padding: isBoxSizeSmall ? "8px 0px" : null }}>
+                  {getLabel(dropTargetIndex)}
+                </span>
               </Tooltip>
-              <IconWrapper>
+              <IconWrapper rightPosition={isBoxSizeSmall ? "0" : "8"}>
                 {choiceAttempted && status === "right" && <RightIcon />}
                 {choiceAttempted && status === "wrong" && <WrongIcon />}
               </IconWrapper>

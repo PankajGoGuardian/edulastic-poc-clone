@@ -69,20 +69,8 @@ const SubHeader = ({
 
   return (
     <ContainerHeader>
-      <LeftContent>
-        <Link to={`/author/manageClass`}>
-          <StyledIcon type="left" size={30} />
-        </Link>
-        <TitleWarapper>
-          <div>{name}</div>
-
-          <p>
-            {districtName}, {institutionName}
-          </p>
-        </TitleWarapper>
-      </LeftContent>
       <RightContent>
-        <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
+        <AnchorLink to="/author/assignments">View Test</AnchorLink>
         {allowGoogleLogin !== false &&
           active === 1 &&
           (isUserGoogleLoggedIn ? (
@@ -139,10 +127,10 @@ const SubHeader = ({
             okText="Yes, Archive"
           />
         )}
-        <ClassCode>
-          Class Code: <span>{code}</span>
-        </ClassCode>
       </RightContent>
+      <ClassCode>
+        Class Code <span>{code}</span>
+      </ClassCode>
     </ContainerHeader>
   );
 };

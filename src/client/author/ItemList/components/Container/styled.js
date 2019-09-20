@@ -49,26 +49,6 @@ export const ContentWrapper = styled(Paper)`
   }
 `;
 
-export const MobileLeftFilterButton = styled(Button)`
-  min-width: 35px;
-  min-height: 25px;
-  padding: 2px;
-  padding-top: 5px;
-  border-radius: 3px;
-  position: fixed;
-  margin-left: -20px;
-  margin-top: 26px;
-  z-index: 100;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${props => (props.isShowFilter ? themeColor : white)} !important;
-
-  &:focus,
-  &:hover {
-    outline: unset;
-    color: ${props => (props.isShowFilter ? white : themeColor)};
-  }
-`;
-
 export const MobileFilterIcon = styled.div`
   display: none;
   @media (max-width: ${largeDesktopWidth}) {

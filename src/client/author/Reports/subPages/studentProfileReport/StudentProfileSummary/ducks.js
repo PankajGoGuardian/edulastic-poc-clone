@@ -4,14 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-const RESET_REPORTS_STUDENT_PROFILE_SUMMARY = "[reports] reset reports student profile summary";
+import { RESET_ALL_REPORTS } from "../../../ducks";
+
 const GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST = "[reports] get reports student profile summary request";
 const GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_SUCCESS = "[reports] get reports student profile summary success";
 const GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_ERROR = "[reports] get reports student profile summary error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const resetStudentProfileSummaryAction = createAction(RESET_REPORTS_STUDENT_PROFILE_SUMMARY);
 export const getStudentProfileSummaryRequestAction = createAction(GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -44,7 +44,7 @@ const initialState = {
 };
 
 export const reportStudentProfileSummaryReducer = createReducer(initialState, {
-  [RESET_REPORTS_STUDENT_PROFILE_SUMMARY]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

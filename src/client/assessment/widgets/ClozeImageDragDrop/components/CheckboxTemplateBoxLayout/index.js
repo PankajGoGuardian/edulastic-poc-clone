@@ -32,7 +32,8 @@ const CheckboxTemplateBox = ({
   theme,
   showBorder,
   disableResponse,
-  isSnapFitValues
+  isSnapFitValues,
+  largestResponseWidth
 }) => {
   const [hideIndexBox, updateVisibility] = useState(null);
 
@@ -80,6 +81,8 @@ const CheckboxTemplateBox = ({
       indexStr = index + 1;
   }
 
+  const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
+
   const dragItemStyle = {
     border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
     padding: "0px 5px",
@@ -89,7 +92,7 @@ const CheckboxTemplateBox = ({
     textOverflow: "ellipsis",
     width: "max-content",
     minWidth: response.minWidth,
-    maxWidth: "80%", // adjusting content(mainly images) alongwith the padding
+    maxWidth: lessMinWidth ? "50%" : "80%", // adjusting content(mainly images) alongwith the padding
     overflow: "hidden",
     height: "100%"
   };
@@ -98,7 +101,7 @@ const CheckboxTemplateBox = ({
     ...btnStyle,
     width: responseContainer.width,
     height: responseContainer.height,
-    minWidth: response.minWidth,
+    minWidth: lessMinWidth ? parseInt(responseContainer.width, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
   };
@@ -108,7 +111,7 @@ const CheckboxTemplateBox = ({
 
   const icons = (
     <>
-      <IconWrapper>
+      <IconWrapper right="5">
         {isChecked && status === "right" && <RightIcon />}
         {isChecked && status === "wrong" && <WrongIcon />}
       </IconWrapper>
@@ -122,7 +125,11 @@ const CheckboxTemplateBox = ({
   const indexBoxRef = useRef();
 
   const responseBoxIndex = showAnswer && (
-    <div style={{ alignSelf: "stretch", height: "auto" }} className="index index-box" ref={indexBoxRef}>
+    <div
+      style={{ alignSelf: "stretch", height: "auto", width: lessMinWidth ? "20px" : null }}
+      className="index index-box"
+      ref={indexBoxRef}
+    >
       {indexStr}
     </div>
   );
@@ -130,7 +137,7 @@ const CheckboxTemplateBox = ({
   return (
     <DropContainer
       index={index}
-      style={{ ...dropContainerStyle, minWidth: response.minWidthShowAnswer }}
+      style={dropContainerStyle}
       className={containerClassName}
       drop={drop}
       disableResponse={disableResponse}

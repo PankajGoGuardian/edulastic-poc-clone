@@ -240,6 +240,7 @@ class FeedbackRight extends Component {
         {!isError && (
           <Fragment>
             <FeedbackInput
+              data-cy="feedBackInput"
               onChange={this.onChangeFeedback}
               onBlur={this.preCheckSubmit}
               value={feedback}

@@ -3,11 +3,13 @@ import { createAction, createReducer } from "redux-starter-kit";
 
 const SET_PRINTING_STATE = "[reports] set printing state";
 const SET_CSV_DOWNLOADING_STATE = "[reports] set csv download state";
+export const RESET_ALL_REPORTS = "[reports] reset all reports";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setPrintingStateAction = createAction(SET_PRINTING_STATE);
 export const setCsvDownloadingStateAction = createAction(SET_CSV_DOWNLOADING_STATE);
+export const resetAllReportsAction = createAction(RESET_ALL_REPORTS);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 

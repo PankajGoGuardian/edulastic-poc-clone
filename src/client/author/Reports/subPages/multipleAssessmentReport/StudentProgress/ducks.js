@@ -4,14 +4,14 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-const RESET_REPORTS_STUDENT_PROGRESS = "[reports] reset reports student progress";
+import { RESET_ALL_REPORTS } from "../../../ducks";
+
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST = "[reports] get reports student progress request";
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS = "[reports] get reports student progress success";
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR = "[reports] get reports student progress error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const resetStudentProgressAction = createAction(RESET_REPORTS_STUDENT_PROGRESS);
 export const getStudentProgressRequestAction = createAction(GET_REPORTS_STUDENT_PROGRESS_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -44,7 +44,7 @@ const initialState = {
 };
 
 export const reportStudentProgressReducer = createReducer(initialState, {
-  [RESET_REPORTS_STUDENT_PROGRESS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

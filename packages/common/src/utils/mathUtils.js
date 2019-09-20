@@ -55,3 +55,9 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
   }
   return [];
 };
+
+export const roundOffNumber = (number = 0) => {
+  const decimalPart = number - Math.round(number);
+  if (decimalPart >= 0.5) return Math.ceil(number);
+  else return Math.floor(number);
+};

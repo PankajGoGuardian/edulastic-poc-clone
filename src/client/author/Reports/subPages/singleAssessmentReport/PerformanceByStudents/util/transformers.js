@@ -20,6 +20,7 @@ import {
 import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
+import { roundOffNumber } from "@edulastic/common";
 
 export const getInterval = maxValue => min([maxValue, 9]);
 
@@ -112,7 +113,7 @@ export const normaliseTableData = (rawData, data) => {
         return relatedGroup.schoolId == school.schoolId;
       }) || {};
 
-    const classAvg = ceil(
+    const classAvg = roundOffNumber(
       (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
     );
     let studentScore = 0;
@@ -131,8 +132,8 @@ export const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
-      schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
-      districtAvg: ceil(districtAvgPerf || 0),
+      schoolAvg: roundOffNumber(relatedSchool.schoolAvgPerf || 0),
+      districtAvg: roundOffNumber(districtAvgPerf || 0),
       studentScore,
       classAvg: classAvg,
       assessmentScore,

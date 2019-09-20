@@ -1,4 +1,5 @@
 import { questionTypeKey as queTypes, attemptTypes, queColor } from "../../constants/questionTypes";
+import CypressHelper from "../../util/cypressHelpers";
 
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
@@ -64,10 +65,12 @@ export default class QuestionResponsePage {
       .should("have.text", points.toString());
   };
 
-  updateScoreForStudent = (studentName, score) => {
+  updateScoreForStudent = (studentName, score, feedback) => {
     cy.server();
     cy.route("PUT", "**/feedback").as("feedback");
     cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
+    cy.route("PUT", "**/feedback").as("feedback");
+
     this.getQuestionContainerByStudent(studentName).as("updatecard");
     cy.wait(500); // front end renders slow and gets old value appended in the box, hence waiting
     this.getScoreInput(cy.get("@updatecard"))
@@ -80,9 +83,21 @@ export default class QuestionResponsePage {
       .then(() => {
         cy.wait("@scoreEntry").then(xhr => {
           expect(xhr.status).to.eq(200);
-          // expect(xhr.responseBody.result).to.eq("feedback and score are saved successfully");
         });
       });
+
+    if (feedback) {
+      this.getFeedbackArea(cy.get("@updatecard"))
+        .clear()
+        .type(feedback);
+      cy.get("@scoreinputbox")
+        .click()
+        .then(() => {
+          cy.wait("@feedback").then(xhr => {
+            expect(xhr.status).to.eq(200);
+          });
+        });
+    }
 
     cy.get("@scoreinputbox").should("have.value", score.toString());
   };
@@ -98,16 +113,23 @@ export default class QuestionResponsePage {
   };
 
   selectStudent = studentName => {
+    let index = -1;
     cy.server();
     cy.route("GET", "**/test-activity/**").as("test-activity");
     this.getDropDown()
       .eq(0)
       .click();
+
+    CypressHelper.getDropDownList(list => {
+      index = list.indexOf(studentName);
+    });
+
     this.getDropDownMenu()
       .contains(studentName)
       .click();
 
-    if (!studentName.includes("Student01")) cy.wait("@test-activity");
+    if (index > 0) cy.wait("@test-activity");
+    // if (!studentName.includes("Student01")) cy.wait("@test-activity");
     this.getQuestionContainer(0).should("contain", studentName);
   };
 

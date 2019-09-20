@@ -284,7 +284,7 @@ class Container extends PureComponent {
     }
     const { params = {} } = match;
     const { current, editEnable, isShowFilter } = this.state;
-    const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
+    const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
@@ -292,6 +292,7 @@ class Container extends PureComponent {
       docUrl,
       annotations,
       questions,
+      freeFormNotes,
       questionsById,
       pageStructure
     };

@@ -137,13 +137,13 @@ const methodOptions = {
   ],
 
   [methods.SET_EVALUATION]: [],
-  [methods.EQUIV_SYNTAX]: ["noExpeced", "syntax", "argument", "rule"],
-  [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
-  [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
-  [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
+  [methods.EQUIV_SYNTAX]: ["notExpected", "syntax", "argument", "rule"],
+  [methods.IS_SIMPLIFIED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
+  [methods.IS_FACTORISED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
+  [methods.IS_EXPANDED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
-  [methods.IS_RATIONALIZED]: ["noExpeced"],
-  [methods.CHECK_IF_TRUE]: ["noExpeced"]
+  [methods.IS_RATIONALIZED]: ["notExpected"],
+  [methods.CHECK_IF_TRUE]: ["notExpected"]
 };
 
 module.exports = {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 
 import { Paper, Stimulus, CorrectAnswersContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -135,16 +135,18 @@ const ShortTextPreview = ({
           <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
             {item.validation.validResponse.value}
           </CorrectAnswersContainer>
-          <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
-            {item.validation.altResponses.map((altAnswer, i) => {
-              return (
-                <div key={i}>
-                  <span>Alternate Answer {i + 1} : </span>
-                  {altAnswer.value}
-                </div>
-              );
-            })}
-          </CorrectAnswersContainer>
+          {!isEmpty(item.validation.altResponses) && (
+            <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
+              {item.validation.altResponses.map((altAnswer, i) => {
+                return (
+                  <div key={i}>
+                    <span>Alternate Answer {i + 1} : </span>
+                    {altAnswer.value}
+                  </div>
+                );
+              })}
+            </CorrectAnswersContainer>
+          )}
         </>
       )}
     </Paper>

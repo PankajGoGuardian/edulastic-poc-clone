@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { themeColor, white, mobileWidth, title, mediumDesktopWidth } from "@edulastic/colors";
@@ -21,9 +21,11 @@ const Tab = ({
   addTabs,
   isAddTab
 }) => {
+  const textWidth = useMemo(() => label?.length * 10 + 10, [label]);
+
   const inputTab = (
     <EditableTab>
-      <Input type="text" value={label} onChange={onChange} />
+      <Input type="text" style={{ width: `${textWidth}px` }} value={label} onChange={onChange} />
       <IconPencilEdit color={themeColor} width={16} height={16} />
     </EditableTab>
   );
@@ -113,8 +115,8 @@ const Container = styled.div`
   }
 
   svg {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     fill: ${({ active }) => (active ? themeColor : title)};
   }
 
@@ -143,6 +145,7 @@ const EditableTab = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 10px;
 `;
 
 const CloseIcon = styled.span`

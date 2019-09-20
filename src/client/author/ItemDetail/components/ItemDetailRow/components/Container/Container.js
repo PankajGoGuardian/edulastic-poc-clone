@@ -48,8 +48,9 @@ class Container extends Component {
   };
 
   handleTabChange = tabIndex => {
+    const { row } = this.props;
     this.setState({
-      tabIndex
+      tabIndex: row?.tabs?.length - 1 < tabIndex ? row?.tabs?.length - 1 : tabIndex
     });
   };
 
@@ -185,7 +186,8 @@ class Container extends Component {
                     isPassageQuestion
                       ? {
                           textAlign: "center",
-                          padding: "20px 15px"
+                          padding: "20px 15px",
+                          display: "flex"
                         }
                       : {
                           textAlign: "center",
@@ -196,7 +198,7 @@ class Container extends Component {
                   onChange={e => changeTabTitle(tabIndex, e.target.value)}
                   editable
                   close
-                  onClose={e => removeTab(tabIndex)}
+                  onClose={e => removeTab(key)}
                   isAddTab={false}
                 />
               ))}

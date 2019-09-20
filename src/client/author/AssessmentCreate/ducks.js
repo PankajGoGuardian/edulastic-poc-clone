@@ -182,11 +182,11 @@ function* createAssessmentSaga({ payload }) {
         data: updatedAssessment
       };
 
-      yield call(testsApi.update, updatePayload);
+      const newTest = yield call(testsApi.update, updatePayload);
 
-      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure }));
+      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure, version: newTest.version }));
       yield put(createAssessmentSuccessAction());
-      // yield put(push(`/author/assessments/${assessment._id}`));
+      yield put(push(`/author/assessments/${assessment._id}`));
     } else {
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");

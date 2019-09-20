@@ -255,17 +255,20 @@ export class ResponseFrequencyTable extends Component {
     const modifiedCsvRows = csvRows.map(csvRow => {
       const item = csvRow[6];
 
-      csvRow[6] = item
-        .replace(/"/g, "")
-        .replace(/%/g, "%,")
-        .split(",")
-        .filter(item => item)
-        .map(item => {
-          const option = item.replace(/\d+%/g, "");
-          const number = item.match(/\d+%/g)[0];
-          return `${option ? `${option} :` : ""} ${number || "N/A"}`;
-        })
-        .join(", ");
+      csvRow[6] =
+        '"' +
+        item
+          .replace(/"/g, "")
+          .replace(/%/g, "%,")
+          .split(",")
+          .filter(item => item)
+          .map(item => {
+            const option = item.replace(/\d+%/g, "");
+            const number = item.match(/\d+%/g)[0];
+            return `${option ? `${option} :` : ""} ${number || "N/A"}`;
+          })
+          .join(", ") +
+        '"';
 
       return csvRow.join(",");
     });

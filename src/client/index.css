@@ -1575,6 +1575,9 @@ span.token.active-word {
   height: 35px;
   line-height: 14px;
 }
+.liveinspect-keydata table.frac td {
+  min-width: auto !important;
+}
 
 .liveinspect-keydata .frac .nu {
   border-left: 0;

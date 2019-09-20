@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import striptags from "striptags";
 
-import { secondaryTextColor, fadedBlack, greyDarken } from "@edulastic/colors";
+import { secondaryTextColor, fadedBlack, greyDarken, greenDark } from "@edulastic/colors";
 
 import {
   IconGraphRay as IconRay,
@@ -45,10 +45,22 @@ class DrawingObjects extends Component {
     return type;
   };
 
-  getIconByToolName = (toolName, options) => {
+  getIconByToolName = toolName => {
     if (!toolName) {
       return "";
     }
+
+    const options = {
+      width:
+        toolName === "point"
+          ? 10
+          : toolName === "circle" || toolName === "parabola" || toolName === "polygon"
+          ? 15
+          : 20,
+      height: 20,
+      color: greenDark,
+      stroke: greenDark
+    };
 
     const iconsByToolName = {
       point: () => <IconPoint {...options} />,
@@ -66,9 +78,7 @@ class DrawingObjects extends Component {
       polynom: () => <IconLine {...options} />,
       parabola: () => <IconParabola {...options} />,
       sine: () => <IconSine {...options} />,
-      polygon: () => <IconPolygon {...options} />,
-      area: () => <IconLine {...options} />,
-      dashed: () => <IconLine {...options} />
+      polygon: () => <IconPolygon {...options} />
     };
 
     return iconsByToolName[toolName]();
@@ -88,14 +98,7 @@ class DrawingObjects extends Component {
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
           >
-            <span style={{ padding: "0 5px" }}>
-              {this.getIconByToolName(drawingObject.type, {
-                width: 10,
-                height: 10,
-                color: "#00b2ff",
-                stroke: "#00b2ff"
-              })}
-            </span>
+            <span className="icon">{this.getIconByToolName(drawingObject.type)}</span>
             {this.getLabel(drawingObject)}
           </Button>
         ))}
@@ -127,6 +130,18 @@ const Button = styled.div`
   transition: background-color 0.1s ease-in, border-color 0.1s ease-in;
   border-radius: 4px;
   border: 1px solid transparent;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .icon {
+    display: block;
+    width: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   &.selected,
   &:hover {

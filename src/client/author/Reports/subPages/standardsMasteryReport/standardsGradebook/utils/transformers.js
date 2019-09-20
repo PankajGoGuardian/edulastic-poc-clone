@@ -394,6 +394,10 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       standardsInfo
     };
 
+    if (_item.compareBy === "studentId") {
+      _item["studentId"] = item;
+    }
+
     return _item;
   });
   return arr;

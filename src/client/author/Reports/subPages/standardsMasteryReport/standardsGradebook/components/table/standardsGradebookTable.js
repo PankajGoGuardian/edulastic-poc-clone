@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 import { isEmpty } from "lodash";
@@ -23,7 +24,14 @@ import {
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 
-export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartFilter, isCsvDownloading, role }) => {
+export const StandardsGradebookTable = ({
+  denormalizedData,
+  masteryScale,
+  chartFilter,
+  isCsvDownloading,
+  role,
+  filters = {}
+}) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
     analyseBy: "score(%)",
@@ -73,7 +81,7 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
 
   const filteredTableData = getFilteredTableData();
 
-  const getDisplayValue = (item, _analyseBy, data, record) => {
+  const getDisplayValue = (item = {}, _analyseBy, data, record) => {
     let printData;
     if (item.scorePercent === 0 || item.rawScore === 0 || item.masteryScore === 0) {
       return "N/A";
@@ -154,7 +162,13 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
         render: (data, record) => {
-          return record.compareByLabel;
+          return record.compareBy === "studentId" ? (
+            <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
+              {record.compareByLabel}
+            </Link>
+          ) : (
+            record.compareByLabel
+          );
         }
       },
       {

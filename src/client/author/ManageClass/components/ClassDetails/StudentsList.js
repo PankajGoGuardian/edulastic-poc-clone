@@ -91,34 +91,33 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
 
   return (
     <div style={{ textAlign: "end" }}>
-      <Spin tip="Loading..." spinning={!loaded}>
-        <StudentContent>
-          {empty && (
-            <NoStudents>
-              <StyledIcon type="user-add" fill={lightBlue3} size={45} />
-              <NoConentDesc>
-                <div> There are no students in your class.</div>
-                <p>Add students to your class and begin assigning work</p>
-              </NoConentDesc>
-            </NoStudents>
-          )}
-          {loaded && !empty && (
-            <TableWrapper>
-              <SwitchBox style={{ fontSize: "10px" }}>
-                {showCurrentStudents ? "ACTIVE" : "ALL"}
-                <Switch checked={showCurrentStudents} onClick={showStudentsHandler} />
-              </SwitchBox>
-              <StudentsTable
-                columns={columns}
-                rowSelection={rowSelection}
-                dataSource={filteredStudents}
-                rowKey={rowKey}
-                pagination={false}
-              />
-            </TableWrapper>
-          )}
-        </StudentContent>
-      </Spin>
+      {!loaded ? (
+        <Spin />
+      ) : empty ? (
+        <NoStudents>
+          <StyledIcon type="user-add" fill={lightBlue3} size={45} />
+          <NoConentDesc>
+            <div> There are no students in your class.</div>
+            <p>Add students to your class and begin assigning work</p>
+          </NoConentDesc>
+        </NoStudents>
+      ) : (
+        <TableWrapper>
+          <>
+            <SwitchBox style={{ fontSize: "10px" }}>
+              {showCurrentStudents ? "ACTIVE" : "ALL"}
+              <Switch checked={showCurrentStudents} onClick={showStudentsHandler} />
+            </SwitchBox>
+            <StudentsTable
+              columns={columns}
+              rowSelection={rowSelection}
+              dataSource={filteredStudents}
+              rowKey={rowKey}
+              pagination={false}
+            />
+          </>
+        </TableWrapper>
+      )}
     </div>
   );
 };

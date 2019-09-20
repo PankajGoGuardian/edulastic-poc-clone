@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TableWrapper = styled.div`
   overflow: auto;
   width: 100%;
-  min-height: 600px;
+  height: 100%;
   max-width: 100%;
   margin: auto;
   margin-top: 0;
@@ -14,4 +14,5 @@ export const TableWrapper = styled.div`
   background-position: ${({ imageOptions }) => (imageOptions ? `${imageOptions.x}px ${imageOptions.y}px` : "inherit")};
   padding: 10px;
   position: relative;
+  display: block;
 `;

@@ -9,17 +9,28 @@ import UiInputGroup from "./UiInputGroup";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
-import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../../../constants/constantsForQuestions";
+import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../const";
 
 class PointsList extends Component {
-  hoverSettings = [
-    { label: this.props.t("component.chart.labelOptions.showAlways"), value: SHOW_ALWAYS },
-    { label: this.props.t("component.chart.labelOptions.showByHover"), value: SHOW_BY_HOVER },
-    { label: this.props.t("component.chart.labelOptions.hidden"), value: HIDDEN }
-  ];
+  getHoverSettings = () => {
+    const { t } = this.props;
+    return [
+      { label: t("component.chart.labelOptions.showAlways"), value: SHOW_ALWAYS },
+      { label: t("component.chart.labelOptions.showByHover"), value: SHOW_BY_HOVER },
+      { label: t("component.chart.labelOptions.hidden"), value: HIDDEN }
+    ];
+  };
 
   render() {
-    const { points, handleChange, handleDelete, t, fillSections, cleanSections, onlyByHoverSetting } = this.props;
+    const {
+      points,
+      handleChange,
+      handleDelete,
+      t,
+      fillSections,
+      cleanSections,
+      showLabelVisibilitySetting
+    } = this.props;
 
     return (
       <Fragment>
@@ -48,14 +59,14 @@ class PointsList extends Component {
             >
               {t("component.chart.interactive")}
             </Checkbox>
-            {onlyByHoverSetting && (
+            {showLabelVisibilitySetting && (
               <Select
                 value={dot.labelVisibility || SHOW_ALWAYS}
                 style={{ width: "150px" }}
                 onSelect={value => handleChange(index)("labelVisibility", value)}
               >
-                {this.hoverSettings.map((setting, index) => (
-                  <Select.Option key={`setting-${index}`} value={setting.value}>
+                {this.getHoverSettings().map((setting, i) => (
+                  <Select.Option key={`setting-${i}`} value={setting.value}>
                     {setting.label}
                   </Select.Option>
                 ))}
@@ -74,12 +85,14 @@ PointsList.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  showLabelVisibilitySetting: PropTypes.bool
 };
 
 PointsList.defaultProps = {
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  showLabelVisibilitySetting: false
 };
 
 export default withAddButton(PointsList);

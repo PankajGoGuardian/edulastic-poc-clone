@@ -64,7 +64,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         ) {
           initValue = yAxisMax;
         }
-        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue, onlyByHover: false };
+        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue };
 
         draft.chart_data.data.push({ ...newPoint });
 
@@ -209,7 +209,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       />
 
       <PointsList
-        onlyByHoverSetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
+        showLabelVisibilitySetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

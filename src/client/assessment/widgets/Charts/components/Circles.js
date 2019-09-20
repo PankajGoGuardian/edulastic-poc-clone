@@ -4,12 +4,14 @@ import PropTypes from "prop-types";
 import { themeColorLight, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
-import { EDIT, CLEAR, CHECK, SHOW, SHOW_ALWAYS, SHOW_BY_HOVER } from "../../../constants/constantsForQuestions";
+import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
 import { Bar, ActiveBar, Text, Circle, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
 const Circles = ({
+  item,
   bars,
   onPointOver,
   onMouseDown,
@@ -22,6 +24,8 @@ const Circles = ({
   deleteMode
 }) => {
   const { height, margin, yAxisMin, yAxisMax, stepSize } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
 
@@ -36,7 +40,7 @@ const Circles = ({
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, { height: height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
+  const getCenterY = dot => convertUnitToPx(dot.y, { height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
@@ -94,7 +98,7 @@ const Circles = ({
             height={getBarHeight(dot.y)}
             color="transparent"
           />
-          {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment>
               <StrokedRect
                 hoverState={isHovered(index)}
@@ -124,8 +128,8 @@ const Circles = ({
             x={getCenterX(index) + step / 2}
             y={height + 20}
           >
-            {(dot.labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
-              ((dot.labelVisibility === SHOW_ALWAYS || !dot.labelVisibility) && dot.x)}
+            {(data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
+              ((data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility) && dot.x)}
           </Text>
         </Fragment>
       ))}
@@ -134,6 +138,7 @@ const Circles = ({
 };
 
 Circles.propTypes = {
+  item: PropTypes.object.isRequired,
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -149,9 +154,13 @@ Circles.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  saveAnswer: PropTypes.func,
+  deleteMode: PropTypes.bool
 };
 Circles.defaultProps = {
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  saveAnswer: () => {},
+  deleteMode: false
 };
 export default Circles;

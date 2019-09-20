@@ -256,7 +256,6 @@
       "xAxisLabel": "X Axis Label",
       "yAxisLabel": "Y Axis Label",
       "interactive": "Interactive",
-      "showLabelOnlyByHover": "Show label only by hover",
       "addPoint": "Add Point",
       "point": "Point",
       "points": "Points",

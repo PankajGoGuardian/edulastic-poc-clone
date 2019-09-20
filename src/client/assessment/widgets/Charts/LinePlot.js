@@ -10,6 +10,7 @@ import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
 const LinePlot = ({
+  item,
   data,
   previewTab,
   saveAnswer,
@@ -103,7 +104,8 @@ const LinePlot = ({
       <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 
       <Crosses
-        saveAnswer={active => saveAnswer(localData, active)}
+        item={item}
+        saveAnswer={i => saveAnswer(localData, i)}
         deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
@@ -123,6 +125,7 @@ const LinePlot = ({
 };
 
 LinePlot.propTypes = {
+  item: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   gridParams: PropTypes.shape({
@@ -135,13 +138,17 @@ LinePlot.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   disableResponse: PropTypes.bool,
+  deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired
+  correct: PropTypes.array.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 LinePlot.defaultProps = {
-  disableResponse: false
+  disableResponse: false,
+  deleteMode: false,
+  toggleBarDragging: () => {}
 };
 
 export default withGrid(LinePlot);

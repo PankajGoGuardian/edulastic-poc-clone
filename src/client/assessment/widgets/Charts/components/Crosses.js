@@ -4,12 +4,14 @@ import PropTypes from "prop-types";
 import { themeColorLight, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
-import { EDIT, CLEAR, CHECK, SHOW, SHOW_ALWAYS, SHOW_BY_HOVER } from "../../../constants/constantsForQuestions";
+import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
 import { Bar, ActiveBar, Text, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
 const Crosses = ({
+  item,
   bars,
   onPointOver,
   onMouseDown,
@@ -22,6 +24,8 @@ const Crosses = ({
   deleteMode
 }) => {
   const { height, margin, yAxisMin } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
 
@@ -100,7 +104,7 @@ const Crosses = ({
             height={getBarHeight(dot.y)}
             color="transparent"
           />
-          {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment>
               <StrokedRect
                 hoverState={isHovered(index)}
@@ -130,8 +134,8 @@ const Crosses = ({
             x={getCenterX(index) + step / 2}
             y={height + 20}
           >
-            {(dot.labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
-              ((dot.labelVisibility === SHOW_ALWAYS || !dot.labelVisibility) && dot.x)}
+            {(data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
+              ((data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility) && dot.x)}
           </Text>
         </Fragment>
       ))}
@@ -140,6 +144,7 @@ const Crosses = ({
 };
 
 Crosses.propTypes = {
+  item: PropTypes.object.isRequired,
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -155,9 +160,13 @@ Crosses.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  saveAnswer: PropTypes.func,
+  deleteMode: PropTypes.bool
 };
 Crosses.defaultProps = {
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  saveAnswer: () => {},
+  deleteMode: false
 };
 export default Crosses;

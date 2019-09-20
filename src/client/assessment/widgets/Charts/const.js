@@ -7,3 +7,7 @@ export const SETTING_NAME_SHOW_GRIDLINES = "showGridlines";
 export const SIZE_DEFAULT = "default";
 export const SIZE_LARGE = "large";
 export const SIZE_SMALL = "small";
+
+export const SHOW_ALWAYS = "showAlways";
+export const SHOW_BY_HOVER = "showByHover";
+export const HIDDEN = "hidden";

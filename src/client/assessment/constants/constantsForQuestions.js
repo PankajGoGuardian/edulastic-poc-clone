@@ -26,10 +26,6 @@ export const HEIGHT = "height";
 export const ALT_TEXT = "altText";
 export const SOURCE = "source";
 
-export const SHOW_ALWAYS = "showAlways";
-export const SHOW_BY_HOVER = "onlyByHover";
-export const HIDDEN = "hidden";
-
 export const templateWithTokens = [
   {
     value: "Risus et tincidunt turpis facilisis.",

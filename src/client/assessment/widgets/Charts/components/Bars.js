@@ -10,6 +10,7 @@ import { Bar, ActiveBar } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Bars = ({
+  item,
   bars,
   onPointOver,
   onMouseDown,
@@ -22,6 +23,8 @@ const Bars = ({
   saveAnswer
 }) => {
   const { margin, yAxisMin } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
 
@@ -67,7 +70,7 @@ const Bars = ({
             width={step * 0.8}
             height={getBarHeight(dot.y)}
           />
-          {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <ActiveBar
               onClick={deleteMode ? () => saveAnswer(index) : () => {}}
               onMouseEnter={handleMouse(index)}
@@ -88,6 +91,7 @@ const Bars = ({
 };
 
 Bars.propTypes = {
+  item: PropTypes.object.isRequired,
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -103,9 +107,13 @@ Bars.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  saveAnswer: PropTypes.func,
+  deleteMode: PropTypes.bool
 };
 Bars.defaultProps = {
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  saveAnswer: () => {},
+  deleteMode: false
 };
 export default Bars;

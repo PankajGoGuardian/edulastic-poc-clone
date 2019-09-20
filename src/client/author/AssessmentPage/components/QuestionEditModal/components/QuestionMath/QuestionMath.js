@@ -87,8 +87,12 @@ export default class QuestionMath extends React.Component {
       <ThemeProvider theme={themes.default}>
         <QuestionFormWrapper>
           <FormGroup>
-            <FormLabel>Correct Answer</FormLabel>
-            <MathFormulaAnswerMethod onChange={this.handleAnswerChange} item={question} {...value} />
+            <MathFormulaAnswerMethod
+              labelValue="Correct Answer"
+              onChange={this.handleAnswerChange}
+              item={question}
+              {...value}
+            />
           </FormGroup>
           <FormGroup>
             <InputNumber min={0} value={score} onChange={this.handleScoreChange} />

@@ -106,8 +106,8 @@ const ClassDetails = ({
       </Modal>
       <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
-        <SubHeader
-          {...selectedClass}
+        <MainInfo
+          entity={selectedClass}
           fetchClassList={fetchClassList}
           viewAssessmentHandler={viewAssessmentHandler}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
@@ -115,10 +115,8 @@ const ClassDetails = ({
           syncGCModal={() => setOpenGCModal(true)}
           archiveClass={archiveClass}
         />
-        <StyledDivider orientation="left" />
-        <MainInfo entity={selectedClass} />
 
-        <ActionContainer loadStudents={loadStudents} />
+        <ActionContainer loadStudents={loadStudents} history={history} />
 
         <StudentsList selectStudent selectedClass={selectedClass} />
       </Container>

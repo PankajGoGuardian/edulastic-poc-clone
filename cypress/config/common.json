@@ -1,17 +1,18 @@
 {
-  "baseUrl": "https://edulastic-poc.snapwiz.net",
+  "baseUrl": "http://localhost:3001",
   "API_URL": "https://edulastic-poc.snapwiz.net/api",
-  "defaultCommandTimeout": 20000,
-  "integrationFolder": "cypress/e2e/visual-regression-suites",
+  "defaultCommandTimeout": 10000,
+  "viewportHeight": 900,
+  "viewportWidth": 1600,
+  "video": false,
+  "integrationFolder": "cypress/e2e/suites",
   "modifyObstructiveCode": false,
   "requestTimeout": 30000,
   "reporter": "mocha-multi-reporters",
   "reporterOptions": {
     "configFile": "cypress/config/reporter-config.json"
   },
-  "video": false,
-  "SCREEN_SIZES": [[1600, 900], [1366, 768], [1024, 650]],
   "env": {
-    "ENVIRONMENT": "poc"
+    "ENVIRONMENT": "local"
   }
 }

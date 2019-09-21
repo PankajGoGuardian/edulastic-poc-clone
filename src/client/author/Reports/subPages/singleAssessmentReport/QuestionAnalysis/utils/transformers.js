@@ -1,5 +1,5 @@
 import { getHSLFromRange1 } from "../../../../common/util";
-import { groupBy, keyBy, values, flatten } from "lodash";
+import { groupBy, keyBy, values, flatten, orderBy } from "lodash";
 import { getFormattedTimeInMins } from "./helpers";
 
 export const getChartData = (rawData = []) => {
@@ -58,7 +58,7 @@ export const getChartData = (rawData = []) => {
 
   let _arr = values(groupedArr);
   _arr = flatten(_arr);
-  return _arr;
+  return orderBy(_arr, "questionId");
 };
 
 export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
@@ -206,5 +206,6 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
       comparedByClass
     };
   });
-  return arr;
+
+  return orderBy(arr, "questionId");
 };

@@ -20,7 +20,7 @@ const StudentAssessmentProfile = ({
   match,
   loading,
   settings,
-  SARFilterData,
+  SPRFilterData,
   studentAssessmentProfile,
   getStudentAssessmentProfileRequestAction,
   isCsvDownloading,
@@ -28,12 +28,14 @@ const StudentAssessmentProfile = ({
 }) => {
   const { selectedStudent } = settings;
 
+  const studentClassData = SPRFilterData?.data?.result?.studentClassData || [];
+
   const [selectedTests, setSelectedTests] = useState([]);
 
   const rawData = get(studentAssessmentProfile, "data.result", {});
 
   const [chartData, tableData] = useMemo(() => {
-    const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo);
+    const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo, studentClassData);
     const tableData = getData(rawData, chartData, bandInfo);
     return [chartData, tableData];
   }, [rawData, bandInfo]);
@@ -90,7 +92,7 @@ const enhance = connect(
   state => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
-    SARFilterData: getReportsSPRFilterData(state),
+    SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
     bandInfoSelected: getBandInfoSelected(state)
   }),

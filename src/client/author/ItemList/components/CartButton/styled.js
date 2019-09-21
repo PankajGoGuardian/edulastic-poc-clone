@@ -36,9 +36,10 @@ export const CartButtonWrapper = styled(Button)`
   &:hover,
   &:focus,
   &:active {
-    background: ${white} url(${iconCart});
+    background: ${white} url(${iconCart}) -20px no-repeat;
     color: ${themeColor};
     border-color: ${themeColor};
+    background-size: 60% 50%;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

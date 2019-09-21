@@ -33,12 +33,7 @@ const StyledIcon = styled(Icon)`
 export const LinkItem = props => {
   return (
     <Item>
-      <Link
-        to={props.data.location}
-        onClick={e => {
-          props.onClick(e.currentTarget.href);
-        }}
-      >
+      <Link to={props.data.location}>
         {props.data.title}
         <StyledIcon type="right" />
       </Link>

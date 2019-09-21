@@ -54,6 +54,12 @@ const StudentAutoComplete = ({
 
   const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
 
+  useEffect(() => {
+    if (isEmpty(studentList)) {
+      searchUser("a", orgData);
+    }
+  }, []);
+
   if (studentList !== prevStudentList && !isEmpty(studentList) && isEmpty(prevStudentList)) {
     // first Render
     setPrevStudentList(studentList);

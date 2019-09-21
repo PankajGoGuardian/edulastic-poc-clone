@@ -26,34 +26,6 @@ import {
   getCsvDownloadingState
 } from "./ducks";
 
-import { resetAssessmentSummaryAction } from "./subPages/singleAssessmentReport/AssessmentSummary/ducks";
-import { resetPeerPerformanceAction } from "./subPages/singleAssessmentReport/PeerPerformance/ducks";
-import { resetQuestionAnalysisAction } from "./subPages/singleAssessmentReport/QuestionAnalysis/ducks";
-import { resetResponseFrequencyAction } from "./subPages/singleAssessmentReport/ResponseFrequency/ducks";
-import { resetPerformanceByStandardsAction } from "./subPages/singleAssessmentReport/PerformanceByStandards/ducks";
-import { resetPerformanceByStudentsAction } from "./subPages/singleAssessmentReport/PerformanceByStudents/ducks";
-
-import { resetPeerProgressAnalysisAction } from "./subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
-import { resetPerformanceOverTimeAction } from "./subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
-import { resetStudentProgressAction } from "./subPages/multipleAssessmentReport/StudentProgress/ducks";
-
-import { resetStandardsGradebookAction } from "./subPages/standardsMasteryReport/standardsGradebook/ducks";
-import { resetStandardsPerformanceSummaryAction } from "./subPages/standardsMasteryReport/standardsPerformance/ducks";
-
-import { resetStudentAssessmentProfileAction } from "./subPages/studentProfileReport/StudentAssessmentProfile/ducks";
-import { resetStudentMasteryProfileAction } from "./subPages/studentProfileReport/StudentMasteryProfile/ducks";
-import { resetStudentProfileSummaryAction } from "./subPages/studentProfileReport/StudentProfileSummary/ducks";
-
-import { resetSARFiltersAction } from "./subPages/singleAssessmentReport/common/filterDataDucks";
-import { resetMARFiltersAction } from "./subPages/multipleAssessmentReport/common/filterDataDucks";
-import { resetSMRFiltersAction } from "./subPages/standardsMasteryReport/common/filterDataDucks";
-import { resetSPRFiltersAction } from "./subPages/studentProfileReport/common/filterDataDucks";
-
-import { resetSARSettingsAction } from "./subPages/singleAssessmentReport/ducks";
-// import {  } from "./subPages/multipleAssessmentReport";
-// import {  } from "./subPages/standardsMasteryReport/";
-import { resetSPRSettingsAction } from "./subPages/studentProfileReport/ducks";
-
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
   const [navigationItems, setNavigationItems] = useState([]);
@@ -127,7 +99,14 @@ const Container = props => {
       <StyledReportsContentContainer>
         {!props.match.params.reportType ? <Route exact path={props.match.path} component={Reports} /> : null}
         <Route
-          path={`/author/reports/assessment-summary/test/`}
+          path={[
+            `/author/reports/assessment-summary/test/`,
+            `/author/reports/peer-performance/test/`,
+            `/author/reports/question-analysis/test/`,
+            `/author/reports/response-frequency/test/`,
+            `/author/reports/performance-by-standards/test/`,
+            `/author/reports/performance-by-students/test/`
+          ]}
           render={_props => (
             <SingleAssessmentReportContainer
               {..._props}
@@ -138,62 +117,11 @@ const Container = props => {
           )}
         />
         <Route
-          path={`/author/reports/peer-performance/test/`}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={expandFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/question-analysis/test/`}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/response-frequency/test/`}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={expandFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/performance-by-standards/test/`}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={expandFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/performance-by-students/test/`}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={expandFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/peer-progress-analysis`}
+          path={[
+            `/author/reports/peer-progress-analysis`,
+            `/author/reports/student-progress`,
+            `/author/reports/performance-over-time`
+          ]}
           render={_props => (
             <MultipleAssessmentReportContainer
               {..._props}
@@ -204,29 +132,7 @@ const Container = props => {
           )}
         />
         <Route
-          path={`/author/reports/student-progress`}
-          render={_props => (
-            <MultipleAssessmentReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/performance-over-time`}
-          render={_props => (
-            <MultipleAssessmentReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/standards-gradebook`}
+          path={[`/author/reports/standards-gradebook`, `/author/reports/standards-performance-summary`]}
           render={_props => (
             <StandardsMasteryReportContainer
               {..._props}
@@ -237,40 +143,11 @@ const Container = props => {
           )}
         />
         <Route
-          path={`/author/reports/standards-performance-summary`}
-          render={_props => (
-            <StandardsMasteryReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/student-mastery-profile/student/`}
-          render={_props => (
-            <StudentProfileReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/student-assessment-profile/student/`}
-          render={_props => (
-            <StudentProfileReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={props.match.params.reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
-        />
-        <Route
-          path={`/author/reports/student-profile-summary/student/`}
+          path={[
+            `/author/reports/student-mastery-profile/student/`,
+            `/author/reports/student-assessment-profile/student/`,
+            `/author/reports/student-profile-summary/student/`
+          ]}
           render={_props => (
             <StudentProfileReportContainer
               {..._props}
@@ -287,59 +164,8 @@ const Container = props => {
 
 const Reports = connect(
   state => {},
-  {
-    resetSARFiltersAction,
-    resetSPRFiltersAction,
-    resetMARFiltersAction,
-    resetSMRFiltersAction,
-    resetSARSettingsAction,
-    resetSPRSettingsAction,
-    resetAssessmentSummaryAction,
-    resetPeerPerformanceAction,
-    resetQuestionAnalysisAction,
-    resetResponseFrequencyAction,
-    resetPerformanceByStandardsAction,
-    resetPerformanceByStudentsAction,
-    resetStudentAssessmentProfileAction,
-    resetStudentMasteryProfileAction,
-    resetStudentProfileSummaryAction,
-    resetPeerProgressAnalysisAction,
-    resetPerformanceOverTimeAction,
-    resetStudentProgressAction,
-    resetSMRFiltersAction,
-    resetStandardsGradebookAction,
-    resetStandardsPerformanceSummaryAction
-  }
+  {}
 )(props => {
-  const onLinkClick = (clickedLink, reportType) => {
-    if (reportType === "singleAssessmentReport") {
-      props.resetSARFiltersAction(clickedLink);
-      props.resetSARSettingsAction();
-
-      props.resetAssessmentSummaryAction();
-      props.resetPeerPerformanceAction();
-      props.resetQuestionAnalysisAction();
-      props.resetResponseFrequencyAction();
-      props.resetPerformanceByStandardsAction();
-      props.resetPerformanceByStudentsAction();
-    } else if (reportType === "studentProfileReport") {
-      props.resetSPRFiltersAction();
-      props.resetSPRSettingsAction();
-      // props.resetStudentAssessmentProfileAction();
-      // props.resetStudentMasteryProfileAction();
-      // props.resetStudentProfileSummaryAction();
-    } else if (reportType === "multipleAssessmentReport") {
-      props.resetMARFiltersAction();
-      // props.resetPeerProgressAnalysisAction();
-      // props.resetPerformanceOverTimeAction();
-      // props.resetStudentProgressAction();
-    } else if (reportType === "standardsMasteryReport") {
-      props.resetSMRFiltersAction();
-      // props.resetStandardsGradebookAction();
-      // props.resetStandardsPerformanceSummaryAction();
-    }
-  };
-
   return (
     <StyledContainer>
       <Row gutter={20}>
@@ -351,12 +177,12 @@ const Reports = connect(
           <Col md={12} xs={24}>
             <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                <SingleAssessmentReport onClickCB={onLinkClick} />
+                <SingleAssessmentReport />
               </StyledCard>
             </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
-                <StudentProfileReport onClickCB={onLinkClick} />
+                <StudentProfileReport />
               </StyledCard>
             </FeaturesSwitch>
           </Col>
@@ -364,11 +190,11 @@ const Reports = connect(
         <Col md={12} xs={24}>
           <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
             <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
-              <MultipleAssessmentReport onClickCB={onLinkClick} />
+              <MultipleAssessmentReport />
             </StyledCard>
           </FeaturesSwitch>
           <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-            <StandardsMasteryReport onClickCB={onLinkClick} />
+            <StandardsMasteryReport />
           </StyledCard>
         </Col>
       </Row>

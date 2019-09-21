@@ -19,7 +19,7 @@ const ClozeInputAnswerDisplay = ({ resprops, id }) => {
   const { inputs: _userAnwers = [] } = answers;
   const val = _userAnwers[id] ? _userAnwers[id].value : "";
   return (
-    <StyledSpan height={uiStyles.height} width={uiStyles.width}>
+    <StyledSpan height={uiStyles.height} width={uiStyles.minWidth}>
       {val}
     </StyledSpan>
   );

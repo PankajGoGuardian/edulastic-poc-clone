@@ -52,6 +52,7 @@ const Crosses = ({
   const handleMouse = index => () => {
     handleMouseAction(index)();
     setHoveredIndex(index);
+    handleLabelVisibility(index);
   };
 
   const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));

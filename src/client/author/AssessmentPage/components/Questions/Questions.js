@@ -16,7 +16,7 @@ import {
 } from "@edulastic/constants/const/questionType";
 import { methods } from "@edulastic/constants/const/math";
 
-import { getPreviewSelector, getViewSelector } from "../../../src/selectors/view";
+import { getPreviewSelector } from "../../../src/selectors/view";
 import { checkAnswerAction } from "../../../src/actions/testItem";
 import { changePreviewAction } from "../../../src/actions/view";
 import { EXACT_MATCH } from "../../../../assessment/constants/constantsForQuestions";
@@ -178,6 +178,7 @@ class Questions extends React.Component {
     super(props);
     this.containerRef = React.createRef();
   }
+
   static propTypes = {
     list: PropTypes.array,
     questionsById: PropTypes.object,
@@ -207,18 +208,6 @@ class Questions extends React.Component {
     currentEditQuestionIndex: -1
   };
 
-  componentDidUpdate(prevProps) {
-    const { highlighted } = this.props;
-    const { highlighted: prevHighlighted } = prevProps;
-
-    if (highlighted && highlighted !== prevHighlighted) {
-      const questionNode = document.getElementById(highlighted);
-
-      if (questionNode) {
-        questionNode.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }
   scrollToBottom = () => {
     const reference = this.containerRef;
     if (reference.current) {
@@ -235,11 +224,8 @@ class Questions extends React.Component {
 
     const lastQuestion = questions[questions.length - 1];
 
-    const questionIndex = index
-      ? index
-      : lastQuestion && lastQuestion.qIndex
-      ? lastQuestion.qIndex + 1
-      : questions.length + 1;
+    const questionIndex =
+      index || (lastQuestion && lastQuestion.qIndex ? lastQuestion.qIndex + 1 : questions.length + 1);
 
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
@@ -367,7 +353,7 @@ class Questions extends React.Component {
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
     if (list.length > 0 && list[currentEditQuestionIndex]) {
-      shouldModalBeVisibile = list[currentEditQuestionIndex]["type"] !== "sectionLabel";
+      shouldModalBeVisibile = list[currentEditQuestionIndex].type !== "sectionLabel";
     }
     return (
       <Fragment>

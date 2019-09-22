@@ -41,8 +41,7 @@ const PDFPreview = ({
   questionsById,
   answersById,
   renderExtra = "",
-  previewMode,
-  viewMode
+  previewMode
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);

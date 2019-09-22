@@ -6,7 +6,7 @@ import { white, green } from "@edulastic/colors";
 export const ThumbnailsWrapper = styled.div`
   position: relative;
   width: ${({ review }) => (review ? "243px" : "213px")};
-  height: calc(100vh - 62px);
+  height: calc(100vh - 96px);
   overflow-y: auto;
   padding: 30px 28px;
   padding-right: ${({ review }) => (review ? "28px" : "13px")};

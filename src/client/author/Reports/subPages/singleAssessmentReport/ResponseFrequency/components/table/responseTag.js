@@ -8,7 +8,7 @@ import { Row, Col, Tag } from "antd";
 import { getHSLFromRange1, getHSLFromRange2 } from "../../../../../common/util";
 import { StyledResponseTagContainer } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { darkGrey } from "@edulastic/colors";
+import { darkGrey, themeColorLight } from "@edulastic/colors";
 
 export class ResponseTag extends Component {
   constructor(props) {
@@ -79,7 +79,7 @@ export class ResponseTag extends Component {
     let value = Number(get(this.props, "data.value", 0));
 
     let style = this.props.data.isCorrect
-      ? { borderColor: getHSLFromRange1(100), color: getHSLFromRange1(100) }
+      ? { borderColor: themeColorLight, color: themeColorLight }
       : value > this.props.incorrectFrequencyThreshold
       ? { borderColor: getHSLFromRange2(100 - value), color: getHSLFromRange2(100 - value) }
       : { borderColor: "#cccccc" };

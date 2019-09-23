@@ -1,14 +1,13 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all } from "redux-saga/effects";
-import { get } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
-import { replaceTestItemsAction } from "../../author/TestPage/ducks";
-// types
-export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
+import { receiveTestByIdSuccess } from "../../author/TestPage/ducks";
+import { markQuestionLabel } from "../../assessment/Transformer";
 
+export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
 export const SET_FEEDBACK = "[studentItems] set feedback";
 
@@ -27,24 +26,10 @@ function* loadTestActivityReport({ payload }) {
       call(testsApi.getById, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
-
-    let count = 0;
-    const testItems = get(test, "testItems", []);
-    testItems.forEach(item => {
-      const questions = get(item, "data.questions", []);
-      questions.forEach(q => {
-        q.qLabel = `Q${++count}`;
-      });
-    });
-
-    yield put(
-      replaceTestItemsAction({
-        ...test,
-        testItems
-      })
-    );
+    yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
+    markQuestionLabel(test.testItems);
     yield put(setTestItemsAction(test.testItems));
     yield put(setPassagesDataAction(test.passages || []));
 

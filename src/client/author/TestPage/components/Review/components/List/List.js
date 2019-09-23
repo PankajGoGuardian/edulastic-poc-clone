@@ -1,13 +1,13 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
+import { SortableContainer } from "react-sortable-hoc";
 import { get } from "lodash";
 import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
-import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
-import { getQuestionType, markQuestionLabel } from "../../../../../dataUtils";
+import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionCheckbox } from "./styled";
+import { getQuestionType } from "../../../../../dataUtils";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -23,13 +23,9 @@ const transformItemRow = ([row], qid) => [
 ];
 
 const splitItems = (item, testItem) => {
-  return (
-    testItem.data &&
-    testItem.data.questions.map(({ id: qid, ...qRest }) => ({
-      item: transformItemRow(item, qid),
-      question: { id: qid, ...qRest }
-    }))
-  );
+  return testItem.data?.questions.map(({ id }) => ({
+    item: transformItemRow(item, id)
+  }));
 };
 
 export const SortableItem = ({
@@ -46,18 +42,14 @@ export const SortableItem = ({
   metaInfoData,
   onPreview,
   questions,
-  setQuestionNumber,
   passagesKeyed,
   mobile
 }) => {
-  // const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
   const handleCheck = e => onCheck(indx, e.target.checked);
   /**
    * @type {{item:Object,question:Object}[]}
    */
-  let items = testItem.itemLevelScoring
-    ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
-    : splitItems(item, testItem);
+  let items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
   }
@@ -68,11 +60,9 @@ export const SortableItem = ({
           <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
             {isEditable && !collapseView && (
               <FlexContainer flexDirection="column" justifyContent="center">
-                {/* <DragHandle /> */}
                 <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
               </FlexContainer>
             )}
-
             <FlexContainer>
               <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
                 Preview
@@ -109,60 +99,55 @@ export const SortableItem = ({
           </FlexContainer>
         </FlexContainer>
       ) : (
-        items.map(({ item: _item, question }, index) => {
-          //pick only questions required for the current loop and create question number for the same
-          const rowQuestions = setQuestionNumber(_item);
-          return (
-            <FlexContainer justifyContent="space-between" alignItems="flex-start">
-              <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
-                {!collapseView && (
-                  <FlexContainer
-                    style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", width: "5%" }}
-                    flexDirection="column"
-                    justifyContent="center"
-                  >
-                    {/* {index === 0 && <DragHandle />} */}
-                    {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
-                  </FlexContainer>
-                )}
-                <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-                  <TestItemPreview
-                    style={{
-                      marginTop: -10,
-                      padding: 0,
-                      boxShadow: "none",
-                      display: "flex",
-                      width: collapseView ? "100%" : "95%"
-                    }}
-                    cols={_item}
-                    preview="show"
-                    metaData={metaInfoData.id}
-                    disableResponse
-                    verticalDivider={item.verticalDivider}
-                    scrolling={item.scrolling}
-                    questions={rowQuestions}
-                    windowWidth="100%"
-                    isReviewTab
-                    testItem
-                  />
-                </AnswerContext.Provider>
-              </FlexContainer>
-              <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
-                <FlexContainer flexDirection="column" style={{ margin: 0 }}>
-                  <PointsLabel>Points</PointsLabel>
-                  <PointsInput
-                    size="large"
-                    type="number"
-                    disabled={!owner || !isEditable}
-                    value={points}
-                    onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
-                  />
+        items.map(({ item: _item }, index) => (
+          <FlexContainer justifyContent="space-between" alignItems="flex-start">
+            <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
+              {!collapseView && (
+                <FlexContainer
+                  style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", width: "5%" }}
+                  flexDirection="column"
+                  justifyContent="center"
+                >
+                  {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
                 </FlexContainer>
-                {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
-              </FlexContainer>
+              )}
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <TestItemPreview
+                  style={{
+                    marginTop: -10,
+                    padding: 0,
+                    boxShadow: "none",
+                    display: "flex",
+                    width: collapseView ? "100%" : "95%"
+                  }}
+                  cols={_item}
+                  preview="show"
+                  metaData={metaInfoData.id}
+                  disableResponse
+                  verticalDivider={item.verticalDivider}
+                  scrolling={item.scrolling}
+                  questions={questions}
+                  windowWidth="100%"
+                  isReviewTab
+                  testItem
+                />
+              </AnswerContext.Provider>
             </FlexContainer>
-          );
-        })
+            <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
+              <FlexContainer flexDirection="column" style={{ margin: 0 }}>
+                <PointsLabel>Points</PointsLabel>
+                <PointsInput
+                  size="large"
+                  type="number"
+                  disabled={!owner || !isEditable}
+                  value={points}
+                  onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+                />
+              </FlexContainer>
+              {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+            </FlexContainer>
+          </FlexContainer>
+        ))
       )}
       <FlexContainer style={{ margin: "20px 0" }}>
         <MetaInfoCell data={metaInfoData} itemTableView={true} />
@@ -207,7 +192,6 @@ const List = SortableContainer(
       return audio;
     };
 
-    const setQuestionNumber = markQuestionLabel(questions);
     return (
       <div>
         {rows.map((item, i) => (
@@ -227,7 +211,6 @@ const List = SortableContainer(
                 testItems[i].data.questions &&
                 (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
-            setQuestionNumber={setQuestionNumber}
             index={i}
             owner={owner}
             indx={i}

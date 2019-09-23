@@ -85,20 +85,3 @@ export const getInterestedStandards = (summary = {}, interestedCurriculums) => {
   }
   return interestedStandards;
 };
-
-export const markQuestionLabel = questions => {
-  let questionNumber = 0;
-  return _item => {
-    const rowQuestions = {};
-    const allQreferences = _item.flatMap(item => item.widgets.map(item => item.reference));
-    allQreferences.forEach(ref => {
-      if (questions[ref]?.isPassage) {
-        rowQuestions[ref] = questions[ref];
-      } else {
-        questionNumber++;
-        rowQuestions[ref] = { ...questions[ref], qLabel: `Q${questionNumber}` };
-      }
-    });
-    return rowQuestions;
-  };
-};

@@ -272,6 +272,12 @@ class AssessmentPlayerDefault extends React.Component {
     return null;
   }
 
+  componentDidUpdate(previousProps) {
+    if (this.props.currentItem !== previousProps.currentItem) {
+      this.scrollElementRef.current.scrollTop = 0;
+    }
+  }
+
   render() {
     const {
       theme,

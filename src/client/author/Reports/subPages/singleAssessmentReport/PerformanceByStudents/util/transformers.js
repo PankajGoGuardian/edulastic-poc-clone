@@ -15,7 +15,8 @@ import {
   forEach,
   includes,
   maxBy,
-  get
+  get,
+  round
 } from "lodash";
 import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
@@ -112,7 +113,7 @@ export const normaliseTableData = (rawData, data) => {
         return relatedGroup.schoolId == school.schoolId;
       }) || {};
 
-    const classAvg = ceil(
+    const classAvg = round(
       (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
     );
     let studentScore = 0;
@@ -131,8 +132,8 @@ export const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
-      schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
-      districtAvg: ceil(districtAvgPerf || 0),
+      schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
+      districtAvg: round(districtAvgPerf || 0),
       studentScore,
       classAvg: classAvg,
       assessmentScore,

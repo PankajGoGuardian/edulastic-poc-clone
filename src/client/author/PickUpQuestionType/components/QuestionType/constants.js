@@ -1924,7 +1924,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],

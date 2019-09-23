@@ -195,7 +195,21 @@ class Worksheet extends React.Component {
     if (pageIndex === 0) return;
 
     const nextIndex = pageIndex - 1;
-    const { pageStructure, setTestData, annotations } = this.props;
+    const {
+      pageStructure,
+      setTestData,
+      annotations = [],
+      freeFormNotes = {},
+      itemDetail,
+      userWork,
+      saveUserWork
+    } = this.props;
+
+    const newFreeFormNotes = {
+      ...freeFormNotes,
+      [nextIndex]: freeFormNotes[pageIndex],
+      [pageIndex]: freeFormNotes[nextIndex]
+    };
 
     const newAnnotations = annotations.map(annotation => ({
       ...annotation,
@@ -208,7 +222,14 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
+    const id = itemDetail?.item?._id;
+    if (id) {
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
+      });
+    }
     setTestData({
+      freeFormNotes: newFreeFormNotes,
       annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
@@ -216,12 +237,24 @@ class Worksheet extends React.Component {
   };
 
   handleMovePageDown = pageIndex => () => {
-    const { pageStructure, setTestData, annotations = [] } = this.props;
-
+    const {
+      pageStructure,
+      setTestData,
+      annotations = [],
+      freeFormNotes = {},
+      itemDetail,
+      saveUserWork,
+      userWork
+    } = this.props;
     if (pageIndex === pageStructure.length - 1) return;
 
     const nextIndex = pageIndex + 1;
 
+    const newFreeFormNotes = {
+      ...freeFormNotes,
+      [nextIndex]: freeFormNotes[pageIndex],
+      [pageIndex]: freeFormNotes[nextIndex]
+    };
     const newAnnotations = annotations.map(annotation => ({
       ...annotation,
       page:
@@ -233,8 +266,15 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
+    const id = itemDetail?.item?._id;
+    if (id) {
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
+      });
+    }
     setTestData({
       annotations: newAnnotations,
+      freeFormNotes: newFreeFormNotes,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);
@@ -363,7 +403,7 @@ class Worksheet extends React.Component {
       questionsById,
       answersById,
       pageStructure,
-      scratchPad,
+      scratchPad = {},
       freeFormNotes = {}
     } = this.props;
 

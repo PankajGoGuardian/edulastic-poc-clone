@@ -25,6 +25,7 @@ import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
 import { updateItemsDocBasedByIdAction } from "../ItemDetail/ducks";
+import { saveUserWorkAction } from "../../assessment/actions/userWork";
 // constants
 
 const testItemStatusConstants = {
@@ -506,6 +507,9 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     yield put(setTestItemsAction(entity.testItems.map(item => item._id)));
+    if (!isEmpty(entity.freeFormNotes)) {
+      yield put(saveUserWorkAction({ [entity.testItems[0]._id]: { scratchpad: entity.freeFormNotes || {} } }));
+    }
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(entity, "subjects[0]", "Other Subjects"),

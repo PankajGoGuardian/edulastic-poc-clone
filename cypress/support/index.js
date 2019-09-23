@@ -30,7 +30,7 @@ Cypress.on("uncaught:exception", () => false);
 // attach screenshots in report for all failed tests
 Cypress.on("test:after:run", (test, runnable) => {
   if (test.state === "failed") {
-    const imgError = test.err.stack.includes("different from saved snapshot");
+    const imgError = test.err.stack.includes("saved snapshot");
     let screenshotFileName = imgError ? `${test.title}.diff.png` : `${test.title} (failed).png`;
     let currentTestContext = runnable;
 
@@ -39,6 +39,7 @@ Cypress.on("test:after:run", (test, runnable) => {
       currentTestContext = currentTestContext.parent;
     }
 
+    screenshotFileName = screenshotFileName.replace(/[\/\\<>]/g, "");
     const imgPath = imgError
       ? `../snapshots/${Cypress.spec.name}/__diff_output__/${screenshotFileName}`
       : `../screenshots/${Cypress.spec.name}/${screenshotFileName}`;

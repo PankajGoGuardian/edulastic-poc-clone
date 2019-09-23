@@ -59,6 +59,16 @@ class QuestionItem extends React.Component {
     dragging: false
   };
 
+  itemRef = React.createRef();
+
+  componentDidUpdate(prevProps) {
+    const { highlighted } = this.props;
+    const { highlighted: prevHighlighted } = prevProps;
+    if (highlighted && highlighted !== prevHighlighted && this.itemRef.current) {
+      this.itemRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   handleDragStart = () => {
     const { onDragStart } = this.props;
     this.setState({ dragging: true });
@@ -202,7 +212,7 @@ class QuestionItem extends React.Component {
     const review = viewMode === "review";
 
     return (
-      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted}>
+      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} innerRef={this.itemRef}>
         <AnswerForm>
           <Draggable
             type="question"

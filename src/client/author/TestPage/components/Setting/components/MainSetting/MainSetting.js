@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -56,7 +56,11 @@ const {
   evalTypeLabels,
   accessibilities,
   releaseGradeTypes,
-  releaseGradeLabels
+  releaseGradeLabels,
+  releaseGradeKeys,
+  nonPremiumReleaseGradeKeys,
+  testContentVisibility: testContentVisibilityOptions,
+  testContentVisibilityTypes
 } = test;
 
 const { Option } = Select;
@@ -67,9 +71,6 @@ const testTypes = {
   [ASSESSMENT]: "Asessment",
   [PRACTICE]: "Practice"
 };
-
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class MainSetting extends Component {
   constructor(props) {
@@ -237,7 +238,8 @@ class MainSetting extends Component {
       grades,
       subjects,
       performanceBand,
-      standardGradingScale
+      standardGradingScale,
+      testContentVisibility = testContentVisibilityOptions.ALWAYS
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -613,6 +615,24 @@ class MainSetting extends Component {
               </Block>
             ) : (
               ""
+            )}
+            {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
+              <Block id="test-content-visibility" smallSize={isSmallSize}>
+                <Title>Item content visibility to Teachers</Title>
+                <Body smallSize={isSmallSize}>
+                  <StyledRadioGroup
+                    disabled={!owner || !isEditable}
+                    onChange={this.updateFeatures("testContentVisibility")}
+                    value={testContentVisibility}
+                  >
+                    {testContentVisibilityTypes.map(item => (
+                      <Radio value={item.key} key={item.key}>
+                        {item.value}
+                      </Radio>
+                    ))}
+                  </StyledRadioGroup>
+                </Body>
+              </Block>
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>

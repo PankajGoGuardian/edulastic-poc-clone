@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
   AlignRight,
@@ -21,9 +22,19 @@ import {
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
 
+import { getUserRole } from "../../../src/selectors/user";
+
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
-const { calculatorKeys, calculators, releaseGradeTypes, evalTypes, evalTypeLabels, completionTypes } = test;
+const {
+  calculatorKeys,
+  calculators,
+  releaseGradeTypes,
+  evalTypes,
+  evalTypeLabels,
+  completionTypes,
+  testContentVisibilityTypes
+} = test;
 
 const Settings = ({
   testSettings,
@@ -31,9 +42,9 @@ const Settings = ({
   updateAssignmentSettings,
   isAdvanced,
   changeField,
-
   gradeSubject,
-  _releaseGradeKeys
+  _releaseGradeKeys,
+  userRole
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -103,7 +114,8 @@ const Settings = ({
     assignmentPassword = tempTestSettings.assignmentPassword,
     maxAttempts = tempTestSettings.maxAttempts,
     performanceBand = tempTestSettings.performanceBand,
-    standardGradingScale = tempTestSettings.standardGradingScale
+    standardGradingScale = tempTestSettings.standardGradingScale,
+    testContentVisibility = tempTestSettings.testContentVisibility
   } = assignmentSettings;
 
   return (
@@ -377,6 +389,25 @@ const Settings = ({
           </StyledRowSettings>
         </FeaturesSwitch>
         {/* Evaluation Method */}
+        {/* Test Content visibility */}
+        {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
+          <StyledRowSettings gutter={16}>
+            <Col span={6}>Item content visibility to Teachers</Col>
+            <Col span={18}>
+              <AlignRight
+                onChange={e => overRideSettings("testContentVisibility", e.target.value)}
+                value={testContentVisibility}
+              >
+                {testContentVisibilityTypes.map(item => (
+                  <Radio value={item.key} key={item.key}>
+                    {item.value}
+                  </Radio>
+                ))}
+              </AlignRight>
+            </Col>
+          </StyledRowSettings>
+        )}
+        {/* Test Content visibility */}
         <FeaturesSwitch
           inputFeatures="performanceBands"
           actionOnInaccessible="hidden"
@@ -401,4 +432,9 @@ const Settings = ({
   );
 };
 
-export default Settings;
+export default connect(
+  state => ({
+    userRole: getUserRole(state)
+  }),
+  null
+)(Settings);

@@ -105,15 +105,19 @@ export const StudentsTable = styled(Table)`
   }
 `;
 export const Title = styled.div`
+  display: flex;
+  flex-direction: column;
   font-size: 22px;
   font-weight: bold;
   line-height: 1.36;
   text-align: left;
   display: flex;
   color: ${white};
-
+  div {
+    margin-left: 10px;
+  }
   span {
-    font-weight: 500;
+    font-weight: 300;
     margin-left: 10px;
   }
 
@@ -142,11 +146,11 @@ const ShareButtonStyle = css`
 `;
 
 export const EditButton = styled(Button)`
-  ${ShareButtonStyle}
   padding: 5px 20px;
   border: none;
   color: ${themeColor};
   background: ${white};
+  font-weight: 400;
   &:hover,
   &:focus {
     color: ${white};

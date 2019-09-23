@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { isEqual, find, clamp } from "lodash";
+import { isEqual, find, clamp, differenceBy } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -144,19 +144,22 @@ class Layout extends Component {
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
       const { responseIds } = this.props;
+      const diff = differenceBy(responseIds, responsecontainerindividuals, "id");
+      const _response = diff[0];
       const ind = responsecontainerindividuals.length;
-      const response = find(responseIds, resp => resp.index === ind);
-      responsecontainerindividuals.push({
-        id: response ? response.id : "",
-        index: response ? response.index : "",
-        widthpx: 0,
-        heightpx: 0,
-        placeholder: ""
-      });
-      onChange("uiStyle", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+      if (_response) {
+        responsecontainerindividuals.push({
+          id: _response.id,
+          index: _response.index,
+          widthpx: 0,
+          heightpx: 0,
+          placeholder: ""
+        });
+        onChange("uiStyle", {
+          ...uiStyle,
+          responsecontainerindividuals: responsecontainerindividuals.sort((r1, r2) => r1.index - r2.index)
+        });
+      }
     };
 
     const removeIndividual = index => {

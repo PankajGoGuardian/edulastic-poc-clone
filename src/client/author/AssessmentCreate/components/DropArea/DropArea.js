@@ -22,7 +22,7 @@ const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelU
         setIsDragging(false);
       }}
     >
-      <UploadDragger name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false} accept=".pdf">
+      <UploadDragger name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false}>
         <FlexContainer childMarginRight="0" style={{ height: "100%" }}>
           <CreateUpload
             isDragging={isDragging}

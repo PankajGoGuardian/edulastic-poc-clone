@@ -1,13 +1,27 @@
 import styled from "styled-components";
-import { Input, Row, Icon, Col, Button } from "antd";
-import { themeColor } from "@edulastic/colors";
+import { Input, Row, Icon, Col, Button, Modal } from "antd";
+import { themeColor, lightGrey3, white, boxShadowDefault, lightGrey4, fadedBlack } from "@edulastic/colors";
 
 const { TextArea } = Input;
+const Search = Input.Search;
+
+export const StyledSearch = styled(Search)`
+  width: 100;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  .ant-btn-primary {
+    color: ${white};
+    background: ${themeColor};
+    border-color: transparent;
+  }
+`;
 
 export const StyledTextArea = styled(TextArea)`
-  margin-top: 20px;
-  min-height: 200px !important;
-  background-color: transparent;
+  margin-top: 10px;
+  min-height: 120px !important;
+  background-color: ${lightGrey3};
+  box-shadow: ${boxShadowDefault};
+  border-radius: 5px;
 `;
 
 export const PlaceHolderText = styled.p`
@@ -20,15 +34,20 @@ export const PlaceHolderText = styled.p`
   pointer-events: none;
   user-select: none;
   display: ${props => (props.visible ? "block" : "none")};
+  z-index: 2000;
 `;
 
 export const SelUserKindDiv = styled(Row)`
-  margin-top: 10px;
-  .ant-col-8 {
-    line-height: 32px;
+  font-weight: 550;
+  margin-top: 20px;
+  .ant-col-11 {
+    text-transform: uppercase;
   }
   .ant-select {
     width: 100%;
+  }
+  .ant-select-selection {
+    background: ${lightGrey3};
   }
 `;
 export const ItemDiv = styled.div`
@@ -41,10 +60,14 @@ export const ItemDiv = styled.div`
 `;
 
 export const Text = styled.h3`
-  font-size: 16px;
+  font-size: 14px;
   color: darkgray;
   font-weight: 600;
   font-family: "Open Sans";
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 export const IconWrapper = styled(Icon)`
   color: green;
@@ -65,4 +88,105 @@ export const ActionButton = styled(Button)`
     background: ${themeColor};
     border-color: ${themeColor};
   }
+`;
+
+export const StyledModal = styled(Modal)`
+  .ant-modal-body {
+    width: 600px;
+    background: ${lightGrey3};
+    box-shadow: ${boxShadowDefault};
+    border-radius: 5px;
+  }
+`;
+
+export const ModalCloseIconWrapper = styled(Col)`
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+`;
+export const SearchViewContainer = styled.div`
+  background: ${white};
+  padding: 2rem;
+  text-align: start;
+  min-height: 200px;
+  font-weight: 550;
+  box-shadow: ${boxShadowDefault};
+`;
+
+export const AddBulkStudentsViewContainer = styled.div`
+  background: ${white};
+  padding: 1.5rem 1rem;
+  box-shadow: ${boxShadowDefault};
+`;
+
+export const SearchTabButton = styled(Button)`
+  width: 100%;
+  border-radius: 2px;
+  border: none;
+  height: 50px;
+  text-transform: uppercase;
+  font-weight: 550;
+  background: ${props => (props.searchViewVisible ? themeColor : lightGrey4)};
+  color: ${props => (props.searchViewVisible ? white : fadedBlack)};
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${props => (props.searchViewVisible ? themeColor : lightGrey4)};
+    color: ${props => (props.searchViewVisible ? white : fadedBlack)};
+  }
+`;
+
+export const AddMultipleStudentsTabButton = styled(Button)`
+  width: 100%;
+  border-radius: 2px;
+  border: none;
+  height: 50px;
+  margin-right: 2px;
+  margin-left: 2px;
+  text-transform: uppercase;
+  font-weight: 550;
+  background: ${props => (props.searchViewVisible ? lightGrey4 : themeColor)};
+  color: ${props => (props.searchViewVisible ? fadedBlack : white)};
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${props => (props.searchViewVisible ? lightGrey4 : themeColor)};
+    color: ${props => (props.searchViewVisible ? fadedBlack : white)};
+  }
+`;
+
+export const ButtonsContainer = styled(Row)`
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+`;
+
+export const CancelButton = styled(Button)`
+  width: 100%;
+  border-radius: 2px;
+  background: transparent;
+  color: ${themeColor};
+  border: 1px solid ${themeColor};
+  height: 40px;
+  text-transform: uppercase;
+`;
+
+export const OkButton = styled(Button)`
+  width: 100%;
+  border-radius: 2px;
+  background: ${themeColor};
+  color: ${white};
+  border: none;
+  height: 40px;
+  text-transform: uppercase;
+`;
+
+export const AddBulkUserPrimaryTextContainer = styled(Col)`
+  font-weight: 550;
+  width: 80%;
+`;
+
+export const IconSwap = styled(Icon)`
+  padding: 1rem;
+  color: ${themeColor};
 `;

@@ -46,5 +46,25 @@ declare namespace Cypress {
      */
 
     setResolution(username: string, password: string): Chainable<any>;
+
+    /**
+     * scroll down the current page and capture snapshots & compare
+     * @param {number} scrollOffset - vertical scroll offset
+     * @example
+     * cy.scrollPageAndMatchImageSnapshots(50) - will scroll the page down by currentPageClientHeight - 50 px
+     */
+
+    scrollPageAndMatchImageSnapshots(scrollOffset: number): Chainable<any>;
+
+    /**
+     * scroll down the current page and capture snapshots & compare
+     * @param {number} scrollOffset - vertical scroll offset to calculate optimum number of scrolls required to cover complete page
+     * @example
+     * cy.isPageScrollPresent(40)
+     * @returns
+     * Object { hasScroll, minScrolls, scrollSize }
+     */
+
+    isPageScrollPresent(scrollOffset: number): Chainable<any>;
   }
 }

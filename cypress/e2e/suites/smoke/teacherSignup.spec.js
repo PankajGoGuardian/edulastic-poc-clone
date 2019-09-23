@@ -63,7 +63,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
   });
 
-  it.skip("> signup using new school and existing district", () => {
+  it("> signup using new school and existing district", () => {
     const { name, email, password, grade, standardSet, subject, newSchool } = signupData;
     const { schoolName, district, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();
@@ -83,7 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
   });
 
-  it.skip("> signup using new district and new school", () => {
+  it("> signup using new district and new school", () => {
     const { name, email, password, grade, standardSet, subject, newSchool, newDistrict } = signupData;
     const { schoolName, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();

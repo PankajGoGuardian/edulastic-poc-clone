@@ -17,7 +17,7 @@ const ClozeMathAnswerDisplay = ({ resprops, id }) => {
   return (
     <MathDisplay
       template="\MathQuillMathField{}"
-      styles={{ height: uiStyles.height || "31px", width: uiStyles.width }}
+      styles={{ height: uiStyles.height || "35px", width: uiStyles.width }}
       innerValues={[
         unit ? (value.search("=") === -1 ? `${value}\\ ${unit}` : value.replace(/=/gm, `\\ ${unit}=`)) : value
       ]}

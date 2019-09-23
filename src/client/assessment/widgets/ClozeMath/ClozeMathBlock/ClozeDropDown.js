@@ -53,7 +53,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       {options &&
         options[id] &&
         options[id].map((option, respID) => (
-          <Option value={option} key={respID} style={{ height: "35px" }}>
+          <Option value={option} key={respID}>
             {option}
           </Option>
         ))}

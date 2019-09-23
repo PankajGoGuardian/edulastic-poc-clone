@@ -44,11 +44,11 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <StyeldSelect
+    <StyledSelect
       width={width}
+      height={height}
       onChange={text => save({ value: text, index }, "dropDowns", id)}
       value={val}
-      style={{ ...uiStyles, width: !width ? "auto" : width, height: !height ? "auto" : height }}
     >
       {options &&
         options[id] &&
@@ -57,7 +57,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
             {option}
           </Option>
         ))}
-    </StyeldSelect>
+    </StyledSelect>
   );
 };
 
@@ -68,7 +68,14 @@ ClozeDropDown.propTypes = {
 
 export default ClozeDropDown;
 
-const StyeldSelect = styled(Select)`
+const StyledSelect = styled(Select)`
   min-width: 120px;
   margin: 2px 4px;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  min-height: 35px;
+
+  .ant-select-selection__rendered {
+    line-height: 35px;
+  }
 `;

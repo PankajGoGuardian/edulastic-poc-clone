@@ -138,13 +138,15 @@ function* createAssessmentSaga({ payload }) {
           ...page,
           pageNo: index + 1
         }));
+    } else {
+      pageStructure = defaultPageStructure;
     }
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
       const { scoring } = assessment;
       const assessmentPageStructure = get(assessment, "pageStructure", [])
-        .filter(page => page.URL === "blank") // delete old pdf
+        .filter(page => page.URL === "blank" || payload.isAddPdf) // delete old pdf
         .concat(pageStructure)
         .map((page, index) => ({
           ...page,

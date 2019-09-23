@@ -92,6 +92,16 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
 
                   <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
                   <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/snapquiz/add`}
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <AssessmentCreate {...props} isAddPdf />
+                      </Suspense>
+                    )}
+                  />
+
                   <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
 
                   <Route exact path={`/author/dashboard`} component={Dashboard} />

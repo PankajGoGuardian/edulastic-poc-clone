@@ -8,12 +8,13 @@ import { IconGraphRightArrow } from "@edulastic/icons";
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
 import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, MinimizeButton } from "./styled";
 
-const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1) => (
+const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
     <Menu.Item onClick={onAddBlank}>Add Blank Page</Menu.Item>
     <Menu.Item disabled={pdfPageLength === 1} onClick={onDeleteBlank}>
       Delete Page
     </Menu.Item>
+    <Menu.Item onClick={onAddPdf}>Add Another PDF</Menu.Item>
     <Menu.Item onClick={onReupload}>Reupload PDF</Menu.Item>
   </Menu>
 );
@@ -31,6 +32,7 @@ const Thumbnails = ({
   onInsertBlankPage,
   setDeleteConfirmation,
   onRotate,
+  onAddPdf,
   viewMode,
   review,
   currentPage
@@ -76,7 +78,7 @@ const Thumbnails = ({
         </ThumbnailsList>
         {!review && (
           <ReuploadButtonWrapper>
-            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length)}>
+            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}>
               <ReuploadButton>Manage document</ReuploadButton>
             </Dropdown>
           </ReuploadButtonWrapper>

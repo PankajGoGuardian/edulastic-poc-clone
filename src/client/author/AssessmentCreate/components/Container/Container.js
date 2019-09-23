@@ -88,7 +88,7 @@ class Container extends React.Component {
   };
 
   handleUploadPDF = debounce(({ file }) => {
-    const { location, createAssessment } = this.props;
+    const { location, createAssessment, isAddPdf = false } = this.props;
     const { assessmentId } = qs.parse(location.search);
     if (file.size / 1024000 > 15) {
       return message.error("File size exceeds 15 MB MB limit.");
@@ -97,6 +97,7 @@ class Container extends React.Component {
       file,
       assessmentId,
       progressCallback: this.handleUploadProgress,
+      isAddPdf,
       cancelUpload: this.setCancelFn
     });
   }, 1000);
@@ -104,10 +105,10 @@ class Container extends React.Component {
   handleCreateBlankAssessment = event => {
     event.stopPropagation();
 
-    const { location, createAssessment } = this.props;
+    const { location, createAssessment, isAddPdf } = this.props;
     const { assessmentId } = qs.parse(location.search);
 
-    createAssessment({ assessmentId });
+    createAssessment({ assessmentId, isAddPdf });
   };
 
   render() {

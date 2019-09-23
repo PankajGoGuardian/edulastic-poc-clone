@@ -306,6 +306,10 @@ class Worksheet extends React.Component {
     history.push(`/author/tests/snapquiz?assessmentId=${test._id}`);
   };
 
+  handleAddPdf = () => {
+    const { test = {}, history } = this.props;
+    history.push(`/author/tests/snapquiz/add?assessmentId=${test._id}`);
+  };
   // Set up for scratchpad
   onFillColorChange = obj => {
     this.setState({
@@ -446,6 +450,7 @@ class Worksheet extends React.Component {
           list={pageStructure}
           currentPage={currentPage}
           onReupload={this.handleReupload}
+          onAddPdf={this.handleAddPdf}
           onPageChange={this.handleChangePage}
           onAddBlankPage={this.handleAppendBlankPage}
           onDeletePage={this.handleDeletePage}

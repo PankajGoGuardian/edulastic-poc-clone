@@ -274,7 +274,7 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 const QuestionTitleWrapper = styled.div`
   display: flex;
   iframe {
-    width: 100%;
+    max-width: 100%;
   }
 `;
 

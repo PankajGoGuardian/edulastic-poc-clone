@@ -44,6 +44,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   };
 
+  // TODO  fix multiple style objects -> one object
   if (btnStyle === undefined) {
     btnStyle = responseBtnStyle;
   }

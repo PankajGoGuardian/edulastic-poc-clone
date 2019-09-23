@@ -48,19 +48,19 @@ export const CustomizedHeaderWrapper = ({
         <StyledCol>
           <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
             {onShareClickCB ? (
-              <IconButton shape="round" onClick={_onShareClickCB}>
+              <IconButton title="Share" shape="round" onClick={_onShareClickCB}>
                 <Icon type="share-alt" />
               </IconButton>
             ) : null}
           </FeaturesSwitch>
           {onPrintClickCB ? (
-            <IconButton shape="round" onClick={_onPrintClickCB}>
+            <IconButton title="Print" shape="round" onClick={_onPrintClickCB}>
               <Icon type="printer" />
             </IconButton>
           ) : null}
           <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
             {onDownloadCSVClickCB ? (
-              <IconButton shape="round" onClick={_onDownloadCSVClickCB}>
+              <IconButton title="Download CSV" shape="round" onClick={_onDownloadCSVClickCB}>
                 <Icon type="download" />
               </IconButton>
             ) : null}

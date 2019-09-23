@@ -30,9 +30,8 @@ export const AssessmentStatisticTable = props => {
     } else if (type === "teacher") {
       hMap = groupBy(data, "teacherId");
     } else if (type === "class") {
-      hMap = groupBy(data, "groupId");
+      hMap = groupBy(data, "assignmentId");
     }
-
     arr = Object.keys(hMap).map((key, index) => {
       let data = hMap[key];
       let obj = { ...data[0] };

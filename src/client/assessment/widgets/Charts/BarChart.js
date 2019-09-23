@@ -17,6 +17,7 @@ import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
 const BarChart = ({
+  item,
   data,
   previewTab,
   saveAnswer,
@@ -25,8 +26,7 @@ const BarChart = ({
   correct,
   disableResponse,
   deleteMode,
-  toggleBarDragging,
-  checkAnnotationLeave
+  toggleBarDragging
 }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
@@ -127,7 +127,8 @@ const BarChart = ({
       />
 
       <Bars
-        saveAnswer={active => saveAnswer(localData, active)}
+        item={item}
+        saveAnswer={i => saveAnswer(localData, i)}
         deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
@@ -147,6 +148,7 @@ const BarChart = ({
 };
 
 BarChart.propTypes = {
+  item: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   gridParams: PropTypes.shape({
@@ -159,13 +161,17 @@ BarChart.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   disableResponse: PropTypes.bool,
+  deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired
+  correct: PropTypes.array.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 BarChart.defaultProps = {
-  disableResponse: false
+  disableResponse: false,
+  deleteMode: false,
+  toggleBarDragging: () => {}
 };
 
 export default withGrid(BarChart);

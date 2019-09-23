@@ -25,7 +25,8 @@ const OptionsList = withPoints(ChartPreview);
 
 const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const {
-    uiStyle: { yAxisMax, yAxisMin, snapTo }
+    uiStyle: { yAxisMax, yAxisMin, snapTo },
+    type
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -98,6 +99,10 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
           }
           case "value": {
             draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
+            break;
+          }
+          case "labelVisibility": {
+            draft.chart_data.data[index].labelVisibility = value;
             break;
           }
           default:
@@ -204,6 +209,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       />
 
       <PointsList
+        showLabelVisibilitySetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

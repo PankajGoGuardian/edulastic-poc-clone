@@ -10,6 +10,7 @@ import { Circle, Cross } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Points = ({
+  item,
   circles,
   onPointOver,
   onMouseDown,
@@ -21,6 +22,8 @@ const Points = ({
   paddingTop
 }) => {
   const { margin, pointStyle } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { padding, step } = getGridVariables(circles, gridParams);
 
@@ -47,7 +50,7 @@ const Points = ({
     <Fragment>
       {circles.map(
         (dot, index) =>
-          ((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          ((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment>
               {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
               {pointStyle === "cross" ? (
@@ -78,6 +81,7 @@ const Points = ({
 };
 
 Points.propTypes = {
+  item: PropTypes.object.isRequired,
   circles: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,

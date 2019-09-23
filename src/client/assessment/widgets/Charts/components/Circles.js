@@ -8,8 +8,10 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 
 import { Bar, ActiveBar, Text, Circle, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
 const Circles = ({
+  item,
   bars,
   onPointOver,
   onMouseDown,
@@ -22,10 +24,13 @@ const Circles = ({
   deleteMode
 }) => {
   const { height, margin, yAxisMin, yAxisMax, stepSize } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [showLabel, handleLabelVisibility] = useState(null);
 
   const handleMouseAction = value => () => {
     if (activeIndex === null) {
@@ -35,7 +40,7 @@ const Circles = ({
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, { height: height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
+  const getCenterY = dot => convertUnitToPx(dot.y, { height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
@@ -47,6 +52,7 @@ const Circles = ({
   const handleMouse = index => () => {
     handleMouseAction(index)();
     setHoveredIndex(index);
+    handleLabelVisibility(index);
   };
 
   const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
@@ -59,6 +65,16 @@ const Circles = ({
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
+          <rect
+            fill="transparent"
+            stroke="transparent"
+            x={getCenterX(index)}
+            y={0}
+            onMouseEnter={() => handleLabelVisibility(index)}
+            onMouseLeave={() => handleLabelVisibility(null)}
+            width={step - 2}
+            height={height + margin}
+          />
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
@@ -69,15 +85,21 @@ const Circles = ({
           ))}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={() => {
+              handleLabelVisibility(index);
+              setHoveredIndex(index);
+            }}
+            onMouseLeave={() => {
+              handleLabelVisibility(null);
+              setHoveredIndex(null);
+            }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
             width={step - 2}
             height={getBarHeight(dot.y)}
             color="transparent"
           />
-          {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment>
               <StrokedRect
                 hoverState={isHovered(index)}
@@ -100,8 +122,15 @@ const Circles = ({
               />
             </Fragment>
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height + 20}>
-            {dot.x}
+          <Text
+            onMouseEnter={() => handleLabelVisibility(index)}
+            onMouseLeave={() => handleLabelVisibility(null)}
+            textAnchor="middle"
+            x={getCenterX(index) + step / 2}
+            y={height + 20}
+          >
+            {(data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
+              ((data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility) && dot.x)}
           </Text>
         </Fragment>
       ))}
@@ -110,6 +139,7 @@ const Circles = ({
 };
 
 Circles.propTypes = {
+  item: PropTypes.object.isRequired,
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -125,9 +155,13 @@ Circles.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  saveAnswer: PropTypes.func,
+  deleteMode: PropTypes.bool
 };
 Circles.defaultProps = {
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  saveAnswer: () => {},
+  deleteMode: false
 };
 export default Circles;

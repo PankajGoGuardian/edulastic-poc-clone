@@ -47,11 +47,11 @@ export default class FormDropdown extends React.Component {
   renderForm = () => {
     const {
       question: { options },
-      answer
+      answer = []
     } = this.props;
 
     return (
-      <Dropdown onChange={this.handleChange}>
+      <Dropdown value={(answer[0] && answer[0].value) || ""} onChange={this.handleChange}>
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}

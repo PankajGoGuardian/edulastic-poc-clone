@@ -12,6 +12,7 @@ import {
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
+  TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { methods } from "@edulastic/constants/const/math";
@@ -32,6 +33,7 @@ import { deleteAnnotationAction } from "../../../TestPage/ducks";
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
   [SHORT_TEXT]: "",
+  [TRUE_OR_FALSE]: [],
   [CLOZE_DROP_DOWN]: [],
   [MATH]: [
     {
@@ -54,7 +56,8 @@ const defaultQuestionOptions = {
   ],
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]
-  }
+  },
+  [TRUE_OR_FALSE]: [{ label: "True", value: uuid() }, { label: "False", value: uuid() }]
 };
 
 const mathData = {
@@ -100,6 +103,11 @@ const essayData = {
   title: "Essay with plain text"
 };
 
+const trueOrFalseData = {
+  type: "multipleChoice",
+  uiStyle: { type: "horizontal" },
+  title: "True or false"
+};
 const createQuestion = (type, index) => ({
   id: uuid(),
   qIndex: index,
@@ -118,6 +126,7 @@ const createQuestion = (type, index) => ({
   stimulus: "",
   smallSize: true,
   alignment: [],
+  ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
   ...(type === MATH ? mathData : {}),
   ...(type === ESSAY_PLAIN_TEXT ? essayData : {})

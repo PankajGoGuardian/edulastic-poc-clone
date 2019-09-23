@@ -9,6 +9,7 @@ import {
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
+  TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
@@ -122,6 +123,7 @@ class QuestionItem extends React.Component {
 
     switch (type) {
       case MULTIPLE_CHOICE:
+      case TRUE_OR_FALSE:
         answerRenderer = this.renderMultipleChoiceAnswer;
         break;
       case SHORT_TEXT:
@@ -166,6 +168,8 @@ class QuestionItem extends React.Component {
         return <FormMath {...props} />;
       case ESSAY_PLAIN_TEXT:
         return <FormEssay {...props} />;
+      case TRUE_OR_FALSE:
+        return <FormChoice isTrueOrFalse onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
       default:
         return null;
     }

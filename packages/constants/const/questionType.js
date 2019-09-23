@@ -34,6 +34,7 @@ const DOT_PLOT = "dots";
 const LINE_PLOT = "linePlot";
 const GRAPH = "graph";
 const FRACTION_EDITOR = "fractionEditor";
+const TRUE_OR_FALSE = "trueOrFalse";
 
 const selectsData = [
   { value: "", text: "All Types" },
@@ -112,5 +113,6 @@ module.exports = {
   selectsData,
   PASSAGE_WITH_QUESTIONS,
   manuallyGradableQn,
+  TRUE_OR_FALSE,
   FRACTION_EDITOR
 };

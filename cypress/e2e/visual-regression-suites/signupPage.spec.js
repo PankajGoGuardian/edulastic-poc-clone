@@ -96,7 +96,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
       });
 
       SCREEN_SIZES.forEach(size => {
-        it(`'grade/subject preference' page when resolution is '${size}'`, () => {
+        it(`'grade-subject preference' page when resolution is '${size}'`, () => {
           cy.setResolution(size);
           cy.visit(`/${PAGE}`);
           cy.get("button")

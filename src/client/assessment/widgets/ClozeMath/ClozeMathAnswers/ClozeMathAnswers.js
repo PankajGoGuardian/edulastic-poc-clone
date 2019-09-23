@@ -187,7 +187,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           obj.id = resp.id;
           obj.type = key;
           obj.widthpx = width;
-          newItem.responseContainers.push(obj);
+          // newItem.responseContainers.push(obj);
         }
       });
     } else {

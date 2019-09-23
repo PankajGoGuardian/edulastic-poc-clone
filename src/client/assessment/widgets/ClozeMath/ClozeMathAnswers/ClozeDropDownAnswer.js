@@ -28,9 +28,17 @@ const AnswerContainer = styled.div`
 `;
 
 const AnswerSelect = styled(Select)`
-  min-width: 120px;
+  min-width: 140px;
   width: ${({ width }) => (!width ? null : `${width}`)};
   height: ${({ height }) => (!height ? null : `${height}`)};
+
+  .ant-select-selection {
+    height: 35px;
+  }
+
+  .ant-select-selection__rendered {
+    min-height: 35px;
+  }
 `;
 
 class ClozeDropDownAnswer extends Component {

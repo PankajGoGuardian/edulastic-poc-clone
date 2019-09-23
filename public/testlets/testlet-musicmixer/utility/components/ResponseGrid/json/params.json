@@ -1,0 +1,85 @@
+{
+  "version": "1.0",
+  "itemName": "Responsegrid",
+  "itemType": "iic",
+  "paramIdScore0001": {
+    "content": "",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0001": {
+    "content": "RadioGroup",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "RadioResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "multi",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": [
+      {
+        "label": "",
+        "value": ""
+      },
+      {
+        "label": "Relevant",
+        "value": "1"
+      },
+      {
+        "label": "Not Relevant",
+        "value": "2"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0005": {
+    "content": [
+      {
+        "label": "option 1",
+        "value": "1",
+        "optionLabel": "A",
+        "selected": "false"
+      },
+      {
+        "label": "option 2",
+        "value": "2",
+        "optionLabel": "B",
+        "selected": "false"
+      },
+      {
+        "label": "option 3",
+        "value": "3",
+        "optionLabel": "C",
+        "selected": "false"
+      },
+      {
+        "label": "option 4",
+        "value": "4",
+        "optionLabel": "D",
+        "selected": "false"
+      },
+      {
+        "label": "option 5",
+        "value": "5",
+        "optionLabel": "E",
+        "selected": "false"
+      },
+      {
+        "label": "option 6",
+        "value": "6",
+        "optionLabel": "F",
+        "selected": "false"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  }
+}

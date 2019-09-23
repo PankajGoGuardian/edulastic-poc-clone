@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "itemName": "Placeholder",
+  "itemType": "iic",
+  "params0001": {
+    "content": "<p>Placeholder component:</p><hr><span data-type=\"component\" id=\"placeholder0001\"></span>",
+    "ref": ""
+  },
+  "paramId0001": {
+    "content": "placeholder",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "Placeholder",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "100",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": "80",
+    "ref": "",
+    "scene": "scene1"
+  }
+}

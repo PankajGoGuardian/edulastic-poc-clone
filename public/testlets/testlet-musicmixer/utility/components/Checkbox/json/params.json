@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "itemName": "Checkbox",
+  "itemType": "iic",
+  "paramIdScore0001": {
+    "content": "",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0001": {
+    "content": "checkboxResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "checkbox",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": [
+      {
+        "label": "option 1",
+        "value": "option 1",
+        "optionLabel": null,
+        "selected": "false"
+      },
+      {
+        "label": "option 2",
+        "value": "option 2",
+        "optionLabel": null,
+        "selected": "false"
+      },
+      {
+        "label": "option 3",
+        "value": "option 3",
+        "optionLabel": null,
+        "selected": "false"
+      },
+      {
+        "label": "option 4",
+        "value": "option 4",
+        "optionLabel": null,
+        "selected": "false"
+      },
+      {
+        "label": "option 5",
+        "value": "option 5",
+        "optionLabel": null,
+        "selected": "false"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  }
+}

@@ -30,23 +30,23 @@ const AssessmentPlayer = ({
     loadTest({ testId, testActivityId, preview, demo, test, groupId });
   }, [testId]);
 
-  const confirmBeforeQuitting = e => {
-    // for older IE versions
-    e = e || window.event;
-    if (e) {
-      e.returnValue = "Are you sure you want to quit?";
-    }
-    // for modern browsers
-    // note: for modern browsers support for custom messages has been deprecated
-    return "Are you sure you want to quit";
-  };
+  // const confirmBeforeQuitting = e => {
+  //   // for older IE versions
+  //   e = e || window.event;
+  //   if (e) {
+  //     e.returnValue = "Are you sure you want to quit?";
+  //   }
+  //   // for modern browsers
+  //   // note: for modern browsers support for custom messages has been deprecated
+  //   return "Are you sure you want to quit";
+  // };
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", confirmBeforeQuitting);
-    return () => {
-      window.removeEventListener("beforeunload", confirmBeforeQuitting);
-    };
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", confirmBeforeQuitting);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", confirmBeforeQuitting);
+  //   };
+  // }, []);
 
   if (preview) {
     return (

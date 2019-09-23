@@ -1,0 +1,45 @@
+{
+  "type": "mediaplayer",
+  "identity": {
+    "id": "mediaplayer0001",
+    "responseId": "paramId0001",
+    "scoreID": "paramIdScore0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "winsight-media",
+    "tabindex": "1",
+    "options": [
+      {
+        "src": "paramId0003",
+
+        "type": "paramId0004",
+
+        "vtt": "paramId0005",
+
+        "autoplay": "paramId0006",
+
+        "posterImage": "paramId0007",
+
+        "width": "paramId0008",
+
+        "fullscreen": "paramId0010",
+
+        "audio": "paramId0011",
+
+        "flow": "paramId0012",
+
+        "title": "paramId0013",
+
+        "shortDescription": "paramId0014",
+
+        "longDescription": "paramId0015"
+      }
+    ]
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": false
+}

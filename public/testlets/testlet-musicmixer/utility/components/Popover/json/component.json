@@ -1,0 +1,21 @@
+{
+  "type": "popover",
+  "identity": {
+    "id": "popover0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "ETS-component-popover",
+    "label": "paramId0003",
+    "content": "paramId0004",
+    "placement": "auto",
+    "tabIndex": "1",
+    "enabled": "true"
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": true
+}

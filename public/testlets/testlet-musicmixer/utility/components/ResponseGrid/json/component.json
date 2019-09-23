@@ -1,0 +1,22 @@
+{
+  "type": "responseGrid",
+  "identity": {
+    "id": "responsegrid0001",
+    "scoreID": "paramIdScore0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "",
+    "enabled": "true",
+    "tabindex": "1",
+    "type": "paramId0003",
+    "columns": "paramId0004",
+    "rows": "paramId0005"
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": true
+}

@@ -1,0 +1,22 @@
+{
+  "type": "image",
+  "identity": {
+    "id": "image0001",
+    "scoreID": "paramIdScore0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "winsight-image",
+    "src": "paramId0003",
+    "alt": "paramId0004",
+    "tabindex": "1",
+    "height": "paramId0005",
+    "width": "paramId0006"
+  },
+  "accessibility": {
+    "aria": false,
+    "tts": false
+  },
+  "required": false
+}

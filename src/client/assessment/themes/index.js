@@ -20,6 +20,7 @@ import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/an
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
+import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -182,7 +183,8 @@ const AssessmentContainer = ({
   return (
     <>
       <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
+        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerTestlet {...props} />}{" "}
+        {/* <AssessmentPlayerSimple {...props} />} */}
       </ScratchPadContext.Provider>
     </>
   );

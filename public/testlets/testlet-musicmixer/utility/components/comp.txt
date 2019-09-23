@@ -1,0 +1,1 @@
+All the global components, like drag and drop, or line graph etc, go here.

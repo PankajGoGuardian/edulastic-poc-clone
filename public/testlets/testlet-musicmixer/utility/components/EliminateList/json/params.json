@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "itemName": "Eliminate List",
+  "itemType": "iic",
+  "paramId0001": {
+    "content": "eliminateListResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramIdScore0001": {
+    "content": "",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "eliminatelist",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": [
+      {
+        "label": "option 1",
+        "value": "option 1",
+        "selected": "false"
+      },
+      {
+        "label": "An option with a longer label",
+        "value": "option 2",
+        "selected": "false"
+      },
+      {
+        "label": "option 3",
+        "value": "option 3",
+        "selected": "false"
+      },
+      {
+        "label": "option 4",
+        "value": "option 4",
+        "selected": "false"
+      },
+      {
+        "label": "option 5",
+        "value": "option 5",
+        "selected": "false"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  }
+}

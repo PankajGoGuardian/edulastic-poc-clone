@@ -1,0 +1,20 @@
+{
+  "type": "radio",
+  "identity": {
+    "id": "radio0001",
+    "scoreID": "paramIdScore0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "winsight-selectList single",
+    "enabled": "true",
+    "tabindex": "1",
+    "options": "paramId0003"
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": true
+}

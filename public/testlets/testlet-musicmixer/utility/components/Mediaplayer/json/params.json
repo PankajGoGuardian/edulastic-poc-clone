@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "itemName": "Media Player",
+  "itemType": "iic",
+  "paramIdScore0001": {
+    "content": "",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0001": {
+    "content": "mediaPlayer01",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "mediaPlayer",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "pup.mp4",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": "video/mp4",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0005": {
+    "content": "pup.vtt",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0006": {
+    "content": "false",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0007": {
+    "content": "pup.jpg",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0008": {
+    "content": "600px",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0010": {
+    "content": "true",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0011": {
+    "content": "true",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0012": {
+    "content": "false",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0013": {
+    "content": "Title of media",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0014": {
+    "content": "Description of the media",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0015": {
+    "content": "Long description of the media",
+    "ref": "",
+    "scene": "scene1"
+  }
+}

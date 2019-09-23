@@ -1,0 +1,3167 @@
+{
+  "version": "1.0",
+  "itemName": "MusicMixer",
+  "itemType": "testlet",
+  "paramIdtestletID": {
+    "content": "MAT8_MusicMixer_PR34",
+    "ref": ""
+  },
+  "paramIdAlert1": {
+    "content": "You have not completed all the task on this page",
+    "ref": ""
+  },
+  "paramIdAlert2": {
+    "content": "Alert Message",
+    "ref": ""
+  },
+  "paramId0001": {
+    "content": "<h2>Music Mixer</h2><h3>An Interactive Assessment of Proportions and Ratios</h3><span data-type=\"component\" id=\"button0001\"></span><div class=\"copyright\"><p>2019&nbsp;Winsight Testlet Pilot</p><p>Copyright &copy;&nbsp;2019 by Educational Testing Service. All rights reserved. ETS and the ETS logo are registered trademarks of Educational Testing Service. WINSIGHT is a trademark of ETS. All other trademarks are the property of their respective owners. Trademarks owned by third parties may be included as part of the text in these testing materials. Such trademarks are owned by the respective trademark holders, none of which are affiliated with ETS, nor do these owners endorse or otherwise sponsor or approve these materials.</p></div>",
+    "ref": ""
+  },
+  "paramId0002": {
+    "content": "<div><p>Congratulations on your new job! Working in a recording studio is really cool.</p><p>I’m Larry. We will be working together, and I have been asked to train you.</p><p> I will guide you through some of the tasks required for our job.</p></div>",
+    "ref": ""
+  },
+  "paramId0003": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0001\"></span>",
+    "ref": ""
+  },
+  "paramId0004": {
+    "content": "<div><div><span data-type=\"component\" id=\"image0021\"></span><span data-type=\"component\" id=\"video0001\"></span></div><div><span data-type=\"component\" id=\"image0022\"></span><span data-type=\"component\" id=\"video0002\"></span></div><div><span data-type=\"component\" id=\"image0023\"></span><span data-type=\"component\" id=\"video0003\"></span></div></div>",
+    "ref": ""
+  },
+  "paramId0005": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0002\"></span>",
+    "ref": ""
+  },
+  "paramId0006": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0003\"></span>",
+    "ref": ""
+  },
+  "paramId0007": {
+    "content": "<span data-type=\"component\" id=\"video0004\"></span>",
+    "ref": ""
+  },
+  "paramId0008": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0004\"></span>",
+    "ref": ""
+  },
+  "paramId0009": {
+    "content": "<p>At a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>&nbsp;beats per minute, there is one beat every<span data-type = \"component\" id=\"dropdown0001\"></span> At a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>120</mn></mrow></math></span>&nbsp;beats per minute, there is one beat every <span data-type=\"component\" id=\"dropdown0002\"></span> So a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>&nbsp;beats per minute is <span data-type=\"component\" id=\"dropdown0012\"></span> as fast as a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>120</mn></mrow></math></span>&nbsp;beats per minute.</p>",
+    "ref": ""
+  },
+  "paramId0010": {
+    "content": "<p>Playing a piece of music at a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>120</mn></mrow></math></span>&nbsp;beats per minute takes <span data-type=\"component\" id=\"dropdown0003\"></span> as long as playing the same piece of music at a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>&nbsp;beats per minute.</p>",
+    "ref": ""
+  },
+  "paramId0011": {
+    "content": "<p>A piece of music with <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>300</mn></mrow></math></span>&nbsp;beats played at <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>120</mn></mrow></math></span>&nbsp;beats per minute takes <span class=\"noWrap\"><span data-type=\"component\" id=\"textfield0001\"></span> minutes</span> to play. The same piece of music played at <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>&nbsp;beats per minutes takes <span class=\"noWrap\"><span data-type=\"component\" id=\"textfield0002\"></span> minutes</span> to play.",
+    "ref": ""
+  },
+  "paramId0012": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0005\"></span>",
+    "ref": ""
+  },
+  "paramId0013": {
+    "content": "A tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>80</mn></mrow></math></span> beats per minute corresponds to <span data-type=\"component\" id=\"textfield0003\"></span> second(s) per beat.",
+    "ref": ""
+  },
+  "paramId0014": {
+    "content": "When comparing two different tempos, the tempo with a greater number of beats per minute is the <span data-type=\"component\" id=\"dropdown0004\"></span> tempo, and the tempo with a greater number of seconds per beat is the <span class=\"noWrap\"><span data-type=\"component\" id=\"dropdown0005\"></span> tempo.</span>",
+    "ref": ""
+  },
+  "paramId0015": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0006\"></span><span data-type=\"component\" id=\"image0003\">",
+    "ref": ""
+  },
+  "paramId0016": {
+    "content": "<center><strong>Drum Tempo</strong></center>",
+    "ref": ""
+  },
+  "paramId0017": {
+    "content": "<p><span data-type=\"component\" id=\"video0005\"></span></p>",
+    "ref": ""
+  },
+  "paramId0018": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0007\"></span><span data-type=\"component\" id=\"image0025\"></span>",
+    "ref": ""
+  },
+  "paramId0019": {
+    "content": "<center><strong>Drum Tempo</strong></center>",
+    "ref": ""
+  },
+  "paramId0020": {
+    "content": "<p><span data-type=\"component\" id=\"video0006\"></span></p>",
+    "ref": ""
+  },
+  "paramId0021": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0008\"></span><span data-type=\"component\" id=\"image0026\"></span>",
+    "ref": ""
+  },
+  "paramId0022": {
+    "content": "<center><strong>Drum Tempo</strong></center>",
+    "ref": ""
+  },
+  "paramId0023": {
+    "content": "<p><span data-type=\"component\" id=\"video0007\"></span></p>",
+    "ref": ""
+  },
+  "paramId0024": {
+    "content": "<p><span>How many measures are played in the video?</span></p><p><span data-type=\"component\" id=\"textfield0004\"></span>&nbsp;measures</p>",
+    "ref": ""
+  },
+  "paramId0025": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0009\"></span>",
+    "ref": ""
+  },
+  "paramId0026": {
+    "content": "<center><strong>Drum Tempo</strong></center><p>How many beats per minute is the drum playing?<div><span data-type=\"component\" id=\"radio0001\"></span><span data-type=\"component\" id=\"image0027\"></span></div></p>",
+    "ref": ""
+  },
+  "paramId0027": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0010\"></span>",
+    "ref": ""
+  },
+  "paramId0028": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0011\"></span>",
+    "ref": ""
+  },
+  "paramId0029": {
+    "content": "<span data-type=\"component\" id=\"video0008\"></span>",
+    "ref": ""
+  },
+  "paramId0030": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0012\"></span><span data-type=\"component\" id=\"image0004\"></span>",
+    "ref": ""
+  },
+  "paramId0031": {
+    "content": "<center><strong>Piano Tempo</strong></center>",
+    "ref": ""
+  },
+  "paramId0032": {
+    "content": "<p><span data-type=\"component\" id=\"video0009\"></span></p>",
+    "ref": ""
+  },
+  "paramId0033": {
+    "content": "<center><strong>Piano Tempo</strong></center><p>What is the tempo, in beats per minute, of the piano?</p><span data-type=\"component\" id=\"textfield0005\"></span></span><span>beats per minute</span>",
+    "ref": ""
+  },
+  "paramId0034": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0013\"></span>",
+    "ref": ""
+  },
+  "paramId0035": {
+    "content": "<span data-type=\"component\" id=\"image0001\"></span><span data-type=\"component\" id=\"image0002\"></span>",
+    "ref": ""
+  },
+  "paramId0036": {
+    "content": "<p>The<span data-type=\"component\" id=\"dropdown0006\"></span>is playing at a faster tempo.</p>",
+    "ref": ""
+  },
+  "paramId0037": {
+    "content": "<p><ul><li>The drum is playing at a rate of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow></math></span> beat every <span class=\"noWrap\"><span data-type=\"component\" id=\"dropdown0007\"></span> second(s).</span></li><li>The piano is playing at a rate of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow></math></span>&nbsp;beat every <span class=\"noWrap\"><span data-type=\"component\" id=\"dropdown0008\"></span> second(s).</span> </li></ul></p>",
+    "ref": ""
+  },
+  "paramId0038": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0014\"></span>",
+    "ref": ""
+  },
+  "paramId0039": {
+    "content": "<p>At these tempos, how many <strong>more</strong> beats will the piano play than the drum in <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>30</mn></mrow></math></span>&nbsp;seconds? <span data-type=\"component\" id=\"radio0002\"></span></p>",
+    "ref": ""
+  },
+  "paramId0040": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0015\"></span>",
+    "ref": ""
+  },
+  "paramId0041": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0016\"></span><span data-type=\"component\" id=\"image0005\"></span>",
+    "ref": ""
+  },
+  "paramId0042": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId0043": {
+    "content": "<center><strong>Guitar Tempo</strong></center>",
+    "ref": ""
+  },
+  "paramId0044": {
+    "content": "<p><span data-type=\"component\" id=\"video0010\"></span></p>",
+    "ref": ""
+  },
+  "paramId0045": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0017\"></span>",
+    "ref": ""
+  },
+  "paramId0046": {
+    "content": "<center><strong>Guitar Tempo</strong></center><p>The tempo of the guitar is <span data-type=\"component\" id=\"dropdown0009\"></span> the tempo of the drum because it plays <span data-type=\"component\" id=\"dropdown0010\"></span> beats in <span class=\"noWrap\"><span data-type=\"component\" id=\"dropdown0011\"></span> time.</span></p>",
+    "ref": ""
+  },
+  "paramId0047": {
+    "content": "<p>Verify the comparison of the two tempos by completing the following table.</p><p>Give your answers to the nearest tenth of a second.</p><table class=\"winsight-table\"><thead><tr><th rowspan=\"2\"><strong>Number of Beats</strong></th><th colspan=\"2\"><strong>Time (in seconds)</strong></th></tr><tr><th><strong>Guitar</strong></th><th><strong>Drum</strong></th></tr></thead><tbody><tr><td><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>4</mn></mrow></math></span></td><td><span data-type=\"component\" id=\"textfield0008\"></span></td><td><span data-type=\"component\" id=\"textfield0009\"></td></tr><tr><td><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>16</mn></mrow></math></span></td><td><span data-type=\"component\" id=\"textfield0011\"></td><td><span data-type=\"component\" id=\"textfield0010\"></td></tr><tr><td><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>24</mn></mrow></math></span></td><td><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>19.2</mn></mrow></math></span></td><td><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>16</mn></mrow></math></span></td></tr></tbody></table>",
+    "ref": ""
+  },
+  "paramId0048": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId0049": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId0050": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0018\"></span>",
+    "ref": ""
+  },
+  "paramId0051": {
+    "content": "<p><strong>Drum Tempo</strong></p><p><strong><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span></strong>&nbsp;beats per minute</p>",
+    "ref": ""
+  },
+  "paramId0052": {
+    "content": "<p><strong>Guitar Tempo</strong></p><p><strong><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>75</mn></mrow></math></span></strong>&nbsp;beats per minute</p>",
+    "ref": ""
+  },
+  "paramId0053": {
+    "content": "<span data-type=\"component\" id=\"image0006\"></span>",
+    "ref": ""
+  },
+  "paramId0054": {
+    "content": "<span data-type=\"component\" id=\"image0007\"></span>",
+    "ref": ""
+  },
+  "paramId0055": {
+    "content": "<p><strong><center>Tempo Change Factor</center></strong></p><div id=\"customNumbers\"><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>3</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>4</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>6</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>7</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span></div><span data-type=\"component\" id=\"range0001\"></span>",
+    "ref": ""
+  },
+  "paramId0056": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0019\"></span>",
+    "ref": ""
+  },
+  "paramId0057": {
+    "content": "<p><strong>Drum Tempo</strong></p><p><strong><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span></strong>&nbsp;beats per minute</p>",
+    "ref": ""
+  },
+  "paramId0058": {
+    "content": "<p><strong>Piano Tempo</strong></p><p><strong><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>100</mn></mrow></math></span></strong>&nbsp;beats per minute</p>",
+    "ref": ""
+  },
+  "paramId0059": {
+    "content": "<span data-type=\"component\" id=\"image0009\"></span>",
+    "ref": ""
+  },
+  "paramId0060": {
+    "content": "<span data-type=\"component\" id=\"image0010\"></span>",
+    "ref": ""
+  },
+  "paramId0061": {
+    "content": "<p><strong><center>Tempo Change Factor</center></strong></p><div id=\"customNumbers\"><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>3</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>4</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>6</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span><span><math xmlns='http://www.w3.org/1998/Math/MathML'><mfrac><mrow><mn>7</mn></mrow><mrow><mn>5</mn></mrow></mfrac></math></span></div><span data-type=\"component\" id=\"range0002\"></span>",
+    "ref": ""
+  },
+  "paramId0062": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0020\"></span>",
+    "ref": ""
+  },
+  "paramId0063": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0021\"></span>",
+    "ref": ""
+  },
+  "paramId0064": {
+    "content": "<div><span data-type=\"component\" id=\"image0012\"></span><span data-type=\"component\" id=\"image0013\"></span><span data-type=\"component\" id=\"image0014\"></span></div>",
+    "ref": ""
+  },
+  "paramId0065": {
+    "content": "<p><span data-type=\"component\" id=\"audio0001\"></span></p>",
+    "ref": ""
+  },
+  "paramId0066": {
+    "content": "<div><strong><p>You did an awesome job today! You learned this part of the job very quickly.</p><p>There is so much more to learn in this industry, but you are off to a great start!</p></strong></div>",
+    "ref": ""
+  },
+  "paramId0067": {
+    "content": "<div><span data-type=\"component\" id=\"image0015\"></span><span data-type=\"component\" id=\"image0016\"></span><span data-type=\"component\" id=\"image0017\"></span></div>",
+    "ref": ""
+  },
+  "paramId0068": {
+    "content": "<div><span data-type=\"component\" id=\"image0018\"></span><span data-type=\"component\" id=\"image0019\"></span><span data-type=\"component\" id=\"image0020\"></span></div>",
+    "ref": ""
+  },
+  "paramId0069": {
+    "content": "<p>So each beat in a tempo of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>120</mn></mrow></math></span> beats per minute lasts<span data-type=\"component\" id=\"dropdown0002\"></span>.</p>",
+    "ref": ""
+  },
+  "paramId1001": {
+    "content": "Start-ButtonResponse",
+    "ref": ""
+  },
+  "paramId1002": {
+    "content": "Start-Button",
+    "ref": ""
+  },
+  "paramId1003": {
+    "content": "Start",
+    "ref": ""
+  },
+  "paramId1004": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1005": {
+    "content": "speech0001",
+    "ref": ""
+  },
+  "paramId1006": {
+    "content": "Larry1",
+    "ref": ""
+  },
+  "paramId1007": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1008": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1009": {
+    "content": "<p>When music is recorded in a studio, sometimes the instruments are recorded separately. They are then mixed together with software so that each sound is perfectly balanced, outside noise is eliminated, and effects can be added.</p><p>Listen to these three instruments played separately.</p>",
+    "ref": ""
+  },
+  "paramId1010": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1011": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1012": {
+    "content": "mediaPlayer01",
+    "ref": ""
+  },
+  "paramId1013": {
+    "content": "mediaPlayer001",
+    "ref": ""
+  },
+  "paramId1014": {
+    "content": "MM04a_drums_mono_90bpm.mp3",
+    "ref": ""
+  },
+  "paramId1015": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1016": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1017": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1018": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1019": {
+    "content": "400px",
+    "ref": ""
+  },
+  "paramId1020": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1021": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1022": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1023": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1024": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1025": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1026": {
+    "content": "mediaPlayer02",
+    "ref": ""
+  },
+  "paramId1027": {
+    "content": "mediaPlayer002",
+    "ref": ""
+  },
+  "paramId1028": {
+    "content": "MM04a_piano_mono_100bpm.mp3",
+    "ref": ""
+  },
+  "paramId1029": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1030": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1031": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1032": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1033": {
+    "content": "400px",
+    "ref": ""
+  },
+  "paramId1034": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1035": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1036": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1037": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1038": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1039": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1040": {
+    "content": "mediaPlayer03",
+    "ref": ""
+  },
+  "paramId1041": {
+    "content": "mediaPlayer003",
+    "ref": ""
+  },
+  "paramId1042": {
+    "content": "MM04a_guitar_mono_75.mp3",
+    "ref": ""
+  },
+  "paramId1043": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1044": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1045": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1046": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1047": {
+    "content": "400px",
+    "ref": ""
+  },
+  "paramId1048": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1049": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1050": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1051": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1052": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1053": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1054": {
+    "content": "speech0002",
+    "ref": ""
+  },
+  "paramId1055": {
+    "content": "Larry2",
+    "ref": ""
+  },
+  "paramId1056": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1057": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1058": {
+    "content": "<p>When these three recordings are all mixed together, it doesn't sound right. Listen for yourself.</p><p id=\"text1058\">The problem with the music you just heard is that each instrument is playing at a different speed.</p>",
+    "ref": ""
+  },
+  "paramId1059": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1060": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1061": {
+    "content": "speech0003",
+    "ref": ""
+  },
+  "paramId1062": {
+    "content": "Larry3",
+    "ref": ""
+  },
+  "paramId1063": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1064": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1065": {
+    "content": "<p>The problem with the music you just heard is that each instrument is playing at a different speed. </p>",
+    "ref": ""
+  },
+  "paramId1066": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1067": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1068": {
+    "content": "mediaPlayer04",
+    "ref": ""
+  },
+  "paramId1069": {
+    "content": "mediaPlayer004",
+    "ref": ""
+  },
+  "paramId1070": {
+    "content": "Mismatched_tempo.mp3",
+    "ref": ""
+  },
+  "paramId1071": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1072": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1073": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1074": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1075": {
+    "content": "200px",
+    "ref": ""
+  },
+  "paramId1076": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1077": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1078": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1079": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1080": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1081": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1082": {
+    "content": "speech0004",
+    "ref": ""
+  },
+  "paramId1083": {
+    "content": "Larry4",
+    "ref": ""
+  },
+  "paramId1084": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1085": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1086": {
+    "content": "<p>Let’s start with a quick music lesson.</p><p><ul><li>The speed of music is called <strong>tempo</strong>.</li><li>Tempo can be measured in beats per minute.</li></ul></p><p>Remember, there are <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>&nbsp;seconds in one minute.</p><p>Complete the sentences to compare two tempos.</p>",
+    "ref": ""
+  },
+  "paramId1087": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1088": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1089": {
+    "content": "s002-ne-r1",
+    "ref": ""
+  },
+  "paramId1090": {
+    "content": "Textfield1",
+    "ref": ""
+  },
+  "paramId1091": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1092": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1093": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1094": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1095": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1096": {
+    "content": "s001-iclms-r1",
+    "ref": ""
+  },
+  "paramId1097": {
+    "content": "Dropdown1",
+    "ref": ""
+  },
+  "paramId1098": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1099": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.5</mn></mrow><mrow><mn>&nbsp;second.</mn></mrow></math></span> ",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow><mrow><mn>&nbsp;second.</mn></mrow></math></span>",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>2</mn></mrow><mrow><mn>&nbsp;seconds.</mn></mrow></math></span>",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1101": {
+    "content": "s001-iclms-r2",
+    "ref": ""
+  },
+  "paramId1102": {
+    "content": "Dropdown2",
+    "ref": ""
+  },
+  "paramId1103": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1104": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.5</mn></mrow><mrow><mn>&nbsp;second.</mn></mrow></math></span> ",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn></mrow><mrow><mn>&nbsp;second.</mn></mrow></math></span>",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>2</mn></mrow><mrow><mn>&nbsp;seconds.</mn></mrow></math></span>",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1105": {
+    "content": "s001-iclms-r4",
+    "ref": ""
+  },
+  "paramId1106": {
+    "content": "Dropdown3",
+    "ref": ""
+  },
+  "paramId1107": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1108": {
+    "content": [
+      {
+        "label": "half",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "twice",
+        "value": "b",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1109": {
+    "content": "s002-ne-r2",
+    "ref": ""
+  },
+  "paramId1110": {
+    "content": "Textfield2",
+    "ref": ""
+  },
+  "paramId1111": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1112": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1113": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1114": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1115": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1116": {
+    "content": "Textfield3Response",
+    "ref": ""
+  },
+  "paramId1117": {
+    "content": "Textfield3",
+    "ref": ""
+  },
+  "paramId1118": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1119": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1120": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1121": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1122": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1123": {
+    "content": "speech0005",
+    "ref": ""
+  },
+  "paramId1124": {
+    "content": "Larry5",
+    "ref": ""
+  },
+  "paramId1125": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1126": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1127": {
+    "content": "<p>Some composers do not calculate the tempo in beats per minute. Instead, they calculate the number of seconds per beat.</p><p>Complete the sentence to compare the methods used to calculate tempos.</p>",
+    "ref": ""
+  },
+  "paramId1128": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1129": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1130": {
+    "content": "s005-ne-r1",
+    "ref": ""
+  },
+  "paramId1131": {
+    "content": "Textfield4",
+    "ref": ""
+  },
+  "paramId1132": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1133": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1134": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1135": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1136": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1137": {
+    "content": "s003-iclms-r1",
+    "ref": ""
+  },
+  "paramId1138": {
+    "content": "Dropdown4",
+    "ref": ""
+  },
+  "paramId1139": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1140": {
+    "content": [
+      {
+        "label": "faster",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "slower",
+        "value": "b",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1141": {
+    "content": "s003-iclms-r2",
+    "ref": ""
+  },
+  "paramId1142": {
+    "content": "Dropdown5",
+    "ref": ""
+  },
+  "paramId1143": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1144": {
+    "content": [
+      {
+        "label": "faster",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "slower",
+        "value": "b",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1145": {
+    "content": "speech0006",
+    "ref": ""
+  },
+  "paramId1146": {
+    "content": "Larry6",
+    "ref": ""
+  },
+  "paramId1147": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1148": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1149": {
+    "content": "<p>Now let’s practice.</p><p>You know how sometimes, when you are listening to music, you clap your hands? That’s because you are listening to the beat. With the aid of video, we can also SEE the beat.</p><p>Watch this video. It is a wave representation of the drum sound that we heard earlier.</p><p>Each beat shows up in the video as a peak.</p>",
+    "ref": ""
+  },
+  "paramId1150": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1151": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1152": {
+    "content": "mediaPlayer05",
+    "ref": ""
+  },
+  "paramId1153": {
+    "content": "mediaPlayer005",
+    "ref": ""
+  },
+  "paramId1154": {
+    "content": "drums_without_markers.mp4",
+    "ref": ""
+  },
+  "paramId1155": {
+    "content": "video/mp4",
+    "ref": ""
+  },
+  "paramId1156": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1157": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1158": {
+    "content": "drums-poster.png",
+    "ref": ""
+  },
+  "paramId1159": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1160": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1161": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1162": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1163": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1164": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1165": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1166": {
+    "content": "speech0007",
+    "ref": ""
+  },
+  "paramId1167": {
+    "content": "Larry7",
+    "ref": ""
+  },
+  "paramId1168": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1169": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1170": {
+    "content": "<p>It may help to see the tempo on a line with tick marks at every beat.</p><p>Play the video again, and notice that each beat matches a tick mark on the line.</p>",
+    "ref": ""
+  },
+  "paramId1171": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1172": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1173": {
+    "content": "mediaPlayer06",
+    "ref": ""
+  },
+  "paramId1174": {
+    "content": "mediaPlayer006",
+    "ref": ""
+  },
+  "paramId1175": {
+    "content": "drums_with_marker_line.mp4",
+    "ref": ""
+  },
+  "paramId1176": {
+    "content": "video/mp4",
+    "ref": ""
+  },
+  "paramId1177": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1178": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1179": {
+    "content": "drums-poster.png",
+    "ref": ""
+  },
+  "paramId1180": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1181": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1182": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1183": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1184": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1185": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1186": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1187": {
+    "content": "speech0008",
+    "ref": ""
+  },
+  "paramId1188": {
+    "content": "Larry8",
+    "ref": ""
+  },
+  "paramId1189": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1190": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1191": {
+    "content": "<p>Since there are so many beats, it may be easier to count by measures.</p><p>Each measure in this piece of music is made up of <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>4</mn></mrow></math></span> &nbsp;beats.</p><p>I marked the first beat of the first measure on the line. Count all the measures by selecting the first beat of each measure on the line.</p>",
+    "ref": ""
+  },
+  "paramId1192": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1193": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1194": {
+    "content": "mediaPlayer07",
+    "ref": ""
+  },
+  "paramId1195": {
+    "content": "mediaPlayer007",
+    "ref": ""
+  },
+  "paramId1196": {
+    "content": "drums_without_markers.mp4",
+    "ref": ""
+  },
+  "paramId1197": {
+    "content": "video/mp4",
+    "ref": ""
+  },
+  "paramId1198": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1199": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1200": {
+    "content": "drums-poster.png",
+    "ref": ""
+  },
+  "paramId1201": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1202": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1203": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1204": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1205": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1206": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1207": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1208": {
+    "content": "speech0009",
+    "ref": ""
+  },
+  "paramId1209": {
+    "content": "Larry9",
+    "ref": ""
+  },
+  "paramId1210": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1211": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1212": {
+    "content": "<p>In <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>16</mn></mrow></math></span>&nbsp;seconds, the drum plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>6</mn></mrow></math></span>&nbsp;measures, which corresponds to <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>24</mn></mrow></math></span>&nbsp;beats.</p>",
+    "ref": ""
+  },
+  "paramId1213": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1214": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1215": {
+    "content": "s006-ssmc-r1",
+    "ref": ""
+  },
+  "paramId1216": {
+    "content": "Radio1",
+    "ref": ""
+  },
+  "paramId1217": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>12</mn></mrow></math></span>",
+        "value": "a",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>50</mn></mrow></math></span>",
+        "value": "b",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>60</mn></mrow></math></span>",
+        "value": "c",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span>",
+        "value": "d",
+        "optionLabel": "",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1218": {
+    "content": "speech0010",
+    "ref": ""
+  },
+  "paramId1219": {
+    "content": "Larry10",
+    "ref": ""
+  },
+  "paramId1220": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1221": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1222": {
+    "content": "<p>In <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>16</mn></mrow></math></span>&nbsp;seconds, the drum actually plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>6</mn></mrow></math></span>&nbsp;measures, which corresponds to <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>24</mn></mrow></math></span>&nbsp;beats.</p>",
+    "ref": ""
+  },
+  "paramId1223": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1224": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1225": {
+    "content": "speech0011",
+    "ref": ""
+  },
+  "paramId1226": {
+    "content": "Larry11",
+    "ref": ""
+  },
+  "paramId1227": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1228": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1229": {
+    "content": "<p>By listening to the music again, you might hear that the tempos of all three instruments are different.</p><p>We need to adjust the beats per minute of the other instruments so that their tempos match that of the drum. </p>",
+    "ref": ""
+  },
+  "paramId1230": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1231": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1232": {
+    "content": "mediaPlayer08",
+    "ref": ""
+  },
+  "paramId1233": {
+    "content": "mediaPlayer008",
+    "ref": ""
+  },
+  "paramId1234": {
+    "content": "Mismatched_tempo.mp3",
+    "ref": ""
+  },
+  "paramId1235": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1236": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1237": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1238": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1239": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1240": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1241": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1242": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1243": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1244": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1245": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1246": {
+    "content": "speech0012",
+    "ref": ""
+  },
+  "paramId1247": {
+    "content": "Larry12",
+    "ref": ""
+  },
+  "paramId1248": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1249": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1250": {
+    "content": "<p>This video is the wave representation of the sound of the piano.</p><p> Listen carefully, and see if you can hear the <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>4</mn></mrow></math></span>&nbsp;beats in each measure. </p>",
+    "ref": ""
+  },
+  "paramId1251": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1252": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1253": {
+    "content": "mediaPlayer09",
+    "ref": ""
+  },
+  "paramId1254": {
+    "content": "mediaPlayer009",
+    "ref": ""
+  },
+  "paramId1255": {
+    "content": "piano.mp4",
+    "ref": ""
+  },
+  "paramId1256": {
+    "content": "video/mp4",
+    "ref": ""
+  },
+  "paramId1257": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1258": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1259": {
+    "content": "piano-poster.jpg",
+    "ref": ""
+  },
+  "paramId1260": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1261": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1262": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1263": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1264": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1265": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1266": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1267": {
+    "content": "s007-ne-r1",
+    "ref": ""
+  },
+  "paramId1268": {
+    "content": "Textfield5",
+    "ref": ""
+  },
+  "paramId1269": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1270": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1271": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1272": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1273": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1274": {
+    "content": "speech0013",
+    "ref": ""
+  },
+  "paramId1275": {
+    "content": "Larry13",
+    "ref": ""
+  },
+  "paramId1276": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1277": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1278": {
+    "content": "<p>In <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>28.8</mn></mrow></math></span>&nbsp;seconds, the piano plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>48</mn></mrow></math></span>&nbsp;beats.</p>",
+    "ref": ""
+  },
+  "paramId1279": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1280": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1281": {
+    "content": "image001",
+    "ref": ""
+  },
+  "paramId1282": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1283": {
+    "content": "piano.png",
+    "ref": ""
+  },
+  "paramId1284": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1285": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1286": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1287": {
+    "content": "image002",
+    "ref": ""
+  },
+  "paramId1288": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1289": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1290": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1291": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1292": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1293": {
+    "content": "DropdownResponse6",
+    "ref": ""
+  },
+  "paramId1294": {
+    "content": "Dropdown6",
+    "ref": ""
+  },
+  "paramId1295": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1296": {
+    "content": [
+      {
+        "label": "piano",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "drum",
+        "value": "b",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1297": {
+    "content": "s009-iclms-r1",
+    "ref": ""
+  },
+  "paramId1298": {
+    "content": "Dropdown7",
+    "ref": ""
+  },
+  "paramId1299": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1300": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.01</mn></mrow></math></span>",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.67</mn></mrow></math></span>",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1.5</mn></mrow></math></span>",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1301": {
+    "content": "s009-iclms-r2",
+    "ref": ""
+  },
+  "paramId1302": {
+    "content": "Dropdown8",
+    "ref": ""
+  },
+  "paramId1303": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1304": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.01</mn></mrow></math></span>",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.6</mn></mrow></math></span>",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1.67</mn></mrow></math></span>",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1305": {
+    "content": "speech0014",
+    "ref": ""
+  },
+  "paramId1306": {
+    "content": "Larry14",
+    "ref": ""
+  },
+  "paramId1307": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1308": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1309": {
+    "content": "<p>That’s right.</p><ul><li>The drum plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span>&nbsp;beats per minute.</li><li>The piano plays <math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>100</mn></mrow></math></span>&nbsp;beats per minute.</li></ul>",
+    "ref": ""
+  },
+  "paramId1310": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1311": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1312": {
+    "content": "s008-ssmc-r1",
+    "ref": ""
+  },
+  "paramId1313": {
+    "content": "Radio2",
+    "ref": ""
+  },
+  "paramId1314": {
+    "content": [
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>5</mn></mrow></math></span>&nbsp;beats",
+        "value": "a",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>10</mn></mrow></math></span>&nbsp;beats",
+        "value": "b",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>15</mn></mrow></math></span>&nbsp;beats",
+        "value": "c",
+        "optionLabel": "",
+        "selected": "false"
+      },
+      {
+        "label": "<span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>20</mn></mrow></math></span>&nbsp;beats",
+        "value": "d",
+        "optionLabel": "",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1315": {
+    "content": "speech0015",
+    "ref": ""
+  },
+  "paramId1316": {
+    "content": "Larry15",
+    "ref": ""
+  },
+  "paramId1317": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1318": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1319": {
+    "content": "<p>Here are the correct tempos.</p><ul><li>The drum plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span>&nbsp;beats per minute.</li><li>The piano plays <math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>100</mn></mrow></math></span>&nbsp;beats per minute.</li></ul>",
+    "ref": ""
+  },
+  "paramId1320": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1321": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1322": {
+    "content": "speech0016",
+    "ref": ""
+  },
+  "paramId1323": {
+    "content": "Larry16",
+    "ref": ""
+  },
+  "paramId1324": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1325": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1326": {
+    "content": "<p>Now, let’s listen to the guitar. </p><p>Hearing the tempo of this guitar piece is more difficult, but don’t worry. I will help you out.</p>",
+    "ref": ""
+  },
+  "paramId1327": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1328": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1329": {
+    "content": "image003",
+    "ref": ""
+  },
+  "paramId1330": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1331": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1332": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1333": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1334": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1335": {
+    "content": "image004",
+    "ref": ""
+  },
+  "paramId1336": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1337": {
+    "content": "piano.png",
+    "ref": ""
+  },
+  "paramId1338": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1339": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1340": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1341": {
+    "content": "image005",
+    "ref": ""
+  },
+  "paramId1342": {
+    "content": "guitar",
+    "ref": ""
+  },
+  "paramId1343": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1344": {
+    "content": "guitar",
+    "ref": ""
+  },
+  "paramId1345": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1346": {
+    "content": "225",
+    "ref": ""
+  },
+  "paramId1347": {
+    "content": "mediaPlayer010",
+    "ref": ""
+  },
+  "paramId1348": {
+    "content": "mediaPlayer010",
+    "ref": ""
+  },
+  "paramId1349": {
+    "content": "guitar_short.mp4",
+    "ref": ""
+  },
+  "paramId1350": {
+    "content": "video/mp4",
+    "ref": ""
+  },
+  "paramId1351": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1352": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1353": {
+    "content": "guitar-short-poster.png",
+    "ref": ""
+  },
+  "paramId1354": {
+    "content": "350px",
+    "ref": ""
+  },
+  "paramId1355": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1356": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1357": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1358": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1359": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1360": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1361": {
+    "content": "speech0017",
+    "ref": ""
+  },
+  "paramId1362": {
+    "content": "Larry17",
+    "ref": ""
+  },
+  "paramId1363": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1364": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1365": {
+    "content": "<p>The guitar is playing <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>24</mn></mrow></math></span>&nbsp;beats every <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>19.2</mn></mrow></math></span>&nbsp;seconds, while the drum is playing <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>24</mn></mrow></math></span>&nbsp;beats in <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>16</mn></mrow></math></span>&nbsp;seconds.</p><p>Complete the sentence to compare the tempos at which the instruments are playing.</p>",
+    "ref": ""
+  },
+  "paramId1366": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1367": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1368": {
+    "content": "s010-iclms-r1",
+    "ref": ""
+  },
+  "paramId1369": {
+    "content": "Dropdown9",
+    "ref": ""
+  },
+  "paramId1370": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1371": {
+    "content": [
+      {
+        "label": "slower than",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "faster than",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "the same as",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1372": {
+    "content": "s010-iclms-r2",
+    "ref": ""
+  },
+  "paramId1373": {
+    "content": "Dropdown10",
+    "ref": ""
+  },
+  "paramId1374": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1375": {
+    "content": [
+      {
+        "label": "more",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "fewer",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "the same number of",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1376": {
+    "content": "s010-iclms-r3",
+    "ref": ""
+  },
+  "paramId1377": {
+    "content": "Dropdown11",
+    "ref": ""
+  },
+  "paramId1378": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1379": {
+    "content": [
+      {
+        "label": "more",
+        "value": "a",
+        "selected": "false"
+      },
+      {
+        "label": "less",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "the same amount of",
+        "value": "c",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1380": {
+    "content": "Textfield6Response",
+    "ref": ""
+  },
+  "paramId1381": {
+    "content": "Textfield6",
+    "ref": ""
+  },
+  "paramId1382": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1383": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1384": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1385": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1386": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1387": {
+    "content": "Textfield7Response",
+    "ref": ""
+  },
+  "paramId1388": {
+    "content": "Textfield7",
+    "ref": ""
+  },
+  "paramId1389": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1390": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1391": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1392": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1393": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1394": {
+    "content": "s011-ne-r1",
+    "ref": ""
+  },
+  "paramId1395": {
+    "content": "Textfield8",
+    "ref": ""
+  },
+  "paramId1396": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1397": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1398": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1399": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1400": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1401": {
+    "content": "s011-ne-r2",
+    "ref": ""
+  },
+  "paramId1402": {
+    "content": "Textfield9",
+    "ref": ""
+  },
+  "paramId1403": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1404": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1405": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1406": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1407": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1408": {
+    "content": "s011-ne-r4",
+    "ref": ""
+  },
+  "paramId1409": {
+    "content": "Textfield10",
+    "ref": ""
+  },
+  "paramId1410": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1411": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1412": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1413": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1414": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1415": {
+    "content": "s011-ne-r3",
+    "ref": ""
+  },
+  "paramId1416": {
+    "content": "Textfield11",
+    "ref": ""
+  },
+  "paramId1417": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1418": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1419": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1420": {
+    "content": "7",
+    "ref": ""
+  },
+  "paramId1421": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1422": {
+    "content": "speech0018",
+    "ref": ""
+  },
+  "paramId1423": {
+    "content": "Larry18",
+    "ref": ""
+  },
+  "paramId1424": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1425": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1426": {
+    "content": "<p>Now it makes sense why the mixed version of the three recordings did not sound right. We have to make the tempos match.</p><p>Let’s adjust the tempos of the guitar and the piano to match that of the drum.</p><p>We will start with the guitar.</p><p>Use the slider to choose the factor by which the tempo of the guitar should be multiplied to match the tempo of the drum.</p>",
+    "ref": ""
+  },
+  "paramId1427": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1428": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1429": {
+    "content": "image006",
+    "ref": ""
+  },
+  "paramId1430": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1431": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1432": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1433": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1434": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1435": {
+    "content": "image007",
+    "ref": ""
+  },
+  "paramId1436": {
+    "content": "guitar",
+    "ref": ""
+  },
+  "paramId1437": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1438": {
+    "content": "guitar",
+    "ref": ""
+  },
+  "paramId1439": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1440": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1441": {
+    "content": "image008",
+    "ref": ""
+  },
+  "paramId1442": {
+    "content": "TempoChangeFactor",
+    "ref": ""
+  },
+  "paramId1443": {
+    "content": "Slider1.png",
+    "ref": ""
+  },
+  "paramId1444": {
+    "content": "TempoChangeFactor",
+    "ref": ""
+  },
+  "paramId1445": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1446": {
+    "content": "520",
+    "ref": ""
+  },
+  "paramId1447": {
+    "content": "speech0019",
+    "ref": ""
+  },
+  "paramId1448": {
+    "content": "Larry19",
+    "ref": ""
+  },
+  "paramId1449": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1450": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1451": {
+    "content": "<p>Now let’s do the same with the piano. Adjust its tempo to match that of the drum.</p><p>Use the slider to choose the factor by which the tempo of the piano should be multiplied to match the tempo of the drum.</p>",
+    "ref": ""
+  },
+  "paramId1452": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1453": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1454": {
+    "content": "image009",
+    "ref": ""
+  },
+  "paramId1455": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1456": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1457": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1458": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1459": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1460": {
+    "content": "image010",
+    "ref": ""
+  },
+  "paramId1461": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1462": {
+    "content": "piano.png",
+    "ref": ""
+  },
+  "paramId1463": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1464": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1465": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1466": {
+    "content": "image011",
+    "ref": ""
+  },
+  "paramId1467": {
+    "content": "TempoChangeFactor",
+    "ref": ""
+  },
+  "paramId1468": {
+    "content": "Slider1.png",
+    "ref": ""
+  },
+  "paramId1469": {
+    "content": "TempoChangeFactor",
+    "ref": ""
+  },
+  "paramId1470": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1471": {
+    "content": "520",
+    "ref": ""
+  },
+  "paramId1472": {
+    "content": "speech0020",
+    "ref": ""
+  },
+  "paramId1473": {
+    "content": "Larry20",
+    "ref": ""
+  },
+  "paramId1474": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1475": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1476": {
+    "content": "<p>Thanks!</p><p>Let’s listen to the three instruments together, now that all the recordings are set at <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span>&nbsp;beats per minute.</p><p id=\"text0063\">Now THAT’s music to my ears!</p>",
+    "ref": ""
+  },
+  "paramId1477": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1478": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1479": {
+    "content": "speech0021",
+    "ref": ""
+  },
+  "paramId1480": {
+    "content": "Larry21",
+    "ref": ""
+  },
+  "paramId1481": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1482": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1483": {
+    "content": "<p>Now THAT’S music to my ears!</p>",
+    "ref": ""
+  },
+  "paramId1484": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1485": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1486": {
+    "content": "image012",
+    "ref": ""
+  },
+  "paramId1487": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1488": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1489": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1490": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1491": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1492": {
+    "content": "image013",
+    "ref": ""
+  },
+  "paramId1493": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1494": {
+    "content": "All_instruments.png",
+    "ref": ""
+  },
+  "paramId1495": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1496": {
+    "content": "341",
+    "ref": ""
+  },
+  "paramId1497": {
+    "content": "640",
+    "ref": ""
+  },
+  "paramId1498": {
+    "content": "image014",
+    "ref": ""
+  },
+  "paramId1499": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1500": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1501": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1502": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1503": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1504": {
+    "content": "audioPlayer01",
+    "ref": ""
+  },
+  "paramId1505": {
+    "content": "audioPlayer001",
+    "ref": ""
+  },
+  "paramId1506": {
+    "content": "Matching_tempo_43sec.mp3",
+    "ref": ""
+  },
+  "paramId1507": {
+    "content": "audio/mp3",
+    "ref": ""
+  },
+  "paramId1508": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1509": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1510": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1511": {
+    "content": "400px",
+    "ref": ""
+  },
+  "paramId1512": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1513": {
+    "content": "true",
+    "ref": ""
+  },
+  "paramId1514": {
+    "content": "false",
+    "ref": ""
+  },
+  "paramId1515": {
+    "content": "Title of media",
+    "ref": ""
+  },
+  "paramId1516": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1517": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1518": {
+    "content": "image015",
+    "ref": ""
+  },
+  "paramId1519": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1520": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1521": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1522": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1523": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1524": {
+    "content": "image016",
+    "ref": ""
+  },
+  "paramId1525": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1526": {
+    "content": "All_Instruments.png",
+    "ref": ""
+  },
+  "paramId1527": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1528": {
+    "content": "341",
+    "ref": ""
+  },
+  "paramId1529": {
+    "content": "640",
+    "ref": ""
+  },
+  "paramId1530": {
+    "content": "image017",
+    "ref": ""
+  },
+  "paramId1531": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1532": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1533": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1534": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1535": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1536": {
+    "content": "image018",
+    "ref": ""
+  },
+  "paramId1537": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1538": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1539": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1540": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1541": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1542": {
+    "content": "image019",
+    "ref": ""
+  },
+  "paramId1543": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1544": {
+    "content": "All_instruments.png",
+    "ref": ""
+  },
+  "paramId1545": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1546": {
+    "content": "341",
+    "ref": ""
+  },
+  "paramId1547": {
+    "content": "640",
+    "ref": ""
+  },
+  "paramId1548": {
+    "content": "image020",
+    "ref": ""
+  },
+  "paramId1549": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1550": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1551": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1552": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1553": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1554": {
+    "content": "image018",
+    "ref": ""
+  },
+  "paramId1555": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1556": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1557": {
+    "content": "drums",
+    "ref": ""
+  },
+  "paramId1558": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1559": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1560": {
+    "content": "image019",
+    "ref": ""
+  },
+  "paramId1561": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1562": {
+    "content": "piano.png",
+    "ref": ""
+  },
+  "paramId1563": {
+    "content": "piano",
+    "ref": ""
+  },
+  "paramId1564": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1565": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1566": {
+    "content": "image020",
+    "ref": ""
+  },
+  "paramId1567": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1568": {
+    "content": "guitar.png",
+    "ref": ""
+  },
+  "paramId1569": {
+    "content": "Guitar",
+    "ref": ""
+  },
+  "paramId1570": {
+    "content": "150",
+    "ref": ""
+  },
+  "paramId1571": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1572": {
+    "content": "<p><span data-type=\"component\" id=\"image0024\"></p>",
+    "ref": ""
+  },
+  "paramId1573": {
+    "content": "image001",
+    "ref": ""
+  },
+  "paramId1574": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1575": {
+    "content": "piano.png",
+    "ref": ""
+  },
+  "paramId1576": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1577": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1578": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1579": {
+    "content": "<span data-type=\"component\" id=\"speechbubble0022\"></span>",
+    "ref": ""
+  },
+  "paramId1580": {
+    "content": "speech0022",
+    "ref": ""
+  },
+  "paramId1581": {
+    "content": "Larry22",
+    "ref": ""
+  },
+  "paramId1582": {
+    "content": "larry.png",
+    "ref": ""
+  },
+  "paramId1583": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1584": {
+    "content": "<p>Complete the sentences to compare the tempos, in seconds per beat, at which the instruments are playing. </p><p>Remember: <ul><li>The drum plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>90</mn></mrow></math></span>&nbsp;beats per minute.</li><li>The piano plays <span><math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>100</mn></mrow></math></span>&nbsp;beats per minute.</li></ul></p>",
+    "ref": ""
+  },
+  "paramId1585": {
+    "content": "left",
+    "ref": ""
+  },
+  "paramId1586": {
+    "content": "Larry",
+    "ref": ""
+  },
+  "paramId1587": {
+    "content": "image0025",
+    "ref": ""
+  },
+  "paramId1588": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1589": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1590": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1591": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1592": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1593": {
+    "content": "image0026",
+    "ref": ""
+  },
+  "paramId1594": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1595": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1596": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1597": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1598": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1599": {
+    "content": "image0027",
+    "ref": ""
+  },
+  "paramId1600": {
+    "content": "Drums",
+    "ref": ""
+  },
+  "paramId1601": {
+    "content": "drums.png",
+    "ref": ""
+  },
+  "paramId1602": {
+    "content": "Piano",
+    "ref": ""
+  },
+  "paramId1603": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1604": {
+    "content": "300",
+    "ref": ""
+  },
+  "paramId1605": {
+    "content": "s001-iclms-r3",
+    "ref": ""
+  },
+  "paramId1606": {
+    "content": "Dropdown12",
+    "ref": ""
+  },
+  "paramId1607": {
+    "content": "",
+    "ref": ""
+  },
+  "paramId1608": {
+    "content": [
+      {
+        "label": "half",
+        "value": "b",
+        "selected": "false"
+      },
+      {
+        "label": "twice",
+        "value": "a",
+        "selected": "false"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1609": {
+    "content": "s012-zone-r1",
+    "ref": ""
+  },
+  "paramId1610": {
+    "content": "Range1",
+    "ref": ""
+  },
+  "paramId1611": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1612": {
+    "content": "9",
+    "ref": ""
+  },
+  "paramId1613": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1614": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1615": {
+    "content": [
+      {
+        "label": "",
+        "value": "a"
+      },
+      {
+        "label": "",
+        "value": "b"
+      },
+      {
+        "label": "",
+        "value": "c"
+      },
+      {
+        "label": "",
+        "value": "d"
+      },
+      {
+        "label": "",
+        "value": "e"
+      },
+      {
+        "label": "",
+        "value": "f"
+      },
+      {
+        "label": "",
+        "value": "g"
+      },
+      {
+        "label": "",
+        "value": "h"
+      },
+      {
+        "label": "",
+        "value": "i"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1616": {
+    "content": "s013-zone-r1",
+    "ref": ""
+  },
+  "paramId1617": {
+    "content": "Range2",
+    "ref": ""
+  },
+  "paramId1618": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1619": {
+    "content": "9",
+    "ref": ""
+  },
+  "paramId1620": {
+    "content": "5",
+    "ref": ""
+  },
+  "paramId1621": {
+    "content": "1",
+    "ref": ""
+  },
+  "paramId1622": {
+    "content": [
+      {
+        "label": "",
+        "value": "a"
+      },
+      {
+        "label": "",
+        "value": "b"
+      },
+      {
+        "label": "",
+        "value": "c"
+      },
+      {
+        "label": "",
+        "value": "d"
+      },
+      {
+        "label": "",
+        "value": "e"
+      },
+      {
+        "label": "",
+        "value": "f"
+      },
+      {
+        "label": "",
+        "value": "g"
+      },
+      {
+        "label": "",
+        "value": "h"
+      },
+      {
+        "label": "",
+        "value": "i"
+      }
+    ],
+    "ref": ""
+  },
+  "paramId1623": {
+    "content": "false"
+  },
+  "paramIdAutorewind0005": {
+    "content": "false"
+  },
+  "paramIdAutorewind0006": {
+    "content": "false"
+  },
+  "paramIdAutorewind0009": {
+    "content": "false"
+  },
+  "paramIdAutorewind0010": {
+    "content": "false"
+  },
+  "paramIdScore0001": {
+    "content": "mmx-s001",
+    "ref": ""
+  },
+  "paramIdScore0002": {
+    "content": "mmx-s002",
+    "ref": ""
+  },
+  "paramIdScore0003": {
+    "content": "mmx-s003",
+    "ref": ""
+  },
+  "paramIdScore0004": {
+    "content": "mmx-s004",
+    "ref": ""
+  },
+  "paramIdScore0005": {
+    "content": "mmx-s005",
+    "ref": ""
+  },
+  "paramIdScore0006": {
+    "content": "mmx-s006",
+    "ref": ""
+  },
+  "paramIdScore0007": {
+    "content": "mmx-s007",
+    "ref": ""
+  },
+  "paramIdScore0008": {
+    "content": "mmx-s008",
+    "ref": ""
+  },
+  "paramIdScore0009": {
+    "content": "mmx-s009",
+    "ref": ""
+  },
+  "paramIdScore0010": {
+    "content": "mmx-s010",
+    "ref": ""
+  },
+  "paramIdScore0011": {
+    "content": "mmx-s011",
+    "ref": ""
+  },
+  "paramIdScore0012": {
+    "content": "mmx-s012",
+    "ref": ""
+  },
+  "paramIdScore0013": {
+    "content": "mmx-s013",
+    "ref": ""
+  },
+  "paramIdScore0014": {
+    "content": "Score0014",
+    "ref": ""
+  },
+  "paramIdScore0015": {
+    "content": "Score0015",
+    "ref": ""
+  },
+  "paramIdScore0016": {
+    "content": "Score0016",
+    "ref": ""
+  },
+  "paramIdScore0017": {
+    "content": "Score0017",
+    "ref": ""
+  },
+  "paramIdScore0018": {
+    "content": "Score0018",
+    "ref": ""
+  },
+  "paramIdScore0019": {
+    "content": "Score0019",
+    "ref": ""
+  },
+  "paramIdScore0020": {
+    "content": "Score0020",
+    "ref": ""
+  },
+  "paramIdScore0021": {
+    "content": "Score0021",
+    "ref": ""
+  }
+}

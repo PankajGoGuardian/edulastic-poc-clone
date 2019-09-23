@@ -1,0 +1,27 @@
+{
+  "type": "textarea",
+  "identity": {
+    "id": "textarea0001",
+    "scoreID": "paramIdScore0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "winsight-input-textarea",
+    "label": "paramId0003",
+    "placeholder": "paramId0004",
+    "enabled": "true",
+    "tabindex": "1",
+    "maxLength": "paramId0005",
+    "minLength": "paramId0006",
+    "cols": "paramId0007",
+    "rows": "paramId0008",
+    "fixed": "true",
+    "regEx": "regEx"
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": true
+}

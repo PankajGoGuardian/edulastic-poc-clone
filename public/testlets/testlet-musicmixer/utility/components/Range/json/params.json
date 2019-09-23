@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "itemName": "Range",
+  "itemType": "iic",
+  "params0001": {
+    "content": "<p>Range component:</p><p><span data-type=\"component\" id=\"range0001\"></span></p>",
+    "ref": ""
+  },
+  "paramId0001": {
+    "content": "RangeResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "Range",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "0",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": "100",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0005": {
+    "content": "50",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0006": {
+    "content": "10",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0007": {
+    "content": [
+      {
+        "label": "10",
+        "value": "a"
+      },
+      {
+        "label": "20",
+        "value": "b"
+      },
+      {
+        "label": "30",
+        "value": "c"
+      },
+      {
+        "label": "40",
+        "value": "d"
+      },
+      {
+        "label": "50",
+        "value": "e"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramIdScore0001": {
+    "content": "ScoreRange0001",
+    "ref": ""
+  }
+}

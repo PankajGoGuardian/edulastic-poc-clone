@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "itemType": "iic",
+  "type": "object",
+  "id": "Listbox",
+  "properties": {
+    "version": {
+      "id": "version",
+      "type": "string",
+      "title": "version",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "itemName": {
+      "id": "itemName",
+      "type": "string",
+      "title": "itemName",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "itemType": {
+      "id": "itemType",
+      "type": "string",
+      "title": "itemType",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "params0001": {
+      "id": "params0001",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "params0001",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0001": {
+      "id": "paramId0001",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0001",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0002": {
+      "id": "paramId0002",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0002",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0003": {
+      "id": "paramId0003",
+      "type": "object",
+      "title": "paramId0003",
+      "properties": {
+        "content": {
+          "type": "array",
+          "title": "paramId0003",
+          "maxItems": 10,
+          "id": "paramId0003-content",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "id": "label",
+                "type": "string",
+                "title": "Label",
+                "mediaType": "text",
+                "hidden": false,
+                "disabled": false
+              },
+              "value": {
+                "id": "value",
+                "type": "string",
+                "title": "Value",
+                "mediaType": "text",
+                "hidden": false,
+                "disabled": false
+              },
+              "selected": {
+                "id": "selected",
+                "type": "string",
+                "title": "Selected",
+                "mediaType": "option-select",
+                "hidden": false,
+                "disabled": false,
+                "optional": false,
+                "enum": ["true", "false"]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

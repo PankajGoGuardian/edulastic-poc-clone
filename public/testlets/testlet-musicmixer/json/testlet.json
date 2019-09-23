@@ -1,0 +1,3718 @@
+{
+  "name": "testlet MusicMixer",
+  "testletID": "paramIdtestletID",
+  "version": {
+    "major": 1,
+    "minor": 2,
+    "patch": 1
+  },
+  "languages": [
+    {
+      "language": "English",
+      "file": "params_en_US.json"
+    }
+  ],
+  "alerts": {
+    "next": {
+      "message": "paramIdAlert1",
+      "title": "paramIdAlert2"
+    }
+  },
+  "containers": [
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-0",
+        "name": "Introduction"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 1,
+            "id": ["content0001"],
+            "requirements": ["paramId1001"]
+          },
+          {
+            "index": 2,
+            "id": ["content0002"],
+            "requirements": []
+          },
+          {
+            "index": 3,
+            "id": ["content0003", "content0004"],
+            "requirements": []
+          },
+          {
+            "index": 4,
+            "id": ["content0005", "content0067", "content0007"],
+            "requirements": []
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0001",
+            "name": "panel-informative"
+          },
+          "properties": {
+            "class": "winsight-panel fullscreen"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0001",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0001"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0002",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0002"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0003",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0003"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0004",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0004"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0005",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0005"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0006",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0006"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0067",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0067"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0007",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0007"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-1",
+        "name": "Music Lesson"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 5,
+            "id": ["content0008", "content0009", "content0010", "content0011"],
+            "requirements": ["paramId1096", "paramId1101", "paramId1605", "paramId1105", "paramId1089", "paramId1109"]
+          },
+          {
+            "index": 6,
+            "id": ["content0012", "content0014"],
+            "requirements": ["paramId1137", "paramId1141"]
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0002L",
+            "name": "panel-MusicLesson"
+          },
+          "properties": {
+            "class": "winsight-panel left"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0008",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0008"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0012",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0012"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0002R",
+            "name": "panel-MusicLesson"
+          },
+          "properties": {
+            "class": "winsight-panel right"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0009",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0009"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0010",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0010"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0011",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0011"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0014",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0014"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-2",
+        "name": "Practice"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 7,
+            "id": ["content0015", "content0016", "content0017"],
+            "requirements": []
+          },
+          {
+            "index": 8,
+            "id": ["content0018", "content0019", "content0020"],
+            "requirements": []
+          },
+          {
+            "index": 9,
+            "id": ["content0021", "content0022", "content0023"],
+            "requirements": []
+          },
+          {
+            "index": 10,
+            "id": ["content0021", "content0022", "content0023", "content0024"],
+            "requirements": ["paramId1130"],
+            "branching": ["paramIdScore0005"],
+            "correct": 11,
+            "wrong": 12
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0003",
+            "name": "panel-practice"
+          },
+          "properties": {
+            "class": "winsight-panel fullscreen"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0015",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0015"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0016",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0016"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0017",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0017"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0018",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0018"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0019",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0019"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0020",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0020"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0021",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0021"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0022",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0022"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0023",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0023"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0024",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0024"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-3",
+        "name": "Drum Question"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 11,
+            "id": ["content0025", "content0026"],
+            "requirements": ["paramId1215"],
+            "redirectPage": 13
+          },
+          {
+            "index": 12,
+            "id": ["content0027", "content0026"],
+            "requirements": ["paramId1215"]
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0004L",
+            "name": "panel-DrumLesson"
+          },
+          "properties": {
+            "class": "winsight-panel left"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0025",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0025"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0027",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0027"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0004R",
+            "name": "panel-DrumLesson"
+          },
+          "properties": {
+            "class": "winsight-panel right"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0026",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0026"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-4",
+        "name": "Instrument Lesson"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 13,
+            "id": ["content0028", "content0068", "content0029"],
+            "requirements": []
+          },
+          {
+            "index": 14,
+            "id": ["content0030", "content0031", "content0032"],
+            "requirements": []
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0005",
+            "name": "panel-InstrumentLesson"
+          },
+          "properties": {
+            "class": "winsight-panel fullscreen"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0028",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0028"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0068",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0068"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0029",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0029"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0030",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0030"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0031",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0031"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0032",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0032"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-5",
+        "name": "Piano Question"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 15,
+            "id": ["content0034", "content0033", "content1572"],
+            "requirements": ["paramId1267"],
+            "branching": ["paramIdScore0007"],
+            "correct": 16,
+            "wrong": 17
+          },
+          {
+            "index": 16,
+            "id": ["content0038", "content0035", "content0039"],
+            "requirements": ["paramId1312"],
+            "redirectPage": 18
+          },
+          {
+            "index": 17,
+            "id": ["content0040", "content0035", "content0039"],
+            "requirements": ["paramId1312"]
+          },
+          {
+            "index": 18,
+            "id": ["content1579", "content0035", "content0037"],
+            "requirements": ["paramId1297", "paramId1301"]
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0006L",
+            "name": "panel-PianoQuestion"
+          },
+          "properties": {
+            "class": "winsight-panel left"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0034",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0034"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0038",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0038"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0040",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0040"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content1579",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId1579"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0006R",
+            "name": "panel-PianoQuestion"
+          },
+          "properties": {
+            "class": "winsight-panel right"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0033",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0033"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content1572",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId1572"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0035",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0035"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0036",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0036"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0037",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0037"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0039",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0039"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-6",
+        "name": "Guitar Tempo"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 19,
+            "id": ["content0041", "content0042", "content0043", "content0044"],
+            "requirements": []
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0007",
+            "name": "panel-GuitarTempo"
+          },
+          "properties": {
+            "class": "winsight-panel fullscreen"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0041",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0041"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0042",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0042"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0043",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0043"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0044",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0044"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0048",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0048"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0049",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0049"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-7",
+        "name": "Tempo"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 20,
+            "id": ["content0045", "content0046", "content0054", "content0053"],
+            "requirements": ["paramId1368", "paramId1372", "paramId1376"]
+          },
+          {
+            "index": 21,
+            "id": ["content0045", "content0046", "content0054", "content0053", "content0047"],
+            "requirements": ["paramId1394", "paramId1401", "paramId1408", "paramId1415"]
+          },
+          {
+            "index": 22,
+            "id": ["content0050", "content0051", "content0052", "content0053", "content0054", "content0055"],
+            "requirements": ["paramId1609"]
+          },
+          {
+            "index": 23,
+            "id": ["content0056", "content0057", "content0058", "content0059", "content0060", "content0061"],
+            "requirements": ["paramId1616"]
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0008L",
+            "name": "panel-Tempo1"
+          },
+          "properties": {
+            "class": "winsight-panel left"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0045",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0045"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0050",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0050"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0056",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0056"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0008R",
+            "name": "panel-Tempo2"
+          },
+          "properties": {
+            "class": "winsight-panel right"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0046",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0046"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0047",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0047"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0051",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0051"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0052",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0052"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0053",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0053"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0054",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0054"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0055",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0055"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0057",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0057"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0058",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0058"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0059",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0059"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0060",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0060"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0061",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0061"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "scene",
+      "identity": {
+        "id": "scene-8",
+        "name": "Conclusion"
+      },
+      "properties": {
+        "screens": [
+          {
+            "index": 24,
+            "id": ["content0062", "content0064", "content0065"],
+            "requirements": []
+          },
+          {
+            "index": 25,
+            "id": ["content0066"],
+            "requirements": []
+          }
+        ]
+      },
+      "children": [
+        {
+          "type": "panel",
+          "identity": {
+            "id": "panel0009",
+            "name": "panel-Conclusion"
+          },
+          "properties": {
+            "class": "winsight-panel fullscreen"
+          },
+          "accessibility": {},
+          "children": [
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0062",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0062"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0063",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0063"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0064",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0064"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0065",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0065"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            },
+            {
+              "type": "content",
+              "identity": {
+                "id": "content0066",
+                "name": "content"
+              },
+              "properties": {
+                "class": "content",
+                "content": "paramId0066"
+              },
+              "accessibility": {
+                "aria": true,
+                "tts": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "type": "button",
+      "identity": {
+        "id": "button0001",
+        "responseId": "paramId1001",
+        "name": "paramId1002"
+      },
+      "properties": {
+        "class": "winsight-button start center",
+        "label": "paramId1003",
+        "tabindex": "1",
+        "type": "paramId1004",
+        "enabled": "true",
+        "onclick": "nextPage()"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0001",
+        "responseId": "paramId1005",
+        "name": "paramId1006"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1007",
+        "characterName": "paramId1008",
+        "content": "paramId1009",
+        "alignment": "paramId1010",
+        "title": "paramId1011"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0001",
+        "responseId": "paramId1012",
+        "name": "paramId1013"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1014",
+
+            "type": "paramId1015",
+
+            "vtt": "paramId1016",
+
+            "autoplay": "paramId1017",
+
+            "posterImage": "paramId1018",
+
+            "width": "paramId1019",
+
+            "fullscreen": "paramId1020",
+
+            "audio": "paramId1021",
+
+            "flow": "paramId1022",
+
+            "title": "paramId1023",
+
+            "shortDescription": "paramId1024",
+
+            "longDescription": "paramId1025"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0002",
+        "responseId": "paramId1026",
+        "name": "paramId1027"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1028",
+
+            "type": "paramId1029",
+
+            "vtt": "paramId1030",
+
+            "autoplay": "paramId1031",
+
+            "posterImage": "paramId1032",
+
+            "width": "paramId1033",
+
+            "fullscreen": "paramId1034",
+
+            "audio": "paramId1035",
+
+            "flow": "paramId1036",
+
+            "title": "paramId1037",
+
+            "shortDescription": "paramId1038",
+
+            "longDescription": "paramId1039"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0003",
+        "responseId": "paramId1040",
+        "name": "paramId1041"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1042",
+
+            "type": "paramId1043",
+
+            "vtt": "paramId1044",
+
+            "autoplay": "paramId1045",
+
+            "posterImage": "paramId1046",
+
+            "width": "paramId1047",
+
+            "fullscreen": "paramId1048",
+
+            "audio": "paramId1049",
+
+            "flow": "paramId1050",
+
+            "title": "paramId1051",
+
+            "shortDescription": "paramId1052",
+
+            "longDescription": "paramId1053"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0002",
+        "responseId": "paramId1054",
+        "name": "paramId1055"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1056",
+        "characterName": "paramId1057",
+        "content": "paramId1058",
+        "alignment": "paramId1059",
+        "title": "paramId1060"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0003",
+        "responseId": "paramId1061",
+        "name": "paramId1062"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1063",
+        "characterName": "paramId1064",
+        "content": "paramId1065",
+        "alignment": "paramId1066",
+        "title": "paramId1067"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0004",
+        "responseId": "paramId1068",
+        "name": "paramId1069"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1070",
+
+            "type": "paramId1071",
+
+            "vtt": "paramId1072",
+
+            "autoplay": "paramId1073",
+
+            "posterImage": "paramId1074",
+
+            "width": "paramId1075",
+
+            "fullscreen": "paramId1076",
+
+            "audio": "paramId1077",
+
+            "flow": "paramId1078",
+
+            "title": "paramId1079",
+
+            "shortDescription": "paramId1080",
+
+            "longDescription": "paramId1081"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0004",
+        "responseId": "paramId1082",
+        "name": "paramId1083"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1084",
+        "characterName": "paramId1085",
+        "content": "paramId1086",
+        "alignment": "paramId1087",
+        "title": "paramId1088"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0001",
+        "responseId": "paramId1096",
+        "scoreID": "paramIdScore0001",
+        "name": "paramId1097"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1098",
+        "options": "paramId1099"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0002",
+        "responseId": "paramId1101",
+        "scoreID": "paramIdScore0001",
+        "name": "paramId1102"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1103",
+        "options": "paramId1104"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0012",
+        "responseId": "paramId1605",
+        "scoreID": "paramIdScore0001",
+        "name": "paramId1606"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1607",
+        "options": "paramId1608"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0003",
+        "responseId": "paramId1105",
+        "scoreID": "paramIdScore0001",
+        "name": "paramId1106"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1107",
+        "options": "paramId1108"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0001",
+        "scoreID": "paramIdScore0002",
+        "responseId": "paramId1089",
+        "name": "paramId1090"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1091",
+        "placeholder": "paramId1092",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1093",
+        "maxLength": "paramId1094",
+        "minLength": "paramId1095",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0002",
+        "scoreID": "paramIdScore0002",
+        "responseId": "paramId1109",
+        "name": "paramId1110"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1111",
+        "placeholder": "paramId1112",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1113",
+        "maxLength": "paramId1114",
+        "minLength": "paramId1115",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0005",
+        "responseId": "paramId1123",
+        "name": "paramId1124"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1125",
+        "characterName": "paramId1126",
+        "content": "paramId1127",
+        "alignment": "paramId1128",
+        "title": "paramId1129"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0003",
+        "responseId": "paramId1116",
+        "name": "paramId1117"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1118",
+        "placeholder": "paramId1119",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1120",
+        "maxLength": "paramId1121",
+        "minLength": "paramId1122",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0004",
+        "responseId": "paramId1137",
+        "scoreID": "paramIdScore0003",
+        "name": "paramId1138"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1139",
+        "options": "paramId1140"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0005",
+        "responseId": "paramId1141",
+        "scoreID": "paramIdScore0003",
+        "name": "paramId1142"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1143",
+        "options": "paramId1144"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0006",
+        "responseId": "paramId1145",
+        "name": "paramId1146"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1147",
+        "characterName": "paramId1148",
+        "content": "paramId1149",
+        "alignment": "paramId1150",
+        "title": "paramId1151"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0005",
+        "responseId": "paramId1152",
+        "name": "paramId1153"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1154",
+
+            "type": "paramId1155",
+
+            "vtt": "paramId1156",
+
+            "autoplay": "paramId1157",
+
+            "posterImage": "paramId1158",
+
+            "width": "paramId1159",
+
+            "fullscreen": "paramId1160",
+
+            "audio": "paramId1161",
+
+            "flow": "paramId1162",
+
+            "title": "paramId1163",
+
+            "autorewind": "paramIdAutorewind0005",
+
+            "shortDescription": "paramId1164",
+
+            "longDescription": "paramId1165"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0007",
+        "responseId": "paramId1166",
+        "name": "paramId1167"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1168",
+        "characterName": "paramId1169",
+        "content": "paramId1170",
+        "alignment": "paramId1171",
+        "title": "paramId1172"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0006",
+        "responseId": "paramId1173",
+        "name": "paramId1174"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1175",
+
+            "type": "paramId1176",
+
+            "vtt": "paramId1177",
+
+            "autoplay": "paramId1178",
+
+            "posterImage": "paramId1179",
+
+            "width": "paramId1180",
+
+            "fullscreen": "paramId1181",
+
+            "audio": "paramId1182",
+
+            "flow": "paramId1183",
+
+            "title": "paramId1184",
+
+            "autorewind": "paramIdAutorewind0006",
+
+            "shortDescription": "paramId1185",
+
+            "longDescription": "paramId1186"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0008",
+        "responseId": "paramId1187",
+        "name": "paramId1188"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1189",
+        "characterName": "paramId1190",
+        "content": "paramId1191",
+        "alignment": "paramId1192",
+        "title": "paramId1193"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0007",
+        "responseId": "paramId1194",
+        "name": "paramId1195"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1196",
+
+            "type": "paramId1197",
+
+            "vtt": "paramId1198",
+
+            "autoplay": "paramId1199",
+
+            "posterImage": "paramId1200",
+
+            "width": "paramId1201",
+
+            "fullscreen": "paramId1202",
+
+            "audio": "paramId1203",
+
+            "flow": "paramId1204",
+
+            "title": "paramId1205",
+
+            "autorewind": "paramId1623",
+
+            "shortDescription": "paramId1206",
+
+            "longDescription": "paramId1207"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0004",
+        "scoreID": "paramIdScore0005",
+        "responseId": "paramId1130",
+        "name": "paramId1131"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1132",
+        "placeholder": "paramId1133",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1134",
+        "maxLength": "paramId1135",
+        "minLength": "paramId1136",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0009",
+        "responseId": "paramId1208",
+        "name": "paramId1209"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1210",
+        "characterName": "paramId1211",
+        "content": "paramId1212",
+        "alignment": "paramId1213",
+        "title": "paramId1214"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "radio",
+      "identity": {
+        "id": "radio0001",
+        "scoreID": "paramIdScore0006",
+        "responseId": "paramId1215",
+        "name": "paramId1216"
+      },
+      "properties": {
+        "class": "winsight-selectList single",
+        "enabled": "true",
+        "tabindex": "1",
+        "options": "paramId1217"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0010",
+        "responseId": "paramId1218",
+        "name": "paramId1219"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1220",
+        "characterName": "paramId1221",
+        "content": "paramId1222",
+        "alignment": "paramId1223",
+        "title": "paramId1224"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0011",
+        "responseId": "paramId1225",
+        "name": "paramId1226"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1227",
+        "characterName": "paramId1228",
+        "content": "paramId1229",
+        "alignment": "paramId1230",
+        "title": "paramId1231"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0008",
+        "responseId": "paramId1232",
+        "name": "paramId1233"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1234",
+
+            "type": "paramId1235",
+
+            "vtt": "paramId1236",
+
+            "autoplay": "paramId1237",
+
+            "posterImage": "paramId1238",
+
+            "width": "paramId1239",
+
+            "fullscreen": "paramId1240",
+
+            "audio": "paramId1241",
+
+            "flow": "paramId1242",
+
+            "title": "paramId1243",
+
+            "shortDescription": "paramId1244",
+
+            "longDescription": "paramId1245"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0012",
+        "responseId": "paramId1246",
+        "name": "paramId1247"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1248",
+        "characterName": "paramId1249",
+        "content": "paramId1250",
+        "alignment": "paramId1251",
+        "title": "paramId1252"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0009",
+        "responseId": "paramId1253",
+        "name": "paramId1254"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1255",
+
+            "type": "paramId1256",
+
+            "vtt": "paramId1257",
+
+            "autoplay": "paramId1258",
+
+            "posterImage": "paramId1259",
+
+            "width": "paramId1260",
+
+            "fullscreen": "paramId1261",
+
+            "audio": "paramId1262",
+
+            "flow": "paramId1263",
+
+            "title": "paramId1264",
+
+            "autorewind": "paramIdAutorewind0009",
+
+            "shortDescription": "paramId1265",
+
+            "longDescription": "paramId1266"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0005",
+        "scoreID": "paramIdScore0007",
+        "responseId": "paramId1267",
+        "name": "paramId1268"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1269",
+        "placeholder": "paramId1270",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1271",
+        "maxLength": "paramId1272",
+        "minLength": "paramId1273",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0013",
+        "responseId": "paramId1274",
+        "name": "paramId1275"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1276",
+        "characterName": "paramId1277",
+        "content": "paramId1278",
+        "alignment": "paramId1279",
+        "title": "paramId1280"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0001",
+        "responseId": "paramId1281",
+        "name": "paramId1282"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1283",
+        "alt": "paramId1284",
+        "tabindex": "1",
+        "height": "paramId1285",
+        "width": "paramId1286"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0002",
+        "responseId": "paramId1287",
+        "name": "paramId1288"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1289",
+        "alt": "paramId1290",
+        "tabindex": "1",
+        "height": "paramId1291",
+        "width": "paramId1292"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0006",
+        "responseId": "paramId1293",
+        "scoreID": "paramIdScore0010",
+        "name": "paramId1294"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1295",
+        "options": "paramId1296"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0007",
+        "responseId": "paramId1297",
+        "scoreID": "paramIdScore0009",
+        "name": "paramId1298"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1299",
+        "options": "paramId1300"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0008",
+        "responseId": "paramId1301",
+        "scoreID": "paramIdScore0009",
+        "name": "paramId1302"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1303",
+        "options": "paramId1304"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0014",
+        "responseId": "paramId1305",
+        "name": "paramId1306"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1307",
+        "characterName": "paramId1308",
+        "content": "paramId1309",
+        "alignment": "paramId1310",
+        "title": "paramId1311"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "radio",
+      "identity": {
+        "id": "radio0002",
+        "scoreID": "paramIdScore0008",
+        "responseId": "paramId1312",
+        "name": "paramId1313"
+      },
+      "properties": {
+        "class": "winsight-selectList single",
+        "enabled": "true",
+        "tabindex": "1",
+        "options": "paramId1314"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0015",
+        "responseId": "paramId1315",
+        "name": "paramId1316"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1317",
+        "characterName": "paramId1318",
+        "content": "paramId1319",
+        "alignment": "paramId1320",
+        "title": "paramId1321"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0016",
+        "responseId": "paramId1322",
+        "name": "paramId1323"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1324",
+        "characterName": "paramId1325",
+        "content": "paramId1326",
+        "alignment": "paramId1327",
+        "title": "paramId1328"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0003",
+        "responseId": "paramId1329",
+        "name": "paramId1330"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1331",
+        "alt": "paramId1332",
+        "tabindex": "1",
+        "height": "paramId1333",
+        "width": "paramId1334"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0004",
+        "responseId": "paramId1335",
+        "name": "paramId1336"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1337",
+        "alt": "paramId1338",
+        "tabindex": "1",
+        "height": "paramId1339",
+        "width": "paramId1340"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0005",
+        "responseId": "paramId1341",
+        "name": "paramId1342"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1343",
+        "alt": "paramId1344",
+        "tabindex": "1",
+        "height": "paramId1345",
+        "width": "paramId1346"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "video0010",
+        "responseId": "paramId1347",
+        "name": "paramId1348"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1349",
+
+            "type": "paramId1350",
+
+            "vtt": "paramId1351",
+
+            "autoplay": "paramId1352",
+
+            "posterImage": "paramId1353",
+
+            "width": "paramId1354",
+
+            "fullscreen": "paramId1355",
+
+            "audio": "paramId1356",
+
+            "flow": "paramId1357",
+
+            "title": "paramId1358",
+
+            "autorewind": "paramIdAutorewind0010",
+
+            "shortDescription": "paramId1359",
+
+            "longDescription": "paramId1360"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0017",
+        "responseId": "paramId1361",
+        "name": "paramId1362"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1363",
+        "characterName": "paramId1364",
+        "content": "paramId1365",
+        "alignment": "paramId1366",
+        "title": "paramId1367"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0009",
+        "responseId": "paramId1368",
+        "scoreID": "paramIdScore0010",
+        "name": "paramId1369"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1370",
+        "options": "paramId1371"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0010",
+        "responseId": "paramId1372",
+        "scoreID": "paramIdScore0010",
+        "name": "paramId1373"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1374",
+        "options": "paramId1375"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "identity": {
+        "id": "dropdown0011",
+        "responseId": "paramId1376",
+        "scoreID": "paramIdScore0010",
+        "name": "paramId1377"
+      },
+      "properties": {
+        "class": "winsight-input-select",
+        "label": "Select",
+        "enabled": "true",
+        "tabindex": "1",
+        "placeholder": "paramId1378",
+        "options": "paramId1379"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0006",
+        "scoreID": "paramIdScore0014",
+        "responseId": "paramId1380",
+        "name": "paramId1381"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1382",
+        "placeholder": "paramId1383",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1384",
+        "maxLength": "paramId1385",
+        "minLength": "paramId1386",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0007",
+        "scoreID": "paramIdScore0014",
+        "responseId": "paramId1387",
+        "name": "paramId1388"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1389",
+        "placeholder": "paramId1390",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1391",
+        "maxLength": "paramId1392",
+        "minLength": "paramId1393",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0008",
+        "scoreID": "paramIdScore0011",
+        "responseId": "paramId1394",
+        "name": "paramId1395"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1396",
+        "placeholder": "paramId1397",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1398",
+        "maxLength": "paramId1399",
+        "minLength": "paramId1400",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0009",
+        "scoreID": "paramIdScore0011",
+        "responseId": "paramId1401",
+        "name": "paramId1402"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1403",
+        "placeholder": "paramId1404",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1405",
+        "maxLength": "paramId1406",
+        "minLength": "paramId1407",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0011",
+        "scoreID": "paramIdScore0011",
+        "responseId": "paramId1415",
+        "name": "paramId1416"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1417",
+        "placeholder": "paramId1418",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1419",
+        "maxLength": "paramId1420",
+        "minLength": "paramId1421",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "textfield",
+      "identity": {
+        "id": "textfield0010",
+        "scoreID": "paramIdScore0011",
+        "responseId": "paramId1408",
+        "name": "paramId1409"
+      },
+      "properties": {
+        "class": "winsight-input-textField",
+        "label": "paramId1410",
+        "placeholder": "paramId1411",
+        "tabindex": "1",
+        "enabled": "true",
+        "size": "paramId1412",
+        "maxLength": "paramId1413",
+        "minLength": "paramId1414",
+        "regEx": "^[0-9.-]{0,7}$"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0018",
+        "responseId": "paramId1422",
+        "name": "paramId1423"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1424",
+        "characterName": "paramId1425",
+        "content": "paramId1426",
+        "alignment": "paramId1427",
+        "title": "paramId1428"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0006",
+        "responseId": "paramId1429",
+        "name": "paramId1430"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1431",
+        "alt": "paramId1432",
+        "tabindex": "1",
+        "height": "paramId1433",
+        "width": "paramId1434"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0007",
+        "responseId": "paramId1435",
+        "name": "paramId1436"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1437",
+        "alt": "paramId1438",
+        "tabindex": "1",
+        "height": "paramId1439",
+        "width": "paramId1440"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0008",
+        "responseId": "paramId1441",
+        "name": "paramId1442"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1443",
+        "alt": "paramId1444",
+        "tabindex": "1",
+        "height": "paramId1445",
+        "width": "paramId1446"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0019",
+        "responseId": "paramId1447",
+        "name": "paramId1448"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1449",
+        "characterName": "paramId1450",
+        "content": "paramId1451",
+        "alignment": "paramId1452",
+        "title": "paramId1453"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0009",
+        "responseId": "paramId1454",
+        "name": "paramId1455"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1456",
+        "alt": "paramId1457",
+        "tabindex": "1",
+        "height": "paramId1458",
+        "width": "paramId1459"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0010",
+        "responseId": "paramId1460",
+        "name": "paramId1461"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1462",
+        "alt": "paramId1463",
+        "tabindex": "1",
+        "height": "paramId1464",
+        "width": "paramId1465"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0011",
+        "responseId": "paramId1466",
+        "name": "paramId1467"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1468",
+        "alt": "paramId1469",
+        "tabindex": "1",
+        "height": "paramId1470",
+        "width": "paramId1471"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0020",
+        "responseId": "paramId1472",
+        "name": "paramId1473"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1474",
+        "characterName": "paramId1475",
+        "content": "paramId1476",
+        "alignment": "paramId1477",
+        "title": "paramId1478"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0021",
+        "responseId": "paramId1479",
+        "name": "paramId1480"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1481",
+        "characterName": "paramId1482",
+        "content": "paramId1483",
+        "alignment": "paramId1484",
+        "title": "paramId1485"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "speechbubble",
+      "identity": {
+        "id": "speechbubble0022",
+        "responseId": "paramId1580",
+        "name": "paramId1581"
+      },
+      "properties": {
+        "class": "winsight-speechbubble",
+        "characterImage": "paramId1582",
+        "characterName": "paramId1583",
+        "content": "paramId1584",
+        "alignment": "paramId1585",
+        "title": "paramId1586"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0012",
+        "responseId": "paramId1486",
+        "name": "paramId1487"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1488",
+        "alt": "paramId1489",
+        "tabindex": "1",
+        "height": "paramId1490",
+        "width": "paramId1491"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0013",
+        "responseId": "paramId1492",
+        "name": "paramId1493"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1494",
+        "alt": "paramId1495",
+        "tabindex": "1",
+        "height": "paramId1496",
+        "width": "paramId1497"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0014",
+        "responseId": "paramId1498",
+        "name": "paramId1499"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1500",
+        "alt": "paramId1501",
+        "tabindex": "1",
+        "height": "paramId1502",
+        "width": "paramId1503"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "mediaplayer",
+      "identity": {
+        "id": "audio0001",
+        "responseId": "paramId1504",
+        "name": "paramId1505"
+      },
+      "properties": {
+        "class": "winsight-media",
+        "tabindex": "1",
+        "options": [
+          {
+            "src": "paramId1506",
+
+            "type": "paramId1507",
+
+            "vtt": "paramId1508",
+
+            "autoplay": "paramId1509",
+
+            "posterImage": "paramId1510",
+
+            "width": "paramId1511",
+
+            "fullscreen": "paramId1512",
+
+            "audio": "paramId1513",
+
+            "flow": "paramId1514",
+
+            "title": "paramId1515",
+
+            "shortDescription": "paramId1516",
+
+            "longDescription": "paramId1517"
+          }
+        ]
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0015",
+        "responseId": "paramId1518",
+        "name": "paramId1519"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1520",
+        "alt": "paramId1521",
+        "tabindex": "1",
+        "height": "paramId1522",
+        "width": "paramId1523"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0016",
+        "responseId": "paramId1524",
+        "name": "paramId1525"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1526",
+        "alt": "paramId1527",
+        "tabindex": "1",
+        "height": "paramId1528",
+        "width": "paramId1529"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0017",
+        "responseId": "paramId1530",
+        "name": "paramId1531"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1532",
+        "alt": "paramId1533",
+        "tabindex": "1",
+        "height": "paramId1534",
+        "width": "paramId1535"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0018",
+        "responseId": "paramId1536",
+        "name": "paramId1537"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1538",
+        "alt": "paramId1539",
+        "tabindex": "1",
+        "height": "paramId1540",
+        "width": "paramId1541"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0019",
+        "responseId": "paramId1542",
+        "name": "paramId1543"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1544",
+        "alt": "paramId1545",
+        "tabindex": "1",
+        "height": "paramId1546",
+        "width": "paramId1547"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0020",
+        "responseId": "paramId1548",
+        "name": "paramId1549"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1550",
+        "alt": "paramId1551",
+        "tabindex": "1",
+        "height": "paramId1552",
+        "width": "paramId1553"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0021",
+        "responseId": "paramId1554",
+        "name": "paramId1555"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1556",
+        "alt": "paramId1557",
+        "tabindex": "1",
+        "height": "paramId1558",
+        "width": "paramId1559"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0022",
+        "responseId": "paramId1560",
+        "name": "paramId1561"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1562",
+        "alt": "paramId1563",
+        "tabindex": "1",
+        "height": "paramId1564",
+        "width": "paramId1565"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0023",
+        "responseId": "paramId1566",
+        "name": "paramId1567"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1568",
+        "alt": "paramId1569",
+        "tabindex": "1",
+        "height": "paramId1570",
+        "width": "paramId1571"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0024",
+        "responseId": "paramId1573",
+        "name": "paramId1574"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1575",
+        "alt": "paramId1576",
+        "tabindex": "1",
+        "height": "paramId1577",
+        "width": "paramId1578"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0025",
+        "responseId": "paramId1587",
+        "name": "paramId1588"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1589",
+        "alt": "paramId1590",
+        "tabindex": "1",
+        "height": "paramId1591",
+        "width": "paramId1592"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0026",
+        "responseId": "paramId1593",
+        "name": "paramId1594"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1595",
+        "alt": "paramId1596",
+        "tabindex": "1",
+        "height": "paramId1597",
+        "width": "paramId1598"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "image",
+      "identity": {
+        "id": "image0027",
+        "responseId": "paramId1599",
+        "name": "paramId1600"
+      },
+      "properties": {
+        "class": "winsight-image",
+        "src": "paramId1601",
+        "alt": "paramId1602",
+        "tabindex": "1",
+        "height": "paramId1603",
+        "width": "paramId1604"
+      },
+      "accessibility": {
+        "aria": false,
+        "tts": false
+      },
+      "required": false
+    },
+    {
+      "type": "range",
+      "identity": {
+        "id": "range0001",
+        "responseId": "paramId1609",
+        "scoreID": "paramIdScore0012",
+        "name": "paramId1610"
+      },
+      "properties": {
+        "class": "winsight-slider-input",
+        "min": "paramId1611",
+        "max": "paramId1612",
+        "now": "paramId1613",
+        "interval": "paramId1614",
+        "range": "paramId1615",
+        "tabindex": "1",
+        "enabled": "true"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    },
+    {
+      "type": "range",
+      "identity": {
+        "id": "range0002",
+        "responseId": "paramId1616",
+        "scoreID": "paramIdScore0013",
+        "name": "paramId1617"
+      },
+      "properties": {
+        "class": "winsight-slider-input",
+        "min": "paramId1618",
+        "max": "paramId1619",
+        "now": "paramId1620",
+        "interval": "paramId1621",
+        "range": "paramId1622",
+        "tabindex": "1",
+        "enabled": "true"
+      },
+      "accessibility": {
+        "aria": true,
+        "tts": true
+      },
+      "required": true
+    }
+  ]
+}

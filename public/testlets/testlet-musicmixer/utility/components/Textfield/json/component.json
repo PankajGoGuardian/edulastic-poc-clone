@@ -1,0 +1,25 @@
+{
+  "type": "textfield",
+  "identity": {
+    "id": "textfield0001",
+    "scoreId": "scoreId0001",
+    "responseId": "paramId0001",
+    "name": "paramId0002"
+  },
+  "properties": {
+    "class": "winsight-input-textField",
+    "label": "paramId0003",
+    "placeholder": "paramId0004",
+    "tabindex": "1",
+    "enabled": "true",
+    "size": "paramId0005",
+    "maxLength": "paramId0006",
+    "minLength": "paramId0007",
+    "regEx": ""
+  },
+  "accessibility": {
+    "aria": true,
+    "tts": true
+  },
+  "required": true
+}

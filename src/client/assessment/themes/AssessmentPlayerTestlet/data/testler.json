@@ -1,0 +1,353 @@
+{
+  "admin": [
+    {
+      "id": "admin-0001",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"fas fa-chevron-left\"></span>",
+        "enabled": true,
+        "class": "group left",
+        "action": "sceneSelect('previous')"
+      }
+    },
+    {
+      "id": "admin-0002",
+      "type": "select",
+      "properties": {
+        "label": "SceneSelect",
+        "action": "screenSelect()",
+        "options": [
+          {
+            "label": "Scene1 (screen 1)",
+            "value": "S1C1",
+            "selected": true
+          },
+          {
+            "label": "Scene1 (screen 2)",
+            "value": "S1C2",
+            "selected": false
+          },
+          {
+            "label": "Scene1 (screen 3)",
+            "value": "S1C3",
+            "selected": false
+          },
+          {
+            "label": "Scene1 (screen 4)",
+            "value": "S1C4",
+            "selected": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "admin-0003",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"fas fa-chevron-right\"></span>",
+        "enabled": true,
+        "class": "group right",
+        "action": "sceneSelect('next')"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-0001",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"fas fa-users-cog\"></span>",
+        "enabled": true,
+        "action": "setRole('admin')"
+      }
+    }
+  ],
+  "interaction": [
+    {
+      "id": "int-0001",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"fas fa-folder\"></span>",
+        "enabled": true,
+        "action": "openTestlet()"
+      }
+    },
+    {
+      "id": "btnConsole",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"far fa-terminal\"></span>",
+        "enabled": true,
+        "action": "displayConsole()"
+      }
+    },
+    {
+      "id": "btnResolution",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"far fa-desktop\"></span>",
+        "enabled": true,
+        "class": null,
+        "action": "chooseResolution()"
+      }
+    },
+    {
+      "id": "btnTTS",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"far fa-comment-lines\"></span>",
+        "enabled": false,
+        "class": null,
+        "action": "tts()"
+      }
+    },
+    {
+      "id": "btnLock",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"fas fa-lock\"></span>",
+        "enabled": true,
+        "class": null,
+        "action": "lock(this)"
+      }
+    },
+    {
+      "id": "btnZoomIn",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"far fa-search-minus\"></span>",
+        "enabled": true,
+        "class": "group left",
+        "action": "zoom('out')"
+      }
+    },
+    {
+      "id": "btnZoomReset",
+      "type": "button",
+      "properties": {
+        "label": "1x",
+        "enabled": true,
+        "class": "group middle",
+        "action": "zoom('reset')"
+      }
+    },
+    {
+      "id": "btnZoomOut",
+      "type": "button",
+      "properties": {
+        "label": "<span class=\"far fa-search-plus\"></span>",
+        "enabled": true,
+        "class": "group right",
+        "action": "zoom('in')"
+      }
+    }
+  ],
+  "resolutions": [
+    {
+      "name": "Full Screen",
+      "width": "100%",
+      "height": "100%",
+      "scale": 1,
+      "icon": "fa-expand-arrows"
+    },
+    {
+      "name": "Cheap phone :)",
+      "width": "420px",
+      "height": "800px",
+      "scale": 1,
+      "icon": "fa-phone"
+    },
+    {
+      "name": "Mobile",
+      "width": "1125px",
+      "height": "2436px",
+      "scale": 1,
+      "icon": "fa-mobile"
+    },
+    {
+      "name": "XGA",
+      "width": "1024px",
+      "height": "768px",
+      "scale": 1,
+      "icon": "fa-desktop"
+    },
+    {
+      "name": "SXGA",
+      "width": "1280px",
+      "height": "1024px",
+      "scale": "1",
+      "icon": "fa-desktop-alt"
+    },
+    {
+      "name": "WSXGA+",
+      "width": "1680px",
+      "height": "1050px",
+      "scale": 1,
+      "icon": "fa-tv"
+    },
+    {
+      "name": "tablet",
+      "width": "2048px",
+      "height": "1536px",
+      "scale": 1,
+      "icon": "fa-tablet-android"
+    }
+  ],
+  "manipulation": [
+    {
+      "id": "man-0001",
+      "type": "select",
+      "properties": {
+        "label": "Language",
+        "action": "changeLanguage(this)",
+        "options": [
+          {
+            "label": "English",
+            "value": "en_US",
+            "selected": true
+          },
+          {
+            "label": "Spanish (testing)",
+            "value": "es_US",
+            "selected": false
+          }
+        ]
+      }
+    }
+  ],
+  "navigation": [
+    {
+      "id": "nav-0001",
+      "type": "button",
+      "properties": {
+        "label": "Next <span class=\"fas fa-chevron-right\"></span>",
+        "enabled": true,
+        "action": "navNext()"
+      }
+    }
+  ],
+  "testlets": {
+    "templates": [],
+    "testlets": [
+      {
+        "name": "Music Mixer 1.2.1",
+        "type": "testlet",
+        "testletID": "MAT8_MusicMixer_PR34",
+        "src": "../testlets/testlet-musicmixer/main-1.html"
+      }
+    ],
+    "components": [],
+    "prototypes": []
+  },
+  "console": [
+    {
+      "tab": "system"
+    },
+    {
+      "tab": "contents"
+    },
+    {
+      "tab": "response"
+    },
+    {
+      "tab": "state"
+    },
+    {
+      "tab": "log"
+    },
+    {
+      "tab": "errors"
+    }
+  ],
+  "icons": [
+    {
+      "type": "system",
+      "icon": "fa-cogs",
+      "color": "blue"
+    },
+    {
+      "type": "meow",
+      "icon": "fa-paw",
+      "color": "green"
+    },
+    {
+      "type": "tag",
+      "icon": "fa-tag",
+      "color": "orange"
+    },
+    {
+      "type": "container",
+      "icon": "fa-box",
+      "color": "yellow"
+    },
+    {
+      "type": "component",
+      "icon": "fa-cog",
+      "color": "blue"
+    },
+    {
+      "type": "property",
+      "icon": "fa-sliders-h-square",
+      "color": "grey"
+    },
+    {
+      "type": "css",
+      "icon": "fa-paint-brush",
+      "color": "purple"
+    },
+    {
+      "type": "requirement",
+      "icon": "fa-shield-check",
+      "color": "green"
+    },
+    {
+      "type": "panel",
+      "icon": "fa-columns",
+      "color": "orange"
+    },
+    {
+      "type": "scene",
+      "icon": "fa-images",
+      "color": "yellow"
+    },
+    {
+      "type": "zoom",
+      "icon": "fa-search",
+      "color": "blue"
+    },
+    {
+      "type": "zoomIn",
+      "icon": "fa-search-plus",
+      "color": "blue"
+    },
+    {
+      "type": "zoomOut",
+      "icon": "fa-search-minus",
+      "color": "blue"
+    },
+    {
+      "type": "error",
+      "icon": "fa-exclamation-triangle",
+      "color": "red"
+    },
+    {
+      "type": "keyboard",
+      "icon": "fa-keyboard",
+      "color": "green"
+    }
+  ],
+  "config": {
+    "title": "Winsight Testler",
+    "adminNav": true,
+    "console": true,
+    "resolution": false,
+    "accessibility": false,
+    "zoom": false,
+    "page": true,
+    "lock": false,
+    "version": true,
+    "css": "assets/libs/css/winsight-testler.css",
+    "localMML": true,
+    "removeTestletHeaderSources": []
+  }
+}

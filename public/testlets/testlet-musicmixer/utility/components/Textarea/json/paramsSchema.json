@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "itemType": "iic",
+  "type": "object",
+  "id": "Textarea",
+  "properties": {
+    "version": {
+      "id": "version",
+      "type": "string",
+      "title": "version",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "itemName": {
+      "id": "itemName",
+      "type": "string",
+      "title": "itemName",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "itemType": {
+      "id": "itemType",
+      "type": "string",
+      "title": "itemType",
+      "mediaType": "text",
+      "hidden": true,
+      "disabled": true
+    },
+    "paramIdScore0001": {
+      "id": "paramIdScore0001",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "scoreId0001",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0001": {
+      "id": "paramId0001",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0001",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0002": {
+      "id": "paramId0002",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0002",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0003": {
+      "id": "paramId0003",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0003",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0004": {
+      "id": "paramId0004",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0004",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0005": {
+      "id": "paramId0005",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0005",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0006": {
+      "id": "paramId0006",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0006",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0007": {
+      "id": "paramId0007",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0007",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    },
+    "paramId0008": {
+      "id": "paramId0008",
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "title": "paramId0008",
+          "mediaType": "html",
+          "hidden": false,
+          "disabled": false
+        }
+      }
+    }
+  }
+}

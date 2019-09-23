@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "itemName": "Dropdown",
+  "itemType": "iic",
+  "paramIdScore0001": {
+    "content": "",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0001": {
+    "content": "DropdownResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "Dropdown",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "Dropdown",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": [
+      {
+        "label": "option 1",
+        "value": "1",
+        "selected": "false"
+      },
+      {
+        "label": "option 2",
+        "value": "2",
+        "selected": "false"
+      },
+      {
+        "label": "option 3",
+        "value": "3",
+        "selected": "false"
+      },
+      {
+        "label": "option 4",
+        "value": "4",
+        "selected": "false"
+      },
+      {
+        "label": "option 5",
+        "value": "5",
+        "selected": "false"
+      },
+      {
+        "label": "option 6",
+        "value": "6",
+        "selected": "false"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  }
+}

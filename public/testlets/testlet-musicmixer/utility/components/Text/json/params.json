@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "itemName": "Text",
+  "itemType": "iic",
+  "params0001": {
+    "content": "<p>Text component:</p><p><span data-type=\"component\" id=\"text0001\"></span></p>",
+    "ref": ""
+  },
+  "paramId0001": {
+    "content": "TextResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "Text",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": "Hi There! I'm the text component!",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0004": {
+    "content": "Text-value",
+    "ref": "",
+    "scene": "scene1"
+  }
+}

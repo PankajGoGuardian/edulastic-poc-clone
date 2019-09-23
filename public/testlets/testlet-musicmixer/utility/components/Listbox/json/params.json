@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "itemName": "Listbox",
+  "itemType": "iic",
+  "params0001": {
+    "content": "<p>Listbox component:</p><hr><span data-type=\"component\" id=\"listbox0001\"></span>",
+    "ref": ""
+  },
+  "paramId0001": {
+    "content": "ListboxResponse",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0002": {
+    "content": "Listbox",
+    "ref": "",
+    "scene": "scene1"
+  },
+  "paramId0003": {
+    "content": [
+      {
+        "label": "option 1",
+        "value": "option 1",
+        "selected": "false"
+      },
+      {
+        "label": "option 2",
+        "value": "option 2",
+        "selected": "false"
+      },
+      {
+        "label": "option 3",
+        "value": "option 3",
+        "selected": "false"
+      },
+      {
+        "label": "option 4",
+        "value": "option 4",
+        "selected": "false"
+      },
+      {
+        "label": "option 5",
+        "value": "option 5",
+        "selected": "false"
+      },
+      {
+        "label": "option 6",
+        "value": "option 6",
+        "selected": "false"
+      },
+      {
+        "label": "option 7",
+        "value": "option 7",
+        "selected": "false"
+      },
+      {
+        "label": "option 8",
+        "value": "option 8",
+        "selected": "false"
+      }
+    ],
+    "ref": "",
+    "scene": "scene1"
+  }
+}

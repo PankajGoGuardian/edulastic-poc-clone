@@ -28,8 +28,13 @@ export default class FormEssay extends React.Component {
   };
 
   renderForm = () => {
-    const { answer } = this.props;
-    return <Input size="large" value={answer} onChange={this.handleChange} />;
+    const {
+      answer,
+      question: {
+        uiStyle: { minHeight }
+      }
+    } = this.props;
+    return <Input.TextArea style={{ minHeight: `${minHeight}px` }} value={answer} onChange={this.handleChange} />;
   };
 
   render() {

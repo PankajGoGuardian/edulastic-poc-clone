@@ -24,7 +24,7 @@ import { helpers } from "@edulastic/common";
 import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
-import { updateItemsDocBasedByIdAction } from "../ItemDetail/ducks";
+import { updateItemDocBasedSaga } from "../ItemDetail/ducks";
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
 // constants
 
@@ -667,7 +667,9 @@ function* updateTestDocBasedSaga({ payload }) {
       ...payload.data,
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
-    yield put(updateItemsDocBasedByIdAction(testItemId, updatedTestItem, true, false));
+    yield call(updateItemDocBasedSaga, {
+      payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
+    });
     return yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment }
     });

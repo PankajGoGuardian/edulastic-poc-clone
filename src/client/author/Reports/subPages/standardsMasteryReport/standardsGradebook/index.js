@@ -16,7 +16,8 @@ import { SignedStackBarChartContainer } from "./components/charts/signedStackBar
 import {
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
-  getSelectedStandardProficiency
+  getSelectedStandardProficiency,
+  getFiltersSelector
 } from "../common/filterDataDucks";
 
 import {
@@ -170,7 +171,7 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),
-      filters: get(state, "reportStandardsFilterDataReducer.filters", {})
+      filters: getFiltersSelector(state)
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,

@@ -15,7 +15,7 @@ import StudentProgress from "./StudentProgress";
 import PerformanceOverTime from "./PerformanceOverTime";
 
 import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
-import { resetAllReportsAction } from "../../ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const MultipleAssessmentReportContainer = props => {
   const { settings, setMARSettingsAction } = props;

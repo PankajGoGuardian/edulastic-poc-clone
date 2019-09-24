@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST = "[reports] get reports standards performance summary request";
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS =
@@ -24,7 +24,7 @@ export const getStandardsPerformanceSummaryRequestAction = createAction(
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStandardsPerformanceSummaryReducer;
+export const stateSelector = state => state.reportReducer.reportStandardsPerformanceSummaryReducer;
 
 export const getReportsStandardsPerformanceSummary = createSelector(
   stateSelector,

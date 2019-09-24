@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST = "[reports] get reports standards browse standards request";
 const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS =
@@ -37,7 +37,7 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStandardsFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportStandardsFilterDataReducer;
 
 export const getReportsStandardsBrowseStandards = createSelector(
   stateSelector,

@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST = "[reports] get reports response frequency request";
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS = "[reports] get reports response frequency request success";
@@ -20,7 +20,7 @@ export const getResponseFrequencyRequestAction = createAction(GET_REPORTS_RESPON
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportResponseFrequencyReducer;
+export const stateSelector = state => state.reportReducer.reportResponseFrequencyReducer;
 
 export const getReportsResponseFrequency = createSelector(
   stateSelector,
@@ -58,7 +58,7 @@ export const reportResponseFrequencyReducer = createReducer(initialState, {
   }
 });
 
-// -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
+// -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 

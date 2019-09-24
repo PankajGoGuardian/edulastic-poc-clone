@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST = "[reports] get reports student mastery profile request";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS = "[reports] get reports student mastery profile success";
@@ -20,7 +20,7 @@ export const getStudentMasteryProfileRequestAction = createAction(GET_REPORTS_ST
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStudentMasteryProfileReducer;
+export const stateSelector = state => state.reportReducer.reportStudentMasteryProfileReducer;
 
 export const getReportsStudentMasteryProfile = createSelector(
   stateSelector,

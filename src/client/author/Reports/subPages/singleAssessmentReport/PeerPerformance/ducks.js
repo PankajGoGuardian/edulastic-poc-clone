@@ -5,7 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import tempData from "./static/json/tempData";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST = "[reports] get reports peer performance request";
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS = "[reports] get reports peer performance success";
@@ -21,7 +21,7 @@ export const getPeerPerformanceRequestAction = createAction(GET_REPORTS_PEER_PER
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportPeerPerformanceReducer;
+export const stateSelector = state => state.reportReducer.reportPeerPerformanceReducer;
 
 export const getReportsPeerPerformance = createSelector(
   stateSelector,

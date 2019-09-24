@@ -5,7 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, get } from "lodash";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST = "[reports] get reports spr filter data request";
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports spr filter data request success";
@@ -40,7 +40,7 @@ export const getSPRStudentDataRequestAction = createAction(GET_REPORTS_SPR_STUDE
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSPRFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportSPRFilterDataReducer;
 
 export const getReportsSPRFilterData = createSelector(
   stateSelector,

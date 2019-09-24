@@ -24,6 +24,10 @@ import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
+import {
+  getSAFFilterSelectedStandardsProficiencyProfile,
+  getSAFFilterStandardsProficiencyProfiles
+} from "../common/filterDataDucks";
 
 const PAGE_SIZE = 15;
 
@@ -360,12 +364,8 @@ const enhance = connect(
     role: getUserRole(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: get(
-      state,
-      "reportSARFilterDataReducer.filters.standardsProficiencyProfile",
-      ""
-    ),
-    standardProficiencyProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.scaleInfo", [])
+    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(state),
+    standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(state)
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction

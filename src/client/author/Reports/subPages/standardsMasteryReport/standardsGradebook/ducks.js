@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST = "[reports] get reports standards gradebook request";
 const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS = "[reports] get reports standards gradebook success";
@@ -20,7 +20,7 @@ export const getStandardsGradebookRequestAction = createAction(GET_REPORTS_STAND
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStandardsGradebookReducer;
+export const stateSelector = state => state.reportReducer.reportStandardsGradebookReducer;
 
 export const getReportsStandardsGradebook = createSelector(
   stateSelector,

@@ -13,7 +13,7 @@ import { getNavigationTabLinks } from "../../common/util";
 import navigation from "../../common/static/json/navigation.json";
 
 import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
-import { resetAllReportsAction } from "../../ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const StandardsMasteryReportContainer = props => {
   const { gradebookSettings, setSMRSettingsAction } = props;

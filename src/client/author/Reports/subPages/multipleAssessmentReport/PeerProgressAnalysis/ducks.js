@@ -4,7 +4,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST = "[reports] get reports peer progress analysis request";
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports peer progress analysis success";
@@ -20,7 +20,7 @@ export const getPeerProgressAnalysisRequestAction = createAction(GET_REPORTS_PEE
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportPeerProgressAnalysisReducer;
+export const stateSelector = state => state.reportReducer.reportPeerProgressAnalysisReducer;
 
 export const getReportsPeerProgressAnalysis = createSelector(
   stateSelector,

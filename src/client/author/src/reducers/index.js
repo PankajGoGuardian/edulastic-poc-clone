@@ -4,30 +4,7 @@ import items from "./items";
 import testItem from "./testItem";
 import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
-import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
-import { reportSARSettingsReducer } from "../../Reports/subPages/singleAssessmentReport/ducks";
-import { reportMARSettingsReducer } from "../../Reports/subPages/multipleAssessmentReport/ducks";
-import { reportSMRSettingsReducer } from "../../Reports/subPages/standardsMasteryReport/ducks";
-import { reportSPRSettingsReducer } from "../../Reports/subPages/studentProfileReport/ducks";
-import { reportSARFilterDataReducer } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
-import { reportMARFilterDataReducer } from "../../Reports/subPages/multipleAssessmentReport/common/filterDataDucks";
-import { reportSPRFilterDataReducer } from "../../Reports/subPages/studentProfileReport/common/filterDataDucks";
-import { reportAssessmentSummaryReducer } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportReducer } from "../../Reports/ducks";
-import { reportResponseFrequencyReducer } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
-import { reportPeerPerformanceReducer } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
-import { reportQuestionAnalysisReducer } from "../../Reports/subPages/singleAssessmentReport/QuestionAnalysis/ducks";
-import { reportPerformanceByStandardsReducer } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
-import { reportPerformanceByStudentsReducer } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStudents/ducks";
-import { reportStandardsGradebookReducer } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
-import { reportStandardsPerformanceSummaryReducer } from "../../Reports/subPages/standardsMasteryReport/standardsPerformance/ducks";
-import { reportStandardsFilterDataReducer } from "../../Reports/subPages/standardsMasteryReport/common/filterDataDucks";
-import { reportPeerProgressAnalysisReducer } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
-import { reportStudentProgressReducer } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
-import { reportPerformanceOverTimeReducer } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
-import { reportStudentMasteryProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
-import { reportStudentAssessmentProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
-import { reportStudentProfileSummaryReducer } from "../../Reports/subPages/studentProfileReport/StudentProfileSummary/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -83,29 +60,7 @@ const authorReducers = {
   dictionaries,
   authorQuestions,
   author_assignments,
-  reportAssignmentsReducer,
-  reportSARSettingsReducer,
-  reportMARSettingsReducer,
-  reportSMRSettingsReducer,
-  reportSPRSettingsReducer,
-  reportSARFilterDataReducer,
-  reportMARFilterDataReducer,
-  reportSPRFilterDataReducer,
-  reportAssessmentSummaryReducer,
   reportReducer,
-  reportResponseFrequencyReducer,
-  reportPeerPerformanceReducer,
-  reportPerformanceByStudentsReducer,
-  reportQuestionAnalysisReducer,
-  reportStandardsGradebookReducer,
-  reportStandardsPerformanceSummaryReducer,
-  reportStandardsFilterDataReducer,
-  reportPeerProgressAnalysisReducer,
-  reportStudentProgressReducer,
-  reportPerformanceOverTimeReducer,
-  reportStudentMasteryProfileReducer,
-  reportStudentAssessmentProfileReducer,
-  reportStudentProfileSummaryReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,
@@ -127,7 +82,6 @@ const authorReducers = {
   performanceBandReducer,
   standardsProficiencyReducer,
   schoolsReducer,
-  reportPerformanceByStandardsReducer,
   studentReducer,
   teacherReducer,
   districtAdminReducer,

@@ -5,7 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
-import { RESET_ALL_REPORTS } from "../../ducks";
+import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
 
 const SET_SAR_SETTINGS = "[SAR settings] get sar settings";
 const RESET_SAR_SETTINGS = "[SAR settings] reset sar settings";
@@ -21,7 +21,7 @@ export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARSettingsReducer;
+export const stateSelector = state => state.reportReducer.reportSARSettingsReducer;
 
 export const getReportsSARSettings = createSelector(
   stateSelector,

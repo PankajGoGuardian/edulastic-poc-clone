@@ -8,7 +8,7 @@ import { DropAreaContainer, UploadDragger } from "./styled";
 import CreateUpload from "../CreateUpload/CreateUpload";
 import CreateBlank from "../CreateBlank/CreateBlank";
 
-const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload }) => {
+const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload, isAddPdf }) => {
   const [isDragging, setIsDragging] = useState(false);
   return (
     <DropAreaContainer
@@ -22,7 +22,7 @@ const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelU
         setIsDragging(false);
       }}
     >
-      <UploadDragger name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false} accept=".pdf">
+      <UploadDragger isAddPdf={isAddPdf} name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false}>
         <FlexContainer childMarginRight="0" style={{ height: "100%" }}>
           <CreateUpload
             isDragging={isDragging}
@@ -33,7 +33,7 @@ const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelU
           />
         </FlexContainer>
       </UploadDragger>
-      <CreateBlank onCreate={onCreateBlank} loading={loading} />
+      {!isAddPdf && <CreateBlank onCreate={onCreateBlank} loading={loading} />}
     </DropAreaContainer>
   );
 };

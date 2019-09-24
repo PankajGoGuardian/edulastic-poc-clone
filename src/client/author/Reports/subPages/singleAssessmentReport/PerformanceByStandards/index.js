@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { indexOf, filter as filterArr, capitalize, find, get } from "lodash";
-import { Form, Select, Radio, Popover, Button, Icon, Row, Col } from "antd";
+import { Form, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
@@ -126,7 +126,7 @@ const PerformanceByStandards = ({
   const handleSetFilter = name => value => {
     setFilter({
       ...filter,
-      [name]: value
+      [name]: value.key
     });
   };
 
@@ -164,49 +164,25 @@ const PerformanceByStandards = ({
     setStandardId(selected.key);
   };
 
-  const renderSimpleFilter = ({ key: filterKey, title: filterTitle, data }) => {
-    const radioValue = filter[filterKey];
-
-    const handleChange = ({ target: { value } }) => {
-      handleSetFilter(filterKey)(value);
-    };
-
-    return (
-      <Form.Item label={filterTitle}>
-        <Radio.Group value={radioValue} onChange={handleChange}>
-          {data.map(({ title, key }) => (
-            <Radio key={key} value={key}>
-              {title}
-            </Radio>
-          ))}
-        </Radio.Group>
-      </Form.Item>
-    );
-  };
-
-  const renderComplexFilter = ({ key: filterKey, title: filterTitle, data }) => {
+  const renderDropDown = ({ key: filterKey, title: filterTitle, data }) => {
     const selectValue = filter[filterKey];
 
     return (
       <Form.Item label={filterTitle}>
-        <Select value={selectValue} onChange={handleSetFilter(filterKey)}>
-          {data.map(({ title, key }) => (
-            <Select.Option key={key} value={key}>
-              {title}
-            </Select.Option>
-          ))}
-        </Select>
+        <ControlDropDown
+          by={selectValue}
+          selectCB={handleSetFilter(filterKey)}
+          data={data}
+          showPrefixOnSelected={false}
+          buttonWidth="200px"
+        />
       </Form.Item>
     );
   };
 
   const renderFilters = () => {
     const popoverContent = (
-      <Form layout="vertical">
-        {dropDownFormat.filterDropDownData.map(filterItem =>
-          filterItem.data.length > 3 ? renderComplexFilter(filterItem) : renderSimpleFilter(filterItem)
-        )}
-      </Form>
+      <Form layout="vertical">{dropDownFormat.filterDropDownData.map(filterItem => renderDropDown(filterItem))}</Form>
     );
     return (
       <Popover content={popoverContent} trigger="click" placement="bottomLeft">

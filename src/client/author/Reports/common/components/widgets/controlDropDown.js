@@ -32,7 +32,8 @@ const ControlDropDown = ({
   selectCB,
   data,
   comData,
-  trigger = ["click"]
+  trigger = ["click"],
+  buttonWidth
 }) => {
   const [selected, setSelected] = useState(by);
   const [isActive, setActive] = useState(false);
@@ -89,7 +90,7 @@ const ControlDropDown = ({
   const title = (selected && selected.title) || prefix;
 
   return (
-    <StyledDiv className={`${containerClassName} control-dropdown`}>
+    <StyledDiv className={`${containerClassName} control-dropdown`} buttonWidth={buttonWidth}>
       <Dropdown
         onVisibleChange={setActive}
         overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
@@ -108,11 +109,10 @@ const StyledDiv = styled.div`
   margin: 0px 5px;
   overflow: hidden;
   button {
-    white-space: pre-wrap;
     display: flex;
     justify-content: start;
     align-items: center;
-
+    width: ${({ buttonWidth }) => (buttonWidth ? buttonWidth : "auto")};
     &.ant-btn.ant-dropdown-trigger {
       font-weight: bold;
       background-color: ${lightGreySecondary};

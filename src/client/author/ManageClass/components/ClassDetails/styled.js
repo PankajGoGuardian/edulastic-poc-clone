@@ -416,9 +416,6 @@ export const RedirectButton = styled(StyledTabButton)`
   margin-right: 5px;
   position: relative;
   justify-content: center;
-  &:nth-child(1) {
-    border-radius: 4px 0 0 4px;
-  }
   &:nth-last-child(1) {
     margin-right: 0px;
   }

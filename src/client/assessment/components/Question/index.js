@@ -20,14 +20,14 @@ class Question extends Component {
   }
 
   componentDidMount = () => {
-    const { fillSections, section, label, visible } = this.props;
+    const { fillSections, section, label, sectionId, visible } = this.props;
 
     const { current: node } = this.node;
 
     if (!node) return false;
     if (visible === false) return false;
 
-    fillSections(section, label, node);
+    fillSections(section, label, node, sectionId);
 
     this.setState({
       intervalID: setInterval(() => {
@@ -41,10 +41,10 @@ class Question extends Component {
   };
 
   componentWillUnmount() {
-    const { cleanSections } = this.props;
+    const { cleanSections, sectionId } = this.props;
     const { intervalID } = this.state;
 
-    cleanSections();
+    cleanSections(sectionId);
     clearInterval(intervalID);
   }
 

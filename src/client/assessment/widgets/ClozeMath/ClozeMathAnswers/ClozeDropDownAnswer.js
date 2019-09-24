@@ -5,6 +5,7 @@ import { Collapse, Select, Icon } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { response } from "@edulastic/constants";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -33,11 +34,11 @@ const AnswerSelect = styled(Select)`
   height: ${({ height }) => (!height ? null : `${height}`)};
 
   .ant-select-selection {
-    height: 35px;
+    height: ${response.minHeight}px;
   }
 
   .ant-select-selection__rendered {
-    min-height: 35px;
+    min-height: ${response.minHeight}px;
   }
 `;
 

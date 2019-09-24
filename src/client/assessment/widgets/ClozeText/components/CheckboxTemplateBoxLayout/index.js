@@ -100,7 +100,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-            style={{ ...btnStyle, height: "auto", margin: 0 }}
+            style={{ ...btnStyle, height: "auto", margin: 0, marginBottom: 4 }}
             onClick={handleClick}
           >
             <span className="index" style={indexStyle}>

@@ -5,6 +5,7 @@ import Draggable from "react-draggable";
 import { WithResources } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import BasicCalculator from "./BasicCalculator";
+import { Spin } from "antd";
 
 class CalculatorContainer extends Component {
   constructor(props) {
@@ -170,7 +171,7 @@ const StyledDraggableF = styled(Draggable)`
 const StyledDiv = styled.div`
   position: absolute;
   left: 50%;
-  top: 200px;
+  top: 80px;
   display: ${props => (props.visible ? "block" : "none")};
 `;
 
@@ -220,7 +221,7 @@ const CalculatorContainerWithResources = ({ ...props }) => (
       "https://www.desmos.com/api/v1.2/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&ext.js",
       "https://cdn.geogebra.org/apps/deployggb.js"
     ]}
-    fallBack={<span />}
+    fallBack={<Spin />}
   >
     <CalculatorContainer {...props} />
   </WithResources>

@@ -88,14 +88,14 @@ export default class QuestionEditModal extends React.Component {
       return null;
     }
 
-    const { type, qIndex } = question;
+    const { type, qIndex, title } = question;
 
     return (
       <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
         <ModalWrapper>
           <ModalHeader>
             <QuestionNumber>{qIndex || index + 1}</QuestionNumber>
-            <ModalTitle>{questionTypeTitles[type]}</ModalTitle>
+            <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
           <div style={{ height: "calc(70vh - 290px)", overflow: "auto" }}>
             <PerfectScrollbar>{this.renderForm(type)}</PerfectScrollbar>

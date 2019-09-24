@@ -5,7 +5,7 @@ import { grey, lightGrey, yellow, greenDark3, red } from "@edulastic/colors";
 import { IconCorrect, IconRemove, IconWrong } from "@edulastic/icons";
 import { Divider } from "antd";
 
-const FeedBackContainer = ({ correct, partiallyCorrect, prevScore, prevMaxScore, prevFeedback, itemId }) => {
+const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId }) => {
   const [feedbackView, setFeedbackView] = useState(false);
   const toggleFeedbackView = () => {
     setFeedbackView(!feedbackView);
@@ -19,16 +19,16 @@ const FeedBackContainer = ({ correct, partiallyCorrect, prevScore, prevMaxScore,
   const iconHeight2 = feedbackView ? 10 : 30;
   const { answer, answerIcon } =
     correct === true
-      ? { answer: "Correct", answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={greenDark3} /> }
-      : partiallyCorrect === true
-      ? {
-          answer: "Partially Correct",
-          answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={yellow} />
-        }
+      ? prevScore === prevMaxScore
+        ? { answer: "Correct", answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={greenDark3} /> }
+        : {
+            answer: "Partially Correct",
+            answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={yellow} />
+          }
       : { answer: "Incorrect", answerIcon: <IconWrong height={iconHeight2} width={iconHeight2} color={red} /> };
   return (
     <Wrapper onClick={toggleFeedbackView}>
-      {!feedbackView && (correct !== undefined || partiallyCorrect != undefined) && (
+      {!feedbackView && correct !== undefined && (
         <div style={{ width: "100px" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>{answerIcon}</div>
           <div style={{ textAlign: "center" }}>{`Thats ${answer}`}</div>
@@ -38,7 +38,7 @@ const FeedBackContainer = ({ correct, partiallyCorrect, prevScore, prevMaxScore,
         <div style={{ width: "120px" }}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div>
-              {(correct !== undefined || partiallyCorrect != undefined) && (
+              {correct !== undefined && (
                 <span>
                   {answerIcon} {`  ${answer}`}
                 </span>
@@ -66,7 +66,6 @@ const FeedBackContainer = ({ correct, partiallyCorrect, prevScore, prevMaxScore,
 
 FeedBackContainer.propTypes = {
   correct: PropTypes.bool.isRequired,
-  partiallyCorrect: PropTypes.bool.isRequired,
   prevScore: PropTypes.number.isRequired,
   prevMaxScore: PropTypes.number.isRequired
 };

@@ -82,9 +82,6 @@ export const Field = styled.fieldset`
 
 export const AddForm = styled(Form)`
   background: none;
-  .ant-input {
-    border-radius: 1px;
-  }
   .ant-collapse {
     border: none;
     background: white;

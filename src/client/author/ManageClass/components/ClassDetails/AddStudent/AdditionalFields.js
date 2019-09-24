@@ -22,7 +22,7 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
       gender,
       contactEmails
     } = studentDetails);
-    contactEmails = contactEmails.join(",");
+    contactEmails = contactEmails && contactEmails.join(",");
   }
 
   const dateProps = {};

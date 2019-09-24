@@ -6,6 +6,7 @@ import { Form, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
+import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
 import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
@@ -123,13 +124,6 @@ const PerformanceByStandards = ({
     setSelectedData(report);
   };
 
-  const handleSetFilter = name => value => {
-    setFilter({
-      ...filter,
-      [name]: value.key
-    });
-  };
-
   const handleToggleSelectedData = item => {
     const dataField = isViewByStandards ? "standardId" : "domainId";
     const stateHandler = isViewByStandards ? setSelectedStandards : setSelectedDomains;
@@ -162,35 +156,6 @@ const PerformanceByStandards = ({
 
   const handleStandardIdChange = selected => {
     setStandardId(selected.key);
-  };
-
-  const renderDropDown = ({ key: filterKey, title: filterTitle, data }) => {
-    const selectValue = filter[filterKey];
-
-    return (
-      <Form.Item label={filterTitle}>
-        <ControlDropDown
-          by={selectValue}
-          selectCB={handleSetFilter(filterKey)}
-          data={data}
-          showPrefixOnSelected={false}
-          buttonWidth="200px"
-        />
-      </Form.Item>
-    );
-  };
-
-  const renderFilters = () => {
-    const popoverContent = (
-      <Form layout="vertical">{dropDownFormat.filterDropDownData.map(filterItem => renderDropDown(filterItem))}</Form>
-    );
-    return (
-      <Popover content={popoverContent} trigger="click" placement="bottomLeft">
-        <Button type="primary">
-          <Icon type="filter" />
-        </Button>
-      </Popover>
-    );
   };
 
   if (loading) {
@@ -233,6 +198,13 @@ const PerformanceByStandards = ({
     );
   }
 
+  const filterDropDownCB = (event, selected, comData) => {
+    setFilter({
+      ...filter,
+      [comData]: selected.key
+    });
+  };
+
   return (
     <>
       <StyledCard>
@@ -268,9 +240,8 @@ const PerformanceByStandards = ({
                   data={standardsDropdownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={2} lg={2} xl={2}>
-                {renderFilters()}
-              </StyledDropDownContainer>
+
+              <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
             </Row>
           </Col>
         </Row>

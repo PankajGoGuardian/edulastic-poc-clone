@@ -10,11 +10,8 @@ import { WithResources } from "@edulastic/common";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 // components
-
 import { Container } from "../common";
-import PlayerHeader from "./PlayerHeader";
-import PlayerMainContentArea from "./PlayerMainContentArea";
-
+import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
 import { playersTheme } from "../assessmentPlayersTheme";
@@ -72,9 +69,8 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, t, items, currentItem, view: previewTab, questions, answerChecksUsedForItem, settings } = this.props;
+    const { theme, items, currentItem } = this.props;
     const { showExitPopup } = this.state;
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -90,22 +86,7 @@ class AssessmentPlayerTestlet extends React.Component {
       >
         <ThemeProvider theme={theme}>
           <Container>
-            <PlayerHeader
-              {...this.props}
-              dropdownOptions={dropdownOptions}
-              onOpenExitPopup={this.openExitPopup}
-              t={t}
-            />
-            <PlayerMainContentArea
-              {...this.props}
-              previewTab={previewTab}
-              dropdownOptions={dropdownOptions}
-              onCheckAnswer={this.onCheckAnswer}
-              answerChecksUsedForItem={answerChecksUsedForItem}
-              settings={settings}
-              t={t}
-              questions={questions}
-            />
+            <PlayerContent {...this.props} openExitPopup={this.openExitPopup} />
             <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
           </Container>
         </ThemeProvider>

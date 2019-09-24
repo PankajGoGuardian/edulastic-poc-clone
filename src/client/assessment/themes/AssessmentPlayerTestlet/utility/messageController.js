@@ -36,7 +36,6 @@ class MessageController {
   connect(context = window) {
     this.context = context;
     this.context.addEventListener("message", this._onMessage);
-    console.log("parent side connected...");
   }
 
   disconnect() {

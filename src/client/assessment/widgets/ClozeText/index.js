@@ -202,7 +202,7 @@ class ClozeText extends Component {
         if (type === "number") {
           // set all the correct answers to empty if ans contains text
           draft.validation.validResponse.value = draft.validation.validResponse.value.map(ans => {
-            if (ans.index === index && !parseInt(ans.value)) {
+            if (ans.index === index && ans.value.split("\n").some(isNaN)) {
               ans.value = "";
             }
             return ans;
@@ -210,7 +210,35 @@ class ClozeText extends Component {
           // set all the alt answers to empty if ans contains text
           draft.validation.altResponses = draft.validation.altResponses.map(resp => {
             resp.value = resp.value.map(ans => {
-              if (ans.index === index && !parseInt(ans.value)) {
+              if (ans.index === index && ans.value.split("\n").some(isNaN)) {
+                ans.value = "";
+              }
+              return ans;
+            });
+            return resp;
+          });
+        }
+      })
+    );
+  };
+
+  handleGlobalTypeChange = type => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.uiStyle.inputtype = type;
+        if (type === "number") {
+          // set all the correct answers to empty if ans contains text
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(ans => {
+            if (ans.value.split("\n").some(isNaN)) {
+              ans.value = "";
+            }
+            return ans;
+          });
+          // set all the alt answers to empty if ans contains text
+          draft.validation.altResponses = draft.validation.altResponses.map(resp => {
+            resp.value = resp.value.map(ans => {
+              if (ans.value.split("\n").some(isNaN)) {
                 ans.value = "";
               }
               return ans;
@@ -327,6 +355,7 @@ class ClozeText extends Component {
                   fillSections={fillSections}
                   responseIds={item.responseIds}
                   handleIndividualTypeChange={this.handleIndividualTypeChange}
+                  handleGlobalTypeChange={this.handleGlobalTypeChange}
                   outerStyle={{
                     padding: "30px 0px"
                   }}

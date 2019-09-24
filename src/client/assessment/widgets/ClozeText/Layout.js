@@ -128,7 +128,8 @@ class Layout extends Component {
       t,
       fillSections,
       cleanSections,
-      handleIndividualTypeChange
+      handleIndividualTypeChange,
+      handleGlobalTypeChange
     } = this.props;
 
     const changeUiStyle = (prop, value) => {
@@ -318,7 +319,7 @@ class Layout extends Component {
               <Label>{t("component.options.inputtype")}</Label>
               <SelectWrapper>
                 <Select
-                  onChange={inputtype => changeUiStyle("inputtype", inputtype)}
+                  onChange={handleGlobalTypeChange}
                   options={[
                     { value: "text", label: t("component.options.text") },
                     { value: "number", label: t("component.options.number") }

@@ -34,7 +34,7 @@ const MixMatchCorrectAnswer = ({
       return acc;
     }, {}) || {};
 
-  const { widthpx } = uiStyle;
+  const { widthpx, inputtype } = uiStyle;
   const btnStyle = {
     minWidth: `${responseDimensions.minWidth}px`,
     minHeight: `${responseDimensions.minHeight}px`,
@@ -90,7 +90,9 @@ const MixMatchCorrectAnswer = ({
               </FlexContainer>
             ))}
           <Input
-            type={responseTypes[answerIndex] || "text"}
+            // individual type overriding the global type
+            // default to text if neither is set
+            type={responseTypes[answerIndex] || inputtype || "text"}
             size="small"
             placeholder="+ Alt Ans"
             value={newValues[answerIndex]}

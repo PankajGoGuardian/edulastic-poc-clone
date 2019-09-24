@@ -260,7 +260,35 @@ const PerformanceAnalysisTable = ({
     ...makeStandardColumns(tableData)
   ];
 
-  const onCsvConvert = data => downloadCSV(`Performance By Standard Report.csv`, data);
+  /**
+   *
+   * converts table header string starting from 3rd column
+   * From
+   * "1-ESS1-2 POINTS - 1 50%"
+   * TO
+   * "1-ESS1-2 (POINTS - 1) (50%)"
+   */
+  const onCsvConvert = data => {
+    const splittedData = data.split("\n");
+    const header = splittedData[0];
+    const columns = header.split(",");
+    for (let i = 2; i < columns.length; i++) {
+      let str = columns[i];
+      let _str = str.toLocaleLowerCase();
+      let indexOfPoints = _str.lastIndexOf("points");
+      let indexOfLastSpace = _str.lastIndexOf(" ");
+
+      const transformedStr = `${str.substring(0, indexOfPoints)}(${str.substring(
+        indexOfPoints,
+        indexOfLastSpace
+      )}) (${str.substring(indexOfLastSpace + 1, str.length - 1)})"`;
+      columns[i] = transformedStr;
+    }
+    const _header = columns.join(",");
+    splittedData[0] = _header;
+    const finalData = splittedData.join("\n");
+    downloadCSV(`Performance By Standard Report.csv`, finalData);
+  };
 
   const columns = getAnalysisColumns();
 

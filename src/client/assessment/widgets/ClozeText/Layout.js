@@ -120,7 +120,16 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, multipleLine, advancedAreOpen, t, fillSections, cleanSections } = this.props;
+    const {
+      onChange,
+      uiStyle,
+      multipleLine,
+      advancedAreOpen,
+      t,
+      fillSections,
+      cleanSections,
+      handleIndividualTypeChange
+    } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("uiStyle", {
@@ -376,7 +385,7 @@ class Layout extends Component {
                   <Label>{t("component.options.inputtype")}</Label>
                   <SelectWrapper>
                     <Select
-                      onChange={inputtype => changeIndividualUiStyle("inputtype", inputtype, index)}
+                      onChange={handleIndividualTypeChange.bind(this, index)}
                       options={[
                         { value: "text", label: t("component.options.text") },
                         { value: "number", label: t("component.options.number") }

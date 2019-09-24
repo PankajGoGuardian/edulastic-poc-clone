@@ -16,7 +16,7 @@ import {
 import { message, Tooltip } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
-import ConfirmationModal from "../../../.././common/components/ConfirmationModal";
+import { TypeToConfirmModal } from "@edulastic/common";
 const SubHeader = ({
   name,
   districtName,
@@ -109,22 +109,15 @@ const SubHeader = ({
             </span>
           </Tooltip>
         )}
+
         {showModal && (
-          <ConfirmationModal
+          <TypeToConfirmModal
+            modalVisible={showModal}
             title="Archive Class"
-            show={showModal}
-            onOk={handleArchiveClass}
-            onCancel={handleArchiveClassCancel}
-            inputVal={modalInputVal}
-            onInputChange={handleModalInput}
-            expectedVal="ARCHIVE"
-            bodyText={
-              <div>
-                Are you sure you want to archive the class -{" "}
-                <span style={{ color: "#4ca4e8", fontSize: "16px" }}>{code}</span>{" "}
-              </div>
-            }
-            okText="Yes, Archive"
+            handleOnOkClick={handleArchiveClass}
+            wordToBeTyped="ARCHIVE"
+            primaryLabel="Are you sure you want to archive the class ?"
+            closeModal={handleArchiveClassCancel}
           />
         )}
       </RightContent>

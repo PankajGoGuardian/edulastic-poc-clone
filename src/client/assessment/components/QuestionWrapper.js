@@ -296,14 +296,7 @@ class QuestionWrapper extends Component {
       displayFeedback = true,
       ...restProps
     } = this.props;
-    const {
-      score: prevScore,
-      maxScore: prevMaxScore,
-      feedback: prevFeedback,
-      correct,
-      incorrect,
-      partiallyCorrect
-    } = prevQActivityForQuestion;
+    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -435,7 +428,6 @@ class QuestionWrapper extends Component {
               {!isEmpty(prevQActivityForQuestion) && (
                 <FeedBackContainer
                   correct={correct}
-                  partiallCorrect={partiallyCorrect}
                   prevScore={prevScore}
                   prevMaxScore={prevMaxScore}
                   prevFeedback={prevFeedback}

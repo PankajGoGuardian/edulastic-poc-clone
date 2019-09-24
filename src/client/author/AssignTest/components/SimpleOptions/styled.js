@@ -43,7 +43,7 @@ export const AlignRight = styled(RadioGroup)`
   .ant-radio-wrapper {
     white-space: normal;
     margin-right: 32px;
-    max-width: 150px;
+    max-width: 200px;
     display: flex;
     align-items: center;
 

@@ -818,7 +818,8 @@ function* setTestDataAndUpdateSaga(payload) {
 
     yield put(setTestDataAction(newTest));
     if (!newTest._id) {
-      const { title } = newTest;
+      const { title, testContentVisibility } = newTest;
+      const role = yield select(getUserRole);
       if (!title) {
         return yield call(message.error("Name field cannot be empty"));
       }
@@ -837,6 +838,9 @@ function* setTestDataAndUpdateSaga(payload) {
             maxScore: helpers.getPoints(o),
             questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
           }));
+        if (!testContentVisibility && (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)) {
+          draft.testContentVisibility = test.testContentVisibility.ALWAYS;
+        }
       });
 
       const entity = yield call(testsApi.create, newTest);

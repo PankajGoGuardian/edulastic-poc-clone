@@ -18,6 +18,7 @@ module.exports = {
     { id: "require-password", title: "Require Password" },
     { id: "check-answer-tries-per-question", title: "Check Answer Tries Per Question" },
     { id: "evaluation-method", title: "Evaluation Method" },
+    { id: "test-content-visibility", title: "Item content visibility to Teachers" },
     { id: "performance-bands", title: "Performance Bands" },
     { id: "standards-proficiency", title: "Standards Proficiency" },
     { id: "title", title: "Title" },
@@ -115,5 +116,26 @@ module.exports = {
     DRAFT: "draft",
     ARCHIVED: "archived",
     PUBLISHED: "published"
+  },
+  releaseGradeKeys: ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"],
+  nonPremiumReleaseGradeKeys: ["DONT_RELEASE", "WITH_ANSWERS"],
+  testContentVisibilityTypes: [
+    {
+      key: "ALWAYS",
+      value: "Always visible"
+    },
+    {
+      key: "GRADING",
+      value: "Hide prior to grading"
+    },
+    {
+      key: "HIDDEN",
+      value: "Always hidden"
+    }
+  ],
+  testContentVisibility: {
+    ALWAYS: "ALWAYS",
+    GRADING: "GRADING",
+    HIDDEN: "HIDDEN"
   }
 };

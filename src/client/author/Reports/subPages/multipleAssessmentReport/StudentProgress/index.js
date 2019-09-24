@@ -93,6 +93,7 @@ const StudentProgress = ({
         renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
       <TrendTable
+        filters={filters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         data={data}

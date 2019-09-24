@@ -117,7 +117,7 @@ class QuestionItem extends React.Component {
     if (type === CLOZE_DROP_DOWN) {
       allCorrect = evaluation && evaluation["0"];
     }
-    if (allCorrect) return null;
+    if (allCorrect || type === ESSAY_PLAIN_TEXT) return null;
 
     let answerRenderer;
 
@@ -188,7 +188,7 @@ class QuestionItem extends React.Component {
   renderAnswerIndicator = type => {
     const { evaluation } = this.props;
 
-    if (isUndefined(evaluation)) {
+    if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null;
     }
 

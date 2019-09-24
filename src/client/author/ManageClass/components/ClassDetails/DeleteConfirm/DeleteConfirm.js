@@ -6,7 +6,8 @@ import { removeStudentsRequestAction, selectStudentAction } from "../../../ducks
 import { getUserOrgData } from "../../../../src/selectors/user";
 import { UserNameContainer, UserName, LightGreenSpan } from "./styled";
 
-import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
+import { TypeToConfirmModal } from "@edulastic/common";
+import { StyledClassName } from "../../../../../admin/Common/StyledComponents";
 
 class DeleteConfirm extends React.Component {
   static propTypes = {
@@ -20,11 +21,6 @@ class DeleteConfirm extends React.Component {
 
   static defaultProps = {
     isOpen: false
-  };
-
-  state = {
-    confirmText: "",
-    defaultText: "REMOVE"
   };
 
   renderUserNames() {
@@ -61,27 +57,28 @@ class DeleteConfirm extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel } = this.props;
-    const { defaultText, confirmText } = this.state;
+    const { isOpen, handleCancel, selectedStudent } = this.props;
 
     return (
-      <ConfirmationModal
-        title="Remove Student(s)"
-        show={isOpen}
-        onOk={this.onRemove}
-        onCancel={handleCancel}
-        inputVal={confirmText}
-        onInputChange={this.onChangeHandler}
-        expectedVal={defaultText}
-        canUndone
-        bodyText={
-          <>
-            {this.renderUserNames()}
-            <div> Are you sure you want to remove the selected student(s) from the class? </div>
-          </>
-        }
-        okText="Yes, Remove"
-      />
+      <>
+        {isOpen && (
+          <TypeToConfirmModal
+            modalVisible={isOpen}
+            title="Remove Student(s)"
+            handleOnOkClick={this.onRemove}
+            wordToBeTyped="REMOVE"
+            primaryLabel="Are you sure you want to remove the selected student(s) from the class?"
+            secondaryLabel={selectedStudent.map(({ firstName = "", lastName = "", _id }) => {
+              return (
+                <StyledClassName key={_id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              );
+            })}
+            closeModal={() => handleCancel()}
+          />
+        )}
+      </>
     );
   }
 }

@@ -21,6 +21,7 @@ import ActionContainer from "./ActionContainer";
 import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider, ButtonWrapper, ButtonRightWrapper, StyledButton } from "./styled";
+import BreadCrumb from "../../../../author/src/components/Breadcrumb";
 
 const ClassDetails = ({
   selectedClass,
@@ -37,6 +38,7 @@ const ClassDetails = ({
   syncClassUsingCode,
   archiveClass
 }) => {
+  const { _id, name } = selectedClass;
   const [disabled, setDisabled] = useState(selectedClass && !!selectedClass.googleCode);
   let googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
@@ -68,6 +70,17 @@ const ClassDetails = ({
       message.error("Enter valid google classroom code");
     }
   };
+
+  const breadCrumbData = [
+    {
+      title: "MANAGE CLASS",
+      to: "/author/manageClass"
+    },
+    {
+      title: `${name}`,
+      to: `/author/manageClass/${_id}`
+    }
+  ];
 
   const viewAssessmentHandler = () => {};
   if (!classLoaded) return <Spin />;
@@ -106,6 +119,7 @@ const ClassDetails = ({
       </Modal>
       <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
+        <BreadCrumb data={breadCrumbData} style={{ position: "unset", margin: "10px 0px" }} />
         <MainInfo
           entity={selectedClass}
           fetchClassList={fetchClassList}

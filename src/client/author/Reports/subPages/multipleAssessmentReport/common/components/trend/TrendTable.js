@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Row, Col } from "antd";
@@ -62,7 +63,8 @@ const getColumns = (
   analyseBy = "",
   compareBy = {},
   customColumns = [],
-  toolTipContent
+  toolTipContent,
+  filters = {}
 ) => {
   const groupedTests = groupBy(testData, "testId");
   const groupedAvailableTests = groupBy(rawMetric, "testId");
@@ -105,7 +107,16 @@ const getColumns = (
     {
       key: compareBy.key,
       title: capitalize(compareBy.title),
-      dataIndex: compareByMap[compareBy.key]
+      dataIndex: compareByMap[compareBy.key],
+      render: (data, record) => {
+        return compareBy.key === "student" ? (
+          <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
+            {data}
+          </Link>
+        ) : (
+          data
+        );
+      }
     },
     ...customColumns,
     {
@@ -149,6 +160,7 @@ const getColumns = (
 };
 
 const TrendTable = ({
+  filters = {},
   data,
   rawMetric,
   testData,
@@ -160,7 +172,7 @@ const TrendTable = ({
   isCsvDownloading,
   onCsvConvert
 }) => {
-  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent);
+  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent, filters);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
 
   return (

@@ -85,7 +85,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     responseIds,
     isReviewTab,
     cAnswers,
-    responsecontainerindividuals,
+    responsecontainerindividuals = [],
     uiStyle
   } = resprops;
   const ref = useRef();
@@ -126,8 +126,14 @@ const ClozeTextInput = ({ resprops, id }) => {
   };
 
   const handleInputChange = data => {
-    if (type === "number" && Number.isNaN(+data.value)) {
-      return;
+    const resp = responsecontainerindividuals.find(resp => resp.id === data.id);
+    // type === "number" (when globally set all reponses to number)
+    // resp.inputtype === "number" (when individually set the type of response to number)
+    if (type === "number" || (resp && resp.inputtype === "number")) {
+      if (data.value.split("\n").some(isNaN)) {
+        return;
+      }
+      // return;
     }
     setInput(data);
   };
@@ -141,7 +147,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
     height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
-
   return (
     <CustomInput
       key={`input_${index}`}

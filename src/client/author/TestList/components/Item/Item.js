@@ -139,7 +139,7 @@ class Item extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
-          hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container
           src={isPlaylist ? _source.thumbnail : thumbnail}

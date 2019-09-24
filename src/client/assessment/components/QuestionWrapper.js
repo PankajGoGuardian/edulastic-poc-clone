@@ -230,7 +230,7 @@ class QuestionWrapper extends Component {
     this.setState({ shuffledOptsOrder });
   };
 
-  fillSections = (section, label, el) => {
+  fillSections = (section, label, el, sectionId) => {
     this.setState(state => {
       const sectionState = state[section];
       const found = sectionState.filter(block => block.label === label);
@@ -249,15 +249,14 @@ class QuestionWrapper extends Component {
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ section, label, el })
+        [section]: sectionState.concat({ section, label, el, sectionId })
       };
     });
   };
 
   cleanSections = sectionId => {
     if (!sectionId) return;
-
-    this.setState(({ main }) => ({ main: main.filter(item => item.id !== sectionId) }));
+    this.setState(({ main }) => ({ main: main.filter(item => item.sectionId !== sectionId) }));
   };
 
   static getDerivedStateFromProps(props) {

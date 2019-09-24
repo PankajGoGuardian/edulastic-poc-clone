@@ -132,6 +132,7 @@ class ChoicesForDropDown extends Component {
             dataCy={`choice-dropdown-${dropdown.index}`}
             label={`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}
             fillSections={fillSections}
+            sectionId={dropdown.id}
             cleanSections={cleanSections}
           >
             <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>

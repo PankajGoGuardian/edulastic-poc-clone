@@ -353,10 +353,10 @@ class Layout extends Component {
                     type="number"
                     disabled={false}
                     containerStyle={{ width: 350 }}
-                    onFocus={onFocusHandler(responsecontainerindividual, index)}
-                    onBlur={onWidthInputBlur(index)}
-                    onChange={this.handleInputChange}
-                    value={getIndividualWidthInputValue(responsecontainerindividual, index)}
+                    // TODO
+                    // change from 'onChange' to 'onBlur for all
+                    onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
+                    value={responsecontainerindividual.widthpx}
                   />
                 </Col>
                 <Col md={12}>

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "antd";
+import { Button, Col, Row, Select } from "antd";
 import Modal from "react-responsive-modal";
 
 import {
@@ -20,6 +20,8 @@ import QuestionMath from "./components/QuestionMath/QuestionMath";
 import QuestionEssay from "./components/QuestionEssay/QuestionEssay";
 import StandardSet from "./common/StandardSet/StandardSet";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { FormLabel } from "./common/QuestionForm";
+import { selectsData } from "../../../TestPage/components/common";
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
@@ -88,7 +90,7 @@ export default class QuestionEditModal extends React.Component {
       return null;
     }
 
-    const { type, qIndex, title } = question;
+    const { type, qIndex, title, authorDifficulty = "", depthOfKnowledge = "" } = question;
 
     return (
       <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
@@ -97,10 +99,54 @@ export default class QuestionEditModal extends React.Component {
             <QuestionNumber>{qIndex || index + 1}</QuestionNumber>
             <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
-          <div style={{ height: "calc(70vh - 290px)", overflow: "auto" }}>
+          <div style={{ height: "calc(70vh - 390px)", overflow: "auto" }}>
             <PerfectScrollbar>{this.renderForm(type)}</PerfectScrollbar>
           </div>
           <StandardSet alignment={question.alignment} onUpdate={onUpdate} />
+          <Row style={{ marginTop: "10px" }}>
+            <Col md={12}>
+              <FormLabel>DOK</FormLabel>
+              <Select
+                style={{ width: "95%" }}
+                placeholder={"Select DOK"}
+                onSelect={val => onUpdate({ depthOfKnowledge: val })}
+                value={depthOfKnowledge}
+              >
+                <Select.Option key={"Select DOK"} value={""}>
+                  {"Select DOK"}
+                </Select.Option>
+                {selectsData.allDepthOfKnowledge.map(
+                  el =>
+                    el.value && (
+                      <Select.Option key={el.value} value={el.value}>
+                        {el.text}
+                      </Select.Option>
+                    )
+                )}
+              </Select>
+            </Col>
+            <Col md={12} style={{ paddingLeft: "5%" }}>
+              <FormLabel>Difficulty</FormLabel>
+              <Select
+                style={{ width: "100%" }}
+                placeholder={"Select Difficulty Level"}
+                onSelect={val => onUpdate({ authorDifficulty: val })}
+                value={authorDifficulty}
+              >
+                <Select.Option key={"Select Difficulty Level"} value={""}>
+                  {"Select Difficulty Level"}
+                </Select.Option>
+                {selectsData.allAuthorDifficulty.map(
+                  el =>
+                    el.value && (
+                      <Select.Option key={el.value} value={el.value}>
+                        {el.text}
+                      </Select.Option>
+                    )
+                )}
+              </Select>
+            </Col>
+          </Row>
           <ModalFooter>
             <Button onClick={onCurrentChange(index - 1)} disabled={index === 0}>
               Previous

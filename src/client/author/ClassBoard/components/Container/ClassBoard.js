@@ -645,7 +645,7 @@ class ClassBoard extends Component {
             bodyText={
               "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
             }
-            okText="Yes,Remove"
+            okText="Yes, Remove"
           />
         )}
         <HooksContainer classId={classId} assignmentId={assignmentId} />

@@ -69,6 +69,7 @@ const StyledSelect = styled(Select)`
   .ant-select-selection {
     display: flex;
     align-items: center;
+    height: 35px;
     padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
     ${({ preview }) =>
       preview &&

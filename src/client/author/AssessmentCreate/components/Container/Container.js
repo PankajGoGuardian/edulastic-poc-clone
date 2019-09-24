@@ -90,11 +90,11 @@ class Container extends React.Component {
   handleUploadPDF = debounce(({ file }) => {
     const { location, createAssessment, isAddPdf = false } = this.props;
     const { assessmentId } = qs.parse(location.search);
-    if (file.size / 1024000 > 15) {
-      return message.error("File size exceeds 15 MB MB limit.");
-    }
     if (file.type !== "application/pdf") {
       return message.error("File format not supported, please select a valid PDF file.");
+    }
+    if (file.size / 1024000 > 15) {
+      return message.error("File size exceeds 15 MB MB limit.");
     }
     createAssessment({
       file,

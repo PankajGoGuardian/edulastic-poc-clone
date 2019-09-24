@@ -23,6 +23,16 @@ const MixMatchCorrectAnswer = ({
       altResponses[resp.index].push({ ...resp, tabId: altResponse.id });
     });
   });
+  /**
+   * input [{inputtype: "number"/"text"}, {inputtype: "numner"/"text"}]
+   * output {0: "number"/"text", 1: "number"/text}
+   */
+  const responseTypes =
+    uiStyle?.responsecontainerindividuals?.reduce((acc, resp) => {
+      acc[resp.index] = acc[resp.index] || {};
+      acc[resp.index] = resp.inputtype || "text";
+      return acc;
+    }, {}) || {};
 
   const { widthpx } = uiStyle;
   const btnStyle = {
@@ -80,7 +90,7 @@ const MixMatchCorrectAnswer = ({
               </FlexContainer>
             ))}
           <Input
-            type="text"
+            type={responseTypes[answerIndex] || "text"}
             size="small"
             placeholder="+ Alt Ans"
             value={newValues[answerIndex]}

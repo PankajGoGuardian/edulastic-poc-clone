@@ -72,7 +72,7 @@ const MainInfo = ({
             viewAssessmentHandler={viewAssessmentHandler}
             isUserGoogleLoggedIn={isUserGoogleLoggedIn}
             allowGoogleLogin={allowGoogleLogin}
-            syncGCModal={() => setOpenGCModal(true)}
+            syncGCModal={syncGCModal}
             archiveClass={archiveClass}
           />
         </FlexDiv>

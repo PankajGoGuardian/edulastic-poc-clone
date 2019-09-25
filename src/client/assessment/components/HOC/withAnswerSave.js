@@ -10,7 +10,7 @@ import { getUserAnswerSelector, getEvaluationByIdSelector } from "../../selector
 const getQuestionId = questionId => questionId || "tmp";
 
 export default WrappedComponent => {
-  const hocComponent = ({ setUserAnswer, testItemId, evaluation, ...props }) => {
+  const hocComponent = ({ setUserAnswer, testItemId, evaluation, userAnswer: _userAnswer, ...props }) => {
     const { data: question } = props;
     const questionId = getQuestionId(question.id);
     const answerContext = useContext(AnswerContext);
@@ -20,7 +20,18 @@ export default WrappedComponent => {
         setUserAnswer(questionId, data);
       }
     };
-    return <WrappedComponent saveAnswer={saveAnswer} questionId={questionId} evaluation={evaluation} {...props} />;
+
+    const userAnswer = answerContext.showAnswers ? _userAnswer : undefined;
+
+    return (
+      <WrappedComponent
+        saveAnswer={saveAnswer}
+        questionId={questionId}
+        userAnswer={userAnswer}
+        evaluation={evaluation}
+        {...props}
+      />
+    );
   };
 
   hocComponent.propTypes = {

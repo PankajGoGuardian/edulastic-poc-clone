@@ -81,7 +81,7 @@ export const SortableItem = ({
             </FlexContainer>
           </FlexContainer>
           <FlexContainer>
-            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
               <TestItemPreview
                 style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
                 cols={item}
@@ -111,7 +111,7 @@ export const SortableItem = ({
                   {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
                 </FlexContainer>
               )}
-              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+              <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
                 <TestItemPreview
                   style={{
                     marginTop: -10,

@@ -267,7 +267,6 @@ class ClozeText extends Component {
       fillSections,
       ...restProps
     } = this.props;
-
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;

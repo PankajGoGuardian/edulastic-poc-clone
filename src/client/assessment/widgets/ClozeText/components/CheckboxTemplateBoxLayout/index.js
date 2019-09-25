@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { find } from "lodash";
 import { Tooltip } from "antd";
 import PropTypes from "prop-types";
@@ -26,11 +26,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responsecontainerindividuals,
     responseIds,
     previewTab,
-    changePreviewTab
+    changePreviewTab,
+    isReviewTab
   } = resprops;
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
   const status = evaluation[choiceId] ? "right" : "wrong";
-
   const indexStr = getStemNumeration(stemNumeration, index);
 
   const btnStyle = {
@@ -50,11 +50,17 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   } else {
     btnStyle.height = btnStyle.heightpx;
   }
-
   let isBoxSizeSmall = false;
   const responseStyle = find(responsecontainerindividuals, resp => resp.id === id);
   if (uiStyle.globalSettings) {
-    const width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
+    let width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
+    if (isReviewTab) {
+      width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
+    } else {
+      const answerWidth = userSelections?.[index] ? userSelections[index].value.split("").length * 9 : width;
+      const splitWidth = Math.max(answerWidth || width, 100);
+      width = Math.min(splitWidth, 400);
+    }
     btnStyle.width = width;
     if (parseInt(width, 10) < response.minWidthShowAnswer) {
       btnStyle.minWidth = parseInt(width, 10) + 15;

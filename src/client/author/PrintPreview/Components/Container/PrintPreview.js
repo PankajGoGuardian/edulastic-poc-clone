@@ -35,7 +35,6 @@ class PrintPreview extends Component {
   componentDidMount() {
     const {
       loadClassStudentResponse,
-      match,
       testActivity,
       additionalData,
       history,

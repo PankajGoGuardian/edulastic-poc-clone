@@ -21,13 +21,12 @@ const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
 /**
  *
- * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}
  * @param {object[]} testItems
  */
-export const markQuestionLabel = (_testItemsData, testItems) => {
-  const testItemsData = keyBy(_testItemsData, "_id");
+export const markQuestionLabel = testItems => {
   for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsData[testItems[i].itemId];
+    const item = testItems[i];
     if (!(item.data && item.data.questions)) {
       continue;
     }
@@ -91,14 +90,13 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
  * @param {{itemId:string}[]} testItems
  * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
  */
-export const getQuestionLabels = (testItemsData, testItems) => {
+export const getQuestionLabels = testItemsData => {
   /**
    * @type {{[qid:string]:{qLabel:string, barLabel: string }  }}
    */
   const result = {};
-  const testItemsdataKeyed = keyBy(testItemsData, "_id");
-  for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsdataKeyed[testItems[i].itemId];
+  for (let i = 0; i < testItemsData.length; i++) {
+    const item = testItemsData[i];
     if (!item) {
       continue;
     }
@@ -204,14 +202,12 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
 };
 
 export const transformGradeBookResponse = ({
-  test,
   testItemsData,
   students: studentNames,
   testActivities,
-  testQuestionActivities,
-  passageData
+  testQuestionActivities
 }) => {
-  const testItemIds = test.testItems.map(o => o.itemId);
+  const testItemIds = testItemsData.map(o => o._id);
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);

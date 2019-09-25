@@ -1,9 +1,11 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 
 import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
+
+import { test } from "@edulastic/constants";
 
 import {
   updateAssignmentStatusAction,
@@ -41,11 +43,14 @@ import {
   ADD_STUDENTS,
   GET_ALL_TESTACTIVITIES_FOR_STUDENT,
   MARK_AS_SUBMITTED,
-  DOWNLOAD_GRADES_RESPONSES
+  DOWNLOAD_GRADES_RESPONSES,
+  RECEIVE_CLASS_RESPONSE_SUCCESS
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
+
+const { testContentVisibility } = test;
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -69,9 +74,18 @@ function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
+    const classResponse = yield call(classResponseApi.classResponse, { ...payload, testId: additionalData.testId });
+
+    yield put({
+      type: RECEIVE_CLASS_RESPONSE_SUCCESS,
+      payload: classResponse
+    });
+
     const students = get(gradebookData, "students", []);
-    // this method mutates the gradebookData
-    markQuestionLabel(gradebookData.testItemsData, gradebookData.test.testItems);
+    // the below methods mutates the gradebookData
+    gradebookData.testItemsData = classResponse.testItems;
+    gradebookData.test = classResponse;
+    markQuestionLabel(gradebookData.testItemsData);
     transformTestItems(gradebookData);
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length);
@@ -84,8 +98,6 @@ function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData }
     });
-
-    const releaseScore = additionalData.showScore;
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
@@ -457,6 +469,22 @@ export const getMarkAsDoneEnableSelector = createSelector(
   (classes, currentClass) => classes.includes(currentClass)
 );
 
+export const isItemVisibiltySelector = createSelector(
+  stateTestActivitySelector,
+  getAdditionalDataSelector,
+  (state, additionalData) => {
+    const assignmentStatus = state?.data?.status;
+    const contentVisibility = additionalData?.testContentVisibility;
+    if (!additionalData?.hasOwnProperty("testContentVisibility")) {
+      return true;
+    }
+    return (
+      contentVisibility === testContentVisibility.ALWAYS ||
+      (assignmentStatus === "IN GRADING" && testContentVisibility.GRADING)
+    );
+  }
+);
+
 export const getTestItemsDataSelector = createSelector(
   stateTestActivitySelector,
   state => get(state, "data.testItemsData")
@@ -581,8 +609,7 @@ export const getQIdsSelector = createSelector(
 export const getQLabelsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    const testItemIds = get(state, "data.test.testItems", []);
-    const testItemsData = get(state, "data.testItemsData", []);
-    return getQuestionLabels(testItemsData, testItemIds);
+    const testItemsData = get(state, "data.test.testItems", []);
+    return getQuestionLabels(testItemsData);
   }
 );

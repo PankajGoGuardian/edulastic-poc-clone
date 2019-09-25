@@ -3,6 +3,7 @@ import { omit, get, keyBy } from "lodash";
 import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
+import { test as testContants, roleuser } from "@edulastic/constants";
 import { assignmentApi, testsApi } from "@edulastic/api";
 import { all, call, put, takeEvery, select, takeLatest } from "redux-saga/effects";
 import { replace, push } from "connected-react-router";
@@ -187,10 +188,23 @@ function* saveAssignment({ payload }) {
           ...payload,
           startDate,
           endDate,
-          testType: userRole !== "teacher" && testType === "assessment" ? "common assessment" : testType,
+          testType:
+            (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && testType === "assessment"
+              ? "common assessment"
+              : testType,
+          testContentVisibility: payload.testContentVisibility || testContants.testContentVisibility.ALWAYS,
           testId
         },
-        ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
+        [
+          "_id",
+          "__v",
+          "createdAt",
+          "updatedAt",
+          "students",
+          "scoreReleasedClasses",
+          "googleAssignmentIds",
+          userRole === "teacher" ? "testContentVisibility" : ""
+        ]
       )
     );
     const result = isUpdate

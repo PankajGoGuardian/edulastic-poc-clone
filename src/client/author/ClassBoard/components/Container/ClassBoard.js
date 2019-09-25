@@ -21,7 +21,6 @@ import {
 // actions
 import {
   receiveTestActivitydAction,
-  receiveClassResponseAction,
   releaseScoreAction,
   markAsDoneAction,
   markAbsentAction,
@@ -48,7 +47,8 @@ import {
   removedStudentsSelector,
   getCurrentTestActivityIdSelector,
   getAllTestActivitiesForStudentSelector,
-  getStudentResponseSelector
+  getStudentResponseSelector,
+  isItemVisibiltySelector
 } from "../../ducks";
 
 import {
@@ -182,13 +182,10 @@ class ClassBoard extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const { loadClassResponses, additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
-    const { testId } = additionalData;
+    const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const { testId: prevTestId } = prevState;
     const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
-    if (testId !== prevTestId) {
-      loadClassResponses({ testId });
+    if (additionalData.testId !== prevState.testId) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
@@ -316,6 +313,9 @@ class ClassBoard extends Component {
   };
 
   onClickBarGraph = data => {
+    if (!this.props.isItemsVisible) {
+      return;
+    }
     const questions = this.getQuestions();
     const index = questions.findIndex(x => x.id === data.qid);
     this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
@@ -549,7 +549,8 @@ class ClassBoard extends Component {
       studentResponse,
       loadStudentResponses,
       getAllTestActivitiesForStudent,
-      enrollmentStatus
+      enrollmentStatus,
+      isItemsVisible
     } = this.props;
     const {
       selectedTab,
@@ -600,7 +601,7 @@ class ClassBoard extends Component {
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
-    const enableDownload = testActivity.some(item => item.status === "submitted");
+    const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
     return (
       <div>
@@ -686,7 +687,7 @@ class ClassBoard extends Component {
                 CARD VIEW
               </BothButton>
               <StudentButton
-                disabled={!firstStudentId}
+                disabled={!firstStudentId || !isItemsVisible}
                 active={selectedTab === "Student"}
                 onClick={e => this.onTabChange(e, "Student", firstStudentId)}
               >
@@ -694,7 +695,7 @@ class ClassBoard extends Component {
               </StudentButton>
               <QuestionButton
                 active={selectedTab === "questionView"}
-                disabled={!firstStudentId}
+                disabled={!firstStudentId || !isItemsVisible}
                 onClick={() => {
                   const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
                   if (!firstQuestion) {
@@ -739,6 +740,7 @@ class ClassBoard extends Component {
                   </CheckContainer>
                   <ClassBoardFeats>
                     <RedirectButton
+                      disabled={!isItemsVisible}
                       first={true}
                       data-cy="printButton"
                       onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
@@ -854,6 +856,9 @@ class ClassBoard extends Component {
                   endDate={additionalData.endDate || additionalData.closedDate}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected) => {
+                    if (!isItemsVisible) {
+                      return;
+                    }
                     getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
                     this.onTabChange(e, "Student", selected);
                   }}
@@ -1068,12 +1073,12 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      isItemsVisible: isItemVisibiltySelector(state),
       labels: getQLabelsSelector(state),
       removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
-      loadClassResponses: receiveClassResponseAction,
       loadStudentResponses: receiveStudentResponseAction,
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
@@ -1104,7 +1109,6 @@ ClassBoard.propTypes = {
   creating: PropTypes.object,
   testActivity: PropTypes.array,
   // t: PropTypes.func,
-  loadClassResponses: PropTypes.func,
   studentSelect: PropTypes.func.isRequired,
   studentUnselectAll: PropTypes.func.isRequired,
   allStudents: PropTypes.array,

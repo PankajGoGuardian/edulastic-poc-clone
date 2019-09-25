@@ -33,7 +33,8 @@ const {
   evalTypes,
   evalTypeLabels,
   completionTypes,
-  testContentVisibilityTypes
+  testContentVisibilityTypes,
+  testContentVisibility: testContentVisibilityOptions
 } = test;
 
 const Settings = ({
@@ -115,7 +116,7 @@ const Settings = ({
     maxAttempts = tempTestSettings.maxAttempts,
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
-    testContentVisibility = tempTestSettings.testContentVisibility
+    testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS
   } = assignmentSettings;
 
   return (

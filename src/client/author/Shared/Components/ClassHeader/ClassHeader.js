@@ -48,7 +48,8 @@ import {
   getClassResponseSelector,
   getMarkAsDoneEnableSelector,
   notStartedStudentsSelector,
-  inProgressStudentsSelector
+  inProgressStudentsSelector,
+  isItemVisibiltySelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
@@ -218,7 +219,8 @@ class ClassHeader extends Component {
       userRole,
       notStartedStudents,
       inProgressStudents,
-      toggleSideBar
+      toggleSideBar,
+      isItemsVisible
     } = this.props;
 
     const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -312,7 +314,11 @@ class ClassHeader extends Component {
               </StyledAnchor>
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
-              <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}`} data-cy="Expressgrader">
+              <StyledLink
+                to={`/author/expressgrader/${assignmentId}/${classId}`}
+                disabled={!isItemsVisible}
+                data-cy="Expressgrader"
+              >
                 <StyledAnchor isActive={active === "expressgrader"}>
                   <IconBookMarkButton
                     color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
@@ -325,7 +331,12 @@ class ClassHeader extends Component {
               </StyledLink>
             </FeaturesSwitch>
 
-            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
+            <FeaturesSwitch
+              inputFeatures="standardBasedReport"
+              actionOnInaccessible="hidden"
+              disabled={!isItemsVisible}
+              groupId={classId}
+            >
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
                   <IconNotes color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
@@ -434,7 +445,8 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
-      inProgressStudents: inProgressStudentsSelector(state)
+      inProgressStudents: inProgressStudentsSelector(state),
+      isItemsVisible: isItemVisibiltySelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

@@ -247,7 +247,7 @@ class StudentViewContainer extends Component {
                 classResponse={classResponseProcessed}
                 testItemsOrder={testItemsOrder}
                 studentViewFilter={filter}
-                labels={_getquestionLabels(classResponse.testItems, testItemIds)}
+                labels={_getquestionLabels(classResponse.testItems)}
                 isPresentationMode={isPresentationMode}
               />
             </ThemeProvider>

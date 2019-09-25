@@ -120,7 +120,7 @@ export const normaliseTableData = (rawData, data) => {
     let assessmentScore = "Absent";
     let proficiencyBand = "Absent";
     if (studentMetric.progressStatus === 1) {
-      studentScore = ceil((studentMetric.totalScore / studentMetric.maxScore) * 100);
+      studentScore = round((studentMetric.totalScore / studentMetric.maxScore) * 100);
       assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
       proficiencyBand = getProficiency(studentMetric, bandInfo);
     }

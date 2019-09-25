@@ -46,17 +46,17 @@ const TemplateBox = ({ resprops, id }) => {
     width,
     maxWidth: globalSettings ? "400px" : "auto"
   };
-  const getLabel = () => {
+  const getData = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {
       const foundedItem = options.find(option => option.value === answers[dropTargetIndex]);
       if (foundedItem) {
-        return foundedItem.label;
+        return attr === "value" ? foundedItem.value : foundedItem.label;
       }
     }
   };
 
-  const getLabelForGroup = () => {
+  const getDataForGroup = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex] && answers[dropTargetIndex].data) {
       const foundedGroup = options.find(option =>
@@ -65,7 +65,7 @@ const TemplateBox = ({ resprops, id }) => {
       if (foundedGroup) {
         const foundItem = foundedGroup.options.find(inOption => inOption.value === answers[dropTargetIndex].data);
         if (foundItem) {
-          return foundItem.label;
+          return attr === "value" ? foundedItem.value : foundedItem.label;
         }
       }
     }
@@ -78,11 +78,11 @@ const TemplateBox = ({ resprops, id }) => {
           <Draggable
             className="content"
             onDrop={onDrop}
-            data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
+            data={`${getData("value")}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />}>
-              <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />
+            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />}>
+              <MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />
             </Tooltip>
           </Draggable>
           &nbsp;
@@ -93,12 +93,12 @@ const TemplateBox = ({ resprops, id }) => {
           <Draggable
             className="content"
             onDrop={onDrop}
-            data={`${getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
+            data={`${getDataForGroup("value")}_${userAnswers[dropTargetIndex] &&
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />}>
-              <MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />
+            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />}>
+              <MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />
             </Tooltip>
           </Draggable>
           &nbsp;

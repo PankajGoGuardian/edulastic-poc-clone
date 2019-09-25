@@ -2,10 +2,10 @@ import { keyBy, groupBy } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
 
-const getAllQids = (testItemIds, testItemsDataKeyed) => {
+export const getAllQids = testItemsData => {
   let qids = [];
-  for (const testItemId of testItemIds) {
-    const questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
+  for (const item of testItemsData) {
+    const questions = item?.data?.questions || [];
     qids = [...qids, ...questions.map(x => x.id)];
   }
   return qids;
@@ -64,9 +64,7 @@ export const transformGradeBookResponse = ({
   testActivities,
   testQuestionActivities
 }) => {
-  const testItemIds = test.testItems;
-  const testItemsDataKeyed = keyBy(testItemsData, "_id");
-  const qids = getAllQids(testItemIds, testItemsDataKeyed);
+  const qids = getAllQids(testItemsData);
 
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
 

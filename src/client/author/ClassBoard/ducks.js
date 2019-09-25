@@ -49,6 +49,7 @@ import {
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
+import { getAllQids } from "../SummaryBoard/Transformer";
 
 const { testContentVisibility } = test;
 
@@ -583,25 +584,14 @@ export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
   return studentTestActivity.algoVariableSetIds;
 };
 
-const getAllQids = (testItemIds, testItemsDataKeyed) => {
-  let qids = [];
-  for (let testItemId of testItemIds) {
-    let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
-    qids = [...qids, ...questions.map(x => x.id)];
-  }
-  return qids;
-};
-
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    const testItemIds = get(state, "data.test.testItems", []);
-    const testItemsData = get(state, "data.testItemsData", []);
-    if (testItemIds.length === 0 && testItemsData.length === 0) {
+    const testItemsData = get(state, "data.test.testItems", []);
+    if (testItemsData.length === 0) {
       return [];
     }
-    const testItemsDataKeyed = keyBy(testItemsData, "_id");
-    const qIds = getAllQids(testItemIds.map(o => o.itemId), testItemsDataKeyed);
+    const qIds = getAllQids(testItemsData);
     return qIds;
   }
 );

@@ -2,20 +2,6 @@
 import { keyBy, groupBy, get } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
-import produce from "immer";
-
-const getAllQids = (testItemIds, testItemsDataKeyed) => {
-  let qids = [];
-  for (let testItemId of testItemIds) {
-    let questions =
-      (testItemsDataKeyed[testItemId] &&
-        testItemsDataKeyed[testItemId].data &&
-        testItemsDataKeyed[testItemId].data.questions) ||
-      [];
-    qids = [...qids, ...questions.map(x => x.id)];
-  }
-  return qids;
-};
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 

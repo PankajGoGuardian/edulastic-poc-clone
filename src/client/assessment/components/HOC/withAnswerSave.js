@@ -20,9 +20,7 @@ export default WrappedComponent => {
         setUserAnswer(questionId, data);
       }
     };
-
-    const userAnswer = answerContext.showAnswers ? _userAnswer : undefined;
-
+    const userAnswer = answerContext.hideAnswers ? undefined : _userAnswer;
     return (
       <WrappedComponent
         saveAnswer={saveAnswer}

@@ -2,7 +2,7 @@ import React from "react";
 
 const AnswerContext = React.createContext({
   isAnswerModifiable: true,
-  showAnswers: true
+  hideAnswers: false
 });
 
 export default AnswerContext;

@@ -81,7 +81,7 @@ export const SortableItem = ({
             </FlexContainer>
           </FlexContainer>
           <FlexContainer>
-            <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
+            <AnswerContext.Provider value={{ isAnswerModifiable: false, hideAnswers: true }}>
               <TestItemPreview
                 style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
                 cols={item}

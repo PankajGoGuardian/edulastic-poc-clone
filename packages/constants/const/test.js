@@ -18,7 +18,7 @@ module.exports = {
     { id: "require-password", title: "Require Password" },
     { id: "check-answer-tries-per-question", title: "Check Answer Tries Per Question" },
     { id: "evaluation-method", title: "Evaluation Method" },
-    { id: "test-content-visibility", title: "Item content visibility to Teachers" },
+    { id: "test-content-visibility", title: "Item content visibility to Teachers", adminFeature: true },
     { id: "performance-bands", title: "Performance Bands" },
     { id: "standards-proficiency", title: "Standards Proficiency" },
     { id: "title", title: "Title" },

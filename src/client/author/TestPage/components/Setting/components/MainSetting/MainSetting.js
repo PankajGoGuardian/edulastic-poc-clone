@@ -281,17 +281,20 @@ class MainSetting extends Component {
           <Col span={isSmallSize ? 0 : 6}>
             <NavigationMenu fixed={windowScrollTop >= 90}>
               <StyledAnchor affix={false} offsetTop={125}>
-                {settingCategories.slice(0, -5).map(category => {
-                  if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
-                    return (
-                      <Anchor.Link
-                        key={category.id}
-                        href={`${history.location.pathname}#${category.id}`}
-                        title={category.title.toLowerCase()}
-                      />
-                    );
-                  }
-                })}
+                {settingCategories
+                  .filter(item => (item.adminFeature ? userRole !== roleuser.TEACHER : true))
+                  .slice(0, -5)
+                  .map(category => {
+                    if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
+                      return (
+                        <Anchor.Link
+                          key={category.id}
+                          href={`${history.location.pathname}#${category.id}`}
+                          title={category.title.toLowerCase()}
+                        />
+                      );
+                    }
+                  })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
               {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>

@@ -139,7 +139,7 @@ class ListItem extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
-          hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container onClick={isPlaylist ? this.moveToItem : this.openModal}>
           <ContentWrapper>

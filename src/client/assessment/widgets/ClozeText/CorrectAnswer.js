@@ -21,7 +21,9 @@ class CorrectAnswer extends Component {
     previewTab: PropTypes.bool.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
-    uiStyle: PropTypes.object.isRequired
+    uiStyle: PropTypes.object.isRequired,
+    max: PropTypes.number.isRequired,
+    min: PropTypes.number.isRequired
   };
 
   static contextType = ItemLevelContext;
@@ -38,11 +40,11 @@ class CorrectAnswer extends Component {
   }
 
   updateScore = e => {
-    const { onUpdatePoints } = this.props;
+    const { onUpdatePoints, max } = this.props;
     if (!(e.target.value > 0)) {
       return;
     }
-    this.setState({ responseScore: e.target.value });
+    this.setState({ responseScore: e.target.value > max ? max : e.target.value });
     onUpdatePoints(parseFloat(e.target.value, 10));
   };
 
@@ -62,7 +64,8 @@ class CorrectAnswer extends Component {
       uiStyle,
       responseIds,
       view,
-      previewTab
+      previewTab,
+      max
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -76,6 +79,7 @@ class CorrectAnswer extends Component {
               onBlur={this.updateScore}
               disabled={false}
               min={0}
+              max={max}
               step={0.5}
               style={{ "font-size": "12px", "font-weight": "600", color: selectColor }}
             />

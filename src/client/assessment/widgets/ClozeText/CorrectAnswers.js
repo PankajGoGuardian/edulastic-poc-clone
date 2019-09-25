@@ -283,6 +283,7 @@ class CorrectAnswers extends Component {
                         onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                         view={view}
                         previewTab={previewTab}
+                        max={validation?.validResponse?.score}
                       />
                     )}
                   </TabContainer>

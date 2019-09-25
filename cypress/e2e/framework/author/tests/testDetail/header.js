@@ -3,18 +3,18 @@ import TestSummayTab from "./testSummaryTab";
 
 export default class TestHeader {
   clickOnDescription = () => {
-    cy.get('[data-cy="description"]').click();
+    cy.get('[data-cy="description"]').click({ force: true });
     return new TestSummayTab();
   };
 
   clickOnAddItems = () => {
     cy.server();
     cy.route("POST", "**/search/**").as("search");
-    cy.get('[data-cy="addItems"]').click();
+    cy.get('[data-cy="addItems"]').click({ force: true });
     return cy.wait("@search").then(() => new TestAddItemTab());
   };
 
-  clickOnReview = () => cy.wait(2000).then(() => cy.get('[data-cy="review"]').click());
+  clickOnReview = () => cy.wait(2000).then(() => cy.get('[data-cy="review"]').click({ force: true }));
 
   clickOnSettings = () => cy.get('[data-cy="settings"]').click();
 
@@ -58,4 +58,17 @@ export default class TestHeader {
     cy.get('[data-cy="assign"]').click();
     cy.wait("@assignment");
   };
+
+  clickOnfilters = () =>
+    cy
+      .get('[data-cy="filter"]')
+      .first()
+      .click();
+
+  closeFilter = () =>
+    cy
+      .get(".anticon-close")
+      .last()
+      .find("svg")
+      .click();
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr, capitalize, find, get } from "lodash";
+import { indexOf, filter as filterArr, capitalize, find, get, intersectionBy } from "lodash";
 import { Form, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
@@ -21,7 +21,7 @@ import {
 } from "./ducks";
 import { AutocompleteDropDown } from "../../../../Reports/common/components/widgets/autocompleteDropDown";
 import dropDownFormat from "./static/json/dropDownFormat.json";
-import { getUserRole } from "../../../../src/selectors/user";
+import { getUserRole, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
@@ -47,6 +47,7 @@ const PerformanceByStandards = ({
   match,
   settings,
   role,
+  interestedCurriculums,
   isCsvDownloading,
   selectedStandardProficiencyProfile,
   standardProficiencyProfiles
@@ -158,6 +159,14 @@ const PerformanceByStandards = ({
     setStandardId(selected.key);
   };
 
+  const standardsDropdownData = useMemo(() => {
+    const { standardsMap } = reportWithFilteredSkills;
+    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: item, name: standardsMap[item] }));
+    let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
+    intersected = intersected.map(item => ({ key: item._id, title: item.name }));
+    return intersected || [];
+  }, [report]);
+
   if (loading) {
     return (
       <>
@@ -167,20 +176,12 @@ const PerformanceByStandards = ({
     );
   }
 
-  const { standardsMap } = reportWithFilteredSkills;
-
-  const standardsList = Object.keys(standardsMap).map(id => ({
-    id,
-    name: standardsMap[id]
-  }));
-
   const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
   const assignmentInfo = `${testName} (ID: ${testId})`;
 
-  const standardsDropdownData = standardsList.map(s => ({ key: s.id, title: s.name }));
   const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
 
   const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
@@ -309,6 +310,7 @@ const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
     role: getUserRole(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(state),

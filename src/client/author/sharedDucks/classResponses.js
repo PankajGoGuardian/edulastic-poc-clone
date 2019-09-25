@@ -25,6 +25,7 @@ import {
   RECEIVE_CLASS_QUESTION_ERROR
 } from "../src/constants/actions";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
+import { markQuestionLabel } from "../ClassBoard/Transformer";
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
@@ -35,7 +36,7 @@ export const updateStudentQuestionActivityScoreAction = createAction(UPDATE_STUD
 function* receiveClassResponseSaga({ payload }) {
   try {
     const classResponse = yield call(classResponseApi.classResponse, payload);
-
+    markQuestionLabel(classResponse.testItems);
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: classResponse

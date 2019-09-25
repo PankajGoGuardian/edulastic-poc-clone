@@ -42,7 +42,7 @@ class PrintPreview extends Component {
       selectedStudents
     } = this.props;
     if (testActivity.length === 0) {
-      history.goBack();
+      return history.goBack();
     }
 
     const { testId, classId } = additionalData;

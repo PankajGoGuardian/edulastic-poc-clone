@@ -5,8 +5,9 @@ const api = new API();
 const classResponse = ({ testId, classId, assignmentId }) =>
   api
     .callApi({
-      url: `/test/${testId}?validation=true&data=true&isAssignmentView=true
-        ${classId ? `&groupId=${classId}` : ""}${assignmentId ? `&assignmentId=${assignmentId}` : ""}`,
+      url: `/test/${testId}?validation=true&data=true${classId ? `&groupId=${classId}` : ""}${
+        assignmentId ? `&assignmentId=${assignmentId}` : ""
+      }`,
       method: "get"
     })
 

@@ -189,8 +189,8 @@ function* saveAssignment({ payload }) {
           startDate,
           endDate,
           testType:
-            (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && testType === "assessment"
-              ? "common assessment"
+            userRole === roleuser.TEACHER && testType === testContants.type.COMMON
+              ? testContants.type.ASSESSMENT
               : testType,
           testContentVisibility: payload.testContentVisibility || testContants.testContentVisibility.ALWAYS,
           testId

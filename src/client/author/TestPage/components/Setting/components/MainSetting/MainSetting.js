@@ -68,7 +68,7 @@ const { Option } = Select;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
-  [ASSESSMENT]: "Asessment",
+  [ASSESSMENT]: "Class Asessment",
   [PRACTICE]: "Practice"
 };
 
@@ -318,17 +318,20 @@ class MainSetting extends Component {
                   <Title>Test Type</Title>
                   <Body smallSize={isSmallSize}>
                     <TestTypeSelect
-                      defaultValue={testType}
+                      value={testType}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("testType")}
                     >
+                      {(userRole === roleuser.DISTRICT_ADMIN ||
+                        userRole === roleuser.SCHOOL_ADMIN ||
+                        testType === COMMON) && (
+                        <Option key={COMMON} value={COMMON}>
+                          {"Common Assessment"}
+                        </Option>
+                      )}
                       {Object.keys(testTypes).map(key => (
                         <Option key={key} value={key}>
-                          {key === ASSESSMENT
-                            ? userRole === "teacher"
-                              ? "Class Assessment "
-                              : "Common Assessment "
-                            : testTypes[key]}
+                          {testTypes[key]}
                         </Option>
                       ))}
                     </TestTypeSelect>

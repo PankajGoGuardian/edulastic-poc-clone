@@ -47,6 +47,7 @@
   "assessmentType": [
     { "key": "All", "title": "All Assessment Types" },
     { "key": "Common", "title": "Common" },
-    { "key": "Teacher Assessments", "title": "Teacher Assessments" }
+    { "key": "Class", "title": "Class" },
+    { "key": "Practice", "title": "Practice" }
   ]
 }

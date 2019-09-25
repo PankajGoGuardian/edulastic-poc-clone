@@ -223,6 +223,8 @@ const QuestionWrapper = styled.div`
   p {
     display: flex;
     align-items: center;
+    white-space: nowrap;
+    flex-wrap: wrap;
   }
   li {
     margin: 4px 0;

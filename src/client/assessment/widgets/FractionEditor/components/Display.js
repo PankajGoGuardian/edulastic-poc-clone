@@ -64,7 +64,7 @@ const Display = ({
         )}
       </FlexContainer>
       <FlexContainer
-        style={{ overflow: "auto", position: "relative", minHeight: "425px", width: "700px" }}
+        style={{ overflow: "auto", position: "relative", minHeight: "425px", maxWidth: "100%" }}
         flexWrap="wrap"
         justifyContent="flex-start"
         alignItems="flex-start"

@@ -5,12 +5,20 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { AnswerContext } from "@edulastic/common";
 import { setUserAnswerAction } from "../../actions/answers";
-import { getUserAnswerSelector, getEvaluationByIdSelector } from "../../selectors/answers";
+import { getUserAnswerSelector, getEvaluationByIdSelector, getUserPrevAnswerSelector } from "../../selectors/answers";
 
 const getQuestionId = questionId => questionId || "tmp";
 
 export default WrappedComponent => {
-  const hocComponent = ({ setUserAnswer, testItemId, evaluation, userAnswer: _userAnswer, ...props }) => {
+  const hocComponent = ({
+    setUserAnswer,
+    testItemId,
+    evaluation,
+    userAnswer: _userAnswer,
+    userPrevAnswer,
+    previewTab: _previewTab,
+    ...props
+  }) => {
     const { data: question } = props;
     const questionId = getQuestionId(question.id);
     const answerContext = useContext(AnswerContext);
@@ -20,7 +28,12 @@ export default WrappedComponent => {
         setUserAnswer(questionId, data);
       }
     };
-    const userAnswer = answerContext.hideAnswers ? undefined : _userAnswer;
+
+    const userAnswer = answerContext.hideAnswers ? undefined : _userAnswer || userPrevAnswer;
+    let previewTab = _previewTab;
+    if (_userAnswer === undefined && userPrevAnswer !== undefined && userAnswer !== undefined) {
+      previewTab = "check";
+    }
     return (
       <WrappedComponent
         saveAnswer={saveAnswer}
@@ -28,6 +41,7 @@ export default WrappedComponent => {
         userAnswer={userAnswer}
         evaluation={evaluation}
         {...props}
+        previewTab={previewTab}
       />
     );
   };
@@ -41,6 +55,7 @@ export default WrappedComponent => {
     connect(
       (state, props) => ({
         userAnswer: getUserAnswerSelector(state, props),
+        userPrevAnswer: getUserPrevAnswerSelector(state, props),
         evaluation: getEvaluationByIdSelector(state, props)
       }),
       {

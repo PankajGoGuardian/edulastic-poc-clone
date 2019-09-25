@@ -21,6 +21,7 @@ import {
   TEST_ACTIVITY_LOADING,
   SET_TEST_LOADING_ERROR,
   LOAD_PREVIOUS_ANSWERS,
+  ADD_ITEM_EVALUATION,
   LOAD_PREVIOUS_RESPONSES_REQUEST
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
@@ -126,7 +127,8 @@ function* loadTest({ payload }) {
     // if testActivity is present.
     if (!preview) {
       let allAnswers = {},
-        allPrevAnswers = {};
+        allPrevAnswers = {},
+        allEvaluation = {};
 
       const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
       // if questions are shuffled !!!
@@ -163,12 +165,21 @@ function* loadTest({ payload }) {
           ...allPrevAnswers,
           [item.qid]: item.userResponse
         };
-
+        allEvaluation = {
+          ...allEvaluation,
+          [item.qid]: item.evaluation
+        };
         if (item.scratchPad) {
           prevScratchPadData[item.testItemId] = item.scratchPad;
         }
       });
 
+      yield put({
+        type: ADD_ITEM_EVALUATION,
+        payload: {
+          ...allEvaluation
+        }
+      });
       yield put({
         type: LOAD_PREVIOUS_ANSWERS,
         payload: allPrevAnswers

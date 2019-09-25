@@ -8,7 +8,7 @@ import { withRouter } from "react-router";
 import { isEmpty, get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB } from "@edulastic/common";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";

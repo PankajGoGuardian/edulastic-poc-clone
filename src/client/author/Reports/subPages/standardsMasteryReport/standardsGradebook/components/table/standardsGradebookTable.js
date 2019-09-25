@@ -49,10 +49,6 @@ export const StandardsGradebookTable = ({
     });
   }
 
-  const masteryLevelDropDownData = useMemo(() => {
-    return getMasteryDropDown(masteryScale);
-  }, [masteryScale]);
-
   const tableData = useMemo(() => {
     return getTableData(
       denormalizedData,
@@ -204,12 +200,7 @@ export const StandardsGradebookTable = ({
   });
 
   const tableFilterDropDownCB = (event, _selected, comData) => {
-    if (comData === "masteryLevel") {
-      setTableDdFilters({
-        ...tableDdFilters,
-        masteryLevel: _selected.key
-      });
-    } else if (comData === "compareBy") {
+    if (comData === "compareBy") {
       setTableDdFilters({
         ...tableDdFilters,
         compareBy: _selected.key
@@ -233,15 +224,6 @@ export const StandardsGradebookTable = ({
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Row>
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
-                <ControlDropDown
-                  data={masteryLevelDropDownData}
-                  by={masteryLevelDropDownData[0]}
-                  prefix="Mastery Level"
-                  selectCB={tableFilterDropDownCB}
-                  comData={"masteryLevel"}
-                />
-              </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}

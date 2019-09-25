@@ -143,7 +143,7 @@ const StandardsPerformanceTable = ({
     selectedDomains
   );
 
-  const { analyseByData, compareByData, masteryLevelData } = tableFiltersOptions;
+  const { analyseByData, compareByData } = tableFiltersOptions;
 
   const onChangeTableFilters = (prefix, options, selectedPayload) => {
     const modifiedState = next(tableFilters, draft => {
@@ -164,14 +164,6 @@ const StandardsPerformanceTable = ({
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <Row>
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
-              <ControlDropDown
-                prefix={"Mastery Level - "}
-                data={masteryLevelData}
-                by={tableFilters.masteryLevel}
-                selectCB={bindOnChange("masteryLevel", masteryLevelData)}
-              />
-            </StyledDropDownContainer>
             <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
               <ControlDropDown
                 prefix={"Compare by "}

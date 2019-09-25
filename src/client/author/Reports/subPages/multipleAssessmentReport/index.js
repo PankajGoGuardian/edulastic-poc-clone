@@ -69,7 +69,7 @@ const MultipleAssessmentReportContainer = props => {
 
       const { selectedTest = [] } = _settings;
       setMARSettingsAction({
-        requestFilters: { ...obj, testIds: map(selectedTest, test => test.key) }
+        requestFilters: { ...obj, testIds: map(selectedTest, test => test.key).join() }
       });
     }
   };

@@ -36,7 +36,7 @@ const StandardsMasteryReportContainer = props => {
         obj[item] = val;
       });
       return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, "?" + qs.stringify(obj));
+        getNavigationTabLinks(arr, "?" + qs.stringify(obj, { arrayFormat: "comma" }));
       });
     } else {
       return [];
@@ -55,7 +55,7 @@ const StandardsMasteryReportContainer = props => {
         }
       });
       obj.testId = gradebookSettings.selectedTest.key;
-      let path = qs.stringify(obj);
+      let path = qs.stringify(obj, { arrayFormat: "comma" });
       props.history.push("?" + path);
     }
     firstRender.current = false;

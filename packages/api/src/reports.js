@@ -49,16 +49,6 @@ const fetchAssignments = () => {
   return api.callApi({ url: `/assignments` });
 };
 
-const getRequestParams = obj => {
-  let str = "";
-  let arr = Object.keys(obj);
-  arr.map((item, index) => {
-    str = str + item + "=" + obj[item] + "&";
-  });
-
-  return str;
-};
-
 const fetchResponseFrequency = params => {
   return api.callApi({
     url: `/report/responseFrequency`,

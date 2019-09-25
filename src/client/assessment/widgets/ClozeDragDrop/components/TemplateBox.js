@@ -7,6 +7,8 @@ import Droppable from "./Droppable";
 import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
 
+import Tooltip from "antd/lib/tooltip";
+
 const TemplateBox = ({ resprops, id }) => {
   if (!id) {
     return "NOID";
@@ -74,13 +76,14 @@ const TemplateBox = ({ resprops, id }) => {
       {!hasGroupResponses && (
         <ResponseContainer id={`response-container-${dropTargetIndex}`} style={style} smallSize={smallSize}>
           <Draggable
-            title={striptags(getLabel(dropTargetIndex)) || ""}
             className="content"
             onDrop={onDrop}
             data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />
+            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />}>
+              <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />
+            </Tooltip>
           </Draggable>
           &nbsp;
         </ResponseContainer>
@@ -88,14 +91,15 @@ const TemplateBox = ({ resprops, id }) => {
       {hasGroupResponses && (
         <ResponseContainer style={style} smallSize={smallSize}>
           <Draggable
-            title={striptags(getLabelForGroup(dropTargetIndex)) || ""}
             className="content"
             onDrop={onDrop}
             data={`${getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />
+            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />}>
+              <MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />
+            </Tooltip>
           </Draggable>
           &nbsp;
         </ResponseContainer>

@@ -18,6 +18,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { MAX_TAB_WIDTH } from "../../../constants/others";
 
 import { clearAnswersAction } from "../../../actions/answers";
 import { ButtonLink } from "..";
@@ -104,7 +105,7 @@ class ButtonBar extends Component {
 
     return (
       <React.Fragment>
-        {windowWidth > 768 ? (
+        {windowWidth > MAX_TAB_WIDTH ? (
           <Container>
             <MenuList mode="horizontal" selectedKeys={[view]}>
               {hasAuthorPermission && (

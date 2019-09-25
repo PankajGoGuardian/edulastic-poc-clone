@@ -222,7 +222,7 @@ export const DropMenuList = styled(Menu)`
 
 export const MenuList = styled(Menu)`
   margin: 0px 10px;
-  justigy-content: center;
+  justify-content: center;
   display: flex;
   background: none;
   border: none;

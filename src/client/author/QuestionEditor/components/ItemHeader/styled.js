@@ -51,6 +51,7 @@ export const LeftSide = styled.div`
 export const RightSide = styled.div`
   text-align: right;
   position: relative;
+  flex: 1;
 
   @media (max-width: ${desktopWidth}) {
     position: static;

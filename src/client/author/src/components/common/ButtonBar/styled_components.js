@@ -1,12 +1,13 @@
 import styled from "styled-components";
-import { mediumDesktopWidth, white, themeColor, fadedGrey } from "@edulastic/colors";
-import { Button } from "antd";
+import { mediumDesktopWidth, white, themeColor, fadedGrey, desktopWidth, secondaryTextColor } from "@edulastic/colors";
+import { Button, Menu, Dropdown } from "antd";
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
+  width: 100%;
 
   .ant-menu-item {
     height: 62px;
@@ -70,25 +71,13 @@ export const CustomButton = styled(Button)`
 export const MobileContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
-export const MobileFirstContainer = styled.div`
+export const MobileBottom = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding-bottom: 17px;
-
-  .ant-btn {
-    background: transparent;
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-
-    &:hover {
-      background: #1fe3a1;
-    }
-  }
+  justify-content: space-between;
 `;
 
 export const MobileSecondContainer = styled.div`
@@ -154,6 +143,94 @@ export const RightSide = styled.div`
       margin-right: 0px;
     }
   }
+
+  @media (max-width: ${desktopWidth}) {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+  }
+`;
+
+export const MobileTopRight = styled.div`
+  .btn-save {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    background: ${white};
+    color: ${themeColor};
+    width: 45px;
+    height: 40px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: ${themeColor};
+    }
+    div {
+      margin: 0px;
+    }
+  }
+`;
+
+export const RightDropdown = styled(Dropdown)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 36px;
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: ${white};
+    &:hover,
+    &:active {
+      fill: ${white};
+    }
+  }
+`;
+
+export const DropMenuList = styled(Menu)`
+  width: 200px;
+  border-radius: 6px;
+  .ant-dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: ${secondaryTextColor};
+    font-weight: 500;
+    & > div {
+      width: 25px;
+      margin: 0px 15px 0px 0px;
+      text-align: center;
+      line-height: 0px;
+    }
+    svg {
+      fill: ${secondaryTextColor};
+    }
+    &:hover {
+      background: ${themeColor};
+      color: ${white};
+      svg {
+        fill: ${white};
+      }
+    }
+  }
+`;
+
+export const MenuList = styled(Menu)`
+  margin: 0px 10px;
+  justigy-content: center;
+  display: flex;
+  background: none;
+  border: none;
+
+  @media (max-width: ${desktopWidth}) {
+    margin: 0px;
+    width: 100%;
+  }
 `;
 
 export const MenuItem = styled.li`
@@ -199,5 +276,8 @@ export const MenuItem = styled.li`
     svg {
       display: none;
     }
+  }
+  @media (max-width: ${desktopWidth}) {
+    flex-basis: 50%;
   }
 `;

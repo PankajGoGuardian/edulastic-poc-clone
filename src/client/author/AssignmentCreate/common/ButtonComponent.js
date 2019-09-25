@@ -6,12 +6,13 @@ const ButtonComponent = styled.button`
     let style = {
       fontWeight: 600,
       fontSize: "11px",
-      padding: "15px 85px",
+      padding: "15px 50px",
       textTransform: "uppercase",
       borderRadius: "5px",
       cursor: "pointer",
       boxShadow: "3px 7px 20px 0px rgba(0, 0, 0, 0.1)",
-      marginBottom: "10px"
+      marginBottom: "10px",
+      whiteSpace: "nowrap"
     };
     if (props.type === "secondary") {
       style = {

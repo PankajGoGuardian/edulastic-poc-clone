@@ -1,29 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { IconChevronLeft } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, MenuIcon } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
-import {
-  Container,
-  Title,
-  Back,
-  LeftSide,
-  MobileContainer,
-  ReferenceText,
-  ReferenceValue,
-  RightSide,
-  ToggleButton
-} from "./styled";
+import { Container, Title, Back, LeftSide, MobileContainer, ReferenceText, ReferenceValue, RightSide } from "./styled";
 
 const ItemHeader = ({ title, children, link, reference, windowWidth, toggleSideBar }) => {
   const width = windowWidth;
   const renderLeftSide = () => (
     <LeftSide>
-      <ToggleButton onClick={toggleSideBar}>
-        <i className="fa fa-bars" />
-      </ToggleButton>
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <Title>{title}</Title>
       {reference && (
         <FlexContainer>

@@ -43,6 +43,10 @@ export const Container = styled.div`
       display: none;
     }
   }
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 20px;
+  }
 `;
 
 export const ScrollbarWrapper = styled.div``;
@@ -56,7 +60,7 @@ export const Filter = styled.div`
   width: 250px;
   z-index: 0;
 
-  @media (max-width: 993px) {
+  @media (max-width: ${desktopWidth}) {
     display: none;
   }
 `;
@@ -72,11 +76,9 @@ export const CardContainer = styled(Card)`
 export const MobileFilter = styled.div`
   height: 50px;
   margin-bottom: 15px;
-  @media (min-width: 993px) {
-    display: none;
-  }
+  display: none;
 
-  @media (max-width: 993px) {
+  @media (max-width: ${desktopWidth}) {
     display: flex;
     .ant-input-search {
       margin-right: 10px;
@@ -97,7 +99,6 @@ export const Main = styled.div`
 `;
 
 export const FilterButton = styled.div`
-  display: none;
   flex: 1;
   height: 50px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -113,10 +114,6 @@ export const FilterButton = styled.div`
       font-weight: 600;
       color: ${textColor};
     }
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    display: block;
   }
 `;
 

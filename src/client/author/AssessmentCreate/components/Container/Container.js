@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { debounce } from "lodash";
 import qs from "query-string";
+import { MenuIcon } from "@edulastic/common";
 
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -22,6 +23,7 @@ import {
   setPercentUploadedAction
 } from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 const breadcrumbStyle = {
   position: "static"
@@ -117,7 +119,7 @@ class Container extends React.Component {
   render() {
     let { method } = this.state;
     const newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading, percentageUploaded, fileInfo, isAddPdf } = this.props;
+    const { creating, location, assessmentLoading, percentageUploaded, fileInfo, isAddPdf, toggleSideBar } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);
@@ -140,7 +142,8 @@ class Container extends React.Component {
             }}
           />
         )}
-        <HeaderWrapper>
+        <HeaderWrapper justify="flex-start">
+          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <Title>New Test</Title>
         </HeaderWrapper>
         <ContainerWrapper>
@@ -175,7 +178,8 @@ const enhance = compose(
     {
       createAssessment: createAssessmentRequestAction,
       receiveTestById: receiveTestByIdAction,
-      setPercentUploaded: setPercentUploadedAction
+      setPercentUploaded: setPercentUploadedAction,
+      toggleSideBar: toggleSideBarAction
     }
   )
 );

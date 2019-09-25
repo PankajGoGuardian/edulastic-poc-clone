@@ -10,7 +10,8 @@ import {
   IconEye,
   IconCheck,
   IconEraseText,
-  IconMetadata
+  IconMetadata,
+  IconMoreVertical
 } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
@@ -26,7 +27,11 @@ import {
   HeadIcon,
   MenuItem,
   MobileContainer,
-  MobileFirstContainer,
+  MobileTopRight,
+  MobileBottom,
+  MenuList,
+  DropMenuList,
+  RightDropdown,
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
@@ -80,15 +85,28 @@ class ButtonBar extends Component {
       withLabels
     } = this.props;
 
+    const MobileDropMenu = (
+      <DropMenuList>
+        <Menu.Item onClick={onShowSource} key="0">
+          <HeadIcon>
+            <IconSource color={white} width={18} height={16} />
+          </HeadIcon>
+          {withLabels ? "Source" : ""}
+        </Menu.Item>
+        <Menu.Item onClick={onShowSettings} key="1">
+          <HeadIcon>
+            <IconSettings color={white} width={24} height={16} />
+          </HeadIcon>
+          {withLabels ? "Settings" : ""}
+        </Menu.Item>
+      </DropMenuList>
+    );
+
     return (
       <React.Fragment>
-        {windowWidth > 468 ? (
+        {windowWidth > 768 ? (
           <Container>
-            <Menu
-              mode="horizontal"
-              selectedKeys={[view]}
-              style={{ marginLeft: 10, marginRight: 10, justifyContent: "center" }}
-            >
+            <MenuList mode="horizontal" selectedKeys={[view]}>
               {hasAuthorPermission && (
                 <MenuItem
                   data-cy="editButton"
@@ -121,7 +139,7 @@ class ButtonBar extends Component {
                 </HeadIcon>
                 Meta data
               </MenuItem>
-            </Menu>
+            </MenuList>
 
             {hasAuthorPermission && (
               <RightSide>
@@ -158,44 +176,41 @@ class ButtonBar extends Component {
           </Container>
         ) : (
           <MobileContainer>
-            <MobileFirstContainer>
-              <Button
-                onClick={() => this.handleMenuClick("edit")}
-                className={`btn-edit ${view === "edit" && "active"}`}
-              >
-                <HeadIcon>
-                  <IconPencilEdit color={white} width={18} height={16} />
-                </HeadIcon>
-                {withLabels ? "Edit Mode" : ""}
-              </Button>
-              <Button
-                onClick={() => this.handleMenuClick("preview")}
-                className={`btn-preview ${view === "preview" && "active"}`}
-              >
-                <HeadIcon>
-                  <IconPreview color={white} width={18} height={16} />
-                </HeadIcon>
-                {withLabels ? "Preview mode" : ""}
-              </Button>
-              <Button data-cy="saveButton" onClick={onSave} className="btn-save">
-                <HeadIcon>
-                  <IconSaveNew color={white} width={18} height={16} />
-                </HeadIcon>
-                {withLabels ? "Save" : ""}
-              </Button>
-              <Button onClick={onShowSource} className="btn-source">
-                <HeadIcon>
-                  <IconSource color={white} width={18} height={16} />
-                </HeadIcon>
-                {withLabels ? "Source" : ""}
-              </Button>
-              <Button onClick={onShowSettings} className="btn-settings">
-                <HeadIcon>
-                  <IconSettings color={white} width={24} height={16} />
-                </HeadIcon>
-                {withLabels ? "Settings" : ""}
-              </Button>
-            </MobileFirstContainer>
+            <MobileTopRight>
+              <CustomButton data-cy="saveButton" onClick={onSave} className="btn-save">
+                <IconSaveNew color={white} width={18} height={16} />
+              </CustomButton>
+            </MobileTopRight>
+            <MobileBottom>
+              <MenuList selectedKeys={[view]}>
+                <MenuItem
+                  onClick={() => this.handleMenuClick("edit")}
+                  className={view === "edit" && "active"}
+                  data-cy="editButton"
+                >
+                  <HeadIcon>
+                    <IconPencilEdit color={white} width={18} height={16} />
+                  </HeadIcon>
+                  {withLabels ? "Edit Mode" : ""}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => this.handleMenuClick("preview")}
+                  className={view === "preview" && "active"}
+                  data-cy="previewButton"
+                >
+                  <HeadIcon>
+                    <IconPreview color={white} width={18} height={16} />
+                  </HeadIcon>
+                  {withLabels ? "Preview mode" : ""}
+                </MenuItem>
+              </MenuList>
+
+              <RightDropdown overlay={MobileDropMenu} trigger={["click"]}>
+                <a className="ant-dropdown-link" href="#">
+                  <IconMoreVertical />
+                </a>
+              </RightDropdown>
+            </MobileBottom>
             {view === "preview" && (
               <MobileSecondContainer>
                 <Button

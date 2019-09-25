@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { lightGrey } from "@edulastic/colors";
+import { lightGrey, mobileWidthMax } from "@edulastic/colors";
 
 const CardComponent = styled.div`
-  width: 350px;
+  flex-basis: 47%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -11,6 +11,12 @@ const CardComponent = styled.div`
   background-color: ${lightGrey};
   border-radius: 10px;
   min-height: 420px;
+
+  @media (max-width: ${mobileWidthMax}) {
+    min-height: unset;
+    flex-basis: 100%;
+    margin-bottom: 10px;
+  }
 `;
 
 export default CardComponent;

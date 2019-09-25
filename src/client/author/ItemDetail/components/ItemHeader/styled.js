@@ -1,4 +1,4 @@
-import { themeColor, mobileWidth, white, desktopWidth, btnColor, btnBg, btnBgActive } from "@edulastic/colors";
+import { themeColor, mobileWidth, white, btnColor, btnBg, btnBgActive } from "@edulastic/colors";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -176,17 +176,4 @@ export const ReferenceValue = styled.div`
   font-weight: 600;
   letter-spacing: 0.2px;
   color: ${white};
-`;
-
-export const ToggleButton = styled.div`
-  color: ${white};
-  font-size: 18px;
-  margin-right: 10px;
-  cursor: pointer;
-  display: none;
-
-  @media (max-width: ${desktopWidth}) {
-    display: block;
-    margin-right: 26px;
-  }
 `;

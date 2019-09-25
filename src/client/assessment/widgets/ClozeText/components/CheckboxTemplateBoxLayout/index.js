@@ -127,7 +127,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}`}
-          style={{ ...btnStyle, height: "auto", minWidth: btnStyle.widthpx, margin: 0 }}
+          style={{ ...btnStyle, height: "auto", minWidth: btnStyle.widthpx, margin: 0, marginBottom: 4 }}
           title={userSelections[index] && userSelections[index].value}
           onClick={handleClick}
         >

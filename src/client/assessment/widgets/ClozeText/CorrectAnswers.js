@@ -141,17 +141,16 @@ class CorrectAnswers extends Component {
 
   updateAltAnswersMixMatch = ({ id, tabId, value }) => {
     const { question, setQuestionData } = this.props;
-    setQuestionData(
-      produce(question, draft => {
-        draft.validation.altResponses = draft.validation.altResponses.map(alt => {
-          if (alt.id === tabId) {
-            alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
-          }
-          return alt;
-        });
-        updateVariables(newData);
-      })
-    );
+    const newQuestion = produce(question, draft => {
+      draft.validation.altResponses = draft.validation.altResponses.map(alt => {
+        if (alt.id === tabId) {
+          alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
+        }
+        return alt;
+      });
+    });
+    setQuestionData(newQuestion);
+    updateVariables(newQuestion);
   };
 
   addAltAnswerMixMatch = ({ index, value }) => {

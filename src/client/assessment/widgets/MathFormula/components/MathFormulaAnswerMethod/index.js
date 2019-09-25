@@ -199,16 +199,6 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.ignoreLeadingAndTrailingSpaces")}
             />
           );
-        case "allowInterval":
-          return (
-            <CheckOption
-              dataCy="answer-allow-interval"
-              optionKey="allowInterval"
-              options={options}
-              onChange={changeOptions}
-              label={t("component.math.allowInterval")}
-            />
-          );
         case "isDecimal":
           return (
             <CheckOption

@@ -118,7 +118,6 @@ const methodOptions = {
     "ignoreOrder",
     "ignoreCoefficientOfOne",
     "inverseResult",
-    "allowInterval",
     "allowedVariables"
   ],
   [methods.EQUIV_VALUE]: [

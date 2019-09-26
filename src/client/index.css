@@ -1915,6 +1915,10 @@ span.token.active-word {
   margin: 8px 0;
 }
 
+.fr-view table thead {
+  font-weight: 700;
+}
+
 .fr-view table td,
 .fr-view table th {
   padding: 8px;

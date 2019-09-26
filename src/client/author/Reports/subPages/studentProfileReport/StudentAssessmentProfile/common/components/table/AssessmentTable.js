@@ -8,7 +8,7 @@ import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
-  const value = typeof text === "undefined" ? "N/A" : `${text}%`;
+  const value = text === undefined || text === null ? "N/A" : `${text}%`;
   return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
 };
 
@@ -70,7 +70,7 @@ const getColumns = (studentName = "") => {
       },
       render: (score, record) => {
         if (!score) {
-          return getCol("N/A", "#cccccc");
+          return getCol(score, "#cccccc");
         }
 
         const toolTipText = () => (

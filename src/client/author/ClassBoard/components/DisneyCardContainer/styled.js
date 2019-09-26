@@ -182,7 +182,7 @@ export const SquareColorDivGreen = styled(SquareColorDiv)`
 `;
 
 export const SquareColorDivGray = styled(SquareColorDiv)`
-  background-color: ${classBoardTheme.CardColor};
+  background-color: ${classBoardTheme.SkippedColor};
 `;
 
 export const SquareColorBlue = styled(SquareColorDiv)`

@@ -158,6 +158,7 @@ const defaultTheme = {
     CardSqurebgColor: "#1fe3a0",
     CardColor: "#e5e5e5",
     CardSqare: "#ee1b82",
+    SkippedColor: "#6A737F",
     CardSquareDivColor: "#fdcc3a",
     CardDisneyColor: "#e1703e",
     SwitchColor: "#1fe3a0"

@@ -56,7 +56,7 @@ function* receiveClassResponseSaga({ payload }) {
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
-    const originalData = yield select(state => state.author_classboard_testActivity ?.data);
+    const originalData = yield select(state => state.author_classboard_testActivity?.data);
     /**
      * transforming questionActivities to support chart/question labels, etc.,
      */
@@ -68,7 +68,7 @@ function* receiveStudentResponseSaga({ payload }) {
       },
       true
     );
-    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId) ?.questionActivities;
+    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId)?.questionActivities;
     studentResponse.questionActivities = transformedQuestionActivities;
 
     yield put({

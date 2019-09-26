@@ -131,7 +131,7 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
                     component={props => <AssignTest {...props} />}
                   />
                   <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
-                  <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
+                  <Route path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
                   <Route
                     exact
                     path={`${

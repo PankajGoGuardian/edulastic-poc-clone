@@ -45,7 +45,7 @@ class AddQuestion extends React.Component {
       <AddQuestionWrapper>
         <ContentWrapper>
           <QuestionTypes flexDirection="column">
-            <Row style={{ display: "flex", width: "100%", marginBottom: "10px" }}>
+            <Row style={{ display: "flex", width: "100%", marginBottom: "10px", justifyContent: "space-between" }}>
               <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
                 <IconNewList />
               </AddQuestionIcon>
@@ -55,11 +55,11 @@ class AddQuestion extends React.Component {
               <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
                 <IconCaretDown />
               </AddQuestionIcon>
+            </Row>
+            <Row style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
               <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
                 <IconMath />
               </AddQuestionIcon>
-            </Row>
-            <Row style={{ display: "flex", width: "100%" }}>
               <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
                 <IconSummary />
               </AddQuestionIcon>

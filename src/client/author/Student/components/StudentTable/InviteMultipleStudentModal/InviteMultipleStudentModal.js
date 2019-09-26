@@ -329,6 +329,7 @@ class InviteMultipleStudentModal extends Component {
         <Row>
           <Col span={13}>
             <SearchTabButton
+              data-cy="searchStudent"
               searchViewVisible={searchViewVisible}
               onClick={() => this.setState({ ...this.setState, searchViewVisible: true })}
             >
@@ -337,6 +338,7 @@ class InviteMultipleStudentModal extends Component {
           </Col>
           <Col span={9}>
             <AddMultipleStudentsTabButton
+              data-cy="addMultipleStudent"
               searchViewVisible={searchViewVisible}
               onClick={() => this.setState({ ...this.setState, searchViewVisible: false })}
             >
@@ -456,6 +458,7 @@ class InviteMultipleStudentModal extends Component {
           </Col>
           <Col span={7}>
             <OkButton
+              data-cy="addStudents"
               onClick={() => {
                 this.addStudents();
               }}

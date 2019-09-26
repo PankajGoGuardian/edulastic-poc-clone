@@ -24,28 +24,8 @@ export const TableTitle = styled.div`
 `;
 
 export const TableData = styled(Table)`
-  text-align: center;
   .ant-table td {
     white-space: nowrap;
-  }
-  .ant-table-thead > tr {
-    &:nth-child(1) th:nth-child(1),
-    &:nth-child(2) th:nth-child(1) {
-      text-align: left;
-      width: 200px;
-    }
-    &:nth-child(2) th:nth-child(2) {
-      width: 130px;
-    }
-    & > th {
-      background-color: white;
-      text-align: center;
-      font-size: 16px;
-      line-height: 22px;
-      color: ${title};
-      font-weight: bold;
-      /* padding: 16px 16px; */
-    }
   }
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
@@ -61,30 +41,14 @@ export const TableData = styled(Table)`
       border-bottom: 0px;
     }
   }
-  .ant-table-fixed {
-    .ant-table-thead {
-      tr {
-        height: unset !important;
-      }
-    }
-  }
-
   th.sub-thead-th {
     background-color: #f8f8f8 !important;
+    text-align: center;
   }
   th.th-border-bottom {
     border-bottom: 10px white solid !important;
   }
-
-  .ant-table-thead > tr > th .ant-table-column-sorters {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   .ant-table-thead > tr > th .ant-table-column-sorter {
-    position: relative;
-    top: 0px;
-    left: 5px;
     .ant-table-column-sorter-inner {
       .ant-table-column-sorter-up,
       .ant-table-column-sorter-down {

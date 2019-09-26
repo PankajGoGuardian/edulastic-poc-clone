@@ -65,7 +65,7 @@ const TemplateBox = ({ resprops, id }) => {
       if (foundedGroup) {
         const foundItem = foundedGroup.options.find(inOption => inOption.value === answers[dropTargetIndex].data);
         if (foundItem) {
-          return attr === "value" ? foundedItem.value : foundedItem.label;
+          return attr === "value" ? foundItem.value : foundItem.label;
         }
       }
     }

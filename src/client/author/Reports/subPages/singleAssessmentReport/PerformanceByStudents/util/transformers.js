@@ -25,11 +25,11 @@ import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipR
 export const getInterval = maxValue => min([maxValue, 9]);
 
 export const createTicks = (maxValue, interval) => {
-  let maxTickRange = ceil(maxValue / interval) * interval;
+  let maxTickRange = (ceil(maxValue / interval) || 0) * interval;
 
   let ticks = [];
 
-  ticks.push(maxTickRange + ceil(maxValue / interval));
+  ticks.push(maxTickRange + (ceil(maxValue / interval) || 0));
 
   while (maxTickRange > 0) {
     ticks.push(maxTickRange);
@@ -58,7 +58,6 @@ const groupData = data => {
   const maxTotalScore = get(maxBy(data, "totalScore"), "totalScore", 0);
 
   let dataToPlotHashMap = {};
-
   let i = 0;
 
   while (maxTotalScore + 1 >= i) {
@@ -70,9 +69,11 @@ const groupData = data => {
   }
 
   forEach(data, ({ totalScore }) => {
-    const floorValue = floor(totalScore);
-    if (dataToPlotHashMap[floorValue]) {
-      dataToPlotHashMap[floorValue].studentCount++;
+    if (totalScore || totalScore === 0) {
+      const floorValue = floor(totalScore);
+      if (dataToPlotHashMap[floorValue]) {
+        dataToPlotHashMap[floorValue].studentCount++;
+      }
     }
   });
 
@@ -113,9 +114,10 @@ export const normaliseTableData = (rawData, data) => {
         return relatedGroup.schoolId == school.schoolId;
       }) || {};
 
-    const classAvg = round(
-      (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
-    );
+    const classAvg =
+      round(
+        (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
+      ) || 0;
     let studentScore = 0;
     let assessmentScore = "Absent";
     let proficiencyBand = "Absent";

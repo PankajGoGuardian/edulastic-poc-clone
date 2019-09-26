@@ -12,7 +12,7 @@ export const Container = styled.div`
   overflow: auto;
 
   .scrollbar-container {
-    height: calc(100vh - 170px);
+    height: calc(100vh - 120px);
     width: 100%;
     padding-right: 30px;
     padding-left: 2px;
@@ -39,7 +39,7 @@ export const LeftWrapper = styled.div`
     left: 100px;
     background: white;
     padding: 15px;
-    box-shadow: 0px 2px 5px 0px #dfdfdf;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.07);
     height: calc(100vh - 50px);
     z-index: 1;
   }

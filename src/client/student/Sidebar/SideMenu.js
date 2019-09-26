@@ -7,11 +7,9 @@ import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
+import styled from "styled-components";
 import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
-import styled, { css } from "styled-components";
-import SettingsModal from "../sharedComponents/SettingsModal";
 import {
-  IconAssignment,
   IconHeader,
   IconLogoCompact,
   IconClockDashboard,
@@ -26,14 +24,14 @@ import {
   white,
   tabletWidth,
   largeDesktopWidth,
-  mobileWidth,
   extraDesktopWidthMax,
-  mainTextColor
+  mainTextColor,
+  themeColor,
+  extraDesktopWidth
 } from "@edulastic/colors";
+import SettingsModal from "../sharedComponents/SettingsModal";
 import { toggleSideBarAction, setSettingsModalVisibilityAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
-
-import Profile from "../assets/Profile.png";
 
 const getIndex = (page, items) => {
   let index;
@@ -398,10 +396,9 @@ const SideBar = styled(Layout.Sider)`
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
-    margin-bottom: 23px;
-
+    margin-bottom: 15px;
     &:hover {
-      background: #1890ff;
+      background: ${themeColor};
     }
 
     @media (max-width: ${largeDesktopWidth}) {
@@ -478,6 +475,13 @@ const LogoWrapper = styled(Row)`
   text-align: center;
   display: flex;
   align-items: center;
+
+  @media (min-width: ${largeDesktopWidth}) and (max-width: 1599.98px) {
+    padding: 27px 39px 22px;
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 20px 39px 14px;
+  }
 `;
 
 const LogoDash = styled.div`
@@ -492,18 +496,15 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 5px 0px 10px;
-  min-height: calc(100% - 90px);
+  padding: 8px 0px;
+  min-height: calc(100% - 100px);
 
-  @media (min-width: ${extraDesktopWidthMax}) {
-    min-height: calc(100% - 100px);
+  @media (min-width: ${largeDesktopWidth}) and (max-width: 1599.98px) {
+    min-height: calc(100% - 80px);
   }
-
   @media (max-width: ${largeDesktopWidth}) {
     min-height: calc(100% - 65px);
-    padding-bottom: 22px;
   }
-
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
     display: ${props => (props.isSidebarCollapsed ? "none" : "flex")};
@@ -565,9 +566,9 @@ const Menu = styled(AntMenu)`
     text-align: left;
     display: flex;
     align-items: center;
-    margin-top: 16px;
+    margin: 10px 0px;
     height: 38px;
-    padding: 10px 39px !important;
+    padding: 5px 39px !important;
     max-width: 100%;
 
     @media(max-width: ${tabletWidth}) {
@@ -586,13 +587,16 @@ const Menu = styled(AntMenu)`
     display: flex;
     text-align: center;
     justify-content: center;
-    margin-top: 14px;
-    padding: 10px 18px !important;
+    margin-top: 10px 0px;
+    padding: 5px 18px !important;
     height: 38px;
     width: 100%;
   }
-  &.ant-menu-inline > .ant-menu-item {
-    margin-top: 14px;
+  @media (min-width: ${extraDesktopWidth}) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      margin: 15px 0px;
+    }
   }
   .ant-menu-item {
     position: relative;

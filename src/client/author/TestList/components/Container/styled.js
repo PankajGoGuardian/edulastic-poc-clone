@@ -138,11 +138,12 @@ export const PaginationWrapper = styled(Pagination)`
 `;
 
 export const StyleChangeWrapper = styled.div`
+  margin-right: 15px;
+  width: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   svg {
     cursor: pointer;
-    margin-right: 23px;
-    &:last-child {
-      margin-right: 0px;
-    }
   }
 `;

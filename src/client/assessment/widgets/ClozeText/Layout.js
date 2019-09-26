@@ -155,9 +155,9 @@ class Layout extends Component {
       const { responsecontainerindividuals } = uiStyle;
       // update response containers only if it is already defined due to style updates
       let flag = false;
-      
-      const resp = responsecontainerindividuals.map( responsecontainerindividual => {
-         if (!flag && responsecontainerindividual.id && !responsecontainerindividual.placeholder) {
+
+      const resp = responsecontainerindividuals.map(responsecontainerindividual => {
+        if (!flag && responsecontainerindividual.id && !responsecontainerindividual.placeholder) {
           flag = true;
           return {
             ...responsecontainerindividual,
@@ -389,7 +389,7 @@ class Layout extends Component {
                       // TODO
                       // change from 'onChange' to 'onBlur for all
                       onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                      value={responsecontainerindividual.widthpx}
+                      value={responsecontainerindividual.widthpx || uiStyle.widthpx}
                     />
                   </Col>
                   <Col md={12}>
@@ -400,7 +400,7 @@ class Layout extends Component {
                       containerStyle={{ width: 350 }}
                       onBlur={() => this.handleBlurIndividualHeight(index)}
                       onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                      value={responsecontainerindividual.heightpx}
+                      value={responsecontainerindividual.heightpx || uiStyle.heightpx}
                     />
                   </Col>
                 </Row>

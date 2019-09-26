@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -60,7 +60,7 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
+const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
@@ -266,7 +266,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       </ButtonAndDetail>
     </CardWrapper>
   );
-};
+});
 
 const enhance = compose(
   withTheme,

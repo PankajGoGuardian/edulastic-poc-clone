@@ -278,10 +278,9 @@ const PerformanceAnalysisTable = ({
       let indexOfPoints = _str.lastIndexOf("points");
       let indexOfLastSpace = _str.lastIndexOf(" ");
 
-      const transformedStr = `${str.substring(0, indexOfPoints)}(${str.substring(
-        indexOfPoints,
-        indexOfLastSpace
-      )}) (${str.substring(indexOfLastSpace + 1, str.length - 1)})"`;
+      const transformedStr = `${str.substring(0, indexOfPoints - 1)}(${str
+        .substring(indexOfPoints, indexOfLastSpace)
+        .replace(/\s/g, "")})(Avg-${str.substring(indexOfLastSpace + 1, str.length - 1)})"`;
       columns[i] = transformedStr;
     }
     const _header = columns.join(",");

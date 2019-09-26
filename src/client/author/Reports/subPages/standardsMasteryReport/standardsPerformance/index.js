@@ -104,8 +104,16 @@ const StandardsPerformance = ({
   const overallMetricMasteryLevel = getMasteryLevel(overallMetricMasteryScore, scaleInfo);
 
   const { domainsData, tableData } = useMemo(() => {
-    return getParsedData(res.metricInfo, maxMasteryScore, tableFilters, selectedDomains, rawDomainData, filterData);
-  }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData]);
+    return getParsedData(
+      res.metricInfo,
+      maxMasteryScore,
+      tableFilters,
+      selectedDomains,
+      rawDomainData,
+      filterData,
+      scaleInfo
+    );
+  }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
 
   if (loading) {
     return (

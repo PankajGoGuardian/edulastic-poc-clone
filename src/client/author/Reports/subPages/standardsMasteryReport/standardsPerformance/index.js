@@ -15,7 +15,8 @@ import {
   getReportsStandardsBrowseStandards,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
-  getSelectedStandardProficiency
+  getSelectedStandardProficiency,
+  getFiltersSelector
 } from "../common/filterDataDucks";
 
 import { getCsvDownloadingState } from "../../../ducks";
@@ -50,7 +51,8 @@ const StandardsPerformance = ({
   settings,
   role,
   loading,
-  selectedStandardProficiency
+  selectedStandardProficiency,
+  filters
 }) => {
   const filterData = get(standardsFilters, "data.result", []);
   const scaleInfo = selectedStandardProficiency || [];
@@ -167,6 +169,7 @@ const StandardsPerformance = ({
           scaleInfo={scaleInfo}
           selectedDomains={selectedDomains}
           isCsvDownloading={isCsvDownloading}
+          filters={filters}
         />
       </StyledCard>
     </DropDownContainer>
@@ -179,6 +182,7 @@ const enhance = connect(
     loading: getReportsStandardsPerformanceSummaryLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
+    filters: getFiltersSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     selectedStandardProficiency: getSelectedStandardProficiency(state)

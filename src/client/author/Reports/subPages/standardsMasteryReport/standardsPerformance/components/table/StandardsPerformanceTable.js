@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { sumBy, includes, filter } from "lodash";
 import next from "immer";
 import { Row, Col } from "antd";
@@ -84,7 +85,7 @@ const getOverallColSorter = (analyseKey, scaleInfo) => {
   }
 };
 
-export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains) => {
+export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains, filters = {}) => {
   let filteredDomains = filter(
     domains,
     domain => includes(selectedDomains, domain.domainId) || !selectedDomains.length
@@ -110,7 +111,16 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
       title: compareBy.title,
       dataIndex: "name",
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name)
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (data, record) => {
+        return compareBy.title === "Student" ? (
+          <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
+            {data}
+          </Link>
+        ) : (
+          data
+        );
+      }
     },
     {
       title: "Overall",
@@ -133,6 +143,7 @@ const StandardsPerformanceTable = ({
   scaleInfo,
   selectedDomains,
   isCsvDownloading,
+  filters = {},
   ...tableProps
 }) => {
   const columns = getColumns(
@@ -140,7 +151,8 @@ const StandardsPerformanceTable = ({
     tableFilters.analyseBy.key,
     domainsData,
     scaleInfo,
-    selectedDomains
+    selectedDomains,
+    filters
   );
 
   const { analyseByData, compareByData } = tableFiltersOptions;

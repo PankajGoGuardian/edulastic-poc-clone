@@ -930,7 +930,7 @@ class ClassBoard extends Component {
                               : ""
                           }
                           onChange={testActivityId => {
-                            loadStudentResponses({ testActivityId, groupId: classId });
+                            loadStudentResponses({ testActivityId, groupId: classId, studentId: selectedStudentId });
                             setCurrentTestActivityId(testActivityId);
                           }}
                         >

@@ -102,7 +102,11 @@ class StudentViewContainer extends Component {
       }
       const { testActivityId } = studentItems[index];
       if (!isUndefined(currentTestActivityId || testActivityId) && !isUndefined(classId)) {
-        loadStudentResponses({ testActivityId: currentTestActivityId || testActivityId, groupId: classId });
+        loadStudentResponses({
+          testActivityId: currentTestActivityId || testActivityId,
+          groupId: classId,
+          studentId: selectedStudent
+        });
       }
     }
     return {
@@ -149,20 +153,18 @@ class StudentViewContainer extends Component {
     });
 
     // show the total count.
-    const totalNumber = currentStudent.questionActivities.length;
+    const activeQuestions = currentStudent.questionActivities.filter(x => !(x.disabled || x.scoringDisabled));
+    const totalNumber = activeQuestions.length;
 
-    const correctNumber = currentStudent.questionActivities.filter(x => x.score === x.maxScore && x.score > 0).length;
+    const correctNumber = activeQuestions.filter(x => x.score === x.maxScore && x.score > 0).length;
 
-    const wrongNumber = currentStudent.questionActivities.filter(
-      x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
-    ).length;
+    const wrongNumber = activeQuestions.filter(x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped).length;
 
-    const partiallyCorrectNumber = currentStudent.questionActivities.filter(x => x.score > 0 && x.score < x.maxScore)
-      .length;
+    const partiallyCorrectNumber = activeQuestions.filter(x => x.score > 0 && x.score < x.maxScore).length;
 
-    const skippedNumber = currentStudent.questionActivities.filter(x => x.skipped && x.score === 0).length;
+    const skippedNumber = activeQuestions.filter(x => x.skipped && x.score === 0).length;
 
-    const notGradedNumber = currentStudent.questionActivities.filter(x => x.graded === false).length;
+    const notGradedNumber = activeQuestions.filter(x => x.graded === false).length;
 
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =

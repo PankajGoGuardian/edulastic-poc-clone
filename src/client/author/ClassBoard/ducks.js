@@ -3,7 +3,7 @@ import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi } from 
 import { message } from "antd";
 import { createSelector } from "reselect";
 
-import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
 import { test } from "@edulastic/constants";
 
@@ -281,15 +281,42 @@ export const getAllTestActivitiesForStudentSelector = createSelector(
   state => state.allTestActivitiesForStudent || []
 );
 
-export const getItemSummary = (entities, questionsOrder, itemsSummary) => {
+export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQuestionActivities) => {
   const questionMap = {};
   let testItemsDataKeyed = {};
+  let originalQuestionActivitiesKeyed = {};
+
   if (itemsSummary) {
     testItemsDataKeyed = keyBy(itemsSummary, "_id");
   }
 
+  if (originalQuestionActivities) {
+    //originalQuestionActivitiesKeyed = keyBy(originalQuestionActivities, "_id");
+    const originalQuestionActivitiesGrouped = groupBy(originalQuestionActivities, "testItemId");
+    for (const itemId of Object.keys(originalQuestionActivitiesGrouped)) {
+      const item = originalQuestionActivitiesGrouped[itemId];
+      const manuallyGradedPresent = originalQuestionActivitiesGrouped[itemId].find(x => x.graded === false);
+      /**
+       * even if at-least 1 questionActivity with graded false
+       * and itemLevelScoring is enabled,
+       * then every other questionActivities in the item
+       * should be treated as manually gradable
+       */
+      if (manuallyGradedPresent && originalQuestionActivitiesGrouped[itemId][0].weight > 1) {
+        originalQuestionActivitiesGrouped[itemId] = originalQuestionActivitiesGrouped[itemId].map(x => ({
+          ...x,
+          score: undefined,
+          graded: false
+        }));
+      }
+    }
+
+    originalQuestionActivitiesKeyed = keyBy(_values(originalQuestionActivitiesGrouped).flat(), "_id");
+  }
+
   for (const entity of entities) {
-    const { questionActivities } = entity;
+    const { questionActivities = [] } = entity;
+
     for (let {
       _id,
       notStarted,
@@ -310,8 +337,8 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary) => {
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
-          qLabel: get(testItemsDataKeyed, [qid, "qLabel"]) || qLabel,
-          barLabel: get(testItemsDataKeyed, [qid, "barLabel"]) || barLabel,
+          qLabel: qLabel,
+          barLabel: barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,

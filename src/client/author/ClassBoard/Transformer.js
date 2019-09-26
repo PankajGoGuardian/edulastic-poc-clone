@@ -1,5 +1,5 @@
 //@ts-check
-import { keyBy, groupBy, get } from "lodash";
+import { keyBy, groupBy, get, values, flatten } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
 
@@ -187,16 +187,28 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
   }
 };
 
-export const transformGradeBookResponse = ({
-  testItemsData,
-  students: studentNames,
-  testActivities,
-  testQuestionActivities
-}) => {
-  const testItemIds = testItemsData.map(o => o._id);
+export const transformGradeBookResponse = (
+  { test, testItemsData, students: studentNames, testActivities, testQuestionActivities, passageData },
+  studentResponse
+) => {
+  const testItemIds = test.testItems.map(o => o._id);
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
+  const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
+  for (const itemId of Object.keys(questionActivitiesGrouped)) {
+    const notGradedPresent = questionActivitiesGrouped[itemId].find(x => x.graded === false);
+    const { itemLevelScoring } = testItemsDataKeyed[itemId];
+    if (itemLevelScoring && notGradedPresent) {
+      questionActivitiesGrouped[itemId] = questionActivitiesGrouped[itemId].map(x => ({
+        ...x,
+        graded: false,
+        score: 0
+      }));
+    }
+  }
+
+  testQuestionActivities = flatten(values(questionActivitiesGrouped));
 
   const studentTestActivities = keyBy(testActivities, "userId");
   let testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
@@ -244,7 +256,7 @@ export const transformGradeBookResponse = ({
           };
         }
         const testActivity = studentTestActivities[studentId];
-        if (testActivity.redirect) {
+        if (testActivity.redirect && !studentResponse) {
           return {
             studentId,
             studentName: fullName,
@@ -266,8 +278,7 @@ export const transformGradeBookResponse = ({
         const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
-        const redirected = testActivity.previouslyRedirected;
-        const testActivityId = testActivity._id;
+        const { _id: testActivityId, groupId, previouslyRedirected: redirected } = testActivity;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
@@ -278,16 +289,19 @@ export const transformGradeBookResponse = ({
         const questionActivities = qids.map(
           ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
             const _id = el;
-
+            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
             if (!questionActivitiesIndexed[el]) {
               return {
                 _id,
+                qid: _id,
                 weight,
                 disabled,
                 testItemId,
                 barLabel,
+                testActivityId,
+                groupId,
                 qLabel,
-                ...(submitted ? { skipped: true, score: 0 } : { notStarted: true })
+                ...(submitted ? { skipped: true, score: 0, maxScore: questionMaxScore } : { notStarted: true })
               };
             }
             let {
@@ -296,9 +310,9 @@ export const transformGradeBookResponse = ({
               partiallyCorrect: partialCorrect,
               timeSpent,
               score,
-              graded
+              graded,
+              ...remainingProps
             } = questionActivitiesIndexed[el];
-            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
             if (score > 0 && skipped) {
               skipped = false;
             }
@@ -310,6 +324,7 @@ export const transformGradeBookResponse = ({
             }
 
             return {
+              ...(studentResponse ? remainingProps : {}),
               _id,
               weight,
               skipped,

@@ -82,12 +82,12 @@ export default class BarGraph extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { gradebook, studentview, studentId, testActivity, studentResponse } = props;
-
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
       const filtered = _getAggregateByQuestion(testActivity, studentId);
+      const selectedTestActivityId = testActivity.find(x => x.studentId === studentId)?.testActivityId;
       if (filtered) {
-        if (isEmpty(studentResponse)) {
+        if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse?.testActivity?._id) {
           itemsSummary = filtered.itemsSummary;
         } else {
           itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);

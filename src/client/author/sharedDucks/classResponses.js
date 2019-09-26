@@ -22,10 +22,12 @@ import {
   RECEIVE_STUDENT_QUESTION_ERROR,
   RECEIVE_CLASS_QUESTION_REQUEST,
   RECEIVE_CLASS_QUESTION_SUCCESS,
-  RECEIVE_CLASS_QUESTION_ERROR
+  RECEIVE_CLASS_QUESTION_ERROR,
+  RESPONSE_ENTRY_SCORE_SUCCESS
 } from "../src/constants/actions";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
-import { markQuestionLabel } from "../ClassBoard/Transformer";
+
+import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Transformer";
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
@@ -54,14 +56,21 @@ function* receiveClassResponseSaga({ payload }) {
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
+    const originalData = yield select(state => state.author_classboard_testActivity ?.data);
+    /**
+     * transforming questionActivities to support chart/question labels, etc.,
+     */
+    const transformed = transformGradeBookResponse(
+      {
+        ...originalData,
+        testActivities: [studentResponse.testActivity],
+        testQuestionActivities: studentResponse.questionActivities
+      },
+      true
+    );
+    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId) ?.questionActivities;
+    studentResponse.questionActivities = transformedQuestionActivities;
 
-    // sort question ACtivity
-    let questionActivities = keyBy(studentResponse.questionActivities, "qid");
-    const testItems = yield select(state => state?.classResponse?.data?.testItems || []);
-    const qIds = testItems.flatMap(item => (item?.data?.questions || []).map(i => i.id) || []);
-
-    questionActivities = qIds.map(id => questionActivities[id]).filter(identity);
-    studentResponse.questionActivities = questionActivities;
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_SUCCESS,
       payload: studentResponse
@@ -195,10 +204,11 @@ function* updateStudentScore({ payload }) {
       scores: { [questionId]: score }
     });
 
-    const { questionActivities } = scoreRes;
+    const { questionActivities, testActivity } = scoreRes;
     for (const { qid: _id, score, maxScore, testActivityId, graded, skipped } of questionActivities) {
       yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore, graded, skipped }]));
     }
+    yield put({ type: RESPONSE_ENTRY_SCORE_SUCCESS, payload: { questionActivities, testActivity } });
 
     yield call(message.success("Score is successfully updated"));
   } catch (e) {

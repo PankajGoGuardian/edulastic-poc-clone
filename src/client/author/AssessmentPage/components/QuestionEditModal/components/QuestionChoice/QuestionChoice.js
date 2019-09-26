@@ -120,20 +120,18 @@ export default class QuestionChoice extends React.Component {
     const {
       question: { options, title }
     } = this.props;
+    const trueOrFalse = title === "True or false";
     return (
       <QuestionFormWrapper>
-        <FormGroup>
-          <FormLabel>Options</FormLabel>
-          <Input
-            value={optionsValue}
-            disabled={title === "True or false"}
-            onChange={throttle(this.handleSetOptions, 2000)}
-            autoFocus
-          />
-        </FormGroup>
+        {!trueOrFalse && (
+          <FormGroup>
+            <FormLabel>Options</FormLabel>
+            <Input value={optionsValue} onChange={throttle(this.handleSetOptions, 2000)} autoFocus />
+          </FormGroup>
+        )}
         <FormGroup>
           <FormLabel>Correct Answers</FormLabel>
-          {title === "True or false" ? (
+          {trueOrFalse ? (
             <RadioGroup options={options} value={correctAnswers[0]} onChange={this.handleSetCorrectAnswers} />
           ) : (
             <CheckboxGroup options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />

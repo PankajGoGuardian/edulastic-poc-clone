@@ -57,7 +57,7 @@ const defaultQuestionOptions = {
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]
   },
-  [TRUE_OR_FALSE]: [{ label: "True", value: uuid() }, { label: "False", value: uuid() }]
+  [TRUE_OR_FALSE]: [{ label: "T", value: uuid() }, { label: "F", value: uuid() }]
 };
 
 const mathData = {

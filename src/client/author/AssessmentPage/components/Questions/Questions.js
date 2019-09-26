@@ -95,6 +95,11 @@ const multipleChoiceData = {
   uiStyle: { type: "horizontal" }
 };
 
+const clozeDropDownData = {
+  responseIds: [{ index: 0, id: "0" }],
+  stimulus: `<p><textdropdown id="0" contenteditable="false" /> </p>`,
+  title: "Cloze with Drop Down"
+};
 const essayData = {
   uiStyle: {
     minHeight: 15
@@ -126,6 +131,7 @@ const createQuestion = (type, index) => ({
   stimulus: "",
   smallSize: true,
   alignment: [],
+  ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
   ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
   ...(type === MATH ? mathData : {}),

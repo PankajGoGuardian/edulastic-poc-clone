@@ -76,8 +76,7 @@ class ViewModal extends React.Component {
         open={isShow}
         onClose={close}
         style={{
-          maxHeight: "70vh",
-          overflow: "auto"
+          maxHeight: "70vh"
         }}
       >
         <ModalTitle>{title}</ModalTitle>

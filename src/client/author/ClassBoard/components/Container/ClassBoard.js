@@ -854,6 +854,7 @@ class ClassBoard extends Component {
                   classId={classId}
                   studentSelect={this.onSelectCardOne}
                   endDate={additionalData.endDate || additionalData.closedDate}
+                  closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected) => {
                     if (!isItemsVisible) {

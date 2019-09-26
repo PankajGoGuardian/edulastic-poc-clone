@@ -81,7 +81,7 @@ function ProfileRow(props) {
   const [deleteText, setDeleteText] = useState("");
   const proficiencyTableInstance = useRef();
 
-  const { _id, index, deleteRow, setEditing, active, readOnly, setName } = props;
+  const { _id, index, deleteRow, setEditing, active, readOnly, setName, onDuplicate } = props;
   const profileName = get(props, "profile.name", "");
   return (
     <ListItemStyled>
@@ -130,7 +130,7 @@ function ProfileRow(props) {
         </Col>
         <StyledProfileCol span={12}>
           {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditing(index)} />}
-          <Icon type="copy" onClick={() => {}} />
+          <Icon type="copy" onClick={onDuplicate} />
           {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
           {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditing(index)} />}
         </StyledProfileCol>
@@ -194,6 +194,24 @@ function StandardsProficiency(props) {
     }
   };
 
+  const duplicateProfile = ({ _id, name }) => {
+    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
+      props.profiles.find(x => x._id === _id) || {};
+    console.log("profile", profile);
+    let lastVersion = 0;
+    if (/#[0-9]*$/.test(name)) {
+      lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
+    }
+    create({
+      noOfAssessment: 5,
+      ...profile,
+      name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`,
+      orgId: props.orgId,
+      orgType: "district",
+      scale: profile.scale.map(({ key, ...x }) => ({ ...x }))
+    });
+  };
+
   useEffect(() => {
     list();
   }, []);
@@ -242,6 +260,7 @@ function StandardsProficiency(props) {
             renderItem={(profile, index) => (
               <ProfileRow
                 readOnly={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
+                onDuplicate={() => duplicateProfile(profile)}
                 setName={setName}
                 setEditing={setEditingIndex}
                 index={index}

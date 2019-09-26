@@ -66,7 +66,7 @@ export const reducer = createReducer(initialState, {
     state.data = [];
     for (let el of payload) {
       if (el != null) {
-        const { scale, calcType, calcAttribute } = el;
+        const { scale, calcType, ...rest } = el;
         const scaleData = [];
         for (let i = 0; i < scale.length; i++) {
           scaleData.push({
@@ -80,13 +80,11 @@ export const reducer = createReducer(initialState, {
           });
         }
         state.data.push({
+          ...rest,
           _id: el._id,
           name: el.name,
           calcType: calcType,
-          calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 65,
-          calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 5,
-          scale: scaleData,
-          createdBy: el.createdBy
+          scale: scaleData
         });
       } else {
         state.data.push({

@@ -29,6 +29,8 @@ export const REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE = "[gradebook] realtime tes
 export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE = "[gradebook] realtime test question add max score";
 export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redirect";
 
+export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT = "[gradebook] realtime close assignment";
+
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
 export const gradebookTestItemAddAction = createAction(GRADEBOOK_TEST_ITEM_ADD);
@@ -36,6 +38,7 @@ export const realtimeGradebookQuestionsRemoveAction = createAction(REALTIME_GRAD
 export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE);
 
 export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_REDIRECT);
+export const realtimeGradebookCloseAction = createAction(REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT);
 
 const initialState = {
   entities: [],
@@ -240,6 +243,14 @@ const reducer = (state = initialState, { type, payload }) => {
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId),
           closed: true,
           classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
+        }
+      };
+    case REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          closed: true
         }
       };
     case UPDATE_REMOVED_STUDENTS_LIST: {

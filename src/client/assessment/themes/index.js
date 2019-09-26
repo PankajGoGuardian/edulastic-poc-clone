@@ -70,20 +70,21 @@ const AssessmentContainer = ({
   const qid = preview ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
   gotoItem(currentItem);
-  saveUserAnswer(currentItem, 0);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
+  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
+
   // start assessment
   useEffect(() => {
+    window.localStorage.assessmentLastTime = Date.now();
     // if its from a modal that maybe showing the answer, then dont reset the answer.
     if (!LCBPreviewModal) startAssessment();
   }, []);
 
-  const lastTime = useRef(Date.now());
-
   useEffect(() => {
     lastTime.current = Date.now();
+    window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));
   }, [qid]);
 

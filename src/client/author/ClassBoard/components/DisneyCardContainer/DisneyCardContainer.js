@@ -74,7 +74,8 @@ class DisneyCardContainer extends Component {
       updateDisabledList,
       isLoading,
       enrollmentStatus,
-      isItemsVisible
+      isItemsVisible,
+      closed
     } = this.props;
 
     const noDataNotification = () => {
@@ -94,6 +95,11 @@ class DisneyCardContainer extends Component {
     let styledCard = [];
 
     if (testActivity.length > 0) {
+      /**
+       * FIXME:
+       * 1. mutating testActivity inside map
+       * 2. move this sort of tranforming code somewhere else
+       */
       testActivity.map((student, index) => {
         const status = {
           color: "",
@@ -103,7 +109,7 @@ class DisneyCardContainer extends Component {
         if (student.status === "notStarted") {
           status.status = "Not Started";
           status.color = red;
-          if (endDate < Date.now()) {
+          if (endDate < Date.now() || closed) {
             status.status = "Absent";
           }
         } else if (student.status === "inProgress") {

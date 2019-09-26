@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import next from "immer";
 import {
@@ -255,6 +256,12 @@ export const getColumns = (columns, assessmentName, role) => {
   const filteredColumns = filterAccordingToRole(columns, role);
 
   return next(filteredColumns, columnsDraft => {
+    columnsDraft[1].render = (data, record) => (
+      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+        {data}
+      </Link>
+    );
+
     forEach(columnsDraft, column => {
       if (column.sortable) {
         column.sorter = getSorter(column.type, column.dataIndex);

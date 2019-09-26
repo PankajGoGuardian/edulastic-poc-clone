@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { filter, includes } from "lodash";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
@@ -16,7 +17,12 @@ const tableColumns = [
   {
     title: "Assessment Name",
     dataIndex: "testName",
-    key: "testName"
+    key: "testName",
+    render: (data, record) => (
+      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+        {data}
+      </Link>
+    )
   },
   {
     title: "Assessment Type",

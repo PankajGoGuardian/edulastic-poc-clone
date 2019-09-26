@@ -255,8 +255,6 @@ class MathFormulaPreview extends Component {
     if (expressGrader && isAnswerModifiable) {
       statusColor = theme.widgets.mathFormula.inputColor;
     }
-    cssStyles.width = cssStyles.width || minWidth;
-    cssStyles.height = cssStyles.height || minHeight;
 
     const testItemCorrectValues = testItem
       ? item.validation.validResponse.value.map(validResponse => validResponse.value)

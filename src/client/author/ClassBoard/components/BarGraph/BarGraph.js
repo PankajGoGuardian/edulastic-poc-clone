@@ -13,6 +13,7 @@ import {
   blue,
   yellow
 } from "@edulastic/colors";
+import { themes } from "../../../../student/themes";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
@@ -324,7 +325,7 @@ export default class BarGraph extends Component {
               yAxisId="left"
               stackId="a"
               dataKey="skippedNum"
-              fill={dropZoneTitleColor}
+              fill={themes.default.classboard.SkippedColor}
               shape={<RectangleBar dataKey="skippedNum" />}
               onClick={this.handleClick}
             />

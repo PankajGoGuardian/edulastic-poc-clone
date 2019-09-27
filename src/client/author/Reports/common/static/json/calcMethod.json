@@ -1,0 +1,10 @@
+[
+  {
+    "calcMethod": 1,
+    "calcType": "Decaying Average"
+  },
+  {
+    "calcMethod": 2,
+    "calcType": "Moving Average"
+  }
+]

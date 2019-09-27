@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -9,10 +9,14 @@ import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST = "[reports] get reports student mastery profile request";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS = "[reports] get reports student mastery profile success";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR = "[reports] get reports student mastery profile error";
+const GET_STUDENT_STANDARDS_REQUEST = "[reports] get student standards request";
+const GET_STUDENT_STANDARDS_SUCCESS = "[reports] get student standards success";
+const GET_STUDENT_STANDARDS_FAILED = "[reports] get student standards failed";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getStudentMasteryProfileRequestAction = createAction(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST);
+export const getStudentStandardsAction = createAction(GET_STUDENT_STANDARDS_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -32,6 +36,16 @@ export const getReportsStudentMasteryProfileLoader = createSelector(
   state => state.loading
 );
 
+export const getStudentStandardData = createSelector(
+  stateSelector,
+  state => state.studentStandard
+);
+
+export const getStudentStandardLoader = createSelector(
+  stateSelector,
+  state => state.loadingStudentStandard
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -40,7 +54,9 @@ export const getReportsStudentMasteryProfileLoader = createSelector(
 
 const initialState = {
   studentMasteryProfile: {},
-  loading: true
+  studentStandard: [],
+  loading: true,
+  loadingStudentStandard: false
 };
 
 export const reportStudentMasteryProfileReducer = createReducer(initialState, {
@@ -55,6 +71,16 @@ export const reportStudentMasteryProfileReducer = createReducer(initialState, {
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false;
     state.error = payload.error;
+  },
+  [GET_STUDENT_STANDARDS_REQUEST]: state => {
+    state.loadingStudentStandard = true;
+  },
+  [GET_STUDENT_STANDARDS_SUCCESS]: (state, { payload }) => {
+    state.studentStandard = payload.data.result;
+    state.loadingStudentStandard = false;
+  },
+  [GET_STUDENT_STANDARDS_FAILED]: state => {
+    state.loadingStudentStandard = "failed";
   }
 });
 
@@ -83,8 +109,27 @@ function* getReportsStudentMasteryProfileRequest({ payload }) {
   }
 }
 
+function* getStudentStandardsSaga({ payload }) {
+  try {
+    const studentStandard = yield call(reportsApi.fetchStudenStandards, payload);
+    yield put({
+      type: GET_STUDENT_STANDARDS_SUCCESS,
+      payload: studentStandard
+    });
+  } catch (error) {
+    console.error("err", error.stack);
+    yield call(message.error, "Failed to fetch student Standards");
+    yield put({
+      type: GET_STUDENT_STANDARDS_FAILED
+    });
+  }
+}
+
 export function* reportStudentMasteryProfileSaga() {
-  yield all([yield takeEvery(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST, getReportsStudentMasteryProfileRequest)]);
+  yield all([
+    yield takeEvery(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST, getReportsStudentMasteryProfileRequest),
+    yield takeLatest(GET_STUDENT_STANDARDS_REQUEST, getStudentStandardsSaga)
+  ]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

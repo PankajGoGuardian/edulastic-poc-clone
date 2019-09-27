@@ -6,6 +6,7 @@ import { Row, Col, Icon } from "antd";
 import { Pie, PieChart, Cell } from "recharts";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { Placeholder } from "../../../common/components/loader";
+import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import StudentMasteryTable from "./common/components/table/StudentMasteryTable";
 import StudentPerformanceSummary from "./common/components/table/StudentPerformanceSummary";
@@ -14,14 +15,22 @@ import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
-  getStudentMasteryProfileRequestAction
+  getStudentMasteryProfileRequestAction,
+  getStudentStandardsAction,
+  getStudentStandardData,
+  getStudentStandardLoader
 } from "./ducks";
 import { getCsvDownloadingState } from "../../../ducks";
-import { getReportsSPRFilterData, getSelectedStandardProficiency } from "../common/filterDataDucks";
+import {
+  getReportsSPRFilterData,
+  getSelectedStandardProficiency,
+  getFiltersSelector,
+  getStudentSelector
+} from "../common/filterDataDucks";
 import { augmentStandardMetaInfo } from "../common/utils/transformers.js";
 import { useGetStudentMasteryData } from "../common/hooks";
 import { getDomainOptions } from "./common/utils/transformers";
-import { toggleItem, downloadCSV } from "../../../common/util";
+import { toggleItem, downloadCSV, getStudentAssignments } from "../../../common/util";
 import { getGrades } from "../common/utils/transformers";
 
 const usefilterRecords = (records, domain) => {
@@ -48,20 +57,32 @@ const StudentMasteryProfile = ({
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequestAction,
-  selectedStandardProficiency
+  selectedStandardProficiency,
+  filters,
+  getStudentStandardsAction,
+  studentStandardData,
+  selectedStudent,
+  loadingStudentStandard
 }) => {
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
   const scaleInfo = selectedStandardProficiency;
-  const { selectedStudent = {} } = settings;
 
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
   const [selectedMastery, setSelectedMastery] = useState([]);
+
+  const studentAssignmentsData = useMemo(() => getStudentAssignments(scaleInfo, studentStandardData), [
+    scaleInfo,
+    studentStandardData
+  ]);
 
   const [studentStandards, studentDomains] = useGetStudentMasteryData(metricInfo, skillInfo, scaleInfo);
 
   const filteredStandards = usefilterRecords(studentStandards, selectedDomain.key);
   const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key);
   const domainOptions = getDomainOptions(studentDomains);
+
+  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(false);
+  const [clickedStandard, setClickedStandard] = useState(undefined);
 
   useEffect(() => {
     const { selectedStudent, requestFilters } = settings;
@@ -94,6 +115,17 @@ const StudentMasteryProfile = ({
 
   const onCsvConvert = data =>
     downloadCSV(`Standard Performance Details-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
+
+  const handleOnClickStandard = (params, standard) => {
+    getStudentStandardsAction(params);
+    setClickedStandard(standard);
+    setStudentAssignmentModal(true);
+  };
+
+  const closeStudentAssignmentModal = () => {
+    setStudentAssignmentModal(false);
+    setClickedStandard(undefined);
+  };
 
   return (
     <>
@@ -139,7 +171,19 @@ const StudentMasteryProfile = ({
         isCsvDownloading={isCsvDownloading}
         data={filteredStandards}
         selectedMastery={selectedMastery}
+        handleOnClickStandard={handleOnClickStandard}
+        filters={filters}
       />
+      {showStudentAssignmentModal && (
+        <StudentAssignmentModal
+          showModal={showStudentAssignmentModal}
+          closeModal={closeStudentAssignmentModal}
+          studentAssignmentsData={studentAssignmentsData}
+          studentName={selectedStudent.title}
+          standardName={clickedStandard}
+          loadingStudentStandard={loadingStudentStandard}
+        />
+      )}
     </>
   );
 };
@@ -150,10 +194,15 @@ const enhance = connect(
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state)
+    selectedStandardProficiency: getSelectedStandardProficiency(state),
+    filters: getFiltersSelector(state),
+    studentStandardData: getStudentStandardData(state),
+    selectedStudent: getStudentSelector(state),
+    loadingStudentStandard: getStudentStandardLoader(state)
   }),
   {
-    getStudentMasteryProfileRequestAction
+    getStudentMasteryProfileRequestAction,
+    getStudentStandardsAction
   }
 );
 

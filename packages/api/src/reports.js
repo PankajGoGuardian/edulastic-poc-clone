@@ -191,6 +191,13 @@ const fetchStudentList = params => {
   });
 };
 
+const fetchStudenStandards = params => {
+  return api.callApi({
+    url: `/report/student-standard`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -216,5 +223,6 @@ export default {
   fetchStudentMasteryProfileReport,
   fetchStudentAssessmentProfileReport,
   fetchStudentProfileSummaryReport,
-  fetchStudentList
+  fetchStudentList,
+  fetchStudenStandards
 };

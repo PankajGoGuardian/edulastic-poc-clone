@@ -23,7 +23,7 @@ export const ContentWrapper = styled.div`
 export const QuestionTypes = styled.div`
   display: flex;
   justify-content: space-between;
-  flex-direction:${props => props.flexDirection || "row"}
+  flex-direction: ${props => props.flexDirection || "row"};
   &:last-child {
     margin-top: 20px;
   }

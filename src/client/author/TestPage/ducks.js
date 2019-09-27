@@ -24,7 +24,12 @@ import { helpers } from "@edulastic/common";
 import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
-import { updateItemDocBasedSaga } from "../ItemDetail/ducks";
+import {
+  updateItemDocBasedSaga,
+  togglePublishWarningModalAction,
+  PROCEED_PUBLISH_ACTION,
+  hasStandards
+} from "../ItemDetail/ducks";
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
 // constants
 
@@ -667,6 +672,21 @@ function* updateTestDocBasedSaga({ payload }) {
       ...payload.data,
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
+    const standardPresent = questions.some(hasStandards);
+    // if alignment data is not present, set the flag to open the modal, and wait for
+    // an action from the modal.!
+    if (!standardPresent) {
+      yield put(togglePublishWarningModalAction(true));
+      // action dispatched by the modal.
+      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+      yield put(togglePublishWarningModalAction(false));
+
+      // if he wishes to add some just close the modal, and go to metadata.
+      // else continue the normal flow.
+      if (!publishItem) {
+        return;
+      }
+    }
     yield call(updateItemDocBasedSaga, {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });

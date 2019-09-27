@@ -232,12 +232,17 @@ class SideMenu extends Component {
         <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <LogoutIcon type="logout" /> {isCollapsed ? "" : "SIGN OUT"}
+              <LogoutIcon type="logout" /> {isCollapsed ? "" : "Sign Out"}
+            </a>
+          </Menu.Item>
+          <Menu.Item key="0" className="removeSelectedBorder">
+            <a>
+              <DollarIcon type="dollar" /> {isCollapsed ? "" : "Subscription"}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
-              <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
+              <IconDropdown type="user" /> {isCollapsed ? "" : "My Profile"}
             </Link>
           </Menu.Item>
         </Menu>
@@ -611,6 +616,13 @@ const Menu = styled(AntMenu)`
       
       &.removeSelectedBorder {
         border: none;
+        background-color: ${themeColor};
+        &:hover{
+          background-color: #fff;
+          svg{
+            fill: ${themeColor};
+          }
+        }
       }
     }
   }
@@ -740,12 +752,19 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid #fff;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
-
+    padding-bottom: 10px;
+    background: #fff;
+    .ant-menu-item:not(.ant-menu-item-selected) svg {
+      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+      &:hover,
+      &:focus {
+        fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+      }
+    }
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
@@ -763,6 +782,7 @@ const FooterDropDown = styled.div`
     li {
       &.ant-menu-item {
         margin: 0px;
+        margin-bottom: 0 !important;
         padding: 5px 16px;
         height: 50px;
         background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
@@ -877,7 +897,7 @@ const UserInfoButton = styled.div`
     width: auto;
     height: 60px;
     border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
     background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
@@ -995,6 +1015,10 @@ const IconDropdown = styled(AntIcon)`
 const LogoutIcon = styled(IconDropdown)`
   transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+`;
+
+const DollarIcon = styled(IconDropdown)`
+  color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 
 const LabelMenuItem = styled.span`

@@ -528,6 +528,13 @@ const Menu = styled(AntMenu)`
       
       &.removeSelectedBorder {
         border: none;
+        background-color: ${themeColor};
+        &:hover{
+          background-color: #fff;
+          svg{
+            fill: ${themeColor};
+          }
+        }
       }
       
       svg {
@@ -718,13 +725,28 @@ const FooterDropDown = styled.div`
   opacity: ${props => (props.isVisible ? "1" : "0")};
   transition: 0.2s;
   -webkit-transition: 0.2s;
+  .ant-menu-item:not(.ant-menu-item-selected) svg {
+    fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+    &:hover,
+    &:focus {
+      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+    }
+  }
   ul {
     background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid ${white};
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
-
+    padding-bottom: 10px;
+    background: #fff;
+    .ant-menu-item:not(.ant-menu-item-selected) svg {
+      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+      &:hover,
+      &:focus {
+        fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+      }
+    }
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
@@ -742,6 +764,7 @@ const FooterDropDown = styled.div`
     li {
       &.ant-menu-item {
         margin: 0px;
+        margin-bottom: 0 !important;
         padding: 5px 16px;
         height: 50px;
         background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
@@ -945,6 +968,7 @@ const IconDropdown = styled(AntIcon)`
 const LogoutIcon = styled(IconDropdown)`
   transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+  color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 
 const IconBars = styled(AntIcon)`

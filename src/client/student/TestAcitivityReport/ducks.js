@@ -1,11 +1,13 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all } from "redux-saga/effects";
+import { keyBy as _keyBy } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
-import { receiveTestByIdSuccess } from "../../author/TestPage/ducks";
+import { receiveTestByIdSuccess, getQuestions } from "../../author/TestPage/ducks";
 import { markQuestionLabel } from "../../assessment/Transformer";
+import { loadQuestionsAction } from "../../author/sharedDucks/questions";
 
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
@@ -18,6 +20,7 @@ export const setFeedbackReportAction = createAction(SET_FEEDBACK);
 function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload;
+    yield put(setFeedbackReportAction(null));
     if (!testActivityId) {
       throw new Error("invalid data");
     }
@@ -26,6 +29,8 @@ function* loadTestActivityReport({ payload }) {
       call(testsApi.getById, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
+    const questions = getQuestions(test.testItems);
+    yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));

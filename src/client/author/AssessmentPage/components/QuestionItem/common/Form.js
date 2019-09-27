@@ -24,7 +24,7 @@ export const QuestionOption = styled.span`
   text-align: center;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};
-  cursor: ${({ review }) => (review ? "pointer" : "default")};
+  cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
   border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
   &:not(:last-child) {
     margin-right: 5px;

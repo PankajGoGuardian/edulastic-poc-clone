@@ -489,7 +489,7 @@ export const reducer = (state = initialState, { type, payload }) => {
  * @param {Object} testItems - list of test items
  *
  */
-const getQuestions = (testItems = []) => {
+export const getQuestions = (testItems = []) => {
   const allQuestions = [];
   for (const item of testItems) {
     const { questions = [], resources = [] } = item.data || {};

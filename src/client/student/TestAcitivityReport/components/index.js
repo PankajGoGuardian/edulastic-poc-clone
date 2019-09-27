@@ -12,13 +12,20 @@ import MainContainer from "../../styled/mainContainer";
 //actions
 import { loadTestActivityReportAction } from "../ducks";
 import { setCurrentItemAction } from "../../sharedDucks/TestItem";
+import { getTestEntitySelector } from "../../../author/TestPage/ducks";
+import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
+import { getQuestionsSelector, getQuestionsArraySelector } from "../../../author/sharedDucks/questions";
+import { Spin } from "antd";
 
 const ReportListContainer = ({
   flag,
   match,
   location,
+  test,
   loadTestActivityReport,
   setCurrentItem,
+  questions,
+  questionsById,
   testTitle,
   testFeedback
 }) => {
@@ -33,17 +40,36 @@ const ReportListContainer = ({
     setCurrentItem(0);
   }, []);
 
+  const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
+
+  const props = {
+    docUrl,
+    annotations,
+    questions,
+    freeFormNotes,
+    questionsById,
+    pageStructure
+  };
+
   useEffect(() => {
     if (!testFeedback) return;
-
     setAssignmentItemTitle(testTitle);
   }, [testFeedback]);
 
+  if (!testFeedback) {
+    return <Spin />;
+  }
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader titleText="common.reportsTitle" />
       <TestActivitySubHeader title={assignmentItemTitle} />
-      <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />
+      {isDocBased ? (
+        <div style={{ height: "calc(100vh - 130px)" }}>
+          <Worksheet key="review" review {...props} viewMode="report" />
+        </div>
+      ) : (
+        <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />
+      )}
     </MainContainer>
   );
 };
@@ -53,7 +79,10 @@ const enhance = compose(
   connect(
     state => ({
       flag: state.ui.flag,
+      test: getTestEntitySelector(state),
       testFeedback: get(state, "testFeedback", null),
+      questions: getQuestionsArraySelector(state),
+      questionsById: getQuestionsSelector(state),
       testTitle: get(state, ["tests", "entity", "title"], "")
     }),
     {

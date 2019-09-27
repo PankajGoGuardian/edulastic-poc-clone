@@ -3,10 +3,8 @@ import PropTypes from "prop-types";
 import { Dropdown, Menu } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { IconGraphRightArrow } from "@edulastic/icons";
-
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
-import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, MinimizeButton } from "./styled";
+import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList } from "./styled";
 
 const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
@@ -35,24 +33,14 @@ const Thumbnails = ({
   onAddPdf,
   viewMode,
   review,
+  minimized,
   currentPage
 }) => {
-  const [minimized, setMinimized] = React.useState(false);
-
-  const toggleMinimized = () => {
-    setMinimized(!minimized);
-  };
-
   const onChangePage = page => () => onPageChange(page);
 
   return (
     <ThumbnailsWrapper review={review} minimized={minimized}>
       <PerfectScrollbar>
-        {review && (
-          <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
-            <IconGraphRightArrow />
-          </MinimizeButton>
-        )}
         <ThumbnailsList>
           {list.map((item, key) => (
             <ThumbnailsItem

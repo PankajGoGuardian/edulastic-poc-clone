@@ -29,6 +29,7 @@ import Section from "../Section/Section";
 import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
+import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
@@ -361,9 +362,19 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, centered, highlighted, list, onDragStart } = this.props;
-
-    const review = viewMode === "review";
+    const {
+      previewMode,
+      viewMode,
+      noCheck,
+      answersById,
+      centered,
+      highlighted,
+      list,
+      onDragStart,
+      review,
+      feedback
+    } = this.props;
+    const report = viewMode === "report";
 
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
@@ -388,6 +399,7 @@ class Questions extends React.Component {
                   key={question.id}
                   index={i}
                   data={question}
+                  review={review}
                   onCreateOptions={this.handleCreateOptions}
                   onOpenEdit={this.handleOpenEditModal(i)}
                   onDelete={this.handleDeleteQuestion(question.id)}
@@ -395,6 +407,7 @@ class Questions extends React.Component {
                   viewMode={viewMode}
                   answer={answersById[question.id]}
                   centered={centered}
+                  feedback={feedback}
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                 />
@@ -409,7 +422,7 @@ class Questions extends React.Component {
               scrollToBottom={this.scrollToBottom}
             />
           )}
-          {review && !noCheck && (
+          {review && !noCheck && !report && (
             <AnswerActionsWrapper>
               <AnswerAction active={previewMode === "check"} onClick={this.handleCheckAnswer}>
                 Check Answer
@@ -442,6 +455,7 @@ class Questions extends React.Component {
 const enhance = compose(
   connect(
     state => ({
+      feedback: FeedbackByQIdSelector(state),
       previewMode: getPreviewSelector(state)
     }),
     {

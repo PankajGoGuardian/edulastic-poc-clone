@@ -8,13 +8,14 @@ import { withRouter } from "react-router";
 import { isEmpty, get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB } from "@edulastic/common";
-import { Modal, message } from "antd";
 
+import { Modal, message } from "antd";
+import { IconGraphRightArrow } from "@edulastic/icons";
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
-import { WorksheetWrapper } from "./styled";
+import { WorksheetWrapper, MinimizeButton } from "./styled";
 import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
@@ -88,6 +89,7 @@ class Worksheet extends React.Component {
     creating: false,
     deleteConfirmation: false,
     deleteMode: false,
+    minimized: false,
     lineWidth: 6
   };
 
@@ -453,6 +455,10 @@ class Worksheet extends React.Component {
     setPercentUploaded(percentCompleted);
   };
 
+  toggleMinimized = () => {
+    this.setState(prevProps => ({ ...prevProps, minimized: !prevProps.minimized }));
+  };
+
   // setup for scratchpad ends
   render() {
     const {
@@ -466,6 +472,7 @@ class Worksheet extends React.Component {
       deleteMode,
       isAddPdf,
       selected,
+      minimized,
       lineWidth
     } = this.state;
     const {
@@ -539,6 +546,12 @@ class Worksheet extends React.Component {
             cancelUpload={this.cancelUpload}
           />
         </Modal>
+
+        {review && (
+          <MinimizeButton onClick={this.toggleMinimized} minimized={minimized}>
+            <IconGraphRightArrow />
+          </MinimizeButton>
+        )}
         <Thumbnails
           annotations={annotations}
           list={pageStructure}
@@ -554,6 +567,7 @@ class Worksheet extends React.Component {
           onMovePageDown={this.handleMovePageDown}
           onInsertBlankPage={this.handleInsertBlankPage}
           onRotate={this.handleRotate}
+          minimized={minimized}
           viewMode={viewMode}
           review={review}
         />
@@ -571,23 +585,26 @@ class Worksheet extends React.Component {
               renderExtra={svgContainer}
               viewMode={viewMode}
             />
-            <Tools
-              isWorksheet
-              onFillColorChange={this.onFillColorChange}
-              fillColor={fillColor}
-              deleteMode={deleteMode}
-              currentColor={currentColor}
-              onToolChange={this.handleToolChange}
-              activeMode={activeMode}
-              undo={this.handleUndo}
-              redo={this.handleRedo}
-              onColorChange={this.handleColorChange}
-            />
+            {viewMode !== "report" && (
+              <Tools
+                isWorksheet
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleToolChange}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                onColorChange={this.handleColorChange}
+              />
+            )}
           </div>
         </Fragment>
         <Questions
           noCheck={noCheck}
           list={questions}
+          review={review}
           viewMode={viewMode}
           questionsById={questionsById}
           answersById={answersById}

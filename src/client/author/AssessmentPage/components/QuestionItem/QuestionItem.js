@@ -156,7 +156,6 @@ class QuestionItem extends React.Component {
       mode: viewMode,
       view: previewMode
     };
-
     switch (data.type) {
       case MULTIPLE_CHOICE:
         return <FormChoice onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
@@ -202,18 +201,28 @@ class QuestionItem extends React.Component {
     return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
   };
 
+  renderScore = qId => {
+    const { feedback = {} } = this.props;
+    const { score = 0, maxScore = 0 } = feedback[qId] || {};
+    return (
+      <CorrectAnswer>
+        <CorrectAnswerTitle>Score:</CorrectAnswerTitle>
+        <CorrectAnswerValue>{`${score}/${maxScore}`}</CorrectAnswerValue>
+      </CorrectAnswer>
+    );
+  };
+
   render() {
     const { dragging } = this.state;
     const {
       data: { id, qIndex, type },
       index,
+      review,
       viewMode,
       previewMode,
       centered,
       highlighted
     } = this.props;
-
-    const review = viewMode === "review";
 
     return (
       <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} innerRef={this.itemRef}>
@@ -229,9 +238,10 @@ class QuestionItem extends React.Component {
           </Draggable>
           <QuestionForm>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
-          {review && previewMode !== "clear" && this.renderAnswerIndicator(type)}
+          {review && (previewMode !== "clear" || viewMode === "report") && this.renderAnswerIndicator(type)}
         </AnswerForm>
-        {review && previewMode === "show" && this.renderCorrectAnswer()}
+        {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
+        {viewMode === "report" && this.renderScore(id)}
       </QuestionItemWrapper>
     );
   }

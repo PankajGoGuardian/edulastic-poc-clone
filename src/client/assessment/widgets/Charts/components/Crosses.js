@@ -9,6 +9,7 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 import { Bar, ActiveBar, Text, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
+import AxisLabel from "./AxisLabel";
 
 const Crosses = ({
   item,
@@ -60,6 +61,10 @@ const Crosses = ({
   const getLength = y => Math.floor((height - margin - convertUnitToPx(y, gridParams)) / yAxisStep);
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
+
+  const labelIsVisible = index =>
+    (data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
+    (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility);
 
   return (
     <Fragment>
@@ -135,8 +140,7 @@ const Crosses = ({
             x={getCenterX(index) + step / 2}
             y={height + 20}
           >
-            {(data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index && dot.x) ||
-              ((data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility) && dot.x)}
+            {labelIsVisible(index) && <AxisLabel fractionFormat={data[index].labelFractionFormat} value={dot.x} />}
           </Text>
         </Fragment>
       ))}

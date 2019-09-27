@@ -276,6 +276,11 @@
         "showAlways": "Show always",
         "hidden": "Hidden",
         "showByHover": "Show by hover"
+      },
+      "fractionFormatOptions": {
+        "decimal": "Decimal",
+        "fraction": "Fraction",
+        "mixedFraction": "Mixed Fraction"
       }
     },
     "hotspot": {

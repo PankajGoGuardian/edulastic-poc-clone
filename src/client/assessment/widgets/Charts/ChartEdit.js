@@ -105,6 +105,10 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
             draft.chart_data.data[index].labelVisibility = value;
             break;
           }
+          case "labelFractionFormat": {
+            draft.chart_data.data[index].labelFractionFormat = value;
+            break;
+          }
           default:
         }
       })
@@ -210,6 +214,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
 
       <PointsList
         showLabelVisibilitySetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
+        showFractionFormatSetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

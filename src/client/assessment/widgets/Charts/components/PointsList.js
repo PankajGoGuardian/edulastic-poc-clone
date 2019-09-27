@@ -9,7 +9,14 @@ import UiInputGroup from "./UiInputGroup";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
-import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../const";
+import {
+  FRACTION_FORMAT_DECIMAL,
+  FRACTION_FORMAT_FRACTION,
+  FRACTION_FORMAT_MIXED_FRACTION,
+  SHOW_ALWAYS,
+  SHOW_BY_HOVER,
+  HIDDEN
+} from "../const";
 
 class PointsList extends Component {
   getHoverSettings = () => {
@@ -21,6 +28,15 @@ class PointsList extends Component {
     ];
   };
 
+  getFractionFormatSettings = () => {
+    const { t } = this.props;
+    return [
+      { label: t("component.chart.fractionFormatOptions.decimal"), value: FRACTION_FORMAT_DECIMAL },
+      { label: t("component.chart.fractionFormatOptions.fraction"), value: FRACTION_FORMAT_FRACTION },
+      { label: t("component.chart.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMAT_MIXED_FRACTION }
+    ];
+  };
+
   render() {
     const {
       points,
@@ -29,7 +45,8 @@ class PointsList extends Component {
       t,
       fillSections,
       cleanSections,
-      showLabelVisibilitySetting
+      showLabelVisibilitySetting,
+      showFractionFormatSetting
     } = this.props;
 
     return (
@@ -62,10 +79,23 @@ class PointsList extends Component {
             {showLabelVisibilitySetting && (
               <Select
                 value={dot.labelVisibility || SHOW_ALWAYS}
-                style={{ width: "150px" }}
+                style={{ width: "150px", marginRight: "20px" }}
                 onSelect={value => handleChange(index)("labelVisibility", value)}
               >
                 {this.getHoverSettings().map((setting, i) => (
+                  <Select.Option key={`setting-${i}`} value={setting.value}>
+                    {setting.label}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+            {showFractionFormatSetting && (
+              <Select
+                value={dot.labelFractionFormat || FRACTION_FORMAT_DECIMAL}
+                style={{ width: "150px" }}
+                onSelect={value => handleChange(index)("labelFractionFormat", value)}
+              >
+                {this.getFractionFormatSettings().map((setting, i) => (
                   <Select.Option key={`setting-${i}`} value={setting.value}>
                     {setting.label}
                   </Select.Option>
@@ -86,13 +116,15 @@ PointsList.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  showLabelVisibilitySetting: PropTypes.bool
+  showLabelVisibilitySetting: PropTypes.bool,
+  showFractionFormatSetting: PropTypes.bool
 };
 
 PointsList.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  showLabelVisibilitySetting: false
+  showLabelVisibilitySetting: false,
+  showFractionFormatSetting: false
 };
 
 export default withAddButton(PointsList);

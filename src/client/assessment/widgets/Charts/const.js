@@ -8,6 +8,10 @@ export const SIZE_DEFAULT = "default";
 export const SIZE_LARGE = "large";
 export const SIZE_SMALL = "small";
 
+export const FRACTION_FORMAT_DECIMAL = "Decimal";
+export const FRACTION_FORMAT_FRACTION = "Fraction";
+export const FRACTION_FORMAT_MIXED_FRACTION = "MixedFraction";
+
 export const SHOW_ALWAYS = "showAlways";
 export const SHOW_BY_HOVER = "showByHover";
 export const HIDDEN = "hidden";

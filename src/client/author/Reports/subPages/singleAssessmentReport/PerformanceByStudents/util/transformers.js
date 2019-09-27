@@ -256,11 +256,14 @@ export const getColumns = (columns, assessmentName, role) => {
   const filteredColumns = filterAccordingToRole(columns, role);
 
   return next(filteredColumns, columnsDraft => {
-    columnsDraft[1].render = (data, record) => (
-      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
-        {data}
-      </Link>
-    );
+    columnsDraft[1].render = (data, record) =>
+      record.totalScore || record.totalScore === 0 ? (
+        <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+          {data}
+        </Link>
+      ) : (
+        data
+      );
 
     forEach(columnsDraft, column => {
       if (column.sortable) {

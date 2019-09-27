@@ -39,36 +39,42 @@ export const StudentsTable = styled(Table)`
   .ant-table {
     overflow: auto;
     &-thead {
-      & > tr > th {
-        border: none;
-        font-weight: bold;
-        font-size: 12px;
-        text-transform: uppercase;
-        color: ${cardTitleColor};
-        background: white;
-        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
-        & .ant-table-header-column .ant-table-column-sorters::before {
-          background: ${white};
-        }
-        &.ant-table-column-has-actions.ant-table-column-has-filters
-          &.ant-table-column-has-actions.ant-table-column-has-sorters {
-          text-align: center;
-        }
-        .ant-table-column-sorters {
-          display: flex;
-          justify-content: center;
+      & > tr {
+        & > th {
+          border: none;
+          font-weight: bold;
+          font-size: 12px;
+          text-transform: uppercase;
+          color: ${cardTitleColor};
+          background: white;
+          padding: 16px 10px;
+          &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+          & .ant-table-header-column .ant-table-column-sorters::before {
+            background: ${white};
+          }
+          &.ant-table-column-has-actions.ant-table-column-has-filters
+            &.ant-table-column-has-actions.ant-table-column-has-sorters {
+            text-align: center;
+          }
+          .ant-table-column-sorters {
+            display: flex;
+            justify-content: center;
 
-          .ant-table-column-sorter-inner {
-            &.ant-table-column-sorter-inner-full {
-              margin-top: 0em;
-            }
-            .ant-table-column-sorter {
-              &-up,
-              &-down {
-                font-size: 10px;
+            .ant-table-column-sorter-inner {
+              &.ant-table-column-sorter-inner-full {
+                margin-top: 0em;
+              }
+              .ant-table-column-sorter {
+                &-up,
+                &-down {
+                  font-size: 10px;
+                }
               }
             }
           }
+        }
+        & > :nth-last-of-type(-n + 3) {
+          text-align: center;
         }
       }
     }
@@ -86,19 +92,11 @@ export const StudentsTable = styled(Table)`
           &.ant-table-column-sort {
             background: none;
           }
-          & > span {
-            overflow: hidden;
-            display: block;
-            max-width: 150px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            padding-left: 5px;
-          }
           font-weight: 550;
-          padding: 10px 10px;
+          padding: 10px 16px;
         }
         & > :nth-last-of-type(-n + 3) {
-          text-align: start;
+          text-align: center;
         }
       }
     }
@@ -446,6 +444,13 @@ export const RedirectButton = styled(StyledTabButton)`
       display: none;
     }
   }
+`;
+
+export const CustomRedirectButton = styled(RedirectButton)`
+  white-space: nowrap;
+  width: auto;
+  background: ${themeColor};
+  color: ${white};
 `;
 
 export const ButtonIconWrap = styled.span`

@@ -45,7 +45,8 @@ const ClassList = ({
         <Tooltip title={_classname} placement="bottom">
           {_classname}
         </Tooltip>
-      )
+      ),
+      width: 300
     },
     {
       title: "Class Code",
@@ -56,7 +57,8 @@ const ClassList = ({
         <Tooltip title={classcode} placement="bottom">
           {classcode}
         </Tooltip>
-      )
+      ),
+      width: 150
     },
     {
       title: "Grades",
@@ -93,7 +95,8 @@ const ClassList = ({
             {subject.text}
           </Tooltip>
         );
-      }
+      },
+      width: 150
     },
     {
       title: "Students",

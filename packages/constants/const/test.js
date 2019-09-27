@@ -2,7 +2,8 @@ module.exports = {
   type: {
     ASSESSMENT: "assessment",
     COMMON: "common assessment",
-    PRACTICE: "practice"
+    PRACTICE: "practice",
+    TESTLET: "testlet"
   },
   settingCategories: [
     { id: "test-type", title: "Test Type" },

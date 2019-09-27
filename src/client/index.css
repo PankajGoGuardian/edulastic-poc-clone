@@ -1933,6 +1933,7 @@ span.token.active-word {
 
 .ant-modal-wrap {
   z-index: 1003;
+  overflow: hidden;
 }
 
 .ant-modal-mask {

@@ -56,6 +56,7 @@ const StudentAutoComplete = ({
 
   useEffect(() => {
     if (isEmpty(studentList)) {
+      // FIXME shouldn't be passing dummy data "a"
       searchUser("a", orgData);
     }
   }, []);

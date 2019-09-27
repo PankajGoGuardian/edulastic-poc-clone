@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { get, filter, includes, map } from "lodash";
+import { get, filter } from "lodash";
 import { Row, Col, Icon } from "antd";
-import { Pie, PieChart, Cell } from "recharts";
-import { StyledCard, StyledH3 } from "../../../common/styled";
+import { StyledCard } from "../../../common/styled";
 import { Placeholder } from "../../../common/components/loader";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
@@ -27,14 +26,13 @@ import {
   getFiltersSelector,
   getStudentSelector
 } from "../common/filterDataDucks";
-import { augmentStandardMetaInfo } from "../common/utils/transformers.js";
 import { useGetStudentMasteryData } from "../common/hooks";
 import { getDomainOptions } from "./common/utils/transformers";
 import { toggleItem, downloadCSV, getStudentAssignments } from "../../../common/util";
-import { getGrades } from "../common/utils/transformers";
+import { getGrades, getStudentName } from "../common/utils/transformers";
 
 const usefilterRecords = (records, domain) => {
-  return useMemo(() => filter(records, record => domain == "All" || record.domainId == domain), [records, domain]);
+  return useMemo(() => filter(records, record => domain === "All" || record.domainId === domain), [records, domain]);
 };
 
 const getTooltip = payload => {
@@ -112,9 +110,10 @@ const StudentMasteryProfile = ({
   }
 
   const studentInformation = studInfo[0] || {};
+  const studentName = getStudentName(selectedStudent, studentInformation);
 
   const onCsvConvert = data =>
-    downloadCSV(`Standard Performance Details-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
+    downloadCSV(`Standard Performance Details-${studentName}-${studentInformation.subject}.csv`, data);
 
   const handleOnClickStandard = (params, standard) => {
     getStudentStandardsAction(params);
@@ -136,7 +135,7 @@ const StudentMasteryProfile = ({
           </Col>
           <Col xs={24} sm={24} md={5} lg={5} xl={5}>
             <p>
-              <b>Name</b>: {selectedStudent.title}
+              <b>Name</b>: {studentName}
             </p>
             <p>
               <b>Grade</b>: {getGrades(studentInformation.grades)}
@@ -179,7 +178,7 @@ const StudentMasteryProfile = ({
           showModal={showStudentAssignmentModal}
           closeModal={closeStudentAssignmentModal}
           studentAssignmentsData={studentAssignmentsData}
-          studentName={selectedStudent.title}
+          studentName={studentName}
           standardName={clickedStandard}
           loadingStudentStandard={loadingStudentStandard}
         />

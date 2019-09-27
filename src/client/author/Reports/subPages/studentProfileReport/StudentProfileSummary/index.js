@@ -16,7 +16,7 @@ import {
 } from "./ducks";
 import { getCsvDownloadingState } from "../../../ducks";
 import { Placeholder } from "../../../common/components/loader";
-import { augementAssessmentChartData, augmentStandardMetaInfo } from "../common/utils/transformers";
+import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
 import { augmentDomainStandardMasteryData } from "./common/utils/transformers";
 import { downloadCSV } from "../../../common/util";
 import { useGetStudentMasteryData } from "../common/hooks";
@@ -90,8 +90,10 @@ const StudentProfileSummary = ({
 
   const studentInformation = studInfo[0] || {};
   const studentClassInfo = studentClassData[0] || {};
+  const studentName = getStudentName(selectedStudent, studentInformation);
+
   const onCsvConvert = data =>
-    downloadCSV(`Student Profile Report-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
+    downloadCSV(`Student Profile Report-${studentName}-${studentInformation.subject}.csv`, data);
 
   return (
     <>
@@ -102,7 +104,7 @@ const StudentProfileSummary = ({
           </Col>
           <Col xs={24} sm={24} md={3} lg={3} xl={3}>
             <p>
-              <b>Name</b>: {selectedStudent.title}
+              <b>Name</b>: {studentName}
             </p>
             <p>
               <b>Grade</b>: {getGrades(studentInformation.grades)}

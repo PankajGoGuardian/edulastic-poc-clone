@@ -223,7 +223,7 @@ export const StandardsGradebookTable = ({
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Row>
+            <Row className="control-dropdown-row">
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}

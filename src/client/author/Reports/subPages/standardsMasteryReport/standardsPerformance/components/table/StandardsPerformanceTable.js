@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { sumBy, includes, filter } from "lodash";
 import next from "immer";
 import { Row, Col } from "antd";
+import styled from "styled-components";
 import {
   getOptionFromKey,
   getMasteryScore,
@@ -136,6 +137,7 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
 };
 
 const StandardsPerformanceTable = ({
+  className,
   tableFilters,
   tableFiltersOptions,
   onFilterChange,
@@ -170,12 +172,12 @@ const StandardsPerformanceTable = ({
 
   return (
     <>
-      <Row type="flex" justify="start">
+      <Row type="flex" justify="start" className={className}>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledH3>Domain Mastery Details by School</StyledH3>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <Row>
+          <Row className="control-dropdown-row">
             <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
               <ControlDropDown
                 prefix={"Compare by "}
@@ -212,4 +214,11 @@ const StandardsPerformanceTable = ({
   );
 };
 
-export default StandardsPerformanceTable;
+const StyledStandardsPerformanceTable = styled(StandardsPerformanceTable)`
+  .control-dropdown-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+`;
+
+export default StyledStandardsPerformanceTable;

@@ -137,29 +137,31 @@ export const getDenormalizedData = rawData => {
   let studInfoMap = keyBy(rawStudInfo, "studentId");
 
   let rawMetricInfo = get(rawData, "data.result.metricInfo", []);
-  let enhancedRawMetricInfo = rawMetricInfo.map((item, index) => {
-    let obj = {
-      ...item
-    };
-    if (studInfoMap[item.studentId]) {
-      obj = {
-        ...obj,
-        ...studInfoMap[item.studentId],
-        studentName: studInfoMap[item.studentId].firstName + " " + studInfoMap[item.studentId].lastName,
-        groupIds: studInfoMap[item.studentId].groupIds.split(",")
+  let enhancedRawMetricInfo = rawMetricInfo
+    .filter(item => skillInfoMap[item.standardId])
+    .map((item, index) => {
+      let obj = {
+        ...item
       };
-      let groupIdsMap = keyBy(obj.groupIds);
-      let uniqueGroupIds = values(groupIdsMap);
-      obj.groupIds = uniqueGroupIds;
-    }
-    if (skillInfoMap[item.standardId]) {
-      obj = {
-        ...obj,
-        ...skillInfoMap[item.standardId]
-      };
-    }
-    return obj;
-  });
+      if (studInfoMap[item.studentId]) {
+        obj = {
+          ...obj,
+          ...studInfoMap[item.studentId],
+          studentName: studInfoMap[item.studentId].firstName + " " + studInfoMap[item.studentId].lastName,
+          groupIds: studInfoMap[item.studentId].groupIds.split(",")
+        };
+        let groupIdsMap = keyBy(obj.groupIds);
+        let uniqueGroupIds = values(groupIdsMap);
+        obj.groupIds = uniqueGroupIds;
+      }
+      if (skillInfoMap[item.standardId]) {
+        obj = {
+          ...obj,
+          ...skillInfoMap[item.standardId]
+        };
+      }
+      return obj;
+    });
 
   let denormalizedEnhancedRawMetricInfo = [];
   enhancedRawMetricInfo.map((item, index) => {

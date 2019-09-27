@@ -11,7 +11,12 @@ export const UpperContainer = styled.div`
   }
 `;
 
-export const TableContainer = styled.div``;
+export const TableContainer = styled.div`
+  .control-dropdown-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+`;
 
 export const StyledTable = styled(Table)`
   .ant-table-body {

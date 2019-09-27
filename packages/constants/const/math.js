@@ -101,24 +101,24 @@ const methodOptions = {
     "isMixedFraction",
     "ignoreAlphabeticCharacter",
     "inverseResult",
-    "setDecimalSeparator",
-    "setThousandsSeparator",
     "allowedVariables",
     "interpretAsSet",
     "isRationalized",
     "setListTypeResponse",
     "compareSides",
-    "unit"
+    "unit",
+    "setDecimalSeparator",
+    "setThousandsSeparator"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
     "ignoreTrailingZeros",
-    "setDecimalSeparator",
-    "setThousandsSeparator",
     "ignoreOrder",
     "ignoreCoefficientOfOne",
     "inverseResult",
-    "allowedVariables"
+    "allowedVariables",
+    "setDecimalSeparator",
+    "setThousandsSeparator"
   ],
   [methods.EQUIV_VALUE]: [
     "ariaLabel",
@@ -126,20 +126,20 @@ const methodOptions = {
     "isMixedFraction",
     "isSimpleFraction",
     "tolerance",
-    "setThousandsSeparator",
     "significantDecimalPlaces",
     "allowNumericOnly",
     "allowedVariables",
     "interpretAsSet",
     "compareSides",
-    "setListTypeResponse"
+    "setListTypeResponse",
+    "setThousandsSeparator"
   ],
 
   [methods.SET_EVALUATION]: [],
   [methods.EQUIV_SYNTAX]: ["notExpected", "syntax", "argument", "rule"],
-  [methods.IS_SIMPLIFIED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
-  [methods.IS_FACTORISED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
-  [methods.IS_EXPANDED]: ["notExpected", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
+  [methods.IS_SIMPLIFIED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.IS_FACTORISED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator", "field"],
+  [methods.IS_EXPANDED]: ["notExpected", "significantDecimalPlaces", "setDecimalSeparator", "setThousandsSeparator"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
   [methods.IS_RATIONALIZED]: ["notExpected"],
   [methods.CHECK_IF_TRUE]: ["notExpected"]

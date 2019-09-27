@@ -266,7 +266,7 @@ const defaultTheme = {
     cardInfoContentColor: title
   },
   profile: {
-    userHeadingTextSize: "22px",
+    userHeadingTextSize: "18px",
     userHeadingTextColor: title,
     userHeadingTextWeight: "bold",
     userSubTitleTextSize: "13px",

@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, largeDesktopWidth, mobileWidthMax, white, extraDesktopWidthMax } from "@edulastic/colors";
+import {
+  tabletWidth,
+  largeDesktopWidth,
+  mobileWidthMax,
+  white,
+  extraDesktopWidthMax,
+  themeColor
+} from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
@@ -38,7 +45,7 @@ export default connect(
 const HeaderContainer = styled.div`
   padding-top: 76px;
   margin-bottom: 16px;
-  background: ${props => props.theme.headerBgColor || "#00AD50"};
+  background: ${props => props.theme.headerBgColor || themeColor};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding-top: 96px;
@@ -64,13 +71,13 @@ const FixedHeader = styled(Affix)`
   @media (max-width: 768px) {
     left: 0;
     padding-left: 70px;
-    background: ${props => props.theme.headerBgColor || "#00AD50"};
+    background: ${props => props.theme.headerBgColor || themeColor};
   }
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
   border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
-  background-color: ${props => props.theme.headerBgColor || "#00AD50"};
+  background-color: ${props => props.theme.headerBgColor || themeColor};
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;
   align-items: center;

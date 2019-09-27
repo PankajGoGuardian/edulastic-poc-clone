@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin, message } from "antd";
-import { themeColor, white, greyishDarker2 } from "@edulastic/colors";
+import { themeColor, white, greyishDarker2, largeDesktopWidth } from "@edulastic/colors";
 import { uploadToS3 } from "../../../author/src/utils/upload";
 import { beforeUpload } from "@edulastic/common";
 import ProfileImage from "../../assets/Profile.png";
@@ -124,20 +124,28 @@ const Container = styled.div`
   width: ${props => props.width}px;
   position: relative;
   border-radius: 50%;
-  background: #dddddd;
+  background: ${greyishDarker2};
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 150px;
+    height: 150px;
+  }
 `;
 
 const UploadWrapper = styled.div`
-  margin: 10px;
   .ant-upload-select {
-    min-width: 100%;
+    width: ${props => props.width}px;
+    height: ${props => props.height}px;
     border: none;
     padding: 0px !important;
-    height: ${props => props.height}px;
   }
-
   .ant-upload {
     padding: 0 !important;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 150px;
+    height: 150px;
   }
 `;
 
@@ -155,7 +163,7 @@ const Image = styled.div`
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 `;
 
@@ -193,4 +201,8 @@ const ImageContainer = styled.div`
   height: ${props => props.height}px;
   overflow: hidden;
   border-radius: 50%;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    height: 150px;
+  }
 `;

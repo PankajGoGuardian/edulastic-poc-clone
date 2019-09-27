@@ -58,7 +58,16 @@ const getColumns = (handleOnClickStandard, filters) => {
     {
       title: "Mastery",
       key: "masteryName",
-      dataIndex: "masteryName"
+      dataIndex: "masteryName",
+      render: (data, record) => {
+        const obj = {
+          termId: filters.termId,
+          studentId: record.studentId,
+          standardId: record.standardId,
+          profileId: filters.standardsProficiencyProfileId
+        };
+        return <OnClick onClick={() => handleOnClickStandard(obj, record.standard)}>{data}</OnClick>;
+      }
     },
     {
       title: "Assessment#",

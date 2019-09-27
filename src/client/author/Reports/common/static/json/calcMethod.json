@@ -1,10 +1,30 @@
 [
   {
     "calcMethod": 1,
-    "calcType": "Decaying Average"
+    "calcType": "Most Recent"
   },
   {
     "calcMethod": 2,
+    "calcType": "Simple Average"
+  },
+  {
+    "calcMethod": 3,
+    "calcType": "Max Score"
+  },
+  {
+    "calcMethod": 4,
+    "calcType": "Power Law"
+  },
+  {
+    "calcMethod": 5,
+    "calcType": "Mode Score"
+  },
+  {
+    "calcMethod": 6,
+    "calcType": "Decaying Average"
+  },
+  {
+    "calcMethod": 7,
     "calcType": "Moving Average"
   }
 ]

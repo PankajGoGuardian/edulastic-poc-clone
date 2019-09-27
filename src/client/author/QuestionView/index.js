@@ -212,6 +212,7 @@ class QuestionViewContainer extends Component {
                   dataKey="avatarName"
                   tickSize={0}
                   cursor="pointer"
+                  dy={10}
                   onClick={({ index }) => {
                     const id = data[index].id;
                     _scrollTo(id);

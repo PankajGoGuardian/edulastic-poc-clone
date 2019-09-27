@@ -84,6 +84,7 @@ function* receiveTestActivitySaga({ payload }) {
 
     const students = get(gradebookData, "students", []);
     // the below methods mutates the gradebookData
+    gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.test = classResponse;
     markQuestionLabel(gradebookData.testItemsData);

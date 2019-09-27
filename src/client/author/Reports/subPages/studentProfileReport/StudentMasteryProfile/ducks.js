@@ -9,9 +9,9 @@ import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST = "[reports] get reports student mastery profile request";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS = "[reports] get reports student mastery profile success";
 const GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR = "[reports] get reports student mastery profile error";
-const GET_STUDENT_STANDARDS_REQUEST = "[reports] get student standards request";
-const GET_STUDENT_STANDARDS_SUCCESS = "[reports] get student standards success";
-const GET_STUDENT_STANDARDS_FAILED = "[reports] get student standards failed";
+const GET_STUDENT_STANDARDS_REQUEST = "[reports] student mastery profile get student standards request";
+const GET_STUDENT_STANDARDS_SUCCESS = "[reports] student mastery profile get student standards success";
+const GET_STUDENT_STANDARDS_FAILED = "[reports] student mastery profile get student standards failed";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 

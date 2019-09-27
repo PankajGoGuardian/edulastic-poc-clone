@@ -7,14 +7,17 @@ class ParentController extends MessageController {
     this.testletID = testletID || "iCat";
     this.initLang = "en_US";
     this.itemState = {};
-    this.itemResponse = {};
+    this.response = {};
     this.totalPage = "0";
+    this.currentPageIds = {};
 
     // callbacks for React component
     this.setTotalPage = null;
     this.setQuestions = null;
     this.setCurrentQuestion = null;
     this.unlockNext = null;
+    this.handleReponse = null;
+    this.gotoParticularQuestion = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -23,11 +26,14 @@ class ParentController extends MessageController {
     this.setQuestions = callbacks.setQuestions;
     this.setCurrentQuestion = callbacks.setCurrentQuestion;
     this.unlockNext = callbacks.unlockNext;
+    this.handleReponse = callbacks.handleReponse;
+    this.gotoParticularQuestion = callbacks.gotoParticularQuestion;
   }
 
   /********************** call from testlet ************************/
   // testlet ready to init
   itemReady() {
+    console.log("itemReady from parent...");
     this.initialize();
   }
 
@@ -46,15 +52,14 @@ class ParentController extends MessageController {
 
   // get response data from testlet
   onResponse(response) {
-    // itemResponse = response;
-    console.log("parent :: response from testlet");
-    console.log(JSON.stringify(response));
+    this.response = response;
+    if (this.handleReponse && typeof this.handleReponse === "function") {
+      setTimeout(this.handleReponse);
+    }
   }
 
   // get state data from testlet
   onState(state) {
-    console.log("parent :: get state data from testlet");
-    console.log(JSON.stringify(state));
     this.itemState = state;
   }
 
@@ -70,10 +75,7 @@ class ParentController extends MessageController {
   }
 
   // get scene info from testlet
-  onScenes(sceneArr) {
-    console.log("parent :: get testlet scenes...");
-    console.log(sceneArr);
-  }
+  onScenes(sceneArr) {}
 
   // get screen info from testlet
   onScreens(screenArr) {
@@ -96,7 +98,10 @@ class ParentController extends MessageController {
   }
 
   onCurrentPageID(currentScoring) {
-    console.log("parent :: get testlet current page score opportunity ids..." + currentScoring);
+    this.currentPageIds = JSON.parse(currentScoring);
+    if (this.gotoParticularQuestion) {
+      this.gotoParticularQuestion(Object.keys(this.currentPageIds));
+    }
   }
 
   // get version number from testlet
@@ -119,7 +124,7 @@ class ParentController extends MessageController {
   /******************** call testlet ***********************/
   initialize() {
     const params = {
-      response: this.itemResponse,
+      response: this.response,
       state: this.itemState,
       language: this.initLang,
       testletID: this.testletID

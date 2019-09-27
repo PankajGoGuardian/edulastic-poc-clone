@@ -33,14 +33,14 @@ const PlayerHeader = ({
                   <ActionButton onClick={onPrevQuestion} title="Prev">
                     <IconChevronLeft />
                   </ActionButton>
-                  <ActionButton onClick={onNextQuestion} title="Next" disable={!unlockNext}>
+                  <ActionButton onClick={onNextQuestion} title="Next">
                     <span>Next</span>
                     <IconGraphRightArrow />
                   </ActionButton>
                 </>
               )}
               {currentItem <= 1 && (
-                <ActionButton onClick={onNextQuestion} title="Start">
+                <ActionButton onClick={onNextQuestion} title="Start" disable={!unlockNext}>
                   <span>Start</span>
                   <IconGraphRightArrow />
                 </ActionButton>

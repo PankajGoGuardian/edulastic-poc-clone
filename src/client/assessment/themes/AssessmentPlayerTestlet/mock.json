@@ -1,0 +1,188 @@
+{
+  "testletURL": "testlets/testlet-musicmixer/main.html",
+  "testletId": "iCat",
+  "mapping": [
+    {
+      "uuid": "7885bbeb-20a0-4691-b720-a7c01a7b8a41",
+      "testletItemId": ["mmx-s001", "mmx-s002"],
+      "responses": [
+        {
+          "uuid": "d4981e8d-84f9-493e-8142-b409fdc3cd2e",
+          "responseId": "s001-iclms-r1",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "5b9c69dd-a700-4d88-87e0-892a47e4c30d",
+          "responseId": "s001-iclms-r2",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "1090ebc9-8c90-481a-8218-dde9f117f37a",
+          "responseId": "s001-iclms-r3",
+          "type": "dropdown",
+          "choices": { "a": 1, "b": 0 }
+        },
+        {
+          "uuid": "3b294b5f-3eda-4195-b1f4-37d7896de6cb",
+          "responseId": "s001-iclms-r4",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "6c939c0e-dbef-424c-9a5a-a69db23f2378",
+          "responseId": "s002-ne-r1",
+          "type": "input"
+        },
+        {
+          "uuid": "c0160e12-8653-4fb8-8777-5b55fe212bde",
+          "responseId": "s002-ne-r2",
+          "type": "input"
+        }
+      ]
+    },
+    {
+      "uuid": "8fc0b299-87b3-4a22-ad3e-d01e024948b0",
+      "testletItemId": ["mmx-s003"],
+      "responses": [
+        {
+          "uuid": "1e32ff0f-cf7f-4832-86bb-c20c7af97cc6",
+          "responseId": "s003-iclms-r1",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "f0b2cf38-9818-4b91-a29a-90184972f21e",
+          "responseId": "s003-iclms-r2",
+          "type": "dropdown"
+        }
+      ]
+    },
+    {
+      "uuid": "a3d72b39-f401-4ff2-9ee6-72f1dd3adf3f",
+      "testletItemId": ["mmx-s005"],
+      "responses": [
+        {
+          "uuid": "631b757c-ca74-4744-b416-51ff0551595d",
+          "responseId": "s005-ne-r1",
+          "type": "input"
+        }
+      ]
+    },
+    {
+      "uuid": "c07318b5-b11b-466a-bded-dd34dbd2fa52",
+      "testletItemId": ["mmx-s006"],
+      "responses": [
+        {
+          "uuid": "1090ebc9-8c90-481a-8218-dde9f117f37a",
+          "responseId": "s006-ssmc-r1",
+          "type": "radio"
+        }
+      ]
+    },
+    {
+      "uuid": "33dae42f-c63b-4be2-a74b-e092cce0ff06",
+      "testletItemId": ["mmx-s007"],
+      "responses": [
+        {
+          "uuid": "8bd134f4-8c77-4851-9470-c75ebc931744",
+          "responseId": "s007-ne-r1",
+          "type": "input"
+        }
+      ]
+    },
+    {
+      "uuid": "fbc5baea-440f-4c91-9b70-9351241dce0d",
+      "testletItemId": ["mmx-s008"],
+      "responses": [
+        {
+          "uuid": "1380dc98-d4f9-45e5-89f1-bdc7dafc4a77",
+          "responseId": "s008-ssmc-r1",
+          "type": "radio"
+        }
+      ]
+    },
+    {
+      "uuid": "d48921d3-e25b-49ce-8b2e-18de7e2f07ce",
+      "testletItemId": ["mmx-s009"],
+      "responses": [
+        {
+          "uuid": "30d853d4-829d-4af0-bdc5-f70ee1dce2a8",
+          "responseId": "s009-iclms-r1",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "85f41dd6-6499-48f3-9807-84327e1366fb",
+          "responseId": "s009-iclms-r2",
+          "type": "dropdown"
+        }
+      ]
+    },
+    {
+      "uuid": "894f559e-3ed1-4586-a46c-ee609f279915",
+      "testletItemId": ["mmx-s010"],
+      "responses": [
+        {
+          "uuid": "8eb8bf6d-8ef2-4ca0-af78-229f78428700",
+          "responseId": "s010-iclms-r1",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "6629a6ad-c122-4ebc-beaa-8e858f6b6b74",
+          "responseId": "s010-iclms-r2",
+          "type": "dropdown"
+        },
+        {
+          "uuid": "503aeda2-d4fb-43a9-b6fd-78de3972a81d",
+          "responseId": "s010-iclms-r3",
+          "type": "dropdown"
+        }
+      ]
+    },
+    {
+      "uuid": "c4f4c6e3-e417-4d9c-9da3-6f5862471e52",
+      "testletItemId": ["mmx-s011"],
+      "responses": [
+        {
+          "uuid": "38ae1c3f-3123-4f47-9f88-d12289b1dbe1",
+          "responseId": "s011-ne-r1",
+          "type": "input"
+        },
+        {
+          "uuid": "1ab770d3-8b92-4ea5-ae4d-c7a2ebef202d",
+          "responseId": "s011-ne-r2",
+          "type": "input"
+        },
+        {
+          "uuid": "a29b2f8a-37a3-4a39-ac69-0fc50025c640",
+          "responseId": "s011-ne-r3",
+          "type": "input"
+        },
+        {
+          "uuid": "24aef30c-02c6-42e0-a0b3-03cbadda9252",
+          "responseId": "s011-ne-r4",
+          "type": "input"
+        }
+      ]
+    },
+    {
+      "uuid": "e177839c-8720-4697-8530-b01b1370b44b",
+      "testletItemId": ["mmx-s012"],
+      "responses": [
+        {
+          "uuid": "2ae7b1b6-7d67-4bb6-9d5c-d8b03ea555b0",
+          "responseId": "s012-zone-r1",
+          "type": "radio"
+        }
+      ]
+    },
+    {
+      "uuid": "7bf3d6d3-eedc-4fc6-ae6e-7b89a7c8403e",
+      "testletItemId": ["mmx-s013"],
+      "responses": [
+        {
+          "uuid": "45c3eef1-c8f2-46e6-9be4-70e2b654fca7",
+          "responseId": "s013-zone-r1",
+          "type": "radio"
+        }
+      ]
+    }
+  ]
+}

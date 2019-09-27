@@ -8,6 +8,7 @@ import { WithResources } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
+import { setUserAnswerAction } from "../../actions/answers";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 // components
 import { Container } from "../common";
@@ -104,6 +105,7 @@ export default connect(
     answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
   }),
   {
-    checkAnswer: checkAnswerEvaluation
+    checkAnswer: checkAnswerEvaluation,
+    setUserAnswer: setUserAnswerAction
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

@@ -259,6 +259,8 @@ function* loadTest({ payload }) {
         passages,
         items: testItems,
         title: test.title,
+        testType: test.testType,
+        testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,

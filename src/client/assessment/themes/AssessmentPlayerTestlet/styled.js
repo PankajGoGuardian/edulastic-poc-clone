@@ -63,7 +63,7 @@ export const ActionButton = styled.div`
   color: ${props => props.theme.headerIconColor};
   font-weight: 900;
   font-size: 17px;
-
+  user-select: none;
   ${props => {
     const { theme, disable } = props;
     return `
@@ -77,7 +77,6 @@ export const ActionButton = styled.div`
       }
     `;
   }}
-
   span {
     margin: 0px 8px;
   }

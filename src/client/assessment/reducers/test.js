@@ -39,6 +39,8 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         items: payload.items,
+        testType: payload.testType,
+        testletConfig: payload.testletConfig,
         passages: payload.passages,
         title: payload.title,
         annotations: payload.annotations,

@@ -10,9 +10,7 @@ import ParentController from "./utility/parentController";
 
 import { MainContent, Main } from "./styled";
 
-import mockMapJson from "./mock";
-
-const frameController = new ParentController("iCat");
+let frameController = {};
 
 const responseType = {
   dropdown: "dropdown",
@@ -22,21 +20,15 @@ const responseType = {
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQuestion }) => {
+const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, saveUserAnswer, testletConfig = {} }) => {
   const frameRef = useRef();
+  const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
   const [currentPage, setCurrentQuestion] = useState(0);
   const [testletItems, setQuestions] = useState([]);
   const [unlockNext, setUnlockNext] = useState(false);
 
-  const nextQuestion = () => {
-    frameController.sendNext();
-  };
-
-  const prevQuestion = () => {
-    frameController.sendPrevDev();
-  };
-
-  const findItemIdMap = cPageIds => find(mockMapJson.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
+  const findItemIdMap = cPageIds =>
+    find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
@@ -49,10 +41,38 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQue
     return allResponses[testletId];
   };
 
-  const mapTestletToEdu = () => {
+  const findCurrentItemFromIdMap = () => {
     const { currentPageIds } = frameController;
     const cPageIds = Object.keys(currentPageIds);
     const currentItem = findItemIdMap(cPageIds);
+    return currentItem;
+  };
+
+  const saveUserResponse = () => {
+    const currentItem = findCurrentItemFromIdMap();
+    if (currentItem) {
+      const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
+      const timeSpent = Date.now() - lastTime.current;
+      saveUserAnswer(cItemIndex, timeSpent);
+    }
+  };
+
+  const nextQuestion = () => {
+    saveUserResponse();
+    if (currentPage < testletItems.length) {
+      frameController.sendNext();
+    } else {
+      // TODO submit test here
+    }
+  };
+
+  const prevQuestion = () => {
+    saveUserResponse();
+    frameController.sendPrevDev();
+  };
+
+  const mapTestletToEdu = () => {
+    const currentItem = findCurrentItemFromIdMap();
     if (!currentItem) {
       return;
     }
@@ -64,7 +84,6 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQue
     // TODO need to restore previous response...
     const { type: cQuestionType } = cQuestion;
     let data = {};
-
     if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
       const { responseIds } = cQuestion;
       Object.keys(responseIds).map(key => {
@@ -105,12 +124,20 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQue
           }
         }
       });
+    } else if (cQuestionType === questionType.CLOZE_TEXT) {
+      const { responseIds: eduItemResponses = [] } = cQuestion;
+      data = eduItemResponses.map(eduRes => {
+        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+        const testletValue = findTestletValue(responseId);
+        return { ...eduRes, value: testletValue };
+      });
     }
     setUserAnswer(currentItem.uuid, data);
   };
 
   useEffect(() => {
-    if (frameRef.current) {
+    if (testletConfig.testletURL && frameRef.current) {
+      frameController = new ParentController(testletConfig.testletId);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -122,27 +149,17 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQue
         unlockNext: flag => {
           setUnlockNext(flag);
         },
-        gotoParticularQuestion: pageIds => {
-          if (pageIds.length) {
-            const currentItem = findItemIdMap(pageIds);
-            if (currentItem && currentItem.uuid) {
-              const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
-              if (cItemIndex !== -1) {
-                gotoQuestion(cItemIndex);
-              }
-            }
-          }
-        },
         handleReponse: mapTestletToEdu
       });
       return () => {
         frameController.disconnect();
       };
     }
-  }, []);
+  }, [testletConfig]);
 
   useEffect(() => {
     if (currentPage > 0) {
+      window.localStorage.assessmentLastTime = Date.now();
       frameController.getCurrentPageScoreID();
     }
   }, [currentPage]);
@@ -160,7 +177,9 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, gotoQue
       />
       <Main skinB="true">
         <MainContent>
-          <iframe ref={frameRef} id="testlet" src="testlets/testlet-musicmixer/main.html" title="testlet" />
+          {testletConfig.testletURL && (
+            <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
+          )}
         </MainContent>
       </Main>
     </>

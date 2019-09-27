@@ -17,7 +17,6 @@ class ParentController extends MessageController {
     this.setCurrentQuestion = null;
     this.unlockNext = null;
     this.handleReponse = null;
-    this.gotoParticularQuestion = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -27,7 +26,6 @@ class ParentController extends MessageController {
     this.setCurrentQuestion = callbacks.setCurrentQuestion;
     this.unlockNext = callbacks.unlockNext;
     this.handleReponse = callbacks.handleReponse;
-    this.gotoParticularQuestion = callbacks.gotoParticularQuestion;
   }
 
   /********************** call from testlet ************************/
@@ -99,9 +97,6 @@ class ParentController extends MessageController {
 
   onCurrentPageID(currentScoring) {
     this.currentPageIds = JSON.parse(currentScoring);
-    if (this.gotoParticularQuestion) {
-      this.gotoParticularQuestion(Object.keys(this.currentPageIds));
-    }
   }
 
   // get version number from testlet

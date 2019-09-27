@@ -11,6 +11,7 @@ import {
 } from "lodash";
 import produce from "immer";
 import { markQuestionLabel } from "../../assessment/Transformer";
+import { UPDATE_TEST_DOC_BASED_REQUEST } from "../TestPage/ducks";
 
 // actions types
 export const LOAD_QUESTIONS = "[author questions] load questions";
@@ -41,16 +42,19 @@ export const deleteQuestionAction = createAction(DELETE_QUESTION);
 // initialState
 const initialState = {
   byId: {},
-  current: ""
+  current: "",
+  updated: false
 };
 
 // load questions to the store.
 const loadQuestions = (state, { payload }) => {
   state.byId = payload;
+  state.updated = false;
 };
 
 const addQuestions = (state, { payload }) => {
   state.byId = { ...state.byId, ...payload };
+  state.updated = false;
 };
 
 const deleteQuestion = (state, { payload }) => {
@@ -80,6 +84,7 @@ const deleteQuestion = (state, { payload }) => {
   );
 
   state.byId = { ...byId };
+  state.updated = true;
 };
 
 // update question by id
@@ -104,6 +109,7 @@ const updateQuestion = (state, { payload }) => {
   }
 
   state.byId[payload.id] = newPayload;
+  state.updated = true;
 };
 
 const changeItem = (state, { payload }) => {
@@ -131,6 +137,7 @@ const setFirstMount = (state, { id }) => {
 const addQuestion = (state, { payload }) => {
   state.byId[payload.id] = payload;
   state.current = payload.id;
+  state.updated = true;
 };
 
 // change current question
@@ -190,6 +197,9 @@ export default createReducer(initialState, {
   [ADD_ALIGNMENT]: addAlignment,
   [REMOVE_ALIGNMENT]: removeAlignment,
   [DELETE_QUESTION]: deleteQuestion,
+  [UPDATE_TEST_DOC_BASED_REQUEST]: (state, { payload }) => {
+    state.updated = false;
+  },
   [SET_QUESTION_SCORE]: (state, { payload }) => {
     const { qid, score } = payload;
     if (!(score > 0)) {

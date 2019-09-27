@@ -164,14 +164,15 @@ class Container extends PureComponent {
       match: { params },
       userId,
       testStatus,
+      questionsUpdated,
       updated
     } = this.props;
-    const { authors, testItems } = test;
+    const { authors, testItems, isDocBased } = test;
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    if (isEditable && testItems.length > 0 && updated) {
+    if (isEditable && testItems.length > 0 && (updated || (questionsUpdated && isDocBased))) {
       return "";
     }
     return;
@@ -591,6 +592,7 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
+      questionsUpdated: get(state, "authorQuestions.updated", false),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
       performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),

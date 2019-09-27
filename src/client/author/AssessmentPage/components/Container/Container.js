@@ -89,7 +89,35 @@ class Container extends React.Component {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
+    window.onbeforeunload = () => {
+      return this.beforeUnload();
+    };
   }
+
+  componentWillUnmount() {
+    window.onbeforeunload = () => {
+      return;
+    };
+  }
+
+  beforeUnload = () => {
+    const {
+      assessment: test,
+      match: { params },
+      userId,
+      questionsUpdated,
+      updated
+    } = this.props;
+    const { authors, testItems, status } = test;
+    const { editEnable = true } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
+
+    if (isEditable && testItems.length > 0 && (updated || questionsUpdated)) {
+      return "";
+    }
+    return;
+  };
 
   componentDidUpdate(prevProps) {
     const { receiveItemDetailById, assessment } = this.props;
@@ -304,6 +332,8 @@ const enhance = compose(
     state => ({
       assessment: getTestEntitySelector(state),
       userId: get(state, "user.user._id", ""),
+      updated: get(state, "tests.updated", false),
+      questionsUpdated: get(state, "authorQuestions.updated", false),
       loading: getTestsLoadingSelector(state),
       questions: getQuestionsArraySelector(state),
       creating: getTestsCreatingSelector(state),

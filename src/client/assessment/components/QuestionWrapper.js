@@ -211,11 +211,18 @@ const getQuestion = type => {
       return Graph;
     case questionType.FRACTION_EDITOR:
       return FractionEditor;
+    case questionType.SECTION_LABEL:
+      return DummyQuestion;
     default:
       return null;
   }
 };
 
+class DummyQuestion extends Component {
+  render() {
+    return <></>;
+  }
+}
 class QuestionWrapper extends Component {
   static contextType = ItemDetailContext;
 

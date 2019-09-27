@@ -303,7 +303,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     case SET_TEST_EDIT_ASSIGNED:
       return { ...state, editAssigned: true };
     case SET_REGRADE_OLD_TESTID:
@@ -334,7 +334,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:
     case UPDATE_TEST_DOC_BASED_REQUEST:
-      return { ...state, creating: true };
+      return { ...state, creating: true, error: null };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
       const { testItems, scoring: score, ...entity } = payload.entity;
@@ -342,6 +342,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...entity },
         createdItems: [],
+        error: null,
         updated: false,
         creating: false
       };
@@ -350,6 +351,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, ...dataRest },
+        error: null,
         updated: false
       };
     case CREATE_TEST_ERROR:
@@ -684,6 +686,7 @@ function* updateTestDocBasedSaga({ payload }) {
       // if he wishes to add some just close the modal, and go to metadata.
       // else continue the normal flow.
       if (!publishItem) {
+        yield put(updateTestErrorAction("User Cancelled"));
         return;
       }
     }
@@ -730,6 +733,10 @@ function* publishTestSaga({ payload }) {
     yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: { id, data: test, assignFlow: true }
     });
+    const error = yield select(state => get(state, "tests.error"), null);
+    if (error) {
+      return;
+    }
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     if (!assignFlow) {

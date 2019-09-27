@@ -15,10 +15,17 @@ const convertNumToPixel = val => {
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   img {
     height: 100%;
     width: 100%;
     margin: 0px !important;
+  }
+  .input__math {
+    height: 100%;
   }
   .clipText {
     white-space: ${({ isWrapText }) => (isWrapText ? "normal" : "nowrap")};
@@ -74,6 +81,7 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
         )}
       >
         <MathSpan
+          style={{ height: "100%", width: "95%", display: "flex", alignItems: "center" }}
           dangerouslySetInnerHTML={{
             __html: answer.replace("<p>", "<p class='clipText'>") || ""
           }}

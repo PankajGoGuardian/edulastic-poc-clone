@@ -421,7 +421,7 @@ class Display extends Component {
 
     const dragItemStyle = {
       border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-      margin: "0 5px",
+      margin: "0 0 0 3px", // EV-8287
       display: "flex",
       alignItems: "center",
       width: "max-content",
@@ -598,7 +598,7 @@ class Display extends Component {
                     Drop target {responseContainer.label}
                   </span>
                 )}
-                <div className="container">
+                <div className="container" style={{ justifyContent: "center" }}>
                   {userAnswers[dropTargetIndex] &&
                     userAnswers[dropTargetIndex].value &&
                     userAnswers[dropTargetIndex].value.map((answer, item_index) => {

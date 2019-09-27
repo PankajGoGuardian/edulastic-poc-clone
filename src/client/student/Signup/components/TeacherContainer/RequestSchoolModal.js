@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { get, debounce, find } from "lodash";
 import styled from "styled-components";
 import { Form, Modal, Button, Input, Select, Row, Col } from "antd";
+import { userApi } from "@edulastic/api";
 import { lightGrey3, linkColor, themeColor, white, mobileWidthLarge } from "@edulastic/colors";
 import { countryApi } from "@edulastic/api";
 import { withNamespaces } from "@edulastic/localization";
@@ -181,12 +182,37 @@ class RequestSchool extends React.Component {
               rules: [
                 { required: true, message: "Please provide a valid district name." },
                 {
-                  validator: (rule, value, callback) => {
+                  validator: async (rule, value, callback) => {
                     if (value.title.length === 0 || value.key.length === 0) {
                       callback("Please provide a valid district name.");
                       return;
                     }
-                    callback();
+
+                    if (value.key === "Add New") {
+                      callback();
+                      return;
+                    }
+
+                    const { userInfo } = this.props;
+                    try {
+                      let signOnMethod = "userNameAndPassword";
+                      signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
+                      signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
+                      signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
+                      const checkDistrictPolicyPayload = {
+                        districtId: value.key,
+                        email: userInfo.email,
+                        type: userInfo.role,
+                        signOnMethod
+                      };
+                      const policyCheckResult = await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
+                      callback();
+                      return;
+                    } catch (error) {
+                      console.error(error);
+                      callback(t("common.policyviolation"));
+                      return;
+                    }
                   }
                 }
               ]

@@ -16,14 +16,16 @@ import dropDownData from "../../static/json/dropDownData.json";
 import { compareByMap } from "../../utils/trend";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
 
-const formatText = (text, type) => {
-  if (text === null || typeof text === "undefined") return "N/A";
+const formatText = (test, type) => {
+  if (test[type] === null || typeof test[type] === "undefined") return "N/A";
+
+  if (test.records[0].maxScore === null || test.records[0].totalScore === null) return "Absent";
 
   if (type == "score") {
-    return `${text}%`;
+    return `${test[type]}%`;
   }
 
-  return text;
+  return test[type];
 };
 
 const getCol = (text, backgroundColor) => {
@@ -46,7 +48,7 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
       color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100);
       break;
     default:
-      value = formatText(test[analyseBy.key], analyseBy.key);
+      value = formatText(test, analyseBy.key);
       color = getHSLFromRange1(test.score);
       break;
   }

@@ -1,5 +1,10 @@
 import JXG from "jsxgraph";
-import { findAvailableStackedSegmentPosition, getAvailablePositions, getClosestTick } from "../utils";
+import {
+  findAvailableStackedSegmentPosition,
+  getAvailablePositions,
+  getClosestTick,
+  calcNumberlinePosition
+} from "../utils";
 import { Colors, CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
 
@@ -65,10 +70,11 @@ const drawPoint = (board, x, fixed, colors, yPosition) => {
 };
 
 const loadPoint = (board, element) => {
-  const point = drawPoint(board, element.point1, false, element.colors, element.y);
+  const yPos = board.stackResponses ? element.y : calcNumberlinePosition(board);
+  const point = drawPoint(board, element.point1, false, element.colors, yPos);
 
   if (!board.stackResponses) {
-    handlePointDrag(board, point, 0);
+    handlePointDrag(board, point, calcNumberlinePosition(board));
   } else {
     handlePointDrag(board, point, element.y, true);
   }
@@ -90,11 +96,11 @@ const onHandler = (board, coord) => {
   }
 
   if (!board.stackResponses) {
-    const point = drawPoint(board, newX, false, null, 0);
-    handlePointDrag(board, point, 0);
+    const yPos = calcNumberlinePosition(board);
+    const point = drawPoint(board, newX, false, null, yPos);
+    handlePointDrag(board, point, yPos);
     return point;
   }
-
   const calcedYPosition = findAvailableStackedSegmentPosition(board);
   const point = drawPoint(board, newX, false, null, calcedYPosition);
   handlePointDrag(board, point, calcedYPosition, true);

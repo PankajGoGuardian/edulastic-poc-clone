@@ -11,6 +11,7 @@ import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
 import CorrectAnswerBox from "./CorrectAnswerBox";
 import SwitchWrapper from "../styled/SwitchWrapper";
+import ContentWrapper from "../styled/Wrapper";
 
 const Display = ({
   saveAnswer,
@@ -48,71 +49,73 @@ const Display = ({
     saveAnswer(_userAnswer);
   };
   return (
-    <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
-      <FlexContainer style={{ width: "100%" }} justifyContent="space-between">
-        <FlexContainer>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
-          <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
-        </FlexContainer>
-        {hasAnnotations && answerContext.isAnswerModifiable && (
+    <ContentWrapper>
+      <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
+        <FlexContainer justifyContent="space-between">
           <FlexContainer>
-            <span>Show Annotatations</span>
-            <SwitchWrapper>
-              <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
-            </SwitchWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
+            <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
           </FlexContainer>
-        )}
-      </FlexContainer>
-      <FlexContainer
-        style={{ overflow: "auto", position: "relative", minHeight: "425px", maxWidth: "100%" }}
-        flexWrap="wrap"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        padding="16px"
-      >
-        <FlexContainer alignItems="flex-start" flexDirection="column" style={{ width: "100%" }} flexWrap="wrap">
-          {Array(count)
-            .fill()
-            .map((_, index) => {
-              return fractionType === "circles" ? (
-                <Circles
-                  fractionNumber={index}
-                  sectors={fractionProperties.sectors}
-                  selected={selected}
-                  sectorClick={index => handleSelect(index)}
-                  previewTab={previewTab}
-                  isExpressGrader={answerContext.expressGrader}
-                  isAnswerModifiable={answerContext.isAnswerModifiable}
-                  evaluation={evaluation}
-                  isReviewTab={isReviewTab}
-                />
-              ) : (
-                <Rectangles
-                  fractionNumber={index}
-                  rows={fractionProperties.rows}
-                  columns={fractionProperties.columns}
-                  selected={selected}
-                  onSelect={index => handleSelect(index)}
-                  previewTab={previewTab}
-                  isExpressGrader={answerContext.expressGrader}
-                  isAnswerModifiable={answerContext.isAnswerModifiable}
-                  evaluation={evaluation}
-                  isReviewTab={isReviewTab}
-                />
-              );
-            })}
+          {hasAnnotations && answerContext.isAnswerModifiable && (
+            <FlexContainer>
+              <span>Show Annotatations</span>
+              <SwitchWrapper>
+                <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
+              </SwitchWrapper>
+            </FlexContainer>
+          )}
         </FlexContainer>
-        {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
-        {previewTab === SHOW && (
-          <CorrectAnswerBox
-            fractionProperties={fractionProperties}
-            selected={Array(get(item, "validation.validResponse.value", 1))
+        <FlexContainer
+          style={{ overflow: "auto", position: "relative", minHeight: "425px", maxWidth: "100%" }}
+          flexWrap="wrap"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+          padding="16px"
+        >
+          <FlexContainer alignItems="flex-start" flexDirection="column" flexWrap="wrap">
+            {Array(count)
               .fill()
-              .map((_, i) => i + 1)}
-          />
-        )}
+              .map((_, index) => {
+                return fractionType === "circles" ? (
+                  <Circles
+                    fractionNumber={index}
+                    sectors={fractionProperties.sectors}
+                    selected={selected}
+                    sectorClick={index => handleSelect(index)}
+                    previewTab={previewTab}
+                    isExpressGrader={answerContext.expressGrader}
+                    isAnswerModifiable={answerContext.isAnswerModifiable}
+                    evaluation={evaluation}
+                    isReviewTab={isReviewTab}
+                  />
+                ) : (
+                  <Rectangles
+                    fractionNumber={index}
+                    rows={fractionProperties.rows}
+                    columns={fractionProperties.columns}
+                    selected={selected}
+                    onSelect={index => handleSelect(index)}
+                    previewTab={previewTab}
+                    isExpressGrader={answerContext.expressGrader}
+                    isAnswerModifiable={answerContext.isAnswerModifiable}
+                    evaluation={evaluation}
+                    isReviewTab={isReviewTab}
+                  />
+                );
+              })}
+          </FlexContainer>
+          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
+          {previewTab === SHOW && (
+            <CorrectAnswerBox
+              fractionProperties={fractionProperties}
+              selected={Array(get(item, "validation.validResponse.value", 1))
+                .fill()
+                .map((_, i) => i + 1)}
+            />
+          )}
+        </FlexContainer>
       </FlexContainer>
-    </FlexContainer>
+    </ContentWrapper>
   );
 };
 

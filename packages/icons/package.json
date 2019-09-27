@@ -7,8 +7,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@edulastic/colors": "1.0.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.5.2"
+    "@edulastic/colors": "1.0.0"
   }
 }

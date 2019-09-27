@@ -20,6 +20,10 @@ import { Placeholder } from "../../../common/components/loader";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
+import {
+  getSAFFilterSelectedPerformanceBandProfile,
+  getSAFFilterPerformanceBandProfiles
+} from "../common/filterDataDucks";
 
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import columns from "./static/json/tableColumns.json";
@@ -168,8 +172,8 @@ const enhance = connect(
     loading: getReportsPerformanceByStudentsLoader(state),
     role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    performanceBandSelected: get(state, "reportSARFilterDataReducer.filters.performanceBandProfile", ""),
-    performanceBandProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.bandInfo", [])
+    performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
+    performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
   }),
   {
     getPerformanceByStudentsRequestAction

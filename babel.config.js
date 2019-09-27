@@ -9,6 +9,7 @@ module.exports = {
       "antd"
     ],
     "lodash",
-    "@babel/plugin-proposal-optional-chaining"
+    "@babel/plugin-proposal-optional-chaining",
+    "babel-plugin-styled-components"
   ]
 };

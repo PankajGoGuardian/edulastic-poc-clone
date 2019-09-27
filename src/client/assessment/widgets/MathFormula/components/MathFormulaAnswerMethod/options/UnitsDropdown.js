@@ -26,7 +26,8 @@ const UnitsDropdownPure = ({
   options,
   onChangeShowDropdown,
   disabled,
-  statusColor
+  statusColor,
+  unitsStyle
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -99,7 +100,7 @@ const UnitsDropdownPure = ({
         </UniteSelet>
       )}
       {!preview && (
-        <FlexContainer justifyContent="flex-end" style={{ width: "100%" }}>
+        <FlexContainer justifyContent={unitsStyle ? "flex-start" : "flex-end"} style={{ width: "100%" }}>
           <FlexContainer alignItems="flex-start" flexDirection="column">
             <Label data-cy="answer-math-unit-dropdown">{t("component.math.showDropdown")}</Label>
             <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">
@@ -131,7 +132,8 @@ UnitsDropdownPure.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
   disabled: PropTypes.bool,
-  statusColor: PropTypes.string
+  statusColor: PropTypes.string,
+  unitsStyle: PropTypes.bool
 };
 
 UnitsDropdownPure.defaultProps = {
@@ -140,7 +142,8 @@ UnitsDropdownPure.defaultProps = {
   disabled: false,
   selected: "",
   statusColor: "",
-  onChangeShowDropdown: () => null
+  onChangeShowDropdown: () => null,
+  unitsStyle: false
 };
 
 const enhance = compose(

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { get } from "lodash";
+import { title } from "@edulastic/colors";
 import { Row, Col, Spin } from "antd";
 import { TextWrapper } from "../../../styledComponents";
 import { Container, CardBox } from "./styled";
-import { withRouter } from "react-router-dom";
-import { get } from "lodash";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
@@ -12,7 +14,6 @@ import CreateClassPage from "./components/CreateClassPage/createClassPage";
 import { fetchClassListAction } from "../../../../../ManageClass/ducks";
 import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
 import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
-import { compose } from "redux";
 
 const Card = ({ data }) => {
   return (
@@ -55,14 +56,14 @@ const MyClasses = ({
   const allClasses = [...sortableClasses, ...unSortableClasses];
   const allActiveClasses = allClasses.filter(c => c.active === 1);
   const ClassCards = allActiveClasses.map(item => (
-    <Col xs={24} sm={24} md={12} lg={12} xl={8} key={item._id}>
+    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
       <Card data={item} />
     </Col>
   ));
 
   return (
     <Container>
-      <TextWrapper size="20px" color="#434B5D" style={{ marginBottom: "1rem" }}>
+      <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My classes
       </TextWrapper>
       {loading ? (

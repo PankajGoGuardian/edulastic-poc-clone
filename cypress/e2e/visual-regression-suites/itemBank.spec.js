@@ -8,7 +8,6 @@ import EditItemPage from "../framework/author/itemList/itemDetail/editPage";
 
 const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
-const heightSrollOffSet = 300;
 const questionGroups = Cypress._.values(questionGroup);
 const pageURL = "author/items/5d653a557973777cde063a7d/item-detail";
 const itemHeader = new Header();
@@ -69,7 +68,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
               .then($elem => {
                 $elem.scrollTop(0);
               });
-            cy.wait(1000);
+            cy.wait(2000);
             cy.matchImageSnapshot();
           });
         });

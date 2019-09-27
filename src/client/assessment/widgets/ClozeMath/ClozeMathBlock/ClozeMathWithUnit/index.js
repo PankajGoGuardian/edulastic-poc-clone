@@ -233,31 +233,13 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div
-        ref={this.wrappedRef}
-        style={{
-          margin: "0 4px",
-          display: "inline-flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative"
-        }}
-      >
-        <span
-          ref={this.mathRef}
+      <OuterWrapper innerRef={this.wrappedRef}>
+        <ClozeMathInputField
+          innerRef={this.mathRef}
           onClick={this.showKeyboardModal}
-          style={{
-            ...btnStyle,
-            width: width || "auto",
-            height: height || "auto",
-            padding: "5px 11px",
-            marginRight: 0,
-            borderRight: 0,
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-            display: "flex",
-            alignItems: "center"
-          }}
+          width={width}
+          height={height}
+          {...btnStyle}
         />
         <SelectUnit
           preview
@@ -281,10 +263,32 @@ class ClozeMathWithUnit extends React.Component {
             />
           </KeyboardWrapper>
         )}
-      </div>
+      </OuterWrapper>
     );
   }
 }
+
+const OuterWrapper = styled.div`
+  margin: 2px 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+const ClozeMathInputField = styled.span`
+  width: ${({ width }) => width};
+  min-width: ${({ minWidth }) => minWidth} !important;
+  font-size: ${({ fontSize }) => fontSize} !important;
+  height: ${({ height }) => height};
+  margin-right: 0 !important;
+  padding: 5px 11px !important;
+  border-top-right-radius: 0 !important;
+  border-right: 0 !important;
+  display: flex !important;
+  border-bottom-right-radius: 0 !important;
+  font-weight: 600 !important;
+`;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
   const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;

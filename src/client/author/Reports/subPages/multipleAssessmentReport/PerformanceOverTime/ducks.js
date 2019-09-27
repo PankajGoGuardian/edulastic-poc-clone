@@ -6,7 +6,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { keyBy } from "lodash";
 import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST = "[reports] get reports performance over time request";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS = "[reports] get reports performance over time success";
@@ -22,7 +22,7 @@ export const getPerformanceOverTimeRequestAction = createAction(GET_REPORTS_PERF
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportPerformanceOverTimeReducer;
+export const stateSelector = state => state.reportReducer.reportPerformanceOverTimeReducer;
 
 export const getReportsPerformanceOverTime = createSelector(
   stateSelector,

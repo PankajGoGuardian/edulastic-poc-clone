@@ -7,7 +7,7 @@ import { QuestionText } from "../../common/Form";
 export default class FormText extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review"]).isRequired,
+    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
     question: PropTypes.object.isRequired,
     onCreateAnswer: PropTypes.func.isRequired,
     answer: PropTypes.string
@@ -43,6 +43,11 @@ export default class FormText extends React.Component {
     return <Input size="large" value={answer} onChange={this.handleChange} />;
   };
 
+  renderReport = () => {
+    const { answer } = this.props;
+    return <QuestionText>{answer}</QuestionText>;
+  };
+
   renderAnswerCreateForm = () => {
     const {
       question: { id, type },
@@ -60,6 +65,8 @@ export default class FormText extends React.Component {
         return this.renderView();
       case "review":
         return this.renderForm();
+      case "report":
+        return this.renderReport();
       default:
         return null;
     }

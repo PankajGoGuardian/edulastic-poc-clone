@@ -1,39 +1,30 @@
 //@ts-check
-import { keyBy, groupBy, get } from "lodash";
+import { keyBy, groupBy, get, values, flatten } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
-import produce from "immer";
-
-const getAllQids = (testItemIds, testItemsDataKeyed) => {
-  let qids = [];
-  for (let testItemId of testItemIds) {
-    let questions =
-      (testItemsDataKeyed[testItemId] &&
-        testItemsDataKeyed[testItemId].data &&
-        testItemsDataKeyed[testItemId].data.questions) ||
-      [];
-    qids = [...qids, ...questions.map(x => x.id)];
-  }
-  return qids;
-};
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
 /**
  *
- * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}
  * @param {object[]} testItems
  */
-export const markQuestionLabel = (_testItemsData, testItems) => {
-  const testItemsData = keyBy(_testItemsData, "_id");
+export const markQuestionLabel = testItems => {
   for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsData[testItems[i].itemId];
+    const item = testItems[i];
     if (!(item.data && item.data.questions)) {
       continue;
     }
     if (item.data.questions.length === 1) {
       item.data.questions[0].qLabel = `Q${i + 1}`;
       item.data.questions[0].barLabel = `Q${i + 1}`;
+    } else if (item.isDocBased) {
+      item.data.questions = item.data.questions.map((q, qIndex) => ({
+        ...q,
+        qLabel: `Q${qIndex + 1}`,
+        barLabel: `Q${qIndex + 1}`
+      }));
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,
@@ -91,14 +82,13 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
  * @param {{itemId:string}[]} testItems
  * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
  */
-export const getQuestionLabels = (testItemsData, testItems) => {
+export const getQuestionLabels = testItemsData => {
   /**
    * @type {{[qid:string]:{qLabel:string, barLabel: string }  }}
    */
   const result = {};
-  const testItemsdataKeyed = keyBy(testItemsData, "_id");
-  for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsdataKeyed[testItems[i].itemId];
+  for (let i = 0; i < testItemsData.length; i++) {
+    const item = testItemsData[i];
     if (!item) {
       continue;
     }
@@ -203,18 +193,28 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
   }
 };
 
-export const transformGradeBookResponse = ({
-  test,
-  testItemsData,
-  students: studentNames,
-  testActivities,
-  testQuestionActivities,
-  passageData
-}) => {
-  const testItemIds = test.testItems.map(o => o.itemId);
+export const transformGradeBookResponse = (
+  { test, testItemsData, students: studentNames, testActivities, testQuestionActivities, passageData },
+  studentResponse
+) => {
+  const testItemIds = test.testItems.map(o => o._id);
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
+  const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
+  for (const itemId of Object.keys(questionActivitiesGrouped)) {
+    const notGradedPresent = questionActivitiesGrouped[itemId].find(x => x.graded === false);
+    const { itemLevelScoring } = testItemsDataKeyed[itemId];
+    if (itemLevelScoring && notGradedPresent) {
+      questionActivitiesGrouped[itemId] = questionActivitiesGrouped[itemId].map(x => ({
+        ...x,
+        graded: false,
+        score: 0
+      }));
+    }
+  }
+
+  testQuestionActivities = flatten(values(questionActivitiesGrouped));
 
   const studentTestActivities = keyBy(testActivities, "userId");
   let testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
@@ -262,7 +262,7 @@ export const transformGradeBookResponse = ({
           };
         }
         const testActivity = studentTestActivities[studentId];
-        if (testActivity.redirect) {
+        if (testActivity.redirect && !studentResponse) {
           return {
             studentId,
             studentName: fullName,
@@ -284,8 +284,7 @@ export const transformGradeBookResponse = ({
         const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
-        const redirected = testActivity.previouslyRedirected;
-        const testActivityId = testActivity._id;
+        const { _id: testActivityId, groupId, previouslyRedirected: redirected } = testActivity;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
@@ -296,16 +295,19 @@ export const transformGradeBookResponse = ({
         const questionActivities = qids.map(
           ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
             const _id = el;
-
+            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
             if (!questionActivitiesIndexed[el]) {
               return {
                 _id,
+                qid: _id,
                 weight,
                 disabled,
                 testItemId,
                 barLabel,
+                testActivityId,
+                groupId,
                 qLabel,
-                ...(submitted ? { skipped: true, score: 0 } : { notStarted: true })
+                ...(submitted ? { skipped: true, score: 0, maxScore: questionMaxScore } : { notStarted: true })
               };
             }
             let {
@@ -314,9 +316,9 @@ export const transformGradeBookResponse = ({
               partiallyCorrect: partialCorrect,
               timeSpent,
               score,
-              graded
+              graded,
+              ...remainingProps
             } = questionActivitiesIndexed[el];
-            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
             if (score > 0 && skipped) {
               skipped = false;
             }
@@ -328,6 +330,7 @@ export const transformGradeBookResponse = ({
             }
 
             return {
+              ...(studentResponse ? remainingProps : {}),
               _id,
               weight,
               skipped,

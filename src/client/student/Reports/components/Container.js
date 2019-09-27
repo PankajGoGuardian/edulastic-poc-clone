@@ -27,7 +27,7 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading 
         {assignments.length < 1 ? (
           <NoDataNotification heading={"No Reports "} description={"You don't have any completed assignment."} />
         ) : (
-          assignments.map((item, index) => <AssignmentCard key={index} data={item} type="reports" />)
+          assignments.map(item => <AssignmentCard key={item._id} data={item} type="reports" />)
         )}
       </Wrapper>
     </LayoutContent>

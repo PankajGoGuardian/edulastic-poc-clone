@@ -139,7 +139,7 @@ class ListItem extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
-          hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container onClick={isPlaylist ? this.moveToItem : this.openModal}>
           <ContentWrapper>
@@ -185,7 +185,7 @@ class ListItem extends Component {
                   <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
                 </div>
                 <Description title={isPlaylist ? _source.description : description}>
-                  <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
+                  <EllipsisWrapper view="list">{isPlaylist ? _source.description : description}</EllipsisWrapper>
                 </Description>
               </Inner>
             </Col>
@@ -214,9 +214,9 @@ class ListItem extends Component {
               <TagsWrapper span={12}>
                 {!isPlaylist && (
                   <>
-                    <Tags tags={tags} key="tags" />
+                    <Tags tags={tags} show={1} key="tags" />
                     {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
-                    <Tags tags={standardsIdentifiers} show={3} key="standards" />
+                    <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
                     <TestStatus
                       style={{
                         marginLeft: tags.length || (standardsIdentifiers && standardsIdentifiers.length) ? "10px" : 0

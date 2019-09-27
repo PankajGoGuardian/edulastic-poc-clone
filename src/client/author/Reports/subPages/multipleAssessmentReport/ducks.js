@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../ducks";
+import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
 
 const SET_MAR_SETTINGS = "[MAR settings] get mar settings";
 
@@ -15,7 +15,7 @@ export const setMARSettingsAction = createAction(SET_MAR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportMARSettingsReducer;
+export const stateSelector = state => state.reportReducer.reportMARSettingsReducer;
 
 export const getReportsMARSettings = createSelector(
   stateSelector,

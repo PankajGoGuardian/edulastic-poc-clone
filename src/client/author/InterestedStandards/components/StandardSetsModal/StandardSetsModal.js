@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Form, Col, Select, Button, Modal, Input, Checkbox } from "antd";
+import { Col, Form, Input, Modal, Select } from "antd";
+import { FlexContainer } from "../../../../assessment/themes/common";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
+import { StyledCheckbox } from "../Container/styled";
+import { StyledRow, SubjectContainer, SubjectSelect } from "./styled";
+
 const Option = Select.Option;
 
-import { StyledRow, SubjectContainer, SubjectSelect } from "./styled";
-import { StyledCheckbox } from "../Container/styled";
-import { FlexContainer } from "../../../../assessment/themes/common";
-
-class StandardSetsModal extends React.Component {
+class StandardSetsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,9 +82,9 @@ class StandardSetsModal extends React.Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button type="primary" key="submit" onClick={this.onConfirm}>
+          <ThemeButton type="primary" key="submit" onClick={this.onConfirm}>
             Confirm
-          </Button>
+          </ThemeButton>
         ]}
       >
         <StyledRow>

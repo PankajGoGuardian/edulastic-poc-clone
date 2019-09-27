@@ -9,7 +9,8 @@ import {
   realtimeGradebookActivitySubmitAction,
   realtimeGradebookQuestionAddMaxScoreAction,
   realtimeGradebookQuestionsRemoveAction,
-  realtimeGradebookRedirectAction
+  realtimeGradebookRedirectAction,
+  realtimeGradebookCloseAction
 } from "../../../src/reducers/testActivity";
 import useRealtimeUpdates from "../../useRealtimeUpdates";
 import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
@@ -23,7 +24,8 @@ const Shell = ({
   loadTestActivity,
   submitActivity,
   removeQuestions,
-  addQuestionsMaxScore
+  addQuestionsMaxScore,
+  closeAssignment
 }) => {
   const redirectCheck = payload => {
     const { assignmentId, classId } = match.params;
@@ -33,7 +35,8 @@ const Shell = ({
     addActivity,
     addItem,
     submitActivity,
-    redirect: redirectCheck
+    redirect: redirectCheck,
+    "assignment:close": closeAssignment
     //TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
@@ -53,7 +56,8 @@ export default compose(
       removeQuestions: realtimeGradebookQuestionsRemoveAction,
       addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
       loadTestActivity: receiveTestActivitydAction,
-      redirect: realtimeGradebookRedirectAction
+      redirect: realtimeGradebookRedirectAction,
+      closeAssignment: realtimeGradebookCloseAction
     }
   )
 )(Shell);

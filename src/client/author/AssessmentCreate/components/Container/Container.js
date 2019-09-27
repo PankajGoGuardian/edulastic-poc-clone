@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { debounce } from "lodash";
 import qs from "query-string";
+import { MenuIcon } from "@edulastic/common";
 
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -22,6 +23,7 @@ import {
   setPercentUploadedAction
 } from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 const breadcrumbStyle = {
   position: "static"
@@ -88,8 +90,11 @@ class Container extends React.Component {
   };
 
   handleUploadPDF = debounce(({ file }) => {
-    const { location, createAssessment } = this.props;
+    const { location, createAssessment, isAddPdf = false } = this.props;
     const { assessmentId } = qs.parse(location.search);
+    if (file.type !== "application/pdf") {
+      return message.error("File format not supported, please select a valid PDF file.");
+    }
     if (file.size / 1024000 > 15) {
       return message.error("File size exceeds 15 MB MB limit.");
     }
@@ -97,6 +102,7 @@ class Container extends React.Component {
       file,
       assessmentId,
       progressCallback: this.handleUploadProgress,
+      isAddPdf,
       cancelUpload: this.setCancelFn
     });
   }, 1000);
@@ -104,16 +110,16 @@ class Container extends React.Component {
   handleCreateBlankAssessment = event => {
     event.stopPropagation();
 
-    const { location, createAssessment } = this.props;
+    const { location, createAssessment, isAddPdf } = this.props;
     const { assessmentId } = qs.parse(location.search);
 
-    createAssessment({ assessmentId });
+    createAssessment({ assessmentId, isAddPdf });
   };
 
   render() {
     let { method } = this.state;
     const newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading, percentageUploaded, fileInfo } = this.props;
+    const { creating, location, assessmentLoading, percentageUploaded, fileInfo, isAddPdf, toggleSideBar } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);
@@ -136,7 +142,8 @@ class Container extends React.Component {
             }}
           />
         )}
-        <HeaderWrapper>
+        <HeaderWrapper justify="flex-start">
+          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <Title>New Test</Title>
         </HeaderWrapper>
         <ContainerWrapper>
@@ -149,6 +156,7 @@ class Container extends React.Component {
               onCreateBlank={this.handleCreateBlankAssessment}
               percent={percentageUploaded}
               fileInfo={fileInfo}
+              isAddPdf={isAddPdf}
               cancelUpload={this.cancelUpload}
             />
           )}
@@ -170,7 +178,8 @@ const enhance = compose(
     {
       createAssessment: createAssessmentRequestAction,
       receiveTestById: receiveTestByIdAction,
-      setPercentUploaded: setPercentUploadedAction
+      setPercentUploaded: setPercentUploadedAction,
+      toggleSideBar: toggleSideBarAction
     }
   )
 );

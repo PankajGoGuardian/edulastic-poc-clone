@@ -199,16 +199,6 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.ignoreLeadingAndTrailingSpaces")}
             />
           );
-        case "allowInterval":
-          return (
-            <CheckOption
-              dataCy="answer-allow-interval"
-              optionKey="allowInterval"
-              options={options}
-              onChange={changeOptions}
-              label={t("component.math.allowInterval")}
-            />
-          );
         case "isDecimal":
           return (
             <CheckOption
@@ -359,7 +349,7 @@ const MathFormulaAnswerMethod = ({
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <ExpectAnswer>
-        {!methodOptions.includes("noExpeced") && (
+        {!methodOptions.includes("notExpected") && (
           <div>
             <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
@@ -385,6 +375,7 @@ const MathFormulaAnswerMethod = ({
             onChange={changeOptions}
             keypadOffset={keypadOffset}
             onChangeShowDropdown={onChangeShowDropdown}
+            unitsStyle={methodOptions.includes("notExpected")}
           />
         )}
       </ExpectAnswer>

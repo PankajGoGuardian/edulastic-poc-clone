@@ -9,7 +9,13 @@ class FilterToggleBtn extends Component {
     const { isShowFilter, toggleFilter, header } = this.props;
     return (
       <>
-        <MobileLeftFilterButton header={header} isShowFilter={isShowFilter} variant="filter" onClick={toggleFilter}>
+        <MobileLeftFilterButton
+          data-cy="filter"
+          header={header}
+          isShowFilter={isShowFilter}
+          variant="filter"
+          onClick={toggleFilter}
+        >
           <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
         </MobileLeftFilterButton>
       </>

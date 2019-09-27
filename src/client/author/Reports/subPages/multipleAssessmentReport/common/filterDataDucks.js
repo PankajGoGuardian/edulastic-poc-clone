@@ -5,7 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST = "[reports] get reports mar filter data request";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports mar filter data request success";
@@ -29,7 +29,7 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportMARFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportMARFilterDataReducer;
 
 export const getReportsMARFilterData = createSelector(
   stateSelector,

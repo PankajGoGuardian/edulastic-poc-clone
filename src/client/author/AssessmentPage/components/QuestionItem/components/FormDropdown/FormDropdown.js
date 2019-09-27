@@ -9,7 +9,7 @@ import { Dropdown } from "./styled";
 export default class FormDropdown extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review"]).isRequired,
+    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
     question: PropTypes.object.isRequired,
     answer: PropTypes.string
   };
@@ -44,14 +44,14 @@ export default class FormDropdown extends React.Component {
     );
   };
 
-  renderForm = () => {
+  renderForm = mode => {
     const {
       question: { options },
-      answer
+      answer = []
     } = this.props;
 
     return (
-      <Dropdown onChange={this.handleChange}>
+      <Dropdown disabled={mode === "report"} value={(answer[0] && answer[0].value) || ""} onChange={this.handleChange}>
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}
@@ -68,7 +68,8 @@ export default class FormDropdown extends React.Component {
       case "edit":
         return this.renderView();
       case "review":
-        return this.renderForm();
+      case "report":
+        return this.renderForm(mode);
       default:
         return null;
     }

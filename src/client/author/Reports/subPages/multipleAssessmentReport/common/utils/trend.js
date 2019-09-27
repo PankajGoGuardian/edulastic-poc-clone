@@ -111,8 +111,7 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
   const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric);
   const augmentedData = augmentWithData(dataWithTrend, compareBy, orgData);
   const filteredTrendData = filter(augmentedData, record => (selectedTrend ? record.trend === selectedTrend : true));
-  const sortedFilteredTrendData = orderBy(filteredTrendData, ["assessmentDate"], ["asc"]);
-
+  const sortedFilteredTrendData = orderBy(filteredTrendData, [compareByMap[compareBy]], ["asc"]);
   return [sortedFilteredTrendData, trendCount];
 };
 

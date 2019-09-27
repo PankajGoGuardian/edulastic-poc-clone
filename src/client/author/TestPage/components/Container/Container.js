@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 
@@ -43,7 +43,7 @@ import {
   updateItemsDocBasedByIdAction,
   getItemDetailByIdAction
 } from "../../../ItemDetail/ducks";
-import { getUserSelector } from "../../../src/selectors/user";
+import { getUserSelector, getUserRole } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
@@ -104,7 +104,9 @@ class Container extends PureComponent {
       editAssigned,
       createdItems = [],
       setRegradeOldId,
-      getDefaultTestSettings
+      getDefaultTestSettings,
+      setData,
+      userRole
     } = this.props;
     const self = this;
     if (location.hash === "#review") {
@@ -130,6 +132,9 @@ class Container extends PureComponent {
       clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
+      if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.DISTRICT_ADMIN) {
+        setData({ testType: test.type.COMMON });
+      }
     }
 
     if (editAssigned) {
@@ -159,14 +164,15 @@ class Container extends PureComponent {
       match: { params },
       userId,
       testStatus,
+      questionsUpdated,
       updated
     } = this.props;
-    const { authors, testItems } = test;
+    const { authors, testItems, isDocBased } = test;
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    if (isEditable && testItems.length > 0 && updated) {
+    if (isEditable && testItems.length > 0 && (updated || (questionsUpdated && isDocBased))) {
       return "";
     }
     return;
@@ -284,7 +290,7 @@ class Container extends PureComponent {
     }
     const { params = {} } = match;
     const { current, editEnable, isShowFilter } = this.state;
-    const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
+    const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
@@ -292,6 +298,7 @@ class Container extends PureComponent {
       docUrl,
       annotations,
       questions,
+      freeFormNotes,
       questionsById,
       pageStructure
     };
@@ -585,9 +592,11 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
+      questionsUpdated: get(state, "authorQuestions.updated", false),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
-      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], [])
+      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),
+      userRole: getUserRole(state)
     }),
     {
       createTest: createTestAction,

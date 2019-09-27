@@ -1,6 +1,11 @@
 import JXG from "jsxgraph";
 import { Colors, CONSTANT } from "../config";
-import { findAvailableStackedSegmentPosition, getAvailablePositions, getClosestTick } from "../utils";
+import {
+  findAvailableStackedSegmentPosition,
+  getAvailablePositions,
+  getClosestTick,
+  calcNumberlinePosition
+} from "../utils";
 import { defaultPointParameters } from "../settings";
 
 const handleVectorPointDrag = (board, vector, point, segmentType, yPosition, isStacked = false) => {
@@ -124,12 +129,13 @@ const loadVector = (board, element, pointIncluded, toRightDirection, segmentType
     ? element.point1
     : element.point2;
 
-  const visiblePoint = drawPoint(board, x, pointIncluded, false, element.pointColor, element.y);
-  const invisiblePoint = drawVectorPoint(board, toRightDirection, element.y);
+  const yPos = board.stackResponses ? element.y : calcNumberlinePosition(board);
+  const visiblePoint = drawPoint(board, x, pointIncluded, false, element.pointColor, yPos);
+  const invisiblePoint = drawVectorPoint(board, toRightDirection, yPos);
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, element.colors, segmentType);
 
   if (!board.stackResponses) {
-    handleVectorPointDrag(board, vector, visiblePoint, segmentType, 0);
+    handleVectorPointDrag(board, vector, visiblePoint, segmentType, calcNumberlinePosition(board));
   } else {
     handleVectorPointDrag(board, vector, visiblePoint, segmentType, element.y, true);
   }
@@ -178,10 +184,11 @@ const onHandler = (board, coord) => {
   }
 
   if (!board.stackResponses) {
-    const visiblePoint = drawPoint(board, newStartX, pointIncluded, false, null, 0);
-    const invisiblePoint = drawVectorPoint(board, toRightDirection, 0);
+    const yPos = calcNumberlinePosition(board);
+    const visiblePoint = drawPoint(board, newStartX, pointIncluded, false, null, yPos);
+    const invisiblePoint = drawVectorPoint(board, toRightDirection, yPos);
     const vector = drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, null, board.currentTool);
-    handleVectorPointDrag(board, vector, visiblePoint, board.currentTool, 0);
+    handleVectorPointDrag(board, vector, visiblePoint, board.currentTool, yPos);
     return vector;
   }
 

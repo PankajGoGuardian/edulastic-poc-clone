@@ -344,18 +344,6 @@ const statusFilter = filterType => assignment => {
   }
 };
 
-const assignmentSortBy = assignment => {
-  const attempts = (assignment.reports && assignment.reports.length) || 0;
-  const status = attempts === 0 ? 1 : 2;
-
-  if (!assignment.class) {
-    return 999999;
-  }
-
-  const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
-  return status * 1000 + ((dueDate || 0) - new Date());
-};
-
 const assignmentSortByDueDate = (groupedReports, assignment) => {
   const reports = groupedReports[assignment._id] || [];
   const attempted = !!(reports && reports.length);
@@ -378,13 +366,13 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
   return sortOrder;
 };
 
-export const getAssignmentsSelector = createSelector(
+export const getAllAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
-  filterSelector,
+
   getCurrentGroup,
   getClassIds,
-  (assignmentsObj, reportsObj, filter, currentGroup, classIds) => {
+  (assignmentsObj, reportsObj, currentGroup, classIds) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), "assignmentId");
     let assignments = values(assignmentsObj)
@@ -392,9 +380,14 @@ export const getAssignmentsSelector = createSelector(
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
-      .filter(assignment => isLiveAssignment(assignment, currentGroup, classIds))
-      .filter(statusFilter(filter));
+      .filter(assignment => isLiveAssignment(assignment, currentGroup, classIds));
 
     return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);
   }
+);
+
+export const getAssignmentsSelector = createSelector(
+  getAllAssignmentsSelector,
+  filterSelector,
+  (assignments, filter) => assignments.filter(statusFilter(filter))
 );

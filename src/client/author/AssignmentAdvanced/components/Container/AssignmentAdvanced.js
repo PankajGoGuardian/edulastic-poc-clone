@@ -158,7 +158,7 @@ class AssignmentAdvanced extends Component {
           isModalVisible={isPreviewModalVisible}
           testId={testId}
           error={error}
-          hideModal={() => this.toggleTestPreviewModal(false)}
+          closeTestPreviewModal={() => this.toggleTestPreviewModal(false)}
         />
 
         <ListHeader title={assingment.title || "Loading..."} hasButton={false} />

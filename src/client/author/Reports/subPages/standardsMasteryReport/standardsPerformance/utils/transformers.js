@@ -135,9 +135,7 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
   });
 };
 
-export const getTableData = (metricInfo = [], appliedFilters, filterData) => {
-  const { scaleInfo = [] } = filterData;
-
+export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleInfo = []) => {
   const compareByData = getCompareByData(metricInfo, appliedFilters.compareBy.key, filterData);
   let filteredData = compareByData;
 
@@ -199,11 +197,12 @@ export const getParsedData = (
   tableFilters,
   selectedDomains,
   rawDomainData,
-  filterData
+  filterData,
+  scaleInfo = []
 ) => {
   return {
-    domainsData: groupedByDomain(metricInfo, maxMasteryScore, filterData.scaleInfo, selectedDomains, rawDomainData),
-    tableData: getTableData(metricInfo, tableFilters, filterData)
+    domainsData: groupedByDomain(metricInfo, maxMasteryScore, scaleInfo, selectedDomains, rawDomainData),
+    tableData: getTableData(metricInfo, tableFilters, filterData, scaleInfo)
   };
 };
 

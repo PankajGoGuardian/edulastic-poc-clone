@@ -96,7 +96,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
           />
         </FlexContainer>
         <FlexContainer
-          style={{ overflow: "auto", position: "relative", height: "425px", width: "700px" }}
+          style={{ overflow: "auto", position: "relative", height: "425px", maxWidth: "100%" }}
           justifyContent="flex-start"
           flexWrap="wrap"
         >

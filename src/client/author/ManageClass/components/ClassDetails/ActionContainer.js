@@ -24,7 +24,8 @@ import {
   ButtonIconWrap,
   DropMenu,
   MenuItems,
-  CaretUp
+  CaretUp,
+  CustomRedirectButton
 } from "./styled";
 import {
   IconPrint,
@@ -292,6 +293,12 @@ const ActionContainer = ({
             PRINT
           </RedirectButton>
 
+          {active ? (
+            <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              ADD MULTIPLE STUDENTS
+            </CustomRedirectButton>
+          ) : null}
+
           <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" groupId={classId}>
             <Dropdown
               overlay={
@@ -325,22 +332,9 @@ const ActionContainer = ({
               }
               placement="bottomRight"
             >
-              <RedirectButton last={true} style={{ background: themeColor, color: white }}>
-                ACTIONS
-              </RedirectButton>
+              <CustomRedirectButton last={true}>ACTIONS</CustomRedirectButton>
             </Dropdown>
           </FeaturesSwitch>
-
-          {active ? (
-            <RedirectButton
-              first={true}
-              data-cy="addMultiStu"
-              onClick={handleAddMultipleStudent}
-              style={{ whiteSpace: "nowrap", width: "180px", background: themeColor, color: white }}
-            >
-              ADD MULTIPLE STUDENTS
-            </RedirectButton>
-          ) : null}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

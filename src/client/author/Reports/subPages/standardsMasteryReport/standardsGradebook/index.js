@@ -8,6 +8,7 @@ import queryString from "query-string";
 
 import { StyledH3, StyledCard } from "../../../common/styled";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
+import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { Placeholder } from "../../../common/components/loader";
 
@@ -16,13 +17,17 @@ import { SignedStackBarChartContainer } from "./components/charts/signedStackBar
 import {
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
-  getSelectedStandardProficiency
+  getSelectedStandardProficiency,
+  getFiltersSelector
 } from "../common/filterDataDucks";
 
 import {
   getStandardsGradebookRequestAction,
   getReportsStandardsGradebook,
-  getReportsStandardsGradebookLoader
+  getReportsStandardsGradebookLoader,
+  getStudentStandardsAction,
+  getStudentStandardData,
+  getStudentStandardLoader
 } from "./ducks";
 
 import { getCsvDownloadingState } from "../../../ducks";
@@ -32,6 +37,7 @@ import { getFilterDropDownData, getDenormalizedData } from "./utils/transformers
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
 import { StandardsGradebookTable } from "./components/table/standardsGradebookTable";
+import { getStudentAssignments } from "../../../common/util";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -48,7 +54,10 @@ const StandardsGradebook = ({
   match,
   loading,
   selectedStandardProficiency,
-  filters
+  filters,
+  getStudentStandardsAction,
+  studentStandardData,
+  loadingStudentStandard
 }) => {
   const [ddfilter, setDdFilter] = useState({
     schoolId: "all",
@@ -62,6 +71,15 @@ const StandardsGradebook = ({
   });
 
   const [chartFilter, setChartFilter] = useState({});
+
+  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(false);
+  const [clickedStandard, setClickedStandard] = useState(undefined);
+  const [clickedStudentName, setClickedStudentName] = useState(undefined);
+
+  const studentAssignmentsData = useMemo(
+    () => getStudentAssignments(selectedStandardProficiency, studentStandardData),
+    [selectedStandardProficiency, studentStandardData]
+  );
 
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
@@ -108,6 +126,19 @@ const StandardsGradebook = ({
 
   const masteryScale = selectedStandardProficiency;
 
+  const handleOnClickStandard = (params, standard, studentName) => {
+    getStudentStandardsAction(params);
+    setClickedStandard(standard);
+    setStudentAssignmentModal(true);
+    setClickedStudentName(studentName);
+  };
+
+  const closeStudentAssignmentModal = () => {
+    setStudentAssignmentModal(false);
+    setClickedStandard(undefined);
+    setClickedStudentName(undefined);
+  };
+
   return (
     <div>
       {loading ? (
@@ -151,8 +182,19 @@ const StandardsGradebook = ({
               isCsvDownloading={isCsvDownloading}
               role={role}
               filters={filters}
+              handleOnClickStandard={handleOnClickStandard}
             />
           </TableContainer>
+          {showStudentAssignmentModal && (
+            <StudentAssignmentModal
+              showModal={showStudentAssignmentModal}
+              closeModal={closeStudentAssignmentModal}
+              studentAssignmentsData={studentAssignmentsData}
+              studentName={clickedStudentName}
+              standardName={clickedStandard}
+              loadingStudentStandard={loadingStudentStandard}
+            />
+          )}
         </>
       )}
     </div>
@@ -170,11 +212,14 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),
-      filters: get(state, "reportStandardsFilterDataReducer.filters", {})
+      filters: getFiltersSelector(state),
+      studentStandardData: getStudentStandardData(state),
+      loadingStudentStandard: getStudentStandardLoader(state)
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,
-      getStandardsFiltersRequestAction
+      getStandardsFiltersRequestAction,
+      getStudentStandardsAction
     }
   )
 );

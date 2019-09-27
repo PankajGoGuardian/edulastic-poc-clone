@@ -1,9 +1,11 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 
-import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
+
+import { test } from "@edulastic/constants";
 
 import {
   updateAssignmentStatusAction,
@@ -41,11 +43,15 @@ import {
   ADD_STUDENTS,
   GET_ALL_TESTACTIVITIES_FOR_STUDENT,
   MARK_AS_SUBMITTED,
-  DOWNLOAD_GRADES_RESPONSES
+  DOWNLOAD_GRADES_RESPONSES,
+  RECEIVE_CLASS_RESPONSE_SUCCESS
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
+import { getAllQids } from "../SummaryBoard/Transformer";
+
+const { testContentVisibility } = test;
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -69,9 +75,19 @@ function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
+    const classResponse = yield call(classResponseApi.classResponse, { ...payload, testId: additionalData.testId });
+
+    yield put({
+      type: RECEIVE_CLASS_RESPONSE_SUCCESS,
+      payload: classResponse
+    });
+
     const students = get(gradebookData, "students", []);
-    // this method mutates the gradebookData
-    markQuestionLabel(gradebookData.testItemsData, gradebookData.test.testItems);
+    // the below methods mutates the gradebookData
+    gradebookData.passageData = classResponse.passages;
+    gradebookData.testItemsData = classResponse.testItems;
+    gradebookData.test = classResponse;
+    markQuestionLabel(gradebookData.testItemsData);
     transformTestItems(gradebookData);
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length);
@@ -84,8 +100,6 @@ function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData }
     });
-
-    const releaseScore = additionalData.showScore;
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
@@ -268,15 +282,42 @@ export const getAllTestActivitiesForStudentSelector = createSelector(
   state => state.allTestActivitiesForStudent || []
 );
 
-export const getItemSummary = (entities, questionsOrder, itemsSummary) => {
+export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQuestionActivities) => {
   const questionMap = {};
   let testItemsDataKeyed = {};
+  let originalQuestionActivitiesKeyed = {};
+
   if (itemsSummary) {
     testItemsDataKeyed = keyBy(itemsSummary, "_id");
   }
 
+  if (originalQuestionActivities) {
+    //originalQuestionActivitiesKeyed = keyBy(originalQuestionActivities, "_id");
+    const originalQuestionActivitiesGrouped = groupBy(originalQuestionActivities, "testItemId");
+    for (const itemId of Object.keys(originalQuestionActivitiesGrouped)) {
+      const item = originalQuestionActivitiesGrouped[itemId];
+      const manuallyGradedPresent = originalQuestionActivitiesGrouped[itemId].find(x => x.graded === false);
+      /**
+       * even if at-least 1 questionActivity with graded false
+       * and itemLevelScoring is enabled,
+       * then every other questionActivities in the item
+       * should be treated as manually gradable
+       */
+      if (manuallyGradedPresent && originalQuestionActivitiesGrouped[itemId][0].weight > 1) {
+        originalQuestionActivitiesGrouped[itemId] = originalQuestionActivitiesGrouped[itemId].map(x => ({
+          ...x,
+          score: undefined,
+          graded: false
+        }));
+      }
+    }
+
+    originalQuestionActivitiesKeyed = keyBy(_values(originalQuestionActivitiesGrouped).flat(), "_id");
+  }
+
   for (const entity of entities) {
-    const { questionActivities } = entity;
+    const { questionActivities = [] } = entity;
+
     for (let {
       _id,
       notStarted,
@@ -297,8 +338,8 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary) => {
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
-          qLabel: get(testItemsDataKeyed, [qid, "qLabel"]) || qLabel,
-          barLabel: get(testItemsDataKeyed, [qid, "barLabel"]) || barLabel,
+          qLabel: qLabel,
+          barLabel: barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,
@@ -457,6 +498,22 @@ export const getMarkAsDoneEnableSelector = createSelector(
   (classes, currentClass) => classes.includes(currentClass)
 );
 
+export const isItemVisibiltySelector = createSelector(
+  stateTestActivitySelector,
+  getAdditionalDataSelector,
+  (state, additionalData) => {
+    const assignmentStatus = state?.data?.status;
+    const contentVisibility = additionalData?.testContentVisibility;
+    if (!additionalData?.hasOwnProperty("testContentVisibility")) {
+      return true;
+    }
+    return (
+      contentVisibility === testContentVisibility.ALWAYS ||
+      (assignmentStatus === "IN GRADING" && testContentVisibility.GRADING)
+    );
+  }
+);
+
 export const getTestItemsDataSelector = createSelector(
   stateTestActivitySelector,
   state => get(state, "data.testItemsData")
@@ -555,25 +612,14 @@ export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
   return studentTestActivity.algoVariableSetIds;
 };
 
-const getAllQids = (testItemIds, testItemsDataKeyed) => {
-  let qids = [];
-  for (let testItemId of testItemIds) {
-    let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
-    qids = [...qids, ...questions.map(x => x.id)];
-  }
-  return qids;
-};
-
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    const testItemIds = get(state, "data.test.testItems", []);
-    const testItemsData = get(state, "data.testItemsData", []);
-    if (testItemIds.length === 0 && testItemsData.length === 0) {
+    const testItemsData = get(state, "data.test.testItems", []);
+    if (testItemsData.length === 0) {
       return [];
     }
-    const testItemsDataKeyed = keyBy(testItemsData, "_id");
-    const qIds = getAllQids(testItemIds.map(o => o.itemId), testItemsDataKeyed);
+    const qIds = getAllQids(testItemsData);
     return qIds;
   }
 );
@@ -581,8 +627,7 @@ export const getQIdsSelector = createSelector(
 export const getQLabelsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    const testItemIds = get(state, "data.test.testItems", []);
-    const testItemsData = get(state, "data.testItemsData", []);
-    return getQuestionLabels(testItemsData, testItemIds);
+    const testItemsData = get(state, "data.test.testItems", []);
+    return getQuestionLabels(testItemsData);
   }
 );

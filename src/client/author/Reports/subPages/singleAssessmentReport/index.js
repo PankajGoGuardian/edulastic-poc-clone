@@ -18,7 +18,7 @@ import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
-import { resetAllReportsAction } from "../../ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const SingleAssessmentReportContainer = props => {
   const { settings, setSARSettingsAction } = props;

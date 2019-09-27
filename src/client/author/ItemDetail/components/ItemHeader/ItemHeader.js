@@ -1,29 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { IconChevronLeft } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, MenuIcon } from "@edulastic/common";
 import { white } from "@edulastic/colors";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
-import {
-  Container,
-  Title,
-  Back,
-  LeftSide,
-  MobileContainer,
-  ReferenceText,
-  ReferenceValue,
-  RightSide,
-  ToggleButton
-} from "./styled";
+import { Affix } from "antd";
+import { Container, Title, Back, LeftSide, ReferenceText, ReferenceValue, RightSide, ExtraFlex } from "./styled";
 
-const ItemHeader = ({ title, children, link, reference, windowWidth, toggleSideBar }) => {
-  const width = windowWidth;
+const ItemHeader = ({ title, children, link, reference, toggleSideBar }) => {
   const renderLeftSide = () => (
     <LeftSide>
-      <ToggleButton onClick={toggleSideBar}>
-        <i className="fa fa-bars" />
-      </ToggleButton>
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <Title>{title}</Title>
       {reference && (
         <FlexContainer>
@@ -44,24 +30,16 @@ const ItemHeader = ({ title, children, link, reference, windowWidth, toggleSideB
     }
   };
 
-  return width > MAX_MOBILE_WIDTH ? (
-    <HeaderWrapper>
-      <FlexContainer alignItems="center" style={{ flex: 1 }}>
-        {renderLeftSide()}
-        <RightSide>{children}</RightSide>
-      </FlexContainer>
-      <LeftSide>{renderIcon()}</LeftSide>
-    </HeaderWrapper>
-  ) : (
-    <MobileContainer type="standard">
-      <Container>
-        <FlexContainer alignItems="center" style={{ flex: 1, paddingBottom: 20, flexDirection: "column" }}>
+  return (
+    <Container type="standard">
+      <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
+        <ExtraFlex justifyContent="space-between" alignItems="center" style={{ flex: 1 }}>
           {renderLeftSide()}
-        </FlexContainer>
-        <RightSide>{children}</RightSide>
+          <RightSide>{children}</RightSide>
+        </ExtraFlex>
         <LeftSide>{renderIcon()}</LeftSide>
-      </Container>
-    </MobileContainer>
+      </Affix>
+    </Container>
   );
 };
 
@@ -69,7 +47,6 @@ ItemHeader.propTypes = {
   title: PropTypes.string,
   children: PropTypes.any,
   link: PropTypes.any,
-  windowWidth: PropTypes.number.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

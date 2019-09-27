@@ -4,7 +4,7 @@ import { Input } from "antd";
 export default class FormEssay extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review"]).isRequired,
+    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
     question: PropTypes.object.isRequired,
     answer: PropTypes.string
   };
@@ -28,8 +28,13 @@ export default class FormEssay extends React.Component {
   };
 
   renderForm = () => {
-    const { answer } = this.props;
-    return <Input size="large" value={answer} onChange={this.handleChange} />;
+    const {
+      answer,
+      question: {
+        uiStyle: { minHeight }
+      }
+    } = this.props;
+    return <Input.TextArea style={{ minHeight: `${minHeight}px` }} value={answer} onChange={this.handleChange} />;
   };
 
   render() {
@@ -37,6 +42,7 @@ export default class FormEssay extends React.Component {
     switch (mode) {
       case "edit":
         return this.renderView();
+      case "report":
       case "review":
         return this.renderForm();
       default:

@@ -241,7 +241,6 @@ const SortListPreview = ({
                 onDrop={onDrop}
                 obj={draggableItem}
                 disableResponse={disableResponse}
-                changePreviewTab={changePreviewTab}
               />
             </DropContainer>
           ))}

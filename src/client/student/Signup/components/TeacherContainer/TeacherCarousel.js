@@ -90,7 +90,7 @@ const carouselOptions = {
 const TeacherCarousel = ({ teachers }) => {
   return (
     <CarouselWrapper>
-      <TeacherCount>{teachers.length}+ teachers from this school use Edulastic</TeacherCount>
+      <TeacherCount>{teachers.length} teacher(s) from this school use Edulastic</TeacherCount>
       <Carousel {...carouselOptions}>
         {teachers.map((item, index) => {
           return <Card teacher={item._source} />;

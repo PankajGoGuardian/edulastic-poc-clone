@@ -5,7 +5,7 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST = "[reports] get reports question analysis request";
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports question analysis success";
@@ -21,7 +21,7 @@ export const getQuestionAnalysisRequestAction = createAction(GET_REPORTS_QUESTIO
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportQuestionAnalysisReducer;
+export const stateSelector = state => state.reportReducer.reportQuestionAnalysisReducer;
 
 export const getReportsQuestionAnalysis = createSelector(
   stateSelector,

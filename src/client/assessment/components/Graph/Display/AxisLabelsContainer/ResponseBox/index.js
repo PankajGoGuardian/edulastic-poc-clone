@@ -100,7 +100,7 @@ ResponseBox.defaultProps = {
   titleHeight: 30,
   titleWidth: 150,
   markCount: 0,
-  markWidth: 55, // from .mark class
+  markWidth: 120, // from .mark class
   markHeight: 45, // from .mark class
   separationDistanceX: 10,
   separationDistanceY: 20,

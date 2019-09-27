@@ -197,7 +197,7 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  top: ${props => (props.isWorksheet ? "120px" : "60px")};
+  top: ${props => (props.isWorksheet ? "130px" : "60px")};
   background: ${props => props.theme.default.sideToolbarBgColor};
   z-index: 500;
   border-radius: 4px;

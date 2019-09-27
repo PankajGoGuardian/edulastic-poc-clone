@@ -12,11 +12,9 @@ import {
   mobileWidthMax,
   borders,
   backgrounds,
-  dashBorderColor,
-  lightGreySecondary
+  white
 } from "@edulastic/colors";
 import { resetMyPasswordAction } from "../../Login/ducks";
-import ProfileImage from "../../assets/Profile.png";
 import { Wrapper } from "../../styled";
 import Photo from "./Photo";
 
@@ -79,7 +77,7 @@ class ProfileContainer extends React.Component {
     const { showChangePassword } = this.state;
     return (
       <LayoutContent flag={flag}>
-        <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+        <ProfileWrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
             <Photo height={200} windowWidth={200} />
           </ProfileImgWrapper>
@@ -89,7 +87,7 @@ class ProfileContainer extends React.Component {
               <Photo height={100} windowWidth={100} mode="small" />
             </ProfileImgMobileWrapper>
             <UserDetail>
-              <Title>{t("common.title.instructor")}</Title>
+              <Title>{t("common.title.student")}</Title>
               <Details>
                 <DetailRow>
                   <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
@@ -157,7 +155,7 @@ class ProfileContainer extends React.Component {
               </FormWrapper>
             )}
           </ProfileContentWrapper>
-        </Wrapper>
+        </ProfileWrapper>
       </LayoutContent>
     );
   }
@@ -186,84 +184,53 @@ ProfileContainer.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-const TitleName = styled.h1`
-  text-align: center;
-  font-weight: 600;
-  display: none;
-
-  @media (max-width: ${mobileWidthMax}) {
-    display: block;
-  }
-`;
-
 const LayoutContent = styled(Layout.Content)`
   width: 100%;
 `;
 
+const ProfileWrapper = styled(Wrapper)`
+  padding: 30px;
+  margin: 0px;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    padding: 20px;
+  }
+`;
+
 const ProfileContentWrapper = styled.div`
-  width: 1150px
-  background-color:white;
+  width: calc(100% - 370px);
+  background-color: white;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 20px;
 
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 800px;
-    padding: 20px;
-  }
-
   @media (max-width: ${largeDesktopWidth}) {
-    width: 735px;
-    padding:15px;
+    width: calc(100% - 270px);
   }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 600px;
-    padding:10px;
-  }
-
   @media (max-width: ${mobileWidthMax}) {
     width: 100%;
-    padding: 20px;
   }
 `;
 
-const UserDetail = styled.div`
-  padding: 5px 0rem 20px;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    padding: 5px 0 20px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    padding: 5px 0 20px;
-  }
-`;
+const UserDetail = styled.div``;
 
 const Title = styled.h3`
   color: ${props => props.theme.profile.userHeadingTextColor};
   font-size: ${props => props.theme.profile.userHeadingTextSize};
   font-weight: ${props => props.theme.profile.userHeadingTextWeight};
-  margin-bottom: 11px;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    font-size: 18px;
-    margin-bottom: 7px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    font-size: 18px;
-    margin-bottom: 11px;
-  }
+  margin-bottom: 10px;
 
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
 `;
 
-const UserSubTitle = styled.p`
-  color: ${props => props.theme.profile.userSubTitleTextColor};
-  font-size: ${props => props.theme.profile.userSubTitleTextSize};
+const TitleName = styled.h1`
+  text-align: center;
+  font-weight: 600;
+  display: none;
+  @media (max-width: ${mobileWidthMax}) {
+    display: block;
+  }
 `;
 
 const ProfileImgMobileWrapper = styled.div`
@@ -276,75 +243,48 @@ const ProfileImgMobileWrapper = styled.div`
 `;
 
 const ProfileImgWrapper = styled.div`
-  width: 400px;
-  height: 350px;
+  width: 350px;
+  height: 300px;
   position: relative;
-  background-color: white;
-  display: flex;
+  background-color: ${white};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 300px;
-    height: 250px;
-    margin-right: 10px;
-    margin-bottom: 20px;
-  }
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-width: 250px;
-    max-height: 200px;
-    margin-right: 10px;
-    margin-bottom: 20px;
+    width: 250px;
+    height: 200px;
   }
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 200px;
-    max-height: 200px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-  }
-
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
 `;
 
 const Details = styled.div`
-  margin: 30px 0px 0px 25px;
-  @media screen and (max-width: ${mobileWidthMax}) {
-    margin: 0px;
-  }
+  padding: 20px;
 `;
 
 const DetailRow = styled.div`
-  padding: 20px 0px;
+  display: flex;
+  align-items: center;
+  padding: 10px 0px 20px;
 `;
+
 const DetailTitle = styled.span`
   font-size: 15px;
   color: ${props => props.theme.profile.formInputLabelColor};
   font-weight: 600;
-  width: 40%;
+  width: 150px;
   display: inline-block;
-  @media screen and (max-width: ${mobileWidthMax}) {
-    width: 100%;
-  }
 `;
+
 const DetailData = styled.span`
   font-size: 15px;
   color: grey;
   display: inline-block;
-  @media screen and (max-width: ${mobileWidthMax}) {
-    width: 100%;
-    margin-top: 10px;
-    border-radius: 5px;
-    border: 1px solid ${dashBorderColor};
-    background-color: ${lightGreySecondary};
-    padding: 8px 24px;
-  }
+  width: calc(100% - 150px);
 `;
 
 const Label = styled.label`
@@ -353,98 +293,44 @@ const Label = styled.label`
 
 const ChangePasswordToggleButton = styled.div`
   color: ${props => props.theme.profile.cancelButtonTextColor};
-  padding-left: 25px;
+  padding-left: 20px;
   cursor: pointer;
   width: fit-content;
   span {
     margin-right: 20px;
     font-weight: 600;
   }
-
-  @media (max-width: ${mobileWidthMax}) {
-    padding-left: 5px;
-  }
 `;
 
 const FormWrapper = styled(Form)`
   width: 100%;
-  margin-left: 15px;
   text-align: left;
-  margin-top: 30px;
-
-  .ant-form-item {
-    margin-bottom: 22px;
-  }
+  padding: 30px 20px 5px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 
   .ant-input {
     height: 40px;
     background: ${backgrounds.primary};
     border: 1px solid ${borders.secondary};
-    padding: 0 24px;
-  }
-
-  @media (max-width: ${extraDesktopWidth}) {
-    max-width: 647px;
-
-    .ant-form-item-control {
-      line-height: 35px;
-    }
-
-    .ant-form-item {
-      margin-bottom: 8px;
-    }
-
-    .ant-input {
-      height: 30px;
-    }
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    .ant-form-item-control {
-      line-height: 34px;
-    }
-
-    .ant-form-item {
-      margin-bottom: 0;
-    }
+    padding: 0 15px;
   }
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;
-
-    .ant-form-item {
-      margin-bottom: 7px;
-      padding: 0 5px;
-    }
-
-    .ant-form-item-control {
-      line-height: 43px;
-    }
-
-    .ant-input {
-      height: 40px;
-    }
-  }
-
-  @media (max-width: ${mobileWidthMax}) {
-    margin: 0px;
+    flex-direction: column;
   }
 `;
 
 const FormItemWrapper = styled(FormItem)`
-  width: 49%;
+  width: calc(50% - 10px);
   display: inline-block;
-  padding: 0px 15px;
-
-  @media (max-width: 425px) {
-    width: 100%;
-    display: block;
-  }
+  padding: 0px;
   label {
     font-size: ${props => props.theme.profile.formInputLabelSize};
     color: ${props => props.theme.profile.formInputLabelColor};
     font-weight: 600;
-    letter-spacing: -0.4px;
   }
   .ant-form-explain {
     font-size: 12px;
@@ -454,7 +340,8 @@ const FormItemWrapper = styled(FormItem)`
 const FormButtonWrapper = styled.div`
   text-align: center;
   float: right;
-  padding-right: 20px;
+  padding: 0px;
+  width: 100%;
   @media (max-width: ${mobileWidthMax}) {
     float: none;
     padding-right: 0px;
@@ -464,21 +351,25 @@ const FormButtonWrapper = styled.div`
 const SaveButton = styled(Button)`
   width: 200px;
   height: 40px;
-  margin: 0 15px;
+  margin-left: 15px;
+  float: right;
   background: ${props => props.theme.profile.saveButtonBgColor};
   border-color: ${props => props.theme.profile.saveButtonBorderColor};
   font-size: ${props => props.theme.profile.saveButtonTextSize};
   color: ${props => props.theme.profile.saveButtonTextColor};
   text-transform: uppercase;
+  &:hover,
+  &:focus {
+    background: ${props => props.theme.profile.saveButtonBgColor};
+    color: ${props => props.theme.profile.saveButtonTextColor};
+  }
 
   @media (max-width: ${extraDesktopWidth}) {
     height: 36px;
   }
-
   @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
+    padding: 0px 15px;
   }
-
   @media (max-width: ${desktopWidth}) {
     width: 100%;
     margin: 8px 0 0 0;
@@ -486,23 +377,16 @@ const SaveButton = styled(Button)`
 `;
 
 const CancelButton = styled(SaveButton)`
-  width: 200px;
-  height: 40px;
-  margin: 0 15px;
   background: ${props => props.theme.profile.cancelButtonBgColor};
   color: ${props => props.theme.profile.cancelButtonTextColor};
   border: 1px solid ${props => props.theme.profile.cancelButtonTextColor};
-
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
+  &:hover,
+  &:focus {
+    background: ${props => props.theme.profile.cancelButtonBgColor};
+    color: ${props => props.theme.profile.cancelButtonTextColor};
   }
 
   @media (max-width: ${desktopWidth}) {
-    width: 100%;
     margin: 0;
   }
 `;

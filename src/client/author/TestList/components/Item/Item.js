@@ -16,13 +16,14 @@ import {
   Header,
   Stars,
   StyledLink,
-  Question,
+  TestInfo,
   LikeIcon,
   ShareIcon,
   AuthorWrapper,
   IconText,
   ButtonWrapper,
   DraftIconWrapper,
+  TagsWrapper,
   EllipsisWrapper,
   ViewButton,
   PlaylistId
@@ -139,7 +140,7 @@ class Item extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
-          hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container
           src={isPlaylist ? _source.thumbnail : thumbnail}
@@ -175,14 +176,24 @@ class Item extends Component {
             </Header>
           }
         >
-          <Question>
+          <TestInfo>
             <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-          </Question>
-          <Inner>
             <CardDescription title={isPlaylist ? _source.description : description}>
               <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
             </CardDescription>
-            {!isPlaylist && <Tags tags={tags} />}
+          </TestInfo>
+
+          <Inner>
+            {!isPlaylist && (
+              <TagsWrapper>
+                <div>
+                  <Tags show={1} tags={tags} />
+                </div>
+                <TestStatus status={status} view="tile">
+                  {status}
+                </TestStatus>
+              </TagsWrapper>
+            )}
             <ViewButton>View</ViewButton>
           </Inner>
           <Footer>
@@ -195,11 +206,6 @@ class Item extends Component {
               </Author>
             )}
             {testItemId ? <PlaylistId># {testItemId}</PlaylistId> : null}
-            {!isPlaylist && (
-              <TestStatus status={status} view="tile">
-                {status}
-              </TestStatus>
-            )}
             {status !== "draft" && (
               <>
                 <ShareIcon>

@@ -102,7 +102,7 @@ export const PagInfo = styled.span`
   color: ${themeColor};
   text-overflow: ellipsis;
   /* width: 50%; */
-  cursor: pointer;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
   user-select: none;
 
   @media (max-width: ${mediumDesktopWidth}) {
@@ -182,7 +182,7 @@ export const SquareColorDivGreen = styled(SquareColorDiv)`
 `;
 
 export const SquareColorDivGray = styled(SquareColorDiv)`
-  background-color: ${classBoardTheme.CardColor};
+  background-color: ${classBoardTheme.SkippedColor};
 `;
 
 export const SquareColorBlue = styled(SquareColorDiv)`
@@ -206,7 +206,7 @@ export const StyledParaF = styled.p`
   line-height: 16px;
   font-weight: 600;
   margin-bottom: 5px;
-  cursor: ${props => (props.isLink ? "pointer" : "default")};
+  cursor: ${props => (props.isLink && !props.disabled ? "pointer" : "default")};
   color: #434b5d;
 
   @media (max-width: ${mediumDesktopWidth}) {

@@ -2,8 +2,10 @@ import {
   RECEIVE_STUDENT_RESPONSE_REQUEST,
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RECEIVE_STUDENT_RESPONSE_ERROR,
-  UPDATE_OVERALL_FEEDBACK
+  UPDATE_OVERALL_FEEDBACK,
+  RESPONSE_ENTRY_SCORE_SUCCESS
 } from "../constants/actions";
+import produce from "immer";
 
 const initialState = {
   data: {},
@@ -21,6 +23,18 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         data: payload
       };
+    case RESPONSE_ENTRY_SCORE_SUCCESS:
+      const { testActivity, questionActivities } = payload;
+      if (state.data.testActivity._id !== testActivity._id) {
+        return state;
+      }
+      return produce(state, _state => {
+        _state.data.testActivity = testActivity;
+        for (const [index, qAct] of questionActivities.entries()) {
+          const { testActivityId, score, maxScore, ...questionItem } = qAct;
+          Object.assign(_state.data.questionActivities[index], { ...questionItem, score });
+        }
+      });
     case RECEIVE_STUDENT_RESPONSE_ERROR:
       return { ...state, loading: false, error: payload.error };
     case UPDATE_OVERALL_FEEDBACK:

@@ -104,7 +104,7 @@ class ClozeImageDragDrop extends Component {
     );
 
     switch (name) {
-      case "duplicated_responses": {
+      case "duplicatedResponses": {
         this.setState({ duplicatedResponses: value });
         break;
       }
@@ -150,7 +150,7 @@ class ClozeImageDragDrop extends Component {
       ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
-    const duplicatedResponses = item.duplicated_responses || false;
+    const duplicatedResponses = item.duplicatedResponses || false;
     const showDraghandle = item.show_draghandle || false;
     const shuffleOptions = item.shuffleOptions || false;
     const transparentResponses = item.transparent_responses || false;
@@ -213,7 +213,7 @@ class ClozeImageDragDrop extends Component {
                       <Checkbox
                         data-cy="multi-check"
                         className="additional-options"
-                        onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
+                        onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
                         defaultChecked={duplicatedResponses}
                       >
                         {t("component.cloze.imageDragDrop.duplicatedresponses")}

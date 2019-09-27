@@ -15,7 +15,9 @@ const Options = ({
   outerStyle,
   advancedAreOpen,
   cleanSections,
-  fillSections
+  fillSections,
+  handleIndividualTypeChange,
+  handleGlobalTypeChange
 }) => (
   <WidgetOptions
     outerStyle={outerStyle}
@@ -31,6 +33,8 @@ const Options = ({
       cleanSections={cleanSections}
       fillSections={fillSections}
       responseIds={responseIds}
+      handleIndividualTypeChange={handleIndividualTypeChange}
+      handleGlobalTypeChange={handleGlobalTypeChange}
     />
     <Extras advancedAreOpen={advancedAreOpen} cleanSections={cleanSections} fillSections={fillSections}>
       <Extras.Distractors />
@@ -46,7 +50,9 @@ Options.propTypes = {
   multipleLine: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  handleIndividualTypeChange: PropTypes.func.isRequired,
+  handleGlobalTypeChange: PropTypes.func.isRequired
 };
 
 Options.defaultProps = {

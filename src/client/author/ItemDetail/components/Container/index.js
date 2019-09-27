@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { Spin } from "antd";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import { withRouter } from "react-router-dom";
 import MultipleQuestionView from "./Container";
 import QuestionView from "../../../QuestionEditor";
@@ -31,6 +31,7 @@ const ItemDetailContainer = ({
   isLoading = false,
   getItem,
   item,
+  history,
   updateItem,
   publishTestItem,
   testItemStatus,
@@ -67,6 +68,8 @@ const ItemDetailContainer = ({
     publishTestItem(itemId);
     setEditable(false);
   };
+
+  if (isEmpty(item) && itemId === "new") history.push("/author/items");
 
   // item is not yet loaded.
   // the store could have values from previous load, in that case

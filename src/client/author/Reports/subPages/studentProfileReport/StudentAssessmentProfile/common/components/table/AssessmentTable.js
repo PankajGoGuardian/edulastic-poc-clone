@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { filter, includes } from "lodash";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
@@ -8,7 +9,7 @@ import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
-  const value = typeof text === "undefined" ? "N/A" : `${text}%`;
+  const value = text === undefined || text === null ? "N/A" : `${text}%`;
   return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
 };
 
@@ -16,7 +17,12 @@ const tableColumns = [
   {
     title: "Assessment Name",
     dataIndex: "testName",
-    key: "testName"
+    key: "testName",
+    render: (data, record) => (
+      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+        {data}
+      </Link>
+    )
   },
   {
     title: "Assessment Type",
@@ -70,7 +76,7 @@ const getColumns = (studentName = "") => {
       },
       render: (score, record) => {
         if (!score) {
-          return getCol("N/A", "#cccccc");
+          return getCol(score, "#cccccc");
         }
 
         const toolTipText = () => (

@@ -23,6 +23,7 @@ const initialState = {
   error: false,
   loading: true,
   settings: {},
+  isDocBased: false,
   answerCheckByItemId: {},
   isPasswordValidated: false,
   loadingTestActivity: true,
@@ -44,6 +45,7 @@ const test = (state = initialState, { payload, type }) => {
         docUrl: payload.docUrl,
         answerCheckByItemId: payload.answerCheckByItemId,
         pageStructure: payload.pageStructure,
+        isDocBased: payload.isDocBased,
         freeFormNotes: payload.freeFormNotes,
         settings: {
           ...state.settings,

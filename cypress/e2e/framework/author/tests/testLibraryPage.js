@@ -117,6 +117,7 @@ export default class TestLibrary {
     cy.route("POST", "**/group/search").as("groups");
     cy.contains("ASSIGN").click({ force: true });
     cy.wait("@groups");
+    cy.wait(1000);
   };
 
   clickOnDuplicate = () => {
@@ -124,7 +125,6 @@ export default class TestLibrary {
     cy.route("GET", "**/test/**").as("getTest");
     cy.contains("DUPLICATE").click({ force: true });
     cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
-    cy.wait("@getTest");
     cy.wait("@getTest");
   };
 

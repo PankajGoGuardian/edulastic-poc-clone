@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, extraDesktopWidth } from "@edulastic/colors";
+import { darkGrey, lightGrey, extraDesktopWidth, themeColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -10,15 +10,12 @@ export const Container = styled(Card)`
   border: 0;
   .ant-card-body {
     padding: 16px;
-    box-shadow: 1px 1px 7px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.07);
     border-radius: 4px;
-    min-height: 280px;
+    min-height: 210px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    @media (max-width: ${extraDesktopWidth}) {
-      min-height: 300px;
-    }
+    justify-content: flex-start;
   }
 
   .ant-card-head {
@@ -50,26 +47,23 @@ export const Container = styled(Card)`
 `;
 
 export const Inner = styled.div`
-  div:last-child {
-    & > span {
-      padding: 4px 15px;
-    }
-  }
+  margin: 10px 0px 15px;
 `;
 
 export const CardDescription = styled.div`
   font-size: 12px;
   height: 55px;
   overflow: hidden;
-  margin-bottom: 5px;
 `;
 
 export const Footer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-end;
-  padding-bottom: 15px;
+  align-items: center;
+  padding-bottom: 0px;
+  height: 25px;
+  overflow: hidden;
 `;
 
 export const Author = styled.div`
@@ -90,7 +84,19 @@ export const Author = styled.div`
   }
 `;
 
-export const PlaylistId = styled(Author)``;
+export const PlaylistId = styled(Author)`
+  max-width: 50px;
+  overflow: hidden;
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  height: 30px;
+  overflow: hidden;
+`;
 
 export const AuthorName = styled.span`
   overflow: hidden;
@@ -104,14 +110,12 @@ export const LikeIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
-  margin-left: 15px;
 `;
 
 export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
-  margin-left: 15px;
   svg {
     transform: rotate(180deg);
   }
@@ -122,7 +126,7 @@ export const EllipsisWrapper = styled.div`
   min-height: 18px;
   position: relative;
   overflow: hidden;
-  text-align: center;
+  text-align: ${props => (props.view === "list" ? "left" : "center")};
   text-overflow: hidden;
   &:before {
     content: "...";
@@ -170,11 +174,11 @@ export const CardId = styled.span`
 `;
 export const ViewButton = styled.div`
   font-size: 12px;
-  color: #00ad50;
+  color: ${themeColor};
   background: white;
   padding: 8px;
-  margin: 10px 0px 15px;
-  border: 1px solid #00ad50;
+  margin: 0px;
+  border: 1px solid ${themeColor};
   line-height: 2.2em;
   text-transform: uppercase;
   border-radius: 4px;
@@ -232,18 +236,18 @@ export const StyledLink = styled.a`
   white-space: nowrap;
   overflow: hidden;
   text-decoration: none;
-  color: #00ad50;
+  color: ${themeColor};
   cursor: pointer;
 
   :hover {
-    color: #00ad50;
+    color: ${themeColor};
   }
 `;
 
-export const Question = styled.div`
-  padding: 15px 0px 4px;
+export const TestInfo = styled.div`
+  padding: 0px;
+  margin: 0px;
   text-align: center;
-  margin-bottom: auto;
 `;
 
 export const DraftIconWrapper = styled.div`

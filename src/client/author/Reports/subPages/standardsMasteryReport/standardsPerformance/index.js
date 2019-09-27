@@ -15,7 +15,8 @@ import {
   getReportsStandardsBrowseStandards,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
-  getSelectedStandardProficiency
+  getSelectedStandardProficiency,
+  getFiltersSelector
 } from "../common/filterDataDucks";
 
 import { getCsvDownloadingState } from "../../../ducks";
@@ -50,7 +51,8 @@ const StandardsPerformance = ({
   settings,
   role,
   loading,
-  selectedStandardProficiency
+  selectedStandardProficiency,
+  filters
 }) => {
   const filterData = get(standardsFilters, "data.result", []);
   const scaleInfo = selectedStandardProficiency || [];
@@ -102,8 +104,16 @@ const StandardsPerformance = ({
   const overallMetricMasteryLevel = getMasteryLevel(overallMetricMasteryScore, scaleInfo);
 
   const { domainsData, tableData } = useMemo(() => {
-    return getParsedData(res.metricInfo, maxMasteryScore, tableFilters, selectedDomains, rawDomainData, filterData);
-  }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData]);
+    return getParsedData(
+      res.metricInfo,
+      maxMasteryScore,
+      tableFilters,
+      selectedDomains,
+      rawDomainData,
+      filterData,
+      scaleInfo
+    );
+  }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
 
   if (loading) {
     return (
@@ -167,6 +177,7 @@ const StandardsPerformance = ({
           scaleInfo={scaleInfo}
           selectedDomains={selectedDomains}
           isCsvDownloading={isCsvDownloading}
+          filters={filters}
         />
       </StyledCard>
     </DropDownContainer>
@@ -179,6 +190,7 @@ const enhance = connect(
     loading: getReportsStandardsPerformanceSummaryLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
+    filters: getFiltersSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     selectedStandardProficiency: getSelectedStandardProficiency(state)

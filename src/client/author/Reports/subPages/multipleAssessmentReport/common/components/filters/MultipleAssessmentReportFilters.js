@@ -131,7 +131,7 @@ const SingleAssessmentReportFilters = ({
       title: "All Assignment Types"
     };
 
-    const testIdsArr = [].concat(search.testIds || []);
+    const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
     let urlTestIds = testIdsArr.map(key => find(dropDownData.testIdArr, test => test.key == key)).filter(item => item);
 

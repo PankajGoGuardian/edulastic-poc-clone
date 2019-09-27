@@ -13,7 +13,7 @@ import { getNavigationTabLinks } from "../../common/util";
 import navigation from "../../common/static/json/navigation.json";
 
 import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
-import { resetAllReportsAction } from "../../ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const StandardsMasteryReportContainer = props => {
   const { gradebookSettings, setSMRSettingsAction } = props;
@@ -36,7 +36,7 @@ const StandardsMasteryReportContainer = props => {
         obj[item] = val;
       });
       return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, "?" + qs.stringify(obj));
+        getNavigationTabLinks(arr, "?" + qs.stringify(obj, { arrayFormat: "comma" }));
       });
     } else {
       return [];
@@ -55,7 +55,7 @@ const StandardsMasteryReportContainer = props => {
         }
       });
       obj.testId = gradebookSettings.selectedTest.key;
-      let path = qs.stringify(obj);
+      let path = qs.stringify(obj, { arrayFormat: "comma" });
       props.history.push("?" + path);
     }
     firstRender.current = false;

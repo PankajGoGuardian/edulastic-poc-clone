@@ -5,13 +5,13 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
-import { RESET_ALL_REPORTS } from "../../ducks";
+import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
 
 const SET_SPR_SETTINGS = "[SPR settings] get spr settings";
 
 export const setSPRSettingsAction = createAction(SET_SPR_SETTINGS);
 
-export const stateSelector = state => state.reportSPRSettingsReducer;
+export const stateSelector = state => state.reportReducer.reportSPRSettingsReducer;
 
 export const getReportsSPRSettings = createSelector(
   stateSelector,

@@ -8,12 +8,14 @@ import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 
 class HeaderWrapper extends Component {
   render = () => {
-    const { children, type } = this.props;
+    const { children, type, justify } = this.props;
 
     return (
       <HeaderContainer type={type}>
         <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
-          <Container type={type}>{children}</Container>
+          <Container justify={justify} type={type}>
+            {children}
+          </Container>
           <ScrollContext.Consumer>
             {context => (
               <Fragment>
@@ -80,7 +82,7 @@ const Container = styled.div`
   padding: 0px 30px;
   background: ${props => props.theme.header.headerBgColor};
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ justify }) => justify || "space-between"};
   align-items: center;
 
   @media (max-width: ${mediumDesktopWidth}) {

@@ -33,7 +33,8 @@ const StandardSet = ({
   getCurriculums,
   getCurriculumStandards,
   curriculumStandards,
-  curriculumStandardsLoading
+  curriculumStandardsLoading,
+  isDocBased
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
 
@@ -100,6 +101,7 @@ const StandardSet = ({
           getCurriculumStandards={searchCurriculumStandards}
           editAlignment={handleEditAlignment}
           createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
+          isDocBased={isDocBased}
         />
       </ThemeProvider>
     </>

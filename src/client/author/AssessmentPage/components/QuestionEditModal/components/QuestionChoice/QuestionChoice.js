@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Checkbox, InputNumber } from "antd";
-import { throttle } from "lodash";
+import { Input, Checkbox, InputNumber, Radio } from "antd";
+import { throttle, isArray } from "lodash";
 
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
 
 const { Group: CheckboxGroup } = Checkbox;
+const { Group: RadioGroup } = Radio;
 
 const defaultState = {
   optionsValue: "",
@@ -73,19 +74,19 @@ export default class QuestionChoice extends React.Component {
 
     this.setState(
       {
-        correctAnswers: checked
+        correctAnswers: isArray(checked) ? checked : [checked.target.value]
       },
       () => {
         const data = {
           validation: {
             scoringType: EXACT_MATCH,
             validResponse: {
-              value: checked,
+              value: isArray(checked) ? checked : [checked.target.value],
               score
             },
             altResponses: []
           },
-          multipleResponses: checked.length > 1
+          multipleResponses: isArray(checked) ? checked.length > 1 : false
         };
 
         onUpdate(data);
@@ -117,18 +118,24 @@ export default class QuestionChoice extends React.Component {
   render() {
     const { optionsValue, correctAnswers, score } = this.state;
     const {
-      question: { options }
+      question: { options, title }
     } = this.props;
-
+    const trueOrFalse = title === "True or false";
     return (
       <QuestionFormWrapper>
-        <FormGroup>
-          <FormLabel>Options</FormLabel>
-          <Input value={optionsValue} onChange={throttle(this.handleSetOptions, 2000)} autoFocus />
-        </FormGroup>
+        {!trueOrFalse && (
+          <FormGroup>
+            <FormLabel>Options</FormLabel>
+            <Input value={optionsValue} onChange={throttle(this.handleSetOptions, 2000)} autoFocus />
+          </FormGroup>
+        )}
         <FormGroup>
           <FormLabel>Correct Answers</FormLabel>
-          <CheckboxGroup options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />
+          {trueOrFalse ? (
+            <RadioGroup options={options} value={correctAnswers[0]} onChange={this.handleSetCorrectAnswers} />
+          ) : (
+            <CheckboxGroup options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />
+          )}
           <InputNumber min={0} value={score} onChange={this.handleSetScore} />
           <Points>Points</Points>
         </FormGroup>

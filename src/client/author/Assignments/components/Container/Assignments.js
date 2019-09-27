@@ -204,7 +204,7 @@ class Assignments extends Component {
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
           error={error}
-          hideModal={this.hidePreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
         <ListHeader
           onCreate={this.handleCreate}

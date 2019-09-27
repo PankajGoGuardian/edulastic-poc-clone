@@ -7,7 +7,7 @@ import BodyWrapper from "../../../AssignmentCreate/common/BodyWrapper";
 import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
 const CreationOptions = ({ onUploadPDF }) => (
   <BodyWrapper>
-    <FlexWrapper>
+    <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
     </FlexWrapper>

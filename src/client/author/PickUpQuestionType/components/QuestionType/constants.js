@@ -1574,7 +1574,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           ticksDistance: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12,
+          fontSize: 16,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1715,7 +1715,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           labelsFrequency: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12,
+          fontSize: 16,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1924,7 +1924,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -56,7 +56,11 @@ const {
   evalTypeLabels,
   accessibilities,
   releaseGradeTypes,
-  releaseGradeLabels
+  releaseGradeLabels,
+  releaseGradeKeys,
+  nonPremiumReleaseGradeKeys,
+  testContentVisibility: testContentVisibilityOptions,
+  testContentVisibilityTypes
 } = test;
 
 const { Option } = Select;
@@ -64,12 +68,9 @@ const { Option } = Select;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
-  [ASSESSMENT]: "Asessment",
+  [ASSESSMENT]: "Class Asessment",
   [PRACTICE]: "Practice"
 };
-
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class MainSetting extends Component {
   constructor(props) {
@@ -237,7 +238,8 @@ class MainSetting extends Component {
       grades,
       subjects,
       performanceBand,
-      standardGradingScale
+      standardGradingScale,
+      testContentVisibility = testContentVisibilityOptions.ALWAYS
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -279,17 +281,20 @@ class MainSetting extends Component {
           <Col span={isSmallSize ? 0 : 6}>
             <NavigationMenu fixed={windowScrollTop >= 90}>
               <StyledAnchor affix={false} offsetTop={125}>
-                {settingCategories.slice(0, -5).map(category => {
-                  if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
-                    return (
-                      <Anchor.Link
-                        key={category.id}
-                        href={`${history.location.pathname}#${category.id}`}
-                        title={category.title.toLowerCase()}
-                      />
-                    );
-                  }
-                })}
+                {settingCategories
+                  .filter(item => (item.adminFeature ? userRole !== roleuser.TEACHER : true))
+                  .slice(0, -5)
+                  .map(category => {
+                    if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
+                      return (
+                        <Anchor.Link
+                          key={category.id}
+                          href={`${history.location.pathname}#${category.id}`}
+                          title={category.title.toLowerCase()}
+                        />
+                      );
+                    }
+                  })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
               {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
@@ -316,17 +321,20 @@ class MainSetting extends Component {
                   <Title>Test Type</Title>
                   <Body smallSize={isSmallSize}>
                     <TestTypeSelect
-                      defaultValue={testType}
+                      value={testType}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("testType")}
                     >
+                      {(userRole === roleuser.DISTRICT_ADMIN ||
+                        userRole === roleuser.SCHOOL_ADMIN ||
+                        testType === COMMON) && (
+                        <Option key={COMMON} value={COMMON}>
+                          {"Common Assessment"}
+                        </Option>
+                      )}
                       {Object.keys(testTypes).map(key => (
                         <Option key={key} value={key}>
-                          {key === ASSESSMENT
-                            ? userRole === "teacher"
-                              ? "Class Assessment "
-                              : "Common Assessment "
-                            : testTypes[key]}
+                          {testTypes[key]}
                         </Option>
                       ))}
                     </TestTypeSelect>
@@ -613,6 +621,24 @@ class MainSetting extends Component {
               </Block>
             ) : (
               ""
+            )}
+            {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
+              <Block id="test-content-visibility" smallSize={isSmallSize}>
+                <Title>Item content visibility to Teachers</Title>
+                <Body smallSize={isSmallSize}>
+                  <StyledRadioGroup
+                    disabled={!owner || !isEditable}
+                    onChange={this.updateFeatures("testContentVisibility")}
+                    value={testContentVisibility}
+                  >
+                    {testContentVisibilityTypes.map(item => (
+                      <Radio value={item.key} key={item.key}>
+                        {item.value}
+                      </Radio>
+                    ))}
+                  </StyledRadioGroup>
+                </Body>
+              </Block>
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>

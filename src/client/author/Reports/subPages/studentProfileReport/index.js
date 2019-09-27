@@ -14,7 +14,7 @@ import StudentProfileSummary from "./StudentProfileSummary";
 import StudentProfileReportsFilters from "./common/components/filter/StudentProfileReportsFilters";
 
 import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
-import { resetAllReportsAction } from "../../ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const StudentProfileReportContainer = props => {
   const { settings, setSPRSettingsAction } = props;

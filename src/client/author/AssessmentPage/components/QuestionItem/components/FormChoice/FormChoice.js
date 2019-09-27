@@ -8,7 +8,7 @@ import { QuestionOption, QuestionChunk } from "../../common/Form";
 export default class FormChoice extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review"]).isRequired,
+    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
     question: PropTypes.object.isRequired,
     onCreateOptions: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
@@ -75,7 +75,7 @@ export default class FormChoice extends React.Component {
     ));
   };
 
-  renderForm = () => {
+  renderForm = mode => {
     const {
       question: { options, multipleResponses: multipleResponses },
       evaluation,
@@ -101,11 +101,12 @@ export default class FormChoice extends React.Component {
       <QuestionChunk key={`form-choice-chunk-${chunkKey}`}>
         {items.map(({ label, value }, key) => (
           <QuestionOption
+            mode={mode}
             key={`form-${label}-${key}`}
             selected={answer.includes(value)}
             correct={evaluation && getCorrect(value)}
             checked={!isUndefined(evaluation) && view !== "clear"}
-            onClick={this.handleSelect(value)}
+            onClick={mode === "report" ? "" : this.handleSelect(value)}
             review
             multipleResponses={multipleResponses}
           >
@@ -132,7 +133,8 @@ export default class FormChoice extends React.Component {
       case "edit":
         return this.renderView();
       case "review":
-        return this.renderForm();
+      case "report":
+        return this.renderForm(mode);
       default:
         return null;
     }

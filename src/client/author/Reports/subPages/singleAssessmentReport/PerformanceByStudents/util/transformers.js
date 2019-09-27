@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import next from "immer";
 import {
@@ -15,7 +16,8 @@ import {
   forEach,
   includes,
   maxBy,
-  get
+  get,
+  round
 } from "lodash";
 import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
@@ -24,11 +26,11 @@ import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipR
 export const getInterval = maxValue => min([maxValue, 9]);
 
 export const createTicks = (maxValue, interval) => {
-  let maxTickRange = ceil(maxValue / interval) * interval;
+  let maxTickRange = (ceil(maxValue / interval) || 0) * interval;
 
   let ticks = [];
 
-  ticks.push(maxTickRange + ceil(maxValue / interval));
+  ticks.push(maxTickRange + (ceil(maxValue / interval) || 0));
 
   while (maxTickRange > 0) {
     ticks.push(maxTickRange);
@@ -57,7 +59,6 @@ const groupData = data => {
   const maxTotalScore = get(maxBy(data, "totalScore"), "totalScore", 0);
 
   let dataToPlotHashMap = {};
-
   let i = 0;
 
   while (maxTotalScore + 1 >= i) {
@@ -69,9 +70,11 @@ const groupData = data => {
   }
 
   forEach(data, ({ totalScore }) => {
-    const floorValue = floor(totalScore);
-    if (dataToPlotHashMap[floorValue]) {
-      dataToPlotHashMap[floorValue].studentCount++;
+    if (totalScore || totalScore === 0) {
+      const floorValue = floor(totalScore);
+      if (dataToPlotHashMap[floorValue]) {
+        dataToPlotHashMap[floorValue].studentCount++;
+      }
     }
   });
 
@@ -112,14 +115,15 @@ export const normaliseTableData = (rawData, data) => {
         return relatedGroup.schoolId == school.schoolId;
       }) || {};
 
-    const classAvg = ceil(
-      (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
-    );
+    const classAvg =
+      round(
+        (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
+      ) || 0;
     let studentScore = 0;
     let assessmentScore = "Absent";
     let proficiencyBand = "Absent";
     if (studentMetric.progressStatus === 1) {
-      studentScore = ceil((studentMetric.totalScore / studentMetric.maxScore) * 100);
+      studentScore = round((studentMetric.totalScore / studentMetric.maxScore) * 100);
       assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
       proficiencyBand = getProficiency(studentMetric, bandInfo);
     }
@@ -131,8 +135,8 @@ export const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
-      schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
-      districtAvg: ceil(districtAvgPerf || 0),
+      schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
+      districtAvg: round(districtAvgPerf || 0),
       studentScore,
       classAvg: classAvg,
       assessmentScore,
@@ -252,6 +256,15 @@ export const getColumns = (columns, assessmentName, role) => {
   const filteredColumns = filterAccordingToRole(columns, role);
 
   return next(filteredColumns, columnsDraft => {
+    columnsDraft[1].render = (data, record) =>
+      record.totalScore || record.totalScore === 0 ? (
+        <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
+          {data}
+        </Link>
+      ) : (
+        data
+      );
+
     forEach(columnsDraft, column => {
       if (column.sortable) {
         column.sorter = getSorter(column.type, column.dataIndex);

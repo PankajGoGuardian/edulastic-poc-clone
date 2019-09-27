@@ -52,7 +52,7 @@ class ClozeInputAnswer extends Component {
             return (
               <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
                 <Input
-                  style={{ width, height }}
+                  style={{ width, height, minWidth: "140px", minHeight: "35px" }}
                   value={answer.value}
                   onChange={e => this.onChangeHandler(e.target.value, answer.id)}
                 />

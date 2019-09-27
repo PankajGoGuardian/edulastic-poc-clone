@@ -12,6 +12,7 @@ export default class SearchFilters {
     this.routeSearch();
     cy.xpath("//li[text()='Authored by me']").click();
     this.waitForSearchResponse();
+    cy.wait(1000);
   };
 
   clearAll = () => {

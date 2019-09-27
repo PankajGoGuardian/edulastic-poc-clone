@@ -5,6 +5,7 @@ import { Collapse, Select, Icon } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { response } from "@edulastic/constants";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -28,9 +29,17 @@ const AnswerContainer = styled.div`
 `;
 
 const AnswerSelect = styled(Select)`
-  min-width: 120px;
+  min-width: 140px;
   width: ${({ width }) => (!width ? null : `${width}`)};
   height: ${({ height }) => (!height ? null : `${height}`)};
+
+  .ant-select-selection {
+    height: ${response.minHeight}px;
+  }
+
+  .ant-select-selection__rendered {
+    min-height: ${response.minHeight}px;
+  }
 `;
 
 class ClozeDropDownAnswer extends Component {

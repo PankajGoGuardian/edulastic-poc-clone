@@ -2,7 +2,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
-import { white, tabletWidth, mediumDesktopWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
+import {
+  white,
+  tabletWidth,
+  mediumDesktopWidth,
+  dashBorderColor,
+  fadedBlack,
+  redHeart,
+  themeColor,
+  mainTextColor,
+  extraDesktopWidth
+} from "@edulastic/colors";
 import { get, remove } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -26,8 +36,8 @@ import { withWindowSizes } from "@edulastic/common";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
-import Profile from "../assets/Profile.png";
 import { getUserFeatures } from "../../../student/Login/ducks";
+
 const menuItems = [
   {
     label: "Dashboard",
@@ -222,12 +232,17 @@ class SideMenu extends Component {
         <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <LogoutIcon type="logout" /> {isCollapsed ? "" : "SIGN OUT"}
+              <LogoutIcon type="logout" /> {isCollapsed ? "" : "Sign Out"}
+            </a>
+          </Menu.Item>
+          <Menu.Item key="0" className="removeSelectedBorder">
+            <a>
+              <DollarIcon type="dollar" /> {isCollapsed ? "" : "Subscription"}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
-              <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
+              <IconDropdown type="user" /> {isCollapsed ? "" : "My Profile"}
             </Link>
           </Menu.Item>
         </Menu>
@@ -403,8 +418,8 @@ export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 const TextIcon = styled.div`
   border-radius: 50%;
   margin-right: 1em;
-  width: 33px;
-  height: 33px;
+  width: 22px;
+  height: 22px;
   background: ${dashBorderColor};
   display: flex;
   align-items: center;
@@ -415,11 +430,11 @@ const TextIcon = styled.div`
   margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1em")};
   .fa-heart {
     position: absolute;
-    bottom: 0px;
     color: ${redHeart};
-    right: 0px;
+    right: -2px;
+    bottom: -2px;
     &:before {
-      font-size: 10px;
+      font-size: 8px;
     }
   }
 `;
@@ -476,14 +491,13 @@ const SideBar = styled(Layout.Sider)`
     height: 60px;
     border-radius: 65px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #ffffff;
+    background: ${white};
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
-    margin-bottom: 23px;
-
+    margin-bottom: 15px;
     &:hover {
-      background: #1890ff;
+      background: ${themeColor};
     }
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
@@ -503,7 +517,7 @@ const SideBar = styled(Layout.Sider)`
   .ant-layout-sider-zero-width-trigger {
     top: 10px;
     right: -50px;
-    color: #fff;
+    color: ${white};
     background: transparent;
     display: none;
   }
@@ -555,6 +569,7 @@ const LogoWrapper = styled(Row)`
   text-align: center;
   display: flex;
   align-items: center;
+
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 20px 39px 14px;
   }
@@ -573,9 +588,12 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 9px 0px 10px;
+  padding: 8px 0px;
   min-height: calc(100% - 100px);
 
+  @media (max-width: ${mediumDesktopWidth}) {
+    min-height: calc(100% - 65px);
+  }
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
   }
@@ -585,7 +603,7 @@ const Menu = styled(AntMenu)`
   background: transparent;
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
-      color: #fff;
+      color: ${white};
       background-color: transparent;
 
       svg {
@@ -598,6 +616,13 @@ const Menu = styled(AntMenu)`
       
       &.removeSelectedBorder {
         border: none;
+        background-color: ${themeColor};
+        &:hover{
+          background-color: #fff;
+          svg{
+            fill: ${themeColor};
+          }
+        }
       }
     }
   }
@@ -631,9 +656,9 @@ const Menu = styled(AntMenu)`
     text-align: left;
     display: flex;
     align-items: center;
-    margin-top: 16px;
-    height: 48px;
-    padding: 10px 39px !important;
+    margin: 10px 0px;
+    height: 35px;
+    padding: 5px 39px !important;
     max-width: 100%;
     
   }
@@ -644,13 +669,16 @@ const Menu = styled(AntMenu)`
     display: flex;
     text-align: center;
     justify-content: center;
-    margin-top: 14px;
-    padding: 10px 18px !important;
-    height: 48px;
+    margin: 10px 0px;
+    padding: 5px 18px !important;
+    height: 35px;
     width: 100%;
   }
-  &.ant-menu-inline > .ant-menu-item {
-    margin-top: 14px;
+  @media (min-width: ${extraDesktopWidth}) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      margin: 15px 0px;
+    }
   }
   .ant-menu-item {
     position: relative;
@@ -724,12 +752,19 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid #fff;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
-
+    padding-bottom: 10px;
+    background: #fff;
+    .ant-menu-item:not(.ant-menu-item-selected) svg {
+      fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+      &:hover,
+      &:focus {
+        fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+      }
+    }
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
@@ -747,6 +782,7 @@ const FooterDropDown = styled.div`
     li {
       &.ant-menu-item {
         margin: 0px;
+        margin-bottom: 0 !important;
         padding: 5px 16px;
         height: 50px;
         background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
@@ -861,7 +897,7 @@ const UserInfoButton = styled.div`
     width: auto;
     height: 60px;
     border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
     background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
@@ -889,7 +925,7 @@ const UserInfoButton = styled.div`
   .ant-select-selection {
     background: transparent;
     border: 0px;
-    color: #ffffff;
+    color: ${white};
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -972,13 +1008,17 @@ const HelpIcon = styled(IconQuestion)`
 `;
 
 const IconDropdown = styled(AntIcon)`
-  color: #444;
+  color: ${mainTextColor};
   position: absolute;
   top: -10px;
 `;
 const LogoutIcon = styled(IconDropdown)`
   transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+`;
+
+const DollarIcon = styled(IconDropdown)`
+  color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 
 const LabelMenuItem = styled.span`

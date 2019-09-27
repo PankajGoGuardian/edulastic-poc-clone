@@ -3,10 +3,10 @@ import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy, set } from "lodash";
+import { groupBy, set, get } from "lodash";
 import { push } from "connected-react-router";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST = "[reports] get reports sar filter data request";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports sar filter data request success";
@@ -37,7 +37,7 @@ export const setStandardsProficiencyProfileFilterAction = createAction(SET_REPOR
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportSARFilterDataReducer;
 
 export const getReportsSARFilterData = createSelector(
   stateSelector,
@@ -62,6 +62,26 @@ export const getReportsPrevSARFilterData = createSelector(
 export const getReportsSARFilterLoadingState = createSelector(
   stateSelector,
   state => state.loading
+);
+
+export const getSAFFilterSelectedPerformanceBandProfile = createSelector(
+  stateSelector,
+  state => state.filters.performanceBandProfile
+);
+
+export const getSAFFilterPerformanceBandProfiles = createSelector(
+  stateSelector,
+  state => get(state, "SARFilterData.data.result.bandInfo", [])
+);
+
+export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
+  stateSelector,
+  state => state.filters.standardsProficiencyProfile
+);
+
+export const getSAFFilterStandardsProficiencyProfiles = createSelector(
+  stateSelector,
+  state => get(state, "SARFilterData.data.result.scaleInfo", [])
 );
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //

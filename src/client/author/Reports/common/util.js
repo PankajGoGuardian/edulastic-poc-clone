@@ -1,4 +1,5 @@
 import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
+import calcMethod from "./static/json/calcMethod";
 import next from "immer";
 
 export const testTypeHashMap = {
@@ -187,7 +188,7 @@ export const convertTableToCSV = refComponent => {
     let row = [],
       cols = rows[i].querySelectorAll("td, th");
     for (let j = 0; j < cols.length; j++) {
-      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
+      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/(\s+)/gm, " ");
       data = data.replace(/"/g, '""');
       row.push('"' + data + '"');
     }
@@ -209,4 +210,43 @@ export const downloadCSV = (filename, data) => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {
+  const assignments = map(studentStandardData, data => {
+    const score = round(percentage(data.obtainedScore, data.maxScore));
+    const scale = getProficiencyBand(score, scaleInfo);
+
+    return {
+      score,
+      scale,
+      standardBasedScore: `${scale.score}(${scale.masteryLabel})`,
+      assessmentName: data.testName,
+      questions: data.questions,
+      obtainedScore: data.obtainedScore,
+      maxScore: data.maxScore,
+      performance: data.performance,
+      standardMastery: data.standardMastery
+    };
+  });
+
+  const maxScoreTotal = sumBy(assignments, "maxScore") || 0;
+  const obtainedScoreTotal = sumBy(assignments, "obtainedScore") || 0;
+  const scoreAvg = round(percentage(obtainedScoreTotal, maxScoreTotal)) || 0;
+  const overallScale = scaleInfo.find(s => s.score === studentStandardData[0]?.fm);
+  const overallStandardBasedScore = `${overallScale?.score}(${overallScale?.masteryLabel})` || "";
+  const calcType = calcMethod.find(method => method.calcMethod === overallScale?.calcMethod)?.calcType || "";
+  const overallAssessmentName = `Current Mastery (${calcType})`;
+
+  const overallAssignmentDetail = {
+    maxScore: maxScoreTotal,
+    obtainedScore: obtainedScoreTotal,
+    score: scoreAvg,
+    scale: overallScale,
+    standardBasedScore: overallStandardBasedScore,
+    assessmentName: overallAssessmentName,
+    questions: "N/A"
+  };
+
+  return [...assignments, overallAssignmentDetail];
 };

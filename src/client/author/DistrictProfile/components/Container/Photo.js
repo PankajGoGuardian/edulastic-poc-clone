@@ -122,57 +122,29 @@ export default connect(
 )(Photo);
 
 const Container = styled.div`
-  height: 250px;
-  width: 250px;
+  width: 200px;
+  height: 200px;
   position: relative;
   border-radius: 50%;
-  background: #dddddd;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 180px;
-    height: 180px;
-  }
+  background: ${greyishDarker2};
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-width: 150px;
-    max-height: 150px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 150px;
-    max-height: 150px;
+    width: 150px;
+    height: 150px;
   }
 `;
 
 const UploadWrapper = styled.div`
-  margin: 10px;
   .ant-upload-select {
-    min-width: 100%;
+    width: 200px;
+    height: 200px;
     border: none;
     padding: 0px !important;
-    height: 250px;
-  }
-
-  @media (max-width: ${extraDesktopWidth}) {
-    .ant-upload-select {
-      height: 180px;
-    }
   }
 
   @media (max-width: ${largeDesktopWidth}) {
-    .ant-upload-select {
-      height: 150px;
-    }
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    .ant-upload-select {
-      height: 150px;
-    }
-  }
-
-  .ant-upload {
-    padding: 0 !important;
+    width: 150px;
+    height: 150px;
   }
 `;
 
@@ -190,7 +162,7 @@ const Image = styled.div`
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 `;
 
@@ -219,18 +191,11 @@ const Camera = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: 250px;
+  height: 200px;
   overflow: hidden;
   border-radius: 50%;
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 180px;
-  }
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-height: 150px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    max-height: 150px;
+    height: 150px;
   }
 `;

@@ -49,7 +49,8 @@ function ProfileRow({
   update: updateToServer,
   readOnly,
   loading,
-  setName
+  setName,
+  onDuplicate
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
@@ -109,7 +110,7 @@ function ProfileRow({
           {readOnly ? null : (
             <Icon type="edit" theme="filled" onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))} />
           )}
-          <Icon type="copy" onClick={() => {}} />
+          <Icon type="copy" onClick={onDuplicate} />
           {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
           {
             <Icon
@@ -215,6 +216,21 @@ export function PerformanceBandAlt(props) {
     }
   };
 
+  const duplicateProfile = ({ _id, name }) => {
+    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
+      profiles.find(x => x._id === _id) || {};
+
+    let lastVersion = 0;
+    if (/#[0-9]*$/.test(name)) {
+      lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
+    }
+    create({
+      ...profile,
+      performanceBand: profile.performanceBand.map(({ key, ...x }) => ({ ...x })),
+      name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`
+    });
+  };
+
   return (
     <PerformanceBandDiv>
       <AdminHeader title={title} active={menuActive} history={history} />
@@ -259,6 +275,7 @@ export function PerformanceBandAlt(props) {
                 remove={remove}
                 loading={loading}
                 update={update}
+                onDuplicate={() => duplicateProfile(profile)}
                 readOnly={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}

@@ -187,7 +187,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           obj.id = resp.id;
           obj.type = key;
           obj.widthpx = width;
-          newItem.responseContainers.push(obj);
+          // newItem.responseContainers.push(obj);
         }
       });
     } else {
@@ -358,8 +358,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       <CorrectAnswerContainer>
         {correctTab === 0 && (
           <MathFormulaPoints
-            points={get(item, "validation.validResponse.score", 0)}
+            points={get(item, "validation.validResponse.score", 1)}
             onChangePoints={_changeCorrectPoints}
+          />
+        )}
+        {correctTab !== 0 && (
+          <MathFormulaPoints
+            points={get(item, `validation.altResponses[${correctTab - 1}].score`, 1)}
+            onChangePoints={_changeAltPoints(correctTab - 1)}
           />
         )}
         {orderedAnswers.map((answer, index) => {

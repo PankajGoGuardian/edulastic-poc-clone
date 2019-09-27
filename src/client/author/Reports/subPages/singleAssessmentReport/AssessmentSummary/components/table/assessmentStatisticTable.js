@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { groupBy, cloneDeep } from "lodash";
+import { groupBy, reduce } from "lodash";
 import Moment from "moment";
 import next from "immer";
 import { StyledTable } from "../styled";
@@ -17,41 +17,40 @@ import columnData from "../../static/json/tableColumns.json";
 export const AssessmentStatisticTable = props => {
   const [tableType, setTableType] = useState({ key: "school", title: "School" });
 
-  if (props.role === "teacher" && tableType.key != "class") {
-    let o = { key: "class", title: "Class" };
+  if (props.role === "teacher" && tableType.key !== "class") {
+    const o = { key: "class", title: "Class" };
     setTableType(o);
   }
 
-  const updateTable = (type, data) => {
-    let arr;
+  const updateTable = (type, _data) => {
     let hMap;
     if (type === "school") {
-      hMap = groupBy(data, "schoolId");
+      hMap = groupBy(_data, "schoolId");
     } else if (type === "teacher") {
-      hMap = groupBy(data, "teacherId");
+      hMap = groupBy(_data, "teacherId");
     } else if (type === "class") {
-      hMap = groupBy(data, "groupId");
+      hMap = groupBy(_data, o => `${o.assignmentId}_${o.groupId}`);
     }
 
-    arr = Object.keys(hMap).map((key, index) => {
-      let data = hMap[key];
-      let obj = { ...data[0] };
+    const arr = Object.keys(hMap).map((key, index) => {
+      const data = hMap[key];
+      const obj = { ...data[0] };
 
-      let maxAssessmentDate = 0,
-        sumTotalScore = 0,
-        sumTotalMaxScore = 0,
-        sumSampleCount = 0,
-        sumStudentsAbsent = 0,
-        sumStudentsAssigned = 0,
-        sumStudentsGraded = 0,
-        minScore = Infinity,
-        maxScore = -Infinity,
-        concatScores = [];
+      let maxAssessmentDate = 0;
+      let sumTotalScore = 0;
+      let sumTotalMaxScore = 0;
+      let sumSampleCount = 0;
+      let sumStudentsAbsent = 0;
+      let sumStudentsAssigned = 0;
+      let sumStudentsGraded = 0;
+      let minScore = Infinity;
+      let maxScore = -Infinity;
+      let concatScores = [];
 
-      for (let item of data) {
-        let {
-          totalScore,
-          totalMaxScore,
+      for (const item of data) {
+        const {
+          totalScore = 0,
+          totalMaxScore = 0,
           sampleCount,
           assessmentDate,
           studentsAbsent,
@@ -77,14 +76,21 @@ export const AssessmentStatisticTable = props => {
         concatScores = concatScores.concat(scores);
       }
 
-      let scoreVariance = getVariance(concatScores);
-
-      let result = {
+      const scoreVariance = getVariance(concatScores);
+      let avgStudentScore = 0;
+      if (sumTotalMaxScore) {
+        avgStudentScore = Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0));
+      }
+      let avgScore = 0;
+      if (avgScore) {
+        avgScore = (sumTotalScore / (sumSampleCount - (sumStudentsAbsent || 0))).toFixed(2);
+      }
+      const result = {
         ...obj,
-        avgStudentScore: Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0)),
+        avgStudentScore,
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
-        avgScore: (sumTotalScore / (sumSampleCount - (sumStudentsAbsent || 0))).toFixed(2),
+        avgScore,
         assessmentDate: Moment(maxAssessmentDate).format("MMMM D, YYYY"),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,

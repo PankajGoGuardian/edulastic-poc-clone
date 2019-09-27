@@ -4,9 +4,7 @@ import { fonts } from "@edulastic/constants";
 
 import { withMathFormula } from "../HOC/withMathFormula";
 
-const MathSpan = withMathFormula(styled.span.attrs({
-  className: ({ clas }) => (!clas ? null : clas)
-})`
+const MathSpan = withMathFormula(styled.span`
   display: inline;
   user-select: ${({ selectableText }) => (selectableText ? "text" : "none")};
   max-width: 400px;

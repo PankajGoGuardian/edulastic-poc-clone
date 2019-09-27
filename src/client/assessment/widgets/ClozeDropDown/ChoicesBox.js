@@ -8,7 +8,7 @@ import { Select } from "antd";
 const { Option } = Select;
 
 const SelectWrapper = styled.span`
-  margin: 0px 4px;
+  margin: 0px 4px 5px 5px;
   display: inline-flex;
   .ant-select-dropdown-menu-item {
     text-overflow: ellipsis;

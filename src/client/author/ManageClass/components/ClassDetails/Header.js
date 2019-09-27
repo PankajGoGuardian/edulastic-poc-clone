@@ -7,22 +7,25 @@ import { white } from "@edulastic/colors";
 import { Title, IconManageClass, EditButton, ButtonsWrapper } from "./styled";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 // ducks
-import { fetchClassListAction, getSelectedClassName } from "../../ducks";
+import { fetchClassListAction, getSelectedClass } from "../../ducks";
 
-const Header = ({ onEdit, activeClass, selectedClassName }) => (
-  <HeaderWrapper>
-    <Title>
-      <IconManageClass color={white} width={20} height={20} />
-      Manage Class / <span>{selectedClassName}</span>
-    </Title>
+const Header = ({ onEdit, activeClass, selectedClass }) => {
+  const { name, institutionName = "" } = selectedClass;
+  return (
+    <HeaderWrapper>
+      <Title>
+        <div>{name}</div>
+        <span>{institutionName}</span>
+      </Title>
 
-    {activeClass ? (
-      <ButtonsWrapper data-cy="editClass">
-        <EditButton onClick={onEdit}>Edit Class</EditButton>
-      </ButtonsWrapper>
-    ) : null}
-  </HeaderWrapper>
-);
+      {activeClass ? (
+        <ButtonsWrapper data-cy="editClass">
+          <EditButton onClick={onEdit}>Edit Class</EditButton>
+        </ButtonsWrapper>
+      ) : null}
+    </HeaderWrapper>
+  );
+};
 
 Header.propTypes = {
   onEdit: PropTypes.func
@@ -35,7 +38,7 @@ Header.defaultProps = {
 const enhance = compose(
   connect(
     state => ({
-      selectedClassName: getSelectedClassName(state)
+      selectedClass: getSelectedClass(state)
     }),
     { fetchClassList: fetchClassListAction }
   )

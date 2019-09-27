@@ -1,7 +1,7 @@
 import { mediumDesktopWidth, white } from "@edulastic/colors";
 import styled from "styled-components";
 
-const Title = styled.p`
+const Title = styled.h2`
   font-size: 22px;
   font-weight: bold;
   font-style: normal;
@@ -10,6 +10,8 @@ const Title = styled.p`
   letter-spacing: normal;
   color: ${white};
   display: inline-block;
+  margin: 0px;
+  padding: 0px;
 
   @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;

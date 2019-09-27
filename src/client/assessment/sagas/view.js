@@ -1,13 +1,16 @@
-import { takeEvery, all, put } from "redux-saga/effects";
+import { takeEvery, all, put, select } from "redux-saga/effects";
 import { CHANGE_PREVIEW, CLEAR_ANSWERS, REMOVE_ANSWERS, SET_ANSWER } from "../constants/actions";
 
 function* resetView() {
-  yield put({
-    type: CHANGE_PREVIEW,
-    payload: {
-      view: "clear"
-    }
-  });
+  const currentView = yield select(state => state.view?.preview);
+
+  if (currentView !== "clear")
+    yield put({
+      type: CHANGE_PREVIEW,
+      payload: {
+        view: "clear"
+      }
+    });
 }
 
 function* clearAnswers() {

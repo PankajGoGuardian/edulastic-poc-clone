@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction, createReducer } from "redux-starter-kit";
 
-import { RESET_ALL_REPORTS } from "../../ducks";
+import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
 
 const SET_SMR_SETTINGS = "[SMR settings] get smr settings";
 
@@ -15,7 +15,7 @@ export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSMRSettingsReducer;
+export const stateSelector = state => state.reportReducer.reportSMRSettingsReducer;
 
 export const getReportsSMRSettings = createSelector(
   stateSelector,

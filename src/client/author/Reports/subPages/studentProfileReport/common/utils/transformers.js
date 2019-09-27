@@ -11,6 +11,13 @@ const getCourses = classData => {
   }));
 };
 
+export const getStudentName = (selectedStudent, studInfo) => {
+  if (selectedStudent.title) {
+    return selectedStudent.title;
+  }
+  return `${studInfo.firstName || ""} ${studInfo.lastName || ""}`;
+};
+
 const getTerms = (terms = []) =>
   map(terms, term => {
     return {

@@ -9,6 +9,7 @@ import {
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
+  TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
@@ -59,6 +60,16 @@ class QuestionItem extends React.Component {
     dragging: false
   };
 
+  itemRef = React.createRef();
+
+  componentDidUpdate(prevProps) {
+    const { highlighted } = this.props;
+    const { highlighted: prevHighlighted } = prevProps;
+    if (highlighted && highlighted !== prevHighlighted && this.itemRef.current) {
+      this.itemRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   handleDragStart = () => {
     const { onDragStart } = this.props;
     this.setState({ dragging: true });
@@ -106,12 +117,13 @@ class QuestionItem extends React.Component {
     if (type === CLOZE_DROP_DOWN) {
       allCorrect = evaluation && evaluation["0"];
     }
-    if (allCorrect) return null;
+    if (allCorrect || type === ESSAY_PLAIN_TEXT) return null;
 
     let answerRenderer;
 
     switch (type) {
       case MULTIPLE_CHOICE:
+      case TRUE_OR_FALSE:
         answerRenderer = this.renderMultipleChoiceAnswer;
         break;
       case SHORT_TEXT:
@@ -144,7 +156,6 @@ class QuestionItem extends React.Component {
       mode: viewMode,
       view: previewMode
     };
-
     switch (data.type) {
       case MULTIPLE_CHOICE:
         return <FormChoice onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
@@ -156,6 +167,8 @@ class QuestionItem extends React.Component {
         return <FormMath {...props} />;
       case ESSAY_PLAIN_TEXT:
         return <FormEssay {...props} />;
+      case TRUE_OR_FALSE:
+        return <FormChoice isTrueOrFalse onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
       default:
         return null;
     }
@@ -174,7 +187,7 @@ class QuestionItem extends React.Component {
   renderAnswerIndicator = type => {
     const { evaluation } = this.props;
 
-    if (isUndefined(evaluation)) {
+    if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null;
     }
 
@@ -188,21 +201,31 @@ class QuestionItem extends React.Component {
     return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
   };
 
+  renderScore = qId => {
+    const { feedback = {} } = this.props;
+    const { score = 0, maxScore = 0 } = feedback[qId] || {};
+    return (
+      <CorrectAnswer>
+        <CorrectAnswerTitle>Score:</CorrectAnswerTitle>
+        <CorrectAnswerValue>{`${score}/${maxScore}`}</CorrectAnswerValue>
+      </CorrectAnswer>
+    );
+  };
+
   render() {
     const { dragging } = this.state;
     const {
       data: { id, qIndex, type },
       index,
+      review,
       viewMode,
       previewMode,
       centered,
       highlighted
     } = this.props;
 
-    const review = viewMode === "review";
-
     return (
-      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted}>
+      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} innerRef={this.itemRef}>
         <AnswerForm>
           <Draggable
             type="question"
@@ -215,9 +238,10 @@ class QuestionItem extends React.Component {
           </Draggable>
           <QuestionForm>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
-          {review && previewMode !== "clear" && this.renderAnswerIndicator(type)}
+          {review && (previewMode !== "clear" || viewMode === "report") && this.renderAnswerIndicator(type)}
         </AnswerForm>
-        {review && previewMode === "show" && this.renderCorrectAnswer()}
+        {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
+        {viewMode === "report" && this.renderScore(id)}
       </QuestionItemWrapper>
     );
   }

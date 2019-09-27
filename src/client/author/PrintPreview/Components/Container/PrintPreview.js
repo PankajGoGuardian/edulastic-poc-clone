@@ -35,7 +35,6 @@ class PrintPreview extends Component {
   componentDidMount() {
     const {
       loadClassStudentResponse,
-      match,
       testActivity,
       additionalData,
       history,
@@ -43,7 +42,7 @@ class PrintPreview extends Component {
       selectedStudents
     } = this.props;
     if (testActivity.length === 0) {
-      history.goBack();
+      return history.goBack();
     }
 
     const { testId, classId } = additionalData;

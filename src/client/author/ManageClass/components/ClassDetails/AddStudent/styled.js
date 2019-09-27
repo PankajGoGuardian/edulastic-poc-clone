@@ -1,10 +1,20 @@
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button, Form } from "antd";
 import { title, themeColor } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
 export const StyledModal = styled(ConfirmationModal)`
+  background: none;
   top: 40px;
+  .ant-modal-content {
+    width: 500px;
+    .ant-modal-body {
+      padding: 0px;
+      background: none;
+      box-shadow: none;
+    }
+  }
+
   .ant-modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -38,10 +48,10 @@ export const ActionButton = styled(Button)`
 `;
 
 export const PanelHeader = styled.div`
-  color: ${themeColor};
+  color: black;
   font-weight: 500;
   font-size: 16px;
-
+  text-transform: uppercase;
   label {
     margin-left: 8px;
     color: ${themeColor};
@@ -58,6 +68,7 @@ export const Field = styled.fieldset`
     margin-bottom: 0px;
     border: 0px;
     color: ${title};
+    text-transform: uppercase;
   }
 
   &:first-child {
@@ -66,5 +77,23 @@ export const Field = styled.fieldset`
   .ant-calendar-picker,
   .ant-select {
     width: 100%;
+  }
+`;
+
+export const AddForm = styled(Form)`
+  background: none;
+  .ant-collapse {
+    border: none;
+    background: white;
+    & > .ant-collapse-item {
+      border: none;
+      width: 100%;
+    }
+  }
+  .ant-collapse-content {
+    border: none;
+    & > .ant-collapse-content-box {
+      padding: 2rem 2rem 1.2rem 2rem;
+    }
   }
 `;

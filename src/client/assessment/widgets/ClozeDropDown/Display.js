@@ -36,10 +36,11 @@ class ClozeDropDownDisplay extends Component {
       userSelections,
       item: { responseIds }
     } = this.props;
-
     changeAnswers(
       produce(userSelections, draft => {
-        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        // answers are null for all the lower indices if a higher index is answered
+        // TODO fix the way answers are stored
+        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
         draft[index] = value;
         if (changedIndex !== -1) {
           draft[changedIndex] = { value, index, id };
@@ -202,7 +203,6 @@ class ClozeDropDownDisplay extends Component {
 
     return (
       <div>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
@@ -273,6 +273,9 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  iframe {
+    max-width: 100%;
+  }
 `;
 
 const ContentWrapper = styled.div`

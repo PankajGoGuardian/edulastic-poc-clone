@@ -46,8 +46,5 @@ export const Checkboxes = styled.div`
     color: rgba(67, 75, 93, 0.9);
     font-weight: bold;
     font-size: 13px;
-    .ant-checkbox {
-      padding-left: 20px;
-    }
   }
 `;

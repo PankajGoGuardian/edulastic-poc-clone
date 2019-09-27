@@ -10,6 +10,7 @@ import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
 const DotPlot = ({
+  item,
   data,
   saveAnswer,
   previewTab,
@@ -112,8 +113,9 @@ const DotPlot = ({
       <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 
       <Circles
+        item={item}
         onMouseDown={!disableResponse ? onMouseDown : () => {}}
-        saveAnswer={active => saveAnswer(localData, active)}
+        saveAnswer={i => saveAnswer(localData, i)}
         activeIndex={activeIndex}
         deleteMode={deleteMode}
         onPointOver={setActive}
@@ -132,6 +134,7 @@ const DotPlot = ({
 };
 
 DotPlot.propTypes = {
+  item: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   gridParams: PropTypes.shape({
@@ -144,13 +147,17 @@ DotPlot.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   disableResponse: PropTypes.bool,
+  deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired
+  correct: PropTypes.array.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 DotPlot.defaultProps = {
-  disableResponse: false
+  disableResponse: false,
+  deleteMode: false,
+  toggleBarDragging: () => {}
 };
 
 export default withGrid(DotPlot);

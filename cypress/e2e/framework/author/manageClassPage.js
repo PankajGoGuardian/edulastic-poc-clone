@@ -277,9 +277,18 @@ export default class TeacherManageClassPage {
 
   getStudentTextArea = () => cy.get("#students");
 
+  clickOnSearchTab = () => {
+    cy.get('[data-cy="searchStudent"]').click();
+  };
+
+  clickOnAddMultipleTab = () => {
+    cy.get('[data-cy="addMultipleStudent"]').click();
+  };
+
   addMultipleStudent(users, uType) {
     cy.route("POST", "**/enrollment/**").as("newenrollment");
     cy.route("GET", "**/enrollment/**").as("enrollment");
+    this.clickOnAddMultipleTab();
     this.selectStudenttype(uType);
     return this.getStudentTextArea().then($area => {
       cy.wrap($area).as("studentlist");

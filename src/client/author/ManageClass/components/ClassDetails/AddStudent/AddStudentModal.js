@@ -8,7 +8,7 @@ import { IconUser } from "@edulastic/icons";
 import { enrollmentApi } from "@edulastic/api";
 import BasicFields from "./BasicFields";
 import AdditionalFields from "./AdditionalFields";
-import { StyledModal, Title, ActionButton, PanelHeader } from "./styled";
+import { StyledModal, Title, ActionButton, PanelHeader, AddForm } from "./styled";
 import { getUserOrgData } from "../../../../src/selectors/user";
 
 const { Panel } = Collapse;
@@ -76,7 +76,7 @@ class AddStudentModal extends React.Component {
     const title = (
       <Title>
         <IconUser />
-        <label>{isEdit ? "Update User" : "Add Student to Class"}</label>
+        <label>{isEdit ? "Update User" : "Add Student"}</label>
       </Title>
     );
 
@@ -105,7 +105,6 @@ class AddStudentModal extends React.Component {
 
     const AdditionalDetailsHeader = (
       <PanelHeader>
-        <Icon type="setting" theme="filled" />
         <label>Configure Additional Details</label>
       </PanelHeader>
     );
@@ -113,29 +112,27 @@ class AddStudentModal extends React.Component {
     return (
       <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} textAlign="left">
         <Spin spinning={submitted}>
-          <Form>
+          <AddForm>
+            <BasicFields
+              getFieldDecorator={getFieldDecorator}
+              getFieldValue={getFieldValue}
+              std={std}
+              stds={stds}
+              isEdit={isEdit}
+              setFields={setFields}
+              setFieldsValue={setFieldsValue}
+              isUpdate={isUpdate}
+              setIsUpdate={this.setIsUpdate}
+              updateStudent={this.updateStudent}
+              setFounduser={this.setFounduser}
+              foundUserId={foundUserId}
+              modalClose={handleCancel}
+              showClassCodeField={showClassCodeField}
+              fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+              validatedClassDetails={validatedClassDetails}
+              resetClassDetails={resetClassDetails}
+            />
             <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
-              <Panel header={BasicDetailsHeader} key="basic">
-                <BasicFields
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  std={std}
-                  stds={stds}
-                  isEdit={isEdit}
-                  setFields={setFields}
-                  setFieldsValue={setFieldsValue}
-                  isUpdate={isUpdate}
-                  setIsUpdate={this.setIsUpdate}
-                  updateStudent={this.updateStudent}
-                  setFounduser={this.setFounduser}
-                  foundUserId={foundUserId}
-                  modalClose={handleCancel}
-                  showClassCodeField={showClassCodeField}
-                  fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-                  validatedClassDetails={validatedClassDetails}
-                  resetClassDetails={resetClassDetails}
-                />
-              </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">
                 <AdditionalFields
                   getFieldDecorator={getFieldDecorator}
@@ -147,7 +144,7 @@ class AddStudentModal extends React.Component {
                 />
               </Panel>
             </Collapse>
-          </Form>
+          </AddForm>
         </Spin>
       </StyledModal>
     );

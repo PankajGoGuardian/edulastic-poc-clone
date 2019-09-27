@@ -47,7 +47,6 @@ class ClozeTextDisplay extends Component {
   getBtnStyle = () => {
     const { uiStyle } = this.props;
     const { widthpx, heightpx, placeholder, inputtype } = uiStyle; // , responsecontainerindividuals
-
     const responseBtnStyle = {
       widthpx: widthpx !== 0 ? widthpx : 140,
       heightpx: heightpx !== 0 ? heightpx : 35

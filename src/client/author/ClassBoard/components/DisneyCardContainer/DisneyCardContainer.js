@@ -35,7 +35,8 @@ import {
   ExclamationMark
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
-import { getAvatarName, getFirstName } from "../../Transformer";
+import { getAvatarName } from "../../Transformer";
+import { isItemVisibiltySelector } from "../../ducks";
 class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
@@ -72,7 +73,9 @@ class DisneyCardContainer extends Component {
       endDate,
       updateDisabledList,
       isLoading,
-      enrollmentStatus
+      enrollmentStatus,
+      isItemsVisible,
+      closed
     } = this.props;
 
     const noDataNotification = () => {
@@ -92,6 +95,11 @@ class DisneyCardContainer extends Component {
     let styledCard = [];
 
     if (testActivity.length > 0) {
+      /**
+       * FIXME:
+       * 1. mutating testActivity inside map
+       * 2. move this sort of tranforming code somewhere else
+       */
       testActivity.map((student, index) => {
         const status = {
           color: "",
@@ -101,7 +109,7 @@ class DisneyCardContainer extends Component {
         if (student.status === "notStarted") {
           status.status = "Not Started";
           status.color = red;
-          if (endDate < Date.now()) {
+          if (endDate < Date.now() || closed) {
             status.status = "Absent";
           }
         } else if (student.status === "inProgress") {
@@ -172,6 +180,7 @@ class DisneyCardContainer extends Component {
                 <StyledParaF
                   isLink={viewResponseStatus.includes(status.status)}
                   data-cy="studentName"
+                  disabled={!isItemsVisible}
                   title={isPresentationMode ? undefined : student.userName}
                   onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
                 >
@@ -236,7 +245,11 @@ class DisneyCardContainer extends Component {
                     {round(student.score, 2) || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   {student.testActivityId && status.status !== "Absent" && (
-                    <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
+                    <PagInfo
+                      data-cy="viewResponse"
+                      disabled={!isItemsVisible}
+                      onClick={e => viewResponses(e, student.studentId)}
+                    >
                       {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                       VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
                       {/* </Link> */}
@@ -284,5 +297,6 @@ class DisneyCardContainer extends Component {
 }
 
 export default connect(state => ({
-  isLoading: get(state, "classResponse.loading")
+  isLoading: get(state, "classResponse.loading"),
+  isItemsVisible: isItemVisibiltySelector(state)
 }))(DisneyCardContainer);

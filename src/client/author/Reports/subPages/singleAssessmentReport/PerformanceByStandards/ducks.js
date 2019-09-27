@@ -6,7 +6,7 @@ import { isEmpty } from "lodash";
 
 import { reportsApi } from "@edulastic/api";
 
-import { RESET_ALL_REPORTS } from "../../../ducks";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_PERFORMANCE_BY_STANDARDS_REQUEST = "[reports] get performance by standards request";
 const GET_PERFORMANCE_BY_STANDARDS_SUCCESS = "[reports] get performance by standards success";
@@ -48,7 +48,7 @@ export const reportPerformanceByStandardsReducer = createReducer(initialState, {
   }
 });
 
-const stateSelector = state => state.reportPerformanceByStandardsReducer;
+const stateSelector = state => state.reportReducer.reportPerformanceByStandardsReducer;
 
 export const getPerformanceByStandardsLoadingSelector = createSelector(
   stateSelector,

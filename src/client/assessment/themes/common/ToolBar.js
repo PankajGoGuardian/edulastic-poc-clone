@@ -26,7 +26,7 @@ class ToolBar extends Component {
   componentDidMount() {}
 
   render() {
-    const { settings, calcBrands, tool, qType } = this.props;
+    const { settings, tool, qType } = this.props;
     const { calcType } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -47,14 +47,6 @@ class ToolBar extends Component {
           <Tooltip placement="top" title="Calculator">
             <StyledButton enable={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
               <CaculatorIcon />
-              {tool.indexOf(2) !== -1 && (
-                <CalculatorMenu
-                  changeCaculateMode={this.handleCalculateMode}
-                  calcType={calcType}
-                  calculatorTypes={calculatorTypes}
-                  calcBrands={calcBrands}
-                />
-              )}
             </StyledButton>
           </Tooltip>
         )}

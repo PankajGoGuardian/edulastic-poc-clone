@@ -30,6 +30,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
         showCollapseBtn
         showFeedback
         cols={rows}
+        isDocBased={item.isDocBased}
         preview="show"
         previewTab="show"
         questions={questionsKeyed}

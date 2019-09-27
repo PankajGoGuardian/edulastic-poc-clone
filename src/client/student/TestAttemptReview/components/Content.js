@@ -67,6 +67,7 @@ class SummaryTest extends Component {
 
   render() {
     const { questionList: questionsAndOrder, t, test } = this.props;
+    const { isDocBased } = test;
     const { blocks: questionList, itemWiseQids } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
     const { finishTest } = this.props;
@@ -132,23 +133,25 @@ class SummaryTest extends Component {
                     let returnObj = [];
                     returnObj = [
                       ...returnObj,
-                      ...itemWiseQids[item].map((q, qIndex) => (
-                        <QuestionColorBlock
-                          key={index * 100 + qIndex}
-                          type={questionList[q]}
-                          isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                          onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
-                        >
-                          <span>
-                            {" "}
-                            {`${index + 1}${
+                      ...itemWiseQids[item].map((q, qIndex) => {
+                        const qInd = isDocBased
+                          ? qIndex + 1
+                          : `${index + 1}${
                               itemWiseQids[item].length > 1
                                 ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
                                 : ""
-                            }`}{" "}
-                          </span>
-                        </QuestionColorBlock>
-                      ))
+                            }`;
+                        return (
+                          <QuestionColorBlock
+                            key={index * 100 + qIndex}
+                            type={questionList[q]}
+                            isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                            onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                          >
+                            <span> {qInd} </span>
+                          </QuestionColorBlock>
+                        );
+                      })
                     ];
                     return returnObj;
                   })}

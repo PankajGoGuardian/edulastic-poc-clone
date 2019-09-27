@@ -261,6 +261,7 @@ function* loadTest({ payload }) {
         title: test.title,
         annotations: test.annotations,
         docUrl: test.docUrl,
+        isDocBased: test.isDocBased,
         pageStructure: test.pageStructure,
         freeFormNotes: test.freeFormNotes,
         settings,

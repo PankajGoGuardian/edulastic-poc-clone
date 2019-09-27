@@ -52,14 +52,16 @@ class TestItemCol extends Component {
       previousQuestionActivity = [],
       previewTab,
       col,
+      isDocBased,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     // question label for preview mode
-    const question = questions[widget.reference]?.qLabel
-      ? questions[widget.reference]
-      : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
+    const question =
+      questions[widget.reference]?.qLabel && !isDocBased
+        ? questions[widget.reference]
+        : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;

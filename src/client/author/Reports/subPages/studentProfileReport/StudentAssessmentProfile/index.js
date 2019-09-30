@@ -78,6 +78,7 @@ const StudentAssessmentProfile = ({
           selectedTests={selectedTests}
           onBarClickCB={onTestSelect}
           onResetClickCB={() => setSelectedTests([])}
+          studentInformation={studentInformation}
         />
       </StyledCard>
       <StyledCard>

@@ -674,22 +674,7 @@ function* updateTestDocBasedSaga({ payload }) {
       ...payload.data,
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
-    const standardPresent = questions.some(hasStandards);
-    // if alignment data is not present, set the flag to open the modal, and wait for
-    // an action from the modal.!
-    if (!standardPresent) {
-      yield put(togglePublishWarningModalAction(true));
-      // action dispatched by the modal.
-      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
-      yield put(togglePublishWarningModalAction(false));
 
-      // if he wishes to add some just close the modal, and go to metadata.
-      // else continue the normal flow.
-      if (!publishItem) {
-        yield put(updateTestErrorAction("User Cancelled"));
-        return;
-      }
-    }
     yield call(updateItemDocBasedSaga, {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });
@@ -730,13 +715,30 @@ function* publishTestSaga({ payload }) {
     let { _id: id, test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
+    const testItems = test?.testItems;
+    const assessmentQuestions = yield select(getQuestionsArraySelector);
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
+
+    const standardPresent = questions.some(hasStandards);
+    // if alignment data is not present, set the flag to open the modal, and wait for
+    // an action from the modal.!
+    if (!standardPresent && test.isDocBased) {
+      yield put(togglePublishWarningModalAction(true));
+      // action dispatched by the modal.
+      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+      yield put(togglePublishWarningModalAction(false));
+
+      // if he wishes to add some just close the modal, and go to metadata.
+      // else continue the normal flow.
+      if (!publishItem) {
+        return;
+      }
+    }
     yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: { id, data: test, assignFlow: true }
     });
-    const error = yield select(state => get(state, "tests.error"), null);
-    if (error) {
-      return;
-    }
+
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     if (!assignFlow) {
@@ -748,6 +750,7 @@ function* publishTestSaga({ payload }) {
       yield put(push(`/author/tests/${id}/publish`));
     }
   } catch (e) {
+    console.log(e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }

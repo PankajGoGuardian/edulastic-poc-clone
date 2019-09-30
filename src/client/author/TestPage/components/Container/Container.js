@@ -41,7 +41,8 @@ import { loadAssignmentsAction } from "../Assign/ducks";
 import {
   saveCurrentEditingTestIdAction,
   updateItemsDocBasedByIdAction,
-  getItemDetailByIdAction
+  getItemDetailByIdAction,
+  proceedPublishingItemAction
 } from "../../../ItemDetail/ducks";
 import { getUserSelector, getUserRole } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
@@ -56,6 +57,7 @@ import Setting from "../Setting";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -520,7 +522,7 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, test, testStatus, userId, updated } = this.props;
+    const { creating, windowWidth, test, testStatus, userId, updated, showWarningModal, proceedPublish } = this.props;
     const { showShareModal, current, editEnable, isShowFilter } = this.state;
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
@@ -546,6 +548,8 @@ class Container extends PureComponent {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
+        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}
@@ -592,6 +596,7 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
       questionsUpdated: get(state, "authorQuestions.updated", false),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
@@ -600,6 +605,7 @@ const enhance = compose(
     }),
     {
       createTest: createTestAction,
+      proceedPublish: proceedPublishingItemAction,
       updateTest: updateTestAction,
       updateDocBasedTest: updateDocBasedTestAction,
       receiveTestById: receiveTestByIdAction,

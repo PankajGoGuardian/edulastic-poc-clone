@@ -147,7 +147,7 @@ const PlayerContent = ({
 
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
-      frameController = new ParentController(testletConfig.testletId, testletState);
+      frameController = new ParentController(testletConfig.testletId, testletState.state, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -160,8 +160,8 @@ const PlayerContent = ({
           setUnlockNext(flag);
         },
         handleReponse: mapTestletToEdu,
-        playerStateHandler: itemState => {
-          saveUserWork({ [testActivityId]: itemState });
+        playerStateHandler: (itemState, itemResponse) => {
+          saveUserWork({ [testActivityId]: { state: itemState, response: itemResponse } });
         }
       });
       return () => {

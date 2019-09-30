@@ -2,12 +2,12 @@
 import MessageController from "./messageController";
 
 class ParentController extends MessageController {
-  constructor(testletID, initState) {
+  constructor(testletID, initState = {}, initResponse = {}) {
     super("parent");
     this.testletID = testletID || "iCat";
     this.initLang = "en_US";
     this.itemState = initState;
-    this.response = {};
+    this.response = initResponse;
     this.totalPage = "0";
     this.currentPageIds = {};
 
@@ -54,7 +54,7 @@ class ParentController extends MessageController {
   onResponse(response) {
     this.response = response;
     if (this.handleReponse && typeof this.handleReponse === "function") {
-      setTimeout(this.handleReponse);
+      this.handleReponse();
     }
   }
 
@@ -62,7 +62,7 @@ class ParentController extends MessageController {
   onState(state) {
     this.itemState = state;
     if (this.playerStateHandler) {
-      this.playerStateHandler(state);
+      this.playerStateHandler(state, this.response);
     }
   }
 

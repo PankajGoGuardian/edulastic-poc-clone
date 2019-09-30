@@ -1,6 +1,8 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { itemsApi, testItemActivityApi } from "@edulastic/api";
+import { message } from "antd";
+import { maxBy } from "lodash";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
   RECEIVE_ITEM_REQUEST,
@@ -12,8 +14,6 @@ import {
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS
 } from "../constants/actions";
-import { message } from "antd";
-import { maxBy } from "lodash";
 
 function* receiveItemsSaga() {
   try {
@@ -93,7 +93,7 @@ function* saveUserResponse({ payload }) {
 
     const itemAnswers = {};
     const shuffles = {};
-    let timesSpent = {};
+    const timesSpent = {};
     questions.forEach(question => {
       timesSpent[question] = ts / questions.length;
       itemAnswers[question] = answers[question];
@@ -103,7 +103,16 @@ function* saveUserResponse({ payload }) {
     });
 
     const testItemId = currentItem._id;
-    const userWork = yield select(({ userWork }) => userWork.present[testItemId]);
+    const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
+
+    const testletState = yield select(({ userWork }) => userWork.present[userTestActivityId]);
+    if (testletState && userTestActivityId) {
+      yield call(testItemActivityApi.updateUserWorkTestLevel, {
+        testActivityId: userTestActivityId,
+        groupId,
+        userWork: { testletState }
+      });
+    }
 
     const activity = {
       answers: itemAnswers,
@@ -115,7 +124,7 @@ function* saveUserResponse({ payload }) {
       shuffledOptions: shuffles,
       bookmarked
     };
-    if (userWork) activity.userWork = userWork;
+    if (_userWork) activity.userWork = _userWork;
 
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {

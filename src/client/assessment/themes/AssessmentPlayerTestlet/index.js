@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
+import { get } from "lodash";
 import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -8,6 +9,7 @@ import { WithResources } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
+import { saveUserWorkAction } from "../../actions/userWork";
 import { setUserAnswerAction } from "../../actions/answers";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 // components
@@ -100,12 +102,15 @@ export default connect(
   state => ({
     evaluation: state.evaluation,
     preview: state.view.preview,
+    testActivityId: state.test ? state.test.testActivityId : "",
+    testletState: get(state, `userWork.present[${state.test ? state.test.testActivityId : ""}]`, {}),
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
     answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
   }),
   {
     checkAnswer: checkAnswerEvaluation,
-    setUserAnswer: setUserAnswerAction
+    setUserAnswer: setUserAnswerAction,
+    saveUserWork: saveUserWorkAction
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

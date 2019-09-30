@@ -82,6 +82,7 @@ export const FILE_UPLOAD_ERROR = "[test] upload file error";
 // scratchPad
 export const SAVE_USER_WORK = "[userWork] save userWork";
 export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
+export const LOAD_TESTLET_STATE = "[userWork] load testlet state data";
 
 // shuffled options
 export const SET_SHUFFLED_OPTIONS = "[shuffledOptions] set shuffled options";

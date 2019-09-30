@@ -2,11 +2,11 @@
 import MessageController from "./messageController";
 
 class ParentController extends MessageController {
-  constructor(testletID) {
+  constructor(testletID, initState) {
     super("parent");
     this.testletID = testletID || "iCat";
     this.initLang = "en_US";
-    this.itemState = {};
+    this.itemState = initState;
     this.response = {};
     this.totalPage = "0";
     this.currentPageIds = {};
@@ -17,6 +17,7 @@ class ParentController extends MessageController {
     this.setCurrentQuestion = null;
     this.unlockNext = null;
     this.handleReponse = null;
+    this.playerStateHandler = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -26,6 +27,7 @@ class ParentController extends MessageController {
     this.setCurrentQuestion = callbacks.setCurrentQuestion;
     this.unlockNext = callbacks.unlockNext;
     this.handleReponse = callbacks.handleReponse;
+    this.playerStateHandler = callbacks.playerStateHandler;
   }
 
   /********************** call from testlet ************************/
@@ -59,6 +61,9 @@ class ParentController extends MessageController {
   // get state data from testlet
   onState(state) {
     this.itemState = state;
+    if (this.playerStateHandler) {
+      this.playerStateHandler(state);
+    }
   }
 
   // get log data from testlet

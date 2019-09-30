@@ -20,7 +20,17 @@ const responseType = {
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, saveUserAnswer, testletConfig = {} }) => {
+const PlayerContent = ({
+  openExitPopup,
+  title,
+  questions,
+  setUserAnswer,
+  saveUserAnswer,
+  saveUserWork,
+  testActivityId,
+  testletState,
+  testletConfig = {}
+}) => {
   const frameRef = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
   const [currentPage, setCurrentQuestion] = useState(0);
@@ -137,7 +147,7 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, saveUse
 
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
-      frameController = new ParentController(testletConfig.testletId);
+      frameController = new ParentController(testletConfig.testletId, testletState);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -149,7 +159,10 @@ const PlayerContent = ({ openExitPopup, title, questions, setUserAnswer, saveUse
         unlockNext: flag => {
           setUnlockNext(flag);
         },
-        handleReponse: mapTestletToEdu
+        handleReponse: mapTestletToEdu,
+        playerStateHandler: itemState => {
+          saveUserWork({ [testActivityId]: itemState });
+        }
       });
       return () => {
         frameController.disconnect();

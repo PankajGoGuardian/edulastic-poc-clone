@@ -7,7 +7,7 @@ import {
 } from "./const";
 
 export const getYAxis = (yAxisMax, yAxisMin, stepSize) =>
-  Array.from({ length: (yAxisMax - yAxisMin) / stepSize + 1 }, (v, k) => +(yAxisMin + k * stepSize).toFixed(2));
+  Array.from({ length: (yAxisMax - yAxisMin) / stepSize + 1 }, (v, k) => +(yAxisMax - k * stepSize).toFixed(2));
 
 export const getPadding = yAxis => Math.max(...yAxis.map(val => val.toString().length)) * 10;
 

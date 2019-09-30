@@ -84,25 +84,26 @@ const UnitsDropdownPure = ({
 
   return (
     <>
-      {item.showDropdown && (
-        <UniteSelet
-          value={preview ? selected : options ? options.unit : ""}
-          onChange={handleChange}
-          disabled={disabled}
-          style={styles}
-          statusColor={statusColor}
-        >
-          {allBtns.map((btn, i) => (
-            <Option value={btn.handler} key={i}>
-              {getLabel(btn.handler)}
-            </Option>
-          ))}
-        </UniteSelet>
-      )}
+      <UniteSelet
+        value={preview ? selected : options ? options.unit : ""}
+        onChange={handleChange}
+        disabled={disabled}
+        style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
+        statusColor={statusColor}
+      >
+        {allBtns.map((btn, i) => (
+          <Option value={btn.handler} key={i}>
+            {getLabel(btn.handler)}
+          </Option>
+        ))}
+      </UniteSelet>
+
       {!preview && (
-        <FlexContainer justifyContent={unitsStyle ? "flex-start" : "flex-end"} style={{ width: "100%" }}>
-          <FlexContainer alignItems="flex-start" flexDirection="column">
-            <Label data-cy="answer-math-unit-dropdown">{t("component.math.showDropdown")}</Label>
+        <FlexContainer justifyContent="center" style={{ width: "50%" }}>
+          <FlexContainer alignItems="center" flexDirection="row">
+            <Label marginBottom="0" marginY="0" marginX="10" data-cy="answer-math-unit-dropdown">
+              {t("component.math.showDropdown")}
+            </Label>
             <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">
               <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
                 <Radio value="dropdown">
@@ -112,7 +113,6 @@ const UnitsDropdownPure = ({
                   <FieldLabel>{t("component.math.keypad")}</FieldLabel>
                 </Radio>
               </Radio.Group>
-              <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
             </FlexContainer>
           </FlexContainer>
         </FlexContainer>

@@ -9,6 +9,8 @@ exports["default"] = void 0;
 
 var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
+var _immer = _interopRequireDefault(require("immer"));
+
 var _constants = require("@edulastic/constants");
 
 var _mainEvaluator = _interopRequireDefault(require("./mainEvaluator"));
@@ -31,9 +33,20 @@ var clozeImageDragDropEvaluator = function clozeImageDragDropEvaluator(_ref) {
 
     return null;
   });
+  var modifiedValidation = (0, _immer["default"])(validation, function(draft) {
+    var _draft$validResponse;
+
+    draft === null || draft === void 0
+      ? void 0
+      : (_draft$validResponse = draft.validResponse) === null || _draft$validResponse === void 0
+      ? void 0
+      : _draft$validResponse.value.forEach(function(val) {
+          delete val.rect;
+        });
+  });
   var evaluation = evaluator({
     userResponse: newUserResponse,
-    validation: validation
+    validation: modifiedValidation
   });
   return evaluation;
 };

@@ -31,6 +31,8 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import ShareModal from "../../../src/components/common/ShareModal";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
+import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { statusConstants } = test;
 
@@ -271,6 +273,8 @@ class Container extends React.Component {
       windowWidth,
       updated,
       creating,
+      showWarningModal,
+      proceedPublish,
       currentTab
     } = this.props;
     const { editEnable, showShareModal } = this.state;
@@ -297,6 +301,8 @@ class Container extends React.Component {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
+        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+
         <TestPageHeader
           onChangeNav={this.handleChangeCurrentTab}
           current={currentTab}
@@ -333,6 +339,7 @@ const enhance = compose(
       assessment: getTestEntitySelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
       questionsUpdated: get(state, "authorQuestions.updated", false),
       loading: getTestsLoadingSelector(state),
       questions: getQuestionsArraySelector(state),
@@ -342,6 +349,7 @@ const enhance = compose(
     }),
     {
       receiveTestById: receiveTestByIdAction,
+      proceedPublish: proceedPublishingItemAction,
       setTestData: setTestDataAction,
       receiveItemDetailById: getItemDetailByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,

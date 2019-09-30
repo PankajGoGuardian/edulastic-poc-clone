@@ -93,14 +93,20 @@ class ClassQuestions extends Component {
   };
 
   getTestItems() {
-    const { currentStudent, questionActivities, studentViewFilter: filter, labels = {} } = this.props;
+    const {
+      currentStudent,
+      questionActivities,
+      studentViewFilter: filter,
+      labels = {},
+      isQuestionView = false
+    } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
     }
     let {
       classResponse: { testItems }
     } = this.props;
-    if (!this.context.expressGrader && testItems) {
+    if (!this.context.expressGrader && testItems && !isQuestionView) {
       testItems = this.props.testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
     }
     const userQActivities =

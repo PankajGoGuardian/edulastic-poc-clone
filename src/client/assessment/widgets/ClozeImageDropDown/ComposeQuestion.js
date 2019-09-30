@@ -268,9 +268,31 @@ class ComposeQuestion extends Component {
     return maxHeight;
   };
 
+  getConvertedDimension = (prop, value) => {
+    const originalHeight = get(this.props, "item.imageOriginalHeight");
+    const originalWidth = get(this.props, "item.imageOriginalWidth");
+    if (prop === "width") {
+      return parseInt((originalWidth / originalHeight) * value, 10);
+    }
+    return parseInt(originalHeight * originalWidth * value, 10);
+  };
+
   changeImageHeight = height => {
+    const {
+      item: { keepAspectRatio = false }
+    } = this.props;
     const { maxHeight } = clozeImage;
     const newHeight = height > 0 ? height : maxHeight;
+    if (keepAspectRatio) {
+      const { item, setQuestionData } = this.props;
+      const newWidth = this.getConvertedDimension("width", newHeight);
+      return setQuestionData(
+        produce(item, draft => {
+          draft.imageHeight = newHeight;
+          draft.imageWidth = newWidth;
+        })
+      );
+    }
     this.onItemPropChange("imageHeight", newHeight);
   };
 

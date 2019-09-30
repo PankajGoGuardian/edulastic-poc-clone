@@ -278,6 +278,7 @@ class Display extends Component {
         fontSize={fontSize}
         imageOptions={imageOptions}
         showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
         uiStyle={uiStyle}

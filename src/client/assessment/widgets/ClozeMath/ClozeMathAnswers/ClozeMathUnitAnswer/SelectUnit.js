@@ -58,7 +58,7 @@ SelectUnit.defaultProps = {
 export default SelectUnit;
 
 const StyledSelect = styled(Select)`
-  min-width: 80px;
+  min-width: 118px;
   margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
   height: ${({ height }) => height || "auto"};
   ${({ preview }) =>

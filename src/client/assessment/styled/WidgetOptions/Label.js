@@ -12,4 +12,5 @@ export const Label = styled.label`
   margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
   display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
+  margin: ${({ marginX, marginY }) => `${marginX} ${marginY}`};
 `;

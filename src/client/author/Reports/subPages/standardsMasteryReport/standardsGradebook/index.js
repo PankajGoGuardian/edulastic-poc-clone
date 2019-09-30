@@ -32,7 +32,7 @@ import {
 
 import { getCsvDownloadingState } from "../../../ducks";
 
-import { getFilterDropDownData, getDenormalizedData } from "./utils/transformers";
+import { getFilterDropDownData, getDenormalizedData, getFilteredDenormalizedData } from "./utils/transformers";
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
@@ -94,6 +94,12 @@ const StandardsGradebook = ({
   const denormalizedData = useMemo(() => {
     return getDenormalizedData(standardsGradebook);
   }, [standardsGradebook]);
+
+  const filteredDenormalizedData = useMemo(() => getFilteredDenormalizedData(denormalizedData, ddfilter, role), [
+    denormalizedData,
+    ddfilter,
+    role
+  ]);
 
   let filterDropDownData = dropDownFormat.filterDropDownData;
   filterDropDownData = useMemo(() => {
@@ -164,7 +170,7 @@ const StandardsGradebook = ({
               </Row>
               <Row>
                 <SignedStackBarChartContainer
-                  denormalizedData={denormalizedData}
+                  filteredDenormalizedData={filteredDenormalizedData}
                   filters={ddfilter}
                   chartFilter={chartFilter}
                   masteryScale={masteryScale}
@@ -176,7 +182,7 @@ const StandardsGradebook = ({
           </UpperContainer>
           <TableContainer>
             <StandardsGradebookTable
-              denormalizedData={denormalizedData}
+              filteredDenormalizedData={filteredDenormalizedData}
               masteryScale={masteryScale}
               chartFilter={chartFilter}
               isCsvDownloading={isCsvDownloading}

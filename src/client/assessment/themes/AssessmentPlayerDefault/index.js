@@ -275,6 +275,7 @@ class AssessmentPlayerDefault extends React.Component {
   componentDidUpdate(previousProps) {
     if (this.props.currentItem !== previousProps.currentItem) {
       this.scrollElementRef.current.scrollTop = 0;
+      this.setState({ showHints: false });
     }
   }
 

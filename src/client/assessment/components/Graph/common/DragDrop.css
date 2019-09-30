@@ -34,4 +34,5 @@
   height: 100%;
   width: auto;
   opacity: 0;
+  max-width: 70px;
 }

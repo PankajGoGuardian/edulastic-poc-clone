@@ -135,7 +135,7 @@ class AdvancedTable extends Component {
                 this.props.showPreviewModal,
                 this.props.toggleEditModal
               )}
-              placement="bottomCenter"
+              placement="bottomRight"
               trigger={["click"]}
             >
               <BtnAction data-cy="testActions">ACTIONS</BtnAction>

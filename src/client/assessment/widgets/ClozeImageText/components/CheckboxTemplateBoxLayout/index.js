@@ -16,8 +16,11 @@ import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "../../styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "../../styled/StyledPreviewContainer";
 
+import Response from "./components/Response";
+
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
+  checkAnswer,
   responseContainers,
   imageAlterText,
   responseBtnStyle,
@@ -66,90 +69,18 @@ const CheckboxTemplateBoxLayout = ({
         const status = evaluation[dropTargetIndex] ? "right" : "wrong";
         const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
         return (
-          <React.Fragment key={index}>
-            {!showAnswer && (
-              <div
-                style={{
-                  ...btnStyle,
-                  minHeight: `${response.minHeight}px`,
-                  minWidth: `${response.minWidth}px`
-                }}
-                className={`
-                    imagelabeldragdrop-droppable 
-                    active 
-                    check-answer
-                    ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
-                onClick={onClickHandler}
-              >
-                {showAnswer && <span className="index index-box">{indexStr}</span>}
-                <div
-                  className="text container"
-                  style={{ padding: lessMinWidth ? "0 2px" : null }}
-                  title={userSelections[dropTargetIndex]}
-                >
-                  <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
-                    {userSelections[dropTargetIndex]}
-                  </div>
-                </div>
-                <IconWrapper rightPosition={lessMinWidth ? 2 : 20}>
-                  {status === "right" && <RightIcon />}
-                  {status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </div>
-            )}
-            {showAnswer && (
-              <div
-                style={{
-                  ...btnStyle,
-                  minHeight: `${response.minHeight}px`,
-                  minWidth: lessMinWidth
-                    ? parseInt(responseContainer.width, 10) + response.indexSizeSmallBox
-                    : `${response.minWidthShowAnswer}px`
-                }}
-                className={`
-                    imagelabeldragdrop-droppable 
-                    active 
-                    ${userSelections.length > 0 ? "check-answer" : "noAnswer"}
-                    ${status} 
-                    show-answer`}
-                onClick={onClickHandler}
-              >
-                {showAnswer && (
-                  <span className="index index-box" style={{ width: lessMinWidth ? "20px" : null }}>
-                    {indexStr}
-                  </span>
-                )}
-                <div className="text container" style={{ padding: lessMinWidth ? "0 0 0 4px" : null }}>
-                  <Tooltip title={userSelections?.[dropTargetIndex]}>
-                    <div
-                      className="clipText"
-                      style={{
-                        minWidth: "100%",
-                        maxWidth: lessMinWidth ? "50%" : `${uiStyle.widthpx}px`
-                      }}
-                    >
-                      {userSelections[dropTargetIndex]}
-                    </div>
-                  </Tooltip>
-
-                  <div>
-                    <IconWrapper rightPosition={lessMinWidth ? "2" : "20"}>
-                      {userSelections.length > 0 && status === "right" && <RightIcon />}
-                      {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
-                    </IconWrapper>
-                    <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                      <Point />
-                      <Triangle />
-                    </Pointer>
-                  </div>
-                </div>
-              </div>
-            )}
-          </React.Fragment>
+          <Response
+            showAnswer={showAnswer}
+            responseContainer={responseContainer}
+            btnStyle={btnStyle}
+            userSelections={userSelections}
+            onClickHandler={onClickHandler}
+            status={status}
+            dropTargetIndex={dropTargetIndex}
+            indexStr={indexStr}
+            lessMinWidth={lessMinWidth}
+            checkAnswer={checkAnswer}
+          />
         );
       })}
     </StyledPreviewContainer>

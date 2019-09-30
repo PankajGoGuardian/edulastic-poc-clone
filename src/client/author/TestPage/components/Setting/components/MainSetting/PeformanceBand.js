@@ -21,6 +21,7 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
       title: "Name",
       dataIndex: "name",
       width: "25%",
+      className: "name",
       render: (text, record) => {
         return (
           <NameColumn>
@@ -55,7 +56,7 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
-        <Select style={{ width: "150px" }} value={performanceBand._id} onChange={val => handleProfileChange(val)}>
+        <Select style={{ width: "150px" }} value={selectedBandsData._id} onChange={val => handleProfileChange(val)}>
           {performanceBandsData.map(bandsData => {
             return (
               <Select.Option key={bandsData._id} value={bandsData._id}>
@@ -95,6 +96,9 @@ export const StyledTable = styled(Table)`
       text-align: center;
       font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
       padding: 8px;
+      &.name {
+        text-align: left;
+      }
     }
     .ant-table-tbody > tr > td {
       border-bottom: 15px;
@@ -103,14 +107,15 @@ export const StyledTable = styled(Table)`
       background: #f8f8f8;
       text-align: center;
       padding: 8px;
+      &.name {
+        text-align: left;
+      }
     }
   }
 `;
 
 const NameColumn = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const StyledBox = styled.span`

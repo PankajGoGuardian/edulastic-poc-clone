@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { get } from "lodash";
-import { StyledCard, StyledH3 } from "../../../common/styled";
+import { get, isEmpty } from "lodash";
+import { StyledCard, StyledH3, NoDataContainer } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
 import {
   getReportsSPRFilterData,
@@ -56,11 +56,9 @@ const StudentProfileSummary = ({
   const bandInfo = bandInfoSelected;
   const scaleInfo = selectedStandardProficiency;
 
-  const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
-    studentProfileSummary,
-    "data.result",
-    {}
-  );
+  const studentProfileSummaryData = get(studentProfileSummary, "data.result", {});
+
+  const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = studentProfileSummaryData;
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
@@ -86,6 +84,10 @@ const StudentProfileSummary = ({
         <Placeholder />
       </>
     );
+  }
+
+  if (isEmpty(studentProfileSummaryData) || !studentProfileSummaryData) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>;
   }
 
   const studentInformation = studInfo[0] || {};

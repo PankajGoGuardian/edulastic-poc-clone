@@ -29,8 +29,6 @@ import {
   createAssessmentRequestAction,
   setPercentUploadedAction
 } from "../../../AssessmentCreate/ducks";
-import WarningModal from "../../../ItemDetail/components/WarningModal";
-import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -488,8 +486,6 @@ class Worksheet extends React.Component {
       percentageUploaded,
       fileInfo,
       pageStructure,
-      showWarningModal,
-      proceedPublish,
       scratchPad = {},
       freeFormNotes = {}
     } = this.props;
@@ -515,8 +511,6 @@ class Worksheet extends React.Component {
 
     return (
       <WorksheetWrapper>
-        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
-
         <Modal
           visible={deleteConfirmation}
           onOk={() => {
@@ -631,14 +625,12 @@ const enhance = compose(
       itemDetail: state.itemDetail,
       creating: getAssessmentCreatingSelector(state),
       percentageUploaded: percentageUploadedSelector(state),
-      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
       fileInfo: fileInfoSelector(state),
       answersById: state.answers
     }),
     {
       saveUserWork: saveUserWorkAction,
       createAssessment: createAssessmentRequestAction,
-      proceedPublish: proceedPublishingItemAction,
       setPercentUploaded: setPercentUploadedAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,

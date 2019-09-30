@@ -33,7 +33,8 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
       title: "Mastery Level",
       dataIndex: "masteryLevel",
       width: "25%",
-      key: "masteryLevel"
+      key: "masteryLevel",
+      className: "mastery-level-column"
     },
     {
       title: "Short Name",
@@ -53,7 +54,7 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Standard based grading scale</span>
-        <Select style={{ width: "150px" }} value={standardGradingScale._id} onChange={val => handleProfileChange(val)}>
+        <Select style={{ width: "150px" }} value={selectedStandardData._id} onChange={val => handleProfileChange(val)}>
           {standardsData.map(standardData => {
             return (
               <Select.Option key={standardData._id} value={standardData._id}>
@@ -90,6 +91,9 @@ export const StyledTable = styled(Table)`
       text-align: center;
       font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
       padding: 8px;
+      &.mastery-level-column {
+        text-align: left;
+      }
     }
     .ant-table-tbody > tr > td {
       border-bottom: 15px;
@@ -98,6 +102,10 @@ export const StyledTable = styled(Table)`
       background: #f8f8f8;
       text-align: center;
       padding: 8px;
+
+      &.mastery-level-column {
+        text-align: left;
+      }
     }
   }
 `;

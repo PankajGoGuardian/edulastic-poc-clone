@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
-import { get } from "lodash";
-import { StyledCard, StyledH3 } from "../../../common/styled";
+import { get, isEmpty } from "lodash";
+import { StyledCard, StyledH3, NoDataContainer } from "../../../common/styled";
 import AssessmentTable from "./common/components/table/AssessmentTable";
 import AssessmentChart from "../common/components/charts/AssessmentChart";
 import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
@@ -63,6 +63,10 @@ const StudentAssessmentProfile = ({
         <Placeholder />
       </>
     );
+  }
+
+  if (isEmpty(rawData) || !rawData) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>;
   }
 
   return (

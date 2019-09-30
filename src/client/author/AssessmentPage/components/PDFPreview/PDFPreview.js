@@ -72,6 +72,7 @@ const PDFPreview = ({
               <QuestionItem
                 key={questionId}
                 index={qIndex}
+                review
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
                 previewMode={viewMode === "edit" ? "clear" : previewMode}

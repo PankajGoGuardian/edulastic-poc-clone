@@ -1073,6 +1073,7 @@ class ClassBoard extends Component {
             (selectedQuestion || selectedQuestion === 0) && (
               <React.Fragment>
                 <QuestionContainer
+                  isQuestionView
                   classResponse={classResponse}
                   testActivity={testActivity}
                   qIndex={selectedQuestion}
@@ -1082,14 +1083,15 @@ class ClassBoard extends Component {
                 >
                   <GenSelect
                     classid="DI"
-                    classname={
-                      selectedTab === "Student"
-                        ? classname
-                        : firstQuestionEntities
-                            .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
-                            .filter(x => !x.disabled)
-                            .map(({ value, id }) => ({ value, name: labels[id].barLabel }))
-                    }
+                    classname={firstQuestionEntities
+                      .map((x, index) => ({
+                        value: index,
+                        disabled: x.disabled || x.scoringDisabled,
+                        id: x._id,
+                        qLabel: x.qLabel
+                      }))
+                      .filter(x => !x.disabled)
+                      .map(({ value, qLabel }) => ({ value, name: qLabel }))}
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {

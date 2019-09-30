@@ -25,7 +25,7 @@ import {
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 
 export const StandardsGradebookTable = ({
-  denormalizedData,
+  filteredDenormalizedData,
   masteryScale,
   chartFilter,
   isCsvDownloading,
@@ -52,14 +52,14 @@ export const StandardsGradebookTable = ({
 
   const tableData = useMemo(() => {
     return getTableData(
-      denormalizedData,
+      filteredDenormalizedData,
       masteryScale,
       tableDdFilters.compareBy,
       tableDdFilters.analyseBy,
       tableDdFilters.masteryLevel,
       role
     );
-  }, [denormalizedData, masteryScale, tableDdFilters]);
+  }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
 
   const getFilteredTableData = () => {
     return next(tableData, arr => {

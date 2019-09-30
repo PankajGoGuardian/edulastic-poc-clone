@@ -16,6 +16,7 @@ const TrendColumn = ({ tests, type }) => {
       <BarChart width={120} height={30} barCategoryGap={1} data={tests} maxBarSize={100}>
         <Bar dataKey="score" fill={trendTypes[type].color} />
         <Tooltip
+          wrapperStyle={{ top: 40 }}
           cursor={false}
           content={({ payload }) => {
             if (!payload[0]) {

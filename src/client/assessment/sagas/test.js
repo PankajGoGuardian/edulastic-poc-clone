@@ -16,6 +16,7 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
+  LOAD_TESTLET_STATE,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   TEST_ACTIVITY_LOADING,
@@ -126,9 +127,9 @@ function* loadTest({ payload }) {
 
     // if testActivity is present.
     if (!preview) {
-      let allAnswers = {},
-        allPrevAnswers = {},
-        allEvaluation = {};
+      let allAnswers = {};
+      let allPrevAnswers = {};
+      let allEvaluation = {};
 
       const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
       // if questions are shuffled !!!
@@ -157,9 +158,9 @@ function* loadTest({ payload }) {
       });
 
       let lastAttemptedQuestion = questionActivities[0] || {};
-      let previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
-      const scratchPadData = {},
-        prevScratchPadData = {};
+      const previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
+      const scratchPadData = {};
+      const prevScratchPadData = {};
       previousQuestionActivities.forEach(item => {
         allPrevAnswers = {
           ...allPrevAnswers,
@@ -213,6 +214,14 @@ function* loadTest({ payload }) {
         });
       }
 
+      const testletState = get(activity, "userWork.testletState");
+      if (testletState) {
+        yield put({
+          type: LOAD_TESTLET_STATE,
+          payload: { [testActivityId]: testletState }
+        });
+      }
+
       // get currentItem index;
       let lastAttendedQuestion = 0;
       if (lastAttemptedQuestion && lastAttemptedQuestion.testItemId) {
@@ -259,6 +268,8 @@ function* loadTest({ payload }) {
         passages,
         items: testItems,
         title: test.title,
+        testType: test.testType,
+        testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,

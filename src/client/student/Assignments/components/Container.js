@@ -102,7 +102,7 @@ const Content = ({
 
   const noDataNotification = () => (
     <NoDataNotification
-      heading={"No Assignments "}
+      heading="No Assignments "
       description={"You don't have any currently assigned or completed assignments."}
     />
   );

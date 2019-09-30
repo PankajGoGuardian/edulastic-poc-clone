@@ -7,9 +7,10 @@ import { withRouter } from "react-router-dom";
 import { Spin } from "antd";
 import { isUndefined } from "lodash";
 import { ScratchPadContext } from "@edulastic/common";
+import { test } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
-import { gotoItem, saveUserResponse } from "../actions/items";
+import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
 import { finishTestAcitivityAction } from "../actions/test";
 import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
@@ -20,6 +21,7 @@ import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/an
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
+import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -65,9 +67,12 @@ const AssessmentContainer = ({
   passages,
   preview,
   LCBPreviewModal,
-  closeTestPreviewModal
+  closeTestPreviewModal,
+  testletType,
+  testletConfig,
+  testType
 }) => {
-  const qid = preview ? 0 : match.params.qid || 0;
+  const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
   gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
@@ -116,8 +121,10 @@ const AssessmentContainer = ({
   };
 
   const gotoSummary = async () => {
-    const timeSpent = Date.now() - lastTime.current;
-    await saveUserAnswer(currentItem, timeSpent);
+    if (!testletType) {
+      const timeSpent = Date.now() - lastTime.current;
+      await saveUserAnswer(currentItem, timeSpent);
+    }
     history.push(`${url}/${"test-summary"}`);
   };
 
@@ -180,6 +187,17 @@ const AssessmentContainer = ({
     );
   }
 
+  if (testType === test.type.TESTLET) {
+    return (
+      <AssessmentPlayerTestlet
+        {...props}
+        testletConfig={testletConfig}
+        saveUserAnswer={saveUserAnswer}
+        gotoSummary={gotoSummary}
+      />
+    );
+  }
+
   return (
     <>
       <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
@@ -199,12 +217,15 @@ AssessmentContainer.propTypes = {
   answers: PropTypes.array.isRequired,
   answersById: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
-  LCBPreviewModal: PropTypes.any.isRequired
+  LCBPreviewModal: PropTypes.any.isRequired,
+  testType: PropTypes.string.isRequired,
+  testletConfig: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
-  annotations: []
+  annotations: [],
+  testletConfig: {}
 };
 
 const enhance = compose(
@@ -216,6 +237,8 @@ const enhance = compose(
       passages: state.test.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
+      testType: state.test.testType,
+      testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
@@ -230,7 +253,7 @@ const enhance = compose(
       changePreview: changePreviewAction,
       startAssessment: startAssessmentAction,
       finishTest: finishTestAcitivityAction,
-      gotoItem
+      gotoItem: gotoItemAction
     }
   )
 );

@@ -40,7 +40,7 @@ function* loadTestActivityReport({ payload }) {
 
     const { questionActivities = [] } = reports || {};
     let allAnswers = {};
-    let userWork = {};
+    const userWork = {};
     questionActivities.forEach(item => {
       allAnswers = {
         ...allAnswers,
@@ -82,7 +82,7 @@ export function* watcherSaga() {
   yield all([yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport)]);
 }
 
-//reducer
+// reducer
 
 export const setCurrentItemAction = index => ({
   type: SET_CURRENT_ITEM,
@@ -94,7 +94,7 @@ export const setCurrentItemAction = index => ({
 export const setTestFeedbackAction = data => ({
   type: SET_FEEDBACK,
   payload: {
-    data: data
+    data
   }
 });
 

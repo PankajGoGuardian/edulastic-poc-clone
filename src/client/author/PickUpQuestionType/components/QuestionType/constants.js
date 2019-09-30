@@ -1189,6 +1189,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
+          heightpx: 35,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom"
         },

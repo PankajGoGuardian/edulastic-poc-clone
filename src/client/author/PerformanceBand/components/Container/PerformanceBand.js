@@ -14,7 +14,8 @@ import {
   setPerformanceBandLocalAction,
   updatePerformanceBandAction,
   setPerformanceBandNameAction,
-  setPerformanceBandChangesAction
+  setPerformanceBandChangesAction,
+  setEditingIndexAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
@@ -107,18 +108,10 @@ function ProfileRow({
           )}
         </Col>
         <StyledProfileCol span={12}>
-          {readOnly ? null : (
-            <Icon type="edit" theme="filled" onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))} />
-          )}
+          {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditingIndex(_id)} />}
           <Icon type="copy" onClick={onDuplicate} />
           {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
-          {
-            <Icon
-              type={active ? "up" : "down"}
-              theme="outlined"
-              onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}
-            />
-          }
+          {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditingIndex(_id)} />}
         </StyledProfileCol>
       </StyledProfileRow>
 
@@ -157,13 +150,17 @@ export function PerformanceBandAlt(props) {
     remove,
     profiles,
     currentUserId,
-    setName
+    setName,
+    editingIndex,
+    setEditingIndex
   } = props;
+
+  console.log("editingIndex", editingIndex);
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
   }, []);
-  const [editingIndex, setEditingIndex] = useState();
+
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
 
@@ -300,6 +297,7 @@ const enhance = compose(
       updating: get(state, ["performanceBandReducer", "updating"], false),
       creating: get(state, ["performanceBandReducer", "creating"], false),
       profiles: get(state, ["performanceBandReducer", "profiles"], []),
+      editingIndex: get(state, ["performanceBandReducer", "editingIndex"]),
       orgId: getUserOrgId(state),
       role: getUserRole(state),
       currentUserId: getUserId(state)
@@ -310,7 +308,8 @@ const enhance = compose(
       update: updatePerformanceBandAction,
       remove: deletePerformanceBandAction,
       updateLocal: setPerformanceBandLocalAction,
-      setName: setPerformanceBandNameAction
+      setName: setPerformanceBandNameAction,
+      setEditingIndex: setEditingIndexAction
     }
   )
 );

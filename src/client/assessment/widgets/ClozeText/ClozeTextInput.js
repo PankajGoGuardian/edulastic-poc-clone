@@ -125,15 +125,24 @@ const ClozeTextInput = ({ resprops, id }) => {
   };
 
   const handleInputChange = data => {
-    const resp = responsecontainerindividuals.find(resp => resp.id === data.id);
+    const resp = responsecontainerindividuals.find(_resp => _resp.id === data.id);
     // type === "number" (when globally set all reponses to number)
     // resp.inputtype === "number" (when individually set the type of response to number)
-    if (type === "number" || (resp && resp.inputtype === "number")) {
-      if (data.value.split("\n").some(isNaN)) {
+    if ((type === "number" || (resp && resp.inputtype === "number")) && data.value) {
+      const regex = new RegExp("[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]*)?", "g");
+      const isInputValid = data.value
+        .trim()
+        .split("\r\n")
+        .filter(val => val) // filter out multiple line feeds in between two strings
+        .every(val => {
+          const res = regex.test(val);
+          return res;
+        });
+      if (!isInputValid) {
         return;
       }
-      // return;
     }
+
     setInput(data);
   };
   let width = style.width || "auto";

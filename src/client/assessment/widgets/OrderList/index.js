@@ -201,7 +201,7 @@ const OrderList = ({
   if (answerContext.expressGrader) {
     initialAnswers = disableResponse ? correctAnswers : userAnswer;
   } else {
-    initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview.list.map((q, i) => i);
+    initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview?.list?.map((q, i) => i);
   }
 
   const getStemNumeration = i => {
@@ -226,7 +226,7 @@ const OrderList = ({
   const checkAnswerOptionComponent = isEmpty(evaluationForCheckAnswer) ? (
     <OrderListPreview
       onSortEnd={onSortPreviewEnd}
-      questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
+      questions={initialAnswers?.map(index => itemForPreview.list && itemForPreview.list[index])}
       smallSize={smallSize}
       listStyle={{ fontSize }}
       styleType={styleType}

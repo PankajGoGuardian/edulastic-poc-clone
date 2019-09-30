@@ -910,12 +910,12 @@ class ClassBoard extends Component {
                   endDate={additionalData.endDate || additionalData.closedDate}
                   closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
-                  viewResponses={(e, selected) => {
+                  viewResponses={(e, selected, testActivityId) => {
                     if (!isItemsVisible) {
                       return;
                     }
                     getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
-                    this.onTabChange(e, "Student", selected);
+                    this.onTabChange(e, "Student", selected, testActivityId);
                   }}
                   isPresentationMode={isPresentationMode}
                   enrollmentStatus={enrollmentStatus}
@@ -961,9 +961,12 @@ class ClassBoard extends Component {
                     students={testActivity}
                     selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
-                    handleChange={value => {
+                    handleChange={(value, testActivityId) => {
                       getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
                       this.setState({ selectedStudentId: value });
+                      this.props.history.push(
+                        `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                      );
                     }}
                     isPresentationMode={isPresentationMode}
                   />
@@ -987,6 +990,9 @@ class ClassBoard extends Component {
                           onChange={testActivityId => {
                             loadStudentResponses({ testActivityId, groupId: classId, studentId: selectedStudentId });
                             setCurrentTestActivityId(testActivityId);
+                            this.props.history.push(
+                              `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                            );
                           }}
                         >
                           {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (

@@ -10,7 +10,7 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
     if (testActivityId !== undefined) {
       if (handleChange) {
         const selected = find(students, student => student.testActivityId === testActivityId);
-        handleChange(selected.studentId);
+        handleChange(selected.studentId, testActivityId);
       }
     }
   };

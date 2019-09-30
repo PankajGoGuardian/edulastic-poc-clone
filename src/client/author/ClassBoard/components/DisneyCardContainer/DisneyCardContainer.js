@@ -248,7 +248,7 @@ class DisneyCardContainer extends Component {
                     <PagInfo
                       data-cy="viewResponse"
                       disabled={!isItemsVisible}
-                      onClick={e => viewResponses(e, student.studentId)}
+                      onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
                     >
                       {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                       VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>

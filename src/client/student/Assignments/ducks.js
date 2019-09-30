@@ -19,7 +19,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
-const { COMMON, ASSESSMENT } = testConst.type;
+const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
@@ -50,13 +50,12 @@ export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FRO
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
     return groupId;
-  } else {
-    const assignmentClassIds = (assignment.class || []).reduce((acc, cur) => {
-      acc.add(cur._id);
-      return acc;
-    }, new Set());
-    return classIds.find(x => assignmentClassIds.has(x));
   }
+  const assignmentClassIds = (assignment.class || []).reduce((acc, cur) => {
+    acc.add(cur._id);
+    return acc;
+  }, new Set());
+  return classIds.find(x => assignmentClassIds.has(x));
 };
 
 /**
@@ -112,7 +111,7 @@ function* fetchAssignments({ payload }) {
       call(assignmentApi.fetchAssigned, payload),
       call(reportsApi.fetchReports, groupId)
     ]);
-    //transform to handle redirect
+    // transform to handle redirect
     const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
     const assignmentsProcessed = assignments.map(transformFn);
 
@@ -195,13 +194,17 @@ function* resumeAssignment({ payload }) {
 
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(
-      push(
-        `/student/${
-          testType === COMMON ? ASSESSMENT : testType
-        }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
-      )
-    );
+    if (testType !== TESTLET) {
+      yield put(
+        push(
+          `/student/${
+            testType === COMMON ? ASSESSMENT : testType
+          }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+        )
+      );
+    } else {
+      yield put(push(`/student/${testType}/${testId}/class/${actualGroupId}/uta/${testActivityId}`));
+    }
   } catch (e) {
     console.log(e);
   }
@@ -300,11 +303,11 @@ export const filterSelector = state => state.studentAssignment.filter;
 export const isLiveAssignment = (assignment, currentGroup, classIds) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
-  let maxAttempts = (assignment && assignment.maxAttempts) || 1;
-  let attempts = (assignment.reports && assignment.reports.length) || 0;
-  let lastAttempt = last(assignment.reports) || {};
+  const maxAttempts = (assignment && assignment.maxAttempts) || 1;
+  const attempts = (assignment.reports && assignment.reports.length) || 0;
+  const lastAttempt = last(assignment.reports) || {};
   let { endDate, class: groups = [] } = assignment;
-  //when attempts over no need to check for any other condition to hide assignment from assignments page
+  // when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
   if (!endDate) {
     endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
@@ -333,7 +336,7 @@ export const isLiveAssignment = (assignment, currentGroup, classIds) => {
 };
 
 const statusFilter = filterType => assignment => {
-  let attempts = (assignment.reports && assignment.reports.length) || 0;
+  const attempts = (assignment.reports && assignment.reports.length) || 0;
   switch (filterType) {
     case FILTERS.NOT_STARTED:
       return attempts === 0;
@@ -352,12 +355,10 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
   let result = 0;
   if (resume) {
     result = 3;
+  } else if (!attempted) {
+    result = 2;
   } else {
-    if (!attempted) {
-      result = 2;
-    } else {
-      result = 1;
-    }
+    result = 1;
   }
   const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
 
@@ -374,8 +375,8 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   (assignmentsObj, reportsObj, currentGroup, classIds) => {
     // group reports by assignmentsID
-    let groupedReports = groupBy(values(reportsObj), "assignmentId");
-    let assignments = values(assignmentsObj)
+    const groupedReports = groupBy(values(reportsObj), "assignmentId");
+    const assignments = values(assignmentsObj)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []

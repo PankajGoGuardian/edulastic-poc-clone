@@ -27,6 +27,7 @@ const PlayerContent = ({
   setUserAnswer,
   saveUserAnswer,
   saveUserWork,
+  gotoSummary,
   testActivityId,
   testletState,
   testletConfig = {}
@@ -72,7 +73,7 @@ const PlayerContent = ({
     if (currentPage < testletItems.length) {
       frameController.sendNext();
     } else {
-      // TODO submit test here
+      gotoSummary();
     }
   };
 
@@ -91,7 +92,6 @@ const PlayerContent = ({
       return;
     }
 
-    // TODO need to restore previous response...
     const { type: cQuestionType } = cQuestion;
     let data = {};
     if (cQuestionType === questionType.EXPRESSION_MULTIPART) {

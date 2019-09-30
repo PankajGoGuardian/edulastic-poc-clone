@@ -195,7 +195,7 @@ class App extends Component {
             />
 
             <PrivateRoute
-              path={`/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary`}
+              path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
               component={TestAttemptReview}
             />
             <Route

@@ -11,7 +11,7 @@ import { WithResources } from "@edulastic/common";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { saveUserWorkAction } from "../../actions/userWork";
 import { setUserAnswerAction } from "../../actions/answers";
-import { currentItemAnswerChecksSelector } from "../../selectors/test";
+
 // components
 import { Container } from "../common";
 import PlayerContent from "./PlayerContent";
@@ -37,7 +37,6 @@ class AssessmentPlayerTestlet extends React.Component {
     items: PropTypes.any.isRequired,
     title: PropTypes.string.isRequired,
     evaluate: PropTypes.any.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
     view: PropTypes.string.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
@@ -51,11 +50,6 @@ class AssessmentPlayerTestlet extends React.Component {
 
   state = {
     showExitPopup: false
-  };
-
-  onCheckAnswer = () => {
-    const { checkAnswer, settings, answerChecksUsedForItem } = this.props;
-    if (settings.maxAnswerChecks > answerChecksUsedForItem) checkAnswer();
   };
 
   openExitPopup = () => {
@@ -105,8 +99,7 @@ export default connect(
     testActivityId: state.test ? state.test.testActivityId : "",
     testletState: get(state, `userWork.present[${state.test ? state.test.testActivityId : ""}]`, {}),
     questions: state.assessmentplayerQuestions.byId,
-    settings: state.test.settings,
-    answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
+    settings: state.test.settings
   }),
   {
     checkAnswer: checkAnswerEvaluation,

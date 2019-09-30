@@ -68,10 +68,11 @@ const AssessmentContainer = ({
   preview,
   LCBPreviewModal,
   closeTestPreviewModal,
+  testletType,
   testletConfig,
   testType
 }) => {
-  const qid = preview ? 0 : match.params.qid || 0;
+  const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
   gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
@@ -120,8 +121,10 @@ const AssessmentContainer = ({
   };
 
   const gotoSummary = async () => {
-    const timeSpent = Date.now() - lastTime.current;
-    await saveUserAnswer(currentItem, timeSpent);
+    if (!testletType) {
+      const timeSpent = Date.now() - lastTime.current;
+      await saveUserAnswer(currentItem, timeSpent);
+    }
     history.push(`${url}/${"test-summary"}`);
   };
 
@@ -185,7 +188,14 @@ const AssessmentContainer = ({
   }
 
   if (testType === test.type.TESTLET) {
-    return <AssessmentPlayerTestlet {...props} testletConfig={testletConfig} saveUserAnswer={saveUserAnswer} />;
+    return (
+      <AssessmentPlayerTestlet
+        {...props}
+        testletConfig={testletConfig}
+        saveUserAnswer={saveUserAnswer}
+        gotoSummary={gotoSummary}
+      />
+    );
   }
 
   return (

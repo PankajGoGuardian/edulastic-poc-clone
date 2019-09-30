@@ -143,7 +143,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   const { activityReview = true } = data;
   let releaseScore = null;
   if (!currentGroup) {
-    //Find current group from assignment classes object
+    // Find current group from assignment classes object
     const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
     currentGroup = getClass._id;
     releaseScore = getClass.releaseScore;

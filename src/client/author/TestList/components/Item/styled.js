@@ -1,16 +1,16 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor } from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor, greyishDarker2 } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
   box-shadow: none;
   cursor: pointer;
-  border-radius: 4px;
-  border: 0;
+  border-radius: ${props => (props.isPlaylist ? "4px" : "10px")};
+  border: ${props => (props.isPlaylist ? "0" : `1px solid ${greyishDarker2}`)};
   .ant-card-body {
     padding: 16px;
-    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.07);
+    box-shadow: ${props => (props.playlist ? "0px 2px 5px 0px rgba(0, 0, 0, 0.07)" : "none")};
     border-radius: 4px;
     min-height: 210px;
     display: flex;
@@ -21,7 +21,6 @@ export const Container = styled(Card)`
   .ant-card-head {
     padding: 16px;
     border: 0;
-    padding: 16px;
     overflow: hidden;
     position: relative;
     .ant-card-head-title {
@@ -36,7 +35,11 @@ export const Container = styled(Card)`
         border-radius: 4px;
         opacity: 0.3;
         background: url(${props =>
-          props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
+          props.isPlaylist
+            ? props.src
+              ? props.src
+              : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"
+            : ""});
       }
     }
   }

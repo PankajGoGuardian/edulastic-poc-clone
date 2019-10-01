@@ -143,6 +143,7 @@ class Item extends Component {
           closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container
+          isPlaylist={isPlaylist}
           src={isPlaylist ? _source.thumbnail : thumbnail}
           onClick={isPlaylist ? this.moveToItem : this.openModal}
           title={

@@ -126,7 +126,8 @@ export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInf
     }
   }).filter(standard => standard);
 
-  return standardsWithInfo;
+  // returning data in the ascending order of domain and standard.
+  return orderBy(standardsWithInfo, ["domain", "standard"], ["asc", "asc"]);
 };
 
 export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {}, asessmentMetricInfo = []) => {

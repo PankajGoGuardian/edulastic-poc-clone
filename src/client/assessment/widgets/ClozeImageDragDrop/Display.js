@@ -265,7 +265,8 @@ class Display extends Component {
     newAnswers[index] = {
       responseBoxID: responseContainers[index] && responseContainers[index].id,
       value: [...(newAnswers[index] ? newAnswers[index].value || [] : []), ...data],
-      containerIndex: index
+      containerIndex: index,
+      rect: this.getAnswerRect(itemRect)
     };
 
     if (maxRespCount && newAnswers[index].value.length > maxRespCount) {

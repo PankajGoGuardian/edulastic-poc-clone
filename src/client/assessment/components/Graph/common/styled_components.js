@@ -13,7 +13,6 @@ import {
   green
 } from "@edulastic/colors";
 import { TextField, Paper } from "@edulastic/common";
-import { StyledPaperWrapper } from "../../../styled/Widget";
 
 export const InstructorStimulus = styled.p`
   border-radius: 3px;
@@ -333,9 +332,9 @@ export const Select = styled.select`
   height: 100%;
   box-sizing: border-box;
   border-radius: 5px;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.selectBgColor};
+  background-color: ${props => props.theme.selectBgColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${props => props.theme.widgets.assessmentPlayers.selectTextColor};
+  color: ${props => props.theme.selectTextColor};
   font-size: 14px;
   border: none;
   outline: none;
@@ -371,7 +370,7 @@ export const Col = styled.div`
   display: block;
 `;
 
-export const PaperWrapper = styled(StyledPaperWrapper)`
+export const PaperWrapper = styled(Paper)`
   padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
 
   @media (max-width: ${mobileWidthMax}) {

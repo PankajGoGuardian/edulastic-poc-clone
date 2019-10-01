@@ -71,8 +71,7 @@ const StatusBtnsContainer = styled.div`
 `;
 
 const FilterBtn = styled(Button)`
-  min-height: 24px;
-  height: auto;
+  height: 24px;
   color: ${props =>
     props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor
@@ -96,7 +95,7 @@ const FilterBtn = styled(Button)`
   }
   &:hover {
     color: ${props => props.theme.headerFilters.headerFilterTextHoverColor};
-    background: ${props => props.theme.headerFilters.headerFilterBgHoverColor};
+    background: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
     border-color: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
   }
   span {

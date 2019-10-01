@@ -15,11 +15,11 @@ import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
-import { themes } from "../../../theme";
+import { playersTheme } from "../assessmentPlayersTheme";
 import assessmentPlayerTheme from "./themeStyle";
 
 const Theme = {
-  ...themes.default,
+  ...playersTheme,
   ...assessmentPlayerTheme
 };
 

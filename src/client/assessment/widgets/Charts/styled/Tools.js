@@ -59,11 +59,6 @@ export const ToolbarItemIcon = styled.div`
   min-width: 23px;
   min-height: 24px;
   margin-bottom: 5px;
-  & > svg {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor};
-    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
-    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
-  }
 `;
 
 export const ToolbarItem = styled.div`
@@ -76,8 +71,7 @@ export const ToolbarItem = styled.div`
 `;
 
 export const ToolbarItemLabel = styled.span`
-  color: ${props =>
-    props.theme.widgets.chart.labelStrokeColor || (props.color ? props.color : `${secondaryTextColor}`)};
+  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)}
   font-size: 14px;
   font-weight: 600;
   line-height: 19px;

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 
-import { themes } from "../../../../../../theme";
+import { themes } from "../../../../../../assessment/themes";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
 

@@ -70,8 +70,7 @@ const StatusBtnsContainer = styled.div`
 `;
 
 const FilterBtn = styled(Button)`
-  min-height: 24px;
-  height: auto;
+  height: 24px;
   color: ${props =>
     props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor

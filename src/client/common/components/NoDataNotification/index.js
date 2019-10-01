@@ -42,43 +42,15 @@ const NoDataBox = styled.div`
   img {
     width: 50px;
     margin-bottom: 15px;
-
-    ${({ theme }) =>
-      theme.respondTo.xl`
-        width: 150px;
-        height: 150px;
-      `}
-
-    ${({ theme }) =>
-      theme.respondTo.lg`
-        width: 100px;
-        height: 100px;
-      `}
   }
   h4 {
     color: ${props => (props.theme.assignment && props.theme.assignment.helpHeadingTextColor) || "#304050"};
-    font-size: ${props => props.theme.noData.NoDataArchiveTextSize};
+    font-size: 18px;
     font-weight: 600;
   }
   p {
     color: ${props => (props.theme.assignment && props.theme.assignment.helpTextColor) || "#848993"};
-    font-size: ${props => props.theme.noData.NoDataArchiveSubTextSize};
+    font-size: 12px;
     line-height: 22px;
-
-    ${({ theme }) =>
-      theme.zoomedCss`
-        line-height: normal;
-      `}
   }
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      width: 600px;
-      height: 600px;
-    `}
-
-  ${({ theme }) =>
-    theme.respondTo.lg`
-      width: 500px;
-      height: 500px;
-    `}
 `;

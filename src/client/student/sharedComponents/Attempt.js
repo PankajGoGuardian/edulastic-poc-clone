@@ -65,7 +65,7 @@ const AnswerAndScore = styled.div`
   align-items: center;
   flex-direction: column;
   span {
-    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
+    font-size: 31px;
     font-weight: bold;
     color: #434b5d;
   }
@@ -75,10 +75,6 @@ const AnswerAndScore = styled.div`
       flex-basis: 50%;
     }
   }
-  ${({ theme }) =>
-    theme.zoomedCss`
-      width: auto;
-    `}
 `;
 
 const SpaceBetween = styled.div`
@@ -112,18 +108,13 @@ const RowData = styled.div`
   justify-content: flex-end;
   align-items: center;
   border-radius: 4px;
-  height: auto;
+  height: 30px;
   background-color: ${lightGreySecondary};
-  padding: 3px;
   @media screen and (max-width: ${mobileWidthMax}) {
     height: auto;
     justify-content: space-between;
+    padding: 3px;
   }
-  ${({ theme }) =>
-    theme.zoomedCss`
-      height: auto;
-      justify-content: space-between;
-    `}
   div {
     height: 100%;
     display: flex;
@@ -134,6 +125,7 @@ const RowData = styled.div`
     }
   }
   span {
+    font-size: 10px !important;
     font-weight: 600 !important;
     color: #9ca0a9;
   }

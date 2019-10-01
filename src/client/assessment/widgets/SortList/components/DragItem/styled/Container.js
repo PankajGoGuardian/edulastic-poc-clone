@@ -6,7 +6,6 @@ export const Container = styled.div`
   align-items: stretch;
   cursor: pointer;
   border-radius: 4px;
-  background-color: ${props => props.theme.widgets.sortList.dragItemContainerBorderColor};
   border: ${props =>
     props.style && props.style.border
       ? props.style.border

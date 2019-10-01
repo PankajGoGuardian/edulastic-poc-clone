@@ -51,7 +51,7 @@ export const AssignmentTitle = styled.div`
   line-height: 1.36;
   letter-spacing: normal;
   text-align: left;
-  color: ${props => props.theme.header.headerTitleTextColor};
+  color: ${props => props.theme.headerTitleTextColor};
   @media screen and (max-width: 768px) {
     padding-left: 0;
   }

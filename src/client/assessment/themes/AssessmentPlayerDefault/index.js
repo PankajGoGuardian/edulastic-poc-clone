@@ -12,8 +12,7 @@ import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
-import { playersZoomTheme } from "../assessmentPlayersTheme";
-import { themes } from "../../../theme";
+import { playersTheme } from "../assessmentPlayersTheme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
 import HeaderMainMenu from "../common/HeaderMainMenu";
@@ -53,7 +52,6 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
-import { getZoomedTheme } from "../../../student/zoomTheme";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -109,7 +107,7 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   static defaultProps = {
-    theme: themes
+    theme: playersTheme
   };
 
   changeTool = val => {
@@ -308,8 +306,6 @@ class AssessmentPlayerDefault extends React.Component {
       previousQuestionActivities,
       LCBPreviewModal,
       preview,
-      zoomLevel,
-      selectedTheme = "default",
       closeTestPreviewModal
     } = this.props;
     const {
@@ -349,13 +345,8 @@ class AssessmentPlayerDefault extends React.Component {
     const hasCollapseButtons =
       itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
 
-    let themeToPass = theme[selectedTheme] || theme.default;
-
-    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-    themeToPass = playersZoomTheme(themeToPass);
-
     return (
-      <ThemeProvider theme={themeToPass}>
+      <ThemeProvider theme={theme}>
         <Container
           scratchPadMode={scratchPadMode}
           innerRef={this.scrollElementRef}
@@ -575,9 +566,6 @@ const enhance = compose(
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
       currentGroupId: getCurrentGroupWithAllClasses(state),
-      userAnswers: state.answers,
-      zoomLevel: state.ui.zoomLevel,
-      selectedTheme: state.ui.selectedTheme,
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       userAnswers: state.answers
     }),

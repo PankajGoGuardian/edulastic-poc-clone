@@ -6,7 +6,7 @@ import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common
 
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
-import { MultiChoiceContent, MultipleChoiceLabelContainer } from "../styled/MultiChoiceContent";
+import { MultiChoiceContent } from "../styled/MultiChoiceContent";
 import { Label, OptionsLabel } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
@@ -179,7 +179,7 @@ const Option = props => {
       case "block":
         return (
           <FlexContainer alignItems="center">
-            <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
+            {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>

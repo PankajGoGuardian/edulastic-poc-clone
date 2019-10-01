@@ -5,7 +5,7 @@ import { ThemeProvider, withTheme } from "styled-components";
 
 import { withWindowSizes } from "@edulastic/common";
 
-import { themes } from "../../../theme";
+import { themes } from "../../themes";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
 import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { isEqual } from "lodash";
 
-import { themes } from "../../../../../../theme";
+import { themes } from "../../../../../../assessment/themes";
 import AlignmentRow from "../../../../../../assessment/containers/QuestionMetadata/AlignmentRow";
 import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../../../src/actions/dictionaries";
 import {

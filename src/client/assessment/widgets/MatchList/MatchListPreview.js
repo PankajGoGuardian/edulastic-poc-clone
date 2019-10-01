@@ -1,7 +1,6 @@
 import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import styled from "styled-components";
 import { connect } from "react-redux";
 import { cloneDeep, isEqual, get, shuffle, identity, keyBy } from "lodash";
 import { withTheme } from "styled-components";
@@ -30,7 +29,6 @@ import { AnswerItem } from "./styled/AnswerItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const styles = {
   dropContainerStyle: smallSize => ({
@@ -260,12 +258,7 @@ const MatchListPreview = ({
   const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
   return (
-    <StyledPaperWrapper
-      data-cy="matchListPreview"
-      style={{ fontSize }}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -291,7 +284,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <StyledMathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -321,7 +314,7 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <StyledCorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (
@@ -434,7 +427,7 @@ const MatchListPreview = ({
                 )}
               </FlexContainer>
             </DropContainer>
-          </StyledCorrectAnswersContainer>
+          </CorrectAnswersContainer>
         )}
       </div>
       {view === "edit" && (
@@ -457,7 +450,7 @@ const MatchListPreview = ({
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
@@ -471,10 +464,10 @@ const MatchListPreview = ({
                 </CorItem>
               </FlexContainer>
             ))}
-          </StyledCorrectAnswersContainer>
+          </CorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <StyledCorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
@@ -485,11 +478,11 @@ const MatchListPreview = ({
                   </CorItem>
                 </FlexContainer>
               ))}
-            </StyledCorrectAnswersContainer>
+            </CorrectAnswersContainer>
           )}
         </Fragment>
       ) : null}
-    </StyledPaperWrapper>
+    </Paper>
   );
 };
 
@@ -533,14 +526,3 @@ const enhance = compose(
 );
 
 export default enhance(MatchListPreview);
-
-const StyledMathFormulaDisplay = styled(MathFormulaDisplay)`
-  color: ${props => props.theme.widgets.matchList.dragItemColor};
-`;
-
-const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer)`
-  background-color: ${props => props.theme.widgets.matchList.containerBgColor};
-  & > h3 {
-    color: ${props => props.theme.widgets.matchList.dragItemColor};
-  }
-`;

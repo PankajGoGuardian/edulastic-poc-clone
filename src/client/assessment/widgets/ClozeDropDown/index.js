@@ -24,7 +24,6 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import ChoicesForResponses from "./ChoicesForResponses";
 import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -137,7 +136,7 @@ class ClozeDropDown extends Component {
 
     const { shuffleOptions, responseIds } = item;
 
-    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+    const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
       <WithResources

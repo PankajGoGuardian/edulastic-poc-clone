@@ -85,7 +85,7 @@ const LogoCompact = styled(IconLogoCompact)`
   width: 21px;
   height: 21px;
   margin: 10px;
-  fill: ${props => props.theme.widgets.assessmentPlayers.logoColor};
+  fill: ${props => props.theme.logoColor};
   &:hover {
     fill: ${props => props.theme.headerIconHoverColor};
   }

@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Checkbox, Radio } from "antd";
 
@@ -10,9 +9,9 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   let input;
 
   if (isMultiple) {
-    input = <StyledCheckbox checked={checked} onChange={onChange} />;
+    input = <Checkbox checked={checked} onChange={onChange} />;
   } else {
-    input = <StyledRadio checked={checked} onChange={onChange} />;
+    input = <Radio checked={checked} onChange={onChange} />;
   }
 
   return (
@@ -41,16 +40,3 @@ MatrixCell.defaultProps = {
 };
 
 export default MatrixCell;
-
-const StyledCheckbox = styled(Checkbox)`
-  border-color: red;
-`;
-
-const StyledRadio = styled(Radio)`
-  .ant-radio-checked .ant-radio-inner {
-    border-color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
-    &:after {
-      background-color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
-    }
-  }
-`;

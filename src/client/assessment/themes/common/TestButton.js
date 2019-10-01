@@ -10,10 +10,6 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import get from "lodash/get";
 
-const customizeIcon = icon => styled(icon)`
-  fill: ${props => props.theme.header.headerButtonColor};
-`;
-
 const TestButton = ({
   t,
   checkAnswer,
@@ -24,8 +20,7 @@ const TestButton = ({
   isBookmarked = false,
   items,
   currentItem: currentItemIndex,
-  handleClick,
-  theme
+  handleClick
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
   /**
@@ -68,32 +63,32 @@ const TestButton = ({
             data-cy="checkAnswer"
             title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
           >
-            <StyledButtonLink color="primary" icon={<StyledIconCheck />}>
+            <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
               {t("common.test.checkanswer")}
-            </StyledButtonLink>
+            </ButtonLink>
           </StyledButton>
         </Tooltip>
       )}
       {showHintButton ? (
         <Tooltip placement="top" title={"Hint"}>
           <StyledButton onClick={handleClick}>
-            <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
+            <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
               {t("common.test.hint")}
-            </StyledButtonLink>
+            </ButtonLink>
           </StyledButton>
         </Tooltip>
       ) : null}
       <Tooltip placement="top" title={"Bookmark"}>
         <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
-          <StyledButtonLink
+          <ButtonLink
             color={isBookmarked ? "success" : "primary"}
             isBookmarked={isBookmarked}
             onClick={toggleBookmark}
-            icon={<StyledIconBookmark color={isBookmarked ? "#f8c165" : ""} width={10} height={16} />}
-            style={{ color: isBookmarked ? "#f8c165" : "" }}
+            icon={<IconBookmark color={isBookmarked ? "#f8c165" : "white"} width={10} height={16} />}
+            style={{ color: isBookmarked ? "#f8c165" : "white" }}
           >
             {t("common.test.bookmark")}
-          </StyledButtonLink>
+          </ButtonLink>
         </StyledButton>
       </Tooltip>
     </Container>
@@ -115,7 +110,7 @@ const Container = styled.div`
 const StyledButton = styled(Button)`
   margin-right: 10px;
   background: transparent;
-  height: auto;
+  height: 24px;
   &[disabled] {
     cursor: pointer;
     &:hover {
@@ -123,7 +118,6 @@ const StyledButton = styled(Button)`
     }
     background: transparent;
   }
-  border-color: ${props => props.theme.default.headerButtonBorderColor};
   &:hover,
   &:focus,
   &:active {
@@ -131,21 +125,3 @@ const StyledButton = styled(Button)`
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
 `;
-
-const StyledButtonLink = styled(ButtonLink)`
-  font-size: ${props => props.theme.default.headerButtonFontSize};
-  color: ${props => props.theme.header.headerButtonColor};
-  span {
-    svg {
-      width: ${props => props.theme.default.headerButtonFontIconWidth};
-      height: ${props => props.theme.default.headerButtonFontIconHeight};
-    }
-  }
-  &:hover {
-    color: ${props => props.theme.header.headerButtonHoverColor};
-  }
-`;
-
-const StyledIconCheck = customizeIcon(IconCheck);
-const StyledIconLightBulb = customizeIcon(IconLightBulb);
-const StyledIconBookmark = customizeIcon(IconBookmark);

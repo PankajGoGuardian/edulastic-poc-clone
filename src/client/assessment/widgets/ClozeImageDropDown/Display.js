@@ -228,7 +228,6 @@ class Display extends Component {
                         width: `100%`,
                         height: `100%`
                       }}
-                      dropdownStyle={{ zoom: theme.widgets.clozeImageDropDown.imageZoom }}
                       disabled={disableResponse}
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}

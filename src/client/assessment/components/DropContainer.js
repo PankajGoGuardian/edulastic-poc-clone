@@ -30,8 +30,8 @@ const DropContainer = ({ connectDropTarget, index, isOver, flag, style, children
         ? `2px solid ${theme.dropContainer.isOverBorderColor}`
         : `2px dashed ${theme.dropContainer.isNotOverBorderColor}`
       : isOver
-      ? `2px solid ${theme.dropContainer.isOverBorderColor}`
-      : `2px solid ${theme.dropContainer.isNotOverBorderColor}`
+      ? `2px solid ${green}`
+      : `2px solid ${dashBorderColor}`
   }`;
 
   return connectDropTarget(

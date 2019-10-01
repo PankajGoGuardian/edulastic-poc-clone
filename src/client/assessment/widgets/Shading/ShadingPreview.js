@@ -29,7 +29,6 @@ import { Subtitle } from "../../styled/Subtitle";
 
 import ShadesView from "./components/ShadesView";
 import { getFontSize } from "../../utils/helpers";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const { Option } = Select;
 
@@ -135,7 +134,7 @@ const ShadingPreview = ({
   ).filter((value, i) => evaluation && evaluation[i]);
 
   return (
-    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -227,7 +226,7 @@ const ShadingPreview = ({
           </Fragment>
         )}
       </FlexContainer>
-    </StyledPaperWrapper>
+    </Paper>
   );
 };
 

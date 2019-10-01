@@ -12,7 +12,6 @@ import { getEnrollClassAction } from "../../ManageClass/ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
-  background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
 const Assignments = ({ activeClasses, loadAllClasses, loading, location, allClasses }) => {

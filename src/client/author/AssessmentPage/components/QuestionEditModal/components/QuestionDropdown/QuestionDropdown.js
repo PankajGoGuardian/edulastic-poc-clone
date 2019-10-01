@@ -4,7 +4,7 @@ import { Select, InputNumber, Button } from "antd";
 import { arrayMove } from "react-sortable-hoc";
 import { ThemeProvider } from "styled-components";
 
-import { themes } from "../../../../../../theme";
+import { themes } from "../../../../../../assessment/themes";
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import SortableList from "../../../../../../assessment/components/SortableList";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";

@@ -18,7 +18,6 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -272,7 +271,7 @@ const TokenHighlightPreview = ({
   };
 
   return (
-    <StyledPaperWrapper
+    <Paper
       data-cy="previewWrapper"
       style={{ wordBreak: "break-word" }}
       fontSize={fontSize}
@@ -338,7 +337,7 @@ const TokenHighlightPreview = ({
             </CorrectAnswersContainer>
           );
         })}
-    </StyledPaperWrapper>
+    </Paper>
   );
 };
 

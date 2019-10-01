@@ -4,7 +4,7 @@ import { WithMathFormula } from "@edulastic/common";
 export const QuestionHeader = WithMathFormula(
   styled.div`
     font-size: 15px;
-    color: ${props => props.theme.widgets.orderList.questionTextColor};
+    color: #434b5d;
     line-height: 1.63;
     margin-bottom: 10px;
     padding: ${props => (props.padding ? props.padding : "10px 20px")};

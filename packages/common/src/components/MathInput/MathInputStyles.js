@@ -17,7 +17,7 @@ export const MathInputStyles = styled.div`
     padding-right: ${({ width }) => (width ? "unset" : "40px")};
     position: relative;
     border-radius: 5px;
-    background: ${props => props.theme.common.mathInputBgColor} !important;
+    background: #fff;
     border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
     padding: ${({ width }) => (width ? "unset" : "5px 25px")};
     align-items: center;

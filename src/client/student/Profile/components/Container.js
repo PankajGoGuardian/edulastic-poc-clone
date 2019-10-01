@@ -273,17 +273,15 @@ const DetailRow = styled.div`
 `;
 
 const DetailTitle = styled.span`
-  font-size: ${props => props.theme.profile.profileDetailFontSize};
+  font-size: 15px;
   color: ${props => props.theme.profile.formInputLabelColor};
   font-weight: 600;
-  min-width: 40%;
   width: 150px;
   display: inline-block;
 `;
 
 const DetailData = styled.span`
-  margin-left: 20px;
-  font-size: ${props => props.theme.profile.profileDetailFontSize};
+  font-size: 15px;
   color: grey;
   display: inline-block;
   width: calc(100% - 150px);
@@ -295,8 +293,7 @@ const Label = styled.label`
 
 const ChangePasswordToggleButton = styled.div`
   color: ${props => props.theme.profile.cancelButtonTextColor};
-  font-size: ${props => props.theme.profile.userHeadingTextSize};
-  padding-left: 25px;
+  padding-left: 20px;
   cursor: pointer;
   width: fit-content;
   span {
@@ -353,8 +350,7 @@ const FormButtonWrapper = styled.div`
 
 const SaveButton = styled(Button)`
   width: 200px;
-  min-height: 40px;
-  height: auto;
+  height: 40px;
   margin-left: 15px;
   float: right;
   background: ${props => props.theme.profile.saveButtonBgColor};
@@ -381,10 +377,6 @@ const SaveButton = styled(Button)`
 `;
 
 const CancelButton = styled(SaveButton)`
-  width: 200px;
-  min-height: 40px;
-  height: auto;
-  margin: 0 15px;
   background: ${props => props.theme.profile.cancelButtonBgColor};
   color: ${props => props.theme.profile.cancelButtonTextColor};
   border: 1px solid ${props => props.theme.profile.cancelButtonTextColor};

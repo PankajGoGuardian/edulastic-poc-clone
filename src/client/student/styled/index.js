@@ -176,7 +176,7 @@ export const BreadcrumbWrapper = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-size: ${props => props.theme.header.headerTitleSecondaryTextSize};
+  font-size: 18px;
   font-weight: bold;
   line-height: 24px;
   color: ${props => props.theme.headerTitleSecondaryTextColor || title};

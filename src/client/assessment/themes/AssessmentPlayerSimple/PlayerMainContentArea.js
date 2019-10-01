@@ -76,7 +76,7 @@ PlayerContentArea.defaultProps = {
 export default PlayerContentArea;
 
 const Main = styled.main`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
+  background-color: ${props => props.theme.mainBgColor};
   padding: 110px 0 0 140px;
   display: flex;
   flex-direction: row;
@@ -95,8 +95,8 @@ const MainWrapper = styled.div`
 `;
 
 const MainContent = styled.div`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
-  color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
+  background-color: ${props => props.theme.mainContentBgColor};
+  color: ${props => props.theme.mainContentTextColor};
   border-radius: 10px;
   height: 67vh;
   padding: 40px;
@@ -115,8 +115,8 @@ const MainContent = styled.div`
 `;
 const Sidebar = styled.div`
   flex: 1;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
-  color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
+  background-color: ${props => props.theme.sidebarBgColor};
+  color: ${props => props.theme.sidebarTextColor};
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     display: none;
   }

@@ -31,15 +31,8 @@ const getColors = ({ color, active }) => {
   return colors;
 };
 
-const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active, className }) => (
-  <Container
-    className={className}
-    onClick={onClick}
-    type="button"
-    uppercase={uppercase}
-    style={style}
-    {...getColors({ color, active })}
-  >
+const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }) => (
+  <Container onClick={onClick} type="button" uppercase={uppercase} style={style} {...getColors({ color, active })}>
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
     <span style={{ marginTop: 1 }}>{children}</span>
@@ -96,7 +89,7 @@ const Container = styled.button`
     margin-top: 1px;
     font-weight: bold;
     svg {
-      width: 10px;
+      width: 10px !important;
     }
   }
 `;

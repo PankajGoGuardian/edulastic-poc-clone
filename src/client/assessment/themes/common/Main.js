@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Main = styled.main`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
+  background-color: ${props => props.theme.mainBgColor};
   padding: ${props => (props.skin ? "82px 20px 20px" : "110px 0 0 140px")};
   display: ${props => (props.skin ? "block" : "flex")};
   flex-direction: ${props => (props.skin ? "initial" : "row")};

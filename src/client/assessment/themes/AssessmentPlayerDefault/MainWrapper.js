@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 const MainWrapper = styled.section`
   width: 100%;
-  background-color: ${props =>
-    props.hasCollapseButtons ? "transparent" : props.theme.widgets.assessmentPlayers.mainContentBgColor};
-  color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
+  background-color: ${props => (props.hasCollapseButtons ? "transparent" : props.theme.mainContentBgColor)};
+  color: ${props => props.theme.mainContentTextColor};
   min-height: 100vh;
   margin: auto;
   box-sizing: border-box;

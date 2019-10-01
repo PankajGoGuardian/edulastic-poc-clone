@@ -2,7 +2,7 @@ import React from "react";
 import { Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
-import { themes } from "../../../../theme";
+import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
 

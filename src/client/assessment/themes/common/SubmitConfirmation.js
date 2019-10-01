@@ -6,7 +6,6 @@ import { Button, Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
 import { secondaryTextColor } from "@edulastic/colors";
-import ColWithZoom from "../../../common/components/ColWithZoom";
 
 class SubmitConfirmation extends Component {
   render() {
@@ -31,16 +30,16 @@ class SubmitConfirmation extends Component {
           <TitleDescription>{t("exitConfirmation.body")}</TitleDescription>
           <ButtonContainer>
             <Row gutter={20} style={{ width: "100%" }}>
-              <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>
+              <Col md={12} sm={24}>
                 <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
                   {t("exitConfirmation.buttonCancel")}
                 </StyledButton>
-              </ColWithZoom>
-              <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>
+              </Col>
+              <Col md={12} sm={24}>
                 <StyledButton data-cy="proceed" type="primary" btnType={2} onClick={finishTest}>
                   {t("exitConfirmation.buttonProceed")}
                 </StyledButton>
-              </ColWithZoom>
+              </Col>
             </Row>
           </ButtonContainer>
         </ModalContainer>
@@ -73,13 +72,13 @@ const ModalContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: ${props => props.theme.confirmationPopupTitleTextSize};
+  font-size: 22px;
   font-weight: bold;
   color: ${secondaryTextColor};
 `;
 
 const TitleDescription = styled.div`
-  font-size: ${props => props.theme.confirmationPopupButtonTextSize};
+  font-size: 13px;
   font-weight: 600;
   margin-top: 12px;
 `;
@@ -92,29 +91,28 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   width: 100%;
-  min-height: 40px;
-  height: auto;
+  height: 40px;
   background: ${props =>
     props.btnType === 1
-      ? props.theme.confirmationPopupButtonTextHoverColor
-      : props.theme.confirmationPopupButtonBgColor};
-  border-color: ${props => props.theme.confirmationPopupButtonBgColor};
+      ? props.theme.default.confirmationPopupButtonTextHoverColor
+      : props.theme.default.confirmationPopupButtonBgColor};
+  border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
   &:hover,
   &:focus {
     background: ${props =>
       props.btnType === 1
-        ? props.theme.confirmationPopupButtonTextHoverColor
-        : props.theme.confirmationPopupButtonBgColor};
-    border-color: ${props => props.theme.confirmationPopupButtonBgColor};
+        ? props.theme.default.confirmationPopupButtonTextHoverColor
+        : props.theme.default.confirmationPopupButtonBgColor};
+    border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
   }
   span {
     text-transform: uppercase;
-    font-size: ${props => props.theme.confirmationPopupButtonTextSize};
+    font-size: 11px;
     font-weight: 600;
     color: ${props =>
       props.btnType === 1
-        ? props.theme.confirmationPopupButtonTextColor
-        : props.theme.confirmationPopupButtonTextHoverColor};
+        ? props.theme.default.confirmationPopupButtonTextColor
+        : props.theme.default.confirmationPopupButtonTextHoverColor};
   }
   @media screen and (max-width: 767px) {
     margin-top: 10px;

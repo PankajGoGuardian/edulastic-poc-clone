@@ -5,7 +5,6 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
-  zoom: ${props => props.theme.widgets.chart.chartZoom};
 `;
 
 export const JSXBox = styled.div`

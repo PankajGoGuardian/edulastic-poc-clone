@@ -123,17 +123,6 @@ export const MathKeyboardStyles = styled.div`
     color: ${props => props.theme.mathKeyboard.numType6Color};
   }
 
-  .num--type-1,
-  .num--type-2,
-  .num--type-3,
-  .num--type-4,
-  .num--type-5,
-  .num--type-6 {
-    &:hover {
-      color: ${props => props.theme.mathKeyboard.numHoverColor};
-    }
-  }
-
   .italic {
     font-style: italic;
   }

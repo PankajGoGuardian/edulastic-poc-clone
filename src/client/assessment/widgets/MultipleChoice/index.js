@@ -23,13 +23,12 @@ import { replaceVariables, replaceValues } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
-const MutlChoiceWrapper = styled(StyledPaperWrapper)`
+const MutlChoiceWrapper = styled(Paper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  ${({ flowLayout }) => flowLayout && "background: transparent"};
+  background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
   padding: ${props => (props.padding ? props.padding : "0px")};
   box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
 `;

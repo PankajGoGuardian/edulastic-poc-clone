@@ -96,11 +96,11 @@ const Container = styled.div`
 `;
 
 const customizeIcon = icon => styled(icon)`
-  fill: ${props => props.theme.header.headerButtonColor};
+  fill: ${white};
   margin-left: -3px;
   margin-top: 3px;
   &:hover {
-    fill: ${props => props.theme.header.headerButtonColor};
+    fill: ${white};
   }
 `;
 
@@ -108,8 +108,8 @@ const StyledButton = styled(Button)`
   margin-right: 10px;
   background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
   border-color: ${props => props.theme.default.headerButtonBorderColor};
-  height: ${props => props.theme.default.headerToolbarButtonWidth};
-  width: ${props => props.theme.default.headerToolbarButtonHeight};
+  height: 40px;
+  width: 40px;
 
   &:focus,
   &:hover,

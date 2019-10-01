@@ -13,7 +13,7 @@ import {
   mobileWidthMax
 } from "@edulastic/colors";
 import { Link } from "react-router-dom";
-import { themes } from "../../../../theme";
+import { themes } from "../../../../student/themes";
 import { StyledTable as Table } from "../../../Reports/common/styled";
 
 const classBoardTheme = themes.default.classboard;

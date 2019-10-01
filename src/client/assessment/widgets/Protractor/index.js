@@ -13,7 +13,6 @@ import { ContentArea } from "../../styled/ContentArea";
 
 import ProtractorView from "./ProtractorView";
 import Details from "./Details";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -28,7 +27,7 @@ const Protractor = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper;
+  const Wrapper = smallSize ? EmptyWrapper : Paper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   if (view === "edit") {

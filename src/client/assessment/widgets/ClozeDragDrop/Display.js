@@ -298,7 +298,7 @@ class ClozeDragDropDisplay extends Component {
     }
 
     // Layout Options
-    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;

@@ -50,7 +50,7 @@ export const Li = styled.li`
   width: ${({ width }) => width * 40}px;
   visibility: ${props => props.visibility};
   height: ${({ height }) => height * 40}px;
-  background: ${getItemBackground(0.5)};
+  background: ${getItemBackground(0.8)};
   cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
   border: ${props => (props.border === "full" ? `2px solid ${props.theme.widgets.shading.liBorderColor}` : "none")};
   display: inline-block;

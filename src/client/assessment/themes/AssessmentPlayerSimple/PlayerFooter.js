@@ -70,12 +70,12 @@ const CounterCircle = styled.div`
 const ControlBtn = styled.button`
   width: 187px;
   height: 40px;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
+  background-color: ${props => props.theme.controlBtnSecondaryColor};
   border: none;
   outline: none;
   border-radius: 5px;
   cursor: pointer;
-  color: ${props => props.theme.widgets.assessmentPlayers.controlBtnTextColor};
+  color: ${props => props.theme.controlBtnTextColor};
   font-size: 2rem;
   padding: 0;
   position: relative;
@@ -106,6 +106,6 @@ const PrevButton = styled(ControlBtn)`
 `;
 
 const CheckAnswerBtn = styled(ControlBtn)`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
+  background-color: ${props => props.theme.controlBtnSecondaryColor};
   border-color: ${props => props.theme.headerIconHoverColor};
 `;

@@ -135,7 +135,7 @@ export const StyledScoreProgress = styled(Progress)`
   .ant-progress-text {
     font-size: 14px;
     font-weight: 600;
-    color: ${props => props.theme.skillReport.RelationTitleColor};
+    color: ${title};
     margin-left: 19px;
     margin-top: 1px;
   }

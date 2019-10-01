@@ -20,7 +20,6 @@ import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -277,7 +276,7 @@ class ClozeText extends Component {
     const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
     const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
-    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+    const Wrapper = testItem ? EmptyWrapper : Paper;
 
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
 

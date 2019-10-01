@@ -45,11 +45,11 @@ const PauseIcon = styled(IconPause)`
 `;
 
 const LogoutIcon = styled(IconLogout)`
-  fill: ${props => props.theme.header.headerButtonColor};
+  fill: ${white};
   width: 24px;
   height: 24px;
   &:hover {
-    fill: ${props => props.theme.header.headerButtonColor};
+    fill: #23e7ab;
   }
 `;
 

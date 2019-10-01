@@ -24,7 +24,6 @@ import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
 import { ContentArea } from "../../styled/ContentArea";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 class ClozeImageDropDown extends Component {
   static contextType = AnswerContext;
@@ -178,7 +177,7 @@ class ClozeImageDropDown extends Component {
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
-    const Wrapper = testItem ? React.Fragment : StyledPaperWrapper;
+    const Wrapper = testItem ? React.Fragment : Paper;
 
     const fontSize = item.uiStyle ? (item.uiStyle.fontsize ? item.uiStyle.fontsize : "lol") : "lol";
 

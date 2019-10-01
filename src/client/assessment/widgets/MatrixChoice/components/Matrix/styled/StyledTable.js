@@ -22,15 +22,6 @@ export const StyledTable = styled(Table)`
     }
 
     tr {
-      &:hover:not(.ant-table-expanded-row) {
-        background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-        & > td,
-        & > td div {
-          background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-          color: ${props => props.theme.widgets.matrixChoice.inlineLabelHoverColor};
-        }
-      }
-
       th {
         text-align: center;
         padding: 0;
@@ -50,7 +41,6 @@ export const StyledTable = styled(Table)`
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
-        color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
         min-width: 110px;
       }
       td div {

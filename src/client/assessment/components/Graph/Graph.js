@@ -22,7 +22,6 @@ import { QuestionTitleWrapper } from "./common/styled_components";
 import Annotations from "../Annotations/Annotations";
 
 import Question from "../Question";
-import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -304,7 +303,7 @@ class Graph extends Component {
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
-    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+    const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
       <React.Fragment>
         {view === "edit" && (
@@ -489,11 +488,4 @@ export default GraphComponent;
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   white-space: pre-wrap;
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      & > p {
-        font-size: ${theme.fontSize}px
-      }
-    `}
 `;

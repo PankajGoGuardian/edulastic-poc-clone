@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Modal, Select, Button, Row, Col } from "antd";
 import { connect } from "react-redux";
-import { themeColorsMap } from "../../theme";
+import { themeColorsMap } from "../themes";
 
 import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
 
@@ -22,9 +22,9 @@ const SettingsModal = ({
       visible={settingsModalVisible}
       onCancel={closeModal}
       footer={[
-        <StyledButton key="submit" type="primary" onClick={closeModal}>
+        <Button key="submit" type="primary" onClick={closeModal}>
           Done
-        </StyledButton>
+        </Button>
       ]}
     >
       <RowWithMargin>
@@ -43,11 +43,11 @@ const SettingsModal = ({
         <Col md={12}>Zoom</Col>
         <Col md={12}>
           <Select style={{ width: "80%" }} value={zoomLevel} onChange={setZoomLevel}>
-            <Select.Option value="xs">No default zoom applied</Select.Option>
-            <Select.Option value="sm">Default level of zoom is set to 1.5X</Select.Option>
-            <Select.Option value="md">Default level of zoom is set to 1.75X</Select.Option>
-            <Select.Option value="lg">Default level of zoom is set to 2.5X</Select.Option>
-            <Select.Option value="xl">Default level of zoom is set to 3X</Select.Option>
+            <Select.Option value="0">No default zoom applied</Select.Option>
+            <Select.Option value="1">Default level of zoom is set to 1.5X</Select.Option>
+            <Select.Option value="2">Default level of zoom is set to 1.75X</Select.Option>
+            <Select.Option value="3">Default level of zoom is set to 2.5X</Select.Option>
+            <Select.Option value="4">Default level of zoom is set to 3X</Select.Option>
           </Select>
         </Col>
       </RowWithMargin>
@@ -70,15 +70,6 @@ const enhance = connect(
 
 const RowWithMargin = styled(Row)`
   margin-bottom: 10px;
-`;
-
-const StyledButton = styled(Button)`
-  background-color: ${props => props.theme.confirmation.submitButtonBgColor};
-  border-color: ${props => props.theme.confirmation.submitButtonBgColor};
-  &:hover {
-    background-color: ${props => props.theme.confirmation.submitButtonBgColor};
-    border-color: ${props => props.theme.confirmation.submitButtonBgColor};
-  }
 `;
 
 export default enhance(SettingsModal);

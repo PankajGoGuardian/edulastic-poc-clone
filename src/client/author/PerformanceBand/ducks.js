@@ -19,6 +19,7 @@ const SET_LOADING = "[Performance Band] set loading";
 const DELETE_PERFORMANCE_BAND_REQUEST = "[Performance Band] delete request";
 const SET_PERFORMANCE_BAND_NAME = "[Performance Band] set name";
 const SET_PERFORMANCE_BAND_EDITING_INDEX = "[Performance Band] set editing index";
+const SET_PERFORMANCE_BAND_EDITABLE = "[Performance Band] set editable";
 
 const SET_PERFORMANCE_BAND_CHANGES = "[Performance Band] set data changes";
 const SET_PERFORMANCE_BAND_DATA_LOCAL = "[Performance Band] set data local";
@@ -36,6 +37,7 @@ export const createPerformanceBandErrorAction = createAction(CREATE_PERFORMANCE_
 
 export const setPerformanceBandChangesAction = createAction(SET_PERFORMANCE_BAND_CHANGES);
 export const setEditingIndexAction = createAction(SET_PERFORMANCE_BAND_EDITING_INDEX);
+export const setEditableAction = createAction(SET_PERFORMANCE_BAND_EDITABLE);
 
 const setLoadingAction = createAction(SET_LOADING);
 export const deletePerformanceBandAction = createAction(DELETE_PERFORMANCE_BAND_REQUEST);
@@ -69,7 +71,8 @@ const initialState = {
   updateError: null,
   creating: false,
   createError: null,
-  editingIndex: undefined
+  editingIndex: undefined,
+  editable: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -137,6 +140,12 @@ export const reducer = createReducer(initialState, {
   [SET_PERFORMANCE_BAND_EDITING_INDEX]: (state, { payload }) => {
     const oldIndex = state.editingIndex;
     state.editingIndex = oldIndex != payload ? payload : undefined;
+    state.editable = false;
+  },
+  [SET_PERFORMANCE_BAND_EDITABLE]: (state, { payload }) => {
+    const { value, index } = payload;
+    state.editable = value;
+    state.editingIndex = index;
   }
 });
 

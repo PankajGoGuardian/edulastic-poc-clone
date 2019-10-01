@@ -15,7 +15,8 @@ import {
   updatePerformanceBandAction,
   setPerformanceBandNameAction,
   setPerformanceBandChangesAction,
-  setEditingIndexAction
+  setEditingIndexAction,
+  setEditableAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
@@ -51,7 +52,9 @@ function ProfileRow({
   readOnly,
   loading,
   setName,
-  onDuplicate
+  onDuplicate,
+  setEditable,
+  hideEdit
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
@@ -90,12 +93,13 @@ function ProfileRow({
         </div>
         <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </ProfileModal>
-      <StyledProfileRow type="flex">
+      <StyledProfileRow onClick={e => setEditingIndex(_id)} type="flex">
         <Col span={12}>
           {active && !readOnly ? (
             <Input
               type="text"
               value={name}
+              onClick={e => e.stopPropagation()}
               onChange={e => {
                 setName({ name: e.target.value, _id });
                 if (performanceBandInstance.current) {
@@ -108,10 +112,38 @@ function ProfileRow({
           )}
         </Col>
         <StyledProfileCol span={12}>
-          {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditingIndex(_id)} />}
+          {hideEdit ? null : (
+            <Icon
+              type="edit"
+              title="edit"
+              theme="filled"
+              onClick={e => {
+                e.stopPropagation();
+                setEditable({ value: true, index: _id });
+              }}
+            />
+          )}
           <Icon type="copy" onClick={onDuplicate} />
-          {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
-          {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditingIndex(_id)} />}
+          {hideEdit ? null : (
+            <Icon
+              type="delete"
+              theme="filled"
+              onClick={e => {
+                e.stopPropagation();
+                setConfirmVisible(true);
+              }}
+            />
+          )}
+          {
+            <Icon
+              type={active ? "up" : "down"}
+              theme="outlined"
+              onClick={e => {
+                e.stopPropagation();
+                setEditingIndex(_id);
+              }}
+            />
+          }
         </StyledProfileCol>
       </StyledProfileRow>
 
@@ -152,7 +184,9 @@ export function PerformanceBandAlt(props) {
     currentUserId,
     setName,
     editingIndex,
-    setEditingIndex
+    setEditingIndex,
+    editable,
+    setEditable
   } = props;
 
   console.log("editingIndex", editingIndex);
@@ -273,7 +307,11 @@ export function PerformanceBandAlt(props) {
                 loading={loading}
                 update={update}
                 onDuplicate={() => duplicateProfile(profile)}
-                readOnly={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
+                setEditable={setEditable}
+                hideEdit={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
+                readOnly={
+                  (props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")) || !editable
+                }
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
@@ -298,6 +336,7 @@ const enhance = compose(
       creating: get(state, ["performanceBandReducer", "creating"], false),
       profiles: get(state, ["performanceBandReducer", "profiles"], []),
       editingIndex: get(state, ["performanceBandReducer", "editingIndex"]),
+      editable: state?.performanceBandReducer?.editable,
       orgId: getUserOrgId(state),
       role: getUserRole(state),
       currentUserId: getUserId(state)
@@ -309,7 +348,8 @@ const enhance = compose(
       remove: deletePerformanceBandAction,
       updateLocal: setPerformanceBandLocalAction,
       setName: setPerformanceBandNameAction,
-      setEditingIndex: setEditingIndexAction
+      setEditingIndex: setEditingIndexAction,
+      setEditable: setEditableAction
     }
   )
 );

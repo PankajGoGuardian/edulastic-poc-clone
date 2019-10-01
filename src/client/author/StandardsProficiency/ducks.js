@@ -23,6 +23,7 @@ const SET_STANDARDS_DECAYINGATTR = "[Standards Proficiency] set decaying attribu
 const SET_STANDARDS_MOVINGAVRATTR = "[Standards Proficiency] set moving average value value";
 const DELETE_STANDARDS_PROFICIENCY = "[Standards Proficiency] delete";
 const SET_EDITING_INDEX = "[Standards Proficiency] set editing index";
+const SET_EDITABLE = "[Standards Proficiency] set editable";
 
 export const receiveStandardsProficiencyAction = createAction(RECEIVE_STANDARDS_PROFICIENCY_REQUEST);
 export const receiveStandardsProficiencySuccessAction = createAction(RECEIVE_STANDARDS_PROFICIENCY_SUCCESS);
@@ -37,6 +38,7 @@ export const createStandardsProficiencyErrorAction = createAction(CREATE_STANDAR
 export const setStandardsProficiencyProfileNameAction = createAction(SET_STANDARDS_PROFILE_NAME);
 
 export const setEditingIndexAction = createAction(SET_EDITING_INDEX);
+export const setEDitableAction = createAction(SET_EDITABLE);
 
 export const deleteStandardsProficiencyAction = createAction(DELETE_STANDARDS_PROFICIENCY);
 
@@ -54,7 +56,8 @@ const initialState = {
   updateError: null,
   creating: false,
   createError: null,
-  editingIndex: undefined
+  editingIndex: undefined,
+  editable: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -149,6 +152,12 @@ export const reducer = createReducer(initialState, {
   },
   [SET_EDITING_INDEX]: (state, { payload }) => {
     state.editingIndex = state.editingIndex === payload ? undefined : payload;
+    state.editable = false;
+  },
+  [SET_EDITABLE]: (state, { payload }) => {
+    const { value, index } = payload;
+    state.editingIndex = index;
+    state.editable = value;
   }
 });
 

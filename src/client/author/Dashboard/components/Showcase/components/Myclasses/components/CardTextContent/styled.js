@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { fadedGreen, lightBlue, green, greenThird } from "@edulastic/colors";
+import { fadedGreen, green, greenThird, title } from "@edulastic/colors";
 import { Row, Col, Icon } from "antd";
 
 export const IconWrapper = styled.div`
@@ -64,11 +64,11 @@ export const Image = styled.img`
 `;
 
 export const TextDiv = styled.p`
-  color: ${lightBlue};
+  color: ${title};
   size: 12px;
   text-overflow: ellipsis;
   display: block;
-  width: 165px;
+  max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
 `;

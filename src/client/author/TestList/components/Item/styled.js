@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, extraDesktopWidth, themeColor } from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`

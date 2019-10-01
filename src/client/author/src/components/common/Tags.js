@@ -91,12 +91,12 @@ const Label = styled.span`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;
-  padding: 6px 15px;
+  padding: 6px 10px;
   font-size: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 5px;
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
 `;

@@ -49,7 +49,7 @@ export const TagsWrapper = styled(Col)`
 
 export const TestStatus = styled.span`
   background: ${props => (props.status === "draft" ? "#F9F9F9" : "#E8F2FF")};
-  padding: 4px 20px;
+  padding: 4px 10px;
   border-radius: 5px;
   font-size: 9px;
   color: ${props => (props.status === "draft" ? "#979BA1" : "#798CA8")};

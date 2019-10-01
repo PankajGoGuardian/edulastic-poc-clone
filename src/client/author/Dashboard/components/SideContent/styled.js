@@ -36,12 +36,20 @@ export const SideContentWrapper = styled.div`
   background: #ffffff;
   padding: 1.2rem;
   width: 275px !important;
-  height: 120vh;
+  height: calc(100vh - 96px);
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: calc(100vh - 60px);
+  }
 `;
 
 export const ScrollbarContainer = styled(PerfectScrollbar)`
-  max-height: 300px;
+  max-height: calc(100vh - 430px);
   overflow-x: hidden;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    max-height: calc(100vh - 400px);
+  }
 `;
 
 export const ColWrapper = styled(Col)`
@@ -61,7 +69,7 @@ export const ContentWrapper = styled.div`
 `;
 
 export const Hdivider = styled(Divider)`
-  margin: 10px !important;
+  margin: 10px 0px !important;
 `;
 
 export const VideoSection = styled.div`

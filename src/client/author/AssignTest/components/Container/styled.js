@@ -9,7 +9,8 @@ import {
   lightGreen1,
   themeColor,
   white,
-  themeColorLight
+  themeColorLight,
+  mediumDesktopWidth
 } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
@@ -49,6 +50,12 @@ export const AssignButton = styled(Button)`
   [disabled] {
     pointer-events: none;
     cursor: not-allowed;
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
+    min-height: 36px;
+    margin-left: 10px;
   }
 `;
 

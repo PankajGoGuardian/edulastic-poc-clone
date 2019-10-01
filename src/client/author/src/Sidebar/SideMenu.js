@@ -346,7 +346,7 @@ class SideMenu extends Component {
                   >
                     <div>
                       {profileThumbnail ? (
-                        <img src={profileThumbnail} alt="Profile" />
+                        <UserImg src={profileThumbnail} />
                       ) : (
                         <PseudoDiv>{this.getInitials()}</PseudoDiv>
                       )}
@@ -877,6 +877,18 @@ const QuestionButton = styled.div`
   }
 `;
 
+const UserImg = styled.div`
+  width: 60px;
+  height: 60px;
+  background: url(${props => props.src});
+  background-position: center center;
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  position: absolute;
+  left: 0;
+`;
+
 const UserInfoButton = styled.div`
   cursor: pointer;
 
@@ -913,14 +925,6 @@ const UserInfoButton = styled.div`
       top: 20px;
       color: ${props => props.theme.sideMenu.dropdownIconColor};
     }
-  }
-  img {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    left: 0;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   }
   .ant-select-selection {
     background: transparent;

@@ -80,7 +80,7 @@ export const StyledCard = styled(Card)`
 
   .ant-card-body {
     padding: 20px 0px 60px;
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 110px);
   }
 `;
 

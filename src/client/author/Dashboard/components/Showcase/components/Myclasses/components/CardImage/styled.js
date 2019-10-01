@@ -29,20 +29,22 @@ export const IconWrapper = styled.div`
   padding: 0.5rem;
   border-radius: 50%;
   text-align: center;
-  margin-left: 1.2rem;
   line-height: 1rem;
   background: ${white};
   cursor: pointer;
-  float: right;
+  position: absolute;
+  top: 2px;
+  right: 2px;
 `;
 export const TextDiv = styled.p`
   font-size: 18px;
   text-overflow: ellipsis;
   display: block;
-  width: 180px;
+  max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
   font-weight: bold;
+  padding-right: 50px;
 `;
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;

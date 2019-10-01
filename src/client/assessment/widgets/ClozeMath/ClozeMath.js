@@ -2,12 +2,11 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus, AnswerContext } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 import { get, cloneDeep } from "lodash";
-import styled from "styled-components";
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
@@ -164,14 +163,6 @@ const ClozeMath = ({
     </WithResources>
   );
 };
-
-const QuestionNumberLabel = styled.div`
-  font-size: 14px;
-  font-weight: 700;
-  margin-right: 6px;
-  line-height: 24px;
-  padding-top: 8px;
-`;
 
 ClozeMath.propTypes = {
   view: PropTypes.string.isRequired,

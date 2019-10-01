@@ -52,8 +52,9 @@ class AssignmentsPage {
       .click({ force: true });
 
     // cy.wait("@startTest");
-    cy.wait("@gettest");
-    return cy.wait("@saved").then(() => new StudentTestPage());
+    // cy.wait("@gettest");
+    // return cy.wait("@saved").then(() => new StudentTestPage());
+    return cy.wait("@gettest").then(() => new StudentTestPage());
   }
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType) {

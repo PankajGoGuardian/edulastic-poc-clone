@@ -150,9 +150,7 @@ export const BreadcrumbWrapper = styled.div`
 
   .ant-breadcrumb-link {
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
     text-transform: uppercase;
-    font-weight: 600;
 
     a {
       color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};

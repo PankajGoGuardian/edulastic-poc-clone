@@ -178,6 +178,9 @@ const defaultTheme = {
   breadcrumbs: {
     breadcrumbTextColor: themeColorBreadcrumb,
     breadcrumbTextSize: "10px",
+    breadcrumbTextSizeLarge: "11px",
+    breadcrumbTextSizeRegular: "10px",
+    breadcrumbTextSizeSmall: "9px",
     breadcrumbLinkColor: themeColorLight
   },
   reportList: {
@@ -245,7 +248,7 @@ const defaultTheme = {
   },
   classCard: {
     cardBg: "white",
-    cardHeaderBorderColor: "#F1F1F1",
+    cardHeaderBorderColor: "#DEDADA",
     cardTitleColor: themeColor,
     cardTitleTextSize: "14px",
     cardVisitClassBtnBgColor: "white",

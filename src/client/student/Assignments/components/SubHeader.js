@@ -17,7 +17,7 @@ import Breadcrumb from "../../sharedComponents/Breadcrumb";
 // styled components
 import { BreadcrumbWrapper } from "../../styled";
 
-const breadcrumbData = [{ title: "ACTIVE ASSIGNMENTS", to: "" }];
+const breadcrumbData = [{ title: "DASHBOARD", to: "" }];
 
 const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   const filterItems = Object.keys(FILTERS);

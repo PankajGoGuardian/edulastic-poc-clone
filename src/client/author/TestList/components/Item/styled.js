@@ -10,7 +10,7 @@ export const Container = styled(Card)`
   border: ${props => (props.isPlaylist ? "0" : `1px solid ${greyishDarker2}`)};
   .ant-card-body {
     padding: 16px;
-    box-shadow: ${props => (props.playlist ? "0px 2px 5px 0px rgba(0, 0, 0, 0.07)" : "none")};
+    box-shadow: ${props => (props.isPlaylist ? "0px 2px 5px 0px rgba(0, 0, 0, 0.07)" : "none")};
     border-radius: 4px;
     min-height: 210px;
     display: flex;

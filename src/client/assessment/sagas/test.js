@@ -23,13 +23,15 @@ import {
   SET_TEST_LOADING_ERROR,
   LOAD_PREVIOUS_ANSWERS,
   ADD_ITEM_EVALUATION,
-  LOAD_PREVIOUS_RESPONSES_REQUEST
+  LOAD_PREVIOUS_RESPONSES_REQUEST,
+  REMOVE_PREVIOUS_ANSWERS
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
+import { CLEAR_ITEM_EVALUATION } from "../../author/src/constants/actions";
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -55,6 +57,14 @@ function* loadTest({ payload }) {
   } = payload;
 
   try {
+    yield put({
+      type: CLEAR_ITEM_EVALUATION
+    });
+
+    yield put({
+      type: REMOVE_PREVIOUS_ANSWERS
+    });
+
     yield put({
       type: SET_TEST_LOADING_STATUS,
       payload: true

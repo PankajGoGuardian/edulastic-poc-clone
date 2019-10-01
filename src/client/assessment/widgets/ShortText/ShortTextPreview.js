@@ -133,9 +133,9 @@ const ShortTextPreview = ({
       {previewTab === SHOW && (
         <>
           <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
-            {item.validation.validResponse.value}
+            {item?.validation?.validResponse?.value}
           </CorrectAnswersContainer>
-          {!isEmpty(item.validation.altResponses) && (
+          {!isEmpty(item.validation?.altResponses) && (
             <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
               {item.validation.altResponses.map((altAnswer, i) => {
                 return (

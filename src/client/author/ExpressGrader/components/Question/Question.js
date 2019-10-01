@@ -3,7 +3,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { isEmpty } from "lodash";
+import produce from "immer";
+
 import { receiveStudentQuestionAction } from "../../../src/actions/classBoard";
 import {
   getAssignmentClassIdSelector,
@@ -34,10 +35,20 @@ class Question extends Component {
   render() {
     const { record, studentQuestion, testItems = [], qIndex, student, isPresentationMode } = this.props;
 
-    const selectedItems = testItems.filter(
+    let selectedItems = testItems.filter(
       ({ data: { questions = [] } = {} }) => questions.filter(({ id }) => id === record._id).length > 0
     );
 
+    selectedItems = produce(selectedItems, draft => {
+      draft.forEach(item => {
+        item.data.questions = item.data.questions.filter(({ id }) => id === record._id);
+        item.rows = item.rows.map(row => ({
+          ...row,
+          widgets: row.widgets.filter(({ reference }) => reference === record._id)
+        }));
+      });
+      return draft;
+    });
     let studentQuestions = [];
     if (studentQuestion) {
       if (Array.isArray(studentQuestion)) {

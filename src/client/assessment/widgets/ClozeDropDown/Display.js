@@ -136,7 +136,6 @@ class ClozeDropDownDisplay extends Component {
     const fontSize = theme.fontSize || getFontSize("normal", true);
     const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
-
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
@@ -177,12 +176,13 @@ class ClozeDropDownDisplay extends Component {
       responseBtnStyle,
       options: responses,
       onChange: this.selectChange,
-      responsecontainerindividuals,
+      uiStyle,
       stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
       showIndex: showAnswer,
+      responsecontainerindividuals,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation

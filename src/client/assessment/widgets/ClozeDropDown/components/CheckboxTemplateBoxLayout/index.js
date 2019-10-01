@@ -1,13 +1,13 @@
-import React, { Fragment } from "react";
+import React, { useState } from "react";
 import { Tooltip } from "antd";
 import PropTypes from "prop-types";
 import { isUndefined, find } from "lodash";
+import { response } from "@edulastic/constants";
 import { getStemNumeration } from "../../../../utils/helpers";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
-import { response } from "@edulastic/constants";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -15,8 +15,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const {
-    showIndex,
-    responsecontainerindividuals,
+    uiStyle,
+    uiStyle: responsecontainerindividuals = [],
     responseBtnStyle,
     stemNumeration,
     fontSize,
@@ -30,9 +30,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     item: { responseIds }
   } = resprops;
 
-  const { index, id: answerId } = find(responseIds, response => response.id === id);
+  const { index, id: answerId } = find(responseIds, _response => _response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
-
   const indexStr = getStemNumeration(stemNumeration, index);
   const status = userSelections && evaluation ? (evaluation[answerId] ? "right" : "wrong") : "wrong";
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[index] : null;
@@ -57,121 +56,82 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (btnStyle && isUndefined(btnStyle.wordwrap) && !isUndefined(responseBtnStyle.wordwrap)) {
     btnStyle.wordwrap = responseBtnStyle.wordwrap;
   }
-
-  const _btnStyle = { ...btnStyle };
-  let isBoxSizeSmall = false;
-  if (showAnswer && btnStyle.width < response.minWidthShowAnswer) {
-    isBoxSizeSmall = true;
-    _btnStyle.minWidth = btnStyle.width + response.indexSizeSmallBox;
-  }
+  const _btnStyle = { ...btnStyle, minWidth: "unset" };
   _btnStyle.width = _btnStyle.widthpx;
-  const indexStyle = isBoxSizeSmall ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
-  const textStyle = isBoxSizeSmall ? { padding: "8px 0" } : {};
+  const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
+  const indexStyle = lessMinWidth ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
+  const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};
+  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
+  const handleHover = () => {
+    if (showAnswer && lessMinWidth) {
+      toggleIndexVisibility(!showIndex);
+    }
+  };
   return (
-    <Fragment>
-      <span className="template_box" style={{ fontSize, padding: 20 }}>
-        {showAnswer && hasGroupResponses && (
-          <span
-            className={`
-            response-btn 
-            ${choiceAttempted ? "check-answer" : ""} 
-            ${status} 
-            ${showAnswer ? "show-answer" : ""}`}
-            style={_btnStyle}
-            onClick={handleClick}
-          >
-            <span className="index" style={indexStyle}>
-              {indexStr}
-            </span>
-            <Tooltip title={userSelection?.value}>
-              <span className="text clipText" style={textStyle}>
-                {userSelection && userSelection.value}
-              </span>
-            </Tooltip>
-
-            <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
-              {choiceAttempted && status === "right" && <RightIcon />}
-              {choiceAttempted && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
-          </span>
-        )}
-        {showAnswer && !hasGroupResponses && (
-          <span
-            className={`
-            response-btn 
-            ${choiceAttempted ? "check-answer" : ""} 
-            ${status} 
-            ${showAnswer ? "show-answer" : ""}`}
-            style={_btnStyle}
-            onClick={handleClick}
-          >
-            <span className="index" style={indexStyle}>
-              {indexStr}
-            </span>
-            <Tooltip title={userSelection?.value}>
-              <span className="text clipText" style={textStyle}>
-                {userSelection && userSelection.value}
-              </span>
-            </Tooltip>
-
-            <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
-              {choiceAttempted && status === "right" && <RightIcon />}
-              {choiceAttempted && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
-          </span>
-        )}
+    <span className="template_box" style={{ fontSize, padding: 20 }}>
+      {hasGroupResponses && (
         <span
-          style={{
-            top: -5,
-            display: "inline-flex"
-          }}
+          className={`
+            response-btn 
+            ${choiceAttempted ? "check-answer" : ""} 
+            ${status} 
+            ${showAnswer ? "show-answer" : ""}`}
+          style={_btnStyle}
           onClick={handleClick}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleHover}
         >
-          {!showAnswer && hasGroupResponses && (
-            <span
-              title={userSelection?.value}
-              className={`
-                response-btn 
-                ${choiceAttempted ? "check-answer" : ""} 
-                ${status}`}
-              style={{
-                ...btnStyle,
-                minWidth: `${btnStyle.widthpx}px`
-              }}
-            >
-              {showIndex && <span className="index">{indexStr}</span>}
-              <span className="text clipText">{userSelection && userSelection.value}</span>
-
-              <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
+          {showAnswer && (
+            <span className="index" style={indexStyle}>
+              {indexStr}
             </span>
           )}
-          {!showAnswer && !hasGroupResponses && (
-            <span
-              title={userSelection?.value}
-              className={`
-                response-btn 
-                ${choiceAttempted ? "check-answer" : ""} 
-                ${status}`}
-              style={{
-                ...btnStyle,
-                minWidth: `${btnStyle.widthpx}px`
-              }}
-            >
-              {showIndex && <span className="index">{indexStr}</span>}
-              <span className="text clipText">{userSelection && userSelection.value}</span>
-
-              <IconWrapper rightPosition={isBoxSizeSmall ? 1 : 8}>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
+          <Tooltip title={userSelection?.value}>
+            <span className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
+              <span style={textStyle} className="clipText">
+                {userSelection?.value}
+              </span>
             </span>
-          )}
+          </Tooltip>
+
+          <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
+            {choiceAttempted && status === "right" && <RightIcon />}
+            {choiceAttempted && status === "wrong" && <WrongIcon />}
+          </IconWrapper>
         </span>
-      </span>
-    </Fragment>
+      )}
+      {!hasGroupResponses && (
+        <span
+          className={`
+            response-btn 
+            ${choiceAttempted ? "check-answer" : ""} 
+            ${status} 
+            ${showAnswer ? "show-answer" : ""}`}
+          style={_btnStyle}
+          onClick={handleClick}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleHover}
+        >
+          {showAnswer && showIndex && (
+            <span className="index" style={indexStyle}>
+              {indexStr}
+            </span>
+          )}
+          <Tooltip title={userSelection?.value}>
+            <div className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
+              <div className="clipText" style={textStyle}>
+                {userSelection && userSelection.value}
+              </div>
+            </div>
+          </Tooltip>
+
+          <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
+            {choiceAttempted && status === "right" && <RightIcon />}
+            {choiceAttempted && status === "wrong" && <WrongIcon />}
+          </IconWrapper>
+        </span>
+      )}
+    </span>
   );
 };
 

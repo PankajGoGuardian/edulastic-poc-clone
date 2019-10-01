@@ -14,6 +14,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 // import { calculateRatio } from "../../../../utils/helpers";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
+import Response from "./components/Response";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -88,60 +89,21 @@ const CheckboxTemplateBoxLayout = ({
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
         const hasAnswered = userSelections?.[dropTargetIndex];
-
         const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
-        const indexStyle = {};
-        if (lessMinWidth) {
-          indexStyle["width"] = "20px";
-        }
 
         return (
-          <React.Fragment key={index}>
-            {(showAnswer || checkAnswer) && (
-              <div
-                style={{
-                  ...btnStyle,
-                  minWidth: lessMinWidth ? responseContainer.width + response.indexSizeSmallBox : minWidthShowAnswer,
-                  minHeight,
-                  background: !hasAnswered ? "rgba(225,225,225,0.75)" : null
-                }}
-                className={`
-                testing
-                imagelabeldragdrop-droppable 
-                active
-                ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 
-                ${status} 
-                show-answer`}
-                onClick={onClickHandler}
-              >
-                {showAnswer && (
-                  <span className="index index-box" style={indexStyle}>
-                    {indexStr}
-                  </span>
-                )}
-                <div
-                  className="text container"
-                  style={{ minwidth: "100%", maxWidth, padding: lessMinWidth ? "0 0 0 4px" : null }}
-                >
-                  <Tooltip title={userSelections?.[dropTargetIndex]}>
-                    <div className="clipText" style={{ minwidth: "100%" }}>
-                      {userSelections[dropTargetIndex]}
-                    </div>
-                  </Tooltip>
-                  <div>
-                    <IconWrapper>
-                      {userSelections.length > 0 && status === "right" && <RightIcon />}
-                      {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
-                    </IconWrapper>
-                    <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                      <Point />
-                      <Triangle />
-                    </Pointer>
-                  </div>
-                </div>
-              </div>
-            )}
-          </React.Fragment>
+          <Response
+            lessMinWidth={lessMinWidth}
+            showAnswer={showAnswer}
+            checkAnswer={checkAnswer}
+            btnStyle={btnStyle}
+            responseContainer={responseContainer}
+            userSelections={userSelections}
+            status={status}
+            onClickHandler={onClickHandler}
+            indexStr={indexStr}
+            dropTargetIndex={dropTargetIndex}
+          />
         );
       })}
     </TemplateCover>

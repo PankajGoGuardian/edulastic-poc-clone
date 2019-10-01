@@ -1,14 +1,14 @@
-import React, { Fragment, useContext } from "react";
+import React, { useState } from "react";
 import { find } from "lodash";
 import { Tooltip } from "antd";
 import PropTypes from "prop-types";
 
+import { response } from "@edulastic/constants";
 import { getStemNumeration } from "../../../../utils/helpers";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
-import { response } from "@edulastic/constants";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -17,137 +17,99 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     evaluation,
     showAnswer,
-    style,
     uiStyle = {},
-    responseBtnStyle,
     fontSize,
     userSelections,
     stemNumeration,
     responsecontainerindividuals,
     responseIds,
     previewTab,
-    changePreviewTab,
-    isReviewTab
+    changePreviewTab
   } = resprops;
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
   const status = evaluation[choiceId] ? "right" : "wrong";
   const indexStr = getStemNumeration(stemNumeration, index);
-
   const btnStyle = {
-    height: 0,
-    widthpx: uiStyle.widthpx ? uiStyle.widthpx : 140,
-    heightpx: 0,
+    width: uiStyle?.widthpx || 140,
+    height: uiStyle?.heightpx || 35,
     position: "relative"
   };
 
-  if (btnStyle && btnStyle.width === 0 && !showAnswer) {
-    btnStyle.width = responseBtnStyle.widthpx;
-  } else {
-    btnStyle.width = btnStyle.widthpx;
-  }
-  if (btnStyle && btnStyle.height === 0) {
-    btnStyle.height = responseBtnStyle.heightpx;
-  } else {
-    btnStyle.height = btnStyle.heightpx;
-  }
-  let isBoxSizeSmall = false;
   const responseStyle = find(responsecontainerindividuals, resp => resp.id === id);
   if (uiStyle.globalSettings) {
-    let width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
-    if (isReviewTab) {
-      width = (responseStyle && responseStyle.previewWidth) || style.widthpx;
-    } else {
-      const answerWidth = userSelections?.[index] ? userSelections[index].value.split("").length * 9 : width;
-      const splitWidth = Math.max(answerWidth || width, 100);
-      width = Math.min(splitWidth, 400);
-    }
+    let width = responseStyle?.previewWidth || btnStyle.width;
+    const answerWidth = userSelections?.[index] ? userSelections[index].value.split("").length * 9 : width;
+    const splitWidth = Math.max(answerWidth || width, 100);
+    width = Math.min(splitWidth, 400);
     btnStyle.width = width;
-    if (parseInt(width, 10) < response.minWidthShowAnswer) {
-      btnStyle.minWidth = parseInt(width, 10) + 15;
-      isBoxSizeSmall = true;
-    }
-    btnStyle.height = style.height || "auto";
   } else {
-    const width = (responseStyle && responseStyle.widthpx) || style.widthpx;
-    btnStyle.width = width;
-    if (parseInt(width, 10) < response.minWidthShowAnswer) {
-      btnStyle.minWidth = parseInt(width, 10) + 15;
-      isBoxSizeSmall = true;
-    }
-    btnStyle.height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
+    btnStyle.width = responseStyle?.widthpx || btnStyle.width;
   }
-
-  const indexStyle = { alignSelf: "stretch", height: "auto" };
+  btnStyle.height = responseStyle?.heightpx || btnStyle.height;
+  const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
+  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
+  const indexStyle = {
+    alignSelf: "stretch",
+    height: "auto",
+    display: showAnswer && showIndex ? "block" : "none",
+    width: lessMinWidth ? Math.max(parseInt(btnStyle.width, 10) / 2, 20) : null,
+    maxWidth: "50%",
+    minWidth: lessMinWidth ? "unset" : null
+  };
   const textStyle = {
-    width: btnStyle.width,
-    height: btnStyle.height,
-    display: "block",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
-    overflow: "hidden"
+    overflow: "hidden",
+    padding: lessMinWidth ? `${btnStyle.height / 6}px 0px` : null
+  };
+  const textContainerStyle = {
+    minwidth: "100%",
+    width: btnStyle.width,
+    padding: lessMinWidth ? "0 1px" : null,
+    height: btnStyle.height,
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center"
   };
 
-  if (isBoxSizeSmall) {
-    indexStyle.minWidth = "50%";
-    indexStyle.width = "20px";
-    indexStyle.maxWidth = response.indexSizeSmallBox;
-    textStyle.padding = "8px 0px";
-  }
-
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
-
+  const handleHover = () => {
+    if (showAnswer && lessMinWidth) {
+      toggleIndexVisibility(!showIndex);
+    }
+  };
   return (
-    <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}>
-      {showAnswer && (
-        <Tooltip title={userSelections?.[index]?.value}>
-          <span
-            className={`
+    <Tooltip title={userSelections?.[index]?.value}>
+      <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}>
+        <span
+          className={`
                     response-btn 
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-            style={{ ...btnStyle, height: "auto", margin: 0, marginBottom: 4 }}
-            onClick={handleClick}
-          >
-            <span className="index" style={indexStyle}>
-              {indexStr}
-            </span>
-            <span className="text" style={textStyle}>
-              {userSelections[index] && userSelections[index].value}&nbsp;
-            </span>
-            <IconWrapper rightPosition={isBoxSizeSmall ? "1" : "10"}>
-              {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-              {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
-          </span>
-        </Tooltip>
-      )}
-      {!showAnswer && (
-        <span
-          className={`response-btn 
-                ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
-                ${status}`}
-          style={{ ...btnStyle, height: "auto", minWidth: btnStyle.widthpx, margin: 0, marginBottom: 4 }}
-          title={userSelections[index] && userSelections[index].value}
+          style={{ ...btnStyle, minWidth: "unset", margin: 0 }}
           onClick={handleClick}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleHover}
         >
-          {showAnswer && (
-            <Fragment>
-              <span className="index" style={indexStyle}>
-                {indexStr}
-              </span>
-            </Fragment>
-          )}
-          <span style={textStyle} className="text">
-            {userSelections[index] && userSelections[index].value}&nbsp;
+          <span className="index" style={indexStyle}>
+            {indexStr}
           </span>
-          <IconWrapper rightPosition={isBoxSizeSmall ? "1" : "10"}>
+          <div className="text container" style={textContainerStyle}>
+            <span className="text" style={textStyle}>
+              {userSelections?.[index]?.value}
+            </span>
+          </div>
+          <IconWrapper
+            display={!showAnswer || (showAnswer && showIndex) ? "flex" : "none"}
+            rightPosition={lessMinWidth ? "1" : "10"}
+          >
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
             {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
           </IconWrapper>
         </span>
-      )}
-    </span>
+      </span>
+    </Tooltip>
   );
 };
 

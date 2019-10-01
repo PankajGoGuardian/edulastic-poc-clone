@@ -514,6 +514,16 @@ export const isItemVisibiltySelector = createSelector(
   }
 );
 
+export const classListSelector = createSelector(
+  getAdditionalDataSelector,
+  state => state?.classes || []
+);
+
+export const testActivtyLoadingSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.loading
+);
+
 export const getTestItemsDataSelector = createSelector(
   stateTestActivitySelector,
   state => get(state, "data.testItemsData")

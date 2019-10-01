@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { Link, withRouter } from "react-router-dom";
 import { message, Dropdown } from "antd";
 import moment from "moment";
 import { get } from "lodash";
@@ -16,6 +17,7 @@ import {
   StyledTitle,
   StyledLink,
   StyledParaFirst,
+  DownArrow,
   LinkLabel,
   StyledParaSecond,
   StyledPopconfirm,
@@ -27,6 +29,7 @@ import {
   HeaderMenuIcon,
   RightSideButtonWrapper,
   DropMenu,
+  ClassDropMenu,
   MenuItems,
   CaretUp,
   StudentStatusDetails,
@@ -41,7 +44,8 @@ import {
   markAsDoneAction,
   openAssignmentAction,
   closeAssignmentAction,
-  togglePauseAssignmentAction
+  togglePauseAssignmentAction,
+  receiveTestActivitydAction
 } from "../../../src/actions/classBoard";
 import {
   showScoreSelector,
@@ -49,16 +53,23 @@ import {
   getMarkAsDoneEnableSelector,
   notStartedStudentsSelector,
   inProgressStudentsSelector,
-  isItemVisibiltySelector
+  isItemVisibiltySelector,
+  classListSelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
 
+const classViewRoutesByActiveTabName = {
+  classboard: "classboard",
+  expressgrader: "expressgrader",
+  standard_report: "standardsBasedReport"
+};
 class ClassHeader extends Component {
   constructor(props) {
     super(props);
@@ -74,6 +85,17 @@ class ClassHeader extends Component {
       studentReportCardModalColumnsFlags: {}
     };
     this.inputRef = React.createRef();
+  }
+
+  switchClass(classId) {
+    const { loadTestActivity, match, studentUnselectAll, resetView, active } = this.props;
+    const { assignmentId } = match.params;
+    if (match.params.classId === classId) return;
+    if (active === "classboard") {
+      resetView("Both");
+    }
+    loadTestActivity(assignmentId, classId);
+    studentUnselectAll();
   }
 
   changeCondition = value => {
@@ -109,18 +131,21 @@ class ClassHeader extends Component {
   };
 
   handleReleaseScore = releaseScore => {
-    const { classId, assignmentId, setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    const { match, setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    const { classId, assignmentId } = match.params;
     setReleaseScore(assignmentId, classId, releaseScore);
     toggleReleaseGradePopUp(false);
   };
 
   handleMarkAsDone = () => {
-    const { setMarkAsDone, assignmentId, classId } = this.props;
+    const { setMarkAsDone, match } = this.props;
+    const { classId, assignmentId } = match.params;
     setMarkAsDone(assignmentId, classId);
   };
 
   handleOpenAssignment = () => {
-    const { openAssignment, assignmentId, classId, additionalData, userRole } = this.props;
+    const { openAssignment, match, additionalData, userRole } = this.props;
+    const { classId, assignmentId } = match.params;
     if (
       additionalData.openPolicy !== POLICY_OPEN_MANUALLY_BY_TEACHER &&
       additionalData.testType === "common assessment" &&
@@ -133,7 +158,8 @@ class ClassHeader extends Component {
   };
 
   handleCloseAssignment = () => {
-    const { closeAssignment, assignmentId, classId } = this.props;
+    const { closeAssignment, match } = this.props;
+    const { classId, assignmentId } = match.params;
     closeAssignment(assignmentId, classId);
     this.toggleCloseModal(false);
   };
@@ -180,10 +206,10 @@ class ClassHeader extends Component {
   handlePauseAssignment(value) {
     const {
       togglePauseAssignment,
-      assignmentId,
-      classId,
+      match,
       additionalData: { testName }
     } = this.props;
+    const { classId, assignmentId } = match.params;
     togglePauseAssignment({ value, assignmentId, classId, name: testName });
     this.togglePauseModal(false);
   }
@@ -204,8 +230,7 @@ class ClassHeader extends Component {
     const {
       t,
       active,
-      assignmentId,
-      classId,
+
       testActivityId,
       additionalData = {},
       selectedStudentsKeys,
@@ -220,7 +245,9 @@ class ClassHeader extends Component {
       notStartedStudents,
       inProgressStudents,
       toggleSideBar,
-      isItemsVisible
+      isItemsVisible,
+      classesList,
+      match
     } = this.props;
 
     const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -242,6 +269,7 @@ class ClassHeader extends Component {
         : closed
         ? "DONE"
         : assignmentStatus;
+    const { assignmentId, classId } = match.params;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -261,7 +289,7 @@ class ClassHeader extends Component {
       </OpenCloseWrapper>
     );
 
-    const menu = (
+    const actionsMenu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
         <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden" groupId={classId}>
@@ -285,14 +313,31 @@ class ClassHeader extends Component {
       </DropMenu>
     );
 
+    const classListMenu = (
+      <ClassDropMenu selectedKeys={classId}>
+        {classesList.map(item => (
+          <MenuItems key={item._id} onClick={() => this.switchClass(item._id)}>
+            <Link to={`/author/${classViewRoutesByActiveTabName[active]}/${assignmentId}/${item._id}`}>
+              {item.name}
+            </Link>
+          </MenuItems>
+        ))}
+      </ClassDropMenu>
+    );
+
     return (
       <Container>
         <StyledTitle>
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <div>
-            <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-              {additionalData.className || "loading..."}
-            </StyledParaFirst>
+            <Dropdown overlay={classListMenu} placement={"bottomLeft"}>
+              <div style={{ position: "relative" }}>
+                <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
+                  {additionalData.className || "loading..."}
+                </StyledParaFirst>
+                {!!classesList.length && <DownArrow type="down" />}
+              </div>
+            </Dropdown>
             <StyledParaSecond>
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
@@ -350,7 +395,7 @@ class ClassHeader extends Component {
         </StyledTabContainer>
         <RightSideButtonWrapper>
           {window.innerWidth > desktopWidth && renderOpenClose}
-          <Dropdown overlay={menu} placement={"bottomRight"}>
+          <Dropdown overlay={actionsMenu} placement={"bottomRight"}>
             <HeaderMenuIcon>
               <i class="fa fa-ellipsis-v" />
             </HeaderMenuIcon>
@@ -435,6 +480,7 @@ ClassHeader.defaultProps = {
 
 const enhance = compose(
   withNamespaces("classBoard"),
+  withRouter,
   connect(
     state => ({
       releaseScore: showScoreSelector(state),
@@ -446,16 +492,19 @@ const enhance = compose(
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),
-      isItemsVisible: isItemVisibiltySelector(state)
+      isItemsVisible: isItemVisibiltySelector(state),
+      classesList: classListSelector(state)
     }),
     {
+      loadTestActivity: receiveTestActivitydAction,
       setReleaseScore: releaseScoreAction,
       togglePauseAssignment: togglePauseAssignmentAction,
       setMarkAsDone: markAsDoneAction,
       openAssignment: openAssignmentAction,
       closeAssignment: closeAssignmentAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
-      toggleSideBar: toggleSideBarAction
+      toggleSideBar: toggleSideBarAction,
+      studentUnselectAll: gradebookUnSelectAllAction
     }
   )
 );

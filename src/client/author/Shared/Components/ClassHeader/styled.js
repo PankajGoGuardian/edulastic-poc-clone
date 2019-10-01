@@ -1,4 +1,4 @@
-import { Popconfirm, Switch, Button, Menu } from "antd";
+import { Popconfirm, Switch, Button, Menu, Icon } from "antd";
 import styled, { css } from "styled-components";
 import {
   white,
@@ -94,6 +94,13 @@ export const StyledParaFirst = styled.p`
     font-size: 18px;
     max-width: 160px;
   }
+`;
+
+export const DownArrow = styled(Icon)`
+  position: absolute;
+  top: 12px;
+  font-size: 12px;
+  right: 0;
 `;
 
 export const LinkLabel = styled.div`
@@ -328,6 +335,9 @@ export const MenuItems = styled(Menu.Item)`
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
     background-color: ${themeColor};
+    > a {
+      color: ${white};
+    }
   }
 `;
 
@@ -342,6 +352,10 @@ export const CaretUp = styled.i`
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
   min-width: 175px;
+`;
+
+export const ClassDropMenu = styled(DropMenu)`
+  margin-top: 0px;
 `;
 
 export const StudentStatusDetails = styled.div`

@@ -3,7 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, keyBy, isEmpty, round } from "lodash";
-import { message, Dropdown, Select } from "antd";
+import { message, Dropdown, Select, Spin } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -297,6 +297,10 @@ class ClassBoard extends Component {
         ? data.find(item => !!item.testActivityId)
         : data.find(item => !!item.testActivityId && item.studentId == student)) || {}
     ).testActivityId;
+  };
+
+  resetView = view => {
+    this.setState({ selectedTab: view });
   };
 
   onTabChange = (e, name, selectedStudentId, testActivityId) => {
@@ -710,6 +714,7 @@ class ClassBoard extends Component {
           additionalData={additionalData}
           testActivityId={testActivityId}
           selectedStudentsKeys={selectedStudentsKeys}
+          resetView={this.resetView}
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
@@ -1013,7 +1018,12 @@ class ClassBoard extends Component {
                         </div>
                         {allTestActivitiesForStudent.length > 1 && (
                           <div
-                            style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              padding: "10px",
+                              alignItems: "center"
+                            }}
                           >
                             <ScoreHeader>SCORE</ScoreHeader>
                             <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>

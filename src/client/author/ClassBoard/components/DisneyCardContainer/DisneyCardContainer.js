@@ -36,7 +36,7 @@ import {
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName } from "../../Transformer";
-import { isItemVisibiltySelector } from "../../ducks";
+import { isItemVisibiltySelector, testActivtyLoadingSelector } from "../../ducks";
 class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
@@ -44,7 +44,8 @@ class DisneyCardContainer extends Component {
     studentUnselect: PropTypes.func.isRequired,
     viewResponses: PropTypes.func.isRequired,
     isPresentationMode: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    testActivityLoading: PropTypes.bool
   };
 
   constructor(props) {
@@ -73,6 +74,7 @@ class DisneyCardContainer extends Component {
       endDate,
       updateDisabledList,
       isLoading,
+      testActivityLoading,
       enrollmentStatus,
       isItemsVisible,
       closed
@@ -290,7 +292,11 @@ class DisneyCardContainer extends Component {
     }
     return (
       <StyledCardContiner>
-        {!isLoading ? (testActivity && testActivity.length > 0 ? styledCard : noDataNotification()) : showLoader()}
+        {!isLoading && !testActivityLoading
+          ? testActivity && testActivity.length > 0
+            ? styledCard
+            : noDataNotification()
+          : showLoader()}
       </StyledCardContiner>
     );
   }
@@ -298,5 +304,6 @@ class DisneyCardContainer extends Component {
 
 export default connect(state => ({
   isLoading: get(state, "classResponse.loading"),
+  testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state)
 }))(DisneyCardContainer);

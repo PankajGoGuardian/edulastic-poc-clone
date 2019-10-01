@@ -16,9 +16,9 @@ import TableTooltipRow from "../../../../../common/components/tooltip/TableToolt
 import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const columnHashMap = {
-  school: "studentName",
+  school: "studentName", // check and remove
   teacher: "teacherName",
-  class: "className",
+  class: "groupName",
   school: "schoolName"
 };
 
@@ -177,7 +177,7 @@ const PerformanceAnalysisTable = ({
           }
 
           const getColValue = (columnKey, record) => {
-            if (columnKey == "students") {
+            if (columnKey === "students") {
               return `${record.firstName} ${record.lastName}`;
             } else if (record[columnHashMap[columnKey]]) {
               return record[columnHashMap[columnKey]];
@@ -220,7 +220,7 @@ const PerformanceAnalysisTable = ({
               <div>
                 <TableTooltipRow title={`${compareByColumn.title}: `} value={getColValue(compareBy, record)} />
                 <TableTooltipRow
-                  title={`${viewBy == viewByMode.STANDARDS ? "Standard" : "Domain"} : `}
+                  title={`${viewBy === viewByMode.STANDARDS ? "Standard" : "Domain"} : `}
                   value={config.title}
                 />
                 <TableTooltipRow
@@ -316,8 +316,7 @@ PerformanceAnalysisTable.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
-    studInfo: [],
-    teacherInfo: []
+    studInfo: []
   },
   selectedStandards: [],
   selectedDomains: []

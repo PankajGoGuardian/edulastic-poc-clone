@@ -26,6 +26,7 @@ import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
+  getOrgDataFromSARFilter,
   getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles
 } from "../common/filterDataDucks";
@@ -35,13 +36,14 @@ const PAGE_SIZE = 15;
 const findCompareByTitle = (key = "") => {
   if (!key) return "";
 
-  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key == key) || {};
+  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key === key) || {};
 
   return title;
 };
 
 const PerformanceByStandards = ({
   loading,
+  teacherInfo,
   report = {},
   getPerformanceByStandards,
   match,
@@ -131,8 +133,8 @@ const PerformanceByStandards = ({
 
     stateHandler(prevState => {
       const newState = next(prevState, draftState => {
-        let index = indexOf(prevState, item[dataField]);
-        if (-1 < index) {
+        const index = indexOf(prevState, item[dataField]);
+        if (index > -1) {
           draftState.splice(index, 1);
         } else {
           draftState.push(item[dataField]);
@@ -176,7 +178,7 @@ const PerformanceByStandards = ({
     );
   }
 
-  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter, teacherInfo);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -248,6 +250,7 @@ const PerformanceByStandards = ({
         </Row>
         <StyledSignedBarContainer>
           <BarToRender
+            teacherInfo={teacherInfo}
             report={reportWithFilteredSkills}
             filter={filter}
             viewBy={viewBy}
@@ -289,7 +292,6 @@ const PerformanceByStandards = ({
 };
 
 const reportPropType = PropTypes.shape({
-  teacherInfo: PropTypes.array,
   scaleInfo: PropTypes.array,
   skillInfo: PropTypes.array,
   metricInfo: PropTypes.array,
@@ -302,6 +304,11 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
+  teacherInfo: PropTypes.array.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
+  standardProficiencyProfiles: PropTypes.array.isRequired,
+  interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired
 };
@@ -314,6 +321,7 @@ const enhance = connect(
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(state),
+    teacherInfo: getOrgDataFromSARFilter(state),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(state)
   }),
   {

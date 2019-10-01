@@ -99,20 +99,20 @@ export const getProficiency = (item, bandInfo) => {
   }
 };
 
-export const normaliseTableData = (rawData, data) => {
-  const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
+export const normaliseTableData = (rawData, data, metaInfo) => {
+  const { bandInfo = {}, schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
 
   const classes = groupBy(studentMetricInfo, "groupId");
 
   return map(data, studentMetric => {
     const relatedGroup =
       find(metaInfo, meta => {
-        return studentMetric.groupId == meta.groupId;
+        return studentMetric.groupId === meta.groupId;
       }) || {};
 
     const relatedSchool =
       find(schoolMetricInfo, school => {
-        return relatedGroup.schoolId == school.schoolId;
+        return relatedGroup.schoolId === school.schoolId;
       }) || {};
 
     const classAvg =
@@ -134,7 +134,7 @@ export const normaliseTableData = (rawData, data) => {
       proficiencyBand,
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
-      className: relatedGroup.className,
+      groupName: relatedGroup.groupName,
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
       districtAvg: round(districtAvgPerf || 0),
       studentScore,
@@ -172,9 +172,9 @@ const filterStudents = (rawData, appliedFilters, range, selectedProficiency) => 
   return dataBetweenRange;
 };
 
-export const getTableData = (rawData, appliedFilters, range, selectedProficiency = "All") => {
+export const getTableData = (rawData, appliedFilters, range, selectedProficiency = "All", metaInfo) => {
   const filteredData = filterStudents(rawData, appliedFilters, range, selectedProficiency);
-  const normalisedData = normaliseTableData(rawData, filteredData);
+  const normalisedData = normaliseTableData(rawData, filteredData, metaInfo);
   const sortedData = orderBy(normalisedData, ["totalScore"], ["desc"]);
 
   return sortedData;
@@ -235,7 +235,7 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
         <TableTooltipRow title={"Performance: "} value={record.assessmentScore} />
         <TableTooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
         <TableTooltipRow title={"Student Name: "} value={record.student} />
-        <TableTooltipRow title={"Class Name: "} value={record.className} />
+        <TableTooltipRow title={"Class Name: "} value={record.groupName} />
         <TableTooltipRow {...lastItem} />
       </div>
     );

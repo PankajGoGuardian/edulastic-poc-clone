@@ -121,26 +121,27 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     let comparedByTeacher;
     const groupedByTeacher = groupBy(groupedItem, "teacherId");
     comparedByTeacher = groupedByTeacherKeys.map(_item => {
-      let __item = groupedByTeacher[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
+      let __item =
+        groupedByTeacher?.[_item]?.reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        ) || {};
       let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
       avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
       return {
-        ...groupedByTeacher[_item][0],
+        ...groupedByTeacher?.[_item]?.[0],
         ...__item,
         avgPerformance
       };
@@ -151,26 +152,27 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     let comparedByClass;
     const groupedByClass = groupBy(groupedItem, "groupId");
     comparedByClass = groupedByClassKeys.map(_item => {
-      let __item = groupedByClass[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
+      let __item =
+        groupedByClass?.[_item]?.reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        ) || {};
       let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
       avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
       return {
-        ...groupedByClass[_item][0],
+        ...groupedByClass?.[_item]?.[0],
         ...__item,
         avgPerformance
       };

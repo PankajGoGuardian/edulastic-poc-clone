@@ -3,7 +3,7 @@ import { getHSLFromRange1 } from "../../../../common/util";
 
 export const idToLabel = {
   schoolId: "schoolName",
-  groupId: "className",
+  groupId: "groupName",
   teacherId: "teacherName",
   race: "race",
   gender: "gender",
@@ -67,7 +67,7 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       : 0;
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    let className = groupedData[data][0].groupName;
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
     item = {
       ...item,
@@ -112,7 +112,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     let maxScore = groupedData[data][0].maxScore;
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    let className = groupedData[data][0].groupName;
 
     item = {
       ...item,
@@ -171,7 +171,7 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
 
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    let className = groupedData[data][0].groupName;
 
     item = {
       ...item,
@@ -235,7 +235,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    let className = groupedData[data][0].groupName;
 
     const proficiencyPercentages = {};
 

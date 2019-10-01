@@ -11,6 +11,7 @@ const defaultSkillInfo = { standard: "", domain: "" };
 
 const SimpleStackedBarChartContainer = ({
   report,
+  teacherInfo,
   filter,
   viewBy,
   analyzeBy,
@@ -22,7 +23,12 @@ const SimpleStackedBarChartContainer = ({
   const barDataKey = "avgScore";
   const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-  let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy), [report, filter, viewBy]);
+  let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy, teacherInfo), [
+    report,
+    filter,
+    viewBy,
+    teacherInfo
+  ]);
 
   const data = useMemo(() => {
     return addColors(formattedData, selectedData, xDataKey);
@@ -128,6 +134,7 @@ SimpleStackedBarChartContainer.propTypes = {
   onBarClick: PropTypes.func.isRequired,
   filter: PropTypes.object.isRequired,
   onResetClick: PropTypes.func.isRequired,
+  teacherInfo: PropTypes.array,
   report: PropTypes.object,
   selectedData: PropTypes.array
 };
@@ -136,9 +143,9 @@ SimpleStackedBarChartContainer.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
-    studInfo: [],
-    teacherInfo: []
+    studInfo: []
   },
+  teacherInfo: [],
   selectedData: []
 };
 

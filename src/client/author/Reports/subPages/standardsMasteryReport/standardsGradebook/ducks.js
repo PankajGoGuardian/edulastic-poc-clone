@@ -119,7 +119,7 @@ function* getReportsStandardsGradebookRequest({ payload }) {
 
 function* getStudentStandardsSaga({ payload }) {
   try {
-    const studentStandard = yield call(reportsApi.fetchStudenStandards, payload);
+    const studentStandard = yield call(reportsApi.fetchStudentStandards, payload);
     yield put({
       type: GET_STUDENT_STANDARDS_SUCCESS,
       payload: studentStandard

@@ -51,28 +51,28 @@ const fetchAssignments = () => {
 
 const fetchResponseFrequency = params => {
   return api.callApi({
-    url: `/report/responseFrequency`,
+    url: `/report/response-frequency`,
     params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchAssessmentSummaryReport = params => {
   return api.callApi({
-    url: `/report/assessmentSummary`,
+    url: `/report/assessment-summary`,
     params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchPeerPerformanceReport = params => {
   return api.callApi({
-    url: `/report/peerPerformance`,
+    url: `/report/peer-performance`,
     params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchPerformanceByStandard = params => {
   return api.callApi({
-    url: `/report/performanceByStandards`,
+    url: `/report/performance-by-standards`,
     params: { ...params.requestFilters, testId: params.testId }
   });
 };
@@ -93,7 +93,7 @@ const fetchSARFilterData = params => {
 
 const fetchStandardsGradebookReport = params => {
   return api.callApi({
-    url: `/report/standards-gradeBook`,
+    url: `/report/standards-gradebook`,
     params: params
   });
 };
@@ -191,7 +191,7 @@ const fetchStudentList = params => {
   });
 };
 
-const fetchStudenStandards = params => {
+const fetchStudentStandards = params => {
   return api.callApi({
     url: `/report/student-standard`,
     params
@@ -224,5 +224,5 @@ export default {
   fetchStudentAssessmentProfileReport,
   fetchStudentProfileSummaryReport,
   fetchStudentList,
-  fetchStudenStandards
+  fetchStudentStandards
 };

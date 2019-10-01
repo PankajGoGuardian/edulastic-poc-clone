@@ -75,8 +75,8 @@ export const compareByColumns = {
     title: "Class",
     dataIndex: "groupId",
     key: "groupId",
-    sorter: lexicSort("className"),
-    render: (groupId, studentClass) => studentClass.className
+    sorter: lexicSort("groupName"),
+    render: (groupId, studentClass) => studentClass.groupName
   },
   [compareByMode.STUDENTS]: {
     title: "Student",
@@ -169,7 +169,9 @@ const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters =
     value: chartFilters[key]
   }));
 
-  const filteredMetrics = filter(metricInfo, metric => find(skillInfo, skill => skill.standardId == metric.standardId));
+  const filteredMetrics = filter(metricInfo, metric =>
+    find(skillInfo, skill => skill.standardId === metric.standardId)
+  );
 
   const metricsWithStudent = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, filteredMetrics);
 
@@ -289,8 +291,8 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
   return [data, totalPoints];
 };
 
-export const analysisParseData = (report, viewBy, compareBy, filters) => {
-  const { studInfo, teacherInfo, skillInfo, scaleInfo, metricInfo } = report;
+export const analysisParseData = (report, viewBy, compareBy, filters, teacherInfo) => {
+  const { studInfo, skillInfo, scaleInfo, metricInfo } = report;
 
   let filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, filters, skillInfo);
   filteredMetrics = augmentMetricInfoWithMasteryScore(filteredMetrics, scaleInfo);
@@ -397,8 +399,8 @@ const getDomainMaxScore = (metricInfo = [], domainId, skillInfo) => {
   return maxScore;
 };
 
-const groupByView = (report, chartFilters, viewBy) => {
-  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo = [], teacherInfo = [] } = report;
+const groupByView = (report, chartFilters, viewBy, teacherInfo) => {
+  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo = [] } = report;
   const groupByKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
   let filteredMetrics = filterAndAugmentMetricInfo(
     studInfo,
@@ -460,10 +462,10 @@ export const getChartMasteryData = (report = {}, chartFilters, viewBy, leastScal
   return parsedGroupedMetricData.sort((a, b) => a.name.localeCompare(b.name));
 };
 
-export const getChartScoreData = (report = {}, chartFilters, viewBy) => {
+export const getChartScoreData = (report = {}, chartFilters, viewBy, teacherInfo) => {
   const { metricInfo = {}, skillInfo = [] } = report;
   // group data according to the chosen viewBy
-  let metricByViewBy = groupByView(report, chartFilters, viewBy);
+  let metricByViewBy = groupByView(report, chartFilters, viewBy, teacherInfo);
 
   return Object.keys(metricByViewBy).map(id => {
     const records = metricByViewBy[id];

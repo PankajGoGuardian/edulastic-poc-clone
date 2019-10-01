@@ -17,7 +17,6 @@ export const getPerformanceByStandardsSuccessAction = createAction(GET_PERFORMAN
 export const getPerformanceByStandardsErrorAction = createAction(GET_PERFORMANCE_BY_STANDARDS_ERROR);
 
 export const defaultReport = {
-  teacherInfo: [],
   scaleInfo: [],
   skillInfo: [],
   metricInfo: [],

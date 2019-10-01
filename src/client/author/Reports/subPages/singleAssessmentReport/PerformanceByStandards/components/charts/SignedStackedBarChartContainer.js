@@ -60,6 +60,7 @@ const getChartSpecifics = (analyzeBy, scaleInfo) => {
 
 const SignedStackedBarChartContainer = ({
   report,
+  teacherInfo,
   filter,
   selectedData,
   onBarClick,
@@ -75,11 +76,12 @@ const SignedStackedBarChartContainer = ({
   });
 
   const leastScale = orderedScaleInfo[0];
-  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy, leastScale), [
+  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy, leastScale, teacherInfo), [
     report,
     filter,
     viewBy,
-    leastScale
+    leastScale,
+    teacherInfo
   ]);
 
   const getTooltipJSX = (payload, barIndex) => {
@@ -146,6 +148,7 @@ SignedStackedBarChartContainer.propTypes = {
   onResetClick: PropTypes.func.isRequired,
   filter: PropTypes.object.isRequired,
   report: PropTypes.object,
+  teacherInfo: PropTypes.array,
   selectedData: PropTypes.array
 };
 
@@ -153,9 +156,9 @@ SignedStackedBarChartContainer.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
-    studInfo: [],
-    teacherInfo: []
+    studInfo: []
   },
+  teacherInfo: [],
   selectedData: []
 };
 

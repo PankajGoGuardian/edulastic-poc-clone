@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
-import { sortBy, maxBy } from "lodash";
+import { sortBy, maxBy, get } from "lodash";
 
 import {
   SHORT_TEXT,
@@ -372,6 +372,7 @@ class Questions extends React.Component {
       list,
       onDragStart,
       review,
+      previousQuestionActivities,
       feedback
     } = this.props;
     const report = viewMode === "report";
@@ -408,6 +409,9 @@ class Questions extends React.Component {
                   answer={answersById[question.id]}
                   centered={centered}
                   feedback={feedback}
+                  previousFeedback={
+                    Object.values(previousQuestionActivities) && Object.values(previousQuestionActivities)[0]
+                  }
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                 />
@@ -456,6 +460,7 @@ const enhance = compose(
   connect(
     state => ({
       feedback: FeedbackByQIdSelector(state),
+      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       previewMode: getPreviewSelector(state)
     }),
     {

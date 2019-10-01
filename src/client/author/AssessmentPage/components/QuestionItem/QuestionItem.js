@@ -148,10 +148,10 @@ class QuestionItem extends React.Component {
   };
 
   renderContent = () => {
-    const { data, saveAnswer, viewMode, onCreateOptions, evaluation, answer, previewMode } = this.props;
+    const { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
     const props = {
       saveAnswer,
-      answer,
+      answer: userAnswer,
       question: data,
       mode: viewMode,
       view: previewMode
@@ -202,8 +202,9 @@ class QuestionItem extends React.Component {
   };
 
   renderScore = qId => {
-    const { feedback = {} } = this.props;
-    const { score = 0, maxScore = 0 } = feedback[qId] || {};
+    const { feedback = {}, previousFeedback = [] } = this.props;
+
+    const { score = 0, maxScore = 0 } = previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
     return (
       <CorrectAnswer>
         <CorrectAnswerTitle>Score:</CorrectAnswerTitle>
@@ -219,11 +220,13 @@ class QuestionItem extends React.Component {
       index,
       review,
       viewMode,
+      previewTab,
       previewMode,
       centered,
       highlighted
     } = this.props;
 
+    const check = viewMode === "report" || previewTab === "check";
     return (
       <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} innerRef={this.itemRef}>
         <AnswerForm>
@@ -238,10 +241,10 @@ class QuestionItem extends React.Component {
           </Draggable>
           <QuestionForm>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
-          {review && (previewMode !== "clear" || viewMode === "report") && this.renderAnswerIndicator(type)}
+          {review && (previewMode !== "clear" || check) && this.renderAnswerIndicator(type)}
         </AnswerForm>
         {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
-        {viewMode === "report" && this.renderScore(id)}
+        {check && this.renderScore(id)}
       </QuestionItemWrapper>
     );
   }

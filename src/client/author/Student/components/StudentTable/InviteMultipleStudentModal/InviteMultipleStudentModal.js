@@ -13,11 +13,33 @@ import {
   Text,
   IconWrapper,
   ColWrapper,
-  ActionButton
+  ActionButton,
+  StyledModal,
+  StyledSearch,
+  ModalCloseIconWrapper,
+  SearchViewContainer,
+  AddBulkStudentsViewContainer,
+  SearchTabButton,
+  AddMultipleStudentsTabButton,
+  CancelButton,
+  OkButton,
+  ButtonsContainer,
+  AddBulkUserPrimaryTextContainer,
+  IconSwap
 } from "./styled";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 import { ModalFormItem } from "../AddStudentModal/styled";
+import {
+  themeColor,
+  white,
+  darkGrey1,
+  fadedBlack,
+  lightGreySecondary,
+  greyScoreCardTitleColor,
+  lightGrey4
+} from "@edulastic/colors";
+import { IconClose, IconCorrect } from "@edulastic/icons";
 
 const { TabPane } = Tabs;
 const Search = Input.Search;
@@ -35,7 +57,7 @@ const Item = ({ item, moveItem, isEnrolled }) => {
         <Col span={18}>
           <Text>{item._source.email}</Text>
         </Col>
-        <Col span={6}> {isEnrolled && <IconWrapper type="check" />}</Col>
+        <Col span={6}> {isEnrolled && <IconCorrect />}</Col>
       </Row>
     </ItemDiv>
   );
@@ -51,7 +73,8 @@ class InviteMultipleStudentModal extends Component {
       placeHolderVisible: true,
       curSel: "google",
       allStudents: [],
-      studentsToEnroll: []
+      studentsToEnroll: [],
+      searchViewVisible: true
     };
   }
 
@@ -176,23 +199,33 @@ class InviteMultipleStudentModal extends Component {
     }
   };
 
-  onAddMultipleStudents = async (
-    setinfoModelVisible,
-    setInfoModalData,
-    students,
-    selClass,
-    setIsAddMultipleStudentsModal,
-    loadStudents
-  ) => {
+  onAddMultipleStudents = async () => {
+    const {
+      setinfoModelVisible,
+      setInfoModalData,
+      selectedClass,
+      setIsAddMultipleStudentsModal,
+      loadStudents
+    } = this.props;
+    const { studentsToEnroll } = this.state;
     const data = {
-      userDetails: students.map(std => std._id)
+      userDetails: studentsToEnroll.map(std => std._id)
     };
-    const { _id: classId } = selClass;
-    const result = await userApi.SearchAddEnrolMultiStudents(selClass.code, data);
+    const { _id: classId } = selectedClass;
+    const result = await userApi.SearchAddEnrolMultiStudents(selectedClass.code, data);
     setIsAddMultipleStudentsModal(false);
     setInfoModalData(result.data.result);
     setinfoModelVisible(true);
     loadStudents({ classId });
+  };
+
+  addStudents = () => {
+    const { searchViewVisible } = this.state;
+    if (searchViewVisible) {
+      this.onAddMultipleStudents();
+    } else {
+      this.onInviteStudents();
+    }
   };
 
   render() {
@@ -209,7 +242,8 @@ class InviteMultipleStudentModal extends Component {
       features,
       role
     } = this.props;
-    const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
+
+    const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
     const { classList = [], searchAndAddStudents = false, schools = [] } = orgData || {};
     const isPremium = isFeatureAccessible({
       features,
@@ -284,162 +318,156 @@ class InviteMultipleStudentModal extends Component {
     }
     const defaultSchoolId = schools.length ? schools[0]._id : "";
     return (
-      <>
-        <Modal
-          visible={modalVisible}
-          onOk={this.onInviteStudents}
-          onCancel={this.onCloseModal}
-          maskClosable={false}
-          footer={null}
-        >
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Add Multiple Students" key="1">
-              <Row>
-                <Col span={24}>
-                  Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add
-                  multiple students.
+      <StyledModal
+        visible={modalVisible}
+        onOk={this.onInviteStudents}
+        onCancel={this.onCloseModal}
+        maskClosable={false}
+        footer={null}
+        closable={false}
+      >
+        <Row>
+          <Col span={13}>
+            <SearchTabButton
+              data-cy="searchStudent"
+              searchViewVisible={searchViewVisible}
+              onClick={() => this.setState({ ...this.setState, searchViewVisible: true })}
+            >
+              Search exisitng student and add
+            </SearchTabButton>
+          </Col>
+          <Col span={9}>
+            <AddMultipleStudentsTabButton
+              data-cy="addMultipleStudent"
+              searchViewVisible={searchViewVisible}
+              onClick={() => this.setState({ ...this.setState, searchViewVisible: false })}
+            >
+              Add multiple students
+            </AddMultipleStudentsTabButton>
+          </Col>
+          <ModalCloseIconWrapper span={2}>
+            <IconClose color="black" width="15px" height="15px" onClick={this.onCloseModal} />
+          </ModalCloseIconWrapper>
+        </Row>
+        {searchViewVisible ? (
+          <SearchViewContainer>
+            <Row>
+              <Col> Search and select existing students from your district and add</Col>
+            </Row>
+            <Row>
+              <StyledSearch
+                placeholder="Type student name or email"
+                onSearch={this.handleSearch}
+                onChange={this.handleSearch}
+                enterButton
+              />
+            </Row>
+            {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
+              <Row type="flex" justify="space-between" align="middle">
+                <ColWrapper span={11}>
+                  <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
+                </ColWrapper>
+                <Col span={2}>
+                  <IconSwap type="swap" />
                 </Col>
+                <ColWrapper span={11}>
+                  <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
+                </ColWrapper>
               </Row>
-              <SelUserKindDiv>
-                <Col span={8}>Add students by their:</Col>
-                <Col span={12} offset={1}>
-                  <Select data-cy="studentType" onChange={this.handleChange} defaultValue="google">
-                    <Option value="google">Google Usernames</Option>
-                    <Option value="mso">Office 365 Usernames</Option>
-                    <Option value="fl">Frist Name and Last Name</Option>
-                    <Option value="lf">Last Name and First Name</Option>
-                  </Select>
-                </Col>
-              </SelUserKindDiv>
+            )}
+          </SearchViewContainer>
+        ) : (
+          <AddBulkStudentsViewContainer>
+            <Row>
+              <AddBulkUserPrimaryTextContainer span={15}>
+                Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add
+                multiple students.
+              </AddBulkUserPrimaryTextContainer>
+            </Row>
+            <SelUserKindDiv>
+              <Col span={11}>Add students by their name</Col>
+              <Col span={13}>
+                <Select data-cy="studentType" onChange={this.handleChange} defaultValue="google">
+                  <Option value="google">Google Usernames</Option>
+                  <Option value="mso">Office 365 Usernames</Option>
+                  <Option value="fl">Frist Name and Last Name</Option>
+                  <Option value="lf">Last Name and First Name</Option>
+                </Select>
+              </Col>
+            </SelUserKindDiv>
+            <Row>
+              <Col span={24}>
+                <FormItem style={{ marginBottom: "0px" }}>
+                  {placeHolderComponent}
+                  {getFieldDecorator("students", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "No user Informtaion added."
+                      },
+                      {
+                        validator: !placeHolderVisible && this.validateStudentsList
+                      }
+                    ]
+                  })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
+                </FormItem>
+              </Col>
+            </Row>
+            {curSel === "fl" || curSel === "lf" ? (
+              <p>
+                {role === roleuser.TEACHER
+                  ? `Class code (${
+                      selectedClass.code
+                    }) will be used as default password for these students, please ask the students to change their password once they login to their account.
+                  `
+                  : `'edulastic' will be used as default password for these students, please ask the students to change
+                  their password once they login to their account.`}
+              </p>
+            ) : null}
+            {role === roleuser.SCHOOL_ADMIN ? (
               <Row>
                 <Col span={24}>
-                  <FormItem>
-                    {placeHolderComponent}
-                    {getFieldDecorator("students", {
+                  <ModalFormItem label="Select School">
+                    {getFieldDecorator("institutionId", {
                       rules: [
                         {
                           required: true,
-                          message: "No user Informtaion added."
-                        },
-                        {
-                          validator: !placeHolderVisible && this.validateStudentsList
+                          message: "Please select school"
                         }
-                      ]
-                    })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
-                  </FormItem>
+                      ],
+                      initialValue: defaultSchoolId
+                    })(
+                      <Select placeholder="Select school">
+                        {schools.map(school => (
+                          <Option key={school._id} value={school._id}>
+                            {school.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </ModalFormItem>
                 </Col>
               </Row>
-              {curSel === "fl" || curSel === "lf" ? (
-                <p>
-                  {role === roleuser.TEACHER
-                    ? `Class code (${
-                        selectedClass.code
-                      }) will be used as default password for these students, please ask the students to change their password once they login to their account.
-                  `
-                    : `'edulastic' will be used as default password for these students, please ask the students to change
-                  their password once they login to their account.`}
-                </p>
-              ) : null}
-              {role === roleuser.SCHOOL_ADMIN ? (
-                <Row>
-                  <Col span={24}>
-                    <ModalFormItem label="Select School">
-                      {getFieldDecorator("institutionId", {
-                        rules: [
-                          {
-                            required: true,
-                            message: "Please select school"
-                          }
-                        ],
-                        initialValue: defaultSchoolId
-                      })(
-                        <Select placeholder="Select school">
-                          {schools.map(school => (
-                            <Option key={school._id} value={school._id}>
-                              {school.name}
-                            </Option>
-                          ))}
-                        </Select>
-                      )}
-                    </ModalFormItem>
-                  </Col>
-                </Row>
-              ) : null}
-              <Row type="flex" justify="end">
-                <Col>
-                  <ActionButton
-                    data-cy="addStudents"
-                    type="primary"
-                    shape="round"
-                    key="submit"
-                    onClick={this.onInviteStudents}
-                  >
-                    Add Student
-                  </ActionButton>
-                </Col>
-              </Row>
-            </TabPane>
-            {searchAndAddStudents && isPremium ? (
-              <TabPane tab="Search Existing Students and Add" key="2">
-                <Row>Search and select existing students from your district and add</Row>
-                <Row>
-                  <Search
-                    placeholder="type student name or email"
-                    style={{ width: 300, marginTop: "1rem", marginBottom: "1.5rem" }}
-                    onSearch={this.handleSearch}
-                    onChange={this.handleSearch}
-                    enterButton
-                  />
-                </Row>
-                {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
-                  <Row type="flex" justify="space-between" align="middle">
-                    <ColWrapper span={11}>
-                      <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
-                    </ColWrapper>
-                    <Col span={2}>
-                      <Icon type="swap" style={{ padding: "1rem" }} />
-                    </Col>
-                    <ColWrapper span={11}>
-                      <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
-                    </ColWrapper>
-                  </Row>
-                )}
+            ) : null}
+          </AddBulkStudentsViewContainer>
+        )}
 
-                <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
-                  <Col>
-                    <Button shape="round" type="primary" key="submit" ghost onClick={this.onCloseModal}>
-                      No,Cancel
-                    </Button>
-                  </Col>
-                  <Col>
-                    <ActionButton
-                      data-cy="addStudents"
-                      type="primary"
-                      shape="round"
-                      key="submit"
-                      disabled={!studentsToEnroll.length}
-                      onClick={this.onAddMultipleStudents.bind(
-                        this,
-                        setinfoModelVisible,
-                        setInfoModalData,
-                        studentsToEnroll,
-                        selectedClass,
-                        setIsAddMultipleStudentsModal,
-                        loadStudents
-                      )}
-                    >
-                      Yes, Add to Class
-                      <Icon type="right" />
-                    </ActionButton>
-                  </Col>
-                </Row>
-              </TabPane>
-            ) : (
-              ""
-            )}
-          </Tabs>
-        </Modal>
-      </>
+        <ButtonsContainer gutter={5}>
+          <Col span={7}>
+            <CancelButton onClick={this.onCloseModal}>No, cancel</CancelButton>
+          </Col>
+          <Col span={7}>
+            <OkButton
+              data-cy="addStudents"
+              onClick={() => {
+                this.addStudents();
+              }}
+            >
+              Yes, Add to class
+            </OkButton>
+          </Col>
+        </ButtonsContainer>
+      </StyledModal>
     );
   }
 }

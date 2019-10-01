@@ -13,14 +13,8 @@ import { Subtitle } from "../../styled/Subtitle";
 import { WidgetSubHeading } from "../../styled/Widget";
 import Question from "../../components/Question";
 import { ColContainer } from "../../styled/ColContainer";
-
 import UiInputGroup from "./components/UiInputGroup";
-
-const fractionFormats = [
-  { value: "Decimal", label: "Decimal" },
-  { value: "Fraction", label: "Fraction" },
-  { value: "MixedFraction", label: "Mixed Fraction" }
-];
+import { FRACTION_FORMAT_DECIMAL, FRACTION_FORMAT_FRACTION, FRACTION_FORMAT_MIXED_FRACTION } from "./const";
 
 class ComposeQuestion extends Component {
   constructor(props) {
@@ -37,6 +31,15 @@ class ComposeQuestion extends Component {
       localSnapTo: snapTo
     };
   }
+
+  getFractionFormatSettings = () => {
+    const { t } = this.props;
+    return [
+      { label: t("component.chart.fractionFormatOptions.decimal"), value: FRACTION_FORMAT_DECIMAL },
+      { label: t("component.chart.fractionFormatOptions.fraction"), value: FRACTION_FORMAT_FRACTION },
+      { label: t("component.chart.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMAT_MIXED_FRACTION }
+    ];
+  };
 
   render() {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
@@ -187,7 +190,7 @@ class ComposeQuestion extends Component {
                   style={{ width: "100%" }}
                   onChange={onFractionFormatChange}
                 >
-                  {fractionFormats.map(({ value: val, label }) => (
+                  {this.getFractionFormatSettings().map(({ value: val, label }) => (
                     <Select.Option data-cy={val} key={val} value={val}>
                       {label}
                     </Select.Option>

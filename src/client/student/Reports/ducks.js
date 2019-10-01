@@ -111,13 +111,13 @@ const statusFilter = filterType => assignment => {
   }
 };
 
-export const getAssignmentsSelector = createSelector(
+export const getAllAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
-  filterSelector,
+
   getCurrentGroup,
   getClassIds,
-  (assignmentsObj, reportsObj, filter, currentGroup, classIds) => {
+  (assignmentsObj, reportsObj, currentGroup, classIds) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), "assignmentId");
     const assignments = values(assignmentsObj)
@@ -127,8 +127,14 @@ export const getAssignmentsSelector = createSelector(
         reports:
           (groupedReports[assignment._id] && groupedReports[assignment._id].filter(item => item.status !== 0)) || []
       }))
-      .filter(assignment => isReport(assignment, currentGroup, classIds))
-      .filter(statusFilter(filter));
+      .filter(assignment => isReport(assignment, currentGroup, classIds));
+
     return assignments;
   }
+);
+
+export const getAssignmentsSelector = createSelector(
+  getAllAssignmentsSelector,
+  filterSelector,
+  (assignments, filter) => assignments.filter(statusFilter(filter))
 );

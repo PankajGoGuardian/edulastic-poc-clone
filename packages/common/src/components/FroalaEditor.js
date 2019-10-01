@@ -92,6 +92,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
         "insertTable",
         "math",
         "insertImage",
+        "insertLink",
         "undo",
         "redo",
         "align",
@@ -306,6 +307,7 @@ const CustomEditor = ({
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
+      linkAlwaysBlank: true, // adding to make link always open in blank
       imageDefaultWidth: imageDefaultWidth,
       initOnClick,
       toolbarButtons,

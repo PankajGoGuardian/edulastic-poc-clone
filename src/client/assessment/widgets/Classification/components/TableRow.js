@@ -64,6 +64,8 @@ const TableRow = ({
     }
   };
 
+  const getChangedContainerHeight = h => Math.max(h, item?.imageOptions?.height + item?.imageOptions?.y);
+
   const changeWrapperH = () => {
     const { responseOptions = [] } = item;
     let maxH = 0;
@@ -74,7 +76,7 @@ const TableRow = ({
         maxH = _containerH;
       }
     }
-    const h = maxH > 600 ? maxH : 600;
+    const h = getChangedContainerHeight(maxH) + 40 || maxH + 40; // +40 to remove scrollbar on drag
     wrapperRef.current.style.height = `${h}px`;
   };
 
@@ -244,10 +246,10 @@ const TableRow = ({
 
   useEffect(() => {
     changeWrapperH();
-  }, [item.responseOptions]);
+  }, [item.responseOptions, item.imageOptions]);
 
   return (
-    <div ref={wrapperRef} style={{ position: "relative" }}>
+    <div ref={wrapperRef} style={{ position: "relative", padding: "20px" }}>
       {cols}
     </div>
   );

@@ -6,7 +6,7 @@ import { getChartData } from "../../utils/transformers";
 import { getHSLFromRange1 } from "../../../../../common/util";
 
 export const SignedStackBarChartContainer = ({
-  denormalizedData,
+  filteredDenormalizedData,
   rawData,
   filters,
   chartFilter,
@@ -15,8 +15,8 @@ export const SignedStackBarChartContainer = ({
   onBarClickCB
 }) => {
   const chartData = useMemo(() => {
-    return getChartData(denormalizedData, masteryScale, filters, role);
-  }, [denormalizedData, masteryScale, filters, role]);
+    return getChartData(filteredDenormalizedData, masteryScale, filters, role);
+  }, [filteredDenormalizedData, masteryScale, filters, role]);
 
   const getChartSpecifics = () => {
     if (!isEmpty(masteryScale)) {

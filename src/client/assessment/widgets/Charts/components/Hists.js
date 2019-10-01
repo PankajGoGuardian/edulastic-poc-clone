@@ -10,6 +10,7 @@ import { Bar, ActiveBar, Text } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Hists = ({
+  item,
   bars,
   onPointOver,
   onMouseDown,
@@ -22,6 +23,8 @@ const Hists = ({
   saveAnswer
 }) => {
   const { margin, yAxisMin, height, multicolorBars } = gridParams;
+  const { chart_data = {} } = item;
+  const { data = [] } = chart_data;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
 
@@ -104,7 +107,7 @@ const Hists = ({
             height={getBarHeight(dot.y)}
             color={getColorForIndex(index)}
           />
-          {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <ActiveBar
               onMouseEnter={handleMouse(index)}
               onMouseLeave={handleMouse(null)}
@@ -128,6 +131,7 @@ const Hists = ({
 };
 
 Hists.propTypes = {
+  item: PropTypes.object.isRequired,
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -144,9 +148,13 @@ Hists.propTypes = {
     multicolorBars: PropTypes.bool
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  saveAnswer: PropTypes.func,
+  deleteMode: PropTypes.bool
 };
 Hists.defaultProps = {
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  saveAnswer: () => {},
+  deleteMode: false
 };
 export default Hists;

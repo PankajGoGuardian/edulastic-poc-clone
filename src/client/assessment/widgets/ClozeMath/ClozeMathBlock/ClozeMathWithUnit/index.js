@@ -221,18 +221,9 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div
-        ref={this.wrappedRef}
-        style={{
-          margin: "0 4px",
-          display: "inline-flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative"
-        }}
-      >
-        <span
-          ref={this.mathRef}
+      <OuterWrapper innerRef={this.wrappedRef}>
+        <ClozeMathInputField
+          innerRef={this.mathRef}
           onClick={this.showKeyboardModal}
           style={{
             ...btnStyle,
@@ -269,13 +260,35 @@ class ClozeMathWithUnit extends React.Component {
             />
           </KeyboardWrapper>
         )}
-      </div>
+      </OuterWrapper>
     );
   }
 }
 
+const OuterWrapper = styled.div`
+  margin: 2px 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+const ClozeMathInputField = styled.span`
+  width: ${({ width }) => width};
+  min-width: ${({ minWidth }) => minWidth} !important;
+  font-size: ${({ fontSize }) => fontSize} !important;
+  height: ${({ height }) => height};
+  margin-right: 0 !important;
+  padding: 5px 11px !important;
+  border-top-right-radius: 0 !important;
+  border-right: 0 !important;
+  display: flex !important;
+  border-bottom-right-radius: 0 !important;
+  font-weight: 600 !important;
+`;
+
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
@@ -287,6 +300,7 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={mathUnits[id]}
       item={item}
       id={id}

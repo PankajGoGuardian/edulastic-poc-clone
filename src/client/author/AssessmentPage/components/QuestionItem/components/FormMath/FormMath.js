@@ -9,7 +9,7 @@ import { MathAnswer } from "./styled";
 export default class FormMath extends React.Component {
   static propTypes = {
     saveAnswer: PropTypes.func.isRequired,
-    mode: PropTypes.oneOf(["edit", "review"]).isRequired,
+    mode: PropTypes.oneOf(["edit", "review", "report"]).isRequired,
     question: PropTypes.object.isRequired,
     answer: PropTypes.string
   };
@@ -40,17 +40,26 @@ export default class FormMath extends React.Component {
     return <QuestionText>{answer.value}</QuestionText>;
   };
 
-  renderForm = () => {
+  renderForm = mode => {
     const {
       question: { numberPad, symbols },
       answer
     } = this.props;
 
+    if (mode === "report") {
+      return <QuestionText>{answer}</QuestionText>;
+    }
     return (
       <ThemeProvider theme={themes.default}>
         <MathAnswer onInput={this.handleChange} numberPad={numberPad} symbols={symbols} value={answer} fullWidth />
       </ThemeProvider>
     );
+  };
+
+  renderReport = () => {
+    const { answer } = this.props;
+
+    return <QuestionText>{answer}</QuestionText>;
   };
 
   render() {
@@ -61,6 +70,8 @@ export default class FormMath extends React.Component {
         return this.renderView();
       case "review":
         return this.renderForm();
+      case "report":
+        return this.renderReport();
       default:
         return null;
     }

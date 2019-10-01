@@ -14,13 +14,11 @@ import selectsData from "../../../author/TestPage/components/common/selectsData"
 import CustomTreeSelect from "./CustomTreeSelect";
 import StandardsModal from "./StandardsModal";
 import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
-import StandardTags from "./styled/StandardTags";
-import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
 import { storeInLocalStorage, removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { themeColor, grey } from "@edulastic/colors";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../../../author/src/selectors/user";
 import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
+import RecentStandardsList from "./RecentStandardsList";
 
 const AlignmentRow = ({
   t,
@@ -44,7 +42,8 @@ const AlignmentRow = ({
   updateDefaultGrades,
   updateDefaultSubject,
   interestedCurriculums,
-  recentStandardsList = []
+  recentStandardsList = [],
+  isDocBased = false
 }) => {
   let {
     subject = "Mathematics",
@@ -211,7 +210,7 @@ const AlignmentRow = ({
           alignmentIndex={alignmentIndex}
         />
       )}
-      <Row gutter={36}>
+      <Row gutter={isDocBased ? 0 : 36}>
         <Col md={20}>
           <Row gutter={1}>
             <Col md={7}>
@@ -287,7 +286,7 @@ const AlignmentRow = ({
                 <Select
                   data-cy="searchStandardSelect"
                   mode="multiple"
-                  style={{ width: "100%" }}
+                  style={{ width: isDocBased ? "90%" : "100%" }}
                   placeholder={t("component.options.searchStandards")}
                   filterOption={false}
                   value={standardsArr}
@@ -322,22 +321,12 @@ const AlignmentRow = ({
                     ))}
                 </Select>
               </ItemBody>
-              {recentStandardsList && recentStandardsList.length > 0 && (
-                <StandardsWrapper>
-                  <div>RECENTLY USED:</div>
-                  <RecentStandards>
-                    {recentStandardsList.map(recentStandard => (
-                      <StandardTags
-                        color={standardsArr.includes(recentStandard.identifier) ? grey : themeColor}
-                        onClick={() => {
-                          handleAddStandard(recentStandard);
-                        }}
-                      >
-                        {recentStandard.identifier}
-                      </StandardTags>
-                    ))}
-                  </RecentStandards>
-                </StandardsWrapper>
+              {recentStandardsList && recentStandardsList.length > 0 && !isDocBased && (
+                <RecentStandardsList
+                  recentStandardsList={recentStandardsList}
+                  standardsArr={standardsArr}
+                  handleAddStandard={handleAddStandard}
+                />
               )}
             </Col>
           </Row>
@@ -349,6 +338,15 @@ const AlignmentRow = ({
             </FlexContainer>
           </ItemBody>
         </Col>
+        {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
+          <Col xs={24}>
+            <RecentStandardsList
+              recentStandardsList={recentStandardsList}
+              standardsArr={standardsArr}
+              handleAddStandard={handleAddStandard}
+            />
+          </Col>
+        )}
       </Row>
     </Fragment>
   );

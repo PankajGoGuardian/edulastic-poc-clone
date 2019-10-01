@@ -16,7 +16,10 @@ import {
   themeColor,
   title,
   red,
-  fadedGreen
+  fadedGreen,
+  mobileWidthMax,
+  white,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { userApi } from "@edulastic/api";
 import {
@@ -366,11 +369,11 @@ class ProfileBody extends React.Component {
     };
     return (
       <LayoutContent flag={flag}>
-        <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+        <ProfileWrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
             <Photo user={user} />
           </ProfileImgWrapper>
-          <div>
+          <RightContainer>
             <ProfileContentWrapper>
               <UserDetail>
                 <SubHeader>
@@ -495,8 +498,8 @@ class ProfileBody extends React.Component {
                 </SchoolWrapper>
               </>
             )}
-          </div>
-        </Wrapper>
+          </RightContainer>
+        </ProfileWrapper>
         {showModal && (
           <DeleteAccountModal visible={showModal} toggleModal={this.toggleModal} deleteProfile={this.deleteProfile} />
         )}
@@ -563,61 +566,44 @@ const LayoutContent = styled(Layout.Content)`
   width: 100%;
 `;
 
-const ProfileContentWrapper = styled.div`
-  width: 1150px
-  background-color:white;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-  overflow:hidden;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 800px;
+const ProfileWrapper = styled(Wrapper)`
+  padding: 30px;
+  margin: 0px;
+  @media screen and (max-width: ${mobileWidthMax}) {
     padding: 20px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 735px;
-    padding:15px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 600px;
-    padding:10px;
   }
 `;
 
-const SchoolWrapper = styled.div`
-  width: 1150px;
-  background-color: white;
+const RightContainer = styled.div`
+  width: calc(100% - 370px);
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: calc(100% - 270px);
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+  }
+`;
+
+const ProfileContentWrapper = styled.div`
+  width: 100%;
+  background-color: ${white};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  padding: 15px;
+  padding: 30px;
+  overflow: hidden;
+`;
+
+const SchoolWrapper = styled(ProfileContentWrapper)`
   display: flex;
   align-items: center;
   margin-top: 20px;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 800px;
-    padding: 20px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 735px;
-    padding: 15px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 600px;
-    padding: 10px;
-  }
 `;
 
 const SchoolLabel = styled.span`
   font-weight: 600;
   font-size: 16px;
-  margin-left: 15px;
-  width: 175px;
+  min-width: 150px;
 `;
 
 const StandardSetsLabel = styled(SchoolLabel)``;
@@ -628,45 +614,7 @@ const SchoolListWrapper = styled.span`
 `;
 
 const StandardSetsList = styled(SchoolListWrapper)`
-  width: 700px;
-`;
-
-const SelectSetsButton = styled(Button)`
-  width: 200px;
-  height: 40px;
-  margin: 0 15px;
-  background: ${themeColor};
-  border-color: ${themeColor};
-  font-size: 11px;
-  color: white;
-  text-transform: uppercase;
-  float: right;
-  font-weight: 600;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    margin: 8px 0 0 0;
-  }
-
-  i {
-    font-size: 14px;
-  }
-`;
-
-const SaveStandardSetsBtn = styled(SelectSetsButton)`
-  margin: 5px 15px;
-  :hover{
-    color ${themeColor};
-  }
-
+  width: 100%;
 `;
 
 const StyledTag = styled(Tag)`
@@ -682,162 +630,62 @@ const StyledTag = styled(Tag)`
   }
 `;
 
-const UserDetail = styled.div`
-  padding: 5px 0rem 20px;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    padding: 5px 0 20px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    padding: 5px 0 20px;
-  }
-`;
+const UserDetail = styled.div``;
 
 const SubHeader = styled.div`
   overflow: hidden;
 `;
 
-const EditProfileButton = styled(Button)`
-  width: 200px;
-  height: 40px;
-  margin: 0 15px;
-  background: ${themeColor};
-  border-color: ${themeColor};
-  font-size: 11px;
-  color: white;
-  text-transform: uppercase;
-  float: right;
-  font-weight: 600;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    margin: 8px 0 0 0;
-  }
-
-  i {
-    font-size: 14px;
-  }
-`;
-
-const DeleteAccountButton = styled(Button)`
-  width: 200px;
-  height: 40px;
-  margin: 0 15px;
-  background: white !important;
-  font-size: 11px;
-  text-transform: uppercase;
-  float: right;
-  border: 1px solid ${red} !important;
-  color: ${red};
-  font-weight: 600;
-
-  &:hover {
-    color: ${red} !important;
-  }
-
-  &:focus {
-    color: ${red} !important;
-  }
-
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    margin: 8px 0 0 0;
-  }
-
-  i {
-    font-size: 14px;
-  }
-`;
-
 const Title = styled.h3`
   color: ${title};
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 11px;
+  margin-bottom: 10px;
   float: left;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    font-size: 18px;
-    margin-bottom: 7px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    font-size: 18px;
-    margin-bottom: 11px;
-  }
 `;
 
 const ProfileImgWrapper = styled.div`
-  width: 400px;
-  height: 350px;
+  width: 350px;
+  height: 300px;
   position: relative;
-  background-color: white;
-  display: flex;
+  background-color: ${white};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
-  margin-bottom: 20px @media (max-width: ${extraDesktopWidth}) {
-    width: 300px;
-    height: 250px;
-    margin-right: 10px;
-    margin-bottom: 20px;
-  }
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-width: 250px;
-    max-height: 200px;
-    margin-right: 10px;
-    margin-bottom: 20px;
+    width: 250px;
+    height: 200px;
   }
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 200px;
-    max-height: 200px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
   }
 `;
 
 const Details = styled.div`
-  margin: 10px 0px 0px 25px;
+  padding: 30px 20px;
 `;
 
 const DetailRow = styled.div`
-  height: 60px;
   display: flex;
   align-items: center;
+  padding: 10px 0px 20px;
 `;
+
 const DetailTitle = styled.span`
   font-size: 15px;
   color: rgba(0, 0, 0, 0.65);
   font-weight: 600;
-  width: 20%;
+  width: 150px;
   display: inline-block;
 `;
 const DetailData = styled.span`
   font-size: 15px;
   color: grey;
   display: inline-block;
-  width: 50%;
+  width: calc(100% - 150px);
 `;
 
 const Label = styled.label`
@@ -846,7 +694,7 @@ const Label = styled.label`
 
 const ChangePasswordToggleButton = styled.div`
   color: ${themeColor};
-  padding-left: 25px;
+  padding-left: 20px;
   cursor: pointer;
   width: fit-content;
   span {
@@ -857,79 +705,31 @@ const ChangePasswordToggleButton = styled.div`
 
 const FormWrapper = styled(Form)`
   width: 100%;
-  margin-left: 15px;
   text-align: left;
-  margin-top: 30px;
-
-  .ant-form-item {
-    margin-bottom: 22px;
-  }
+  padding: 30px 20px 5px;
+  display: flex;
+  justify-content: space-between;
 
   .ant-input {
     height: 40px;
     background: ${backgrounds.primary};
     border: 1px solid ${borders.secondary};
-    padding: 0 24px;
-  }
-
-  @media (max-width: ${extraDesktopWidth}) {
-    max-width: 647px;
-
-    .ant-form-item-control {
-      line-height: 35px;
-    }
-
-    .ant-form-item {
-      margin-bottom: 8px;
-    }
-
-    .ant-input {
-      height: 30px;
-    }
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    .ant-form-item-control {
-      line-height: 34px;
-    }
-
-    .ant-form-item {
-      margin-bottom: 0;
-    }
+    padding: 0 15px;
   }
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;
-
-    .ant-form-item {
-      margin-bottom: 7px;
-      padding: 0 5px;
-    }
-
-    .ant-form-item-control {
-      line-height: 43px;
-    }
-
-    .ant-input {
-      height: 40px;
-    }
+    flex-direction: column;
   }
 `;
 
 const FormItemWrapper = styled(FormItem)`
-  width: 49%;
+  width: calc(50% - 10px);
   display: inline-block;
-  padding: 0px 15px;
-
-  @media (max-width: 425px) {
-    width: 100%;
-    display: block;
-  }
   label {
     font-size: 13px;
     color: rgba(0, 0, 0, 0.65);
     font-weight: 600;
-    letter-spacing: -0.4px;
   }
   .ant-form-explain {
     font-size: 12px;
@@ -940,15 +740,9 @@ const InputItemWrapper = styled(FormItem)`
   width: 50%;
   display: inline-block;
   margin-bottom: 0 !important;
-
-  @media (max-width: 425px) {
-    width: 100%;
-    display: block;
-  }
   .ant-form-explain {
     font-size: 12px;
   }
-
   .ant-input {
     height: 40px;
     background: ${backgrounds.primary};
@@ -966,6 +760,11 @@ const InputItemWrapper = styled(FormItem)`
     line-height:40px;
     margin: 0 24px !important;
   }
+  
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    display: block;
+  }
 `;
 
 const FormButtonWrapper = styled.div`
@@ -974,48 +773,65 @@ const FormButtonWrapper = styled.div`
   padding-right: 20px;
 `;
 
-const SaveButton = styled(Button)`
-  width: 200px;
+const EditProfileButton = styled(Button)`
   height: 40px;
-  margin: 0 15px;
+  margin-left: 15px;
   background: ${themeColor};
   border-color: ${themeColor};
   font-size: 11px;
-  color: white;
+  color: ${white};
   text-transform: uppercase;
+  float: right;
+  font-weight: 600;
+  padding: 0px 30px;
+  i {
+    font-size: 14px;
+  }
 
   @media (max-width: ${extraDesktopWidth}) {
     height: 36px;
   }
-
   @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
+    padding: 0px 15px;
   }
-
   @media (max-width: ${desktopWidth}) {
     width: 100%;
     margin: 8px 0 0 0;
   }
 `;
 
-const CancelButton = styled(SaveButton)`
-  width: 200px;
-  height: 40px;
-  margin: 0 15px;
-  background: white;
+const DeleteAccountButton = styled(EditProfileButton)`
+  background: ${white};
+  border: 1px solid ${red} !important;
+  color: ${red};
+  &:hover,
+  &:focus {
+    color: ${red} !important;
+  }
+`;
+
+const SaveButton = styled(EditProfileButton)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  color: ${white};
+`;
+
+const CancelButton = styled(EditProfileButton)`
+  background: ${white};
   color: ${themeColor};
   border: 1px solid ${themeColor};
+`;
 
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
+const SelectSetsButton = styled(EditProfileButton)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  color: ${white};
+  padding: 0px 20px;
+`;
 
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 160px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    margin: 0;
+const SaveStandardSetsBtn = styled(SelectSetsButton)`
+  margin: 5px 15px;
+  :hover{
+    color ${themeColor};
   }
 `;

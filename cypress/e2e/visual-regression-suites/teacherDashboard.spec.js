@@ -21,6 +21,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.get("img")
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
+        cy.wait(1000); // some images takes time to load
         cy.matchImageSnapshot(); // take screenshot and comapare
       });
     });

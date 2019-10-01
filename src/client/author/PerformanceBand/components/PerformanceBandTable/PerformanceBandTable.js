@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Input, Form, Icon, Checkbox, message, Slider, Row, Col } from "antd";
+import { Table, Input, InputNumber, Form, Icon, Checkbox, message, Slider, Row, Col } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -74,6 +74,12 @@ const StyledSlider = styled(Slider)`
     margin-left: -7px;
     border-color: #4e95f3;
   }
+`;
+
+const StyledInputNumber = styled(InputNumber)`
+  width: 60px;
+  margin-right: 10px;
+  margin-top: -5px;
 `;
 
 const StyledAddBandButton = styled(ThemeButton)`
@@ -273,12 +279,22 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "From",
         dataIndex: "from",
-        width: "22%",
+        width: "25%",
         render: (text, record) => {
           return (
             <StyledColFromTo>
               <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
-                <PercentText>{record.from}%</PercentText>
+                {this.props.readOnly ? (
+                  <PercentText>{record.from}%</PercentText>
+                ) : (
+                  <StyledInputNumber
+                    value={record.from}
+                    onChange={v => {
+                      const delta = v - record.from;
+                      this.onClickFromTo(v, record.key, "from", delta);
+                    }}
+                  />
+                )}
                 <Col style={{ flex: "1 1 auto" }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
@@ -300,13 +316,23 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "To",
         dataIndex: "to",
-        width: "22%",
+        width: "25%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
               <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
-                <PercentText>{record.to}%</PercentText>
+                {this.props.readOnly ? (
+                  <PercentText>{record.to}%</PercentText>
+                ) : (
+                  <StyledInputNumber
+                    value={record.to}
+                    onChange={v => {
+                      const delta = v - record.to;
+                      this.onClickFromTo(v, record.key, "to", delta);
+                    }}
+                  />
+                )}
                 <Col style={{ flex: "1 1 auto" }}>
                   <StyledSlider
                     disabled={this.props.readOnly}

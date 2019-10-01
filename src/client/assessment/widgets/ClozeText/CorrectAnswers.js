@@ -16,6 +16,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import CorrectAnswer from "./CorrectAnswer";
 import MixMatchCorrectAnswer from "./MixMatchCorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
+import { updateVariables } from "../../utils/variables";
 
 class CorrectAnswers extends Component {
   state = {
@@ -119,6 +120,7 @@ class CorrectAnswers extends Component {
       }
     }
     setQuestionData(newData);
+    updateVariables(newData);
   };
 
   updateAltCorrectValidationAnswers = (answers, tabIndex) => {
@@ -134,20 +136,21 @@ class CorrectAnswers extends Component {
 
     newData.validation.altResponses = updatedAltResponses;
     setQuestionData(newData);
+    updateVariables(newData);
   };
 
   updateAltAnswersMixMatch = ({ id, tabId, value }) => {
     const { question, setQuestionData } = this.props;
-    setQuestionData(
-      produce(question, draft => {
-        draft.validation.altResponses = draft.validation.altResponses.map(alt => {
-          if (alt.id === tabId) {
-            alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
-          }
-          return alt;
-        });
-      })
-    );
+    const newQuestion = produce(question, draft => {
+      draft.validation.altResponses = draft.validation.altResponses.map(alt => {
+        if (alt.id === tabId) {
+          alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
+        }
+        return alt;
+      });
+    });
+    setQuestionData(newQuestion);
+    updateVariables(newQuestion);
   };
 
   addAltAnswerMixMatch = ({ index, value }) => {
@@ -279,6 +282,7 @@ class CorrectAnswers extends Component {
                         onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                         view={view}
                         previewTab={previewTab}
+                        max={validation?.validResponse?.score}
                       />
                     )}
                   </TabContainer>

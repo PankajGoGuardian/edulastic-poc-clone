@@ -5,18 +5,19 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
-import { sortBy, maxBy } from "lodash";
+import { sortBy, maxBy, get } from "lodash";
 
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
+  TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { methods } from "@edulastic/constants/const/math";
 
-import { getPreviewSelector, getViewSelector } from "../../../src/selectors/view";
+import { getPreviewSelector } from "../../../src/selectors/view";
 import { checkAnswerAction } from "../../../src/actions/testItem";
 import { changePreviewAction } from "../../../src/actions/view";
 import { EXACT_MATCH } from "../../../../assessment/constants/constantsForQuestions";
@@ -28,10 +29,12 @@ import Section from "../Section/Section";
 import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
+import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
   [SHORT_TEXT]: "",
+  [TRUE_OR_FALSE]: [],
   [CLOZE_DROP_DOWN]: [],
   [MATH]: [
     {
@@ -54,7 +57,8 @@ const defaultQuestionOptions = {
   ],
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]
-  }
+  },
+  [TRUE_OR_FALSE]: [{ label: "T", value: uuid() }, { label: "F", value: uuid() }]
 };
 
 const mathData = {
@@ -92,6 +96,11 @@ const multipleChoiceData = {
   uiStyle: { type: "horizontal" }
 };
 
+const clozeDropDownData = {
+  responseIds: [{ index: 0, id: "0" }],
+  stimulus: `<p><textdropdown id="0" contenteditable="false" /> </p>`,
+  title: "Cloze with Drop Down"
+};
 const essayData = {
   uiStyle: {
     minHeight: 15
@@ -100,6 +109,11 @@ const essayData = {
   title: "Essay with plain text"
 };
 
+const trueOrFalseData = {
+  type: "multipleChoice",
+  uiStyle: { type: "horizontal" },
+  title: "True or false"
+};
 const createQuestion = (type, index) => ({
   id: uuid(),
   qIndex: index,
@@ -118,6 +132,8 @@ const createQuestion = (type, index) => ({
   stimulus: "",
   smallSize: true,
   alignment: [],
+  ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
+  ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
   ...(type === MATH ? mathData : {}),
   ...(type === ESSAY_PLAIN_TEXT ? essayData : {})
@@ -178,6 +194,7 @@ class Questions extends React.Component {
     super(props);
     this.containerRef = React.createRef();
   }
+
   static propTypes = {
     list: PropTypes.array,
     questionsById: PropTypes.object,
@@ -207,18 +224,6 @@ class Questions extends React.Component {
     currentEditQuestionIndex: -1
   };
 
-  componentDidUpdate(prevProps) {
-    const { highlighted } = this.props;
-    const { highlighted: prevHighlighted } = prevProps;
-
-    if (highlighted && highlighted !== prevHighlighted) {
-      const questionNode = document.getElementById(highlighted);
-
-      if (questionNode) {
-        questionNode.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }
   scrollToBottom = () => {
     const reference = this.containerRef;
     if (reference.current) {
@@ -235,11 +240,8 @@ class Questions extends React.Component {
 
     const lastQuestion = questions[questions.length - 1];
 
-    const questionIndex = index
-      ? index
-      : lastQuestion && lastQuestion.qIndex
-      ? lastQuestion.qIndex + 1
-      : questions.length + 1;
+    const questionIndex =
+      index || (lastQuestion && lastQuestion.qIndex ? lastQuestion.qIndex + 1 : questions.length + 1);
 
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
@@ -360,14 +362,25 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, centered, highlighted, list, onDragStart } = this.props;
-
-    const review = viewMode === "review";
+    const {
+      previewMode,
+      viewMode,
+      noCheck,
+      answersById,
+      centered,
+      highlighted,
+      list,
+      onDragStart,
+      review,
+      previousQuestionActivities,
+      feedback
+    } = this.props;
+    const report = viewMode === "report";
 
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
     if (list.length > 0 && list[currentEditQuestionIndex]) {
-      shouldModalBeVisibile = list[currentEditQuestionIndex]["type"] !== "sectionLabel";
+      shouldModalBeVisibile = list[currentEditQuestionIndex].type !== "sectionLabel";
     }
     return (
       <Fragment>
@@ -387,6 +400,7 @@ class Questions extends React.Component {
                   key={question.id}
                   index={i}
                   data={question}
+                  review={review}
                   onCreateOptions={this.handleCreateOptions}
                   onOpenEdit={this.handleOpenEditModal(i)}
                   onDelete={this.handleDeleteQuestion(question.id)}
@@ -394,6 +408,10 @@ class Questions extends React.Component {
                   viewMode={viewMode}
                   answer={answersById[question.id]}
                   centered={centered}
+                  feedback={feedback}
+                  previousFeedback={
+                    Object.values(previousQuestionActivities) && Object.values(previousQuestionActivities)[0]
+                  }
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                 />
@@ -408,7 +426,7 @@ class Questions extends React.Component {
               scrollToBottom={this.scrollToBottom}
             />
           )}
-          {review && !noCheck && (
+          {review && !noCheck && !report && (
             <AnswerActionsWrapper>
               <AnswerAction active={previewMode === "check"} onClick={this.handleCheckAnswer}>
                 Check Answer
@@ -441,6 +459,8 @@ class Questions extends React.Component {
 const enhance = compose(
   connect(
     state => ({
+      feedback: FeedbackByQIdSelector(state),
+      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       previewMode: getPreviewSelector(state)
     }),
     {

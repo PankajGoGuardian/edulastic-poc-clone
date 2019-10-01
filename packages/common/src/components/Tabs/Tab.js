@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { themeColor, white, mobileWidth, title, mediumDesktopWidth } from "@edulastic/colors";
@@ -19,11 +19,20 @@ const Tab = ({
   type,
   borderRadius,
   addTabs,
-  isAddTab
+  isAddTab,
+  isPassageQuestion
 }) => {
+  const textWidth = useMemo(() => (label?.length || 0) * 10 + 10, [label]);
+
   const inputTab = (
     <EditableTab>
-      <Input type="text" value={label} onChange={onChange} />
+      <Input
+        isPassageQuestion={isPassageQuestion}
+        type="text"
+        style={{ width: `${textWidth}px` }}
+        value={label}
+        onChange={onChange}
+      />
       <IconPencilEdit color={themeColor} width={16} height={16} />
     </EditableTab>
   );
@@ -113,8 +122,8 @@ const Container = styled.div`
   }
 
   svg {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     fill: ${({ active }) => (active ? themeColor : title)};
   }
 
@@ -134,7 +143,7 @@ const Container = styled.div`
 const Input = styled.input`
   border: 0;
   width: 100%;
-  text-align: center;
+  text-align: ${({ isPassageQuestion }) => (isPassageQuestion ? "left" : "center")};
   outline: none;
   background: transparent;
 `;
@@ -143,6 +152,7 @@ const EditableTab = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 10px;
 `;
 
 const CloseIcon = styled.span`

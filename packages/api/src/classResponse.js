@@ -2,10 +2,12 @@ import API from "./utils/API";
 
 const api = new API();
 
-const classResponse = ({ testId }) =>
+const classResponse = ({ testId, classId, assignmentId }) =>
   api
     .callApi({
-      url: `/test/${testId}?validation=true&data=true`,
+      url: `/test/${testId}?validation=true&data=true${classId ? `&groupId=${classId}` : ""}${
+        assignmentId ? `&assignmentId=${assignmentId}` : ""
+      }`,
       method: "get"
     })
 

@@ -199,7 +199,8 @@ const CreateButton = styled(Button)`
     border-color: ${props => props.theme.themeColor};
   }
   svg {
-    display: none;
+    display: block;
+    margin-right: 10px;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
@@ -213,6 +214,7 @@ const CreateButton = styled(Button)`
     }
     svg {
       display: block;
+      margin-right: 0px;
     }
     padding: 0px;
     width: 45px;

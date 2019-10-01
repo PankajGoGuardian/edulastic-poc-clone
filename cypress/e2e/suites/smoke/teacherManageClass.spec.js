@@ -149,7 +149,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     });
 
     it("> edit existing class", () => {
-      const randomGrade = posibleGrades[_.floor(Math.random() * posibleGrades.length) - 1];
+      const randomGrade = posibleGrades[_.floor(Math.random() * posibleGrades.length)];
       manageClass.getClassDetailsByName(classNameEdit);
       manageClass.clickOnEditClass();
       manageClass.fillClassDetails(undefined, undefined, undefined, randomGrade, subject, standardSet, true);

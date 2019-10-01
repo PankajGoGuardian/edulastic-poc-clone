@@ -8,7 +8,7 @@ import { ReviewTableWrapper } from "./styled";
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
-import { getQuestionType, markQuestionLabel } from "../../../../../dataUtils";
+import { getQuestionType } from "../../../../../dataUtils";
 import { SortableItem } from "../List/List";
 import { helpers } from "@edulastic/common";
 
@@ -28,8 +28,6 @@ const ItemsTable = ({
   isCollapse
 }) => {
   const [expandedRows, setExpandedRows] = useState(-1);
-
-  const setQuestionNumber = markQuestionLabel(questions);
   const handleCheckboxChange = (index, checked) => {
     if (checked) {
       setSelected([...selected, index]);
@@ -60,7 +58,6 @@ const ItemsTable = ({
             onPreview={handlePreview}
             selected={selected}
             collapseView={true}
-            setQuestionNumber={setQuestionNumber}
             questions={questions}
             mobile={mobile}
           />

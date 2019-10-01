@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
 import { Dropdown } from "antd";
 
-const Tags = ({ tags = [], labelStyle, type, show }) => {
+const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);
@@ -14,7 +14,7 @@ const Tags = ({ tags = [], labelStyle, type, show }) => {
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {tag.tagName}
+          {isStandards ? tag : tag.tagName}
         </Label>
       ))}
     </PopupContainer>
@@ -22,9 +22,9 @@ const Tags = ({ tags = [], labelStyle, type, show }) => {
 
   return (
     <Labels>
-      {visibleTags.map(({ tagName }, i) => (
+      {visibleTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {tagName}
+          {isStandards ? tag : tag.tagName}
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (
@@ -91,12 +91,12 @@ const Label = styled.span`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;
-  padding: 6px 15px;
+  padding: 6px 10px;
   font-size: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 5px;
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
 `;

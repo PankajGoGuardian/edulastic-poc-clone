@@ -70,7 +70,7 @@ class Layout extends Component {
     const { item, responseContainers, onChange } = this.props;
     const { responseIds } = item;
     const ind = responseContainers.length;
-    let obj = {};
+    let obj = undefined;
     // eslint-disable-next-line no-labels
     outerLoop: if (responseIds) {
       // eslint-disable-next-line guard-for-in
@@ -85,7 +85,9 @@ class Layout extends Component {
         }
       }
     }
-    onChange("responseContainers", [...responseContainers, obj]);
+    if (obj) {
+      onChange("responseContainers", [...responseContainers, obj]);
+    }
   };
 
   deleteResponseContainer = index => {

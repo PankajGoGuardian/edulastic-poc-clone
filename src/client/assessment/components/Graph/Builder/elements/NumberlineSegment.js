@@ -1,6 +1,12 @@
 import JXG from "jsxgraph";
 import { Colors, CONSTANT } from "../config";
-import { calcMeasure, findAvailableStackedSegmentPosition, getAvailablePositions, getClosestTick } from "../utils";
+import {
+  calcMeasure,
+  findAvailableStackedSegmentPosition,
+  getAvailablePositions,
+  getClosestTick,
+  calcNumberlinePosition
+} from "../utils";
 import { defaultPointParameters } from "../settings";
 
 // Check if there an element inside after segment dragging, then find closest available space and put segment there
@@ -154,12 +160,13 @@ const drawLine = (board, firstPoint, secondPoint, colors, segmentType) => {
 };
 
 const loadSegment = (board, element, leftIncluded, rightIncluded, segmentType) => {
-  const firstPoint = drawPoint(board, element.point1, leftIncluded, false, element.leftPointColor, element.y);
-  const secondPoint = drawPoint(board, element.point2, rightIncluded, false, element.rightPointColor, element.y);
+  const yPos = board.stackResponses ? element.y : calcNumberlinePosition(board);
+  const firstPoint = drawPoint(board, element.point1, leftIncluded, false, element.leftPointColor, yPos);
+  const secondPoint = drawPoint(board, element.point2, rightIncluded, false, element.rightPointColor, yPos);
   const segment = drawLine(board, firstPoint, secondPoint, element.lineColor, segmentType);
 
   if (!board.stackResponses) {
-    handleSegmentDrag(board, segment, 0);
+    handleSegmentDrag(board, segment, calcNumberlinePosition(board));
   } else {
     handleSegmentDrag(board, segment, element.y, true);
   }
@@ -206,10 +213,11 @@ const onHandler = (board, coord) => {
   }
 
   if (!board.stackResponses) {
-    const firstPoint = drawPoint(board, newStartX, leftIncluded, false, null, 0);
-    const secondPoint = drawPoint(board, newEndX, rightIncluded, false, null, 0);
+    const yPos = calcNumberlinePosition(board);
+    const firstPoint = drawPoint(board, newStartX, leftIncluded, false, null, yPos);
+    const secondPoint = drawPoint(board, newEndX, rightIncluded, false, null, yPos);
     const segment = drawLine(board, firstPoint, secondPoint, null, board.currentTool);
-    handleSegmentDrag(board, segment, 0);
+    handleSegmentDrag(board, segment, yPos);
     return segment;
   }
 

@@ -30,6 +30,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
         showCollapseBtn
         showFeedback
         cols={rows}
+        isDocBased={item.isDocBased}
         preview="show"
         previewTab="show"
         questions={questionsKeyed}
@@ -65,7 +66,7 @@ class ClassQuestions extends Component {
 
   componentDidUpdate(prevProps) {
     const { loadScratchPad, questionActivities } = this.props;
-    if (prevProps.questionActivities !== questionActivities) {
+    if (prevProps.questionActivities !== questionActivities && !isEmpty(questionActivities)) {
       const userWork = {};
       questionActivities.forEach(curr => {
         if (curr.scratchPad && !userWork[curr.testItemId]) {
@@ -92,14 +93,20 @@ class ClassQuestions extends Component {
   };
 
   getTestItems() {
-    const { currentStudent, questionActivities, studentViewFilter: filter, labels = {} } = this.props;
+    const {
+      currentStudent,
+      questionActivities,
+      studentViewFilter: filter,
+      labels = {},
+      isQuestionView = false
+    } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
     }
     let {
       classResponse: { testItems }
     } = this.props;
-    if (!this.context.expressGrader && testItems) {
+    if (!this.context.expressGrader && testItems && !isQuestionView) {
       testItems = this.props.testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
     }
     const userQActivities =

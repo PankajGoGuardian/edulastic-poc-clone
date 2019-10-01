@@ -220,6 +220,12 @@ export default withCheckAnswerButton(ClozeMathPreview);
 const QuestionWrapper = styled.div`
   font-size: ${props => props.uiStyles.fontSize || "16px"};
   font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
+  p {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-wrap: wrap;
+  }
   li {
     margin: 4px 0;
   }

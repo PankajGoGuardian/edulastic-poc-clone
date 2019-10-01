@@ -58,7 +58,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
           <BarTooltipRow title="Assessment : " value={record.testName || "N/A"} />
           <BarTooltipRow title="Student Count : " value={record.totalGraded} />
           <BarTooltipRow title="Avg. Score : " value={round(record.rawScore, 2)} />
-          <BarTooltipRow title="Total Points : " value={record.maxScore} />
+          <BarTooltipRow title="Total Points : " value={record.maxPossibleScore} />
         </div>
       );
     }

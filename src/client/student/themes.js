@@ -70,10 +70,10 @@ const defaultTheme = {
     userInfoNameFontSize: "14px",
     userInfoRoleTextColor: "#444444",
     userInfoRoleFontSize: "12px",
-    userInfoDropdownBgColor: "#ffffff",
-    userInfoDropdownItemBgColor: "#ffffff",
-    userInfoDropdownItemBgHoverColor: "#f0f0f0",
-    userInfoDropdownItemTextColor: "#444444",
+    userInfoDropdownBgColor: themeColor,
+    userInfoDropdownItemBgColor: themeColor,
+    userInfoDropdownItemBgHoverColor: "#fff",
+    userInfoDropdownItemTextColor: "#fff",
     userInfoDropdownItemTextHoverColor: themeColor,
     itemIconColor: "#425066",
     userInfoDropdownItemFontSize: "14px",
@@ -158,6 +158,7 @@ const defaultTheme = {
     CardSqurebgColor: "#1fe3a0",
     CardColor: "#e5e5e5",
     CardSqare: "#ee1b82",
+    SkippedColor: "#6A737F",
     CardSquareDivColor: "#fdcc3a",
     CardDisneyColor: "#e1703e",
     SwitchColor: "#1fe3a0"
@@ -177,6 +178,9 @@ const defaultTheme = {
   breadcrumbs: {
     breadcrumbTextColor: themeColorBreadcrumb,
     breadcrumbTextSize: "10px",
+    breadcrumbTextSizeLarge: "11px",
+    breadcrumbTextSizeRegular: "10px",
+    breadcrumbTextSizeSmall: "9px",
     breadcrumbLinkColor: themeColorLight
   },
   reportList: {
@@ -244,7 +248,7 @@ const defaultTheme = {
   },
   classCard: {
     cardBg: "white",
-    cardHeaderBorderColor: "#F1F1F1",
+    cardHeaderBorderColor: "#DEDADA",
     cardTitleColor: themeColor,
     cardTitleTextSize: "14px",
     cardVisitClassBtnBgColor: "white",
@@ -265,7 +269,7 @@ const defaultTheme = {
     cardInfoContentColor: title
   },
   profile: {
-    userHeadingTextSize: "22px",
+    userHeadingTextSize: "18px",
     userHeadingTextColor: title,
     userHeadingTextWeight: "bold",
     userSubTitleTextSize: "13px",

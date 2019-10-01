@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
 import { MathKeyboard } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 const { Option } = Select;
 
@@ -57,7 +58,7 @@ SelectUnit.defaultProps = {
 export default SelectUnit;
 
 const StyledSelect = styled(Select)`
-  min-width: 80px;
+  min-width: 118px;
   margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
   height: ${({ height }) => height || "auto"};
   ${({ preview }) =>
@@ -69,6 +70,7 @@ const StyledSelect = styled(Select)`
   .ant-select-selection {
     display: flex;
     align-items: center;
+    height: ${response.minHeight}px;
     padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
     ${({ preview }) =>
       preview &&

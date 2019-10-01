@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Row } from "antd";
 
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
+  TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { IconNewList, IconPencilEdit, IconCaretDown, IconMath, IconSummary } from "@edulastic/icons";
@@ -42,22 +44,29 @@ class AddQuestion extends React.Component {
     return (
       <AddQuestionWrapper>
         <ContentWrapper>
-          <QuestionTypes>
-            <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
-              <IconNewList />
-            </AddQuestionIcon>
-            <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
-              <IconPencilEdit />
-            </AddQuestionIcon>
-            <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
-              <IconCaretDown />
-            </AddQuestionIcon>
-            <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
-              <IconMath />
-            </AddQuestionIcon>
-            <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
-              <IconSummary />
-            </AddQuestionIcon>
+          <QuestionTypes flexDirection="column">
+            <Row style={{ display: "flex", width: "100%", marginBottom: "10px", justifyContent: "space-between" }}>
+              <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+                <IconNewList />
+              </AddQuestionIcon>
+              <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
+                <IconPencilEdit />
+              </AddQuestionIcon>
+              <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+                <IconCaretDown />
+              </AddQuestionIcon>
+            </Row>
+            <Row style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+              <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
+                <IconMath />
+              </AddQuestionIcon>
+              <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+                <IconSummary />
+              </AddQuestionIcon>
+              <AddQuestionIcon title={"True/False"} onClick={onAddQuestion(TRUE_OR_FALSE)}>
+                <IconSummary />
+              </AddQuestionIcon>
+            </Row>
           </QuestionTypes>
           <QuestionTypes>
             <AddButton onClick={this.toggleBulkModal}>Add Bulk</AddButton>

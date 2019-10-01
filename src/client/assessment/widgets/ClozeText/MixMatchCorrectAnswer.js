@@ -23,8 +23,18 @@ const MixMatchCorrectAnswer = ({
       altResponses[resp.index].push({ ...resp, tabId: altResponse.id });
     });
   });
+  /**
+   * input [{inputtype: "number"/"text"}, {inputtype: "numner"/"text"}]
+   * output {0: "number"/"text", 1: "number"/text}
+   */
+  const responseTypes =
+    uiStyle?.responsecontainerindividuals?.reduce((acc, resp) => {
+      acc[resp.index] = acc[resp.index] || {};
+      acc[resp.index] = resp.inputtype || "text";
+      return acc;
+    }, {}) || {};
 
-  const { widthpx } = uiStyle;
+  const { widthpx, inputtype } = uiStyle;
   const btnStyle = {
     minWidth: `${responseDimensions.minWidth}px`,
     minHeight: `${responseDimensions.minHeight}px`,
@@ -80,7 +90,9 @@ const MixMatchCorrectAnswer = ({
               </FlexContainer>
             ))}
           <Input
-            type="text"
+            // individual type overriding the global type
+            // default to text if neither is set
+            type={responseTypes[answerIndex] || inputtype || "text"}
             size="small"
             placeholder="+ Alt Ans"
             value={newValues[answerIndex]}

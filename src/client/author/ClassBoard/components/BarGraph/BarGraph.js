@@ -13,6 +13,7 @@ import {
   blue,
   yellow
 } from "@edulastic/colors";
+import { themes } from "../../../../student/themes";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
@@ -82,12 +83,12 @@ export default class BarGraph extends Component {
 
   static getDerivedStateFromProps(props, state) {
     const { gradebook, studentview, studentId, testActivity, studentResponse } = props;
-
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
       const filtered = _getAggregateByQuestion(testActivity, studentId);
+      const selectedTestActivityId = testActivity.find(x => x.studentId === studentId)?.testActivityId;
       if (filtered) {
-        if (isEmpty(studentResponse)) {
+        if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse?.testActivity?._id) {
           itemsSummary = filtered.itemsSummary;
         } else {
           itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
@@ -324,7 +325,7 @@ export default class BarGraph extends Component {
               yAxisId="left"
               stackId="a"
               dataKey="skippedNum"
-              fill={dropZoneTitleColor}
+              fill={themes.default.classboard.SkippedColor}
               shape={<RectangleBar dataKey="skippedNum" />}
               onClick={this.handleClick}
             />

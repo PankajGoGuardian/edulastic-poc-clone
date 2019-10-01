@@ -12,10 +12,23 @@ import Polygon from "./elements/Polygon";
 // Calculate amount of units in chosen amount of pixels
 export const calcMeasure = (x, y, board) => [x / board.$board.unitX, y / board.$board.unitY];
 
+export const calcNumberlinePosition = board => {
+  const {
+    canvas: { yMax },
+    layout: { linePosition }
+  } = board.numberlineSettings;
+  const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  return yMax - (y / 100) * linePosition;
+};
+
 export const findAvailableStackedSegmentPosition = board => {
+  const {
+    canvas: { yMax },
+    layout: { linePosition }
+  } = board.numberlineSettings;
   const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const [, yMeasure] = calcMeasure(0, board.stackResponsesSpacing, board);
-  const lineY = 0.5 - (y / 100) * 75;
+  const lineY = yMax - (y / 100) * linePosition - yMeasure;
   const calcedYPosition = lineY + yMeasure;
 
   for (let i = 0; i <= board.elements.length; i++) {

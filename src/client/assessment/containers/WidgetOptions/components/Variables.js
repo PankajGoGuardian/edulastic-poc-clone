@@ -173,12 +173,12 @@ class Variables extends Component {
         {variableEnabled && Object.keys(variables).length > 0 && (
           <Block>
             <Row gutter={36}>
-              <Col md={2}>{t("component.options.variable")}</Col>
+              <Col md={3}>{t("component.options.variable")}</Col>
               <Col md={5}>{t("component.options.variableType")}</Col>
               <Col md={3}>{t("component.options.variableMin")}</Col>
               <Col md={3}>{t("component.options.variableMax")}</Col>
               <Col md={4}>{t("component.options.variableDecimalPlaces")}</Col>
-              <Col md={7}>{t("component.options.variableExample")}</Col>
+              <Col md={6}>{t("component.options.variableExample")}</Col>
             </Row>
             {Object.keys(variables).map((variableName, index) => {
               const variable = variables[variableName];
@@ -187,7 +187,7 @@ class Variables extends Component {
               const isSet = variable.type.includes("SET");
               return (
                 <Row key={`variable${index}`} gutter={36}>
-                  <Col md={2} style={{ paddingTop: 10 }}>
+                  <Col md={3} style={{ paddingTop: 10 }}>
                     <Label>{variableName}</Label>
                   </Col>
                   <Col md={5}>
@@ -269,7 +269,7 @@ class Variables extends Component {
                       />
                     </Col>
                   )}
-                  <Col md={7} style={{ paddingTop: 10 }}>
+                  <Col md={6} style={{ paddingTop: 10 }}>
                     <Label>{variable.exampleValue}</Label>
                   </Col>
                 </Row>

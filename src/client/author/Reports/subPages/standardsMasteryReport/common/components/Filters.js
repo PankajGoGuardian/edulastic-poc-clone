@@ -19,7 +19,11 @@ import {
   getStandardsBrowseStandardsRequestAction,
   getReportsStandardsBrowseStandards,
   getStandardsFiltersRequestAction,
-  getReportsStandardsFilters
+  getReportsStandardsFilters,
+  getPrevBrowseStandardsSelector,
+  getPrevStandardsFiltersSelector,
+  setPrevBrowseStandardsAction,
+  setPrevStandardsFiltersAction
 } from "../filterDataDucks";
 
 import filtersDropDownData from "../static/json/filtersDropDownData";
@@ -41,17 +45,14 @@ const StandardsFilters = ({
   onGoClick: _onGoClick,
   location,
   className,
-  style
+  style,
+  setPrevBrowseStandardsAction,
+  setPrevStandardsFiltersAction,
+  prevBrowseStandards,
+  prevStandardsFilters
 }) => {
-  const firstRender = useRef(true);
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
-
-  const [prevBorwseStandards, setPrevBorwseStandards] = useState(null);
-  const [prevStandardsFilters, setPrevStandardsFilters] = useState(null);
-
-  const [domains, setDomains] = useState([{ key: "All", title: "All Domains" }]);
-  const [testIds, setTestIds] = useState([{ key: "All", title: "All Assessments" }]);
 
   const getTitleByTestId = testId => {
     let arr = get(standardsFilters, "result.testData", []);
@@ -63,121 +64,7 @@ const StandardsFilters = ({
     return "";
   };
 
-  const scaleInfo = get(standardsFilters, "data.result.scaleInfo", []);
-
-  const schoolYear = useMemo(() => {
-    let schoolYear = [];
-    let arr = get(user, "orgData.terms", []);
-    if (arr.length) {
-      schoolYear = arr.map((item, index) => {
-        return { key: item._id, title: item.name };
-      });
-    }
-    return schoolYear;
-  }, [user]);
-
-  const curriculums = useMemo(() => {
-    let curriculums = [];
-    if (interestedCurriculums.length) {
-      curriculums = interestedCurriculums.map((item, index) => {
-        return { key: item._id, title: item.name };
-      });
-    }
-    return curriculums;
-  }, [interestedCurriculums]);
-
-  if (prevBorwseStandards !== browseStandards && !isEmpty(browseStandards)) {
-    // domainIds Received
-    const search = qs.parse(location.search.substring(1));
-    setPrevBorwseStandards(browseStandards);
-
-    let tempArr = get(browseStandards, "data.result", []);
-    let _domains = [{ key: "All", title: "All Domains" }];
-    let arr = [];
-    if (tempArr.length) {
-      tempArr = getDomains(tempArr);
-      arr = tempArr.map((item, index) => {
-        return { key: item.tloId, title: item.tloIdentifier };
-      });
-    }
-
-    _domains = _domains.concat(arr);
-
-    setDomains(_domains);
-    // check if domainId in url is in the array if not select the first one
-
-    const domainIdsKeys = keyBy(search.domainIds);
-    let urlDomainId = _domains.filter((item, index) => domainIdsKeys[item.key]);
-    if (!urlDomainId.length) {
-      urlDomainId = _domains.filter((item, index) => index > 0);
-    }
-
-    let _filters = {
-      ...filters,
-      domainIds: urlDomainId.map((item, index) => item.key)
-    };
-
-    setFiltersAction(_filters);
-
-    let settings = {
-      filters: { ..._filters },
-      selectedTest: { key: testId, title: getTitleByTestId(testId) }
-    };
-    if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
-      _onGoClick(settings);
-    }
-
-    browseStandardsReceiveCount.current++;
-  }
-
-  if (prevStandardsFilters != standardsFilters && !isEmpty(standardsFilters)) {
-    // testIds Received
-    const search = qs.parse(location.search.substring(1));
-    setPrevStandardsFilters(standardsFilters);
-
-    let tempArr = get(standardsFilters, "data.result.testData", []);
-    let arr = [{ key: "All", title: "All Assessments" }];
-    tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
-    tempArr = tempArr.map((item, index) => {
-      return {
-        key: item.testId,
-        title: item.testName
-      };
-    });
-    arr = arr.concat(tempArr);
-
-    let _testIds = arr;
-    setTestIds(_testIds);
-
-    // now check if testId in url is in the array if not select the first one
-    let urlTestId = _testIds.find((item, index) => {
-      if (item.key === search.testId) {
-        return true;
-      }
-    });
-
-    let _testId = testId;
-    if (!urlTestId && _testIds.length) {
-      _testId = _testIds[0].key;
-      setTestIdAction(_testId);
-    } else if (!urlTestId) {
-      _testId = "";
-      setTestIdAction(_testId);
-    }
-
-    let settings = {
-      filters: { ...filters },
-      selectedTest: { key: testId, title: getTitleByTestId(_testId) }
-    };
-
-    if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
-      _onGoClick(settings);
-    }
-
-    standardsFilteresReceiveCount.current++;
-  }
-
-  if (firstRender.current === true) {
+  useEffect(() => {
     const search = qs.parse(location.search.substring(1));
 
     const defaultTermId = get(user, "orgData.defaultTermId", "");
@@ -202,16 +89,144 @@ const StandardsFilters = ({
       grades: urlGrade.map((item, index) => item.key)
     });
 
-    let q = {
-      curriculumId: urlSubject.key || undefined,
-      grades: urlGrade.map((item, index) => item.key)
-    };
-    getStandardsBrowseStandardsRequestAction(q);
+    if (browseStandards !== prevBrowseStandards) {
+      let q = {
+        curriculumId: urlSubject.key || undefined,
+        grades: urlGrade.map((item, index) => item.key)
+      };
+      getStandardsBrowseStandardsRequestAction(q);
+    }
 
-    let _q = {
-      termId: urlSchoolYear.key
+    if (prevStandardsFilters !== standardsFilters) {
+      let _q = {
+        termId: urlSchoolYear.key
+      };
+      getStandardsFiltersRequestAction(_q);
+    }
+  }, []);
+
+  const scaleInfo = get(standardsFilters, "data.result.scaleInfo", []);
+
+  const schoolYear = useMemo(() => {
+    let schoolYear = [];
+    let arr = get(user, "orgData.terms", []);
+    if (arr.length) {
+      schoolYear = arr.map((item, index) => {
+        return { key: item._id, title: item.name };
+      });
+    }
+    return schoolYear;
+  }, [user]);
+
+  const curriculums = useMemo(() => {
+    let curriculums = [];
+    if (interestedCurriculums.length) {
+      curriculums = interestedCurriculums.map((item, index) => {
+        return { key: item._id, title: item.name };
+      });
+    }
+    return curriculums;
+  }, [interestedCurriculums]);
+
+  const domains = useMemo(() => {
+    let _domains = [{ key: "All", title: "All Domains" }];
+    if (browseStandards && !isEmpty(browseStandards)) {
+      let tempArr = get(browseStandards, "data.result", []);
+
+      let arr = [];
+      if (tempArr.length) {
+        tempArr = getDomains(tempArr);
+        arr = tempArr.map((item, index) => {
+          return { key: item.tloId, title: item.tloIdentifier };
+        });
+      }
+      _domains = _domains.concat(arr);
+    }
+    return _domains;
+  }, [browseStandards]);
+
+  if (browseStandards !== prevBrowseStandards && !isEmpty(browseStandards)) {
+    // domainIds Received
+
+    const search = qs.parse(location.search.substring(1));
+    setPrevBrowseStandardsAction(browseStandards);
+
+    // check if domainId in url is in the array if not select the first one
+
+    const domainIdsKeys = keyBy(search.domainIds?.split(","));
+    let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
+    if (!urlDomainId.length) {
+      urlDomainId = domains.filter((item, index) => index > 0);
+    }
+
+    let _filters = {
+      ...filters,
+      domainIds: urlDomainId.map((item, index) => item.key).join()
     };
-    getStandardsFiltersRequestAction(_q);
+
+    setFiltersAction(_filters);
+
+    let settings = {
+      filters: { ..._filters },
+      selectedTest: { key: testId, title: getTitleByTestId(testId) }
+    };
+    if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
+      _onGoClick(settings);
+    }
+
+    browseStandardsReceiveCount.current++;
+  }
+
+  const testIds = useMemo(() => {
+    let arr = [{ key: "All", title: "All Assessments" }];
+    if (standardsFilters && !isEmpty(standardsFilters)) {
+      let tempArr = get(standardsFilters, "data.result.testData", []);
+
+      tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
+      tempArr = tempArr.map((item, index) => {
+        return {
+          key: item.testId,
+          title: item.testName
+        };
+      });
+      arr = arr.concat(tempArr);
+    }
+    return arr;
+  }, [standardsFilters]);
+
+  if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
+    // testIds Received
+
+    const search = qs.parse(location.search.substring(1));
+    setPrevStandardsFiltersAction(standardsFilters);
+
+    // now check if testId in url is in the array if not select the first one
+
+    let urlTestId = testIds.find((item, index) => {
+      if (item.key === search.testId) {
+        return true;
+      }
+    });
+
+    let _testId = testId;
+    if (!urlTestId && testIds.length) {
+      _testId = testIds[0].key;
+      setTestIdAction(_testId);
+    } else if (!urlTestId) {
+      _testId = "";
+      setTestIdAction(_testId);
+    }
+
+    let settings = {
+      filters: { ...filters },
+      selectedTest: { key: testId, title: getTitleByTestId(_testId) }
+    };
+
+    if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
+      _onGoClick(settings);
+    }
+
+    standardsFilteresReceiveCount.current++;
   }
 
   // -----|-----|-----|-----| EVENT HANDLERS BEGIN |-----|-----|-----|----- //
@@ -237,7 +252,7 @@ const StandardsFilters = ({
 
     let q = {
       curriculumId: selected.key || undefined,
-      grades: obj.grade
+      grades: obj.grades
     };
     getStandardsBrowseStandardsRequestAction(q);
   };
@@ -270,13 +285,13 @@ const StandardsFilters = ({
 
       let obj = {
         ...filters,
-        domainIds: tempArr
+        domainIds: tempArr.join()
       };
       setFiltersAction(obj);
     } else {
       let obj = {
         ...filters,
-        domainIds: [selected.key]
+        domainIds: [selected.key].join()
       };
       setFiltersAction(obj);
     }
@@ -312,8 +327,6 @@ const StandardsFilters = ({
   };
 
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
-
-  firstRender.current = false;
 
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
@@ -413,13 +426,17 @@ const enhance = compose(
       testId: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state)
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      prevBrowseStandards: getPrevBrowseStandardsSelector(state),
+      prevStandardsFilters: getPrevStandardsFiltersSelector(state)
     }),
     {
       getStandardsBrowseStandardsRequestAction: getStandardsBrowseStandardsRequestAction,
       getStandardsFiltersRequestAction: getStandardsFiltersRequestAction,
       setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction
+      setTestIdAction: setTestIdAction,
+      setPrevBrowseStandardsAction,
+      setPrevStandardsFiltersAction
     }
   )
 );

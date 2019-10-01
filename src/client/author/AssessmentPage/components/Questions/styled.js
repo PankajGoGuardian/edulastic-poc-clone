@@ -5,14 +5,14 @@ import { themeColorLight, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  min-width: 300px;
-  height: calc(100vh - 62px);
+  width: 345px;
+  height: calc(100% - 140px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
-  padding: 30px 0 170px 10px;
+  padding: 30px 10px 30px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const AnswerActionsWrapper = styled.div`

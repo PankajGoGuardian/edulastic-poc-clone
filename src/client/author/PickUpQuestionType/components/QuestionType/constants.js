@@ -1189,6 +1189,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
+          heightpx: 35,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom"
         },
@@ -1574,7 +1575,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           ticksDistance: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12,
+          fontSize: 16,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1715,7 +1716,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           labelsFrequency: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12,
+          fontSize: 16,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1850,7 +1851,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "units_us", "units_si"],
@@ -1888,7 +1890,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
@@ -1924,7 +1927,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
@@ -1965,7 +1969,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
@@ -2001,7 +2006,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "intermediate", "general"],
@@ -2041,7 +2047,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           widthpx: 140,
           heightpx: 36,
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          responseFontScale: "Normal (100%)"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["units_us", "units_si", "qwerty"],
@@ -2123,8 +2130,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         type: questionType.FORMULA_ESSAY,
         uiStyle: {
           defaultMode: "math",
-          fontsize: "",
-          textFormattingOptions: ["bold", "italic", "underline", "unorderedList"]
+          fontsize: "Normal",
+          textFormattingOptions: ["bold", "italic", "underline", "unorderedList"],
+          responseFontScale: "Normal (100%)"
         },
         validation: {
           validResponse: {

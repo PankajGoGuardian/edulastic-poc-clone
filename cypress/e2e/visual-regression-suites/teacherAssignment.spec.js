@@ -1,5 +1,6 @@
 import FileHelper from "../framework/util/fileHelper";
 import LiveClassboardPage from "../framework/author/assignments/LiveClassboardPage";
+import { screenSizes } from "../framework/constants/visual";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const liveClassboardPage = new LiveClassboardPage();
@@ -17,6 +18,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@testdetail");
+        if (size[0] < screenSizes.MAX_TAB_WIDTH) cy.contains("More Options").click();
         cy.get('[data-cy="PresentationIcon"]')
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
@@ -46,6 +48,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@testdetail");
 
+        cy.contains("Test Assessment");
         cy.get('[data-cy="studentStatus"]')
           .contains("Graded")
           .should("be.visible")
@@ -55,10 +58,10 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
 
         cy.wait("@testactivity");
 
-        cy.get('[data-cy="question-container"]')
-          .contains("This is math question")
-          .should("be.visible")
-          .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
+        // cy.get('[data-cy="question-container"]')
+        //   .contains("This is math question")
+        //   .should("be.visible")
+        //   .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
 
         cy.matchImageSnapshot(); // take screenshot and compare
       });
@@ -93,9 +96,9 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@testdetail");
 
-        cy.contains("Score Grid")
-          .should("be.visible")
-          .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
+        if (size[0] < screenSizes.MAX_TAB_WIDTH)
+          cy.contains("Question & Standard").should("have.length.greaterThan", 0);
+        else cy.contains("Score Grid").should("have.length.greaterThan", 0); // ensure the dom elements are rendered
         cy.matchImageSnapshot(); // take screenshot and compare
       });
     });
@@ -114,6 +117,11 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
         cy.matchImageSnapshot(); // take screenshot and compare
+
+        // scroll and take screenshot for mobile
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
+        });
       });
     });
   });

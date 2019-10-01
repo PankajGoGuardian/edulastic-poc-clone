@@ -15,7 +15,7 @@ const iconStyles = {
   marginBottom: "20px"
 };
 
-const CreateUpload = ({ creating, percent, fileInfo, cancelUpload, isDragging }) => {
+const CreateUpload = ({ creating, percent = 0, fileInfo, cancelUpload, isDragging }) => {
   const onCancel = () => {
     if (cancelUpload) {
       cancelUpload("Cancelled by user");
@@ -35,18 +35,20 @@ const CreateUpload = ({ creating, percent, fileInfo, cancelUpload, isDragging })
             </FileName>
             <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
           </FileInfoCont>
-          <ProgressCont>
-            <ProgressBarWrapper>
-              <Progress
-                strokeColor={{
-                  "0%": "#108ee9",
-                  "100%": "#87d068"
-                }}
-                percent={percent}
-              />
-            </ProgressBarWrapper>
-            <UploadCancelBtn onClick={onCancel}>Cancel</UploadCancelBtn>
-          </ProgressCont>
+          {percent > 0 && percent < 100 && (
+            <ProgressCont>
+              <ProgressBarWrapper>
+                <Progress
+                  strokeColor={{
+                    "0%": "#108ee9",
+                    "100%": "#87d068"
+                  }}
+                  percent={percent}
+                />
+              </ProgressBarWrapper>
+              <UploadCancelBtn onClick={onCancel}>Cancel</UploadCancelBtn>
+            </ProgressCont>
+          )}
         </>
       )}
     </CreateUploadContainer>

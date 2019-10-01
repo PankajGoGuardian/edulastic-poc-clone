@@ -20,9 +20,9 @@ const EmptyWrapper = styled.div``;
 const PassageWrapper = styled(Paper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
-  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px")};
   box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
   position: relative;
+  text-align: justify;
 `;
 
 const Passage = ({

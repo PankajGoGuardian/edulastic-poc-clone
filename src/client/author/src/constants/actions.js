@@ -174,6 +174,7 @@ export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";
 export const RECEIVE_TESTACTIVITY_ERROR = "[testActivity] receive list error";
 export const TOGGLE_PRESENTATION_MODE = "[testActivity] toggle presentation mode";
+export const RESPONSE_ENTRY_SCORE_SUCCESS = "[testActivity] response entry score success";
 // assignments
 export const RECEIVE_ASSIGNMENTS_REQUEST = "[assignments] receive list request";
 export const RECEIVE_ASSIGNMENTS_SUCCESS = "[assignments] receive list success";

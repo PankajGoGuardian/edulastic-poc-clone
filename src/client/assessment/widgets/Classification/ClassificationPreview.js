@@ -249,7 +249,7 @@ const ClassificationPreview = ({
   const arrayOfCols = transformArray(validArray);
   const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
-  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "left");
   const rowHeader = get(item, "uiStyle.rowHeader", null);
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 

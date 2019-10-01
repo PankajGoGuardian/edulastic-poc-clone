@@ -18,6 +18,10 @@ import { UpperContainer, TableContainer } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
 import { getCsvDownloadingState } from "../../../ducks";
+import {
+  getSAFFilterSelectedPerformanceBandProfile,
+  getSAFFilterPerformanceBandProfiles
+} from "../common/filterDataDucks";
 
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
@@ -245,8 +249,8 @@ const enhance = compose(
       loading: getReportsPeerPerformanceLoader(state),
       role: getUserRole(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      performanceBandSelected: get(state, "reportSARFilterDataReducer.filters.performanceBandProfile", ""),
-      performanceBandProfiles: get(state, "reportSARFilterDataReducer.SARFilterData.data.result.bandInfo", [])
+      performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
+      performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
     }),
     {
       getPeerPerformanceRequestAction: getPeerPerformanceRequestAction

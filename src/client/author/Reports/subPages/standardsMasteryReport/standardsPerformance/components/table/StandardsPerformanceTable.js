@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { sumBy, includes, filter } from "lodash";
 import next from "immer";
 import { Row, Col } from "antd";
+import styled from "styled-components";
 import {
   getOptionFromKey,
   getMasteryScore,
@@ -84,7 +86,7 @@ const getOverallColSorter = (analyseKey, scaleInfo) => {
   }
 };
 
-export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains) => {
+export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains, filters = {}) => {
   let filteredDomains = filter(
     domains,
     domain => includes(selectedDomains, domain.domainId) || !selectedDomains.length
@@ -110,7 +112,16 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
       title: compareBy.title,
       dataIndex: "name",
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name)
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (data, record) => {
+        return compareBy.title === "Student" ? (
+          <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
+            {data}
+          </Link>
+        ) : (
+          data
+        );
+      }
     },
     {
       title: "Overall",
@@ -126,6 +137,7 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
 };
 
 const StandardsPerformanceTable = ({
+  className,
   tableFilters,
   tableFiltersOptions,
   onFilterChange,
@@ -133,6 +145,7 @@ const StandardsPerformanceTable = ({
   scaleInfo,
   selectedDomains,
   isCsvDownloading,
+  filters = {},
   ...tableProps
 }) => {
   const columns = getColumns(
@@ -140,10 +153,11 @@ const StandardsPerformanceTable = ({
     tableFilters.analyseBy.key,
     domainsData,
     scaleInfo,
-    selectedDomains
+    selectedDomains,
+    filters
   );
 
-  const { analyseByData, compareByData, masteryLevelData } = tableFiltersOptions;
+  const { analyseByData, compareByData } = tableFiltersOptions;
 
   const onChangeTableFilters = (prefix, options, selectedPayload) => {
     const modifiedState = next(tableFilters, draft => {
@@ -158,20 +172,12 @@ const StandardsPerformanceTable = ({
 
   return (
     <>
-      <Row type="flex" justify="start">
+      <Row type="flex" justify="start" className={className}>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledH3>Domain Mastery Details by School</StyledH3>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <Row>
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
-              <ControlDropDown
-                prefix={"Mastery Level - "}
-                data={masteryLevelData}
-                by={tableFilters.masteryLevel}
-                selectCB={bindOnChange("masteryLevel", masteryLevelData)}
-              />
-            </StyledDropDownContainer>
+          <Row className="control-dropdown-row">
             <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
               <ControlDropDown
                 prefix={"Compare by "}
@@ -208,4 +214,11 @@ const StandardsPerformanceTable = ({
   );
 };
 
-export default StandardsPerformanceTable;
+const StyledStandardsPerformanceTable = styled(StandardsPerformanceTable)`
+  .control-dropdown-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+`;
+
+export default StyledStandardsPerformanceTable;

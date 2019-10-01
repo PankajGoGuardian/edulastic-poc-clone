@@ -3,17 +3,16 @@ import PropTypes from "prop-types";
 import { Dropdown, Menu } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { IconGraphRightArrow } from "@edulastic/icons";
-
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
-import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, MinimizeButton } from "./styled";
+import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList } from "./styled";
 
-const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1) => (
+const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
     <Menu.Item onClick={onAddBlank}>Add Blank Page</Menu.Item>
     <Menu.Item disabled={pdfPageLength === 1} onClick={onDeleteBlank}>
       Delete Page
     </Menu.Item>
+    <Menu.Item onClick={onAddPdf}>Add Another PDF</Menu.Item>
     <Menu.Item onClick={onReupload}>Reupload PDF</Menu.Item>
   </Menu>
 );
@@ -31,26 +30,17 @@ const Thumbnails = ({
   onInsertBlankPage,
   setDeleteConfirmation,
   onRotate,
+  onAddPdf,
   viewMode,
   review,
+  minimized,
   currentPage
 }) => {
-  const [minimized, setMinimized] = React.useState(false);
-
-  const toggleMinimized = () => {
-    setMinimized(!minimized);
-  };
-
   const onChangePage = page => () => onPageChange(page);
 
   return (
     <ThumbnailsWrapper review={review} minimized={minimized}>
       <PerfectScrollbar>
-        {review && (
-          <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
-            <IconGraphRightArrow />
-          </MinimizeButton>
-        )}
         <ThumbnailsList>
           {list.map((item, key) => (
             <ThumbnailsItem
@@ -76,7 +66,7 @@ const Thumbnails = ({
         </ThumbnailsList>
         {!review && (
           <ReuploadButtonWrapper>
-            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length)}>
+            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}>
               <ReuploadButton>Manage document</ReuploadButton>
             </Dropdown>
           </ReuploadButtonWrapper>

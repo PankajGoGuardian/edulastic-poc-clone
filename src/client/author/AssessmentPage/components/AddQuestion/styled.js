@@ -17,13 +17,13 @@ export const ContentWrapper = styled.div`
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   box-sizing: border-box;
-  width: 288px;
+  width: 300px;
 `;
 
 export const QuestionTypes = styled.div`
   display: flex;
   justify-content: space-between;
-
+  flex-direction: ${props => props.flexDirection || "row"};
   &:last-child {
     margin-top: 20px;
   }

@@ -85,7 +85,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     responseIds,
     isReviewTab,
     cAnswers,
-    responsecontainerindividuals,
+    responsecontainerindividuals = [],
     uiStyle
   } = resprops;
   const ref = useRef();
@@ -102,7 +102,6 @@ const ClozeTextInput = ({ resprops, id }) => {
   useEffect(() => {
     setInput({ id, value });
   }, [value]);
-
   const _getValue = specialChar => {
     // TODO get input ref ? set cursor postion ?
     const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
@@ -126,22 +125,38 @@ const ClozeTextInput = ({ resprops, id }) => {
   };
 
   const handleInputChange = data => {
-    if (type === "number" && Number.isNaN(+data.value)) {
-      return;
+    const resp = responsecontainerindividuals.find(_resp => _resp.id === data.id);
+    // type === "number" (when globally set all reponses to number)
+    // resp.inputtype === "number" (when individually set the type of response to number)
+    if ((type === "number" || (resp && resp.inputtype === "number")) && data.value) {
+      const regex = new RegExp("[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]*)?", "g");
+      const isInputValid = data.value
+        .trim()
+        .split("\r\n")
+        .filter(val => val) // filter out multiple line feeds in between two strings
+        .every(val => {
+          const res = regex.test(val);
+          return res;
+        });
+      if (!isInputValid) {
+        return;
+      }
     }
+
     setInput(data);
   };
   let width = style.width || "auto";
   let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (uiStyle.globalSettings) {
-    width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    // width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    const splitWidth = Math.max(value.split("").length * 9, 100);
+    width = Math.min(splitWidth, 400);
     height = style.height || "auto";
   } else {
     width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
     height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
-
   return (
     <CustomInput
       key={`input_${index}`}

@@ -103,19 +103,20 @@ export const parseData = (rawData = {}) => {
   const parsedData = map(groupedTestsByType, records => {
     const { assessmentDate, testId, testType } = records[0];
     const totalAssigned = parseInt(records[0].totalAssigned);
+    const totalGraded = sumBy(records, test => parseInt(test.totalGraded));
     const totalScore = sumBy(records, test => parseFloat(test.totalScore || 0));
-    const totalMaxScore = sumBy(records, test => parseFloat(test.maxScore || 0) * parseInt(test.totalAssigned));
+    const totalMaxScore = sumBy(records, test => parseFloat(test.maxPossibleScore || 0) * parseInt(test.totalGraded));
 
     const score = round(percentage(totalScore, totalMaxScore));
-    const rawScore = totalScore / totalAssigned;
+    const rawScore = totalScore / totalGraded;
     const assessmentDateFormatted = assessmentDate ? moment(parseInt(assessmentDate)).format("MMMM DD, YYYY") : "N/A";
 
     return {
       maxScore: get(maxBy(records, "maxScore"), "maxScore", 0),
       minScore: get(minBy(records, "minScore"), "minScore", 0),
-      maxPossibleScore: records[0].maxPossibleScore,
+      maxPossibleScore: (records.find(r => r.maxPossibleScore) || records[0]).maxPossibleScore,
       totalAbsent: sumBy(records, test => parseInt(test.totalAbsent)),
-      totalGraded: sumBy(records, test => parseInt(test.totalGraded)),
+      totalGraded: totalGraded,
       diffScore: 100 - round(score),
       testId,
       uniqId: testId + testType,

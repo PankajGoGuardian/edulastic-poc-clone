@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { themeColor, linkColor } from "@edulastic/colors";
+import { desktopWidth, white, themeColor, linkColor } from "@edulastic/colors";
 import { Button, Icon } from "antd";
 
 export const Container = styled.div`
@@ -48,8 +48,8 @@ export const MobileRightSide = styled.div`
 `;
 
 export const ButtonsContainer = styled(FlexContainer)`
-  background: #fff;
-  padding: 15px 15px 0px 35px;
+  background: ${white};
+  padding: 0px 15px;
   justify-content: space-between;
   flex-basis: 400px;
   border-radius: 10px 10px 0px 0px;
@@ -62,6 +62,11 @@ export const ButtonsWrapper = styled.div`
   .ant-btn {
     width: 120px;
     margin: 0 5px;
+
+    @media (max-width: ${desktopWidth}) {
+      width: auto;
+      margin: 0 3px;
+    }
   }
 `;
 
@@ -79,19 +84,28 @@ export const EvaluateButton = styled(Button)`
   height: 28px;
   color: ${themeColor};
   border-color: ${themeColor};
+
+  @media (max-width: ${desktopWidth}) {
+    flex-basis: 100%;
+    white-space: normal;
+    height: auto;
+    line-height: normal;
+    padding: 5px 0px;
+  }
 `;
 
 export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-top: 20px;
-  padding: 0 10px;
+  white-space: nowrap;
+  margin: 20px 0px 0px;
+  padding: 0 5px;
   font-size: 11px;
   color: ${linkColor};
   .ant-pagination-item-active {
     a {
-      color: #fff;
+      color: ${white};
     }
     background-color: ${themeColor};
   }

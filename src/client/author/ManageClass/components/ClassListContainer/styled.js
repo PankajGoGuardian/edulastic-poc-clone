@@ -92,7 +92,7 @@ export const CreateIcon = styled(IconPlus)`
 const ShareButtonStyle = css`
   font-weight: 600;
   font-size: 11px;
-  border-radius: 10px;
+  border-radius: 4px;
   height: 40px;
   display: flex;
 
@@ -209,16 +209,8 @@ export const ClassListTable = styled(Table)`
           &.ant-table-column-sort {
             background: none;
           }
-          & > span {
-            overflow: hidden;
-            display: block;
-            max-width: 150px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            padding-left: 5px;
-          }
           font-weight: 550;
-          padding: 10px 10px;
+          padding: 10px 16px;
         }
         & > :nth-last-of-type(-n + 2) {
           text-align: center;
@@ -236,8 +228,8 @@ export const BannerDiv = styled.div`
   width: 100%;
   margin-bottom: 10px;
   padding: 15px 15px;
-  background-color:${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")}
-  color:${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")}
+  background-color: ${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")};
+  color: ${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")};
   justify-content: center;
   border-radius: 10px;
 `;

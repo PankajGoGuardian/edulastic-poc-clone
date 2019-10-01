@@ -44,6 +44,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   };
 
+  // TODO  fix multiple style objects -> one object
   if (btnStyle === undefined) {
     btnStyle = responseBtnStyle;
   }
@@ -63,7 +64,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     isBoxSizeSmall = true;
     _btnStyle.minWidth = btnStyle.width + response.indexSizeSmallBox;
   }
-
+  _btnStyle.width = _btnStyle.widthpx;
   const indexStyle = isBoxSizeSmall ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
   const textStyle = isBoxSizeSmall ? { padding: "8px 0" } : {};
   return (

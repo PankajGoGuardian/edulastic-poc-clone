@@ -45,26 +45,27 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       title: "Username",
       dataIndex: "username",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.username > b.username
+      sorter: (a, b) => a.username > b.username,
+      render: username => <span>{username}</span>
     },
     {
       title: "TTS Enabled",
       dataIndex: "tts",
       render: tts => (
-        <span style={{ textAlign: "center", paddingRight: "30px" }}>
-          {tts === "yes" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}
-        </span>
-      )
+        <span>{tts === "yes" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}</span>
+      ),
+      width: 150
     },
     {
       title: "Google User",
       dataIndex: "lastSigninSSO",
       defaultSortOrder: "descend",
       render: lastSigninSSO => (
-        <span style={{ textAlign: "center", paddingRight: "30px" }}>
+        <span>
           {lastSigninSSO === "google" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}
         </span>
-      )
+      ),
+      width: 150
     },
     {
       title: "Status",
@@ -104,8 +105,8 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       ) : (
         <TableWrapper>
           <>
-            <SwitchBox style={{ fontSize: "10px" }}>
-              {showCurrentStudents ? "ACTIVE" : "ALL"}
+            <SwitchBox>
+              <span>SHOW {showCurrentStudents ? "ACTIVE" : "ALL"} STUDENTS</span>
               <Switch checked={showCurrentStudents} onClick={showStudentsHandler} />
             </SwitchBox>
             <StudentsTable

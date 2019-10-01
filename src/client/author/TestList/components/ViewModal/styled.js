@@ -1,6 +1,18 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
-import { darkGrey, secondaryTextColor, themeColor, fadedGrey, lightGrey, white, greenDark } from "@edulastic/colors";
+import {
+  darkGrey,
+  secondaryTextColor,
+  themeColor,
+  fadedGrey,
+  lightGrey,
+  white,
+  greenDark,
+  greyDarken,
+  borders,
+  publishStatusColor
+} from "@edulastic/colors";
+import { Status } from "../../../AssessmentPage/components/Header/styled";
 
 export const ModalTitle = styled.h2`
   font-weight: bolder;
@@ -10,6 +22,7 @@ export const ModalTitle = styled.h2`
 
 export const ModalContainer = styled(Card)`
   color: ${secondaryTextColor};
+  margin-top: 35px;
   .ant-card-body {
     display: flex;
     padding: 32px;
@@ -222,4 +235,16 @@ export const IconWrapper = styled.span`
   margin-right: 4px;
   position: relative;
   top: 3px;
+`;
+
+export const TestStatus = styled(Status)`
+  margin-left: 10px;
+  padding: 0;
+  margin-top: 0;
+  position: relative;
+  top: -6px;
+  color: ${greyDarken};
+  background-color: ${props => (props.status === "draft" ? white : publishStatusColor)};
+  border-radius: 5px;
+  border: 1px solid ${borders.tag};
 `;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { DragLayer } from "react-dnd";
@@ -10,19 +10,34 @@ function collect(monitor, { isResetOffset }) {
   };
 }
 
-class DragPreview extends Component {
-  render() {
-    const { isDragging, children, sourceOffset } = this.props;
-    if (!isDragging || !sourceOffset) {
-      return null;
+function useDragScroll(sourceOffset) {
+  const interval = useRef(null);
+
+  // scroll the page when dragging element reaches top of the view port..
+  useEffect(() => {
+    const yOffset = sourceOffset?.y ?? Infinity;
+    if (interval.current && yOffset > 30) {
+      clearInterval(interval.current);
+      interval.current = null;
+    } else if (!interval.current && yOffset < 30) {
+      interval.current = setInterval(() => window.scrollBy(0, -10), 50);
     }
-    return (
-      <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
-        {children}
-      </PreviewContainer>
-    );
-  }
+  }, [sourceOffset]);
 }
+
+const DragPreview = ({ isDragging, children, sourceOffset }) => {
+  useDragScroll(sourceOffset);
+
+  if (!isDragging || !sourceOffset) {
+    return null;
+  }
+
+  return (
+    <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
+      {children}
+    </PreviewContainer>
+  );
+};
 
 DragPreview.propTypes = {
   isDragging: PropTypes.bool,

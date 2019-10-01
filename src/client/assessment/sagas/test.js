@@ -16,11 +16,13 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
+  LOAD_TESTLET_STATE,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   TEST_ACTIVITY_LOADING,
   SET_TEST_LOADING_ERROR,
   LOAD_PREVIOUS_ANSWERS,
+  ADD_ITEM_EVALUATION,
   LOAD_PREVIOUS_RESPONSES_REQUEST
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
@@ -107,13 +109,6 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
-    let questions = getQuestions(test.testItems);
-    if (test.passages) {
-      const passageItems = test.passages.map(passage => passage.data || []);
-      questions = [...flatten(passageItems), ...questions];
-    }
-
-    yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     let { testItems, passages } = test;
 
@@ -132,8 +127,9 @@ function* loadTest({ payload }) {
 
     // if testActivity is present.
     if (!preview) {
-      let allAnswers = {},
-        allPrevAnswers = {};
+      let allAnswers = {};
+      let allPrevAnswers = {};
+      let allEvaluation = {};
 
       const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
       // if questions are shuffled !!!
@@ -156,27 +152,35 @@ function* loadTest({ payload }) {
         [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
         yield put(setShuffledOptions(shuffles));
       }
-      markQuestionLabel(testItems);
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }
       });
 
       let lastAttemptedQuestion = questionActivities[0] || {};
-      let previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
-      const scratchPadData = {},
-        prevScratchPadData = {};
+      const previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
+      const scratchPadData = {};
+      const prevScratchPadData = {};
       previousQuestionActivities.forEach(item => {
         allPrevAnswers = {
           ...allPrevAnswers,
           [item.qid]: item.userResponse
         };
-
+        allEvaluation = {
+          ...allEvaluation,
+          [item.qid]: item.evaluation
+        };
         if (item.scratchPad) {
           prevScratchPadData[item.testItemId] = item.scratchPad;
         }
       });
 
+      yield put({
+        type: ADD_ITEM_EVALUATION,
+        payload: {
+          ...allEvaluation
+        }
+      });
       yield put({
         type: LOAD_PREVIOUS_ANSWERS,
         payload: allPrevAnswers
@@ -210,6 +214,14 @@ function* loadTest({ payload }) {
         });
       }
 
+      const testletState = get(activity, "userWork.testletState");
+      if (testletState) {
+        yield put({
+          type: LOAD_TESTLET_STATE,
+          payload: { [testActivityId]: testletState }
+        });
+      }
+
       // get currentItem index;
       let lastAttendedQuestion = 0;
       if (lastAttemptedQuestion && lastAttemptedQuestion.testItemId) {
@@ -240,6 +252,13 @@ function* loadTest({ payload }) {
         });
       }
     }
+    markQuestionLabel(testItems);
+    let questions = getQuestions(testItems);
+    if (test.passages) {
+      const passageItems = test.passages.map(passage => passage.data || []);
+      questions = [...flatten(passageItems), ...questions];
+    }
+    yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
@@ -249,8 +268,11 @@ function* loadTest({ payload }) {
         passages,
         items: testItems,
         title: test.title,
+        testType: test.testType,
+        testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,
+        isDocBased: test.isDocBased,
         pageStructure: test.pageStructure,
         freeFormNotes: test.freeFormNotes,
         settings,

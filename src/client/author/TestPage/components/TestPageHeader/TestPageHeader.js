@@ -279,12 +279,12 @@ const TestPageHeader = ({
                 </MobileHeaderFilterIcon>
               )}
               {owner && (
-                <EduButton size="large" onClick={onShare}>
+                <EduButton data-cy="share" size="large" onClick={onShare}>
                   <ShareIcon />
                 </EduButton>
               )}
               {owner && (
-                <SaveBtn disabled={creating} size="large" type="secondary" onClick={onSave}>
+                <SaveBtn data-cy="save" disabled={creating} size="large" type="secondary" onClick={onSave}>
                   {creating ? "Saving..." : "Save"}
                 </SaveBtn>
               )}

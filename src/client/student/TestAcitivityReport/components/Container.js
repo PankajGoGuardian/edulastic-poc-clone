@@ -57,7 +57,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
         </AssignmentContentWrapper>
         <TestPreviewModal
           isModalVisible={showModal}
-          hideModal={closeModal}
+          closeTestPreviewModal={closeModal}
           test={{ testItems: [item] }}
           LCBPreviewModal
         />

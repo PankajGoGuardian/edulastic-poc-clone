@@ -294,7 +294,7 @@ class TableList extends Component {
                 showPreviewModal,
                 toggleEditModal
               )}
-              placement="bottomCenter"
+              placement="bottomRight"
               trigger={["click"]}
               onClick={e => e.stopPropagation()}
             >

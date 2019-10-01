@@ -143,7 +143,7 @@ const BasicFields = ({
       )}
       {!isEdit ? (
         <Field name="email">
-          <legend>Username/Email</legend>
+          <legend>Username</legend>
           {enroll && "user exists and will be enrolled"}
           <Form.Item>
             {getFieldDecorator("email", {
@@ -308,6 +308,9 @@ export default connect(state => ({
 }))(BasicFields);
 
 const FormBody = styled.div`
+  background: white;
+  padding: 2rem 2rem 1.2rem 2rem;
+  margin-bottom: 20px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {
       width: 15px;

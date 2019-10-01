@@ -29,13 +29,8 @@ const getQuestionSelector = (state, props) => {
 const getQuestionId = questionId => questionId || "tmp";
 
 export const getUserAnswerSelector = createSelector(
-  [
-    getActivityFromPropsSelector,
-    getQuestionIdFromPropsSelector,
-    getAnswersListSelector,
-    getPreviousAnswersListSelector
-  ],
-  (activity, questionId, answers, previousAnswers) => {
+  [getActivityFromPropsSelector, getQuestionIdFromPropsSelector, getAnswersListSelector],
+  (activity, questionId, answers) => {
     if (!questionId) return undefined;
 
     let userAnswer;
@@ -43,9 +38,19 @@ export const getUserAnswerSelector = createSelector(
       userAnswer = activity.userResponse;
     } else {
       const qId = getQuestionId(questionId);
-      userAnswer = getAnswerByQuestionIdSelector(qId)(answers) || getAnswerByQuestionIdSelector(qId)(previousAnswers);
+      userAnswer = getAnswerByQuestionIdSelector(qId)(answers);
     }
     return userAnswer;
+  }
+);
+
+export const getUserPrevAnswerSelector = createSelector(
+  [getQuestionIdFromPropsSelector, getPreviousAnswersListSelector],
+  (questionId, previousAnswers) => {
+    if (!questionId) return undefined;
+
+    const qId = getQuestionId(questionId);
+    return getAnswerByQuestionIdSelector(qId)(previousAnswers);
   }
 );
 

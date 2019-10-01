@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
+import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded, blue, white } from "@edulastic/colors";
@@ -95,22 +96,22 @@ class QuestionViewContainer extends Component {
       classQuestion,
       children,
       qIndex,
+      isQuestionView = false,
       isPresentationMode
     } = this.props;
     const { loading } = this.state;
 
-    const filterdItems = testItems.filter(item => item.data.questions.filter(q => q.id === question.id).length > 0);
+    let filteredItems = testItems.filter(item => item.data.questions.some(q => q.id === question.id));
 
-    filterdItems.forEach(item => {
-      if (this.props.itemId) {
-        console.log("itemId", this.props.itemId);
-      } else {
+    filteredItems = produce(filteredItems, draft => {
+      draft.forEach(item => {
         item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
         item.rows = item.rows.map(row => ({
           ...row,
           widgets: row.widgets.filter(({ reference }) => reference === question.id)
         }));
-      }
+      });
+      return draft;
     });
     const isMobile = this.isMobile();
     let data = [];
@@ -212,6 +213,7 @@ class QuestionViewContainer extends Component {
                   dataKey="avatarName"
                   tickSize={0}
                   cursor="pointer"
+                  dy={10}
                   onClick={({ index }) => {
                     const id = data[index].id;
                     _scrollTo(id);
@@ -315,9 +317,10 @@ class QuestionViewContainer extends Component {
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <ClassQuestions
                   key={index}
+                  isQuestionView={isQuestionView}
                   qIndex={qIndex}
                   currentStudent={student}
-                  classResponse={{ testItems: filterdItems, ...others }}
+                  classResponse={{ testItems: filteredItems, ...others }}
                   questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
                   isPresentationMode={isPresentationMode}
                   labels={this.props.labels}
@@ -349,6 +352,7 @@ QuestionViewContainer.propTypes = {
   question: PropTypes.object.isRequired,
   testActivity: PropTypes.array.isRequired,
   classQuestion: PropTypes.array,
+  isQuestionView: PropTypes.bool,
   children: PropTypes.node,
   qIndex: PropTypes.number
 };

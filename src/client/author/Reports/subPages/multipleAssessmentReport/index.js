@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import { map } from "lodash";
 import next from "immer";
 import qs from "qs";
+import { connect } from "react-redux";
 
 import { getNavigationTabLinks } from "../../common/util";
 
@@ -13,21 +14,18 @@ import PeerProgressAnalysis from "./PeerProgressAnalysis";
 import StudentProgress from "./StudentProgress";
 import PerformanceOverTime from "./PerformanceOverTime";
 
-export const MultipleAssessmentReportContainer = props => {
-  const [settings, setSettings] = useState({
-    selectedTest: [{ key: "", title: "" }],
-    requestFilters: {
-      termId: "",
-      subject: "",
-      grade: "",
-      courseId: "",
-      groupId: "",
-      schoolId: "",
-      teacherId: "",
-      assessmentType: "",
-      testIds: ""
-    }
-  });
+import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
+
+const MultipleAssessmentReportContainer = props => {
+  const { settings, setMARSettingsAction } = props;
+
+  useEffect(() => {
+    return () => {
+      console.log("Multiple Assessment Summary Component Unmount");
+      props.resetAllReportsAction();
+    };
+  }, []);
 
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[props.loc]) {
@@ -70,8 +68,8 @@ export const MultipleAssessmentReportContainer = props => {
       });
 
       const { selectedTest = [] } = _settings;
-      setSettings({
-        requestFilters: { ...obj, testIds: map(selectedTest, test => test.key) }
+      setMARSettingsAction({
+        requestFilters: { ...obj, testIds: map(selectedTest, test => test.key).join() }
       });
     }
   };
@@ -107,3 +105,13 @@ export const MultipleAssessmentReportContainer = props => {
     </>
   );
 };
+
+const ConnectedMultipleAssessmentReportContainer = connect(
+  state => ({ settings: getReportsMARSettings(state) }),
+  {
+    setMARSettingsAction,
+    resetAllReportsAction
+  }
+)(MultipleAssessmentReportContainer);
+
+export { ConnectedMultipleAssessmentReportContainer as MultipleAssessmentReportContainer };

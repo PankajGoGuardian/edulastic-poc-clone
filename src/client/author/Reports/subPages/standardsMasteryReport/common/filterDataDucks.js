@@ -4,28 +4,29 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+
 const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST = "[reports] get reports standards browse standards request";
 const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS =
   "[reports] get reports standards browse standards success";
 const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR = "[reports] get reports standards browse standards error";
+const SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS = "[reports] get reports prev standards browse standards";
 
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST = "[reports] get reports standards filters request";
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS = "[reports] get reports standards filters success";
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR = "[reports] get reports standards filters error";
+const SET_REPORTS_PREV_STANDARDS_FILTERS = "[reports] get reports prev standards filters";
 
 const SET_FILTERS = "[reports] set standards filters";
 const SET_TEST_ID = "[reports] set standards testId";
-
-const RESET_REPORTS_SMR_FILTERS = "[reports] reset reports smr filters";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 // export const getStandardsProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_PROCESS_REQUESTS);
 export const getStandardsBrowseStandardsRequestAction = createAction(GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST);
-
 export const getStandardsFiltersRequestAction = createAction(GET_REPORTS_STANDARDS_FILTERS_REQUEST);
-
-export const resetSMRFiltersAction = createAction(RESET_REPORTS_SMR_FILTERS);
+export const setPrevBrowseStandardsAction = createAction(SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS);
+export const setPrevStandardsFiltersAction = createAction(SET_REPORTS_PREV_STANDARDS_FILTERS);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -36,7 +37,7 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStandardsFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportStandardsFilterDataReducer;
 
 export const getReportsStandardsBrowseStandards = createSelector(
   stateSelector,
@@ -58,6 +59,16 @@ export const getTestIdSelector = createSelector(
   state => state.testId
 );
 
+export const getPrevBrowseStandardsSelector = createSelector(
+  stateSelector,
+  state => state.prevBrowseStandards
+);
+
+export const getPrevStandardsFiltersSelector = createSelector(
+  stateSelector,
+  state => state.prevStandardsFilters
+);
+
 export const getSelectedStandardProficiency = createSelector(
   getFiltersSelector,
   getReportsStandardsFilters,
@@ -76,6 +87,8 @@ export const getSelectedStandardProficiency = createSelector(
 const initialState = {
   browseStandards: {},
   standardsFilters: {},
+  prevBrowseStandards: null,
+  prevStandardsFilters: null,
   filters: {
     termId: "",
     subject: "All",
@@ -120,7 +133,13 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_REPORTS_SMR_FILTERS]: (state, { payload }) => (state = initialState)
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS]: (state, { payload }) => {
+    state.prevBrowseStandards = payload;
+  },
+  [SET_REPORTS_PREV_STANDARDS_FILTERS]: (state, { payload }) => {
+    state.prevStandardsFilters = payload;
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

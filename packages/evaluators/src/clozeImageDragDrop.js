@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import produce from "immer";
 import { evaluatorTypes } from "@edulastic/constants";
 import mainEvaluator from "./mainEvaluator";
 
@@ -14,7 +15,14 @@ const clozeImageDragDropEvaluator = ({ userResponse = [], validation }) => {
     }
     return null;
   });
-  const evaluation = evaluator({ userResponse: newUserResponse, validation });
+
+  const modifiedValidation = produce(validation, draft => {
+    draft?.validResponse?.value.forEach(val => {
+      delete val.rect;
+    });
+  });
+
+  const evaluation = evaluator({ userResponse: newUserResponse, validation: modifiedValidation });
   return evaluation;
 };
 

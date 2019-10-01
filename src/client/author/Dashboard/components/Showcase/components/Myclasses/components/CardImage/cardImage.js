@@ -29,7 +29,7 @@ const CardImage = ({ data, history }) => {
       <Image src={thumbnail || cardImg} />
       <OverlayText>
         <Row>
-          <Col span={18}>
+          <Col span={24}>
             <Row>
               <Tooltip title={name} placement="topLeft">
                 <TextDiv data-cy="name">{name}</TextDiv>
@@ -63,8 +63,6 @@ const CardImage = ({ data, history }) => {
                 {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
             </RowWrapperSTudentCount>
-          </Col>
-          <Col span={6}>
             <IconWrapper bgcolor="#FFFFFF" width="34px" height="34px" padding="0.5">
               <img src={rightArrow} alt="" onClick={gotoManageClass} />
             </IconWrapper>

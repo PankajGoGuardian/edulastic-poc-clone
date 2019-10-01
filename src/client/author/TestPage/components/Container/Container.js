@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 
@@ -41,9 +41,10 @@ import { loadAssignmentsAction } from "../Assign/ducks";
 import {
   saveCurrentEditingTestIdAction,
   updateItemsDocBasedByIdAction,
-  getItemDetailByIdAction
+  getItemDetailByIdAction,
+  proceedPublishingItemAction
 } from "../../../ItemDetail/ducks";
-import { getUserSelector } from "../../../src/selectors/user";
+import { getUserSelector, getUserRole } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
@@ -56,6 +57,7 @@ import Setting from "../Setting";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -104,7 +106,9 @@ class Container extends PureComponent {
       editAssigned,
       createdItems = [],
       setRegradeOldId,
-      getDefaultTestSettings
+      getDefaultTestSettings,
+      setData,
+      userRole
     } = this.props;
     const self = this;
     if (location.hash === "#review") {
@@ -130,6 +134,9 @@ class Container extends PureComponent {
       clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
+      if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.DISTRICT_ADMIN) {
+        setData({ testType: test.type.COMMON });
+      }
     }
 
     if (editAssigned) {
@@ -159,14 +166,15 @@ class Container extends PureComponent {
       match: { params },
       userId,
       testStatus,
+      questionsUpdated,
       updated
     } = this.props;
-    const { authors, testItems } = test;
+    const { authors, testItems, isDocBased } = test;
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    if (isEditable && testItems.length > 0 && updated) {
+    if (isEditable && testItems.length > 0 && (updated || (questionsUpdated && isDocBased))) {
       return "";
     }
     return;
@@ -284,7 +292,7 @@ class Container extends PureComponent {
     }
     const { params = {} } = match;
     const { current, editEnable, isShowFilter } = this.state;
-    const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
+    const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
@@ -292,6 +300,7 @@ class Container extends PureComponent {
       docUrl,
       annotations,
       questions,
+      freeFormNotes,
       questionsById,
       pageStructure
     };
@@ -513,7 +522,7 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, test, testStatus, userId, updated } = this.props;
+    const { creating, windowWidth, test, testStatus, userId, updated, showWarningModal, proceedPublish } = this.props;
     const { showShareModal, current, editEnable, isShowFilter } = this.state;
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
@@ -539,6 +548,8 @@ class Container extends PureComponent {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
+        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}
@@ -585,12 +596,16 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
+      questionsUpdated: get(state, "authorQuestions.updated", false),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
-      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], [])
+      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),
+      userRole: getUserRole(state)
     }),
     {
       createTest: createTestAction,
+      proceedPublish: proceedPublishingItemAction,
       updateTest: updateTestAction,
       updateDocBasedTest: updateDocBasedTestAction,
       receiveTestById: receiveTestByIdAction,

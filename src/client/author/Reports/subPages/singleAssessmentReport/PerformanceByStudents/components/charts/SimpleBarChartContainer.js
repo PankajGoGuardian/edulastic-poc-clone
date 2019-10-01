@@ -55,7 +55,7 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
 
   const maxStudentCount = get(maxBy(data, "studentCount"), "studentCount", 0);
   const interval = getInterval(maxStudentCount);
-  const domain = [0, maxStudentCount + ceil(maxStudentCount / interval)];
+  const domain = [0, maxStudentCount + (ceil(maxStudentCount / interval) || 0)];
   const ticks = createTicks(maxStudentCount, interval);
 
   return (
@@ -72,7 +72,6 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
       >
         <XAxis label={xAxisLabel} interval={0} dataKey="name" scale={"linear"} />
         <YAxis
-          axisLine={false}
           padding={{ left: 100, right: 100 }}
           domain={domain}
           yAxisId="1"

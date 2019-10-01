@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -60,7 +60,7 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
+const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
@@ -143,7 +143,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const { activityReview = true } = data;
   let releaseScore = null;
   if (!currentGroup) {
-    //Find current group from assignment classes object
+    // Find current group from assignment classes object
     const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
     currentGroup = getClass._id;
     releaseScore = getClass.releaseScore;
@@ -203,7 +203,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                   {arrow} &nbsp;&nbsp;{t("common.attemps")}
                 </AttemptsTitle>
               </Attempts>
-              {releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
+              {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
             </AttemptDetails>
           )}
           {type === "assignment" ? (
@@ -266,7 +266,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       </ButtonAndDetail>
     </CardWrapper>
   );
-};
+});
 
 const enhance = compose(
   withTheme,

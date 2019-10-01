@@ -5,21 +5,30 @@ import uuid from "uuid/v4";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { isEmpty, get } from "lodash";
+import { isEmpty, get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB } from "@edulastic/common";
-import { Modal } from "antd";
 
+import { Modal, message } from "antd";
+import { IconGraphRightArrow } from "@edulastic/icons";
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
-import { WorksheetWrapper } from "./styled";
+import { WorksheetWrapper, MinimizeButton } from "./styled";
 import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
 import { getTestEntitySelector } from "../../../AssignTest/duck";
+import DropArea from "../../../AssessmentCreate/components/DropArea/DropArea";
+import {
+  getAssessmentCreatingSelector,
+  percentageUploadedSelector,
+  fileInfoSelector,
+  createAssessmentRequestAction,
+  setPercentUploadedAction
+} from "../../../AssessmentCreate/ducks";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -63,6 +72,8 @@ class Worksheet extends React.Component {
     docUrl: ""
   };
 
+  cancelUpload;
+
   state = {
     currentPage: 0,
     highlightedQuestion: undefined,
@@ -71,8 +82,12 @@ class Worksheet extends React.Component {
     activeMode: "",
     history: 0,
     selected: 0,
+    uploadModal: false,
+    isAddPdf: false,
+    creating: false,
     deleteConfirmation: false,
     deleteMode: false,
+    minimized: false,
     lineWidth: 6
   };
 
@@ -80,6 +95,20 @@ class Worksheet extends React.Component {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props;
     if (itemDetail?.item?._id) {
       saveUserWork({ [itemDetail.item._id]: { scratchpad: freeFormNotes || {} } });
+    }
+  }
+
+  static getDerivedStateFromProps(props, prevState) {
+    if (prevState.uploadModal && prevState.creating && !props.creating) {
+      return {
+        uploadModal: false,
+        creating: false,
+        isAddPdf: false
+      };
+    } else if (!prevState.creating && props.creating) {
+      return {
+        creating: true
+      };
     }
   }
 
@@ -133,7 +162,7 @@ class Worksheet extends React.Component {
   addBlankPage = index => {
     const { pageStructure, setTestData } = this.props;
 
-    if (index < 0 || index >= pageStructure.length) return;
+    if (index < 0 || index > pageStructure.length) return;
 
     const pageNumber = index + 1;
     const blankPage = createPage(pageNumber);
@@ -195,7 +224,21 @@ class Worksheet extends React.Component {
     if (pageIndex === 0) return;
 
     const nextIndex = pageIndex - 1;
-    const { pageStructure, setTestData, annotations } = this.props;
+    const {
+      pageStructure,
+      setTestData,
+      annotations = [],
+      freeFormNotes = {},
+      itemDetail,
+      userWork,
+      saveUserWork
+    } = this.props;
+
+    const newFreeFormNotes = {
+      ...freeFormNotes,
+      [nextIndex]: freeFormNotes[pageIndex],
+      [pageIndex]: freeFormNotes[nextIndex]
+    };
 
     const newAnnotations = annotations.map(annotation => ({
       ...annotation,
@@ -208,7 +251,14 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
+    const id = itemDetail?.item?._id;
+    if (id) {
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
+      });
+    }
     setTestData({
+      freeFormNotes: newFreeFormNotes,
       annotations: newAnnotations,
       pageStructure: updatedPageStructure
     });
@@ -216,12 +266,24 @@ class Worksheet extends React.Component {
   };
 
   handleMovePageDown = pageIndex => () => {
-    const { pageStructure, setTestData, annotations = [] } = this.props;
-
+    const {
+      pageStructure,
+      setTestData,
+      annotations = [],
+      freeFormNotes = {},
+      itemDetail,
+      saveUserWork,
+      userWork
+    } = this.props;
     if (pageIndex === pageStructure.length - 1) return;
 
     const nextIndex = pageIndex + 1;
 
+    const newFreeFormNotes = {
+      ...freeFormNotes,
+      [nextIndex]: freeFormNotes[pageIndex],
+      [pageIndex]: freeFormNotes[nextIndex]
+    };
     const newAnnotations = annotations.map(annotation => ({
       ...annotation,
       page:
@@ -233,8 +295,15 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
+    const id = itemDetail?.item?._id;
+    if (id) {
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
+      });
+    }
     setTestData({
       annotations: newAnnotations,
+      freeFormNotes: newFreeFormNotes,
       pageStructure: updatedPageStructure
     });
     this.handleChangePage(nextIndex);
@@ -262,10 +331,12 @@ class Worksheet extends React.Component {
   };
 
   handleReupload = () => {
-    const { test = {}, history } = this.props;
-    history.push(`/author/tests/snapquiz?assessmentId=${test._id}`);
+    this.setState({ uploadModal: true });
   };
 
+  handleAddPdf = () => {
+    this.setState({ uploadModal: true, isAddPdf: true });
+  };
   // Set up for scratchpad
   onFillColorChange = obj => {
     this.setState({
@@ -340,30 +411,82 @@ class Worksheet extends React.Component {
     this.setState({ deleteConfirmation, selected });
   };
 
+  handleUploadPDF = debounce(({ file }) => {
+    const { isAddPdf = false } = this.state;
+    const {
+      createAssessment,
+      test: { _id: assessmentId }
+    } = this.props;
+    if (file.type !== "application/pdf") {
+      return message.error("File format not supported, please select a valid PDF file.");
+    }
+    if (file.size / 1024000 > 15) {
+      return message.error("File size exceeds 15 MB MB limit.");
+    }
+    createAssessment({
+      file,
+      assessmentId,
+      progressCallback: this.handleUploadProgress,
+      isAddPdf,
+      cancelUpload: this.setCancelFn
+    });
+  }, 1000);
+
+  handleCreateBlankAssessment = event => {
+    event.stopPropagation();
+    const { isAddPdf } = this.state;
+    const {
+      createAssessment,
+      test: { _id: assessmentId }
+    } = this.props;
+
+    createAssessment({ assessmentId, isAddPdf });
+  };
+
+  setCancelFn = _cancelFn => {
+    this.cancelUpload = _cancelFn;
+  };
+
+  handleUploadProgress = progressEvent => {
+    const { setPercentUploaded } = this.props;
+    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    setPercentUploaded(percentCompleted);
+  };
+
+  toggleMinimized = () => {
+    this.setState(prevProps => ({ ...prevProps, minimized: !prevProps.minimized }));
+  };
+
   // setup for scratchpad ends
   render() {
     const {
       currentPage,
+      uploadModal,
       highlightedQuestion,
       currentColor,
       fillColor,
       activeMode,
       deleteConfirmation,
       deleteMode,
+      isAddPdf,
       selected,
+      minimized,
       lineWidth
     } = this.state;
     const {
       docUrl,
       annotations,
       review,
+      creating,
       viewMode,
       noCheck,
       questions,
       questionsById,
       answersById,
+      percentageUploaded,
+      fileInfo,
       pageStructure,
-      scratchPad,
+      scratchPad = {},
       freeFormNotes = {}
     } = this.props;
 
@@ -401,11 +524,34 @@ class Worksheet extends React.Component {
         >
           {"Are you sure that you want to delete this page?"}
         </Modal>
+        <Modal
+          width={700}
+          visible={uploadModal}
+          onCancel={() => this.setState({ uploadModal: false, isAddPdf: false })}
+          footer={null}
+        >
+          <DropArea
+            loading={creating}
+            onUpload={this.handleUploadPDF}
+            onCreateBlank={this.handleCreateBlankAssessment}
+            percent={percentageUploaded}
+            fileInfo={fileInfo}
+            isAddPdf={isAddPdf}
+            cancelUpload={this.cancelUpload}
+          />
+        </Modal>
+
+        {review && (
+          <MinimizeButton onClick={this.toggleMinimized} minimized={minimized}>
+            <IconGraphRightArrow />
+          </MinimizeButton>
+        )}
         <Thumbnails
           annotations={annotations}
           list={pageStructure}
           currentPage={currentPage}
           onReupload={this.handleReupload}
+          onAddPdf={this.handleAddPdf}
           onPageChange={this.handleChangePage}
           onAddBlankPage={this.handleAppendBlankPage}
           onDeletePage={this.handleDeletePage}
@@ -415,6 +561,7 @@ class Worksheet extends React.Component {
           onMovePageDown={this.handleMovePageDown}
           onInsertBlankPage={this.handleInsertBlankPage}
           onRotate={this.handleRotate}
+          minimized={minimized}
           viewMode={viewMode}
           review={review}
         />
@@ -432,23 +579,26 @@ class Worksheet extends React.Component {
               renderExtra={svgContainer}
               viewMode={viewMode}
             />
-            <Tools
-              isWorksheet
-              onFillColorChange={this.onFillColorChange}
-              fillColor={fillColor}
-              deleteMode={deleteMode}
-              currentColor={currentColor}
-              onToolChange={this.handleToolChange}
-              activeMode={activeMode}
-              undo={this.handleUndo}
-              redo={this.handleRedo}
-              onColorChange={this.handleColorChange}
-            />
+            {viewMode !== "report" && (
+              <Tools
+                isWorksheet
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleToolChange}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                onColorChange={this.handleColorChange}
+              />
+            )}
           </div>
         </Fragment>
         <Questions
           noCheck={noCheck}
           list={questions}
+          review={review}
           viewMode={viewMode}
           questionsById={questionsById}
           answersById={answersById}
@@ -473,10 +623,15 @@ const enhance = compose(
       test: getTestEntitySelector(state),
       userWork: get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}]`, {}),
       itemDetail: state.itemDetail,
+      creating: getAssessmentCreatingSelector(state),
+      percentageUploaded: percentageUploadedSelector(state),
+      fileInfo: fileInfoSelector(state),
       answersById: state.answers
     }),
     {
       saveUserWork: saveUserWorkAction,
+      createAssessment: createAssessmentRequestAction,
+      setPercentUploaded: setPercentUploadedAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction

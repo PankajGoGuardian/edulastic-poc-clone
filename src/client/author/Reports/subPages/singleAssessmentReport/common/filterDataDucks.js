@@ -3,15 +3,16 @@ import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy, set } from "lodash";
+import { groupBy, set, get } from "lodash";
 import { push } from "connected-react-router";
+
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST = "[reports] get reports sar filter data request";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports sar filter data request success";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports sar filter data request error";
 const RESET_REPORTS_SAR_FILTER_DATA = "[reports] reset reports sar filter data";
 const RESET_REPORTS_SAR_FILTERS = "[reports] reset reports sar filters";
-
 const SET_REPORTS_PREV_SAR_FILTER_DATA = "[reports] set reports prev sar filter data";
 const SET_REPORTS_FILTER_PB_PROFILE = "[reports] set performance band profile filter";
 const SET_REPORTS_FILTER_SP_PROFILE = "[reports] set standards proficiency profile filter";
@@ -22,10 +23,8 @@ const SET_TEST_ID = "[reports] set sar testId";
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getSARFilterDataRequestAction = createAction(GET_REPORTS_SAR_FILTER_DATA_REQUEST);
-
-export const setPrevSARFilterDataAction = createAction(SET_REPORTS_PREV_SAR_FILTER_DATA);
-
 export const resetSARFiltersAction = createAction(RESET_REPORTS_SAR_FILTERS);
+export const setPrevSARFilterDataAction = createAction(SET_REPORTS_PREV_SAR_FILTER_DATA);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -38,7 +37,7 @@ export const setStandardsProficiencyProfileFilterAction = createAction(SET_REPOR
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportSARFilterDataReducer;
 
 export const getReportsSARFilterData = createSelector(
   stateSelector,
@@ -63,6 +62,26 @@ export const getReportsPrevSARFilterData = createSelector(
 export const getReportsSARFilterLoadingState = createSelector(
   stateSelector,
   state => state.loading
+);
+
+export const getSAFFilterSelectedPerformanceBandProfile = createSelector(
+  stateSelector,
+  state => state.filters.performanceBandProfile
+);
+
+export const getSAFFilterPerformanceBandProfiles = createSelector(
+  stateSelector,
+  state => get(state, "SARFilterData.data.result.bandInfo", [])
+);
+
+export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
+  stateSelector,
+  state => state.filters.standardsProficiencyProfile
+);
+
+export const getSAFFilterStandardsProficiencyProfiles = createSelector(
+  stateSelector,
+  state => get(state, "SARFilterData.data.result.scaleInfo", [])
 );
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -153,14 +172,13 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     set(state, "filters.standardsProficiencyProfile", payload);
   },
   [SET_TEST_ID]: setTestIdReducer,
-
-  [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
-    state.prevSARFilterData = payload;
-  },
   [RESET_REPORTS_SAR_FILTER_DATA]: (state, { payload }) => {
     state.SARFilterData = {};
   },
-  [RESET_REPORTS_SAR_FILTERS]: (state, { payload }) => (state = initialState)
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
+    state.prevSARFilterData = payload;
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

@@ -31,6 +31,8 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import ShareModal from "../../../src/components/common/ShareModal";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
+import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { statusConstants } = test;
 
@@ -89,7 +91,35 @@ class Container extends React.Component {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
+    window.onbeforeunload = () => {
+      return this.beforeUnload();
+    };
   }
+
+  componentWillUnmount() {
+    window.onbeforeunload = () => {
+      return;
+    };
+  }
+
+  beforeUnload = () => {
+    const {
+      assessment: test,
+      match: { params },
+      userId,
+      questionsUpdated,
+      updated
+    } = this.props;
+    const { authors, testItems, status } = test;
+    const { editEnable = true } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
+
+    if (isEditable && testItems.length > 0 && (updated || questionsUpdated)) {
+      return "";
+    }
+    return;
+  };
 
   componentDidUpdate(prevProps) {
     const { receiveItemDetailById, assessment } = this.props;
@@ -243,6 +273,8 @@ class Container extends React.Component {
       windowWidth,
       updated,
       creating,
+      showWarningModal,
+      proceedPublish,
       currentTab
     } = this.props;
     const { editEnable, showShareModal } = this.state;
@@ -269,6 +301,8 @@ class Container extends React.Component {
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
         />
+        <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
+
         <TestPageHeader
           onChangeNav={this.handleChangeCurrentTab}
           current={currentTab}
@@ -304,6 +338,9 @@ const enhance = compose(
     state => ({
       assessment: getTestEntitySelector(state),
       userId: get(state, "user.user._id", ""),
+      updated: get(state, "tests.updated", false),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
+      questionsUpdated: get(state, "authorQuestions.updated", false),
       loading: getTestsLoadingSelector(state),
       questions: getQuestionsArraySelector(state),
       creating: getTestsCreatingSelector(state),
@@ -312,6 +349,7 @@ const enhance = compose(
     }),
     {
       receiveTestById: receiveTestByIdAction,
+      proceedPublish: proceedPublishingItemAction,
       setTestData: setTestDataAction,
       receiveItemDetailById: getItemDetailByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,

@@ -102,7 +102,7 @@ const Content = ({
 
   const noDataNotification = () => (
     <NoDataNotification
-      heading={"No Assignments "}
+      heading="No Assignments "
       description={"You don't have any currently assigned or completed assignments."}
     />
   );
@@ -110,13 +110,14 @@ const Content = ({
   const renderAssignments = () => (
     <AssignmentWrapper>
       {assignments.map((item, index) => (
-        <AssignmentCard key={index} data={item} currentGroup={currentGroup} type="assignment" />
+        <AssignmentCard key={item._id} data={item} currentGroup={currentGroup} type="assignment" />
       ))}
     </AssignmentWrapper>
   );
 
   const showLoader = () => <Spin size="small" />;
 
+  console.log("assignments are", assignments);
   return (
     <LayoutContent flag={flag}>
       <Wrapper>

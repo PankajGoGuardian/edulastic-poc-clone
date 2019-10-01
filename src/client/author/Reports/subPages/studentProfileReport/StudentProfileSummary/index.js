@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { get } from "lodash";
-import { StyledCard, StyledH3 } from "../../../common/styled";
+import { get, isEmpty } from "lodash";
+import { StyledCard, StyledH3, NoDataContainer } from "../../../common/styled";
 import { Row, Col, Icon } from "antd";
 import {
   getReportsSPRFilterData,
@@ -16,7 +16,7 @@ import {
 } from "./ducks";
 import { getCsvDownloadingState } from "../../../ducks";
 import { Placeholder } from "../../../common/components/loader";
-import { augementAssessmentChartData, augmentStandardMetaInfo } from "../common/utils/transformers";
+import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
 import { augmentDomainStandardMasteryData } from "./common/utils/transformers";
 import { downloadCSV } from "../../../common/util";
 import { useGetStudentMasteryData } from "../common/hooks";
@@ -56,17 +56,22 @@ const StudentProfileSummary = ({
   const bandInfo = bandInfoSelected;
   const scaleInfo = selectedStandardProficiency;
 
-  const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = get(
-    studentProfileSummary,
-    "data.result",
-    {}
-  );
+  const studentProfileSummaryData = get(studentProfileSummary, "data.result", {});
+
+  const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = studentProfileSummaryData;
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const studentClassInfo = studentClassData[0] || {};
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
   ]);
-  const [standards, domains] = useGetStudentMasteryData(metricInfo, skillInfo, scaleInfo);
+  const [standards, domains] = useGetStudentMasteryData(
+    metricInfo,
+    skillInfo,
+    scaleInfo,
+    studentClassInfo,
+    asessmentMetricInfo
+  );
   const domainsWithMastery = augmentDomainStandardMasteryData(domains, scaleInfo);
 
   useEffect(() => {
@@ -88,10 +93,22 @@ const StudentProfileSummary = ({
     );
   }
 
+  if (
+    isEmpty(studentProfileSummaryData) ||
+    !studentProfileSummaryData ||
+    isEmpty(asessmentMetricInfo) ||
+    isEmpty(metricInfo) ||
+    isEmpty(skillInfo)
+  ) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>;
+  }
+
   const studentInformation = studInfo[0] || {};
-  const studentClassInfo = studentClassData[0] || {};
+
+  const studentName = getStudentName(selectedStudent, studentInformation);
+
   const onCsvConvert = data =>
-    downloadCSV(`Student Profile Report-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
+    downloadCSV(`Student Profile Report-${studentName}-${studentInformation.subject}.csv`, data);
 
   return (
     <>
@@ -102,7 +119,7 @@ const StudentProfileSummary = ({
           </Col>
           <Col xs={24} sm={24} md={3} lg={3} xl={3}>
             <p>
-              <b>Name</b>: {selectedStudent.title}
+              <b>Name</b>: {studentName}
             </p>
             <p>
               <b>Grade</b>: {getGrades(studentInformation.grades)}

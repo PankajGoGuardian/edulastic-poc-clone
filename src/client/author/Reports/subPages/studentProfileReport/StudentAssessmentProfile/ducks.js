@@ -4,7 +4,8 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
-const RESET_REPORTS_STUDENT_ASSESSMENT_PROFILE = "[reports] reset reports student assessment profile";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+
 const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST = "[reports] get reports student assessment profile request";
 const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS =
   "[reports] get reports student assessment profile success";
@@ -12,7 +13,6 @@ const GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR = "[reports] get repo
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const resetStudentAssessmentProfileAction = createAction(RESET_REPORTS_STUDENT_ASSESSMENT_PROFILE);
 export const getStudentAssessmentProfileRequestAction = createAction(GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -21,7 +21,7 @@ export const getStudentAssessmentProfileRequestAction = createAction(GET_REPORTS
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportStudentAssessmentProfileReducer;
+export const stateSelector = state => state.reportReducer.reportStudentAssessmentProfileReducer;
 
 export const getReportsStudentAssessmentProfile = createSelector(
   stateSelector,
@@ -45,7 +45,7 @@ const initialState = {
 };
 
 export const reportStudentAssessmentProfileReducer = createReducer(initialState, {
-  [RESET_REPORTS_STUDENT_ASSESSMENT_PROFILE]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

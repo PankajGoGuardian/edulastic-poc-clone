@@ -18,7 +18,7 @@ export const getAssignmentsRequestAction = createAction(GET_REPORTS_ASSIGNMENTS_
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportAssignmentsReducer;
+export const stateSelector = state => state.reportReducer.reportAssignmentsReducer;
 
 export const getReportsAssignments = createSelector(
   stateSelector,

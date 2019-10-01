@@ -19,8 +19,8 @@ export const Wrapper = styled.div`
   background-color: ${props => (props.bgColor ? props.bgColor : props.theme.assignment.cardContainerBgColor)};
   padding: 5px 30px;
   position: relative;
-  display: ${props => (props.display ? props.display : "")}
-  justify-content: ${props => (props.display === "flex" ? "space-between" : "")}
+  display: ${props => (props.display ? props.display : "")};
+  justify-content: ${props => (props.display === "flex" ? "space-between" : "")};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
@@ -150,9 +150,7 @@ export const BreadcrumbWrapper = styled.div`
 
   .ant-breadcrumb-link {
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
     text-transform: uppercase;
-    font-weight: 600;
 
     a {
       color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};

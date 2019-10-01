@@ -137,29 +137,31 @@ export const getDenormalizedData = rawData => {
   let studInfoMap = keyBy(rawStudInfo, "studentId");
 
   let rawMetricInfo = get(rawData, "data.result.metricInfo", []);
-  let enhancedRawMetricInfo = rawMetricInfo.map((item, index) => {
-    let obj = {
-      ...item
-    };
-    if (studInfoMap[item.studentId]) {
-      obj = {
-        ...obj,
-        ...studInfoMap[item.studentId],
-        studentName: studInfoMap[item.studentId].firstName + " " + studInfoMap[item.studentId].lastName,
-        groupIds: studInfoMap[item.studentId].groupIds.split(",")
+  let enhancedRawMetricInfo = rawMetricInfo
+    .filter(item => skillInfoMap[item.standardId])
+    .map((item, index) => {
+      let obj = {
+        ...item
       };
-      let groupIdsMap = keyBy(obj.groupIds);
-      let uniqueGroupIds = values(groupIdsMap);
-      obj.groupIds = uniqueGroupIds;
-    }
-    if (skillInfoMap[item.standardId]) {
-      obj = {
-        ...obj,
-        ...skillInfoMap[item.standardId]
-      };
-    }
-    return obj;
-  });
+      if (studInfoMap[item.studentId]) {
+        obj = {
+          ...obj,
+          ...studInfoMap[item.studentId],
+          studentName: studInfoMap[item.studentId].firstName + " " + studInfoMap[item.studentId].lastName,
+          groupIds: studInfoMap[item.studentId].groupIds.split(",")
+        };
+        let groupIdsMap = keyBy(obj.groupIds);
+        let uniqueGroupIds = values(groupIdsMap);
+        obj.groupIds = uniqueGroupIds;
+      }
+      if (skillInfoMap[item.standardId]) {
+        obj = {
+          ...obj,
+          ...skillInfoMap[item.standardId]
+        };
+      }
+      return obj;
+    });
 
   let denormalizedEnhancedRawMetricInfo = [];
   enhancedRawMetricInfo.map((item, index) => {
@@ -191,11 +193,7 @@ export const getDenormalizedData = rawData => {
   return finalDenormalizedData;
 };
 
-export const getChartData = (denormalizedData, masteryScale, filters, role) => {
-  if (isEmpty(denormalizedData) || isEmpty(masteryScale) || isEmpty(filters)) {
-    return [];
-  }
-
+export const getFilteredDenormalizedData = (denormalizedData, filters, role) => {
   let filteredDenormalizedData = denormalizedData.filter((item, index) => {
     let schoolIdFlag;
     let teacherIdFlag;
@@ -236,6 +234,14 @@ export const getChartData = (denormalizedData, masteryScale, filters, role) => {
     }
     return false;
   });
+
+  return filteredDenormalizedData;
+};
+
+export const getChartData = (filteredDenormalizedData, masteryScale, filters, role) => {
+  if (isEmpty(filteredDenormalizedData) || isEmpty(masteryScale) || isEmpty(filters)) {
+    return [];
+  }
 
   let groupedStandardIds = groupBy(filteredDenormalizedData, "standardId");
 
@@ -414,11 +420,15 @@ const filterByMasteryLevel = (analysedData, masteryLevel) => {
   return filteredAnalysedData;
 };
 
-export const getTableData = (denormalizedData, masteryScale, compareBy, analyseBy, masteryLevel, role) => {
-  if (!denormalizedData || isEmpty(denormalizedData) || (!masteryScale || isEmpty(masteryScale))) {
+export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, analyseBy, masteryLevel, role) => {
+  if (!filteredDenormalizedData || isEmpty(filteredDenormalizedData) || (!masteryScale || isEmpty(masteryScale))) {
     return [];
   }
-  let groupedData = groupBy(denormalizedData.filter((item, index) => (item[compareBy] ? true : false)), compareBy);
+
+  let groupedData = groupBy(
+    filteredDenormalizedData.filter((item, index) => (item[compareBy] ? true : false)),
+    compareBy
+  );
   let analysedData = getAnalysedData(groupedData, compareBy, masteryScale);
 
   let filteredData = filterByMasteryLevel(analysedData, masteryLevel);

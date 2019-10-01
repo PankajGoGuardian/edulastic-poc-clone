@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { IconTestBank, IconPlaylist } from "@edulastic/icons";
+import { MenuIcon } from "@edulastic/common";
 import HeaderWrapper from "../../src/mainContent/headerWrapper";
 import Title from "../common/Title";
 import SubTitle from "../common/SubTitle";
@@ -22,6 +24,7 @@ import LinkWrapper from "../common/LinkWrapper";
 import FlexWrapper from "../common/FlexWrapper";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import { toggleSideBarAction } from "../../src/actions/toggleMenu";
 
 class Container extends Component {
   render() {
@@ -36,7 +39,7 @@ class Container extends Component {
       }
     ];
 
-    const { lastPlayList = {} } = this.props;
+    const { lastPlayList = {}, toggleSideBar } = this.props;
     let toLinkForPlaylist = "/author/playlists";
     if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
       toLinkForPlaylist = `/author/playlists/${lastPlayList.value._id}/use-this`;
@@ -44,7 +47,8 @@ class Container extends Component {
 
     return (
       <div>
-        <HeaderWrapper>
+        <HeaderWrapper justify="flex-start">
+          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <Title>New Assignment</Title>
         </HeaderWrapper>
         <ContainerWrapper>
@@ -82,9 +86,9 @@ class Container extends Component {
                 <TextWrapperBold>Pre-built assessment in Library</TextWrapperBold>
               </CardComponent>
             </FlexWrapper>
-            <FlexWrapper>
+            <FlexWrapper marginBottom="0px">
               <Link to="/author/tests/select">
-                <LinkWrapper> Or Author a Test >></LinkWrapper>
+                <LinkWrapper marginBottom="0px"> Or Author a Test >></LinkWrapper>
               </Link>
             </FlexWrapper>
           </BodyWrapper>
@@ -94,10 +98,17 @@ class Container extends Component {
   }
 }
 
+Container.propTypes = {
+  toggleSideBar: PropTypes.func.isRequired
+};
+
 const enhance = compose(
   withRouter,
-  connect(state => ({
-    lastPlayList: getLastPlayListSelector(state)
-  }))
+  connect(
+    state => ({
+      lastPlayList: getLastPlayListSelector(state)
+    }),
+    { toggleSideBar: toggleSideBarAction }
+  )
 );
 export default enhance(Container);

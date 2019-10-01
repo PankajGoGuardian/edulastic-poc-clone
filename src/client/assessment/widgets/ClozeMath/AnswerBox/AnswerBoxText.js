@@ -4,8 +4,26 @@ import { white } from "@edulastic/colors";
 import MathSpanWrapper from "../../../components/MathSpanWrapper";
 
 const AnswerBoxText = ({ children, isMath }) => {
+  const latexEscape = str => {
+    const specialCharMap = {
+      "#": "\\#",
+      $: "\\$",
+      "%": "\\%",
+      "&": "\\&",
+      "~": "\\~{}",
+      _: "\\_",
+      "^": "\\^{}"
+    };
+    Object.keys(specialCharMap).forEach(key => {
+      str = str.replace(key, specialCharMap[key]);
+      return null;
+    });
+    return str;
+  };
   return (
-    <Text data-cy="correct-answer-box">{isMath ? <MathSpanWrapper latex={children} /> : <span>{children}</span>}</Text>
+    <Text data-cy="correct-answer-box">
+      {isMath ? <MathSpanWrapper latex={latexEscape(children)} /> : <span>{children}</span>}
+    </Text>
   );
 };
 

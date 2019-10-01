@@ -17,7 +17,7 @@ export const DropAreaContainer = styled(Paper)`
 export const UploadDragger = styled(Dragger)`
   display: block;
   border: 1px dashed ${grey};
-  margin-right: 40px;
+  margin-right: ${props => (props.isAddPdf ? "0" : "40px")};
   width: 100%;
 
   .ant-upload-drag-hover {

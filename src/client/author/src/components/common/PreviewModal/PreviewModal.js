@@ -27,6 +27,7 @@ import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPag
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
+import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -187,7 +188,7 @@ class PreviewModal extends React.Component {
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 30 }}
-        width="70%"
+        width={window.innerWidth < SMALL_DESKTOP_WIDTH ? "90%" : "70%"}
         visible={isVisible}
         onCancel={this.closeModal}
         footer={null}

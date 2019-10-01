@@ -5,14 +5,14 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import tempData from "./static/json/tempData";
 
-const RESET_REPORTS_PEER_PERFORMANCE = "[reports] reset reports peer performance";
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST = "[reports] get reports peer performance request";
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS = "[reports] get reports peer performance success";
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR = "[reports] get reports peer performance error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const resetPeerPerformanceAction = createAction(RESET_REPORTS_PEER_PERFORMANCE);
 export const getPeerPerformanceRequestAction = createAction(GET_REPORTS_PEER_PERFORMANCE_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -21,7 +21,7 @@ export const getPeerPerformanceRequestAction = createAction(GET_REPORTS_PEER_PER
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportPeerPerformanceReducer;
+export const stateSelector = state => state.reportReducer.reportPeerPerformanceReducer;
 
 export const getReportsPeerPerformance = createSelector(
   stateSelector,
@@ -45,7 +45,7 @@ const initialState = {
 };
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
-  [RESET_REPORTS_PEER_PERFORMANCE]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },

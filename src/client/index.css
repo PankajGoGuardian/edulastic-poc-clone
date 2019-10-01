@@ -1915,6 +1915,10 @@ span.token.active-word {
   margin: 8px 0;
 }
 
+.fr-view table thead {
+  font-weight: 700;
+}
+
 .fr-view table td,
 .fr-view table th {
   padding: 8px;
@@ -1929,6 +1933,7 @@ span.token.active-word {
 
 .ant-modal-wrap {
   z-index: 1003;
+  overflow: hidden;
 }
 
 .ant-modal-mask {

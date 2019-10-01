@@ -3,7 +3,19 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import striptags from "striptags";
 
-import { secondaryTextColor, fadedBlack, greyDarken } from "@edulastic/colors";
+import { secondaryTextColor, fadedBlack, greyDarken, greenDark } from "@edulastic/colors";
+
+import {
+  IconGraphRay as IconRay,
+  IconGraphLine as IconLine,
+  IconGraphPoint as IconPoint,
+  IconGraphSine as IconSine,
+  IconGraphParabola as IconParabola,
+  IconGraphCircle as IconCircle,
+  IconGraphVector as IconVector,
+  IconGraphSegment as IconSegment,
+  IconGraphPolygon as IconPolygon
+} from "@edulastic/icons";
 
 import utils from "../../common/utils";
 
@@ -33,6 +45,45 @@ class DrawingObjects extends Component {
     return type;
   };
 
+  getIconByToolName = toolName => {
+    if (!toolName) {
+      return "";
+    }
+
+    const options = {
+      width:
+        toolName === "point"
+          ? 10
+          : toolName === "circle" || toolName === "parabola" || toolName === "polygon"
+          ? 15
+          : 20,
+      height: 20,
+      color: greenDark,
+      stroke: greenDark
+    };
+
+    const iconsByToolName = {
+      point: () => <IconPoint {...options} />,
+      line: () => <IconLine {...options} />,
+      ray: () => <IconRay {...options} />,
+      segment: () => <IconSegment {...options} />,
+      vector: () => <IconVector {...options} />,
+      circle: () => <IconCircle {...options} />,
+      ellipse: () => <IconLine {...options} />,
+      hyperbola: () => <IconLine {...options} />,
+      tangent: () => <IconLine {...options} />,
+      secant: () => <IconLine {...options} />,
+      exponent: () => <IconLine {...options} />,
+      logarithm: () => <IconLine {...options} />,
+      polynom: () => <IconLine {...options} />,
+      parabola: () => <IconParabola {...options} />,
+      sine: () => <IconSine {...options} />,
+      polygon: () => <IconPolygon {...options} />
+    };
+
+    return iconsByToolName[toolName]();
+  };
+
   render() {
     const { drawingObjects } = this.props;
     return (
@@ -47,6 +98,7 @@ class DrawingObjects extends Component {
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
           >
+            <span className="icon">{this.getIconByToolName(drawingObject.type)}</span>
             {this.getLabel(drawingObject)}
           </Button>
         ))}
@@ -78,6 +130,18 @@ const Button = styled.div`
   transition: background-color 0.1s ease-in, border-color 0.1s ease-in;
   border-radius: 4px;
   border: 1px solid transparent;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .icon {
+    display: block;
+    width: 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   &.selected,
   &:hover {

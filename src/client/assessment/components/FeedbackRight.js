@@ -37,7 +37,9 @@ const showNotification = (type, msg) => {
 class FeedbackRight extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+
+    const { score, maxScore } = props?.widget?.activity || {};
+    this.state = { score, maxScore };
     this.scoreInput = React.createRef();
   }
 
@@ -80,6 +82,7 @@ class FeedbackRight extends Component {
     }
     const _score = toNumber(score);
     if (_score > maxScore) {
+      message.warn("Score given should be less than or equal to maximum score");
       return;
     }
 
@@ -213,7 +216,7 @@ class FeedbackRight extends Component {
       <StyledCardTwo
         twoColLayout={twoColLayout}
         bordered={isStudentName}
-        disabled={this.props.disabled || !activity}
+        disabled={this.props.disabled}
         showCollapseBtn={showCollapseBtn}
         title={title}
       >
@@ -226,9 +229,9 @@ class FeedbackRight extends Component {
               value={
                 activity && activity.graded === false && activity.score === 0 && !score && !this.state.changed
                   ? ""
-                  : adaptiveRound(score)
+                  : adaptiveRound(score || 0)
               }
-              disabled={!activity || isPresentationMode}
+              disabled={isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"

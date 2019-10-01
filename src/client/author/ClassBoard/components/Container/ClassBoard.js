@@ -3,7 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, keyBy, isEmpty, round } from "lodash";
-import { message, Dropdown, Select } from "antd";
+import { message, Dropdown, Select, Spin } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -21,7 +21,6 @@ import {
 // actions
 import {
   receiveTestActivitydAction,
-  receiveClassResponseAction,
   releaseScoreAction,
   markAsDoneAction,
   markAbsentAction,
@@ -48,7 +47,8 @@ import {
   removedStudentsSelector,
   getCurrentTestActivityIdSelector,
   getAllTestActivitiesForStudentSelector,
-  getStudentResponseSelector
+  getStudentResponseSelector,
+  isItemVisibiltySelector
 } from "../../ducks";
 
 import {
@@ -120,12 +120,22 @@ class ClassBoard extends Component {
     this.changeStateFalse = this.changeStateFalse.bind(this);
     this.onSelectAllChange = this.onSelectAllChange.bind(this);
 
+    let _selectedTab = "Both";
+    let questionId = null;
+    if (props.location.pathname.includes("question-activity")) {
+      _selectedTab = "questionView";
+      const tempArr = props.location.pathname.split("/");
+      questionId = tempArr[tempArr.length - 1];
+    } else if (props.location.pathname.includes("test-activity")) {
+      _selectedTab = "Student";
+    }
+
     this.state = {
       flag: true,
-      selectedTab: "Both",
+      selectedTab: _selectedTab,
       selectAll: false,
       selectedQuestion: 0,
-      selectedQid: null,
+      selectedQid: questionId,
       itemId: null,
       nCountTrue: 0,
       redirectPopup: false,
@@ -182,22 +192,50 @@ class ClassBoard extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const { loadClassResponses, additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
-    const { testId } = additionalData;
+    const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const { testId: prevTestId } = prevState;
     const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
-    if (testId !== prevTestId) {
-      loadClassResponses({ testId });
+    if (additionalData.testId !== prevState.testId) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { additionalData: { testId } = {} } = props;
+    let newState = {};
+    const { additionalData: { testId } = {}, testActivity } = props;
+
     if (testId !== state.testId) {
-      return { testId };
+      newState = { ...newState, testId };
+    }
+
+    if (
+      state.selectedQid &&
+      !state.itemId &&
+      testActivity.length &&
+      props.location.pathname.includes("question-activity")
+    ) {
+      // first load for question-activity page
+      const questions = testActivity[0].questionActivities;
+      const question = questions.find(item => item._id === state.selectedQid);
+      if (question) {
+        newState = { ...newState, itemId: question.testItemId };
+      }
+    }
+
+    if (testActivity.length && !state.selectedStudentId && props.location.pathname.includes("test-activity")) {
+      // first load for test-activity page
+      const tempArr = props.location.pathname.split("/");
+      const testActivityId = tempArr[tempArr.length - 1];
+
+      const student = testActivity.find(item => item.testActivityId === testActivityId);
+      if (student) {
+        newState = { ...newState, selectedStudentId: student.studentId };
+      }
+    }
+
+    if (Object.keys(newState).length) {
+      return newState;
     }
     return null;
   }
@@ -261,11 +299,22 @@ class ClassBoard extends Component {
     ).testActivityId;
   };
 
-  onTabChange = (e, name, selectedStudentId) => {
+  resetView = view => {
+    this.setState({ selectedTab: view });
+  };
+
+  onTabChange = (e, name, selectedStudentId, testActivityId) => {
+    const { assignmentId, classId } = this.props.match.params;
     this.setState({
       selectedTab: name,
       selectedStudentId
     });
+
+    if (name === "Both") {
+      this.props.history.push(`/author/classboard/${assignmentId}/${classId}`);
+    } else if (name === "Student") {
+      this.props.history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
+    }
   };
 
   getQuestions = () => {
@@ -316,9 +365,15 @@ class ClassBoard extends Component {
   };
 
   onClickBarGraph = data => {
+    if (!this.props.isItemsVisible) {
+      return;
+    }
+    const { assignmentId, classId } = this.props.match.params;
     const questions = this.getQuestions();
     const index = questions.findIndex(x => x.id === data.qid);
+
     this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
+    this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${data.qid}`);
   };
 
   isMobile = () => window.innerWidth < 480;
@@ -361,8 +416,8 @@ class ClassBoard extends Component {
   };
 
   handleShowMarkAsSubmittedModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
+    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    if (assignmentStatus.toLowerCase() === "not open") {
       return message.warn("Assignment is not opened yet");
     }
 
@@ -549,7 +604,8 @@ class ClassBoard extends Component {
       studentResponse,
       loadStudentResponses,
       getAllTestActivitiesForStudent,
-      enrollmentStatus
+      enrollmentStatus,
+      isItemsVisible
     } = this.props;
     const {
       selectedTab,
@@ -600,7 +656,7 @@ class ClassBoard extends Component {
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
-    const enableDownload = testActivity.some(item => item.status === "submitted");
+    const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
     return (
       <div>
@@ -614,7 +670,7 @@ class ClassBoard extends Component {
             onInputChange={this.handleValidateInput}
             expectedVal="SUBMIT"
             bodyText={`The assignment for selected student(s) will be marked as "Submitted". Once you proceed, these students will not be able to take the assignment online. If the students have answered any questions, their responses will be saved.`}
-            okText="Yes,Submit"
+            okText="Yes, Submit"
             canUndone
           />
         )}
@@ -645,7 +701,7 @@ class ClassBoard extends Component {
             bodyText={
               "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
             }
-            okText="Yes,Remove"
+            okText="Yes, Remove"
           />
         )}
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -658,6 +714,7 @@ class ClassBoard extends Component {
           additionalData={additionalData}
           testActivityId={testActivityId}
           selectedStudentsKeys={selectedStudentsKeys}
+          resetView={this.resetView}
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
@@ -686,15 +743,15 @@ class ClassBoard extends Component {
                 CARD VIEW
               </BothButton>
               <StudentButton
-                disabled={!firstStudentId}
+                disabled={!firstStudentId || !isItemsVisible}
                 active={selectedTab === "Student"}
-                onClick={e => this.onTabChange(e, "Student", firstStudentId)}
+                onClick={e => this.onTabChange(e, "Student", firstStudentId, testActivityId)}
               >
                 STUDENTS
               </StudentButton>
               <QuestionButton
                 active={selectedTab === "questionView"}
-                disabled={!firstStudentId}
+                disabled={!firstStudentId || !isItemsVisible}
                 onClick={() => {
                   const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
                   if (!firstQuestion) {
@@ -707,6 +764,9 @@ class ClassBoard extends Component {
                     itemId: firstQuestion.testItemId,
                     selectedTab: "questionView"
                   });
+                  this.props.history.push(
+                    `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                  );
                 }}
               >
                 QUESTIONS
@@ -739,6 +799,7 @@ class ClassBoard extends Component {
                   </CheckContainer>
                   <ClassBoardFeats>
                     <RedirectButton
+                      disabled={!isItemsVisible}
                       first={true}
                       data-cy="printButton"
                       onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
@@ -852,10 +913,14 @@ class ClassBoard extends Component {
                   classId={classId}
                   studentSelect={this.onSelectCardOne}
                   endDate={additionalData.endDate || additionalData.closedDate}
+                  closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
-                  viewResponses={(e, selected) => {
+                  viewResponses={(e, selected, testActivityId) => {
+                    if (!isItemsVisible) {
+                      return;
+                    }
                     getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
-                    this.onTabChange(e, "Student", selected);
+                    this.onTabChange(e, "Student", selected, testActivityId);
                   }}
                   isPresentationMode={isPresentationMode}
                   enrollmentStatus={enrollmentStatus}
@@ -892,7 +957,7 @@ class ClassBoard extends Component {
             </React.Fragment>
           )}
 
-          {selectedTab === "Student" && testActivity && (
+          {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
             <React.Fragment>
               <StudentGrapContainer>
                 <StyledCard bordered={false} paddingTop={15}>
@@ -901,9 +966,12 @@ class ClassBoard extends Component {
                     students={testActivity}
                     selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
-                    handleChange={value => {
+                    handleChange={(value, testActivityId) => {
                       getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
                       this.setState({ selectedStudentId: value });
+                      this.props.history.push(
+                        `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                      );
                     }}
                     isPresentationMode={isPresentationMode}
                   />
@@ -925,8 +993,11 @@ class ClassBoard extends Component {
                               : ""
                           }
                           onChange={testActivityId => {
-                            loadStudentResponses({ testActivityId, groupId: classId });
+                            loadStudentResponses({ testActivityId, groupId: classId, studentId: selectedStudentId });
                             setCurrentTestActivityId(testActivityId);
+                            this.props.history.push(
+                              `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                            );
                           }}
                         >
                           {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
@@ -947,7 +1018,12 @@ class ClassBoard extends Component {
                         </div>
                         {allTestActivitiesForStudent.length > 1 && (
                           <div
-                            style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              padding: "10px",
+                              alignItems: "center"
+                            }}
                           >
                             <ScoreHeader>SCORE</ScoreHeader>
                             <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
@@ -1007,37 +1083,41 @@ class ClassBoard extends Component {
               />
             </React.Fragment>
           )}
-
-          {selectedTab === "questionView" && (selectedQuestion || selectedQuestion === 0) && (
-            <React.Fragment>
-              <QuestionContainer
-                classResponse={classResponse}
-                testActivity={testActivity}
-                qIndex={selectedQuestion}
-                itemId={itemId}
-                question={{ id: selectedQid }}
-                isPresentationMode={isPresentationMode}
-              >
-                <GenSelect
-                  classid="DI"
-                  classname={
-                    selectedTab === "Student"
-                      ? classname
-                      : firstQuestionEntities
-                          .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
-                          .filter(x => !x.disabled)
-                          .map(({ value, id }) => ({ value, name: labels[id].barLabel }))
-                  }
-                  selected={selectedQuestion}
-                  justifyContent="flex-end"
-                  handleChange={value => {
-                    const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                    this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
-                  }}
-                />
-              </QuestionContainer>
-            </React.Fragment>
-          )}
+          {selectedTab === "questionView" &&
+            !isEmpty(testActivity) &&
+            !isEmpty(classResponse) &&
+            (selectedQuestion || selectedQuestion === 0) && (
+              <React.Fragment>
+                <QuestionContainer
+                  isQuestionView
+                  classResponse={classResponse}
+                  testActivity={testActivity}
+                  qIndex={selectedQuestion}
+                  itemId={itemId}
+                  question={{ id: selectedQid }}
+                  isPresentationMode={isPresentationMode}
+                >
+                  <GenSelect
+                    classid="DI"
+                    classname={firstQuestionEntities
+                      .map((x, index) => ({
+                        value: index,
+                        disabled: x.disabled || x.scoringDisabled,
+                        id: x._id,
+                        qLabel: x.qLabel
+                      }))
+                      .filter(x => !x.disabled)
+                      .map(({ value, qLabel }) => ({ value, name: qLabel }))}
+                    selected={selectedQuestion}
+                    justifyContent="flex-end"
+                    handleChange={value => {
+                      const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
+                      this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
+                    }}
+                  />
+                </QuestionContainer>
+              </React.Fragment>
+            )}
         </CardDetailsContainer>
       </div>
     );
@@ -1068,12 +1148,12 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      isItemsVisible: isItemVisibiltySelector(state),
       labels: getQLabelsSelector(state),
       removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
-      loadClassResponses: receiveClassResponseAction,
       loadStudentResponses: receiveStudentResponseAction,
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
@@ -1104,7 +1184,6 @@ ClassBoard.propTypes = {
   creating: PropTypes.object,
   testActivity: PropTypes.array,
   // t: PropTypes.func,
-  loadClassResponses: PropTypes.func,
   studentSelect: PropTypes.func.isRequired,
   studentUnselectAll: PropTypes.func.isRequired,
   allStudents: PropTypes.array,

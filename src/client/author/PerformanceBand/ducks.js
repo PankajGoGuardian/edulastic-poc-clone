@@ -18,6 +18,7 @@ const CREATE_PERFORMANCE_BAND_ERROR = "[Performance Band] create data error";
 const SET_LOADING = "[Performance Band] set loading";
 const DELETE_PERFORMANCE_BAND_REQUEST = "[Performance Band] delete request";
 const SET_PERFORMANCE_BAND_NAME = "[Performance Band] set name";
+const SET_PERFORMANCE_BAND_EDITING_INDEX = "[Performance Band] set editing index";
 
 const SET_PERFORMANCE_BAND_CHANGES = "[Performance Band] set data changes";
 const SET_PERFORMANCE_BAND_DATA_LOCAL = "[Performance Band] set data local";
@@ -34,6 +35,7 @@ export const createPerformanceBandSuccessAction = createAction(CREATE_PERFORMANC
 export const createPerformanceBandErrorAction = createAction(CREATE_PERFORMANCE_BAND_ERROR);
 
 export const setPerformanceBandChangesAction = createAction(SET_PERFORMANCE_BAND_CHANGES);
+export const setEditingIndexAction = createAction(SET_PERFORMANCE_BAND_EDITING_INDEX);
 
 const setLoadingAction = createAction(SET_LOADING);
 export const deletePerformanceBandAction = createAction(DELETE_PERFORMANCE_BAND_REQUEST);
@@ -66,7 +68,8 @@ const initialState = {
   updating: false,
   updateError: null,
   creating: false,
-  createError: null
+  createError: null,
+  editingIndex: undefined
 };
 
 export const reducer = createReducer(initialState, {
@@ -130,6 +133,10 @@ export const reducer = createReducer(initialState, {
     if (ind > -1) {
       state.profiles[ind].name = name;
     }
+  },
+  [SET_PERFORMANCE_BAND_EDITING_INDEX]: (state, { payload }) => {
+    const oldIndex = state.editingIndex;
+    state.editingIndex = oldIndex != payload ? payload : undefined;
   }
 });
 
@@ -175,6 +182,7 @@ function* createPerformanceBandSaga({ payload }) {
     const createPerformanceBand = yield call(settingsApi.createPerformanceBand, payload);
     yield put(createPerformanceBandSuccessAction(createPerformanceBand));
     yield put(receivePerformanceBandAction());
+    yield put(setEditingIndexAction(createPerformanceBand._id));
   } catch (err) {
     const errorMessage = "Create PerformanceBand is failing";
     yield call(message.error, errorMessage);

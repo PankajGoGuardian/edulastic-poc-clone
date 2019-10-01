@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
-import { darkGrey, themeColor } from "@edulastic/colors";
+import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
 import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription } from "@edulastic/icons";
 import {
   ModalTitle,
@@ -37,12 +37,20 @@ import {
   ListHeaderCell,
   ListCell,
   SammaryMark,
+  TestStatus,
   IconWrapper
 } from "./styled";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
+const modalStyles = {
+  modal: {
+    background: backgrounds.primary,
+    padding: "14px 29px 28px 29px",
+    maxWidth: "920px"
+  }
+};
 class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
@@ -72,15 +80,13 @@ class ViewModal extends React.Component {
     } = item;
 
     return (
-      <Modal
-        open={isShow}
-        onClose={close}
-        style={{
-          maxHeight: "70vh",
-          overflow: "auto"
-        }}
-      >
-        <ModalTitle>{title}</ModalTitle>
+      <Modal open={isShow} onClose={close} styles={modalStyles}>
+        <ModalTitle>
+          {title}
+          <TestStatus view="tile" status={status}>
+            {status}
+          </TestStatus>
+        </ModalTitle>
         <ModalContainer>
           <ModalColumn>
             <Image src={thumbnail} />

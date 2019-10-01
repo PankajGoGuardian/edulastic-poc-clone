@@ -7,7 +7,7 @@ import next from "immer";
 
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import { StyledTable, StyledDropDownContainer } from "../styled";
+import { StyledTable, StyledDropDownContainer, OnClick } from "../styled";
 import { StyledH3, StyledCard } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 
@@ -25,12 +25,13 @@ import {
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 
 export const StandardsGradebookTable = ({
-  denormalizedData,
+  filteredDenormalizedData,
   masteryScale,
   chartFilter,
   isCsvDownloading,
   role,
-  filters = {}
+  filters = {},
+  handleOnClickStandard
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
@@ -49,20 +50,16 @@ export const StandardsGradebookTable = ({
     });
   }
 
-  const masteryLevelDropDownData = useMemo(() => {
-    return getMasteryDropDown(masteryScale);
-  }, [masteryScale]);
-
   const tableData = useMemo(() => {
     return getTableData(
-      denormalizedData,
+      filteredDenormalizedData,
       masteryScale,
       tableDdFilters.compareBy,
       tableDdFilters.analyseBy,
       tableDdFilters.masteryLevel,
       role
     );
-  }, [denormalizedData, masteryScale, tableDdFilters]);
+  }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
 
   const getFilteredTableData = () => {
     return next(tableData, arr => {
@@ -99,7 +96,7 @@ export const StandardsGradebookTable = ({
     return printData;
   };
 
-  const renderStandardIdColumns = (index, _compareBy, _analyseBy) => (data, record) => {
+  const renderStandardIdColumns = (index, _compareBy, _analyseBy, standardName, standardId) => (data, record) => {
     const tooltipText = record => {
       return (
         <div>
@@ -137,8 +134,28 @@ export const StandardsGradebookTable = ({
       );
     };
 
+    const obj = {
+      termId: filters.termId,
+      studentId: record.studentId,
+      standardId: standardId,
+      profileId: filters.profileId
+    };
+
     const getCellContents = props => {
       let { printData } = props;
+      if (_compareBy === "studentId") {
+        return (
+          <div style={{ backgroundColor: record.color }}>
+            {printData === "N/A" ? (
+              printData
+            ) : (
+              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
+                {printData}
+              </OnClick>
+            )}
+          </div>
+        );
+      }
       return <div style={{ backgroundColor: record.color }}>{printData}</div>;
     };
 
@@ -187,7 +204,13 @@ export const StandardsGradebookTable = ({
           dataIndex: item.standardId,
           key: item.standardId,
           width: 150,
-          render: renderStandardIdColumns(index, tableDdFilters.compareBy, tableDdFilters.analyseBy)
+          render: renderStandardIdColumns(
+            index,
+            tableDdFilters.compareBy,
+            tableDdFilters.analyseBy,
+            item.standardName,
+            item.standardId
+          )
         }))
       ];
     }
@@ -204,12 +227,7 @@ export const StandardsGradebookTable = ({
   });
 
   const tableFilterDropDownCB = (event, _selected, comData) => {
-    if (comData === "masteryLevel") {
-      setTableDdFilters({
-        ...tableDdFilters,
-        masteryLevel: _selected.key
-      });
-    } else if (comData === "compareBy") {
+    if (comData === "compareBy") {
       setTableDdFilters({
         ...tableDdFilters,
         compareBy: _selected.key
@@ -232,16 +250,7 @@ export const StandardsGradebookTable = ({
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Row>
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
-                <ControlDropDown
-                  data={masteryLevelDropDownData}
-                  by={masteryLevelDropDownData[0]}
-                  prefix="Mastery Level"
-                  selectCB={tableFilterDropDownCB}
-                  comData={"masteryLevel"}
-                />
-              </StyledDropDownContainer>
+            <Row className="control-dropdown-row">
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}

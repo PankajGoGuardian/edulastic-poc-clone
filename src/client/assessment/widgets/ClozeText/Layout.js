@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { isEqual, find, clamp } from "lodash";
+import { isEqual, find, clamp, differenceBy } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -120,7 +120,17 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, multipleLine, advancedAreOpen, t, fillSections, cleanSections } = this.props;
+    const {
+      onChange,
+      uiStyle,
+      multipleLine,
+      advancedAreOpen,
+      t,
+      fillSections,
+      cleanSections,
+      handleIndividualTypeChange,
+      handleGlobalTypeChange
+    } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("uiStyle", {
@@ -143,20 +153,45 @@ class Layout extends Component {
 
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
+      // update response containers only if it is already defined due to style updates
+      let flag = false;
+
+      const resp = responsecontainerindividuals.map(responsecontainerindividual => {
+        if (!flag && responsecontainerindividual.id && !responsecontainerindividual.placeholder) {
+          flag = true;
+          return {
+            ...responsecontainerindividual,
+            placeholder: " "
+          };
+        }
+        return responsecontainerindividual;
+      });
+      if (flag) {
+        flag = false;
+        onChange("uiStyle", {
+          ...uiStyle,
+          responsecontainerindividuals: resp.sort((r1, r2) => r1.index - r2.index)
+        });
+      }
+
+      // limit addition of response containers to response ids
       const { responseIds } = this.props;
+      const diff = differenceBy(responseIds, responsecontainerindividuals, "id");
+      const _response = diff[0];
       const ind = responsecontainerindividuals.length;
-      const response = find(responseIds, resp => resp.index === ind);
-      responsecontainerindividuals.push({
-        id: response ? response.id : "",
-        index: response ? response.index : "",
-        widthpx: 0,
-        heightpx: 0,
-        placeholder: ""
-      });
-      onChange("uiStyle", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+      if (_response) {
+        responsecontainerindividuals.push({
+          id: _response.id,
+          index: _response.index,
+          widthpx: 0,
+          heightpx: 0,
+          placeholder: " "
+        });
+        onChange("uiStyle", {
+          ...uiStyle,
+          responsecontainerindividuals: responsecontainerindividuals.sort((r1, r2) => r1.index - r2.index)
+        });
+      }
     };
 
     const removeIndividual = index => {
@@ -306,7 +341,7 @@ class Layout extends Component {
               <Label>{t("component.options.inputtype")}</Label>
               <SelectWrapper>
                 <Select
-                  onChange={inputtype => changeUiStyle("inputtype", inputtype)}
+                  onChange={handleGlobalTypeChange}
                   options={[
                     { value: "text", label: t("component.options.text") },
                     { value: "number", label: t("component.options.number") }
@@ -330,70 +365,72 @@ class Layout extends Component {
               <Label>{t("component.options.responsecontainerindividuals")}</Label>
             </Col>
           </Row>
-          {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-            <Container key={index}>
-              <Row>
-                <Col md={18}>
-                  <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-                </Col>
-                <Col md={6}>
-                  <Delete onClick={() => removeIndividual(index)}>X</Delete>
-                </Col>
-              </Row>
-              <Row gutter={20}>
-                <Col md={12}>
-                  <Label>{t("component.options.widthpx")}</Label>
-                  <TextField
-                    ref={ref => {
-                      this[`individualWidth${index}`] = ref;
-                    }}
-                    type="number"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onFocus={onFocusHandler(responsecontainerindividual, index)}
-                    onBlur={onWidthInputBlur(index)}
-                    onChange={this.handleInputChange}
-                    value={getIndividualWidthInputValue(responsecontainerindividual, index)}
-                  />
-                </Col>
-                <Col md={12}>
-                  <Label>{t("component.options.heightpx")}</Label>
-                  <TextField
-                    type="number"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onBlur={() => this.handleBlurIndividualHeight(index)}
-                    onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                    value={responsecontainerindividual.heightpx}
-                  />
-                </Col>
-              </Row>
-              <Row gutter={20}>
-                <Col md={12}>
-                  <Label>{t("component.options.inputtype")}</Label>
-                  <SelectWrapper>
-                    <Select
-                      onChange={inputtype => changeIndividualUiStyle("inputtype", inputtype, index)}
-                      options={[
-                        { value: "text", label: t("component.options.text") },
-                        { value: "number", label: t("component.options.number") }
-                      ]}
-                      value={responsecontainerindividual.inputtype}
+          {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) =>
+            responsecontainerindividual.placeholder ? (
+              <Container key={index}>
+                <Row>
+                  <Col md={18}>
+                    <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
+                  </Col>
+                  <Col md={6}>
+                    <Delete onClick={() => removeIndividual(index)}>X</Delete>
+                  </Col>
+                </Row>
+                <Row gutter={20}>
+                  <Col md={12}>
+                    <Label>{t("component.options.widthpx")}</Label>
+                    <TextField
+                      ref={ref => {
+                        this[`individualWidth${index}`] = ref;
+                      }}
+                      type="number"
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      // TODO
+                      // change from 'onChange' to 'onBlur for all
+                      onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
+                      value={responsecontainerindividual.widthpx || uiStyle.widthpx}
                     />
-                  </SelectWrapper>
-                </Col>
-                <Col md={12}>
-                  <Label>{t("component.options.placeholder")}</Label>
-                  <TextField
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
-                    value={responsecontainerindividual.placeholder}
-                  />
-                </Col>
-              </Row>
-            </Container>
-          ))}
+                  </Col>
+                  <Col md={12}>
+                    <Label>{t("component.options.heightpx")}</Label>
+                    <TextField
+                      type="number"
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      onBlur={() => this.handleBlurIndividualHeight(index)}
+                      onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
+                      value={responsecontainerindividual.heightpx || uiStyle.heightpx}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={20}>
+                  <Col md={12}>
+                    <Label>{t("component.options.inputtype")}</Label>
+                    <SelectWrapper>
+                      <Select
+                        onChange={handleIndividualTypeChange.bind(this, index)}
+                        options={[
+                          { value: "text", label: t("component.options.text") },
+                          { value: "number", label: t("component.options.number") }
+                        ]}
+                        value={responsecontainerindividual.inputtype}
+                      />
+                    </SelectWrapper>
+                  </Col>
+                  <Col md={12}>
+                    <Label>{t("component.options.placeholder")}</Label>
+                    <TextField
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
+                      value={responsecontainerindividual.placeholder}
+                    />
+                  </Col>
+                </Row>
+              </Container>
+            ) : null
+          )}
           <Row gutter={20}>
             <Col md={24}>
               <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>

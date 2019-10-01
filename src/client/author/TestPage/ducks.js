@@ -24,7 +24,13 @@ import { helpers } from "@edulastic/common";
 import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
-import { updateItemsDocBasedByIdAction } from "../ItemDetail/ducks";
+import {
+  updateItemDocBasedSaga,
+  togglePublishWarningModalAction,
+  PROCEED_PUBLISH_ACTION,
+  hasStandards
+} from "../ItemDetail/ducks";
+import { saveUserWorkAction } from "../../assessment/actions/userWork";
 // constants
 
 const testItemStatusConstants = {
@@ -297,7 +303,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     case SET_TEST_EDIT_ASSIGNED:
       return { ...state, editAssigned: true };
     case SET_REGRADE_OLD_TESTID:
@@ -328,7 +334,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:
     case UPDATE_TEST_DOC_BASED_REQUEST:
-      return { ...state, creating: true };
+      return { ...state, creating: true, error: null };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
       const { testItems, scoring: score, ...entity } = payload.entity;
@@ -336,6 +342,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...entity },
         createdItems: [],
+        error: null,
         updated: false,
         creating: false
       };
@@ -344,6 +351,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, ...dataRest },
+        error: null,
         updated: false
       };
     case CREATE_TEST_ERROR:
@@ -481,7 +489,7 @@ export const reducer = (state = initialState, { type, payload }) => {
  * @param {Object} testItems - list of test items
  *
  */
-const getQuestions = (testItems = []) => {
+export const getQuestions = (testItems = []) => {
   const allQuestions = [];
   for (const item of testItems) {
     const { questions = [], resources = [] } = item.data || {};
@@ -506,6 +514,9 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     yield put(setTestItemsAction(entity.testItems.map(item => item._id)));
+    if (!isEmpty(entity.freeFormNotes)) {
+      yield put(saveUserWorkAction({ [entity.testItems[0]._id]: { scratchpad: entity.freeFormNotes || {} } }));
+    }
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(entity, "subjects[0]", "Other Subjects"),
@@ -663,7 +674,10 @@ function* updateTestDocBasedSaga({ payload }) {
       ...payload.data,
       testItems: [{ _id: testItemId, ...updatedTestItem }]
     };
-    yield put(updateItemsDocBasedByIdAction(testItemId, updatedTestItem, true, false));
+
+    yield call(updateItemDocBasedSaga, {
+      payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
+    });
     return yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment }
     });
@@ -701,9 +715,30 @@ function* publishTestSaga({ payload }) {
     let { _id: id, test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
+    const testItems = test?.testItems;
+    const assessmentQuestions = yield select(getQuestionsArraySelector);
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
+
+    const standardPresent = questions.some(hasStandards);
+    // if alignment data is not present, set the flag to open the modal, and wait for
+    // an action from the modal.!
+    if (!standardPresent && test.isDocBased) {
+      yield put(togglePublishWarningModalAction(true));
+      // action dispatched by the modal.
+      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+      yield put(togglePublishWarningModalAction(false));
+
+      // if he wishes to add some just close the modal, and go to metadata.
+      // else continue the normal flow.
+      if (!publishItem) {
+        return;
+      }
+    }
     yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: { id, data: test, assignFlow: true }
     });
+
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     if (!assignFlow) {
@@ -715,6 +750,7 @@ function* publishTestSaga({ payload }) {
       yield put(push(`/author/tests/${id}/publish`));
     }
   } catch (e) {
+    console.log(e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }
@@ -814,7 +850,8 @@ function* setTestDataAndUpdateSaga(payload) {
 
     yield put(setTestDataAction(newTest));
     if (!newTest._id) {
-      const { title } = newTest;
+      const { title, testContentVisibility } = newTest;
+      const role = yield select(getUserRole);
       if (!title) {
         return yield call(message.error("Name field cannot be empty"));
       }
@@ -833,6 +870,9 @@ function* setTestDataAndUpdateSaga(payload) {
             maxScore: helpers.getPoints(o),
             questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
           }));
+        if (!testContentVisibility && (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)) {
+          draft.testContentVisibility = test.testContentVisibility.ALWAYS;
+        }
       });
 
       const entity = yield call(testsApi.create, newTest);

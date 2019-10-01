@@ -9,15 +9,13 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop }) => {
   const { yAxisMax, yAxisMin, stepSize, width, fractionFormat } = gridParams;
   const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
   const padding = getPadding(yAxis);
-  const labelsAmount = Math.ceil(
-    Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(yAxisMax, gridParams)) / 19
-  );
+  const maxCount = 16;
+  const labelsFrequency = Math.ceil(yAxis.length / maxCount);
 
   const displayLabel = index => {
-    if (yAxis.length <= labelsAmount) {
+    if (yAxis.length <= maxCount) {
       return true;
     }
-    const labelsFrequency = Math.ceil((yAxis.length - 2) / labelsAmount);
     return index % labelsFrequency === 0;
   };
 

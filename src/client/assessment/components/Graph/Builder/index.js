@@ -459,7 +459,8 @@ class Board {
         numberlineAxis.stackResponses,
         numberlineAxis.stackResponsesSpacing,
         canvas.responsesAllowed,
-        layout.width
+        layout.width,
+        layout.height
       );
     }
 
@@ -483,14 +484,14 @@ class Board {
     this.$board.fullUpdate();
   }
 
-  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed, width) {
+  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed, width, height = 150) {
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
-      const newHeight = Math.max(150, 75 + (responsesAllowed + 1) * stackResponsesSpacing);
+      const newHeight = Math.max(height, 75 + (responsesAllowed + 1) * stackResponsesSpacing);
       this.resizeContainer(width, newHeight);
     }
 
     if (stackResponsesSpacing < 1 || !stackResponses) {
-      this.resizeContainer(width, 150);
+      this.resizeContainer(width, height);
     }
 
     this.stackResponses = stackResponses;

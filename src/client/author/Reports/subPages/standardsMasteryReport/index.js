@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
+import { connect } from "react-redux";
 
 import StandardsGradebook from "./standardsGradebook";
 import StandardsPerfromance from "./standardsPerformance";
@@ -11,19 +12,20 @@ import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
 
-export const StandardsMasteryReportContainer = props => {
-  const [gradebookSettings, setGradebookSettings] = useState({
-    selectedTest: { key: "", title: "" },
-    requestFilters: {
-      termId: "",
-      subject: "",
-      grades: ["K"],
-      domainIds: ["All"]
-      // classSectionId: "",
-      // assessmentType: ""
-    }
-  });
+import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
+import { resetAllReportsAction } from "../../common/reportsRedux";
+
+const StandardsMasteryReportContainer = props => {
+  const { gradebookSettings, setSMRSettingsAction } = props;
+
   const firstRender = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      console.log("Standards Mastery Report Component Unmount");
+      props.resetAllReportsAction();
+    };
+  }, []);
 
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[props.loc]) {
@@ -34,7 +36,7 @@ export const StandardsMasteryReportContainer = props => {
         obj[item] = val;
       });
       return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, "?" + qs.stringify(obj));
+        getNavigationTabLinks(arr, "?" + qs.stringify(obj, { arrayFormat: "comma" }));
       });
     } else {
       return [];
@@ -53,7 +55,7 @@ export const StandardsMasteryReportContainer = props => {
         }
       });
       obj.testId = gradebookSettings.selectedTest.key;
-      let path = qs.stringify(obj);
+      let path = qs.stringify(obj, { arrayFormat: "comma" });
       props.history.push("?" + path);
     }
     firstRender.current = false;
@@ -75,7 +77,7 @@ export const StandardsMasteryReportContainer = props => {
       }
     });
 
-    setGradebookSettings({
+    setSMRSettingsAction({
       ...gradebookSettings,
       selectedTest: _settings.selectedTest.key === "All" ? { key: "", title: "" } : _settings.selectedTest,
       requestFilters: { ...obj }
@@ -105,3 +107,13 @@ export const StandardsMasteryReportContainer = props => {
     </>
   );
 };
+
+const ConnectedStandardsMasteryReportContainer = connect(
+  state => ({ gradebookSettings: getReportsSMRSettings(state) }),
+  {
+    setSMRSettingsAction,
+    resetAllReportsAction
+  }
+)(StandardsMasteryReportContainer);
+
+export { ConnectedStandardsMasteryReportContainer as StandardsMasteryReportContainer };

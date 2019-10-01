@@ -176,7 +176,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               style={{ ...btnStyle, margin: "2px 4px" }}
             >
               {showAnswer && <span className="index">{indexStr}</span>}
-              <span className="text">{getLabel(dropTargetIndex)}</span>
+              <Tooltip title={getLabel(dropTargetIndex)}>
+                <span className="text">{getLabel(dropTargetIndex)}</span>
+              </Tooltip>
 
               <IconWrapper>
                 {choiceAttempted && status === "right" && <RightIcon />}
@@ -197,7 +199,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               style={{ ...btnStyle, margin: "2px 4px" }}
             >
               {showAnswer && <span className="index">{indexStr}</span>}
-              <span className="text">{getLabel(dropTargetIndex)}</span>
+              <Tooltip title={getLabel(dropTargetIndex)}>
+                <span className="text">{getLabel(dropTargetIndex)}</span>
+              </Tooltip>
 
               <IconWrapper>
                 {choiceAttempted && status === "right" && <RightIcon />}

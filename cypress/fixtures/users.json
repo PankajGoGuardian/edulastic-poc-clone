@@ -4,6 +4,9 @@
       "username": "teacher.visual-automation@snapwiz.com",
       "password": "automation"
     },
-    "student": "dastd4@xyz.com"
+    "student": {
+      "username": "student.1.visual-automation@snapwiz.com",
+      "password": "automation"
+    }
   }
 }

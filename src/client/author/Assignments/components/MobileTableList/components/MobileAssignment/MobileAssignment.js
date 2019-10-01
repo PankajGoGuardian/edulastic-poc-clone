@@ -51,7 +51,7 @@ export default class MobileAssignment extends React.Component {
     const itemLink = `${item._id}/${item.classId}`;
 
     return (
-      <AssignmentNavigation>
+      <AssignmentNavigation data-cy="PresentationIcon">
         <Link to={`/author/classboard/${itemLink}`}>
           <Icon src={presentationIcon} alt="Images" />
         </Link>

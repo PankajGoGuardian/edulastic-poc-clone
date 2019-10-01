@@ -35,12 +35,10 @@ const AssessmentDetails = ({
   absent,
   isPaused
 }) => {
-  const getAssignmentStatus = () => {
-    if (started || resume) {
-      return `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`;
-    }
-    return `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
-  };
+  const status =
+    started || resume
+      ? `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`
+      : `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
 
   return (
     <Wrapper>
@@ -77,7 +75,7 @@ const AssessmentDetails = ({
           {type === "assignment" ? (
             <React.Fragment>
               <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
-                <span data-cy="status">{getAssignmentStatus()}</span>
+                <span data-cy="status">{status}</span>
               </StatusButton>
               {safeBrowser && (
                 <SafeExamIcon
@@ -140,16 +138,16 @@ const getStatusBgColor = (props, type) => {
   }
 };
 
-const Wrapper = styled(Col)`
+const Wrapper = React.memo(styled(Col)`
   display: flex;
   flex-direction: row;
   @media screen and (max-width: 767px) {
     flex-direction: column;
     align-items: center;
   }
-`;
+`);
 
-const ImageWrapper = styled.div`
+const ImageWrapper = React.memo(styled.div`
   max-width: 168.5px;
   max-height: 90.5px;
   overflow: hidden;
@@ -168,9 +166,9 @@ const ImageWrapper = styled.div`
     max-width: 100%;
     margin: 0;
   }
-`;
+`);
 
-const Thumbnail = styled.img`
+const Thumbnail = React.memo(styled.img`
   width: 168px;
   border-radius: 10px;
   height: 90px;
@@ -188,9 +186,9 @@ const Thumbnail = styled.img`
     margin: 0 auto;
   }	 
  }
-`;
+`);
 
-const CardDetails = styled(Col)`
+const CardDetails = React.memo(styled(Col)`
   @media (max-width: ${extraDesktopWidth}) {
     width: 35vw;
   }
@@ -217,9 +215,9 @@ const CardDetails = styled(Col)`
     flex-direction: column;
     margin-top: 10px;
   }
-`;
+`);
 
-const CardTitle = styled.div`
+const CardTitle = React.memo(styled.div`
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   font-size: ${props => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;
@@ -246,9 +244,9 @@ const CardTitle = styled.div`
     font-size: 16px;
     text-align: center;
   }
-`;
+`);
 
-const CardDate = styled.div`
+const CardDate = React.memo(styled.div`
   display: flex;
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   font-size: ${props => props.theme.assignment.cardTimeTextFontSize};
@@ -283,16 +281,17 @@ const CardDate = styled.div`
     padding-bottom: 13px;
     padding-top: 10px;
   }
-`;
+`);
 
-const DueDetails = styled.span`
+const DueDetails = React.memo(styled.span`
   padding-left: 11px;
-`;
+`);
+
 const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
-const StatusButton = styled.div`
+const StatusButton = React.memo(styled.div`
   width: ${props => (props.isPaused ? "auto" : "121px")};
   height: 23.5px;
   border-radius: 5px;
@@ -318,15 +317,15 @@ const StatusButton = styled.div`
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
-`;
+`);
 
-const SafeExamIcon = styled.img`
+const SafeExamIcon = React.memo(styled.img`
   width: 25px;
   height: 25px;
   margin-left: 10px;
-`;
+`);
 
-const TestType = styled.span`
+const TestType = React.memo(styled.span`
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   width: 20px;
   height: 20px;
@@ -340,4 +339,4 @@ const TestType = styled.span`
   margin: 0px 10px;
   display: inline-block;
   vertical-align: top;
-`;
+`);

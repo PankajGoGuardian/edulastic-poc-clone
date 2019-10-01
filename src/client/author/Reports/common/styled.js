@@ -415,3 +415,15 @@ export const StyledAutocompleteDropDownContainer = styled.div`
 export const StyledP = styled.p`
   margin-bottom: 15px;
 `;
+
+export const NoDataContainer = styled.div`
+  background: white;
+  margin: 20px 10px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 17px;
+`;

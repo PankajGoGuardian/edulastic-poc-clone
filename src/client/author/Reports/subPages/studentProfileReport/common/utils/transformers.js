@@ -11,6 +11,13 @@ const getCourses = classData => {
   }));
 };
 
+export const getStudentName = (selectedStudent, studInfo) => {
+  if (selectedStudent.title) {
+    return selectedStudent.title;
+  }
+  return `${studInfo.firstName || ""} ${studInfo.lastName || ""}`;
+};
+
 const getTerms = (terms = []) =>
   map(terms, term => {
     return {
@@ -119,10 +126,11 @@ export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInf
     }
   }).filter(standard => standard);
 
-  return standardsWithInfo;
+  // returning data in the ascending order of domain and standard.
+  return orderBy(standardsWithInfo, ["domain", "standard"], ["asc", "asc"]);
 };
 
-export const getDomains = (metricInfo = [], scaleInfo = []) => {
+export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {}, asessmentMetricInfo = []) => {
   if (!metricInfo.length) {
     return [];
   }
@@ -139,7 +147,10 @@ export const getDomains = (metricInfo = [], scaleInfo = []) => {
       standards,
       masteryScore: getOverallMasteryPercentage(standards, maxScale),
       name: domain,
-      description: domainName
+      description: domainName,
+      subject: studentClassInfo?.subject,
+      standardSet: studentClassInfo?.standardSet,
+      assessmentCount: asessmentMetricInfo?.length || 0
     };
   });
 

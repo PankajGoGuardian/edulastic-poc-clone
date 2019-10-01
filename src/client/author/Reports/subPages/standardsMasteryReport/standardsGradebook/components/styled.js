@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { StyledTable as Table } from "../../../../common/styled";
 import { Col } from "antd";
+import { themeColor, themeColorLight } from "@edulastic/colors";
 
 export const UpperContainer = styled.div`
   .dropdown-container {
@@ -11,7 +12,12 @@ export const UpperContainer = styled.div`
   }
 `;
 
-export const TableContainer = styled.div``;
+export const TableContainer = styled.div`
+  .control-dropdown-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+`;
 
 export const StyledTable = styled(Table)`
   .ant-table-body {
@@ -62,5 +68,13 @@ export const StyledDropDownContainer = styled(Col)`
     text-overflow: ellipsis;
     width: 100%;
     margin-bottom: 25px;
+  }
+`;
+
+export const OnClick = styled.span`
+  color: ${themeColor};
+  cursor: pointer;
+  &:hover {
+    color: ${themeColorLight};
   }
 `;

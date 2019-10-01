@@ -3,12 +3,16 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
-import HeaderWrapper from "../../sharedComponents/Header/headerWrapper";
+import { connect } from "react-redux";
+import { MenuIcon } from "@edulastic/common";
+import { mediumDesktopWidth, themeColor } from "@edulastic/colors";
+import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const ProfileHeader = ({ t }) => (
-  <HeaderWrapper>
+const ProfileHeader = ({ t, toggleSideBar }) => (
+  <ProfileHeaderWrapper borderBottom="none">
+    <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
     <Title>{t("common.profileTitle")}</Title>
-  </HeaderWrapper>
+  </ProfileHeaderWrapper>
 );
 
 ProfileHeader.propTypes = {
@@ -17,7 +21,11 @@ ProfileHeader.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces("header")
+  withNamespaces("header"),
+  connect(
+    null,
+    { toggleSideBar: toggleSideBarAction }
+  )
 );
 
 export default enhance(ProfileHeader);
@@ -28,4 +36,17 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
+`;
+
+const ProfileHeaderWrapper = styled.div`
+  background: ${props => props.theme.headerBgColor || themeColor};
+  height: 96px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0px 30px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 60px;
+  }
 `;

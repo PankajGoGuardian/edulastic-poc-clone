@@ -211,11 +211,18 @@ const getQuestion = type => {
       return Graph;
     case questionType.FRACTION_EDITOR:
       return FractionEditor;
+    case questionType.SECTION_LABEL:
+      return DummyQuestion;
     default:
       return null;
   }
 };
 
+class DummyQuestion extends Component {
+  render() {
+    return <></>;
+  }
+}
 class QuestionWrapper extends Component {
   static contextType = ItemDetailContext;
 
@@ -230,7 +237,7 @@ class QuestionWrapper extends Component {
     this.setState({ shuffledOptsOrder });
   };
 
-  fillSections = (section, label, el) => {
+  fillSections = (section, label, el, sectionId) => {
     this.setState(state => {
       const sectionState = state[section];
       const found = sectionState.filter(block => block.label === label);
@@ -249,15 +256,14 @@ class QuestionWrapper extends Component {
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ section, label, el })
+        [section]: sectionState.concat({ section, label, el, sectionId })
       };
     });
   };
 
   cleanSections = sectionId => {
     if (!sectionId) return;
-
-    this.setState(({ main }) => ({ main: main.filter(item => item.id !== sectionId) }));
+    this.setState(({ main }) => ({ main: main.filter(item => item.sectionId !== sectionId) }));
   };
 
   static getDerivedStateFromProps(props) {
@@ -296,14 +302,7 @@ class QuestionWrapper extends Component {
       displayFeedback = true,
       ...restProps
     } = this.props;
-    const {
-      score: prevScore,
-      maxScore: prevMaxScore,
-      feedback: prevFeedback,
-      correct,
-      incorrect,
-      partiallyCorrect
-    } = prevQActivityForQuestion;
+    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -340,7 +339,6 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
-    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
     return (
       <WithResources
         resources={[
@@ -402,7 +400,7 @@ class QuestionWrapper extends Component {
                     advancedAreOpen={advancedAreOpen}
                     cleanSections={this.cleanSections}
                     fillSections={this.fillSections}
-                    showQuestionNumber={showQuestionNumber}
+                    showQuestionNumber={!isPassageOrVideoType && data.qLabel}
                     flowLayout={flowLayout}
                     disableResponse={disableResponse}
                     studentReport={studentReportFeedbackVisible}
@@ -436,7 +434,6 @@ class QuestionWrapper extends Component {
               {!isEmpty(prevQActivityForQuestion) && (
                 <FeedBackContainer
                   correct={correct}
-                  partiallCorrect={partiallyCorrect}
                   prevScore={prevScore}
                   prevMaxScore={prevMaxScore}
                   prevFeedback={prevFeedback}

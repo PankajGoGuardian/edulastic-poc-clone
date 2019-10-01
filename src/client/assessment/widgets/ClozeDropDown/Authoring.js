@@ -11,6 +11,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 // import ComposeQuestion from "./ComposeQuestion";
 import TemplateMarkup from "./TemplateMarkup";
+import QuestionWrapper from "./styled/QuestionWrapper";
 
 class ClozeDropDownAuthoring extends Component {
   static propTypes = {
@@ -28,10 +29,10 @@ class ClozeDropDownAuthoring extends Component {
     const { item, fillSections, cleanSections } = this.props;
 
     return (
-      <div>
+      <QuestionWrapper>
         {/* <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} /> */}
         <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
-      </div>
+      </QuestionWrapper>
     );
   }
 }

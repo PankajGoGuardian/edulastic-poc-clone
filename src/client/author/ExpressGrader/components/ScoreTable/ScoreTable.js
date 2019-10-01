@@ -79,15 +79,16 @@ class ScoreTable extends Component {
     const columns = [
       {
         title: <TableTitle>Score Grid</TableTitle>,
-        // TODO: find another way to determine fixed column by questions length
-        fixed: window.innerWidth - 500 / length < 160,
-        width: 230,
+        // Make score grid column fixed when more than 10 questions data exist
+        fixed: length > 10 ? "left" : false,
+        width: 300,
         children: [
           {
             key: "students",
             title: <StudentsTitle>students</StudentsTitle>,
             dataIndex: "students",
             className: "th-border-bottom",
+            width: 200,
             render: record => (
               <StyledDivMid className="name-col">
                 {isPresentationMode ? record.fakeName : record.studentName}
@@ -100,6 +101,7 @@ class ScoreTable extends Component {
             title: <ScoreTitle>score</ScoreTitle>,
             className: "th-border-bottom",
             dataIndex: "score",
+            width: 100,
             render: record => {
               const { score = 0, maxScore = 0 } = record;
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
@@ -153,6 +155,7 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: "sub-thead-th th-border-bottom",
+            width: 100,
             render: record => {
               const { columnData: tableData } = this.state;
               const isTest = record && record.testActivityId;
@@ -187,14 +190,20 @@ class ScoreTable extends Component {
     if (columnsLength) {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength);
     }
-
+    const scrollX = columnsLength * 100 + 300;
+    const scrollY = window.innerHeight - 350;
     return (
       <StyledCard bordered={false}>
         <TableData
           pagination={false}
           columns={columnInfo}
           dataSource={columnData}
-          scroll={{ x: true }}
+          //Columns length will be the number of questions
+          //Column data length will be number of students
+          scroll={{
+            x: columnsLength > 10 ? scrollX : false,
+            y: columnData.length > 6 ? scrollY : false
+          }}
           rowKey={(record, i) => i}
         />
       </StyledCard>

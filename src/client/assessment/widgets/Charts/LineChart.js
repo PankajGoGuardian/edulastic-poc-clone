@@ -19,6 +19,7 @@ import {
 } from "./helpers";
 
 const LineChart = ({
+  item,
   data,
   previewTab,
   saveAnswer,
@@ -126,6 +127,7 @@ const LineChart = ({
       <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
       <Points
+        item={item}
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
@@ -141,6 +143,7 @@ const LineChart = ({
 };
 
 LineChart.propTypes = {
+  item: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   gridParams: PropTypes.shape({
@@ -154,13 +157,17 @@ LineChart.propTypes = {
     pointStyle: PropTypes.string
   }).isRequired,
   disableResponse: PropTypes.bool,
+  deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired
+  correct: PropTypes.array.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 LineChart.defaultProps = {
-  disableResponse: false
+  disableResponse: false,
+  deleteMode: false,
+  toggleBarDragging: () => {}
 };
 
 export default withGrid(LineChart);

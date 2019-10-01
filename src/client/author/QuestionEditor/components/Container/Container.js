@@ -333,6 +333,7 @@ class Container extends Component {
         hasAuthorPermission={hasAuthorPermission}
         itemStatus={item && item.status}
         renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
+        onShowSettings={() => setShowSettings(true)}
       />
     ) : (
       <ButtonBar

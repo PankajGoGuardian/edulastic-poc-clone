@@ -54,7 +54,7 @@ class LayoutWrapper extends Component {
             <Col md={12}>
               <ResponseContainerPositionOption
                 onChange={val => changeUIStyle("possibilityListPosition", val)}
-                value={get(item, "uiStyle.possibilityListPosition", "bottom")}
+                value={get(item, "uiStyle.possibilityListPosition", "left")}
               />
             </Col>
             <Col md={12}>

@@ -18,6 +18,7 @@ import Hists from "./components/Hists";
 import BarsAxises from "./components/BarsAxises";
 
 const Histogram = ({
+  item,
   data,
   previewTab,
   saveAnswer,
@@ -125,7 +126,8 @@ const Histogram = ({
       />
 
       <Hists
-        saveAnswer={active => saveAnswer(localData, active)}
+        item={item}
+        saveAnswer={i => saveAnswer(localData, i)}
         deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
@@ -145,6 +147,7 @@ const Histogram = ({
 };
 
 Histogram.propTypes = {
+  item: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   gridParams: PropTypes.shape({
@@ -158,12 +161,16 @@ Histogram.propTypes = {
   }).isRequired,
   view: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
+  deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired
+  correct: PropTypes.array.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 Histogram.defaultProps = {
-  disableResponse: false
+  disableResponse: false,
+  deleteMode: false,
+  toggleBarDragging: () => {}
 };
 
 export default withGrid(Histogram);

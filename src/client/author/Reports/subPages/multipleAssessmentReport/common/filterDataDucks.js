@@ -5,10 +5,12 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
+import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST = "[reports] get reports mar filter data request";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports mar filter data request success";
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports mar filter data request error";
-const RESET_REPORTS_MAR_FILTERS = "[reports] reset reports mar filters";
+const SET_REPORTS_PREV_MAR_FILTER_DATA = "[reports] set reports prev mar filter data";
 
 const SET_FILTERS = "[reports] set mar filters";
 const SET_TEST_ID = "[reports] set mar testId";
@@ -16,7 +18,7 @@ const SET_TEST_ID = "[reports] set mar testId";
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getMARFilterDataRequestAction = createAction(GET_REPORTS_MAR_FILTER_DATA_REQUEST);
-export const resetMARFiltersAction = createAction(RESET_REPORTS_MAR_FILTERS);
+export const setPrevMARFilterDataAction = createAction(SET_REPORTS_PREV_MAR_FILTER_DATA);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -27,7 +29,7 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportMARFilterDataReducer;
+export const stateSelector = state => state.reportReducer.reportMARFilterDataReducer;
 
 export const getReportsMARFilterData = createSelector(
   stateSelector,
@@ -53,6 +55,16 @@ export const getTestIdSelector = createSelector(
   state => state.testId
 );
 
+export const getReportsPrevMARFilterData = createSelector(
+  stateSelector,
+  state => state.prevMARFilterData
+);
+
+export const getReportsMARFilterLoadingState = createSelector(
+  stateSelector,
+  state => state.loading
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -61,6 +73,7 @@ export const getTestIdSelector = createSelector(
 
 const initialState = {
   MARFilterData: {},
+  prevMARFilterData: null,
   filters: {
     termId: "",
     subject: "All",
@@ -75,7 +88,8 @@ const initialState = {
      */
     profileId: ""
   },
-  testId: ""
+  testId: "",
+  loading: false
 };
 
 const setFiltersReducer = (state, { payload }) => {
@@ -132,7 +146,10 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_REPORTS_MAR_FILTERS]: (state, { payload }) => (state = initialState)
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [SET_REPORTS_PREV_MAR_FILTER_DATA]: (state, { payload }) => {
+    state.prevMARFilterData = payload;
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

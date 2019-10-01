@@ -50,11 +50,15 @@ export default class TestAssignPage {
   };
 
   clickOnAssign = () => {
+    cy.wait(1000);
     cy.server();
     cy.route("POST", "**/assignments").as("assigned");
     cy.contains("ASSIGN").click();
     cy.wait("@assigned").then(xhr => {
-      expect(xhr.status).to.eq(200);
+      assert(
+        xhr.status === 200,
+        `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
+      );
     });
   };
 }

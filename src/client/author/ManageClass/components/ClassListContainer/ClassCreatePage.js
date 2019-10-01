@@ -1,52 +1,34 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  ClassCreateContainer,
-  ButtonsContainer,
-  CreateClassBtn,
-  SyncClassDiv,
-  SyncImg,
-  IconEdit,
-  IconQuestion
-} from "./styled";
-import GoogleClassRoomImg from "../../../Dashboard/assets/images/google-classroom.png";
-import { Icon } from "antd";
+import { ClassCreateContainer, ButtonsContainer, ThemeButton, SyncImg } from "./styled";
+import { IconGoogleClassroom } from "@edulastic/icons";
+import NoClassNotification from "../NoClassNotification";
 const ClassCreatePage = ({ filterClass, recentInstitute = {} }) => {
   const { name } = recentInstitute;
   return (
     <>
       <ClassCreateContainer>
         {filterClass === "Archive Classes" ? (
-          <span>-No archive classes yet-</span>
+          <NoClassNotification heading={"No archive classes"} description={"You have no archive classes available"} />
         ) : (
           <>
-            <p>
-              No Active classes yet. You are currently a teacher in{" "}
-              <span>
-                {name}
-                <IconEdit type="edit" />
-              </span>
-            </p>
+            <NoClassNotification
+              heading={"No active classes"}
+              description={`No active classes yet.You are currently a teacher in`}
+              data={name}
+            />
             <ButtonsContainer>
               <Link to={"/author/manageClass/createClass"}>
-                <CreateClassBtn>
-                  <Icon type="plus" />
-                  <p>Create new class</p>
-                </CreateClassBtn>
+                <ThemeButton>create new class</ThemeButton>
               </Link>
-              <p>or</p>
-              <SyncClassDiv>
-                <SyncImg src={GoogleClassRoomImg} width={35} />
-                <p>Sync with google classroom</p>
-              </SyncClassDiv>
+              <ThemeButton>
+                <IconGoogleClassroom width={20} height={20} />
+                <span>Sync with google classroom</span>
+              </ThemeButton>
             </ButtonsContainer>
           </>
         )}
       </ClassCreateContainer>
-      <div style={{ textAlign: "center", fontStyle: "italic" }}>
-        <IconQuestion type="question-circle" />
-        Learn more about <Link to={"/author/manageClass"}>class creation</Link> in our Help Center
-      </div>
     </>
   );
 };

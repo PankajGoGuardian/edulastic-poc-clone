@@ -64,9 +64,20 @@ class ClassQuestions extends Component {
 
   static contextType = AnswerContext;
 
+  componentDidMount() {
+    this.loadScratchPadData();
+  }
+
   componentDidUpdate(prevProps) {
+    const { questionActivities } = this.props;
+    if (prevProps.questionActivities !== questionActivities) {
+      this.loadScratchPadData();
+    }
+  }
+
+  loadScratchPadData = () => {
     const { loadScratchPad, questionActivities } = this.props;
-    if (prevProps.questionActivities !== questionActivities && !isEmpty(questionActivities)) {
+    if (!isEmpty(questionActivities)) {
       const userWork = {};
       questionActivities.forEach(curr => {
         if (curr.scratchPad && !userWork[curr.testItemId]) {
@@ -76,7 +87,7 @@ class ClassQuestions extends Component {
 
       loadScratchPad(userWork);
     }
-  }
+  };
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {

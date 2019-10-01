@@ -203,7 +203,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
                   {arrow} &nbsp;&nbsp;{t("common.attemps")}
                 </AttemptsTitle>
               </Attempts>
-              {releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
+              {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
             </AttemptDetails>
           )}
           {type === "assignment" ? (

@@ -45,7 +45,7 @@ export default connect(
 const HeaderContainer = styled.div`
   padding-top: 76px;
   margin-bottom: 16px;
-  background: ${props => props.theme.headerBgColor || themeColor};
+  background: ${props => props.theme.header.headerBgColor || themeColor};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding-top: 96px;
@@ -55,6 +55,11 @@ const HeaderContainer = styled.div`
     padding-top: 60px;
     margin-bottom: 12px;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      padding-top: 100px;
+    `}
 `;
 
 const FixedHeader = styled(Affix)`
@@ -71,14 +76,14 @@ const FixedHeader = styled(Affix)`
   @media (max-width: 768px) {
     left: 0;
     padding-left: 70px;
-    background: ${props => props.theme.headerBgColor || themeColor};
+    background: ${props => props.theme.header.headerBgColor || themeColor};
   }
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
   border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
-  background-color: ${props => props.theme.headerBgColor || themeColor};
-  color: ${props => props.theme.headerTitleTextColor};
+  background-color: ${props => props.theme.header.headerBgColor || themeColor};
+  color: ${props => props.theme.header.headerTitleTextColor};
   display: flex;
   align-items: center;
   height: 76px;
@@ -105,6 +110,11 @@ const AssignmentsHeader = styled(Layout.Header)`
     line-height: 1.2;
     display: flex;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      height: 100px;
+    `}
 `;
 
 const HeaderRow = styled(Row)`

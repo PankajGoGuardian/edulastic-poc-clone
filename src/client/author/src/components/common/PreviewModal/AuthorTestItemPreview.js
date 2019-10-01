@@ -5,7 +5,7 @@ import { themeColor } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 
-import { themes } from "../../../../../assessment/themes";
+import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
 

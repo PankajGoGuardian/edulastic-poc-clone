@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
-import { themes } from "../../themes";
+import { themes } from "../../../theme";
 
 import SummaryHeader from "./Header";
 import SummaryTest from "./Content";

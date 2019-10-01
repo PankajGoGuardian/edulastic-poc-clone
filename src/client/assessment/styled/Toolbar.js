@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Toolbar = styled.div`
   display: flex;
   width: 100%;
-  height: 38px;
+  min-height: 38px;
   align-content: center;
   justify-content: space-between;
   align-items: stretch;

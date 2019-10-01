@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
-import { themes } from "../themes";
+import { themes } from "../../theme";
 import QuestionMenu from "./Graph/common/QuestionMenu";
 
 import { OrderList } from "../widgets/OrderList";
@@ -53,7 +53,9 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
+import { getZoomedTheme } from "../../student/zoomTheme";
 import FeedBackContainer from "./FeedBackContainer";
+import { playersZoomTheme } from "../themes/assessmentPlayersTheme";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -299,6 +301,8 @@ class QuestionWrapper extends Component {
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
+      zoomLevel = "xs",
+      selectedTheme = "default",
       displayFeedback = true,
       ...restProps
     } = this.props;
@@ -339,6 +343,13 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+
+    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
+
+    let themeToPass = themes[selectedTheme] || themes.default;
+    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    themeToPass = playersZoomTheme(themeToPass);
+
     return (
       <WithResources
         resources={[
@@ -347,7 +358,12 @@ class QuestionWrapper extends Component {
         ]}
         fallBack={<span />}
       >
-        <ThemeProvider theme={{ ...themes.default, fontSize: getFontSize(get(data, "uiStyle.fontsize", "normal")) }}>
+        <ThemeProvider
+          theme={{
+            ...themeToPass,
+            fontSize: themeToPass.fontSize || getFontSize(get(data, "uiStyle.fontsize", "normal"))
+          }}
+        >
           <>
             {canShowPlayer ? (
               <AudioControls
@@ -389,7 +405,7 @@ class QuestionWrapper extends Component {
                     handleAdvancedOpen={handleAdvancedOpen}
                   />
                 )}
-                <FlexContainer>
+                <StyledFlexContainer>
                   <Question
                     {...restProps}
                     setQuestionData={setQuestionData}
@@ -419,7 +435,7 @@ class QuestionWrapper extends Component {
                   ) : (
                     ""
                   )}
-                </FlexContainer>
+                </StyledFlexContainer>
               </PaperWrapper>
               {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
                 <FeedbackRight
@@ -513,6 +529,8 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       showUserTTS: get(state, "user.user.tts", "no"),
+      selectedTheme: state.ui.selectedTheme,
+      zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state)
     }),
     {
@@ -523,3 +541,7 @@ const enhance = compose(
 );
 
 export default enhance(QuestionWrapper);
+
+const StyledFlexContainer = styled(FlexContainer)`
+  font-size: ${props => props.theme.fontSize}px;
+`;

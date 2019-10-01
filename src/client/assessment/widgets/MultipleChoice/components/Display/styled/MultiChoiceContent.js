@@ -31,4 +31,8 @@ export const MultiChoiceContent = styled.div`
     `}
 `;
 
+export const MultipleChoiceLabelContainer = styled.div`
+  display: block;
+`;
+
 MultiChoiceContent.displayName = "MultiChoiceContent";

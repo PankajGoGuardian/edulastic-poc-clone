@@ -316,12 +316,23 @@ const CardWrapper = styled(Row)`
     border-radius: 10px;
     margin-top: 20px;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      flex-direction: column;
+      padding: 24px 0;
+      border: 1px solid
+        ${props => (props.theme.assignment && props.theme.assignment.attemptsReviewRowBgColor) || lightGreySecondary};
+      border-radius: 10px;
+      margin-top: 20px;
+    `}
 `;
 
 const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
   width: 62%;
+
   @media screen and (min-width: 1025px) {
     margin-left: auto;
   }
@@ -329,6 +340,13 @@ const ButtonAndDetail = styled(Col)`
     flex-direction: column;
     width: 100%;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      margin-left: auto;
+      flex-direction: column;
+      width: 100%;
+    `}
 `;
 
 const AttemptDetails = styled(Col)`
@@ -340,6 +358,11 @@ const AttemptDetails = styled(Col)`
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
     flex: 1;
   }
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      width: 100%;
+      justify-content: space-around;
+    `}
 `;
 
 const AnswerAndScore = styled.div`
@@ -358,6 +381,11 @@ const AnswerAndScore = styled.div`
   @media screen and (max-width: 767px) {
     width: 33%;
   }
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      width: auto;
+    `}
 `;
 
 const Attempts = AnswerAndScore;
@@ -370,6 +398,11 @@ const DetailContainer = styled.div`
   @media screen and (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      flex-direction: column;
+    `}
 `;
 
 const AttemptsTitle = styled.div`

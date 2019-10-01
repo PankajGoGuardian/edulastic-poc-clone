@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { MathSpan } from "@edulastic/common";
 
 import Draggable from "./Draggable";
 import Droppable from "./Droppable";
+import { StyledResponseDiv, StyledResponseOption } from "../styled/ResponseBox";
 
 const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler, onDrop, theme }) => {
   const handleMove = e => {
@@ -24,7 +25,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
   }, []);
   return (
     <Droppable style={{ display: "block" }} drop={e => e}>
-      <div
+      <StyledResponseDiv
         className="responses_box"
         style={{
           padding: smallSize ? "5px 10px" : 16,
@@ -79,7 +80,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
           responses.map((option, index) => {
             const { label, value } = option;
             return (
-              <div
+              <StyledResponseOption
                 id={`response-item-${index}`}
                 key={value}
                 className="draggable_box"
@@ -108,10 +109,10 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                     </Draggable>
                   </React.Fragment>
                 )}
-              </div>
+              </StyledResponseOption>
             );
           })}
-      </div>
+      </StyledResponseDiv>
     </Droppable>
   );
 };

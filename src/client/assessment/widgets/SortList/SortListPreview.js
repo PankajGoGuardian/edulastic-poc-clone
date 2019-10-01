@@ -29,6 +29,7 @@ import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -206,7 +207,7 @@ const SortListPreview = ({
   };
 
   return (
-    <Paper data-cy="sortListPreview" style={paperStyle}>
+    <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
       <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -305,7 +306,7 @@ const SortListPreview = ({
           item={item}
         />
       )}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

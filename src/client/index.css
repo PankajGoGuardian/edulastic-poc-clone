@@ -1256,7 +1256,6 @@ p {
 span.token,
 span.token > *,
 span.token.answer {
-  line-height: 28px;
   margin-left: 1px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0);

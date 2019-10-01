@@ -27,6 +27,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div`
   overflow-x: auto;
@@ -155,7 +156,7 @@ class ClozeImageDragDrop extends Component {
     const shuffleOptions = item.shuffleOptions || false;
     const transparentResponses = item.transparent_responses || false;
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
 

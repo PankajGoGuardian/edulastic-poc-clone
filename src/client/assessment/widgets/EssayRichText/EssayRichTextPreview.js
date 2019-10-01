@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes, { element } from "prop-types";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 import { AnswerContext } from "@edulastic/common";
@@ -26,6 +26,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const getToolBarButtons = item =>
   (item.formattingOptions || [])
@@ -121,7 +122,7 @@ const EssayRichTextPreview = ({
   const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
   return item.id ? (
-    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -141,23 +142,25 @@ const EssayRichTextPreview = ({
           )}
         </div>
         {!Array.isArray(userAnswer) && !isReadOnly && (
-          <FroalaEditor
-            backgroundColor={
-              item.maxWord < wordCount
-                ? theme.widgets.essayRichText.quillLimitedBgColor
-                : theme.widgets.essayRichText.quillBgColor
-            }
-            heightMin={minHeight}
-            heightMax={maxHeight}
-            onChange={handleTextChange}
-            value={userAnswer}
-            spellcheck={!!item.spellcheck}
-            toolbarInline={false}
-            initOnClick={false}
-            readOnly={isReadOnly}
-            quickInsertTags={[]}
-            toolbarButtons={toolbarButtons}
-          />
+          <FroalaEditorContainer>
+            <FroalaEditor
+              backgroundColor={
+                item.maxWord < wordCount
+                  ? theme.widgets.essayRichText.quillLimitedBgColor
+                  : theme.widgets.essayRichText.quillBgColor
+              }
+              heightMin={minHeight}
+              heightMax={maxHeight}
+              onChange={handleTextChange}
+              value={userAnswer}
+              spellcheck={!!item.spellcheck}
+              toolbarInline={false}
+              initOnClick={false}
+              readOnly={isReadOnly}
+              quickInsertTags={[]}
+              toolbarButtons={toolbarButtons}
+            />
+          </FroalaEditorContainer>
         )}
         {!Array.isArray(userAnswer) && isReadOnly && (
           <FlexContainer
@@ -185,7 +188,7 @@ const EssayRichTextPreview = ({
           </Toolbar>
         )}
       </div>
-    </Paper>
+    </StyledPaperWrapper>
   ) : null;
 };
 
@@ -262,3 +265,22 @@ const enhance = compose(
 );
 
 export default enhance(EssayRichTextPreview);
+
+const FroalaEditorContainer = styled.div`
+  .fr-box.fr-basic .fr-element {
+    font-size: ${props => props.theme.fontSize}px;
+  }
+  .fr-toolbar,
+  .second-toolbar {
+    background-color: ${props => props.theme.widgets.essayRichText.toolbarBgColor};
+  }
+
+  .fr-box .fr-counter,
+  .fr-box.fr-basic .fr-element {
+    color: ${props => props.theme.widgets.essayRichText.toolbarColor};
+  }
+
+  .fr-toolbar .fr-command.fr-btn svg path {
+    fill: ${props => props.theme.widgets.essayRichText.toolbarColor};
+  }
+`;

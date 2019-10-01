@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { themeColor, white, dashBorderColor } from "@edulastic/colors";
 import { CheckboxContainer } from "./CheckboxContainer";
-import { MultiChoiceContent } from "./MultiChoiceContent";
+import { MultiChoiceContent, MultipleChoiceLabelContainer } from "./MultiChoiceContent";
 
 export const Label = styled.label`
   cursor: ${({ uiStyle }) => {
@@ -33,9 +33,17 @@ export const Label = styled.label`
   }
 
   & ${MultiChoiceContent} {
-    color: ${({ uiStyle, selected, checkAnswer, showAnswer }) => {
+    color: ${({ uiStyle, selected, checkAnswer, showAnswer, theme }) => {
       if (uiStyle.type === "block" && selected && !checkAnswer && !showAnswer) {
-        return white;
+        return theme.widgets.multipleChoice.labelIconCheckColor;
+      }
+    }};
+  }
+
+  & ${MultipleChoiceLabelContainer} {
+    color: ${({ uiStyle, selected, checkAnswer, showAnswer, theme }) => {
+      if (uiStyle.type === "block" && selected && !checkAnswer && !showAnswer) {
+        return theme.widgets.multipleChoice.labelIconCheckColor;
       }
     }};
   }
@@ -52,20 +60,20 @@ export const Label = styled.label`
   padding-left: ${props => (props.styleType === "primary" ? "15px" : "25px")};
   border: ${props =>
     props.styleType === "primary"
-      ? `1px solid ${dashBorderColor}`
+      ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
       : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
   border-left: ${props =>
     props.styleType === "primary"
-      ? `1px solid ${dashBorderColor}`
+      ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
       : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
-  background-color: ${({ styleType, color, selected, uiStyle }) => {
+  background-color: ${({ styleType, color, selected, uiStyle, theme }) => {
     if (styleType === "primary" && uiStyle.type !== "block") {
-      return white;
+      return theme.widgets.multipleChoice.labelIconCheckColor;
       // eslint-disable-next-line no-else-return
     } else if (uiStyle.type === "block" && !selected) {
-      return white;
+      return theme.widgets.multipleChoice.labelIconCheckColor;
     } else if (uiStyle.type === "block" && selected) {
-      return themeColor;
+      return theme.widgets.multipleChoice.labelIconSelectedCheckColor;
     }
 
     return color;

@@ -5,4 +5,6 @@ export const Item = styled(FlexContainer)`
   line-height: 100%;
   padding-right: 15px;
   padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;

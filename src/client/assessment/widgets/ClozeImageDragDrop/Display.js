@@ -358,6 +358,12 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getCalculatedHeight = (maxHeight, canvasHeight) => {
+    const calculatedHeight = canvasHeight > maxHeight ? canvasHeight : maxHeight;
+
+    return calculatedHeight;
+  };
+
   getResponseBoxMaxValues = () => {
     const { responseContainers } = this.props;
 
@@ -544,12 +550,12 @@ class Display extends Component {
       <StyledPreviewTemplateBox
         smallSize={smallSize}
         fontSize={fontSize}
-        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+        height={this.getCalculatedHeight(maxHeight, canvasHeight)}
       >
         <StyledPreviewContainer
           smallSize={smallSize}
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
-          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
           data-cy="preview-contaniner"
           innerRef={this.previewContainerRef}
         >
@@ -641,10 +647,10 @@ class Display extends Component {
     );
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+      <StyledPreviewTemplateBox fontSize={fontSize} height={this.getCalculatedHeight(maxHeight, canvasHeight)}>
         <StyledPreviewContainer
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
-          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
           innerRef={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout

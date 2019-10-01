@@ -40,7 +40,8 @@ const Container = styled.div`
 `;
 
 const Items = styled.div`
-  background: ${props => (props.fillColor ? props.theme.progressFill : props.theme.progressTrailColor)};
+  background: ${props =>
+    props.fillColor ? props.theme.progressFill : props.theme.widgets.assessmentPlayers.progressTrailColor};
   height: 8px;
   margin-right: 5px;
   width: 50px;
@@ -48,7 +49,7 @@ const Items = styled.div`
 `;
 
 const CompletedItems = styled.div`
-  color: ${props => props.theme.headerBarTextColor};
+  color: ${props => props.theme.assessmentPlayers.headerBarTextColor};
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 5px;

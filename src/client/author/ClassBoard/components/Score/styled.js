@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card, Table, Progress } from "antd";
-import { themes } from "../../../../student/themes";
+import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
 

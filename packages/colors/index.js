@@ -165,6 +165,7 @@ export const eastBaycolor = "#51596a";
 
 export const draftColor = "#f8ac59";
 export const publishedColor = "#1ab394";
+export const publishStatusColor = "#e8f2ff";
 
 export const backgrounds = {
   default: "#f3f3f3",
@@ -174,7 +175,8 @@ export const backgrounds = {
 export const borders = {
   default: "#f2f2f2",
   primary: "#b1b1b1",
-  secondary: "#e6e6e6"
+  secondary: "#e6e6e6",
+  tag: "#e2e2e2"
 };
 
 export const highlightColors = {

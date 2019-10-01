@@ -418,14 +418,16 @@ class AssessmentPlayerDefault extends React.Component {
                     justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
                   }}
                 >
-                  <QuestionSelectDropdown
-                    key={currentItem}
-                    currentItem={currentItem}
-                    gotoQuestion={gotoQuestion}
-                    options={dropdownOptions}
-                    bookmarks={bookmarksInOrder}
-                    skipped={skippedInOrder}
-                  />
+                  {!LCBPreviewModal && (
+                    <QuestionSelectDropdown
+                      key={currentItem}
+                      currentItem={currentItem}
+                      gotoQuestion={gotoQuestion}
+                      options={dropdownOptions}
+                      bookmarks={bookmarksInOrder}
+                      skipped={skippedInOrder}
+                    />
+                  )}
 
                   <FlexContainer
                     style={{
@@ -433,57 +435,61 @@ class AssessmentPlayerDefault extends React.Component {
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
-                    <Tooltip placement="top" title="Previous">
-                      <ControlBtn
-                        prev
-                        skin
-                        data-cy="prev"
-                        type="primary"
-                        icon="left"
-                        disabled={isFirst()}
-                        onClick={moveToPrev}
-                      />
-                    </Tooltip>
-                    <Tooltip placement="top" title="Next">
-                      <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
-                    </Tooltip>
-                    {windowWidth < LARGE_DESKTOP_WIDTH && (
-                      <Tooltip placement="top" title="Tool">
-                        <ToolButton
-                          next
-                          skin
-                          size="large"
-                          type="primary"
-                          icon="tool"
-                          data-cy="setting"
-                          onClick={() => {
-                            this.setState({ isToolbarModalVisible: true });
-                          }}
-                        />
-                      </Tooltip>
-                    )}
-                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
-                      <TestButton
-                        answerChecksUsedForItem={answerChecksUsedForItem}
-                        settings={settings}
-                        items={items}
-                        currentItem={currentItem}
-                        isNonAutoGradable={isNonAutoGradable}
-                        checkAnswer={() => this.changeTabItemState("check")}
-                        toggleBookmark={() => toggleBookmark(item._id)}
-                        isBookmarked={isBookmarked}
-                        handleClick={this.showHideHints}
-                      />
-                    )}
-                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
-                      <ToolBar
-                        settings={settings}
-                        calcBrands={calcBrands}
-                        tool={currentToolMode}
-                        changeCaculateMode={this.handleModeCaculate}
-                        changeTool={this.changeTool}
-                        qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-                      />
+                    {!LCBPreviewModal && (
+                      <>
+                        <Tooltip placement="top" title="Previous">
+                          <ControlBtn
+                            prev
+                            skin
+                            data-cy="prev"
+                            type="primary"
+                            icon="left"
+                            disabled={isFirst()}
+                            onClick={moveToPrev}
+                          />
+                        </Tooltip>
+                        <Tooltip placement="top" title="Next">
+                          <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
+                        </Tooltip>
+                        {windowWidth < LARGE_DESKTOP_WIDTH && (
+                          <Tooltip placement="top" title="Tool">
+                            <ToolButton
+                              next
+                              skin
+                              size="large"
+                              type="primary"
+                              icon="tool"
+                              data-cy="setting"
+                              onClick={() => {
+                                this.setState({ isToolbarModalVisible: true });
+                              }}
+                            />
+                          </Tooltip>
+                        )}
+                        {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                          <TestButton
+                            answerChecksUsedForItem={answerChecksUsedForItem}
+                            settings={settings}
+                            items={items}
+                            currentItem={currentItem}
+                            isNonAutoGradable={isNonAutoGradable}
+                            checkAnswer={() => this.changeTabItemState("check")}
+                            toggleBookmark={() => toggleBookmark(item._id)}
+                            isBookmarked={isBookmarked}
+                            handleClick={this.showHideHints}
+                          />
+                        )}
+                        {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                          <ToolBar
+                            settings={settings}
+                            calcBrands={calcBrands}
+                            tool={currentToolMode}
+                            changeCaculateMode={this.handleModeCaculate}
+                            changeTool={this.changeTool}
+                            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+                          />
+                        )}
+                      </>
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />

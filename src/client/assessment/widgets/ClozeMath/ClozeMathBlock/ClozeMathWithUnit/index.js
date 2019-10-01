@@ -291,7 +291,7 @@ const ClozeMathInputField = styled.span`
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
@@ -303,6 +303,7 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={mathUnits[id]}
       item={item}
       id={id}

@@ -3,8 +3,7 @@ import { groupBy } from "lodash";
 import memoizeOne from "memoize-one";
 
 export const getStandardWisePerformance = (testActivities, std) => {
-  const submittedTestActivities = testActivities.filter(x => x.status === "submitted");
-  const questionActivities = submittedTestActivities.flatMap(({ studentId, questionActivities }) =>
+  const questionActivities = testActivities.flatMap(({ studentId, questionActivities }) =>
     questionActivities.map(x => ({ ...x, studentId }))
   );
 
@@ -13,7 +12,6 @@ export const getStandardWisePerformance = (testActivities, std) => {
   if (std && std.qIds) {
     for (let qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
-
 
       for (let qAct of questionActs) {
         if (qAct.scoringDisabled || qAct.disabled) {

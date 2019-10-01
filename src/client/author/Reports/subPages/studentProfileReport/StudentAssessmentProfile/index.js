@@ -50,6 +50,7 @@ const StudentAssessmentProfile = ({
     }
   }, [settings]);
 
+  const { districtAvg = [], groupAvg = [], metricInfo = [], schoolAvg = [] } = rawData;
   const studentInformation = studentClassData[0] || {};
   const studentName = getStudentName(selectedStudent, studentInformation);
 
@@ -65,7 +66,14 @@ const StudentAssessmentProfile = ({
     );
   }
 
-  if (isEmpty(rawData) || !rawData) {
+  if (
+    isEmpty(rawData) ||
+    !rawData ||
+    isEmpty(districtAvg) ||
+    isEmpty(groupAvg) ||
+    isEmpty(metricInfo) ||
+    isEmpty(schoolAvg)
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>;
   }
 

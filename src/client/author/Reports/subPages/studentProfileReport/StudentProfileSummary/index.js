@@ -93,7 +93,13 @@ const StudentProfileSummary = ({
     );
   }
 
-  if (isEmpty(studentProfileSummaryData) || !studentProfileSummaryData) {
+  if (
+    isEmpty(studentProfileSummaryData) ||
+    !studentProfileSummaryData ||
+    isEmpty(asessmentMetricInfo) ||
+    isEmpty(metricInfo) ||
+    isEmpty(skillInfo)
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>;
   }
 

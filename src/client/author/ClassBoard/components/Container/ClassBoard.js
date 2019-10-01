@@ -416,8 +416,8 @@ class ClassBoard extends Component {
   };
 
   handleShowMarkAsSubmittedModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
+    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    if (assignmentStatus.toLowerCase() === "not open") {
       return message.warn("Assignment is not opened yet");
     }
 
@@ -670,7 +670,7 @@ class ClassBoard extends Component {
             onInputChange={this.handleValidateInput}
             expectedVal="SUBMIT"
             bodyText={`The assignment for selected student(s) will be marked as "Submitted". Once you proceed, these students will not be able to take the assignment online. If the students have answered any questions, their responses will be saved.`}
-            okText="Yes,Submit"
+            okText="Yes, Submit"
             canUndone
           />
         )}

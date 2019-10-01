@@ -230,7 +230,6 @@ class ClassHeader extends Component {
     const {
       t,
       active,
-
       testActivityId,
       additionalData = {},
       selectedStudentsKeys,
@@ -254,6 +253,7 @@ class ClassHeader extends Component {
     const { endDate, startDate, releaseScore, isPaused = false, open, closed } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
+    const { assignmentId, classId } = match.params;
     const canOpen =
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
     const canClose =
@@ -269,7 +269,6 @@ class ClassHeader extends Component {
         : closed
         ? "DONE"
         : assignmentStatus;
-    const { assignmentId, classId } = match.params;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -330,14 +329,22 @@ class ClassHeader extends Component {
         <StyledTitle>
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <div>
-            <Dropdown overlay={classListMenu} placement={"bottomLeft"}>
+            {classesList.length > 1 ? (
+              <Dropdown overlay={classListMenu} placement={"bottomLeft"}>
+                <div style={{ position: "relative" }}>
+                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
+                    {additionalData.className || "loading..."}
+                  </StyledParaFirst>
+                  <DownArrow type="down" />
+                </div>
+              </Dropdown>
+            ) : (
               <div style={{ position: "relative" }}>
                 <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
                   {additionalData.className || "loading..."}
                 </StyledParaFirst>
-                {!!classesList.length && <DownArrow type="down" />}
               </div>
-            </Dropdown>
+            )}
             <StyledParaSecond>
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}

@@ -384,6 +384,7 @@ class Review extends PureComponent {
                   selected={selected}
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
+                  shouldCancelStart={() => {}}
                   owner={owner}
                   isEditable={isEditable}
                   scoring={test.scoring}

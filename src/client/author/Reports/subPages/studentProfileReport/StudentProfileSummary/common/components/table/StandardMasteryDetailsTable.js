@@ -14,11 +14,13 @@ const renderToolTipColumn = (value, record) => {
   const toolTipText = () => (
     <div>
       <TableTooltipRow title={"Domain : "} value={record.name} />
+      <TableTooltipRow title={"Subject : "} value={record.standardSet} />
       <TableTooltipRow title={"Domain description : "} value={record.description} />
       <TableTooltipRow
         title={"Standards Mastered : "}
         value={`${record.masteredCount} out of ${record.standards.length}`}
       />
+      <TableTooltipRow title={"Assessments# : "} value={record.assessmentCount} />
     </div>
   );
 

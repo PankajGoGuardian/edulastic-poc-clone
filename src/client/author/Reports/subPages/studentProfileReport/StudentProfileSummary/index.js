@@ -60,11 +60,18 @@ const StudentProfileSummary = ({
 
   const { asessmentMetricInfo = [], studInfo = [], skillInfo = [], metricInfo = [] } = studentProfileSummaryData;
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
+  const studentClassInfo = studentClassData[0] || {};
   const data = useMemo(() => augementAssessmentChartData(asessmentMetricInfo, bandInfo), [
     asessmentMetricInfo,
     bandInfo
   ]);
-  const [standards, domains] = useGetStudentMasteryData(metricInfo, skillInfo, scaleInfo);
+  const [standards, domains] = useGetStudentMasteryData(
+    metricInfo,
+    skillInfo,
+    scaleInfo,
+    studentClassInfo,
+    asessmentMetricInfo
+  );
   const domainsWithMastery = augmentDomainStandardMasteryData(domains, scaleInfo);
 
   useEffect(() => {
@@ -91,7 +98,7 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {};
-  const studentClassInfo = studentClassData[0] || {};
+
   const studentName = getStudentName(selectedStudent, studentInformation);
 
   const onCsvConvert = data =>

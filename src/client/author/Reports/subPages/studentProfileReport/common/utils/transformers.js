@@ -129,7 +129,7 @@ export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInf
   return standardsWithInfo;
 };
 
-export const getDomains = (metricInfo = [], scaleInfo = []) => {
+export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {}, asessmentMetricInfo = []) => {
   if (!metricInfo.length) {
     return [];
   }
@@ -146,7 +146,10 @@ export const getDomains = (metricInfo = [], scaleInfo = []) => {
       standards,
       masteryScore: getOverallMasteryPercentage(standards, maxScale),
       name: domain,
-      description: domainName
+      description: domainName,
+      subject: studentClassInfo?.subject,
+      standardSet: studentClassInfo?.standardSet,
+      assessmentCount: asessmentMetricInfo?.length || 0
     };
   });
 

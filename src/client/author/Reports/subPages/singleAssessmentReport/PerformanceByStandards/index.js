@@ -26,7 +26,6 @@ import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
-  getOrgDataFromSARFilter,
   getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles
 } from "../common/filterDataDucks";
@@ -43,7 +42,6 @@ const findCompareByTitle = (key = "") => {
 
 const PerformanceByStandards = ({
   loading,
-  teacherInfo,
   report = {},
   getPerformanceByStandards,
   match,
@@ -178,7 +176,7 @@ const PerformanceByStandards = ({
     );
   }
 
-  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter, teacherInfo);
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -250,7 +248,6 @@ const PerformanceByStandards = ({
         </Row>
         <StyledSignedBarContainer>
           <BarToRender
-            teacherInfo={teacherInfo}
             report={reportWithFilteredSkills}
             filter={filter}
             viewBy={viewBy}
@@ -292,6 +289,7 @@ const PerformanceByStandards = ({
 };
 
 const reportPropType = PropTypes.shape({
+  teacherInfo: PropTypes.array,
   scaleInfo: PropTypes.array,
   skillInfo: PropTypes.array,
   metricInfo: PropTypes.array,
@@ -304,7 +302,6 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
-  teacherInfo: PropTypes.array.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   selectedStandardProficiencyProfile: PropTypes.string.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
@@ -321,7 +318,6 @@ const enhance = connect(
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(state),
-    teacherInfo: getOrgDataFromSARFilter(state),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(state)
   }),
   {

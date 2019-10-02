@@ -291,8 +291,8 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
   return [data, totalPoints];
 };
 
-export const analysisParseData = (report, viewBy, compareBy, filters, teacherInfo) => {
-  const { studInfo, skillInfo, scaleInfo, metricInfo } = report;
+export const analysisParseData = (report, viewBy, compareBy, filters) => {
+  const { studInfo, teacherInfo, skillInfo, scaleInfo, metricInfo } = report;
 
   let filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, filters, skillInfo);
   filteredMetrics = augmentMetricInfoWithMasteryScore(filteredMetrics, scaleInfo);
@@ -399,8 +399,8 @@ const getDomainMaxScore = (metricInfo = [], domainId, skillInfo) => {
   return maxScore;
 };
 
-const groupByView = (report, chartFilters, viewBy, teacherInfo) => {
-  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo = [] } = report;
+const groupByView = (report, chartFilters, viewBy) => {
+  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo = [], teacherInfo = [] } = report;
   const groupByKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
   let filteredMetrics = filterAndAugmentMetricInfo(
     studInfo,
@@ -462,10 +462,10 @@ export const getChartMasteryData = (report = {}, chartFilters, viewBy, leastScal
   return parsedGroupedMetricData.sort((a, b) => a.name.localeCompare(b.name));
 };
 
-export const getChartScoreData = (report = {}, chartFilters, viewBy, teacherInfo) => {
+export const getChartScoreData = (report = {}, chartFilters, viewBy) => {
   const { metricInfo = {}, skillInfo = [] } = report;
   // group data according to the chosen viewBy
-  let metricByViewBy = groupByView(report, chartFilters, viewBy, teacherInfo);
+  let metricByViewBy = groupByView(report, chartFilters, viewBy);
 
   return Object.keys(metricByViewBy).map(id => {
     const records = metricByViewBy[id];

@@ -6,6 +6,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST = "[reports] get reports question analysis request";
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports question analysis success";
@@ -23,10 +24,15 @@ export const getQuestionAnalysisRequestAction = createAction(GET_REPORTS_QUESTIO
 
 export const stateSelector = state => state.reportReducer.reportQuestionAnalysisReducer;
 
-export const getReportsQuestionAnalysis = createSelector(
+const _getReportsQuestionAnalysis = createSelector(
   stateSelector,
   state => state.questionAnalysis
 );
+
+export const getReportsQuestionAnalysis = state => ({
+  ..._getReportsQuestionAnalysis(state),
+  metaInfo: getOrgDataFromSARFilter(state)
+});
 
 export const getReportsQuestionAnalysisLoader = createSelector(
   stateSelector,

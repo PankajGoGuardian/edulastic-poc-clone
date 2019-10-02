@@ -316,7 +316,8 @@ PerformanceAnalysisTable.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
-    studInfo: []
+    studInfo: [],
+    teacherInfo: []
   },
   selectedStandards: [],
   selectedDomains: []

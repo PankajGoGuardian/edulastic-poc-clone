@@ -99,20 +99,20 @@ export const getProficiency = (item, bandInfo) => {
   }
 };
 
-export const normaliseTableData = (rawData, data, metaInfo) => {
-  const { bandInfo = {}, schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
+export const normaliseTableData = (rawData, data) => {
+  const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
 
   const classes = groupBy(studentMetricInfo, "groupId");
 
   return map(data, studentMetric => {
     const relatedGroup =
       find(metaInfo, meta => {
-        return studentMetric.groupId === meta.groupId;
+        return studentMetric.groupId == meta.groupId;
       }) || {};
 
     const relatedSchool =
       find(schoolMetricInfo, school => {
-        return relatedGroup.schoolId === school.schoolId;
+        return relatedGroup.schoolId == school.schoolId;
       }) || {};
 
     const classAvg =
@@ -172,9 +172,9 @@ const filterStudents = (rawData, appliedFilters, range, selectedProficiency) => 
   return dataBetweenRange;
 };
 
-export const getTableData = (rawData, appliedFilters, range, selectedProficiency = "All", metaInfo) => {
+export const getTableData = (rawData, appliedFilters, range, selectedProficiency = "All") => {
   const filteredData = filterStudents(rawData, appliedFilters, range, selectedProficiency);
-  const normalisedData = normaliseTableData(rawData, filteredData, metaInfo);
+  const normalisedData = normaliseTableData(rawData, filteredData);
   const sortedData = orderBy(normalisedData, ["totalScore"], ["desc"]);
 
   return sortedData;

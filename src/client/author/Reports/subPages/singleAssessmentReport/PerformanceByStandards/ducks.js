@@ -7,6 +7,7 @@ import { isEmpty } from "lodash";
 import { reportsApi } from "@edulastic/api";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const GET_PERFORMANCE_BY_STANDARDS_REQUEST = "[reports] get performance by standards request";
 const GET_PERFORMANCE_BY_STANDARDS_SUCCESS = "[reports] get performance by standards success";
@@ -17,6 +18,7 @@ export const getPerformanceByStandardsSuccessAction = createAction(GET_PERFORMAN
 export const getPerformanceByStandardsErrorAction = createAction(GET_PERFORMANCE_BY_STANDARDS_ERROR);
 
 export const defaultReport = {
+  teacherInfo: [],
   scaleInfo: [],
   skillInfo: [],
   metricInfo: [],
@@ -59,10 +61,15 @@ export const getPerformanceByStandardsErrorSelector = createSelector(
   state => state.error
 );
 
-export const getPerformanceByStandardsReportSelector = createSelector(
+const _getPerformanceByStandardsReportSelector = createSelector(
   stateSelector,
   state => state.performanceByStandards
 );
+
+export const getPerformanceByStandardsReportSelector = state => ({
+  ..._getPerformanceByStandardsReportSelector(state),
+  teacherInfo: getOrgDataFromSARFilter(state)
+});
 
 function* getPerformanceByStandardsSaga({ payload }) {
   const errorMessage = "Failed to fetch performance by standards, please try again";

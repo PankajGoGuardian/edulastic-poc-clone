@@ -20,8 +20,7 @@ import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsP
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getSAFFilterSelectedPerformanceBandProfile,
-  getSAFFilterPerformanceBandProfiles,
-  getOrgDataFromSARFilter
+  getSAFFilterPerformanceBandProfiles
 } from "../common/filterDataDucks";
 
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
@@ -29,8 +28,8 @@ import { getUserRole } from "../../../../src/selectors/user";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
 
-const denormalizeData = (res, metaInfo) => {
-  let hMap = keyBy(metaInfo, "groupId");
+const denormalizeData = res => {
+  let hMap = keyBy(res.metaInfo, "groupId");
 
   if (res && !isEmpty(res.metricInfo)) {
     let filteredArr = res.metricInfo.filter((data, index) => {
@@ -56,7 +55,6 @@ const denormalizeData = (res, metaInfo) => {
 
 const PeerPerformance = ({
   peerPerformance,
-  metaInfo,
   getPeerPerformanceRequestAction,
   role,
   settings,
@@ -106,8 +104,8 @@ const PeerPerformance = ({
   res = res ? { ...res, bandInfo } : res;
 
   const denormData = useMemo(() => {
-    return denormalizeData(res, metaInfo);
-  }, [res, metaInfo]);
+    return denormalizeData(res);
+  }, [res]);
 
   const parsedData = useMemo(() => {
     return { data: parseData(res, denormData, ddfilter), columns: getColumns() };
@@ -251,7 +249,6 @@ const enhance = compose(
       loading: getReportsPeerPerformanceLoader(state),
       role: getUserRole(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      metaInfo: getOrgDataFromSARFilter(state),
       performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
     }),

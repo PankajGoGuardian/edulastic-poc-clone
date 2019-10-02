@@ -20,11 +20,9 @@ import {
   getReportsQuestionAnalysis
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const QuestionAnalysis = ({
   questionAnalysis,
-  metaInfo,
   getQuestionAnalysisRequestAction,
   role,
   settings,
@@ -48,8 +46,8 @@ const QuestionAnalysis = ({
   }, [questionAnalysis]);
 
   const tableData = useMemo(() => {
-    return getTableData({ ...questionAnalysis, metaInfo });
-  }, [questionAnalysis, compareBy, metaInfo]);
+    return getTableData(questionAnalysis);
+  }, [questionAnalysis, compareBy]);
 
   const compareByDropDownData = dropDownData.compareByDropDownData;
   const dropDownKeyToLabel = dropDownData.dropDownKeyToLabel;
@@ -153,7 +151,6 @@ export default connect(
     questionAnalysis: getReportsQuestionAnalysis(state),
     loading: getReportsQuestionAnalysisLoader(state),
     role: getUserRole(state),
-    metaInfo: getOrgDataFromSARFilter(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   { getQuestionAnalysisRequestAction }

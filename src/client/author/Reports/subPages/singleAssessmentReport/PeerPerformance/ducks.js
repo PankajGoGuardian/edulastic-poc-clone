@@ -6,6 +6,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import tempData from "./static/json/tempData";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST = "[reports] get reports peer performance request";
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS = "[reports] get reports peer performance success";
@@ -23,10 +24,15 @@ export const getPeerPerformanceRequestAction = createAction(GET_REPORTS_PEER_PER
 
 export const stateSelector = state => state.reportReducer.reportPeerPerformanceReducer;
 
-export const getReportsPeerPerformance = createSelector(
+const _getReportsPeerPerformance = createSelector(
   stateSelector,
   state => state.peerPerformance
 );
+
+export const getReportsPeerPerformance = state => ({
+  ..._getReportsPeerPerformance(state),
+  metaInfo: getOrgDataFromSARFilter(state)
+});
 
 export const getReportsPeerPerformanceLoader = createSelector(
   stateSelector,

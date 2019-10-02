@@ -22,8 +22,7 @@ import { ControlDropDown } from "../../../common/components/widgets/controlDropD
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
 import {
   getSAFFilterSelectedPerformanceBandProfile,
-  getSAFFilterPerformanceBandProfiles,
-  getOrgDataFromSARFilter
+  getSAFFilterPerformanceBandProfiles
 } from "../common/filterDataDucks";
 
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
@@ -31,7 +30,6 @@ import columns from "./static/json/tableColumns.json";
 
 const PerformanceByStudents = ({
   role,
-  metaInfo,
   performanceByStudents,
   getPerformanceByStudentsRequestAction,
   settings,
@@ -86,8 +84,8 @@ const PerformanceByStudents = ({
   }, [res, ddfilter]);
 
   const tableData = useMemo(() => {
-    return getTableData(res, ddfilter, range, selectedProficiency.key, metaInfo);
-  }, [res, ddfilter, range, selectedProficiency.key, metaInfo]);
+    return getTableData(res, ddfilter, range, selectedProficiency.key);
+  }, [res, ddfilter, range, selectedProficiency.key]);
 
   const filterDropDownCB = (event, selected, comData) => {
     setDdFilter({
@@ -174,7 +172,6 @@ const enhance = connect(
     loading: getReportsPerformanceByStudentsLoader(state),
     role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    metaInfo: getOrgDataFromSARFilter(state),
     performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
   }),

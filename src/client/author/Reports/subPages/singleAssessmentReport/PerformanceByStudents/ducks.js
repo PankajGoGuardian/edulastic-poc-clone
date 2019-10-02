@@ -5,6 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST = "[reports] get reports performance by students request";
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS = "[reports] get reports performance by students success";
@@ -22,10 +23,15 @@ export const getPerformanceByStudentsRequestAction = createAction(GET_REPORTS_PE
 
 export const stateSelector = state => state.reportReducer.reportPerformanceByStudentsReducer;
 
-export const getReportsPerformanceByStudents = createSelector(
+const _getReportsPerformanceByStudents = createSelector(
   stateSelector,
   state => state.performanceByStudents
 );
+
+export const getReportsPerformanceByStudents = state => ({
+  ..._getReportsPerformanceByStudents(state),
+  metaInfo: getOrgDataFromSARFilter(state)
+});
 
 export const getReportsPerformanceByStudentsLoader = createSelector(
   stateSelector,

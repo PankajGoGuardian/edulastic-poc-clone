@@ -33,14 +33,17 @@ const ResponseBoxLayout = ({
   onDrop,
   transparentResponses,
   connectDropTarget,
-  isOver
-}) =>
-  connectDropTarget(
+  isOver,
+  responseContainerPosition
+}) => {
+  const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
+  return connectDropTarget(
     <div
       className="responses_box"
       data-cy="responses-box"
       style={{
-        padding: smallSize ? "5px 10px" : 16,
+        padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
+        height: horizontallyAligned && "100%",
         border: "2px dashed transparent",
         ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
       }}
@@ -50,7 +53,8 @@ const ResponseBoxLayout = ({
           key={index}
           className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
           style={{
-            fontSize: smallSize ? 10 : fontSize
+            fontSize: smallSize ? 10 : fontSize,
+            width: horizontallyAligned && "100%"
           }}
         >
           {!dragHandler && (
@@ -68,6 +72,7 @@ const ResponseBoxLayout = ({
       ))}
     </div>
   );
+};
 
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
@@ -76,7 +81,8 @@ ResponseBoxLayout.propTypes = {
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
   transparentResponses: PropTypes.bool,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  responseContainerPosition: PropTypes.string
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -84,7 +90,8 @@ ResponseBoxLayout.defaultProps = {
   fontSize: "13px",
   smallSize: false,
   dragHandler: false,
-  transparentResponses: false
+  transparentResponses: false,
+  responseContainerPosition: "bottom"
 };
 
 const enhance = compose(

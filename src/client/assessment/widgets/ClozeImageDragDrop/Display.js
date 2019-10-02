@@ -679,6 +679,7 @@ class Display extends Component {
         fontSize={fontSize}
         dragHandler={dragHandler}
         transparentResponses={transparentResponses}
+        responseContainerPosition={responsecontainerposition}
       />
     );
 

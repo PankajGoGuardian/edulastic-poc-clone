@@ -314,13 +314,15 @@ export const DragDropValuesContainer = styled.div`
   .drag-drop-value {
     background: white;
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
     display: flex !important;
     overflow: hidden;
 
     img.fr-dii {
-      max-height: 40px !important;
-      width: auto !important;
+      max-height: 50px;
+      max-width: 120px;
+      user-drag: none;
+      user-select: none;
     }
   }
 

@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
+import PropTypes from "prop-types";
 import { fadedBlack } from "@edulastic/colors";
 import { Row, Col } from "antd";
 import { sumBy } from "lodash";
 import { StyledCustomChartTooltip } from "../styled";
-import performanceBandColorRange from "../../../../../common/static/json/performanceBandColorRange.json";
 
-export const SimplePieChart = props => {
+export const SimplePieChart = ({ data }) => {
   const [activeLegend, setActiveLegend] = useState(null);
 
   const onLegendMouseEnter = ({ value }) => setActiveLegend(value);
@@ -14,7 +14,7 @@ export const SimplePieChart = props => {
 
   const renderCustomizedLabel = args => {
     const RADIAN = Math.PI / 180;
-    let { cx, cy, midAngle, innerRadius, outerRadius, percent, index } = args;
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent } = args;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -26,30 +26,29 @@ export const SimplePieChart = props => {
   };
 
   const chartData = useMemo(() => {
-    let arr = [];
-    if (props.data) {
-      const sum = sumBy(props.data, o => {
+    const arr = [];
+    if (data) {
+      const sum = sumBy(data, o => {
         return o.bandPerf;
       });
-      const colors = performanceBandColorRange[props.data.length];
-      for (let i = 0; i < props.data.length; i++) {
+      for (let i = 0; i < data.length; i++) {
         let fillOpacity = 1;
 
-        if (activeLegend && activeLegend !== props.data[i].name) {
+        if (activeLegend && activeLegend !== data[i].name) {
           fillOpacity = 0.2;
         }
 
         arr.push({
-          bandPerf: props.data[i].bandPerf,
-          fill: colors[i],
-          name: props.data[i].name,
+          bandPerf: data[i].bandPerf,
+          fill: data[i].color,
+          name: data[i].name,
           sum,
           fillOpacity
         });
       }
     }
     return arr;
-  }, [props.data, activeLegend]);
+  }, [data, activeLegend]);
 
   const getTooltipJSX = payload => {
     if (payload && payload.length) {
@@ -80,4 +79,15 @@ export const SimplePieChart = props => {
       </PieChart>
     </ResponsiveContainer>
   );
+};
+const performanceByBand = PropTypes.shape({
+  aboveStandard: PropTypes.number,
+  bandPerf: PropTypes.number,
+  color: PropTypes.string,
+  name: PropTypes.string,
+  threshold: PropTypes.number
+});
+
+SimplePieChart.propTypes = {
+  data: PropTypes.arrayOf(performanceByBand).isRequired
 };

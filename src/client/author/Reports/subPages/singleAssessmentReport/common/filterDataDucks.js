@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -211,7 +211,7 @@ function* getReportsSARFilterDataRequest({ payload }) {
 }
 
 export function* reportSARFilterDataSaga() {
-  yield all([yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
+  yield all([yield takeLatest(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

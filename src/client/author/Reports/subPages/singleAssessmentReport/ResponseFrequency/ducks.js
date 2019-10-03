@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { isEmpty } from "lodash";
 import { reportsApi } from "@edulastic/api";
@@ -91,7 +91,7 @@ function* getReportsResponseFrequencyRequest({ payload }) {
 }
 
 export function* reportResponseFrequencySaga() {
-  yield all([yield takeEvery(GET_REPORTS_RESPONSE_FREQUENCY_REQUEST, getReportsResponseFrequencyRequest)]);
+  yield all([yield takeLatest(GET_REPORTS_RESPONSE_FREQUENCY_REQUEST, getReportsResponseFrequencyRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

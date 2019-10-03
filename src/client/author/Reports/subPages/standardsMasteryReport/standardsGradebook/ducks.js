@@ -135,7 +135,7 @@ function* getStudentStandardsSaga({ payload }) {
 
 export function* reportStandardsGradebookSaga() {
   yield all([
-    yield takeEvery(GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST, getReportsStandardsGradebookRequest),
+    yield takeLatest(GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST, getReportsStandardsGradebookRequest),
     yield takeLatest(GET_STUDENT_STANDARDS_REQUEST, getStudentStandardsSaga)
   ]);
 }

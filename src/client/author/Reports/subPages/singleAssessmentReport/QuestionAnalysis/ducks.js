@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
@@ -99,7 +99,7 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
 }
 
 export function* reportQuestionAnalysisSaga() {
-  yield all([yield takeEvery(GET_REPORTS_QUESTION_ANALYSIS_REQUEST, getReportsQuestionAnalysisRequest)]);
+  yield all([yield takeLatest(GET_REPORTS_QUESTION_ANALYSIS_REQUEST, getReportsQuestionAnalysisRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

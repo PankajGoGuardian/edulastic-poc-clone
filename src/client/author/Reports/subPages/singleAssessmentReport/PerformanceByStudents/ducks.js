@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
@@ -44,8 +45,17 @@ export const getReportsPerformanceByStudentsLoader = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+export const defaultReport = {
+  districtAvg: 0,
+  districtAvgPerf: 0,
+  schoolMetricInfo: [],
+  studentMetricInfo: [],
+  metaInfo: [],
+  metricInfo: []
+};
+
 const initialState = {
-  performanceByStudents: {},
+  performanceByStudents: defaultReport,
   loading: true
 };
 
@@ -72,7 +82,10 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
 
 function* getReportsPerformanceByStudentsRequest({ payload }) {
   try {
-    const performanceByStudents = yield call(reportsApi.fetchPerformanceByStudentsReport, payload);
+    const {
+      data: { result }
+    } = yield call(reportsApi.fetchPerformanceByStudentsReport, payload);
+    const performanceByStudents = isEmpty(result) ? defaultReport : result;
 
     yield put({
       type: GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS,

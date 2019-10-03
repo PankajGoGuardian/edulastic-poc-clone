@@ -1,4 +1,5 @@
-import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
+import { isEmpty } from "lodash";
+import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -38,8 +39,13 @@ export const getReportsAssessmentSummaryLoader = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+export const defaultReport = {
+  bandInfo: [],
+  metricInfo: []
+};
+
 const initialState = {
-  assessmentSummary: {},
+  assessmentSummary: defaultReport,
   loading: true
 };
 
@@ -66,7 +72,10 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
-    const assessmentSummary = yield call(reportsApi.fetchAssessmentSummaryReport, payload);
+    const {
+      data: { result }
+    } = yield call(reportsApi.fetchAssessmentSummaryReport, payload);
+    const assessmentSummary = isEmpty(result) ? defaultReport : result;
 
     yield put({
       type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS,

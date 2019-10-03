@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { groupBy } from "lodash";
+import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
 import { getHSLFromRange1 } from "../../../../../common/util";
-import { idToName, analyseByToName } from "../../util/transformers";
+import { idToName } from "../../util/transformers";
 
 export const SignedStackedBarChartContainer = ({
   data,

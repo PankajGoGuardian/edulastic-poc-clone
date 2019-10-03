@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { Row, Col } from "antd";
 import {} from "@edulastic/colors";
-import { StyledTable as Table } from "../../../../common/styled";
-import { StyledCard as Card } from "../../../../common/styled";
+import { StyledTable as Table, StyledCard as Card } from "../../../../common/styled";
 
 export const StyledCard = styled(Card)``;
 

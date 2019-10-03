@@ -1,17 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import { compose } from "redux";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import queryString from "query-string";
 import { Row, Col } from "antd";
-import { get, isEmpty } from "lodash";
-import next from "immer";
+import { get } from "lodash";
 
 import { SimplePieChart } from "./components/charts/pieChart";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
 import { Stats } from "./components/stats";
 import { Placeholder } from "../../../common/components/loader";
-import data from "./static/json/data.json";
 
 import {
   getAssessmentSummaryRequestAction,
@@ -21,29 +19,33 @@ import {
 import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
 import { getUserRole } from "../../../../src/selectors/user";
 
-const AssessmentSummary = props => {
+const AssessmentSummary = ({
+  loading,
+  isPrinting,
+  isCsvDownloading,
+  role,
+  assessmentSummary,
+  getAssessmentSummary,
+  settings
+}) => {
   useEffect(() => {
-    if (props.settings.selectedTest && props.settings.selectedTest.key) {
+    if (settings.selectedTest && settings.selectedTest.key) {
       let q = {};
-      q.testId = props.settings.selectedTest.key;
-      const { performanceBandProfile, ...requestFilters } = props.settings.requestFilters;
+      q.testId = settings.selectedTest.key;
+      const { performanceBandProfile, ...requestFilters } = settings.requestFilters;
       q.requestFilters = { ...requestFilters, profileId: performanceBandProfile };
 
-      props.getAssessmentSummaryRequestAction(q);
+      getAssessmentSummary(q);
     }
-  }, [props.settings]);
+  }, [settings]);
 
-  const state = get(props, "assessmentSummary.data.result", {
-    assessmentName: "",
-    bandInfo: [],
-    metricInfo: []
-  });
+  const { bandInfo, metricInfo } = assessmentSummary;
 
-  const assessmentName = get(props.settings, "selectedTest.title", "");
+  const assessmentName = get(settings, "selectedTest.title", "");
 
   return (
     <div>
-      {props.loading ? (
+      {loading ? (
         <div>
           <Row type="flex">
             <Placeholder />
@@ -58,26 +60,26 @@ const AssessmentSummary = props => {
           <UpperContainer type="flex">
             <Col className="sub-container district-statistics" xs={24} sm={24} md={18} lg={18} xl={18}>
               <StyledCard>
-                <Stats name={assessmentName} data={state.metricInfo} role={props.role} />
+                <Stats name={assessmentName} data={metricInfo} role={role} />
               </StyledCard>
             </Col>
             <Col className="sub-container chart-container" xs={24} sm={24} md={6} lg={6} xl={6}>
               <StyledCard>
                 <StyledH3>Students in Performance Bands (%)</StyledH3>
-                <SimplePieChart data={state.bandInfo} />
+                <SimplePieChart data={bandInfo} />
               </StyledCard>
             </Col>
           </UpperContainer>
           <TableContainer>
             <Col>
               <StyledCard>
-                {props.role ? (
+                {role ? (
                   <StyledAssessmentStatisticTable
                     name={assessmentName}
-                    data={state.metricInfo}
-                    role={props.role}
-                    isPrinting={props.isPrinting}
-                    isCsvDownloading={props.isCsvDownloading}
+                    data={metricInfo}
+                    role={role}
+                    isPrinting={isPrinting}
+                    isCsvDownloading={isCsvDownloading}
                   />
                 ) : (
                   ""
@@ -91,17 +93,32 @@ const AssessmentSummary = props => {
   );
 };
 
+const reportPropType = PropTypes.shape({
+  bandInfo: PropTypes.array,
+  metricInfo: PropTypes.array
+});
+
+AssessmentSummary.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  isPrinting: PropTypes.bool.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  role: PropTypes.string.isRequired,
+  assessmentSummary: reportPropType.isRequired,
+  getAssessmentSummary: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
+};
+
 const enhance = compose(
   connect(
     state => ({
-      assessmentSummary: getReportsAssessmentSummary(state),
       loading: getReportsAssessmentSummaryLoader(state),
-      role: getUserRole(state),
       isPrinting: getPrintingState(state),
-      isCsvDownloading: getCsvDownloadingState(state)
+      isCsvDownloading: getCsvDownloadingState(state),
+      role: getUserRole(state),
+      assessmentSummary: getReportsAssessmentSummary(state)
     }),
     {
-      getAssessmentSummaryRequestAction: getAssessmentSummaryRequestAction
+      getAssessmentSummary: getAssessmentSummaryRequestAction
     }
   )
 );

@@ -1,9 +1,9 @@
-import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
+import { isEmpty } from "lodash";
+import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import tempData from "./static/json/tempData";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
@@ -45,8 +45,15 @@ export const getReportsPeerPerformanceLoader = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+export const defaultReport = {
+  districtAvg: 0,
+  districtAvgPerf: 0,
+  metaInfo: [],
+  metricInfo: []
+};
+
 const initialState = {
-  peerPerformance: {},
+  peerPerformance: defaultReport,
   loading: true
 };
 
@@ -73,7 +80,10 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
 
 function* getReportsPeerPerformanceRequest({ payload }) {
   try {
-    const peerPerformance = yield call(reportsApi.fetchPeerPerformanceReport, payload);
+    const {
+      data: { result }
+    } = yield call(reportsApi.fetchPeerPerformanceReport, payload);
+    const peerPerformance = isEmpty(result) ? defaultReport : result;
 
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS,

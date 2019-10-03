@@ -1,9 +1,7 @@
 import {
   groupBy,
-  head,
   uniqBy,
   capitalize,
-  last,
   ceil,
   orderBy,
   find,
@@ -15,8 +13,8 @@ import {
   mapValues,
   reduce
 } from "lodash";
-import { percentage } from "../../../../common/util";
 import next from "immer";
+import { percentage } from "../../../../common/util";
 
 export const viewByMode = {
   STANDARDS: "standard",

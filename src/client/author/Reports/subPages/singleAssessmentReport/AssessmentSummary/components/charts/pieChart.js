@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
 import { fadedBlack } from "@edulastic/colors";
-import { StyledCustomChartTooltip } from "../styled";
 import { Row, Col } from "antd";
 import { sumBy } from "lodash";
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { StyledCustomChartTooltip } from "../styled";
 import performanceBandColorRange from "../../../../../common/static/json/performanceBandColorRange.json";
 
 export const SimplePieChart = props => {

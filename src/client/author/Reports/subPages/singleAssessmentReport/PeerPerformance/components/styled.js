@@ -1,10 +1,7 @@
 import styled from "styled-components";
-import { Row, Col } from "antd";
 import { fadedBlack } from "@edulastic/colors";
 import { StyledTable as Table } from "../../../../common/styled";
 import { FilterDropDownWithDropDown } from "../../../../common/components/widgets/filterDropDownWithDropDown";
-import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
-import { StyledCard as Card } from "../../../../common/styled";
 
 export const UpperContainer = styled.div`
   .dropdown-container {

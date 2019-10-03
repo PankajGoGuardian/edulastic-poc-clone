@@ -4,7 +4,6 @@ import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, set, get } from "lodash";
-import { push } from "connected-react-router";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 

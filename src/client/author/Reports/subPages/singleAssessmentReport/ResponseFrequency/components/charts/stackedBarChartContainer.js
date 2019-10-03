@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { groupBy } from "lodash";
-import { Row, Col } from "antd";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";

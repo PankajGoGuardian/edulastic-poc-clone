@@ -1,5 +1,6 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
+import { isEmpty } from "lodash";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
@@ -38,8 +39,12 @@ export const getReportsResponseFrequencyLoader = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+export const defaultReport = {
+  metricInfo: []
+};
+
 const initialState = {
-  responseFrequency: {},
+  responseFrequency: defaultReport,
   loading: true
 };
 
@@ -66,7 +71,11 @@ export const reportResponseFrequencyReducer = createReducer(initialState, {
 
 function* getReportsResponseFrequencyRequest({ payload }) {
   try {
-    const responseFrequency = yield call(reportsApi.fetchResponseFrequency, payload);
+    const {
+      data: { result }
+    } = yield call(reportsApi.fetchResponseFrequency, payload);
+    const responseFrequency = isEmpty(result) ? defaultReport : result;
+
     yield put({
       type: GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS,
       payload: { responseFrequency }

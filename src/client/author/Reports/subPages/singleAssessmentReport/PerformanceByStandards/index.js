@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr, capitalize, find, get, intersectionBy } from "lodash";
-import { Form, Popover, Button, Icon, Row, Col } from "antd";
+import { indexOf, filter as filterArr, capitalize, find, intersectionBy } from "lodash";
+import { Row, Col } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
@@ -19,11 +19,10 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector
 } from "./ducks";
-import { AutocompleteDropDown } from "../../../../Reports/common/components/widgets/autocompleteDropDown";
+import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
-import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,

@@ -16,7 +16,6 @@ import TableTooltipRow from "../../../../../common/components/tooltip/TableToolt
 import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const columnHashMap = {
-  school: "studentName", // check and remove
   teacher: "teacherName",
   class: "groupName",
   school: "schoolName"

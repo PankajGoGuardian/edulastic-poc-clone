@@ -226,13 +226,15 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
-  testletConfig: PropTypes.object
+  testletConfig: PropTypes.object,
+  test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
-  testletConfig: {}
+  testletConfig: {},
+  test: {}
 };
 
 const enhance = compose(

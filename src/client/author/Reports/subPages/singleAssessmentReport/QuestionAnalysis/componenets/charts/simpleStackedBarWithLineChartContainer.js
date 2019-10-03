@@ -67,7 +67,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
 
   return (
     <SimpleStackedBarChart
-      margin={{ top: 0, right: 20, left: 20, bottom: 0 }}
+      margin={{ top: 0, right: 60, left: 60, bottom: 0 }}
       pageSize={10}
       data={chartData}
       barsData={chartSpecifics.barsData}

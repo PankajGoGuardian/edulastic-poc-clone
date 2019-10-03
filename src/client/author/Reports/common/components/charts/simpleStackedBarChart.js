@@ -33,7 +33,7 @@ const LabelText = props => {
 };
 
 export const SimpleStackedBarChart = ({
-  margin = { top: 0, right: 20, left: 20, bottom: 0 },
+  margin = { top: 0, right: 60, left: 60, bottom: 0 },
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -68,8 +68,8 @@ export const SimpleStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "normal" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 },
-    LINE_Y_AXIS_LABEL: { value: lineYAxisLabel, angle: -90, dx: 25 }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -55 },
+    LINE_Y_AXIS_LABEL: { value: lineYAxisLabel, angle: -90, dx: 50 }
   };
 
   if (data !== copyData) {
@@ -170,6 +170,10 @@ export const SimpleStackedBarChart = ({
             dataKey={xAxisDataKey}
             tick={<CustomChartXTick data={chartData} getXTickText={getXTickText} />}
             interval={0}
+            axisLine={{
+              stroke: "#E5E5E5"
+            }}
+            tickLine={false}
           />
           <YAxis
             type={"number"}
@@ -179,6 +183,14 @@ export const SimpleStackedBarChart = ({
             ticks={ticks}
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
+            axisLine={false}
+            tickLine={{
+              stroke: "#4A4A4A"
+            }}
+            tickSize="9"
+            tickMargin="6"
+            style={{ transform: "translate(-25px)" }}
+          />
           />
           <Brush
             dataKey={xAxisDataKey}
@@ -193,7 +205,7 @@ export const SimpleStackedBarChart = ({
             stackId="a"
             unit={"%"}
             onClick={onBarClick}
-            barSize={70}
+            barSize={45}
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
           />
@@ -202,7 +214,7 @@ export const SimpleStackedBarChart = ({
             yAxisId="barChart"
             stackId="a"
             onClick={onBarClick}
-            barSize={70}
+            barSize={45}
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
           >
@@ -223,7 +235,7 @@ export const SimpleStackedBarChart = ({
               }
             />
             {chartData.map((entry, index) => {
-              return <Cell key={entry[xAxisDataKey]} fill={"#e5e5e5"} />;
+              return <Cell radius={[10, 10, 0, 0]} key={entry[xAxisDataKey]} fill={"#e5e5e5"} />;
             })}
           </Bar>
           {lineChartDataKey ? (
@@ -234,6 +246,13 @@ export const SimpleStackedBarChart = ({
               ticks={lineTicks}
               orientation="right"
               tickFormatter={lineYTickFormatter}
+              axisLine={false}
+              tickLine={{
+                stroke: "#4A4A4A"
+              }}
+              tickSize="9"
+              tickMargin="6"
+              style={{ transform: "translate(20px)" }}
             />
           ) : null}
           {lineChartDataKey ? (

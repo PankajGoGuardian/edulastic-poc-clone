@@ -358,6 +358,7 @@ export const StyledChartNavButton = styled(Button)`
   border-radius: 25px;
   background-color: white;
   color: black;
+  z-index: 1;
 `;
 
 export const StyledAxisTickText = styled(Text)`

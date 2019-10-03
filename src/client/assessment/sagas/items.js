@@ -105,15 +105,6 @@ function* saveUserResponse({ payload }) {
     const testItemId = currentItem._id;
     const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
 
-    const testletState = yield select(({ userWork }) => userWork.present[userTestActivityId]);
-    if (testletState && userTestActivityId) {
-      yield call(testItemActivityApi.updateUserWorkTestLevel, {
-        testActivityId: userTestActivityId,
-        groupId,
-        userWork: { testletState }
-      });
-    }
-
     const activity = {
       answers: itemAnswers,
       testItemId,

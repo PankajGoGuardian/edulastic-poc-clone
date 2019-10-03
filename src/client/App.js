@@ -23,7 +23,7 @@ import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
 
-const { ASSESSMENT, PRACTICE } = test.type;
+const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
 const AssessmentPlayer = lazy(() => import(/* webpackChunkName: "assessmentPlayer" */ "./assessment/index"));
 const TeacherSignup = lazy(() =>
@@ -200,6 +200,10 @@ class App extends Component {
             />
             <Route
               path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP />}
+            />
+            <Route
+              path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
               render={() => <AssessmentPlayer defaultAP />}
             />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />

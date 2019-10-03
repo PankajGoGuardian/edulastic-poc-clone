@@ -8,7 +8,7 @@ export const Main = styled.main`
   padding: 96px 0px 32px;
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  min-height: ${({ LCBPreviewModal }) => (LCBPreviewModal ? "calc(100vh - 56px)" : "100vh")};
   box-sizing: border-box;
   margin: 0px 32px;
 `;
@@ -39,9 +39,8 @@ export const MainContent = styled.div`
     overflow: auto;
     height: 100%;
     width: 100%;
-    border-color: #888888;
-    border-style: dashed;
-    border-width: thin;
+    border-style: none;
+    border-width: 0px;
   }
 `;
 
@@ -106,4 +105,14 @@ export const HeaderPracticePlayer = styled(Header)`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;
   }
+`;
+
+export const OverlayDiv = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 9999;
+  background: transparent;
 `;

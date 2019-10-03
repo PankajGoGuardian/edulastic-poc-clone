@@ -1,5 +1,5 @@
 import undoable from "redux-undo";
-import { SAVE_USER_WORK, LOAD_SCRATCH_PAD, LOAD_TESTLET_STATE } from "../constants/actions";
+import { SAVE_USER_WORK, LOAD_SCRATCH_PAD } from "../constants/actions";
 
 const initialState = {};
 
@@ -12,11 +12,6 @@ const userWork = (state = initialState, { type, payload }) => {
       };
     case LOAD_SCRATCH_PAD:
       return {
-        ...payload
-      };
-    case LOAD_TESTLET_STATE:
-      return {
-        ...state,
         ...payload
       };
     default:

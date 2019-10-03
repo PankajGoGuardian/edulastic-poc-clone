@@ -13,6 +13,16 @@ export const StyledFlexContainer = styled(FlexContainer)`
   }
 `;
 
+export const StudentButtonWrapper = styled(FlexContainer)`
+  width: calc(75% - 15px);
+  justify-content: space-between;
+  margin-bottom: 0px;
+
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+`;
+
 export const StudentButtonDiv = styled.div`
   display: flex;
   .ant-btn-primary {
@@ -27,13 +37,14 @@ export const StudentButtonDiv = styled.div`
   }
 `;
 
-const StyledStudentTabButton = styled.a`
+export const StyledStudentTabButton = styled.a`
   height: 28px;
   padding: 6px 20px;
   font-size: 11px;
   font-weight: 600;
   border-radius: 0px;
   margin-right: 2px;
+  user-select: none;
   background-color: ${({ active }) => (active ? "rgba(255, 255, 255, .30)" : white)};
   color: ${({ active }) => (active ? themeColor : tabGrey)};
   &:hover {

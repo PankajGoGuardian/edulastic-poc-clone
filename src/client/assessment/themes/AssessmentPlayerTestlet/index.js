@@ -1,15 +1,13 @@
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
-import { get } from "lodash";
 import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { WithResources } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
-import { saveUserWorkAction } from "../../actions/userWork";
+import { setTestUserWorkAction, saveTestletStateAction } from "../../actions/testUserWork";
 import { setUserAnswerAction } from "../../actions/answers";
 
 // components
@@ -53,7 +51,12 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   openExitPopup = () => {
-    this.setState({ showExitPopup: true });
+    const { closeTestPreviewModal } = this.props;
+    this.setState({ showExitPopup: true }, () => {
+      if (closeTestPreviewModal) {
+        closeTestPreviewModal();
+      }
+    });
   };
 
   hideExitPopup = () => {
@@ -74,20 +77,12 @@ class AssessmentPlayerTestlet extends React.Component {
       return <div />;
     }
     return (
-      <WithResources
-        resources={[
-          "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js",
-          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/js/all.min.js"
-        ]}
-        fallBack={<span />}
-      >
-        <ThemeProvider theme={theme}>
-          <Container>
-            <PlayerContent {...this.props} openExitPopup={this.openExitPopup} />
-            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
-          </Container>
-        </ThemeProvider>
-      </WithResources>
+      <ThemeProvider theme={theme}>
+        <Container>
+          <PlayerContent {...this.props} openExitPopup={this.openExitPopup} />
+          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+        </Container>
+      </ThemeProvider>
     );
   }
 }
@@ -97,13 +92,13 @@ export default connect(
     evaluation: state.evaluation,
     preview: state.view.preview,
     testActivityId: state.test ? state.test.testActivityId : "",
-    testletState: get(state, `userWork.present[${state.test ? state.test.testActivityId : ""}]`, {}),
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings
   }),
   {
     checkAnswer: checkAnswerEvaluation,
     setUserAnswer: setUserAnswerAction,
-    saveUserWork: saveUserWorkAction
+    setTestUserWork: setTestUserWorkAction, // save to redux
+    saveTestletState: saveTestletStateAction // save to db
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

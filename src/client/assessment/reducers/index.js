@@ -9,9 +9,11 @@ import questions from "./questions";
 import shuffledOptions from "./shuffledOptions";
 import graphTools from "./graphTools";
 import bookmarks from "../sharedDucks/bookmark";
+import testUserWork from "./testUserWork";
 
 const assessmentReducers = {
-  userWork,
+  userWork, // Item/Question level userWork
+  testUserWork, // test level userWork
   test,
   items,
   answers,

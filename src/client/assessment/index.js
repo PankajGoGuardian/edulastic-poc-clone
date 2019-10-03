@@ -54,6 +54,7 @@ const AssessmentPlayer = ({
       <ThemeContainer
         closeTestPreviewModal={closeTestPreviewModal}
         LCBPreviewModal={LCBPreviewModal}
+        test={test}
         defaultAP
         preview
       />

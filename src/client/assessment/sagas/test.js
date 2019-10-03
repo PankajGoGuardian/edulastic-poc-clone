@@ -16,7 +16,7 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
-  LOAD_TESTLET_STATE,
+  LOAD_TEST_LEVEL_USER_WORK,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   TEST_ACTIVITY_LOADING,
@@ -120,7 +120,7 @@ function* loadTest({ payload }) {
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
 
-    let { testItems, passages } = test;
+    let { testItems, passages, testType } = test;
 
     const settings = {
       calcType:
@@ -224,11 +224,11 @@ function* loadTest({ payload }) {
         });
       }
 
-      const testletState = get(activity, "userWork.testletState");
-      if (testletState) {
+      const testUserWork = get(activity, "userWork");
+      if (testUserWork) {
         yield put({
-          type: LOAD_TESTLET_STATE,
-          payload: { [testActivityId]: testletState }
+          type: LOAD_TEST_LEVEL_USER_WORK,
+          payload: { [testActivityId]: testUserWork }
         });
       }
 
@@ -254,7 +254,7 @@ function* loadTest({ payload }) {
       const loadFromLast = yield select(state => state.test && state.test.resume);
 
       // move to last attended question
-      if (loadFromLast) {
+      if (loadFromLast && testType !== testContants.type.TESTLET) {
         yield put(push(`${lastAttendedQuestion}`));
         yield put({
           type: SET_RESUME_STATUS,

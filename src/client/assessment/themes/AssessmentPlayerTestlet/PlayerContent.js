@@ -3,12 +3,13 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
 import { isEqual, find, isObject } from "lodash";
+import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
 
-import { MainContent, Main } from "./styled";
+import { MainContent, Main, OverlayDiv } from "./styled";
 
 let frameController = {};
 
@@ -26,16 +27,20 @@ const PlayerContent = ({
   questions,
   setUserAnswer,
   saveUserAnswer,
-  saveUserWork,
+  saveTestletState,
+  setTestUserWork,
   gotoSummary,
   testActivityId,
   testletState,
-  testletConfig = {}
+  testletConfig = {},
+  LCBPreviewModal,
+  location = { state: {} }
 }) => {
   const frameRef = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
   const [currentPage, setCurrentQuestion] = useState(0);
   const [testletItems, setQuestions] = useState([]);
+  const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
 
   const findItemIdMap = cPageIds =>
@@ -60,11 +65,13 @@ const PlayerContent = ({
   };
 
   const saveUserResponse = () => {
-    const currentItem = findCurrentItemFromIdMap();
-    if (currentItem) {
-      const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
-      const timeSpent = Date.now() - lastTime.current;
-      saveUserAnswer(cItemIndex, timeSpent);
+    if (!LCBPreviewModal) {
+      const currentItem = findCurrentItemFromIdMap();
+      if (currentItem) {
+        const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
+        const timeSpent = Date.now() - lastTime.current;
+        saveUserAnswer(cItemIndex, timeSpent);
+      }
     }
   };
 
@@ -72,7 +79,7 @@ const PlayerContent = ({
     saveUserResponse();
     if (currentPage < testletItems.length) {
       frameController.sendNext();
-    } else {
+    } else if (!LCBPreviewModal) {
       gotoSummary();
     }
   };
@@ -83,6 +90,9 @@ const PlayerContent = ({
   };
 
   const mapTestletToEdu = () => {
+    if (LCBPreviewModal) {
+      return;
+    }
     const currentItem = findCurrentItemFromIdMap();
     if (!currentItem) {
       return;
@@ -147,7 +157,17 @@ const PlayerContent = ({
 
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
-      frameController = new ParentController(testletConfig.testletId, testletState.state, testletState.response);
+      const { state: initState = {} } = testletState;
+      if (location.state) {
+        const { fromSummary, question: questionId } = location.state;
+        if (fromSummary && questionId) {
+          const questionMap = find(testletConfig.mapping, ({ uuid }) => uuid === questionId);
+          if (questionMap) {
+            initState.pageNum = questionMap.testletPageNum;
+          }
+        }
+      }
+      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -157,11 +177,16 @@ const PlayerContent = ({
           setQuestions(_questions);
         },
         unlockNext: flag => {
-          setUnlockNext(flag);
+          setUnlockNext(flag || LCBPreviewModal);
+        },
+        setCurrentScoring: ids => {
+          setCurrentScoring(!!Object.keys(ids).length);
         },
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
-          saveUserWork({ [testActivityId]: { state: itemState, response: itemResponse } });
+          if (!LCBPreviewModal) {
+            setTestUserWork({ [testActivityId]: { testletState: { state: itemState, response: itemResponse } } });
+          }
         }
       });
       return () => {
@@ -172,6 +197,9 @@ const PlayerContent = ({
 
   useEffect(() => {
     if (currentPage > 0) {
+      if (!LCBPreviewModal) {
+        saveTestletState();
+      }
       window.localStorage.assessmentLastTime = Date.now();
       frameController.getCurrentPageScoreID();
     }
@@ -188,8 +216,9 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
       />
-      <Main skinB="true">
+      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>
+          {LCBPreviewModal && currentScoring && <OverlayDiv />}
           {testletConfig.testletURL && (
             <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
           )}
@@ -199,4 +228,4 @@ const PlayerContent = ({
   );
 };
 
-export default PlayerContent;
+export default withRouter(PlayerContent);

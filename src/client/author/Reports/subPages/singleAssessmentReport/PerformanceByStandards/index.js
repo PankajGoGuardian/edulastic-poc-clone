@@ -232,7 +232,7 @@ const PerformanceByStandards = ({
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer padding="5px" xs={24} sm={24} md={7} lg={7} xl={7}>
                 <AutocompleteDropDown
                   prefix="Standard set"
                   by={selectedStandardId || { key: "", title: "" }}

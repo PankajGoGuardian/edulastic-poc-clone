@@ -65,7 +65,7 @@ const AssessmentSummary = ({
             </Col>
             <Col className="sub-container chart-container" xs={24} sm={24} md={6} lg={6} xl={6}>
               <StyledCard>
-                <StyledH3>Students in Performance Bands (%)</StyledH3>
+                <StyledH3 textAlign="center">Students in Performance Bands (%)</StyledH3>
                 <SimplePieChart data={bandInfo} />
               </StyledCard>
             </Col>

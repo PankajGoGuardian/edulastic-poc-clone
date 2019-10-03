@@ -106,15 +106,13 @@ const ControlDropDown = ({
 };
 
 const StyledDiv = styled.div`
-  margin: 0px 5px;
-  overflow: hidden;
+  padding: 5px;
   button {
     display: flex;
     justify-content: start;
     align-items: center;
     width: ${({ buttonWidth }) => (buttonWidth ? buttonWidth : "auto")};
     &.ant-btn.ant-dropdown-trigger {
-      font-weight: bold;
       background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};
 

@@ -75,7 +75,15 @@ export const SimplePieChart = ({ data }) => {
           verticalAlign="bottom"
         />
         <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
-        <Pie name={"name"} data={chartData} labelLine={false} dataKey="bandPerf" label={renderCustomizedLabel} />
+        <Pie
+          name={"name"}
+          data={chartData}
+          labelLine={false}
+          innerRadius={35}
+          outerRadius={65}
+          dataKey="bandPerf"
+          label={renderCustomizedLabel}
+        />
       </PieChart>
     </ResponsiveContainer>
   );

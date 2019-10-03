@@ -72,7 +72,7 @@ const StudentProfileReportContainer = props => {
           history={props.history}
           location={props.location}
           match={props.match}
-          style={props.showFilter ? { display: "block" } : { display: "none" }}
+          style={props.showFilter ? { display: "block", padding: "10px" } : { display: "none" }}
           performanceBandRequired={[
             "/author/reports/student-profile-summary",
             "/author/reports/student-assessment-profile"

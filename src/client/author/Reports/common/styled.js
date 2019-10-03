@@ -36,7 +36,7 @@ export const StyledFilterWrapper = styled.div`
   background-color: white;
   border-radius: 10px;
   padding: 15px 20px;
-  margin: 0px 8px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
 
   .ant-select-selection {
     &__rendered {
@@ -299,6 +299,7 @@ export const StyledH3 = styled.h3`
   color: ${fadedBlack};
   font-size: 14px;
   margin: 0px 0px 10px;
+  text-align: ${({ textAlign }) => (textAlign ? textAlign : "left")};
 `;
 
 export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
@@ -392,6 +393,7 @@ export const StyledSignedBarContainer = styled.div`
 `;
 
 export const StyledDropDownContainer = styled(Col)`
+  padding: ${({ padding }) => (padding ? padding : "unset")};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -409,6 +411,22 @@ export const StyledAutocompleteDropDownContainer = styled.div`
   }
   input {
     cursor: pointer;
+    &:focus,
+    :active {
+      border-color: ${themeColor} !important;
+      box-shadow: none;
+    }
+  }
+
+  .anticon {
+    color: ${themeColor};
+  }
+  .ant-select-selection {
+    border: 1px solid #e6e6e6;
+    background: #f8f8f8;
+  }
+  .ant-select-selection--multiple {
+    padding-bottom: 6px;
   }
 `;
 

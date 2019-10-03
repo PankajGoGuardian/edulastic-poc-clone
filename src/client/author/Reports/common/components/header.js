@@ -6,6 +6,7 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import HeaderNavigation from "./Header/HeaderNavigation";
+import { IconFilter } from "@edulastic/icons";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -72,9 +73,12 @@ export const CustomizedHeaderWrapper = ({
           {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
         </HeaderTitle>
         {onRefineResultsCB ? (
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={_onRefineResultsCB}>
+          <StyledButton display={"flex"} type={"default"} shape="round" onClick={_onRefineResultsCB}>
+            <i className="anticon">
+              <IconFilter color={themeColor} width={20} height={20} />
+            </i>
             REFINE RESULTS
-            <Icon type={refineButtonActive ? "up" : "down"} />
+            <ArrowIcon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
         ) : null}
       </SecondaryHeader>
@@ -82,12 +86,18 @@ export const CustomizedHeaderWrapper = ({
   );
 };
 
+const ArrowIcon = styled(Icon)`
+  height: 14px;
+`;
+
 const StyledCol = styled(Col)`
   text-align: right;
 `;
 
 const StyledButton = styled(Button)`
   &.ant-btn {
+    display: ${({ display }) => (display ? display : "unset")};
+    align-items: ${({ display }) => (display === "flex" ? "center" : "unset")};
     margin-left: 10px;
     font-size: 14px;
     text-shadow: none;

@@ -4,6 +4,7 @@ import { Button, Dropdown, Menu, Icon } from "antd";
 import { NormalDropDown } from "./normalDropDown";
 import { themeColor } from "@edulastic/colors";
 import { ControlDropDown } from "./controlDropDown";
+import { IconFilter } from "@edulastic/icons";
 
 export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }) => {
   const [visible, setVisible] = useState(false);
@@ -40,13 +41,18 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }
   return (
     <div className={`${className || ""}`}>
       <Dropdown overlay={menu} visible={visible} onVisibleChange={handleVisibleChange} trigger={["click"]}>
-        <Button>
-          <StyledIcon type="filter" />
-        </Button>
+        <StyledButton>
+          <IconFilter color={themeColor} width={20} height={20} />
+        </StyledButton>
       </Dropdown>
     </div>
   );
 };
+
+const StyledButton = styled(Button)`
+  margin: 5px;
+`;
+
 const StyledMenu = styled(Menu)`
   min-width: 230px;
 `;

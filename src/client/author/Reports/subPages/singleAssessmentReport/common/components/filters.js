@@ -414,9 +414,7 @@ const SingleAssessmentReportFilters = ({
               data={staticDropDownData.assessmentType}
             />
           </Col>
-        </Row>
-        <Row type="flex" className="single-assessment-report-bottom-filter">
-          <Col className="single-assessment-report-test-autocomplete-container">
+          <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
             <div>
               <PrintablePrefix>Assessment Name</PrintablePrefix>
             </div>

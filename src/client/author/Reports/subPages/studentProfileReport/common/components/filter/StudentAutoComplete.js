@@ -4,6 +4,7 @@ import { map, debounce, isEmpty } from "lodash";
 import { AutoComplete, Input, Icon } from "antd";
 import { getSPRStudentDataRequestAction, getStudentsListSelector, getStudentsLoading } from "../../filterDataDucks";
 import { getOrgDataSelector } from "../../../../../../src/selectors/user";
+import styled from "styled-components";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -113,9 +114,11 @@ const StudentAutoComplete = ({
   options = options.length ? options : [selectedStudent];
 
   return (
-    <AutoComplete value={text} onSearch={onSearchTermChange} dataSource={options} onSelect={onSelect} onBlur={onBlur}>
-      <Input suffix={<Icon type={loading ? "loading" : "search"} />} />
-    </AutoComplete>
+    <AutoCompleteContainer>
+      <AutoComplete value={text} onSearch={onSearchTermChange} dataSource={options} onSelect={onSelect} onBlur={onBlur}>
+        <Input suffix={<Icon type={loading ? "loading" : "search"} />} />
+      </AutoComplete>
+    </AutoCompleteContainer>
   );
 };
 
@@ -131,3 +134,9 @@ const enchance = connect(
 );
 
 export default enchance(StudentAutoComplete);
+
+const AutoCompleteContainer = styled.div`
+  .ant-select-auto-complete {
+    padding: 5px;
+  }
+`;

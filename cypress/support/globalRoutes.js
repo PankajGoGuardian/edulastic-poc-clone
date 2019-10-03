@@ -18,11 +18,11 @@ export default function initGlobalRoutes() {
   cy.route("GET", "**//playlists//**").as("playlists");
 
   cy.route("**single-assessment**").as("singleAssessment");
-  cy.route("**assessmentSummary**").as("assessmentSummary");
-  cy.route("**peerPerformance**").as("peerPerformance");
+  cy.route("**assessment-summary**").as("assessmentSummary");
+  cy.route("**peer-performance**").as("peerPerformance");
   cy.route("**question-analysis**").as("questionAnalysis");
-  cy.route("**responseFrequency**").as("responseFrequency");
-  cy.route("**performanceByStandards**").as("performanceByStandards");
+  cy.route("**response-frequency**").as("responseFrequency");
+  cy.route("**performance-by-standards**").as("performanceByStandards");
   cy.route("**performance-by-students**").as("performanceByStudents");
 
   cy.route("**multiple-assessment**").as("multipleAssessment");
@@ -33,5 +33,5 @@ export default function initGlobalRoutes() {
   cy.route("POST", "**browseStandards").as("browseStandards");
   cy.route("**standard-mastery**").as("standardMastery");
   cy.route("**standards-summary**").as("standardsPerformanceSummary");
-  cy.route("**standards-gradeBook**").as("standardsGradebook");
+  cy.route("**standards-gradebook**").as("standardsGradebook");
 }

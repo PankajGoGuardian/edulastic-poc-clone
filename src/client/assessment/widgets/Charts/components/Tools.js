@@ -19,15 +19,7 @@ export const Tools = ({ controls, tool, setTool, getHandlerByControlName, fontSi
       >
         <ToolbarItem>
           <ToolbarItemIcon style={{ marginBottom: fontSize / 2 }}>
-            <IconClear
-              width={fontSize + 2}
-              height={fontSize}
-              style={{
-                color: "#4aac8b",
-                fill: "#4aac8b",
-                stroke: "#4aac8b"
-              }}
-            />
+            <IconClear width={fontSize + 2} height={fontSize} />
           </ToolbarItemIcon>
           <ToolbarItemLabel style={{ fontSize }} color="#4aac8b">
             {capitalizeFirstLetter(control)}

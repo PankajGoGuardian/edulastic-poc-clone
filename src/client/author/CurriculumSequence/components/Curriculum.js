@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import DropContainer from "../../../assessment/components/DropContainer";
 import CurriculumModuleRow from "./CurriculumModuleRow";
-import { theme } from "../theme";
+import { themes } from "../../../theme";
 
 /**
  * @typedef CurriculumProps
@@ -41,7 +41,11 @@ class Curriculum extends Component {
       <ModuleWrapper>
         {modules &&
           modules.map((moduleItem, index) => (
-            <DropContainer theme={theme} key={`drop-${index}-${moduleItem._id}`} drop={() => this.onDrop(index)}>
+            <DropContainer
+              theme={themes.default}
+              key={`drop-${index}-${moduleItem._id}`}
+              drop={() => this.onDrop(index)}
+            >
               <CurriculumModuleRow
                 mode={mode}
                 status={status}

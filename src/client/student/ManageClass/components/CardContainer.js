@@ -7,6 +7,7 @@ import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { changeClassAction } from "../../Login/ducks";
+import ColWithZoom from "../../../common/components/ColWithZoom";
 
 const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
@@ -19,7 +20,13 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   };
 
   return (
-    <Col xs={24} md={12} lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6} xxl={6}>
+    <ColWithZoom
+      xs={24}
+      md={12}
+      lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6}
+      xxl={6}
+      layout={{ xs: 24, sm: 12, md: 12, lg: 24, xl: 24 }}
+    >
       <ManageClassCardContent>
         <CardHeader type="flex" justify="space-between" align="middle">
           <CardTitle title="Class Name">{name}</CardTitle>
@@ -86,7 +93,7 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
           {active === 0 && <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>}
         </CardBody>
       </ManageClassCardContent>
-    </Col>
+    </ColWithZoom>
   );
 };
 
@@ -130,7 +137,7 @@ const CardTitle = styled.h3`
 
 const VisitClassButton = styled(Button)`
   width: 100%;
-  height: 36px;
+  height: ${props => (props.theme.zoomLevel == "xs" ? "36px" : "auto")};
   line-height: 36px;
   border-radius: 4px;
   background-color: ${props => props.theme.classCard.cardVisitClassBtnBgColor};
@@ -149,6 +156,11 @@ const VisitClassButton = styled(Button)`
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
     border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   }
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      padding: 10px 0px;
+    `}
 `;
 
 const CardBody = styled(Row)`
@@ -162,7 +174,7 @@ const InfoLabel = styled(Col)`
   font-weight: 700;
   text-align: center;
   color: ${props => props.theme.classCard.cardUserInfoLabelColor};
-  line-height: 25px;
+  line-height: ${props => (props.theme.zoomLevel == "xs" ? "25px" : "none")};
 `;
 
 const InfoContent = styled(InfoLabel)`
@@ -189,7 +201,7 @@ const InfoContent = styled(InfoLabel)`
         display: block;
         width: 100%;
         text-align: center;
-        font-size: 12px;
+        font-size: ${props => props.theme.classCard.cardUserInfoContentSize};
         font-weight: 600;
         margin-top: -3.7px;
       `;

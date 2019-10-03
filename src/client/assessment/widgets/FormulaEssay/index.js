@@ -21,6 +21,7 @@ import FormulaEssayPreview from "./components/FormulaEssayPreview";
 import FormulaEssayOptions from "./components/FormulaEssayOptions";
 import ComposeQuestion from "./ComposeQuestion";
 import TextFormattingOptions from "./TextFormattingOptions";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -44,7 +45,7 @@ const FormulaEssay = ({
     saveAnswer([{ text: "", type: item.uiStyle && item.uiStyle.defaultMode, index: uuidv4() }]);
   };
 
-  const Wrapper = testItem ? EmptyWrapper : Paper;
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
   const handleItemChange = (prop, data) => {
     setQuestionData(

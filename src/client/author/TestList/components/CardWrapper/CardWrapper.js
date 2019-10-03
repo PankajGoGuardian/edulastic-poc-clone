@@ -47,7 +47,6 @@ class CardWrapper extends Component {
 
     if (blockStyle === "tile") {
       return (
-
         <Col data-cy={item._id} key={item._id} xs={24} md={12} xl={8} xxl={6} style={{ marginBottom: 20 }}>
           <Item
             owner={owner}

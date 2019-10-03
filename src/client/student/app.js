@@ -6,7 +6,7 @@ import { Layout } from "antd";
 import { connect } from "react-redux";
 import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
 
-import { themes } from "./themes";
+import { getZoomedTheme } from "./zoomTheme";
 
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
@@ -20,38 +20,47 @@ import SkillReportContainer from "./SkillReport";
 import DeepLink from "./DeeplinkAssessment";
 import StartAssignment from "./StartAssignment";
 
-const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => (
-  <ThemeProvider theme={themes[selectedTheme] || themes.default}>
-    <Layout>
-      <MainContainer className={`zoom${zoomLevel}`} isCollapsed={isSidebarCollapsed}>
-        <Sidebar />
-        <Wrapper>
-          <Switch>
-            <Route path={`${match.url}/assignments`} component={Assignment} />
-            <Route path={`${match.url}/dashboard`} component={Assignment} />
-            <Route
-              path={`${
-                match.url
-              }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
-              component={DeepLink}
-            />
-            <Route
-              path={`${match.url}/seb/test/:testId/type/:testType/assignment/:assignmentId`}
-              component={DeepLink}
-            />
+import { themes as globalThemes } from "../theme";
+import { addThemeBackgroundColor } from "../common/utils/helpers";
 
-            <Route path={`${match.url}/reports`} component={Report} />
-            <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
-            <Route path={`${match.url}/manage`} component={ManageClass} />
-            <Route path={`${match.url}/profile`} component={Profile} />
-            <Route path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`} component={ReportList} />
-            <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
-          </Switch>
-        </Wrapper>
-      </MainContainer>
-    </Layout>
-  </ThemeProvider>
-);
+const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => {
+  let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
+  themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+  themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
+
+  return (
+    <ThemeProvider theme={themeToPass}>
+      <Layout>
+        <MainContainer isCollapsed={isSidebarCollapsed}>
+          <Sidebar />
+          <Wrapper>
+            <Switch>
+              <Route path={`${match.url}/assignments`} component={Assignment} />
+              <Route path={`${match.url}/dashboard`} component={Assignment} />
+              <Route
+                path={`${
+                  match.url
+                }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
+                component={DeepLink}
+              />
+              <Route
+                path={`${match.url}/seb/test/:testId/type/:testType/assignment/:assignmentId`}
+                component={DeepLink}
+              />
+
+              <Route path={`${match.url}/reports`} component={Report} />
+              <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
+              <Route path={`${match.url}/manage`} component={ManageClass} />
+              <Route path={`${match.url}/profile`} component={Profile} />
+              <Route path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`} component={ReportList} />
+              <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
+            </Switch>
+          </Wrapper>
+        </MainContainer>
+      </Layout>
+    </ThemeProvider>
+  );
+};
 
 export default connect(({ ui }) => ({
   isSidebarCollapsed: ui.isSidebarCollapsed,
@@ -65,7 +74,7 @@ StudentApp.propTypes = {
   selectedTheme: PropTypes.string.isRequired
 };
 
-const MainContainer = styled.div`
+const MainContainer = addThemeBackgroundColor(styled.div`
   padding-left: 100px;
   width: 100%;
 
@@ -113,7 +122,7 @@ const MainContainer = styled.div`
       background: #0188d2;
     }
   }
-`;
+`);
 
 const Wrapper = styled.div`
   position: relative;

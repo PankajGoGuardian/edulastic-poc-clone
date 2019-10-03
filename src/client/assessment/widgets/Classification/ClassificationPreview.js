@@ -27,6 +27,7 @@ import { getStyles } from "./utils";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { TableWrapper } from "./styled/TableWrapper";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ClassificationPreview = ({
   view,
@@ -338,7 +339,12 @@ const ClassificationPreview = ({
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
   const maxWidth = listPosition === "left" || listPosition === "right" ? "25%" : null;
   return (
-    <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper
+      data-cy="classificationPreview"
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
@@ -526,7 +532,7 @@ const ClassificationPreview = ({
           ))}
         </CorrectAnswersContainer>
       ) : null}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

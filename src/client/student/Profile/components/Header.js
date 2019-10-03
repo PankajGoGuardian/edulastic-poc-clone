@@ -31,8 +31,8 @@ const enhance = compose(
 export default enhance(ProfileHeader);
 
 const Title = styled.h1`
-  color: ${props => props.theme.headerTitleTextColor};
-  font-size: ${props => props.theme.headerTitleFontSize};
+  color: ${props => props.theme.header.headerTitleTextColor};
+  font-size: ${props => props.theme.header.eaderTitleFontSize};
   font-weight: bold;
   margin: 0;
   padding: 0;

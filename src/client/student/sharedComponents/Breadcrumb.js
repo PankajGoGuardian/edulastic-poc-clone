@@ -13,7 +13,7 @@ const BreadCrumb = props => {
         {Array.isArray(data) &&
           data.map((breadCrumb, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
-              {index === 0 && <Icon key={index} type="left" style={{ fontSize: 9 }} />}
+              {index === 0 && <Icon key={index} type="left" />}
               {index !== data.length - 1 ? <Link to={breadCrumb.to}>{breadCrumb.title}</Link> : breadCrumb.title}
             </Breadcrumb.Item>
           ))}
@@ -71,5 +71,6 @@ const Container = styled.div`
 
   .anticon-left {
     margin-right: 5px;
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
   }
 `;

@@ -23,6 +23,7 @@ import Answers from "./Answers";
 import { ContentArea } from "../../styled/ContentArea";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { changePreviewAction } from "../../../author/src/actions/view";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -45,7 +46,7 @@ const MatrixChoice = ({
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
-  const Wrapper = testItem ? EmptyWrapper : Paper;
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(

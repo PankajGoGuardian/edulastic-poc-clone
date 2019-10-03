@@ -17,6 +17,7 @@ import { ToolbarItem } from "./styled/ToolbarItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/helpers";
 import Character from "./components/Character";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EssayPlainTextPreview = ({
   col,
@@ -126,10 +127,10 @@ const EssayPlainTextPreview = ({
   const minHeight = get(item, "uiStyle.minHeight", "inherit");
   const maxHeight = get(item, "uiStyle.max_height", "inherit");
   const isV1Multipart = get(col, "isV1Multipart", false);
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   return (
-    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -166,6 +167,8 @@ const EssayPlainTextPreview = ({
           minHeight,
           maxHeight,
           fontSize,
+          color: theme.widgets.essayPlainText.textInputColor,
+          borderColor: theme.widgets.essayPlainText.textInputBorderColor,
           background:
             item.maxWord < wordCount
               ? theme.widgets.essayPlainText.textInputLimitedBgColor
@@ -191,7 +194,7 @@ const EssayPlainTextPreview = ({
           <Item style={wordCountStyle}>{displayWordCount}</Item>
         </Toolbar>
       )}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

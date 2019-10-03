@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 
 import { math } from "@edulastic/constants";
 
-import { themes } from "../../../../../../assessment/themes";
+import { themes } from "../../../../../../theme";
 import MathFormulaAnswerMethod from "../../../../../../assessment/widgets/MathFormula/components/MathFormulaAnswerMethod";
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import { QuestionFormWrapper, FormGroup, Points } from "../../common/QuestionForm";

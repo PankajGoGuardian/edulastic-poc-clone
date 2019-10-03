@@ -19,7 +19,7 @@ import {
   cardTitleColor,
   desktopWidth
 } from "@edulastic/colors";
-import { themes } from "../../../../student/themes";
+import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
 export const Anchor = styled.a`

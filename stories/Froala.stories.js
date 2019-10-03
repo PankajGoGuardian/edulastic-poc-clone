@@ -4,7 +4,7 @@ import { set } from "lodash";
 import styled, { ThemeProvider } from "styled-components";
 import FroalaEditorDynamic from "@edulastic/common/src/components/FroalaEditor.Dynamic";
 import FroalaEditor from "@edulastic/common/src/components/FroalaEditor";
-import { themes } from "../src/client/assessment/themes";
+import { themes } from "../src/client/theme";
 
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";

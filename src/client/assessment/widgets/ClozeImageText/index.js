@@ -24,6 +24,7 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 class ClozeImageText extends Component {
   static contextType = AnswerContext;
@@ -173,7 +174,7 @@ class ClozeImageText extends Component {
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
 
-    const Wrapper = testItem ? React.Fragment : Paper;
+    const Wrapper = testItem ? React.Fragment : StyledPaperWrapper;
     return (
       <React.Fragment>
         {view === "edit" && (

@@ -143,7 +143,7 @@ const AssignmentSelectClass = styled.div`
     align-items: center;
     display: flex !important;
     padding-left: 15px;
-    font-size: 12px;
+    font-size: ${props => props.theme.headerDropdownFontSize};
 
     @media (max-width: ${largeDesktopWidth}) {
       padding-left: 2px;

@@ -15,13 +15,10 @@ import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
-import { playersTheme } from "../assessmentPlayersTheme";
+import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
-
-const Theme = {
-  ...playersTheme,
-  ...assessmentPlayerTheme
-};
+import { getZoomedTheme } from "../../../student/zoomTheme";
+import { playersZoomTheme } from "../assessmentPlayersTheme";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -43,7 +40,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   static defaultProps = {
-    theme: Theme,
+    theme: themes,
     itemRows: []
   };
 
@@ -70,7 +67,18 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   render() {
-    const { theme, t, items, currentItem, view: previewTab, questions, answerChecksUsedForItem, settings } = this.props;
+    const {
+      theme,
+      t,
+      items,
+      currentItem,
+      view: previewTab,
+      questions,
+      answerChecksUsedForItem,
+      settings,
+      selectedTheme,
+      zoomLevel
+    } = this.props;
     const { showExitPopup } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -78,12 +86,21 @@ class AssessmentPlayerSimple extends React.Component {
     if (!item) {
       return <div />;
     }
+
+    let themeToPass = theme[selectedTheme] || theme.default;
+
+    themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
+    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    themeToPass = playersZoomTheme(themeToPass);
+
+    const newProps = { ...this.props, theme: themeToPass };
+
     return (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeToPass}>
         <Container>
-          <PlayerHeader {...this.props} dropdownOptions={dropdownOptions} onOpenExitPopup={this.openExitPopup} t={t} />
+          <PlayerHeader {...newProps} dropdownOptions={dropdownOptions} onOpenExitPopup={this.openExitPopup} t={t} />
           <PlayerMainContentArea
-            {...this.props}
+            {...newProps}
             previewTab={previewTab}
             dropdownOptions={dropdownOptions}
             onCheckAnswer={this.onCheckAnswer}
@@ -105,7 +122,9 @@ export default connect(
     preview: state.view.preview,
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
-    answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
+    answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+    zoomLevel: state.ui.zoomLevel,
+    selectedTheme: state.ui.selectedTheme
   }),
   {
     checkAnswer: checkAnswerEvaluation

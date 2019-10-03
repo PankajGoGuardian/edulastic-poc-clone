@@ -26,6 +26,7 @@ import Options from "./components/Options";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { CheckContainer } from "./styled/CheckContainer";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -132,7 +133,7 @@ class ClozeDragDrop extends Component {
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, responseIds: responseIDs } = item;
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);

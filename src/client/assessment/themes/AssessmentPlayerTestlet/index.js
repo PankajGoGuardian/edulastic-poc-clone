@@ -15,11 +15,9 @@ import { Container } from "../common";
 import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
-import { playersTheme } from "../assessmentPlayersTheme";
 import assessmentPlayerTheme from "./themeStyle";
 
 const Theme = {
-  ...playersTheme,
   ...assessmentPlayerTheme
 };
 

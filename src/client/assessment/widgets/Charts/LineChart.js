@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
@@ -120,7 +121,7 @@ const LineChart = ({
         paddingTop={paddingTop}
       />
 
-      <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
+      <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
 
@@ -171,3 +172,7 @@ LineChart.defaultProps = {
 };
 
 export default withGrid(LineChart);
+
+const StyledPolyline = styled.polyline`
+  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+`;

@@ -1,8 +1,8 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { Modal, Select, Button, Row, Col } from "antd";
 import { connect } from "react-redux";
-import { themeColorsMap } from "../themes";
+import { themeColorsMap } from "../../theme";
 
 import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
 
@@ -12,25 +12,34 @@ const SettingsModal = ({
   setSelectedTheme,
   setSettingsModalVisibility,
   zoomLevel,
-  setZoomLevel
+  setZoomLevel,
+  theme
 }) => {
   const onThemeChange = theme => setSelectedTheme(theme);
   const closeModal = () => setSettingsModalVisibility(false);
 
+  const dropdownStyle = { zoom: theme.confirmation.modalWidth };
+
   return (
-    <Modal
+    <StyledModal
+      id="student-settings-modal"
       visible={settingsModalVisible}
       onCancel={closeModal}
       footer={[
-        <Button key="submit" type="primary" onClick={closeModal}>
+        <StyledButton key="submit" type="primary" onClick={closeModal}>
           Done
-        </Button>
+        </StyledButton>
       ]}
     >
       <RowWithMargin>
         <Col md={12}>Color Contrast</Col>
         <Col md={12}>
-          <Select style={{ width: "80%" }} value={selectedTheme} onChange={setSelectedTheme}>
+          <Select
+            dropdownStyle={dropdownStyle}
+            style={{ width: "80%" }}
+            value={selectedTheme}
+            onChange={setSelectedTheme}
+          >
             <Select.Option value="default">Default</Select.Option>
             {Object.keys(themeColorsMap).map(key => {
               const item = themeColorsMap[key];
@@ -42,16 +51,16 @@ const SettingsModal = ({
       <RowWithMargin>
         <Col md={12}>Zoom</Col>
         <Col md={12}>
-          <Select style={{ width: "80%" }} value={zoomLevel} onChange={setZoomLevel}>
-            <Select.Option value="0">No default zoom applied</Select.Option>
-            <Select.Option value="1">Default level of zoom is set to 1.5X</Select.Option>
-            <Select.Option value="2">Default level of zoom is set to 1.75X</Select.Option>
-            <Select.Option value="3">Default level of zoom is set to 2.5X</Select.Option>
-            <Select.Option value="4">Default level of zoom is set to 3X</Select.Option>
+          <Select dropdownStyle={dropdownStyle} style={{ width: "80%" }} value={zoomLevel} onChange={setZoomLevel}>
+            <Select.Option value="xs">No default zoom applied</Select.Option>
+            <Select.Option value="sm">Default level of zoom is set to 1.5X</Select.Option>
+            <Select.Option value="md">Default level of zoom is set to 1.75X</Select.Option>
+            <Select.Option value="lg">Default level of zoom is set to 2.5X</Select.Option>
+            <Select.Option value="xl">Default level of zoom is set to 3X</Select.Option>
           </Select>
         </Col>
       </RowWithMargin>
-    </Modal>
+    </StyledModal>
   );
 };
 
@@ -68,8 +77,68 @@ const enhance = connect(
   }
 );
 
+const StyledModal = styled(Modal)`
+  zoom: ${props => props.theme.confirmation.modalWidth};
+
+  .ant-modal-content {
+    background-color: ${props => props.theme.sectionBackgroundColor};
+    color: ${props => props.theme.confirmation.descriptionTextColor};
+
+    .ant-modal-close-icon {
+      svg {
+        fill: ${props => props.theme.confirmation.descriptionTextColor};
+      }
+    }
+  }
+
+  .ant-select-selection {
+    background-color: ${props => props.theme.headerDropdownBgColor};
+    color: ${props => props.theme.headerDropdownTextColor};
+    border: ${props =>
+      props.theme.headerDropdownBorderColor ? `1px solid ${props.theme.headerDropdownBorderColor}` : "0px"};
+  }
+
+  .ant-select-dropdown-menu-item {
+    background-color: ${props => props.theme.headerDropdownItemBgColor};
+    color: ${props => props.theme.headerDropdownTextColor};
+
+    &.ant-select-dropdown-menu-item-selected {
+      background-color: ${props => props.theme.headerDropdownItemBgSelectedColor};
+      color: ${props => props.theme.headerDropdownItemTextSelectedColor};
+    }
+
+    &:hover {
+      background-color: ${props => props.theme.headerDropdownItemBgHoverColor} !important;
+      color: ${props => props.theme.headerDropdownItemTextHoverColor} !important;
+    }
+  }
+
+  .ant-select-selection__rendered {
+    height: 100%;
+    align-items: center;
+    display: flex !important;
+    padding-left: 15px;
+  }
+  .anticon-down {
+    svg {
+      fill: ${props => props.theme.headerDropdownTextColor};
+    }
+  }
+`;
+
 const RowWithMargin = styled(Row)`
   margin-bottom: 10px;
 `;
 
-export default enhance(SettingsModal);
+const StyledButton = styled(Button)`
+  background-color: ${props => props.theme.confirmation.submitButtonBgColor};
+  border-color: ${props => props.theme.confirmation.submitButtonBgColor};
+  color: ${props => props.theme.confirmation.submitButtonTextColor};
+  &:hover {
+    background-color: ${props => props.theme.confirmation.submitButtonBgColor};
+    border-color: ${props => props.theme.confirmation.submitButtonBgColor};
+    color: ${props => props.theme.confirmation.submitButtonTextColor};
+  }
+`;
+
+export default enhance(withTheme(SettingsModal));

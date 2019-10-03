@@ -90,6 +90,7 @@ Display.defaultProps = {
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   overflow: hidden;
+  line-height: ${props => (props.theme.zoomLevel == "xs" ? "24px" : "auto")};
 `;
 
 export default Display;

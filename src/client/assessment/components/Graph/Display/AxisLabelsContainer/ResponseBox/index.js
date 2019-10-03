@@ -69,7 +69,7 @@ class ResponseBox extends Component {
             bounds=".jsxbox-with-response-box"
             className="mark"
           >
-            <MarkContainer dangerouslySetInnerHTML={{ __html: value.text }} />
+            <MarkContainer fontSize={12} dangerouslySetInnerHTML={{ __html: value.text }} />
           </Rnd>
         ))}
       </Container>

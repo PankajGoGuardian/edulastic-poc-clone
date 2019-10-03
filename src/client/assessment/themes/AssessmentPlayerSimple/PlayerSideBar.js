@@ -38,15 +38,19 @@ SidebarQuestionList.propTypes = {
 export default withNamespaces("student")(SidebarQuestionList);
 
 const ItemContainer = styled.div`
-  border-left: solid 3px ${props => (props.active ? props.theme.sidebarContentBorderColor : "transparent")};
+  border-left: solid 3px
+    ${props => (props.active ? props.theme.widgets.assessmentPlayers.sidebarContentBorderColor : "transparent")};
   padding: 18px 10px;
   margin: 5px 0 5px 40px;
   box-sizing: border-box;
 `;
 
 const Content = styled.div`
-  color: ${props => (props.active ? props.theme.sidebarActiveTextColor : props.theme.sidebarTextColor)};
-  font-size: ${props => props.theme.sidebarFontSize};
+  color: ${props =>
+    props.active
+      ? props.theme.widgets.assessmentPlayers.sidebarActiveTextColor
+      : props.theme.widgets.assessmentPlayers.sidebarTextColor};
+  font-size: ${props => props.theme.widgets.assessmentPlayers.sidebarFontSize};
   line-height: 1;
   letter-spacing: 0.2px;
   text-transform: capitalize;

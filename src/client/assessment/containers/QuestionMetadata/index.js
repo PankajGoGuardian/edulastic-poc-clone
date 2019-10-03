@@ -7,7 +7,7 @@ import connect from "react-redux/es/connect/connect";
 import { ThemeProvider } from "styled-components";
 import _ from "lodash";
 
-import { themes } from "../../themes";
+import { themes } from "../../../theme";
 
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import {

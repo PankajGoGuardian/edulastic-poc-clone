@@ -2,6 +2,7 @@ import { signUpState } from "@edulastic/constants";
 import { isUndefined, last, get, isEmpty } from "lodash";
 import { Partners } from "./static/partnerData";
 import { message } from "antd";
+import styled from "styled-components";
 
 export const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
@@ -222,3 +223,7 @@ export const validateQuestionsForDocBased = questions => {
   }
   return true;
 };
+
+export const addThemeBackgroundColor = elem => styled(elem)`
+  background-color: ${props => props.theme.sectionBackgroundColor};
+`;

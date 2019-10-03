@@ -10,6 +10,8 @@ import {
   selectColor
 } from "@edulastic/colors";
 
+import { Paper } from "@edulastic/common";
+
 export const WidgetWrapper = styled.div`
   margin-top: 30px;
 `;
@@ -197,4 +199,8 @@ export const WidgetFRInput = styled.div`
       padding: 9px 21px;
     }
   }
+`;
+
+export const StyledPaperWrapper = styled(Paper)`
+  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
 `;

@@ -13,6 +13,7 @@ import {
   green
 } from "@edulastic/colors";
 import { TextField, Paper } from "@edulastic/common";
+import { StyledPaperWrapper } from "../../../styled/Widget";
 
 export const InstructorStimulus = styled.p`
   border-radius: 3px;
@@ -332,9 +333,9 @@ export const Select = styled.select`
   height: 100%;
   box-sizing: border-box;
   border-radius: 5px;
-  background-color: ${props => props.theme.selectBgColor};
+  background-color: ${props => props.theme.widgets.assessmentPlayers.selectBgColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${props => props.theme.selectTextColor};
+  color: ${props => props.theme.widgets.assessmentPlayers.selectTextColor};
   font-size: 14px;
   border: none;
   outline: none;
@@ -370,7 +371,7 @@ export const Col = styled.div`
   display: block;
 `;
 
-export const PaperWrapper = styled(Paper)`
+export const PaperWrapper = styled(StyledPaperWrapper)`
   padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
 
   @media (max-width: ${mobileWidthMax}) {
@@ -392,6 +393,7 @@ export const GraphToolbar = styled.div`
   justify-content: space-between;
   min-height: 90px;
   padding: 0 0 10px 0;
+  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
 
   ul {
@@ -456,25 +458,110 @@ export const ToolBtn = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${white};
-  color: ${green};
+  width: 93px;
+  height: 84px;
+  background-color: transparent;
+  color: ${props => props.theme.widgets.chart.labelStrokeColor};
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
-  transition: all 0.1s ease-in;
-  user-select: none;
-  box-shadow: 2px 2px 8px #00000026;
-  border-radius: 4px;
+  transition: background-color 0.1s ease-in;
+  xuser-select: none;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
 
   svg {
-    color: ${green};
-    stroke: ${green};
-    fill: ${green};
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  &:hover {
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
+  }
+
+  &:active {
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
   &:hover,
   &:active,
   &.active {
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+
+    .dd-header-title svg {
+      color: ${greenDark};
+      stroke: ${greenDark};
+      fill: ${greenDark};
+    }
+
+    .tool-btn-icon svg {
+      color: ${props => props.theme.widgets.chart.labelStrokeColor};
+      stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+      fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+    }
+  }
+`;
+
+export const DropdownMenu = styled.ul`
+  position: absolute;
+  top: 108%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 150px;
+  margin: 1px 0 0;
+  list-style: none;
+  user-select: none;
+  white-space: nowrap;
+  border: 0;
+  padding: 20px 0;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  z-index: 10;
+
+  &:before {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    content: "";
+    transform: translateX(-50%);
+    z-index: 11;
+    width: 12px;
+    height: 10px;
+    border-style: solid;
+    border-width: 0 12px 10px 12px;
+    border-color: transparent transparent #fff transparent;
+  }
+`;
+
+export const GroupToolBtn = styled.li`
+  padding: 0.6em 1.6em;
+  background-color: ${white};
+  width: 100%;
+  line-height: 1.5em;
+  transition: background-color 0.1s ease-in;
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  cursor: pointer;
+  color: ${secondaryTextColor};
+  box-shadow: none;
+
+  svg {
+    color: ${secondaryTextColor};
+    stroke: ${secondaryTextColor};
+    fill: ${secondaryTextColor};
+  }
+
+  &:hover {
     background-color: ${green};
     color: ${white};
 

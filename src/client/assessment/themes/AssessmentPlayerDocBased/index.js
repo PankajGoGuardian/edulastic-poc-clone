@@ -11,16 +11,13 @@ import { withNamespaces } from "@edulastic/localization";
 import { Container } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import PlayerHeader from "../AssessmentPlayerSimple/PlayerHeader";
-import { playersTheme } from "../assessmentPlayersTheme";
+import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
-
-const Theme = {
-  ...playersTheme,
-  ...assessmentPlayerTheme
-};
+import { getZoomedTheme } from "../../../student/zoomTheme";
+import { playersZoomTheme } from "../assessmentPlayersTheme";
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -41,7 +38,7 @@ class AssessmentPlayerDocBased extends React.Component {
   static defaultProps = {
     docUrl: "",
     annotations: [],
-    theme: Theme
+    theme: themes
   };
 
   state = {
@@ -98,15 +95,23 @@ class AssessmentPlayerDocBased extends React.Component {
       loading,
       pageStructure = [],
       freeFormNotes,
-      gotoSummary
+      gotoSummary,
+      zoomLevel,
+      selectedTheme
     } = this.props;
 
     const dropdownOptions = items[0].data.questions.map((item, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
     const questions = this.assessmentQuestions();
 
+    let themeToPass = theme[selectedTheme] || theme.default;
+
+    themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
+    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    themeToPass = playersZoomTheme(themeToPass);
+
     return (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeToPass}>
         <Container style={{ paddingTop: "80px" }}>
           <PlayerHeader
             {...this.props}
@@ -144,7 +149,9 @@ const enhance = compose(
   withNamespaces("common"),
   connect(
     state => ({
-      loading: testLoadingSelector(state)
+      loading: testLoadingSelector(state),
+      zoomLevel: state.ui.zoomLevel,
+      selectedTheme: state.ui.selectedTheme
     }),
     {
       changeView: changeViewAction

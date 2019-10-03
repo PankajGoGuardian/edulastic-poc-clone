@@ -9,7 +9,9 @@ const ControlBtn = styled(Button)`
   width: 40px;
   border-radius: 4px;
   background-color: ${props =>
-    props.skin ? props.theme.default.headerButtonActiveBgColor : props.theme.controlBtnSecondaryColor};
+    props.skin
+      ? props.theme.default.headerButtonActiveBgColor
+      : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border: none;
   color: ${props => props.theme.default.headerButtonIconActiveColor};
@@ -41,7 +43,9 @@ const ControlBtn = styled(Button)`
   &:active {
     color: ${props => props.theme.default.headerButtonIconActiveColor};
     background-color: ${props =>
-      props.skin ? props.theme.default.headerButtonActiveBgColor : props.theme.controlBtnSecondaryColor};
+      props.skin
+        ? props.theme.default.headerButtonActiveBgColor
+        : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
     border: none;
   }
 
@@ -79,7 +83,7 @@ const ControlBtn = styled(Button)`
     svg {
       width: 15px;
       height: 15px;
-      fill: ${white};
+      fill: ${props => props.theme.default.headerButtonIconColor};
     }
   }
 
@@ -96,7 +100,9 @@ const ControlBtn = styled(Button)`
     justify-content: center;
     background-color: ${props => {
       if (props.setting) {
-        return props.skin ? props.theme.controlBtnSecondaryColor : props.theme.controlBtnPrimaryColor;
+        return props.skin
+          ? props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor
+          : props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor;
       }
     }};
 

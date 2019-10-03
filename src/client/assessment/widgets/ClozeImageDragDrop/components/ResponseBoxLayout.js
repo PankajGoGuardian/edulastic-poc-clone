@@ -7,6 +7,7 @@ import { compose } from "redux";
 import { MathSpan } from "@edulastic/common";
 
 import DragItem from "./DragItem";
+import { StyledResponseDiv, StyledResponseOption } from "../../ClozeDragDrop/styled/ResponseBox";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -38,38 +39,40 @@ const ResponseBoxLayout = ({
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   return connectDropTarget(
-    <div
-      className="responses_box"
-      data-cy="responses-box"
-      style={{
-        padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
-        height: horizontallyAligned && "100%",
-        border: "2px dashed transparent",
-        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
-      }}
-    >
-      {responses.map((option = "", index) => (
-        <div
-          key={index}
-          className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
-          style={{
-            fontSize: smallSize ? 10 : fontSize,
-            width: horizontallyAligned && "100%"
-          }}
-        >
-          {!dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
-              <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-            </DragItem>
-          )}
-          {dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
-              <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
-              <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-            </DragItem>
-          )}
-        </div>
-      ))}
+    <div>
+      <StyledResponseDiv
+        className="responses_box"
+        data-cy="responses-box"
+        style={{
+          padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
+          height: horizontallyAligned && "100%",
+          border: "2px dashed transparent",
+          ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
+        }}
+      >
+        {responses.map((option = "", index) => (
+          <StyledResponseOption
+            key={index}
+            className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+            style={{
+              fontSize: smallSize ? 10 : fontSize,
+              width: horizontallyAligned && "100%"
+            }}
+          >
+            {!dragHandler && (
+              <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
+                <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+              </DragItem>
+            )}
+            {dragHandler && (
+              <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
+                <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+              </DragItem>
+            )}
+          </StyledResponseOption>
+        ))}
+      </StyledResponseDiv>
     </div>
   );
 };

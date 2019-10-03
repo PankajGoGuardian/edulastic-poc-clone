@@ -12,7 +12,7 @@ import {
 } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
-import { themes } from "../../../../student/themes";
+import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
 

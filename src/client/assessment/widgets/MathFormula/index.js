@@ -22,6 +22,7 @@ import MathFormulaOptions from "./components/MathFormulaOptions";
 import MathFormulaPreview from "./MathFormulaPreview";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -44,7 +45,7 @@ const MathFormula = ({
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const [keypadOffset, setOffset] = useState(0);
-  const Wrapper = testItem ? EmptyWrapper : Paper;
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(

@@ -1,5 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
@@ -26,6 +27,7 @@ import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper } from "./styled/QuestionNumber";
 import { Tools } from "./components/Tools";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ChartPreview = ({
   item,
@@ -176,7 +178,12 @@ const ChartPreview = ({
   );
 
   return (
-    <Paper className="chart-wrapper" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper
+      className="chart-wrapper"
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
       {view === PREVIEW && (
         <Fragment>
           <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -186,20 +193,22 @@ const ChartPreview = ({
           </QuestionTitleWrapper>
         </Fragment>
       )}
-      {!disableResponse && renderTools()}
-      <CurrentChart
-        name={name}
-        data={answerIsActual() ? userAnswer : data.map(({ x, y }) => ({ x, y }))}
-        gridParams={calculatedParams}
-        deleteMode={tool === 3}
-        view={view}
-        disableResponse={disableResponse}
-        previewTab={previewTab}
-        saveAnswer={saveAnswerHandler}
-        correct={correct}
-        item={item}
-        setQuestionData={setQuestionData}
-      />
+      <StyledChartContainer>
+        {!disableResponse && renderTools()}
+        <CurrentChart
+          name={name}
+          data={answerIsActual() ? userAnswer : data.map(({ x, y }) => ({ x, y }))}
+          gridParams={calculatedParams}
+          deleteMode={tool === 3}
+          view={view}
+          disableResponse={disableResponse}
+          previewTab={previewTab}
+          saveAnswer={saveAnswerHandler}
+          correct={correct}
+          item={item}
+          setQuestionData={setQuestionData}
+        />
+      </StyledChartContainer>
       {view === PREVIEW && previewTab === SHOW && (
         <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
           <CurrentChart
@@ -238,7 +247,7 @@ const ChartPreview = ({
             />
           </CorrectAnswersContainer>
         ))}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 
@@ -291,3 +300,7 @@ const enhance = compose(
 );
 
 export default enhance(ChartPreview);
+
+const StyledChartContainer = styled.div`
+  zoom: ${props => props.theme.widgets.chart.chartZoom};
+`;

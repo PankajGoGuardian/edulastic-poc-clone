@@ -9,7 +9,7 @@ import { Row, Col, Button } from "antd";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import { test as testTypes } from "@edulastic/constants";
-import { themes } from "../../themes";
+import { themes } from "../../../theme";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";

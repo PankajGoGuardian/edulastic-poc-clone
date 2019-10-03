@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
 import {
   IconHeader,
@@ -70,6 +70,14 @@ const menuItems = [
     path: ""
   }
 ];
+
+const responsiveSidebarWidth = {
+  xs: 245,
+  sm: 300,
+  md: 375,
+  lg: 425,
+  xl: 500
+};
 
 class SideMenu extends Component {
   constructor(props) {
@@ -160,7 +168,8 @@ class SideMenu extends Component {
       lastName,
       isSidebarCollapsed,
       t,
-      profileThumbnail
+      profileThumbnail,
+      theme
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
@@ -168,7 +177,7 @@ class SideMenu extends Component {
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap" isSidebarCollapsed={isSidebarCollapsed}>
-        <Menu onClick={this.onClickFooterDropDownMenu}>
+        <Menu isSidebarCollapsed={isSidebarCollapsed} onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
               <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
@@ -197,7 +206,7 @@ class SideMenu extends Component {
             collapsible
             breakpoint="md"
             onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-            width="245"
+            width={responsiveSidebarWidth[theme.zoomLevel]}
             collapsedWidth={broken ? "0" : "100"}
             className="sideBarwrapper"
             data-cy="side-wrapper"
@@ -206,7 +215,7 @@ class SideMenu extends Component {
               {isMobile ? (
                 <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
               ) : (
-                <LogoWrapper className="logoWrapper">
+                <LogoWrapper isSidebarCollapsed={isSidebarCollapsed} className="logoWrapper">
                   {broken ? (
                     <Col span={3}>
                       <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
@@ -220,7 +229,12 @@ class SideMenu extends Component {
               <LogoDash />
               <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
                 {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
-                <Menu selectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
+                <Menu
+                  isSidebarCollapsed={isSidebarCollapsed}
+                  selectedKeys={[menuIndex.toString()]}
+                  mode="inline"
+                  onClick={this.handleMenu}
+                >
                   {menuItems.map((menu, index) => {
                     const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                     return (
@@ -323,7 +337,7 @@ const enhance = compose(
   )
 );
 
-export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
+export default enhance(withTheme(ReactOutsideEvent(SideMenu, ["mousedown"])));
 
 const StyledTooltip = styled(Tooltip)`
   @media (max-width: ${tabletWidth}) {
@@ -364,7 +378,7 @@ const SideBar = styled(Layout.Sider)`
   max-width: 245px;
   min-width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-  background-color: #fbfafc;
+  background-color: ${props => props.theme.sideMenu.sidebarBgColor};
   z-index: 22;
   padding-bottom: 0;
 
@@ -471,6 +485,7 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
+  zoom: ${props => (props.isSidebarCollapsed ? 1 : props.theme.sideMenu.zoom)};
   padding: 39px 39px 31px;
   text-align: center;
   display: flex;
@@ -513,9 +528,11 @@ const MenuWrapper = styled.div`
 
 const Menu = styled(AntMenu)`
   background: transparent;
+  zoom: ${props => (props.isSidebarCollapsed ? 1 : props.theme.sideMenu.zoom)};
+  
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
-      color: ${white};
+      color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
       background-color: transparent;
 
       svg {
@@ -537,9 +554,6 @@ const Menu = styled(AntMenu)`
         }
       }
       
-      svg {
-        fill: ${white};
-      }
     }
   }
 
@@ -673,6 +687,7 @@ const MenuFooter = styled.div`
 `;
 
 const QuestionButton = styled.div`
+  zoom: ${props => props.theme.sideMenu.zoom};
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
@@ -697,6 +712,9 @@ const QuestionButton = styled.div`
     svg {
       fill: ${props => props.theme.sideMenu.helpIconHoverColor};
     }
+  }
+  &.active {
+    zoom: 1;
   }
   @media (max-width: ${tabletWidth}) {
     width: 60px;

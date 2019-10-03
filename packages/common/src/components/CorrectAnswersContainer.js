@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { dashBorderColor } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth }) => (
-  <Container maxWidth={maxWidth} imageStyle={imageStyle}>
+const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth, className }) => (
+  <Container className={className} maxWidth={maxWidth} imageStyle={imageStyle}>
     <Subtitle style={{ marginBottom: 30 }}>{title}</Subtitle>
     {children}
   </Container>

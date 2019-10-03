@@ -1,6 +1,27 @@
+import { groupBy, keyBy, values, flatten } from "lodash";
 import { getHSLFromRange1 } from "../../../../common/util";
-import { groupBy, keyBy, values, flatten, orderBy } from "lodash";
 import { getFormattedTimeInMins } from "./helpers";
+
+const sortByAvgPerformanceAndLabel = arr => {
+  arr = arr.sort((a, b) => a.avgPerformance - b.avgPerformance);
+
+  const groupedArr = groupBy(arr, "avgPerformance");
+  const groupedArrKeys = Object.keys(groupedArr);
+  for (const item of groupedArrKeys) {
+    const _item = groupedArr[item];
+    _item.sort((a, b) => {
+      let _a = a.qLabel || "";
+      let _b = b.qLabel || "";
+      _a = Number(_a.substring(1));
+      _b = Number(_b.substring(1));
+      return _a - _b;
+    });
+  }
+
+  let _arr = values(groupedArr);
+  _arr = flatten(_arr);
+  return _arr;
+};
 
 export const getChartData = (rawData = []) => {
   const groupedData = groupBy(rawData, "questionId");
@@ -39,26 +60,7 @@ export const getChartData = (rawData = []) => {
     };
   });
 
-  arr = arr.sort((a, b) => {
-    return a.avgPerformance - b.avgPerformance;
-  });
-
-  const groupedArr = groupBy(arr, "avgPerformance");
-  const groupedArrKeys = Object.keys(groupedArr);
-  for (let item of groupedArrKeys) {
-    let _item = groupedArr[item];
-    _item.sort((a, b) => {
-      let _a = a.qLabel || "";
-      let _b = b.qLabel || "";
-      _a = Number(_a.substring(1));
-      _b = Number(_b.substring(1));
-      return _a - _b;
-    });
-  }
-
-  let _arr = values(groupedArr);
-  _arr = flatten(_arr);
-  return orderBy(_arr, "questionId");
+  return sortByAvgPerformanceAndLabel(arr);
 };
 
 export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
@@ -209,5 +211,5 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     };
   });
 
-  return orderBy(arr, "questionId");
+  return sortByAvgPerformanceAndLabel(arr);
 };

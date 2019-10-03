@@ -36,7 +36,7 @@ import DragDropValues from "./DragDropValues";
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
-const bgColor = "#ccc";
+const bgColor = "#69727e";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {

@@ -1,6 +1,8 @@
 import FileHelper from "../framework/util/fileHelper";
+import StudentTestPage from "../framework/student/studentTestPage";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
+const test = new StudentTestPage();
 const assignmentQue = {
   0: "Math, Text & Dropdown",
   1: "Math, Text & Dropdown",
@@ -35,8 +37,7 @@ const assignmentQue = {
 describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`Assessment Player`, () => {
     const pageURL =
-      "/student/assessment/5d8dfd88d4420e0e09dd321e/class/5d53b53af7efc82f60100347/uta/5d8e0190576a238f0ad0e1ea/qid";
-
+      "student/assessment/5d92f2bdf5d8736a5d8d397d/class/5d53b53af7efc82f60100347/uta/5d92f307426ce1c0f41c3291/qid";
     before("set token", () => {
       cy.fixture("users").then(users => {
         const user = users["visual-regression"].student;
@@ -46,34 +47,31 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
 
     SCREEN_SIZES.forEach(size => {
       Object.keys(assignmentQue).forEach(q => {
-        it(`when resolution is '${size}' and queType - ${assignmentQue[q]}`, () => {
+        it(`> que type - ${assignmentQue[q]} when resolution is '${size}'`, () => {
           cy.setResolution(size); // set the screen resolution
           cy.visit(`/${pageURL}/${q}`); // go to the required page usign url
           cy.wait("@testactivity"); // wait for xhr to finish
           cy.wait("@testdetail"); // wait for xhr to finish
           cy.wait(2000); // allow que to render
           cy.matchImageSnapshot(); // take screenshot and comapare
+          cy.isPageScrollPresent().then(({ hasScroll }) => {
+            if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
+          });
         });
-      });
-    });
-  });
-
-  context(`Report`, () => {
-    const pageURL = "/home/reports";
-
-    before("set token", () => {
-      cy.fixture("users").then(users => {
-        const user = users["visual-regression"].student;
-        cy.setToken(user.username, user.password);
       });
     });
 
     SCREEN_SIZES.forEach(size => {
-      it(`when resolution is '${size}'`, () => {
+      it(`> review page when resolution is '${size}'`, () => {
         cy.setResolution(size);
-        cy.visit(`/${pageURL}`);
+        cy.visit(`/${pageURL}/27`);
         cy.wait("@testactivity");
+        cy.wait("@testdetail");
+        test.clickOnNext();
         cy.matchImageSnapshot();
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
+        });
       });
     });
   });

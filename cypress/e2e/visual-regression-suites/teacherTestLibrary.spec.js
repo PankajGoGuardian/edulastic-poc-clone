@@ -20,7 +20,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@searchTest");
         search.clearAll();
-        cy.wait("@searchTest");
+        // cy.wait("@searchTest");
         search.getAuthoredByMe();
         testLibraryPage.clickOnListView();
         cy.contains("published").should("be.visible");

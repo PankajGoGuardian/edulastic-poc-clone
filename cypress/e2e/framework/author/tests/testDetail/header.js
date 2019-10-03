@@ -70,5 +70,5 @@ export default class TestHeader {
       .get(".anticon-close")
       .last()
       .find("svg")
-      .click();
+      .click({ force: true });
 }

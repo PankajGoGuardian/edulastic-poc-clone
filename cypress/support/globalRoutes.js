@@ -12,6 +12,10 @@ export default function initGlobalRoutes() {
   cy.route("POST", "**//search//items").as("searchItem");
   cy.route("POST", "**//school//search").as("schoolSearch");
   cy.route("POST", "**//search//tests").as("searchTest");
+  cy.route("POST", "**/playlists/search").as("searchPL");
+  cy.route("**/skill-report/**").as("skillReport");
+  cy.route("**/enrollment/student").as("enrollment");
+  cy.route("GET", "**//playlists//**").as("playlists");
 
   cy.route("**single-assessment**").as("singleAssessment");
   cy.route("**assessmentSummary**").as("assessmentSummary");

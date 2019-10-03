@@ -192,7 +192,7 @@ const AssessmentContainer = ({
     );
   }
 
-  if (testType === testTypes.type.TESTLET || test.testType) {
+  if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
     return (
       <AssessmentPlayerTestlet
         {...props}

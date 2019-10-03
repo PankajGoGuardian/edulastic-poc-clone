@@ -237,134 +237,6 @@ class EditableCell extends React.Component {
 export class PerformanceBandTable extends React.Component {
   constructor(props) {
     super(props);
-    this.columns = [
-      {
-        title: "Band Name",
-        dataIndex: "name",
-        width: "20%",
-        editable: !this.props.readOnly,
-        render: (text, record) => {
-          return (
-            <React.Fragment>
-              <ColorPicker
-                disabled={this.props.readOnly}
-                value={record.color}
-                onChange={c => this.changeColor(c, record.key)}
-              />{" "}
-              <span title={record.name}>
-                <Ellipsify limit={20}>{record.name}</Ellipsify>
-              </span>
-              &nbsp;
-            </React.Fragment>
-          );
-        }
-      },
-      {
-        title: "Above or At Standard",
-        dataIndex: "aboveOrAtStandard",
-        width: "20%",
-        render: (text, record) => {
-          return (
-            <StyledDivCenter>
-              <Checkbox
-                defaultChecked={record.aboveOrAtStandard}
-                checked={record.aboveOrAtStandard}
-                disabled={this.props.readOnly}
-                onChange={e => this.changeAbove(e, record.key)}
-              />
-            </StyledDivCenter>
-          );
-        }
-      },
-      {
-        title: "From",
-        dataIndex: "from",
-        width: "25%",
-        render: (text, record) => {
-          return (
-            <StyledColFromTo>
-              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
-                {this.props.readOnly ? (
-                  <PercentText>{record.from}%</PercentText>
-                ) : (
-                  <StyledInputNumber
-                    value={record.from}
-                    onChange={v => {
-                      const delta = v - record.from;
-                      this.onClickFromTo(v, record.key, "from", delta);
-                    }}
-                  />
-                )}
-                <Col style={{ flex: "1 1 auto" }}>
-                  <StyledSlider
-                    disabled={this.props.readOnly}
-                    onChange={v => {
-                      const delta = v - record.from;
-                      this.onClickFromTo(v, record.key, "from", delta);
-                    }}
-                    value={parseInt(record.from)}
-                    max={100}
-                    step={1}
-                    min={0}
-                  />
-                </Col>
-              </Row>
-            </StyledColFromTo>
-          );
-        }
-      },
-      {
-        title: "To",
-        dataIndex: "to",
-        width: "25%",
-        editable: !this.props.readOnly,
-        render: (text, record) => {
-          return (
-            <StyledColFromTo>
-              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
-                {this.props.readOnly ? (
-                  <PercentText>{record.to}%</PercentText>
-                ) : (
-                  <StyledInputNumber
-                    value={record.to}
-                    onChange={v => {
-                      const delta = v - record.to;
-                      this.onClickFromTo(v, record.key, "to", delta);
-                    }}
-                  />
-                )}
-                <Col style={{ flex: "1 1 auto" }}>
-                  <StyledSlider
-                    disabled={this.props.readOnly}
-                    onChange={v => {
-                      const delta = v - record.to;
-                      this.onClickFromTo(v, record.key, "to", delta);
-                    }}
-                    value={parseInt(record.to)}
-                    max={100}
-                    step={1}
-                    min={0}
-                  />
-                </Col>
-              </Row>
-            </StyledColFromTo>
-          );
-        }
-      },
-      {
-        title: this.props.readOnly ? "" : <StyledAddBandButton onClick={this.handleAdd}>ADD BAND</StyledAddBandButton>,
-        dataIndex: "operation",
-        width: "15%",
-        render: (text, record) =>
-          this.state.dataSource.length >= 3 && !this.props.readOnly ? (
-            <StyledDivCenter>
-              <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
-                <Icon type="delete" theme="filled" twoToneColor={themeColor} />
-              </a>
-            </StyledDivCenter>
-          ) : null
-      }
-    ];
 
     this.state = {
       editingKey: -1,
@@ -537,6 +409,145 @@ export class PerformanceBandTable extends React.Component {
 
   render() {
     const { dataSource, editingKey, isChangeState, performanceBandId } = this.state;
+
+    this.columns = [
+      {
+        title: "Band Name",
+        dataIndex: "name",
+        width: "20%",
+        editable: !this.props.readOnly,
+        render: (text, record) => {
+          return (
+            <React.Fragment>
+              <ColorPicker
+                disabled={this.props.readOnly}
+                value={record.color}
+                onChange={c => this.changeColor(c, record.key)}
+              />{" "}
+              <span title={record.name}>
+                <Ellipsify limit={20}>{record.name}</Ellipsify>
+              </span>
+              &nbsp;
+            </React.Fragment>
+          );
+        }
+      },
+      {
+        title: "Above or At Standard",
+        dataIndex: "aboveOrAtStandard",
+        width: "20%",
+        render: (text, record) => {
+          return (
+            <StyledDivCenter>
+              <Checkbox
+                defaultChecked={record.aboveOrAtStandard}
+                checked={record.aboveOrAtStandard}
+                disabled={this.props.readOnly}
+                onChange={e => this.changeAbove(e, record.key)}
+              />
+            </StyledDivCenter>
+          );
+        }
+      },
+      {
+        title: "From",
+        dataIndex: "from",
+        width: "25%",
+        render: (text, record) => {
+          return (
+            <StyledColFromTo>
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                {this.props.readOnly ? (
+                  <PercentText>{record.from}%</PercentText>
+                ) : (
+                  <StyledInputNumber
+                    value={record.from}
+                    onChange={v => {
+                      const delta = v - record.from;
+                      this.onClickFromTo(v, record.key, "from", delta);
+                    }}
+                  />
+                )}
+                <Col style={{ flex: "1 1 auto" }}>
+                  <StyledSlider
+                    disabled={this.props.readOnly}
+                    onChange={v => {
+                      const delta = v - record.from;
+                      this.onClickFromTo(v, record.key, "from", delta);
+                    }}
+                    value={parseInt(record.from)}
+                    max={100}
+                    step={1}
+                    min={0}
+                  />
+                </Col>
+              </Row>
+            </StyledColFromTo>
+          );
+        }
+      },
+      {
+        title: "To",
+        dataIndex: "to",
+        width: "25%",
+        editable: !this.props.readOnly,
+        render: (text, record) => {
+          return (
+            <StyledColFromTo>
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                {this.props.readOnly ? (
+                  <PercentText>{record.to}%</PercentText>
+                ) : (
+                  <StyledInputNumber
+                    value={record.to}
+                    onChange={v => {
+                      const delta = v - record.to;
+                      this.onClickFromTo(v, record.key, "to", delta);
+                    }}
+                  />
+                )}
+                <Col style={{ flex: "1 1 auto" }}>
+                  <StyledSlider
+                    disabled={this.props.readOnly}
+                    onChange={v => {
+                      const delta = v - record.to;
+                      this.onClickFromTo(v, record.key, "to", delta);
+                    }}
+                    value={parseInt(record.to)}
+                    max={100}
+                    step={1}
+                    min={0}
+                  />
+                </Col>
+              </Row>
+            </StyledColFromTo>
+          );
+        }
+      },
+      {
+        title: this.props.readOnly ? (
+          ""
+        ) : (
+          <StyledAddBandButton
+            disabled={dataSource.length >= 10}
+            title={dataSource.length >= 10 ? "maximum 10 bands allowed" : undefined}
+            onClick={this.handleAdd}
+          >
+            ADD BAND
+          </StyledAddBandButton>
+        ),
+        dataIndex: "operation",
+        width: "15%",
+        render: (text, record) =>
+          this.state.dataSource.length >= 3 && !this.props.readOnly ? (
+            <StyledDivCenter>
+              <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
+                <Icon type="delete" theme="filled" twoToneColor={themeColor} />
+              </a>
+            </StyledDivCenter>
+          ) : null
+      }
+    ];
 
     const components = {
       body: {

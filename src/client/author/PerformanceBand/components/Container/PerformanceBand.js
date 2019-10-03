@@ -189,7 +189,6 @@ export function PerformanceBandAlt(props) {
     setEditable
   } = props;
 
-  console.log("editingIndex", editingIndex);
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
@@ -197,6 +196,15 @@ export function PerformanceBandAlt(props) {
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
+
+  const handleProfileLimit = () => {
+    const canCreateProfile = profiles.filter(x => x.createdBy._id === currentUserId).length <= 10;
+    if (!canCreateProfile) {
+      message.error("Maximum 10 profiles per user is allowed");
+      return false;
+    }
+    return true;
+  };
 
   const addProfile = () => {
     const name = profileName;
@@ -248,6 +256,9 @@ export function PerformanceBandAlt(props) {
   };
 
   const duplicateProfile = ({ _id, name }) => {
+    if (!handleProfileLimit()) {
+      return;
+    }
     const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
       profiles.find(x => x._id === _id) || {};
 
@@ -293,7 +304,7 @@ export function PerformanceBandAlt(props) {
               <h4>NAME OF THE PROFILE</h4>
               <ModalInput autoFocus value={profileName} onChange={e => setProfileName(e.target.value)} />
             </ProfileModal>
-            <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
+            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
               <i>+</i> Create new Profile
             </CreateProfile>
           </Row>

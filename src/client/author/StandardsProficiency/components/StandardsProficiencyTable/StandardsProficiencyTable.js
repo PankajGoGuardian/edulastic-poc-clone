@@ -52,86 +52,6 @@ class StandardsProficiencyTable extends React.Component {
       isAdding: false,
       isChangeState: false
     };
-
-    this.columns = [
-      {
-        title: "Score",
-        dataIndex: "color",
-        width: "15%",
-        editable: true,
-        render: (text, record) => {
-          return (
-            <StyledScoreDiv>
-              <ScoreColorSpan color={text} />
-              <Icon type="down" />
-              {record.score}
-            </StyledScoreDiv>
-          );
-        }
-      },
-      {
-        title: "Mastery Level",
-        dataIndex: "masteryLevel",
-        width: "20%",
-        editable: true
-      },
-      {
-        title: "Short Name",
-        dataIndex: "shortName",
-        width: "25%",
-        editable: true
-      },
-      {
-        title: "Performance Threshold",
-        dataIndex: "threshold",
-        width: "25%",
-        editable: true,
-        render: text => {
-          return <React.Fragment>{text}%</React.Fragment>;
-        }
-      },
-      {
-        title: this.props.readOnly ? null : (
-          <StyledAddButton type="primary" onClick={this.handleAdd}>
-            ADD LEVEL
-          </StyledAddButton>
-        ),
-        dataIndex: "operation",
-        render: (text, record) => {
-          const { editingKey } = this.state;
-          const editable = this.isEditing(record);
-          return (
-            <div>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a href="javascript:;" onClick={() => this.save(form, record.key)} style={{ marginRight: 8 }}>
-                        Save
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <a onClick={() => this.cancel(record.key)}>Cancel</a>
-                </span>
-              ) : this.props.readOnly ? null : (
-                <React.Fragment>
-                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
-                    <Icon type="edit" theme="twoTone" />
-                  </StyledButton>
-                  <StyledButton
-                    disabled={editingKey !== ""}
-                    onClick={() => this.handleDelete(record.key)}
-                    title="Delete"
-                  >
-                    <Icon type="delete" theme="twoTone" />
-                  </StyledButton>
-                </React.Fragment>
-              )}
-            </div>
-          );
-        }
-      }
-    ];
   }
 
   setChanged = v => this.setState({ isChangeState: v });
@@ -289,6 +209,85 @@ class StandardsProficiencyTable extends React.Component {
         cell: StandardsProficiencyEditableCell
       }
     };
+    this.columns = [
+      {
+        title: "Score",
+        dataIndex: "color",
+        width: "15%",
+        editable: true,
+        render: (text, record) => {
+          return (
+            <StyledScoreDiv>
+              <ScoreColorSpan color={text} />
+              <Icon type="down" />
+              {record.score}
+            </StyledScoreDiv>
+          );
+        }
+      },
+      {
+        title: "Mastery Level",
+        dataIndex: "masteryLevel",
+        width: "20%",
+        editable: true
+      },
+      {
+        title: "Short Name",
+        dataIndex: "shortName",
+        width: "25%",
+        editable: true
+      },
+      {
+        title: "Performance Threshold",
+        dataIndex: "threshold",
+        width: "25%",
+        editable: true,
+        render: text => {
+          return <React.Fragment>{text}%</React.Fragment>;
+        }
+      },
+      {
+        title: this.props.readOnly ? null : (
+          <StyledAddButton type="primary" onClick={this.handleAdd}>
+            ADD LEVEL
+          </StyledAddButton>
+        ),
+        dataIndex: "operation",
+        render: (text, record) => {
+          const { editingKey } = this.state;
+          const editable = this.isEditing(record);
+          return (
+            <div>
+              {editable ? (
+                <span>
+                  <EditableContext.Consumer>
+                    {form => (
+                      <a href="javascript:;" onClick={() => this.save(form, record.key)} style={{ marginRight: 8 }}>
+                        Save
+                      </a>
+                    )}
+                  </EditableContext.Consumer>
+                  <a onClick={() => this.cancel(record.key)}>Cancel</a>
+                </span>
+              ) : this.props.readOnly ? null : (
+                <React.Fragment>
+                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
+                    <Icon type="edit" theme="twoTone" />
+                  </StyledButton>
+                  <StyledButton
+                    disabled={editingKey !== ""}
+                    onClick={() => this.handleDelete(record.key)}
+                    title="Delete"
+                  >
+                    <Icon type="delete" theme="twoTone" />
+                  </StyledButton>
+                </React.Fragment>
+              )}
+            </div>
+          );
+        }
+      }
+    ];
 
     const columns = this.columns.map(col => {
       if (!col.editable) {

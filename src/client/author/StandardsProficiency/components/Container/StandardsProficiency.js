@@ -187,6 +187,15 @@ function StandardsProficiency(props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
 
+  const handleProfileLimit = () => {
+    const canCreateProfile = props.profiles.filter(x => x.createdBy._id === props.userId).length <= 10;
+    if (!canCreateProfile) {
+      message.error("Maximum 10 profiles per user is allowed");
+      return false;
+    }
+    return true;
+  };
+
   const createStandardProficiency = () => {
     const name = profileName;
     if (name === "") {
@@ -209,6 +218,9 @@ function StandardsProficiency(props) {
   };
 
   const duplicateProfile = ({ _id, name }) => {
+    if (!handleProfileLimit()) {
+      return;
+    }
     const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
       props.profiles.find(x => x._id === _id) || {};
     console.log("profile", profile);
@@ -262,7 +274,7 @@ function StandardsProficiency(props) {
               <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>
               <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
             </ProfileModal>
-            <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
+            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
               <i>+</i> Create new Profile
             </CreateProfile>
           </Row>

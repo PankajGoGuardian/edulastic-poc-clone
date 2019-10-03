@@ -105,7 +105,7 @@ class AnnotationsRnd extends Component {
           prevProps.question.annotations &&
           prevProps.question.annotations[i] &&
           prevProps.question.annotations[i].size.width !== annotation.size.width &&
-          prevProps.question.annotation[i].size.height !== annotation.size.height
+          prevProps.question.annotations[i].size.height !== annotation.size.height
         ) {
           const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
           const { value } = annotation;

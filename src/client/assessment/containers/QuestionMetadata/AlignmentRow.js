@@ -28,6 +28,7 @@ const AlignmentRow = ({
   curriculumStandardsTLO,
   alignment,
   alignmentIndex,
+  qId,
   onDelete,
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
@@ -187,7 +188,7 @@ const AlignmentRow = ({
         });
       }
     }
-  }, []);
+  }, [qId]);
   return (
     <Fragment>
       {showModal && (

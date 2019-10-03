@@ -28,6 +28,7 @@ const defaultAlignment = {
 const StandardSet = ({
   t,
   alignment,
+  qId,
   onUpdate,
   curriculums,
   getCurriculums,
@@ -92,6 +93,7 @@ const StandardSet = ({
           t={t}
           alignment={questionAlignment}
           alignmentIndex={0}
+          qId={qId}
           curriculums={curriculums}
           curriculumStandardsELO={curriculumStandards.elo}
           curriculumStandardsTLO={curriculumStandards.tlo}

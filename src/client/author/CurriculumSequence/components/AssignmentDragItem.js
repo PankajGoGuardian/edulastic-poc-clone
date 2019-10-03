@@ -4,8 +4,8 @@ import { Dropdown, Icon, Button } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
 import { lightBlue, white, themeColor } from "@edulastic/colors";
-import Tags from "../../src/components/common/Tags";
 import { IconVisualization, IconMoreVertical, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
+import Tags from "../../src/components/common/Tags";
 import { matchAssigned } from "../util";
 import {
   AssignmentContent,
@@ -19,7 +19,6 @@ import {
 
 /**
  * @typedef Props
- * @property {function} onToggleCheck
  * @property {Object} moduleData
  * @property {boolean} checked
  * @property {Component} menu
@@ -65,7 +64,7 @@ class AssignmentDragItem extends Component {
     } = this.props;
 
     return connectDragSource(
-      <div className={`item`}>
+      <div className="item">
         <Assignment
           key={moduleData.contentId}
           data-cy="moduleAssignment"

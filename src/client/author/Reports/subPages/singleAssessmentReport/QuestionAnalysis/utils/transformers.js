@@ -1,27 +1,9 @@
-import { groupBy, keyBy, values, flatten } from "lodash";
+import { groupBy, keyBy, orderBy } from "lodash";
 import { getHSLFromRange1 } from "../../../../common/util";
 import { getFormattedTimeInMins } from "./helpers";
 
-const sortByAvgPerformanceAndLabel = arr => {
-  arr = arr.sort((a, b) => a.avgPerformance - b.avgPerformance);
-
-  const groupedArr = groupBy(arr, "avgPerformance");
-  const groupedArrKeys = Object.keys(groupedArr);
-  for (const item of groupedArrKeys) {
-    const _item = groupedArr[item];
-    _item.sort((a, b) => {
-      let _a = a.qLabel || "";
-      let _b = b.qLabel || "";
-      _a = Number(_a.substring(1));
-      _b = Number(_b.substring(1));
-      return _a - _b;
-    });
-  }
-
-  let _arr = values(groupedArr);
-  _arr = flatten(_arr);
-  return _arr;
-};
+const sortByAvgPerformanceAndLabel = arr =>
+  orderBy(arr, ["avgPerformance", item => Number((item.qLabel || "").substring(1))]);
 
 export const getChartData = (rawData = []) => {
   const groupedData = groupBy(rawData, "questionId");

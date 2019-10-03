@@ -59,9 +59,3 @@ export const RENDERING_BASE = {
   ZERO_BASED: "zero-based",
   LINE_MINIMUM_VALUE: "min-value-based"
 };
-
-export const FRACTIONS_FORMAT = {
-  NOT_NORMALIZED: "not-normalized-fractions",
-  NORMALIZED: "normalized-fractions",
-  IMPROPER: "improper-fractions"
-};

@@ -2,12 +2,12 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { message, Select } from "antd";
-import { isString } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Checkbox } from "@edulastic/common";
 
-import { FRACTIONS_FORMAT, RENDERING_BASE } from "../../Builder/config/constants";
-import { getFraction } from "../../Builder/fraction";
+import { fractionStringToNumber } from "../../../../utils/helpers";
+import { FRACTION_FORMATS } from "../../../../constants/constantsForQuestions";
+import { RENDERING_BASE } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
 import { MoreOptionsInput } from "../../common/styled_components";
 
@@ -32,12 +32,6 @@ class AxisSegmentsMoreOptions extends Component {
     this.state = {
       layout: "horizontal",
       minWidth: "550px",
-      currentFractionItem: {
-        id: FRACTIONS_FORMAT.NOT_NORMALIZED,
-        value: "Not normalized and mixed fractions",
-        label: "Not normalized and mixed fractions",
-        selected: true
-      },
       currentRenderingBaseItem: {
         id: RENDERING_BASE.LINE_MINIMUM_VALUE,
         value: "Line minimum value",
@@ -53,6 +47,15 @@ class AxisSegmentsMoreOptions extends Component {
     { label: "Partial match", value: "partialMatch" },
     { label: "Partial match per response", value: "partialMatchV2" }
   ];
+
+  getFractionFormatSettings = () => {
+    const { t } = this.props;
+    return [
+      { label: t("component.options.fractionFormatOptions.decimal"), value: FRACTION_FORMATS.decimal },
+      { label: t("component.options.fractionFormatOptions.fraction"), value: FRACTION_FORMATS.fraction },
+      { label: t("component.options.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMATS.mixedFraction }
+    ];
+  };
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { graphData, setNumberline } = this.props;
@@ -72,17 +75,10 @@ class AxisSegmentsMoreOptions extends Component {
     const { graphData, setNumberline } = this.props;
     const {
       numberlineAxis,
-      canvas: { xMin: xMin, xMax: xMax }
+      canvas: { xMin, xMax }
     } = graphData;
 
-    let parsedValue = null;
-    if (isString(value) && value.indexOf("/") !== -1) {
-      const fracTicksDistance = getFraction(value);
-      parsedValue = fracTicksDistance ? fracTicksDistance.decim : NaN;
-    } else {
-      parsedValue = parseFloat(value);
-    }
-
+    const parsedValue = fractionStringToNumber(value);
     if (Number.isNaN(parsedValue)) {
       setNumberline({ ...numberlineAxis, ticksDistance: value });
       return;
@@ -174,19 +170,9 @@ class AxisSegmentsMoreOptions extends Component {
   };
 
   changeFractionsFormat = e => {
-    const { setNumberline, graphData, fractionsFormatList } = this.props;
+    const { setNumberline, graphData } = this.props;
     const { numberlineAxis } = graphData;
-    const findItem = fractionsFormatList.find(fractionItem => fractionItem.value.toLowerCase() === e.toLowerCase());
-
-    if (findItem) {
-      findItem.selected = true;
-
-      setNumberline({ ...numberlineAxis, fractionsFormat: findItem.id });
-
-      this.setState(() => ({
-        currentFractionItem: findItem
-      }));
-    }
+    setNumberline({ ...numberlineAxis, fractionsFormat: e });
   };
 
   changeRenderingBase = e => {
@@ -211,7 +197,6 @@ class AxisSegmentsMoreOptions extends Component {
       orientationList,
       fontSizeList,
       renderingBaseList,
-      fractionsFormatList,
       fillSections,
       cleanSections,
       setValidation,
@@ -220,9 +205,9 @@ class AxisSegmentsMoreOptions extends Component {
       advancedAreOpen
     } = this.props;
 
-    const { layout, minWidth, currentRenderingBaseItem, currentFractionItem, ticksDistance } = this.state;
-
+    const { layout, minWidth, currentRenderingBaseItem, ticksDistance } = this.state;
     const { canvas, uiStyle, numberlineAxis, toolbar } = graphData;
+    const { fractionsFormat } = numberlineAxis;
 
     return (
       <Fragment>
@@ -449,15 +434,15 @@ class AxisSegmentsMoreOptions extends Component {
             <Col md={12}>
               <Row>
                 <Col md={24}>
-                  <Label>{t("component.graphing.ticksoptions.fractionsformat")}</Label>
+                  <Label>{t("component.options.fractionFormat")}</Label>
                   <Select
                     style={{ width: "100%" }}
                     onChange={this.changeFractionsFormat}
-                    value={currentFractionItem.label}
+                    value={fractionsFormat || FRACTION_FORMATS.decimal}
                   >
-                    {fractionsFormatList.map(option => (
+                    {this.getFractionFormatSettings().map(option => (
                       <Select.Option data-cy={option.value} key={option.value}>
-                        {t(option.label)}
+                        {option.label}
                       </Select.Option>
                     ))}
                   </Select>
@@ -547,7 +532,6 @@ AxisSegmentsMoreOptions.propTypes = {
   orientationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
-  fractionsFormatList: PropTypes.array.isRequired,
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setControls: PropTypes.func.isRequired,

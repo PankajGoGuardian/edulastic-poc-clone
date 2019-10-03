@@ -1,4 +1,5 @@
 import { groupBy, difference, isEmpty } from "lodash";
+import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -299,4 +300,93 @@ export const getStemNumeration = (stemNumeration, index) => {
     default:
   }
   return indexStr;
+};
+
+export const convertNumberToFraction = (value, fractionFormat) => {
+  const result = {
+    main: null,
+    sup: null,
+    sub: null
+  };
+
+  const strValue = value.toString();
+  const numValue = parseFloat(strValue);
+  const indexOfDot = strValue.indexOf(".");
+  if (Number.isNaN(numValue) || numValue.toString().length !== strValue.length || indexOfDot === -1) {
+    result.main = value;
+    return result;
+  }
+
+  const countDecimals = strValue.length - indexOfDot - 1;
+  let sub = +`1${Array.from({ length: countDecimals }, () => 0).join("")}`;
+
+  if (fractionFormat === FRACTION_FORMATS.fraction) {
+    let sup = value * sub;
+    while (sup % 5 === 0 && sub % 5 === 0) {
+      sup /= 5;
+      sub /= 5;
+    }
+    while (sup % 2 === 0 && sub % 2 === 0) {
+      sup /= 2;
+      sub /= 2;
+    }
+    result.sub = +sub.toFixed(0);
+    result.sup = +sup.toFixed(0);
+    return result;
+  }
+
+  if (fractionFormat === FRACTION_FORMATS.mixedFraction) {
+    const main = Math.trunc(value);
+    let sup = Math.abs((value * sub) % sub);
+    while (sup % 5 === 0 && sub % 5 === 0) {
+      sup /= 5;
+      sub /= 5;
+    }
+    while (sup % 2 === 0 && sub % 2 === 0) {
+      sup /= 2;
+      sub /= 2;
+    }
+    if (main !== 0) {
+      result.main = main;
+    }
+    result.sub = +sub.toFixed(0);
+    result.sup = +sup.toFixed(0);
+    return result;
+  }
+
+  result.main = value;
+  return result;
+};
+
+export const fractionStringToNumber = fString => {
+  const str = fString
+    .toString()
+    .trim()
+    .replace(/\s+/g, " ");
+  if (str.indexOf("/") === -1) {
+    return parseFloat(fString);
+  }
+
+  let split = str.split("/");
+  let lastIndex = split.length - 1;
+  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()];
+  const sub = parseFloat(split[1]);
+
+  if (Number.isNaN(sub) || sub <= 0) {
+    return NaN;
+  }
+
+  if (split[0].indexOf(" ") === -1) {
+    const sup = parseFloat(split[0]);
+    return sup / sub;
+  }
+
+  split = split[0].split(" ");
+  lastIndex = split.length - 1;
+  split = [split[lastIndex - 1].trim(), split[lastIndex].trim()];
+
+  const main = parseFloat(split[0]);
+  const sup = parseFloat(split[1]);
+
+  return +(main + sup / sub).toFixed(8);
 };

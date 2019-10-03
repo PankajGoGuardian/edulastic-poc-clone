@@ -208,7 +208,13 @@
       "display": "Display",
       "enterDistractorRationaleQuestion": "Enter distractor rationale for the question",
       "enterSampleAnswer": "Enter sample answer",
-      "hints": "Hints"
+      "hints": "Hints",
+      "fractionFormat": "Fraction Format",
+      "fractionFormatOptions": {
+        "decimal": "Decimal",
+        "fraction": "Fraction",
+        "mixedFraction": "Mixed Fraction"
+      }
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -264,7 +270,6 @@
       "chartTitle": "Chart Title",
       "correctAnswer": "Correct Answer",
       "alternateAnswer": "Alternate Answer",
-      "fractionFormat": "Fraction Format",
       "gridlines": "Gridlines",
       "showGridlinesOptions": {
         "both": "Display X and Y axes gridlines",
@@ -276,11 +281,6 @@
         "showAlways": "Show always",
         "hidden": "Hidden",
         "showByHover": "Show by hover"
-      },
-      "fractionFormatOptions": {
-        "decimal": "Decimal",
-        "fraction": "Fraction",
-        "mixedFraction": "Mixed Fraction"
       }
     },
     "hotspot": {
@@ -643,7 +643,6 @@
         "tickdistance": "Tick distance",
         "snaptoticks": "Snap to ticks",
         "renderingbase": "Rendering base",
-        "fractionsformat": "Fractions format",
         "minorTicks": "Minor ticks"
       },
       "labelstitle": "Labels",

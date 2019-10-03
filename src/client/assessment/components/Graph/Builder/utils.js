@@ -1,6 +1,7 @@
 import JXG from "jsxgraph";
 import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
+import { convertNumberToFraction } from "../../../utils/helpers";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
 import { Area, EditButton } from "./elements";
@@ -695,3 +696,16 @@ export function colorGenerator(index) {
 
   return colorPool[index % colorPool.length];
 }
+
+export const toFractionHTML = (value, fractionsFormat) => {
+  const fraction = convertNumberToFraction(value, fractionsFormat);
+
+  const main = fraction.main !== null ? `${fraction.main}` : "";
+
+  const fracs =
+    fraction.sup !== null && fraction.sub !== null ? `<sup>${fraction.sup}</sup>/<sub>${fraction.sub}</sub>` : "";
+
+  const space = main.length > 0 && fracs.length > 0 ? "&nbsp;" : "";
+
+  return `<span>${main}${space}${fracs}</span>`;
+};

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import AxisLabelsMoreOptions from "./AxisLabelsMoreOptions";
-import { RENDERING_BASE, FRACTIONS_FORMAT } from "../../Builder/config/constants";
+import { RENDERING_BASE } from "../../Builder/config/constants";
 
 const AxisLabelsOptions = ({
   t,
@@ -45,27 +45,6 @@ const AxisLabelsOptions = ({
       id: "huge",
       label: "Huge",
       value: 24,
-      selected: false
-    }
-  ];
-
-  const fractionsFormatList = [
-    {
-      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
-      value: "Not normalized and mixed fractions",
-      label: "Not normalized and mixed fractions",
-      selected: true
-    },
-    {
-      id: FRACTIONS_FORMAT.NORMALIZED,
-      value: "Normalized and mixed fractions",
-      label: "Normalized and mixed fractions",
-      selected: false
-    },
-    {
-      id: FRACTIONS_FORMAT.IMPROPER,
-      value: "Improper fractions",
-      label: "Improper fractions",
       selected: false
     }
   ];
@@ -116,7 +95,6 @@ const AxisLabelsOptions = ({
         setValidation={setValidation}
         fontSizeList={fontSizeList}
         renderingBaseList={renderingBaseList}
-        fractionsFormatList={fractionsFormatList}
         responseBoxPositionList={responseBoxPositionList}
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}

@@ -47,8 +47,6 @@ class ResponseBox extends Component {
         ? Math.max(height, titleHeight + markHeight + separationDistanceY)
         : Math.max(height, minHeight);
 
-    console.log("responsebox render");
-
     return (
       <Container width={width} height={height}>
         <Title height={titleHeight} width={titleWidth}>

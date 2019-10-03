@@ -1725,7 +1725,6 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           separationDistanceY: 20,
           renderingBase: "min-value-based",
           specificPoints: "",
-          fractionsFormat: "not-normalized-fractions",
           responseBoxPosition: "bottom"
         },
         uiStyle: {

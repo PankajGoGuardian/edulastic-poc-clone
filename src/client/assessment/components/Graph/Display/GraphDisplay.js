@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { fractionStringToNumber } from "../../../utils/helpers";
 import { CLEAR } from "../../../constants/constantsForQuestions";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
@@ -322,7 +323,7 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
+        ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
@@ -426,7 +427,7 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
+        ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
         separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),

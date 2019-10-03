@@ -9,14 +9,8 @@ import UiInputGroup from "./UiInputGroup";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
-import {
-  FRACTION_FORMAT_DECIMAL,
-  FRACTION_FORMAT_FRACTION,
-  FRACTION_FORMAT_MIXED_FRACTION,
-  SHOW_ALWAYS,
-  SHOW_BY_HOVER,
-  HIDDEN
-} from "../const";
+import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../const";
+import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
 
 class PointsList extends Component {
   getHoverSettings = () => {
@@ -31,9 +25,9 @@ class PointsList extends Component {
   getFractionFormatSettings = () => {
     const { t } = this.props;
     return [
-      { label: t("component.chart.fractionFormatOptions.decimal"), value: FRACTION_FORMAT_DECIMAL },
-      { label: t("component.chart.fractionFormatOptions.fraction"), value: FRACTION_FORMAT_FRACTION },
-      { label: t("component.chart.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMAT_MIXED_FRACTION }
+      { label: t("component.options.fractionFormatOptions.decimal"), value: FRACTION_FORMATS.decimal },
+      { label: t("component.options.fractionFormatOptions.fraction"), value: FRACTION_FORMATS.fraction },
+      { label: t("component.options.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMATS.mixedFraction }
     ];
   };
 
@@ -91,7 +85,7 @@ class PointsList extends Component {
             )}
             {showFractionFormatSetting && (
               <Select
-                value={dot.labelFractionFormat || FRACTION_FORMAT_DECIMAL}
+                value={dot.labelFractionFormat || FRACTION_FORMATS.decimal}
                 style={{ width: "150px" }}
                 onSelect={value => handleChange(index)("labelFractionFormat", value)}
               >

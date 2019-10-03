@@ -110,6 +110,7 @@ class FeedbackRight extends Component {
     const { feedback } = this.state;
     const {
       user,
+      studentId,
       loadFeedbackResponses,
       widget: { id, activity = {} }
     } = this.props;
@@ -127,6 +128,7 @@ class FeedbackRight extends Component {
         },
         groupId
       },
+      studentId,
       testActivityId,
       questionId: id,
       itemId: testItemId

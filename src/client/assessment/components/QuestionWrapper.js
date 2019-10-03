@@ -311,6 +311,7 @@ class QuestionWrapper extends Component {
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
+    const userId = get(data, "activity.userId");
     const Question = getQuestion(type);
     const { layoutType } = this.context;
 
@@ -443,6 +444,7 @@ class QuestionWrapper extends Component {
                   showCollapseBtn={showCollapseBtn}
                   disabled={disabled}
                   widget={data}
+                  studentId={userId}
                   studentName={studentName}
                   {...presentationModeProps}
                 />

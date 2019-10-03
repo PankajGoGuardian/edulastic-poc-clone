@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FeedbackByQIdSelector } from "../../sharedDucks/TestItem";
-//TODO user  response to show in UI
+// TODO user  response to show in UI
 const StudentFeedback = ({ question, qId, qLabel }) => {
   const { score, maxScore, feedback } = question[qId] || {};
   return (
@@ -26,7 +26,8 @@ const StudentFeedback = ({ question, qId, qLabel }) => {
 
 StudentFeedback.propTypes = {
   question: PropTypes.object.isRequired,
-  qId: PropTypes.number.isRequired
+  qId: PropTypes.number.isRequired,
+  qLabel: PropTypes.string.isRequired
 };
 
 export default connect(
@@ -59,7 +60,7 @@ const Feedback = styled.div`
 `;
 
 const ScoreWrapper = styled.div`
-  width: 62px;
+  width: 80px;
 `;
 
 const FeedbackContainer = styled.div`

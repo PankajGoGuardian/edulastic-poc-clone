@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { themeColor, white, grey, secondaryTextColor } from "@edulastic/colors";
 
-const Checkbox = ({ onChange, checked, label, style, className }) => (
+const Checkbox = ({ onChange, checked, label, style, className, labelFontSize }) => (
   <Container data-cy="multi" onClick={onChange} style={style} className={className}>
     <Input type="checkbox" checked={checked} onChange={() => {}} />
     <span />
     {label && (
-      <span style={{ fontSize: 13, fontWeight: 600, color: secondaryTextColor }} className="label">
+      <span style={{ fontSize: labelFontSize, fontWeight: 600, color: secondaryTextColor }} className="label">
         {label}
       </span>
     )}
@@ -20,14 +20,16 @@ Checkbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
   style: PropTypes.object,
-  className: PropTypes.string
+  className: PropTypes.string,
+  labelFontSize: PropTypes.string
 };
 
 Checkbox.defaultProps = {
   style: {},
   label: "",
   className: "",
-  checked: false
+  checked: false,
+  labelFontSize: "13px"
 };
 
 export default Checkbox;

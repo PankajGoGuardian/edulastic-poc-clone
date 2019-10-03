@@ -7,7 +7,6 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, PaddingDiv } from "@edulastic/common";
 import { StyledTextField } from "../../common/styled_components";
-import GraphToolsParams from "../../components/GraphToolsParams";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -77,37 +76,6 @@ class GraphQuadrants extends Component {
       setQuestionData({ ...graphData, canvas });
     }
   };
-
-  handleToolsChange = toolbar => {
-    const { graphData, setQuestionData } = this.props;
-    setQuestionData({ ...graphData, toolbar });
-  };
-
-  getToolOptions = () => [
-    { value: "point", label: "Point" },
-    { value: "line", label: "Line" },
-    { value: "ray", label: "Ray" },
-    { value: "segment", label: "Segment" },
-    { value: "vector", label: "Vector" },
-    { value: "circle", label: "Circle" },
-    { value: "ellipse", label: "Ellipse" },
-    { value: "parabola", label: "Parabola" },
-    { value: "sine", label: "Sine" },
-    { value: "tangent", label: "Tangent" },
-    { value: "secant", label: "Secant" },
-    { value: "exponent", label: "Exponent" },
-    { value: "polynom", label: "Polynom" },
-    { value: "logarithm", label: "Logarithm" },
-    { value: "hyperbola", label: "Hyperbola" },
-    { value: "polygon", label: "Polygon" },
-    { value: "area", label: "Area" },
-    { value: "dashed", label: "Dashed" }
-  ];
-
-  getDrawingPromptOptions = () => [
-    { value: "byTools", label: "By drawing tools" },
-    { value: "byObjects", label: "By objects" }
-  ];
 
   onSortOrderListEnd = ({ oldIndex, newIndex }) => {
     const { graphData, setQuestionData } = this.props;
@@ -273,25 +241,6 @@ class GraphQuadrants extends Component {
             </Row>
           </PaddingDiv>
         </Question>
-        {!this.isQuadrantsPlacement() && (
-          <Question
-            section="main"
-            label="Tools"
-            cleanSections={cleanSections}
-            fillSections={fillSections}
-            advancedAreOpen
-          >
-            <PaddingDiv>
-              <Subtitle>{t("component.graphing.tools")}</Subtitle>
-              <GraphToolsParams
-                toolOptions={this.getToolOptions()}
-                drawingPromptOptions={this.getDrawingPromptOptions()}
-                toolbar={graphData.toolbar}
-                onChange={this.handleToolsChange}
-              />
-            </PaddingDiv>
-          </Question>
-        )}
         {this.isQuadrantsPlacement() && (
           <Question
             section="main"

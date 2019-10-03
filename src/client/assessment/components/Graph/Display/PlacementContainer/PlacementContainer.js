@@ -371,7 +371,7 @@ class PlacementContainer extends PureComponent {
     return `${questionId}_${type}`;
   }
 
-  getHandlerByControlName = control => {
+  onSelectControl = control => {
     switch (control) {
       case "undo":
         return this.onUndo();
@@ -481,7 +481,7 @@ class PlacementContainer extends PureComponent {
     const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0;
 
     return (
-      <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+      <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
           resources={[
             "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
@@ -495,15 +495,7 @@ class PlacementContainer extends PureComponent {
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
-            <Tools
-              toolsAreVisible={false}
-              controls={controls}
-              bgShapes={false}
-              getIconByToolName={() => ""}
-              getHandlerByControlName={this.getHandlerByControlName}
-              onSelect={() => {}}
-              fontSize={layout.fontSize}
-            />
+            <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
           )}
           <JSXBoxWithDropValues className="jsxbox-with-drag-drop">
             {!disableResponse && (

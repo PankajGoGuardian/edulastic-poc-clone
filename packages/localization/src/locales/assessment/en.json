@@ -602,7 +602,12 @@
       "possibleresponses": "Possible responses",
       "graphparameters": "Graph parameters",
       "tools": "Tools",
+      "studentInteraction": "Student Interaction",
+      "graphControls": "Graph Controls",
       "drawingprompt": "Drawing Prompt",
+      "allowedTools": "Allowed Tools",
+      "withDrawingTools": "With drawing tools",
+      "withObjects": "With objects",
       "addnewpossibleresponsebtn": "Add",
       "optionstitle": "Advanced Options",
       "layoutoptionstitle": "Layout",
@@ -664,6 +669,17 @@
         "comma_in_label": "Comma in label",
         "show_axis": "Show axis",
         "show_grid": "Show grid"
+      },
+      "settingsPopup": {
+        "xAxis": "X-AXIS",
+        "yAxis": "Y-AXIS",
+        "addLabel": "Add label",
+        "min": "Min",
+        "max": "Max",
+        "step": "Step",
+        "arrows": "ARROWS",
+        "plot": "PLOT",
+        "addText": "ADD TEXT"
       },
       "background_options": {
         "background_image": "Background image",

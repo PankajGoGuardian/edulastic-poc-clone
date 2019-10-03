@@ -1,269 +1,98 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { Select } from "antd";
+import { Radio } from "antd";
 
-import { Button } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { ToolSubTitle, SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
-import DeleteButton from "../common/DeleteButton";
+import Tools from "../common/Tools";
 
 class GraphToolsParams extends Component {
-  addTool = groupIndex => {
-    const { toolbar, onChange, toolOptions } = this.props;
-    const newTools = [...toolbar.tools];
-    const areToolsArray = Array.isArray(toolbar.tools[groupIndex]);
-    const defaultOption = toolOptions && toolOptions[0] ? toolOptions[0].value : "";
+  allTools = [
+    "point",
+    "line",
+    "ray",
+    "segment",
+    "vector",
+    "circle",
+    "ellipse",
+    "sine",
+    "tangent",
+    "secant",
+    "exponent",
+    "logarithm",
+    "polynom",
+    "hyperbola",
+    "polygon",
+    "parabola",
+    "area",
+    "dashed"
+  ];
 
-    if (groupIndex !== undefined && areToolsArray) {
-      newTools[groupIndex].push(defaultOption);
+  getDrawingPromptOptions = () => {
+    const { t } = this.props;
+    return [
+      { value: "byObjects", label: t("component.graphing.withObjects") },
+      { value: "byTools", label: t("component.graphing.withDrawingTools") }
+    ];
+  };
+
+  onSelectTool = tool => {
+    const { toolbar, setToolbar } = this.props;
+
+    let newTools = [...toolbar.tools];
+    if (newTools.includes(tool)) {
+      newTools = newTools.filter(item => item !== tool);
     } else {
-      newTools.push(defaultOption);
+      newTools.push(tool);
     }
 
-    onChange({
+    setToolbar({
       ...toolbar,
-      tools: newTools
+      tools: [...this.allTools.filter(item => newTools.includes(item))]
     });
   };
 
-  addGroup = () => {
-    const { toolbar, onChange } = this.props;
-    onChange({
-      ...toolbar,
-      tools: [...toolbar.tools, []]
-    });
-  };
-
-  deleteTool = (index, groupIndex) => {
-    const { toolbar, onChange } = this.props;
-
-    const newTools = [...toolbar.tools];
-    const areToolsArray = Array.isArray(toolbar.tools[groupIndex]);
-
-    if (groupIndex !== undefined && areToolsArray) {
-      newTools[groupIndex].splice(index, 1);
-    } else {
-      newTools.splice(index, 1);
-    }
-
-    onChange({
-      ...toolbar,
-      tools: newTools
-    });
-  };
-
-  deleteGroup = groupIndex => {
-    const { toolbar, onChange } = this.props;
-
-    const newTools = [...toolbar.tools];
-    newTools.splice(groupIndex, 1);
-
-    onChange({
-      ...toolbar,
-      tools: newTools
-    });
-  };
-
-  handleSelect = (index, newItemVal, groupIndex) => {
-    const { toolbar, onChange } = this.props;
-
-    const newTools = [...toolbar.tools];
-
-    if (groupIndex !== undefined) {
-      newTools[groupIndex][index] = newItemVal;
-    } else {
-      newTools[index] = newItemVal;
-    }
-
-    onChange({
-      ...toolbar,
-      tools: newTools
-    });
-  };
-
-  renderAddToolBtn = groupIndex => (
-    <Row>
-      <Button
-        style={{
-          minWidth: 227,
-          minHeight: 40,
-          marginRight: "0.7em",
-          borderRadius: "4px"
-        }}
-        onClick={() => this.addTool(groupIndex)}
-        color="primary"
-        outlined
-      >
-        ADD TOOL
-      </Button>
-    </Row>
-  );
-
-  renderSingleToolsInDefaultGroup = () => {
-    const { toolOptions, toolbar } = this.props;
-    const countOfSingleTools = toolbar.tools.filter(t => !Array.isArray(t)).length;
-
-    return (
-      <Col md={12} marginBottom="40px">
-        <ToolSubTitle data-cy="toolSubTitle">Default Group</ToolSubTitle>
-        {toolbar.tools.map((tool, i) =>
-          !Array.isArray(tool) ? (
-            <React.Fragment key={`default-group-tool-${i}`}>
-              <ToolSelect>
-                <Tool
-                  value={tool}
-                  options={toolOptions}
-                  selectWidth="100%"
-                  index={i}
-                  countOfSingleTools={countOfSingleTools}
-                  onDelete={this.deleteTool}
-                  onChange={this.handleSelect}
-                />
-              </ToolSelect>
-            </React.Fragment>
-          ) : null
-        )}
-
-        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
-      </Col>
-    );
-  };
-
-  renderAddGroupBtn = () => (
-    <Row>
-      <Button
-        style={{
-          minWidth: 227,
-          minHeight: 40,
-          marginRight: "0.7em",
-          borderRadius: "4px"
-        }}
-        onClick={this.addGroup}
-        color="primary"
-        variant="extendedFab"
-      >
-        ADD NEW GROUP
-      </Button>
-    </Row>
-  );
-
-  getToolGroups = () => {
+  handleSelectDrawingPrompt = e => {
+    const { toolbar, setToolbar } = this.props;
     const {
-      toolbar: { tools }
-    } = this.props;
-    const areToolsExist = tools && tools.length;
-    const toolGroups =
-      areToolsExist &&
-      tools
-        .map((tool, i) => {
-          if (Array.isArray(tool)) {
-            return {
-              tools: [...tool],
-              id: i
-            };
-          }
-          return null;
-        })
-        .filter(tool => tool !== null);
+      target: { value }
+    } = e;
 
-    return toolGroups && toolGroups.length > 0 ? toolGroups : [];
-  };
-
-  renderGroupTools = () => {
-    const { toolOptions } = this.props;
-    const toolGroups = this.getToolGroups();
-
-    return (
-      <React.Fragment>
-        {toolGroups.map((toolGroup, i) => (
-          <Col md={12} marginBottom="40px" key={`tool-group-${i}`}>
-            <ToolSubTitle data-cy="toolSubTitle">
-              {`Group ${i + 1}`}
-              <DeleteButton
-                width="18px"
-                height="18px"
-                marginLeft="10px"
-                deleteToolStyles={{ width: 18, height: 18, marginLeft: 10 }}
-                onDelete={() => {
-                  this.deleteGroup(toolGroup.id);
-                }}
-              />
-            </ToolSubTitle>
-
-            {toolGroup.tools.map((innerTool, innerIndex) => (
-              <React.Fragment key={`group-${i}-item-${innerIndex}`}>
-                <ToolSelect>
-                  <Tool
-                    countOfSingleTools={toolGroup.tools.length}
-                    value={innerTool}
-                    options={toolOptions}
-                    selectWidth="100%"
-                    index={innerIndex}
-                    isGroup
-                    groupIndex={toolGroup.id}
-                    onDelete={this.deleteTool}
-                    onChange={this.handleSelect}
-                  />
-                </ToolSelect>
-              </React.Fragment>
-            ))}
-
-            <AddToolBtnWrapper>{this.renderAddToolBtn(toolGroup.id)}</AddToolBtnWrapper>
-          </Col>
-        ))}
-      </React.Fragment>
-    );
-  };
-
-  handleSelectDrawingPrompt = drawingPrompt => {
-    const { toolbar, onChange } = this.props;
-
-    onChange({
+    setToolbar({
       ...toolbar,
-      drawingPrompt
+      drawingPrompt: value
     });
   };
 
   render() {
     const {
       t,
-      drawingPromptOptions,
-      toolbar: { drawingPrompt }
+      toolbar: { drawingPrompt, tools }
     } = this.props;
 
     return (
       <React.Fragment>
-        <Row gutter={60}>
-          {this.renderSingleToolsInDefaultGroup()}
-          {this.renderGroupTools()}
-        </Row>
-
-        <Row gutter={60}>
-          <Col marginBottom="0px" md={24}>
-            {this.renderAddGroupBtn()}
+        <Row gutter={60} marginTop={15}>
+          <Col md={24}>
+            <Label>{t("component.graphing.drawingprompt")}</Label>
+            <Radio.Group value={drawingPrompt} onChange={this.handleSelectDrawingPrompt} data-cy="drawingPrompt">
+              {this.getDrawingPromptOptions().map(({ value, label }) => (
+                <Radio value={value} key={value}>
+                  {label}
+                </Radio>
+              ))}
+            </Radio.Group>
           </Col>
         </Row>
-        <Row gutter={60} marginTop={30}>
-          <Col md={12}>
-            <Label>{t("component.graphing.drawingprompt")}</Label>
-            <Select
-              size="large"
-              onChange={this.handleSelectDrawingPrompt}
-              value={drawingPrompt}
-              data-cy="drawingPrompt"
-              style={{ width: "100%" }}
-            >
-              {drawingPromptOptions.map(option => (
-                <Select.Option data-cy={option.value} key={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-            </Select>
+
+        <Row gutter={60} marginTop={15}>
+          <Col marginBottom="0px" md={24}>
+            <Label>{t("component.graphing.allowedTools")}</Label>
+            <Tools tools={this.allTools} selected={tools} onSelect={this.onSelectTool} />
           </Col>
         </Row>
       </React.Fragment>
@@ -274,9 +103,7 @@ class GraphToolsParams extends Component {
 GraphToolsParams.propTypes = {
   t: PropTypes.func.isRequired,
   toolbar: PropTypes.object,
-  toolOptions: PropTypes.array.isRequired,
-  drawingPromptOptions: PropTypes.array.isRequired,
-  onChange: PropTypes.func.isRequired
+  setToolbar: PropTypes.func.isRequired
 };
 
 GraphToolsParams.defaultProps = {
@@ -285,75 +112,6 @@ GraphToolsParams.defaultProps = {
     tools: [],
     drawingPrompt: "byTools"
   }
-};
-
-const Tool = props => {
-  const {
-    countOfSingleTools,
-    options,
-    isGroup,
-    groupIndex,
-    value,
-    onChange,
-    selectWidth,
-    index,
-    onDelete,
-    deleteToolStyles
-  } = props;
-
-  const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
-
-  const onSelectChange = val => {
-    onChange(index, val, groupIndex);
-  };
-
-  return (
-    <React.Fragment>
-      <SelectWrapper>
-        <Select
-          data-cy="graphToolSelect"
-          style={{ width: selectWidth || "70%", height: "40px" }}
-          onChange={onSelectChange}
-          options={options}
-          value={value}
-        >
-          {options.map(option => (
-            <Select.Option data-cy={option.value} key={option.value}>
-              {option.label}
-            </Select.Option>
-          ))}
-        </Select>
-
-        {isNeedToShowDeleteButton() && (
-          <DeleteButton
-            onDelete={() => {
-              onDelete(index, groupIndex);
-            }}
-            deleteToolStyles={deleteToolStyles}
-          />
-        )}
-      </SelectWrapper>
-    </React.Fragment>
-  );
-};
-
-Tool.propTypes = {
-  countOfSingleTools: PropTypes.number.isRequired,
-  options: PropTypes.array.isRequired,
-  isGroup: PropTypes.bool,
-  groupIndex: PropTypes.number,
-  value: PropTypes.any.isRequired,
-  onChange: PropTypes.func.isRequired,
-  selectWidth: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  deleteToolStyles: PropTypes.object
-};
-
-Tool.defaultProps = {
-  deleteToolStyles: {},
-  groupIndex: undefined,
-  isGroup: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

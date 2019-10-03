@@ -203,12 +203,19 @@ class GraphDisplay extends Component {
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = uiStyle;
 
+    const xMin = parseFloat(canvas.xMin);
+    const xMax = parseFloat(canvas.xMax);
+    const yMin = parseFloat(canvas.yMin);
+    const yMax = parseFloat(canvas.yMax);
+    const xDistance = safeParseFloat(uiStyle.xDistance);
+    const yDistance = safeParseFloat(uiStyle.yDistance);
+
     return {
       canvas: {
-        xMin: parseFloat(canvas.xMin) - 1,
-        xMax: parseFloat(canvas.xMax) + 1,
-        yMin: parseFloat(canvas.yMin) - 1,
-        yMax: parseFloat(canvas.yMax) + 1
+        xMin: xMax - xMin <= 6 ? xMin - xDistance : xMin - 1,
+        xMax: xMax - xMin <= 6 ? xMax + xDistance : xMax + 1,
+        yMin: yMax - yMin <= 6 ? yMin - yDistance : yMin - 1,
+        yMax: yMax - yMin <= 6 ? yMax + yDistance : yMax + 1
       },
       layout: {
         width: uiStyle.layoutWidth,
@@ -245,8 +252,8 @@ class GraphDisplay extends Component {
         showAxis: yShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(uiStyle.xDistance),
-        gridY: safeParseFloat(uiStyle.yDistance),
+        gridX: xDistance,
+        gridY: yDistance,
         showGrid
       },
       bgImgOptions: {

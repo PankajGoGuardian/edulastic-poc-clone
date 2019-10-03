@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox } from "@edulastic/common";
+import { Checkbox, PaddingDiv } from "@edulastic/common";
 import { Select } from "antd";
 
 import { EDIT } from "../../../../constants/constantsForQuestions";
@@ -15,10 +15,18 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
 import { GraphDisplay } from "../../Display";
-import { AnnotationSettings, ControlsSettings, ScoreSettings } from "..";
+import { AnnotationSettings, ScoreSettings } from "..";
 import Question from "../../../Question";
+import GraphToolsParams from "../../components/GraphToolsParams";
+import Tools from "../../common/Tools";
 
 class QuadrantsMoreOptions extends Component {
+  isQuadrantsPlacement = () => {
+    const { graphData } = this.props;
+    const { graphType } = graphData;
+    return graphType === "quadrantsPlacement";
+  };
+
   handleCheckbox = (name, checked) => {
     const { graphData, setOptions } = this.props;
     const { uiStyle } = graphData;
@@ -55,6 +63,25 @@ class QuadrantsMoreOptions extends Component {
     setBgImg({ ...backgroundImage, [name]: value });
   };
 
+  allControls = ["undo", "redo", "reset", "delete"];
+
+  onSelectControl = control => {
+    const { graphData, setControls } = this.props;
+    const { controlbar } = graphData;
+
+    let newControls = [...controlbar.controls];
+    if (newControls.includes(control)) {
+      newControls = newControls.filter(item => item !== control);
+    } else {
+      newControls.push(control);
+    }
+
+    setControls({
+      ...controlbar,
+      controls: [...this.allControls.filter(item => newControls.includes(item))]
+    });
+  };
+
   render() {
     const {
       t,
@@ -63,18 +90,17 @@ class QuadrantsMoreOptions extends Component {
       setBgShapes,
       fillSections,
       cleanSections,
-      setControls,
+      setToolbar,
       setAnnotation,
       setValidation,
       advancedAreOpen
     } = this.props;
 
-    const { uiStyle, backgroundImage, controlbar, annotation } = graphData;
+    const { uiStyle, backgroundImage, controlbar, annotation, toolbar } = graphData;
 
     const {
       drawLabelZero,
       displayPositionOnHover,
-      currentStemNum,
       currentFontSize,
       xShowAxisLabel,
       xHideTicks,
@@ -105,6 +131,20 @@ class QuadrantsMoreOptions extends Component {
 
     return (
       <Fragment>
+        {!this.isQuadrantsPlacement() && (
+          <Question
+            section="main"
+            label={t("component.graphing.studentInteraction")}
+            cleanSections={cleanSections}
+            fillSections={fillSections}
+            advancedAreOpen
+          >
+            <PaddingDiv>
+              <Subtitle>{t("component.graphing.studentInteraction")}</Subtitle>
+              <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} />
+            </PaddingDiv>
+          </Question>
+        )}
         <Question
           padding="0px"
           section="advanced"
@@ -425,12 +465,18 @@ class QuadrantsMoreOptions extends Component {
 
         <Question
           section="advanced"
-          label="Controls"
+          label={t("component.graphing.graphControls")}
           cleanSections={cleanSections}
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <ControlsSettings onChange={setControls} controlbar={controlbar} />
+          <Subtitle>{t("component.graphing.graphControls")}</Subtitle>
+          <Tools
+            toolsAreVisible={false}
+            controls={this.allControls}
+            selected={controlbar.controls}
+            onSelectControl={this.onSelectControl}
+          />
         </Question>
 
         <Question
@@ -545,7 +591,7 @@ class QuadrantsMoreOptions extends Component {
               {advancedAreOpen && (
                 <GraphDisplay
                   view={EDIT}
-                  advancedElementSettings={true}
+                  advancedElementSettings
                   graphData={graphData}
                   onChange={setBgShapes}
                   elements={graphData.background_shapes}
@@ -576,6 +622,7 @@ QuadrantsMoreOptions.propTypes = {
   setBgImg: PropTypes.func.isRequired,
   setBgShapes: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
+  setToolbar: PropTypes.func.isRequired,
   setAnnotation: PropTypes.func.isRequired,
   setValidation: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool

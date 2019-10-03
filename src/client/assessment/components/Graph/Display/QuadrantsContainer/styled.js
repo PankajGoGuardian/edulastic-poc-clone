@@ -8,12 +8,6 @@ export const GraphWrapper = styled.div`
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
 `;
 
-export const IconButton = styled(Button)`
-  min-width: 30px;
-  border-radius: 4px;
-  margin-left: 4px;
-`;
-
 export const PrevColor = styled.div`
   height: 40px;
   width: 40px;

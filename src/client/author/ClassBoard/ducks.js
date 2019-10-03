@@ -176,8 +176,8 @@ function* markAbsentSaga({ payload }) {
 
 function* markAsSubmittedSaga({ payload }) {
   try {
-    yield call(classBoardApi.markSubmitted, payload);
-    yield put(updateSubmittedStudentsAction(payload.students));
+    const response = yield call(classBoardApi.markSubmitted, payload);
+    yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(message.success, "Successfully marked as submitted");
   } catch (err) {
     yield call(message.error, "Mark as submit failed");

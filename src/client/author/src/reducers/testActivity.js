@@ -1,5 +1,5 @@
 import { createAction } from "redux-starter-kit";
-import { uniqBy } from "lodash";
+import { uniqBy, keyBy } from "lodash";
 import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
@@ -286,9 +286,17 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     }
     case UPDATE_SUBMITTED_STUDENTS: {
+      const updatedActivityByUserId = keyBy(payload, "userId");
       const updatedStudents = state.entities.map(item => {
-        if (payload.includes(item.studentId)) {
-          return { ...item, status: "submitted" };
+        const updatedActivity = updatedActivityByUserId[item.studentId];
+        if (updatedActivity) {
+          return {
+            ...item,
+            status: "submitted",
+            graded: updatedActivity.gradedAll,
+            score: updatedActivity.score,
+            testActivityId: updatedActivity._id
+          };
         }
         return item;
       });

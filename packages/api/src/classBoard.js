@@ -69,7 +69,7 @@ const markSubmitted = ({ assignmentId, classId, students }) =>
       url: `${prefix}/${assignmentId}/mark-as-submitted`,
       data: { groupId: classId, students }
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const togglePause = ({ assignmentId, classId, value }) =>
   api

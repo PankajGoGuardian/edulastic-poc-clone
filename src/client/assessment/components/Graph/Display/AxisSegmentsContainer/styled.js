@@ -56,7 +56,7 @@ export const SegmentsToolBtn = styled.li`
   width: 89px;
   height: 65px;
   background-color: transparent;
-  color: ${secondaryTextColor};
+  color: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
@@ -117,34 +117,34 @@ export const SegmentsToolBtn = styled.li`
   }
 
   svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
+    color: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
+    stroke: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
+    fill: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
   }
 
   &:hover {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonHoverBgColor};
   }
 
   &:active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
   &.active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
 
     .dd-header-title svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+      color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
     }
 
     .tool-btn-icon svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+      color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
     }
   }
 `;

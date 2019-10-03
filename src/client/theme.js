@@ -276,6 +276,7 @@ export const defaultTheme = {
 
   confirmationPopupButtonBgColor: themeColor,
   confirmationPopupButtonBgHoverColor: themeColorHover,
+  confirmationPopupTextColor: textColor,
   confirmationPopupButtonTextColor: themeColor,
   confirmationPopupButtonTextHoverColor: linkFilledBgColor,
   confirmationPopupButtonTextSize: bodyFontSize,
@@ -1024,10 +1025,10 @@ export const defaultTheme = {
       headingFontWeight: bold
     },
     chart: {
-      bgColor: brandGrey,
+      bgColor: brandWhite,
       axisLabelFontWeight: bold,
       axisBorderColor: brandGrey,
-      labelStrokeColor: themeColor,
+      labelStrokeColor: textColor,
       labelBgHoverColor: white,
       chartZoom: 1
     },
@@ -1037,7 +1038,11 @@ export const defaultTheme = {
     },
     graphPlacement: {
       dragDropTitleFontWeight: bold,
-      dragDropTitleFontSize: subtitleFontSize
+      dragDropTitleFontSize: subtitleFontSize,
+      buttonLabelStroke: textColor,
+      buttonActiveLabelStroke: themeColor,
+      buttonActiveBgColor: brandWhite,
+      buttonHoverBgColor: brandWhite
     },
     quadrants: {
       dragDropTitleFontWeight: bold,
@@ -1380,6 +1385,7 @@ export const themes = {
     confirmationPopupButtonBgHoverColor: themeColorsMap.MGLG.themeColor,
     confirmationPopupButtonTextColor: themeColorsMap.MGLG.themeSecondaryColor,
     confirmationPopupButtonTextHoverColor: themeColorsMap.MGLG.themeColor,
+    confirmationPopupTextColor: themeColorsMap.MGLG.themeSecondaryColor,
 
     default: {
       ...defaultTheme.default,
@@ -1562,6 +1568,13 @@ export const themes = {
       hotspot: {
         ...defaultTheme.widgets.hotspot,
         svgMapStrokeColor: themeColorsMap.MGLG.themeSecondaryColor
+      },
+      graphPlacement: {
+        ...defaultTheme.widgets.graphPlacement,
+        buttonLabelStroke: themeColorsMap.MGLG.themeSecondaryColor,
+        buttonActiveLabelStroke: themeColorsMap.MGLG.themeColor,
+        buttonActiveBgColor: themeColorsMap.MGLG.themeSecondaryColor,
+        buttonHoverBgColor: themeColorsMap.MGLG.themeColor
       }
     }
   },
@@ -1585,6 +1598,7 @@ export const themes = {
     confirmationPopupButtonBgHoverColor: themeColorsMap.BOR.themeColor,
     confirmationPopupButtonTextColor: themeColorsMap.BOR.themeSecondaryColor,
     confirmationPopupButtonTextHoverColor: themeColorsMap.BOR.themeColor,
+    confirmationPopupTextColor: themeColorsMap.BOR.themeSecondaryColor,
 
     default: {
       ...defaultTheme.default,
@@ -1767,6 +1781,13 @@ export const themes = {
       hotspot: {
         ...defaultTheme.widgets.hotspot,
         svgMapStrokeColor: themeColorsMap.BOR.themeSecondaryColor
+      },
+      graphPlacement: {
+        ...defaultTheme.widgets.graphPlacement,
+        buttonLabelStroke: themeColorsMap.BOR.themeSecondaryColor,
+        buttonActiveLabelStroke: themeColorsMap.BOR.themeColor,
+        buttonActiveBgColor: themeColorsMap.BOR.themeSecondaryColor,
+        buttonHoverBgColor: themeColorsMap.BOR.themeColor
       }
     }
   },
@@ -1790,6 +1811,7 @@ export const themes = {
     confirmationPopupButtonBgHoverColor: themeColorsMap.RCON.themeColor,
     confirmationPopupButtonTextColor: themeColorsMap.RCON.themeSecondaryColor,
     confirmationPopupButtonTextHoverColor: themeColorsMap.RCON.themeColor,
+    confirmationPopupTextColor: themeColorsMap.RCON.themeSecondaryColor,
 
     default: {
       ...defaultTheme.default,
@@ -1972,6 +1994,13 @@ export const themes = {
       hotspot: {
         ...defaultTheme.widgets.hotspot,
         svgMapStrokeColor: themeColorsMap.RCON.themeSecondaryColor
+      },
+      graphPlacement: {
+        ...defaultTheme.widgets.graphPlacement,
+        buttonLabelStroke: themeColorsMap.RCON.themeSecondaryColor,
+        buttonActiveLabelStroke: themeColorsMap.RCON.themeColor,
+        buttonActiveBgColor: themeColorsMap.RCON.themeSecondaryColor,
+        buttonHoverBgColor: themeColorsMap.RCON.themeColor
       }
     }
   },
@@ -1995,6 +2024,8 @@ export const themes = {
     confirmationPopupButtonBgHoverColor: themeColorsMap.YAB.themeColor,
     confirmationPopupButtonTextColor: themeColorsMap.YAB.themeSecondaryColor,
     confirmationPopupButtonTextHoverColor: themeColorsMap.YAB.themeColor,
+    confirmationPopupTextColor: themeColorsMap.YAB.themeSecondaryColor,
+    confirmationPopupTextColor: themeColorsMap.YAB.themeSecondaryColor,
 
     default: {
       ...defaultTheme.default,
@@ -2183,6 +2214,13 @@ export const themes = {
       axisLabels: {
         ...defaultTheme.widgets.axisLabels,
         responseBoxBgColor: themeColorsMap.YAB.themeColor
+      },
+      graphPlacement: {
+        ...defaultTheme.widgets.graphPlacement,
+        buttonLabelStroke: themeColorsMap.YAB.themeSecondaryColor,
+        buttonActiveLabelStroke: themeColorsMap.YAB.themeColor,
+        buttonActiveBgColor: themeColorsMap.YAB.themeSecondaryColor,
+        buttonHoverBgColor: themeColorsMap.YAB.themeColor
       }
     }
   },

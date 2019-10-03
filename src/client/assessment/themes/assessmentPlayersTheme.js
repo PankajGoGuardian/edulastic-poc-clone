@@ -19,6 +19,22 @@ export const playersZoomTheme = theme => {
     },
     widgets: {
       ...theme.widgets,
+      shading: {
+        ...theme.widgets.shading,
+        zoom: assessmentZoomMap[theme.zoomLevel]
+      },
+      highlightImage: {
+        ...theme.widgets.highlightImage,
+        imageZoom: assessmentZoomMap[theme.zoomLevel]
+      },
+      hotspot: {
+        ...theme.widgets.hotspot,
+        imageZoom: assessmentZoomMap[theme.zoomLevel]
+      },
+      classification: {
+        ...theme.widgets.classification,
+        imageZoom: assessmentZoomMap[theme.zoomLevel]
+      },
       clozeImageDragDrop: {
         ...theme.widgets.clozeImageDragDrop,
         imageZoom: assessmentZoomMap[theme.zoomLevel]

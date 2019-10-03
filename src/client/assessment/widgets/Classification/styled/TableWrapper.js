@@ -15,4 +15,5 @@ export const TableWrapper = styled.div`
   padding: 10px;
   position: relative;
   display: block;
+  zoom: ${props => props.theme.widgets.classification.imageZoom};
 `;

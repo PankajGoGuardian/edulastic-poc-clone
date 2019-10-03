@@ -23,6 +23,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 // import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ClozeMath = ({
   view,
@@ -94,13 +95,18 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      <>
+      <div style={{ zoom: 2 }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+          {!flowLayout
+            ? showQuestionNumber && <QuestionNumberLabel fontSize="12">{qLabel}:</QuestionNumberLabel>
+            : null}
 
           {view === PREVIEW && (
-            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible", flex: "auto" }}>
+            <StyledPaperWrapper
+              isV1Multipart={isV1Multipart}
+              style={{ height: "100%", overflow: "visible", flex: "auto" }}
+            >
               <ClozeMathPreview
                 type={actualPreviewMode}
                 isExpressGrader={answerContextConfig.expressGrader}
@@ -114,10 +120,10 @@ const ClozeMath = ({
                 evaluation={evaluation}
                 {...restProps}
               />
-            </Paper>
+            </StyledPaperWrapper>
           )}
         </QuestionTitleWrapper>
-      </>
+      </div>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>

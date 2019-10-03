@@ -77,14 +77,14 @@ const ModalContainer = styled.div`
 const Title = styled.div`
   font-size: ${props => props.theme.confirmationPopupTitleTextSize};
   font-weight: bold;
-  color: ${props => props.theme.confirmationPopupButtonTextColor};
+  color: ${props => props.theme.confirmationPopupTextColor};
 `;
 
 const TitleDescription = styled.div`
   font-size: ${props => props.theme.confirmationPopupButtonTextSize};
   font-weight: 600;
   margin-top: 12px;
-  color: ${props => props.theme.confirmationPopupButtonTextColor};
+  color: ${props => props.theme.confirmationPopupTextColor};
 `;
 
 const ButtonContainer = styled.div`

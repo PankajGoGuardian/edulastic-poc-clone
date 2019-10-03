@@ -38,7 +38,8 @@ const HighlightImagePreview = ({
   t,
   showQuestionNumber,
   qIndex,
-  disableResponse
+  disableResponse,
+  theme
 }) => {
   const canvas = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -183,7 +184,7 @@ const HighlightImagePreview = ({
 
   const renderImage = () =>
     file ? (
-      <div style={{ width: "100%", height: "100%" }}>
+      <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
         <img src={file} alt={altText} style={{ width, height }} />
       </div>
     ) : (

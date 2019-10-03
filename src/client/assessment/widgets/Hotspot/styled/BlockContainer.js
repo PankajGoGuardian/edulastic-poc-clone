@@ -9,6 +9,7 @@ const BlockContainer = styled.div.attrs({
   display: block;
   overflow: auto;
   position: relative;
+  zoom: ${props => props.theme.widgets.hotspot.imageZoom};
   & > * {
     margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;
   }

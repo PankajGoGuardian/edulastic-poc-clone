@@ -100,7 +100,7 @@ const ClozeMath = ({
           {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
 
           {view === PREVIEW && (
-            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
+            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible", flex: "auto" }}>
               <ClozeMathPreview
                 type={actualPreviewMode}
                 isExpressGrader={answerContextConfig.expressGrader}

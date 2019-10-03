@@ -131,9 +131,24 @@ class ClozeMathInput extends React.Component {
     if (!currentMathQuill) {
       return;
     }
-    this.setState({ showKeyboard: true });
+    this.setState({ showKeyboard: true }, this.calcKeyPosition);
     currentMathQuill.focus();
   };
+
+  calcKeyPosition() {
+    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
+      return;
+    }
+    const keyboardW = this.mathKeyboardRef.current.offsetWidth;
+    const previewWrapperW = this.wrappedRef.current.offsetParent.offsetWidth; // offsetParent is Preview Container element
+    const mathWrapLeft = this.wrappedRef.current.offsetLeft;
+    const diff = previewWrapperW - mathWrapLeft - keyboardW;
+    if (diff < 0) {
+      this.mathKeyboardRef.current.style.left = `${diff}px`;
+    } else {
+      this.mathKeyboardRef.current.style.left = "0px";
+    }
+  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -284,8 +299,7 @@ MathInput.propTypes = {
 export default MathInput;
 
 const KeyboardWrapper = styled.div`
-  width: 40%;
-  left: 0px;
+  width: fit-content;
   top: ${({ height }) => height};
   position: absolute;
   z-index: 100;

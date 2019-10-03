@@ -56,6 +56,14 @@ class Question extends Component {
       } else {
         studentQuestions = [studentQuestion];
       }
+      /**
+       * when studentQuestions is empty, meaning,
+       * question activities not created,
+       * then use the computed questionActivities
+       */
+      if (studentQuestions.length === 0) {
+        studentQuestions = [record];
+      }
     }
 
     return (

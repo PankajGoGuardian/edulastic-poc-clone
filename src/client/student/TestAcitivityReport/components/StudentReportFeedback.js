@@ -2,10 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { FeedbackByQIdSelector } from "../../sharedDucks/TestItem";
+import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedDucks/TestItem";
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel }) => {
-  const { score, maxScore, feedback } = question[qId] || {};
+const StudentFeedback = ({ question, qId, qLabel, itemMaxScore }) => {
+  const { score = 0, maxScore = itemMaxScore, feedback } = question[qId] || {};
+
   return (
     <FeedbackWrapper>
       <FeedbackText>
@@ -32,7 +33,8 @@ StudentFeedback.propTypes = {
 
 export default connect(
   state => ({
-    question: FeedbackByQIdSelector(state)
+    question: FeedbackByQIdSelector(state),
+    itemMaxScore: getMaxScoreFromCurrentItem(state)
   }),
   null
 )(StudentFeedback);

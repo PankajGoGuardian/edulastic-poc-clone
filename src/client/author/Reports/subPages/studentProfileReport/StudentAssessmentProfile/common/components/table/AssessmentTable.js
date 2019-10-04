@@ -45,6 +45,7 @@ const tableColumns = [
   {
     title: "Score",
     dataIndex: "rawScore",
+    className: "rawscore",
     key: "rawScore"
   },
   {

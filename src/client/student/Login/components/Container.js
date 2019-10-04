@@ -11,7 +11,8 @@ import {
   tabletWidth,
   mediumDesktopWidth,
   middleMobileWidth,
-  grey
+  grey,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
@@ -258,13 +259,7 @@ const LoginContentWrapper = styled(Row)`
 
 const RegistrationBody = styled(Row)`
   padding: 30px 0px 65px;
-
-  @media (min-width: ${mediumDesktopWidth}) {
-    justify-content: center;
-  }
-  @media (max-width: ${tabletWidth}) {
-    justify-content: center;
-  }
+  justify-content: center;
 `;
 
 const Copyright = styled(Row)`

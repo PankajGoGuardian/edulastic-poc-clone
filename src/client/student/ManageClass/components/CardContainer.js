@@ -28,12 +28,15 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
       layout={{ xs: 24, sm: 12, md: 12, lg: 24, xl: 24 }}
     >
       <ManageClassCardContent>
-        <CardHeader type="flex" justify="space-between" align="middle">
-          <CardTitle title="Class Name">{name}</CardTitle>
-          {/* passing classItem as props to Assignments route */}
-          <InfoContent span={16} status={status}>
-            <span>{status === "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
-          </InfoContent>
+        <CardHeader>
+          <Col span={15}>
+            <CardTitle title="Class Name">{name}</CardTitle>
+          </Col>
+          <Col span={9}>
+            <InfoContent width={100} status={status}>
+              <span>{status === "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
+            </InfoContent>
+          </Col>
         </CardHeader>
         <CardBody>
           <Col span={12}>
@@ -118,10 +121,8 @@ const ManageClassCardContent = styled.div`
 `;
 
 const CardHeader = styled(Row)`
-  padding: 15px 16px 15px 24px;
+  padding: 15px 8px;
   border-bottom: 1px solid ${props => props.theme.classCard.cardHeaderBorderColor};
-  display: flex;
-  align-items: center;
 `;
 
 const CardTitle = styled.h3`
@@ -129,7 +130,6 @@ const CardTitle = styled.h3`
   color: ${props => props.theme.classCard.cardTitleColor};
   font-weight: bold;
   margin: 0px;
-  width: 50%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -178,7 +178,7 @@ const InfoLabel = styled(Col)`
 `;
 
 const InfoContent = styled(InfoLabel)`
-  width: 50%;
+  width: ${props => (props.width ? `${props.width}%` : "50%")};
   text-align: right;
   color: ${props =>
     props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardUserInfoContentColor};
@@ -187,9 +187,12 @@ const InfoContent = styled(InfoLabel)`
   white-space: nowrap;
 
   span {
+    width: 100%;
+    text-align: center;
     border-radius: 5px;
     background-color: ${props => (props.status === "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor)};
-    padding: 4.8px 25px;
+    padding: 4.8px 3px;
+    font-size: 10px;
     color: ${props =>
       props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};

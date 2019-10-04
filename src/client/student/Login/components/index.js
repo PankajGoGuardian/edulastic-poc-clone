@@ -11,6 +11,7 @@ import { validatePartnerUrl, getPartnerKeyFromUrl } from "../../../common/utils/
 
 const Wrapper = styled(Layout)`
   width: 100%;
+  overflow: hidden;
 `;
 
 const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {

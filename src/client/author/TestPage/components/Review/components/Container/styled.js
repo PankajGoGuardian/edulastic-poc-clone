@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { mediumDesktopWidth, mainBgColor, mobileWidthMax, tabletWidth, desktopWidth } from "@edulastic/colors";
+import {
+  mediumDesktopWidth,
+  mainBgColor,
+  mobileWidthMax,
+  tabletWidth,
+  desktopWidth,
+  smallDesktopWidth
+} from "@edulastic/colors";
 import { Col } from "antd";
 
 export const ReviewPageContainer = styled.div`
@@ -12,7 +19,7 @@ export const ReviewPageContainer = styled.div`
     right: 0;
     z-index: 2;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-    padding: 10px 24% 10px 10px;
+    padding: 10px 24% 10px 55px;
     transition: top 1s ease-in;
     > div {
       margin: 0;
@@ -22,6 +29,9 @@ export const ReviewPageContainer = styled.div`
     }
     @media (max-width: ${mediumDesktopWidth}) {
       top: 59px;
+    }
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 10px 10px 10px 55px;
     }
     @media (max-width: ${desktopWidth}) {
       padding: 10px;

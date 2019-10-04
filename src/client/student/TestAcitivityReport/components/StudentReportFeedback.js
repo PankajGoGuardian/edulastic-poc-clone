@@ -62,7 +62,7 @@ const Feedback = styled.div`
 `;
 
 const ScoreWrapper = styled.div`
-  width: 80px;
+  max-width: 80px;
 `;
 
 const FeedbackContainer = styled.div`

@@ -4,7 +4,4 @@ export default styled.div.attrs({
   className: "testing"
 })`
   width: 100%;
-  div {
-    width: 100%;
-  }
 `;

@@ -55,7 +55,7 @@ const getColumns = (handleOnClickStandard, filters) => {
       dataIndex: "standardName",
       width: 300,
       render: data => {
-        let str = data;
+        let str = data || "";
         if (str.length > 60) {
           str = str.substring(0, 60) + "...";
         }
@@ -78,14 +78,14 @@ const getColumns = (handleOnClickStandard, filters) => {
     },
     {
       title: "Assessment#",
-      key: "assessmentCount",
-      dataIndex: "assessmentCount",
+      key: "testCount",
+      dataIndex: "testCount",
       render: renderToolTipColumn("Assessment#")
     },
     {
       title: "Total Questions",
-      key: "totalQuestions",
-      dataIndex: "totalQuestions",
+      key: "questionCount",
+      dataIndex: "questionCount",
       render: renderToolTipColumn("Total Questions")
     },
     {

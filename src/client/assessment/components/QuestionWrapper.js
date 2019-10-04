@@ -60,6 +60,7 @@ import { playersZoomTheme } from "../themes/assessmentPlayersTheme";
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
+  justify-content: "space-between";
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
@@ -381,7 +382,7 @@ class QuestionWrapper extends Component {
               className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}
               noPadding={noPadding}
-              isFlex={isFlex}
+              isFlex
               data-cy="question-container"
             >
               <PaperWrapper
@@ -389,8 +390,9 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 style={{
-                  width: studentReportFeedbackVisible ? "75%" : "-webkit-fill-available",
+                  width: "-webkit-fill-available",
                   display: "flex",
+                  flex: 9,
                   boxShadow: "none",
                   paddingRight: layoutType === COMPACT ? "100px" : null
                 }}

@@ -25,11 +25,22 @@ const containerWhite = "#FFFFFF";
 const keyboardColor = "#91D8FF";
 const keyboardHoverColor = "#7AC8F3";
 const keyboardFontColor = "#6A737F";
-const keyboardBorderColor = "#FFFFFF";
+const keyboardBorderColor = "#b3b3b3";
+const keyboardBgColor = "#FFFFFF";
 const numberpadBorderColor = "#FFFFFF";
 const numberpadColor = "#FFFFFF";
+const numType1BgColor = "#e5e5e5";
+const numType2BgColor = "#d1d1d1";
+const numType3BgColor = "#d0edfd";
+const numType3Color = "#808080";
+const numType4BgColor = "#91D8FF";
+const numType4Color = "#738C9F";
+const numType5BgColor = "#0EB08D";
+const numType5Color = "#fff";
+const numType6BgColor = "#50B29D";
+const numType6Color = "#fff";
 const numberpadBgColor = "#0EB08D";
-const numberpadBgHoverColor = "#079A7A";
+const numberpadBgHoverColor = "#dfdfdf";
 const numberpadBgDisable = "#FFFFFF";
 const iconDeleteColor = "#00AD50";
 const iconDeleteHoverColor = "#FF0080";
@@ -178,6 +189,16 @@ export const allThemeVars = {
   keyboardBorderColor,
   numberpadBorderColor,
   numberpadColor,
+  numType1BgColor,
+  numType2BgColor,
+  numType3BgColor,
+  numType3Color,
+  numType4BgColor,
+  numType4Color,
+  numType5BgColor,
+  numType5Color,
+  numType6BgColor,
+  numType6Color,
   numberpadBgColor,
   numberpadBgHoverColor,
   numberpadBgDisable,
@@ -374,7 +395,7 @@ export const defaultTheme = {
     questionHeaderFontSize: questionTextextraFontSize,
     questionHeaderSmallFontSize: questionTextsmallFontSize,
     questionHeaderColor: textColor,
-    subtitleFontSize: subtitleFontSize,
+    subtitleFontSize,
     subtitleFontWeight: semiBold,
     subtitleFontStyle: "normal",
     subtitleFontStretch: "normal",
@@ -421,9 +442,9 @@ export const defaultTheme = {
   mathKeyboard: {
     numFontFamily: "Open Sans",
     dropDownFontFamily: "Open Sans",
-    keyboardBorderColor: keyboardBorderColor,
-    keyboardBgColor: keyboardBorderColor,
-    dropDownShadowColor: "none",
+    keyboardBorderColor,
+    keyboardBgColor,
+    dropDownShadowColor: "rgba(219, 219, 219, 0.55)",
     dropDownBgColor: containerWhite,
     dropDownColor: labelStyle,
     dropDownFontSize: subtitleFontSize,
@@ -443,16 +464,16 @@ export const defaultTheme = {
     numBgActiveColor: numberpadBgColor,
     numBgHoverColor: numberpadBgHoverColor,
     numHoverColor: numberpadColor,
-    numType1BgColor: numberpadBgColor,
-    numType2BgColor: numberpadBgColor,
-    numType3BgColor: numberpadBgColor,
-    numType3Color: numberpadColor,
-    numType4BgColor: numberpadBgColor,
-    numType4Color: numberpadColor,
-    numType5BgColor: numberpadBgColor,
-    numType5Color: numberpadColor,
-    numType6BgColor: numberpadBgColor,
-    numType6Color: numberpadColor
+    numType1BgColor,
+    numType2BgColor,
+    numType3BgColor,
+    numType3Color,
+    numType4BgColor,
+    numType4Color,
+    numType5BgColor,
+    numType5Color,
+    numType6BgColor,
+    numType6Color
   },
   numberPad: {
     itemBorderColor: numberpadBorderColor,
@@ -531,7 +552,7 @@ export const defaultTheme = {
     antButtonCircleShadowColor: "none",
     antSelectSelectionBgColor: labelBgColorOverlayingContainer,
     antSelectSelectionChoiceBorderColor: borderColor,
-    textColor: textColor,
+    textColor,
     antSelectSelectionChoiceContentColor: textColor,
     antSelectSelectionChoiceContentFontSize: subtitleFontSize,
     antSelectSelectionChoiceContentFontWeight: semiBold,
@@ -571,7 +592,7 @@ export const defaultTheme = {
   },
   widgets: {
     classification: {
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       previewSubtitleColor: labelStyle,
       previewItemFontWeight: semiBold,
@@ -613,16 +634,16 @@ export const defaultTheme = {
       draggableBoxSmallFontWeight: semiBold,
       draggableBoxFontWeight: semiBold,
       deleteBgColor: containerGrey,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor
+      rightIconColor,
+      wrongIconColor
     },
     clozeDropDown: {
       editViewBgColor: containerWhite,
       previewTemplateBoxSmallFontSize: subtitleFontSize,
       iconPlusColor: themeColor,
       deleteBgColor: themeColor,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor
+      rightIconColor,
+      wrongIconColor
     },
     clozeImageDragDrop: {
       editViewBgColor: containerWhite,
@@ -645,8 +666,8 @@ export const defaultTheme = {
       correctAnswerBoxSubtitleColor: labelStyle,
       correctAnswerBoxTextContainerFontWeight: semiBold,
       correctAnswerBoxTextContainerBgColor: containerWhite,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor,
+      rightIconColor,
+      wrongIconColor,
       imageZoom: 1
     },
     clozeImageDropDown: {
@@ -691,8 +712,8 @@ export const defaultTheme = {
       controlButtonFontWeight: semiBold,
       colorBoxBorderColor: borderColor,
       colorBoxBgColor: containerWhite,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor,
+      rightIconColor,
+      wrongIconColor,
       antSelectSelectionBgColor: buttonBackgroundColor,
       antSelectSelectionBorderColor: borderColor,
       antSelectSelectionFontSize: subtitleFontSize,
@@ -744,8 +765,8 @@ export const defaultTheme = {
       controlButtonFontWeight: semiBold,
       colorBoxBorderColor: borderColor,
       colorBoxBgColor: containerWhite,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor,
+      rightIconColor,
+      wrongIconColor,
       imageZoom: 1
     },
     clozeText: {
@@ -753,9 +774,9 @@ export const defaultTheme = {
       previewTemplateBoxSmallFontSize: questionTextnormalFontSize,
       iconPlusColor: actionIconColor,
       deleteBgColor: containerGrey,
-      rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor,
-      textZoom: 1
+      rightIconColor,
+      wrongIconColor,
+      textZoom: 1,
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,
@@ -784,7 +805,7 @@ export const defaultTheme = {
       toolbarColor: labelStyle
     },
     shortText: {
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       correctInputBgColor: rightIconColor,
       incorrectInputBgColor: wrongIconColor,
@@ -815,7 +836,7 @@ export const defaultTheme = {
       answerBgColor: containerGrey
     },
     highlightImage: {
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       textFontSize: questionTextnormalFontSize,
       textFontWeight: regular,
@@ -832,7 +853,7 @@ export const defaultTheme = {
     },
     shading: {
       liIconFontFamily: "Open Sans",
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       liIconFontSize: questionTexticonFontSize,
       liIconColor: clearIconColor,
@@ -846,7 +867,7 @@ export const defaultTheme = {
     },
     hotspot: {
       textFontFamily: "Open Sans",
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       svgMapFillColor: liColor,
       svgMapStrokeColor: actionIconColor,
@@ -892,7 +913,7 @@ export const defaultTheme = {
     },
     matchList: {
       containerBgColor: dashBorderColor,
-      subtitleFontSize: subtitleFontSize,
+      subtitleFontSize,
       subtitleColor: labelStyle,
       previewSubtitleColor: labelStyle,
       dragItemBgColor: clearIconColor,
@@ -1061,15 +1082,15 @@ export const defaultTheme = {
       baseFontFamily: "'Source Sans Pro', 'Arial', sans-serif",
       sidebarFontFamily: "'Source Sans Pro', 'Arial', sans-serif",
       mainContentFontFamily: "'Source Sans Pro', 'Arial', sans-serif",
-      brandBlue: brandBlue,
-      brandGreen: brandGreen,
+      brandBlue,
+      brandGreen,
       brandDarkgreen: brandDarkGreen,
-      brandRed: brandRed,
-      brandYellow: brandYellow,
+      brandRed,
+      brandYellow,
       brandDarkgrey: brandDarkGrey,
-      brandGrey: brandGrey,
+      brandGrey,
       brandLightgrey: brandLightGrey,
-      brandWhite: brandWhite,
+      brandWhite,
       primary: themeColor,
       secondary: themeColorHover,
       warning: warningColor,
@@ -1106,7 +1127,7 @@ export const defaultTheme = {
       quitAssessmentTextColor: themeColor,
       quitAssessmentFontSize: standardFont,
       timerIconColor: clearIconColor,
-      progressStrokeColor: progressStrokeColor,
+      progressStrokeColor,
       progressTrailColor: clearIconColor,
       saveIconColor: actionIconColor,
       submitIconColor: actionIconColor,
@@ -1120,7 +1141,7 @@ export const defaultTheme = {
     },
     assessmentPlayerSimple: {
       logoColor: clearIconColor,
-      progressStrokeColor: progressStrokeColor,
+      progressStrokeColor,
       progressTrailColor: clearIconColor,
       headerBg: themeColor,
       headerIconBgColor: clearIconColor,

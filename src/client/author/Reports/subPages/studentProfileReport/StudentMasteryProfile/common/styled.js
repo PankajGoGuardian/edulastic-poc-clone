@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { Col } from "antd";
 import { themeColor, themeColorLight } from "@edulastic/colors";
 
+import { StyledTable as Table } from "../../../../common/styled";
+
 export const StyledTag = styled(Col)`
   flex: 1 1 100px;
   text-align: center;
@@ -17,5 +19,19 @@ export const OnClick = styled.span`
   cursor: pointer;
   &:hover {
     color: ${themeColorLight};
+  }
+`;
+
+export const StyledTable = styled(Table)`
+  .ant-table-body {
+    table {
+      tbody {
+        tr {
+          td:nth-child(3) {
+            font-weight: normal;
+          }
+        }
+      }
+    }
   }
 `;

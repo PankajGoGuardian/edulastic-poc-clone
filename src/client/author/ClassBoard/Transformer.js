@@ -316,8 +316,11 @@ export const transformGradeBookResponse = (
                 barLabel,
                 testActivityId,
                 groupId,
+                score: 0,
                 qLabel,
-                ...(submitted ? { skipped: true, score: 0, maxScore: questionMaxScore } : { notStarted: true })
+                ...(submitted
+                  ? { skipped: true, score: 0, maxScore: questionMaxScore }
+                  : { notStarted: true, score: 0, maxScore: questionMaxScore })
               };
             }
             let {

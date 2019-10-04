@@ -14,7 +14,8 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
   ADD_ITEM_EVALUATION,
-  CHANGE_PREVIEW
+  CHANGE_PREVIEW,
+  CHANGE_VIEW
 } from "../src/constants/actions";
 import { loadQuestionsAction, getQuestionsArraySelector } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
@@ -536,7 +537,7 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const { title, requirePassword = false } = payload.data;
+  const { _id: oldId, versioned: regrade = false, title, requirePassword = false } = payload.data;
   try {
     if (!title) {
       return yield call(message.error(" Name field cannot be empty "));
@@ -787,6 +788,7 @@ function* receiveSharedWithListSaga({ payload }) {
 
 function* deleteSharedUserSaga({ payload }) {
   try {
+    const authors = yield call(contentSharingApi.deleteSharedUser, payload);
     yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.contentType }));
   } catch (e) {
     const errorMessage = "delete shared user is failing";

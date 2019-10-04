@@ -1,6 +1,6 @@
-const exactMatchEvaluator = ({ minScoreIfAttempted, maxScore }) => ({
-  score: minScoreIfAttempted || 0,
-  maxScore: maxScore || 1,
+const exactMatchEvaluator = ({ minScoreIfAttempted, validResponse }) => ({
+  score: undefined,
+  maxScore: validResponse?.score || 0,
   evaluation: {}
 });
 

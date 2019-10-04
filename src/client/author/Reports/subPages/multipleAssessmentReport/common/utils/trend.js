@@ -1,6 +1,6 @@
 import next from "immer";
-import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, ceil, maxBy } from "lodash";
-import { getOverallScore, filterAccordingToRole, getHSLFromRange1 } from "../../../../common/util";
+import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, maxBy } from "lodash";
+import { filterAccordingToRole, percentage } from "../../../../common/util";
 
 import dropDownData from "../static/json/dropDownData.json";
 
@@ -15,6 +15,11 @@ const sanitizeNullNumberFields = (records, fields = []) => {
     });
   });
 };
+
+const getOverallScore = (metrics = []) =>
+  round(
+    percentage(sumBy(metrics, item => parseFloat(item.totalScore)), sumBy(metrics, item => parseFloat(item.maxScore)))
+  );
 
 export const compareByMap = {
   school: "schoolName",
@@ -46,7 +51,7 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
       return map(metricInfo, metric => {
         const relatedSchool =
           find(dataSource, school => {
-            return metric.id == school.schoolId;
+            return metric.id === school.schoolId;
           }) || {};
 
         return { ...metric, ...relatedSchool };
@@ -55,7 +60,7 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
       return map(metricInfo, metric => {
         const relatedGroup =
           find(dataSource, school => {
-            return metric.id == school.groupId;
+            return metric.id === school.groupId;
           }) || {};
 
         return { ...metric, ...relatedGroup };
@@ -64,7 +69,7 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
       return map(metricInfo, metric => {
         const relatedTeacher =
           find(dataSource, school => {
-            return metric.id == school.teacherId;
+            return metric.id === school.teacherId;
           }) || {};
 
         return { ...metric, ...relatedTeacher };

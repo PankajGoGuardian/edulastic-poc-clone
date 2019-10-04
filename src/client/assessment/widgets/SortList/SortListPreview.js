@@ -238,6 +238,7 @@ const SortListPreview = ({
                 smallSize={smallSize}
                 active={isEqual(active, draggableItem)}
                 onClick={setActiveItem}
+                items={selected}
                 flag="items"
                 onDrop={onDrop}
                 obj={draggableItem}
@@ -282,6 +283,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
+                items={items}
                 obj={userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}

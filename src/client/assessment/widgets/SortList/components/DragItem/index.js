@@ -2,8 +2,7 @@ import React from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
-
+import styled, { withTheme } from "styled-components";
 import { CHECK, SHOW, CLEAR } from "../../../../constants/constantsForQuestions";
 import { TextEmpty } from "./styled/TextEmpty";
 import DragPreview from "../../../../components/DragPreview";
@@ -50,7 +49,8 @@ const DragItem = ({
   previewTab,
   index,
   theme,
-  isResetOffset
+  isResetOffset,
+  items
 }) => {
   const showPreview = previewTab === CHECK || previewTab === SHOW;
   return (
@@ -90,12 +90,25 @@ const DragItem = ({
         )
       ) : (
         <div>
-          <TextEmpty smallSize={smallSize} />
+          <TextEmpty smallSize={smallSize}>
+            <HiddenContent dangerouslySetInnerHTML={{ __html: items[index] }} />
+          </TextEmpty>
         </div>
       )}
     </div>
   );
 };
+
+const HiddenContent = styled.div`
+  display: flex;
+  align-items: stretch;
+  visibility: hidden;
+  width: 100%;
+  margin-left: 42px;
+  p {
+    padding: 16px;
+  }
+`;
 
 DragItem.propTypes = {
   connectDragSource: PropTypes.func.isRequired,

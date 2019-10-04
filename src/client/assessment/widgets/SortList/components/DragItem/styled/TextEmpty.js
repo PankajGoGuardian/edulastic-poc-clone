@@ -7,10 +7,10 @@ export const TextEmpty = styled.div`
   height: 100%;
   border-radius: 4px;
   min-height: ${({ smallSize }) => (smallSize ? 31 : 56)}px;
-  padding: ${({ smallSize }) => (smallSize ? "5px" : "15px")};
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
+  flex-grow: 1;
   font-size: ${({ smallSize, theme }) =>
     smallSize
       ? theme.widgets.sortList.dragItemTextEmptySmallFontSize

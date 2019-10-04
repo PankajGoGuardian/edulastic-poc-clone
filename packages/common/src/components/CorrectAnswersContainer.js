@@ -34,6 +34,7 @@ const Container = styled.div`
   background-color: ${dashBorderColor};
   flex: 2;
   max-width: ${({ maxWidth }) => maxWidth || null};
+  min-width: 200px;
   img {
     ${({ imageStyle }) => {
       return imageStyle

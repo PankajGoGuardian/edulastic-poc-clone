@@ -2,7 +2,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
-import { isEqual, find, isObject } from "lodash";
+import { isEqual, find, isObject, isArray } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 
@@ -101,7 +101,6 @@ const PlayerContent = ({
     if (!cQuestion) {
       return;
     }
-
     const { type: cQuestionType } = cQuestion;
     let data = {};
     if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
@@ -138,9 +137,20 @@ const PlayerContent = ({
       currentItem.responses.map(({ responseId }) => {
         const testletValue = findTestletValue(responseId);
         if (testletValue) {
-          const opIndex = ALPHABET.indexOf(testletValue);
-          if (options[opIndex]) {
-            data.push(options[opIndex].value);
+          if (isArray(testletValue)) {
+            // here is checkbox type
+            testletValue.map(v => {
+              const opIndex = ALPHABET.indexOf(v);
+              if (options[opIndex]) {
+                data.push(options[opIndex].value);
+              }
+            });
+          } else {
+            // here is radio type
+            const opIndex = ALPHABET.indexOf(testletValue);
+            if (options[opIndex]) {
+              data.push(options[opIndex].value);
+            }
           }
         }
       });
@@ -150,6 +160,38 @@ const PlayerContent = ({
         const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
         const testletValue = findTestletValue(responseId);
         return { ...eduRes, value: testletValue };
+      });
+    } else if (cQuestionType === questionType.CHOICE_MATRIX) {
+      // here is grid type
+      data.value = [];
+      currentItem.responses.map(({ responseId }) => {
+        let testletValue = findTestletValue(responseId) || [];
+        testletValue = testletValue.split(",");
+        data.value = Array.from({
+          length: testletValue.length
+        }).fill([]);
+        testletValue.map(v => {
+          const num = v.match(/[0-9]+/);
+          const alpha = v.match(/[a-z]+/);
+          if (num && alpha) {
+            const opIndex = ALPHABET.indexOf(alpha[0]);
+            const answer = [opIndex];
+            data.value[num[0] - 1] = answer;
+          }
+        });
+      });
+    } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
+      // here is match
+      data = [];
+      currentItem.responses.map(({ responseId }) => {
+        const testletValue = findTestletValue(responseId);
+        const { options } = cQuestion;
+        const opIndex = ALPHABET.indexOf(testletValue);
+        if (options[opIndex]) {
+          data.push(options[opIndex].value);
+        } else {
+          data.push(false);
+        }
       });
     }
     setUserAnswer(currentItem.uuid, data);

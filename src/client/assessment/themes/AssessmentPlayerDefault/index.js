@@ -39,10 +39,10 @@ import {
 import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
 import {
-  LARGE_DESKTOP_WIDTH,
   SMALL_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
-  MAX_MOBILE_WIDTH
+  MAX_MOBILE_WIDTH,
+  MEDIUM_DESKTOP_WIDTH
 } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -394,6 +394,7 @@ class AssessmentPlayerDefault extends React.Component {
               isVisible={isToolbarModalVisible}
               onClose={() => this.closeToolbarModal()}
               checkAnswer={() => this.changeTabItemState("check")}
+              windowWidth={windowWidth}
             />
           </FeaturesSwitch>
           {!previewPlayer && (
@@ -451,7 +452,7 @@ class AssessmentPlayerDefault extends React.Component {
                         <Tooltip placement="top" title="Next">
                           <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                         </Tooltip>
-                        {windowWidth < LARGE_DESKTOP_WIDTH && (
+                        {windowWidth < MEDIUM_DESKTOP_WIDTH && (
                           <Tooltip placement="top" title="Tool">
                             <ToolButton
                               next
@@ -479,7 +480,7 @@ class AssessmentPlayerDefault extends React.Component {
                             handleClick={this.showHideHints}
                           />
                         )}
-                        {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                        {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
                           <ToolBar
                             settings={settings}
                             calcBrands={calcBrands}

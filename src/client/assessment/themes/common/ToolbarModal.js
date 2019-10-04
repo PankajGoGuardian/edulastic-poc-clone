@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Modal } from "antd";
+import { SMALL_DESKTOP_WIDTH } from "../../constants/others";
 
 class ToolbarModal extends React.Component {
   checkAnswer = () => {
@@ -62,9 +63,14 @@ class ToolbarModal extends React.Component {
         width="390px"
       >
         <Container>
-          <StyledButton onClick={() => this.checkAnswer()}>Check Answer</StyledButton>
-          <StyledButton onClick={() => this.hint()}>Hint</StyledButton>
-          <StyledButton onClick={() => this.bookmark()}>Bookmark</StyledButton>
+          {windowWidth <= SMALL_DESKTOP_WIDTH && (
+            <>
+              <StyledButton onClick={() => this.checkAnswer()}>Check Answer</StyledButton>
+              <StyledButton onClick={() => this.hint()}>Hint</StyledButton>
+              <StyledButton onClick={() => this.bookmark()}>Bookmark</StyledButton>
+            </>
+          )}
+
           <StyledButton onClick={() => this.pointer()}>Pointer</StyledButton>
           <StyledButton onClick={() => this.inchRuler()}>Inch Ruler</StyledButton>
           <StyledButton onClick={() => this.centimeterRuler()}>Centimeter Ruler</StyledButton>

@@ -5,6 +5,7 @@ import { Button, Tooltip } from "antd";
 
 import { test, questionType } from "@edulastic/constants";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
+import { MEDIUM_DESKTOP_WIDTH } from "../../constants/others";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {

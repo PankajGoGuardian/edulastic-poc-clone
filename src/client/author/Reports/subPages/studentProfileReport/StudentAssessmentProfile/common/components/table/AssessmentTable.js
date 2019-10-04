@@ -33,6 +33,7 @@ const tableColumns = [
     title: "Day of Assessment Start",
     dataIndex: "assignmentDateFormatted",
     key: "assignmentDateFormatted",
+    className: "assessmentDate",
     sorter: (a, b) => {
       return a.assignmentDate - b.assignmentDate;
     }

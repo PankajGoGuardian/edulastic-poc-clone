@@ -35,6 +35,7 @@
         "title": "Assessment Date",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
+        "className": "assessmentDate",
         "width": 150
       },
       {
@@ -111,6 +112,7 @@
         "title": "Assessment Date",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
+        "className": "assessmentDate",
         "width": 150
       },
       {
@@ -187,6 +189,7 @@
         "title": "Assessment Date",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
+        "className": "assessmentDate",
         "width": 150
       },
       {

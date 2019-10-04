@@ -257,8 +257,11 @@ export const StyledTable = styled(Table)`
             text-align: right;
           }
 
-          td.rawscore {
-            white-space: nowrap;
+          td {
+            &.rawscore,
+            &.assessmentDate {
+              white-space: nowrap;
+            }
           }
 
           td {

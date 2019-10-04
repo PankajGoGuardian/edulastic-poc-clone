@@ -52,7 +52,7 @@ class ToolbarModal extends React.Component {
   };
 
   render() {
-    const { isVisible, onClose } = this.props;
+    const { isVisible, onClose, windowWidth } = this.props;
     return (
       <Modal
         visible={isVisible}

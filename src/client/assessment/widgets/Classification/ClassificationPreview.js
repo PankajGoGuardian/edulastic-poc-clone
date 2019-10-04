@@ -76,7 +76,7 @@ const ClassificationPreview = ({
     possibleResponseGroups = [],
     stimulus,
     imageUrl,
-    imageOptions,
+    imageOptions = {},
     shuffleOptions,
     transparentPossibleResponses,
     transparentBackgroundImage = true,

@@ -54,30 +54,32 @@ export const getMasteryLevelOptions = scaleInfo => {
 
 export const groupedByDomain = (metricInfo = [], maxScore, scaleInfo = [], selectedDomains, rawDomainData) => {
   const domains = groupBy(metricInfo, "domainId");
-  return Object.keys(domains).map(domainId => {
-    const domainData = domains[domainId];
+  return Object.keys(domains)
+    .map(domainId => {
+      const domainData = domains[domainId];
 
-    const masteryScore = getOverallMasteryScore(domainData);
-    const score = ceilingPercentage(sumBy(domainData, "totalScore"), sumBy(domainData, "maxScore"));
-    const rawScore = `${sumBy(domainData, "totalScore")} / ${sumBy(domainData, "maxScore")}`;
-    const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo).masteryLabel;
-    const domainMetaInformation = find(rawDomainData, rawDomain => rawDomain.tloId === domainId);
+      const masteryScore = getOverallMasteryScore(domainData);
+      const score = ceilingPercentage(sumBy(domainData, "totalScore"), sumBy(domainData, "maxScore"));
+      const rawScore = `${sumBy(domainData, "totalScore")} / ${sumBy(domainData, "maxScore")}`;
+      const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo).masteryLabel;
+      const domainMetaInformation = find(rawDomainData, rawDomain => rawDomain.tloId === domainId);
 
-    return {
-      domainId: domainId,
-      domainName: domainMetaInformation ? domainMetaInformation.tloIdentifier : "",
-      masteryScore: masteryScore,
-      diffMasteryScore: maxScore - round(masteryScore, 2),
-      score: score,
-      rawScore,
-      masteryLevel,
-      records: domainData,
-      fill:
-        includes(selectedDomains, domainId) || !selectedDomains.length
-          ? getMasteryLevel(masteryScore, scaleInfo).color
-          : "#cccccc"
-    };
-  });
+      return {
+        domainId: domainId,
+        domainName: domainMetaInformation ? domainMetaInformation.tloIdentifier : "",
+        masteryScore: masteryScore,
+        diffMasteryScore: maxScore - round(masteryScore, 2),
+        score: score,
+        rawScore,
+        masteryLevel,
+        records: domainData,
+        fill:
+          includes(selectedDomains, domainId) || !selectedDomains.length
+            ? getMasteryLevel(masteryScore, scaleInfo).color
+            : "#cccccc"
+      };
+    })
+    .sort((a, b) => a.domainName.localeCompare(b.domainName));
 };
 
 // Table data utils
@@ -146,7 +148,7 @@ export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleI
     );
   }
 
-  return filteredData;
+  return filteredData.sort((a, b) => a.name.localeCompare(b.name));
 };
 
 // Table column related utils

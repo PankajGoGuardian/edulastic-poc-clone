@@ -60,7 +60,8 @@ const AttemptsData = styled.div`
 `;
 
 const AnswerAndScore = styled.div`
-  width: 135px;
+  max-width: 135px;
+  flex-basis: 25%;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -89,6 +90,7 @@ const SpaceBetween = styled.div`
 `;
 
 const AnswerAndScoreReview = styled(AnswerAndScore)`
+  max-width: 200px;
   span {
     color: #00b0ff;
     cursor: pointer;

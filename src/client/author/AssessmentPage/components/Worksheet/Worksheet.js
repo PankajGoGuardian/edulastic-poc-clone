@@ -195,13 +195,23 @@ class Worksheet extends React.Component {
   };
 
   deleteBlankPage = pageNumber => {
-    const { pageStructure, setTestData, annotations } = this.props;
+    const {
+      pageStructure,
+      setTestData,
+      annotations,
+      saveUserWork,
+      itemDetail,
+      scratchPad = {},
+      userWork,
+      freeFormNotes = {}
+    } = this.props;
     if (pageStructure.length < 2) return;
 
     const updatedPageStructure = [...pageStructure];
 
     updatedPageStructure.splice(pageNumber, 1);
 
+    const newFreeFormNotes = { ...freeFormNotes, [pageNumber]: undefined };
     const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
     const updatedAssessment = {
@@ -213,10 +223,18 @@ class Worksheet extends React.Component {
           pageNo: index + 1
         };
       }),
+      freeFormNotes: newFreeFormNotes,
       annotations: updatedAnnotations
     };
+    const id = itemDetail?.item?._id;
+    if (id) {
+      this.setState(({ history }) => ({ history: history + 1 }));
+      saveUserWork({
+        [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [pageNumber]: undefined } }
+      });
+    }
 
-    this.handleChangePage(pageNumber - 1);
+    this.handleChangePage(pageNumber > 0 ? pageNumber - 1 : pageNumber);
     setTestData(updatedAssessment);
   };
 

@@ -16,6 +16,7 @@ export const ThumbnailsWrapper = styled.div`
 
 export const ThumbnailsList = styled.div`
   margin-bottom: 70px;
+  padding-top: 5px;
   padding-right: 15px;
 `;
 

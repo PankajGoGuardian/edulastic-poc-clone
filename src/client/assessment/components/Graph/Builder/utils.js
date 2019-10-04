@@ -223,17 +223,19 @@ export function getPropsByLineType(type) {
   }
 }
 
-export function tickLabel(axe, withComma = true, distance = 0) {
+export function tickLabel(axe, withComma = true, drawZero = true, distance = 0) {
   return coords => {
     const label = axe === "x" ? coords.usrCoords[1] : coords.usrCoords[2];
-    if (axe === "x" && label === 0) {
+    if (label !== 0) {
+      return withComma ? numberWithCommas(label.toFixed(distance)) : label;
+    }
+    if (axe === "x") {
       // offset fix for zero label
-      return "0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;";
+      return drawZero ? "0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;" : "";
     }
-    if (axe === "y" && label === 0) {
-      return "";
+    if (axe === "y") {
+      return drawZero ? "0" : "";
     }
-    return withComma ? numberWithCommas(label.toFixed(distance)) : label;
   };
 }
 
@@ -256,6 +258,7 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 }
 
 export function updateAxe(line, parameters, axe) {
+  line.ticks[0].setAttribute({ drawZero: true });
   if ("ticksDistance" in parameters) {
     line.ticks[0].setAttribute({ ticksDistance: parameters.ticksDistance });
   }
@@ -278,12 +281,7 @@ export function updateAxe(line, parameters, axe) {
       parameters.maxArrow === true ? { size: 8 } : false
     );
   }
-  if ("commaInLabel" in parameters) {
-    line.ticks[0].generateLabelText = tickLabel(axe, parameters.commaInLabel);
-  }
-  if ("drawZero" in parameters) {
-    line.ticks[0].setAttribute({ drawZero: parameters.drawZero });
-  }
+  line.ticks[0].generateLabelText = tickLabel(axe, parameters.commaInLabel, parameters.drawZero);
   if ("showAxis" in parameters) {
     line.setAttribute({ visible: parameters.showAxis });
     line.ticks[0].setAttribute({ visible: parameters.showAxis });

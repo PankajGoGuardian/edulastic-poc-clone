@@ -345,6 +345,7 @@ class GraphContainer extends PureComponent {
         xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
         xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
+        xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
         yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
         yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
@@ -352,7 +353,8 @@ class GraphContainer extends PureComponent {
         yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
         yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
         yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis
+        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
+        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
       ) {
         this._graph.setAxesParameters({
           x: {

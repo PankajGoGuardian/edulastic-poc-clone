@@ -227,15 +227,8 @@ function mergeAxesParameters(target, parameters) {
   if ("gridY" in parameters) {
     target.grid.gridY = parameters.gridY;
   }
-  if ("commaInLabel" in parameters.x) {
-    target.x.ticks.generateLabelText = tickLabel("x", parameters.x.commaInLabel);
-  }
-  if ("commaInLabel" in parameters.y) {
-    target.y.ticks.generateLabelText = tickLabel("y", parameters.y.commaInLabel);
-  }
-  if ("drawZero" in parameters.x && parameters.x.drawZero === false) {
-    target.x.ticks.drawZero = false;
-  }
+  target.x.ticks.generateLabelText = tickLabel("x", parameters.x.commaInLabel, parameters.x.drawZero);
+  target.y.ticks.generateLabelText = tickLabel("y", parameters.y.commaInLabel, parameters.y.drawZero);
 }
 
 export function mergeParams(defaultConfig, userConfig) {

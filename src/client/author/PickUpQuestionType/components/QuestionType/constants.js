@@ -1326,7 +1326,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",
@@ -1406,7 +1406,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",
@@ -1497,7 +1497,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",

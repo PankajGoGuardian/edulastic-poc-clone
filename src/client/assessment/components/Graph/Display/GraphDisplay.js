@@ -202,7 +202,7 @@ class GraphDisplay extends Component {
       list
     } = graphData;
 
-    const { showGrid = true, xShowAxis = true, yShowAxis = true } = uiStyle;
+    const { showGrid = true, xShowAxis = true, yShowAxis = true, drawLabelZero = true } = uiStyle;
 
     const xMin = parseFloat(canvas.xMin);
     const xMax = parseFloat(canvas.xMax);
@@ -240,7 +240,8 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
         commaInLabel: uiStyle.xCommaInLabel,
-        showAxis: xShowAxis
+        showAxis: xShowAxis,
+        drawZero: drawLabelZero
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
@@ -250,7 +251,8 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.yMaxArrow,
         minArrow: uiStyle.yMinArrow,
         commaInLabel: uiStyle.yCommaInLabel,
-        showAxis: yShowAxis
+        showAxis: yShowAxis,
+        drawZero: drawLabelZero && !xShowAxis
       },
       gridParams: {
         gridX: xDistance,

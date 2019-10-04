@@ -101,7 +101,10 @@ class LayoutComponent extends Component {
           <Row gutter={36}>
             <Col md={12}>
               <PlaceholderOption
-                onChange={val => changeItem("placeholder", val)}
+                onChange={val => {
+                  changeItem("placeholder", val);
+                }}
+                type="text"
                 value={get(item, "placeholder", "")}
               />
             </Col>

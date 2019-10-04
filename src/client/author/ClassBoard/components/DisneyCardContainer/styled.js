@@ -182,7 +182,7 @@ export const SquareColorDivGreen = styled(SquareColorDiv)`
 `;
 
 export const SquareColorDivGray = styled(SquareColorDiv)`
-  background-color: ${classBoardTheme.SkippedColor};
+  background-color: rgb(106, 115, 127);
 `;
 
 export const SquareColorBlue = styled(SquareColorDiv)`

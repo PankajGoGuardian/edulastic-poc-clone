@@ -24,6 +24,7 @@ const StyledCol = styled(Col)`
   flex-direction: row;
   align-items: center;
   border-radius: 5px;
+  white-space: pre-wrap;
 
   .stats-title {
     font-size: 17px;

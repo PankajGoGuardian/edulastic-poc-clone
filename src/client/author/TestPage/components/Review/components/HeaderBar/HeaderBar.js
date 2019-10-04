@@ -20,7 +20,8 @@ const HeaderBar = ({
   onMoveTo,
   windowWidth,
   setCollapse,
-  onShowTestPreview
+  onShowTestPreview,
+  hasStickyHeader
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -46,7 +47,7 @@ const HeaderBar = ({
   };
 
   return (
-    <Container windowWidth={windowWidth}>
+    <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
       {owner && isEditable && (
         <Item>
           <SelectAllCheckbox data-cy="selectAllCh" onChange={onSelectAll}>

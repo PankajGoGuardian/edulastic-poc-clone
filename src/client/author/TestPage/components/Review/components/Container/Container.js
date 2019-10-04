@@ -112,7 +112,8 @@ class Review extends PureComponent {
     isModalVisible: false,
     item: [],
     isTestPreviewModalVisible: false,
-    currentTestId: ""
+    currentTestId: "",
+    hasStickyHeader: false
   };
 
   componentWillUnmount() {
@@ -272,10 +273,12 @@ class Review extends PureComponent {
 
   handleScroll = e => {
     if (this.secondHeaderRef.current) {
-      if (window.scrollY > 50) {
+      if (window.scrollY > 50 && !this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.add("fixed-second-header");
-      } else {
+        this.setState({ hasStickyHeader: true });
+      } else if (window.scrollY <= 50 && this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
+        this.setState({ hasStickyHeader: false });
       }
     }
   };
@@ -301,7 +304,7 @@ class Review extends PureComponent {
       checkAnswer,
       showAnswer
     } = this.props;
-    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId } = this.state;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId, hasStickyHeader } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -340,7 +343,7 @@ class Review extends PureComponent {
           <Col span={owner && isEditable ? 24 : 18}>
             <div ref={this.secondHeaderRef}>
               <SecondHeader>
-                <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+                <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
                 <HeaderBar
                   onSelectAll={this.handleSelectAll}
                   itemTotal={test.testItems.length}
@@ -353,6 +356,7 @@ class Review extends PureComponent {
                   windowWidth={windowWidth}
                   setCollapse={isCollapse}
                   onShowTestPreview={this.showTestPreviewModal}
+                  hasStickyHeader={hasStickyHeader}
                 />
               </SecondHeader>
             </div>

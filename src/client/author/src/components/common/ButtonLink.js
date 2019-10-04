@@ -64,7 +64,7 @@ export default ButtonLink;
 const Icon = styled.span`
   display: inline-flex;
   align-items: center;
-  margin-right: 21px;
+  margin-right: 10px;
   font-size: 10px;
 
   @media (max-width: ${desktopWidth}) {
@@ -81,6 +81,7 @@ const Container = styled.button`
   font-size: 10px;
   letter-spacing: 0.2px;
   border: none;
+  padding: 10px;
   text-transform: ${({ uppercase }) => (uppercase ? "uppercase" : "")};
   color: ${({ color }) => color};
   background: transparent;

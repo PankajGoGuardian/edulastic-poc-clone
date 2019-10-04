@@ -9,7 +9,7 @@ import { secondaryTextColor, linkColor } from "@edulastic/colors";
 const BreadCrumb = props => {
   const { data, style } = props;
   return (
-    <Container style={style}>
+    <Container style={style} hasStickyHeader={props.hasStickyHeader}>
       <Breadcrumb>
         {Array.isArray(data) &&
           data.map((breadCrumb, index) => (
@@ -42,7 +42,7 @@ export default BreadCrumb;
 const Container = styled.div`
   position: fixed;
   top: 80px;
-
+  display: ${props => (props.hasStickyHeader ? "none" : "intial")};
   .ant-breadcrumb {
     > span:first-child {
       &:before {

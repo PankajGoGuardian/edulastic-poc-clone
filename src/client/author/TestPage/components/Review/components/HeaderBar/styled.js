@@ -14,6 +14,7 @@ export const Item = styled(FlexContainer)`
 export const Container = styled(FlexContainer)`
   justify-content: space-between;
   margin: 0px;
+  width: ${props => props.hasStickyHeader && "100%"};
 
   @media (max-width: ${desktopWidth}) {
     margin-top: 15px;

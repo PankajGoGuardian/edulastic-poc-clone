@@ -15,6 +15,7 @@ import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
+import { questionType } from "@edulastic/constants";
 import { testLoadingSelector } from "../../selectors/test";
 import { getZoomedTheme } from "../../../student/zoomTheme";
 import { playersZoomTheme } from "../assessmentPlayersTheme";
@@ -100,7 +101,9 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme
     } = this.props;
 
-    const dropdownOptions = items[0].data.questions.map((item, index) => index);
+    const dropdownOptions = items[0].data.questions
+      .filter(q => q.type !== questionType.SECTION_LABEL)
+      .map((item, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
     const questions = this.assessmentQuestions();
 

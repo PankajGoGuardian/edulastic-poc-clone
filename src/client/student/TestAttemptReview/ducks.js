@@ -15,7 +15,7 @@ export const attemptSummarySelector = createSelector(
     const blocks = {};
     const allQids = [];
     let itemWiseQids = {};
-    const nonQuestionTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const nonQuestionTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.SECTION_LABEL];
     for (const item of items) {
       const qids = get(item, "data.questions", [])
         .filter(x => !nonQuestionTypes.includes(x.type))

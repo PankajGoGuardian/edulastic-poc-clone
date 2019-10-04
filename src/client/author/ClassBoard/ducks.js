@@ -533,7 +533,7 @@ export const getTestItemsOrderSelector = createSelector(
   stateTestActivitySelector,
   state =>
     get(state, "data.test.testItems", []).reduce((acc, item, idx) => {
-      const id = item.itemId;
+      const id = item.itemId || item._id;
       acc[id] = idx;
       return acc;
     }, {})

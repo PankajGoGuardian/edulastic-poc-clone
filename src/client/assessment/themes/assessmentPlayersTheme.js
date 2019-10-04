@@ -47,6 +47,10 @@ export const playersZoomTheme = theme => {
         ...theme.widgets.clozeImageText,
         imageZoom: assessmentZoomMap[theme.zoomLevel]
       },
+      clozeText: {
+        ...theme.widgets.clozeText,
+        textZoom: assessmentZoomMap[theme.zoomLevel]
+      },
       chart: {
         ...theme.widgets.chart,
         chartZoom: assessmentZoomMap[theme.zoomLevel]

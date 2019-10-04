@@ -754,7 +754,8 @@ export const defaultTheme = {
       iconPlusColor: actionIconColor,
       deleteBgColor: containerGrey,
       rightIconColor: rightIconColor,
-      wrongIconColor: wrongIconColor
+      wrongIconColor: wrongIconColor,
+      textZoom: 1
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,

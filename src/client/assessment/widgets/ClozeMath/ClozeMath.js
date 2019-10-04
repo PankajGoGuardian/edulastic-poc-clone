@@ -24,6 +24,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 
 const ClozeMath = ({
   view,
@@ -95,7 +96,7 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      <div style={{ zoom: 2 }}>
+      <StyledClozeMathWrapper>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {!flowLayout
@@ -123,7 +124,7 @@ const ClozeMath = ({
             </StyledPaperWrapper>
           )}
         </QuestionTitleWrapper>
-      </div>
+      </StyledClozeMathWrapper>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>

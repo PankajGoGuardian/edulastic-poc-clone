@@ -971,7 +971,7 @@ const PseudoDiv = styled.div`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 119px;
+  width: 100%;
   height: 21px;
 `;
 

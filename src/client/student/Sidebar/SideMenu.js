@@ -608,7 +608,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     text-align: center;
     justify-content: center;
-    margin-top: 10px 0px;
+    margin: 10px 0px;
     padding: 5px 18px !important;
     height: 38px;
     width: 100%;
@@ -937,7 +937,7 @@ const DropdownBtn = styled(Dropdown)`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 119px;
+  width: 100%;
   height: 21px;
 `;
 

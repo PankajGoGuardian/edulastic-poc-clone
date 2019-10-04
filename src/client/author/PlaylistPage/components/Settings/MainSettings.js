@@ -10,6 +10,7 @@ import {
   Description,
   Container
 } from "../../../TestPage/components/Setting/components/MainSetting/styled";
+import styled from "styled-components";
 
 const { settingCategories } = playlists;
 
@@ -19,7 +20,7 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
     <Container>
       <Row style={{ padding: 0 }}>
         <Col span={isSmallSize ? 0 : 6}>
-          <StyledAnchor affix={false} offsetTop={125}>
+          <CustomStyledAnchor affix={false} offsetTop={125}>
             {settingCategories.map(category => (
               <Anchor.Link
                 key={category.id}
@@ -27,10 +28,10 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
                 title={category.title.toLowerCase()}
               />
             ))}
-          </StyledAnchor>
+          </CustomStyledAnchor>
         </Col>
         <Col span={isSmallSize ? 24 : 18}>
-          <Block id="user-customization" smallSize={isSmallSize}>
+          <StyledBlock id="user-customization" smallSize={isSmallSize}>
             <Title>User Customization</Title>
             <Body smallSize={isSmallSize}>
               <Switch defaultChecked={customize} onChange={handleUserCustomize} />
@@ -40,7 +41,7 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
                 }
               </Description>
             </Body>
-          </Block>
+          </StyledBlock>
         </Col>
       </Row>
     </Container>
@@ -48,3 +49,14 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
 };
 
 export default Settings;
+
+const CustomStyledAnchor = styled(StyledAnchor)`
+  margin-left: 0px;
+  padding-left: 25px;
+  .ant-anchor-link {
+    margin: 20px 12px;
+  }
+`;
+const StyledBlock = styled(Block)`
+  margin: 0px;
+`;

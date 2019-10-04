@@ -1,6 +1,14 @@
-import { graphEvaluateApi } from "@edulastic/api";
 import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
+
+const evaluateApi = data =>
+  axios
+    .post("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev", data, {
+      headers: {
+        Authorization: "Bearer Token: U4aJ6616mlTFKK"
+      }
+    })
+    .then(result => result.data.result);
 
 const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) => {
   const result = {
@@ -263,7 +271,7 @@ const checkEquations = async (answer, userResponse) => {
   //   checks: "evaluateGraphEquations"
   // });
 
-  const apiResult = await graphEvaluateApi.evaluate({
+  const apiResult = await evaluateApi({
     input: buildGraphApiResponse(userResponse),
     expected: buildGraphApiResponse(answer),
     checks: "evaluateGraphEquations"

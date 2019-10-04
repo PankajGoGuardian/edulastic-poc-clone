@@ -72,7 +72,7 @@ const Display = ({
           alignItems="flex-start"
           padding="16px"
         >
-          <FlexContainer alignItems="flex-start" flexDirection="column" flexWrap="wrap">
+          <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
             {Array(count)
               .fill()
               .map((_, index) => {

@@ -12,6 +12,7 @@ export const StyledCell = styled.div`
   padding: 10px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 `;
 
 export const PrintablePrefix = styled.b`

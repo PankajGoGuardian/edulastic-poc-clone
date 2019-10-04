@@ -20,7 +20,7 @@ export const CustomChartXTick = props => {
   }
 
   return (
-    <g transform={`translate(${x},${y})`}>
+    <g transform={`translate(${isMobile ? x + 25 : x},${y})`}>
       {!isMobile ? (
         <StyledAxisTickText textAnchor="middle" verticalAnchor="start" width={70}>
           {text}

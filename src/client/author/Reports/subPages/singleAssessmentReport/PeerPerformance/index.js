@@ -166,12 +166,12 @@ const PeerPerformance = ({
             <StyledCard>
               <StyledSignedBarContainer>
                 <Row type="flex" justify="start">
-                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Col xs={24} sm={24} md={12} lg={8} xl={12}>
                     <StyledH3>
                       Assessment Performance by {idToName[ddfilter.compareBy]} | {assessmentName}
                     </StyledH3>
                   </Col>
-                  <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Col className="dropdown-container" xs={24} sm={24} md={12} lg={16} xl={12}>
                     <ControlDropDown
                       prefix={"Analyse by"}
                       by={dropDownFormat.analyseByDropDownData[0]}

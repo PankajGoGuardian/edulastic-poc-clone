@@ -39,12 +39,12 @@ const StyledCol = styled(Col)`
     justify-content: flex-end;
 
     .stats-value-big {
-      font-size: 35px;
+      font-size: 17px;
       font-weight: 900;
       color: ${themeColorLighter};
     }
     .stats-value-small {
-      font-size: 25px;
+      font-size: 17px;
     }
   }
 `;

@@ -179,7 +179,7 @@ const PerformanceByStandards = ({
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
-  const assignmentInfo = `${testName} (ID: ${testId})`;
+  const assignmentInfo = `${testName}`;
 
   const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
 
@@ -209,12 +209,12 @@ const PerformanceByStandards = ({
     <>
       <StyledCard>
         <Row type="flex" justify="start">
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={8} xl={12}>
             <StyledH3>
               Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
             </StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={16} xl={12}>
             <Row>
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
@@ -240,8 +240,9 @@ const PerformanceByStandards = ({
                   data={standardsDropdownData}
                 />
               </StyledDropDownContainer>
-
-              <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
+              <StyledDropDownContainer xs={2} sm={2} md={2} lg={2} xl={2}>
+                <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
+              </StyledDropDownContainer>
             </Row>
           </Col>
         </Row>

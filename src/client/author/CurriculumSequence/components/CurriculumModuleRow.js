@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -61,10 +63,12 @@ class ModuleRow extends Component {
     setSelectedItemsForAssign(moduleItemsIds);
     history.push(`/author/playlists/assignments/${playlistId}/${module._id}`);
   };
+
   assignTest = (moduleId, testId) => {
     const { history, playlistId } = this.props;
     history.push(`/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`);
   };
+
   viewTest = testId => {
     this.setState({
       showModal: true,
@@ -94,7 +98,6 @@ class ModuleRow extends Component {
       hideEditOptions,
       curriculum,
       moduleStatus,
-      customize,
       handleRemove,
       removeUnit
     } = this.props;
@@ -123,11 +126,11 @@ class ModuleRow extends Component {
           footer={null}
           visible={showModal}
           onCancel={this.closeModal}
-          width="calc(100% - 30px)"
-          height="calc(100% - 30px)"
-          destroyOnClose={true}
+          width="100%"
+          height="100%"
+          destroyOnClose
         >
-          <AssessmentPlayer testId={selectedTest} preview />
+          <AssessmentPlayer testId={selectedTest} preview closeTestPreviewModal={this.closeModal} />
         </ModalWrapper>
         <ModuleWrapper data-cy="curriculumModuleRow" key={`${data.length}-${module.id}`} padding={padding}>
           <Container>
@@ -201,7 +204,7 @@ class ModuleRow extends Component {
                     const standardTags = (standards && standards.map(stand => stand.name)) || [];
                     const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);
                     const contentCompleted =
-                      statusList.filter(status => status === "DONE").length === statusList.length &&
+                      statusList.filter(_status => _status === "DONE").length === statusList.length &&
                       statusList.length > 0;
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
@@ -219,7 +222,6 @@ class ModuleRow extends Component {
                         <AssignmentDragItem
                           key={`${index}-${moduleData.id}`}
                           moduleData={moduleData}
-                          onToggleCheck={() => toggleCheckedUnitItem(moduleData.contentId)}
                           isContentExpanded={isContentExpanded}
                           hideEditOptions={hideEditOptions}
                           assignTest={this.assignTest}
@@ -242,7 +244,7 @@ class ModuleRow extends Component {
                     return (
                       <Assignment
                         data-cy="moduleAssignment"
-                        key={`${moduleData.id}-${moduleData.assigned}`}
+                        key={`${index}-${moduleData.id}`}
                         padding="14px 30px 14px 50px"
                         borderRadius="unset"
                         boxShadow="unset"
@@ -328,18 +330,16 @@ ModuleRow.propTypes = {
   onCollapseExpand: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
   padding: PropTypes.bool.isRequired,
-  moduleStatus: PropTypes.bool,
-  customize: PropTypes.bool,
   isContentExpanded: PropTypes.bool.isRequired,
-  removeItemFromUnit: PropTypes.func.isRequired,
   assigned: PropTypes.array.isRequired,
+  moduleStatus: PropTypes.bool,
   mode: PropTypes.string,
   status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
 
 const ModalWrapper = styled(Modal)`
-  top: 20px;
+  top: 0px;
   padding: 0;
   overflow: hidden;
   .ant-modal-content {

@@ -22,6 +22,7 @@ const staticFields = [
   {
     title: "Assessment Date",
     dataIndex: "assessmentDateFormatted",
+    className: "assessmentDate",
     sorter: (a, b) => {
       return a.assessmentDate - b.assessmentDate;
     }
@@ -58,7 +59,7 @@ const customFields = [
     dataIndex: "maxScore"
   },
   {
-    title: "Avg. Student(Score%)",
+    title: "Avg. Student (Score%)",
     dataIndex: "score"
   }
 ];

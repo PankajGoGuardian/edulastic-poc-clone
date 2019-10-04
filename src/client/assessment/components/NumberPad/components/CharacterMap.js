@@ -11,7 +11,11 @@ const CharacterMap = ({ onClick, buttonStyle }) => {
   return (
     <ButtonWrapper style={{ flexWrap: "wrap" }}>
       {items.map((item, index) => (
-        <NumberPadButton buttonStyle={buttonStyle} onClick={() => onClick(item.value)} key={index}>
+        <NumberPadButton
+          buttonStyle={{ ...buttonStyle, position: "initial" }}
+          onClick={() => onClick(item.value)}
+          key={index}
+        >
           {item.label}
         </NumberPadButton>
       ))}

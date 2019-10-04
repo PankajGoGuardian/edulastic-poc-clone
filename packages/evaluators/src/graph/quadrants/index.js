@@ -1,5 +1,6 @@
 import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
+import axios from "axios";
 
 const evaluateApi = data =>
   axios

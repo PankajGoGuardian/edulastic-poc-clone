@@ -358,7 +358,11 @@ const ClassificationPreview = ({
           {tableContent}
         </TableWrapper>
         {!disableResponse && (
-          <CorrectAnswersContainer maxWidth={maxWidth} title={t("component.classification.dragItemsTitle")}>
+          <CorrectAnswersContainer
+            maxWidth={maxWidth}
+            minHeight={imageOptions.height}
+            title={t("component.classification.dragItemsTitle")}
+          >
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (

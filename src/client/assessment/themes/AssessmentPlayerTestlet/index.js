@@ -15,11 +15,10 @@ import { Container } from "../common";
 import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
-import assessmentPlayerTheme from "./themeStyle";
-
-const Theme = {
-  ...assessmentPlayerTheme
-};
+// player theme
+import { themes } from "../../../theme";
+import { getZoomedTheme } from "../../../student/zoomTheme";
+import { playersZoomTheme } from "../assessmentPlayersTheme";
 
 class AssessmentPlayerTestlet extends React.Component {
   static propTypes = {
@@ -40,7 +39,7 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   static defaultProps = {
-    theme: Theme,
+    theme: themes,
     itemRows: []
   };
 
@@ -67,15 +66,21 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, items, currentItem } = this.props;
+    const { theme, items, currentItem, selectedTheme = "default", zoomLevel } = this.props;
     const { showExitPopup } = this.state;
 
     const item = items[currentItem];
     if (!item) {
       return <div />;
     }
+
+    let themeToPass = theme[selectedTheme] || theme.default;
+
+    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    themeToPass = playersZoomTheme(themeToPass);
+
     return (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={themeToPass}>
         <Container>
           <PlayerContent {...this.props} openExitPopup={this.openExitPopup} />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
@@ -91,7 +96,9 @@ export default connect(
     preview: state.view.preview,
     testActivityId: state.test ? state.test.testActivityId : "",
     questions: state.assessmentplayerQuestions.byId,
-    settings: state.test.settings
+    settings: state.test.settings,
+    zoomLevel: state.ui.zoomLevel,
+    selectedTheme: state.ui.selectedTheme
   }),
   {
     checkAnswer: checkAnswerEvaluation,

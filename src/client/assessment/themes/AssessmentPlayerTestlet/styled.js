@@ -59,14 +59,14 @@ export const ActionButton = styled.div`
   border-radius: 5px;
   padding: 12px 14px;
   margin-left: 10px;
-  color: ${props => props.theme.headerIconColor};
+  color: #00ad50;
   font-weight: 900;
   font-size: 17px;
   user-select: none;
   ${props => {
-    const { theme, disable } = props;
+    const { disable } = props;
     return `
-      background: ${disable ? theme.btnDisabled : theme.headerIconBgColor};
+      background: ${disable ? "#dfdfdf" : "#fff"};
       ${
         disable
           ? ` cursor: not-allowed;
@@ -81,7 +81,7 @@ export const ActionButton = styled.div`
   }
 
   svg {
-    fill: ${props => props.theme.headerIconColor};
+    fill: #00ad50;
   }
 `;
 
@@ -98,7 +98,7 @@ export const ContainerRight = styled.div`
 `;
 
 export const HeaderPracticePlayer = styled(Header)`
-  background: ${props => props.theme.headerBg};
+  background: ${props => props.theme.header.headerBg};
   box-shadow: ${boxShadowDefault};
   height: 70px;
   z-index: 1;

@@ -161,13 +161,17 @@ function* startAssignment({ payload }) {
       testId
     });
     // set Activity id
-    yield put(
-      push(
-        `/student/${
-          testType === COMMON ? ASSESSMENT : testType
-        }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
-      )
-    );
+    if (testType !== TESTLET) {
+      yield put(
+        push(
+          `/student/${
+            testType === COMMON ? ASSESSMENT : testType
+          }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+        )
+      );
+    } else {
+      yield put(push(`/student/${testType}/${testId}/class/${actualGroupId}/uta/${testActivityId}`));
+    }
 
     // TODO:load previous responses if resume!!
   } catch (e) {

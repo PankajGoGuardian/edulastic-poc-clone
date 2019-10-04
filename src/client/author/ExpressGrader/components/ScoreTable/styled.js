@@ -48,6 +48,9 @@ export const TableData = styled(Table)`
   th.th-border-bottom {
     border-bottom: 10px white solid !important;
   }
+  .ant-table-thead > tr > th.score-title {
+    text-align: center;
+  }
   .ant-table-thead > tr > th .ant-table-column-sorter {
     .ant-table-column-sorter-inner {
       .ant-table-column-sorter-up,

@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
-import { sortBy, maxBy, get } from "lodash";
+import { sortBy, maxBy, get, uniqBy } from "lodash";
 
 import {
   SHORT_TEXT,
@@ -30,6 +30,9 @@ import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
+import { getRecentStandardsListSelector } from "../../../src/selectors/dictionaries";
+import { updateRecentStandardsAction } from "../../../src/actions/dictionaries";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
@@ -291,12 +294,21 @@ class Questions extends React.Component {
   };
 
   handleUpdateData = data => {
-    const { updateQuestion } = this.props;
+    const { updateQuestion, updateRecentStandards } = this.props;
+    let { recentStandardsList } = this.props;
     const question = this.currentQuestion;
 
     const nextQuestion = updateQuesionData(question, data);
-
     updateQuestion(nextQuestion);
+    const { alignment = [] } = nextQuestion;
+
+    const standards = alignment[0]?.standards || [];
+    if (standards.length > 0 && data?.alignment) {
+      // to update recent standards used in local storage and store
+      recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+      updateRecentStandards({ recentStandards: recentStandardsList });
+      storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+    }
   };
 
   handleOpenEditModal = questionIndex => () => {
@@ -460,6 +472,7 @@ const enhance = compose(
   connect(
     state => ({
       feedback: FeedbackByQIdSelector(state),
+      recentStandardsList: getRecentStandardsListSelector(state),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       previewMode: getPreviewSelector(state)
     }),
@@ -468,6 +481,7 @@ const enhance = compose(
       updateQuestion: updateQuestionAction,
       deleteQuestion: deleteQuestionAction,
       deleteAnnotation: deleteAnnotationAction,
+      updateRecentStandards: updateRecentStandardsAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
       removeUserAnswer: clearAnswersAction

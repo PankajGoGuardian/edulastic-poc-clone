@@ -63,8 +63,9 @@ const Crosses = ({
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
   const labelIsVisible = index =>
-    (data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
-    (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility);
+    data[index] &&
+    ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
+      (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
 
   return (
     <Fragment>

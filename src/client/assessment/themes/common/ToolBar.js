@@ -4,9 +4,7 @@ import styled from "styled-components";
 import { Button, Tooltip } from "antd";
 
 import { test, questionType } from "@edulastic/constants";
-import { white } from "@edulastic/colors";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
-import CalculatorMenu from "./CalculatorMenu";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {
@@ -85,7 +83,6 @@ ToolBar.propTypes = {
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  calcBrands: PropTypes.array.isRequired,
   qType: PropTypes.string.isRequired
 };
 

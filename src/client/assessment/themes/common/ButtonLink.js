@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -35,14 +36,13 @@ const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active, 
   <Container
     className={className}
     onClick={onClick}
-    type="button"
     uppercase={uppercase}
     style={style}
     {...getColors({ color, active })}
   >
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
-    <span style={{ marginTop: 1 }}>{children}</span>
+    <Text>{children}</Text>
   </Container>
 );
 
@@ -72,9 +72,12 @@ const Icon = styled.span`
   align-items: center;
   margin-right: 10px;
   font-size: 10px;
+  ${({ theme }) => theme.zoomedCss`
+    margin-right: 0px;
+  `}
 `;
 
-const Container = styled.button`
+const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,4 +102,11 @@ const Container = styled.button`
       width: 10px;
     }
   }
+`;
+
+const Text = styled.div`
+  margin-top: 1px;
+  ${({ theme }) => theme.zoomedCss`
+    display: none;
+  `}
 `;

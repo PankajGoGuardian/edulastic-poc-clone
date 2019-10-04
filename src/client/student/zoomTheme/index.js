@@ -11,7 +11,7 @@ export const breakpoints = {
 };
 
 const respondToBreakpoint = (zoomLevel, breakpoint) => (...style) => {
-  if (zoomLevel == breakpoint) {
+  if (zoomLevel === breakpoint) {
     return css`
       @media (min-width: ${desktop * breakpoints[breakpoint]}px) {
         ${css(...style)}
@@ -32,7 +32,7 @@ export const fontSizes = {
 };
 
 export const getZoomedTheme = (theme, zoomLevel) => {
-  let modifiedTheme = {
+  const modifiedTheme = {
     ...theme,
     ...fontSizes,
     breakpoints,
@@ -44,7 +44,7 @@ export const getZoomedTheme = (theme, zoomLevel) => {
   });
 
   const zoomedCss = (...args) => {
-    if (zoomLevel != "xs") {
+    if (zoomLevel !== "xs") {
       return css`
         @media (min-width: ${modifiedTheme.desktop * modifiedTheme.breakpoints.xs}px) {
           ${css(...args)}

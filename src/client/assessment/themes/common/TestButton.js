@@ -1,14 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Tooltip } from "antd";
-import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
-import ButtonLink from "./ButtonLink";
 import get from "lodash/get";
+import ButtonLink from "./ButtonLink";
 
 const customizeIcon = icon => styled(icon)`
   fill: ${props => props.theme.header.headerButtonColor};
@@ -24,8 +23,7 @@ const TestButton = ({
   isBookmarked = false,
   items,
   currentItem: currentItemIndex,
-  handleClick,
-  theme
+  handleClick
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
   /**
@@ -62,7 +60,7 @@ const TestButton = ({
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-        <Tooltip placement="top" title={"Check Answer"}>
+        <Tooltip placement="top" title="Check Answer">
           <StyledButton
             onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
             data-cy="checkAnswer"
@@ -75,7 +73,7 @@ const TestButton = ({
         </Tooltip>
       )}
       {showHintButton ? (
-        <Tooltip placement="top" title={"Hint"}>
+        <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handleClick}>
             <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
               {t("common.test.hint")}
@@ -83,7 +81,7 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       ) : null}
-      <Tooltip placement="top" title={"Bookmark"}>
+      <Tooltip placement="top" title="Bookmark">
         <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
           <StyledButtonLink
             color={isBookmarked ? "success" : "primary"}
@@ -130,6 +128,10 @@ const StyledButton = styled(Button)`
     background: ${props => props.theme.default.headerButtonActiveBgColor};
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
+  ${({ theme }) => theme.zoomedCss`
+      height: ${props => props.theme.default.headerToolbarButtonWidth};
+     width: ${theme.default.headerToolbarButtonHeight};
+  `}
 `;
 
 const StyledButtonLink = styled(ButtonLink)`

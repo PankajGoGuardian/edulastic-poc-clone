@@ -132,7 +132,12 @@ class ModuleRow extends Component {
         >
           <AssessmentPlayer testId={selectedTest} preview closeTestPreviewModal={this.closeModal} />
         </ModalWrapper>
-        <ModuleWrapper data-cy="curriculumModuleRow" key={`${data.length}-${module.id}`} padding={padding}>
+        <ModuleWrapper
+          data-cy="curriculumModuleRow"
+          key={`${data.length}-${module.id}`}
+          padding={padding}
+          onClick={() => onCollapseExpand(moduleIndex)}
+        >
           <Container>
             <Module>
               <ModuleHeader
@@ -142,7 +147,7 @@ class ModuleRow extends Component {
                 boxShadow={collapsed ? "0 3px 7px 0 rgba(0, 0, 0, 0.1)" : "unset"}
               >
                 <ModuleInfo>
-                  <CustomIcon marginRight="25" marginLeft={7} onClick={() => onCollapseExpand(moduleIndex)}>
+                  <CustomIcon marginRight="25" marginLeft={7}>
                     {!collapsed ? (
                       <Icon type="up" style={{ color: "#707070" }} />
                     ) : (
@@ -750,6 +755,7 @@ const ModulesAssigned = styled.div`
 `;
 
 const ModuleWrapper = styled.div`
+  cursor: pointer;
   & {
     padding-top: 0;
     padding-bottom: 0;

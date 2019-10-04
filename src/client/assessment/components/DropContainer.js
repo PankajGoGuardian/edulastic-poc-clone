@@ -23,7 +23,18 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const DropContainer = ({ connectDropTarget, index, isOver, flag, style, children, noBorder, noTopBorder, theme }) => {
+const DropContainer = ({
+  connectDropTarget,
+  index,
+  isOver,
+  flag,
+  style,
+  children,
+  noBorder,
+  noTopBorder,
+  theme,
+  borderNone
+}) => {
   const border = `${
     !noBorder
       ? isOver
@@ -41,7 +52,7 @@ const DropContainer = ({ connectDropTarget, index, isOver, flag, style, children
       style={{
         zIndex: 1,
         ...style,
-        border,
+        border: borderNone ? "none" : border,
         borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border,
         padding: 0
       }}

@@ -45,6 +45,7 @@ class Curriculum extends Component {
               theme={themes.default}
               key={`drop-${index}-${moduleItem._id}`}
               drop={() => this.onDrop(index)}
+              borderNone
             >
               <CurriculumModuleRow
                 mode={mode}

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FaTimes } from "react-icons/fa";
-import { white, themeColor, mobileWidth } from "@edulastic/colors";
+import { white, themeColor, mobileWidth, boxShadowDefault } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button } from "@edulastic/common";
 
@@ -25,9 +25,9 @@ class Modal extends Component {
           </Header>
           {children}
           <Footer>
-            <Button onClick={onClose} variant="extendedFab" style={{ width: "40%" }}>
+            <StyledCancelButton onClick={onClose} variant="extendedFab" style={{ width: "40%" }}>
               {cancelLabel || t("component.common.modal.cancel")}
-            </Button>
+            </StyledCancelButton>
             <Button onClick={onApply} variant="extendedFab" color="primary" style={{ width: "40%" }}>
               {applyLabel || t("component.common.modal.apply")}
             </Button>
@@ -71,8 +71,7 @@ const Container = styled.div`
 const Content = styled.div`
   position: absolute;
   z-index: 101;
-  padding: 30px;
-  min-height: 200px;
+  padding: 20px 30px;
   min-width: 450px;
   background: ${white};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -97,7 +96,9 @@ const BackDoor = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
   text-align: center;
   font-size: 22px;
   font-weight: 700;
@@ -117,7 +118,11 @@ const Close = styled.div`
 
 const Footer = styled.div`
   display: flex;
-  padding-top: 10px
+  margin-top: 10px;
   justify-content: space-around;
   align-items: center;
+`;
+
+const StyledCancelButton = styled(Button)`
+  border: 1px solid #cccccc;
 `;

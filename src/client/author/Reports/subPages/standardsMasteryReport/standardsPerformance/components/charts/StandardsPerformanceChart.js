@@ -81,7 +81,7 @@ const StandardsPerformanceChart = ({
       <Row type="flex" justify="start">
         <StyledChartContainer xs={24} sm={24} md={24} lg={24} xl={24}>
           <SimpleStackedBarChart
-            margin={{ top: 0, right: 25, left: 25, bottom: 0 }}
+            margin={{ top: 0, right: 40, left: 40, bottom: 0 }}
             xAxisDataKey={"domainName"}
             bottomStackDataKey={"masteryScore"}
             topStackDataKey={"diffMasteryScore"}

@@ -208,8 +208,6 @@ const SortListPreview = ({
 
   return (
     <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
-      <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}

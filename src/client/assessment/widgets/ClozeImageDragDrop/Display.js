@@ -715,7 +715,6 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />

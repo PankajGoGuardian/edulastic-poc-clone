@@ -21,7 +21,6 @@ const FormulaEssayPreview = ({
 }) => {
   return (
     <MathEssayInputWrapper>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />

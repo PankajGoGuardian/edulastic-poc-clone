@@ -186,7 +186,6 @@ const ChartPreview = ({
     >
       {view === PREVIEW && (
         <Fragment>
-          <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />

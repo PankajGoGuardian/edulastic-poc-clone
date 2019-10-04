@@ -10,7 +10,6 @@ import {
   Paper,
   Stimulus,
   FlexContainer,
-  InstructorStimulus,
   FroalaEditor,
   MathFormulaDisplay,
   QuestionNumberLabel
@@ -123,8 +122,6 @@ const EssayRichTextPreview = ({
 
   return item.id ? (
     <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}

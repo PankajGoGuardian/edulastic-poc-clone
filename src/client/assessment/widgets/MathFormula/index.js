@@ -92,7 +92,6 @@ const MathFormula = ({
             responseContainers={item.responseContainers}
             customKeys={item.customKeys}
             stimulusReview={item.stimulusReview}
-            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
             setKeyPadOffest={setOffset}

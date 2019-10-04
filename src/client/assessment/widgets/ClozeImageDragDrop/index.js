@@ -288,7 +288,6 @@ class ClozeImageDragDrop extends Component {
               preview={isClearAnswer}
               item={itemForPreview}
               options={previewDisplayOptions}
-              instructorStimulus={itemForPreview.instructorStimulus}
               question={previewStimulus}
               uiStyle={uiStyle}
               templateMarkUp={itemForPreview.templateMarkUp}

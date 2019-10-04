@@ -275,8 +275,6 @@ const OrderList = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          <InstructorStimulus>{itemForPreview.instructorStimulus}</InstructorStimulus>
-
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <QuestionHeader

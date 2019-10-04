@@ -284,7 +284,6 @@ class ClozeText extends Component {
     const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
-
     return (
       <WithResources
         resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
@@ -380,7 +379,6 @@ class ClozeText extends Component {
               uiStyle={uiStyle}
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
-              instructorStimulus={itemForPreview.instructorStimulus}
               item={itemForPreview}
               responseIds={item.responseIds}
               view={view}

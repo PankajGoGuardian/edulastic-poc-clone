@@ -97,7 +97,6 @@ const ClozeMath = ({
       onLoaded={() => {}}
     >
       <StyledClozeMathWrapper>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {!flowLayout
             ? showQuestionNumber && <QuestionNumberLabel fontSize="12">{qLabel}:</QuestionNumberLabel>
@@ -158,7 +157,6 @@ const ClozeMath = ({
             responseContainers={item.responseContainers}
             customKeys={item.customKeys}
             stimulusReview={item.stimulusReview}
-            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
             showResponseBoxes

@@ -306,7 +306,6 @@ class MultipleChoice extends Component {
                   onRemove={this.handleRemoveAnswer}
                   qIndex={qIndex}
                   qId={qId}
-                  instructorStimulus={item.instructorStimulus}
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}

@@ -345,7 +345,6 @@ const ClassificationPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}

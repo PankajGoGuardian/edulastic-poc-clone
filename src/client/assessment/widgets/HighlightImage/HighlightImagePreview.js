@@ -209,7 +209,6 @@ const HighlightImagePreview = ({
         }}
       >
         <CanvasContainer>
-          <InstructorStimulus width="100%">{item.instructorStimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}

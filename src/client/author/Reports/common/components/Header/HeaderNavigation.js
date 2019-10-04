@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { themeColorLight, themeColorSecondaryLighter } from "@edulastic/colors";
+import { themeColorLight, themeColorSecondaryLighter, smallDesktopWidth } from "@edulastic/colors";
 
 const HeaderNavigation = ({ navigationItems, activeItemKey }) => {
   return (
@@ -51,5 +51,9 @@ const StyledLink = styled(Link)`
 
   &:hover {
     color: white;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
   }
 `;

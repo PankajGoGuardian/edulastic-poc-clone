@@ -67,6 +67,12 @@ export const StyledTable = styled(Table)`
           th:nth-child(n + 2) {
             text-align: right;
           }
+
+          @media only screen and (min-width: 1200px) {
+            th {
+              font-size: 11px;
+            }
+          }
         }
       }
 

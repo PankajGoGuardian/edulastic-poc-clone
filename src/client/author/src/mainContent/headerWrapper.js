@@ -1,7 +1,7 @@
 import React, { memo, Component, Fragment } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { mobileWidth, desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
 import { Affix } from "antd";
 import DragScroll, { UPWARDS, DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
@@ -91,5 +91,10 @@ const Container = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     padding: 0px 20px;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding-left: 5px;
+    padding-right: 5px;
   }
 `;

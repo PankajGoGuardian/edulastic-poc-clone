@@ -52,6 +52,7 @@ export const StyledFilterWrapper = styled.div`
     background-color: ${lightGreySecondary};
     border-radius: 3px;
     padding: 18px;
+    padding-right: 24px;
     font-size: 13px;
     font-weight: 600;
     &:focus {
@@ -62,7 +63,7 @@ export const StyledFilterWrapper = styled.div`
   }
 
   .ant-input-affix-wrapper .ant-input-suffix {
-    right: 18px;
+    right: 8px;
     i {
       svg {
         color: ${themeColor};
@@ -75,6 +76,7 @@ export const StyledFilterWrapper = styled.div`
       background-color: ${lightGreySecondary};
       border-radius: 3px;
       padding: 8.5px 18px;
+      padding-right: 8px;
       height: auto;
       font-size: 13px;
       font-weight: 600;

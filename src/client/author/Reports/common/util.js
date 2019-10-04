@@ -233,8 +233,8 @@ export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) 
   const maxScoreTotal = sumBy(assignments, "maxScore") || 0;
   const obtainedScoreTotal = sumBy(assignments, "obtainedScore") || 0;
   const scoreAvg = round(percentage(obtainedScoreTotal, maxScoreTotal)) || 0;
-  const overallScale = scaleInfo.find(s => s.score === studentStandardData[0]?.fm);
-  const overallStandardBasedScore = `${overallScale?.score}(${overallScale?.masteryLabel})` || "";
+  const overallScale = scaleInfo.find(s => s.score === round(studentStandardData[0]?.fm || 1));
+  const overallStandardBasedScore = `${overallScale?.score || ""}(${overallScale?.masteryLabel || ""})`;
   const calcType = calcMethod.find(method => method.calcMethod === overallScale?.calcMethod)?.calcType || "";
   const overallAssessmentName = `Current Mastery (${calcType})`;
 

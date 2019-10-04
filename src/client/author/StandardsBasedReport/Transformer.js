@@ -12,7 +12,6 @@ export const getStandardWisePerformance = (testActivities, std) => {
   if (std && std.qIds) {
     for (let qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
-
       for (let qAct of questionActs) {
         if (qAct.scoringDisabled || qAct.disabled) {
           continue;

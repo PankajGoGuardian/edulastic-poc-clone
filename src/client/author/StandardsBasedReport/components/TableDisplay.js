@@ -79,7 +79,7 @@ class TableDisplay extends Component {
   }
 
   onCaretClick = (e, id = 0, data, perfomancePercentage = undefined) => {
-    if (perfomancePercentage) {
+    if (perfomancePercentage || perfomancePercentage === 0) {
       this.setState({ selectedRow: id, stdId: data, perfomancePercentage });
     } else {
       this.setState({ selectedRow: id, stdId: data });

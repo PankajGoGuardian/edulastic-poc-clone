@@ -7,7 +7,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "fast-levenshtein": "^2.0.6"
+    "fast-levenshtein": "^2.0.6",
+    "immer": "^2.1",
+    "axios": "^0.18.0"
   },
   "scripts": {
     "test": "ava --watch",
@@ -19,9 +21,7 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/register": "^7.0.0",
     "ava": "1.0.0-rc.2",
-    "rimraf": "^2.6.2",
-    "immer": "^2.1",
-    "axios": "^0.18.0"
+    "rimraf": "^2.6.2"
   },
   "ava": {
     "files": [

@@ -23,11 +23,11 @@ const respondToBreakpoint = (zoomLevel, breakpoint) => (...style) => {
 };
 
 export const fontSizes = {
-  fontSize: 12,
-  size1: 24,
-  size2: 18,
-  size3: 15,
-  size4: 12,
+  fontSize: 16,
+  size1: 26,
+  size2: 22,
+  size3: 18,
+  size4: 16,
   size5: 9
 };
 

@@ -39,7 +39,7 @@ export const StyledTable = styled(Table)`
         border-style: solid;
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-left: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
-        border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
+        border-top: "inherits";
       }
       td {
         padding: 0;
@@ -59,6 +59,12 @@ export const StyledTable = styled(Table)`
       }
       td:nth-of-type(1) div {
         min-width: 50px;
+      }
+    }
+
+    tr:last-child {
+      td {
+        border-bottom: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
       }
     }
 

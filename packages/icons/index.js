@@ -181,3 +181,7 @@ export { default as IconMinusRounded } from "./src/IconMinusRounded";
 export { default as IconKeyboard } from "./src/IconKeyboard";
 export { default as IconAllArrows } from "./src/IconAllArrows";
 export { default as IconMaxArrows } from "./src/IconMaxArrows";
+export { default as IconTrueFalse } from "./src/IconTrueFalse";
+export { default as IconTextEntry } from "./src/IconTextEntry";
+export { default as IconPencilHollow } from "./src/IconPencilHollow";
+export { default as IconDropDown } from "./src/IconDropDown";

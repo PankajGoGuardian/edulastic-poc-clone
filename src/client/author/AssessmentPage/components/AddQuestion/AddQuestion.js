@@ -10,7 +10,7 @@ import {
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
-import { IconNewList, IconPencilEdit, IconCaretDown, IconMath, IconSummary } from "@edulastic/icons";
+import { IconNewList, IconMath, IconTrueFalse, IconPencilHollow, IconTextEntry, IconDropDown } from "@edulastic/icons";
 
 import AddBulkModal from "../AddBulkModal/AddBulkModal";
 import { AddQuestionWrapper, AddQuestionIcon, QuestionTypes, ContentWrapper, AddButton } from "./styled";
@@ -50,21 +50,21 @@ class AddQuestion extends React.Component {
                 <IconNewList />
               </AddQuestionIcon>
               <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
-                <IconPencilEdit />
+                <IconTextEntry />
               </AddQuestionIcon>
               <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
-                <IconCaretDown />
+                <IconDropDown />
               </AddQuestionIcon>
             </Row>
             <Row style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
               <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
                 <IconMath />
               </AddQuestionIcon>
-              <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
-                <IconSummary />
-              </AddQuestionIcon>
               <AddQuestionIcon title={"True/False"} onClick={onAddQuestion(TRUE_OR_FALSE)}>
-                <IconSummary />
+                <IconTrueFalse />
+              </AddQuestionIcon>
+              <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+                <IconPencilHollow />
               </AddQuestionIcon>
             </Row>
           </QuestionTypes>

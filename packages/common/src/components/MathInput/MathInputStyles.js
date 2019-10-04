@@ -122,6 +122,15 @@ export const MathInputStyles = styled.div`
     font-style: ${props => props.fontStyle};
   }
 
+  .mq-math-mode .mq-matrix {
+    table {
+      margin: 4px 0px;
+      td {
+        text-align: center;
+      }
+    }
+  }
+
   @media (max-width: ${mobileWidth}) {
     .keyboard__main {
       display: flex;

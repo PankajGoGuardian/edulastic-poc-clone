@@ -21,8 +21,8 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
   if (item.passageId && passages.length) {
     const passage = passages.find(p => p._id === item.passageId) || {};
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
+    rows[0] = passage.structure;
   }
-
   const answerContextConfig = useContext(AnswerContext);
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>

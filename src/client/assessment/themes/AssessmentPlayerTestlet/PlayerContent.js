@@ -43,8 +43,11 @@ const PlayerContent = ({
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
 
-  const findItemIdMap = cPageIds =>
-    find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
+  const findItemIdMap = (cPageIds, pageNum) =>
+    find(
+      testletConfig.mapping,
+      ({ testletItemId, testletPageNum }) => isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
+    );
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
@@ -58,9 +61,9 @@ const PlayerContent = ({
   };
 
   const findCurrentItemFromIdMap = () => {
-    const { currentPageIds } = frameController;
+    const { currentPageIds, currentPageNum } = frameController;
     const cPageIds = Object.keys(currentPageIds);
-    const currentItem = findItemIdMap(cPageIds);
+    const currentItem = findItemIdMap(cPageIds, currentPageNum);
     return currentItem;
   };
 
@@ -94,6 +97,7 @@ const PlayerContent = ({
       return;
     }
     const currentItem = findCurrentItemFromIdMap();
+    console.log(currentItem);
     if (!currentItem) {
       return;
     }

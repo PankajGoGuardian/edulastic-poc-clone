@@ -10,6 +10,7 @@ class ParentController extends MessageController {
     this.response = initResponse;
     this.totalPage = "0";
     this.currentPageIds = {};
+    this.currentPageNum = 0;
 
     // callbacks for React component
     this.setTotalPage = null;
@@ -97,6 +98,7 @@ class ParentController extends MessageController {
   }
 
   onCurrentPage(page) {
+    this.currentPageNum = page;
     if (this.setCurrentQuestion) {
       this.setCurrentQuestion(page);
     }

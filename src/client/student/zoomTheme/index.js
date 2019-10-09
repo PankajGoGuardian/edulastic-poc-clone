@@ -26,8 +26,8 @@ export const fontSizes = {
   fontSize: 16,
   size1: 26,
   size2: 22,
-  size3: 18,
-  size4: 16,
+  size3: 16,
+  size4: 14,
   size5: 9
 };
 

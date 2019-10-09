@@ -776,7 +776,7 @@ export const defaultTheme = {
       deleteBgColor: containerGrey,
       rightIconColor,
       wrongIconColor,
-      textZoom: 1,
+      textZoom: 1
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,

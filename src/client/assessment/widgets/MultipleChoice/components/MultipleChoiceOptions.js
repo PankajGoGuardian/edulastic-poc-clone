@@ -46,39 +46,7 @@ class MultipleChoiceOptions extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        // reorder the options and sort the key based on index
-        // editing is based on on index!
-        draft.options = arrayMove(draft.options, oldIndex, newIndex).map(({ label }, index) => ({
-          value: index,
-          label
-        }));
-
-        let idx = item.validation.validResponse.value.findIndex(val => val === oldIndex);
-        if (idx !== -1) {
-          draft.validation.validResponse.value[idx] = newIndex;
-        }
-
-        idx = item.validation.validResponse.value.findIndex(val => val === newIndex);
-        if (idx !== -1) {
-          draft.validation.validResponse.value[idx] = oldIndex;
-        }
-
-        if (draft.validation.altResponses) {
-          for (let i = 0; i < item.validation.altResponses; i++) {
-            const altResponse = draft.validation.altResponses[i];
-            idx = item.validation.altResponses[i].value.findIndex(val => val === oldIndex);
-            if (idx !== -1) {
-              altResponse.value[idx] = newIndex;
-            }
-
-            idx = item.validation.altResponses[i].value.findIndex(val => val === newIndex);
-            if (idx !== -1) {
-              altResponse.value[idx] = oldIndex;
-            }
-            return altResponse;
-          }
-        }
-
+        [draft.options[oldIndex], draft.options[newIndex]] = [draft.options[newIndex], draft.options[oldIndex]];
         updateVariables(draft);
       })
     );

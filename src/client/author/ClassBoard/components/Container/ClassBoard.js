@@ -607,6 +607,7 @@ class ClassBoard extends Component {
       enrollmentStatus,
       isItemsVisible
     } = this.props;
+
     const {
       selectedTab,
       flag,

@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
+import { find, forEach } from "lodash";
 import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
 import { getChartMasteryData, analyzeByMode, getYLabelString, viewByMode } from "../../util/transformers";
-import { find, forEach } from "lodash";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
 const getSelectedItems = items => {

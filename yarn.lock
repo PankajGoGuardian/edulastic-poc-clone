@@ -7375,10 +7375,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@3.0.0-beta.1, froala-editor@^3.0.0-beta.1:
-  version "3.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.0.0-beta.1.tgz#c109fb6d781ae8b6fa46137e3774f4fd66cc9113"
-  integrity sha512-IbtHs+IxuaCm4RSZX6mACAH3VGRPYX0G4Syl9V5/p2OIov93gXfZJ5LZOKR9FnAwBPsRSraZEaoiS1gPQrfSSQ==
+froala-editor@3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.0.4.tgz#e079eb11bd8c66e193f94cc82768f356408a42a4"
+  integrity sha512-520kcQQwCTLqwCDm/QKBWjhmPtO9o+8NC/iYie0eH1RB0yA678Q+x3NgjEC6FE9cUmRiuQYq3OOktLYaJ+8l0w==
 
 from2@^2.1.0:
   version "2.3.0"
@@ -8375,7 +8375,7 @@ immer@^1.12.0:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.12.1.tgz#40c6e5b292c00560836c2993bda3a24379d466f5"
   integrity sha512-3fmKM6ovaqDt0CdC9daXpNi5x/YCYS3i4cwLdTVkhJdk5jrDXoPs7lCm3IqM3yhfSnz4tjjxbRG2CziQ7m8ztg==
 
-immer@^2.1.5:
+immer@^2.1, immer@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/immer/-/immer-2.1.5.tgz#0389947455c5a2c7a47f1e6f415c9d1a62a1ebed"
   integrity sha512-xyjQyTBYIeiz6jd02Hg12jV+9QISwF1crLcwTlzHpWH4e0ryNWj1kacpTwimK3bJV5NKKXw458G2vpqoB/inFA==
@@ -13882,13 +13882,13 @@ react-focus-lock@^1.17.7:
     prop-types "^15.6.2"
     react-clientside-effect "^1.2.0"
 
-react-froala-wysiwyg@3.0.0-beta.1-1:
-  version "3.0.0-beta.1-1"
-  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.0.0-beta.1-1.tgz#95dde087b3a448026b21011422531e39df80346a"
-  integrity sha512-xPyTJ0dUm25kkhsBDL88BFqZScwoZpg+8TozavrE04/SbegOl4+V00T2mEYTUYiANyuvFQ+orCQykXW0cvCNcQ==
+react-froala-wysiwyg@3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.0.4.tgz#c682ff5d96600c2fc3dacb0be7902f47fb38d580"
+  integrity sha512-jP34Xw5t1nb+vuxMGDbCjMw+vEAnDuOcw5XTFRt6mrjwwYUo6PkZu3GTr3wmihJOsmX6UoHeLb7X6YH6y2WChg==
   dependencies:
     create-react-class "^15.5.2"
-    froala-editor "^3.0.0-beta.1"
+    froala-editor "3.0.4"
 
 react-google-login@^5.0.2:
   version "5.0.4"

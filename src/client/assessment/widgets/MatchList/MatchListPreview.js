@@ -1,6 +1,7 @@
 import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { cloneDeep, isEqual, get, shuffle, identity, keyBy } from "lodash";
 import { withTheme } from "styled-components";
@@ -29,6 +30,7 @@ import { AnswerItem } from "./styled/AnswerItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const styles = {
   dropContainerStyle: smallSize => ({
@@ -258,9 +260,12 @@ const MatchListPreview = ({
   const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
   return (
-    <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
+    <StyledPaperWrapper
+      data-cy="matchListPreview"
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
@@ -284,7 +289,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
+                <StyledMathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -314,7 +319,7 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <StyledCorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (
@@ -427,7 +432,7 @@ const MatchListPreview = ({
                 )}
               </FlexContainer>
             </DropContainer>
-          </CorrectAnswersContainer>
+          </StyledCorrectAnswersContainer>
         )}
       </div>
       {view === "edit" && (
@@ -450,7 +455,7 @@ const MatchListPreview = ({
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+          <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
@@ -464,10 +469,10 @@ const MatchListPreview = ({
                 </CorItem>
               </FlexContainer>
             ))}
-          </CorrectAnswersContainer>
+          </StyledCorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+            <StyledCorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
@@ -478,11 +483,11 @@ const MatchListPreview = ({
                   </CorItem>
                 </FlexContainer>
               ))}
-            </CorrectAnswersContainer>
+            </StyledCorrectAnswersContainer>
           )}
         </Fragment>
       ) : null}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 
@@ -526,3 +531,14 @@ const enhance = compose(
 );
 
 export default enhance(MatchListPreview);
+
+const StyledMathFormulaDisplay = styled(MathFormulaDisplay)`
+  color: ${props => props.theme.widgets.matchList.dragItemColor};
+`;
+
+const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer)`
+  background-color: ${props => props.theme.widgets.matchList.containerBgColor};
+  & > h3 {
+    color: ${props => props.theme.widgets.matchList.dragItemColor};
+  }
+`;

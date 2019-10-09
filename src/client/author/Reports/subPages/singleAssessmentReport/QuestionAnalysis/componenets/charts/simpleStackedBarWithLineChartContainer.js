@@ -2,10 +2,10 @@ import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import { maxBy } from "lodash";
 import { ticks } from "d3-array";
+import { themeColor } from "@edulastic/colors";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { CustomChartCursor } from "../../../../../common/components/charts/chartUtils/customChartCursor";
-import { fadedBlack, themeColor } from "@edulastic/colors";
 
 import { getSecondsFormattedTimeInMins } from "../../utils/helpers";
 
@@ -67,7 +67,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
 
   return (
     <SimpleStackedBarChart
-      margin={{ top: 0, right: 20, left: 20, bottom: 0 }}
+      margin={{ top: 0, right: 60, left: 60, bottom: 0 }}
       pageSize={10}
       data={chartData}
       barsData={chartSpecifics.barsData}
@@ -88,7 +88,6 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
       lineChartDataKey="avgTimeSecs"
       lineProps={{ stroke: themeColor, strokeWidth: 3 }}
       lineDotProps={{ stroke: "#ffffff", strokeWidth: 4 }}
-      lineYAxisLabel="Time (mins)"
     />
   );
 };

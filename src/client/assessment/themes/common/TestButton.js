@@ -1,14 +1,17 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Tooltip } from "antd";
-import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
-import ButtonLink from "./ButtonLink";
 import get from "lodash/get";
+import ButtonLink from "./ButtonLink";
+
+const customizeIcon = icon => styled(icon)`
+  fill: ${props => props.theme.header.headerButtonColor};
+`;
 
 const TestButton = ({
   t,
@@ -57,38 +60,38 @@ const TestButton = ({
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-        <Tooltip placement="top" title={"Check Answer"}>
+        <Tooltip placement="top" title="Check Answer">
           <StyledButton
             onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
             data-cy="checkAnswer"
             title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
           >
-            <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
+            <StyledButtonLink color="primary" icon={<StyledIconCheck />}>
               {t("common.test.checkanswer")}
-            </ButtonLink>
+            </StyledButtonLink>
           </StyledButton>
         </Tooltip>
       )}
       {showHintButton ? (
-        <Tooltip placement="top" title={"Hint"}>
+        <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handleClick}>
-            <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
+            <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
               {t("common.test.hint")}
-            </ButtonLink>
+            </StyledButtonLink>
           </StyledButton>
         </Tooltip>
       ) : null}
-      <Tooltip placement="top" title={"Bookmark"}>
+      <Tooltip placement="top" title="Bookmark">
         <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
-          <ButtonLink
+          <StyledButtonLink
             color={isBookmarked ? "success" : "primary"}
             isBookmarked={isBookmarked}
             onClick={toggleBookmark}
-            icon={<IconBookmark color={isBookmarked ? "#f8c165" : "white"} width={10} height={16} />}
-            style={{ color: isBookmarked ? "#f8c165" : "white" }}
+            icon={<StyledIconBookmark color={isBookmarked ? "#f8c165" : ""} width={10} height={16} />}
+            style={{ color: isBookmarked ? "#f8c165" : "" }}
           >
             {t("common.test.bookmark")}
-          </ButtonLink>
+          </StyledButtonLink>
         </StyledButton>
       </Tooltip>
     </Container>
@@ -110,7 +113,7 @@ const Container = styled.div`
 const StyledButton = styled(Button)`
   margin-right: 10px;
   background: transparent;
-  height: 24px;
+  height: auto;
   &[disabled] {
     cursor: pointer;
     &:hover {
@@ -118,10 +121,33 @@ const StyledButton = styled(Button)`
     }
     background: transparent;
   }
+  border-color: ${props => props.theme.default.headerButtonBorderColor};
   &:hover,
   &:focus,
   &:active {
     background: ${props => props.theme.default.headerButtonActiveBgColor};
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
+  ${({ theme }) => theme.zoomedCss`
+      height: ${props => props.theme.default.headerToolbarButtonWidth};
+     width: ${theme.default.headerToolbarButtonHeight};
+  `}
 `;
+
+const StyledButtonLink = styled(ButtonLink)`
+  font-size: ${props => props.theme.default.headerButtonFontSize};
+  color: ${props => props.theme.header.headerButtonColor};
+  span {
+    svg {
+      width: ${props => props.theme.default.headerButtonFontIconWidth};
+      height: ${props => props.theme.default.headerButtonFontIconHeight};
+    }
+  }
+  &:hover {
+    color: ${props => props.theme.header.headerButtonHoverColor};
+  }
+`;
+
+const StyledIconCheck = customizeIcon(IconCheck);
+const StyledIconLightBulb = customizeIcon(IconLightBulb);
+const StyledIconBookmark = customizeIcon(IconBookmark);

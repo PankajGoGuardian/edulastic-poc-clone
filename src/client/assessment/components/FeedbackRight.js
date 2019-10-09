@@ -110,6 +110,7 @@ class FeedbackRight extends Component {
     const { feedback } = this.state;
     const {
       user,
+      studentId,
       loadFeedbackResponses,
       widget: { id, activity = {} }
     } = this.props;
@@ -127,6 +128,7 @@ class FeedbackRight extends Component {
         },
         groupId
       },
+      studentId,
       testActivityId,
       questionId: id,
       itemId: testItemId
@@ -301,6 +303,7 @@ const StyledCardTwo = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   flex-direction: column;
+  flex: 3;
   margin: 0px 0px 0px 15px;
   min-height: 100%;
   .ant-card-head {

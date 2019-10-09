@@ -22,6 +22,15 @@ export const StyledTable = styled(Table)`
     }
 
     tr {
+      &:hover:not(.ant-table-expanded-row) {
+        background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
+        & > td,
+        & > td div {
+          background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
+          color: ${props => props.theme.widgets.matrixChoice.inlineLabelHoverColor};
+        }
+      }
+
       th {
         text-align: center;
         padding: 0;
@@ -30,7 +39,7 @@ export const StyledTable = styled(Table)`
         border-style: solid;
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-left: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
-        border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
+        border-top: "inherits";
       }
       td {
         padding: 0;
@@ -41,6 +50,7 @@ export const StyledTable = styled(Table)`
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
+        color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
         min-width: 110px;
       }
       td div {
@@ -49,6 +59,12 @@ export const StyledTable = styled(Table)`
       }
       td:nth-of-type(1) div {
         min-width: 50px;
+      }
+    }
+
+    tr:last-child {
+      td {
+        border-bottom: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
       }
     }
 

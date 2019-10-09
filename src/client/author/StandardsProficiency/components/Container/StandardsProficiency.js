@@ -30,7 +30,8 @@ import {
   deleteStandardsProficiencyAction,
   receiveStandardsProficiencyAction,
   setEditingIndexAction,
-  setStandardsProficiencyProfileNameAction
+  setStandardsProficiencyProfileNameAction,
+  setEDitableAction
 } from "../../ducks";
 import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 
@@ -112,11 +113,12 @@ function ProfileRow(props) {
         <ModalInput autoFocus value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </ProfileModal>
 
-      <StyledProfileRow type="flex">
+      <StyledProfileRow onClick={e => setEditing(index)} type="flex">
         <Col span={12}>
           {active & !readOnly ? (
             <Input
               value={profileName}
+              onClick={e => e.stopPropagation()}
               onChange={e => {
                 setName({ _id, name: e.target.value });
                 if (proficiencyTableInstance.current) {
@@ -129,9 +131,19 @@ function ProfileRow(props) {
           )}
         </Col>
         <StyledProfileCol span={12}>
-          {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditing(index)} />}
+          {props.hideEdit ? null : (
+            <Icon
+              type="edit"
+              theme="filled"
+              title="edit"
+              onClick={e => {
+                e.stopPropagation();
+                props.setEditable({ index, value: true });
+              }}
+            />
+          )}
           <Icon type="copy" onClick={onDuplicate} />
-          {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
+          {props.hideEdit ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
           {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditing(index)} />}
         </StyledProfileCol>
       </StyledProfileRow>
@@ -165,13 +177,24 @@ function StandardsProficiency(props) {
     remove,
     editingIndex,
     setEditingIndex,
-    setName
+    setName,
+    setEditable,
+    editable
   } = props;
   const showSpin = loading || updating || creating;
   const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
+
+  const handleProfileLimit = () => {
+    const canCreateProfile = props.profiles.filter(x => x.createdBy._id === props.userId).length <= 10;
+    if (!canCreateProfile) {
+      message.error("Maximum 10 profiles per user is allowed");
+      return false;
+    }
+    return true;
+  };
 
   const createStandardProficiency = () => {
     const name = profileName;
@@ -195,6 +218,9 @@ function StandardsProficiency(props) {
   };
 
   const duplicateProfile = ({ _id, name }) => {
+    if (!handleProfileLimit()) {
+      return;
+    }
     const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
       props.profiles.find(x => x._id === _id) || {};
     console.log("profile", profile);
@@ -248,7 +274,7 @@ function StandardsProficiency(props) {
               <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>
               <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
             </ProfileModal>
-            <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
+            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
               <i>+</i> Create new Profile
             </CreateProfile>
           </Row>
@@ -259,7 +285,9 @@ function StandardsProficiency(props) {
             rowKey="_id"
             renderItem={(profile, index) => (
               <ProfileRow
-                readOnly={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
+                readOnly={(props.role === "school-admin" && get(profile, "createdBy._id") != props.userId) || !editable}
+                hideEdit={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
+                setEditable={setEditable}
                 onDuplicate={() => duplicateProfile(profile)}
                 setName={setName}
                 setEditing={setEditingIndex}
@@ -284,6 +312,7 @@ const enhance = connect(
     updating: get(state, ["standardsProficiencyReducer", "updating"], false),
     creating: get(state, ["standardsProficiencyReducer", "creating"], false),
     profiles: get(state, ["standardsProficiencyReducer", "data"], []),
+    editable: state?.standardsProficiencyReducer?.editable,
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     userId: getUserId(state),
@@ -295,7 +324,8 @@ const enhance = connect(
     list: receiveStandardsProficiencyAction,
     remove: deleteStandardsProficiencyAction,
     setEditingIndex: setEditingIndexAction,
-    setName: setStandardsProficiencyProfileNameAction
+    setName: setStandardsProficiencyProfileNameAction,
+    setEditable: setEDitableAction
   }
 );
 

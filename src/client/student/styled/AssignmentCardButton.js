@@ -3,8 +3,8 @@ import { Button } from "antd";
 import { extraDesktopWidth, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 
 const StartAssignButton = styled(Button)`
-  max-width: 200px;
-  height: 40px;
+  ${props => (props.theme.zoomLevel == "xs" ? "max-width: 200px; height: 40px;" : "max-width: 300px; height: auto;")}
+
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -56,6 +56,19 @@ const StartAssignButton = styled(Button)`
     width: 70%;
     float: none;
   }
+
+  ${({ theme }) =>
+    theme.respondTo.lg`
+      max-width: 400px;
+    `}
+
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      margin: 20px auto 0px auto
+      width: 70%;
+      float: none;
+      max-width: 500px;
+    `}
 `;
 
 export default StartAssignButton;

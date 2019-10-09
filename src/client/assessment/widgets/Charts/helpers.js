@@ -1,10 +1,4 @@
-import {
-  SHOW_GRIDLINES_BOTH,
-  SHOW_GRIDLINES_X_ONLY,
-  SHOW_GRIDLINES_Y_ONLY,
-  FRACTION_FORMAT_FRACTION,
-  FRACTION_FORMAT_MIXED_FRACTION
-} from "./const";
+import { SHOW_GRIDLINES_BOTH, SHOW_GRIDLINES_X_ONLY, SHOW_GRIDLINES_Y_ONLY } from "./const";
 
 export const getYAxis = (yAxisMax, yAxisMin, stepSize) =>
   Array.from({ length: (yAxisMax - yAxisMin) / stepSize + 1 }, (v, k) => +(yAxisMax - k * stepSize).toFixed(2));
@@ -49,62 +43,6 @@ export const convertPxToUnit = (px, { height, margin, yAxisMax, yAxisMin, stepSi
   const padding = getPadding(yAxis);
   const result = ((height - margin - px) * (yAxisMax - yAxisMin)) / (height - margin - padding) + yAxisMin;
   return normalizeValue(result, { yAxisMax, yAxisMin, snapTo });
-};
-
-export const getFractionResult = (value, fractionFormat) => {
-  const result = {
-    main: null,
-    sup: null,
-    sub: null
-  };
-
-  const strValue = value.toString();
-  const numValue = parseFloat(strValue);
-  const indexOfDot = strValue.indexOf(".");
-  if (Number.isNaN(numValue) || numValue.toString().length !== strValue.length || indexOfDot === -1) {
-    result.main = value;
-    return result;
-  }
-
-  const countDecimals = strValue.length - indexOfDot - 1;
-  let sub = +`1${Array.from({ length: countDecimals }, () => 0).join("")}`;
-
-  if (fractionFormat === FRACTION_FORMAT_FRACTION) {
-    let sup = value * sub;
-    while (sup % 5 === 0 && sub % 5 === 0) {
-      sup /= 5;
-      sub /= 5;
-    }
-    while (sup % 2 === 0 && sub % 2 === 0) {
-      sup /= 2;
-      sub /= 2;
-    }
-    result.sub = +sub.toFixed(0);
-    result.sup = +sup.toFixed(0);
-    return result;
-  }
-
-  if (fractionFormat === FRACTION_FORMAT_MIXED_FRACTION) {
-    const main = Math.trunc(value);
-    let sup = (value * sub) % sub;
-    while (sup % 5 === 0 && sub % 5 === 0) {
-      sup /= 5;
-      sub /= 5;
-    }
-    while (sup % 2 === 0 && sub % 2 === 0) {
-      sup /= 2;
-      sub /= 2;
-    }
-    if (main !== 0) {
-      result.main = main;
-    }
-    result.sub = +sub.toFixed(0);
-    result.sup = +sup.toFixed(0);
-    return result;
-  }
-
-  result.main = value;
-  return result;
 };
 
 export const displayVerticalLines = showGridlines =>

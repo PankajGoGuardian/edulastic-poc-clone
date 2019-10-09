@@ -6,7 +6,7 @@ export const TableWrapper = styled.div`
   height: 100%;
   max-width: 100%;
   margin: auto;
-  margin-top: 0;
+  margin: 20px 0;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};
   background-repeat: no-repeat;
   background-size: ${({ imageOptions = { width: 0, height: 0 } }) =>
@@ -15,4 +15,5 @@ export const TableWrapper = styled.div`
   padding: 10px;
   position: relative;
   display: block;
+  zoom: ${props => props.theme.widgets.classification.imageZoom};
 `;

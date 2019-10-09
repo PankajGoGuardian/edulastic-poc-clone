@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import AxisSegmentsMoreOptions from "./AxisSegmentsMoreOptions";
-import { FRACTIONS_FORMAT, RENDERING_BASE } from "../../Builder/config/constants";
+import { RENDERING_BASE } from "../../Builder/config/constants";
 
 const AxisSegmentsOptions = ({
   setCanvas,
@@ -51,27 +51,6 @@ const AxisSegmentsOptions = ({
 
   const orientationList = [{ value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" }];
 
-  const fractionsFormatList = [
-    {
-      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
-      value: "Not normalized and mixed fractions",
-      label: "Not normalized and mixed fractions",
-      selected: true
-    },
-    {
-      id: FRACTIONS_FORMAT.NORMALIZED,
-      value: "Normalized and mixed fractions",
-      label: "Normalized and mixed fractions",
-      selected: false
-    },
-    {
-      id: FRACTIONS_FORMAT.IMPROPER,
-      value: "Improper fractions",
-      label: "Improper fractions",
-      selected: false
-    }
-  ];
-
   const renderingBaseList = [
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
@@ -100,7 +79,6 @@ const AxisSegmentsOptions = ({
         fontSizeList={fontSizeList}
         orientationList={orientationList}
         renderingBaseList={renderingBaseList}
-        fractionsFormatList={fractionsFormatList}
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />

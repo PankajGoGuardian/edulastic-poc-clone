@@ -7,10 +7,10 @@ exports["default"] = void 0;
 
 var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
   var minScoreIfAttempted = _ref.minScoreIfAttempted,
-    maxScore = _ref.maxScore;
+    validResponse = _ref.validResponse;
   return {
-    score: minScoreIfAttempted || 0,
-    maxScore: maxScore || 1,
+    score: undefined,
+    maxScore: (validResponse === null || validResponse === void 0 ? void 0 : validResponse.score) || 0,
     evaluation: {}
   };
 };

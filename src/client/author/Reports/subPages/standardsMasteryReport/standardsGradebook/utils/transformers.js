@@ -234,8 +234,7 @@ export const getFilteredDenormalizedData = (denormalizedData, filters, role) => 
     }
     return false;
   });
-
-  return filteredDenormalizedData;
+  return filteredDenormalizedData.sort((a, b) => a.standard.localeCompare(b.standard));
 };
 
 export const getChartData = (filteredDenormalizedData, masteryScale, filters, role) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { get } from "lodash";
 import { Row, Col } from "antd";
 
@@ -29,17 +30,17 @@ import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import columns from "./static/json/tableColumns.json";
 
 const PerformanceByStudents = ({
-  role,
-  performanceByStudents,
-  getPerformanceByStudentsRequestAction,
-  settings,
-  isCsvDownloading,
   loading,
+  isCsvDownloading,
+  role,
   performanceBandProfiles,
-  performanceBandSelected
+  selectedPerformanceBand,
+  performanceByStudents,
+  getPerformanceByStudents,
+  settings
 }) => {
   const bandInfo =
-    performanceBandProfiles.find(profile => profile._id === performanceBandSelected)?.performanceBand ||
+    performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
     performanceBandProfiles[0]?.performanceBand;
 
   const [ddfilter, setDdFilter] = useState({
@@ -65,7 +66,7 @@ const PerformanceByStudents = ({
       let q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
-      getPerformanceByStudentsRequestAction(q);
+      getPerformanceByStudents(q);
     }
   }, [settings]);
 
@@ -73,8 +74,7 @@ const PerformanceByStudents = ({
     setPagination({ ...pagination, current: 0 });
   }, [range.left, range.right]);
 
-  let res = get(performanceByStudents, "data.result", false);
-  res = res ? { ...res, bandInfo } : res;
+  const res = { ...performanceByStudents, bandInfo };
 
   const proficiencyBandData = getProficiencyBandData(res && res.bandInfo);
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0]);
@@ -166,17 +166,37 @@ const PerformanceByStudents = ({
   );
 };
 
+const reportPropType = PropTypes.shape({
+  districtAvg: PropTypes.number,
+  districtAvgPerf: PropTypes.number,
+  schoolMetricInfo: PropTypes.array,
+  studentMetricInfo: PropTypes.array,
+  metaInfo: PropTypes.array,
+  metricInfo: PropTypes.array
+});
+
+PerformanceByStudents.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  role: PropTypes.string.isRequired,
+  performanceBandProfiles: PropTypes.array.isRequired,
+  selectedPerformanceBand: PropTypes.string.isRequired,
+  performanceByStudents: reportPropType.isRequired,
+  getPerformanceByStudents: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
+};
+
 const enhance = connect(
   state => ({
-    performanceByStudents: getReportsPerformanceByStudents(state),
     loading: getReportsPerformanceByStudentsLoader(state),
-    role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
-    performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
+    role: getUserRole(state),
+    performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
+    selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
+    performanceByStudents: getReportsPerformanceByStudents(state)
   }),
   {
-    getPerformanceByStudentsRequestAction
+    getPerformanceByStudents: getPerformanceByStudentsRequestAction
   }
 );
 

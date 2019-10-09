@@ -222,9 +222,17 @@ const QuestionWrapper = styled.div`
   font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
   p {
     display: flex;
-    align-items: center;
     white-space: nowrap;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-flow: row wrap;
+
+    > div {
+      margin: -6px 2px 10px 2px !important;
+    }
+
+    > input {
+      margin: -8px 2px 10px 2px;
+    }
   }
   li {
     margin: 4px 0;

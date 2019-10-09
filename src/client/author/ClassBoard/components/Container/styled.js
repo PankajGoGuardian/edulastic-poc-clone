@@ -19,7 +19,7 @@ import {
   cardTitleColor,
   desktopWidth
 } from "@edulastic/colors";
-import { themes } from "../../../../student/themes";
+import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
 export const Anchor = styled.a`
@@ -108,7 +108,7 @@ export const StyledCard = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
-    padding: 20px 30px;
+    padding: 20px;
   }
 
   @media (max-width: ${mobileWidth}) {

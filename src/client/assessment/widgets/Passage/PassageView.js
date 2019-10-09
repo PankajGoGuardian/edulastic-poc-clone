@@ -25,6 +25,7 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
     if (window.$) {
       const jQuery = window.$;
       jQuery(".selected-text-heighlight").each(function(index) {
+        this.setAttribute("heighlight-index", index);
         jQuery(this).on("mouseenter", function() {
           if (!selected && !startedSelectingText) {
             const top = this.offsetTop + this.offsetHeight + 1; // 1px is for the arrow point
@@ -43,6 +44,25 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
     addEventToSelectedText();
   };
 
+  const getIndexForSameWord = (str, highlightIndex) => {
+    const regex = new RegExp(str, "g");
+    const { innerHTML: content } = mainContentsRef.current;
+    let i = 0;
+    let match = regex.exec(content);
+
+    const hStr = `heighlight-index="${highlightIndex}"`;
+
+    while (match) {
+      const frontStr = content.slice(match.index - (hStr.length + 1), match.index - 1);
+      const backStr = content.slice(match.index + str.length, match.index + str.length + 7);
+      if (backStr === "</span>" && hStr === frontStr) {
+        return i;
+      }
+      i += 1;
+      match = regex.exec(content);
+    }
+  };
+
   const clickHighligter = color => {
     if (mainContentsRef.current) {
       const { innerHTML: content } = mainContentsRef.current;
@@ -55,6 +75,8 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
           text: match.slice(3)[0],
           style: match.slice(1)[0]
         });
+        const index = getIndexForSameWord(matchs[matchs.length - 1].text, matchs.length - 1);
+        matchs[matchs.length - 1].index = index;
         match = regex.exec(content);
       }
 
@@ -72,6 +94,7 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
           })
         );
       }
+
       if (color === "remove") {
         toggleColorPicker(null);
       }
@@ -88,13 +111,26 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
     if (highlights) {
       for (let i = 0; i < highlights.length; i++) {
         if (highlights[i]) {
-          const { color, style, text } = highlights[i];
+          const { color, style, text, index } = highlights[i];
           const highlightStyle = color ? `style="background-color:${color}"` : style;
           const className = color
             ? 'class="selected-text-heighlight active"'
             : 'class="selected-text-heighlight unsaved"';
           const replaceStr = `<span ${highlightStyle} ${className}>${text}</span>`;
-          content = content.replace(new RegExp(highlights[i].text), replaceStr);
+          if (!index) {
+            content = content.replace(new RegExp(text), replaceStr);
+          } else {
+            const regex = new RegExp(text, "g");
+            let wordIndex = 0;
+            let match = regex.exec(content);
+            while (match) {
+              if (wordIndex === index) {
+                content = content.substr(0, match.index) + replaceStr + content.substr(match.index + text.length);
+              }
+              wordIndex += 1;
+              match = regex.exec(content);
+            }
+          }
         }
       }
     }

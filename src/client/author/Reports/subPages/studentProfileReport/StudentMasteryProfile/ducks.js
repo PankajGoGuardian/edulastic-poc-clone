@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
+import { call, put, all, takeLatest } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -111,7 +111,7 @@ function* getReportsStudentMasteryProfileRequest({ payload }) {
 
 function* getStudentStandardsSaga({ payload }) {
   try {
-    const studentStandard = yield call(reportsApi.fetchStudenStandards, payload);
+    const studentStandard = yield call(reportsApi.fetchStudentStandards, payload);
     yield put({
       type: GET_STUDENT_STANDARDS_SUCCESS,
       payload: studentStandard
@@ -127,7 +127,7 @@ function* getStudentStandardsSaga({ payload }) {
 
 export function* reportStudentMasteryProfileSaga() {
   yield all([
-    yield takeEvery(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST, getReportsStudentMasteryProfileRequest),
+    yield takeLatest(GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST, getReportsStudentMasteryProfileRequest),
     yield takeLatest(GET_STUDENT_STANDARDS_REQUEST, getStudentStandardsSaga)
   ]);
 }

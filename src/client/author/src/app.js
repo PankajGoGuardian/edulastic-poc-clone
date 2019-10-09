@@ -7,13 +7,14 @@ import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
-import { themes } from "../../assessment/themes";
+import { themes } from "../../theme";
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
 import { get } from "lodash";
 import { getUserOrgId, getUserRole } from "./selectors/user";
 import { receiveDistrictPolicyAction } from "../DistrictPolicy/ducks";
+import { getZoomedTheme } from "../../student/zoomTheme";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -78,8 +79,11 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
   const isPrintPreview = history.location.pathname.includes("printpreview");
+
+  const themeToPass = getZoomedTheme(themes.default, "xs");
+
   return (
-    <ThemeProvider theme={themes.default}>
+    <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout>
           <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
@@ -158,7 +162,11 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
                   <Route exact path={`${match.url}/items`} component={ItemList} />
                   <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
                   <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
-                  <Route exact path={`${match.url}/items/:id/item-detail/test/:testId`} component={ItemDetail} />
+                  <Route
+                    exact
+                    path={`${match.url}/items/:id/item-detail/test/:testId`}
+                    render={props => <ItemDetail isTestFlow {...props} />}
+                  />
                   <Route
                     exact
                     path={`${match.url}/playlists`}

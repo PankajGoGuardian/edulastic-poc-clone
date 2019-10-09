@@ -61,11 +61,16 @@ export const StyledTable = styled(Table)`
       thead {
         tr {
           th {
-            white-space: nowrap;
             color: ${fadedBlack};
           }
           th:nth-child(n + 2) {
             text-align: right;
+          }
+
+          @media only screen and (min-width: 1200px) {
+            th {
+              font-size: 11px;
+            }
           }
         }
       }
@@ -75,6 +80,9 @@ export const StyledTable = styled(Table)`
           td:nth-child(n + 2) {
             text-align: right;
           }
+        }
+        td .assessmentDate {
+          white-space: nowrap;
         }
       }
 

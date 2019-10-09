@@ -10,6 +10,7 @@ class ParentController extends MessageController {
     this.response = initResponse;
     this.totalPage = "0";
     this.currentPageIds = {};
+    this.currentPageNum = 0;
 
     // callbacks for React component
     this.setTotalPage = null;
@@ -18,6 +19,7 @@ class ParentController extends MessageController {
     this.unlockNext = null;
     this.handleReponse = null;
     this.playerStateHandler = null;
+    this.setCurrentScoring = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -28,6 +30,7 @@ class ParentController extends MessageController {
     this.unlockNext = callbacks.unlockNext;
     this.handleReponse = callbacks.handleReponse;
     this.playerStateHandler = callbacks.playerStateHandler;
+    this.setCurrentScoring = callbacks.setCurrentScoring;
   }
 
   /********************** call from testlet ************************/
@@ -95,13 +98,21 @@ class ParentController extends MessageController {
   }
 
   onCurrentPage(page) {
+    this.currentPageNum = page;
     if (this.setCurrentQuestion) {
       this.setCurrentQuestion(page);
+    }
+    if (this.playerStateHandler) {
+      this.itemState.pageNum = page;
+      this.playerStateHandler(this.itemState, this.response);
     }
   }
 
   onCurrentPageID(currentScoring) {
     this.currentPageIds = JSON.parse(currentScoring);
+    if (this.setCurrentScoring) {
+      this.setCurrentScoring(JSON.parse(currentScoring));
+    }
   }
 
   // get version number from testlet

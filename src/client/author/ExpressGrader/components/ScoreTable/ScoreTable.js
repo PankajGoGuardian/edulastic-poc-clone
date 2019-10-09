@@ -99,7 +99,7 @@ class ScoreTable extends Component {
           {
             key: "score",
             title: <ScoreTitle>score</ScoreTitle>,
-            className: "th-border-bottom",
+            className: "th-border-bottom score-title",
             dataIndex: "score",
             width: 100,
             render: record => {

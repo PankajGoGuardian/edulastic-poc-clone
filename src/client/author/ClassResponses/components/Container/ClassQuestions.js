@@ -6,7 +6,7 @@ import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
 import { AnswerContext } from "@edulastic/common";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
-import { loadScratchPadAction } from "../../../../assessment/actions/userWork.js";
+import { loadScratchPadAction } from "../../../../assessment/actions/userWork";
 
 import AssessmentPlayerModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getRows } from "../../../sharedDucks/itemDetail";
@@ -21,8 +21,8 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
   if (item.passageId && passages.length) {
     const passage = passages.find(p => p._id === item.passageId) || {};
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
+    rows[0] = passage.structure;
   }
-
   const answerContextConfig = useContext(AnswerContext);
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
@@ -64,9 +64,20 @@ class ClassQuestions extends Component {
 
   static contextType = AnswerContext;
 
+  componentDidMount() {
+    this.loadScratchPadData();
+  }
+
   componentDidUpdate(prevProps) {
+    const { questionActivities } = this.props;
+    if (prevProps.questionActivities !== questionActivities) {
+      this.loadScratchPadData();
+    }
+  }
+
+  loadScratchPadData = () => {
     const { loadScratchPad, questionActivities } = this.props;
-    if (prevProps.questionActivities !== questionActivities && !isEmpty(questionActivities)) {
+    if (!isEmpty(questionActivities)) {
       const userWork = {};
       questionActivities.forEach(curr => {
         if (curr.scratchPad && !userWork[curr.testItemId]) {
@@ -76,7 +87,7 @@ class ClassQuestions extends Component {
 
       loadScratchPad(userWork);
     }
-  }
+  };
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {
@@ -98,16 +109,20 @@ class ClassQuestions extends Component {
       questionActivities,
       studentViewFilter: filter,
       labels = {},
-      isQuestionView = false
+      isQuestionView = false,
+      testItemsData
     } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
     }
+
     let {
       classResponse: { testItems }
     } = this.props;
-    if (!this.context.expressGrader && testItems && !isQuestionView) {
-      testItems = this.props.testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
+
+    const { expressGrader } = this.context;
+    if (!expressGrader && testItems && !isQuestionView) {
+      testItems = testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
     }
     const userQActivities =
       currentStudent && currentStudent.questionActivities ? currentStudent.questionActivities : [];
@@ -218,15 +233,23 @@ class ClassQuestions extends Component {
   };
 
   hideStudentWork = () => {
-    this.setState({
-      showPlayerModal: false,
-      selectedTestItem: []
-    });
+    const { closeTestletPlayer, showTestletPlayer } = this.props;
+    this.setState(
+      {
+        showPlayerModal: false,
+        selectedTestItem: []
+      },
+      () => {
+        if (showTestletPlayer && closeTestletPlayer) {
+          closeTestletPlayer();
+        }
+      }
+    );
   };
 
   render() {
     const { showPlayerModal, selectedTestItem } = this.state;
-    const { questionActivities, passages = [] } = this.props;
+    const { questionActivities, passages = [], showTestletPlayer, classResponse, testActivity } = this.props;
     const testItems = this.getTestItems();
     const userWork = {};
 
@@ -256,13 +279,22 @@ class ClassQuestions extends Component {
         />
       );
     });
+    const test = showTestletPlayer
+      ? {
+          testType: classResponse.testType,
+          title: classResponse.title,
+          testletConfig: classResponse.testletConfig,
+          testletState: get(testActivity, "userWork.testletState"),
+          testItems: [selectedTestItem]
+        }
+      : { testItems: [selectedTestItem] };
 
     return (
       <>
         <AssessmentPlayerModal
-          isModalVisible={showPlayerModal}
+          isModalVisible={showPlayerModal || showTestletPlayer}
           closeTestPreviewModal={this.hideStudentWork}
-          test={{ testItems: [selectedTestItem] }}
+          test={test}
           LCBPreviewModal
         />
         {testItemsPreview}
@@ -295,10 +327,12 @@ ClassQuestions.propTypes = {
   labels: PropTypes.array.isRequired,
   qIndex: PropTypes.number,
   isPresentationMode: PropTypes.bool,
-  studentViewFilter: PropTypes.string
+  studentViewFilter: PropTypes.string,
+  showTestletPlayer: PropTypes.bool
 };
 ClassQuestions.defaultProps = {
   qIndex: null,
   isPresentationMode: false,
+  showTestletPlayer: false,
   studentViewFilter: null
 };

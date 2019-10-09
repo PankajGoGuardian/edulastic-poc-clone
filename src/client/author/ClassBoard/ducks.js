@@ -176,8 +176,8 @@ function* markAbsentSaga({ payload }) {
 
 function* markAsSubmittedSaga({ payload }) {
   try {
-    yield call(classBoardApi.markSubmitted, payload);
-    yield put(updateSubmittedStudentsAction(payload.students));
+    const response = yield call(classBoardApi.markSubmitted, payload);
+    yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(message.success, "Successfully marked as submitted");
   } catch (err) {
     yield call(message.error, "Mark as submit failed");
@@ -533,7 +533,7 @@ export const getTestItemsOrderSelector = createSelector(
   stateTestActivitySelector,
   state =>
     get(state, "data.test.testItems", []).reduce((acc, item, idx) => {
-      const id = item.itemId;
+      const id = item.itemId || item._id;
       acc[id] = idx;
       return acc;
     }, {})

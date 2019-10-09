@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import { sumBy } from "lodash";
 import next from "immer";
 import { StyledTable } from "../styled";
 import { StyledH3 } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { idToName, analyseByToName } from "../../util/transformers";
+import { idToName } from "../../util/transformers";
 import styled from "styled-components";
 import { downloadCSV } from "../../../../../common/util";
 import CsvTable from "../../../../../common/components/tables/CsvTable";

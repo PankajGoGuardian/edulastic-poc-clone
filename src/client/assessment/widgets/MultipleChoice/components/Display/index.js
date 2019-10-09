@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { InstructorStimulus, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import Options from "./components/Options";
 import { QuestionTitleWrapper } from "./styled/Label";
@@ -24,7 +24,6 @@ const Display = ({
   <div>
     {!flowLayout && (
       <>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
           <StyledStimulus dangerouslySetInnerHTML={{ __html: question }} />
@@ -90,6 +89,10 @@ Display.defaultProps = {
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   overflow: hidden;
+
+  img {
+    padding: 0px;
+  }
 `;
 
 export default Display;

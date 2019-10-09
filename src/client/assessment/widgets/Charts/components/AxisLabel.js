@@ -1,11 +1,12 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
+import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
+import { convertNumberToFraction } from "../../../utils/helpers";
 import { Sub, Sup } from "../styled";
-import { getFractionResult } from "../helpers";
 
 const AxisLabel = ({ value, fractionFormat }) => {
-  const result = getFractionResult(value, fractionFormat);
+  const result = convertNumberToFraction(value, fractionFormat);
 
   return (
     <Fragment>
@@ -28,7 +29,7 @@ AxisLabel.propTypes = {
 };
 
 AxisLabel.defaultProps = {
-  fractionFormat: "Decimal"
+  fractionFormat: FRACTION_FORMATS.decimal
 };
 
 export default AxisLabel;

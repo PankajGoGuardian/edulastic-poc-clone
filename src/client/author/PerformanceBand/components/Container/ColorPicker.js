@@ -15,7 +15,19 @@ const StyledIcon = styled(Icon)`
   }
 `;
 
-export const colors = ["#576BA9", "#A1C3EA", "#F39300", "#FEC571", "#3DB04E", "#74E27A", "#AFA515", "#EBDD54"];
+export const colors = [
+  "#576BA9",
+  "#A1C3EA",
+  "#F39300",
+  "#FEC571",
+  "#3DB04E",
+  "#74E27A",
+  "#AFA515",
+  "#EBDD54",
+  "#b22222",
+  "#7c0a02",
+  "#db75c5"
+];
 
 //"#576BA9","#A1C3EA","#F39300","#FEC571","#3DB04E","#74E27A","#AFA515","#EBDD54"
 function ColorPicker(props) {

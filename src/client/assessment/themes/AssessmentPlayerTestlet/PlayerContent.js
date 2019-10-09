@@ -2,13 +2,14 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
-import { isEqual, find, isObject } from "lodash";
+import { isEqual, find, isObject, isArray } from "lodash";
+import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
 
-import { MainContent, Main } from "./styled";
+import { MainContent, Main, OverlayDiv } from "./styled";
 
 let frameController = {};
 
@@ -26,20 +27,27 @@ const PlayerContent = ({
   questions,
   setUserAnswer,
   saveUserAnswer,
-  saveUserWork,
+  saveTestletState,
+  setTestUserWork,
   gotoSummary,
   testActivityId,
   testletState,
-  testletConfig = {}
+  testletConfig = {},
+  LCBPreviewModal,
+  location = { state: {} }
 }) => {
   const frameRef = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
   const [currentPage, setCurrentQuestion] = useState(0);
   const [testletItems, setQuestions] = useState([]);
+  const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
 
-  const findItemIdMap = cPageIds =>
-    find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
+  const findItemIdMap = (cPageIds, pageNum) =>
+    find(
+      testletConfig.mapping,
+      ({ testletItemId, testletPageNum }) => isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
+    );
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
@@ -53,18 +61,20 @@ const PlayerContent = ({
   };
 
   const findCurrentItemFromIdMap = () => {
-    const { currentPageIds } = frameController;
+    const { currentPageIds, currentPageNum } = frameController;
     const cPageIds = Object.keys(currentPageIds);
-    const currentItem = findItemIdMap(cPageIds);
+    const currentItem = findItemIdMap(cPageIds, currentPageNum);
     return currentItem;
   };
 
   const saveUserResponse = () => {
-    const currentItem = findCurrentItemFromIdMap();
-    if (currentItem) {
-      const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
-      const timeSpent = Date.now() - lastTime.current;
-      saveUserAnswer(cItemIndex, timeSpent);
+    if (!LCBPreviewModal) {
+      const currentItem = findCurrentItemFromIdMap();
+      if (currentItem) {
+        const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
+        const timeSpent = Date.now() - lastTime.current;
+        saveUserAnswer(cItemIndex, timeSpent);
+      }
     }
   };
 
@@ -72,7 +82,7 @@ const PlayerContent = ({
     saveUserResponse();
     if (currentPage < testletItems.length) {
       frameController.sendNext();
-    } else {
+    } else if (!LCBPreviewModal) {
       gotoSummary();
     }
   };
@@ -83,7 +93,11 @@ const PlayerContent = ({
   };
 
   const mapTestletToEdu = () => {
+    if (LCBPreviewModal) {
+      return;
+    }
     const currentItem = findCurrentItemFromIdMap();
+    console.log(currentItem);
     if (!currentItem) {
       return;
     }
@@ -91,7 +105,6 @@ const PlayerContent = ({
     if (!cQuestion) {
       return;
     }
-
     const { type: cQuestionType } = cQuestion;
     let data = {};
     if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
@@ -128,9 +141,20 @@ const PlayerContent = ({
       currentItem.responses.map(({ responseId }) => {
         const testletValue = findTestletValue(responseId);
         if (testletValue) {
-          const opIndex = ALPHABET.indexOf(testletValue);
-          if (options[opIndex]) {
-            data.push(options[opIndex].value);
+          if (isArray(testletValue)) {
+            // here is checkbox type
+            testletValue.map(v => {
+              const opIndex = ALPHABET.indexOf(v);
+              if (options[opIndex]) {
+                data.push(options[opIndex].value);
+              }
+            });
+          } else {
+            // here is radio type
+            const opIndex = ALPHABET.indexOf(testletValue);
+            if (options[opIndex]) {
+              data.push(options[opIndex].value);
+            }
           }
         }
       });
@@ -141,13 +165,55 @@ const PlayerContent = ({
         const testletValue = findTestletValue(responseId);
         return { ...eduRes, value: testletValue };
       });
+    } else if (cQuestionType === questionType.CHOICE_MATRIX) {
+      // here is grid type
+      data.value = [];
+      currentItem.responses.map(({ responseId }) => {
+        let testletValue = findTestletValue(responseId) || [];
+        testletValue = testletValue.split(",");
+        data.value = Array.from({
+          length: testletValue.length
+        }).fill([]);
+        testletValue.map(v => {
+          const num = v.match(/[0-9]+/);
+          const alpha = v.match(/[a-z]+/);
+          if (num && alpha) {
+            const opIndex = ALPHABET.indexOf(alpha[0]);
+            const answer = [opIndex];
+            data.value[num[0] - 1] = answer;
+          }
+        });
+      });
+    } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
+      // here is match
+      data = [];
+      currentItem.responses.map(({ responseId }) => {
+        const testletValue = findTestletValue(responseId);
+        const { options } = cQuestion;
+        const opIndex = ALPHABET.indexOf(testletValue);
+        if (options[opIndex]) {
+          data.push(options[opIndex].value);
+        } else {
+          data.push(false);
+        }
+      });
     }
     setUserAnswer(currentItem.uuid, data);
   };
 
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
-      frameController = new ParentController(testletConfig.testletId, testletState.state, testletState.response);
+      const { state: initState = {} } = testletState;
+      if (location.state) {
+        const { fromSummary, question: questionId } = location.state;
+        if (fromSummary && questionId) {
+          const questionMap = find(testletConfig.mapping, ({ uuid }) => uuid === questionId);
+          if (questionMap) {
+            initState.pageNum = questionMap.testletPageNum;
+          }
+        }
+      }
+      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -157,11 +223,16 @@ const PlayerContent = ({
           setQuestions(_questions);
         },
         unlockNext: flag => {
-          setUnlockNext(flag);
+          setUnlockNext(flag || LCBPreviewModal);
+        },
+        setCurrentScoring: ids => {
+          setCurrentScoring(!!Object.keys(ids).length);
         },
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
-          saveUserWork({ [testActivityId]: { state: itemState, response: itemResponse } });
+          if (!LCBPreviewModal) {
+            setTestUserWork({ [testActivityId]: { testletState: { state: itemState, response: itemResponse } } });
+          }
         }
       });
       return () => {
@@ -172,6 +243,9 @@ const PlayerContent = ({
 
   useEffect(() => {
     if (currentPage > 0) {
+      if (!LCBPreviewModal) {
+        saveTestletState();
+      }
       window.localStorage.assessmentLastTime = Date.now();
       frameController.getCurrentPageScoreID();
     }
@@ -188,8 +262,9 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
       />
-      <Main skinB="true">
+      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>
+          {LCBPreviewModal && currentScoring && <OverlayDiv />}
           {testletConfig.testletURL && (
             <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
           )}
@@ -199,4 +274,4 @@ const PlayerContent = ({
   );
 };
 
-export default PlayerContent;
+export default withRouter(PlayerContent);

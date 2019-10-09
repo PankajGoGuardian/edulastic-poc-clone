@@ -185,16 +185,16 @@ class Item extends Component {
           </TestInfo>
 
           <Inner>
-            {!isPlaylist && (
-              <TagsWrapper>
-                <div>
-                  <Tags show={1} tags={tags} />
-                </div>
+            <TagsWrapper>
+              <div>
+                <Tags show={1} tags={isPlaylist ? _source.tags : tags} />
+              </div>
+              {!isPlaylist && (
                 <TestStatus status={status} view="tile">
                   {status}
                 </TestStatus>
-              </TagsWrapper>
-            )}
+              )}
+            </TagsWrapper>
             <ViewButton>View</ViewButton>
           </Inner>
           <Footer>

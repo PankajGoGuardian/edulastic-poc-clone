@@ -391,6 +391,11 @@ export const TableData = styled(Table)`
     background: ${lightGreySecondary};
     border-bottom: 10px solid ${white};
     padding: 10px 16px;
+    & > div {
+      width: 100%;
+      text-align: center;
+      margin: 0px auto;
+    }
   }
   .ant-table-row-expand-icon {
     display: none;
@@ -398,7 +403,7 @@ export const TableData = styled(Table)`
   @media (max-width: 1300px) and (min-width: 980px) {
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr > td {
-      max-width: 100px;
+      max-width: 150px;
     }
     .ant-table-thead > tr > th .ant-table-column-sorters {
       padding-left: 0px;

@@ -7,7 +7,7 @@ import connect from "react-redux/es/connect/connect";
 import { ThemeProvider } from "styled-components";
 import _ from "lodash";
 
-import { themes } from "../../themes";
+import { themes } from "../../../theme";
 
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import {
@@ -69,7 +69,7 @@ const QuestionMetadata = ({
   curriculumStandardsLoading
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const { grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
+  const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
 
   useEffect(() => {
     if (curriculums.length === 0) {
@@ -137,6 +137,7 @@ const QuestionMetadata = ({
               <AlignmentRow
                 key={index}
                 t={t}
+                qId={qId}
                 alignmentIndex={index}
                 handleUpdateQuestionAlignment={handleUpdateQuestionAlignment}
                 alignment={el}

@@ -1,9 +1,7 @@
 import {
   groupBy,
-  head,
   uniqBy,
   capitalize,
-  last,
   ceil,
   orderBy,
   find,
@@ -15,8 +13,8 @@ import {
   mapValues,
   reduce
 } from "lodash";
-import { percentage } from "../../../../common/util";
 import next from "immer";
+import { percentage } from "../../../../common/util";
 
 export const viewByMode = {
   STANDARDS: "standard",
@@ -75,8 +73,8 @@ export const compareByColumns = {
     title: "Class",
     dataIndex: "groupId",
     key: "groupId",
-    sorter: lexicSort("className"),
-    render: (groupId, studentClass) => studentClass.className
+    sorter: lexicSort("groupName"),
+    render: (groupId, studentClass) => studentClass.groupName
   },
   [compareByMode.STUDENTS]: {
     title: "Student",
@@ -169,7 +167,9 @@ const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters =
     value: chartFilters[key]
   }));
 
-  const filteredMetrics = filter(metricInfo, metric => find(skillInfo, skill => skill.standardId == metric.standardId));
+  const filteredMetrics = filter(metricInfo, metric =>
+    find(skillInfo, skill => skill.standardId === metric.standardId)
+  );
 
   const metricsWithStudent = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, filteredMetrics);
 

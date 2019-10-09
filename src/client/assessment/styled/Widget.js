@@ -10,6 +10,8 @@ import {
   selectColor
 } from "@edulastic/colors";
 
+import { Paper } from "@edulastic/common";
+
 export const WidgetWrapper = styled.div`
   margin-top: 30px;
 `;
@@ -74,7 +76,6 @@ export const Widget = styled.div`
       padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
-      font-weight: 600;
       max-height: 40px;
     }
 
@@ -103,7 +104,6 @@ export const Widget = styled.div`
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
-    font-weight: 600;
     min-height: 42px;
   }
 
@@ -197,4 +197,8 @@ export const WidgetFRInput = styled.div`
       padding: 9px 21px;
     }
   }
+`;
+
+export const StyledPaperWrapper = styled(Paper)`
+  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
 `;

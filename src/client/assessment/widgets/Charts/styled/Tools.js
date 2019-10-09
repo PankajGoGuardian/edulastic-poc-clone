@@ -23,16 +23,16 @@ export const ToolBtn = styled.li`
   }
 
   &:hover {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
   }
 
   &:active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
   &.active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
 
     .dd-header-title svg {
@@ -59,6 +59,11 @@ export const ToolbarItemIcon = styled.div`
   min-width: 23px;
   min-height: 24px;
   margin-bottom: 5px;
+  & > svg {
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
 `;
 
 export const ToolbarItem = styled.div`
@@ -71,7 +76,8 @@ export const ToolbarItem = styled.div`
 `;
 
 export const ToolbarItemLabel = styled.span`
-  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)}
+  color: ${props =>
+    props.theme.widgets.chart.labelStrokeColor || (props.color ? props.color : `${secondaryTextColor}`)};
   font-size: 14px;
   font-weight: 600;
   line-height: 19px;

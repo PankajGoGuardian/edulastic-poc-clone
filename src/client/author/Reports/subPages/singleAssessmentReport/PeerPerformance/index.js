@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { compose } from "redux";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
 import { get, keyBy, isEmpty } from "lodash";
@@ -26,18 +27,17 @@ import {
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import columns from "./static/json/tableColumns.json";
-import tempData from "./static/json/tempData";
 
 const denormalizeData = res => {
-  let hMap = keyBy(res.metaInfo, "groupId");
+  const hMap = keyBy(res.metaInfo, "groupId");
 
   if (res && !isEmpty(res.metricInfo)) {
-    let filteredArr = res.metricInfo.filter((data, index) => {
+    const filteredArr = res.metricInfo.filter((data, index) => {
       if (hMap[data.groupId]) return true;
-      else return false;
+      return false;
     });
 
-    let denormArr = filteredArr.map((data, index) => {
+    const denormArr = filteredArr.map((data, index) => {
       return {
         ...hMap[data.groupId],
         ...data,
@@ -54,17 +54,17 @@ const denormalizeData = res => {
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
 const PeerPerformance = ({
-  peerPerformance,
-  getPeerPerformanceRequestAction,
-  role,
-  settings,
   loading,
   isCsvDownloading,
+  role,
   performanceBandProfiles,
-  performanceBandSelected
+  selectedPerformanceBand,
+  peerPerformance,
+  getPeerPerformance,
+  settings
 }) => {
   const bandInfo =
-    performanceBandProfiles.find(profile => profile._id === performanceBandSelected)?.performanceBand ||
+    performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
     performanceBandProfiles[0]?.performanceBand;
 
   const [ddfilter, setDdFilter] = useState({
@@ -83,11 +83,11 @@ const PeerPerformance = ({
       let q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
-      getPeerPerformanceRequestAction(q);
+      getPeerPerformance(q);
     }
   }, [settings]);
 
-  let compareByDropDownData = dropDownFormat.compareByDropDownData;
+  let { compareByDropDownData } = dropDownFormat;
   if (role === "teacher") {
     compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
       if (role === "teacher") {
@@ -96,12 +96,9 @@ const PeerPerformance = ({
     });
   }
 
-  const getColumns = () => {
-    return columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
-  };
+  const getColumns = () => columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
 
-  let res = get(peerPerformance, "data.result", false);
-  res = res ? { ...res, bandInfo } : res;
+  const res = { ...peerPerformance, bandInfo };
 
   const denormData = useMemo(() => {
     return denormalizeData(res);
@@ -137,7 +134,7 @@ const PeerPerformance = ({
   //
 
   const onBarClickCB = key => {
-    let _chartFilter = { ...chartFilter };
+    const _chartFilter = { ...chartFilter };
     if (_chartFilter[key]) {
       delete _chartFilter[key];
     } else {
@@ -169,12 +166,12 @@ const PeerPerformance = ({
             <StyledCard>
               <StyledSignedBarContainer>
                 <Row type="flex" justify="start">
-                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Col xs={24} sm={24} md={12} lg={8} xl={12}>
                     <StyledH3>
                       Assessment Performance by {idToName[ddfilter.compareBy]} | {assessmentName}
                     </StyledH3>
                   </Col>
-                  <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
+                  <Col className="dropdown-container" xs={24} sm={24} md={12} lg={16} xl={12}>
                     <ControlDropDown
                       prefix={"Analyse by"}
                       by={dropDownFormat.analyseByDropDownData[0]}
@@ -242,18 +239,36 @@ const PeerPerformance = ({
   );
 };
 
+const reportPropType = PropTypes.shape({
+  districtAvg: PropTypes.number,
+  districtAvgPerf: PropTypes.number,
+  metaInfo: PropTypes.array,
+  metricInfo: PropTypes.array
+});
+
+PeerPerformance.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  role: PropTypes.string.isRequired,
+  peerPerformance: reportPropType.isRequired,
+  performanceBandProfiles: PropTypes.array.isRequired,
+  selectedPerformanceBand: PropTypes.string.isRequired,
+  getPeerPerformance: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
+};
+
 const enhance = compose(
   connect(
     state => ({
-      peerPerformance: getReportsPeerPerformance(state),
       loading: getReportsPeerPerformanceLoader(state),
-      role: getUserRole(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      performanceBandSelected: getSAFFilterSelectedPerformanceBandProfile(state),
-      performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state)
+      role: getUserRole(state),
+      selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
+      performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
+      peerPerformance: getReportsPeerPerformance(state)
     }),
     {
-      getPeerPerformanceRequestAction: getPeerPerformanceRequestAction
+      getPeerPerformance: getPeerPerformanceRequestAction
     }
   )
 );

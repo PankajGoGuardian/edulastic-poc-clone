@@ -23,12 +23,13 @@ import { replaceVariables, replaceValues } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
-const MutlChoiceWrapper = styled(Paper)`
+const MutlChoiceWrapper = styled(StyledPaperWrapper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
+  ${({ flowLayout }) => flowLayout && "background: transparent"};
   padding: ${props => (props.padding ? props.padding : "0px")};
   box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
 `;
@@ -305,7 +306,6 @@ class MultipleChoice extends Component {
                   onRemove={this.handleRemoveAnswer}
                   qIndex={qIndex}
                   qId={qId}
-                  instructorStimulus={item.instructorStimulus}
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}

@@ -71,6 +71,7 @@ import { questionType } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
+import { setCreatedItemToTestAction } from "../../../TestPage/ducks";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -205,7 +206,7 @@ class Container extends Component {
     }
     history.push({
       pathname: isTestFlow
-        ? `/author/tests/${match.params.testId}/createItem/${match.params.itemId}/pickup-questiontype`
+        ? `/author/tests/${match.params.testId}/createItem/${match.params.id}/pickup-questiontype`
         : `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
         backText: t("component.itemDetail.backText"),
@@ -386,7 +387,10 @@ class Container extends Component {
   };
 
   addItemToPassage = () => {
-    const { passage, isTestFlow, testId } = this.props;
+    const { passage, isTestFlow, match, setCreatedItemToTest, item: previousItem } = this.props;
+    const { testId } = match.params;
+    //every test flow add previous item to test and then go for creating new
+    if (isTestFlow) setCreatedItemToTest(previousItem);
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
@@ -408,7 +412,7 @@ class Container extends Component {
   };
 
   removeItemAndUpdatePassage = () => {
-    const { item, passage } = this.props;
+    const { item, passage, isTestFlow, match } = this.props;
     const id = item._id;
     const { testItems } = passage;
     const originalIndex = testItems.indexOf(id);
@@ -417,7 +421,7 @@ class Container extends Component {
       ? removedArray[originalIndex]
       : removedArray[removedArray.length - 1];
     this.closeRemovePassageItemPopup();
-    this.props.deleteItem({ id: item._id, redirectId });
+    this.props.deleteItem({ id: item._id, redirectId, isTestFlow, testId: match.params.testId });
   };
 
   closeRemovePassageItemPopup = () => {
@@ -427,10 +431,11 @@ class Container extends Component {
   };
 
   goToItem = page => {
-    const { passage, history } = this.props;
+    const { passage, history, match, isTestFlow } = this.props;
+    const testId = match.params.testId;
     const _id = passage.testItems[page - 1];
     history.push({
-      pathname: `/author/items/${_id}/item-detail`,
+      pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
       state: { resetView: false }
     });
   };
@@ -803,7 +808,8 @@ const enhance = compose(
       addWidgetToPassage: addWidgetToPassageAction,
       createItem: createTestItemAction,
       deleteItem: deleteItemAction,
-      deleteWidgetFromPassage: deleteWidgetFromPassageAction
+      deleteWidgetFromPassage: deleteWidgetFromPassageAction,
+      setCreatedItemToTest: setCreatedItemToTestAction
     }
   )
 );

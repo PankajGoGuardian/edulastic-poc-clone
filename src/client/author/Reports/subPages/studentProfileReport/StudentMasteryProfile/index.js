@@ -151,7 +151,7 @@ const StudentMasteryProfile = ({
       </StyledCard>
       <StyledCard>
         <Row type="flex">
-          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Col xs={24} sm={24} md={8} lg={11} xl={8}>
             <StudentPerformancePie
               selectedMastery={selectedMastery}
               data={filteredStandards}
@@ -160,7 +160,7 @@ const StudentMasteryProfile = ({
               getTooltip={getTooltip}
             />
           </Col>
-          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={16} lg={13} xl={16}>
             <StudentPerformanceSummary data={filteredDomains} selectedMastery={selectedMastery} />
           </Col>
         </Row>

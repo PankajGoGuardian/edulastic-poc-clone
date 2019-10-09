@@ -134,7 +134,7 @@ const TestListFilters = ({
 
   const mappedfilterData = getFilters();
   return (
-    <Container>
+    <Container id="filter-container">
       {showModal ? (
         <StandardsSearchModal
           setShowModal={setShowModal}
@@ -173,6 +173,7 @@ const TestListFilters = ({
             value={search[filterItem.onChange]}
             onChange={value => onChange(filterItem.onChange, value)}
             disabled={filterItem.disabled}
+            getPopupContainer={() => document.getElementById("filter-container")}
           >
             {filterItem.data.map(({ value, text, disabled }, index1) => (
               <Select.Option value={value} key={index1} disabled={disabled}>

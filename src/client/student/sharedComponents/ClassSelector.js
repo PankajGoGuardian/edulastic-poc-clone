@@ -100,6 +100,7 @@ const ClassLabel = styled.span`
 
 const AssignmentSelectClass = styled.div`
   display: flex;
+  align-items: center;
 
   .ant-select {
     height: 40px;
@@ -143,7 +144,7 @@ const AssignmentSelectClass = styled.div`
     align-items: center;
     display: flex !important;
     padding-left: 15px;
-    font-size: 12px;
+    font-size: ${props => props.theme.headerDropdownFontSize};
 
     @media (max-width: ${largeDesktopWidth}) {
       padding-left: 2px;

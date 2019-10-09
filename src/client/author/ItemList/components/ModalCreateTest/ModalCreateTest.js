@@ -1,11 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Form, Input, message } from "antd";
+import { Input, message, Row, Col } from "antd";
 
 import Modal from "../../../src/components/common/Modal";
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { createTestFromCartAction } from "../../ducks";
+import styled from "styled-components";
 
 const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSelectedItems }) => {
   const inputRef = useRef(null);
@@ -36,11 +37,12 @@ const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSele
       onClose={onCancel}
       onApply={handleProceed}
     >
-      <Form layout="inline">
-        <Form.Item label="Name">
+      <StyledRow>
+        <Col span={5}>Test Name</Col>
+        <Col span={19}>
           <Input ref={inputRef} placeholder="Enter test name" onKeyUp={handleProceedKeyPress} />
-        </Form.Item>
-      </Form>
+        </Col>
+      </StyledRow>
     </Modal>
   );
 };
@@ -60,3 +62,7 @@ export default connect(
     createTestFromCart: createTestFromCartAction
   }
 )(ModalCreateTest);
+
+const StyledRow = styled(Row)`
+  margin: 24px 0px;
+`;

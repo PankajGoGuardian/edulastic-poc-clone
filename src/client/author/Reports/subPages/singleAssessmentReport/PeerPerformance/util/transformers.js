@@ -3,7 +3,7 @@ import { getHSLFromRange1 } from "../../../../common/util";
 
 export const idToLabel = {
   schoolId: "schoolName",
-  groupId: "className",
+  groupId: "groupName",
   teacherId: "teacherName",
   race: "race",
   gender: "gender",
@@ -31,7 +31,7 @@ export const analyseByToName = {
 };
 
 const filterData = (data, filter) => {
-  let filteredData = data.filter((item, index) => {
+  const filteredData = data.filter((item, index) => {
     if (
       (item.gender.toLowerCase() === filter.gender.toLowerCase() || filter.gender === "all") &&
       (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() || filter.frlStatus === "all") &&
@@ -50,7 +50,7 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        let { maxScore = 0, totalScore = 0 } = currentValue;
+        const { maxScore = 0, totalScore = 0 } = currentValue;
         return {
           totalMaxScore: (total.totalMaxScore += maxScore),
           totalTotalScore: (total.totalTotalScore += totalScore)
@@ -62,27 +62,26 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
     let avgStudentScorePercentUnrounded = (item.totalTotalScore / item.totalMaxScore) * 100;
     avgStudentScorePercentUnrounded = !isNaN(avgStudentScorePercentUnrounded) ? avgStudentScorePercentUnrounded : 0;
 
-    let avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
+    const avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
       ? Math.round(avgStudentScorePercentUnrounded)
       : 0;
-    let schoolName = groupedData[data][0].schoolName;
-    let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+
     item = {
       ...item,
-      avgStudentScorePercentUnrounded: avgStudentScorePercentUnrounded,
-      avgStudentScorePercent: avgStudentScorePercent,
+      avgStudentScorePercentUnrounded,
+      avgStudentScorePercent,
       correct: avgStudentScorePercent,
       incorrect: Math.round(100 - avgStudentScorePercent),
       districtAvg: Math.round(rawData.districtAvgPerf),
       absent: statusCounts[2] || 0,
       graded: statusCounts[1] || 0,
-      schoolName: schoolName,
-      teacherName: teacherName,
-      className: className,
+      schoolName,
+      teacherName,
+      className,
       [compareBy]: data,
-      compareBy: compareBy,
+      compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill: getHSLFromRange1(avgStudentScorePercent),
       dFill: getHSLFromRange1(rawData.districtAvgPerf)
@@ -96,7 +95,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        let { maxScore = 0, totalScore = 0 } = currentValue;
+        const { maxScore = 0, totalScore = 0 } = currentValue;
         return {
           totalMaxScore: (total.totalMaxScore += maxScore),
           totalTotalScore: (total.totalTotalScore += totalScore)
@@ -105,30 +104,28 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       { totalMaxScore: 0, totalTotalScore: 0 }
     );
 
-    let avgStudentScoreUnrounded = item.totalTotalScore / groupedData[data].length;
+    const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+    let avgStudentScoreUnrounded = item.totalTotalScore / (statusCounts[1] || 1);
     avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded) ? avgStudentScoreUnrounded : 0;
 
-    let avgStudentScore = !isNaN(avgStudentScoreUnrounded) ? Number(avgStudentScoreUnrounded.toFixed(2)) : 0;
-    let maxScore = groupedData[data][0].maxScore;
-    let schoolName = groupedData[data][0].schoolName;
-    let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    const avgStudentScore = !isNaN(avgStudentScoreUnrounded) ? Number(avgStudentScoreUnrounded.toFixed(2)) : 0;
+    const { maxScore, schoolName, teacherName, groupName: className } = groupedData[data][0];
 
     item = {
       ...item,
-      maxScore: maxScore,
-      avgStudentScoreUnrounded: avgStudentScoreUnrounded,
-      avgStudentScore: avgStudentScore,
+      maxScore,
+      avgStudentScoreUnrounded,
+      avgStudentScore,
       correct: avgStudentScore,
       incorrect: Number((maxScore - avgStudentScore).toFixed(2)),
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: 0,
-      graded: groupedData[data].length,
-      schoolName: schoolName,
-      teacherName: teacherName,
-      className: className,
+      absent: statusCounts[2] || 0,
+      graded: statusCounts[1] || 0,
+      schoolName,
+      teacherName,
+      className,
       [compareBy]: data,
-      compareBy: compareBy,
+      compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
       dFill: getHSLFromRange1(rawData.districtAvgPerf)
@@ -139,12 +136,12 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
 };
 
 const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
-  const threshold = minBy(rawData.bandInfo, o => {
+  const { threshold } = minBy(rawData.bandInfo, o => {
     if (o.aboveStandard === 1) {
       return o.threshold;
     }
     return Infinity;
-  }).threshold;
+  });
 
   const getStandard = item => {
     if ((item.totalScore / item.maxScore) * 100 >= threshold) {
@@ -156,36 +153,34 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        let standard = getStandard(currentValue);
+        const standard = getStandard(currentValue);
         return {
           ...total,
-          [standard]: total[standard] + 1,
-          total: total.total + 1
+          [standard]: total[standard] + (currentValue.progressStatus === 2 ? 0 : 1),
+          total: total.total + (currentValue.progressStatus === 2 ? 0 : 1)
         };
       },
       { belowStandard: 0, aboveStandard: 0, total: 0 }
     );
 
-    let belowStandardPercentage = -Math.round((item.belowStandard / item.total) * 100);
-    let aboveStandardPercentage = Math.round((item.aboveStandard / item.total) * 100);
+    const belowStandardPercentage = -Math.round((item.belowStandard / (item.total || 1)) * 100);
+    const aboveStandardPercentage = Math.round((item.aboveStandard / (item.total || 1)) * 100);
 
-    let schoolName = groupedData[data][0].schoolName;
-    let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
+    const statusCounts = countBy(groupedData[data], o => o.progressStatus);
 
     item = {
       ...item,
-      aboveStandardPercentage: aboveStandardPercentage,
-      belowStandardPercentage: belowStandardPercentage,
-
+      aboveStandardPercentage,
+      belowStandardPercentage,
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: 0,
-      graded: groupedData[data].length,
-      schoolName: schoolName,
-      teacherName: teacherName,
-      className: className,
+      absent: statusCounts[2] || 0,
+      graded: statusCounts[1] || 0,
+      schoolName,
+      teacherName,
+      className,
       [compareBy]: data,
-      compareBy: compareBy,
+      compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0)
@@ -200,7 +195,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
   const bandInfo = cloneDeep(rawData.bandInfo);
   const proficiencies = {};
   const proficienciesDetail = {};
-  for (let o of rawData.bandInfo) {
+  for (const o of rawData.bandInfo) {
     proficiencies[o.name] = 0;
     proficienciesDetail[o.name] = o;
   }
@@ -223,9 +218,9 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        let proficiency = getProficiency(currentValue);
-        total[proficiency] += 1;
-        total.total += 1;
+        const proficiency = getProficiency(currentValue);
+        total[proficiency] += currentValue.progressStatus === 2 ? 0 : 1;
+        total.total += currentValue.progressStatus === 2 ? 0 : 1;
         return {
           ...total
         };
@@ -233,15 +228,13 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       { ...proficiencies, total: 0 }
     );
 
-    let schoolName = groupedData[data][0].schoolName;
-    let teacherName = groupedData[data][0].teacherName;
-    let className = groupedData[data][0].className;
+    const { schoolName, teacherName, groupName: className } = groupedData[data][0];
 
     const proficiencyPercentages = {};
 
     bandInfoAsc.map((o, index) => {
-      let prof = Math.round((item[o.name] / item.total) * 100);
-      let fill = Math.round((100 / (bandInfo.length - 1)) * index);
+      const prof = Math.round((item[o.name] / (item.total || 1)) * 100);
+      const fill = Math.round((100 / (bandInfo.length - 1)) * index);
       if (proficienciesDetail[o.name].aboveStandard !== 1) {
         proficiencyPercentages[o.name + "Percentage"] = -prof;
       } else {
@@ -250,18 +243,19 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       proficiencyPercentages["fill_" + index] = getHSLFromRange1(fill);
     });
 
+    const statusCounts = countBy(groupedData[data], o => o.progressStatus);
+
     item = {
       ...item,
       ...proficiencyPercentages,
-
       districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent: 0,
-      graded: groupedData[data].length,
-      schoolName: schoolName,
-      teacherName: teacherName,
-      className: className,
+      absent: statusCounts[2] || 0,
+      graded: statusCounts[1] || 0,
+      schoolName,
+      teacherName,
+      className,
       [compareBy]: data,
-      compareBy: compareBy,
+      compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA"
     };
 
@@ -271,8 +265,8 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 };
 
 export const parseData = (rawData, data, filter) => {
-  let filteredData = filterData(data, filter);
-  let groupedData = groupBy(filteredData, filter.compareBy);
+  const filteredData = filterData(data, filter);
+  const groupedData = groupBy(filteredData, filter.compareBy);
   let output = null;
   if (filter.analyseBy === "score(%)") {
     output = analyseByScorePercent(rawData, groupedData, filter.compareBy);

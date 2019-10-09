@@ -23,6 +23,7 @@ const PassageWrapper = styled(Paper)`
   box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
   position: relative;
   text-align: justify;
+  word-break: break-all;
 `;
 
 const Passage = ({

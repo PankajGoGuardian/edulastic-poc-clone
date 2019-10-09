@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { fractionStringToNumber } from "../../../utils/helpers";
 import { CLEAR } from "../../../constants/constantsForQuestions";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
@@ -201,14 +202,21 @@ class GraphDisplay extends Component {
       list
     } = graphData;
 
-    const { showGrid = true, xShowAxis = true, yShowAxis = true } = uiStyle;
+    const { showGrid = true, xShowAxis = true, yShowAxis = true, drawLabelZero = true } = uiStyle;
+
+    const xMin = parseFloat(canvas.xMin);
+    const xMax = parseFloat(canvas.xMax);
+    const yMin = parseFloat(canvas.yMin);
+    const yMax = parseFloat(canvas.yMax);
+    const xDistance = safeParseFloat(uiStyle.xDistance);
+    const yDistance = safeParseFloat(uiStyle.yDistance);
 
     return {
       canvas: {
-        xMin: parseFloat(canvas.xMin) - 1,
-        xMax: parseFloat(canvas.xMax) + 1,
-        yMin: parseFloat(canvas.yMin) - 1,
-        yMax: parseFloat(canvas.yMax) + 1
+        xMin: xMax - xMin <= 6 ? xMin - xDistance : xMin - 1,
+        xMax: xMax - xMin <= 6 ? xMax + xDistance : xMax + 1,
+        yMin: yMax - yMin <= 6 ? yMin - yDistance : yMin - 1,
+        yMax: yMax - yMin <= 6 ? yMax + yDistance : yMax + 1
       },
       layout: {
         width: uiStyle.layoutWidth,
@@ -232,7 +240,8 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
         commaInLabel: uiStyle.xCommaInLabel,
-        showAxis: xShowAxis
+        showAxis: xShowAxis,
+        drawZero: drawLabelZero
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
@@ -242,11 +251,12 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.yMaxArrow,
         minArrow: uiStyle.yMinArrow,
         commaInLabel: uiStyle.yCommaInLabel,
-        showAxis: yShowAxis
+        showAxis: yShowAxis,
+        drawZero: drawLabelZero && !xShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(uiStyle.xDistance),
-        gridY: safeParseFloat(uiStyle.yDistance),
+        gridX: xDistance,
+        gridY: yDistance,
         showGrid
       },
       bgImgOptions: {
@@ -315,7 +325,7 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
+        ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
@@ -419,7 +429,7 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
+        ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
         separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),

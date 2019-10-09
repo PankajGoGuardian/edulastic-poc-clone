@@ -29,6 +29,7 @@ import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -206,9 +207,7 @@ const SortListPreview = ({
   };
 
   return (
-    <Paper data-cy="sortListPreview" style={paperStyle}>
-      <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-
+    <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
@@ -237,6 +236,7 @@ const SortListPreview = ({
                 smallSize={smallSize}
                 active={isEqual(active, draggableItem)}
                 onClick={setActiveItem}
+                items={selected}
                 flag="items"
                 onDrop={onDrop}
                 obj={draggableItem}
@@ -281,6 +281,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
+                items={items}
                 obj={userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
@@ -305,7 +306,7 @@ const SortListPreview = ({
           item={item}
         />
       )}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

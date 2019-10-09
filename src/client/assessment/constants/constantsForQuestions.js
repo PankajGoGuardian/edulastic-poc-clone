@@ -217,3 +217,10 @@ export const previewAreas = [
 ];
 
 export const defaultOptions = ["Option 1", "Option 2", "Option 3", "Option 4"];
+
+// fraction formats
+export const FRACTION_FORMATS = {
+  decimal: "Decimal",
+  fraction: "Fraction",
+  mixedFraction: "MixedFraction"
+};

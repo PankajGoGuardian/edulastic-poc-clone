@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { Row, Col } from "antd";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
-import { StyledTable, StyledCell, StyledH3, StyledCard } from "../../../../../../common/styled";
+import { StyledCell, StyledH3, StyledCard } from "../../../../../../common/styled";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
-import { OnClick } from "../../styled";
+import { OnClick, StyledTable } from "../../styled";
 
 const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text}</StyledCell>;
@@ -53,7 +53,14 @@ const getColumns = (handleOnClickStandard, filters) => {
       title: "Description",
       key: "standardName",
       dataIndex: "standardName",
-      width: 300
+      width: 300,
+      render: data => {
+        let str = data || "";
+        if (str.length > 60) {
+          str = str.substring(0, 60) + "...";
+        }
+        return <span>{str}</span>;
+      }
     },
     {
       title: "Mastery",
@@ -71,14 +78,14 @@ const getColumns = (handleOnClickStandard, filters) => {
     },
     {
       title: "Assessment#",
-      key: "assessmentCount",
-      dataIndex: "assessmentCount",
+      key: "testCount",
+      dataIndex: "testCount",
       render: renderToolTipColumn("Assessment#")
     },
     {
       title: "Total Questions",
-      key: "totalQuestions",
-      dataIndex: "totalQuestions",
+      key: "questionCount",
+      dataIndex: "questionCount",
       render: renderToolTipColumn("Total Questions")
     },
     {

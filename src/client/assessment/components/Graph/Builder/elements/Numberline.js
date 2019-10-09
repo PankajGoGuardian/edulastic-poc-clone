@@ -1,10 +1,7 @@
 import JXG from "jsxgraph";
-import { union, isString, uniq } from "lodash";
-import { calcMeasure } from "../utils";
+import { union, isString } from "lodash";
+import { calcMeasure, toFractionHTML } from "../utils";
 import { RENDERING_BASE } from "../config/constants";
-import { getFraction, toFractionHTML, roundFracIfPossible } from "../fraction";
-
-import "../../common/Fraction.css";
 
 const LABEL_ROUNDING_FACTOR = 100;
 const TICK_ROUNDING_FACTOR = 100000;
@@ -48,7 +45,7 @@ const onHandler = board => {
     layout: { linePosition, width }
   } = board.numberlineSettings;
 
-  if (width < 10) {
+  if (width < 10 || Number.isNaN(ticksDistance)) {
     return;
   }
 
@@ -75,21 +72,12 @@ const onHandler = board => {
   newAxis.point1.coords.setCoordinates(JXG.COORDS_BY_SCREEN, newAxis.point1.coords.scrCoords);
   newAxis.point2.coords.setCoordinates(JXG.COORDS_BY_SCREEN, newAxis.point2.coords.scrCoords);
 
-  let _ticksDistance = ticksDistance;
-  let fracTicksDistance = null;
-  if (isString(_ticksDistance) && _ticksDistance.indexOf("/") !== -1) {
-    fracTicksDistance = getFraction(_ticksDistance);
-    _ticksDistance = fracTicksDistance ? fracTicksDistance.decim : NaN;
-  } else {
-    _ticksDistance = parseFloat(ticksDistance);
-  }
-
   newAxis.removeAllTicks();
   /**
    * Major ticks
    * */
   let ticks = [];
-  if (_ticksDistance === 0) {
+  if (ticksDistance === 0) {
     ticks.push(xMin);
     ticks.push(xMax);
   } else if (renderingBase === RENDERING_BASE.ZERO_BASED) {
@@ -100,30 +88,30 @@ const onHandler = board => {
       let i = startPoint;
       while (i < xMax) {
         ticks.push(i);
-        i += _ticksDistance;
+        i += ticksDistance;
       }
     } else if (xMax < 0) {
       do {
-        startPoint -= _ticksDistance;
+        startPoint -= ticksDistance;
       } while (startPoint > xMax);
 
       let i = startPoint;
       while (i > xMin) {
         ticks.push(i);
-        i -= _ticksDistance;
+        i -= ticksDistance;
       }
     } else {
       // startPoint === 0
       let i = startPoint;
       while (i < xMax) {
         ticks.push(i);
-        i += _ticksDistance;
+        i += ticksDistance;
       }
       i = startPoint;
-      i -= _ticksDistance;
+      i -= ticksDistance;
       while (i > xMin) {
         ticks.push(i);
-        i -= _ticksDistance;
+        i -= ticksDistance;
       }
     }
     ticks.push(xMax);
@@ -131,7 +119,7 @@ const onHandler = board => {
     let i = xMin;
     while (i < xMax) {
       ticks.push(i);
-      i += _ticksDistance;
+      i += ticksDistance;
     }
     ticks.push(xMax);
   }
@@ -199,13 +187,7 @@ const onHandler = board => {
     return "";
   });
 
-  if (fracTicksDistance) {
-    // round nums to remove dublicates
-    ticks = ticks.map(t => roundFracIfPossible(t, fracTicksDistance.denominator));
-    ticks = uniq(ticks);
-
-    labels = labels.map(t => toFractionHTML(t, fracTicksDistance.denominator, fractionsFormat));
-  }
+  labels = labels.map(t => toFractionHTML(t, fractionsFormat));
 
   board.$board.create("ticks", [newAxis, ticks], {
     strokeColor: "#d6d6d6",
@@ -216,7 +198,7 @@ const onHandler = board => {
     tickEndings: [1, 1],
     majorHeight: 25,
     drawLabels: true,
-    _ticksDistance,
+    ticksDistance,
     label: {
       offset: [0, -15],
       anchorX: "middle",

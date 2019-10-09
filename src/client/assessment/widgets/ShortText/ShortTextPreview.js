@@ -17,6 +17,7 @@ import { Addon } from "./styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 import { InputWrapper } from "./styled/InputWrapper";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ShortTextPreview = ({
   view,
@@ -75,7 +76,9 @@ const ShortTextPreview = ({
 
   const style = {
     paddingRight: 35,
-    fontSize: getFontSize(get(item, "uiStyle.fontsize")),
+    minHeight: 40,
+    height: "auto",
+    fontSize: theme.fontSize || getFontSize(get(item, "uiStyle.fontsize")),
     ...(preview
       ? evaluation
         ? { background: theme.widgets.shortText.correctInputBgColor }
@@ -86,9 +89,7 @@ const ShortTextPreview = ({
   const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
+    <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
@@ -149,7 +150,7 @@ const ShortTextPreview = ({
           )}
         </>
       )}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

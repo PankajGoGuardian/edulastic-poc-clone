@@ -105,15 +105,6 @@ function* saveUserResponse({ payload }) {
     const testItemId = currentItem._id;
     const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
 
-    const testletState = yield select(({ userWork }) => userWork.present[userTestActivityId]);
-    if (testletState && userTestActivityId) {
-      yield call(testItemActivityApi.updateUserWorkTestLevel, {
-        testActivityId: userTestActivityId,
-        groupId,
-        userWork: { testletState }
-      });
-    }
-
     const activity = {
       answers: itemAnswers,
       testItemId,
@@ -124,7 +115,15 @@ function* saveUserResponse({ payload }) {
       shuffledOptions: shuffles,
       bookmarked
     };
-    if (_userWork) activity.userWork = _userWork;
+
+    if (_userWork) {
+      const { resourceId = [] } = _userWork;
+      const filteredResourceId = resourceId.filter(resource => {
+        const { style, color } = resource;
+        return !!style.trim() || color;
+      });
+      activity.userWork = { ..._userWork, resourceId: filteredResourceId };
+    }
 
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {

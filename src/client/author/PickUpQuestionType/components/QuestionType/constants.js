@@ -1326,7 +1326,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",
@@ -1406,7 +1406,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",
@@ -1497,7 +1497,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         sampleAnswer: "",
         uiStyle: {
-          drawLabelZero: false,
+          drawLabelZero: true,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
           currentFontSize: "normal",
@@ -1575,7 +1575,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           ticksDistance: 1,
           showMin: true,
           showMax: true,
-          fontSize: 16,
+          fontSize: 12,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1716,7 +1716,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           labelsFrequency: 1,
           showMin: true,
           showMax: true,
-          fontSize: 16,
+          fontSize: 12,
           labelShowMax: true,
           labelShowMin: true,
           minorTicks: 1,
@@ -1725,7 +1725,6 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           separationDistanceY: 20,
           renderingBase: "min-value-based",
           specificPoints: "",
-          fractionsFormat: "not-normalized-fractions",
           responseBoxPosition: "bottom"
         },
         uiStyle: {

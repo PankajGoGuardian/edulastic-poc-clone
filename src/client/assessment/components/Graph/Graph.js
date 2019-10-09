@@ -22,6 +22,7 @@ import { QuestionTitleWrapper } from "./common/styled_components";
 import Annotations from "../Annotations/Annotations";
 
 import Question from "../Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -120,6 +121,7 @@ class Graph extends Component {
       setOptions: this.handleOptionsChange,
       setValidation: this.handleValidationChange,
       setControls: this.handleControlbarChange,
+      setToolbar: this.handleToolbarChange,
       setBgImg: this.handleBgImgChange,
       setBgShapes: this.handleBgShapesChange,
       graphData: item,
@@ -299,11 +301,11 @@ class Graph extends Component {
       compact = true;
     }
 
-    const { uiStyle, validation, stimulus } = item;
+    const { validation, stimulus, graphType } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
     return (
       <React.Fragment>
         {view === "edit" && (
@@ -318,36 +320,29 @@ class Graph extends Component {
                 setCanvas={this.handleCanvasChange}
                 fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
               />
-              <Question
-                section="main"
-                label="Set Correct Answer"
-                cleanSections={cleanSections}
-                fillSections={fillSections}
-                deskHeight={uiStyle.layoutHeight}
-                advancedAreOpen
-              >
-                <GraphAnswers
-                  view={view}
-                  graphData={item}
-                  previewTab={previewTab}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  getIgnoreLabelsOptions={getIgnoreLabelsOptions}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                  handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
-                  getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
-                  handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
-                  handleNumberlineChange={this.handleNumberlineChange}
-                />
-              </Question>
-              <Question
-                section="main"
-                label="Annotations"
-                cleanSections={cleanSections}
-                fillSections={fillSections}
-                advancedAreOpen
-              >
-                <Annotations question={item} setQuestionData={setQuestionData} editable />
-              </Question>
+              <GraphAnswers
+                view={view}
+                graphData={item}
+                previewTab={previewTab}
+                onAddAltResponses={this.handleAddAltResponses}
+                getIgnoreLabelsOptions={getIgnoreLabelsOptions}
+                onRemoveAltResponses={this.handleRemoveAltResponses}
+                handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
+                getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
+                handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
+                handleNumberlineChange={this.handleNumberlineChange}
+              />
+              {graphType !== "firstQuadrant" && graphType !== "quadrants" && (
+                <Question
+                  section="main"
+                  label="Annotations"
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  advancedAreOpen
+                >
+                  <Annotations question={item} setQuestionData={setQuestionData} editable />
+                </Question>
+              )}
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>
@@ -488,4 +483,11 @@ export default GraphComponent;
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   white-space: pre-wrap;
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      & > p {
+        font-size: ${theme.fontSize}px
+      }
+    `}
 `;

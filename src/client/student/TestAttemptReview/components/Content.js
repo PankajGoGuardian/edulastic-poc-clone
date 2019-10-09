@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -6,16 +7,16 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button } from "antd";
 import { withRouter } from "react-router-dom";
-import { get, isEmpty } from "lodash";
-import { themes } from "../../themes";
+import { get } from "lodash";
+import { test as testTypes } from "@edulastic/constants";
+import { themes } from "../../../theme";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
-import { test } from "@edulastic/constants";
 
-const { ASSESSMENT, PRACTICE } = test.type;
+const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +29,7 @@ class SummaryTest extends Component {
   componentDidMount() {
     const { loadTest, history, match, questionList } = this.props;
     const { utaId: testActivityId, id: testId, assessmentType } = match.params;
-    if (assessmentType === ASSESSMENT || assessmentType === PRACTICE) {
+    if (assessmentType === ASSESSMENT || assessmentType === PRACTICE || assessmentType === TESTLET) {
       const { allQids } = questionList;
       if (allQids.length === 0) {
         loadTest({ testId, testActivityId });
@@ -53,16 +54,25 @@ class SummaryTest extends Component {
   };
 
   goToQuestion = (testId, testActivityId, q) => () => {
-    const { history, items, match } = this.props;
+    const { history, items, match, test } = this.props;
     const { assessmentType, groupId } = match.params;
     const targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index;
       return acc;
     }, null);
-
-    history.push(`/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`, {
-      fromSummary: true
-    });
+    if (test.testType !== TESTLET) {
+      history.push(
+        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,
+        {
+          fromSummary: true
+        }
+      );
+    } else {
+      history.push(`/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}`, {
+        fromSummary: true,
+        question: q
+      });
+    }
   };
 
   render() {
@@ -174,14 +184,10 @@ class SummaryTest extends Component {
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
   questionList: PropTypes.array,
-  assignments: PropTypes.array.isRequired,
   items: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  loadTestActivity: PropTypes.func.isRequired,
-  assignmentId: PropTypes.string,
-  classId: PropTypes.string,
-  test: PropTypes.object
+  test: PropTypes.object.isRequired
 };
 
 SummaryTest.defaultProps = {

@@ -8,7 +8,8 @@ export const YAxisLabel = ({ data, viewBox, offset }) => {
       y={viewBox.height / 2 + viewBox.y}
       textAnchor="middle"
       dominant-baseline="hanging"
-      transform={`rotate(${data.angle}, ${0}, ${viewBox.height / 2 + viewBox.y}) translate(${0}, ${viewBox.width / 3})`}
+      transform={`rotate(${data.angle}, ${0}, ${viewBox.height / 2 + viewBox.y}) translate(${0}, ${viewBox.width /
+        1.5})`}
       style={{ fontSize: `${data.fontSize}px` }}
     >
       <tspan>{data.value}</tspan>

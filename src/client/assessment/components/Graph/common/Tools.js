@@ -1,6 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { IconGraphClear as IconClear } from "@edulastic/icons";
+import {
+  IconGraphCircle as IconCircle,
+  IconGraphLine as IconLine,
+  IconGraphParabola as IconParabola,
+  IconGraphPoint as IconPoint,
+  IconGraphPolygon as IconPolygon,
+  IconGraphRay as IconRay,
+  IconGraphSegment as IconSegment,
+  IconGraphSine as IconSine,
+  IconGraphVector as IconVector,
+  IconEraseText,
+  IconRedo,
+  IconTrash,
+  IconUndo
+} from "@edulastic/icons";
 import {
   GraphToolbar,
   ToolbarLeft,
@@ -10,115 +24,163 @@ import {
   ToolbarItemLabel,
   ToolbarItemIcon
 } from "./styled_components";
-import Dropdown from "./Dropdown";
 import utils from "./utils";
 
 export default function Tools(props) {
-  const {
-    tools,
-    tool,
-    bgShapes,
-    controls,
-    onSelect,
-    fontSize,
-    getIconByToolName,
-    getHandlerByControlName,
-    toolsAreVisible
-  } = props;
+  const { toolsAreVisible, selected, tools, controls, onSelectControl, onSelect, fontSize } = props;
 
-  const uiTools = tools.map((_tool, index) => {
-    if (Array.isArray(_tool)) {
-      const group = _tool.map((item, toolInnerIndex) => ({
-        name: item,
-        index: toolInnerIndex,
-        groupIndex: index
-      }));
+  const isActive = tool => selected.includes(tool);
 
-      return { group };
-    }
-
+  const getSize = () => {
+    const size = fontSize < 17 ? 70 : fontSize < 20 ? 88 : fontSize < 24 ? 105 : 120;
     return {
-      name: _tool,
-      index,
-      groupIndex: -1
+      width: size,
+      height: size
     };
-  });
-
-  const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
-
-  const isActiveControl = control => control === tool.name;
-
-  const resetThenSet = newTool => {
-    onSelect(newTool);
   };
 
-  const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName.toLowerCase(), options);
+  const getIconByToolName = (toolName = "point") => {
+    const options = {
+      width: fontSize + 2,
+      height: fontSize + 2,
+      color: ""
+    };
+    const { width, height } = options;
+
+    const iconsByToolName = {
+      point: () => <IconPoint {...options} />,
+      line: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconLine {...newOptions} />;
+      },
+      ray: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconRay {...newOptions} />;
+      },
+      segment: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconSegment {...newOptions} />;
+      },
+      vector: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconVector {...newOptions} />;
+      },
+      circle: () => <IconCircle {...options} />,
+      ellipse: () => "ellipse",
+      hyperbola: () => "hyperbola",
+      tangent: () => "tangent",
+      secant: () => "secant",
+      exponent: () => "exponent",
+      logarithm: () => "logarithm",
+      polynom: () => "polynom",
+      parabola: () => <IconParabola {...options} />,
+      sine: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10
+        };
+
+        return <IconSine {...newOptions} />;
+      },
+      polygon: () => <IconPolygon {...options} />,
+      area: () => "area",
+      dashed: () => "dashed",
+      undo: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconUndo {...newOptions} />;
+      },
+      redo: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconRedo {...newOptions} />;
+      },
+      reset: () => {
+        const newOptions = {
+          ...options,
+          stroke: "transparent !important",
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconEraseText {...newOptions} />;
+      },
+      delete: () => {
+        const newOptions = {
+          ...options,
+          stroke: "transparent !important",
+          height: height + 5
+        };
+
+        return <IconTrash {...newOptions} />;
+      }
+    };
+
+    return iconsByToolName[toolName]();
+  };
 
   return (
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
       {toolsAreVisible && (
         <ToolbarLeft>
-          {uiTools.map(
-            (uiTool, i) =>
-              !uiTool.group && (
-                <ToolBtn
-                  style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
-                  className={isActive(uiTool) ? "active" : ""}
-                  onClick={() => onSelect(uiTool)}
-                  key={`tool-btn-${i}`}
-                >
-                  <ToolbarItem>
-                    <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-                      {getIconTemplate(uiTool.name, {
-                        width: fontSize + 2,
-                        height: fontSize + 2,
-                        color: ""
-                      })}
-                    </ToolbarItemIcon>
-                    <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(uiTool.name)}</ToolbarItemLabel>
-                  </ToolbarItem>
-                </ToolBtn>
-              )
-          )}
-          {uiTools.map((uiTool, i) =>
-            uiTool.group
-              ? uiTool.group[0] && (
-                  <Dropdown
-                    key={`tools-group-${i}`}
-                    list={uiTool.group}
-                    resetThenSet={resetThenSet}
-                    currentTool={tool}
-                    fontSize={fontSize}
-                    getIconTemplate={getIconTemplate}
-                  />
-                )
-              : null
-          )}
+          {tools.map(item => (
+            <ToolBtn
+              style={{ ...getSize() }}
+              className={isActive(item) ? "active" : ""}
+              onClick={() => onSelect(item)}
+              key={`tool-btn-${item}`}
+            >
+              <ToolbarItem>
+                <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                  {getIconByToolName(item)}
+                </ToolbarItemIcon>
+                <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(item)}</ToolbarItemLabel>
+              </ToolbarItem>
+            </ToolBtn>
+          ))}
         </ToolbarLeft>
       )}
       <ToolbarRight>
-        {controls.map((control, i) => (
+        {controls.map(control => (
           <ToolBtn
-            key={`control-${i}`}
-            className={isActiveControl(control) ? "active" : ""}
-            onClick={() => getHandlerByControlName(control)}
-            style={{ width: fontSize > 20 ? 105 : 93 }}
+            key={`control-${control}`}
+            className={isActive(control) ? "active" : ""}
+            onClick={() => onSelectControl(control)}
+            style={{ ...getSize() }}
           >
             <ToolbarItem>
-              <ToolbarItemIcon style={{ marginBottom: fontSize / 2 }}>
-                <IconClear
-                  width={fontSize + 2}
-                  height={fontSize}
-                  style={{
-                    color: "#4aac8b",
-                    fill: "#4aac8b",
-                    stroke: "#4aac8b"
-                  }}
-                />
+              <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                {getIconByToolName(control)}
               </ToolbarItemIcon>
-              <ToolbarItemLabel style={{ fontSize }} color="#4aac8b">
-                {utils.capitalizeFirstLetter(control)}
-              </ToolbarItemLabel>
+              <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(control)}</ToolbarItemLabel>
             </ToolbarItem>
           </ToolBtn>
         ))}
@@ -128,23 +190,21 @@ export default function Tools(props) {
 }
 
 Tools.propTypes = {
-  toolsAreVisible: PropTypes.bool.isRequired,
-  tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  toolsAreVisible: PropTypes.bool,
+  selected: PropTypes.array,
   tools: PropTypes.array,
-  bgShapes: PropTypes.bool.isRequired,
-  controls: PropTypes.shape.isRequired,
-  getIconByToolName: PropTypes.func.isRequired,
-  getHandlerByControlName: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
+  controls: PropTypes.array,
+  onSelectControl: PropTypes.func,
+  onSelect: PropTypes.func,
   fontSize: PropTypes.number
 };
 
 Tools.defaultProps = {
+  toolsAreVisible: true,
+  selected: [],
   tools: [],
-  fontSize: 14,
-  tool: {
-    toolIndex: 0,
-    innerIndex: 0,
-    toolName: "point"
-  }
+  controls: [],
+  onSelectControl: () => {},
+  onSelect: () => {},
+  fontSize: 14
 };

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { groupBy, reduce } from "lodash";
+import { groupBy } from "lodash";
 import Moment from "moment";
 import next from "immer";
 import { StyledTable } from "../styled";
@@ -82,7 +82,7 @@ export const AssessmentStatisticTable = props => {
         avgStudentScore = Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0));
       }
       let avgScore = 0;
-      if (avgScore) {
+      if (sumTotalScore) {
         avgScore = (sumTotalScore / (sumSampleCount - (sumStudentsAbsent || 0))).toFixed(2);
       }
       const result = {

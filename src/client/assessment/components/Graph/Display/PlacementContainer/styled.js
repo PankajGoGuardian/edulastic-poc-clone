@@ -130,15 +130,31 @@ export const GraphWrapper = styled.div`
 `;
 
 export const JSXBox = styled.div`
-  background-color: ${white};
+  background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
 
   border: 1px solid #e8e8e8;
   border-radius: 0;
+  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
-`;
 
+  line,
+  path,
+  ellipse {
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  text {
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  div {
+    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
+    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+  }
+`;
 export const DropdownMenu = styled.ul`
   position: absolute;
   top: 108%;
@@ -309,18 +325,20 @@ export const DragDropValuesContainer = styled.div`
   min-width: ${props => props.width}px;
   min-height: ${props => props.minHeight}px;
   height: ${props => props.height}px;
-  background-color: rgba(230, 230, 230, 0.23);
+  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
 
   .drag-drop-value {
-    background: white;
+    background: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
     border-radius: 4px;
-    padding: 5px;
+    padding: 0 5px;
     display: flex !important;
     overflow: hidden;
 
     img.fr-dii {
-      max-height: 40px !important;
-      width: auto !important;
+      max-height: 50px;
+      max-width: 120px;
+      user-drag: none;
+      user-select: none;
     }
   }
 

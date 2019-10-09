@@ -4,9 +4,8 @@ import styled from "styled-components";
 import { Button, Tooltip } from "antd";
 
 import { test, questionType } from "@edulastic/constants";
-import { white } from "@edulastic/colors";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
-import CalculatorMenu from "./CalculatorMenu";
+import { MEDIUM_DESKTOP_WIDTH } from "../../constants/others";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {
@@ -85,7 +84,6 @@ ToolBar.propTypes = {
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  calcBrands: PropTypes.array.isRequired,
   qType: PropTypes.string.isRequired
 };
 
@@ -96,11 +94,11 @@ const Container = styled.div`
 `;
 
 const customizeIcon = icon => styled(icon)`
-  fill: ${white};
+  fill: ${props => props.theme.header.headerButtonColor};
   margin-left: -3px;
   margin-top: 3px;
   &:hover {
-    fill: ${white};
+    fill: ${props => props.theme.header.headerButtonColor};
   }
 `;
 
@@ -108,8 +106,8 @@ const StyledButton = styled(Button)`
   margin-right: 10px;
   background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
   border-color: ${props => props.theme.default.headerButtonBorderColor};
-  height: 40px;
-  width: 40px;
+  height: ${props => props.theme.default.headerToolbarButtonWidth};
+  width: ${props => props.theme.default.headerToolbarButtonHeight};
 
   &:focus,
   &:hover,

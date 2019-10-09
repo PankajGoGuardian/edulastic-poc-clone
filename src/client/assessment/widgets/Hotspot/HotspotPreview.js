@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer, QuestionNumberLabel } from "@edulastic/common";
+import { Stimulus, InstructorStimulus, CorrectAnswersContainer, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -13,6 +13,7 @@ import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { ImageContainer } from "./styled/ImageContainer";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const HotspotPreview = ({
   view,
@@ -62,9 +63,7 @@ const HotspotPreview = ({
   });
 
   return (
-    <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
+    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && (
@@ -163,7 +162,7 @@ const HotspotPreview = ({
           </Svg>
         </BlockContainer>
       )}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

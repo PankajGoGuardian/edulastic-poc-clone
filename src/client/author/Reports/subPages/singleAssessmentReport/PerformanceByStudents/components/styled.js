@@ -29,7 +29,6 @@ export const StyledTable = styled(Table)`
       thead {
         tr {
           th {
-            white-space: nowrap;
             color: ${fadedBlack};
           }
           th:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
@@ -59,6 +58,9 @@ export const StyledTable = styled(Table)`
             }
           }
         }
+      }
+      td .assessmentDate {
+        white-space: nowrap;
       }
     }
   }

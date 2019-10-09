@@ -141,6 +141,11 @@ const getStatusBgColor = (props, type) => {
 const Wrapper = React.memo(styled(Col)`
   display: flex;
   flex-direction: row;
+  ${({ theme }) =>
+    theme.zoomedCss`
+      flex-direction: column;
+      align-items: center;
+    `}
   @media screen and (max-width: 767px) {
     flex-direction: column;
     align-items: center;
@@ -184,7 +189,15 @@ const Thumbnail = React.memo(styled.img`
     height: 90.5px;
     display: block;
     margin: 0 auto;
-  }	 
+  }
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      width: calc(100% - 14px);
+      height: 90.5px;
+      display: block;
+      margin: 0 auto;
+    `}
  }
 `);
 
@@ -198,11 +211,11 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
-    width: 30vw;
+    width: 20vw;
   }
 
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${smallDesktopWidth}) {
-    width: 20vw;
+    width: 18vw;
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -215,6 +228,15 @@ const CardDetails = React.memo(styled(Col)`
     flex-direction: column;
     margin-top: 10px;
   }
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 10px;
+      width: 100%;
+    `}
 `);
 
 const CardTitle = React.memo(styled.div`
@@ -291,9 +313,10 @@ const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const StatusButton = React.memo(styled.div`
-  width: ${props => (props.isPaused ? "auto" : "121px")};
-  height: 23.5px;
+  min-width: ${props => (props.isPaused ? "auto" : "121px")};
+  min-height: 23.5px;
   border-radius: 5px;
   background-color: ${props => getStatusBgColor(props, "Bg")};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};

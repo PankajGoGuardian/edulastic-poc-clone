@@ -10,6 +10,7 @@ import {
   darkGrey,
   titleColor,
   mediumDesktopWidth,
+  extraDesktopWidthMax,
   desktopWidth,
   mobileWidthLarge,
   tabGrey,
@@ -198,9 +199,9 @@ export const StyledDivider = styled(Divider)`
 `;
 
 export const Container = styled(Paper)`
-  margin: 15px auto 0 auto;
   border-radius: 0px;
-  width: 90%;
+  margin: 30px;
+  width: 95%;
   background: none;
 `;
 
@@ -293,8 +294,15 @@ export const DividerDiv = styled.div`
 
 export const Image = styled.img`
   width: 100%;
-  height: 50%;
+  min-width: 200px;
+  min-height: 100px;
   border-radius: 5px;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    height: 60%;
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 100%;
+  }
 `;
 
 export const MidWrapper = styled.div``;
@@ -308,7 +316,6 @@ export const RightWrapper = styled.div`
 `;
 
 export const FieldValue = styled.div`
-  font-size: 14px;
   font-weight: 550;
   color: ${cardTitleColor};
   margin-top: 12px;
@@ -324,6 +331,12 @@ export const FieldValue = styled.div`
   span {
     margin-left: 5px;
     color: ${secondaryTextColor};
+  }
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 13px;
   }
 `;
 
@@ -502,11 +515,11 @@ export const CaretUp = styled.i`
 `;
 
 export const ImageContainer = styled.div`
-  width: 20%;
+  width: 25%;
 `;
 
 export const ClassInfoContainer = styled.div`
-  width: 79%;
+  width: 74%;
   padding: 0 1.2rem;
 `;
 

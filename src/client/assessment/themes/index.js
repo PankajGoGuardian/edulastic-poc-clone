@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin } from "antd";
-import { isUndefined } from "lodash";
+import { isUndefined, get } from "lodash";
 import { ScratchPadContext } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test as testTypes } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
@@ -69,12 +69,13 @@ const AssessmentContainer = ({
   LCBPreviewModal,
   closeTestPreviewModal,
   testletType,
+  testletState,
   testletConfig,
-  testType
+  testType,
+  test
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
-  gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -92,6 +93,10 @@ const AssessmentContainer = ({
     window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));
   }, [qid]);
+
+  useEffect(() => {
+    gotoItem(currentItem);
+  }, [currentItem]);
 
   const gotoQuestion = index => {
     setCurrentItem(index);
@@ -125,7 +130,7 @@ const AssessmentContainer = ({
       const timeSpent = Date.now() - lastTime.current;
       await saveUserAnswer(currentItem, timeSpent);
     }
-    history.push(`${url}/${"test-summary"}`);
+    history.push(`${url}/test-summary`);
   };
 
   const moveToPrev = () => {
@@ -187,13 +192,15 @@ const AssessmentContainer = ({
     );
   }
 
-  if (testType === test.type.TESTLET) {
+  if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
     return (
       <AssessmentPlayerTestlet
         {...props}
         testletConfig={testletConfig}
+        testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
+        {...test}
       />
     );
   }
@@ -219,13 +226,15 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
-  testletConfig: PropTypes.object
+  testletConfig: PropTypes.object,
+  test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
-  testletConfig: {}
+  testletConfig: {},
+  test: {}
 };
 
 const enhance = compose(
@@ -240,6 +249,7 @@ const enhance = compose(
       testType: state.test.testType,
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
+      testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),

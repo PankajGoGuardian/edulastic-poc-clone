@@ -46,7 +46,7 @@ const ReviewButtonLink = styled(Link)`
     max-width: 100%;
   }
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
-    margin: 0px;
+    margin: 10px;
     width: auto;
   }
   @media screen and (min-width: 1025px) {
@@ -56,4 +56,9 @@ const ReviewButtonLink = styled(Link)`
     width: 80%;
     margin: 10px 0 0;
   }
+  ${({ theme }) =>
+    theme.respondTo.xl`
+      width: 80%;
+      margin: 10px 0 0;
+    `}
 `;

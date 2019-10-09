@@ -185,15 +185,17 @@ class ClozeTextDisplay extends Component {
     };
 
     const QuestionContent = (
-      <JsxParser
-        bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-        showWarnings
-        components={{
-          textinput: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ClozeTextInput,
-          mathspan: MathSpanWrapper
-        }}
-        jsx={parsedTemplate}
-      />
+      <StyledParser>
+        <JsxParser
+          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          showWarnings
+          components={{
+            textinput: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ClozeTextInput,
+            mathspan: MathSpanWrapper
+          }}
+          jsx={parsedTemplate}
+        />
+      </StyledParser>
     );
 
     const answerBox =
@@ -302,5 +304,21 @@ const QuestionTitleWrapper = styled.div`
   }
   .jsx-parser {
     width: 100%;
+  }
+`;
+
+const StyledParser = styled.div`
+  .jsx-parser {
+    p {
+      font-size: ${props => props.theme.fontSize}px;
+    }
+
+    input {
+      font-size: ${props => props.theme.fontSize}px;
+      ${({ theme }) => theme.zoomedCss`
+          height: auto !important;
+          width: 200px !important;
+        `}
+    }
   }
 `;

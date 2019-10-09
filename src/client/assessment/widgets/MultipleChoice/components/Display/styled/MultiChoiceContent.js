@@ -16,7 +16,7 @@ export const MultiChoiceContent = styled.div`
   font-weight: ${props => props.theme.widgets.multipleChoice.multiChoiceContentFontWeight};
   font-size: ${props => props.fontSize || props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
 
-  .mtight {
+  .katex {
     font-size: ${props => props.fontSize || props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
   }
 
@@ -29,6 +29,10 @@ export const MultiChoiceContent = styled.div`
       }
       &:after { ${underline} }
     `}
+`;
+
+export const MultipleChoiceLabelContainer = styled.div`
+  display: block;
 `;
 
 MultiChoiceContent.displayName = "MultiChoiceContent";

@@ -69,3 +69,12 @@ export const FeedbackByQIdSelector = createSelector(
   getTestFeedbackSelector,
   testFeedback => keyBy(testFeedback, "qid")
 );
+
+export const getMaxScoreFromCurrentItem = state => {
+  const currentItem = state?.studentTestItems?.items?.[state?.studentTestItems?.current || 0];
+  if (currentItem?.itemLevelScoring) {
+    return currentItem?.itemLevelScore;
+  } else {
+    return currentItem?.data?.questions?.reduce((acc, q) => q.validation.validResponse.score + acc, 0);
+  }
+};

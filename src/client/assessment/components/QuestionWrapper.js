@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
-import { themes } from "../themes";
+import { themes } from "../../theme";
 import QuestionMenu from "./Graph/common/QuestionMenu";
 
 import { OrderList } from "../widgets/OrderList";
@@ -53,11 +53,14 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
+import { getZoomedTheme } from "../../student/zoomTheme";
 import FeedBackContainer from "./FeedBackContainer";
+import { playersZoomTheme } from "../themes/assessmentPlayersTheme";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
+  justify-content: "space-between";
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
@@ -299,6 +302,8 @@ class QuestionWrapper extends Component {
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
+      zoomLevel = "xs",
+      selectedTheme = "default",
       displayFeedback = true,
       ...restProps
     } = this.props;
@@ -307,6 +312,7 @@ class QuestionWrapper extends Component {
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
+    const userId = get(data, "activity.userId");
     const Question = getQuestion(type);
     const { layoutType } = this.context;
 
@@ -339,115 +345,121 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+
+    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
+
+    let themeToPass = themes[selectedTheme] || themes.default;
+    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    themeToPass = playersZoomTheme(themeToPass);
+
     return (
-      <WithResources
-        resources={[
-          "https://cdneduv2.snapwiz.net/JS/froala/v0/froala_editor.pkgd.min.css",
-          "https://cdneduv2.snapwiz.net/JS/froala/v0/froala_editor.min.css"
-        ]}
-        fallBack={<span />}
+      <ThemeProvider
+        theme={{
+          ...themeToPass,
+          fontSize: themeToPass.fontSize || getFontSize(get(data, "uiStyle.fontsize", "normal"))
+        }}
       >
-        <ThemeProvider theme={{ ...themes.default, fontSize: getFontSize(get(data, "uiStyle.fontsize", "normal")) }}>
-          <>
-            {canShowPlayer ? (
-              <AudioControls
-                showAudioControls={showAudioControls}
-                key={data.id}
-                item={data}
-                qId={data.id}
-                audioSrc={data.tts.titleAudioURL}
-              />
-            ) : (
-              ""
-            )}
-            <QuestionContainer
-              className={`fr-view question-container-id-${data.id}`}
+        <>
+          {canShowPlayer ? (
+            <AudioControls
+              showAudioControls={showAudioControls}
+              key={data.id}
+              item={data}
+              qId={data.id}
+              audioSrc={data.tts.titleAudioURL}
+            />
+          ) : (
+            ""
+          )}
+          <QuestionContainer
+            className={`fr-view question-container-id-${data.id}`}
+            disabled={disabled}
+            noPadding={noPadding}
+            isFlex
+            data-cy="question-container"
+          >
+            <PaperWrapper
+              // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
               disabled={disabled}
-              noPadding={noPadding}
-              isFlex={isFlex}
-              data-cy="question-container"
+              isV1Multipart={isV1Multipart}
+              style={{
+                width: "-webkit-fill-available",
+                display: "flex",
+                flex: 9,
+                boxShadow: "none",
+                paddingRight: layoutType === COMPACT ? "100px" : null
+              }}
+              flowLayout={flowLayout}
+              twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
             >
-              <PaperWrapper
-                // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
-                disabled={disabled}
-                isV1Multipart={isV1Multipart}
-                style={{
-                  width: studentReportFeedbackVisible ? "75%" : "-webkit-fill-available",
-                  display: "flex",
-                  boxShadow: "none",
-                  paddingRight: layoutType === COMPACT ? "100px" : null
-                }}
-                flowLayout={flowLayout}
-                twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
-              >
-                {view === "edit" && (
-                  <QuestionMenu
-                    activeTab={activeTab}
-                    main={main}
-                    advanced={advanced}
-                    advancedAreOpen={advancedAreOpen}
-                    handleAdvancedOpen={handleAdvancedOpen}
-                  />
+              {view === "edit" && (
+                <QuestionMenu
+                  activeTab={activeTab}
+                  main={main}
+                  advanced={advanced}
+                  advancedAreOpen={advancedAreOpen}
+                  handleAdvancedOpen={handleAdvancedOpen}
+                />
+              )}
+              <StyledFlexContainer>
+                <Question
+                  {...restProps}
+                  setQuestionData={setQuestionData}
+                  item={data}
+                  view={view}
+                  changePreviewTab={changePreviewTab}
+                  qIndex={qIndex}
+                  advancedAreOpen={advancedAreOpen}
+                  cleanSections={this.cleanSections}
+                  fillSections={this.fillSections}
+                  showQuestionNumber={!isPassageOrVideoType && data.qLabel}
+                  flowLayout={flowLayout}
+                  disableResponse={disableResponse}
+                  studentReport={studentReportFeedbackVisible}
+                  {...userAnswerProps}
+                />
+                {showFeedback && timeSpent ? (
+                  <>
+                    <TimeSpentWrapper>
+                      {!!showStudentWork && (
+                        <ShowStudentWorkBtn onClick={showStudentWork}> Show student work</ShowStudentWorkBtn>
+                      )}
+                      <i className="fa fa-clock-o" aria-hidden="true" />
+                      {round(timeSpent / 1000, 1)}s
+                    </TimeSpentWrapper>
+                  </>
+                ) : (
+                  ""
                 )}
-                <FlexContainer>
-                  <Question
-                    {...restProps}
-                    setQuestionData={setQuestionData}
-                    item={data}
-                    view={view}
-                    changePreviewTab={changePreviewTab}
-                    qIndex={qIndex}
-                    advancedAreOpen={advancedAreOpen}
-                    cleanSections={this.cleanSections}
-                    fillSections={this.fillSections}
-                    showQuestionNumber={!isPassageOrVideoType && data.qLabel}
-                    flowLayout={flowLayout}
-                    disableResponse={disableResponse}
-                    studentReport={studentReportFeedbackVisible}
-                    {...userAnswerProps}
-                  />
-                  {showFeedback && timeSpent ? (
-                    <>
-                      <TimeSpentWrapper>
-                        {!!showStudentWork && (
-                          <ShowStudentWorkBtn onClick={showStudentWork}> Show student work</ShowStudentWorkBtn>
-                        )}
-                        <i className="fa fa-clock-o" aria-hidden="true" />
-                        {round(timeSpent / 1000, 1)}s
-                      </TimeSpentWrapper>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </FlexContainer>
-              </PaperWrapper>
-              {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
-                <FeedbackRight
-                  twoColLayout={this.props.theme?.twoColLayout}
-                  showCollapseBtn={showCollapseBtn}
-                  disabled={disabled}
-                  widget={data}
-                  studentName={studentName}
-                  {...presentationModeProps}
-                />
-              )}
-              {!isEmpty(prevQActivityForQuestion) && (
-                <FeedBackContainer
-                  correct={correct}
-                  prevScore={prevScore}
-                  prevMaxScore={prevMaxScore}
-                  prevFeedback={prevFeedback}
-                  itemId={data.id}
-                />
-              )}
-              {/* STUDENT REPORT PAGE FEEDBACK */}
-              {studentReportFeedbackVisible && displayFeedback && (
-                <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
-              )}
-            </QuestionContainer>
-          </>
-        </ThemeProvider>
-      </WithResources>
+              </StyledFlexContainer>
+            </PaperWrapper>
+            {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
+              <FeedbackRight
+                twoColLayout={this.props.theme?.twoColLayout}
+                showCollapseBtn={showCollapseBtn}
+                disabled={disabled}
+                widget={data}
+                studentId={userId}
+                studentName={studentName}
+                {...presentationModeProps}
+              />
+            )}
+            {!isEmpty(prevQActivityForQuestion) && (
+              <FeedBackContainer
+                correct={correct}
+                prevScore={prevScore}
+                prevMaxScore={prevMaxScore}
+                prevFeedback={prevFeedback}
+                itemId={data.id}
+              />
+            )}
+            {/* STUDENT REPORT PAGE FEEDBACK */}
+            {studentReportFeedbackVisible && displayFeedback && (
+              <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
+            )}
+          </QuestionContainer>
+        </>
+      </ThemeProvider>
     );
   }
 }
@@ -513,6 +525,8 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       showUserTTS: get(state, "user.user.tts", "no"),
+      selectedTheme: state.ui.selectedTheme,
+      zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state)
     }),
     {
@@ -523,3 +537,7 @@ const enhance = compose(
 );
 
 export default enhance(QuestionWrapper);
+
+const StyledFlexContainer = styled(FlexContainer)`
+  font-size: ${props => props.theme.fontSize}px;
+`;

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Row, Col } from "antd";
-import { get, keyBy, isEmpty } from "lodash";
 import next from "immer";
 
 import { roleuser } from "@edulastic/constants";
@@ -23,7 +22,7 @@ const comparedByToToolTipLabel = {
     all: "All Teachers (% Score)",
     nameKey: "teacherName"
   },
-  comparedByClass: { name: "Class Name", type: "Class (% Score)", all: "All Classes (% Score)", nameKey: "className" }
+  comparedByClass: { name: "Class Name", type: "Class (% Score)", all: "All Classes (% Score)", nameKey: "groupName" }
 };
 
 const compareByToPluralName = {
@@ -149,7 +148,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
     } else if (compareBy === "groupId") {
       for (let [index, item] of tableData[0].comparedByClass.entries()) {
         const col = {
-          title: item.className,
+          title: item.groupName,
           dataIndex: item.groupId,
           key: item.groupId,
           width: 150,

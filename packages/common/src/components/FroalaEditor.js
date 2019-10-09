@@ -11,7 +11,10 @@ import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import { white, dashBorderColor } from "@edulastic/colors";
-import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
+import FroalaEditor from "froala-editor";
+import "froala-editor/js/plugins.pkgd.min.js";
+import "froala-editor/css/plugins.pkgd.min.css";
+import "froala-editor/css/froala_editor.pkgd.min.css";
 // froala.min.css is loaded at index as it required for preview as well.
 
 import { uploadToS3, reIndexResponses, canInsert, beforeUpload } from "../helpers";
@@ -209,11 +212,10 @@ export const ToolbarContainer = styled.div.attrs({
   toolbarid: props => props.toolbarId
 })`
   position: absolute;
-  bottom: 105%;
-  left: 0;
-  right: 0;
   z-index: 1000;
-
+  left: 0px;
+  right: 0px;
+  bottom: 105%;
   .fr-toolbar .fr-command.fr-btn {
     margin: 0 2px !important;
   }
@@ -221,6 +223,8 @@ export const ToolbarContainer = styled.div.attrs({
   .fr-toolbar.fr-top {
     border-radius: 2px !important;
     border: 1px solid #cccccc !important;
+    left: 0 !important;
+    top: 0 !important;
   }
 `;
 

@@ -1,6 +1,9 @@
+import { groupBy, keyBy, orderBy } from "lodash";
 import { getHSLFromRange1 } from "../../../../common/util";
-import { groupBy, keyBy, values, flatten, orderBy } from "lodash";
 import { getFormattedTimeInMins } from "./helpers";
+
+const sortByAvgPerformanceAndLabel = arr =>
+  orderBy(arr, ["avgPerformance", item => Number((item.qLabel || "").substring(1))]);
 
 export const getChartData = (rawData = []) => {
   const groupedData = groupBy(rawData, "questionId");
@@ -39,26 +42,7 @@ export const getChartData = (rawData = []) => {
     };
   });
 
-  arr = arr.sort((a, b) => {
-    return a.avgPerformance - b.avgPerformance;
-  });
-
-  const groupedArr = groupBy(arr, "avgPerformance");
-  const groupedArrKeys = Object.keys(groupedArr);
-  for (let item of groupedArrKeys) {
-    let _item = groupedArr[item];
-    _item.sort((a, b) => {
-      let _a = a.qLabel || "";
-      let _b = b.qLabel || "";
-      _a = Number(_a.substring(1));
-      _b = Number(_b.substring(1));
-      return _a - _b;
-    });
-  }
-
-  let _arr = values(groupedArr);
-  _arr = flatten(_arr);
-  return orderBy(_arr, "questionId");
+  return sortByAvgPerformanceAndLabel(arr);
 };
 
 export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
@@ -121,26 +105,27 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     let comparedByTeacher;
     const groupedByTeacher = groupBy(groupedItem, "teacherId");
     comparedByTeacher = groupedByTeacherKeys.map(_item => {
-      let __item = groupedByTeacher[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
+      let __item =
+        groupedByTeacher?.[_item]?.reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        ) || {};
       let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
       avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
       return {
-        ...groupedByTeacher[_item][0],
+        ...groupedByTeacher?.[_item]?.[0],
         ...__item,
         avgPerformance
       };
@@ -151,26 +136,27 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     let comparedByClass;
     const groupedByClass = groupBy(groupedItem, "groupId");
     comparedByClass = groupedByClassKeys.map(_item => {
-      let __item = groupedByClass[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
+      let __item =
+        groupedByClass?.[_item]?.reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        ) || {};
       let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
       avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
       return {
-        ...groupedByClass[_item][0],
+        ...groupedByClass?.[_item]?.[0],
         ...__item,
         avgPerformance
       };
@@ -207,5 +193,5 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     };
   });
 
-  return orderBy(arr, "questionId");
+  return sortByAvgPerformanceAndLabel(arr);
 };

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Menu, Button, Tooltip } from "antd";
 import {
@@ -36,6 +37,7 @@ import {
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
+import { addAuthoredItemsAction } from "../../../../QuestionEditor/ducks";
 
 class ButtonBar extends Component {
   constructor(props) {
@@ -63,6 +65,14 @@ class ButtonBar extends Component {
     const { changePreviewTab, clearAnswers } = this.props;
     clearAnswers();
     changePreviewTab("clear");
+  };
+
+  handleAddAuthoredItemToTest = () => {
+    const { addAuthoredItemsToTest, match, onSave, isTestFlow, itemStatus } = this.props;
+    if (itemStatus === "draft" && isTestFlow) {
+      return addAuthoredItemsToTest({ testId: match.params.testId, isEditFlow: false });
+    }
+    onSave();
   };
 
   render() {
@@ -148,7 +158,11 @@ class ButtonBar extends Component {
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === "draft" ? (
                     <Tooltip title="Save">
-                      <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
+                      <CustomButton
+                        data-cy="saveButton"
+                        className="save-btn"
+                        onClick={this.handleAddAuthoredItemToTest}
+                      >
                         <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                       </CustomButton>
                     </Tooltip>
@@ -299,11 +313,15 @@ ButtonBar.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   withNamespaces("author"),
   connect(
     null,
-    { clearAnswers: clearAnswersAction }
+    {
+      clearAnswers: clearAnswersAction,
+      addAuthoredItemsToTest: addAuthoredItemsAction
+    }
   )
 );
 

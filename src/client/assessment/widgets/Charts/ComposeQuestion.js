@@ -14,7 +14,7 @@ import { WidgetSubHeading } from "../../styled/Widget";
 import Question from "../../components/Question";
 import { ColContainer } from "../../styled/ColContainer";
 import UiInputGroup from "./components/UiInputGroup";
-import { FRACTION_FORMAT_DECIMAL, FRACTION_FORMAT_FRACTION, FRACTION_FORMAT_MIXED_FRACTION } from "./const";
+import { FRACTION_FORMATS } from "../../constants/constantsForQuestions";
 
 class ComposeQuestion extends Component {
   constructor(props) {
@@ -35,9 +35,9 @@ class ComposeQuestion extends Component {
   getFractionFormatSettings = () => {
     const { t } = this.props;
     return [
-      { label: t("component.chart.fractionFormatOptions.decimal"), value: FRACTION_FORMAT_DECIMAL },
-      { label: t("component.chart.fractionFormatOptions.fraction"), value: FRACTION_FORMAT_FRACTION },
-      { label: t("component.chart.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMAT_MIXED_FRACTION }
+      { label: t("component.options.fractionFormatOptions.decimal"), value: FRACTION_FORMATS.decimal },
+      { label: t("component.options.fractionFormatOptions.fraction"), value: FRACTION_FORMATS.fraction },
+      { label: t("component.options.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMATS.mixedFraction }
     ];
   };
 
@@ -72,7 +72,7 @@ class ComposeQuestion extends Component {
               this.setState({ localSnapTo: val });
               break;
             case "stepSize":
-              draft.uiStyle[prop] = val < 1 ? 1 : val;
+              draft.uiStyle[prop] = val <= 0 ? 0.1 : val;
               break;
             default:
               draft.uiStyle[prop] = val;
@@ -182,7 +182,7 @@ class ComposeQuestion extends Component {
           <Row gutter={60}>
             <ColContainer>
               <Col span={12}>
-                <WidgetSubHeading>{t("component.chart.fractionFormat")}</WidgetSubHeading>
+                <WidgetSubHeading>{t("component.options.fractionFormat")}</WidgetSubHeading>
                 <Select
                   data-cy="fractionFormatSelect"
                   size="large"

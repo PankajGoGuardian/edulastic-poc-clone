@@ -6,24 +6,20 @@ import { ThemeProvider } from "styled-components";
 
 import { math } from "@edulastic/constants";
 
-import { themes } from "../../../../../../assessment/themes";
+import { themes } from "../../../../../../theme";
 import MathFormulaAnswerMethod from "../../../../../../assessment/widgets/MathFormula/components/MathFormulaAnswerMethod";
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
-import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
+import { QuestionFormWrapper, FormGroup, Points } from "../../common/QuestionForm";
 
 const { methods } = math;
 
-export default class QuestionMath extends React.Component {
-  static propTypes = {
-    question: PropTypes.object.isRequired,
-    onUpdate: PropTypes.func.isRequired
+const QuestionMath = ({ onUpdate, question }) => {
+  const toggleAdditional = val => {
+    onUpdate({ showAdditional: val });
   };
 
-  handleAnswerChange = (prop, value) => {
-    const {
-      question: { validation },
-      onUpdate
-    } = this.props;
+  const handleAnswerChange = (prop, value) => {
+    const { validation } = question;
     const nextValidation = cloneDeep(validation);
 
     nextValidation.validResponse.value[0][prop] = value;
@@ -55,14 +51,8 @@ export default class QuestionMath extends React.Component {
     onUpdate(data);
   };
 
-  handleScoreChange = score => {
-    const {
-      question: {
-        validation: { validResponse }
-      }
-    } = this.props;
-    const { onUpdate } = this.props;
-
+  const handleScoreChange = score => {
+    const { validResponse } = question.validation;
     const data = {
       validation: {
         scoringType: EXACT_MATCH,
@@ -77,29 +67,43 @@ export default class QuestionMath extends React.Component {
     onUpdate(data);
   };
 
-  render() {
-    const { question } = this.props;
-    const { validResponse: validResponse } = question.validation;
-    const { score } = validResponse;
-    const value = validResponse.value[0];
+  const onChangeAllowedOptions = (option, variables) => {
+    onUpdate({
+      [`${option}`]: variables || null
+    });
+  };
 
-    return (
-      <ThemeProvider theme={themes.default}>
-        <QuestionFormWrapper>
-          <FormGroup>
-            <MathFormulaAnswerMethod
-              labelValue="Correct Answer"
-              onChange={this.handleAnswerChange}
-              item={question}
-              {...value}
-            />
-          </FormGroup>
-          <FormGroup>
-            <InputNumber min={0} value={score} onChange={this.handleScoreChange} />
-            <Points>Points</Points>
-          </FormGroup>
-        </QuestionFormWrapper>
-      </ThemeProvider>
-    );
-  }
-}
+  const { validResponse: validResponse } = question.validation;
+  const { score } = validResponse;
+  const value = validResponse.value[0];
+
+  return (
+    <ThemeProvider theme={themes.default}>
+      <QuestionFormWrapper>
+        <FormGroup>
+          <MathFormulaAnswerMethod
+            labelValue="Correct Answer"
+            allowedVariables={question.allowedVariables || ""}
+            onChange={handleAnswerChange}
+            onChangeAllowedOptions={onChangeAllowedOptions}
+            item={question}
+            index={0}
+            toggleAdditional={toggleAdditional}
+            {...value}
+          />
+        </FormGroup>
+        <FormGroup>
+          <InputNumber min={0} value={score} onChange={handleScoreChange} />
+          <Points>Points</Points>
+        </FormGroup>
+      </QuestionFormWrapper>
+    </ThemeProvider>
+  );
+};
+
+export default QuestionMath;
+
+QuestionMath.propTypes = {
+  question: PropTypes.object.isRequired,
+  onUpdate: PropTypes.func.isRequired
+};

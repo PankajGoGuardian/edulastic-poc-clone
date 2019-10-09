@@ -46,7 +46,7 @@ export const CheckboxContainer = styled.div`
       
       + div {
         font-weight: ${fonts.previewFontWeight || params.fontWeight};
-        color: ${secondaryTextColor};
+        color: ${props => props.theme.widgets.multipleChoice.labelColor};
 
         @media (max-width: ${desktopWidth}) {
           font-size: ${fonts.previewFontSizeMobile};

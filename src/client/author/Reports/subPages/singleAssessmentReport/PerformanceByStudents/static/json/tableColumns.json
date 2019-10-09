@@ -3,8 +3,14 @@
   { "title": "Student", "sortable": true, "type": "name", "dataIndex": "student", "key": "student", "width": 250 },
   { "title": "School", "dataIndex": "school", "key": "school", "width": 250, "hiddenFromRole": ["teacher"] },
   { "title": "Teacher", "dataIndex": "teacher", "key": "teacher", "width": 250, "hiddenFromRole": ["teacher"] },
-  { "title": "Class Name", "dataIndex": "className", "key": "className", "width": 250 },
-  { "title": "Assessment Date", "dataIndex": "assessmentDate", "key": "assessmentDate", "width": 250 },
+  { "title": "Class Name", "dataIndex": "groupName", "key": "groupName", "width": 250 },
+  {
+    "title": "Assessment Date",
+    "dataIndex": "assessmentDate",
+    "key": "assessmentDate",
+    "className": "assessmentDate",
+    "width": 250
+  },
   { "title": "Assessment Score", "dataIndex": "assessmentScore", "key": "assessmentScore", "width": 250 },
   {
     "title": "District (Avg. Score%)",

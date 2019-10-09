@@ -64,8 +64,11 @@ const Circles = ({
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
   const labelIsVisible = index =>
-    (data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
-    (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility);
+    data[index] &&
+    ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
+      (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
+
+  const isRenderIcons = !!(correct && correct.length);
 
   return (
     <Fragment>
@@ -81,7 +84,7 @@ const Circles = ({
             width={step - 2}
             height={height + margin}
           />
-          {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               cx={getCenterX(index) + step / 2}

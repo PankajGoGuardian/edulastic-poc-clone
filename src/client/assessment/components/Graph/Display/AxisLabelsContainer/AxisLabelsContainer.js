@@ -282,7 +282,7 @@ class AxisLabelsContainer extends PureComponent {
     return `${graphData.id}_${type}`;
   }
 
-  getHandlerByControlName = control => {
+  onSelectControl = control => {
     switch (control) {
       case "undo":
         return this.onUndo();
@@ -325,7 +325,7 @@ class AxisLabelsContainer extends PureComponent {
     } = this.props;
 
     return (
-      <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
+      <div data-cy="axis-labels-container">
         <WithResources
           resources={[
             "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
@@ -340,8 +340,7 @@ class AxisLabelsContainer extends PureComponent {
           {!disableResponse && (
             <Tools
               controls={this.controls}
-              getIconByToolName={() => ""}
-              getHandlerByControlName={this.getHandlerByControlName}
+              onSelectControl={this.onSelectControl}
               onSelect={() => {}}
               fontSize={fontSize}
             />
@@ -359,7 +358,7 @@ class AxisLabelsContainer extends PureComponent {
                 minHeight={layout.height}
               />
             )}
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", overflow: "auto" }}>
               <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
             </div>

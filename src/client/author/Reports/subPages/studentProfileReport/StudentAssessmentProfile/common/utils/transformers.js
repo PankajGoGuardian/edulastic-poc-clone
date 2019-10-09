@@ -17,7 +17,10 @@ export const getData = (rawData = {}, tests = [], bandInfo = []) => {
     const testDistrictAvg = round(get(find(districtAvg, testInfo), "districtAvgPerf", 0));
     const testGroupAvg = round(get(find(groupAvg, testInfo), "groupAvgPerf", 0));
     const testSchoolAvg = round(get(find(schoolAvg, testInfo), "schoolAvgPerf", 0));
-    const rawScore = `${round(sumBy(assignments, "score"), 2)} / ${round(sumBy(assignments, "maxScore"), 2)}`;
+    const rawScore = `${sumBy(assignments, "score")?.toFixed(2) || "0.00"} / ${round(
+      sumBy(assignments, "maxScore"),
+      2
+    )}`;
 
     const assignmentDateFormatted = test.assignmentDate
       ? moment(parseInt(test.assignmentDate)).format("MMMM DD, YYYY")

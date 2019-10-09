@@ -12,7 +12,7 @@ import {
 } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
-import { themes } from "../../../../student/themes";
+import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
 
@@ -182,7 +182,7 @@ export const SquareColorDivGreen = styled(SquareColorDiv)`
 `;
 
 export const SquareColorDivGray = styled(SquareColorDiv)`
-  background-color: ${classBoardTheme.SkippedColor};
+  background-color: rgb(106, 115, 127);
 `;
 
 export const SquareColorBlue = styled(SquareColorDiv)`

@@ -6,6 +6,7 @@ import {
   boxShadowDefault,
   themeColorLight,
   mediumDesktopWidth,
+  mobileWidthMax,
   darkGrey,
   lightGreySecondary,
   secondaryTextColor,
@@ -15,19 +16,22 @@ import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
 export const ClassCreateContainer = styled.div`
-  background: white;
   width: 100%;
   justify-content: center;
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 60vh;
-  font-style: italic;
+  height: 70vh;
 `;
 export const ButtonsContainer = styled.div`
   display: flex;
-  margin: 1rem;
+  margin: 0.8rem;
   justify-content: space-between;
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem;
+  }
 `;
 
 export const IconEdit = styled(Icon)`
@@ -48,22 +52,38 @@ export const SyncClassDiv = styled.div`
   cursor: pointer;
 `;
 export const SyncImg = styled.img`
-  margin-right: 0.5rem;
   width: 30px;
   height: 30px;
-  margin-left: 0.5rem;
+  border-radius: 50%;
 `;
-export const CreateClassBtn = styled(Button)`
+export const ThemeButton = styled(Button)`
   display: flex;
   align-items: center;
-  border: 2px solid ${themeColor} !important;
-  background-color: transparent;
-  border-radius: 50px;
-  color: ${themeColor};
+  background-color: ${themeColor};
+  color: ${white};
+  font-size: 11px;
   margin-right: 0.5rem;
-  &:hover {
-    background: ${themeColor};
-    color: ${white};
+  border-radius: 4px;
+  min-width: 234px;
+  height: 45px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-style: "Open Sans,SemiBold";
+  &:hover,
+  &:focus {
+    background-color: ${white};
+    color: ${themeColor};
+  }
+  & > span {
+    width: 100%;
+    text-align: center;
+  }
+  & > svg {
+    margin-right: 5px;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    width: 250px;
+    margin-bottom: 10px;
   }
 `;
 
@@ -147,7 +167,6 @@ export const ClassSelect = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 15px;
   font-weight: bold;
   button {
     &:hover,
@@ -160,6 +179,7 @@ export const LabelMyClasses = styled.span`
   margin-right: 10px;
 `;
 export const ClassListTable = styled(Table)`
+  margin-top: 20px;
   .ant-table {
     overflow: auto;
     &-thead {

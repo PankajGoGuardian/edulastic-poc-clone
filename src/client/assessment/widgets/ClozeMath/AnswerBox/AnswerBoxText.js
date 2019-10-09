@@ -1,3 +1,4 @@
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { white } from "@edulastic/colors";
@@ -11,8 +12,7 @@ const AnswerBoxText = ({ children, isMath }) => {
       "%": "\\%",
       "&": "\\&",
       "~": "\\~{}",
-      _: "\\_",
-      "^": "\\^{}"
+      _: "\\_"
     };
     Object.keys(specialCharMap).forEach(key => {
       str = str.replace(key, specialCharMap[key]);

@@ -7,6 +7,7 @@ import ClassCard from "./CardContainer";
 
 import { Wrapper, NoDataBox, Title } from "../../styled";
 import NoDataIcon from "../../assets/nodata.svg";
+import styled from "styled-components";
 
 const ClassCards = ({ classList, t }) => {
   const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
@@ -16,12 +17,10 @@ const ClassCards = ({ classList, t }) => {
 const ManageClassContainer = ({ t, classList, loading, showClass }) => {
   if (loading) return <Spin />;
   return (
-    <Wrapper>
+    <CustomWrapper>
       <Title>{t("common.myClasses")}</Title>
       {classList.length ? (
-        <Row gutter={34} style={{ padding: "0px 12px" }}>
-          {<ClassCards classList={classList} t={t} />}
-        </Row>
+        <Row gutter={25}>{<ClassCards classList={classList} t={t} />}</Row>
       ) : (
         <NoDataBox>
           <img src={NoDataIcon} alt="noData" />
@@ -29,7 +28,7 @@ const ManageClassContainer = ({ t, classList, loading, showClass }) => {
           <p>{showClass === "ACTIVE" ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
         </NoDataBox>
       )}
-    </Wrapper>
+    </CustomWrapper>
   );
 };
 
@@ -46,3 +45,9 @@ ManageClassContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   showClass: PropTypes.string.isRequired
 };
+
+const CustomWrapper = styled(Wrapper)`
+  @media (max-width: 768px) {
+    padding: 0px 15px;
+  }
+`;

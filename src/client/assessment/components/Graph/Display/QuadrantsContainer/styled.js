@@ -6,12 +6,7 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
-`;
-
-export const IconButton = styled(Button)`
-  min-width: 30px;
-  border-radius: 4px;
-  margin-left: 4px;
+  zoom: ${props => props.theme.widgets.chart.chartZoom};
 `;
 
 export const PrevColor = styled.div`
@@ -23,15 +18,31 @@ export const PrevColor = styled.div`
 `;
 
 export const JSXBox = styled.div`
-  background-color: ${white};
+  background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
 
   border: 1px solid #e8e8e8;
   border-radius: 0;
+  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
-`;
 
+  line,
+  path,
+  ellipse {
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  text {
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  div {
+    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
+    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+  }
+`;
 export const LabelTop = WithMathFormula(styled.div`
   height: 20px;
   line-height: 20px;

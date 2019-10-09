@@ -40,6 +40,7 @@ const MathModal = ({
 
   return (
     <Modal
+      centered
       visible={show}
       title="Edit Math"
       className="math-modal"
@@ -47,6 +48,9 @@ const MathModal = ({
       onOk={() => onSave(latex)}
       onCancel={() => onClose()}
       width={width || "785px"}
+      wrapProps={{
+        style: { overflow: "auto", display: show ? "block" : "none" }
+      }}
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
       {isEditable && (

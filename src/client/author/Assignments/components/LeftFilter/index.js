@@ -334,7 +334,7 @@ class LeftFilter extends React.Component {
     const classListActive = classListByTerm.filter(item => item.active === 1);
     const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
-      <FilterContainer>
+      <FilterContainer id={"filter-container"}>
         <FolderActionModal
           title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
@@ -410,7 +410,13 @@ class LeftFilter extends React.Component {
         ) : (
           <>
             <StyledBoldText>Grade</StyledBoldText>
-            <Select mode="multiple" placeholder="All grades" value={grades} onChange={this.handleChange("grades")}>
+            <Select
+              mode="multiple"
+              placeholder="All grades"
+              value={grades}
+              onChange={this.handleChange("grades")}
+              getPopupContainer={() => document.getElementById("filter-container")}
+            >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
                   !isContentGrade && (
@@ -421,7 +427,13 @@ class LeftFilter extends React.Component {
               )}
             </Select>
             <StyledBoldText>Subject</StyledBoldText>
-            <Select mode="default" placeholder="All subjects" value={subject} onChange={this.handleChange("subject")}>
+            <Select
+              mode="default"
+              placeholder="All subjects"
+              value={subject}
+              onChange={this.handleChange("subject")}
+              getPopupContainer={() => document.getElementById("filter-container")}
+            >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
@@ -429,7 +441,13 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Year</StyledBoldText>
-            <Select mode="default" placeholder="All years" value={termId} onChange={this.handleChange("termId")}>
+            <Select
+              mode="default"
+              placeholder="All years"
+              value={termId}
+              onChange={this.handleChange("termId")}
+              getPopupContainer={() => document.getElementById("filter-container")}
+            >
               <Select.Option key="all" value="">
                 {"All years"}
               </Select.Option>
@@ -440,7 +458,13 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
-            <Select mode="default" placeholder="All" value={testType} onChange={this.handleChange("testType")}>
+            <Select
+              mode="default"
+              placeholder="All"
+              value={testType}
+              onChange={this.handleChange("testType")}
+              getPopupContainer={() => document.getElementById("filter-container")}
+            >
               {roleBasedTestType.map(({ value, text }, index) => (
                 <Select.Option key={index} value={value}>
                   {text}
@@ -457,6 +481,7 @@ class LeftFilter extends React.Component {
                   placeholder="All"
                   value={classId}
                   onChange={this.handleChange("classId")}
+                  getPopupContainer={() => document.getElementById("filter-container")}
                 >
                   <Select.Option key={"all"} value={""}>
                     {"All classes"}

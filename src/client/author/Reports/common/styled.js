@@ -10,6 +10,9 @@ export const StyledCell = styled.div`
   height: 100%;
   width: 100%;
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 export const PrintablePrefix = styled.b`
@@ -36,7 +39,7 @@ export const StyledFilterWrapper = styled.div`
   background-color: white;
   border-radius: 10px;
   padding: 15px 20px;
-  margin: 0px 8px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
 
   .ant-select-selection {
     &__rendered {
@@ -52,6 +55,7 @@ export const StyledFilterWrapper = styled.div`
     background-color: ${lightGreySecondary};
     border-radius: 3px;
     padding: 18px;
+    padding-right: 24px;
     font-size: 13px;
     font-weight: 600;
     &:focus {
@@ -62,7 +66,7 @@ export const StyledFilterWrapper = styled.div`
   }
 
   .ant-input-affix-wrapper .ant-input-suffix {
-    right: 18px;
+    right: 8px;
     i {
       svg {
         color: ${themeColor};
@@ -75,6 +79,7 @@ export const StyledFilterWrapper = styled.div`
       background-color: ${lightGreySecondary};
       border-radius: 3px;
       padding: 8.5px 18px;
+      padding-right: 8px;
       height: auto;
       font-size: 13px;
       font-weight: 600;
@@ -254,6 +259,13 @@ export const StyledTable = styled(Table)`
           }
 
           td {
+            &.rawscore,
+            &.assessmentDate {
+              white-space: nowrap;
+            }
+          }
+
+          td {
             height: 50px;
             padding: 10px;
             text-align: left;
@@ -268,6 +280,9 @@ export const StyledTable = styled(Table)`
                 padding: 10px;
               }
             }
+          }
+          .studentCount {
+            text-align: right;
           }
         }
       }
@@ -299,6 +314,7 @@ export const StyledH3 = styled.h3`
   color: ${fadedBlack};
   font-size: 14px;
   margin: 0px 0px 10px;
+  text-align: ${({ textAlign }) => (textAlign ? textAlign : "left")};
 `;
 
 export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
@@ -357,6 +373,7 @@ export const StyledChartNavButton = styled(Button)`
   border-radius: 25px;
   background-color: white;
   color: black;
+  z-index: 1;
 `;
 
 export const StyledAxisTickText = styled(Text)`
@@ -392,6 +409,7 @@ export const StyledSignedBarContainer = styled.div`
 `;
 
 export const StyledDropDownContainer = styled(Col)`
+  padding: ${({ padding }) => (padding ? padding : "unset")};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -409,6 +427,22 @@ export const StyledAutocompleteDropDownContainer = styled.div`
   }
   input {
     cursor: pointer;
+    &:focus,
+    :active {
+      border-color: ${themeColor} !important;
+      box-shadow: none;
+    }
+  }
+
+  .anticon {
+    color: ${themeColor};
+  }
+  .ant-select-selection {
+    border: 1px solid #e6e6e6;
+    background: #f8f8f8;
+  }
+  .ant-select-selection--multiple {
+    padding-bottom: 6px;
   }
 `;
 

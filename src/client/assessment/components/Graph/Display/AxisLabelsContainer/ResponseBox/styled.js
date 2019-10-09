@@ -5,7 +5,7 @@ export const Container = styled.div`
   position: relative;
   height: ${props => props.height}px;
   width: ${props => props.width}px;
-  background-color: rgba(230, 230, 230, 0.23);
+  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
 `;
 
 export const Title = styled.div`

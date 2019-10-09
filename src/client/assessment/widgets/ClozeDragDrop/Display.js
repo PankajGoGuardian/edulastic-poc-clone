@@ -298,7 +298,7 @@ class ClozeDragDropDisplay extends Component {
     }
 
     // Layout Options
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize);
     const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
@@ -330,15 +330,17 @@ class ClozeDragDropDisplay extends Component {
             fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
-          <JsxParser
-            bindings={{ resProps }}
-            showWarnings
-            components={{
-              response: templateBoxLayout,
-              mathspan: MathSpanWrapper
-            }}
-            jsx={parsedTemplate}
-          />
+          <StyledJsxParserContainer>
+            <JsxParser
+              bindings={{ resProps }}
+              showWarnings
+              components={{
+                response: templateBoxLayout,
+                mathspan: MathSpanWrapper
+              }}
+              jsx={parsedTemplate}
+            />
+          </StyledJsxParserContainer>
         </div>
       </PreWrapper>
     );
@@ -516,4 +518,11 @@ export default withTheme(ClozeDragDropDisplay);
 
 const TextWrappedDiv = styled.div`
   word-break: break-all;
+`;
+
+const StyledJsxParserContainer = styled.div`
+  [id*="response-container"] {
+    width: auto !important;
+    height: auto !important;
+  }
 `;

@@ -82,6 +82,12 @@ const ModalBody = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  .ant-table-column-title {
+    font-weight: 600;
+  }
+  tbody > tr:last-child > td {
+    font-weight: 600;
+  }
 `;
 
 const Heading = styled.h4`

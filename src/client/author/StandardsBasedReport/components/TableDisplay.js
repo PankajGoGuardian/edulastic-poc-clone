@@ -9,6 +9,7 @@ import DetailedDisplay from "./DetailedDisplay";
 import { getStandardWisePerformanceMemoized } from "../Transformer";
 
 import { getAdditionalDataSelector, getTestActivitySelector } from "../../ClassBoard/ducks";
+import styled from "styled-components";
 
 import {
   TableData,
@@ -79,7 +80,7 @@ class TableDisplay extends Component {
   }
 
   onCaretClick = (e, id = 0, data, perfomancePercentage = undefined) => {
-    if (perfomancePercentage) {
+    if (perfomancePercentage || perfomancePercentage === 0) {
       this.setState({ selectedRow: id, stdId: data, perfomancePercentage });
     } else {
       this.setState({ selectedRow: id, stdId: data });
@@ -127,14 +128,15 @@ class TableDisplay extends Component {
         dataIndex: "standard",
         key: "standard",
         sorter: (a, b) => sortAlphaNum(a.standard.props.children, b.standard.props.children),
-        render: text => <StandardCell>{text}</StandardCell>
+        render: text => <CustomStandardCell>{text}</CustomStandardCell>
       },
       {
         title: "Question",
         dataIndex: "question",
         key: "question",
         sorter: (a, b) => sortAlphaNum(a.question, b.question),
-        render: text => <QuestionCell>{text}</QuestionCell>
+        width: 200,
+        render: text => <CustomQuestionCell>{text}</CustomQuestionCell>
       },
       {
         title: "Mastery Summary",
@@ -248,6 +250,18 @@ class TableDisplay extends Component {
 }
 
 export default TableDisplay;
+
+const CustomStandardCell = styled(StandardCell)`
+  max-width: 120px;
+`;
+const CustomQuestionCell = styled(QuestionCell)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  div {
+    margin: 0px auto;
+  }
+`;
 
 TableDisplay.propTypes = {
   /* eslint-disable react/require-default-props */

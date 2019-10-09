@@ -7,18 +7,20 @@ import { CustomTooltip } from "./CustomTooltip";
 export const MainDiv = styled.div`
   width: 100%;
   position: relative;
+  padding-left: 27px;
+  padding-right: 27px;
 
   .navigator {
     z-index: 1000;
   }
 
   .navigator-left {
-    left: -25px;
+    left: 0px;
     top: 35%;
   }
 
   .navigator-right {
-    right: -25px;
+    right: 0px;
     top: 35%;
   }
 

@@ -1,10 +1,12 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { isEmpty } from "lodash";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST = "[reports] get reports performance by students request";
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS = "[reports] get reports performance by students success";
@@ -22,10 +24,15 @@ export const getPerformanceByStudentsRequestAction = createAction(GET_REPORTS_PE
 
 export const stateSelector = state => state.reportReducer.reportPerformanceByStudentsReducer;
 
-export const getReportsPerformanceByStudents = createSelector(
+const _getReportsPerformanceByStudents = createSelector(
   stateSelector,
   state => state.performanceByStudents
 );
+
+export const getReportsPerformanceByStudents = state => ({
+  ..._getReportsPerformanceByStudents(state),
+  metaInfo: getOrgDataFromSARFilter(state)
+});
 
 export const getReportsPerformanceByStudentsLoader = createSelector(
   stateSelector,
@@ -38,8 +45,17 @@ export const getReportsPerformanceByStudentsLoader = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+export const defaultReport = {
+  districtAvg: 0,
+  districtAvgPerf: 0,
+  schoolMetricInfo: [],
+  studentMetricInfo: [],
+  metaInfo: [],
+  metricInfo: []
+};
+
 const initialState = {
-  performanceByStudents: {},
+  performanceByStudents: defaultReport,
   loading: true
 };
 
@@ -66,7 +82,10 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
 
 function* getReportsPerformanceByStudentsRequest({ payload }) {
   try {
-    const performanceByStudents = yield call(reportsApi.fetchPerformanceByStudentsReport, payload);
+    const {
+      data: { result }
+    } = yield call(reportsApi.fetchPerformanceByStudentsReport, payload);
+    const performanceByStudents = isEmpty(result) ? defaultReport : result;
 
     yield put({
       type: GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS,
@@ -85,7 +104,7 @@ function* getReportsPerformanceByStudentsRequest({ payload }) {
 }
 
 export function* reportPerformanceByStudentsSaga() {
-  yield all([yield takeEvery(GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST, getReportsPerformanceByStudentsRequest)]);
+  yield all([yield takeLatest(GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST, getReportsPerformanceByStudentsRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mainBgColor, themeColorLight } from "@edulastic/colors";
+import { white, mainBgColor, themeColorLight, themeColor } from "@edulastic/colors";
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -36,7 +36,7 @@ export const AddQuestionIcon = styled.span`
   width: 40px;
   height: 40px;
   border-radius: 5px;
-  background: #aaafb8;
+  background: ${themeColor};
   cursor: pointer;
 
   &:hover {

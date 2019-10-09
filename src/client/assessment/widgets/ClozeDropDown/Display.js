@@ -13,8 +13,7 @@ import { getFontSize } from "../../utils/helpers";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-
-import ChoicesBox from "./ChoicesBox";
+import ChoicesBoxContainer from "./ChoicesBoxContainer";
 
 class ClozeDropDownDisplay extends Component {
   state = {
@@ -136,7 +135,6 @@ class ClozeDropDownDisplay extends Component {
     const fontSize = theme.fontSize || getFontSize("normal", true);
     const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
-
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
@@ -177,12 +175,13 @@ class ClozeDropDownDisplay extends Component {
       responseBtnStyle,
       options: responses,
       onChange: this.selectChange,
-      responsecontainerindividuals,
+      uiStyle,
       stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
       showIndex: showAnswer,
+      responsecontainerindividuals,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
@@ -193,7 +192,7 @@ class ClozeDropDownDisplay extends Component {
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
-            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBoxContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}

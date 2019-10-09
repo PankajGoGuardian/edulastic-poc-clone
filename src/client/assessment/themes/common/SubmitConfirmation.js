@@ -1,15 +1,17 @@
 import React, { Component } from "react";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import { Button, Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
 import { secondaryTextColor } from "@edulastic/colors";
+import ColWithZoom from "../../../common/components/ColWithZoom";
 
 class SubmitConfirmation extends Component {
   render() {
-    const { isVisible, onClose, finishTest, t } = this.props;
+    const { isVisible, onClose, finishTest, t, theme } = this.props;
+
     return (
       <ModalConfirmation
         open={isVisible}
@@ -20,7 +22,8 @@ class SubmitConfirmation extends Component {
             maxWidth: "640px",
             borderRadius: 5,
             textAlign: "center",
-            padding: "20px 30px"
+            padding: "20px 30px",
+            backgroundColor: theme.sectionBackgroundColor
           }
         }}
         center
@@ -30,16 +33,16 @@ class SubmitConfirmation extends Component {
           <TitleDescription>{t("exitConfirmation.body")}</TitleDescription>
           <ButtonContainer>
             <Row gutter={20} style={{ width: "100%" }}>
-              <Col md={12} sm={24}>
+              <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>
                 <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
                   {t("exitConfirmation.buttonCancel")}
                 </StyledButton>
-              </Col>
-              <Col md={12} sm={24}>
+              </ColWithZoom>
+              <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>
                 <StyledButton data-cy="proceed" type="primary" btnType={2} onClick={finishTest}>
                   {t("exitConfirmation.buttonProceed")}
                 </StyledButton>
-              </Col>
+              </ColWithZoom>
             </Row>
           </ButtonContainer>
         </ModalContainer>
@@ -55,7 +58,7 @@ SubmitConfirmation.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces("common")(SubmitConfirmation);
+export default withTheme(withNamespaces("common")(SubmitConfirmation));
 
 const ModalConfirmation = styled(Modal)`
   border-radius: 5;
@@ -72,15 +75,16 @@ const ModalContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 22px;
+  font-size: ${props => props.theme.confirmationPopupTitleTextSize};
   font-weight: bold;
-  color: ${secondaryTextColor};
+  color: ${props => props.theme.confirmationPopupTextColor};
 `;
 
 const TitleDescription = styled.div`
-  font-size: 13px;
+  font-size: ${props => props.theme.confirmationPopupButtonTextSize};
   font-weight: 600;
   margin-top: 12px;
+  color: ${props => props.theme.confirmationPopupTextColor};
 `;
 
 const ButtonContainer = styled.div`
@@ -91,28 +95,29 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   width: 100%;
-  height: 40px;
+  min-height: 40px;
+  height: auto;
   background: ${props =>
     props.btnType === 1
-      ? props.theme.default.confirmationPopupButtonTextHoverColor
-      : props.theme.default.confirmationPopupButtonBgColor};
-  border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
+      ? props.theme.confirmationPopupButtonTextHoverColor
+      : props.theme.confirmationPopupButtonBgColor};
+  border-color: ${props => props.theme.confirmationPopupButtonBgColor};
   &:hover,
   &:focus {
     background: ${props =>
       props.btnType === 1
-        ? props.theme.default.confirmationPopupButtonTextHoverColor
-        : props.theme.default.confirmationPopupButtonBgColor};
-    border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
+        ? props.theme.confirmationPopupButtonTextHoverColor
+        : props.theme.confirmationPopupButtonBgColor};
+    border-color: ${props => props.theme.confirmationPopupButtonBgColor};
   }
   span {
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: ${props => props.theme.confirmationPopupButtonTextSize};
     font-weight: 600;
     color: ${props =>
       props.btnType === 1
-        ? props.theme.default.confirmationPopupButtonTextColor
-        : props.theme.default.confirmationPopupButtonTextHoverColor};
+        ? props.theme.confirmationPopupButtonTextColor
+        : props.theme.confirmationPopupButtonTextHoverColor};
   }
   @media screen and (max-width: 767px) {
     margin-top: 10px;

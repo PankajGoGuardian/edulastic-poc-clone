@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Col, Button } from "antd";
+import { Row, Col } from "antd";
 import { themeColor, fadedBlack } from "@edulastic/colors";
 import { StyledTable as Table, StyledCard as Card } from "../../../../common/styled";
 

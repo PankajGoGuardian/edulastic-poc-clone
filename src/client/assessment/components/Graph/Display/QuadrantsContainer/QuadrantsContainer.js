@@ -1,19 +1,7 @@
-import React, { PureComponent } from "react";
+import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, sortBy } from "lodash";
-
-import {
-  IconGraphRay as IconRay,
-  IconGraphLine as IconLine,
-  IconGraphPoint as IconPoint,
-  IconGraphSine as IconSine,
-  IconGraphParabola as IconParabola,
-  IconGraphCircle as IconCircle,
-  IconGraphVector as IconVector,
-  IconGraphSegment as IconSegment,
-  IconGraphPolygon as IconPolygon
-} from "@edulastic/icons";
 
 import { WithResources } from "@edulastic/common";
 
@@ -43,14 +31,14 @@ import {
   JSXBoxWithDrawingObjectsWrapper
 } from "./styled";
 import Tools from "../../common/Tools";
-import Equations from "./Equations";
+import GraphEditTools from "../../components/GraphEditTools";
 import DrawingObjects from "./DrawingObjects";
 import { ElementSettingsMenu } from "./ElementSettingsMenu";
 
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
-const bgColor = "#ccc";
+const bgColor = "#69727e";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -171,12 +159,7 @@ class GraphContainer extends PureComponent {
   getDefaultTool() {
     const { toolbar } = this.props;
     const { tools } = toolbar;
-
-    return {
-      name: tools[0],
-      index: 0,
-      groupIndex: -1
-    };
+    return tools[0];
   }
 
   handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
@@ -311,6 +294,8 @@ class GraphContainer extends PureComponent {
     const { tools } = toolbar;
     const { resourcesLoaded } = this.state;
 
+    let refreshElements = false;
+
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
       this.setDefaultToolState();
       this._graph.setTool(tools[0]);
@@ -335,6 +320,7 @@ class GraphContainer extends PureComponent {
           ...defaultGraphParameters(),
           ...canvas
         });
+        refreshElements = true;
       }
 
       if (
@@ -359,6 +345,7 @@ class GraphContainer extends PureComponent {
         xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
         xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
+        xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
         yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
         yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
@@ -366,7 +353,8 @@ class GraphContainer extends PureComponent {
         yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
         yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
         yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis
+        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
+        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -422,7 +410,7 @@ class GraphContainer extends PureComponent {
       }
 
       this.setPriorityColor();
-      this.setElementsToGraph(prevProps);
+      this.setElementsToGraph(prevProps, refreshElements);
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
@@ -441,8 +429,8 @@ class GraphContainer extends PureComponent {
     }
   }
 
-  onSelectTool({ name, index, groupIndex }) {
-    this.setState({ selectedTool: { name, index, groupIndex } });
+  onSelectTool(name) {
+    this.setState({ selectedTool: name });
     this._graph.setTool(name);
   }
 
@@ -485,7 +473,7 @@ class GraphContainer extends PureComponent {
 
   onDelete() {
     this.selectDrawingObject(null);
-    this.setState({ selectedTool: { name: "delete", index: -1, groupIndex: -1 } });
+    this.setState({ selectedTool: "delete" });
     this._graph.setTool("trash");
   }
 
@@ -495,7 +483,7 @@ class GraphContainer extends PureComponent {
     return `${graphData.id}_${type}`;
   }
 
-  getHandlerByControlName = control => {
+  onSelectControl = control => {
     switch (control) {
       case "undo":
         return this.onUndo();
@@ -530,7 +518,7 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
-  setElementsToGraph = (prevProps = {}) => {
+  setElementsToGraph = (prevProps = {}, refreshElements = false) => {
     const { resourcesLoaded } = this.state;
     if (!resourcesLoaded) {
       return;
@@ -565,6 +553,7 @@ class GraphContainer extends PureComponent {
     }
 
     if (
+      refreshElements ||
       !isEqual(sortBy(elements), sortBy(this._graph.getConfig())) ||
       (prevProps.toolbar && prevProps.toolbar.drawingPrompt !== drawingPrompt) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
@@ -573,76 +562,6 @@ class GraphContainer extends PureComponent {
       this._graph.resetAnswers();
       this._graph.loadFromConfig(elements);
     }
-  };
-
-  getIconByToolName = (toolName, options) => {
-    if (!toolName) {
-      return "";
-    }
-
-    const { width, height } = options;
-
-    const iconsByToolName = {
-      point: () => <IconPoint {...options} />,
-      line: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconLine {...newOptions} />;
-      },
-      ray: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconRay {...newOptions} />;
-      },
-      segment: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconSegment {...newOptions} />;
-      },
-      vector: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconVector {...newOptions} />;
-      },
-      circle: () => <IconCircle {...options} />,
-      ellipse: () => "ellipse",
-      hyperbola: () => "hyperbola",
-      tangent: () => "tangent",
-      secant: () => "secant",
-      exponent: () => "exponent",
-      logarithm: () => "logarithm",
-      polynom: () => "polynom",
-      parabola: () => <IconParabola {...options} />,
-      sine: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10
-        };
-
-        return <IconSine {...newOptions} />;
-      },
-      polygon: () => <IconPolygon {...options} />,
-      area: () => "area",
-      dashed: () => "dashed"
-    };
-
-    return iconsByToolName[toolName]();
   };
 
   setEquations = equations => {
@@ -738,7 +657,7 @@ class GraphContainer extends PureComponent {
     const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
 
     return (
-      <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+      <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
           resources={[
             "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
@@ -753,19 +672,13 @@ class GraphContainer extends PureComponent {
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
             <Tools
-              toolsAreVisible={!this.drawingObjectsAreVisible()}
-              tools={bgShapes ? this.allTools : tools}
+              tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible() ? [] : tools}
               controls={bgShapes ? this.allControls : controls}
-              tool={selectedTool}
-              bgShapes={bgShapes}
-              getIconByToolName={this.getIconByToolName}
-              getHandlerByControlName={this.getHandlerByControlName}
+              selected={[selectedTool]}
+              onSelectControl={this.onSelectControl}
               onSelect={this.onSelectTool}
-              fontSize={bgShapes ? 12 : layout.fontSize}
+              fontSize={bgShapes ? 14 : layout.fontSize}
             />
-          )}
-          {!this.drawingObjectsAreVisible() && !disableResponse && view === EDIT && (
-            <Equations equations={equations} setEquations={this.setEquations} />
           )}
           <JSXBoxWithDrawingObjectsWrapper>
             {this.drawingObjectsAreVisible() && !disableResponse && (
@@ -793,6 +706,34 @@ class GraphContainer extends PureComponent {
                 className="jxgbox"
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
+              {view === EDIT && !bgShapes && !disableResponse && (
+                <Fragment>
+                  <GraphEditTools
+                    side="left"
+                    graphData={graphData}
+                    setQuestionData={setQuestionData}
+                    equations={equations}
+                    setEquations={this.setEquations}
+                    layout={layout}
+                    margin={{
+                      top: layout.margin ? layout.margin : hasAnnotation ? 20 : 0,
+                      left: hasAnnotation ? 20 : 0
+                    }}
+                  />
+                  <GraphEditTools
+                    side="right"
+                    graphData={graphData}
+                    setQuestionData={setQuestionData}
+                    equations={equations}
+                    setEquations={this.setEquations}
+                    layout={layout}
+                    margin={{
+                      top: layout.margin ? layout.margin : hasAnnotation ? 20 : 0,
+                      left: hasAnnotation ? 20 : 0
+                    }}
+                  />
+                </Fragment>
+              )}
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu

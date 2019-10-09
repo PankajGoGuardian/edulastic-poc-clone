@@ -20,6 +20,7 @@ import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -276,14 +277,13 @@ class ClozeText extends Component {
     const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
     const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
     const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
-
     return (
       <WithResources
         resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
@@ -379,7 +379,6 @@ class ClozeText extends Component {
               uiStyle={uiStyle}
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
-              instructorStimulus={itemForPreview.instructorStimulus}
               item={itemForPreview}
               responseIds={item.responseIds}
               view={view}

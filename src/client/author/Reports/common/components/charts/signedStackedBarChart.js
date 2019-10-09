@@ -38,7 +38,7 @@ const LabelText = props => {
 };
 
 export const SignedStackedBarChart = ({
-  margin = { top: 0, right: 20, left: 20, bottom: 0 },
+  margin = { top: 0, right: 60, left: 60, bottom: 0 },
   pageSize,
   barsData,
   data = [],

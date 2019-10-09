@@ -139,10 +139,10 @@ const StudentProfileSummary = ({
       <StyledCard>
         <StyledH3>Standard Mastery Detail by Student</StyledH3>
         <Row>
-          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Col xs={24} sm={24} md={8} lg={11} xl={8}>
             <StudentPerformancePie data={standards} scaleInfo={scaleInfo} getTooltip={getTooltip} title="" />
           </Col>
-          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={16} lg={13} xl={16}>
             <StandardMasteryDetailsTable
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}

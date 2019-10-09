@@ -8,7 +8,7 @@ export const Main = styled.main`
   padding: 96px 0px 32px;
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  min-height: ${({ LCBPreviewModal }) => (LCBPreviewModal ? "calc(100vh - 56px)" : "100vh")};
   box-sizing: border-box;
   margin: 0px 32px;
 `;
@@ -39,9 +39,8 @@ export const MainContent = styled.div`
     overflow: auto;
     height: 100%;
     width: 100%;
-    border-color: #888888;
-    border-style: dashed;
-    border-width: thin;
+    border-style: none;
+    border-width: 0px;
   }
 `;
 
@@ -60,14 +59,14 @@ export const ActionButton = styled.div`
   border-radius: 5px;
   padding: 12px 14px;
   margin-left: 10px;
-  color: ${props => props.theme.headerIconColor};
+  color: #00ad50;
   font-weight: 900;
   font-size: 17px;
   user-select: none;
   ${props => {
-    const { theme, disable } = props;
+    const { disable } = props;
     return `
-      background: ${disable ? theme.btnDisabled : theme.headerIconBgColor};
+      background: ${disable ? "#dfdfdf" : "#fff"};
       ${
         disable
           ? ` cursor: not-allowed;
@@ -82,7 +81,7 @@ export const ActionButton = styled.div`
   }
 
   svg {
-    fill: ${props => props.theme.headerIconColor};
+    fill: #00ad50;
   }
 `;
 
@@ -99,11 +98,21 @@ export const ContainerRight = styled.div`
 `;
 
 export const HeaderPracticePlayer = styled(Header)`
-  background: ${props => props.theme.headerBg};
+  background: ${props => props.theme.header.headerBg};
   box-shadow: ${boxShadowDefault};
   height: 70px;
   z-index: 1;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;
   }
+`;
+
+export const OverlayDiv = styled.div`
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 9999;
+  background: transparent;
 `;

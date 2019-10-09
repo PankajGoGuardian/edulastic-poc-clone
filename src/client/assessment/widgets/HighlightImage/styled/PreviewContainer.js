@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Paper } from "@edulastic/common";
+import { StyledPaperWrapper } from "../../../styled/Widget";
 
-export const PreviewContainer = styled(Paper)`
+export const PreviewContainer = styled(StyledPaperWrapper)`
   padding: 0;
   overflow: auto;
 `;

@@ -15,6 +15,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import AdvancedOptions from "./components/AdvancedOptions";
 import VideoPreview from "./VideoPreview";
 import VideoPlayer from "./VideoPlayer";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -29,7 +30,7 @@ const Video = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : Paper;
+  const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   if (view === "edit") {

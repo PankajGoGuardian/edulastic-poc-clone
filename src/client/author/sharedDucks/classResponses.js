@@ -118,6 +118,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
     const {
       testActivityId,
       itemId,
+      studentId,
       questionId,
       body: { groupId, score, feedback }
     } = payload;
@@ -130,13 +131,12 @@ function* receiveFeedbackResponseSaga({ payload }) {
       itemId
     });
 
-    yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
-
-    yield call(message.success("Feedback successully update"));
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
       payload: feedbackResponse
     });
+    yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId, studentId } });
+    yield call(message.success("Feedback successully update"));
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive tests is failing";

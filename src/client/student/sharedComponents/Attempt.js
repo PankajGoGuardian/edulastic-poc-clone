@@ -60,12 +60,13 @@ const AttemptsData = styled.div`
 `;
 
 const AnswerAndScore = styled.div`
-  width: 135px;
+  max-width: 135px;
+  flex-basis: 25%;
   display: flex;
   align-items: center;
   flex-direction: column;
   span {
-    font-size: 31px;
+    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
     font-weight: bold;
     color: #434b5d;
   }
@@ -75,6 +76,11 @@ const AnswerAndScore = styled.div`
       flex-basis: 50%;
     }
   }
+  ${({ theme }) =>
+    theme.zoomedCss`
+      width: auto;
+      max-width: fit-content;
+    `}
 `;
 
 const SpaceBetween = styled.div`
@@ -85,6 +91,7 @@ const SpaceBetween = styled.div`
 `;
 
 const AnswerAndScoreReview = styled(AnswerAndScore)`
+  max-width: 200px;
   span {
     color: #00b0ff;
     cursor: pointer;
@@ -108,13 +115,18 @@ const RowData = styled.div`
   justify-content: flex-end;
   align-items: center;
   border-radius: 4px;
-  height: 30px;
+  height: auto;
   background-color: ${lightGreySecondary};
+  padding: 3px;
   @media screen and (max-width: ${mobileWidthMax}) {
     height: auto;
     justify-content: space-between;
-    padding: 3px;
   }
+  ${({ theme }) =>
+    theme.zoomedCss`
+      height: auto;
+      justify-content: space-between;
+    `}
   div {
     height: 100%;
     display: flex;
@@ -125,7 +137,6 @@ const RowData = styled.div`
     }
   }
   span {
-    font-size: 10px !important;
     font-weight: 600 !important;
     color: #9ca0a9;
   }

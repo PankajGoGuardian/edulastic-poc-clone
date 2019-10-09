@@ -16,20 +16,22 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
-  LOAD_TESTLET_STATE,
+  LOAD_TEST_LEVEL_USER_WORK,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   TEST_ACTIVITY_LOADING,
   SET_TEST_LOADING_ERROR,
   LOAD_PREVIOUS_ANSWERS,
   ADD_ITEM_EVALUATION,
-  LOAD_PREVIOUS_RESPONSES_REQUEST
+  LOAD_PREVIOUS_RESPONSES_REQUEST,
+  REMOVE_PREVIOUS_ANSWERS
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
+import { CLEAR_ITEM_EVALUATION } from "../../author/src/constants/actions";
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -55,6 +57,14 @@ function* loadTest({ payload }) {
   } = payload;
 
   try {
+    yield put({
+      type: CLEAR_ITEM_EVALUATION
+    });
+
+    yield put({
+      type: REMOVE_PREVIOUS_ANSWERS
+    });
+
     yield put({
       type: SET_TEST_LOADING_STATUS,
       payload: true
@@ -110,7 +120,7 @@ function* loadTest({ payload }) {
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
 
-    let { testItems, passages } = test;
+    let { testItems, passages, testType } = test;
 
     const settings = {
       calcType:
@@ -214,11 +224,11 @@ function* loadTest({ payload }) {
         });
       }
 
-      const testletState = get(activity, "userWork.testletState");
-      if (testletState) {
+      const testUserWork = get(activity, "userWork");
+      if (testUserWork) {
         yield put({
-          type: LOAD_TESTLET_STATE,
-          payload: { [testActivityId]: testletState }
+          type: LOAD_TEST_LEVEL_USER_WORK,
+          payload: { [testActivityId]: testUserWork }
         });
       }
 
@@ -244,7 +254,7 @@ function* loadTest({ payload }) {
       const loadFromLast = yield select(state => state.test && state.test.resume);
 
       // move to last attended question
-      if (loadFromLast) {
+      if (loadFromLast && testType !== testContants.type.TESTLET) {
         yield put(push(`${lastAttendedQuestion}`));
         yield put({
           type: SET_RESUME_STATUS,

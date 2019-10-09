@@ -40,6 +40,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
 import { CorrectAnswerItem } from "./components/OrderListReport/styled/CorrectAnswerItem";
 import { QuestionText } from "./styled/QuestionText";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -175,7 +176,7 @@ const OrderList = ({
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
   const correctAnswers = get(itemForPreview, "validation.validResponse.value", []);
 
-  const Wrapper = testItem ? EmptyWrapper : Paper;
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
   const hasAltAnswers =
     itemForPreview &&
@@ -274,8 +275,6 @@ const OrderList = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          <InstructorStimulus>{itemForPreview.instructorStimulus}</InstructorStimulus>
-
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <QuestionHeader

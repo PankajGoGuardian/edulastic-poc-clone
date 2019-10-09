@@ -81,6 +81,9 @@ const StudentAssessmentProfile = ({
     <>
       <StyledCard>
         <StyledH3>Assessment Performance Details of {studentName}</StyledH3>
+        <p>
+          <b>Subject</b>: {studentInformation.standardSet}
+        </p>
         <AssessmentChart
           data={chartData}
           selectedTests={selectedTests}

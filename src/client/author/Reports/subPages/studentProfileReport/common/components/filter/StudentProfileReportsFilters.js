@@ -214,7 +214,7 @@ const StudentProfileReportsFilters = ({
               />
             </Col>
           )}
-          <Col xs={12} sm={12} md={1} lg={1} xl={1}>
+          <Col xs={12} sm={12} md={1} lg={1} xl={1} style={{ padding: "5px" }}>
             <StyledGoButton type="primary" onClick={onGoClick}>
               Go
             </StyledGoButton>

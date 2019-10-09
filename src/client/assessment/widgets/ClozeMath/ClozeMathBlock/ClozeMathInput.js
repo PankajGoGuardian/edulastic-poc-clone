@@ -212,6 +212,7 @@ class ClozeMathInput extends React.Component {
             onClick={this.showKeyboardModal}
             style={{
               ...btnStyle,
+              minWidth: width,
               minHeight: height,
               padding: "5px 11px 4px"
             }}

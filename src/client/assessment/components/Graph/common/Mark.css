@@ -1,4 +1,5 @@
 .mark {
+  height: 45px !important;
   width: 120px !important;
   word-break: break-all;
   max-width: 55px;
@@ -24,6 +25,7 @@
   opacity: 1 !important;
 }
 
+.mark.dragging::after,
 .mark.mounted::after {
   content: "";
   position: absolute;
@@ -33,7 +35,11 @@
   height: 0;
   border-style: solid;
   border-width: 7px 10px 0 10px;
-  border-color: #e6e6e6 transparent transparent transparent;
+}
+
+.mark.dragging::after,
+.mark.mounted::after {
+  border-color: #434b5d transparent transparent transparent;
 }
 
 .mark.correct {

@@ -737,12 +737,13 @@ const UserName = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  width: 80px;
+  width: 96%;
 `;
 
 const UserType = styled.div`
-  font-size: ${props => props.theme.sideMenu.userInfoRoleFontSize};
+  font-size: 12px;
   color: ${props => props.theme.sideMenu.userInfoRoleTextColor};
+  width: 96%;
 `;
 
 const FooterDropDown = styled.div`
@@ -963,7 +964,7 @@ const PseudoDiv = styled.div`
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  font-size: 25px;
+  font-size: 22px;
   font-weight: bold;
   line-height: 60px;
   text-align: center;
@@ -971,7 +972,7 @@ const PseudoDiv = styled.div`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 119px;
+  width: 100%;
   height: 21px;
 `;
 

@@ -24,6 +24,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import ChoicesForResponses from "./ChoicesForResponses";
 import Question from "../../components/Question";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -136,7 +137,7 @@ class ClozeDropDown extends Component {
 
     const { shuffleOptions, responseIds } = item;
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
 
     return (
       <WithResources
@@ -226,7 +227,6 @@ class ClozeDropDown extends Component {
               userSelections={userAnswer}
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
-              instructorStimulus={instructorStimulus}
               isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
               {...restProps}
             />

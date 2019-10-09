@@ -141,7 +141,7 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container onClick={isPlaylist ? this.moveToItem : this.openModal}>
+        <Container onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
             <Col span={18}>
               <ListCard

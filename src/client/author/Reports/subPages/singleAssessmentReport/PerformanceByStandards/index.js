@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr, capitalize, find, get, intersectionBy } from "lodash";
-import { Form, Popover, Button, Icon, Row, Col } from "antd";
+import { indexOf, filter as filterArr, capitalize, find, intersectionBy } from "lodash";
+import { Row, Col } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
@@ -19,11 +19,10 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector
 } from "./ducks";
-import { AutocompleteDropDown } from "../../../../Reports/common/components/widgets/autocompleteDropDown";
+import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
-import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,
@@ -35,7 +34,7 @@ const PAGE_SIZE = 15;
 const findCompareByTitle = (key = "") => {
   if (!key) return "";
 
-  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key == key) || {};
+  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key === key) || {};
 
   return title;
 };
@@ -131,8 +130,8 @@ const PerformanceByStandards = ({
 
     stateHandler(prevState => {
       const newState = next(prevState, draftState => {
-        let index = indexOf(prevState, item[dataField]);
-        if (-1 < index) {
+        const index = indexOf(prevState, item[dataField]);
+        if (index > -1) {
           draftState.splice(index, 1);
         } else {
           draftState.push(item[dataField]);
@@ -180,7 +179,7 @@ const PerformanceByStandards = ({
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
-  const assignmentInfo = `${testName} (ID: ${testId})`;
+  const assignmentInfo = `${testName}`;
 
   const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
 
@@ -210,12 +209,12 @@ const PerformanceByStandards = ({
     <>
       <StyledCard>
         <Row type="flex" justify="start">
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={8} xl={12}>
             <StyledH3>
               Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
             </StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={16} xl={12}>
             <Row>
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
@@ -233,7 +232,7 @@ const PerformanceByStandards = ({
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer padding="5px" xs={24} sm={24} md={7} lg={7} xl={7}>
                 <AutocompleteDropDown
                   prefix="Standard set"
                   by={selectedStandardId || { key: "", title: "" }}
@@ -241,8 +240,9 @@ const PerformanceByStandards = ({
                   data={standardsDropdownData}
                 />
               </StyledDropDownContainer>
-
-              <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
+              <StyledDropDownContainer xs={2} sm={2} md={2} lg={2} xl={2}>
+                <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
+              </StyledDropDownContainer>
             </Row>
           </Col>
         </Row>
@@ -302,6 +302,10 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
+  standardProficiencyProfiles: PropTypes.array.isRequired,
+  interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired
 };

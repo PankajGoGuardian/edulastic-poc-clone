@@ -89,7 +89,7 @@ export default class QuestionEditModal extends React.Component {
       return null;
     }
 
-    const { type, qIndex, title, authorDifficulty = "", depthOfKnowledge = "" } = question;
+    const { id, type, qIndex, title, authorDifficulty = "", depthOfKnowledge = "" } = question;
 
     return (
       <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
@@ -102,7 +102,7 @@ export default class QuestionEditModal extends React.Component {
           <div style={{ height: "50vh", overflow: "hidden auto", paddingBottom: "10px" }}>
             <PerfectScrollbar>
               {this.renderForm(type)}
-              <StandardSet alignment={question.alignment} onUpdate={onUpdate} isDocBased />
+              <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased />
               <Row style={{ marginTop: "10px" }}>
                 <Col md={12}>
                   <FormLabel>DOK</FormLabel>

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Col } from "antd";
-import { greyish, greenSomeWhatDark } from "@edulastic/colors";
+import { greyish, title, themeColorLighter } from "@edulastic/colors";
 
 const StatItem = ({ heading, value }) => {
   return (
@@ -24,12 +24,14 @@ const StyledCol = styled(Col)`
   flex-direction: row;
   align-items: center;
   border-radius: 5px;
+  white-space: pre-wrap;
 
   .stats-title {
     font-size: 17px;
     font-weight: 600;
     display: block;
     flex: 1 1 auto;
+    color: ${title};
   }
   .stats-value {
     display: flex;
@@ -38,12 +40,12 @@ const StyledCol = styled(Col)`
     justify-content: flex-end;
 
     .stats-value-big {
-      font-size: 35px;
+      font-size: 17px;
       font-weight: 900;
-      color: ${greenSomeWhatDark};
+      color: ${themeColorLighter};
     }
     .stats-value-small {
-      font-size: 25px;
+      font-size: 17px;
     }
   }
 `;

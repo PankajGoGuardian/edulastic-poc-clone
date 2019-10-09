@@ -3,6 +3,10 @@ import { groupBy } from "lodash";
 import memoizeOne from "memoize-one";
 
 export const getStandardWisePerformance = (testActivities, std) => {
+  // In this PR #5187 filtering by "submitted" was removed, instead may be we should filter out absent
+  // const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
+  // const questionActivities = submittedTestActivities.flatMap(({ studentId, questionActivities }) =>
+
   const questionActivities = testActivities.flatMap(({ studentId, questionActivities }) =>
     questionActivities.map(x => ({ ...x, studentId }))
   );
@@ -12,7 +16,6 @@ export const getStandardWisePerformance = (testActivities, std) => {
   if (std && std.qIds) {
     for (let qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
-
       for (let qAct of questionActs) {
         if (qAct.scoringDisabled || qAct.disabled) {
           continue;
@@ -31,13 +34,14 @@ export const getStandardWisePerformance = (testActivities, std) => {
 
   for (const key of Object.keys(performanceStudentWise)) {
     const { score, maxScore } = performanceStudentWise[key];
-    performanceStudentWise[key] = score / maxScore;
+    performanceStudentWise[key] = maxScore ? score / maxScore : 0;
   }
 
   return performanceStudentWise;
 };
 
 export const getStandardWisePerformanceDetail = (testActivities, std, isPresentationMode = false) => {
+  // may be filter out absent const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
   const submittedTestActivities = testActivities.filter(x => x.status === "submitted");
   const questionActivities = submittedTestActivities.flatMap(
     ({ studentId, studentName, fakeName, questionActivities }) =>

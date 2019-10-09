@@ -81,7 +81,7 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
         )}
       >
         <MathSpan
-          style={{ height: "100%", width: "95%", display: "flex", alignItems: "center" }}
+          style={{ height: "100%", width: "100%", display: "flex", alignItems: "center" }}
           dangerouslySetInnerHTML={{
             __html: answer.replace("<p>", "<p class='clipText'>") || ""
           }}

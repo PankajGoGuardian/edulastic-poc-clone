@@ -5,7 +5,7 @@ import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
   shape-rendering: crispEdges;
-  stroke: ${dashBorderColor};
+  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
   stroke-width: ${({ strokeWidth }) => strokeWidth};
 `;
 
@@ -14,8 +14,8 @@ export const Circle = styled.circle`
   cursor: pointer;
   position: relative;
   z-index: 10;
-  stroke: ${themeColorLight};
-  fill: ${themeColorLight};
+  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
 `;
 
 export const Bar = styled.rect`
@@ -48,6 +48,7 @@ export const StrokedRect = styled.rect`
 
 export const Text = styled.text`
   user-select: none;
+  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
 `;
 
 export const Sub = styled.tspan`

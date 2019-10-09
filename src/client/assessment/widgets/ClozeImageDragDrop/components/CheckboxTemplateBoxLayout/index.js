@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { get, isNull } from "lodash";
+import { get } from "lodash";
 
 import { response } from "@edulastic/constants";
 import DropContainer from "../DropContainer";
@@ -32,14 +32,15 @@ const CheckboxTemplateBox = ({
   theme,
   showBorder,
   disableResponse,
-  isSnapFitValues,
-  largestResponseWidth
+  isSnapFitValues
 }) => {
-  const [hideIndexBox, updateVisibility] = useState(null);
+  const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
 
-  const updateIndexBoxVisibility = visibility => {
-    if (isNull(hideIndexBox)) {
-      updateVisibility(visibility);
+  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
+
+  const handleHover = () => {
+    if (showAnswer && lessMinWidth) {
+      toggleIndexVisibility(!showIndex);
     }
   };
 
@@ -81,18 +82,16 @@ const CheckboxTemplateBox = ({
       indexStr = index + 1;
   }
 
-  const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
-
   const dragItemStyle = {
     border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-    padding: "0px 5px",
+    padding: lessMinWidth ? "0px 2px" : "0px 5px",
     display: "inline-flex",
     alignItems: "center",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
     width: "max-content",
     minWidth: response.minWidth,
-    maxWidth: lessMinWidth ? "50%" : "80%", // adjusting content(mainly images) alongwith the padding
+    maxWidth: lessMinWidth ? "80%" : "90%", // adjusting content(mainly images) alongwith the padding
     overflow: "hidden",
     height: "100%"
   };
@@ -109,9 +108,9 @@ const CheckboxTemplateBox = ({
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
   containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
-  const icons = (
+  const icons = (checkAnswer || (showAnswer && showIndex)) && (
     <>
-      <IconWrapper right="5">
+      <IconWrapper right={lessMinWidth && 1}>
         {isChecked && status === "right" && <RightIcon />}
         {isChecked && status === "wrong" && <WrongIcon />}
       </IconWrapper>
@@ -124,9 +123,15 @@ const CheckboxTemplateBox = ({
 
   const indexBoxRef = useRef();
 
-  const responseBoxIndex = showAnswer && (
+  const responseBoxIndex = showAnswer && showIndex && (
     <div
-      style={{ alignSelf: "stretch", height: "auto", width: lessMinWidth ? "20px" : null }}
+      style={{
+        alignSelf: "stretch",
+        height: "auto",
+        width: lessMinWidth ? "20px" : null,
+        maxWidth: lessMinWidth && "20%",
+        padding: lessMinWidth && "0 8px"
+      }}
       className="index index-box"
       ref={indexBoxRef}
     >
@@ -135,39 +140,41 @@ const CheckboxTemplateBox = ({
   );
 
   return (
-    <DropContainer
-      index={index}
-      style={dropContainerStyle}
-      className={containerClassName}
-      drop={drop}
-      disableResponse={disableResponse}
-    >
-      {responseBoxIndex}
-      <TextContainer
-        dropTargetIndex={index}
-        userSelections={userSelections}
-        isSnapFitValues={isSnapFitValues}
-        showAnswer={showAnswer}
-        checkAnswer={checkAnswer}
-        dragItemStyle={dragItemStyle}
-        onDropHandler={onDropHandler}
+    <div onMouseEnter={handleHover} onMouseLeave={handleHover}>
+      <DropContainer
+        index={index}
+        style={dropContainerStyle}
+        className={containerClassName}
+        drop={drop}
         disableResponse={disableResponse}
-        dropContainerWidth={dropContainerStyle.width}
-        indexBoxRef={indexBoxRef}
-        onHideIndexBox={updateIndexBoxVisibility}
-        style={
-          hideIndexBox || checkAnswer
-            ? {
-                borderRadius: 5,
-                justifyContent: hideIndexBox && "center",
-                width: responseContainer.width,
-                height: responseContainer.height
-              }
-            : { width: responseContainer.width, height: responseContainer.height }
-        }
-      />
-      {isSnapFitValues && icons}
-    </DropContainer>
+      >
+        {responseBoxIndex}
+        <TextContainer
+          responseContainer={responseContainer}
+          dropTargetIndex={index}
+          userSelections={userSelections}
+          isSnapFitValues={isSnapFitValues}
+          showAnswer={showAnswer}
+          checkAnswer={checkAnswer}
+          dragItemStyle={dragItemStyle}
+          onDropHandler={onDropHandler}
+          disableResponse={disableResponse}
+          dropContainerWidth={dropContainerStyle.width}
+          indexBoxRef={indexBoxRef}
+          style={
+            checkAnswer
+              ? {
+                  borderRadius: 5,
+                  justifyContent: lessMinWidth ? "flex-start" : "center",
+                  width: responseContainer.width,
+                  height: responseContainer.height
+                }
+              : { width: responseContainer.width, height: responseContainer.height }
+          }
+        />
+        {isSnapFitValues && icons}
+      </DropContainer>
+    </div>
   );
 };
 

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { groupBy } from "lodash";
+import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import { ticks } from "d3-array";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../../common/util";
-import { idToName, analyseByToName } from "../../util/transformers";
+import { idToName } from "../../util/transformers";
 
 export const SimpleStackedBarChartContainer = ({
   data,

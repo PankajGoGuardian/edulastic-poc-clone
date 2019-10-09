@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
-import { get, keyBy, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import { get, isEmpty } from "lodash";
 
 import { SimpleStackedBarWithLineChartContainer } from "./componenets/charts/simpleStackedBarWithLineChartContainer";
 import { QuestionAnalysisTable } from "./componenets/table/questionAnalysisTable";
@@ -21,14 +22,7 @@ import {
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
 
-const QuestionAnalysis = ({
-  questionAnalysis,
-  getQuestionAnalysisRequestAction,
-  role,
-  settings,
-  loading,
-  isCsvDownloading
-}) => {
+const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, getQuestionAnalysis, settings }) => {
   const [compareBy, setCompareBy] = useState(role === "teacher" ? "groupId" : "schoolId");
   const [chartFilter, setChartFilter] = useState({});
 
@@ -37,7 +31,7 @@ const QuestionAnalysis = ({
       let q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
-      getQuestionAnalysisRequestAction(q);
+      getQuestionAnalysis(q);
     }
   }, [settings]);
 
@@ -49,8 +43,7 @@ const QuestionAnalysis = ({
     return getTableData(questionAnalysis);
   }, [questionAnalysis, compareBy]);
 
-  const compareByDropDownData = dropDownData.compareByDropDownData;
-  const dropDownKeyToLabel = dropDownData.dropDownKeyToLabel;
+  const { compareByDropDownData, dropDownKeyToLabel } = dropDownData;
 
   const updateCompareByCB = (event, selected, comData) => {
     setCompareBy(selected.key);
@@ -111,7 +104,7 @@ const QuestionAnalysis = ({
                   <Row type="flex" justify="space-between" className="top-row">
                     <Col>
                       <StyledH3>
-                        Detailed Performance Analysis {role !== "teacher" ? "By " + dropDownKeyToLabel[compareBy] : ""}{" "}
+                        Detailed Performance Analysis {role !== "teacher" ? `By ${dropDownKeyToLabel[compareBy]}` : ""}{" "}
                         | {assessmentName}
                       </StyledH3>
                     </Col>
@@ -146,12 +139,26 @@ const QuestionAnalysis = ({
   );
 };
 
+const reportPropType = PropTypes.shape({
+  metaInfo: PropTypes.array,
+  metricInfo: PropTypes.array
+});
+
+QuestionAnalysis.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  role: PropTypes.string.isRequired,
+  questionAnalysis: reportPropType.isRequired,
+  getQuestionAnalysis: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
+};
+
 export default connect(
   state => ({
-    questionAnalysis: getReportsQuestionAnalysis(state),
     loading: getReportsQuestionAnalysisLoader(state),
+    isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    questionAnalysis: getReportsQuestionAnalysis(state)
   }),
-  { getQuestionAnalysisRequestAction }
+  { getQuestionAnalysis: getQuestionAnalysisRequestAction }
 )(QuestionAnalysis);

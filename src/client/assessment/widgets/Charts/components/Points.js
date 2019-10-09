@@ -46,13 +46,15 @@ const Points = ({
     </g>
   );
 
+  const isRenderIcons = !!(correct && correct.length);
+
   return (
     <Fragment>
       {circles.map(
         (dot, index) =>
           ((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment>
-              {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
+              {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
               {pointStyle === "cross" ? (
                 <Cross
                   key={`cross-${index}`}

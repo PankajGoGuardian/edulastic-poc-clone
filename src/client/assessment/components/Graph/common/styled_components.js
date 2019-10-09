@@ -13,6 +13,7 @@ import {
   green
 } from "@edulastic/colors";
 import { TextField, Paper } from "@edulastic/common";
+import { StyledPaperWrapper } from "../../../styled/Widget";
 
 export const InstructorStimulus = styled.p`
   border-radius: 3px;
@@ -332,9 +333,9 @@ export const Select = styled.select`
   height: 100%;
   box-sizing: border-box;
   border-radius: 5px;
-  background-color: ${props => props.theme.selectBgColor};
+  background-color: ${props => props.theme.widgets.assessmentPlayers.selectBgColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${props => props.theme.selectTextColor};
+  color: ${props => props.theme.widgets.assessmentPlayers.selectTextColor};
   font-size: 14px;
   border: none;
   outline: none;
@@ -370,7 +371,7 @@ export const Col = styled.div`
   display: block;
 `;
 
-export const PaperWrapper = styled(Paper)`
+export const PaperWrapper = styled(StyledPaperWrapper)`
   padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
 
   @media (max-width: ${mobileWidthMax}) {
@@ -389,10 +390,10 @@ export const GraphToolbar = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: flex-start;
-  min-height: 88px;
-  padding: 0;
-  background-color: rgba(230, 230, 230, 0.23);
+  justify-content: space-between;
+  min-height: 90px;
+  padding: 0 0 10px 0;
+  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
 
   ul {
@@ -400,15 +401,12 @@ export const GraphToolbar = styled.div`
   }
 
   ul li {
-    margin: 2px 1px 0 0;
+    margin: 10px 10px 0 0;
   }
 `;
 
 export const ToolbarLeft = styled.ul`
   display: flex;
-  max-width: 100%;
-  width: 100%;
-  height: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -420,16 +418,17 @@ export const ToolbarLeft = styled.ul`
 export const ToolbarRight = styled.ul`
   display: flex;
   align-items: center;
-  min-width: 93px;
-  height: 100%;
   margin: 0;
-  margin-left: auto;
   padding: 0;
+
+  li:last-child {
+    margin: 10px 0 0 0;
+  }
 `;
 
 export const ToolbarItem = styled.div`
   width: 100%;
-  height: 84px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -462,31 +461,33 @@ export const ToolBtn = styled.li`
   width: 93px;
   height: 84px;
   background-color: transparent;
-  color: ${secondaryTextColor};
+  color: ${props => props.theme.widgets.chart.labelStrokeColor};
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
   transition: background-color 0.1s ease-in;
-  user-select: none;
+  xuser-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
 
   svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
   }
 
   &:hover {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
   }
 
   &:active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
+  &:hover,
+  &:active,
   &.active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.chart.labelBgHoverColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
 
     .dd-header-title svg {
@@ -496,9 +497,9 @@ export const ToolBtn = styled.li`
     }
 
     .tool-btn-icon svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+      color: ${props => props.theme.widgets.chart.labelStrokeColor};
+      stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+      fill: ${props => props.theme.widgets.chart.labelStrokeColor};
     }
   }
 `;
@@ -571,35 +572,8 @@ export const GroupToolBtn = styled.li`
     }
   }
 
+  &:active,
   &.active {
-    background-color: ${green};
-    color: ${white};
-
-    svg {
-      color: ${white};
-      stroke: ${white};
-      fill: ${white};
-    }
+    box-shadow: none;
   }
-`;
-
-export const DropdownArrowWrapper = styled.div`
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%) rotate(90deg);
-  display: flex;
-  left: 50%;
-  align-items: center;
-  justify-content: center;
-  max-width: 12px;
-  max-height: 12px;
-  z-index: 11;
-`;
-
-export const Icon = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-right: 19px;
-  font-size: 16px;
 `;

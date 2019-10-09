@@ -57,6 +57,7 @@ const quadrantsDefaultConfig = {
       ticks: {
         drawLabels: true,
         visible: true,
+        drawZero: true,
         insertTicks: false,
         minorHeight: 0,
         ticksDistance: 1,

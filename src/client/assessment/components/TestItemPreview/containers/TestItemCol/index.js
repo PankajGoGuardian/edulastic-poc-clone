@@ -10,6 +10,7 @@ import { Container, WidgetContainer } from "./styled/Container";
 import { MobileRightSide } from "./styled/MobileRightSide";
 import { MobileLeftSide } from "./styled/MobileLeftSide";
 import { IconArrow } from "./styled/IconArrow";
+import { questionType } from "@edulastic/constants";
 
 class TestItemCol extends Component {
   state = {
@@ -137,15 +138,17 @@ class TestItemCol extends Component {
           </MobileLeftSide>
         )}
         <WidgetContainer flowLayout={col.flowLayout}>
-          {col.widgets.map((widget, i) => (
-            <React.Fragment key={i}>
-              {col.tabs &&
-                !!col.tabs.length &&
-                value === widget.tabIndex &&
-                this.renderTabContent(widget, col.flowLayout)}
-              {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
-            </React.Fragment>
-          ))}
+          {col.widgets
+            .filter(widget => widget.type !== questionType.SECTION_LABEL)
+            .map((widget, i) => (
+              <React.Fragment key={i}>
+                {col.tabs &&
+                  !!col.tabs.length &&
+                  value === widget.tabIndex &&
+                  this.renderTabContent(widget, col.flowLayout)}
+                {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
+              </React.Fragment>
+            ))}
         </WidgetContainer>
       </Container>
     );

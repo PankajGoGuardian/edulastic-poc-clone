@@ -30,10 +30,10 @@ const computeColumns = t => [
     dataIndex: "percentage",
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage => (
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <PercentageWrapper>
         {Number.isNaN(percentage) ? "-" : `${Number(percentage.toFixed(1))}%`}
         {!Number.isNaN(percentage) && <Circle percentage={percentage} />}
-      </div>
+      </PercentageWrapper>
     ),
     width: "20%"
   },
@@ -113,4 +113,10 @@ const WrapperContent = styled(Wrapper)`
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 26px 22px;
   }
+`;
+
+export const PercentageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

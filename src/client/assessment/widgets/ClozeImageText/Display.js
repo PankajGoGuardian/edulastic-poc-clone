@@ -155,14 +155,13 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
-      isReviewTab,
       isExpressGrader
     } = this.props;
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers } = this.state;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemNumeration, responsecontainerindividuals = [] } = uiStyle;
+    const { height, wordwrap, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",
@@ -344,7 +343,6 @@ Display.propTypes = {
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   isExpressGrader: PropTypes.bool,
-  isReviewTab: PropTypes.bool,
   changePreviewTab: PropTypes.func,
   imageOptions: PropTypes.object
 };
@@ -375,8 +373,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   imageOptions: {},
-  isExpressGrader: false,
-  isReviewTab: false
+  isExpressGrader: false
 };
 
 export default withTheme(Display);

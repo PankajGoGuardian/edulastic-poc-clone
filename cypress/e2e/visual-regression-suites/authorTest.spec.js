@@ -4,7 +4,7 @@ import TestLibrary from "../framework/author/tests/testLibraryPage";
 import { screenSizes } from "../framework/constants/visual";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
-const testUrl = "author/tests/5d8a008333ac9af288c03bce";
+const testUrl = "author/tests/5d92ff4494fae46a63c41b85";
 const testLibraryPage = new TestLibrary();
 
 describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
@@ -18,7 +18,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
   context(`Author Test`, () => {
     const pageURL = "author/tests/select";
     SCREEN_SIZES.forEach(size => {
-      it(`when resolution is '${size}'`, () => {
+      it(`create-new when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${pageURL}`);
         cy.contains("Create from Scratch").should("be.visible");
@@ -70,12 +70,12 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
   });
 
   context(`Assign Test`, () => {
-    const pageURL = "author/assignments/5d89ff138ff65a5b679c7910";
+    const pageURL = "author/assignments/5d92ff4494fae46a63c41b85";
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${pageURL}`);
-        cy.contains("Test Visual Automation").should("be.visible");
+        cy.contains("Visual Automation").should("be.visible");
         cy.matchImageSnapshot();
         // for mobile
         cy.isPageScrollPresent().then(({ hasScroll }) => {

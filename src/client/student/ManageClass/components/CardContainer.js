@@ -7,6 +7,7 @@ import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { changeClassAction } from "../../Login/ducks";
+import ColWithZoom from "../../../common/components/ColWithZoom";
 
 const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
@@ -19,14 +20,17 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   };
 
   return (
-    <Col xs={24} md={12} lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6} xxl={6}>
+    <ColWithZoom xs={24} md={12} lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6} xxl={6}>
       <ManageClassCardContent>
-        <CardHeader type="flex" justify="space-between" align="middle">
-          <CardTitle title="Class Name">{name}</CardTitle>
-          {/* passing classItem as props to Assignments route */}
-          <InfoContent span={16} status={status}>
-            <span>{status === "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
-          </InfoContent>
+        <CardHeader>
+          <Col span={15}>
+            <CardTitle title="Class Name">{name}</CardTitle>
+          </Col>
+          <Col span={9}>
+            <InfoContent width={100} status={status}>
+              <span>{status === "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
+            </InfoContent>
+          </Col>
         </CardHeader>
         <CardBody>
           <Col span={12}>
@@ -86,7 +90,7 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
           {active === 0 && <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>}
         </CardBody>
       </ManageClassCardContent>
-    </Col>
+    </ColWithZoom>
   );
 };
 
@@ -111,10 +115,8 @@ const ManageClassCardContent = styled.div`
 `;
 
 const CardHeader = styled(Row)`
-  padding: 15px 16px 15px 24px;
+  padding: 15px 8px;
   border-bottom: 1px solid ${props => props.theme.classCard.cardHeaderBorderColor};
-  display: flex;
-  align-items: center;
 `;
 
 const CardTitle = styled.h3`
@@ -122,7 +124,6 @@ const CardTitle = styled.h3`
   color: ${props => props.theme.classCard.cardTitleColor};
   font-weight: bold;
   margin: 0px;
-  width: 50%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -130,7 +131,7 @@ const CardTitle = styled.h3`
 
 const VisitClassButton = styled(Button)`
   width: 100%;
-  height: 36px;
+  height: ${props => (props.theme.zoomLevel == "xs" ? "36px" : "auto")};
   line-height: 36px;
   border-radius: 4px;
   background-color: ${props => props.theme.classCard.cardVisitClassBtnBgColor};
@@ -149,6 +150,11 @@ const VisitClassButton = styled(Button)`
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
     border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   }
+
+  ${({ theme }) =>
+    theme.zoomedCss`
+      padding: 10px 0px;
+    `}
 `;
 
 const CardBody = styled(Row)`
@@ -162,11 +168,11 @@ const InfoLabel = styled(Col)`
   font-weight: 700;
   text-align: center;
   color: ${props => props.theme.classCard.cardUserInfoLabelColor};
-  line-height: 25px;
+  line-height: ${props => (props.theme.zoomLevel == "xs" ? "25px" : "none")};
 `;
 
 const InfoContent = styled(InfoLabel)`
-  width: 50%;
+  width: ${props => (props.width ? `${props.width}%` : "50%")};
   text-align: right;
   color: ${props =>
     props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardUserInfoContentColor};
@@ -175,9 +181,12 @@ const InfoContent = styled(InfoLabel)`
   white-space: nowrap;
 
   span {
+    width: 100%;
+    text-align: center;
     border-radius: 5px;
     background-color: ${props => (props.status === "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor)};
-    padding: 4.8px 25px;
+    padding: 4.8px 3px;
+    font-size: 10px;
     color: ${props =>
       props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};
@@ -189,7 +198,7 @@ const InfoContent = styled(InfoLabel)`
         display: block;
         width: 100%;
         text-align: center;
-        font-size: 12px;
+        font-size: ${props => props.theme.classCard.cardUserInfoContentSize};
         font-weight: 600;
         margin-top: -3.7px;
       `;

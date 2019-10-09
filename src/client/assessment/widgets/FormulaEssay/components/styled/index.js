@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
 export const MathEssayInputWrapper = styled.div`
-  max-width: 450px;
+  max-width: 100%;
 `;

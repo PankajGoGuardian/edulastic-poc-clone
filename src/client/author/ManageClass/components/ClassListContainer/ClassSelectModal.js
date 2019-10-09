@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Modal, Table, Select, Input, message } from "antd";
+import { Modal, Table, Select, Input, message, Button } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { themeColorLight } from "@edulastic/colors";
+import { themeColorLight, white } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ClassListModal = ({
@@ -65,13 +65,13 @@ const ClassListModal = ({
 
   const columns = [
     {
-      title: "Class Code",
+      title: <b>{"GOOGLE CLASS CODE"}</b>,
       key: "enrollmentCode",
       width: "5%",
       dataIndex: "enrollmentCode"
     },
     {
-      title: "Class Name",
+      title: <b>{"CLASS NAME"}</b>,
       key: "name",
       width: "20%",
       dataIndex: "name",
@@ -86,7 +86,7 @@ const ClassListModal = ({
       )
     },
     {
-      title: "Grade",
+      title: <b>{"GRADE"}</b>,
       key: "grades",
       width: "15%",
       dataIndex: "grades",
@@ -109,12 +109,13 @@ const ClassListModal = ({
       )
     },
     {
-      title: "Subject",
+      title: <b>{"SUBJECT"}</b>,
       key: "subject",
       width: "15%",
       dataIndex: "subject",
       render: (_, row, ind) => (
         <StyledSelect
+          style={{ minWidth: "80px" }}
           disabled={selectedGroups.includes(row.enrollmentCode)}
           value={row.subject || ""}
           placeholder="Please select any subject"
@@ -137,7 +138,7 @@ const ClassListModal = ({
       )
     },
     {
-      title: "Standards",
+      title: <b>{"STANDARDS"}</b>,
       key: "standards",
       width: "30%",
       dataIndex: "standards",
@@ -169,7 +170,7 @@ const ClassListModal = ({
       }
     },
     {
-      title: "Course",
+      title: <b>{"COURSE"}</b>,
       key: "course",
       width: "15%",
       dataIndex: "course",
@@ -218,23 +219,51 @@ const ClassListModal = ({
       visible={visible}
       onCancel={close}
       onOk={addGroups}
-      title="Import Classes and Students from Google"
-      width={"70vw"}
-      bodyStyle={{ height: "70vh" }}
-      okText="Sync"
+      style={{ maxHeight: "80vh" }}
+      title={<b>{"Import Classes and Students from Google"}</b>}
+      width={"800px"}
+      bodyStyle={{ height: "calc(70vh - 150px)" }}
+      okText="SYNC"
+      cancelText="CANCEL"
       okButtonProps={{
         style: { "background-color": themeColorLight, "border-color": themeColorLight },
         loading: syncClassLoading,
         shape: "round"
       }}
-      cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
+      footer={
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{ "border-color": themeColorLight, color: themeColorLight, padding: "5px 30px" }}
+            onClick={close}
+          >
+            CANCEL
+          </Button>
+          <Button
+            onClick={addGroups}
+            loading={syncClassLoading}
+            style={{
+              color: white,
+              padding: "5px 30px",
+              borderColor: themeColorLight,
+              backgroundColor: themeColorLight
+            }}
+          >
+            SYNC
+          </Button>
+        </div>
+      }
+      cancelButtonProps={{}}
     >
       <PerfectScrollbar>
         <>
-          <p>The following classes will be imported from you Google Classroom account.</p>
           <p>
-            Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
-            successful, Students accounts will be automatically created in Edulastic.{" "}
+            <b>The following classes will be imported from you Google Classroom account.</b>
+          </p>
+          <p>
+            <b>
+              Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import
+              is successful, Students accounts will be automatically created in Edulastic.{" "}
+            </b>
           </p>
           <Table
             style={{ marginTop: "20px" }}

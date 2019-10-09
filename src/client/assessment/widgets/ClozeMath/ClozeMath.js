@@ -2,12 +2,11 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus, AnswerContext } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 import { get, cloneDeep } from "lodash";
-import styled from "styled-components";
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
@@ -24,6 +23,8 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 // import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
+import { StyledPaperWrapper } from "../../styled/Widget";
+import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 
 const ClozeMath = ({
   view,
@@ -95,13 +96,17 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      <>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+      <StyledClozeMathWrapper>
         <QuestionTitleWrapper>
-          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+          {!flowLayout
+            ? showQuestionNumber && <QuestionNumberLabel fontSize="12">{qLabel}:</QuestionNumberLabel>
+            : null}
 
           {view === PREVIEW && (
-            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
+            <StyledPaperWrapper
+              isV1Multipart={isV1Multipart}
+              style={{ height: "100%", overflow: "visible", flex: "auto" }}
+            >
               <ClozeMathPreview
                 type={actualPreviewMode}
                 isExpressGrader={answerContextConfig.expressGrader}
@@ -115,10 +120,10 @@ const ClozeMath = ({
                 evaluation={evaluation}
                 {...restProps}
               />
-            </Paper>
+            </StyledPaperWrapper>
           )}
         </QuestionTitleWrapper>
-      </>
+      </StyledClozeMathWrapper>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
@@ -152,7 +157,6 @@ const ClozeMath = ({
             responseContainers={item.responseContainers}
             customKeys={item.customKeys}
             stimulusReview={item.stimulusReview}
-            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
             showResponseBoxes
@@ -164,14 +168,6 @@ const ClozeMath = ({
     </WithResources>
   );
 };
-
-const QuestionNumberLabel = styled.div`
-  font-size: 14px;
-  font-weight: 700;
-  margin-right: 6px;
-  line-height: 24px;
-  padding-top: 8px;
-`;
 
 ClozeMath.propTypes = {
   view: PropTypes.string.isRequired,

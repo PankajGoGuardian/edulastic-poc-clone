@@ -3,7 +3,14 @@ import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import { Button, Select } from "antd";
 
-import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
+import {
+  SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  ESSAY_PLAIN_TEXT,
+  TRUE_OR_FALSE
+} from "@edulastic/constants/const/questionType";
 
 import { ModalWrapper, ModalHeader, ModalFooter } from "../../common/Modal";
 import { FormGroup, FormLabel, FormInline, QuestionFormWrapper } from "../QuestionEditModal/common/QuestionForm";
@@ -59,15 +66,17 @@ export default class AddBulkModal extends React.Component {
             <FormInline>
               <FormGroup>
                 <FormLabel>Number</FormLabel>
-                <NumberInput min={0} value={number} onChange={this.handleChange("number")} />
+                <NumberInput min={1} value={number} onChange={this.handleChange("number")} />
               </FormGroup>
               <TypeOfQuestion>
                 <FormLabel>Type of Question</FormLabel>
                 <TypeOfQuestionSelect value={type} onChange={this.handleChange("type")}>
                   <Select.Option value={MULTIPLE_CHOICE}>Multiple Choice</Select.Option>
                   <Select.Option value={SHORT_TEXT}>Text</Select.Option>
-                  <Select.Option value={CLOZE_DROP_DOWN}>Select</Select.Option>
+                  <Select.Option value={CLOZE_DROP_DOWN}>Drop down</Select.Option>
                   <Select.Option value={MATH}>Math</Select.Option>
+                  <Select.Option value={ESSAY_PLAIN_TEXT}>Essay</Select.Option>
+                  <Select.Option value={TRUE_OR_FALSE}>True or False</Select.Option>
                 </TypeOfQuestionSelect>
               </TypeOfQuestion>
             </FormInline>

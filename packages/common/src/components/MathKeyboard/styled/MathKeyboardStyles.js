@@ -106,21 +106,36 @@ export const MathKeyboardStyles = styled.div`
   .num--type-3 {
     background-color: ${props => props.theme.mathKeyboard.numType3BgColor};
     color: ${props => props.theme.mathKeyboard.numType3Color};
+    border-color: ${props => props.theme.mathKeyboard.numType3Color};
   }
 
   .num--type-4 {
     background-color: ${props => props.theme.mathKeyboard.numType4BgColor};
     color: ${props => props.theme.mathKeyboard.numType4Color};
+    border-color: ${props => props.theme.mathKeyboard.numType4Color};
   }
 
   .num--type-5 {
     background-color: ${props => props.theme.mathKeyboard.numType5BgColor};
     color: ${props => props.theme.mathKeyboard.numType5Color};
+    border-color: ${props => props.theme.mathKeyboard.numType5Color};
   }
 
   .num--type-6 {
     background-color: ${props => props.theme.mathKeyboard.numType6BgColor};
     color: ${props => props.theme.mathKeyboard.numType6Color};
+    border-color: ${props => props.theme.mathKeyboard.numType6Color};
+  }
+
+  .num--type-1,
+  .num--type-2,
+  .num--type-3,
+  .num--type-4,
+  .num--type-5,
+  .num--type-6 {
+    &:hover {
+      color: ${props => props.theme.mathKeyboard.numHoverColor};
+    }
   }
 
   .italic {

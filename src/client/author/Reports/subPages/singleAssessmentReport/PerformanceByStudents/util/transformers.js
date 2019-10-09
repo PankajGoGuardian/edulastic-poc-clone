@@ -2,23 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import next from "immer";
-import {
-  max,
-  min,
-  filter,
-  map,
-  find,
-  orderBy,
-  ceil,
-  groupBy,
-  sumBy,
-  floor,
-  forEach,
-  includes,
-  maxBy,
-  get,
-  round
-} from "lodash";
+import { max, min, filter, map, find, orderBy, ceil, groupBy, sumBy, floor, forEach, maxBy, get, round } from "lodash";
 import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
@@ -107,12 +91,12 @@ export const normaliseTableData = (rawData, data) => {
   return map(data, studentMetric => {
     const relatedGroup =
       find(metaInfo, meta => {
-        return studentMetric.groupId == meta.groupId;
+        return studentMetric.groupId === meta.groupId;
       }) || {};
 
     const relatedSchool =
       find(schoolMetricInfo, school => {
-        return relatedGroup.schoolId == school.schoolId;
+        return relatedGroup.schoolId === school.schoolId;
       }) || {};
 
     const classAvg =
@@ -134,7 +118,7 @@ export const normaliseTableData = (rawData, data) => {
       proficiencyBand,
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
-      className: relatedGroup.className,
+      groupName: relatedGroup.groupName,
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
       districtAvg: round(districtAvgPerf || 0),
       studentScore,
@@ -235,7 +219,7 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
         <TableTooltipRow title={"Performance: "} value={record.assessmentScore} />
         <TableTooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
         <TableTooltipRow title={"Student Name: "} value={record.student} />
-        <TableTooltipRow title={"Class Name: "} value={record.className} />
+        <TableTooltipRow title={"Class Name: "} value={record.groupName} />
         <TableTooltipRow {...lastItem} />
       </div>
     );

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Row, Col, Button } from "antd";
+import { Row, Col } from "antd";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
@@ -414,9 +414,7 @@ const SingleAssessmentReportFilters = ({
               data={staticDropDownData.assessmentType}
             />
           </Col>
-        </Row>
-        <Row type="flex" className="single-assessment-report-bottom-filter">
-          <Col className="single-assessment-report-test-autocomplete-container">
+          <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
             <div>
               <PrintablePrefix>Assessment Name</PrintablePrefix>
             </div>

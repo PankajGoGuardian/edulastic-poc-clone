@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
-
+import { themeColor } from "@edulastic/colors";
 import { white, secondaryTextColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
@@ -24,13 +24,13 @@ import {
 } from "@edulastic/icons";
 
 const customizeIcon = icon => styled(icon)`
-  fill: ${white};
+  fill: ${themeColor};
   width: 20px;
   height: 20px;
   margin-left: -5px;
   margin-top: 5px;
   &:hover {
-    fill: ${white};
+    fill: ${themeColor};
   }
 `;
 
@@ -224,7 +224,7 @@ const BackButton = styled(FlexContainer)`
   cursor: pointer;
   user-select: none;
   text-transform: uppercase;
-  color: ${white};
+  color: ${themeColor};
 `;
 
 const Separator = styled.span`

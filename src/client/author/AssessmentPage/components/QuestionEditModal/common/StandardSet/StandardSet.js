@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { isEqual } from "lodash";
 
-import { themes } from "../../../../../../assessment/themes";
+import { themes } from "../../../../../../theme";
 import AlignmentRow from "../../../../../../assessment/containers/QuestionMetadata/AlignmentRow";
 import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../../../src/actions/dictionaries";
 import {
@@ -28,6 +28,7 @@ const defaultAlignment = {
 const StandardSet = ({
   t,
   alignment,
+  qId,
   onUpdate,
   curriculums,
   getCurriculums,
@@ -92,6 +93,7 @@ const StandardSet = ({
           t={t}
           alignment={questionAlignment}
           alignmentIndex={0}
+          qId={qId}
           curriculums={curriculums}
           curriculumStandardsELO={curriculumStandards.elo}
           curriculumStandardsTLO={curriculumStandards.tlo}

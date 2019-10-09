@@ -211,7 +211,7 @@ function* saveAssignment({ payload }) {
       ? yield call(assignmentApi.update, payload._id, { ...data, updateTestActivities })
       : yield call(assignmentApi.create, { assignments: data, assignedBy });
     const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
-    const successMessage = `Assign ${payload.playlistModuleId ? "module" : "test"} is successed!`;
+    const successMessage = `${payload.playlistModuleId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));

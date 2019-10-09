@@ -1,10 +1,9 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, set, get } from "lodash";
-import { push } from "connected-react-router";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
@@ -82,6 +81,11 @@ export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
 export const getSAFFilterStandardsProficiencyProfiles = createSelector(
   stateSelector,
   state => get(state, "SARFilterData.data.result.scaleInfo", [])
+);
+
+export const getOrgDataFromSARFilter = createSelector(
+  stateSelector,
+  state => get(state, "SARFilterData.data.result.orgData", [])
 );
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -207,7 +211,7 @@ function* getReportsSARFilterDataRequest({ payload }) {
 }
 
 export function* reportSARFilterDataSaga() {
-  yield all([yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
+  yield all([yield takeLatest(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

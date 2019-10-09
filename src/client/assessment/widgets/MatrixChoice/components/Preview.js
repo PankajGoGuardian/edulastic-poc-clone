@@ -53,8 +53,6 @@ const Preview = ({
 
   return (
     <div>
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />

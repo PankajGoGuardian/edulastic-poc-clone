@@ -113,6 +113,7 @@ export const StyledProfileRow = styled(Row)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
   h3 {
     font-weight: 500;
     font-size: 15px;

@@ -15,11 +15,23 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _api = require("@edulastic/api");
-
 var _constants = require("./constants");
 
 var _compareShapes = _interopRequireDefault(require("./compareShapes"));
+
+var _axios = _interopRequireDefault(require("axios"));
+
+var evaluateApi = function evaluateApi(data) {
+  return _axios["default"]
+    .post("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev", data, {
+      headers: {
+        Authorization: "Bearer Token: U4aJ6616mlTFKK"
+      }
+    })
+    .then(function(result) {
+      return result.data.result;
+    });
+};
 
 var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShapes, ignoreLabels) {
   var result = {
@@ -356,7 +368,7 @@ var checkEquations =
             switch ((_context.prev = _context.next)) {
               case 0:
                 _context.next = 2;
-                return _api.graphEvaluateApi.evaluate({
+                return evaluateApi({
                   input: buildGraphApiResponse(userResponse),
                   expected: buildGraphApiResponse(answer),
                   checks: "evaluateGraphEquations"

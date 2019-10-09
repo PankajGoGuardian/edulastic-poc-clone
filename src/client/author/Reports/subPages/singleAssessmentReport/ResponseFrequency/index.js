@@ -1,46 +1,49 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { compose } from "redux";
 import { connect } from "react-redux";
-import queryString from "query-string";
+import PropTypes from "prop-types";
 import { Row, Col } from "antd";
-import next from "immer";
+import { get, isEmpty } from "lodash";
 
 import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
 import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
-import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
+import { StyledContainer, StyledCard } from "./components/styled";
 import { StyledSlider, StyledH3 } from "../../../common/styled";
 import { Placeholder } from "../../../common/components/loader";
 import { EmptyData } from "../../../common/components/emptyData";
 import jsonData from "./static/json/data.json";
-import { get, isEmpty } from "lodash";
 
 import {
   getResponseFrequencyRequestAction,
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader
 } from "./ducks";
-import tempData from "./static/json/temp.json";
 import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
 
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
 
-const ResponseFrequency = props => {
+const ResponseFrequency = ({
+  loading,
+  isPrinting,
+  isCsvDownloading,
+  responseFrequency: res,
+  getResponseFrequency,
+  settings
+}) => {
   const [difficultItems, setDifficultItems] = useState(40);
   const [misunderstoodItems, setMisunderstoodItems] = useState(20);
 
   const [filter, setFilter] = useState({});
 
   useEffect(() => {
-    if (props.settings.selectedTest && props.settings.selectedTest.key) {
+    if (settings.selectedTest && settings.selectedTest.key) {
       let q = {};
-      q.testId = props.settings.selectedTest.key;
-      q.requestFilters = { ...props.settings.requestFilters };
-      props.getResponseFrequencyRequestAction(q);
+      q.testId = settings.selectedTest.key;
+      q.requestFilters = { ...settings.requestFilters };
+      getResponseFrequency(q);
     }
-  }, [props.settings]);
+  }, [settings]);
 
-  let res = get(props, "responseFrequency.data.result", false);
-
+  const assessmentName = get(settings, "selectedTest.title", "");
   const obj = useMemo(() => {
     let obj = {
       metaData: {},
@@ -56,7 +59,7 @@ const ResponseFrequency = props => {
       obj = {
         data: [...arr],
         filteredData: [...arr],
-        metaData: res.metaData
+        metaData: { testName: assessmentName }
       };
     }
     return obj;
@@ -86,7 +89,7 @@ const ResponseFrequency = props => {
     setFilter({});
   };
 
-  if (isEmpty(res) && !props.loading) {
+  if (isEmpty(res) && !loading) {
     return (
       <>
         <EmptyData />
@@ -96,7 +99,7 @@ const ResponseFrequency = props => {
 
   return (
     <div>
-      {props.loading ? (
+      {loading ? (
         <div>
           <Row type="flex">
             <Placeholder />
@@ -108,7 +111,7 @@ const ResponseFrequency = props => {
       ) : (
         <StyledContainer type="flex">
           <StyledCard>
-            <StyledH3>Question Type performance for Assessment: {obj.metaData.testName}</StyledH3>
+            <StyledH3>Question Type performance for Assessment: {assessmentName}</StyledH3>
             <StackedBarChartContainer
               data={obj.data}
               assessment={obj.metaData}
@@ -159,27 +162,37 @@ const ResponseFrequency = props => {
             assessment={obj.metaData}
             correctThreshold={difficultItems}
             incorrectFrequencyThreshold={misunderstoodItems}
-            isPrinting={props.isPrinting}
-            isCsvDownloading={props.isCsvDownloading}
+            isPrinting={isPrinting}
+            isCsvDownloading={isCsvDownloading}
           />
         </StyledContainer>
       )}
     </div>
   );
 };
+const reportPropType = PropTypes.shape({
+  metricInfo: PropTypes.array
+});
 
-const enhance = compose(
-  connect(
-    state => ({
-      responseFrequency: getReportsResponseFrequency(state),
-      loading: getReportsResponseFrequencyLoader(state),
-      isPrinting: getPrintingState(state),
-      isCsvDownloading: getCsvDownloadingState(state)
-    }),
-    {
-      getResponseFrequencyRequestAction: getResponseFrequencyRequestAction
-    }
-  )
+ResponseFrequency.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  isPrinting: PropTypes.bool.isRequired,
+  isCsvDownloading: PropTypes.bool.isRequired,
+  responseFrequency: reportPropType.isRequired,
+  getResponseFrequency: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
+};
+
+const enhance = connect(
+  state => ({
+    loading: getReportsResponseFrequencyLoader(state),
+    isPrinting: getPrintingState(state),
+    isCsvDownloading: getCsvDownloadingState(state),
+    responseFrequency: getReportsResponseFrequency(state)
+  }),
+  {
+    getResponseFrequency: getResponseFrequencyRequestAction
+  }
 );
 
 export default enhance(ResponseFrequency);

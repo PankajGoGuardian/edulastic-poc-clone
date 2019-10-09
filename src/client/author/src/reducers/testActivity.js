@@ -1,5 +1,5 @@
 import { createAction } from "redux-starter-kit";
-import { uniqBy } from "lodash";
+import { uniqBy, keyBy } from "lodash";
 import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
@@ -30,6 +30,7 @@ export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE = "[gradebook] realti
 export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redirect";
 
 export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT = "[gradebook] realtime close assignment";
+export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT = "[gradebook] realtime gradebook update assignment";
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
@@ -39,6 +40,7 @@ export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_
 
 export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_REDIRECT);
 export const realtimeGradebookCloseAction = createAction(REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT);
+export const realtimeUpdateAssignmentAction = createAction(REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT);
 
 const initialState = {
   entities: [],
@@ -79,18 +81,36 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;
-
       nextState = produce(state, _st => {
+        if (!state.allTestActivitiesForStudent.includes(entity.testActivityId)) {
+          _st.allTestActivitiesForStudent.push(entity.testActivityId);
+        }
+
         const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
         if (index != -1) {
           _st.entities[index].status = "inProgress";
           _st.entities[index].score = 0;
+          if (_st.entities[index].testActivityId) {
+            _st.currentTestActivityId = _st.entities[index].testActivityId;
+          }
           _st.entities[index].testActivityId = entity.testActivityId;
         } else {
           console.warn(`can't find any testactivity for studentId ${entity.studentId}`);
         }
       });
       return nextState;
+
+    case REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT:
+      return produce(state, _state => {
+        const { status, ...otherProps } = payload;
+        if (status) {
+          if (_state.data.status === "NOT OPEN" && status === "IN PROGRESS") {
+            _state.additionalData.canCloseClass = [_state.additionalData.classId];
+          }
+          _state.data.status = status;
+        }
+        Object.assign(_state.additionalData, otherProps);
+      });
 
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT:
       nextState = produce(state, _st => {
@@ -266,9 +286,17 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     }
     case UPDATE_SUBMITTED_STUDENTS: {
+      const updatedActivityByUserId = keyBy(payload, "userId");
       const updatedStudents = state.entities.map(item => {
-        if (payload.includes(item.studentId)) {
-          return { ...item, status: "submitted" };
+        const updatedActivity = updatedActivityByUserId[item.studentId];
+        if (updatedActivity) {
+          return {
+            ...item,
+            status: "submitted",
+            graded: updatedActivity.gradedAll,
+            score: updatedActivity.score,
+            testActivityId: updatedActivity._id
+          };
         }
         return item;
       });

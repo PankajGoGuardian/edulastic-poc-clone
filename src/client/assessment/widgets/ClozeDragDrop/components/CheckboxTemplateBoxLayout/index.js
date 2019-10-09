@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import striptags from "striptags";
 import { MathSpan } from "@edulastic/common";
+import { Tooltip } from "antd";
+import { response as dimensions } from "@edulastic/constants";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import { getStemNumeration } from "../../../../utils/helpers";
@@ -10,8 +11,6 @@ import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-import { response as dimensions } from "@edulastic/constants";
-import { Tooltip } from "antd";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
@@ -54,10 +53,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.maxWidth = "400px";
   }
 
-  let isBoxSizeSmall = parseInt(btnStyle.width, 10) < dimensions.minWidthShowAnswer;
+  const lessMinWidth = parseInt(btnStyle.width, 10) < dimensions.minWidthShowAnswer;
+  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
+
   const indexStyle = {};
-  if (isBoxSizeSmall) {
-    btnStyle.minWidth = parseInt(btnStyle.width, 10) + 15;
+  if (lessMinWidth) {
+    btnStyle.minWidth = "unset";
     indexStyle.width = "10px";
     indexStyle.minWidth = "unset";
   }
@@ -92,9 +93,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       </CheckboxContainer>
     );
   };
+
+  const handleHover = () => {
+    if (showAnswer && lessMinWidth) {
+      toggleIndexVisibility(!showIndex);
+    }
+  };
+
   return (
     <CheckBoxTemplateBox>
-      {showAnswer && hasGroupResponses && (
+      {hasGroupResponses && (
         <Droppable drop={() => ({ dropTargetIndex })}>
           <Draggable
             onDrop={onDropHandler}
@@ -108,6 +116,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
               style={btnStyle}
+              onMouseEnter={handleHover}
+              onMouseLeave={handleHover}
             >
               {showAnswer && (
                 <span style={indexStyle} className="index">
@@ -115,12 +125,18 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 </span>
               )}
               <Tooltip title={getLabel(dropTargetIndex)}>
-                <span style={{ padding: isBoxSizeSmall ? "8px 0px" : null }} className="text">
+                <span
+                  style={{
+                    padding: lessMinWidth ? "8px 0px" : null,
+                    maxWidth: showAnswer && lessMinWidth ? "50%" : null
+                  }}
+                  className="text"
+                >
                   {getLabel(dropTargetIndex)}
                 </span>
               </Tooltip>
 
-              <IconWrapper rightPosition={isBoxSizeSmall ? "0" : "8"}>
+              <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
                 {choiceAttempted && status === "right" && <RightIcon />}
                 {choiceAttempted && status === "wrong" && <WrongIcon />}
               </IconWrapper>
@@ -128,7 +144,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </Draggable>
         </Droppable>
       )}
-      {showAnswer && !hasGroupResponses && (
+      {!hasGroupResponses && (
         <Droppable drop={() => ({ dropTargetIndex })}>
           <Draggable
             onDrop={onDropHandler}
@@ -142,71 +158,30 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
               style={btnStyle}
+              onMouseEnter={handleHover}
+              onMouseLeave={handleHover}
             >
-              {showAnswer && (
+              {showAnswer && showIndex && (
                 <span style={indexStyle} className="index">
                   {indexStr}
                 </span>
               )}
               <Tooltip title={getLabel(dropTargetIndex)}>
-                <span className="text" style={{ padding: isBoxSizeSmall ? "8px 0px" : null }}>
+                <span
+                  className="text"
+                  style={{
+                    padding: lessMinWidth ? "8px 0px" : null
+                  }}
+                >
                   {getLabel(dropTargetIndex)}
                 </span>
               </Tooltip>
-              <IconWrapper rightPosition={isBoxSizeSmall ? "0" : "8"}>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
-            </div>
-          </Draggable>
-        </Droppable>
-      )}
-      {!showAnswer && hasGroupResponses && (
-        <Droppable drop={() => ({ dropTargetIndex })}>
-          <Draggable
-            onDrop={onDropHandler}
-            data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
-              userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-          >
-            <div
-              className={`
-              response-btn 
-              check-answer
-              ${choiceAttempted ? status : ""}`}
-              style={{ ...btnStyle, margin: "2px 4px" }}
-            >
-              {showAnswer && <span className="index">{indexStr}</span>}
-              <Tooltip title={getLabel(dropTargetIndex)}>
-                <span className="text">{getLabel(dropTargetIndex)}</span>
-              </Tooltip>
-
-              <IconWrapper>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
-            </div>
-          </Draggable>
-        </Droppable>
-      )}
-      {!showAnswer && !hasGroupResponses && (
-        <Droppable drop={() => ({ dropTargetIndex })}>
-          <Draggable onDrop={onDropHandler} data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}>
-            <div
-              className={`
-              response-btn 
-              check-answer
-              ${choiceAttempted ? status : ""}`}
-              style={{ ...btnStyle, margin: "2px 4px" }}
-            >
-              {showAnswer && <span className="index">{indexStr}</span>}
-              <Tooltip title={getLabel(dropTargetIndex)}>
-                <span className="text">{getLabel(dropTargetIndex)}</span>
-              </Tooltip>
-
-              <IconWrapper>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
+              {(!showAnswer || (showAnswer && showIndex)) && (
+                <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
+                  {choiceAttempted && status === "right" && <RightIcon />}
+                  {choiceAttempted && status === "wrong" && <WrongIcon />}
+                </IconWrapper>
+              )}
             </div>
           </Draggable>
         </Droppable>

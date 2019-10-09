@@ -18,6 +18,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
+import { StyledPaperWrapper } from "../../styled/Widget";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -271,15 +272,13 @@ const TokenHighlightPreview = ({
   };
 
   return (
-    <Paper
+    <StyledPaperWrapper
       data-cy="previewWrapper"
       style={{ wordBreak: "break-word" }}
       fontSize={fontSize}
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
-
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
@@ -337,7 +336,7 @@ const TokenHighlightPreview = ({
             </CorrectAnswersContainer>
           );
         })}
-    </Paper>
+    </StyledPaperWrapper>
   );
 };
 

@@ -11,7 +11,7 @@ export const GraphToolbar = styled.div`
   justify-content: flex-start;
   min-height: 65px;
   padding: 0;
-  background-color: #efefef;
+  background-color: ${props => props.theme.widgets.chart.bgColor};
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
 
   .toolbar-compact & {
@@ -56,7 +56,7 @@ export const SegmentsToolBtn = styled.li`
   width: 89px;
   height: 65px;
   background-color: transparent;
-  color: ${secondaryTextColor};
+  color: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
@@ -117,34 +117,34 @@ export const SegmentsToolBtn = styled.li`
   }
 
   svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
+    color: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
+    stroke: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
+    fill: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
   }
 
   &:hover {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonHoverBgColor};
   }
 
   &:active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
   &.active {
-    background-color: ${white};
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
 
     .dd-header-title svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+      color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
     }
 
     .tool-btn-icon svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+      color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
     }
   }
 `;
@@ -153,16 +153,29 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
+  zoom: ${props => props.theme.widgets.chart.chartZoom};
 `;
 
 export const JSXBox = styled.div`
-  background-color: ${white};
+  background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
 
   border: 1px solid #e8e8e8;
   border-radius: 0;
+  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
+
+  line,
+  path {
+    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  }
+
+  div {
+    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
+    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+  }
 `;
 
 export const DropdownMenu = styled.ul`

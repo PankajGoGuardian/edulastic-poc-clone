@@ -36,7 +36,7 @@ import DragDropValues from "./DragDropValues";
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
-const bgColor = "#ccc";
+const bgColor = "#69727e";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -272,6 +272,7 @@ class PlacementContainer extends PureComponent {
         xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
         xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
+        xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
         yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
         yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
@@ -279,7 +280,8 @@ class PlacementContainer extends PureComponent {
         yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
         yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
         yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis
+        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
+        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -371,7 +373,7 @@ class PlacementContainer extends PureComponent {
     return `${questionId}_${type}`;
   }
 
-  getHandlerByControlName = control => {
+  onSelectControl = control => {
     switch (control) {
       case "undo":
         return this.onUndo();
@@ -481,7 +483,7 @@ class PlacementContainer extends PureComponent {
     const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0;
 
     return (
-      <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+      <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
           resources={[
             "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
@@ -495,15 +497,7 @@ class PlacementContainer extends PureComponent {
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
-            <Tools
-              toolsAreVisible={false}
-              controls={controls}
-              bgShapes={false}
-              getIconByToolName={() => ""}
-              getHandlerByControlName={this.getHandlerByControlName}
-              onSelect={() => {}}
-              fontSize={layout.fontSize}
-            />
+            <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
           )}
           <JSXBoxWithDropValues className="jsxbox-with-drag-drop">
             {!disableResponse && (

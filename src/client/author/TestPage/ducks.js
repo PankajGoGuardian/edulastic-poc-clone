@@ -8,6 +8,7 @@ import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty } from "loda
 import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
 import moment from "moment";
 import produce from "immer";
+import { helpers } from "@edulastic/common";
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -20,7 +21,6 @@ import { loadQuestionsAction, getQuestionsArraySelector } from "../sharedDucks/q
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
-import { helpers } from "@edulastic/common";
 import { getUserRole, getUserOrgData } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
@@ -200,7 +200,7 @@ export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TY
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 
 export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
-//reducer
+// reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
   description: "",
@@ -502,7 +502,7 @@ export const getQuestions = (testItems = []) => {
 function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
-    let entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
+    const entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
     if (entity._id !== payload.id) {
       yield put(push(`/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`));
     }
@@ -554,7 +554,7 @@ function* createTestSaga({ payload }) {
       "passages",
       "isUsed"
     ]);
-    //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
+    // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
     dataToSend.testItems = payload.data.testItems.map(o => ({
       itemId: o._id,
       maxScore: helpers.getPoints(o),
@@ -629,10 +629,8 @@ function* updateTestSaga({ payload }) {
         yield call(message.success, "Test versioned");
         yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
       }
-    } else {
-      if (!payload.assignFlow) {
-        yield call(message.success, "Test saved as Draft");
-      }
+    } else if (!payload.assignFlow) {
+      yield call(message.success, "Test saved as Draft");
     }
   } catch (err) {
     const errorMessage = "Update test is failing";
@@ -712,7 +710,7 @@ function* shareTestSaga({ payload }) {
 
 function* publishTestSaga({ payload }) {
   try {
-    let { _id: id, test, assignFlow } = payload;
+    const { _id: id, test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     const testItems = test?.testItems;
@@ -821,14 +819,14 @@ function* setTestDataAndUpdateSaga(payload) {
     const questionSubjects = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.subjects || []);
-    //alignment object inside questions contains subject and domains
+    // alignment object inside questions contains subject and domains
     const getAlignmentsObject = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.alignment || []);
 
     const subjects = getAlignmentsObject.map(alignment => alignment.subject);
 
-    //domains inside alignment object holds standards with grades
+    // domains inside alignment object holds standards with grades
     const grades = getAlignmentsObject
       .flatMap(alignment => alignment.domains)
       .flatMap(domain => domain.standards)

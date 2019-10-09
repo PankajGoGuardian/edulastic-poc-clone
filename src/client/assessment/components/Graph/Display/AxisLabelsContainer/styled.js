@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
 
 export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
@@ -9,7 +8,7 @@ export const GraphWrapper = styled.div`
 `;
 
 export const JSXBox = styled.div`
-  background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+  background-color: ${props => props.theme.widgets.chart.bgColor};
   position: relative;
   overflow: hidden;
 
@@ -24,16 +23,14 @@ export const JSXBox = styled.div`
   }
 
   div {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
   }
 `;
 
 export const ContainerWithResponses = styled.div`
   .mark {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    border-color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
+    border-color: ${props => props.theme.widgets.chart.labelStrokeColor};
     &.mounted::after {
       border-color: ${props => props.theme.widgets.chart.labelStrokeColor} transparent transparent transparent;
     }

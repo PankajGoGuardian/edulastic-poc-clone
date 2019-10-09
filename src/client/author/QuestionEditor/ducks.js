@@ -15,7 +15,8 @@ import {
   setRedirectTestAction,
   hasStandards,
   PROCEED_PUBLISH_ACTION,
-  togglePublishWarningModalAction
+  togglePublishWarningModalAction,
+  getPassageSelector
 } from "../ItemDetail/ducks";
 import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
@@ -61,6 +62,7 @@ export const SET_QUESTION_ALIGNMENT_ADD_ROW = "[question] set question alignment
 export const SET_QUESTION_ALIGNMENT_REMOVE_ROW = "[question] set question alignment remove row";
 export const SET_QUESTION = "[question] set question";
 export const LOAD_QUESTION = "[quesiton] load question from testItem";
+export const ADD_AUTHORED_ITEMS_TO_TEST = "[question] add authored items to test";
 // actions
 
 // Variable
@@ -115,6 +117,11 @@ export const calculateFormulaAction = data => ({
 
 export const setDictAlignmentFromQuestion = payload => ({
   type: SET_ALIGNMENT_FROM_QUESTION,
+  payload
+});
+
+export const addAuthoredItemsAction = payload => ({
+  type: ADD_AUTHORED_ITEMS_TO_TEST,
   payload
 });
 
@@ -418,21 +425,25 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
-
     if (isTestFlow) {
-      // add item to test entity
-      const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...testItems, itemDetail._id];
-
-      yield put(setTestItemsAction(nextTestItems));
-
-      yield put(setCreatedItemToTestAction(item));
-      if (!tId || tId === "undefined") {
-        yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
-      } else {
-        yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
+      // user should get redirected to item detail page when multipart or passgae questions are being created from test flow or else save and continue.
+      if (itemDetail.multipartItem || !!item.passageId || item.isPassageWithQuestions) {
+        yield put(
+          push({
+            pathname: `/author/items/${item._id}/item-detail/test/${tId}`,
+            state: {
+              backText: "Back to item bank",
+              backUrl: "/author/items",
+              itemDetail: false,
+              isTestFlow
+            }
+          })
+        );
+        return;
       }
-      yield put(changeViewAction("edit"));
+
+      // add item to test entity
+      yield put(addAuthoredItemsAction({ testId: tId, isEditFlow }));
       return;
     }
     if (itemDetail) {
@@ -458,6 +469,47 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage }
     });
+  }
+}
+
+/**
+ *
+ * @param {*} payload should be an object with testId and isEditFlow flags
+ *
+ */
+function* addAuthoredItemsToTestSaga({ payload }) {
+  try {
+    const { testId, isEditFlow } = payload;
+
+    //current authored item
+    const item = yield select(getItemDetailSelector);
+    //existing test items from test
+    const testItems = yield select(getSelectedItemSelector);
+
+    //updated testItems should have the current authored item
+    // if it is passage item there could be multiple testitems merge all into nextTestItems and add to test.
+    let nextTestItems = testItems;
+    if (!!item.passageId) {
+      const passage = yield select(getPassageSelector);
+      nextTestItems = [...nextTestItems, ...passage.testItems];
+    } else {
+      nextTestItems = [...nextTestItems, item._id];
+    }
+    yield put(setTestItemsAction(nextTestItems));
+    yield put(setCreatedItemToTestAction(item));
+
+    // if the item is getting created from test before saving then save and continue else change the route to test
+    if (!testId || testId === "undefined") {
+      yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
+    } else {
+      yield put(push(!isEditFlow ? `/author/tests/${testId}` : `/author/tests/${testId}/createItem/${item._id}`));
+    }
+    if (!isEditFlow) return;
+    yield put(changeViewAction("edit"));
+  } catch (e) {
+    console.log(e, "error");
+    const errorMessage = "Loading Question is failed";
+    yield call(message.error, errorMessage);
   }
 }
 // actions
@@ -578,6 +630,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
     yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
-    yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga)
+    yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
+    yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga)
   ]);
 }

@@ -725,17 +725,21 @@ function* receiveItemSaga({ payload }) {
 export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true));
-    const { id, redirectId } = payload;
+    const { id, redirectId, isTestFlow, testId } = payload;
     const res = yield call(testItemsApi.deleteById, id);
     yield call(message.success, "item deleted successfully");
     yield put(setItemDeletingAction(false));
+    if (isTestFlow) {
+      yield put(push(`/author/items/${redirectId}/item-detail/test/${testId}`));
+      return;
+    }
     if (redirectId) {
       yield put(push(`/author/items/${redirectId}/item-detail`));
     } else {
       yield put(push(`/author/items`));
     }
   } catch (e) {
-    console.error(err);
+    console.error(e);
     yield call(message.error, "deleting item failed");
   }
 }

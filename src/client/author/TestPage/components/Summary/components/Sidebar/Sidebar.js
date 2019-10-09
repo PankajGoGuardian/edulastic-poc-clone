@@ -130,6 +130,8 @@ const Sidebar = ({
           placeholder="Please select"
           defaultValue={grades}
           onChange={onChangeGrade}
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {selectsData.allGrades.map(({ value, text }) => (
             <Select.Option key={value} value={value}>
@@ -147,6 +149,8 @@ const Sidebar = ({
           placeholder="Please select"
           defaultValue={subjects}
           onChange={onChangeSubjects}
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {subjectsList.map(({ value, text }) => (
             <Select.Option key={value} value={value}>

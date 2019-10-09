@@ -162,7 +162,11 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
                   <Route exact path={`${match.url}/items`} component={ItemList} />
                   <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
                   <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
-                  <Route exact path={`${match.url}/items/:id/item-detail/test/:testId`} component={ItemDetail} />
+                  <Route
+                    exact
+                    path={`${match.url}/items/:id/item-detail/test/:testId`}
+                    render={props => <ItemDetail isTestFlow {...props} />}
+                  />
                   <Route
                     exact
                     path={`${match.url}/playlists`}

@@ -76,7 +76,6 @@ export const Widget = styled.div`
       padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
-      font-weight: 600;
       max-height: 40px;
     }
 
@@ -105,7 +104,6 @@ export const Widget = styled.div`
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
-    font-weight: 600;
     min-height: 42px;
   }
 

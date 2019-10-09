@@ -5,6 +5,7 @@ import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { selectColor } from "@edulastic/colors";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 
 import { Points } from "./styled/Points";
@@ -12,7 +13,6 @@ import { CorrectAnswerHeader } from "./styled/CorrectAnswerHeader";
 import Display from "./Display";
 import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import { selectColor } from "@edulastic/colors";
 
 class CorrectAnswer extends Component {
   static propTypes = {

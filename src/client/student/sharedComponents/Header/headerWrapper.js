@@ -48,7 +48,7 @@ const HeaderContainer = styled.div`
   background: ${props => props.theme.header.headerBgColor || themeColor};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    padding-top: 96px;
+    padding-top: 100px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -58,7 +58,7 @@ const HeaderContainer = styled.div`
 
   ${({ theme }) =>
     theme.respondTo.xl`
-      padding-top: 100px;
+      padding-top: 120px;
     `}
 `;
 
@@ -91,7 +91,7 @@ const AssignmentsHeader = styled(Layout.Header)`
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding: 0px 44px;
-    height: 96px;
+    height: 100px;
     padding: 0px 30px 0 40px;
   }
 
@@ -113,7 +113,7 @@ const AssignmentsHeader = styled(Layout.Header)`
 
   ${({ theme }) =>
     theme.respondTo.xl`
-      height: 100px;
+      height: 120px;
     `}
 `;
 

@@ -100,6 +100,7 @@ const ClassLabel = styled.span`
 
 const AssignmentSelectClass = styled.div`
   display: flex;
+  align-items: center;
 
   .ant-select {
     height: 40px;

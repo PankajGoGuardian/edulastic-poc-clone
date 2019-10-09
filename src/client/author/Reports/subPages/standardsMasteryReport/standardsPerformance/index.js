@@ -138,9 +138,9 @@ const StandardsPerformance = ({
     <DropDownContainer>
       <StyledCard>
         <Row>
-          <Col md={10} lg={10} offset={7}>
+          <Col>
             <StyledRow>
-              <StyledInnerRow type="flex" justify="start" className="students-stats">
+              <StyledInnerRow type="flex" justify="center" className="students-stats">
                 <Col>
                   <p className="students-title">Overall Mastery Score</p>
                   <p className="students-value">{overallMetricMasteryScore}</p>

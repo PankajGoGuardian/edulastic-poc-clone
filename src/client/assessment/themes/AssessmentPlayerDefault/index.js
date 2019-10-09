@@ -504,7 +504,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <FlexContainer />
               </HeaderMainMenu>
               <HeaderRightMenu skin />
-              <DragScrollContainer scrollWrraper={previewPlayer ? this.scrollElementRef.current : null} />
+              <DragScrollContainer scrollWrraper={this.scrollElementRef.current} />
             </Header>
           </Affix>
           <Main skin>

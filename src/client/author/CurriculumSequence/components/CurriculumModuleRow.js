@@ -249,7 +249,7 @@ class ModuleRow extends Component {
                     return (
                       <Assignment
                         data-cy="moduleAssignment"
-                        key={`${index}-${moduleData.id}`}
+                        key={moduleData.contentId}
                         padding="14px 30px 14px 50px"
                         borderRadius="unset"
                         boxShadow="unset"

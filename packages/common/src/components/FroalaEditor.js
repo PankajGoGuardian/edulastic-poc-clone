@@ -11,7 +11,7 @@ import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import { white, dashBorderColor } from "@edulastic/colors";
-import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
+import FroalaEditor from "froala-editor";
 import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/css/plugins.pkgd.min.css";
 import "froala-editor/css/froala_editor.pkgd.min.css";

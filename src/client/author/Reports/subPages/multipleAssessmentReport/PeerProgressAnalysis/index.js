@@ -84,6 +84,7 @@ const PeerProgressAnalysis = ({
   const studentColumn = {
     key: "studentCount",
     title: "Student#",
+    className: "studentCount",
     dataIndex: "studentCount"
   };
 

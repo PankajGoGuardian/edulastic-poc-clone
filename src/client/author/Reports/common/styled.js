@@ -281,6 +281,9 @@ export const StyledTable = styled(Table)`
               }
             }
           }
+          .studentCount {
+            text-align: right;
+          }
         }
       }
     }

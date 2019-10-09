@@ -24,17 +24,17 @@ import { percentage, downloadCSV } from "../../../../../common/util";
 export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
 const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
-  const domain = record.domainData[domainId] || {};
+  const domain = record.domainData[domainId];
 
   switch (analyseByKey) {
     case "masteryScore":
-      return getMasteryScore(domain);
+      return domain ? getMasteryScore(domain) : "N/A";
     case "score":
-      return `${getScore(domain)}%`;
+      return domain ? `${getScore(domain)}%` : "N/A";
     case "rawScore":
-      return `${domain.totalScore} / ${domain.maxScore}`;
+      return domain ? `${domain.totalScore} / ${domain.maxScore}` : 0;
     case "masteryLevel":
-      return getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel;
+      return domain ? getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel : "N/A";
     default:
       return "";
   }
@@ -91,7 +91,6 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
     domains,
     domain => includes(selectedDomains, domain.domainId) || !selectedDomains.length
   );
-
   let domainCols = filteredDomains.map(domain => ({
     title: (
       <>

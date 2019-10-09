@@ -73,7 +73,7 @@ export default class AddBulkModal extends React.Component {
                 <TypeOfQuestionSelect value={type} onChange={this.handleChange("type")}>
                   <Select.Option value={MULTIPLE_CHOICE}>Multiple Choice</Select.Option>
                   <Select.Option value={SHORT_TEXT}>Text</Select.Option>
-                  <Select.Option value={CLOZE_DROP_DOWN}>Select</Select.Option>
+                  <Select.Option value={CLOZE_DROP_DOWN}>Drop down</Select.Option>
                   <Select.Option value={MATH}>Math</Select.Option>
                   <Select.Option value={ESSAY_PLAIN_TEXT}>Essay</Select.Option>
                   <Select.Option value={TRUE_OR_FALSE}>True or False</Select.Option>

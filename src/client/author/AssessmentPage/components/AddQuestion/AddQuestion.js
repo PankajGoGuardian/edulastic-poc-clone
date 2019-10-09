@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row } from "antd";
+import { Row, Tooltip } from "antd";
 
 import {
   SHORT_TEXT,
@@ -46,26 +46,38 @@ class AddQuestion extends React.Component {
         <ContentWrapper>
           <QuestionTypes flexDirection="column">
             <Row style={{ display: "flex", width: "100%", marginBottom: "10px", justifyContent: "space-between" }}>
-              <AddQuestionIcon title={"Multiple-Choice"} onClick={onAddQuestion(MULTIPLE_CHOICE)}>
-                <IconNewList />
-              </AddQuestionIcon>
-              <AddQuestionIcon title={"Short-Text"} onClick={onAddQuestion(SHORT_TEXT)}>
-                <IconTextEntry />
-              </AddQuestionIcon>
-              <AddQuestionIcon title={"DropDown"} onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
-                <IconDropDown />
-              </AddQuestionIcon>
+              <Tooltip placement="top" title="Multiple Choice">
+                <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+                  <IconNewList />
+                </AddQuestionIcon>
+              </Tooltip>
+              <Tooltip placement="top" title="Short Text">
+                <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
+                  <IconTextEntry />
+                </AddQuestionIcon>
+              </Tooltip>
+              <Tooltip placement="top" title="Drop down">
+                <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+                  <IconDropDown />
+                </AddQuestionIcon>
+              </Tooltip>
             </Row>
             <Row style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-              <AddQuestionIcon title={"Math"} onClick={onAddQuestion(MATH)}>
-                <IconMath />
-              </AddQuestionIcon>
-              <AddQuestionIcon title={"True/False"} onClick={onAddQuestion(TRUE_OR_FALSE)}>
-                <IconTrueFalse />
-              </AddQuestionIcon>
-              <AddQuestionIcon title={"Essay"} onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
-                <IconPencilHollow />
-              </AddQuestionIcon>
+              <Tooltip placement="bottom" title="Math">
+                <AddQuestionIcon onClick={onAddQuestion(MATH)}>
+                  <IconMath />
+                </AddQuestionIcon>
+              </Tooltip>
+              <Tooltip placement="bottom" title="True/False">
+                <AddQuestionIcon onClick={onAddQuestion(TRUE_OR_FALSE)}>
+                  <IconTrueFalse />
+                </AddQuestionIcon>
+              </Tooltip>
+              <Tooltip placement="bottom" title="Essay">
+                <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+                  <IconPencilHollow />
+                </AddQuestionIcon>
+              </Tooltip>
             </Row>
           </QuestionTypes>
           <QuestionTypes>

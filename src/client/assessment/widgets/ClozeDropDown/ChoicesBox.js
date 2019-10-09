@@ -19,7 +19,7 @@ const SelectWrapper = styled.span`
   }
 `;
 
-const ChoicesBox = ({ resprops, id }) => {
+const ChoicesBox = ({ style = {}, resprops, id, className }) => {
   const selectWrapperRef = useRef(null);
   const {
     userAnswers,
@@ -47,7 +47,8 @@ const ChoicesBox = ({ resprops, id }) => {
   const styles = {
     ...btnStyle,
     width: widthpx || btnStyle.width,
-    height: heightpx || btnStyle.height
+    height: heightpx || btnStyle.height,
+    ...style
   };
 
   if (isReviewTab) {
@@ -61,7 +62,7 @@ const ChoicesBox = ({ resprops, id }) => {
   };
 
   return (
-    <SelectWrapper ref={selectWrapperRef}>
+    <SelectWrapper ref={selectWrapperRef} className={className}>
       <Select
         value={userAnswer ? userAnswer.value : ""}
         style={{

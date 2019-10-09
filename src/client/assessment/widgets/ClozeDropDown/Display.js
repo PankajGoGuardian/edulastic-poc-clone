@@ -13,8 +13,7 @@ import { getFontSize } from "../../utils/helpers";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-
-import ChoicesBox from "./ChoicesBox";
+import ChoicesBoxContainer from "./ChoicesBoxContainer";
 
 class ClozeDropDownDisplay extends Component {
   state = {
@@ -193,7 +192,7 @@ class ClozeDropDownDisplay extends Component {
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
-            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBoxContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}

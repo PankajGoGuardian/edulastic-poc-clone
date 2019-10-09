@@ -49,7 +49,7 @@ const MathModal = ({
       onCancel={() => onClose()}
       width={width || "785px"}
       wrapProps={{
-        style: { overflow: "auto" }
+        style: { overflow: "auto", display: show ? "block" : "none" }
       }}
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}

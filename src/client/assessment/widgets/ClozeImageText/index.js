@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import produce from "immer";
 
 import { Checkbox, Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
@@ -165,7 +165,7 @@ class ClozeImageText extends Component {
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
 
     const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
-
+    const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
@@ -236,16 +236,12 @@ class ClozeImageText extends Component {
                         label={t("component.cloze.dropDown.allowsinglelettermistake")}
                         checked={!!allowSingleLetterMistake}
                       />
-                      <MaxRespCountWrapper>
-                        <MaxRespCountInput
-                          data-cy="drag-drop-image-max-res"
-                          min={1}
-                          max={10}
-                          defaultValue={item.maxRespCount}
-                          onChange={val => this.handleOptionsChange("maxRespCount", val)}
-                        />
-                        <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
-                      </MaxRespCountWrapper>
+                      <Checkbox
+                        className="additional-options"
+                        onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                        label="Mix-n-Match alternative answers"
+                        checked={!!mixAndMatch}
+                      />
                     </AdditionalContainer>
                   </Question>
                 </div>

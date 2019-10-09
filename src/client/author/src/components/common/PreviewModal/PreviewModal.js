@@ -163,11 +163,11 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons,
       passage,
+      questions,
       page
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
-    const questions = keyBy(get(item, "data.questions", []), "id");
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };

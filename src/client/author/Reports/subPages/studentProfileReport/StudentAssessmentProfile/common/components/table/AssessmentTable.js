@@ -33,6 +33,7 @@ const tableColumns = [
     title: "Day of Assessment Start",
     dataIndex: "assignmentDateFormatted",
     key: "assignmentDateFormatted",
+    align: "right",
     className: "assessmentDate",
     sorter: (a, b) => {
       return a.assignmentDate - b.assignmentDate;
@@ -41,27 +42,32 @@ const tableColumns = [
   {
     title: "Total Questions",
     dataIndex: "totalQuestions",
+    align: "right",
     key: "totalQuestions"
   },
   {
     title: "Score",
     dataIndex: "rawScore",
     className: "rawscore",
+    align: "right",
     key: "rawScore"
   },
   {
     title: "District (Avg. Score%)",
     dataIndex: "districtAvg",
+    align: "right",
     key: "districtAvg"
   },
   {
     title: "School (Avg Score%)",
     dataIndex: "schoolAvg",
+    align: "right",
     key: "schoolAvg"
   },
   {
     title: "Class (Avg Score%)",
     dataIndex: "groupAvg",
+    align: "right",
     key: "groupAvg"
   }
 ];
@@ -72,6 +78,7 @@ const getColumns = (studentName = "") => {
     {
       title: "Student (Score%)",
       dataIndex: "score",
+      align: "right",
       key: "score",
       sorter: (a, b) => {
         return a.score - b.score;

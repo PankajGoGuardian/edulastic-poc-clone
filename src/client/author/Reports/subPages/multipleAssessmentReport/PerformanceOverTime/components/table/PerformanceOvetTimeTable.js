@@ -78,6 +78,9 @@ const getColumns = () => {
       if (field.dataIndex === "score") {
         color = getHSLFromRange1(value);
         value = `${value}%`;
+      } else {
+        // to display maxScore and minScore upto 2 decimal places
+        value = value.toFixed(2);
       }
 
       const toolTipText = () => (

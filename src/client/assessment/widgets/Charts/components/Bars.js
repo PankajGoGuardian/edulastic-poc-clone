@@ -56,11 +56,13 @@ const Bars = ({
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
+  const isRenderIcons = !!(correct && correct.length);
+
   return (
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
-          {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}

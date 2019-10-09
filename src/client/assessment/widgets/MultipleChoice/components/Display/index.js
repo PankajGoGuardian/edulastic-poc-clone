@@ -89,6 +89,10 @@ Display.defaultProps = {
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   overflow: hidden;
+
+  img {
+    padding: 0px;
+  }
 `;
 
 export default Display;

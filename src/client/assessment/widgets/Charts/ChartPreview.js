@@ -6,7 +6,6 @@ import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
 import {
-  Paper,
   Stimulus,
   InstructorStimulus,
   CorrectAnswersContainer,
@@ -118,7 +117,7 @@ const ChartPreview = ({
 
     if (tool === 3 && index >= 0) {
       const newAnswer = cloneDeep(ans);
-      newAnswer[index].y = uiStyle.yAxisMin;
+      newAnswer[index].y = data[index].y || uiStyle.yAxisMin;
       setTool(0);
       saveAnswer(newAnswer);
       setElementsStash(newAnswer, getStashId());

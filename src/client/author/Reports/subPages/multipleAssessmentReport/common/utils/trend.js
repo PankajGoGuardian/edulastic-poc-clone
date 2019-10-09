@@ -101,7 +101,7 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
       tests[key] = {
         records: value,
         score: getOverallScore(sanitizedRecords),
-        rawScore: `${round(sumBy(sanitizedRecords, "totalScore"), 2)} / ${sumBy(sanitizedRecords, "maxScore")}`,
+        rawScore: `${(sumBy(sanitizedRecords, "totalScore") || 0).toFixed(2)} / ${sumBy(sanitizedRecords, "maxScore")}`,
         studentCount: parseInt(maxStudents[studentCountKey]) || 0
       };
     });

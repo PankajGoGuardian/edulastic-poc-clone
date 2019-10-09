@@ -4,7 +4,11 @@ import { Rnd } from "react-rnd";
 import { Container, Title, MarkContainer } from "./styled";
 
 class ResponseBox extends Component {
-  handleDragDropValuePosition(d, value, width, height) {
+  state = {
+    draggingMark: null
+  };
+
+  handleDragDropValuePosition = (d, value, width, height) => {
     const { onAddMark, position, markWidth, markHeight, minWidth, minHeight } = this.props;
     let x = d.x + markWidth / 2;
     let y = d.y + markHeight / 2;
@@ -20,7 +24,12 @@ class ResponseBox extends Component {
     }
 
     onAddMark(value, x, y);
-  }
+    this.setState({ draggingMark: null });
+  };
+
+  handleDragStart = i => () => {
+    this.setState({ draggingMark: i });
+  };
 
   render() {
     const {
@@ -36,6 +45,8 @@ class ResponseBox extends Component {
       separationDistanceY,
       position
     } = this.props;
+
+    const { draggingMark } = this.state;
 
     const width = position === "top" || position === "bottom" ? minWidth : titleWidth;
 
@@ -60,14 +71,18 @@ class ResponseBox extends Component {
               y: titleHeight + Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
             }}
             size={{ width: markWidth, height: markHeight }}
+            onDragStart={this.handleDragStart(i)}
             onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
-            style={{ zIndex: 10, overflow: "hidden" }}
+            style={{ zIndex: 10 }}
             disableDragging={false}
             enableResizing={false}
             bounds=".jsxbox-with-response-box"
-            className="mark"
+            className={`mark${draggingMark === i ? " dragging" : ""}`}
           >
-            <MarkContainer fontSize={12} dangerouslySetInnerHTML={{ __html: value.text }} />
+            <MarkContainer
+              fontSize={12}
+              dangerouslySetInnerHTML={{ __html: `<div class='mark-content'>${value.text}</div>` }}
+            />
           </Rnd>
         ))}
       </Container>

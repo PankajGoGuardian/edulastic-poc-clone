@@ -142,7 +142,7 @@ const Wrapper = React.memo(styled(Col)`
   display: flex;
   flex-direction: row;
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       flex-direction: column;
       align-items: center;
     `}
@@ -192,7 +192,7 @@ const Thumbnail = React.memo(styled.img`
   }
 
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       width: calc(100% - 14px);
       height: 90.5px;
       display: block;
@@ -230,7 +230,7 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       display: flex;
       align-items: center;
       flex-direction: column;

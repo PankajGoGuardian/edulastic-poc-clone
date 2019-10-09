@@ -20,13 +20,7 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   };
 
   return (
-    <ColWithZoom
-      xs={24}
-      md={12}
-      lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6}
-      xxl={6}
-      layout={{ xs: 24, sm: 12, md: 12, lg: 24, xl: 24 }}
-    >
+    <ColWithZoom xs={24} md={12} lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6} xxl={6}>
       <ManageClassCardContent>
         <CardHeader>
           <Col span={15}>

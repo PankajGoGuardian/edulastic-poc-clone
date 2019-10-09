@@ -318,7 +318,7 @@ const CardWrapper = styled(Row)`
   }
 
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       flex-direction: column;
       padding: 24px 0;
       border: 1px solid
@@ -342,7 +342,7 @@ const ButtonAndDetail = styled(Col)`
   }
 
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       margin-left: auto;
       flex-direction: column;
       width: 100%;
@@ -359,7 +359,7 @@ const AttemptDetails = styled(Col)`
     flex: 1;
   }
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       width: 100%;
       justify-content: space-around;
     `}
@@ -385,6 +385,7 @@ const AnswerAndScore = styled.div`
   ${({ theme }) =>
     theme.zoomedCss`
       width: auto;
+      flex-basis: 33%;
     `}
 `;
 
@@ -400,7 +401,7 @@ const DetailContainer = styled.div`
   }
 
   ${({ theme }) =>
-    theme.respondTo.xl`
+    theme.zoomedCss`
       flex-direction: column;
     `}
 `;
@@ -416,4 +417,5 @@ const Title = styled.div`
   font-size: ${props => props.theme.assignment.cardResponseBoxLabelsFontSize};
   font-weight: 600;
   color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
+  text-align: center;
 `;

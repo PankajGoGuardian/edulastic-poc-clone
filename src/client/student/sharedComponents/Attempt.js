@@ -79,6 +79,7 @@ const AnswerAndScore = styled.div`
   ${({ theme }) =>
     theme.zoomedCss`
       width: auto;
+      max-width: fit-content;
     `}
 `;
 

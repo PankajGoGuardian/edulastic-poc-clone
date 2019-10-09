@@ -84,7 +84,7 @@ const getColumns = (studentName = "") => {
         return a.score - b.score;
       },
       render: (score, record) => {
-        if (!score) {
+        if (isNaN(score)) {
           return getCol(score, "#cccccc");
         }
 

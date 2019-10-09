@@ -115,7 +115,15 @@ function* saveUserResponse({ payload }) {
       shuffledOptions: shuffles,
       bookmarked
     };
-    if (_userWork) activity.userWork = _userWork;
+
+    if (_userWork) {
+      const { resourceId = [] } = _userWork;
+      const filteredResourceId = resourceId.filter(resource => {
+        const { style, color } = resource;
+        return !!style.trim() || color;
+      });
+      activity.userWork = { ..._userWork, resourceId: filteredResourceId };
+    }
 
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {

@@ -11,7 +11,8 @@ import {
   authorAssignment,
   themeColor,
   title,
-  testTypeColor
+  testTypeColor,
+  smallDesktopWidth
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -316,6 +317,11 @@ export const GreyFont = styled.div`
   width: 100%;
   &.class-column {
     white-space: initial;
+    text-align: right;
+    padding-right: 50px;
+    @media (max-width: ${smallDesktopWidth}) {
+      padding-right: 0px;
+    }
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

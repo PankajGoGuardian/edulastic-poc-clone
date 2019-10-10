@@ -8,7 +8,7 @@ import { Dropdown, Checkbox, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, withWindowSizes } from "@edulastic/common";
 
 import arrowUpIcon from "../../assets/arrow-up.svg";
 import presentationIcon from "../../assets/presentation.svg";
@@ -86,19 +86,13 @@ class TableList extends Component {
       {
         title: <Checkbox />,
         dataIndex: "checkbox",
-        width: "5%",
+        width: "10%",
         className: "select-row",
         render: () => <GreyFont style={{ display: "block" }} />
       },
       {
-        title: "",
-        dataIndex: "",
-        width: "20%",
-        className: ""
-      },
-      {
         dataIndex: "class",
-        width: "10%",
+        width: "25%",
         render: text => (
           <GreyFont className="class-column">
             <Tooltip placement="bottom" title={text}>
@@ -203,7 +197,8 @@ class TableList extends Component {
       toggleEditModal,
       folderData,
       showPreviewModal,
-      showFilter
+      showFilter,
+      windowWidth
     } = this.props;
 
     const { details, expandedRows } = this.state;
@@ -358,6 +353,7 @@ class TableList extends Component {
           expandRowByClick={details}
           onExpandedRowsChange={this.handleExpandedRowsChange}
           defaultExpandedRowKeys={expandedRows}
+          scroll={{ x: windowWidth <= 1024 ? 1024 : false }}
         />
       </Container>
     );
@@ -388,6 +384,7 @@ TableList.defaultProps = {
 };
 
 const enhance = compose(
+  withWindowSizes,
   withRouter,
   withNamespaces("assignmentCard"),
   connect(

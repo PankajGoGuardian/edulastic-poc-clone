@@ -48,12 +48,15 @@ const HeaderBar = ({
 
   return (
     <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
-      {owner && isEditable && (
+      {owner && isEditable ? (
         <Item>
           <SelectAllCheckbox data-cy="selectAllCh" onChange={onSelectAll}>
             Select All
           </SelectAllCheckbox>
         </Item>
+      ) : (
+        //this empty span can fix some alignment issues when there is no select all button exists. dont remove it.
+        <span />
       )}
       <MobileButtomContainer>
         <ActionButton>

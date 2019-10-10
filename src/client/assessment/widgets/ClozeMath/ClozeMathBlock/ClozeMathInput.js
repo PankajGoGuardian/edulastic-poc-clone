@@ -270,8 +270,8 @@ export default MathInput;
 
 const KeyboardWrapper = styled.div`
   width: 40%;
-  left: 0px;
-  top: ${({ height }) => height};
+  left: 4px;
+  top: ${({ height }) => `${parseInt(height, 10) + 4}px`};
   position: absolute;
   z-index: 100;
 `;

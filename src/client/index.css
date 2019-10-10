@@ -1574,6 +1574,7 @@ span.token.active-word {
   height: 35px;
   line-height: 14px;
 }
+
 .liveinspect-keydata table.frac td {
   min-width: auto !important;
 }
@@ -1892,6 +1893,13 @@ span.token.active-word {
   min-width: 60px;
 }
 
+.mq-editable-field.mq-focused,
+.mq-math-mode .mq-editable-field.mq-focused {
+  border-color: #00ad50 !important;
+  box-shadow: 0 0 1px 1px #5eb50066 !important;
+  border-radius: 4px !important;
+}
+
 .jsx-parser p {
   /* display: flex;
   flex-wrap: wrap;
@@ -2075,6 +2083,7 @@ span.token.active-word {
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
 }
+
 .ant-affix {
   z-index: 50;
 }

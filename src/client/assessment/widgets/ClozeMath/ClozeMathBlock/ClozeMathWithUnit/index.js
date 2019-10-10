@@ -281,7 +281,6 @@ const ClozeMathInputField = styled.span`
   margin-right: 0 !important;
   padding: 5px 11px !important;
   border-top-right-radius: 0 !important;
-  border-right: 0 !important;
   display: flex !important;
   border-bottom-right-radius: 0 !important;
   font-weight: 600 !important;
@@ -323,7 +322,7 @@ export default MathWithUnit;
 const KeyboardWrapper = styled.div`
   width: 40%;
   position: absolute;
-  left: 0px;
-  top: ${({ height }) => height};
+  left: 4px;
+  top: ${({ height }) => `${parseInt(height, 10) + 4}px`};
   z-index: 100;
 `;

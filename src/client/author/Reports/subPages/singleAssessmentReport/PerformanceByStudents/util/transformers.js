@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import next from "immer";
 import { max, min, filter, map, find, orderBy, ceil, groupBy, sumBy, floor, forEach, maxBy, get, round } from "lodash";
-import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
+import { filterData, getHSLFromRange1, filterAccordingToRole, formatDate } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
 
@@ -124,7 +123,7 @@ export const normaliseTableData = (rawData, data) => {
       studentScore,
       classAvg: classAvg,
       assessmentScore,
-      assessmentDate: moment(parseInt(studentMetric.timestamp)).format("MMMM DD, YYYY")
+      assessmentDate: formatDate(studentMetric.timestamp)
     };
   });
 };

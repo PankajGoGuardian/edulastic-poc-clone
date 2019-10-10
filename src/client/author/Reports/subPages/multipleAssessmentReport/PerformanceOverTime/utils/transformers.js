@@ -1,7 +1,6 @@
 import next from "immer";
-import moment from "moment";
 import { groupBy, sumBy, round, maxBy, minBy, get, map, head, forEach, values, reduce, capitalize } from "lodash";
-import { percentage, getLeastProficiencyBand, testTypeHashMap } from "../../../../common/util";
+import { percentage, getLeastProficiencyBand, testTypeHashMap, formatDate } from "../../../../common/util";
 
 export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   const leastProficiency = getLeastProficiencyBand(bandInfo);
@@ -109,7 +108,7 @@ export const parseData = (rawData = {}) => {
 
     const score = round(percentage(totalScore, totalMaxScore));
     const rawScore = totalScore / totalGraded;
-    const assessmentDateFormatted = assessmentDate ? moment(parseInt(assessmentDate)).format("MMMM DD, YYYY") : "N/A";
+    const assessmentDateFormatted = formatDate(assessmentDate);
 
     return {
       maxScore: get(maxBy(records, "maxScore"), "maxScore", 0),

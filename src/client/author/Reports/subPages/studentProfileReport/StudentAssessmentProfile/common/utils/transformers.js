@@ -1,6 +1,5 @@
-import moment from "moment";
 import { map, get, find, round, sumBy, capitalize } from "lodash";
-import { testTypeHashMap } from "../../../../../common/util";
+import { testTypeHashMap, formatDate } from "../../../../../common/util";
 
 export const getData = (rawData = {}, tests = [], bandInfo = []) => {
   if (!tests.length) {
@@ -22,9 +21,7 @@ export const getData = (rawData = {}, tests = [], bandInfo = []) => {
       2
     )}`;
 
-    const assignmentDateFormatted = test.assignmentDate
-      ? moment(parseInt(test.assignmentDate)).format("MMMM DD, YYYY")
-      : "N/A";
+    const assignmentDateFormatted = formatDate(test.assignmentDate);
 
     return {
       totalQuestions: 0,

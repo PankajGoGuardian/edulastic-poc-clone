@@ -2,11 +2,10 @@ import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { groupBy } from "lodash";
-import Moment from "moment";
 import next from "immer";
 import { StyledTable } from "../styled";
 
-import { getStandardDeviation, getVariance, downloadCSV } from "../../../../../common/util";
+import { getStandardDeviation, getVariance, downloadCSV, formatDate } from "../../../../../common/util";
 import { StyledH3 } from "../../../../../common/styled";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import PrintableTable from "../../../../../common/components/tables/PrintableTable";
@@ -91,7 +90,7 @@ export const AssessmentStatisticTable = props => {
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
-        assessmentDate: Moment(maxAssessmentDate).format("MMMM D, YYYY"),
+        assessmentDate: formatDate(maxAssessmentDate),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,

@@ -1,6 +1,7 @@
 import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
 import calcMethod from "./static/json/calcMethod";
 import next from "immer";
+import moment from "moment";
 
 export const testTypeHashMap = {
   common: "common",
@@ -249,4 +250,8 @@ export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) 
   };
 
   return [...assignments, overallAssignmentDetail];
+};
+
+export const formatDate = milliseconds => {
+  return milliseconds ? moment(parseInt(milliseconds)).format("MMM DD, YYYY") : "N/A";
 };

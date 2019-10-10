@@ -33,6 +33,7 @@ export const linkColor1 = "#6a737f";
 export const lightGrey3 = "#f4f3f3";
 export const lightGrey4 = "#dbdce0";
 export const someGreyColor1 = "#c0c0c0";
+export const labelGrey = "#9B9B9B";
 
 export const whiteSmoke = "#f5f5f5";
 

@@ -25,6 +25,7 @@ import StudentPerformancePie from "../common/components/charts/StudentPerformanc
 import StandardMasteryDetailsTable from "./common/components/table/StandardMasteryDetailsTable";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 import { getGrades } from "../common/utils/transformers";
+import { backgrounds, labelGrey, secondaryTextColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 
 const getTooltip = payload => {
   if (payload && payload.length) {
@@ -114,24 +115,22 @@ const StudentProfileSummary = ({
     <>
       <StyledCard>
         <Row>
-          <Col xs={24} sm={24} md={2} lg={2} xl={2}>
-            <StyledIcon type="user" />
-          </Col>
-          <Col xs={24} sm={24} md={3} lg={3} xl={3}>
-            <p>
-              <b>Name</b>: {studentName}
-            </p>
-            <p>
-              <b>Grade</b>: {getGrades(studentInformation.grades)}
-            </p>
-            <p>
-              <b>School</b>: {studentClassInfo.schoolName || "N/A"}
-            </p>
-            <p>
-              <b>Subject</b>: {studentClassInfo.standardSet || "N/A"}
-            </p>
-          </Col>
-          <Col xs={24} sm={24} md={19} lg={19} xl={19}>
+          <StyledCol xs={24} sm={24} md={6} lg={6} xl={5}>
+            <IconContainer>
+              <StyledIcon type="user" />
+            </IconContainer>
+            <StudentDetailsContainer>
+              <span>NAME</span>
+              <p>{studentName}</p>
+              <span>GRADE</span>
+              <p>{getGrades(studentInformation.grades)}</p>
+              <span>SCHOOL</span>
+              <p>{studentClassInfo.schoolName || "N/A"}</p>
+              <span>SUBJECT</span>
+              <p>{studentClassInfo.standardSet || "N/A"}</p>
+            </StudentDetailsContainer>
+          </StyledCol>
+          <Col xs={24} sm={24} md={18} lg={18} xl={19}>
             <AssessmentChart data={data} studentClassInfo={studentClassInfo} />
           </Col>
         </Row>
@@ -173,4 +172,53 @@ export default enhance(StudentProfileSummary);
 
 const StyledIcon = styled(Icon)`
   font-size: 80px;
+`;
+
+const IconContainer = styled.div`
+  width: 138px;
+  height: 138px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 5px;
+  background: white;
+`;
+
+const StudentDetailsContainer = styled.div`
+  width: 251px;
+  margin-top: 69px;
+  background: ${backgrounds.default};
+  border-radius: 10px;
+  padding: 69px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  span {
+    color: ${labelGrey};
+    font-weight: bold;
+  }
+  p {
+    color: ${secondaryTextColor};
+    margin-bottom: 15px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 180px;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 95%;
+  }
+`;
+
+const StyledCol = styled(Col)`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 46px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 15px 0px;
+  }
 `;

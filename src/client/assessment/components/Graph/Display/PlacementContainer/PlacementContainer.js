@@ -476,11 +476,16 @@ class PlacementContainer extends PureComponent {
   };
 
   render() {
-    const { layout, annotation, controls, disableResponse, view, graphData, setQuestionData } = this.props;
+    const { layout, annotation, controls, disableResponse, view, graphData, setQuestionData, questionId } = this.props;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
 
     const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0;
+
+    const dragDropBoundsClassName = `jsxbox-with-drag-drop-${questionId ||
+      Math.random()
+        .toString()
+        .slice(2, 9)}`;
 
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
@@ -499,13 +504,14 @@ class PlacementContainer extends PureComponent {
           {!disableResponse && (
             <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
           )}
-          <JSXBoxWithDropValues className="jsxbox-with-drag-drop">
+          <JSXBoxWithDropValues className={dragDropBoundsClassName}>
             {!disableResponse && (
               <DragDropValues
                 height={layout.height}
                 margin={margin}
                 values={this.getDragDropValues()}
                 onAddDragDropValue={this.onAddDragDropValue}
+                dragDropBoundsClassName={dragDropBoundsClassName}
               />
             )}
             <JSXBoxWrapper width={+layout.width + 40}>

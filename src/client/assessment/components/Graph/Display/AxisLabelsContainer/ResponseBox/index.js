@@ -25,6 +25,7 @@ class ResponseBox extends Component {
 
     onAddMark(value, x, y);
     this.setState({ draggingMark: null });
+    return false;
   };
 
   handleDragStart = i => () => {

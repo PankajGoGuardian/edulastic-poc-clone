@@ -7,10 +7,11 @@ class DragDropValues extends Component {
   handleDragDropValuePosition = (d, value) => {
     const { onAddDragDropValue, width, margin, valueHeight } = this.props;
     onAddDragDropValue(value, d.x - width - margin + width / 2, d.y - margin + valueHeight / 2);
+    return false;
   };
 
   render() {
-    const { values, width, height, valueHeight, titleOffset } = this.props;
+    const { values, width, height, valueHeight, titleOffset, dragDropBoundsClassName } = this.props;
 
     return (
       <DragDropValuesContainer
@@ -32,7 +33,7 @@ class DragDropValues extends Component {
               style={{ zIndex: 10 }}
               disableDragging={false}
               enableResizing={false}
-              bounds=".jsxbox-with-drag-drop"
+              bounds={dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : ""}
               className="drag-drop-value"
             >
               <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
@@ -45,6 +46,7 @@ class DragDropValues extends Component {
 }
 
 DragDropValues.propTypes = {
+  dragDropBoundsClassName: PropTypes.string,
   values: PropTypes.array,
   width: PropTypes.number,
   height: PropTypes.number,
@@ -61,7 +63,8 @@ DragDropValues.defaultProps = {
   valueHeight: 50,
   titleOffset: 40,
   margin: 0,
-  onAddDragDropValue: () => {}
+  onAddDragDropValue: () => {},
+  dragDropBoundsClassName: ""
 };
 
 export default DragDropValues;

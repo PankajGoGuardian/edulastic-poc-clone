@@ -81,7 +81,7 @@ const StandardsPerformanceChart = ({
       <Row type="flex" justify="start">
         <StyledChartContainer xs={24} sm={24} md={24} lg={24} xl={24}>
           <SimpleStackedBarChart
-            margin={{ top: 0, right: 60, left: 60, bottom: 0 }}
+            margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
             xAxisDataKey={"domainName"}
             bottomStackDataKey={"masteryScore"}
             topStackDataKey={"diffMasteryScore"}
@@ -91,7 +91,7 @@ const StandardsPerformanceChart = ({
             onBarClickCB={onClickBarData}
             onResetClickCB={() => setSelectedDomains([])}
             getTooltipJSX={getTooltipJSX}
-            yDomain={[0, maxMasteryScore]}
+            yDomain={[0, +maxMasteryScore + 0.1]}
             data={data}
             ticks={ticks}
             filter={selectedDomains}

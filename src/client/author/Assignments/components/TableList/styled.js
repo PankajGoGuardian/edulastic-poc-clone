@@ -100,7 +100,9 @@ export const TableData = styled(Table)`
         color: ${darkGrey};
         white-space: nowrap;
         text-align: center;
-
+        &.ant-table-selection-column {
+          padding-left: 25px;
+        }
         @media (max-width: ${mediumDesktopWidth}) {
           font-size: 10px;
         }
@@ -161,7 +163,7 @@ export const TableData = styled(Table)`
       font-weight: 600;
 
       &.ant-table-selection-column {
-        padding: 10px 15px;
+        padding: 10px 15px 10px 25px;
       }
     }
   }

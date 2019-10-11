@@ -52,3 +52,10 @@ export const attemptSummarySelector = createSelector(
     return { allQids, blocks, itemWiseQids };
   }
 );
+
+export const QuestionsLeftToAttemptSelector = createSelector(
+  attemptSummarySelector,
+  ({ blocks }) => {
+    return Object.values(blocks).filter(_o => !_o).length;
+  }
+);

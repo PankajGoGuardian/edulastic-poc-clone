@@ -19,6 +19,7 @@ import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
 import { getZoomedTheme } from "../../../student/zoomTheme";
 import { playersZoomTheme } from "../assessmentPlayersTheme";
+import { QuestionsLeftToAttemptSelector } from "../../../student/TestAttemptReview/ducks";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -77,7 +78,8 @@ class AssessmentPlayerSimple extends React.Component {
       answerChecksUsedForItem,
       settings,
       selectedTheme,
-      zoomLevel
+      zoomLevel,
+      questionsLeftToAttemptCount
     } = this.props;
     const { showExitPopup } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -107,7 +109,7 @@ class AssessmentPlayerSimple extends React.Component {
             answerChecksUsedForItem={answerChecksUsedForItem}
             settings={settings}
             t={t}
-            questions={questions}
+            questionsLeftToAttemptCount={questionsLeftToAttemptCount}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>
@@ -124,7 +126,8 @@ export default connect(
     settings: state.test.settings,
     answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
     zoomLevel: state.ui.zoomLevel,
-    selectedTheme: state.ui.selectedTheme
+    selectedTheme: state.ui.selectedTheme,
+    questionsLeftToAttemptCount: QuestionsLeftToAttemptSelector(state)
   }),
   {
     checkAnswer: checkAnswerEvaluation

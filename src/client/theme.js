@@ -1137,7 +1137,9 @@ export const defaultTheme = {
       NextPrevButtonBg: actionIconColor,
       timeDurationTextColor: linkFilledBgColor,
       saveIconBgColor: actionIconColor,
-      logoColor: clearIconColor
+      logoColor: clearIconColor,
+      questionsToAttemptBg: buttonBackgroundColor,
+      questionsToAttemptTextColor: themeColor
     },
     assessmentPlayerSimple: {
       logoColor: clearIconColor,

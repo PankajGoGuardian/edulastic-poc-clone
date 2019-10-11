@@ -23,7 +23,8 @@ const PlayerContentArea = ({
   questions,
   answerChecksUsedForItem,
   settings,
-  t
+  t,
+  questionsLeftToAttemptCount
 }) => {
   const scrollElementRef = useRef(null);
   return (
@@ -42,6 +43,7 @@ const PlayerContentArea = ({
           answerChecksUsedForItem={answerChecksUsedForItem}
           settings={settings}
           t={t}
+          questionsLeftToAttemptCount={questionsLeftToAttemptCount}
         />
       </MainWrapper>
       <Sidebar>

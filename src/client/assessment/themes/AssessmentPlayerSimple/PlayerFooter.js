@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { FlexContainer } from "../common";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { IconCorrect } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
 
 const PlayerFooter = ({
   onCheckAnswer,
@@ -12,7 +14,8 @@ const PlayerFooter = ({
   moveToNext,
   t,
   settings,
-  answerChecksUsedForItem
+  answerChecksUsedForItem,
+  questionsLeftToAttemptCount
 }) => {
   return (
     <MainFooter>
@@ -26,6 +29,12 @@ const PlayerFooter = ({
         </ControlBtn>
       </FlexContainer>
       <FlexContainer>
+        <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
+          <span>
+            <IconCorrect color={themeColor} />
+            {questionsLeftToAttemptCount} Left
+          </span>
+        </QuestionsLeftToAttempt>
         {settings.maxAnswerChecks && (
           <CheckAnswerBtn
             onClick={onCheckAnswer}
@@ -70,7 +79,7 @@ const CounterCircle = styled.div`
 const ControlBtn = styled.button`
   width: 187px;
   height: 40px;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
+  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
   border: none;
   outline: none;
   border-radius: 5px;
@@ -106,6 +115,18 @@ const PrevButton = styled(ControlBtn)`
 `;
 
 const CheckAnswerBtn = styled(ControlBtn)`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
+  background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
   border-color: ${props => props.theme.headerIconHoverColor};
+`;
+
+const QuestionsLeftToAttempt = styled(ControlBtn)`
+  span {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  width: 150px;
+  background-color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptBg};
+  color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptTextColor};
 `;

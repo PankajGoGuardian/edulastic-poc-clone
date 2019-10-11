@@ -644,7 +644,7 @@ function* updateTestDocBasedSaga({ payload }) {
     const assessmentQuestions = yield select(getQuestionsArraySelector);
     const [testItem] = payload.data.testItems;
     const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
 
     const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
     const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
@@ -715,7 +715,7 @@ function* publishTestSaga({ payload }) {
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     const testItems = test?.testItems;
     const assessmentQuestions = yield select(getQuestionsArraySelector);
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
     const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
 
     const standardPresent = questions.some(hasStandards);

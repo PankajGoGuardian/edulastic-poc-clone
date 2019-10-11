@@ -758,7 +758,7 @@ export function* updateItemSaga({ payload }) {
     const { itemLevelScoring } = data;
 
     // const questions = yield select(getQuestionsSelector);
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
     const rows = yield select(state => get(state, "itemDetail.item.rows"), []);
     const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
       let widgetIds = (row.widgets || []).map(i => i.reference);
@@ -927,7 +927,7 @@ export const hasStandards = question => {
  *  to a multipart question type.
  */
 function* saveTestItemSaga() {
-  const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+  const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
   const data = yield select(getItemDetailSelector);
   const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
   let questions = widgets.filter(item => !resourceTypes.includes(item.type));

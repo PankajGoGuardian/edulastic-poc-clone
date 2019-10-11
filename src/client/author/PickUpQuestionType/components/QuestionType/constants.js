@@ -1825,6 +1825,19 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
+      type: "video-passages",
+      cardImage: VPVideoPlayer,
+      stimulus: "",
+      data: {
+        title: "Text",
+        type: questionType.TEXT,
+        heading: "",
+        content: "",
+        uiStyle: {}
+      },
+      onSelectQuestionType
+    },
+    {
       type: "math",
       cardImage: MTFormula,
       stimulus: "",

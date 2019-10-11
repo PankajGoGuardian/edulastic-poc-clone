@@ -835,6 +835,15 @@
       "uploadSuccess": " has been uploaded successfully",
       "settings": "Settings"
     },
+    "text": {
+      "heading": "Heading (Optional)",
+      "content": "Content",
+      "video": "Video",
+      "stimulus": "Enter your text resource",
+      "text": "Text",
+      "uploadSuccess": " has been uploaded successfully",
+      "settings": "Settings"
+    },
     "protractor": {
       "details": "Details",
       "imageAlternativeText": "Image alternative text",

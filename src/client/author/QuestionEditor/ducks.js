@@ -7,6 +7,7 @@ import { message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { push } from "connected-react-router";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import {
@@ -18,7 +19,7 @@ import {
   togglePublishWarningModalAction,
   getPassageSelector
 } from "../ItemDetail/ducks";
-import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
+import { setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   UPDATE_QUESTION,
@@ -35,13 +36,13 @@ import { isIncompleteQuestion } from "../questionUtils";
 import changeViewAction from "../src/actions/view";
 import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../src/actions/dictionaries";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
   PROTRACTOR: questionType.PROTRACTOR,
-  VIDEO: questionType.VIDEO
+  VIDEO: questionType.VIDEO,
+  TEXT: questionType.TEXT
 };
 
 export const widgetTypes = {

@@ -57,13 +57,7 @@ const StudentPerformanceSummary = ({ data, selectedMastery }) => {
       <StyledH3>Standard Performance Summary</StyledH3>
       <Row>
         <Col>
-          <StyledTable
-            dataSource={filteredDomains}
-            columns={columns}
-            pagination={{
-              pageSize: 5
-            }}
-          />
+          <StyledTable dataSource={filteredDomains} columns={columns} pagination={false} />
         </Col>
       </Row>
     </>

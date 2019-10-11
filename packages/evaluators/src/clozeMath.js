@@ -34,8 +34,8 @@ const mathEval = async ({ userResponse, validation }) => {
       }
 
       const data = {
-        input: value.replace(/\\ /g, " "),
-        expected: ans ? ans.replace(/\\ /g, " ") : "",
+        input: value.replace(/\s+/g, " "),
+        expected: ans ? ans.replace(/s+/g, " ") : "",
         checks
       };
 
@@ -199,7 +199,7 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
         input = combineUnitAndExpression(userResponse[id].value, userResponse[id].unit);
       }
 
-      return evaluate({ checks, input: input.replace(/\\ /g, " "), expected: expected.replace(/\\ /g, " ") });
+      return evaluate({ checks, input: input.replace(/\s+/g, " "), expected: expected.replace(/\s+/g, " ") });
     });
 
     const result = await Promise.all(calculations);

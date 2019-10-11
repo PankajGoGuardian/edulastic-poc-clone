@@ -88,8 +88,8 @@ var mathEval =
                               }
 
                               var data = {
-                                input: value.replace(/\\ /g, " "),
-                                expected: ans ? ans.replace(/\\ /g, " ") : "",
+                                input: value.replace(/\s+/g, " "),
+                                expected: ans ? ans.replace(/\s+/g, " ") : "",
                                 checks: checks
                               };
                               return (0, _math.evaluate)(data);
@@ -494,8 +494,8 @@ var mixAndMatchMathEvaluator =
 
                                 return (0, _math.evaluate)({
                                   checks: checks,
-                                  input: input.replace(/\\ /g, " "),
-                                  expected: expected.replace(/\\ /g, " ")
+                                  input: input.replace(/\s+/g, " "),
+                                  expected: expected.replace(/\s+/g, " ")
                                 });
                               });
                               _context4.next = 5;

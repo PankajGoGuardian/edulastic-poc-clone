@@ -30,12 +30,24 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
     }
   };
 
-  const barsLabelFormatter = (value, index) => {
+  const barsLabelFormatter = (value, index, startIndex, x, y) => {
     switch (analyseBy) {
       case "score":
         return yTickformatLabel(value);
       case "rawScore":
-        return `${dataWithColors[index].rawScore.toFixed(2)} / ${dataWithColors[index].maxScore}`;
+        return (
+          <>
+            <tspan x={x + 20} dy="-15">
+              {dataWithColors[index].rawScore.toFixed(2)}
+            </tspan>
+            <tspan x={x + 20} dy="2">
+              _____
+            </tspan>
+            <tspan x={x + 20} dy="15">
+              {dataWithColors[index].maxScore}
+            </tspan>
+          </>
+        );
     }
   };
 

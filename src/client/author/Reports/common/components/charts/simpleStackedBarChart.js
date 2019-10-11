@@ -26,7 +26,7 @@ const LabelText = props => {
   return (
     <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
       <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
-        {formatter(value, index, startIndex)}
+        {formatter(value, index, startIndex, x, y)}
       </text>
     </g>
   );

@@ -201,7 +201,6 @@ class Worksheet extends React.Component {
       annotations,
       saveUserWork,
       itemDetail,
-      scratchPad = {},
       userWork,
       freeFormNotes = {}
     } = this.props;
@@ -211,7 +210,19 @@ class Worksheet extends React.Component {
 
     updatedPageStructure.splice(pageNumber, 1);
 
-    const newFreeFormNotes = { ...freeFormNotes, [pageNumber]: undefined };
+    const newFreeFormNotes = {};
+    //TODO some one plis fix this shit.
+    /*Scratchpad component requires an object in this({"1":value,"2":value,"3":value}) format to perform rendering. As the freeFormNotes is not an array can not perform the shift or splice operations. So found below way to shift items.*/
+    Object.keys(freeFormNotes).forEach(item => {
+      const parsedItem = parseInt(item);
+      //new note should not have the removed key so return here
+      if (parsedItem === pageNumber) return;
+      //all items greater than the removed should shift backwards.
+      if (parsedItem > pageNumber) {
+        return (newFreeFormNotes[parsedItem - 1] = freeFormNotes[item]);
+      }
+      newFreeFormNotes[parsedItem] = freeFormNotes[item];
+    });
     const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
 
     const updatedAssessment = {
@@ -230,7 +241,7 @@ class Worksheet extends React.Component {
     if (id) {
       this.setState(({ history }) => ({ history: history + 1 }));
       saveUserWork({
-        [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [pageNumber]: undefined } }
+        [id]: { ...userWork, scratchpad: newFreeFormNotes }
       });
     }
 

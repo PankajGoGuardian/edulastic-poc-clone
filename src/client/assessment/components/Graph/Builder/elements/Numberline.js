@@ -189,10 +189,35 @@ const onHandler = board => {
 
   labels = labels.map(t => toFractionHTML(t, fractionsFormat));
 
+  /**
+   * Show Ticks based on showTicks, showMax, and showMin
+   */
+  if (!showTicks) {
+    const firstTick = ticks[0];
+    const lastTick = ticks[ticks.length - 1];
+    const firstTickLabel = labels[0];
+    const lastTickLable = labels[labels.length - 1];
+
+    ticks = [];
+    labels = [];
+
+    if (showMin) {
+      ticks.push(firstTick);
+      if (labelShowMin) {
+        labels.push(firstTickLabel);
+      }
+    }
+    if (showMax) {
+      ticks.push(lastTick);
+      if (labelShowMax) {
+        labels.push(lastTickLable);
+      }
+    }
+  }
   board.$board.create("ticks", [newAxis, ticks], {
     strokeColor: "#d6d6d6",
     highlightStrokeColor: "#d6d6d6",
-    visible: showTicks,
+    visible: true,
     anchor: "middle",
     insertTicks: false,
     tickEndings: [1, 1],
@@ -222,6 +247,7 @@ const onHandler = board => {
   if (labelsFrequency && newAxis.ticks[1]) {
     newAxis.ticks[1].labels.forEach((label, index) => {
       if (index % labelsFrequency === 0 || specificTicks.includes(+label.htmlStr)) {
+        //
       } else if (index !== 0 && index !== labels.length - 1) {
         board.$board.removeObject(newAxis.ticks[1].labels[index]);
       }
@@ -233,7 +259,7 @@ const onHandler = board => {
       let compareValue = label.htmlStr;
 
       if (compareValue[0] === "−") {
-        compareValue = "-" + compareValue.substr(1, compareValue.length - 1);
+        compareValue = `-${compareValue.substr(1, compareValue.length - 1)}`;
       }
 
       if (parseInt(compareValue, 10) === xMin && !specificTicks.includes(+label.htmlStr)) {
@@ -247,7 +273,7 @@ const onHandler = board => {
       let compareValue = label.htmlStr;
 
       if (compareValue[0] === "−") {
-        compareValue = "-" + compareValue.substr(1, compareValue.length - 1);
+        compareValue = `-${compareValue.substr(1, compareValue.length - 1)}`;
       }
 
       if (parseInt(compareValue, 10) === xMax && !specificTicks.includes(+label.htmlStr)) {

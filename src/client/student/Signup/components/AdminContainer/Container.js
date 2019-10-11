@@ -24,7 +24,8 @@ import {
   CircleDiv,
   AlreadyhaveAccount,
   MobileViewLinks,
-  DesktopVieLinks
+  DesktopVieLinks,
+  DesktopViewCopyright
 } from "../../styled";
 import { signupAction } from "../../../Login/ducks";
 import {
@@ -44,6 +45,8 @@ import keyIcon from "../../../assets/key-icon.svg";
 import lockIcon from "../../../assets/lock-icon.svg";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
+import { withWindowSizes } from "@edulastic/common";
+import { MAX_TAB_WIDTH } from "../../../../author/src/constants/others";
 
 const FormItem = Form.Item;
 
@@ -117,7 +120,8 @@ class AdminSignup extends React.Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldError },
-      t
+      t,
+      windowWidth
     } = this.props;
 
     const formItemLayout = {
@@ -156,7 +160,7 @@ class AdminSignup extends React.Component {
           <RegistrationBody type="flex" align="middle">
             <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
               <FlexWrapper type="flex" align="middle">
-                <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
+                <BannerText xs={24} sm={10} md={13} lg={12} xl={14}>
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.admin.foradmin")}
                   </h1>
@@ -169,7 +173,12 @@ class AdminSignup extends React.Component {
                     </LinkDiv>
                   </DesktopVieLinks>
                 </BannerText>
-                <Col xs={24} sm={14} md={13} lg={12} xl={10}>
+                {windowWidth >= MAX_TAB_WIDTH && (
+                  <DesktopViewCopyright>
+                    <Col span={24}>{t("common.copyright")}</Col>
+                  </DesktopViewCopyright>
+                )}
+                <Col xs={24} sm={14} md={11} lg={12} xl={10}>
                   <FormWrapper>
                     <FormHead>
                       <h3 align="center">
@@ -272,9 +281,11 @@ class AdminSignup extends React.Component {
           <CircleDiv size={64} right={118} top={320} />
           <CircleDiv size={40} right={210} top={432} />
           <CircleDiv size={32} right={72} top={500} />
-          <Copyright>
-            <Col span={24}>{t("common.copyright")}</Col>
-          </Copyright>
+          {windowWidth < MAX_TAB_WIDTH && (
+            <Copyright>
+              <Col span={24}>{t("common.copyright")}</Col>
+            </Copyright>
+          )}
         </RegistrationWrapper>
       </div>
     );
@@ -285,6 +296,7 @@ const SignupForm = Form.create()(AdminSignup);
 
 const enhance = compose(
   withNamespaces("login"),
+  withWindowSizes,
   connect(
     null,
     { signup: signupAction }

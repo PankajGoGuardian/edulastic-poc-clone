@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { trim, get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
+import { withWindowSizes } from "@edulastic/common";
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -25,7 +26,8 @@ import {
   Description,
   AlreadyhaveAccount,
   MobileViewLinks,
-  DesktopVieLinks
+  DesktopVieLinks,
+  DesktopViewCopyright
 } from "../styled";
 import { signupAction, googleLoginAction, msoLoginAction, studentSignupCheckClasscodeAction } from "../../Login/ducks";
 import {
@@ -49,6 +51,7 @@ import keyIcon from "../../assets/key-icon.svg";
 import lockIcon from "../../assets/lock-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
+import { MAX_TAB_WIDTH } from "../../../author/src/constants/others";
 
 const FormItem = Form.Item;
 const GOOGLE = "google";
@@ -350,7 +353,8 @@ class StudentSignup extends React.Component {
   };
 
   render() {
-    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName } = this.props;
+    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, windowWidth } = this.props;
+
     const { method } = this.state;
 
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
@@ -415,6 +419,11 @@ class StudentSignup extends React.Component {
                     ) : null}
                   </DesktopVieLinks>
                 </BannerText>
+                {windowWidth >= MAX_TAB_WIDTH && (
+                  <DesktopViewCopyright>
+                    <Col span={24}>{t("common.copyright")}</Col>
+                  </DesktopViewCopyright>
+                )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
@@ -477,9 +486,11 @@ class StudentSignup extends React.Component {
           <CircleDiv size={64} right={118} top={320} />
           <CircleDiv size={40} right={210} top={432} />
           <CircleDiv size={32} right={72} top={500} />
-          <Copyright>
-            <Col span={24}>{t("common.copyright")}</Col>
-          </Copyright>
+          {windowWidth < MAX_TAB_WIDTH && (
+            <Copyright>
+              <Col span={24}>{t("common.copyright")}</Col>
+            </Copyright>
+          )}
         </RegistrationWrapper>
       </div>
     );
@@ -490,6 +501,7 @@ const SignupForm = Form.create()(StudentSignup);
 
 const enhance = compose(
   withNamespaces("login"),
+  withWindowSizes,
   connect(
     state => ({}),
     {

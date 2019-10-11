@@ -24,7 +24,8 @@ import {
   CircleDiv,
   AlreadyhaveAccount,
   MobileViewLinks,
-  DesktopVieLinks
+  DesktopVieLinks,
+  DesktopViewCopyright
 } from "../../styled";
 import {
   signupAction,
@@ -54,6 +55,8 @@ import lockIcon from "../../../assets/lock-icon.svg";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
 import cleverIcon from "../../../assets/clever-icon.svg";
+import { withWindowSizes } from "@edulastic/common";
+import { MAX_TAB_WIDTH } from "../../../../author/src/constants/others";
 
 const FormItem = Form.Item;
 
@@ -160,7 +163,8 @@ class Signup extends React.Component {
       cleverLoginAction,
       msoLoginAction,
       invitedUser = false,
-      invitedUserDetails = {}
+      invitedUserDetails = {},
+      windowWidth
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -230,6 +234,11 @@ class Signup extends React.Component {
                     ) : null}
                   </DesktopVieLinks>
                 </BannerText>
+                {windowWidth >= MAX_TAB_WIDTH && (
+                  <DesktopViewCopyright>
+                    <Col span={24}>{t("common.copyright")}</Col>
+                  </DesktopViewCopyright>
+                )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     <FormHead>
@@ -415,9 +424,11 @@ class Signup extends React.Component {
           <CircleDiv size={64} right={118} top={320} />
           <CircleDiv size={40} right={210} top={432} />
           <CircleDiv size={32} right={72} top={500} />
-          <Copyright>
-            <Col span={24}>{t("common.copyright")}</Col>
-          </Copyright>
+          {windowWidth < MAX_TAB_WIDTH && (
+            <Copyright>
+              <Col span={24}>{t("common.copyright")}</Col>
+            </Copyright>
+          )}
         </RegistrationWrapper>
       </div>
     );
@@ -428,6 +439,7 @@ const SignupForm = Form.create()(Signup);
 
 const enhance = compose(
   withNamespaces("login"),
+  withWindowSizes,
   connect(
     null,
     { signup: signupAction, googleLoginAction, cleverLoginAction, msoLoginAction, setInviteDetailsAction }

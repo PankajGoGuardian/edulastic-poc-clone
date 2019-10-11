@@ -88,18 +88,17 @@ export const BannerText = styled(Col)`
 
 export const RegistrationBody = styled(Row)`
   min-height: calc(100vh - 120px);
-  padding: 30px 0px 65px;
+  padding: 15px;
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 20px;
+  }
 `;
 
 export const Copyright = styled(Row)`
   font-size: 10px;
   color: ${grey};
   text-align: center;
-  margin: 25px 0px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  margin: 20px 0px;
 `;
 
 export const FormWrapper = styled.div`
@@ -163,14 +162,13 @@ export const FormBody = styled(Row)`
   padding: 15px;
   background: white;
   h5 {
-    margin-bottom: 20px;
-    margin-top: 5px;
+    margin-bottom: 10px;
     font-size: 13px;
     font-weight: 600;
   }
   form {
     .ant-form-item {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
     .ant-form-item-label {
       text-align: left;
@@ -269,4 +267,15 @@ export const DesktopVieLinks = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
+`;
+
+export const DesktopViewCopyright = styled(Row)`
+  width: 50%;
+  text-align: start;
+  font-size: 10px;
+  color: ${grey};
+  margin: 25px 0px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 `;

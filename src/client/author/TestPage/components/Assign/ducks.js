@@ -181,7 +181,7 @@ function* saveAssignment({ payload }) {
     let userRole = yield select(getUserRole);
     const testType = get(payload, "testType", test.testType);
     let data = [];
-
+    const visibility = payload.testContentVisibility ? { testContentVisibility: payload.testContentVisibility } : {};
     data = testIds.map(testId =>
       omit(
         {
@@ -192,7 +192,7 @@ function* saveAssignment({ payload }) {
             userRole === roleuser.TEACHER && testType === testContants.type.COMMON
               ? testContants.type.ASSESSMENT
               : testType,
-          testContentVisibility: payload.testContentVisibility || testContants.testContentVisibility.ALWAYS,
+          ...visibility,
           testId
         },
         [

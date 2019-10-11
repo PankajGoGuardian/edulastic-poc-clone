@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 
 import {
   updateAssignmentStatusAction,
@@ -50,6 +50,7 @@ import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
 import { getAllQids } from "../SummaryBoard/Transformer";
+import { getUserRole } from "../../student/Login/ducks";
 
 const { testContentVisibility } = test;
 
@@ -501,9 +502,14 @@ export const getMarkAsDoneEnableSelector = createSelector(
 export const isItemVisibiltySelector = createSelector(
   stateTestActivitySelector,
   getAdditionalDataSelector,
-  (state, additionalData) => {
+  getUserRole,
+  (state, additionalData, role) => {
     const assignmentStatus = state?.data?.status;
     const contentVisibility = additionalData?.testContentVisibility;
+    //Item can be visible for da and sa
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      return true;
+    }
     if (!additionalData?.hasOwnProperty("testContentVisibility")) {
       return true;
     }

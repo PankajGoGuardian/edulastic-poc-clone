@@ -102,12 +102,12 @@ export const parseData = (rawData = {}) => {
   const parsedData = map(groupedTestsByType, records => {
     const { assessmentDate, testId, testType } = records[0];
     const totalAssigned = parseInt(records[0].totalAssigned);
-    const totalGraded = sumBy(records, test => parseInt(test.totalGraded));
+    const totalGraded = sumBy(records, test => parseInt(test.totalGraded || 0));
     const totalScore = sumBy(records, test => parseFloat(test.totalScore || 0));
     const totalMaxScore = sumBy(records, test => parseFloat(test.maxPossibleScore || 0) * parseInt(test.totalGraded));
 
     const score = round(percentage(totalScore, totalMaxScore));
-    const rawScore = totalScore / totalGraded;
+    const rawScore = totalScore / totalGraded || 0;
     const assessmentDateFormatted = formatDate(assessmentDate);
 
     return {

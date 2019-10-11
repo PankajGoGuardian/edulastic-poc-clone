@@ -35,7 +35,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
       case "score":
         return yTickformatLabel(value);
       case "rawScore":
-        return `${round(dataWithColors[index].rawScore, 2)} / ${dataWithColors[index].maxScore}`;
+        return `${dataWithColors[index].rawScore.toFixed(2)} / ${dataWithColors[index].maxScore}`;
     }
   };
 

@@ -24,9 +24,6 @@ const Container = styled.div`
     width: 100%;
     margin: 0px !important;
   }
-  .input__math {
-    height: 100%;
-  }
   .clipText {
     white-space: ${({ isWrapText }) => (isWrapText ? "normal" : "nowrap")};
     height: ${({ containerH, isWrapText }) =>

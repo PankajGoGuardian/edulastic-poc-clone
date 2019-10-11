@@ -45,20 +45,23 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10) => {
+Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
   return cy.document().then(doc => {
+    const scrollHeight = pageHeight || doc.body.scrollHeight;
     const scroll = {
+      scrollHeight,
+      clientHeight: doc.body.clientHeight,
       hasScroll: doc.body.scrollHeight > doc.body.clientHeight,
-      minScrolls: Cypress._.ceil(doc.body.scrollHeight / (doc.body.clientHeight - scrollOffset)) - 1,
+      minScrolls: Cypress._.ceil(scrollHeight / (doc.body.clientHeight - scrollOffset)) - 1,
       scrollSize: doc.body.clientHeight - scrollOffset
     };
-    // console.log("scroll", JSON.stringify(scroll));
+    console.log("scroll", JSON.stringify(scroll));
     return scroll;
   });
 });
 
-Cypress.Commands.add("scrollPageAndMatchImageSnapshots", scrollOffset => {
-  cy.isPageScrollPresent(scrollOffset).then(({ hasScroll, minScrolls, scrollSize }) => {
+Cypress.Commands.add("scrollPageAndMatchImageSnapshots", (scrollOffset, pageHeight, pageContext) => {
+  cy.isPageScrollPresent(scrollOffset, pageHeight).then(({ hasScroll, minScrolls, scrollSize }) => {
     if (hasScroll) {
       let scrollNum = 1;
       let scrollInPixel = scrollSize;
@@ -71,8 +74,10 @@ Cypress.Commands.add("scrollPageAndMatchImageSnapshots", scrollOffset => {
       }
 
       while (scrollNum <= minScrolls) {
-        cy.scrollTo(0, scrollInPixel);
-        cy.wait(500);
+        if (pageContext) {
+          cy.wrap(pageContext).scrollTo(0, scrollInPixel);
+        } else cy.scrollTo(0, scrollInPixel);
+        cy.wait(1000);
         cy.matchImageSnapshot(`${screenshotFileName} - scroll-${scrollNum}`);
         scrollNum += 1;
         scrollInPixel += scrollSize;

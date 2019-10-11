@@ -1,5 +1,6 @@
 import TestAddItemTab from "./testAddItemTab";
 import TestSummayTab from "./testSummaryTab";
+import TestReviewTab from "./testReviewTab";
 
 export default class TestHeader {
   clickOnDescription = () => {
@@ -14,7 +15,10 @@ export default class TestHeader {
     return cy.wait("@search").then(() => new TestAddItemTab());
   };
 
-  clickOnReview = () => cy.wait(2000).then(() => cy.get('[data-cy="review"]').click({ force: true }));
+  clickOnReview = () => {
+    cy.wait(2000).then(() => cy.get('[data-cy="review"]').click({ force: true }));
+    return new TestReviewTab();
+  };
 
   clickOnSettings = () => cy.get('[data-cy="settings"]').click();
 

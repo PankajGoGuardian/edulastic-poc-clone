@@ -16,7 +16,7 @@ const editItem = new EditItemPage();
 const itemPage = new ItemListPage();
 const search = new SearchFilters();
 
-const questions = {
+/* const questions = {
   "Cloze with Text": "5d8e084aca293d1c3e684ca0",
   "Bar chart": "5d8e084aca293d1c3e684ca1",
   "Cloze with Drop Down": "5d8e084bca293d1c3e684ca2",
@@ -40,9 +40,34 @@ const questions = {
   "Multiple choice - multiple response": "5d8e0854ca293d1c3e684cb9",
   "Multiple choice - standard": "5d8e0854ca293d1c3e684cba",
   "Number line with plot": "5d8e0855ca293d1c3e684cbb"
+}; */
+
+const questions = {
+  "Multiple choice - standard": ["5d9dbbaff0423148e943b814"],
+  "Multiple choice - multiple response": [
+    "5d96f1b7fa159feccabb0ddd",
+    "5d9dbd005ba830e8b6bea7ca",
+    "5d9dbdac733fa8171f5df93b"
+  ],
+  "Label Image with Drag & Drop": ["5d9c5f722db4379b8d316c34"],
+  OrderList: ["5d97207ffa159feccae50ab6"],
+  "Math, Text & Dropdown": ["5d52c8adb7ed18cd3af444f6", "5d9b26b4f94d754831c721b2"],
+  "Fraction Editor": ["5d9ac436e1d27c375803b5c7"],
+  "Token highlight": ["5d9b470854efd9fb1bfbd402"],
+  "Match list": ["5d9c721d623e4a113a5061e6"],
+  "Graph Placement": ["5d9b489954efd93ca8fbd403"],
+  "Cloze with Text": ["5d9b239760f4e88a62b4860f"],
+  "Multiple choice": ["5d9c6a20d8a4cf776603b515"],
+  "Choice matrix - labels": ["5d9ad1e0e1d27c15c803b5d1"],
+  "Number line with drag & drop": ["5d81fc89fa159fecca04f102"],
+  Classification: ["5d971ff3fa159feccae4f923"],
+  "Dot plot": ["5d31a400305f9c1ef064f81b"],
+  "Essay with rich text": ["5d0c717b38a00c59eadce00c", "5d52c0cfb7ed18cd3af10df3", "5d1c4768305f9c1ef00213ba"],
+  Graphing: ["5ce3a1dbbe25950032f0887f", "5d0c7ae838a00c59eae1c4cb"],
+  "Bar chart": ["5d4d754ab7ed18cd3a64f7a8", "5d31a906305f9c1ef07e55de"]
 };
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.fixture("users").then(users => {
       const user = users["visual-regression"].teacher;
@@ -106,6 +131,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
 
   SCREEN_SIZES.forEach(size => {
     const isSizeSmall = size[0] < SMALL_DESKTOP_WIDTH;
+    const scrollOffset = size[1] > MAX_TAB_WIDTH ? 60 : 120;
     context("create item", () => {
       /* before(() => {
         cy.setResolution(size);
@@ -119,58 +145,87 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
       questionGroups.forEach(queGroup => {
         questionTypeMap[queGroup].forEach(queType => {
           if (Object.keys(questions).indexOf(queType) >= 0) {
-            context(`'${queGroup}' - '${queType}'`, () => {
-              /* before(() => {
-                cy.setResolution(size);
-                cy.url().then(url => {
-                  if (url.includes("create")) {
-                    if (isSizeSmall) cy.contains("span", "Back to Item List").click();
-                    else cy.contains("span", "item detail").click();
-                  }
-  
-                  if (isSizeSmall) cy.get('[data-cy="selectWidget"]').click();
-  
-                  cy.xpath(`//li[contains(text(),'${queGroup}')]`).then($ele => {
-                    if (isSizeSmall) {
-                      cy.wrap($ele)
-                        .eq(1)
-                        .click();
-                    } else cy.wrap($ele).click();
+            questions[queType].forEach((queId, index) => {
+              context(`'${queGroup}'-'${queType}-${queId}'`, () => {
+                /* before(() => {
+                  cy.setResolution(size);
+                  cy.url().then(url => {
+                    if (url.includes("create")) {
+                      if (isSizeSmall) cy.contains("span", "Back to Item List").click();
+                      else cy.contains("span", "item detail").click();
+                    }
+    
+                    if (isSizeSmall) cy.get('[data-cy="selectWidget"]').click();
+    
+                    cy.xpath(`//li[contains(text(),'${queGroup}')]`).then($ele => {
+                      if (isSizeSmall) {
+                        cy.wrap($ele)
+                          .eq(1)
+                          .click();
+                      } else cy.wrap($ele).click();
+                    });
+    
+                    editItem.selectQue(queType);
                   });
-  
-                  editItem.selectQue(queType);
+                }); */
+
+                before(() => {
+                  cy.server();
+                  cy.route("**/testitem/**").as("testitem");
+                  cy.setResolution(size);
+                  cy.visit(`author/items/${queId}/item-detail`);
+                  cy.wait("@testitem");
+                  cy.contains("Question");
                 });
-              }); */
 
-              before(() => {
-                cy.server();
-                cy.route("**/testitem/**").as("testitem");
-                cy.setResolution(size);
-                cy.visit(`author/items/${questions[queType]}/item-detail`);
-                cy.wait("@testitem");
-                cy.contains("Question");
-              });
+                it(`when resolution is ${size} - 'edit'`, () => {
+                  cy.wait(1000);
+                  cy.matchImageSnapshot();
 
-              it(`when resolution is ${size} - 'edit'`, () => {
-                const scrollOffset = size[1] > MAX_TAB_WIDTH ? 60 : 120;
-                cy.wait(1000);
-                cy.matchImageSnapshot();
-
-                cy.isPageScrollPresent().then(({ hasScroll }) => {
-                  if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                  cy.isPageScrollPresent().then(({ hasScroll }) => {
+                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                  });
                 });
-              });
 
-              it(`when resolution is ${size} - 'preview'`, () => {
-                itemHeader.preview();
-                cy.wait(1000);
-                cy.matchImageSnapshot();
-              });
+                it(`when resolution is ${size} - 'preview'`, () => {
+                  itemHeader.preview();
+                  cy.wait(1000);
+                  cy.matchImageSnapshot();
 
-              it(`when resolution is ${size} - 'metadata'`, () => {
-                itemHeader.metadata();
-                cy.wait(1000);
-                cy.matchImageSnapshot();
+                  cy.isPageScrollPresent().then(({ hasScroll }) => {
+                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                  });
+                });
+
+                it(`when resolution is ${size} - 'preview-showAns'`, () => {
+                  itemHeader
+                    .preview()
+                    .getShowAnswer()
+                    .click();
+                  cy.wait(1000);
+                  cy.matchImageSnapshot();
+                  cy.isPageScrollPresent().then(({ hasScroll }) => {
+                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                  });
+                });
+
+                it(`when resolution is ${size} - 'preview-clear'`, () => {
+                  itemHeader
+                    .preview()
+                    .getClear()
+                    .click();
+                  cy.wait(1000);
+                  cy.matchImageSnapshot();
+                  cy.isPageScrollPresent().then(({ hasScroll }) => {
+                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                  });
+                });
+
+                it(`when resolution is ${size} - 'metadata'`, () => {
+                  itemHeader.metadata();
+                  cy.wait(1000);
+                  cy.matchImageSnapshot();
+                });
               });
             });
           }

@@ -59,7 +59,7 @@ const HeaderBar = ({
         <span />
       )}
       <MobileButtomContainer>
-        <ActionButton>
+        <ActionButton data-cy="viewAsStudent">
           <ButtonLink
             onClick={onShowTestPreview}
             color="primary"

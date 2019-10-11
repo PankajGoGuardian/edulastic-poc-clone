@@ -116,11 +116,10 @@ const StyledTag = styled.div`
   border-radius: 40px;
   margin: 2px 5px;
   text-align: center;
-  padding: 3px 10px;
-  min-width: 80px;
+  padding: 0px 10px;
   display: flex;
+  flex-direction: column;
   p {
-    margin: 2px;
     &:nth-child(1) {
       flex-grow: 0;
     }

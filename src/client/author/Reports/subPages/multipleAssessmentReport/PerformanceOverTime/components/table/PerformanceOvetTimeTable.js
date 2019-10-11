@@ -16,7 +16,7 @@ const staticFields = [
     }
   },
   {
-    title: "Assessment Type",
+    title: "Type",
     dataIndex: "testType"
   },
   {
@@ -32,19 +32,19 @@ const staticFields = [
     dataIndex: "maxPossibleScore"
   },
   {
-    title: "Questions#",
+    title: "Questions",
     dataIndex: "totalTestItems"
   },
   {
-    title: "#Assigned",
+    title: "Assigned",
     dataIndex: "totalAssigned"
   },
   {
-    title: "#Graded",
+    title: "Graded",
     dataIndex: "totalGraded"
   },
   {
-    title: "#Absent",
+    title: "Absent",
     dataIndex: "totalAbsent"
   }
 ];

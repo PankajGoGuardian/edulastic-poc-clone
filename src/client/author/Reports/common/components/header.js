@@ -98,7 +98,7 @@ const StyledButton = styled(Button)`
   &.ant-btn {
     display: ${({ display }) => (display ? display : "unset")};
     align-items: ${({ display }) => (display === "flex" ? "center" : "unset")};
-    margin-left: 10px;
+    margin-left: 5px;
     font-size: 14px;
     text-shadow: none;
     font-weight: 400;

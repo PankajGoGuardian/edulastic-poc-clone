@@ -17,7 +17,7 @@ export const ReviewPageContainer = styled.div`
     position: fixed;
     left: 100px;
     right: 0;
-    z-index: 2;
+    z-index: 999;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
     padding: 10px 24% 10px 55px;
     transition: top 1s ease-in;

@@ -84,6 +84,7 @@ const titleSectionFontSize = "16px";
 const titleSecondarySectionFontSize = "18px";
 const headerTitle = "22px";
 const scoreFontSize = "31px";
+const tableDataFont = "14px";
 
 const questionTextsmallFontSize = "13px";
 const questionTextnormalFontSize = "14px";
@@ -1300,6 +1301,7 @@ export const defaultTheme = {
   manageClass: {
     manageClassBgColor: containerWhite,
     manageClassBgBorderColor: borderColor,
+    manageClassTdFontSize: tableDataFont,
     NoDataArchiveTextColor: labelStyle,
     NoDataArchiveTextSize: headerTitle,
     NoDataArchiveSubTextColor: questionTextColor,

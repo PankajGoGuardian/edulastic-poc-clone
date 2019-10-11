@@ -92,9 +92,4 @@ const Container = styled.div`
   @media (max-width: ${desktopWidth}) {
     padding: 0px 20px;
   }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
 `;

@@ -35,7 +35,7 @@ export const Title = styled.h1`
   font-size: ${props => props.theme.header.headerTitleFontSize};
   color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
-  line-height: normal
+  line-height: normal;
   margin: 0px;
   max-width: 250px;
   text-overflow: ellipsis;

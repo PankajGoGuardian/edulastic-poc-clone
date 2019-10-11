@@ -37,14 +37,14 @@ const TabsContainer = styled.div`
 
 const StyledLink = styled(Link)`
   display: block;
-  padding: 0px 20px;
+  padding: 0px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: ${props => (props.isActive ? themeColorLight : themeColorSecondaryLighter)};
   border-radius: 3px;
   font-weight: 600;
-  margin: 0px 5px;
+  margin: 0px 3px;
   color: white;
   font-size: 12px;
   height: 40px;

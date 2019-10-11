@@ -7,10 +7,10 @@ import {
   themeColorLight,
   mediumDesktopWidth,
   mobileWidthMax,
-  darkGrey,
   lightGreySecondary,
   secondaryTextColor,
-  cardTitleColor
+  cardTitleColor,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
@@ -155,7 +155,7 @@ export const ButtonsWrapper = styled.div`
 
 export const TableWrapper = styled.div`
   background: ${white};
-  margin: 40px 40px;
+  margin: 30px;
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: ${boxShadowDefault};
@@ -222,7 +222,7 @@ export const ClassListTable = styled(Table)`
         font-family: Open Sans, SemiBold;
         letter-spacing: 0.26px;
         color: ${secondaryTextColor};
-        font-size: 14px;
+        font-size: ${props => props.theme.manageClass.manageClassTdFontSize};
         cursor: pointer;
         border-bottom: 15px solid white;
         & > td {
@@ -234,6 +234,10 @@ export const ClassListTable = styled(Table)`
         }
         & > :nth-last-of-type(-n + 2) {
           text-align: center;
+        }
+
+        @media (max-width: ${smallDesktopWidth}) {
+          font-size: 11px;
         }
       }
     }

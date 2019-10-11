@@ -77,6 +77,7 @@ class ToolbarModal extends React.Component {
           <StyledButton onClick={() => this.calculator()}>Calculator</StyledButton>
           <StyledButton onClick={() => this.eliminationQuestion()}>Elimination Question</StyledButton>
           <StyledButton onClick={() => this.procractorRuler()}>Procractor Ruler</StyledButton>
+          <StyledButton>Scratchpad</StyledButton>
         </Container>
       </Modal>
     );

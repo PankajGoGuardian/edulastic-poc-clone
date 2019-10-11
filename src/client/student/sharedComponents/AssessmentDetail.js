@@ -157,14 +157,10 @@ const ImageWrapper = React.memo(styled.div`
   max-height: 90.5px;
   overflow: hidden;
   border-radius: 10px;
-  margin-right: 41px;
+  margin-right: 40px;
 
   @media (max-width: ${extraDesktopWidth}) {
-    margin-right: 22px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    margin-right: 17px;
+    margin-right: 20px;
   }
 
   @media screen and (max-width: 767px) {
@@ -249,19 +245,12 @@ const CardTitle = React.memo(styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.assignment.cardTitleColor};
-  padding-bottom: 7px;
-  padding-top: 6px;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    padding-top: 11px;
-  }
+  padding-bottom: 8px;
+  padding-top: 3px;
 
   @media (max-width: ${largeDesktopWidth}) {
-    font-size: 12px;
-    padding-top: 8px;
-    padding-bottom: 0;
+    font-size: 14px;
   }
-
   @media (max-width: ${mobileWidthMax}) {
     font-size: 16px;
     text-align: center;
@@ -306,7 +295,7 @@ const CardDate = React.memo(styled.div`
 `);
 
 const DueDetails = React.memo(styled.span`
-  padding-left: 11px;
+  padding-left: 10px;
 `);
 
 const StatusWrapper = styled.div`
@@ -327,7 +316,6 @@ const StatusButton = React.memo(styled.div`
   padding: 6px 24px;
   span {
     position: relative;
-    top: -1px;
     color: ${props => getStatusBgColor(props, "Text")};
   }
 

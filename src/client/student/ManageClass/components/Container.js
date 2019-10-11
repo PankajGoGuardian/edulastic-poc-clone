@@ -47,6 +47,7 @@ ManageClassContainer.propTypes = {
 };
 
 const CustomWrapper = styled(Wrapper)`
+  padding: 5px 25px;
   @media (max-width: 768px) {
     padding: 0px 15px;
   }

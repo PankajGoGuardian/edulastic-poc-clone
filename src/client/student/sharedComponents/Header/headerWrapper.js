@@ -48,7 +48,7 @@ const HeaderContainer = styled.div`
   background: ${props => props.theme.header.headerBgColor || themeColor};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    padding-top: 100px;
+    padding-top: 96px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -87,12 +87,11 @@ const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
   height: 76px;
-  padding: 0px 46px;
+  padding: 0px 40px;
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding: 0px 44px;
-    height: 100px;
-    padding: 0px 30px 0 40px;
+    height: 96px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -101,7 +100,6 @@ const AssignmentsHeader = styled(Layout.Header)`
   }
 
   @media (max-width: ${mobileWidthMax}) {
-    height: 60px;
     padding: 0 26px 0 0;
   }
 

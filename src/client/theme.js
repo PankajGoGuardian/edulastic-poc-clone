@@ -77,6 +77,7 @@ const tagFontSize = "10px";
 const linkFontSize = "11px";
 const commentFontSize = "11px";
 const subtitleFontSize = "20px";
+const smallFontSize = "12px";
 const bodyFontSize = "13px";
 const standardFont = "14px";
 const keyboardFontSize = "16px";
@@ -345,7 +346,7 @@ export const defaultTheme = {
     userInfoNameTextColor: textColor,
     userInfoNameFontSize: standardFont,
     userInfoRoleTextColor: textColor,
-    userInfoRoleFontSize: subtitleFontSize,
+    userInfoRoleFontSize: smallFontSize,
     userInfoDropdownBgColor: buttonBackgroundColor,
     userInfoDropdownItemBgColor: themeColor,
     userInfoDropdownItemBgHoverColor: buttonBackgroundColor,
@@ -2051,7 +2052,6 @@ export const themes = {
     confirmationPopupButtonTextColor: themeColorsMap.YAB.themeSecondaryColor,
     confirmationPopupButtonTextHoverColor: themeColorsMap.YAB.themeColor,
     confirmationPopupTextColor: themeColorsMap.YAB.themeSecondaryColor,
-    confirmationPopupTextColor: themeColorsMap.YAB.themeSecondaryColor,
 
     default: {
       ...defaultTheme.default,
@@ -2252,7 +2252,7 @@ export const themes = {
   },
   default: defaultTheme,
   zoomed: theme => ({
-    headerTitleFontSize: `${theme.size1}px`,
+    headerTitleFontSize: `${theme.size2}px`,
     headerClassTitleFontSize: `${theme.size4}px`,
     headerDropdownFontSize: `${theme.size4}px`,
     confirmationPopupButtonTextSize: `${theme.size4}px`,
@@ -2267,10 +2267,11 @@ export const themes = {
     },
     profile: {
       ...theme.profile,
-      formInputLabelSize: `${theme.size4}px`,
-      profileDetailFontSize: `${theme.size3}px`,
-      saveButtonTextSize: `${theme.size4}px`,
-      userHeadingTextSize: `${theme.size3}px`
+      formInputLabelSize: `${theme.size6}px`,
+      profileDetailFontSize: `${theme.size4}px`,
+      saveButtonTextSize: `${theme.size6}px`,
+      userHeadingTextSize: `${theme.size3}px`,
+      changePasswordTextSize: `${theme.size6}px`
     },
     confirmation: {
       ...theme.confirmation,
@@ -2297,13 +2298,13 @@ export const themes = {
     assignment: {
       ...theme.assignment,
       cardTitleFontSize: `${theme.size3}px`,
-      cardDefaultBtnFontSize: `${theme.size4}px`,
-      cardTimeTextFontSize: `${theme.size4}px`,
+      cardDefaultBtnFontSize: `${theme.size7}px`,
+      cardTimeTextFontSize: `${theme.size6}px`,
       cardSubmitLabelFontSize: `${theme.size5}px`,
       attemptsReviewRowFontSize: `${theme.size4}px`,
       cardAnswerAndScoreTextSize: `${theme.size1}px`,
-      cardAttemptLinkFontSize: `${theme.size4}px`,
-      cardResponseBoxLabelsFontSize: `${theme.size4}px`
+      cardAttemptLinkFontSize: `${theme.size6}px`,
+      cardResponseBoxLabelsFontSize: `${theme.size6}px`
     },
     classCard: {
       ...theme.classCard,

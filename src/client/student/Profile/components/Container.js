@@ -295,8 +295,8 @@ const Label = styled.label`
 
 const ChangePasswordToggleButton = styled.div`
   color: ${props => props.theme.profile.cancelButtonTextColor};
-  font-size: ${props => props.theme.profile.userHeadingTextSize};
-  padding-left: 25px;
+  font-size: ${props => props.theme.profile.changePasswordTextSize};
+  padding-left: 20px;
   cursor: pointer;
   width: fit-content;
   span {

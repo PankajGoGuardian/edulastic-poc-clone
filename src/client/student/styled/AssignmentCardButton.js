@@ -16,7 +16,7 @@ const StartAssignButton = styled(Button)`
   padding: 5px 20px;
   cursor: pointer;
   float: right;
-  margin: 18px 15px 0 10px;
+  margin: 0px;
 
   span {
     color: ${props => props.theme.assignment.cardDefaultBtnTextColor};
@@ -35,11 +35,9 @@ const StartAssignButton = styled(Button)`
 
   @media (max-width: ${extraDesktopWidth}) {
     width: auto;
-    margin: 32px 15px 0 10px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
-    margin: 21px -5px 0 10px;
     height: 36px;
 
     span {

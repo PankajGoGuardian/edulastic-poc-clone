@@ -40,7 +40,7 @@ const Container = styled.div`
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
     font-weight: bold !important;
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSizeLarge};
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
 
     a {
@@ -51,21 +51,21 @@ const Container = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     .ant-breadcrumb-link,
     .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSizeLarge} !important;
+      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
     }
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
     .ant-breadcrumb-link,
     .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSizeRegular} !important;
+      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
     }
   }
 
   @media (max-width: ${smallDesktopWidth}) {
     .ant-breadcrumb-link,
     .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSizeSmall} !important;
+      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
     }
   }
 

@@ -12,6 +12,9 @@ const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
+const ContentWrapper = styled.div`
+  padding: 0px 40px;
+`;
 
 const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList }) => {
   useEffect(() => {
@@ -29,8 +32,10 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
         setClassList={setClassList}
         setShowClass={setShowClass}
       />
-      <SubHeader />
-      <ManageClassContainer classList={filterClasses} loading={loading} showClass={showClass} />
+      <ContentWrapper>
+        <SubHeader />
+        <ManageClassContainer classList={filterClasses} loading={loading} showClass={showClass} />
+      </ContentWrapper>
     </Wrapper>
   );
 };

@@ -14,6 +14,9 @@ const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
+const ContentWrapper = styled.div`
+  padding: 0px 40px;
+`;
 
 const Assignments = ({ activeClasses, loadAllClasses, loading, location, allClasses }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
@@ -32,8 +35,10 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, location, allClas
         showActiveClass={false}
         classList={activeEnrolledClasses}
       />
-      <SubHeader />
-      <AssignmentContainer />
+      <ContentWrapper>
+        <SubHeader />
+        <AssignmentContainer />
+      </ContentWrapper>
     </Wrapper>
   );
 };

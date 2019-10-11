@@ -68,13 +68,15 @@ const SkillReportMainContent = ({ skillReport, t }) => {
   }
   return (
     <React.Fragment>
-      <WrapperContent>
-        <S.SummaryTitle>{t("common.skillSummary")}</S.SummaryTitle>
-        <StyledTable columns={summaryColumns} dataSource={sumData} pagination={false} />
-      </WrapperContent>
-      {sumData.map((summary, index) => (
-        <TableSection summary={summary} dataSource={sumData} skillReport={skillReport} key={index} />
-      ))}
+      <ContentWrapper>
+        <WrapperContent>
+          <S.SummaryTitle>{t("common.skillSummary")}</S.SummaryTitle>
+          <StyledTable columns={summaryColumns} dataSource={sumData} pagination={false} />
+        </WrapperContent>
+        {sumData.map((summary, index) => (
+          <TableSection summary={summary} dataSource={sumData} skillReport={skillReport} key={index} />
+        ))}
+      </ContentWrapper>
     </React.Fragment>
   );
 };
@@ -102,16 +104,16 @@ const Circle = styled.div`
   margin-left: 18px;
 `;
 
+const ContentWrapper = styled.div`
+  padding: 0px 40px;
+`;
+
 const WrapperContent = styled(Wrapper)`
   padding: 32px 39px;
   min-height: 0;
 
   @media (max-width: ${extraDesktopWidth}) {
-    padding: 27px 23px;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 26px 22px;
+    padding: 25px 20px;
   }
 `;
 

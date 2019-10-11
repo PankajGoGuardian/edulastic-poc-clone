@@ -57,24 +57,16 @@ Content.defaultProps = {
 };
 
 const LayoutContent = styled(Layout.Content)`
-  min-height: 100vh;
-  padding-bottom: 150px;
+  min-height: 75vh;
   width: 100%;
 `;
 
 const Wrapper = styled.div`
   height: 100%;
-  margin: 30px 30px;
+  margin: 15px 0px;
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background-color: ${props => props.theme.assignment.cardContainerBgColor};
-  padding: 5px 30px;
+  padding: 5px 15px;
   position: relative;
-  @media screen and (max-width: 1300px) {
-    padding: 5px 15px;
-  }
-
-  @media screen and (max-width: 767px) {
-    padding: 5px 30px;
-  }
 `;

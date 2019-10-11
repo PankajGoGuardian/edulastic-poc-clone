@@ -28,7 +28,9 @@ export const fontSizes = {
   size2: 22,
   size3: 16,
   size4: 14,
-  size5: 9
+  size5: 10,
+  size6: 12,
+  size7: 11
 };
 
 export const getZoomedTheme = (theme, zoomLevel) => {

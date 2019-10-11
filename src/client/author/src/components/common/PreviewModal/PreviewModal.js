@@ -149,7 +149,7 @@ class PreviewModal extends React.Component {
     }
     return true;
   }
-
+  //TODO consistency for question and resources for previeew
   render() {
     const {
       isVisible,
@@ -163,11 +163,11 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons,
       passage,
+      questions = keyBy(get(item, "data.questions", []), "id"),
       page
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
-    const questions = keyBy(get(item, "data.questions", []), "id");
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };

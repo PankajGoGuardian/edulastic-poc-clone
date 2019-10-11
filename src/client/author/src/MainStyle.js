@@ -203,4 +203,10 @@ export const MainContainer = styled.div`
       }
     }
   }
+  #messageContainer {
+    .ant-message-notice:first-child {
+      width: 80%;
+      margin: 0px 100px 0px 150px;
+    }
+  }
 `;

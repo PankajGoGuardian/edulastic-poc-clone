@@ -539,6 +539,7 @@ class Container extends PureComponent {
     const gradeSubject = { grades, subjects };
     return (
       <>
+        <div id="messageContainer" /> {/* wrapper for antd message component */}
         {this.renderModal()}
         <ShareModal
           isVisible={showShareModal}
@@ -549,7 +550,6 @@ class Container extends PureComponent {
           gradeSubject={gradeSubject}
         />
         <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
-
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}

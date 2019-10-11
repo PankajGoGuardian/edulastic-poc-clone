@@ -19,10 +19,10 @@ const CsvTable = ({
   const Component = tableToRender;
   const childrenRef = useRef(null);
 
-  let _pagination = { ...pagination };
+  let _pagination = pagination ? { ...pagination } : pagination;
   let _columns = [...columns];
 
-  if (typeof _pagination.pageSize === "undefined") {
+  if (pagination && typeof _pagination.pageSize === "undefined") {
     _pagination.pageSize = 10;
   }
 

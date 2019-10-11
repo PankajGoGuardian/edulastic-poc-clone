@@ -72,9 +72,7 @@ const StandardMasteryDetailsTable = ({ data, isCsvDownloading, onCsvConvert }) =
       columns={columns}
       colouredCellsNo={1}
       rightAligned={2}
-      pagination={{
-        pageSize: 5
-      }}
+      pagination={false}
     />
   );
 };

@@ -85,6 +85,7 @@ const PeerProgressAnalysis = ({
     key: "studentCount",
     title: "Student#",
     className: "studentCount",
+    align: "right",
     dataIndex: "studentCount"
   };
 

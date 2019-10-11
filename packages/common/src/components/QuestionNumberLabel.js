@@ -6,6 +6,7 @@ const QuestionNumberLabel = styled.section`
   font-weight: 700;
   margin-right: 6px;
   width: auto;
+  word-break: normal;
 `;
 
 export default QuestionNumberLabel;

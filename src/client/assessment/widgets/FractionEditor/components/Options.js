@@ -1,9 +1,11 @@
 import React from "react";
-import get from "lodash/get";
-import { Input, Row, Col, Select, Modal, Checkbox } from "antd";
+import PropTypes from "prop-types";
+// import get from "lodash/get";
+import { Row, Col, Select, Modal } from "antd";
 import { FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question/index";
+import Input from "./Input";
 import { Subtitle } from "../../../styled/Subtitle";
 import Label from "../styled/Label";
 
@@ -11,7 +13,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
   const { confirm } = Modal;
   const { Option } = Select;
   const { fractionProperties = {} } = item;
-  const fractionType = fractionProperties.fractionType;
+  const { fractionType } = fractionProperties;
   const handleFractionTypeChange = _fractionType => {
     if (_fractionType !== fractionType) {
       confirm({
@@ -81,10 +83,10 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <FlexContainer marginBottom="1em" justifyContent="flex-start">
               <Label>Count: </Label>
               <Input
-                value={fractionProperties.count}
                 type="number"
-                placeholder="Fraction Type"
-                onChange={e => handleDimensionChange("count", +e.target.value)}
+                value={fractionProperties.count}
+                placeholder="Fraction count"
+                onBlur={value => handleDimensionChange("count", +value)}
               />
             </FlexContainer>
           </Col>
@@ -96,7 +98,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
                 type="number"
                 value={fractionProperties.sectors || 7}
                 placeholder="Sectors"
-                onChange={e => handleDimensionChange("sectors", +e.target.value)}
+                onBlur={value => handleDimensionChange("sectors", +value)}
                 min={2}
               />
             </FlexContainer>
@@ -110,8 +112,8 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               <Input
                 type="number"
                 value={fractionProperties.count}
-                placeholder="Fraction Type"
-                onChange={e => handleDimensionChange("count", +e.target.value)}
+                placeholder="Fraction count"
+                onBlur={value => handleDimensionChange("count", +value)}
               />
             </FlexContainer>
           </Col>
@@ -123,7 +125,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
                 type="number"
                 value={fractionProperties.rows}
                 placeholder="Rows"
-                onChange={e => handleDimensionChange("rows", +e.target.value)}
+                onBlur={value => handleDimensionChange("rows", +value)}
                 min={1}
               />
             </FlexContainer>
@@ -136,7 +138,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
                 type="number"
                 value={fractionProperties.columns}
                 placeholder="Columns"
-                onChange={e => handleDimensionChange("columns", +e.target.value)}
+                onBlur={value => handleDimensionChange("columns", +value)}
                 min={1}
               />
             </FlexContainer>
@@ -145,6 +147,19 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
       )}
     </Question>
   );
+};
+
+Options.propTypes = {
+  fillSections: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+  produce: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
+  item: PropTypes.object
+};
+
+Options.defaultProps = {
+  item: {}
 };
 
 export default Options;

@@ -785,6 +785,7 @@ input[type="checkbox"] {
   flex: 1;
   text-align: left;
   color: #878282;
+  display: flex;
   align-items: center;
   height: 100%;
   padding: 8px 20px 8px 10px;

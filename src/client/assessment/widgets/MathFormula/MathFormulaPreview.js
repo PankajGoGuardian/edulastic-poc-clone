@@ -12,7 +12,6 @@ import {
   QuestionNumberLabel,
   getInnerValuesForStatic
 } from "@edulastic/common";
-import { response } from "@edulastic/constants";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -222,8 +221,6 @@ class MathFormulaPreview extends Component {
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
 
-    const { minWidth, minHeight } = response;
-
     const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
@@ -309,7 +306,7 @@ class MathFormulaPreview extends Component {
             justifyContent="flex-start"
             style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
           >
-            <MathInputWrapper width={cssStyles.width}>
+            <MathInputWrapper width={cssStyles.width} style={{ background: statusColor }}>
               {this.isStatic() && !disableResponse && (
                 <StaticMath
                   symbols={item.symbols}

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // import get from "lodash/get";
-import { Row, Col, Select, Modal } from "antd";
+import { Row, Col, Select, Modal, message } from "antd";
 import { FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question/index";
@@ -46,6 +46,11 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
   };
 
   const handleDimensionChange = (prop, value) => {
+    const regex = new RegExp("^[1-9]+([0-9]*)$", "g");
+    if (!regex.test(value)) {
+      message.error("Values can only be natural numbers greater than 0");
+      return null;
+    }
     setQuestionData(
       produce(item, draft => {
         draft.fractionProperties = {
@@ -83,7 +88,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <FlexContainer marginBottom="1em" justifyContent="flex-start">
               <Label>Count: </Label>
               <Input
-                type="number"
                 value={fractionProperties.count}
                 placeholder="Fraction count"
                 onBlur={value => handleDimensionChange("count", +value)}
@@ -95,7 +99,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               <Label>Sectors: </Label>
               <Input
                 size="default"
-                type="number"
                 value={fractionProperties.sectors || 7}
                 placeholder="Sectors"
                 onBlur={value => handleDimensionChange("sectors", +value)}
@@ -110,7 +113,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <FlexContainer marginBottom="1em" justifyContent="flex-start">
               <Label>Count: </Label>
               <Input
-                type="number"
                 value={fractionProperties.count}
                 placeholder="Fraction count"
                 onBlur={value => handleDimensionChange("count", +value)}
@@ -122,7 +124,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               <Label>Rows: </Label>
               <Input
                 size="default"
-                type="number"
                 value={fractionProperties.rows}
                 placeholder="Rows"
                 onBlur={value => handleDimensionChange("rows", +value)}
@@ -135,7 +136,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               <Label>Columns: </Label>
               <Input
                 size="default"
-                type="number"
                 value={fractionProperties.columns}
                 placeholder="Columns"
                 onBlur={value => handleDimensionChange("columns", +value)}

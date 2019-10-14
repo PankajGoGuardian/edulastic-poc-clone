@@ -10,6 +10,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import Divider from "../styled/Divider";
+import CustomInput from "./Input";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CorrectAnswerHeader } from "../styled/CorrectAnswerHeader";
 
@@ -45,16 +46,18 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
     }
   };
 
-  const handleCorrectAnswerPointsChange = e => {
-    if (+e.target.value >= 1) {
+  const handleCorrectAnswerPointsChange = score => {
+    if (+score > 0) {
       setQuestionData(
         produce(item, draft => {
           draft.validation.validResponse = {
             ...draft.validation.validResponse,
-            score: +e.target.value
+            score: +score
           };
         })
       );
+    } else {
+      message.error("Score should be a number greater than 0");
     }
   };
 
@@ -67,10 +70,10 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
     >
       <Subtitle>{t("common.correctAnswers.setCorrectAnswers")}</Subtitle>
       <CorrectAnswerHeader>
-        <Input
-          type="number"
+        <CustomInput
+          size="default"
           value={get(item, "validation.validResponse.score", 1)}
-          onChange={handleCorrectAnswerPointsChange}
+          onBlur={handleCorrectAnswerPointsChange}
           style={{ width: "140px", marginRight: "25px", background: "#F8F8FB" }}
         />
         <span>{t("component.correctanswers.points")}</span>

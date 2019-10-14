@@ -1,33 +1,26 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { Input, message } from "antd";
+import { Input } from "antd";
 
-const CustomInput = ({ size, type, value, placeholder, onBlur }) => {
+const CustomInput = ({ size, type, value, placeholder, onBlur, style }) => {
   const [inputValue, changeInputValue] = useState(value);
 
   const handleInputChange = event => {
     changeInputValue(event.target.value);
   };
 
-  const handleInputBlur = () => {
-    if (type === "number") {
-      const regex = new RegExp("^[1-9]+([0-9]*)$", "g");
-      if (!regex.test(inputValue)) {
-        message.error("Values can only be natural numbers greater than 0");
-        return null;
-      }
-    }
-    onBlur(inputValue);
-  };
+  const handleInputBlur = () => onBlur(inputValue);
 
   return (
     <Input
       size={size}
+      type={type}
       onChange={handleInputChange}
       onBlur={handleInputBlur}
       value={inputValue}
       placeholder={placeholder}
+      style={style}
     />
   );
 };
@@ -37,14 +30,16 @@ CustomInput.propTypes = {
   type: PropTypes.string,
   value: PropTypes.number.isRequired,
   placeholder: PropTypes.string,
-  onBlur: PropTypes.func
+  onBlur: PropTypes.func,
+  style: PropTypes.object
 };
 
 CustomInput.defaultProps = {
   size: "default",
   type: "text",
   placeholder: "",
-  onBlur: () => {}
+  onBlur: () => {},
+  style: {}
 };
 
 export default CustomInput;

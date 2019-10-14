@@ -15,7 +15,7 @@ import { questionType as constantsQuestionType } from "@edulastic/constants";
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
-import { getViewSelector } from "../../../src/selectors/view";
+import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
 import { ButtonBar, SecondHeadBar, ButtonAction } from "../../../src/components/common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
@@ -58,7 +58,6 @@ class Container extends Component {
     this.state = {
       showModal: false,
       saveClicked: false,
-      previewTab: "clear",
       showHints: false
     };
 
@@ -141,15 +140,11 @@ class Container extends Component {
     }
 
     changePreview(previewTab);
-
-    this.setState({
-      previewTab
-    });
   };
 
   renderQuestion = () => {
-    const { view, question } = this.props;
-    const { previewTab, saveClicked, showHints } = this.state;
+    const { view, question, preview } = this.props;
+    const { saveClicked, showHints } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
@@ -161,7 +156,7 @@ class Container extends Component {
           <QuestionWrapper
             type={questionType}
             view={view}
-            previewTab={previewTab}
+            previewTab={preview}
             changePreviewTab={this.handleChangePreviewTab}
             key={questionType && view && saveClicked}
             data={question}
@@ -238,8 +233,8 @@ class Container extends Component {
   };
 
   renderButtons = () => {
-    const { view, question, authorQuestions } = this.props;
-    const { previewTab, showHints } = this.state;
+    const { view, question, authorQuestions, preview } = this.props;
+    const { showHints } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
 
     const isShowAnswerVisible =
@@ -257,7 +252,7 @@ class Container extends Component {
         view={view}
         showCheckButton={isShowAnswerVisible || checkAnswerButton}
         allowedAttempts={checkAttempts}
-        previewTab={previewTab}
+        previewTab={preview}
         showSettingsButton={false}
         isShowAnswerVisible={isShowAnswerVisible}
       />
@@ -317,16 +312,16 @@ class Container extends Component {
       onSaveScrollTop,
       savedWindowScrollTop,
       setShowSettings,
-      saveItem
+      saveItem,
+      preview
     } = this.props;
-    const { previewTab } = this.state;
 
     const commonProps = {
       onChangeView: this.handleChangeView,
       onShowSource: this.handleShowSource,
       changePreviewTab: this.handleChangePreviewTab,
       view,
-      previewTab,
+      preview,
       isTestFlow,
       withLabels: true
     };
@@ -413,6 +408,7 @@ class Container extends Component {
 
 Container.propTypes = {
   view: PropTypes.string.isRequired,
+  preview: PropTypes.string.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
@@ -456,6 +452,7 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
+      preview: getPreviewSelector(state),
       question: getCurrentQuestionSelector(state),
       testItemId: getItemIdSelector(state),
       itemFromState: getItemSelector(state),

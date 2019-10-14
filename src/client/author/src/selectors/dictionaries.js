@@ -83,10 +83,27 @@ export const standardsSelector = createSelector(
 );
 export const getStandardsListSelector = createSelector(
   standardsSelector,
-  state => ({
-    elo: state.elo.sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1)),
-    tlo: state.tlo.sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1))
-  })
+  state => {
+    const elo = [...state.elo].sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1));
+    const mapElosByStandard = { other: [], kindergarten: [] };
+    for (let item of elo) {
+      // Assuming that all the elo identifier starting with k will be kindergarten
+      if (
+        item?.identifier
+          ?.trim()
+          ?.toLowerCase()
+          ?.startsWith("k")
+      ) {
+        mapElosByStandard.kindergarten.push(item);
+      } else {
+        mapElosByStandard.other.push(item);
+      }
+    }
+    return {
+      elo: [...mapElosByStandard.kindergarten, ...mapElosByStandard.other],
+      tlo: [...state.tlo].sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1))
+    };
+  }
 );
 export const getRecentStandardsListSelector = createSelector(
   stateSelector,

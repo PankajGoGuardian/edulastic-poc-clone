@@ -119,6 +119,7 @@ class Graph extends Component {
     return {
       fontSizeList: getFontSizeList(),
       setOptions: this.handleOptionsChange,
+      setCanvas: this.handleCanvasChange,
       setValidation: this.handleValidationChange,
       setControls: this.handleControlbarChange,
       setToolbar: this.handleToolbarChange,
@@ -320,18 +321,26 @@ class Graph extends Component {
                 setCanvas={this.handleCanvasChange}
                 fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
               />
-              <GraphAnswers
-                view={view}
-                graphData={item}
-                previewTab={previewTab}
-                onAddAltResponses={this.handleAddAltResponses}
-                getIgnoreLabelsOptions={getIgnoreLabelsOptions}
-                onRemoveAltResponses={this.handleRemoveAltResponses}
-                handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
-                getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
-                handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
-                handleNumberlineChange={this.handleNumberlineChange}
-              />
+              <Question
+                section="main"
+                label="Set Correct Answer(s)"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                advancedAreOpen
+              >
+                <GraphAnswers
+                  view={view}
+                  graphData={item}
+                  previewTab={previewTab}
+                  onAddAltResponses={this.handleAddAltResponses}
+                  getIgnoreLabelsOptions={getIgnoreLabelsOptions}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
+                  getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
+                  handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
+                  handleNumberlineChange={this.handleNumberlineChange}
+                />
+              </Question>
               {graphType !== "firstQuadrant" && graphType !== "quadrants" && (
                 <Question
                   section="main"

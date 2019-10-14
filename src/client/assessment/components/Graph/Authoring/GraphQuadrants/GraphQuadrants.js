@@ -6,22 +6,11 @@ import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, PaddingDiv } from "@edulastic/common";
-import { StyledTextField } from "../../common/styled_components";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
-import { Row } from "../../../../styled/WidgetOptions/Row";
-import { Col } from "../../../../styled/WidgetOptions/Col";
-import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
-
-const X_RATIO = "xRatio";
-const Y_RATIO = "yRatio";
-const X_MIN = "xMin";
-const X_MAX = "xMax";
-const Y_MIN = "yMin";
-const Y_MAX = "yMax";
 
 class GraphQuadrants extends Component {
   isQuadrantsPlacement = () => {
@@ -33,37 +22,6 @@ class GraphQuadrants extends Component {
   onChangeQuestion = stimulus => {
     const { graphData, setQuestionData } = this.props;
     setQuestionData({ ...graphData, stimulus });
-  };
-
-  handleCanvasChange = event => {
-    const { value, name } = event.target;
-    const { graphData, setQuestionData } = this.props;
-    const { canvas } = graphData;
-
-    canvas[name] = value;
-    canvas[X_RATIO] = 1;
-    canvas[Y_RATIO] = 1;
-    setQuestionData({ ...graphData, canvas });
-  };
-
-  handleRatioChange = event => {
-    let { value } = event.target;
-    const { name } = event.target;
-    const { graphData, setQuestionData } = this.props;
-    const { canvas } = graphData;
-
-    value = parseFloat(value);
-    value = value > 0 ? value : 1;
-    if (name === X_RATIO) {
-      canvas[X_MIN] = +(parseFloat(canvas[X_MIN]) * (value / canvas[X_RATIO])).toFixed(4);
-      canvas[X_MAX] = +(parseFloat(canvas[X_MAX]) * (value / canvas[X_RATIO])).toFixed(4);
-    } else if (name === Y_RATIO) {
-      canvas[Y_MIN] = +(parseFloat(canvas[Y_MIN]) * (value / canvas[Y_RATIO])).toFixed(4);
-      canvas[Y_MAX] = +(parseFloat(canvas[Y_MAX]) * (value / canvas[Y_RATIO])).toFixed(4);
-    }
-
-    canvas[name] = value;
-    setQuestionData({ ...graphData, canvas });
   };
 
   handleCanvasBlur = (event, defaultValue) => {
@@ -132,7 +90,6 @@ class GraphQuadrants extends Component {
 
   render() {
     const { t, graphData, fillSections, cleanSections, fontSize } = this.props;
-    const { canvas } = graphData;
 
     return (
       <div>
@@ -153,93 +110,6 @@ class GraphQuadrants extends Component {
             border="border"
             fontSize={fontSize}
           />
-        </Question>
-        <Question
-          section="main"
-          label="Graph Parameters"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          advancedAreOpen
-        >
-          <PaddingDiv>
-            <Subtitle>{t("component.graphing.graphparameters")}</Subtitle>
-            <Row gutter={60}>
-              <Col md={12}>
-                <Label>X min</Label>
-                <StyledTextField
-                  width="100%"
-                  type="number"
-                  name={X_MIN}
-                  value={canvas[X_MIN]}
-                  onChange={this.handleCanvasChange}
-                  onBlur={event => this.handleCanvasBlur(event, -10)}
-                  disabled={false}
-                  step={0.1}
-                />
-                <Label>X max</Label>
-                <StyledTextField
-                  width="100%"
-                  type="number"
-                  name={X_MAX}
-                  value={canvas[X_MAX]}
-                  onChange={this.handleCanvasChange}
-                  onBlur={event => this.handleCanvasBlur(event, 10)}
-                  disabled={false}
-                  step={0.1}
-                />
-                <Label>X Axis : Y Axis</Label>
-                <StyledTextField
-                  marginBottom="0"
-                  marginRight="0"
-                  width="25%"
-                  type="number"
-                  name={X_RATIO}
-                  value={canvas[X_RATIO]}
-                  onChange={this.handleRatioChange}
-                  onBlur={event => this.handleCanvasBlur(event, 1)}
-                  disabled={false}
-                  step={0.1}
-                />
-                <span style={{ margin: "0 4px" }}>:</span>
-                <StyledTextField
-                  marginBottom="0"
-                  width="25%"
-                  type="number"
-                  name={Y_RATIO}
-                  value={canvas[Y_RATIO]}
-                  onChange={this.handleRatioChange}
-                  onBlur={event => this.handleCanvasBlur(event, 1)}
-                  disabled={false}
-                  step={0.1}
-                />
-              </Col>
-              <Col md={12}>
-                <Label>Y min</Label>
-                <StyledTextField
-                  width="100%"
-                  type="number"
-                  name={Y_MIN}
-                  value={canvas[Y_MIN]}
-                  onChange={this.handleCanvasChange}
-                  onBlur={event => this.handleCanvasBlur(event, -10)}
-                  disabled={false}
-                  step={0.1}
-                />
-                <Label>Y max</Label>
-                <StyledTextField
-                  marginBottom="0"
-                  width="100%"
-                  type="number"
-                  name={Y_MAX}
-                  value={canvas[Y_MAX]}
-                  onChange={this.handleCanvasChange}
-                  onBlur={event => this.handleCanvasBlur(event, 10)}
-                  disabled={false}
-                  step={0.1}
-                />
-              </Col>
-            </Row>
-          </PaddingDiv>
         </Question>
         {this.isQuadrantsPlacement() && (
           <Question

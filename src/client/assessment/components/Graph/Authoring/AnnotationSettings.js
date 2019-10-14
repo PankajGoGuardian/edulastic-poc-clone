@@ -26,7 +26,7 @@ class AnnotationSettings extends Component {
 
     return (
       <Fragment>
-        <Subtitle>Annotation</Subtitle>
+        <Subtitle>Labels</Subtitle>
         <Row gutter={60}>
           <Col md={12}>
             <Label>Title</Label>

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
-import { ModalFormItem } from "./styled";
+import { ModalFormItem, StyledModal } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 
@@ -174,7 +174,7 @@ class AddClassModal extends Component {
 
     const { getFieldDecorator } = this.props.form;
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Add Class"
         onOk={this.onAddClass}
@@ -345,7 +345,7 @@ class AddClassModal extends Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

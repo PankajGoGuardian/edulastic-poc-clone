@@ -4,7 +4,7 @@ import moment from "moment";
 import { debounce } from "lodash";
 const Option = Select.Option;
 import selectsData from "../../../../TestPage/components/common/selectsData";
-import { ModalFormItem } from "./styled";
+import { ModalFormItem, StyledModal } from "./styled";
 const { allGrades, allSubjects } = selectsData;
 import { tagsApi } from "@edulastic/api";
 class EditClassModal extends Component {
@@ -22,7 +22,7 @@ class EditClassModal extends Component {
         const saveClassData = {
           name: row.name,
           type: "class",
-          owners: row.teacher,
+          owners: [row.teacher],
           parent,
           districtId,
           institutionId: row.institutionId,
@@ -138,7 +138,7 @@ class EditClassModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const {} = this.props;
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Edit Class"
         onOk={this.onSaveClass}
@@ -266,11 +266,7 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: ownersData
-              })(
-                <Select mode="multiple" placeholder="Search by Username">
-                  {teacherOptions}
-                </Select>
-              )}
+              })(<Select placeholder="Search by Username">{teacherOptions}</Select>)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -298,7 +294,7 @@ class EditClassModal extends Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

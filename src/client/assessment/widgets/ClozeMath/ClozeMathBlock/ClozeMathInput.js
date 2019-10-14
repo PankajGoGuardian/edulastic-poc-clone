@@ -197,7 +197,7 @@ class ClozeMathInput extends React.Component {
     const { responseContainers, item, uiStyles = {} } = resprops;
     const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${DefaultDimensions.minWidth}px`;
+    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);

@@ -278,7 +278,7 @@ class SideMenu extends Component {
                       <div>
                         {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
                         <StyledTooltip title={userName}>
-                          <div style={{ paddingLeft: 11 }}>
+                          <div style={{ paddingLeft: 11, width: "140px" }}>
                             {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
                             {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
                           </div>
@@ -730,6 +730,11 @@ const QuestionButton = styled.div`
 const UserName = styled.div`
   font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
   color: ${props => props.theme.sideMenu.userInfoNameTextColor};
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 80%;
 `;
 
 const UserType = styled.div`

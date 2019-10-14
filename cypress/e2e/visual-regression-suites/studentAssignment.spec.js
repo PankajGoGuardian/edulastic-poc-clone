@@ -38,7 +38,7 @@ const assignmentQue = {
 };
 const queKeys = Object.keys(assignmentQue);
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`Assessment Player`, () => {
     before("set token", () => {
       cy.fixture("users").then(users => {
@@ -57,7 +57,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           test.getQueDropDown().click();
           cy.contains(`${queNum}/ ${queKeys.length}`).click({ force: true });
           cy.wait(2000); // allow que to render before taking screenshot
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
           });
@@ -70,7 +70,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.contains(`Question ${queKeys.length}/ ${queKeys.length}`).click({ force: true });
         cy.wait(2000);
         test.clickOnNext();
-        cy.matchImageSnapshot();
+        cy.matchImageSnapshotWithSize();
         cy.isPageScrollPresent().then(({ hasScroll }) => {
           if (hasScroll) cy.scrollPageAndMatchImageSnapshots(50);
         });

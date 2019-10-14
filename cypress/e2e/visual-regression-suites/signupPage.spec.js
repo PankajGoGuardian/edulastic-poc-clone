@@ -26,16 +26,16 @@ function setSignupStatus(signUpState) {
   });
 }
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before(() => cy.clearToken());
   context(`getStarted page`, () => {
     const page = "getStarted";
     SCREEN_SIZES.forEach(size => {
-      it(`should match with base screenshot when resolution is '${size}'`, () => {
+      it(`- when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${page}`);
         cy.get("span").should("be.visible");
-        cy.matchImageSnapshot();
+        cy.matchImageSnapshotWithSize();
       });
     });
   });
@@ -43,11 +43,11 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
   PAGE.forEach(page => {
     context(`${page} page`, () => {
       SCREEN_SIZES.forEach(size => {
-        it(`should match with base screenshot when resolution is '${size}'`, () => {
+        it(`- when resolution is '${size}'`, () => {
           cy.setResolution(size);
           cy.visit(`/${page}`);
           cy.get("button").should("be.visible");
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
         });
       });
     });
@@ -75,7 +75,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           cy.visit(`/${PAGE}`);
           cy.wait("@schoolSearch");
           cy.contains("Collaborate with your colleagues and more").should("be.visible");
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
         });
 
         // skipping below test as option is now hidden temperarely
@@ -85,7 +85,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           // eslint-disable-next-line cypress/no-unnecessary-waiting
           cy.wait(500);
           cy.get("button").contains("Request a new school");
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
         });
       });
     });
@@ -104,7 +104,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
             .should("be.visible");
           // eslint-disable-next-line cypress/no-unnecessary-waiting
           cy.wait(500);
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
         });
       });
     });

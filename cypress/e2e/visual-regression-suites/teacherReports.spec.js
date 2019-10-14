@@ -57,7 +57,7 @@ const standardPerfReport = [
 
 const sideBar = new TeacherSideBar();
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}-`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}-`, () => {
   before("set token", () => {
     cy.login("teacher", "newtea01@dist01.com", "snapwiz"); // setting auth token for teacher user
   });
@@ -78,7 +78,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
             if (hasScroll) cy.window().scrollTo("top");
           });
           cy.wait(1000);
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.scrollPageAndMatchImageSnapshots(100);
           });
@@ -99,7 +99,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
             if (hasScroll) cy.window().scrollTo("top");
           });
           cy.wait(1000);
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.scrollPageAndMatchImageSnapshots(100);
           });
@@ -121,7 +121,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
             if (hasScroll) cy.window().scrollTo("top");
           });
           cy.wait(1000);
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.scrollPageAndMatchImageSnapshots(100);
           });

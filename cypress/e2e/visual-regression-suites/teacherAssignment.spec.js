@@ -5,7 +5,7 @@ import { screenSizes } from "../framework/constants/visual";
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const liveClassboardPage = new LiveClassboardPage();
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.setToken("teacher.1.loadtest.k6test_jul26_4@snapwiz.com"); // setting auth token for teacher user
   });
@@ -22,7 +22,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.get('[data-cy="PresentationIcon"]')
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
     });
   });
@@ -40,7 +40,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           .contains("Graded")
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
 
       it(`'student view' when resolution is '${size}'`, () => {
@@ -63,7 +63,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         //   .should("be.visible")
         //   .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
 
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
 
       it(`'question view' when resolution is '${size}'`, () => {
@@ -82,7 +82,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           .contains("This is math question")
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
     });
   });
@@ -99,7 +99,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         if (size[0] < screenSizes.MAX_TAB_WIDTH)
           cy.contains("Question & Standard").should("have.length.greaterThan", 0);
         else cy.contains("Score Grid").should("have.length.greaterThan", 0); // ensure the dom elements are rendered
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
     });
   });
@@ -116,7 +116,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.contains("Standard: ")
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
 
         // scroll and take screenshot for mobile
         cy.isPageScrollPresent().then(({ hasScroll }) => {

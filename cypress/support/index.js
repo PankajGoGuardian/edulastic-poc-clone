@@ -3,10 +3,13 @@ import "./commands";
 import "./apiCommands";
 import "cypress-promise";
 import initGlobleRoutes from "./globalRoutes";
+import FileHelper from "../e2e/framework/util/fileHelper";
 
 require("cypress-xpath");
 
 const addContext = require("mochawesome/addContext");
+
+const screenResolutions = Cypress.config("SCREEN_SIZES");
 
 /*
  *  Global before hook to delete testdata
@@ -31,18 +34,17 @@ Cypress.on("uncaught:exception", () => false);
 Cypress.on("test:after:run", (test, runnable) => {
   if (test.state === "failed") {
     const imgError = test.err.stack.includes("saved snapshot");
-    let screenshotFileName = test.title;
-    let currentTestContext = runnable;
+    let screenshotFileName = FileHelper.getTestFullName();
+    let width;
 
-    while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
-      screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
-      currentTestContext = currentTestContext.parent;
+    for (const res of screenResolutions) {
+      width = screenshotFileName.includes(res) ? res[0] : undefined;
+      if (width) break;
     }
 
-    screenshotFileName = screenshotFileName.replace(/[\/\\<>:]/g, "").slice(0, 220);
     screenshotFileName = imgError ? `${screenshotFileName}.diff.png` : `${screenshotFileName} (failed).png`;
     const imgPath = imgError
-      ? `../snapshots/${Cypress.spec.name}/__diff_output__/${screenshotFileName}`
+      ? `../snapshots/${Cypress.spec.name}/${width}/__diff_output__/${screenshotFileName}`
       : `../screenshots/${Cypress.spec.name}/${screenshotFileName}`;
     addContext({ test }, imgPath);
   }

@@ -32,7 +32,7 @@ const assignmentQue = {
   27: "Multiple choice - multiple response"
 };
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   const pageURL = "/home/reports";
   before("set token", () => {
     cy.fixture("users").then(users => {
@@ -54,7 +54,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.setResolution(size);
         cy.visit(`/${pageURL}`);
         cy.wait("@testactivity");
-        cy.matchImageSnapshot();
+        cy.matchImageSnapshotWithSize();
       });
     });
   });
@@ -82,7 +82,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.window().scrollTo("top");
           });
-          cy.matchImageSnapshot();
+          cy.matchImageSnapshotWithSize();
           cy.isPageScrollPresent().then(({ hasScroll }) => {
             if (hasScroll) cy.scrollPageAndMatchImageSnapshots(100);
           });

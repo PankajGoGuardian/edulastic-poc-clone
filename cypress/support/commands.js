@@ -5,6 +5,9 @@ import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
+import FileHelper from "../e2e/framework/util/fileHelper";
+
+const screenResolutions = Cypress.config("SCREEN_SIZES");
 
 addMatchImageSnapshotCommand({
   failureThreshold: 100, // threshold for entire image
@@ -45,6 +48,22 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
+Cypress.Commands.add("matchImageSnapshotWithSize", filename => {
+  cy.wait(300);
+  return cy.document().then(doc => {
+    const testName = FileHelper.getTestFullName();
+    let width;
+
+    for (const res of screenResolutions) {
+      width = testName.includes(res) ? res[0] : undefined;
+      if (width) break;
+    }
+
+    const screenshotFile = `${width || doc.body.clientWidth}/${filename || testName}`;
+    cy.matchImageSnapshot(screenshotFile);
+  });
+});
+
 Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
   return cy.document().then(doc => {
     const scrollHeight = pageHeight || doc.body.scrollHeight;
@@ -65,20 +84,14 @@ Cypress.Commands.add("scrollPageAndMatchImageSnapshots", (scrollOffset, pageHeig
     if (hasScroll) {
       let scrollNum = 1;
       let scrollInPixel = scrollSize;
-      let currentTestContext = Cypress.mocha.getRunner().currentRunnable;
-      let screenshotFileName = currentTestContext.title;
-
-      while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
-        screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
-        currentTestContext = currentTestContext.parent;
-      }
+      const testName = FileHelper.getTestFullName();
 
       while (scrollNum <= minScrolls) {
         if (pageContext) {
           cy.wrap(pageContext).scrollTo(0, scrollInPixel);
         } else cy.scrollTo(0, scrollInPixel);
         cy.wait(1000);
-        cy.matchImageSnapshot(`${screenshotFileName} - scroll-${scrollNum}`);
+        cy.matchImageSnapshotWithSize(`${testName}-scroll-${scrollNum}`);
         scrollNum += 1;
         scrollInPixel += scrollSize;
       }

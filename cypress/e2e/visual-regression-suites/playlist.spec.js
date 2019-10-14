@@ -7,7 +7,7 @@ const search = new SearchFilters();
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const library = new TestLibrary();
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.fixture("users").then(users => {
       const user = users["visual-regression"].teacher;
@@ -23,7 +23,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@playlists");
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
     });
   });
@@ -65,7 +65,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
 
         cy.get('[data-cy="listView"]').click({ force: true });
         search.scrollFiltersToTop();
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
 
       it(`Tile view, when resolution is '${size}'`, () => {
@@ -73,7 +73,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.get('[data-cy="tileView"]').click();
         cy.contains("View").should("be.visible");
         search.scrollFiltersToTop();
-        cy.matchImageSnapshot(); // take screenshot and compare
+        cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
     });
   });

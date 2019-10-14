@@ -2,7 +2,7 @@ import FileHelper from "../framework/util/fileHelper";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`skill report`, () => {
     const pageURL = "home/skill-report";
 
@@ -19,7 +19,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.visit(`/${pageURL}`);
         cy.wait("@skillReport");
         cy.contains("Skill Summary").should("have.length.greaterThan", 0);
-        cy.matchImageSnapshot(); // take screenshot and comapare
+        cy.matchImageSnapshotWithSize(); // take screenshot and comapare
       });
     });
   });

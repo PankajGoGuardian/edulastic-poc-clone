@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { withNamespaces } from "@edulastic/localization";
+import { FlexContainer } from "@edulastic/common";
 
 import { Container } from "./styled/Container";
 import { ZoneTitle } from "./styled/ZoneTitle";
@@ -42,15 +43,11 @@ const StyledDropZone = ({
     ) : (
       thumb || (
         <Fragment>
-          <div
-            style={{
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%"
-            }}
+          <FlexContainer
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: "100%", width: "100%" }}
           >
             <IconUpload isDragActive={isDragActive} />
             <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
@@ -59,7 +56,7 @@ const StyledDropZone = ({
               {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
               {maxSize}KB MAX.)
             </ZoneTitle>
-          </div>
+          </FlexContainer>
           {children}
         </Fragment>
       )

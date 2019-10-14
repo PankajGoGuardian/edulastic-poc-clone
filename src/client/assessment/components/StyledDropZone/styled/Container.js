@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
+import { lightBlue7 } from "@edulastic/colors";
 
 export const Container = styled(FlexContainer)`
   height: 616px;
@@ -10,4 +11,10 @@ export const Container = styled(FlexContainer)`
     isDragActive
       ? `2px solid ${theme.styledDropZone.containerDragActiveColor}`
       : `1px solid ${theme.styledDropZone.containerColor}`};
+  &:focus {
+    border: 1px solid ${lightBlue7};
+  }
+  &:active {
+    border: 1px solid ${lightBlue7};
+  }
 `;

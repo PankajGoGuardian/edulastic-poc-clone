@@ -114,7 +114,6 @@ class ComposeQuestion extends Component {
     };
 
     const thumb = image[SOURCE] && <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
-
     return (
       <Question
         section="main"
@@ -168,9 +167,8 @@ class ComposeQuestion extends Component {
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div
               style={{
-                maxWidth: canvasDimensions.maxWidth,
-                maxHeight: canvasDimensions.maxHeight,
-                margin: "0 auto"
+                margin: "0 auto",
+                outline: "none"
               }}
               data-cy="dropzone-image-container"
               {...getRootProps()}
@@ -184,7 +182,9 @@ class ComposeQuestion extends Component {
                   alignItems: "flex-start !important",
                   minHeight: maxHeight,
                   minWidth: maxWidth,
-                  height: "unset"
+                  maxWidth: canvasDimensions.maxWidth,
+                  maxHeight: canvasDimensions.maxHeight,
+                  margin: "0 auto"
                 }}
                 loading={loading}
                 isDragActive={isDragActive}

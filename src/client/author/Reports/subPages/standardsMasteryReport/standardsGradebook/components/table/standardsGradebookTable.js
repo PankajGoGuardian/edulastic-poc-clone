@@ -255,12 +255,12 @@ export const StandardsGradebookTable = ({
     <>
       <StyledCard>
         <Row type="flex" justify="start">
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={10} lg={10} xl={12}>
             <StyledH3>Standards Mastery By {idToName[tableDdFilters.compareBy]}</StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={14} lg={14} xl={12}>
             <Row className="control-dropdown-row">
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+              <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}
                   by={compareByDropDownData[0]}
@@ -269,7 +269,7 @@ export const StandardsGradebookTable = ({
                   comData={"compareBy"}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+              <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
                   by={dropDownFormat.analyseByDropDownData[0]}

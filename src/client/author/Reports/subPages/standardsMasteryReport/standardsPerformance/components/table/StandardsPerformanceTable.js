@@ -172,12 +172,12 @@ const StandardsPerformanceTable = ({
   return (
     <>
       <Row type="flex" justify="start" className={className}>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+        <Col xs={24} sm={24} md={11} lg={11} xl={12}>
           <StyledH3>Domain Mastery Details by School</StyledH3>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+        <Col xs={24} sm={24} md={13} lg={13} xl={12}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
               <ControlDropDown
                 prefix={"Compare by "}
                 data={compareByData}
@@ -185,7 +185,7 @@ const StandardsPerformanceTable = ({
                 selectCB={bindOnChange("compareBy", compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8}>
               <ControlDropDown
                 prefix={"Analyse by "}
                 data={analyseByData}

@@ -125,14 +125,14 @@ const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penalty) =
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { validResponse, altResponses, scoringType, rounding, penalty = 0 } = validation;
+  const { validResponse, altResponses, scoringType, rounding = "none", penalty = 0 } = validation;
 
   let answers = [validResponse];
   if (altResponses) {
     answers = answers.concat([...altResponses]);
   }
 
-  const roundingIsNone = rounding && rounding === "none";
+  const roundingIsNone = rounding === "none";
 
   switch (scoringType) {
     case ScoringType.PARTIAL_MATCH:

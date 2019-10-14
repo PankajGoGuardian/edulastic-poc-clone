@@ -130,7 +130,8 @@ var evaluator = function evaluator(_ref) {
   var validResponse = validation.validResponse,
     altResponses = validation.altResponses,
     scoringType = validation.scoringType,
-    rounding = validation.rounding,
+    _validation$rounding = validation.rounding,
+    rounding = _validation$rounding === void 0 ? "none" : _validation$rounding,
     _validation$penalty = validation.penalty,
     penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
   var answers = [validResponse];
@@ -139,7 +140,7 @@ var evaluator = function evaluator(_ref) {
     answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
   }
 
-  var roundingIsNone = rounding && rounding === "none";
+  var roundingIsNone = rounding === "none";
 
   switch (scoringType) {
     case _scoring.ScoringType.PARTIAL_MATCH:

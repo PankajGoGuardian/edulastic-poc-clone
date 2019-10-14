@@ -10,6 +10,7 @@ import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import Hints from "@edulastic/common/src/components/Hints";
 import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 import {
   getItemDetailSelectorForPreview,
@@ -37,7 +38,8 @@ class PreviewModal extends React.Component {
     this.state = {
       flag: false,
       scrollElement: null,
-      passageLoading: false
+      passageLoading: false,
+      showHints: false
     };
   }
 
@@ -149,6 +151,13 @@ class PreviewModal extends React.Component {
     }
     return true;
   }
+
+  toggleHints = () => {
+    this.setState(prevState => ({
+      showHints: !prevState.showHints
+    }));
+  };
+
   //TODO consistency for question and resources for previeew
   render() {
     const {
@@ -161,13 +170,12 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons,
       passage,
       questions = keyBy(get(item, "data.questions", []), "id"),
       page
     } = this.props;
 
-    const { scrollElement, passageLoading } = this.state;
+    const { scrollElement, passageLoading, showHints } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -222,30 +230,35 @@ class PreviewModal extends React.Component {
                 <Spin tip="" />
               </ProgressContainer>
             ) : (
-              <AuthorTestItemPreview
-                cols={allRows}
-                preview={preview}
-                previewTab={preview}
-                verticalDivider={item.verticalDivider}
-                scrolling={item.scrolling}
-                style={{ width: "100%" }}
-                questions={allWidgets}
-                viewComponent="authorPreviewPopup"
-                handleCheckAnswer={checkAnswer}
-                handleShowAnswer={showAnswer}
-                allowDuplicate={allowDuplicate}
-                isEditable={isEditable && authorHasPermission}
-                isPassage={isPassage}
-                passageTestItems={passageTestItems}
-                handleDuplicateTestItem={this.handleDuplicateTestItem}
-                editTestItem={this.editTestItem}
-                clearView={this.clearView}
-                goToItem={this.goToItem}
-                isAnswerBtnVisible={isAnswerBtnVisible}
-                item={item}
-                page={page}
-                showCollapseBtn
-              />
+              <>
+                <AuthorTestItemPreview
+                  cols={allRows}
+                  preview={preview}
+                  previewTab={preview}
+                  verticalDivider={item.verticalDivider}
+                  scrolling={item.scrolling}
+                  style={{ width: "100%" }}
+                  questions={allWidgets}
+                  viewComponent="authorPreviewPopup"
+                  handleCheckAnswer={checkAnswer}
+                  handleShowAnswer={showAnswer}
+                  handleShowHints={this.toggleHints}
+                  showHints={showHints}
+                  allowDuplicate={allowDuplicate}
+                  isEditable={isEditable && authorHasPermission}
+                  isPassage={isPassage}
+                  passageTestItems={passageTestItems}
+                  handleDuplicateTestItem={this.handleDuplicateTestItem}
+                  editTestItem={this.editTestItem}
+                  clearView={this.clearView}
+                  goToItem={this.goToItem}
+                  isAnswerBtnVisible={isAnswerBtnVisible}
+                  item={item}
+                  page={page}
+                  showCollapseBtn
+                />
+                {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+              </>
             )}
           </QuestionWrapper>
         </ModalContentArea>
@@ -268,7 +281,6 @@ PreviewModal.propTypes = {
   showAnswer: PropTypes.func,
   clearAnswers: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
-  showEvaluationButtons: PropTypes.bool,
   testId: PropTypes.string.isRequired,
   history: PropTypes.any.isRequired
 };
@@ -278,8 +290,7 @@ PreviewModal.defaultProps = {
   showAnswer: () => {},
   gotoSummary: () => {},
   loading: false,
-  isEditable: false,
-  showEvaluationButtons: false
+  isEditable: false
 };
 
 const enhance = compose(

@@ -107,6 +107,7 @@ class AssessmentPlayerSimple extends React.Component {
             dropdownOptions={dropdownOptions}
             onCheckAnswer={this.onCheckAnswer}
             answerChecksUsedForItem={answerChecksUsedForItem}
+            items={items}
             settings={settings}
             t={t}
             questionsLeftToAttemptCount={questionsLeftToAttemptCount}

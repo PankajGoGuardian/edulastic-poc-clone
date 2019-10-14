@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { IconSettings } from "@edulastic/icons";
-import { darkGrey, themeColor } from "@edulastic/colors";
+import { darkGrey, themeColor, white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -52,9 +52,10 @@ class ButtonAction extends Component {
       allowedAttempts,
       showPublishButton,
       showSettingsButton,
-      isShowAnswerVisible
+      isShowAnswerVisible,
+      handleShowHints,
+      showHints
     } = this.props;
-
     return (
       <Container showPublishButton={showPublishButton}>
         <DisplayBlock>
@@ -83,6 +84,16 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
+              <Button
+                style={showHints ? { background: themeColor, height: "25px" } : { height: "25px" }}
+                htmlType="button"
+                onClick={handleShowHints}
+                data-cy="show-answers-btn"
+              >
+                <ButtonLink color="primary" style={showHints ? { color: white } : { color: themeColor }}>
+                  <LabelText>HINTS</LabelText>
+                </ButtonLink>
+              </Button>
               {showCheckButton && (
                 <Button
                   style={{ height: "25px" }}

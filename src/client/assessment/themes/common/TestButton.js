@@ -8,6 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import get from "lodash/get";
 import ButtonLink from "./ButtonLink";
+import { showHintButton } from "../../utils/test";
 
 const customizeIcon = icon => styled(icon)`
   fill: ${props => props.theme.header.headerButtonColor};
@@ -26,37 +27,7 @@ const TestButton = ({
   handleClick
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
-  /**
-   * input
-   * questions: [
-   * {
-   *  ...restProps,
-   *  hints: [{label: "", value: ""}]
-   * },
-   * {
-   *  ...restProps,
-   *  hints: [{label: "", value: ""}]
-   * }
-   * ]
-   *
-   * output: a number >= 0
-   *
-   * logic:
-   * for all questions, check if there are hints
-   * for all hints check if the label is not empty
-   * empty label is possible when a user entered something in the hint and then cleared it (obj is not removed)
-   *
-   * a number > 0 would indicate the current item has hints which have non empty label
-   */
 
-  //  TODO :  need to remove the object if the hint is cleared
-  const showHintButton = questions.reduce((acc, question) => {
-    if (question.hints) {
-      // handling cases when hints are undefined
-      acc += question.hints.filter(hint => hint.label.length > 0).length;
-    }
-    return acc;
-  }, 0);
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
@@ -72,7 +43,7 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {showHintButton ? (
+      {!!showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handleClick}>
             <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>

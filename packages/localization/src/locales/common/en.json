@@ -12,7 +12,8 @@
     "submit": "Submit",
     "next": "Next",
     "quit": "Quit",
-    "checkanswer": "Check answer"
+    "checkanswer": "Check answer",
+    "hints": "Hints"
   },
   "exitConfirmation": {
     "title": "Are you sure?",

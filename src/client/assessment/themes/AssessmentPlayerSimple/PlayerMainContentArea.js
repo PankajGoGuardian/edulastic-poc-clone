@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -8,6 +9,7 @@ import PlayerFooter from "./PlayerFooter";
 import DragScrollContainer from "../../components/DragScrollContainer";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { Hints } from "@edulastic/common";
 
 const PlayerContentArea = ({
   itemRows,
@@ -24,15 +26,23 @@ const PlayerContentArea = ({
   answerChecksUsedForItem,
   settings,
   t,
-  questionsLeftToAttemptCount
+  questionsLeftToAttemptCount,
+  items
 }) => {
   const scrollElementRef = useRef(null);
+  const [showHints, setShowHints] = useState(false);
+  const item = items[currentItem];
+
+  useEffect(() => {
+    setShowHints(false);
+  }, [currentItem]);
   return (
     <Main skinB="true">
       <MainWrapper>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
         <MainContent innerRef={scrollElementRef}>
           <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
+          {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
         </MainContent>
         <PlayerFooter
           isLast={isLast}
@@ -42,6 +52,9 @@ const PlayerContentArea = ({
           onCheckAnswer={onCheckAnswer}
           answerChecksUsedForItem={answerChecksUsedForItem}
           settings={settings}
+          showHints={showHints}
+          onShowHints={() => setShowHints(showHint => !showHint)}
+          questions={item?.data?.questions || []}
           t={t}
           questionsLeftToAttemptCount={questionsLeftToAttemptCount}
         />

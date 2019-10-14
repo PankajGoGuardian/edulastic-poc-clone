@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
-import { withWindowSizes, AnswerContext } from "@edulastic/common";
+import { withWindowSizes, AnswerContext, Hints } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
 import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
@@ -95,7 +95,8 @@ class Container extends Component {
   state = {
     showRemovePassageItemPopup: false,
     showSettings: false,
-    collapseDirection: ""
+    collapseDirection: "",
+    showHints: false
   };
 
   componentDidMount() {
@@ -312,26 +313,35 @@ class Container extends Component {
     setEditable(true);
   };
 
+  toggleHints = () => {
+    this.setState(prevState => ({
+      showHints: !prevState.showHints
+    }));
+  };
+
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps, passage, view } = this.props;
     const item = itemProps || {};
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent view={view}>
-        <AuthorTestItemPreview
-          cols={allRows}
-          previewTab={preview}
-          preview={preview}
-          verticalDivider={item.verticalDivider}
-          scrolling={item.scrolling}
-          style={{ width: "100%" }}
-          questions={questions}
-          item={item}
-          isAnswerBtnVisible={false}
-          page={"itemAuthoring"}
-        />
-      </PreviewContent>
+      <>
+        <PreviewContent view={view}>
+          <AuthorTestItemPreview
+            cols={allRows}
+            previewTab={preview}
+            preview={preview}
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+            style={{ width: "100%" }}
+            questions={questions}
+            item={item}
+            isAnswerBtnVisible={false}
+            page={"itemAuthoring"}
+          />
+        </PreviewContent>
+        {this.state.showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+      </>
     );
   };
 
@@ -375,6 +385,8 @@ class Container extends Component {
         onChangeView={this.handleChangeView}
         changePreview={changePreview}
         changePreviewTab={this.handleChangePreviewTab}
+        handleShowHints={this.toggleHints}
+        showHints={this.state.showHints}
         onSave={saveItem}
         saving={updating}
         view={view}

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 
@@ -159,7 +159,9 @@ class AuthorTestItemPreview extends Component {
       goToItem,
       passageTestItems,
       clearView,
-      page
+      page,
+      handleShowHints,
+      showHints
     } = this.props;
     return (
       <>
@@ -175,6 +177,14 @@ class AuthorTestItemPreview extends Component {
           </PassageNavigation>
         )}
         <ButtonsWrapper justifyContent="flex-end">
+          {page !== "itemAuthoring" && (
+            <EvaluateButton
+              onClick={handleShowHints}
+              style={showHints ? { background: themeColor, color: white } : null}
+            >
+              Hint
+            </EvaluateButton>
+          )}
           {isAnswerBtnVisible && (
             <>
               <EvaluateButton onClick={handleCheckAnswer}>CHECK ANSWER</EvaluateButton>

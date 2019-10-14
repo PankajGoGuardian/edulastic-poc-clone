@@ -4,7 +4,8 @@ import { FlexContainer } from "../common";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 import { IconCorrect } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
+import { showHintButton } from "../../utils/test";
 
 const PlayerFooter = ({
   onCheckAnswer,
@@ -15,7 +16,10 @@ const PlayerFooter = ({
   t,
   settings,
   answerChecksUsedForItem,
-  questionsLeftToAttemptCount
+  questionsLeftToAttemptCount,
+  onShowHints,
+  showHints,
+  questions
 }) => {
   return (
     <MainFooter>
@@ -35,14 +39,24 @@ const PlayerFooter = ({
             {questionsLeftToAttemptCount} Left
           </span>
         </QuestionsLeftToAttempt>
-        {settings.maxAnswerChecks && (
-          <CheckAnswerBtn
+        {!!showHintButton(questions) && (
+          <ActionsButton
+            onClick={onShowHints}
+            style={
+              showHints ? { backgroundColor: themeColor, color: white } : { backgroundColor: white, color: themeColor }
+            }
+          >
+            <span>{t("pagination.hints")}</span>
+          </ActionsButton>
+        )}
+        {!!settings.maxAnswerChecks && (
+          <ActionsButton
             onClick={onCheckAnswer}
             title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
           >
             <CounterCircle>{settings.maxAnswerChecks - answerChecksUsedForItem}</CounterCircle>
             <span>{t("pagination.checkanswer")} </span>
-          </CheckAnswerBtn>
+          </ActionsButton>
         )}
       </FlexContainer>
     </MainFooter>
@@ -114,9 +128,10 @@ const PrevButton = styled(ControlBtn)`
   width: 50px;
 `;
 
-const CheckAnswerBtn = styled(ControlBtn)`
+const ActionsButton = styled(ControlBtn)`
   background-color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
   border-color: ${props => props.theme.headerIconHoverColor};
+  margin-right: 10px;
 `;
 
 const QuestionsLeftToAttempt = styled(ControlBtn)`

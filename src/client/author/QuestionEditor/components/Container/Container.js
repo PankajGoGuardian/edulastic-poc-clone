@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { ContentWrapper, withWindowSizes } from "@edulastic/common";
+import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -25,7 +25,6 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import {
   getItemIdSelector,
-  getItemLevelScoringSelector,
   getItemSelector,
   proceedPublishingItemAction,
   savePassageAction
@@ -59,7 +58,8 @@ class Container extends Component {
     this.state = {
       showModal: false,
       saveClicked: false,
-      previewTab: "clear"
+      previewTab: "clear",
+      showHints: false
     };
 
     this.innerDiv = React.createRef();
@@ -148,8 +148,8 @@ class Container extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question, itemLevelScoring, containsVideoOrPassage } = this.props;
-    const { previewTab, saveClicked } = this.state;
+    const { view, question } = this.props;
+    const { previewTab, saveClicked, showHints } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
@@ -168,6 +168,7 @@ class Container extends Component {
             questionId={question.id}
             saveClicked={saveClicked}
           />
+          {showHints && <Hints questions={[question]} />}
         </HideScoringBlackContext.Provider>
       );
     }
@@ -230,9 +231,15 @@ class Container extends Component {
     return crumbs;
   }
 
+  toggleHints = () => {
+    this.setState(prevState => ({
+      showHints: !prevState.showHints
+    }));
+  };
+
   renderButtons = () => {
     const { view, question, authorQuestions } = this.props;
-    const { previewTab } = this.state;
+    const { previewTab, showHints } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
 
     const isShowAnswerVisible =
@@ -245,6 +252,8 @@ class Container extends Component {
         onChangeView={this.handleChangeView}
         changePreviewTab={this.handleChangePreviewTab}
         onSave={this.handleSave}
+        handleShowHints={this.toggleHints}
+        showHints={showHints}
         view={view}
         showCheckButton={isShowAnswerVisible || checkAnswerButton}
         allowedAttempts={checkAttempts}
@@ -450,7 +459,6 @@ const enhance = compose(
       question: getCurrentQuestionSelector(state),
       testItemId: getItemIdSelector(state),
       itemFromState: getItemSelector(state),
-      itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
       savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,

@@ -566,7 +566,6 @@ class ComposeQuestion extends Component {
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
     }
-
     return (
       <div>
         <PaddingDiv>
@@ -689,6 +688,7 @@ class ComposeQuestion extends Component {
                       <Rnd
                         ref={this.imageRndRef}
                         style={{ overflow: "hidden" }}
+                        size={{ width: imageWidth, height: imageHeight }}
                         default={{
                           x: imageOptions.x || 0,
                           y: imageOptions.y || 0

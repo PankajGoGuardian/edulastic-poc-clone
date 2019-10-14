@@ -106,18 +106,6 @@ class SubjectGrade extends React.Component {
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);
-    let defaultStandardsList = [];
-    if (subjects.length > 1) {
-      const missingInterestedSubjects = subjects.filter(
-        item => defaultStandards[item] && !interestedCurriculums.some(el => el.subject === item)
-      );
-      defaultStandardsList = missingInterestedSubjects
-        .map(item => curriculums.find(el => defaultStandards[item] === el.curriculum))
-        .map(el => ({
-          value: el._id,
-          text: el.curriculum
-        }));
-    }
     return (
       <>
         <SubjectGradeBody>
@@ -190,7 +178,7 @@ class SubjectGrade extends React.Component {
                         mode="multiple"
                         showArrow
                       >
-                        {[...defaultStandardsList, ...formattedCurriculums].map(({ value, text, disabled }) => (
+                        {formattedCurriculums.map(({ value, text, disabled }) => (
                           <Option key={value} value={value} disabled={disabled}>
                             {text}
                           </Option>

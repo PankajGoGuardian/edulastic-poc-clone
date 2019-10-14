@@ -120,6 +120,7 @@ const EssayRichTextPreview = ({
    */
   const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
+ 
   return item.id ? (
     <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <QuestionTitleWrapper>
@@ -153,7 +154,7 @@ const EssayRichTextPreview = ({
               spellcheck={!!item.spellcheck}
               toolbarInline={false}
               initOnClick={false}
-              readOnly={isReadOnly}
+              readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
               quickInsertTags={[]}
               toolbarButtons={toolbarButtons}
             />

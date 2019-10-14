@@ -1260,7 +1260,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         keepAspectRatio: true,
         uiStyle: {
           width: 140,
-          responsecontainerindividuals: []
+          responsecontainerindividuals: [],
+          widthpx: 200,
+          heightpx: 35,
+          placeholder: "",
+          inputtype: "text",
+          pointer: "right"
         },
         validation: {
           scoringType: EXACT_MATCH,

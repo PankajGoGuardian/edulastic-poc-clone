@@ -92,6 +92,7 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
           <TextField
             type="number"
             size="large"
+            minimum={30}
             disabled={false}
             onBlur={() =>
               changeStyle(
@@ -113,6 +114,7 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
           <TextField
             type="number"
             size="large"
+            minimum={30}
             disabled={false}
             onBlur={() =>
               changeStyle(

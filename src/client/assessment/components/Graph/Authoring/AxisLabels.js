@@ -96,7 +96,7 @@ class GraphAxisLabels extends Component {
   };
 
   render() {
-    const { t, graphData, cleanSections, fillSections } = this.props;
+    const { t, graphData, cleanSections, fillSections, fontSize } = this.props;
     const { canvas, stimulus, firstMount } = graphData;
 
     return (
@@ -106,7 +106,7 @@ class GraphAxisLabels extends Component {
           label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
 
@@ -116,17 +116,11 @@ class GraphAxisLabels extends Component {
             value={stimulus}
             firstFocus={firstMount}
             border="border"
-            fontSize={graphData.numberlineAxis.fontSize + "px"}
+            fontSize={fontSize}
           />
         </Question>
 
-        <Question
-          section="main"
-          label="Line"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          advancedAreOpen={true}
-        >
+        <Question section="main" label="Line" cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen>
           <Subtitle>{t("component.graphing.graphline")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -167,7 +161,7 @@ class GraphAxisLabels extends Component {
           label="Title"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.title")}</Subtitle>
@@ -180,7 +174,7 @@ class GraphAxisLabels extends Component {
           label="Possible Responses"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>

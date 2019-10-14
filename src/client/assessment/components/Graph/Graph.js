@@ -363,11 +363,7 @@ class Graph extends Component {
               <StyledStimulus
                 data-cy="questionHeader"
                 dangerouslySetInnerHTML={{ __html: stimulus }}
-                fontSize={
-                  item.numberlineAxis
-                    ? `${item.numberlineAxis.fontSize}px`
-                    : getFontSize(mapFontName[item.uiStyle.currentFontSize])
-                }
+                fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
               />
             </QuestionTitleWrapper>
             {item.canvas && item.uiStyle && (

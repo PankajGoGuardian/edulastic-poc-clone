@@ -24,7 +24,7 @@ class AxisSegments extends Component {
     const { graphData, setQuestionData } = this.props;
     const { canvas } = graphData;
 
-    canvas[name] = value;
+    canvas[name] = parseInt(value) || 1;
     setQuestionData({ ...graphData, canvas });
   };
 

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { desktopWidth, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
 
 export const Subtitle = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
@@ -13,10 +13,13 @@ export const Subtitle = styled.div`
   padding: 0;
   margin: ${props => (props.margin ? props.margin : "0 0 25px")};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 16px;
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize};
   }
   @media (max-width: ${desktopWidth}) {
     margin-bottom: 20px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${({ theme }) => theme?.common?.titleSectionFontSize};
   }
 `;

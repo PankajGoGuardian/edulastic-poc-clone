@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
 
 export const Label = styled.label`
   font-size: ${props => props.theme.widgetOptions.labelFontSize};
@@ -13,4 +14,12 @@ export const Label = styled.label`
   display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
   margin: ${({ marginX, marginY }) => `${marginX} ${marginY}`};
+
+  @media screen and (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: ${smallDesktopWidth}) {
+    font-size: 14px;
+  }
 `;

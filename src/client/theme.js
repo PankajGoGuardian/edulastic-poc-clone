@@ -1150,7 +1150,7 @@ export const defaultTheme = {
       headerBg: themeColor,
       headerIconBgColor: clearIconColor,
       headerIconHoverColor: buttonBackgroundHoverColor,
-      headerIconColor: clearIconColor,
+      headerIconColor: themeColor,
       progressFill: actionIconColor,
       btnDisabled: disableButtonBgGreen,
       mainContentTextColor: questionTextColor,

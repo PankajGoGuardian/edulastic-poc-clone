@@ -35,24 +35,24 @@ const PlayerHeader = ({
               <FlexDisplay>
                 {showSubmit && (
                   <Save onClick={onSubmit} title="Submit">
-                    <IconSend color={theme.headerIconColor} />
+                    <IconSend color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
                 )}
                 <Save onClick={onSaveProgress} title="Save">
-                  <IconSave color={theme.headerIconColor} />
+                  <IconSave color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
                 </Save>
                 {onPause && (
                   <Save onClick={onPause} title="Pause">
-                    <IconPause color={theme.headerIconColor} />
+                    <IconPause color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
                 )}
                 {!onPause && (
                   <StyledLink to="/home/assignments">
-                    <IconPause color={theme.headerIconColor} />
+                    <IconPause color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
                   </StyledLink>
                 )}
                 <Save onClick={onOpenExitPopup} title="Exit">
-                  <IconLogout color={theme.headerIconColor} />
+                  <IconLogout color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
                 </Save>
               </FlexDisplay>
             </ContainerRight>
@@ -87,7 +87,7 @@ const LogoCompact = styled(IconLogoCompact)`
   margin: 10px;
   fill: ${props => props.theme.widgets.assessmentPlayers.logoColor};
   &:hover {
-    fill: ${props => props.theme.headerIconHoverColor};
+    fill: ${props => props.theme.widgets.assessmentPlayers.logoColor};
   }
 `;
 
@@ -105,9 +105,10 @@ const PlayerTitle = styled.h1`
 const Save = styled.div`
   background: ${props => props.theme.headerIconBgColor};
   border-radius: 5px;
-  padding: 12px 14px;
+  padding: 13px;
   margin-left: 10px;
   cursor: pointer;
+  display: flex;
   &:hover {
     svg {
       fill: ${props => props.theme.headerIconHoverColor};

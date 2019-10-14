@@ -247,7 +247,7 @@ class Display extends Component {
                     btnStyle: { border: btnStyle.border },
                     item,
                     onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
-                    placeholder: uiStyle.placeholder,
+                    placeholder: responseContainer.placeholder || uiStyle.placeholder,
                     type: uiStyle.inputtype,
                     showIndex: false,
                     indexNumber,

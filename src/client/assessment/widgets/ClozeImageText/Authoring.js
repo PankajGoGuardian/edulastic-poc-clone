@@ -161,14 +161,26 @@ class Authoring extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
+        draft[prop] = value;
+        updateVariables(draft);
+      })
+    );
+  };
+
+  onUserDimensionChange = prop => {
+    const { imageWidth, imageHeight } = prop;
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
         // This is when the image gets uploaded so
         // we reset the image to the starting position on canvas
         // we need the updatePosition to nudge the rnd component to re-render
-        if (prop === IMAGE_WIDTH_PROP || prop === IMAGE_HEIGHT_PROP) {
+        if (prop[IMAGE_WIDTH_PROP] || prop[IMAGE_HEIGHT_PROP]) {
           draft.imageOptions = { x: 0, y: 0 };
-          this.imageRndRef.current.updatePosition({ x: 0, y: 0 });
+          this.imageRndRef?.current?.updatePosition({ x: 0, y: 0 });
         }
-        draft[prop] = value;
+        draft[IMAGE_WIDTH_PROP] = imageWidth;
+        draft[IMAGE_HEIGHT_PROP] = imageHeight;
         updateVariables(draft);
       })
     );
@@ -322,16 +334,46 @@ class Authoring extends Component {
     return isUndefined(imageOptions.y) ? y : imageOptions.y || 0;
   };
 
-  changeImageHeight = height => {
-    const { maxHeight } = clozeImage;
-    const newHeight = height > 0 ? height : maxHeight;
-    this.onItemPropChange("imageHeight", newHeight);
-  };
+  changeImageDimensions = (prop, value) => {
+    const { item } = this.props;
+    const { imageOriginalWidth, imageOriginalHeight, imageWidth, imageHeight, keepAspectRatio } = item;
+    const { maxWidth, maxHeight } = clozeImage;
+    let newHeight = maxHeight;
+    let newWidth = maxWidth;
+    let newDimensions = {};
+    if (prop === "width") {
+      if (keepAspectRatio && !isUndefined(imageOriginalWidth) && !isUndefined(imageHeight)) {
+        newWidth = value;
+        newHeight = Math.round((imageOriginalHeight * newWidth) / imageOriginalWidth);
+      }
 
-  changeImageWidth = width => {
-    const { maxWidth } = clozeImage;
-    const newWidth = width > 0 ? width : maxWidth;
-    this.onItemPropChange("imageWidth", newWidth);
+      if (!isUndefined(imageWidth) && newWidth === maxWidth) {
+        newWidth = value > 0 ? value : maxHeight;
+      }
+
+      if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth && newWidth === maxWidth) {
+        newWidth = imageOriginalWidth;
+      }
+
+      if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth && newWidth === maxWidth) {
+        newWidth = maxWidth;
+      }
+    } else {
+      if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+        newHeight = value;
+        newWidth = Math.round((imageOriginalWidth * newHeight) / imageOriginalHeight);
+      }
+
+      if (!isUndefined(imageHeight) && newHeight === maxHeight) {
+        newHeight = value > 0 ? value : maxHeight;
+      }
+
+      if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight && newHeight === maxHeight) {
+        newHeight = imageOriginalHeight;
+      }
+    }
+    newDimensions = { imageWidth: newWidth, imageHeight: newHeight };
+    this.onUserDimensionChange(newDimensions);
   };
 
   changeImageLeft = left => {
@@ -550,8 +592,9 @@ class Authoring extends Component {
       showUploadList: false
     };
 
-    const imageWidth = this.getWidth();
-    const imageHeight = this.getHeight();
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
+    const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
+    const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     const imageTop = this.getTop();
     const imageLeft = this.getLeft();
     let canvasWidth = imageWidth < maxWidth ? maxWidth : imageWidth;
@@ -603,7 +646,7 @@ class Authoring extends Component {
                       ref={this.imageWidthEditor}
                       data-cy="image-width-input"
                       value={imageWidth}
-                      onChange={this.changeImageWidth}
+                      onChange={value => this.changeImageDimensions("width", value)}
                     />
                     <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
                   </FieldWrapper>
@@ -612,7 +655,7 @@ class Authoring extends Component {
                     <ImageWidthInput
                       data-cy="image-height-input"
                       value={imageHeight}
-                      onChange={this.changeImageHeight}
+                      onChange={value => this.changeImageDimensions("height", value)}
                     />
                     <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
                   </FieldWrapper>

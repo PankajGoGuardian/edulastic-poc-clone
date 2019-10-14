@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { white } from "@edulastic/colors";
+import { white, mediumDesktopWidth } from "@edulastic/colors";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
@@ -8,6 +8,9 @@ export const PDFPreviewWrapper = styled.div`
   padding: 30px 23px 30px 24px;
   overflow-y: auto;
   margin: 0 auto;
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 30px 0px 30px 54px;
+  }
 `;
 
 export const Preview = styled.div`

@@ -13,7 +13,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   const popup = (
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
-        <Label style={labelStyle} key={i} type={type}>
+        <Label marginBottom="5px" style={labelStyle} key={i} type={type}>
           {isStandards ? tag : tag.tagName}
         </Label>
       ))}
@@ -85,6 +85,9 @@ const PopupContainer = styled.div`
   padding: 10px;
   border: 1px solid ${grey};
   border-radius: 5px;
+  max-width: 350px;
+  max-height: 200px;
+  overflow: auto;
 `;
 
 const Label = styled.span`
@@ -97,6 +100,7 @@ const Label = styled.span`
   align-items: center;
   justify-content: center;
   margin-right: 5px;
+  margin-bottom: ${({ marginBottom }) => marginBottom || "0px"};
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
 `;

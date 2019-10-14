@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
@@ -5,11 +6,11 @@ import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isUndefined, round, isEmpty } from "lodash";
+import { get, round, isEmpty } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, themeColor } from "@edulastic/colors";
-import { withWindowSizes, WithResources, ItemDetailContext, COMPACT } from "@edulastic/common";
+import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -150,6 +151,8 @@ export const FlexContainer = styled.div`
   max-width: 100%;
 `;
 
+const DummyQuestion = () => <></>;
+
 const getQuestion = type => {
   switch (type) {
     case questionType.LINE_PLOT:
@@ -224,11 +227,6 @@ const getQuestion = type => {
   }
 };
 
-class DummyQuestion extends Component {
-  render() {
-    return <></>;
-  }
-}
 class QuestionWrapper extends Component {
   static contextType = ItemDetailContext;
 
@@ -349,8 +347,6 @@ class QuestionWrapper extends Component {
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
-    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType) || restProps.isReviewTab;
-
     let themeToPass = themes[selectedTheme] || themes.default;
     themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     themeToPass = playersZoomTheme(themeToPass);
@@ -438,6 +434,7 @@ class QuestionWrapper extends Component {
             </PaperWrapper>
             {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
               <FeedbackRight
+                // eslint-disable-next-line
                 twoColLayout={this.props.theme?.twoColLayout}
                 showCollapseBtn={showCollapseBtn}
                 disabled={disabled}

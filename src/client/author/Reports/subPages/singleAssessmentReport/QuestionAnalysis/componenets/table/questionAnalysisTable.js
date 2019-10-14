@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import next from "immer";
+import { Link } from "react-router-dom";
 
 import { roleuser } from "@edulastic/constants";
 import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
@@ -93,6 +94,12 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
         return 0;
       }
     };
+    rawColumns[0].render = (text, record, _index) => (
+      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`}>
+        {text}
+      </Link>
+    );
+
     rawColumns[1].render = (text, record, _index) => {
       if (Array.isArray(text)) {
         return text.join(", ");

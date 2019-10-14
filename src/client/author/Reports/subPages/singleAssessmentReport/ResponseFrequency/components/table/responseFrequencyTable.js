@@ -1,5 +1,5 @@
-import React from "react";
-import { Component } from "react";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { StyledCard, StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { Row, Col } from "antd";
@@ -19,6 +19,12 @@ export class ResponseFrequencyTable extends Component {
     this.columns = this.props.columns;
 
     this.columns[0].sorter = this.sortQuestionColumn.bind(null, "qLabel");
+
+    this.columns[0].render = (text, record, _index) => (
+      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`}>
+        {text}
+      </Link>
+    );
 
     // README: below line might work if antd version is upgraded to 3.15.0
     // this.columns[0].sortDirections = ["descend"];

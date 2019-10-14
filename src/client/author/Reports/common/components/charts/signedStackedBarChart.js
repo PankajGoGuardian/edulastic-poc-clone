@@ -202,7 +202,7 @@ export const SignedStackedBarChart = ({
                 fill={bdItem.fill}
                 unit={bdItem.unit}
                 onClick={onBarClick}
-                barSize={70}
+                barSize={45}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
               >
@@ -224,9 +224,14 @@ export const SignedStackedBarChart = ({
                 />
                 {renderData.map((cdItem, cdIndex) => {
                   return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
-                    <Cell key={cdItem[xAxisDataKey]} fill={cdItem["fill_" + bdIndex]} fillOpacity={fillOpacity} />
+                    <Cell
+                      radius={[10, 10, 0, 0]}
+                      key={cdItem[xAxisDataKey]}
+                      fill={cdItem["fill_" + bdIndex]}
+                      fillOpacity={fillOpacity}
+                    />
                   ) : (
-                    <Cell key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
+                    <Cell radius={[10, 10, 0, 0]} key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
                   );
                 })}
               </Bar>

@@ -11,7 +11,8 @@ import {
   lightGreySecondary,
   themeColor,
   red,
-  blueBorder
+  blueBorder,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
 
@@ -27,7 +28,7 @@ export const StyledAnchor = styled(Anchor)`
   max-height: unset !important;
 
   .ant-anchor-ink {
-    padding: 25px 0;
+    padding: 14px 0;
     left: 8px;
 
     &:before {
@@ -37,7 +38,10 @@ export const StyledAnchor = styled(Anchor)`
 
   .ant-anchor-link {
     position: relative;
-    padding: 20px 30px;
+    padding: 10px;
+    @media (max-width: ${smallDesktopWidth}) {
+      max-width: 200px;
+    }
 
     &.ant-anchor-link-active:after {
       opacity: 1;
@@ -47,7 +51,7 @@ export const StyledAnchor = styled(Anchor)`
       display: block;
       position: absolute;
       content: "";
-      top: 22px;
+      top: 14px;
       left: -5px;
       width: 8px;
       height: 8px;
@@ -64,7 +68,7 @@ export const StyledAnchor = styled(Anchor)`
       content: "";
       position: absolute;
       left: -7px;
-      top: 21px;
+      top: 14px;
       z-index: 5;
       opacity: 0;
       transition: all 0.3s ease;
@@ -246,9 +250,7 @@ export const AdvancedSettings = styled.div``;
 
 export const NavigationMenu = styled.div`
   position: absolute;
-  max-height: calc(100vh - 230px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: calc(100vh - 100px);
   padding: 0 0 0 10px;
   margin-left: -20px;
 

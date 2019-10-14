@@ -3,10 +3,8 @@ import { mobileWidth, mainBgColor, mediumDesktopWidth } from "@edulastic/colors"
 
 export const Container = styled.div`
   padding: 20px 30px;
-  height: calc(100vh - )
   background: ${mainBgColor};
   height: calc(100vh - 96px);
-  overflow: auto;
 
   @media (max-width: ${mediumDesktopWidth}) {
     height: calc(100vh - 60px);

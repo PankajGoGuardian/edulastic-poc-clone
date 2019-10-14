@@ -9,12 +9,7 @@ const FlexContainer = styled.div`
   margin-bottom: ${({ marginBottom }) => (!marginBottom ? null : marginBottom)};
   padding: ${props => (props.padding ? props.padding : "0px")};
   flex-wrap: ${({ flexWrap }) => flexWrap || null};
-  & > * {
-    margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;
-  }
-  & > *:last-child {
-    margin-right: 0;
-  }
+
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;
   }

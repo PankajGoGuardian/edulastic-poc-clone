@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -5,9 +6,9 @@ import styled from "styled-components";
 import { dashBorderColor } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth, minHeight, className }) => (
-  <Container className={className} maxWidth={maxWidth} minHeight={minHeight} imageStyle={imageStyle}>
-    <Subtitle style={{ marginBottom: 30 }}>{title}</Subtitle>
+const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth, className, style = {} }) => (
+  <Container className={className} maxWidth={maxWidth} imageStyle={imageStyle} style={style}>
+    <Subtitle>{title}</Subtitle>
     {children}
   </Container>
 );
@@ -36,14 +37,16 @@ const Container = styled.div`
   max-width: ${({ maxWidth }) => maxWidth || null};
   min-width: 200px;
   img {
-    ${({ imageStyle }) => {
-      return imageStyle
+    ${({ imageStyle }) =>
+      imageStyle
         ? `
         z-index: 1;
         position: relative;
       `
-        : null;
-    }}
+        : null}
     ${({ imageStyle }) => imageStyle}
+  }
+  h3 {
+    margin-bottom: 30px;
   }
 `;

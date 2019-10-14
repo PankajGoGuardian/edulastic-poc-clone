@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 export const TableWrapper = styled.div`
   overflow: auto;
-  width: 100%;
+  width: ${({ width }) => width};
   height: 100%;
-  max-width: 100%;
   margin: auto;
   margin: 20px 0;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};

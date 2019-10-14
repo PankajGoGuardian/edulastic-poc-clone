@@ -5,7 +5,6 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import "core-js/features/array/flat";
 import {
-  Paper,
   FlexContainer,
   CorrectAnswersContainer,
   Stimulus,
@@ -45,7 +44,19 @@ const ClassificationPreview = ({
   isReviewTab,
   setQuestionData
 }) => {
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "left");
+  const rowHeader = get(item, "uiStyle.rowHeader", null);
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const isLeft = listPosition === "left" || listPosition === "right";
+
+  const answerContainerMaxWidth = isLeft ? "20%" : "100%";
+  const TableWrapperMaxWidth = isLeft ? "80%" : "100%";
+
   const styles = {
+    wrapperStyle: {
+      display: "flex",
+      flexDirection: getDirection(listPosition)
+    },
     itemContainerStyle: {
       display: "flex",
       alignItems: "center",
@@ -64,9 +75,12 @@ const ClassificationPreview = ({
       display: "flex",
       alignItems: "flex-start",
       flexWrap: "wrap",
-      minHeight: 140,
+      minHeight: isLeft ? 140 : 50,
       borderRadius: 4
     },
+    correctAnswerContainerStyle: isLeft
+      ? { textAlign: "center" }
+      : { textAlign: "left", minHeight: "unset", paddingBottom: 30 },
     correctAnswersMargins: { marginBottom: 0, marginRight: 30, width: "100%" }
   };
 
@@ -250,15 +264,6 @@ const ClassificationPreview = ({
   const arrayOfCols = transformArray(validArray);
   const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
-  const listPosition = get(item, "uiStyle.possibilityListPosition", "left");
-  const rowHeader = get(item, "uiStyle.rowHeader", null);
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
-
-  const wrapperStyle = {
-    display: "flex",
-    flexDirection: getDirection(listPosition)
-  };
-
   const verifiedDragItems = uniq(
     shuffleOptions
       ? shuffle(duplicateResponses ? posResponses : dragItems)
@@ -337,7 +342,7 @@ const ClassificationPreview = ({
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
-  const maxWidth = listPosition === "left" || listPosition === "right" ? "25%" : null;
+
   return (
     <StyledPaperWrapper
       data-cy="classificationPreview"
@@ -352,15 +357,15 @@ const ClassificationPreview = ({
         </QuestionTitleWrapper>
       )}
 
-      <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
-        <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl}>
+      <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
+        <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl} width={TableWrapperMaxWidth}>
           {tableContent}
         </TableWrapper>
         {!disableResponse && (
           <CorrectAnswersContainer
-            maxWidth={maxWidth}
-            minHeight={imageOptions.height}
+            maxWidth={answerContainerMaxWidth}
             title={t("component.classification.dragItemsTitle")}
+            style={styles.correctAnswerContainerStyle}
           >
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">

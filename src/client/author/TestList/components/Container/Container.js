@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has } from "lodash";
+import { debounce, get, has, pickBy, identity, pick } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -33,17 +33,20 @@ import {
   getTestsLoadingSelector,
   getTestsCountSelector,
   getTestsLimitSelector,
-  getTestsPageSelector
+  getTestsPageSelector,
+  updateTestSearchFilterAction,
+  updateAllTestSearchFilterAction,
+  getTestsFilterSelector,
+  clearTestFiltersAction
 } from "../../ducks";
 import {
   getTestsCreatingSelector,
   clearTestDataAction,
   clearCreatedItemsAction,
-  getDefaultTestSettingsAction,
   getAllTagsAction
 } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
@@ -54,7 +57,7 @@ import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
 import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
-import { ItemsMenu, StyledButton } from "../../../TestPage/components/AddItems/styled";
+import { StyledButton } from "../../../TestPage/components/AddItems/styled";
 import {
   createNewModuleAction,
   createTestInModuleAction,
@@ -82,20 +85,9 @@ export const filterMenuItems = [
   { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
 ];
 
-export const getClearSearchState = () => ({
-  subject: "",
-  questionType: "",
-  depthOfKnowledge: "",
-  authorDifficulty: "",
-  collectionName: "",
-  curriculumId: "",
-  status: "",
-  grades: [],
-  standardIds: [],
-  tags: [],
-  filter: filterMenuItems[0].filter,
-  searchString: ""
-});
+// TODO: split into mulitple components, for performance sake.
+// and only connect what is required.
+// like seprating out filter and test rendering into two, and connect them to only what is required.
 
 class TestList extends Component {
   static propTypes = {
@@ -133,7 +125,6 @@ class TestList extends Component {
   };
 
   state = {
-    search: getClearSearchState(),
     standardQuery: "",
     blockStyle: "tile",
     showCreateModuleModal: false,
@@ -148,6 +139,7 @@ class TestList extends Component {
       receiveTests,
       curriculums,
       getCurriculums,
+      page,
       limit,
       location,
       playlist,
@@ -156,18 +148,32 @@ class TestList extends Component {
       defaultSubject,
       interestedGrades = [],
       interestedSubjects = [],
-      match: { params = {} },
+      match: params,
       getCurriculumStandards,
       clearCreatedItems,
       clearSelectedItems,
+      updateDefaultGrades,
+      updateDefaultSubject,
       getAllTags,
-      clearDictStandards
+      testFilters,
+      clearDictStandards,
+      history,
+      updateAllTestFilters
     } = this.props;
-    const { search } = this.state;
-    const parsedQueryData = qs.parse(location.search);
+
+    const searchFilters = {
+      ...testFilters
+    };
+
+    // propagate filter from query params to the store (test.filters)
+    const searchParams = qs.parse(location.search);
+    if (Object.keys(params).length) {
+      Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
+    }
+
     if (mode === "embedded") {
       let selectedTests = [];
-      const { grades, subjects, tags, modules } = playlist;
+      const { grades, subjects, modules } = playlist;
       const { state = {} } = location;
       const { editFlow } = state;
       modules.forEach(mod => {
@@ -175,22 +181,16 @@ class TestList extends Component {
           selectedTests.push(test.contentId);
         });
       });
-      this.setState(prevState => ({
-        search: {
-          ...prevState.search,
-          subject: subjects && subjects[0],
-          grades,
-          tags: []
-        },
+      this.setState({
         selectedTests,
         editFlow,
         blockStyle: "horizontal"
-      }));
+      });
       receiveTests({
         page: 1,
         limit,
         search: {
-          ...search,
+          ...testFilters,
           subject: subjects && subjects[0],
           grades,
           tags: []
@@ -200,61 +200,34 @@ class TestList extends Component {
       if (!curriculums.length) {
         getCurriculums();
       }
-      const { filterType } = params;
-      if (filterType) {
-        const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-        const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-        let updatedSearch = { ...search };
-        if (filter === filterMenuItems[0].filter) {
-          updatedSearch = {
-            ...updatedSearch,
-            status: ""
-          };
-        }
-        this.setState({
-          search: {
-            ...updatedSearch,
-            filter
-          }
-        });
-        receiveTests({
-          page: 1,
-          limit,
-          search: {
-            ...updatedSearch,
-            filter
-          }
-        });
-      } else if (Object.entries(parsedQueryData).length > 0) {
-        this.setFilterParams(parsedQueryData, params);
-      } else if (params.page && params.limit) {
-        receiveTests({
-          page: Number(params.page),
-          limit: Number(params.limit),
-          search
-        });
-      } else {
-        let grades = defaultGrades;
-        let subject = defaultSubject;
-        if (!grades) {
-          grades = interestedGrades;
-        }
-        if (subject === null) {
-          subject = interestedSubjects[0] || "";
-        }
-        this.setState({
-          search: {
-            ...search,
-            grades,
-            subject
-          }
-        });
-        receiveTests({ page: 1, limit, search: { ...search, grades, subject } });
+
+      let grades = defaultGrades;
+      let subject = defaultSubject;
+
+      // if user doesnt have default grades or subject, update it from user's profile.
+      if (!grades) {
+        grades = interestedGrades;
+        updateDefaultGrades(grades);
       }
+      if (!subject) {
+        subject = interestedSubjects[0] || "";
+        updateDefaultSubject(subject);
+      }
+
+      // update default grades and subject.
+      updateAllTestFilters(searchFilters);
+      const pageNumber = params.page || page;
+      const limitCount = params.limit || limit;
+      const queryParams = qs.stringify(
+        pickBy({ ...searchFilters, grades, subject, page: pageNumber, limit: limitCount }, identity)
+      );
+      history.push(`/author/tests?${queryParams}`);
+      receiveTests({ page: 1, limit, search: { ...searchFilters, grades, subject } });
       getAllTags({ type: "test" });
     }
-    if (parsedQueryData.curriculumId) {
-      const { curriculumId, grades } = parsedQueryData;
+
+    if (searchFilters.curriculumId) {
+      const { curriculumId, grades } = testFilters;
       const gradeArray = Array.isArray(grades) ? grades : [grades];
       clearDictStandards();
       getCurriculumStandards(curriculumId, gradeArray, "");
@@ -263,60 +236,68 @@ class TestList extends Component {
     clearSelectedItems();
   }
 
-  searchTest = debounce(() => {
-    const { receiveTests, limit } = this.props;
-    const { search } = this.state;
-
-    receiveTests({
-      page: 1,
-      limit,
-      search
-    });
+  searchTest = debounce(search => {
+    const { receiveTests, limit, history } = this.props;
+    const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
+    history.push(`/author/tests?${queryParams}`);
+    receiveTests({ search, limit, page: 1 });
   }, 500);
 
   handleSearchInputChange = e => {
-    const { search } = this.state;
+    const { testFilters, defaultGrades, defaultSubject, updateTestFilters } = this.props;
     const searchString = e.target.value;
     const newSearch = {
-      ...search,
+      ...testFilters,
+      grades: defaultGrades,
+      subject: defaultSubject,
       searchString
     };
-    this.setState(
-      {
-        search: newSearch
-      },
-      () => {
-        this.searchTest();
-      }
-    );
+
+    updateTestFilters({ key: "searchString", value: searchString });
+    this.searchTest(newSearch);
   };
 
+  /**
+   * invoked when any of the filter changes.
+   * @params name {String} - name of the filt.er
+   * @params value {Sring} - filter value
+   */
   handleFiltersChange = (name, value) => {
-    const { search } = this.state;
     const {
       receiveTests,
       clearDictStandards,
       history,
       limit,
-      page,
       mode,
       getCurriculumStandards,
       updateDefaultGrades,
-      updateDefaultSubject
+      updateDefaultSubject,
+      defaultSubject,
+      defaultGrades,
+      testFilters,
+      updateTestFilters
     } = this.props;
-    let updatedKeys = {};
+
+    // all the fields to pass for search.
+
+    let updatedKeys = {
+      ...testFilters,
+      grades: defaultGrades,
+      subject: defaultSubject
+    };
+
     if (name === "curriculumId") {
       clearDictStandards();
-      getCurriculumStandards(value, search.grades, "");
-      search.standardIds = [];
+      getCurriculumStandards(value, defaultGrades, "");
+      updateTestFilters({ key: "standardIds", value: [] });
     }
-    if (name === "grades" && search.curriculumId) {
+    if (name === "grades" && testFilters.curriculumId) {
       clearDictStandards();
-      getCurriculumStandards(search.curriculumId, value, "");
+      getCurriculumStandards(testFilters.curriculumId, value, "");
     }
     if (name === "subject") {
       updatedKeys = {
-        ...search,
+        ...testFilters,
         [name]: value,
         curriculumId: ""
       };
@@ -325,7 +306,7 @@ class TestList extends Component {
       clearDictStandards();
     } else {
       updatedKeys = {
-        ...search,
+        ...updatedKeys,
         [name]: value
       };
     }
@@ -333,18 +314,24 @@ class TestList extends Component {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      () => {
-        const { search: updatedSearch } = this.state;
-        receiveTests({ search: updatedSearch, page: 1, limit });
-        if (mode !== "embedded") {
-          history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
-        }
-      }
-    );
+
+    // grades and subject are not in filters
+    if (!["grades", "subject"].includes(name))
+      updateTestFilters({
+        key: name,
+        value
+      });
+
+    // update the test filters with the freshly applied filter.
+    const searchFilters = {
+      ...updatedKeys,
+      [name]: value
+    };
+
+    // update the url to reflect the newly applied filter and get the new results.
+    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
+    history.push(`/author/tests?${queryParams}`);
+    receiveTests({ search: searchFilters, page: 1, limit });
   };
 
   handleCreate = () => {
@@ -358,13 +345,17 @@ class TestList extends Component {
   };
 
   handlePaginationChange = page => {
-    const { receiveTests, limit, history, mode } = this.props;
-    const { search } = this.state;
+    const { receiveTests, limit, history, mode, testFilters, defaultGrades, defaultSubject } = this.props;
 
-    receiveTests({ page, limit, search });
-    if (mode !== "embedded") {
-      history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
-    }
+    const searchFilters = {
+      ...testFilters,
+      grades: defaultGrades,
+      subject: defaultSubject
+    };
+
+    const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
+    history.push(`/author/tests?${queryParams}`);
+    receiveTests({ page, limit, search: searchFilters });
   };
 
   handleStyleChange = blockStyle => {
@@ -381,28 +372,24 @@ class TestList extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  resetFilter = () => {
-    const { receiveTests, limit, history, mode } = this.props;
-    const { search } = this.state;
-    receiveTests({ page: 1, limit, search });
+  handleClearFilter = () => {
+    const {
+      clearAllFilters,
+      limit,
+      receiveTests,
+      mode,
+      history,
+      updateDefaultGrades,
+      updateDefaultSubject
+    } = this.props;
+    clearAllFilters();
+    updateDefaultGrades();
+    updateDefaultSubject();
+    receiveTests({ page: 1, limit });
     if (mode !== "embedded") {
       history.push(`/author/tests`);
     }
   };
-
-  handleClearFilter = () => {
-    this.setState(
-      {
-        search: getClearSearchState()
-      },
-      this.resetFilter
-    );
-  };
-
-  get filterUrl() {
-    const { search, standardQuery } = this.state;
-    return qs.stringify({ ...search, standardQuery });
-  }
 
   typeCheck = (parsedQueryData, search) => {
     const parsedQueryDataClone = {};
@@ -420,38 +407,41 @@ class TestList extends Component {
     const {
       getCurriculumStandards,
       receiveTests,
-      match: { params = {} }
+      match: { params = {} },
+      testFilters,
+      defaultGrades,
+      defaultSubject,
+      updateAllTestFilters
     } = this.props;
-    const { search } = this.state;
+
+    const search = {
+      ...testFilters,
+      defaultGrades,
+      defaultSubject
+    };
 
     parsedQueryData = this.typeCheck(parsedQueryData, search);
-    const searchClone = {};
+    const searchClone = {
+      ...testFilters
+    };
 
     for (const key of Object.keys(parsedQueryData)) {
-      if (has(search, key)) {
+      if (has(testFilters, key)) {
         searchClone[key] = parsedQueryData[key];
       }
     }
 
-    this.setState(
-      {
-        search: searchClone
-      },
-      () => {
-        const {
-          search: { curriculumId, grade },
-          search: updatedSearch
-        } = this.state;
-        if (curriculumId.length && parsedQueryData.standardQuery.length >= 2) {
-          getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
-        }
-        receiveTests({
-          page: Number(params.page),
-          limit: Number(params.limit),
-          search: updatedSearch
-        });
-      }
-    );
+    updateAllTestFilters(searchClone);
+
+    const { curriculumId, grade } = searchClone;
+    if (curriculumId.length && parsedQueryData.standardQuery.length >= 2) {
+      getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
+    }
+    receiveTests({
+      page: Number(params.page),
+      limit: Number(params.limit),
+      search: searchClone
+    });
   }
 
   handleCreateNewModule = () => {
@@ -549,9 +539,9 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.map((item, index) => (
+        {tests.map(item => (
           <CardWrapper
-            key={index}
+            key={item._id}
             owner={item.authors && item.authors.some(x => x._id === userId)}
             item={item}
             windowWidth={windowWidth}
@@ -572,45 +562,68 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receiveTests, limit, mode } = this.props;
-    const { search } = this.state;
-    let updatedKeys = { ...search };
-    if (mode !== "embedded") {
-      history.push(`/author/tests/filter/${filterType}`);
-    }
+    const {
+      history,
+      receiveTests,
+      limit,
+      mode,
+      testFilters,
+      updateTestFilters,
+      defaultGrades,
+      defaultSubject
+    } = this.props;
+    let updatedKeys = { ...testFilters, grades: defaultGrades, subject: defaultSubject };
+
     if (filter === filterMenuItems[0].filter) {
       updatedKeys = {
         ...updatedKeys,
         status: ""
       };
     }
-    this.setState({
-      search: {
-        ...updatedKeys,
-        filter
-      }
-    });
+
+    updatedKeys["filter"] = filter;
+    updateTestFilters({ key: "filter", value: filter });
+
+    const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
+    history.push(`/author/tests?${queryParams}`);
     receiveTests({
       page: 1,
       limit,
-      search: {
-        ...updatedKeys,
-        filter
-      }
+      search: updatedKeys
     });
   };
 
   render() {
-    const { page, limit, count, creating, mode, playlist, addModuleToPlaylist } = this.props;
+    const {
+      page,
+      limit,
+      defaultGrades,
+      interestedGrades,
+      defaultSubject,
+      interestedSubjects,
+      count,
+      creating,
+      mode,
+      playlist,
+      addModuleToPlaylist,
+      testFilters
+    } = this.props;
 
     const {
       blockStyle,
       isShowFilter,
-      search,
+
       showAddTestInModules,
       showCreateModuleModal,
       showConfirmRemoveModal
     } = this.state;
+
+    const search = {
+      ...testFilters,
+      grades: defaultGrades || interestedGrades,
+      subject: defaultSubject || interestedSubjects?.[0]
+    };
+
     const { searchString } = search;
     let modulesList = [];
     if (playlist) {
@@ -652,11 +665,11 @@ class TestList extends Component {
         )}
         <Container>
           <MobileFilter>
-            <Input.Search
+            <Input
               placeholder="Search by skills and keywords"
               onChange={this.handleSearchInputChange}
               size="large"
-              value={searchString}
+              value={testFilters.searchString}
             />
             <FilterButton>
               <Button onClick={() => this.showFilterHandler()}>
@@ -707,11 +720,11 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <Input.Search
+                      <Input
                         placeholder="Search by skills and keywords"
                         onChange={this.handleSearchInputChange}
                         size="large"
-                        value={searchString}
+                        value={testFilters.searchString}
                       />
                       <TestListFilters
                         search={search}
@@ -779,6 +792,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, "user.user._id", false),
+      testFilters: getTestsFilterSelector(state),
       t: PropTypes.func.isRequired
     }),
     {
@@ -794,7 +808,10 @@ const enhance = compose(
       updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,
       getAllTags: getAllTagsAction,
-      clearTestData: clearTestDataAction
+      clearTestData: clearTestDataAction,
+      updateTestFilters: updateTestSearchFilterAction,
+      updateAllTestFilters: updateAllTestSearchFilterAction,
+      clearAllFilters: clearTestFiltersAction
     }
   )
 );

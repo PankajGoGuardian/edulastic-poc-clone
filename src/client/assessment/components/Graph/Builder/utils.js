@@ -707,3 +707,24 @@ export const toFractionHTML = (value, fractionsFormat) => {
 
   return `<span>${main}${space}${fracs}</span>`;
 };
+
+/**
+ * check can add dragged value to board
+ * @param {object} board
+ * @param {number} x
+ * @param {number} y
+ * @returns {object} coords
+ */
+export const canAddElementToBoard = (board, x, y) => {
+  const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board);
+  const [xMin, yMax, xMax, yMin] = board.getBoundingBox();
+  if (
+    coords.usrCoords[1] < xMin ||
+    coords.usrCoords[1] > xMax ||
+    coords.usrCoords[2] < yMin ||
+    coords.usrCoords[2] > yMax
+  ) {
+    return false;
+  }
+  return coords;
+};

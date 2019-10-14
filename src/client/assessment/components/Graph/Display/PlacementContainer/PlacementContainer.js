@@ -453,6 +453,10 @@ class PlacementContainer extends PureComponent {
     }
   };
 
+  onDrawDragDropValue = (dragDropValue, x, y) => {
+    this._graph.drawDragDropValue(dragDropValue, x, y);
+  };
+
   getDragDropValues = () => {
     const { list, elements } = this.props;
     return list.filter(elem => !elements.some(el => elem.id === el.id));
@@ -511,6 +515,7 @@ class PlacementContainer extends PureComponent {
                 margin={margin}
                 values={this.getDragDropValues()}
                 onAddDragDropValue={this.onAddDragDropValue}
+                onDrawDragDropValue={this.onDrawDragDropValue}
                 dragDropBoundsClassName={dragDropBoundsClassName}
               />
             )}

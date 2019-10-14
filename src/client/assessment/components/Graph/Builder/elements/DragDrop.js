@@ -14,16 +14,33 @@ const deleteIconPattern =
 
 const jxgType = 101;
 
-function create(board, object, settings) {
+/**
+ * this point will show while dragging value over the board
+ * and then will get removed after release the value from the board
+ */
+let pointElemForDrag = null;
+
+function drawPoint(board, object, settings) {
+  if (pointElemForDrag) {
+    board.$board.removeObject(pointElemForDrag);
+    pointElemForDrag = null;
+  }
   const { fixed = false } = settings;
-
-  const { id = null, x, y, text, priorityColor } = object;
-
+  const { x, y, priorityColor } = object;
   const point = board.$board.create("point", [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Point.getColorParams(priorityColor || board.priorityColor),
     fixed
   });
+  return point;
+}
+
+function create(board, object, settings) {
+  const { fixed = false } = settings;
+
+  const { id = null, x, y, text } = object;
+
+  const point = drawPoint(board, object, settings);
 
   let content = replaceLatexesWithMathHtml(text);
 
@@ -81,6 +98,15 @@ function create(board, object, settings) {
   return newElement;
 }
 
+function moveElement(board, object, settings) {
+  if (!pointElemForDrag) {
+    pointElemForDrag = drawPoint(board, object, settings);
+  } else {
+    const { x, y } = object;
+    pointElemForDrag.moveTo([x, y]);
+  }
+}
+
 function getConfig(dragDrop) {
   return {
     _type: dragDrop.type,
@@ -96,5 +122,6 @@ function getConfig(dragDrop) {
 export default {
   jxgType,
   create,
+  moveElement,
   getConfig
 };

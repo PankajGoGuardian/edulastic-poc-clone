@@ -10,6 +10,11 @@ class DragDropValues extends Component {
     return false;
   };
 
+  handleDragDropValue = (d, value) => {
+    const { onDrawDragDropValue, width, margin, valueHeight } = this.props;
+    onDrawDragDropValue(value, d.x - width - margin + width / 2, d.y - margin + valueHeight / 2);
+  };
+
   render() {
     const { values, width, height, valueHeight, titleOffset, dragDropBoundsClassName } = this.props;
 
@@ -30,6 +35,7 @@ class DragDropValues extends Component {
               position={position}
               size={size}
               onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value)}
+              onDrag={(e, d) => this.handleDragDropValue(d, value)}
               style={{ zIndex: 10 }}
               disableDragging={false}
               enableResizing={false}
@@ -53,7 +59,8 @@ DragDropValues.propTypes = {
   valueHeight: PropTypes.number,
   titleOffset: PropTypes.number,
   margin: PropTypes.number,
-  onAddDragDropValue: PropTypes.func
+  onAddDragDropValue: PropTypes.func,
+  onDrawDragDropValue: PropTypes.func
 };
 
 DragDropValues.defaultProps = {
@@ -63,6 +70,7 @@ DragDropValues.defaultProps = {
   valueHeight: 50,
   titleOffset: 40,
   margin: 0,
+  onDrawDragDropValue: () => {},
   onAddDragDropValue: () => {},
   dragDropBoundsClassName: ""
 };

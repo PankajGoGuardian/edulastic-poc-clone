@@ -42,7 +42,8 @@ import {
   getImageCoordsByPercent,
   updateAxe,
   updateGrid,
-  updatePointParameters
+  updatePointParameters,
+  canAddElementToBoard
 } from "./utils";
 import _events from "./events";
 
@@ -125,15 +126,10 @@ class Board {
   }
 
   addDragDropValue(value, x, y) {
-    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board);
-    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox();
-    if (
-      coords.usrCoords[1] < xMin ||
-      coords.usrCoords[1] > xMax ||
-      coords.usrCoords[2] < yMin ||
-      coords.usrCoords[2] > yMax
-    ) {
-      return false;
+    const coords = canAddElementToBoard(this.$board, x, y);
+
+    if (!coords) {
+      return;
     }
 
     const element = {
@@ -171,6 +167,18 @@ class Board {
 
     this.elements.push(Mark.onHandler(this, mark));
     return true;
+  }
+
+  drawDragDropValue(value, x, y) {
+    const coords = canAddElementToBoard(this.$board, x, y);
+    if (coords.usrCoords) {
+      const element = {
+        ...value,
+        x: coords.usrCoords[1],
+        y: coords.usrCoords[2]
+      };
+      return DragDrop.moveElement(this, element, {});
+    }
   }
 
   setDrawingObject(drawingObject) {

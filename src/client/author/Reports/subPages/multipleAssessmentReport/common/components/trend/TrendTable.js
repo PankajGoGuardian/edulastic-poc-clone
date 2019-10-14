@@ -49,7 +49,9 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
       break;
     default:
       value = formatText(test, analyseBy.key);
-      color = getHSLFromRange1(test.score);
+      if (value !== "Absent") {
+        color = getHSLFromRange1(test.score);
+      }
       break;
   }
 

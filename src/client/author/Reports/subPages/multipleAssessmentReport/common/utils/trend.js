@@ -5,15 +5,19 @@ import { filterAccordingToRole, percentage } from "../../../../common/util";
 import dropDownData from "../static/json/dropDownData.json";
 
 const sanitizeNullNumberFields = (records, fields = []) => {
-  return map(records, record => {
+  let allAbsent = true;
+  const sanitizedRecords = map(records, record => {
     return next(record, draftRecord => {
       forEach(fields, field => {
         if (record[field] === null || typeof record[field] === "undefined") {
           draftRecord[field] = 0;
+        } else {
+          allAbsent = false;
         }
       });
     });
   });
+  return { sanitizedRecords, allAbsent };
 };
 
 const getOverallScore = (metrics = []) =>
@@ -97,9 +101,10 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
     forEach(groupByTests, (value, key) => {
       const studentCountKey = compareBy === "group" ? "studentCount" : "totalStudentCount";
       const maxStudents = maxBy(value, item => parseInt(item[studentCountKey] || 0)) || {};
-      const sanitizedRecords = sanitizeNullNumberFields(value, ["totalScore", "maxScore"]);
+      const { sanitizedRecords, allAbsent } = sanitizeNullNumberFields(value, ["totalScore", "maxScore"]);
       tests[key] = {
         records: value,
+        allAbsent,
         score: getOverallScore(sanitizedRecords),
         rawScore: `${(sumBy(sanitizedRecords, "totalScore") || 0).toFixed(2)} / ${sumBy(sanitizedRecords, "maxScore")}`,
         studentCount: parseInt(maxStudents[studentCountKey]) || 0
@@ -134,18 +139,13 @@ export const calculateTrend = groupedData => {
       sum_x = 0,
       sum_y = 0,
       trend = "flat";
-    let allAssessments = values(d.tests).sort(function(a, b) {
-      return a.records[0].assessmentDate - b.records[0].assessmentDate;
-    });
+    let allAssessments = values(d.tests)
+      .filter(a => !a.allAbsent)
+      .sort(function(a, b) {
+        return a.records[0].assessmentDate - b.records[0].assessmentDate;
+      });
 
     const n = allAssessments.length;
-
-    forEach(allAssessments, (ob, index) => {
-      sum_x += index + 1;
-      sum_y += ob.score;
-      sum_xx += (index + 1) * (index + 1);
-      sum_xy += (index + 1) * ob.score;
-    });
 
     if (n === 0 || n === 1) {
       trend = "No Trend";
@@ -154,6 +154,13 @@ export const calculateTrend = groupedData => {
         trend
       };
     }
+
+    forEach(allAssessments, (ob, index) => {
+      sum_x += index + 1;
+      sum_y += ob.score;
+      sum_xx += (index + 1) * (index + 1);
+      sum_xy += (index + 1) * ob.score;
+    });
 
     if (n * sum_xy - sum_x * sum_y === 0) {
       trend = "flat";

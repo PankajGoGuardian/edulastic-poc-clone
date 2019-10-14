@@ -92,9 +92,13 @@ export const Main = styled.div`
   min-height: calc(100vh - 96px);
   box-shadow: -1px 0px 5px 1px ${grey};
   padding: 20px 25px;
+  width: calc(100% - 250px);
 
   @media (max-width: ${mediumDesktopWidth}) {
     min-height: calc(100vh - 60px);
+  }
+  @media (max-width: ${desktopWidth}) {
+    width: 100%;
   }
 `;
 

@@ -467,12 +467,12 @@ class ProfileBody extends React.Component {
               {(isEditProfile || showChangePassword) && (
                 <FormButtonWrapper>
                   <FormItem>
-                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
-                      {t("common.title.cancel")}
-                    </CancelButton>
                     <SaveButton type="primary" onClick={this.handleSubmit}>
                       {t("common.title.save")}
                     </SaveButton>
+                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
+                      {t("common.title.cancel")}
+                    </CancelButton>
                   </FormItem>
                 </FormButtonWrapper>
               )}
@@ -814,12 +814,14 @@ const SaveButton = styled(EditProfileButton)`
   background: ${themeColor};
   border-color: ${themeColor};
   color: ${white};
+  width: 130px;
 `;
 
 const CancelButton = styled(EditProfileButton)`
   background: ${white};
   color: ${themeColor};
   border: 1px solid ${themeColor};
+  width: 130px;
 `;
 
 const SelectSetsButton = styled(EditProfileButton)`
@@ -830,7 +832,7 @@ const SelectSetsButton = styled(EditProfileButton)`
 `;
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
-  margin: 5px 15px;
+  margin: 5px 0px 5px 15px;
   :hover{
     color ${themeColor};
   }

@@ -51,7 +51,7 @@ class MultipleChoice extends Component {
       this.setState({
         shuffledOptions
       });
-    } else if (nextProps.item.shuffleOptions !== item.shuffleOptions && nextProps.item.shuffleOptions) {
+    } else if (nextProps.item.shuffleOptions === item.shuffleOptions && nextProps.item.shuffleOptions) {
       const shuffledOptions = replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable);
       this.setState({
         shuffledOptions

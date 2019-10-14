@@ -280,13 +280,36 @@ const TestPageHeader = ({
               )}
               {owner && (
                 <EduButton data-cy="share" size="large" onClick={onShare}>
-                  <ShareIcon />
+                  <ShareIcon color={themeColor} />
                 </EduButton>
               )}
+
               {owner && (
-                <SaveBtn data-cy="save" disabled={creating} size="large" type="secondary" onClick={onSave}>
-                  {creating ? "Saving..." : "Save"}
-                </SaveBtn>
+                <EduButton
+                  title="Save as Draft"
+                  data-cy="save"
+                  style={{ width: 42, padding: 0 }}
+                  size="large"
+                  onClick={onSave}
+                >
+                  <IconDiskette color={themeColor} />
+                </EduButton>
+              )}
+              {showShareButton && owner && showPublishButton && (
+                <EduButton
+                  title="Publish Test"
+                  data-cy="publish"
+                  style={{ width: 42, padding: 0 }}
+                  size="large"
+                  onClick={handlePublish}
+                >
+                  <IconSend color={themeColor} stroke={themeColor} />
+                </EduButton>
+              )}
+              {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
+                <AssignButton data-cy="assign" size="large" onClick={handleAssign}>
+                  Assign
+                </AssignButton>
               )}
             </RightWrapper>
             <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />

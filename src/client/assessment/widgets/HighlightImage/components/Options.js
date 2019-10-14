@@ -9,6 +9,7 @@ import LayoutComponent from "./LayoutComponent";
 const Options = ({ fillSections, cleanSections, advancedAreOpen }) => (
   <WidgetOptions
     showScoring
+    showSelect={false}
     fillSections={fillSections}
     cleanSections={cleanSections}
     advancedAreOpen={advancedAreOpen}

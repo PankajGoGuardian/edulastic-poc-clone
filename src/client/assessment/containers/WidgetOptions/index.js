@@ -16,7 +16,8 @@ class WidgetOptions extends Component {
     showVariables: PropTypes.bool,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func,
-    advancedAreOpen: PropTypes.bool
+    advancedAreOpen: PropTypes.bool,
+    showSelect: PropTypes.bool
   };
 
   static defaultProps = {
@@ -25,7 +26,8 @@ class WidgetOptions extends Component {
     showVariables: true,
     advancedAreOpen: false,
     fillSections: () => {},
-    cleanSections: () => {}
+    cleanSections: () => {},
+    showSelect: true
   };
 
   render() {
@@ -36,7 +38,8 @@ class WidgetOptions extends Component {
       showVariables,
       fillSections,
       cleanSections,
-      advancedAreOpen
+      advancedAreOpen,
+      showSelect
     } = this.props;
 
     return (
@@ -47,6 +50,7 @@ class WidgetOptions extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
             advancedAreOpen={advancedAreOpen}
+            showSelect={showSelect}
           />
         )}
         {showVariables && (

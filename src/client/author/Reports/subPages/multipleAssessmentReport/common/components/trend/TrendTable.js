@@ -83,6 +83,7 @@ const getColumns = (
       title: assessmentName,
       assessmentDate: test.assessmentDate,
       align: "right",
+      className: "normal-text",
       dataIndex: "tests",
       render: (tests = {}, record) => {
         const currentTest = tests[testId];

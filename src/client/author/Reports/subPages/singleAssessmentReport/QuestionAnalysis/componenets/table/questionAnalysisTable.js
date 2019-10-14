@@ -128,6 +128,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
           dataIndex: item.schoolId,
           key: item.schoolId,
           width: 150,
+          className: "normal-text",
           render: colouredCells("comparedBySchool", index),
           sorter: sortNumbers("comparedBySchool", index, "avgPerformance")
         };
@@ -140,6 +141,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
           dataIndex: item.teacherId,
           key: item.teacherId,
           width: 150,
+          className: "normal-text",
           render: colouredCells("comparedByTeacher", index),
           sorter: sortNumbers("comparedByTeacher", index, "avgPerformance")
         };
@@ -152,6 +154,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
           dataIndex: item.groupId,
           key: item.groupId,
           width: 150,
+          className: "normal-text",
           render: colouredCells("comparedByClass", index),
           sorter: sortNumbers("comparedByClass", index, "avgPerformance")
         };

@@ -181,6 +181,10 @@ export const StyledTable = styled(Table)`
         tr {
           background: transparent;
           text-transform: uppercase;
+          .normal-text {
+            text-transform: none;
+          }
+          ,
           th {
             padding: 8px;
             text-align: left;
@@ -443,6 +447,9 @@ export const StyledAutocompleteDropDownContainer = styled.div`
   }
   .ant-select-selection--multiple {
     padding-bottom: 6px;
+  }
+  .ant-select-selection--multiple .ant-select-selection__choice__content {
+    text-transform: none;
   }
 `;
 

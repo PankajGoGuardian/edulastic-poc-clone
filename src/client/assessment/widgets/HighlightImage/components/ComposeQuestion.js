@@ -8,7 +8,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img, uploadToS3, beforeUpload } from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload, FlexContainer } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
@@ -17,9 +17,10 @@ import { updateVariables } from "../../../utils/variables";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
-import DropZoneToolbar from "../../../components/DropZoneToolbar";
+import CustomInput from "../../../components/Input";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
+import { Label } from "../../../components/DropZoneToolbar/styled/Label";
 
 class ComposeQuestion extends Component {
   render() {
@@ -46,7 +47,7 @@ class ComposeQuestion extends Component {
       setQuestionData(newItem);
     };
 
-    const handleImageToolbarChange = prop => val => {
+    const handleImageToolbarChange = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
           let value = val;
@@ -130,13 +131,38 @@ class ComposeQuestion extends Component {
           border="border"
         />
 
-        <DropZoneToolbar
-          width={+width}
-          height={+height}
-          maxWidth={maxWidth}
-          altText={altText}
-          handleChange={handleImageToolbarChange}
-        />
+        <FlexContainer marginBottom="1rem">
+          <FlexContainer>
+            <CustomInput
+              size="large"
+              type="number"
+              value={+width}
+              onBlur={val => handleImageToolbarChange("width", val)}
+              placeholder={t("component.hotspot.widthLabel")}
+            />
+            <Label>{t("component.hotspot.widthLabel")}</Label>
+          </FlexContainer>
+          <FlexContainer>
+            <CustomInput
+              size="large"
+              type="number"
+              value={+height}
+              onBlur={val => handleImageToolbarChange("height", val)}
+              placeholder={t("component.hotspot.heightLabel")}
+            />
+            <Label>{t("component.hotspot.heightLabel")}</Label>
+          </FlexContainer>
+          <FlexContainer flexProps={{ flex: "1 1 33%" }}>
+            <CustomInput
+              size="large"
+              type="text"
+              value={altText}
+              onBlur={val => handleImageToolbarChange("altText", val)}
+              placeholder={t("component.hotspot.altTextLabel")}
+            />
+            <Label>{t("component.hotspot.altTextLabel")}</Label>
+          </FlexContainer>
+        </FlexContainer>
 
         <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
           {({ getRootProps, getInputProps, isDragActive }) => (

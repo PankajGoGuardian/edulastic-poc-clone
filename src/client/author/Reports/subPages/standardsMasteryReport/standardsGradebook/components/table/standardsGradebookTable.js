@@ -19,7 +19,8 @@ import {
   getMasteryDropDown,
   idToName,
   analyseByToKeyToRender,
-  analyseByToName
+  analyseByToName,
+  getAverageStandardScorePercent
 } from "../../utils/transformers";
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
@@ -60,6 +61,8 @@ export const StandardsGradebookTable = ({
       role
     );
   }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
+
+  const averageStandardScorePercent = useMemo(() => getAverageStandardScorePercent(tableData), [tableData]);
 
   const getFilteredTableData = () => {
     return next(tableData, arr => {
@@ -200,7 +203,13 @@ export const StandardsGradebookTable = ({
       result = [
         ...result,
         ...filteredTableData[0].standardsInfo.map((item, index) => ({
-          title: item.standardName,
+          title: (
+            <>
+              <span>{item.standardName}</span>
+              <br />
+              <span>{averageStandardScorePercent[item.standardName]}%</span>
+            </>
+          ),
           dataIndex: item.standardId,
           key: item.standardId,
           width: 150,

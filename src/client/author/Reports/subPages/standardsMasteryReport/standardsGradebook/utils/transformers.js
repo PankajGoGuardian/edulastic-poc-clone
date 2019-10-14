@@ -433,3 +433,23 @@ export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, 
   let filteredData = filterByMasteryLevel(analysedData, masteryLevel);
   return filteredData;
 };
+
+export const getAverageStandardScorePercent = tableData => {
+  let averageScoreInfo = {};
+
+  tableData.forEach(data => {
+    const standardsInfo = data.standardsInfo;
+    standardsInfo.forEach(standard => {
+      averageScoreInfo[standard.standardName] = averageScoreInfo[standard.standardName]
+        ? averageScoreInfo[standard.standardName] + (standard.scorePercent || 0)
+        : standard.scorePercent || 0;
+    });
+  });
+
+  let averageScorePercent = {};
+
+  for (let [key, value] of Object.entries(averageScoreInfo)) {
+    averageScorePercent[key] = Math.round(value / tableData.length);
+  }
+  return averageScorePercent;
+};

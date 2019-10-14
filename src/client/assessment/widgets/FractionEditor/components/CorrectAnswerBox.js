@@ -20,7 +20,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     return obj;
   }, {});
   return (
-    <StyledCorrectAnswerbox>
+    <StyledCorrectAnswerbox width="100%">
       <CorrectAnswerTitle>Correct Answer</CorrectAnswerTitle>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {Array(count)

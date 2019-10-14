@@ -11,7 +11,6 @@ import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
 import CorrectAnswerBox from "./CorrectAnswerBox";
 import SwitchWrapper from "../styled/SwitchWrapper";
-import ContentWrapper from "../styled/Wrapper";
 
 const Display = ({
   saveAnswer,
@@ -49,29 +48,35 @@ const Display = ({
     saveAnswer(_userAnswer);
   };
   return (
-    <ContentWrapper>
-      <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
-        <FlexContainer justifyContent="space-between">
-          <FlexContainer>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
-            <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
-          </FlexContainer>
-          {hasAnnotations && answerContext.isAnswerModifiable && (
-            <FlexContainer>
-              <span>Show Annotatations</span>
-              <SwitchWrapper>
-                <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
-              </SwitchWrapper>
-            </FlexContainer>
-          )}
+    <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
+      <FlexContainer justifyContent="space-between">
+        <FlexContainer>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
+          <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
         </FlexContainer>
-        <FlexContainer
-          style={{ overflow: "auto", position: "relative", minHeight: "425px", maxWidth: "100%" }}
-          flexWrap="wrap"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-          padding="16px"
-        >
+        {hasAnnotations && answerContext.isAnswerModifiable && (
+          <FlexContainer>
+            <span>Show Annotatations</span>
+            <SwitchWrapper>
+              <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
+            </SwitchWrapper>
+          </FlexContainer>
+        )}
+      </FlexContainer>
+      <FlexContainer
+        style={{
+          overflow: "auto",
+          position: "relative",
+          minHeight: "425px",
+          maxWidth: "100%",
+          width: "100%",
+          padding: "0 0 1em 0"
+        }}
+        flexDirection="column"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+      >
+        <FlexContainer flexWrap="wrap" justifyContent="flex-start" alignItems="flex-start" padding="16px">
           <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
             {Array(count)
               .fill()
@@ -105,17 +110,17 @@ const Display = ({
               })}
           </FlexContainer>
           {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
-          {previewTab === SHOW && (
-            <CorrectAnswerBox
-              fractionProperties={fractionProperties}
-              selected={Array(get(item, "validation.validResponse.value", 1))
-                .fill()
-                .map((_, i) => i + 1)}
-            />
-          )}
         </FlexContainer>
+        {previewTab === SHOW && (
+          <CorrectAnswerBox
+            fractionProperties={fractionProperties}
+            selected={Array(get(item, "validation.validResponse.value", 1))
+              .fill()
+              .map((_, i) => i + 1)}
+          />
+        )}
       </FlexContainer>
-    </ContentWrapper>
+    </FlexContainer>
   );
 };
 

@@ -51,7 +51,7 @@ export const ModalColumn = styled.div`
 
 const Label = styled.div`
   font-size: 13px;
-  font-family: "Open Sans, SemiBold";
+  font-family: "Open Sans";
   margin-top: 20px;
   margin-bottom: 10px;
   font-weight: 600;

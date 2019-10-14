@@ -91,7 +91,7 @@ class ViewModal extends React.Component {
           <ModalColumn>
             <Image src={thumbnail} />
 
-            <AssessmentNameLabel>Assignment Name</AssessmentNameLabel>
+            <AssessmentNameLabel>Test Name</AssessmentNameLabel>
             <AssessmentName>{title}</AssessmentName>
 
             <DescriptionLabel>Description</DescriptionLabel>

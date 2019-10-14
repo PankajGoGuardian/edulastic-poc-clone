@@ -88,7 +88,7 @@ class ButtonAction extends Component {
                 style={showHints ? { background: themeColor, height: "25px" } : { height: "25px" }}
                 htmlType="button"
                 onClick={handleShowHints}
-                data-cy="show-answers-btn"
+                data-cy="show-hint-btn"
               >
                 <ButtonLink color="primary" style={showHints ? { color: white } : { color: themeColor }}>
                   <LabelText>HINTS</LabelText>

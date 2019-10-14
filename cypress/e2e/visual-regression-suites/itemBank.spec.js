@@ -185,12 +185,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
 
                 it(`when resolution is ${size} - 'preview'`, () => {
                   itemHeader.preview();
-                  cy.scrollTo(0, 0);
-                  cy.wait(1000);
-                  cy.matchImageSnapshotWithSize();
-
                   cy.isPageScrollPresent().then(({ hasScroll }) => {
-                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                    cy.wait(1000);
+                    if (hasScroll) {
+                      cy.scrollTo(0, 0);
+                      cy.matchImageSnapshotWithSize();
+                      cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                    } else cy.matchImageSnapshotWithSize();
                   });
                 });
 
@@ -200,12 +201,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                       .preview()
                       .getShowAnswer()
                       .click();
-                    cy.scrollTo(0, 0);
-
-                    cy.wait(1000);
-                    cy.matchImageSnapshotWithSize();
                     cy.isPageScrollPresent().then(({ hasScroll }) => {
-                      if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                      cy.wait(1000);
+                      if (hasScroll) {
+                        cy.scrollTo(0, 0);
+                        cy.matchImageSnapshotWithSize();
+                        cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                      } else cy.matchImageSnapshotWithSize();
                     });
                   });
                 }
@@ -215,12 +217,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                     .preview()
                     .getClear()
                     .click();
-                  cy.scrollTo(0, 0);
 
-                  cy.wait(1000);
-                  cy.matchImageSnapshotWithSize();
                   cy.isPageScrollPresent().then(({ hasScroll }) => {
-                    if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                    cy.wait(1000);
+                    if (hasScroll) {
+                      cy.scrollTo(0, 0);
+                      cy.matchImageSnapshotWithSize();
+                      cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+                    } else cy.matchImageSnapshotWithSize();
                   });
                 });
 

@@ -60,7 +60,13 @@ const ResponseBoxLayout = ({
             }}
           >
             {!dragHandler && (
-              <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
+              <DragItem
+                style={{ width: "100%" }}
+                index={index}
+                onDrop={onDrop}
+                item={option}
+                data={`${option}_null_${index}`}
+              >
                 <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
               </DragItem>
             )}

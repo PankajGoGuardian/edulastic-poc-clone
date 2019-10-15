@@ -35,7 +35,11 @@ const DragPreview = ({ isDragging, children, sourceOffset }) => {
   }
 
   return (
-    <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
+    <PreviewContainer
+      style={{ width: "auto" }}
+      left={sourceOffset && sourceOffset.x}
+      top={sourceOffset && sourceOffset.y}
+    >
       {children}
     </PreviewContainer>
   );

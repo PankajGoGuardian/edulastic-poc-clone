@@ -151,7 +151,7 @@ class Display extends Component {
 
     const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-
+    const placeholder = uiStyle?.placeholder || "";
     const imageHeight = this.getHeight();
     const imageWidth = this.getWidth();
     let canvasHeight = imageHeight + (imageOptions.y || 0);
@@ -223,6 +223,7 @@ class Display extends Component {
                 >
                   {!smallSize && (
                     <AnswerDropdown
+                      placeholder={responseContainer.placeholder || placeholder}
                       responseIndex={dropTargetIndex}
                       style={{
                         width: `100%`,

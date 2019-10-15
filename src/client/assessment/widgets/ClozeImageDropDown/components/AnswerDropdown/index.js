@@ -12,14 +12,16 @@ const AnswerDropdown = ({
   onChange,
   disabled,
   options,
-  defaultValue
+  defaultValue,
+  placeholder
 }) => (
   <SelectContainer style={style} backgroundColor={backgroundColor}>
     <Select
       style={style}
+      placeholder={placeholder}
       disabled={disabled}
       data-cy={`dropdown-res-${responseIndex}`}
-      value={defaultValue}
+      value={defaultValue || undefined} // placeholder doesn't work if value is empty string
       dropdownStyle={dropdownStyle}
       onChange={value => {
         onChange(value);
@@ -40,12 +42,14 @@ AnswerDropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
   style: PropTypes.object.isRequired,
-  backgroundColor: PropTypes.string.isRequired
+  backgroundColor: PropTypes.string.isRequired,
+  placeholder: PropTypes.string
 };
 
 AnswerDropdown.defaultProps = {
   defaultValue: "",
-  responseIndex: 0
+  responseIndex: 0,
+  placeholder: ""
 };
 
 export default AnswerDropdown;

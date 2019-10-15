@@ -383,6 +383,7 @@ class QuestionWrapper extends Component {
               isV1Multipart={isV1Multipart}
               style={{
                 width: "-webkit-fill-available",
+                maxWidth: studentReportFeedbackVisible && displayFeedback && "75%",
                 display: "flex",
                 flex: 9,
                 boxShadow: "none",

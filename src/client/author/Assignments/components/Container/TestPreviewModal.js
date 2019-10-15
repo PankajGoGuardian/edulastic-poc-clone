@@ -5,12 +5,21 @@ import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, testId, test, error, closeTestPreviewModal }) => {
+const TestPreviewModal = ({
+  isModalVisible,
+  LCBPreviewModal,
+  testId,
+  test,
+  error,
+  closeTestPreviewModal,
+  isShowStudentWork = false
+}) => {
   useEffect(() => {
     if (error) {
       closeTestPreviewModal();
     }
   }, [error]);
+
 
   return (
     <StyledModal
@@ -31,6 +40,7 @@ const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, testId, test, error
         testId={testId}
         test={test}
         preview
+        isShowStudentWork={isShowStudentWork}
       />
     </StyledModal>
   );

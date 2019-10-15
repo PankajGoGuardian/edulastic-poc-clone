@@ -53,7 +53,8 @@ function* loadTest({ payload }) {
     preview = false,
     demo = false,
     test: testData = {},
-    groupId: groupIdFromUrl
+    groupId: groupIdFromUrl,
+    generateQuestionLabel = true
   } = payload;
 
   try {
@@ -262,7 +263,7 @@ function* loadTest({ payload }) {
         });
       }
     }
-    markQuestionLabel(testItems);
+    if (generateQuestionLabel) markQuestionLabel(testItems);
     let questions = getQuestions(testItems);
     if (test.passages) {
       const passageItems = test.passages.map(passage => passage.data || []);

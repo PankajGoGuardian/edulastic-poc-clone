@@ -22,13 +22,15 @@ const AssessmentPlayer = ({
   testActivityLoading,
   test,
   LCBPreviewModal,
-  closeTestPreviewModal
+  closeTestPreviewModal,
+  isShowStudentWork = false
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
     const { utaId: testActivityId, groupId } = match.params;
 
-    loadTest({ testId, testActivityId, preview, demo, test, groupId });
+    // if showing student work dont genrate question labels again
+    loadTest({ testId, testActivityId, preview, demo, test, groupId, generateQuestionLabel: !isShowStudentWork });
   }, [testId]);
 
   const confirmBeforeQuitting = e => {

@@ -295,6 +295,7 @@ class ClassQuestions extends Component {
           isModalVisible={showPlayerModal || showTestletPlayer}
           closeTestPreviewModal={this.hideStudentWork}
           test={test}
+          isShowStudentWork
           LCBPreviewModal
         />
         {testItemsPreview}

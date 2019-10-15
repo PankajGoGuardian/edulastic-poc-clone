@@ -60,7 +60,7 @@ export const groupedByDomain = (metricInfo = [], maxScore, scaleInfo = [], selec
 
       const masteryScore = getOverallMasteryScore(domainData);
       const score = round((sumBy(domainData, "totalScore") / sumBy(domainData, "maxScore")) * 100);
-      const rawScore = `${sumBy(domainData, "totalScore")} / ${sumBy(domainData, "maxScore")}`;
+      const rawScore = `${sumBy(domainData, "totalScore").toFixed(2)} / ${sumBy(domainData, "maxScore")}`;
       const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo).masteryLabel;
       const domainMetaInformation = find(rawDomainData, rawDomain => rawDomain.tloId === domainId);
 
@@ -170,7 +170,7 @@ export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
     case "score":
       return `${getOverallScore(record.records)}%`;
     case "rawScore":
-      return `${sumBy(record.records, "totalScore")} / ${sumBy(record.records, "maxScore")}`;
+      return `${sumBy(record.records, "totalScore").toFixed(2)} / ${sumBy(record.records, "maxScore")}`;
     case "masteryLevel":
       return getRecordMasteryLevel(record.records, scaleInfo).masteryLabel;
     default:

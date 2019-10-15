@@ -32,7 +32,7 @@ const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
     case "score":
       return domain ? `${getScore(domain)}%` : "N/A";
     case "rawScore":
-      return domain ? `${domain.totalScore} / ${domain.maxScore}` : 0;
+      return domain ? `${(domain.totalScore || 0).toFixed(2)} / ${domain.maxScore}` : 0;
     case "masteryLevel":
       return domain ? getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel : "N/A";
     default:

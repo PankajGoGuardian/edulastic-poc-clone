@@ -45,7 +45,7 @@ class AddQuestion extends React.Component {
       <AddQuestionWrapper>
         <ContentWrapper>
           <QuestionTypes flexDirection="column">
-            <Row style={{ display: "flex", width: "100%", marginBottom: "10px", justifyContent: "space-between" }}>
+            <Row type="flex" justify="space-between" style={{ marginBottom: "10px" }}>
               <Tooltip placement="top" title="Multiple Choice">
                 <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
                   <IconNewList />
@@ -62,18 +62,18 @@ class AddQuestion extends React.Component {
                 </AddQuestionIcon>
               </Tooltip>
             </Row>
-            <Row style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-              <Tooltip placement="bottom" title="Math">
+            <Row type="flex" justify="space-between">
+              <Tooltip placement="top" title="Math">
                 <AddQuestionIcon onClick={onAddQuestion(MATH)}>
                   <IconMath />
                 </AddQuestionIcon>
               </Tooltip>
-              <Tooltip placement="bottom" title="True/False">
+              <Tooltip placement="top" title="True/False">
                 <AddQuestionIcon onClick={onAddQuestion(TRUE_OR_FALSE)}>
                   <IconTrueFalse />
                 </AddQuestionIcon>
               </Tooltip>
-              <Tooltip placement="bottom" title="Essay">
+              <Tooltip placement="top" title="Essay">
                 <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
                   <IconPencilHollow />
                 </AddQuestionIcon>

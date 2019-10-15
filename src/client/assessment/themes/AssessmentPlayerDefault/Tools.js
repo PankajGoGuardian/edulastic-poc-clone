@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, desktopWidth } from "@edulastic/colors";
 import { white, secondaryTextColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
@@ -202,6 +202,9 @@ const ToolBox = styled(FlexContainer)`
   z-index: 500;
   border-radius: 4px;
   padding: 10px 0;
+  @media (max-width: ${desktopWidth}) {
+    top: ${props => props.isWorksheet && "160px"};
+  }
 `;
 
 const Block = styled.div`

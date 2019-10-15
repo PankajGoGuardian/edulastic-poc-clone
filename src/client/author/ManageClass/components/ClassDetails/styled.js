@@ -20,7 +20,9 @@ import {
   lightGreySecondary,
   secondaryTextColor,
   boxShadowDefault,
-  themeColorLighter
+  themeColorLighter,
+  smallDesktopWidth,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
 import { IconManage } from "@edulastic/icons";
@@ -300,7 +302,7 @@ export const Image = styled.img`
   @media (max-width: ${extraDesktopWidthMax}) {
     height: 60%;
   }
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopExactWidth}) {
     height: 100%;
   }
 `;
@@ -335,8 +337,11 @@ export const FieldValue = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 14px;
   }
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: 13px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
   }
 `;
 

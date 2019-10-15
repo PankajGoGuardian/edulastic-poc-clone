@@ -157,6 +157,12 @@ class SideMenu extends Component {
       this.setState({ isVisible: false });
     }
   };
+  getInitials = () => {
+    const { firstName, lastName } = this.props;
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
+    else if (firstName) return `${firstName.substr(0, 2)}`;
+    else if (lastName) return `${lastName.substr(0, 2)}`;
+  };
 
   render() {
     const { broken, isVisible } = this.state;
@@ -276,7 +282,11 @@ class SideMenu extends Component {
                       getPopupContainer={() => this.sideMenuRef.current}
                     >
                       <div>
-                        {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
+                        {profileThumbnail ? (
+                          <img src={profileThumbnail} alt="Profile" />
+                        ) : (
+                          <PseudoDiv>{this.getInitials()}</PseudoDiv>
+                        )}
                         <StyledTooltip title={userName}>
                           <div style={{ paddingLeft: 11, width: "140px" }}>
                             {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
@@ -902,6 +912,11 @@ const PseudoDiv = styled.div`
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 60px;
+  text-align: center;
+  text-transform: uppercase;
 `;
 
 const DropdownBtn = styled(Dropdown)`

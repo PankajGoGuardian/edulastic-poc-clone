@@ -194,6 +194,10 @@ const Camera = styled.div`
     left: auto;
     bottom: 0px;`
       : ""}
+  @media (max-width:${largeDesktopWidth}){
+    left: 5px;
+  }
+  
 `;
 
 const ImageContainer = styled.div`

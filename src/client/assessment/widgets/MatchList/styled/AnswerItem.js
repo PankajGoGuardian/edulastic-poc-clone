@@ -15,6 +15,12 @@ export const AnswerItem = styled(FlexContainer)`
     width: calc(50% - 50px);
     align-self: stretch;
   }
+  .katex {
+    .base {
+      white-space: inherit;
+      width: auto;
+    }
+  }
 `;
 
 AnswerItem.displayName = "AnswerItem";

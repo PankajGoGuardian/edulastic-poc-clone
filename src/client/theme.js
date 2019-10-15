@@ -2,6 +2,8 @@ import { themeColor, themeColorLight, white, dashBorderColor } from "@edulastic/
 
 // all theme variables
 
+const defaultFontFamily = "Open Sans";
+
 const themeColorHover = "#029D49";
 const playerButtonBackgroundColor = "rgba(255, 255, 255, 0.15)";
 const playerButtonBackgroundHoverColor = "rgba(255, 255, 255, 0.5)";
@@ -66,6 +68,7 @@ const progressStrokeColor = "#8FDBB2";
 const disableButtonBgGreen = "#26B96A";
 const descriptionColor = "#878282";
 const breadcrumbColor = "#69727E";
+const titleColor = "#304050";
 
 const sidebarBgColorPlayer = "#F8F8F8";
 const sidebarFontColorPlayer = "#6A737F";
@@ -169,6 +172,7 @@ export const themeColorsMap = {
 };
 
 export const allThemeVars = {
+  defaultFontFamily,
   themeColor,
   themeColorHover,
   buttonBackgroundColor,
@@ -228,6 +232,7 @@ export const allThemeVars = {
   disableButtonBgGreen,
   descriptionColor,
   breadcrumbColor,
+  titleColor,
 
   sidebarBgColorPlayer,
   sidebarFontColorPlayer,

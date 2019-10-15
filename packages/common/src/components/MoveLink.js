@@ -1,10 +1,38 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-
+import styled, { css } from "styled-components";
 import { withMathFormula } from "../HOC/withMathFormula";
 
-const MathSpan = withMathFormula(styled.span``);
+const Style = css`
+  background: transparent !important;
+  font-family: ${props => props.theme.defaultFontFamily} !important;
+  font-size: ${props => props.theme.questionTextnormalFontSize} !important;
+  color: ${props => props.theme.titleColor} !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  text-decoration: none;
+`;
+
+const MathSpan = withMathFormula(styled.span`
+  ${Style}
+  em,
+  strong,
+  p,
+  u,
+  div, 
+  & > span,
+  & > p > span,
+  & > p > strong > span,
+  span > *[style*="family"] {
+    ${Style}
+  }
+  * {
+    background: transparent !important;
+    font-weight: normal !important;
+    text-decoration: none;
+    color: ${props => props.theme.titleColor} !important;
+  }
+`);
 
 const MoveLink = ({ onClick, children }) => (
   <Link onClick={onClick}>
@@ -37,7 +65,7 @@ const Link = styled.a`
   }
 
   p {
-    font-size: 15px !important;
+    font-size: 15px;
   }
 
   span {

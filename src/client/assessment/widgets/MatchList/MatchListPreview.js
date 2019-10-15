@@ -28,7 +28,7 @@ import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, getDirection } from "../../utils/helpers";
+import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
@@ -224,21 +224,6 @@ const MatchListPreview = ({
     display: "flex",
     flexDirection: getDirection(listPosition),
     alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
-  };
-
-  const getStemNumeration = i => {
-    if (item.uiStyle) {
-      switch (item.uiStyle.validationStemNumeration) {
-        case "upper-alpha":
-          return String.fromCharCode(i + 65);
-        case "lower-alpha":
-          return String.fromCharCode(i + 65).toLowerCase();
-        default:
-          break;
-      }
-    }
-
-    return i + 1;
   };
 
   const allItemsById = keyBy(getPossibleResponses(), "value");
@@ -461,7 +446,7 @@ const MatchListPreview = ({
                 <CorTitle>
                   <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
-                <CorItem index={getStemNumeration(i)}>
+                <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
                   <MathFormulaDisplay
                     choice
                     dangerouslySetInnerHTML={{ __html: allItemsById?.[validArray?.[i]]?.label || "" }}
@@ -478,7 +463,7 @@ const MatchListPreview = ({
                   <CorTitle>
                     <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
-                  <CorItem index={getStemNumeration(i)}>
+                  <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>
                 </FlexContainer>

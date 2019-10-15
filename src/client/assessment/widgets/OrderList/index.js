@@ -32,7 +32,7 @@ import withPoints from "../../components/HOC/withPoints";
 import OrderListPreview from "./components/OrderListPreview";
 import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
-import { getFontSize } from "../../utils/helpers";
+import { getFontSize, getStemNumeration } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -205,23 +205,6 @@ const OrderList = ({
     initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview?.list?.map((q, i) => i);
   }
 
-  const getStemNumeration = i => {
-    if (item) {
-      if (item.uiStyle) {
-        switch (item.uiStyle.validationStemNumeration) {
-          case "upper-alpha":
-            return String.fromCharCode(i + 65);
-          case "lower-alpha":
-            return String.fromCharCode(i + 65).toLowerCase();
-          default:
-            break;
-        }
-      }
-    }
-
-    return i + 1;
-  };
-
   const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
 
   const checkAnswerOptionComponent = isEmpty(evaluationForCheckAnswer) ? (
@@ -295,7 +278,7 @@ const OrderList = ({
                   {correctAnswers.map((correctAnswer, i) => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>
-                        <Index>{getStemNumeration(i)}</Index>
+                        <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, i)}</Index>
                         <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                           <QuestionText>
                             <MathFormulaDisplay
@@ -315,7 +298,7 @@ const OrderList = ({
                     {Object.keys(alternateAnswers).map((key, i) => (
                       <CorrectAnswerItem theme={theme}>
                         <Text>
-                          <Index>{getStemNumeration(i)}</Index>
+                          <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, i)}</Index>
                           <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                             <QuestionText>
                               <MathFormulaDisplay

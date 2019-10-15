@@ -167,7 +167,7 @@ class StudentViewContainer extends Component {
 
     const skippedNumber = activeQuestions.filter(x => x.skipped && x.score === 0).length;
 
-    const notGradedNumber = activeQuestions.filter(x => x.graded === false).length;
+    const notGradedNumber = activeQuestions.filter(x => !x.skipped && x.graded === false).length;
 
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =

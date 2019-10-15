@@ -33,7 +33,7 @@ import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import { BackLink } from "./styled";
+import { BackLink, ScrollbarContainer } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
@@ -398,8 +398,9 @@ class Container extends Component {
             <div>{view === "preview" && this.renderButtons()}</div>
           </RightActionButtons>
         </BreadCrumbBar>
-
-        <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
+        <ScrollbarContainer>
+          <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
+        </ScrollbarContainer>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </div>
     );

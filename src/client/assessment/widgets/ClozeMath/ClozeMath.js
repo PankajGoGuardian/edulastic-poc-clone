@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
+import { WithResources, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";

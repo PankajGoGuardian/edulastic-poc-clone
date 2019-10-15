@@ -7,6 +7,7 @@ const underline = `
   position: absolute;
   left: -5px;
   border-bottom: 2px ${tabGrey} solid;
+  height: 3px;
 `;
 
 export const MultiChoiceContent = styled.div`

@@ -37,7 +37,7 @@ const Hints = ({ questions = [] }) => {
     }
     return acc;
   }, 0);
-  if (!validHints) return null;
+  if (!validHints) return <Wrapper>No Hints</Wrapper>;
   return (
     <Wrapper>
       <Title>Hints</Title>

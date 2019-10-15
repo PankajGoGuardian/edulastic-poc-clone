@@ -84,9 +84,27 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
   });
 
 class StudentViewContainer extends Component {
-  state = { filter: null, showFeedbackPopup: false, showTestletPlayer: false };
+  state = { filter: null, showFeedbackPopup: false, showTestletPlayer: false, hasStickyHeader: false };
 
   feedbackRef = React.createRef();
+  questionsContainerRef = React.createRef();
+
+  handleScroll = e => {
+    const elementTop = this.questionsContainerRef.current.getBoundingClientRect().top;
+    if (elementTop < 100 && !this.state.hasStickyHeader) {
+      this.setState({ hasStickyHeader: true });
+    } else if (elementTop > 100 && this.state.hasStickyHeader) {
+      this.setState({ hasStickyHeader: false });
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
 
   static getDerivedStateFromProps(nextProps, preState) {
     const {
@@ -143,7 +161,7 @@ class StudentViewContainer extends Component {
       testItemsOrder
     } = this.props;
 
-    const { loading, filter, showFeedbackPopup, showTestletPlayer } = this.state;
+    const { loading, filter, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
@@ -209,7 +227,7 @@ class StudentViewContainer extends Component {
           </Modal>
         )}
 
-        <StyledFlexContainer justifyContent="space-between">
+        <StyledFlexContainer justifyContent="space-between" hasStickyHeader={hasStickyHeader}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
               <AllButton active={filter === null} onClick={() => this.setState({ filter: null })}>
@@ -243,7 +261,7 @@ class StudentViewContainer extends Component {
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active style={{ width: "25%" }}>
             <IconFeedback color={white} />
             {initFeedbackValue.length ? (
-              <Tooltip title={feedbackButtonToolTip}>
+              <Tooltip title={feedbackButtonToolTip} placement={hasStickyHeader ? "bottom" : "top"}>
                 <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
               </Tooltip>
             ) : (
@@ -253,22 +271,26 @@ class StudentViewContainer extends Component {
         </StyledFlexContainer>
 
         {!loading && (
-          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            <ThemeProvider theme={{ twoColLayout: { first: "calc(75% - 15px) !important", second: "25% !important" } }}>
-              <ClassQuestions
-                currentStudent={currentStudent || {}}
-                questionActivities={studentResponse.questionActivities || []}
-                testActivity={studentResponse.testActivity || {}}
-                classResponse={classResponseProcessed}
-                testItemsOrder={testItemsOrder}
-                studentViewFilter={filter}
-                labels={_getquestionLabels(classResponse.testItems)}
-                isPresentationMode={isPresentationMode}
-                showTestletPlayer={showTestletPlayer}
-                closeTestletPlayer={() => this.setState({ showTestletPlayer: false })}
-              />
-            </ThemeProvider>
-          </AnswerContext.Provider>
+          <div ref={this.questionsContainerRef}>
+            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+              <ThemeProvider
+                theme={{ twoColLayout: { first: "calc(75% - 15px) !important", second: "25% !important" } }}
+              >
+                <ClassQuestions
+                  currentStudent={currentStudent || {}}
+                  questionActivities={studentResponse.questionActivities || []}
+                  testActivity={studentResponse.testActivity || {}}
+                  classResponse={classResponseProcessed}
+                  testItemsOrder={testItemsOrder}
+                  studentViewFilter={filter}
+                  labels={_getquestionLabels(classResponse.testItems)}
+                  isPresentationMode={isPresentationMode}
+                  showTestletPlayer={showTestletPlayer}
+                  closeTestletPlayer={() => this.setState({ showTestletPlayer: false })}
+                />
+              </ThemeProvider>
+            </AnswerContext.Provider>
+          </div>
         )}
       </React.Fragment>
     );

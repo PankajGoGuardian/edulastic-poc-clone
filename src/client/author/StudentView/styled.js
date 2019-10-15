@@ -1,16 +1,28 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { mobileWidthMax, mediumDesktopWidth, white, themeColor, tabGrey, desktopWidth } from "@edulastic/colors";
 
+const FixedHeaderStyle = css`
+  width: auto;
+  position: fixed;
+  top: 0;
+  right: 30px;
+  background: #fff;
+  z-index: 2;
+  left: 130px;
+  box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+`;
+
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 0px;
-
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
+  ${props => props.hasStickyHeader && FixedHeaderStyle}
 `;
 
 export const StudentButtonWrapper = styled(FlexContainer)`

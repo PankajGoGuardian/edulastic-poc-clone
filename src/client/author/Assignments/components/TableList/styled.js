@@ -207,6 +207,8 @@ export const TestThumbnail = styled.img`
   border-radius: 4px;
   width: 50px;
   height: 24px;
+  margin-right: 5px;
+
   @media (max-width: ${mediumDesktopWidth}) {
     width: 32px;
   }

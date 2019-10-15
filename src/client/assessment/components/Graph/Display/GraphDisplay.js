@@ -9,6 +9,15 @@ import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
 import { PlacementContainer } from "./PlacementContainer";
+import { smallestZoomLevel } from "../../../../common/utils/static/zoom";
+import { ifZoomed } from "../../../../common/utils/helpers";
+
+const graphDimensionsMultiplierHashMap = {
+  sm: 1.5,
+  md: 1.75,
+  lg: 2.5,
+  xl: 3
+};
 
 const safeParseFloat = val => {
   if (val) {
@@ -58,14 +67,35 @@ class GraphDisplay extends Component {
     }
   }
 
+  getGraphDimensions = (defaultStyle, numberlineAxis = {}) => {
+    const { theme = {} } = this.props;
+    const zoomLevel = theme?.zoomLevel || smallestZoomLevel;
+
+    let multiplier = 1;
+    let fontSize = numberlineAxis?.fontSize || 14;
+
+    if (ifZoomed(zoomLevel)) {
+      multiplier = graphDimensionsMultiplierHashMap[zoomLevel];
+      fontSize = theme?.fontSize || fontSize;
+    }
+
+    return {
+      width: defaultStyle.layoutWidth * multiplier,
+      height: defaultStyle.layoutHeight * multiplier,
+      fontSize
+    };
+  };
+
   validateNumberline = () => {
     const { graphData } = this.props;
     const { canvas, uiStyle } = graphData;
     const { graphIsValid } = this.state;
 
+    const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle);
+
     const parsedGraphData = {
-      width: uiStyle.layoutWidth ? parseInt(uiStyle.layoutWidth, 10) : uiStyle.layoutWidth,
-      height: uiStyle.layoutHeight ? parseInt(uiStyle.layoutHeight, 10) : uiStyle.layoutHeight,
+      width: width ? parseInt(width, 10) : width,
+      height: height ? parseInt(height, 10) : height,
       xMin: canvas.xMin ? parseFloat(canvas.xMin, 10) : canvas.xMin,
       xMax: canvas.xMax ? parseFloat(canvas.xMax, 10) : canvas.xMax
     };
@@ -92,9 +122,11 @@ class GraphDisplay extends Component {
     const { canvas, uiStyle } = graphData;
     const { graphIsValid } = this.state;
 
+    const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle);
+
     const parsedGraphData = {
-      width: uiStyle.layoutWidth ? parseInt(uiStyle.layoutWidth, 10) : uiStyle.layoutWidth,
-      height: uiStyle.layoutHeight ? parseInt(uiStyle.layoutHeight, 10) : uiStyle.layoutHeight,
+      width: width ? parseInt(width, 10) : width,
+      height: height ? parseInt(height, 10) : height,
       xMin: canvas.xMin ? parseFloat(canvas.xMin, 10) : canvas.xMin,
       xMax: canvas.xMax ? parseFloat(canvas.xMax, 10) : canvas.xMax,
       yMin: canvas.yMin ? parseFloat(canvas.yMin, 10) : canvas.yMin,
@@ -211,6 +243,8 @@ class GraphDisplay extends Component {
     const xDistance = safeParseFloat(uiStyle.xDistance);
     const yDistance = safeParseFloat(uiStyle.yDistance);
 
+    const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle);
+
     return {
       canvas: {
         xMin: xMax - xMin <= 6 ? xMin - xDistance : xMin - 1,
@@ -219,9 +253,9 @@ class GraphDisplay extends Component {
         yMax: yMax - yMin <= 6 ? yMax + yDistance : yMax + 1
       },
       layout: {
-        width: uiStyle.layoutWidth,
+        width,
         margin: uiStyle.layoutMargin,
-        height: uiStyle.layoutHeight,
+        height,
         snapTo: uiStyle.layoutSnapto,
         fontSize: getFontSizeVal(uiStyle.currentFontSize)
       },
@@ -307,6 +341,8 @@ class GraphDisplay extends Component {
 
     const { uiStyle, canvas, toolbar, numberlineAxis } = graphData;
 
+    const { width = 0, height = 0, fontSize } = this.getGraphDimensions(uiStyle, numberlineAxis);
+
     return {
       canvas: {
         xMin: parseFloat(canvas.xMin),
@@ -326,7 +362,7 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
-        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
+        fontSize: fontSize && parseInt(fontSize, 10),
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
@@ -338,9 +374,9 @@ class GraphDisplay extends Component {
         labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
       },
       layout: {
-        width: uiStyle.layoutWidth,
+        width,
         margin: uiStyle.layoutMargin,
-        height: uiStyle.layoutHeight,
+        height,
         snapTo: uiStyle.layoutSnapto,
         fontSize: getFontSizeVal(uiStyle.currentFontSize),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
@@ -412,6 +448,8 @@ class GraphDisplay extends Component {
 
     const { uiStyle, canvas, numberlineAxis, list } = graphData;
 
+    const { width = 0, height = 0, fontSize } = this.getGraphDimensions(uiStyle, numberlineAxis);
+
     return {
       canvas: {
         xMin: parseFloat(canvas.xMin),
@@ -430,7 +468,7 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
-        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
+        fontSize: fontSize && parseInt(fontSize, 10),
         labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
         separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),
         separationDistanceY: numberlineAxis && parseInt(numberlineAxis.separationDistanceY, 10),
@@ -445,9 +483,9 @@ class GraphDisplay extends Component {
         responseBoxPosition: (numberlineAxis && numberlineAxis.responseBoxPosition) || "bottom"
       },
       layout: {
-        width: parseInt(uiStyle.layoutWidth, 10),
+        width: parseInt(width, 10),
         margin: uiStyle.layoutMargin,
-        height: uiStyle.layoutHeight === "auto" ? 150 : parseInt(uiStyle.layoutHeight, 10),
+        height: height === "auto" ? 150 : parseInt(height, 10),
         snapTo: uiStyle.layoutSnapto,
         fontSize: getFontSizeVal(uiStyle.currentFontSize),
         titlePosition: parseInt(uiStyle.titlePosition, 10),

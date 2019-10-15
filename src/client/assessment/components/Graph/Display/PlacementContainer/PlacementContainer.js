@@ -28,7 +28,8 @@ import {
   LabelRight,
   Title,
   JSXBoxWrapper,
-  JSXBoxWithDropValues
+  JSXBoxWithDropValues,
+  StyledToolsContainer
 } from "./styled";
 import Tools from "../../common/Tools";
 import DragDropValues from "./DragDropValues";
@@ -506,7 +507,9 @@ class PlacementContainer extends PureComponent {
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
-            <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
+            <StyledToolsContainer>
+              <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
+            </StyledToolsContainer>
           )}
           <JSXBoxWithDropValues className={dragDropBoundsClassName}>
             {!disableResponse && (

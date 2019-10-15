@@ -1,8 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 import { GraphToolbar, SegmentsToolBtn, SegmentsToolbarItem, ToolbarItemIcon } from "./styled";
+import { ifZoomed } from "../../../../../common/utils/helpers";
 
-const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, responsesAllowed, elementsNumber, toolbar }) => {
+const SegmentsTools = ({
+  tool,
+  onSelect,
+  fontSize,
+  getIconByToolName,
+  responsesAllowed,
+  elementsNumber,
+  toolbar,
+  theme
+}) => {
   const segmentsTools = [
     "segments_point",
     "segment_both_point_included",
@@ -63,13 +74,29 @@ const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, responsesA
 
   const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
 
+  const getStyle = (theme, fontSize) => {
+    if (ifZoomed(theme?.zoomLevel)) {
+      return {
+        width: "auto",
+        padding: "0px 10px",
+        zoom: theme?.widgets?.graphPlacement?.toolsZoom
+      };
+    }
+
+    return {
+      width: fontSize > 20 ? 105 : 93
+    };
+  };
+
+  let toolBtnStyle = getStyle(theme, fontSize);
+
   return (
     <GraphToolbar data-cy="segmentsToolbar" fontSize={fontSize}>
       {uiTools.map(
         (uiTool, i) =>
           !uiTool.group && (
             <SegmentsToolBtn
-              style={{ width: fontSize > 20 ? 105 : 93 }}
+              style={toolBtnStyle}
               className={getToolClassName(uiTool)}
               onClick={getToolClickHandler(uiTool)}
               key={`segments-tool-btn-${i}`}
@@ -88,7 +115,7 @@ const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, responsesA
       )}
       {serviceTools.map((serviceTool, i) => (
         <SegmentsToolBtn
-          style={{ width: fontSize > 20 ? 105 : 93, marginLeft: i === 0 ? "auto" : "" }}
+          style={{ ...toolBtnStyle, marginLeft: i === 0 ? "auto" : "" }}
           className={getToolClassName({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
           onClick={getToolClickHandler({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
           key={`segments-service-tool-btn-${i}`}
@@ -128,4 +155,4 @@ SegmentsTools.defaultProps = {
   toolbar: []
 };
 
-export default SegmentsTools;
+export default withTheme(SegmentsTools);

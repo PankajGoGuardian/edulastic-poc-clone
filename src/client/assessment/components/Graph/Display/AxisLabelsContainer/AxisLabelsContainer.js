@@ -21,7 +21,7 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
 import ResponseBox from "./ResponseBox";
-import { GraphWrapper, JSXBox, ContainerWithResponses } from "./styled";
+import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -316,7 +316,7 @@ class AxisLabelsContainer extends PureComponent {
   render() {
     const {
       layout,
-      numberlineAxis: { fontSize, responseBoxPosition, separationDistanceX, separationDistanceY },
+      numberlineAxis: { responseBoxPosition, separationDistanceX, separationDistanceY },
       disableResponse,
       view,
       graphData,
@@ -338,12 +338,14 @@ class AxisLabelsContainer extends PureComponent {
         </WithResources>
         <GraphWrapper>
           {!disableResponse && (
-            <Tools
-              controls={this.controls}
-              onSelectControl={this.onSelectControl}
-              onSelect={() => {}}
-              fontSize={fontSize}
-            />
+            <StyledToolsContainer>
+              <Tools
+                controls={this.controls}
+                onSelectControl={this.onSelectControl}
+                onSelect={() => {}}
+                fontSize={layout?.fontSize}
+              />
+            </StyledToolsContainer>
           )}
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
             {!disableResponse && (

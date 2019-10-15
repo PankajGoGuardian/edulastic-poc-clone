@@ -28,7 +28,8 @@ import {
   LabelRight,
   Title,
   JSXBoxWrapper,
-  JSXBoxWithDrawingObjectsWrapper
+  JSXBoxWithDrawingObjectsWrapper,
+  StyledToolsContainer
 } from "./styled";
 import Tools from "../../common/Tools";
 import GraphEditTools from "../../components/GraphEditTools";
@@ -671,14 +672,16 @@ class GraphContainer extends PureComponent {
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
-            <Tools
-              tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible() ? [] : tools}
-              controls={bgShapes ? this.allControls : controls}
-              selected={[selectedTool]}
-              onSelectControl={this.onSelectControl}
-              onSelect={this.onSelectTool}
-              fontSize={bgShapes ? 14 : layout.fontSize}
-            />
+            <StyledToolsContainer>
+              <Tools
+                tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible() ? [] : tools}
+                controls={bgShapes ? this.allControls : controls}
+                selected={[selectedTool]}
+                onSelectControl={this.onSelectControl}
+                onSelect={this.onSelectTool}
+                fontSize={bgShapes ? 14 : layout.fontSize}
+              />
+            </StyledToolsContainer>
           )}
           <JSXBoxWithDrawingObjectsWrapper>
             {this.drawingObjectsAreVisible() && !disableResponse && (

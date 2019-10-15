@@ -2,11 +2,14 @@ import styled from "styled-components";
 import { white } from "@edulastic/colors";
 import { WithMathFormula, Button } from "@edulastic/common";
 
+export const StyledToolsContainer = styled.div`
+  zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
+`;
+
 export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
-  zoom: ${props => props.theme.widgets.chart.chartZoom};
 `;
 
 export const PrevColor = styled.div`
@@ -36,12 +39,20 @@ export const JSXBox = styled.div`
 
   text {
     fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+    font-size: ${({ theme }) => theme?.fontSize}px !important;
   }
 
   div {
     color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
     background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   }
+
+  ${({ theme }) => theme.zoomedCss`
+    .graph-shape-label {
+      font-size: ${theme?.fontSize}px !important;
+      background-color: transparent !important;
+    }
+  `}
 `;
 export const LabelTop = WithMathFormula(styled.div`
   height: 20px;

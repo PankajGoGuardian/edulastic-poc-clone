@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { greenDark, secondaryTextColor, white, green } from "@edulastic/colors";
 import { WithMathFormula } from "@edulastic/common";
 
+export const StyledToolsContainer = styled.div`
+  zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
+`;
+
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
   position: relative;

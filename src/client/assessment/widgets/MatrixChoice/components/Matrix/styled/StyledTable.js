@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "antd";
-import { mobileWidth, desktopWidth } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, mainTextColor } from "@edulastic/colors";
 import { fonts } from "@edulastic/constants";
 
 export const StyledTable = styled(Table)`
@@ -27,7 +27,7 @@ export const StyledTable = styled(Table)`
         & > td,
         & > td div {
           background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-          color: ${props => props.theme.widgets.matrixChoice.inlineLabelHoverColor};
+          color: ${mainTextColor};
         }
       }
 
@@ -50,7 +50,7 @@ export const StyledTable = styled(Table)`
         border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
-        color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
+        color: ${mainTextColor};
         min-width: 110px;
       }
       td div {

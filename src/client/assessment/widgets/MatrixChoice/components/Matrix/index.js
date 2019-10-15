@@ -4,7 +4,7 @@ import { cloneDeep, flatten } from "lodash";
 import styled, { withTheme } from "styled-components";
 
 import { helpers, WithMathFormula } from "@edulastic/common";
-
+import { mainTextColor } from "@edulastic/colors";
 import MatrixCell from "../MatrixCell";
 import { StyledTable } from "./styled/StyledTable";
 import { getFontSize } from "../../../../utils/helpers";
@@ -190,10 +190,7 @@ const Matrix = props => {
 
     const optionsData = options.map((option, i) => ({
       title: isTable ? (
-        <StyledHeader
-          style={{ color: theme.widgets.matrixChoice.tableStyledHeaderColor }}
-          dangerouslySetInnerHTML={{ __html: option }}
-        />
+        <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: option }} />
       ) : (
         ""
       ),

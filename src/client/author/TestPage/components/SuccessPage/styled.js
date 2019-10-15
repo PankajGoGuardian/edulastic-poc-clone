@@ -1,18 +1,25 @@
 import { Typography } from "antd";
 import styled from "styled-components";
-import { mobileWidth, tabletWidth, themeColor, white, darkGrey, lightGrey, lightGrey4 } from "@edulastic/colors";
+import {
+  mobileWidth,
+  tabletWidth,
+  themeColor,
+  white,
+  darkGrey,
+  lightGrey,
+  lightGrey4,
+  largeDesktopWidth
+} from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
+
 const { Paragraph } = Typography;
 
 export const Container = styled.div`
-  padding: 30px;
+  padding: 20px 30px;
   left: 0;
   right: 0;
   height: 100%;
   overflow: auto;
-  @media (max-width: ${mobileWidth}) {
-    padding: 0 26px 45px 26px;
-  }
 `;
 
 export const Main = styled.div`
@@ -46,29 +53,43 @@ export const StyledCard = styled(Card)`
 `;
 
 export const FlexContainerWrapper = styled(FlexContainer)`
-  @media (max-width: 770px) {
-    width: 50%;
-  }
-  padding: 20px;
-  width: ${props => (props.isAssignSuccess ? "1000px" : "700px")};
-  margin: 40px auto;
-  height: ${props => (props.isAssignSuccess ? "600px" : "500px")};
+  width: ${props => (props.isAssignSuccess ? "950px" : "700px")};
+  min-height: 300px;
   background-color: ${white};
+  margin: 20px auto 0px;
+  padding: 20px;
+  align-items: flex-start;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 100%;
+  }
 `;
 
 export const FlexContainerWrapperLeft = styled(FlexContainer)`
   width: 300px;
   flex-direction: column;
   justify-content: flex-start;
-  height: 550px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 25%;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 50%;
+  }
 `;
 export const FlexContainerWrapperRight = styled(FlexContainer)`
-  width: 600px;
+  width: calc(100% - 300px);
   justify-content: ${props => (props.isAssignSuccess ? "flex-start" : "center")};
   align-items: ${props => (props.isAssignSuccess ? "flex-start" : "")};
   padding: 0px 20px;
   flex-direction: column;
-  height: ${props => (props.isAssignSuccess ? "550px" : "500px")};
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 75%;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+  }
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`

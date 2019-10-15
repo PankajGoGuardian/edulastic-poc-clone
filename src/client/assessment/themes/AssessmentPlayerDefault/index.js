@@ -361,16 +361,6 @@ class AssessmentPlayerDefault extends React.Component {
           innerRef={this.scrollElementRef}
           data-cy="assessment-player-default-wrapper"
         >
-          <SvgDraw
-            activeMode={activeMode}
-            scratchPadMode={scratchPadMode}
-            lineColor={currentColor}
-            deleteMode={deleteMode}
-            lineWidth={lineWidth}
-            fillColor={fillColor}
-            saveHistory={this.saveHistory("scratchpad")}
-            history={scratchPad}
-          />
           {scratchPadMode && !previewPlayer && (
             <Tools
               onFillColorChange={this.onFillColorChange}
@@ -508,6 +498,16 @@ class AssessmentPlayerDefault extends React.Component {
             </Header>
           </Affix>
           <Main skin>
+            <SvgDraw
+              activeMode={activeMode}
+              scratchPadMode={scratchPadMode}
+              lineColor={currentColor}
+              deleteMode={deleteMode}
+              lineWidth={lineWidth}
+              fillColor={fillColor}
+              saveHistory={this.saveHistory("scratchpad")}
+              history={scratchPad}
+            />
             <MainWrapper hasCollapseButtons={hasCollapseButtons}>
               {testItemState === "" && (
                 <TestItemPreview

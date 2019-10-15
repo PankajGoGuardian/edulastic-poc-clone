@@ -7,7 +7,7 @@ const Main = styled.main`
   flex-direction: ${props => (props.skin ? "initial" : "row")};
   min-height: ${props => (props.skin ? "0" : "100vh")};
   box-sizing: border-box;
-
+  position: relative;
   & p {
     margin: 0;
   }

@@ -20,7 +20,6 @@ const SvgDraw = ({
   top
 }) => {
   const svg = useRef(null);
-
   const [points, setPoints] = useState([]);
   const [pathes, setPathes] = useState([]);
   const [dragStart, setDragStart] = useState(false);
@@ -669,7 +668,7 @@ const SvgDraw = ({
         {...getSvgHandlers()}
         width="calc(100% - 50px)"
         style={{
-          height: !height ? document.body.scrollHeight + 28 : height,
+          height: !height ? "calc(100% - 50px)" : height,
           background: "transparent",
           position: "absolute",
           top: `${top === 0 ? 0 : 62}`,

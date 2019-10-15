@@ -277,6 +277,7 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const altAnswers = get(validation, "altResponses", []);
     const correctAnswerBoxLayout = (
       <React.Fragment>
         <CorrectAnswerBoxLayout
@@ -285,15 +286,15 @@ class Display extends Component {
           groupResponses={newOptions}
           userAnswers={validation.validResponse && validation.validResponse.value}
         />
-        {!isEmpty(validation.altResponses) && (
+        {altAnswers.map((answer, index) => (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             cleanValue
             groupResponses={newOptions}
-            userAnswers={validation.validResponse && validation.validResponse.value}
-            altResponses={validation.altResponses}
+            userAnswers={answer.value}
+            altAnsIndex={index + 1}
           />
-        )}
+        ))}
       </React.Fragment>
     );
 

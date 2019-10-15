@@ -779,13 +779,6 @@ class ComposeQuestion extends Component {
                 >
                   {t("component.cloze.imageDropDown.editAriaLabels")}
                 </Checkbox>
-                <Checkbox
-                  data-cy="drag-drop-image-border-check"
-                  defaultChecked={responseLayout && responseLayout.showborder}
-                  onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
-                >
-                  {t("component.cloze.imageDropDown.showborder")}
-                </Checkbox>
               </CheckContainer>
             </FlexContainer>
             <PaddingDiv>

@@ -416,8 +416,8 @@ export const defaultTheme = {
     subtitleColor: textColor,
     toolbarBgColor: brandLightGrey,
     toolbarBorderColor: "none",
-    triangleBorderLeftColor: "none",
-    triangleBorderRightColor: "none",
+    triangleBorderLeftColor: "transparent",
+    triangleBorderRightColor: "transparent",
     triangleBorderBottomColor: triangleBottomColor
   },
   dropZoneToolbar: {

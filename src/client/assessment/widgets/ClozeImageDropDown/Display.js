@@ -16,6 +16,9 @@ import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
+import { Pointer } from "../../styled/Pointer";
+import { Point } from "../../styled/Point";
+import { Triangle } from "../../styled/Triangle";
 
 class Display extends Component {
   selectChange = (value, index) => {
@@ -130,7 +133,6 @@ class Display extends Component {
       isExpressGrader,
       isReviewTab
     } = this.props;
-
     const { shuffleOptions } = configureOptions;
     const { maxHeight, maxWidth } = clozeImage;
     let newOptions;
@@ -214,7 +216,6 @@ class Display extends Component {
                   key={index}
                   style={{
                     ...btnStyle,
-                    overflow: "hidden",
                     minWidth: response.minWidth,
                     minHeight: response.minHeight,
                     borderStyle: smallSize ? "dashed" : "solid"
@@ -237,6 +238,10 @@ class Display extends Component {
                       defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelections[dropTargetIndex]}
                     />
                   )}
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle theme={theme} />
+                  </Pointer>
                 </div>
               );
             })}

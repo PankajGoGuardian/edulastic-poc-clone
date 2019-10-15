@@ -1235,6 +1235,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         ],
         uiStyle: {
           widthpx: 140,
+          heightpx: 35,
+          inputtype: "text",
+          stemNumeration: "numerical",
+          fontsize: "normal",
           responsecontainerindividuals: []
         },
         stimulusReviewonly: "",

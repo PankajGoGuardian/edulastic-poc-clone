@@ -207,7 +207,7 @@ class Layout extends Component {
                   <OptionSelect
                     size="large"
                     onChange={val => changeUiStyle("stemNumeration", val)}
-                    value={uiStyle.stemNumeration}
+                    value={uiStyle.stemNumeration || "normal"}
                   >
                     {stemnumerationOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -223,7 +223,7 @@ class Layout extends Component {
                   <OptionSelect
                     size="large"
                     onChange={fontsize => changeUiStyle("fontsize", fontsize)}
-                    value={uiStyle.fontsize}
+                    value={uiStyle.fontsize || "normal"}
                   >
                     {fontsizeOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -241,7 +241,7 @@ class Layout extends Component {
                   <OptionSelect
                     size="large"
                     onChange={inputtype => changeUiStyle("inputtype", inputtype)}
-                    value={uiStyle.inputtype}
+                    value={uiStyle.inputtype || "text"}
                   >
                     {inputtypeOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -283,7 +283,7 @@ class Layout extends Component {
                   disabled={false}
                   onBlur={this.handleHeightChange}
                   onChange={e => changeUiStyle("heightpx", e.target.value)}
-                  value={uiStyle.heightpx}
+                  value={uiStyle.heightpx || 35}
                   max={response.maxHeight}
                   min={response.minHeight}
                 />

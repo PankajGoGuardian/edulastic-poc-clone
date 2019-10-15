@@ -187,6 +187,9 @@ const Camera = styled.div`
   justify-content: center;
   z-index: 1;
   cursor: pointer;
+  @media (max-width: ${largeDesktopWidth}) {
+    left: 5px;
+  }
 `;
 
 const ImageContainer = styled.div`

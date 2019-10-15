@@ -46,7 +46,7 @@ const ClassList = ({
           {_classname}
         </Tooltip>
       ),
-      width: 300
+      width: 350
     },
     {
       title: "Class Code",

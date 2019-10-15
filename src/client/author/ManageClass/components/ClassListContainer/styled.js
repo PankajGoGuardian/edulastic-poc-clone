@@ -214,6 +214,9 @@ export const ClassListTable = styled(Table)`
             }
           }
         }
+        &:nth-last-of-type(-n + 2) {
+          text-align: center;
+        }
       }
     }
     &-tbody {

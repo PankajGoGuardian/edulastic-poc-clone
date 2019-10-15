@@ -114,7 +114,7 @@ const Main = styled.main`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     padding: 174px 26px 0;
   }
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     justify-content: center;
   }
 `;
@@ -142,7 +142,7 @@ const MainContent = styled.div`
 const MainWrapper = styled.div`
   width: ${({ theme, isSidebarVisible }) => {
     if (isSidebarVisible) {
-      return ifZoomed(theme?.zoomLevel) ? "75%" : "85%";
+      return ifZoomed(theme?.zoomLevel) ? "75%" : "80%";
     }
     return "95%";
   }};
@@ -157,7 +157,7 @@ const MainWrapper = styled.div`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     width: 100%;
   }
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     padding: 120px 0px;
   }
 `;
@@ -165,14 +165,15 @@ const MainWrapper = styled.div`
 const Sidebar = styled.div`
   width: ${({ theme, isVisible }) => {
     if (isVisible) {
-      return ifZoomed(theme?.zoomLevel) ? "25%" : "15%";
+      return ifZoomed(theme?.zoomLevel) ? "25%" : "20%";
     }
     return "5%";
   }};
   padding-top: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
+  padding-right: 20px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     display: none;
   }
 `;

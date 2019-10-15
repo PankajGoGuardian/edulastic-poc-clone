@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import FlexContainer from "../common/FlexContainer";
 import Circle from "../common/Circle";
-import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import { IconGraphRightArrow } from "@edulastic/icons";
 
 const SidebarQuestionList = ({
   questions,
@@ -17,13 +17,9 @@ const SidebarQuestionList = ({
   theme
 }) => (
   <SidebarWrapper>
-    <IconWrapper onClick={toggleSideBar}>
-      {isSidebarVisible ? (
-        <IconArrowRight color={theme.widgets.assessmentPlayers.sidebarArrowIconColor} height={15} width={15} />
-      ) : (
-        <IconArrowLeft color={theme.widgets.assessmentPlayers.sidebarArrowIconColor} height={15} width={15} />
-      )}
-    </IconWrapper>
+    <MinimizeButton onClick={toggleSideBar} minimized={isSidebarVisible}>
+      <IconGraphRightArrow />
+    </MinimizeButton>
     {isSidebarVisible && (
       <div>
         <Title>{t("common.layout.questionlist.heading")} </Title>
@@ -88,21 +84,34 @@ const SidebarWrapper = styled.div`
 
 const Title = styled(Content)`
   text-transform: uppercase;
-  padding: 25px 0px;
+  padding: 30px 0px;
   text-align: center;
   font-size: 15px;
 `;
 
-const IconWrapper = styled.div`
-  width: 25px;
-  height: 25px;
-  background: white;
+export const MinimizeButton = styled.div`
   position: absolute;
+  left: ${({ minimized }) => (minimized ? "40px" : "210px")};
   top: 25px;
   left: -10px;
+  padding: 9px;
+  background: ${props => props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor};
   border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: left 300ms ease-in-out;
+
+  svg {
+    fill: ${props => props.theme.widgets.assessmentPlayers.sidebarActiveTextColor};
+    transform: rotate(${({ minimized }) => (minimized ? 0 : "-180deg")});
+    transition: transform 300ms ease-in-out;
+
+    &:hover,
+    &:active,
+    &:focus {
+      fill: ${props => props.theme.widgets.assessmentPlayers.sidebarActiveTextColor};
+    }
+  }
 `;

@@ -40,16 +40,18 @@ export const CardTextContent = ({ data, history }) => {
         <CenterCol>
           <Link to="/author/assignments">
             <TextWrapper color={titleColor} size="14px">
-              {totalAssignment > 1 ? "Assessments" : "Assessment"}
+              {totalAssignment > 1 ? "Assignments" : "Assignment"}
             </TextWrapper>
           </Link>
         </CenterCol>
 
         {(!totalAssignment || totalAssignment === 0) && (
           <RightCol>
-            <Link to="/author/assignments/select">
-              <IconPlusCircle color={themeColorLight} width={25} height={25} />
-            </Link>
+            <Tooltip title="Create new assignment" placement="topLeft">
+              <Link to="/author/assignments/select">
+                <IconPlusCircle color={themeColorLight} width={25} height={25} />
+              </Link>
+            </Tooltip>
           </RightCol>
         )}
       </RowWrapper>

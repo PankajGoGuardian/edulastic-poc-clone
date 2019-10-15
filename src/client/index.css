@@ -2103,3 +2103,7 @@ span.token.active-word {
 .customTooltip div.ant-tooltip-inner {
   width: max-content;
 }
+
+.ant-modal-wrap {
+  overflow-y: auto;
+}

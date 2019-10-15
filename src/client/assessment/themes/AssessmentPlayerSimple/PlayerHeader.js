@@ -35,24 +35,24 @@ const PlayerHeader = ({
               <FlexDisplay>
                 {showSubmit && (
                   <Save onClick={onSubmit} title="Submit">
-                    <IconSend color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
+                    <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
                 )}
                 <Save onClick={onSaveProgress} title="Save">
-                  <IconSave color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
+                  <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                 </Save>
                 {onPause && (
                   <Save onClick={onPause} title="Pause">
-                    <IconPause color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
+                    <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
                 )}
                 {!onPause && (
                   <StyledLink to="/home/assignments">
-                    <IconPause color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
+                    <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                   </StyledLink>
                 )}
                 <Save onClick={onOpenExitPopup} title="Exit">
-                  <IconLogout color={theme.default.widgets.assessmentPlayerSimple.headerIconColor} />
+                  <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                 </Save>
               </FlexDisplay>
             </ContainerRight>

@@ -14,12 +14,11 @@ export const MathInputStyles = styled.div`
     width: 100%;
     min-width: 40px;
     display: inline-flex;
-    padding-right: ${({ width }) => (width ? "unset" : "40px")};
     position: relative;
     border-radius: 5px;
     background: ${props => props.theme.common.mathInputBgColor};
     border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
-    padding: ${({ width }) => (width ? "unset" : "5px 25px")};
+    padding: ${({ width }) => (width ? "unset" : "5px 15px")};
     align-items: center;
 
     &.clear {
@@ -41,6 +40,7 @@ export const MathInputStyles = styled.div`
 
     &.mq-focused {
       box-shadow: none;
+      border: 0;
     }
     .mq-editable-field {
       min-width: ${({ minWidth }) => minWidth || "auto"};

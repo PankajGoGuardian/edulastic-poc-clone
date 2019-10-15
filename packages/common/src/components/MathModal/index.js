@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Modal, Button } from "antd";
+import { themeColor, white, titleColor } from "@edulastic/colors";
+import styled from "styled-components";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
 
@@ -45,12 +47,19 @@ const MathModal = ({
       title="Edit Math"
       className="math-modal"
       maskClosable={false}
-      onOk={() => onSave(latex)}
       onCancel={() => onClose()}
       width={width || "785px"}
       wrapProps={{
         style: { overflow: "auto", display: show ? "block" : "none" }
       }}
+      footer={[
+        <ThemeButton ghost onClick={() => onClose()}>
+          CANCEL
+        </ThemeButton>,
+        <ThemeButton type="primary" onClick={() => onSave(latex)}>
+          OK
+        </ThemeButton>
+      ]}
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
       {isEditable && (
@@ -96,3 +105,15 @@ MathModal.defaultProps = {
 };
 
 export default MathModal;
+
+const ThemeButton = styled(Button)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  color: ${props => (props.ghost ? titleColor : white)};
+  &:hover,
+  &:focus {
+    color: ${props => (props.ghost ? titleColor : white)};
+    background: ${themeColor};
+    border-color: ${themeColor};
+  }
+`;

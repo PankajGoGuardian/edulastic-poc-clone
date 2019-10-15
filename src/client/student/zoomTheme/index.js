@@ -57,7 +57,9 @@ export const getZoomedTheme = (theme, zoomLevel) => {
 
   const respondTo = {
     xl: respondToBreakpoint(zoomLevel, "xl"),
-    lg: respondToBreakpoint(zoomLevel, "lg")
+    lg: respondToBreakpoint(zoomLevel, "lg"),
+    md: respondToBreakpoint(zoomLevel, "md"),
+    sm: respondToBreakpoint(zoomLevel, "sm")
   };
 
   return {

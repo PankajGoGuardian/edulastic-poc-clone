@@ -8,8 +8,9 @@ import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
 import DragScrollContainer from "../../components/DragScrollContainer";
 
-import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, headerOffsetHashMap } from "../../constants/others";
 import { Hints } from "@edulastic/common";
+import { ifZoomed } from "../../../common/utils/helpers";
 
 const PlayerContentArea = ({
   itemRows,
@@ -139,8 +140,20 @@ const MainContent = styled.div`
 `;
 
 const MainWrapper = styled.div`
-  width: ${props => (props.isSidebarVisible ? "85%" : "95%")};
-  padding: ${props => (props.isSidebarVisible ? "120px 100px" : "120px 50px 100px 100px")};
+  width: ${({ theme, isSidebarVisible }) => {
+    if (isSidebarVisible) {
+      return ifZoomed(theme?.zoomLevel) ? "75%" : "85%";
+    }
+    return "95%";
+  }};
+  padding: ${({ theme, isSidebarVisible }) => {
+    if (isSidebarVisible) {
+      return ifZoomed(theme?.zoomLevel)
+        ? `${120 - headerOffsetHashMap["xs"] + headerOffsetHashMap[(theme?.zoomLevel)]}px 100px`
+        : "120px 100px";
+    }
+    return "120px 50px 100px 100px";
+  }};
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     width: 100%;
   }
@@ -150,8 +163,13 @@ const MainWrapper = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width: ${props => (props.isVisible ? "15%" : "5%")};
-  padding-top: 70px;
+  width: ${({ theme, isVisible }) => {
+    if (isVisible) {
+      return ifZoomed(theme?.zoomLevel) ? "25%" : "15%";
+    }
+    return "5%";
+  }};
+  padding-top: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {

@@ -71,6 +71,7 @@ const MainFooter = styled.div`
   height: 60px;
   display: flex;
   justify-content: space-between;
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
 `;
 
 const CounterCircle = styled.div`

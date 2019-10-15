@@ -58,6 +58,10 @@ export const playersZoomTheme = theme => {
       graphPlacement: {
         ...theme.widgets.graphPlacement,
         toolsZoom: assessmentZoomMap[theme.zoomLevel]
+      },
+      assessmentPlayers: {
+        ...theme.widgets.assessmentPlayers,
+        textZoom: assessmentZoomMap[theme.zoomLevel]
       }
     }
   };

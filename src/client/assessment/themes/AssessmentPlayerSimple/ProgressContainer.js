@@ -27,6 +27,7 @@ ProgressContainer.propTypes = {
 export default ProgressContainer;
 
 const Container = styled.div`
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   display: flex;
   flex-direction: column;
   margin-left: auto;

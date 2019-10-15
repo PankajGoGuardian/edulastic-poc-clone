@@ -83,6 +83,7 @@ const Content = styled.div`
 
 const SidebarWrapper = styled.div`
   position: relative;
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
 `;
 
 const Title = styled(Content)`

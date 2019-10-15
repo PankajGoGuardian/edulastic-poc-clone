@@ -37,3 +37,10 @@ export const IPAD_LANDSCAPE_WIDTH = 1024;
 export const SMALL_DESKTOP_WIDTH = 993;
 export const IPAD_PORTRAIT_WIDTH = 768;
 export const MAX_MOBILE_WIDTH = 468;
+export const headerOffsetHashMap = {
+  xs: 70,
+  sm: 85,
+  md: 95,
+  lg: 105,
+  xl: 115
+};

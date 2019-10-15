@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import { IconLogoCompact, IconSave, IconPause, IconLogout, IconSend } from "@edulastic/icons";
-import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { IPAD_PORTRAIT_WIDTH, headerOffsetHashMap } from "../../constants/others";
 import { boxShadowDefault } from "@edulastic/colors";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 
@@ -82,6 +82,7 @@ PlayerHeader.defaultProps = {
 export default PlayerHeader;
 
 const LogoCompact = styled(IconLogoCompact)`
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   width: 21px;
   height: 21px;
   margin: 10px;
@@ -92,6 +93,7 @@ const LogoCompact = styled(IconLogoCompact)`
 `;
 
 const PlayerTitle = styled.h1`
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   font-size: 20px;
   font-weight: bold;
   margin: 0;
@@ -134,6 +136,7 @@ const FlexDisplay = styled.div`
 `;
 
 const ContainerRight = styled.div`
+  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   display: flex;
   margin-left: 40px;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
@@ -144,7 +147,7 @@ const ContainerRight = styled.div`
 const HeaderPracticePlayer = styled(Header)`
   background: ${props => props.theme.headerBg};
   box-shadow: ${boxShadowDefault};
-  height: 70px;
+  height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
   z-index: 1;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;

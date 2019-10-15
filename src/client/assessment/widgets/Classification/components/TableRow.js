@@ -174,8 +174,8 @@ const TableRow = ({
                   justifyContent: "center",
                   alignItems: "center",
                   wordWrap: "break-word",
-                  width: `200px`,
-                  height: "85px"
+                  width: get(item, "uiStyle.row_titles_width", "max-content"),
+                  height: get(item, "uiStyle.row_min_height", "85px")
                 }}
                 dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
               />

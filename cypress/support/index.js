@@ -37,9 +37,11 @@ Cypress.on("test:after:run", (test, runnable) => {
     let screenshotFileName = FileHelper.getTestFullName();
     let width;
 
-    for (const res of screenResolutions) {
-      width = screenshotFileName.includes(res) ? res[0] : undefined;
-      if (width) break;
+    if (Cypress.env().configFile === "visual-regression") {
+      for (const res of screenResolutions) {
+        width = screenshotFileName.includes(res) ? res[0] : undefined;
+        if (width) break;
+      }
     }
 
     screenshotFileName = imgError ? `${screenshotFileName}.diff.png` : `${screenshotFileName} (failed).png`;

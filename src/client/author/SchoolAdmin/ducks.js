@@ -242,8 +242,10 @@ export const reducer = createReducer(initialState, {
     state.creating = true;
     state.teacherDetailsModalVisible = false;
   },
-  [ADD_BULK_TEACHER_SUCCESS]: (state, { payload }) => {
-    state.bulkTeacherData = payload;
+  [ADD_BULK_TEACHER_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
+    state.bulkTeacherData = res;
+    state.data.result = _bulkTeachers;
+    state.data.totalUsers = state.data.totalUsers + Object.keys(_bulkTeachers).length;
     state.creating = false;
     state.teacherDetailsModalVisible = true;
   },
@@ -334,8 +336,20 @@ function* deleteSchoolAdminSaga({ payload }) {
 function* addBulkTeacherAdminSaga({ payload }) {
   try {
     const res = yield call(userApi.adddBulkTeacher, payload.addReq);
-    yield put(addBulkTeacherAdminSuccessAction(res));
-    yield put(receiveAdminDataAction(payload.listReq));
+    const _bulkTeachers = {};
+    res
+      .filter(_t => _t.status == "SUCCESS")
+      .forEach(_o => {
+        const { _id } = _o;
+        _bulkTeachers[_id] = {
+          _id,
+          _source: {
+            ..._o,
+            status: 1
+          }
+        };
+      });
+    yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }));
   } catch (err) {
     const errorMessage = "Add Bulk Teacher is failing";
     yield call(message.error, errorMessage);

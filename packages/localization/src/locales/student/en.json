@@ -37,6 +37,7 @@
     "layout": {
       "nextbtn": "next",
       "questionlist": {
+        "heading": "Questions",
         "question": "question"
       },
       "selectbox": {

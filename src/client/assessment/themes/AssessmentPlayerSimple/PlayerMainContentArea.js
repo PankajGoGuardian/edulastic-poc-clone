@@ -8,7 +8,7 @@ import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
 import DragScrollContainer from "../../components/DragScrollContainer";
 
-import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 import { Hints } from "@edulastic/common";
 
 const PlayerContentArea = ({
@@ -27,18 +27,24 @@ const PlayerContentArea = ({
   settings,
   t,
   questionsLeftToAttemptCount,
-  items
+  items,
+  theme
 }) => {
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
   const scrollElementRef = useRef(null);
   const [showHints, setShowHints] = useState(false);
   const item = items[currentItem];
+
+  const toggleSideBar = () => {
+    setSidebarVisible(isSidebarVisible => !isSidebarVisible);
+  };
 
   useEffect(() => {
     setShowHints(false);
   }, [currentItem]);
   return (
     <Main skinB="true">
-      <MainWrapper>
+      <MainWrapper isSidebarVisible={isSidebarVisible}>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
         <MainContent innerRef={scrollElementRef}>
           <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
@@ -59,8 +65,16 @@ const PlayerContentArea = ({
           questionsLeftToAttemptCount={questionsLeftToAttemptCount}
         />
       </MainWrapper>
-      <Sidebar>
-        <SidebarQuestionList questions={dropdownOptions} selectedQuestion={currentItem} gotoQuestion={gotoQuestion} />
+
+      <Sidebar isVisible={isSidebarVisible}>
+        <SidebarQuestionList
+          questions={dropdownOptions}
+          selectedQuestion={currentItem}
+          gotoQuestion={gotoQuestion}
+          toggleSideBar={toggleSideBar}
+          isSidebarVisible={isSidebarVisible}
+          theme={theme}
+        />
       </Sidebar>
     </Main>
   );
@@ -92,20 +106,15 @@ export default PlayerContentArea;
 
 const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
-  padding: 110px 0 0 140px;
   display: flex;
-  flex-direction: row;
   min-height: 100vh;
   box-sizing: border-box;
+  overflow-x: hidden;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     padding: 174px 26px 0;
   }
-`;
-
-const MainWrapper = styled.div`
-  flex: 4;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    width: 100%;
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+    justify-content: center;
   }
 `;
 
@@ -128,11 +137,24 @@ const MainContent = styled.div`
     padding: 24px;
   }
 `;
+
+const MainWrapper = styled.div`
+  width: ${props => (props.isSidebarVisible ? "85%" : "95%")};
+  padding: ${props => (props.isSidebarVisible ? "120px 100px" : "120px 50px 100px 100px")};
+  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
+    width: 100%;
+  }
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+    padding: 120px 0px;
+  }
+`;
+
 const Sidebar = styled.div`
-  flex: 1;
+  width: ${props => (props.isVisible ? "15%" : "5%")};
+  padding-top: 70px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
     display: none;
   }
 `;

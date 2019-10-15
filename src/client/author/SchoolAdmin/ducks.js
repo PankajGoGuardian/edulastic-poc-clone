@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
-import { keyBy, get } from "lodash";
+import { keyBy, get, omit } from "lodash";
 import { message } from "antd";
 import { getUserOrgId } from "../src/selectors/user";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
@@ -174,9 +174,14 @@ export const reducer = createReducer(initialState, {
     state.creating = true;
   },
   [CREATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
+    const { _id } = payload;
     state.creating = false;
     state.create = payload;
-    // state.data = [createdSchoolAdmin, ...state.data];
+    state.data.result[_id] = {
+      _id,
+      _source: payload
+    };
+    ++state.data.totalUsers;
   },
   [CREATE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -186,6 +191,9 @@ export const reducer = createReducer(initialState, {
     state.deleting = true;
   },
   [DELETE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
+    const { userIds } = payload; // userIds in an array of ids
+    state.data.result = omit(state.data.result, userIds);
+    state.data.totalUsers = state.data.totalUsers - userIds.length;
     state.delete = payload;
     state.deleting = false;
   },
@@ -281,8 +289,6 @@ function* createSchoolAdminSaga({ payload }) {
     const isFetchClassEnrollmentList = get(payload, "classEnrollmentPage", false);
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq));
-    } else {
-      yield put(receiveAdminDataAction(payload.listReq));
     }
     const { role } = createSchoolAdmin;
     let msg = "";
@@ -317,8 +323,6 @@ function* deleteSchoolAdminSaga({ payload }) {
     const isFetchClassEnrollmentList = get(payload, "classEnrollmentPage", false);
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq));
-    } else {
-      yield put(receiveAdminDataAction(payload.listReq));
     }
     message.success("User(s) has been successfully deactivated");
   } catch (err) {

@@ -4,7 +4,7 @@ import { ThemeProvider } from "styled-components";
 import { themeColor, white } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
-
+import { get } from "lodash";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
@@ -163,6 +163,10 @@ class AuthorTestItemPreview extends Component {
       handleShowHints,
       showHints
     } = this.props;
+
+    const hints = get(item, "data.questions.[0].hints");
+    const showHintsBtn = hints.length > 0 ? hints[0].label : false;
+
     return (
       <>
         {isPassage && passageTestItems.length > 1 && (page === "addItems" || page === "itemList") && (
@@ -177,7 +181,7 @@ class AuthorTestItemPreview extends Component {
           </PassageNavigation>
         )}
         <ButtonsWrapper justifyContent="flex-end">
-          {page !== "itemAuthoring" && (
+          {page !== "itemAuthoring" && showHintsBtn && (
             <EvaluateButton
               onClick={handleShowHints}
               style={showHints ? { background: themeColor, color: white } : null}

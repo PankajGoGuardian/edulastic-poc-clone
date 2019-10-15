@@ -26,7 +26,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem
 const FlexContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 0.9rem;
+  grid-gap: 1.2rem;
   @media only screen and (max-width: ${largeDesktopWidth}) {
     grid-template-columns: repeat(2, 1fr);
   }

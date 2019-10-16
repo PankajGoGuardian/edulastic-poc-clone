@@ -17,7 +17,7 @@ const testQuestions = {
   "7": "Match list",
   "8": "Graph Placement",
   "9": "Cloze with Text",
-  "10": "Multiple choice",
+  "10": "Label Image with Drop Down",
   "11": "Choice matrix - labels",
   "12": "Number line with drag & drop",
   "13": "Classification",
@@ -29,7 +29,16 @@ const testQuestions = {
   "19": "Graphing",
   "20": "Bar chart",
   "21": "Bar chart",
-  "22": "Math, Text & Dropdown"
+  "22": "Math, Text & Dropdown",
+  "23": "Cloze with Text",
+  "24": "Cloze with Drag & Drop",
+  "25": "Label Image with Text",
+  "26": "Choice matrix - standard",
+  "27": "True or false",
+  "28": "Highlight Image",
+  "29": "Math, Text & Dropdown",
+  "30": "Number line with plot",
+  "31": "Line plot"
 };
 const queKeys = Object.keys(testQuestions);
 const testLibraryPage = new TestLibrary();

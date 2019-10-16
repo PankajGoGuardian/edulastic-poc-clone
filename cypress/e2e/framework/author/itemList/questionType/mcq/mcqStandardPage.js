@@ -119,7 +119,7 @@ class MCQStandardPage {
 
   // correct ans
 
-  getPoints = () => cy.get('[data-cy="points"]').should("be.visible");
+  getPoints = () => cy.get('[data-cy="points"]');
 
   getCorrectAnsOptions = () =>
     cy

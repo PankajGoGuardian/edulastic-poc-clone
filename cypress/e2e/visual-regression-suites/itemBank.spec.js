@@ -47,20 +47,27 @@ const questions = {
   "Multiple choice - multiple response": ["5d9ee3550ba990deb2773c23"],
   "Label Image with Drag & Drop": ["5d9ef7577fe54765293be58f"],
   OrderList: ["5d9ef813236a6d40c08ca88c"],
-  "Math, Text & Dropdown": ["5d9ef859236a6d0aaa8ca88e", "5d9f09a1487008f9f0bcf4bb"],
+  "Math, Text & Dropdown": ["5d9ef859236a6d0aaa8ca88e", "5d9f09a1487008f9f0bcf4bb", "5d08d76d38a00c59ea2d8203"],
   "Fraction Editor": ["5d9efa42930e8afa87b3f73d"],
   "Token highlight": ["5d9efa82930e8ae8f5b3f73f"],
   "Match list": ["5d9efb1ad88319032295da4a"],
   "Graph Placement": ["5d9efb5ed88319e3b095da4b"],
-  "Cloze with Text": ["5d9efc08b0801c844df2a906"],
-  "Multiple choice": ["5d9efc55d8831934aa95da4c"],
+  "Cloze with Text": ["5d9efc08b0801c844df2a906", "5d70d5a0fa159fecca51cb96"],
+  "Label Image with Drop Down": ["5d9efc55d8831934aa95da4c"],
   "Choice matrix - labels": ["5d9efc96b0801c7d91f2a907"],
   "Number line with drag & drop": ["5d9efcc6d88319394b95da4d"],
   Classification: ["5d9efdf2d88319c83695da4f"],
   "Dot plot": ["5d9efe34236a6d4ce68ca88f"],
   "Essay with rich text": ["5d9efe8c7fe547a8e63be591", "5d9efec4236a6d85ee8ca890", "5d9eff34d8831976da95da51"],
   Graphing: ["5d9efef0236a6d7b3d8ca892", "5d9eff657fe54768593be593"],
-  "Bar chart": ["5d9effaa930e8a7f3eb3f740", "5d9efff0d883198b5a95da52"]
+  "Bar chart": ["5d9effaa930e8a7f3eb3f740", "5d9efff0d883198b5a95da52"],
+  "Cloze with Drag & Drop": ["5d9579778644f4f04cc5781e"],
+  "Label Image with Text": ["5d70d595fa159fecca51ca77"],
+  "Choice matrix - standard": ["5d96052ffa159fecca7178dd"],
+  "True or false": ["5d270250305f9c1ef0ae03fa"],
+  "Highlight Image": ["5d96053afa159fecca71e66d"],
+  "Number line with plot": ["5d2d63ab305f9c1ef0b85a50"],
+  "Line plot": ["5d15c5c2305f9c1ef02a187c"]
 };
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {

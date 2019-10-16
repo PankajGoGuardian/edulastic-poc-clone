@@ -161,7 +161,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
         <AnswerAndScore>
           <span data-cy="score">
-            {Math.floor(score * 100) / 100}/{Math.floor(maxScore * 100) / 100}
+            {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
           </span>
           <Title>{t("common.correctAnswer")}</Title>
         </AnswerAndScore>

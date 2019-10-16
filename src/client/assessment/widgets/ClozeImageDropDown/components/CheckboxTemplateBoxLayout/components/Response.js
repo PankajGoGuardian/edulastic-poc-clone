@@ -19,16 +19,17 @@ const Response = ({
   status,
   onClickHandler,
   indexStr,
-  dropTargetIndex
+  dropTargetIndex,
+  isExpressGrader
 }) => {
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
   const hoverProps = {};
-  if (showAnswer && lessMinWidth) {
+  if ((showAnswer || isExpressGrader) && lessMinWidth) {
     hoverProps.onMouseEnter = () => toggleIndexVisibility(!showIndex);
     hoverProps.onMouseLeave = () => toggleIndexVisibility(!showIndex);
   }
   const indexStyle = {
-    display: showAnswer && showIndex ? "flex" : "none",
+    display: (showAnswer || isExpressGrader) && showIndex ? "flex" : "none",
     width: Math.max(responseContainer.width / 2, 20),
     maxWidth: "50%"
   };
@@ -40,7 +41,7 @@ const Response = ({
   };
   const textStyle = {
     minwidth: "100%",
-    display: showAnswer && showIndex ? "none" : "block"
+    display: (showAnswer || isExpressGrader) && showIndex ? "none" : "block"
   };
   const classNames = `
             testing
@@ -61,7 +62,7 @@ const Response = ({
           </div>
           <div
             style={{
-              display: checkAnswer || (showAnswer && showIndex) ? "flex" : "none"
+              display: checkAnswer || ((showAnswer || isExpressGrader) && showIndex) ? "flex" : "none"
             }}
           >
             <IconWrapper>
@@ -89,7 +90,8 @@ Response.propTypes = {
   status: Proptypes.string.isRequired,
   onClickHandler: Proptypes.func.isRequired,
   indexStr: Proptypes.string.isRequired,
-  dropTargetIndex: Proptypes.number.isRequired
+  dropTargetIndex: Proptypes.number.isRequired,
+  isExpressGrader: Proptypes.bool.isRequired
 };
 
 Response.defaultProps = {

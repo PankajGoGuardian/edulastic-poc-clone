@@ -42,7 +42,8 @@ const CheckboxTemplateBoxLayout = ({
   canvasHeight,
   canvasWidth,
   checkAnswer,
-  onClickHandler
+  onClickHandler,
+  isExpressGrader
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover
@@ -88,9 +89,7 @@ const CheckboxTemplateBoxLayout = ({
         if (userSelections[dropTargetIndex]) {
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
-        const hasAnswered = userSelections?.[dropTargetIndex];
         const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
-
         return (
           <Response
             lessMinWidth={lessMinWidth}
@@ -103,6 +102,7 @@ const CheckboxTemplateBoxLayout = ({
             onClickHandler={onClickHandler}
             indexStr={indexStr}
             dropTargetIndex={dropTargetIndex}
+            isExpressGrader={isExpressGrader}
           />
         );
       })}
@@ -132,7 +132,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageOptions: PropTypes.object,
   canvasWidth: PropTypes.number.isRequired,
   canvasHeight: PropTypes.number.isRequired,
-  onClickHandler: PropTypes.func.isRequired
+  onClickHandler: PropTypes.func.isRequired,
+  isExpressGrader: PropTypes.bool
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -140,7 +141,8 @@ CheckboxTemplateBoxLayout.defaultProps = {
   //   fontsize: "normal"
   // },
   // imagescale: false
-  imageOptions: {}
+  imageOptions: {},
+  isExpressGrader: false
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

@@ -1,4 +1,4 @@
-import { identity } from "lodash";
+import { identity, zip } from "lodash";
 import { ScoringType } from "./const/scoring";
 
 const exactMatchEvaluator = (answers = [], userResponse = []) => {
@@ -24,10 +24,10 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
   if (score) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    const correctAnswer = answers[0]?.value || [];
+    const correctAnswer = zip(...answers.map(i => i.value));
     evaluation = userResponse.map((item, index) => {
       if (!item) return null;
-      return item === correctAnswer[index];
+      return correctAnswer[index].includes(item);
     });
   }
 

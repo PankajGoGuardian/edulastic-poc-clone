@@ -9,6 +9,8 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
+var _zip2 = _interopRequireDefault(require("lodash/zip"));
+
 var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
 var _scoring = require("./const/scoring");
@@ -59,12 +61,18 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   if (score) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    var _answers$;
+    var correctAnswer = _zip2["default"].apply(
+      void 0,
+      (0, _toConsumableArray2["default"])(
+        answers.map(function(i) {
+          return i.value;
+        })
+      )
+    );
 
-    var correctAnswer = ((_answers$ = answers[0]) === null || _answers$ === void 0 ? void 0 : _answers$.value) || [];
     evaluation = userResponse.map(function(item, index) {
       if (!item) return null;
-      return item === correctAnswer[index];
+      return correctAnswer[index].includes(item);
     });
   }
 
@@ -126,9 +134,9 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   }
 
   if (evaluation.length === 0) {
-    var _answers$2;
+    var _answers$;
 
-    var correctAnswer = ((_answers$2 = answers[0]) === null || _answers$2 === void 0 ? void 0 : _answers$2.value) || [];
+    var correctAnswer = ((_answers$ = answers[0]) === null || _answers$ === void 0 ? void 0 : _answers$.value) || [];
     evaluation = userResponse.map(function(item, index) {
       if (!item) return null;
       return item === correctAnswer[index];

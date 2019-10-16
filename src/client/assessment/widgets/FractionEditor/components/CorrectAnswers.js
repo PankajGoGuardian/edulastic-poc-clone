@@ -99,8 +99,9 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
           />
         </FlexContainer>
         <FlexContainer
-          style={{ overflow: "auto", position: "relative", height: "425px", maxWidth: "100%" }}
-          justifyContent="flex-start"
+          style={{ overflow: "auto", position: "relative", minWidth: "660px", minHeight: "300px", maxWidth: "100%" }}
+          justifyContent="center"
+          alignItems="flex-start"
           flexWrap="wrap"
         >
           {Array(count)

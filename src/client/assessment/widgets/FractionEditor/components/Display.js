@@ -67,50 +67,47 @@ const Display = ({
         style={{
           overflow: "auto",
           position: "relative",
-          minHeight: "425px",
-          maxWidth: "100%",
-          width: "100%",
+          minWidth: "660px",
+          minHeight: "300px",
           padding: "0 0 1em 0"
         }}
         flexDirection="column"
         justifyContent="flex-start"
-        alignItems="flex-start"
+        alignItems="center"
       >
-        <FlexContainer flexWrap="wrap" justifyContent="flex-start" alignItems="flex-start" padding="16px">
-          <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
-            {Array(count)
-              .fill()
-              .map((_, index) => {
-                return fractionType === "circles" ? (
-                  <Circles
-                    fractionNumber={index}
-                    sectors={fractionProperties.sectors}
-                    selected={selected}
-                    sectorClick={index => handleSelect(index)}
-                    previewTab={previewTab}
-                    isExpressGrader={answerContext.expressGrader}
-                    isAnswerModifiable={answerContext.isAnswerModifiable}
-                    evaluation={evaluation}
-                    isReviewTab={isReviewTab}
-                  />
-                ) : (
-                  <Rectangles
-                    fractionNumber={index}
-                    rows={fractionProperties.rows}
-                    columns={fractionProperties.columns}
-                    selected={selected}
-                    onSelect={index => handleSelect(index)}
-                    previewTab={previewTab}
-                    isExpressGrader={answerContext.expressGrader}
-                    isAnswerModifiable={answerContext.isAnswerModifiable}
-                    evaluation={evaluation}
-                    isReviewTab={isReviewTab}
-                  />
-                );
-              })}
-          </FlexContainer>
-          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
+        <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
+          {Array(count)
+            .fill()
+            .map((_, index) => {
+              return fractionType === "circles" ? (
+                <Circles
+                  fractionNumber={index}
+                  sectors={fractionProperties.sectors}
+                  selected={selected}
+                  sectorClick={index => handleSelect(index)}
+                  previewTab={previewTab}
+                  isExpressGrader={answerContext.expressGrader}
+                  isAnswerModifiable={answerContext.isAnswerModifiable}
+                  evaluation={evaluation}
+                  isReviewTab={isReviewTab}
+                />
+              ) : (
+                <Rectangles
+                  fractionNumber={index}
+                  rows={fractionProperties.rows}
+                  columns={fractionProperties.columns}
+                  selected={selected}
+                  onSelect={index => handleSelect(index)}
+                  previewTab={previewTab}
+                  isExpressGrader={answerContext.expressGrader}
+                  isAnswerModifiable={answerContext.isAnswerModifiable}
+                  evaluation={evaluation}
+                  isReviewTab={isReviewTab}
+                />
+              );
+            })}
         </FlexContainer>
+        {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
         {previewTab === SHOW && (
           <CorrectAnswerBox
             fractionProperties={fractionProperties}

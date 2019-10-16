@@ -34,6 +34,29 @@ import {
 import Tools from "../../common/Tools";
 import DragDropValues from "./DragDropValues";
 
+const valueHeightHashMap = {
+  xs: {
+    width: 150,
+    height: 50
+  },
+  sm: {
+    width: 175,
+    height: 70
+  },
+  md: {
+    width: 200,
+    height: 90
+  },
+  lg: {
+    width: 250,
+    height: 120
+  },
+  xl: {
+    width: 300,
+    height: 150
+  }
+};
+
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
@@ -481,7 +504,17 @@ class PlacementContainer extends PureComponent {
   };
 
   render() {
-    const { layout, annotation, controls, disableResponse, view, graphData, setQuestionData, questionId } = this.props;
+    const {
+      layout,
+      annotation,
+      controls,
+      disableResponse,
+      view,
+      graphData,
+      setQuestionData,
+      questionId,
+      zoomLevel
+    } = this.props;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
 
@@ -491,6 +524,8 @@ class PlacementContainer extends PureComponent {
       Math.random()
         .toString()
         .slice(2, 9)}`;
+
+    const valueDimensions = valueHeightHashMap[zoomLevel];
 
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
@@ -517,6 +552,8 @@ class PlacementContainer extends PureComponent {
                 height={layout.height}
                 margin={margin}
                 values={this.getDragDropValues()}
+                width={valueDimensions.width}
+                valueHeight={valueDimensions.height}
                 onAddDragDropValue={this.onAddDragDropValue}
                 onDrawDragDropValue={this.onDrawDragDropValue}
                 dragDropBoundsClassName={dragDropBoundsClassName}
@@ -594,7 +631,8 @@ PlacementContainer.defaultProps = {
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex
+    stashIndex: state.graphTools.stashIndex,
+    zoomLevel: state.ui.zoomLevel
   }),
   {
     setElementsStash: setElementsStashAction,

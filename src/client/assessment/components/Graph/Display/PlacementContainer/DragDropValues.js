@@ -16,36 +16,41 @@ class DragDropValues extends Component {
   };
 
   render() {
-    const { values, width, height, valueHeight, titleOffset, dragDropBoundsClassName } = this.props;
+    const { values, width, height, valueHeight, dragDropBoundsClassName } = this.props;
+
+    const containerStyle = {
+      position: "relative",
+      width: width,
+      minHeight: height,
+      height: values.length * (valueHeight + 5)
+    };
 
     return (
-      <DragDropValuesContainer
-        width={width}
-        minHeight={height}
-        height={values.length * (valueHeight + 5) - titleOffset}
-      >
-        <DragDropTitle height={titleOffset}>DRAG DROP VALUES</DragDropTitle>
-        {values.map((value, i) => {
-          const position = { x: 5, y: i * (valueHeight + 5) + titleOffset };
-          const size = { width: width - 10, height: valueHeight };
+      <DragDropValuesContainer width={width} minHeight={height} height={values.length * (valueHeight + 5)}>
+        <DragDropTitle>DRAG DROP VALUES</DragDropTitle>
+        <div style={containerStyle}>
+          {values.map((value, i) => {
+            const position = { x: 5, y: i * (valueHeight + 5) };
+            const size = { width: width - 10, height: valueHeight };
 
-          return (
-            <Rnd
-              key={value.id}
-              position={position}
-              size={size}
-              onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value)}
-              onDrag={(e, d) => this.handleDragDropValue(d, value)}
-              style={{ zIndex: 10 }}
-              disableDragging={false}
-              enableResizing={false}
-              bounds={dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : ""}
-              className="drag-drop-value"
-            >
-              <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
-            </Rnd>
-          );
-        })}
+            return (
+              <Rnd
+                key={value.id}
+                position={position}
+                size={size}
+                onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value)}
+                onDrag={(e, d) => this.handleDragDropValue(d, value)}
+                style={{ zIndex: 10 }}
+                disableDragging={false}
+                enableResizing={false}
+                bounds={dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : ""}
+                className="drag-drop-value"
+              >
+                <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
+              </Rnd>
+            );
+          })}
+        </div>
       </DragDropValuesContainer>
     );
   }

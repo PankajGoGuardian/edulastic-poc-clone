@@ -81,6 +81,7 @@ class QuillSortableHintsList extends Component {
         <QuillSortableList
           items={item.hints.map(o => o.label)}
           onSortEnd={this.onSortEnd}
+          prefix={"hints"}
           useDragHandle
           placeholder={t("component.enterHintForTheProblem")}
           defaultLabel={false}

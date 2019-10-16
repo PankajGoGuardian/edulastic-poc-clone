@@ -339,8 +339,9 @@ export const DragDropValuesContainer = styled.div`
     overflow: hidden;
 
     img.fr-dii {
-      max-height: 50px;
-      max-width: 120px;
+      max-height: 50px !important;
+      width: 100%;
+      max-width: 120px !important;
       user-drag: none;
       user-select: none;
     }
@@ -363,5 +364,6 @@ export const DragDropTitle = styled.div`
 export const DragDropContainer = WithMathFormula(
   styled.div`
     margin: auto 0;
+    width: 100%;
   `
 );

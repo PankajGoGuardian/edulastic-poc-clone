@@ -30,7 +30,7 @@ const Container = styled.div`
   margin: 20px 0;
   padding: 22px 35px;
   min-height: ${({ minHeight }) => minHeight || 200}px;
-  height: 100%;
+  height: auto;
   border-radius: 10px 0px 0px 10px;
   background-color: ${dashBorderColor};
   flex: 2;

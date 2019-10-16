@@ -239,7 +239,6 @@ class StudentSignup extends React.Component {
         </FormItem>
         <FormItem
           {...formItemLayout}
-          label={t("component.signup.student.signupidlabel")}
           validateStatus={usernameEmailError ? "error" : "success"}
           help={usernameEmailError}
         >
@@ -326,12 +325,7 @@ class StudentSignup extends React.Component {
     const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
 
     return (
-      <FormItem
-        {...formItemLayout}
-        label={t("component.signup.student.signupclasslabel")}
-        validateStatus={classCodeError ? "error" : "success"}
-        help={classCodeError}
-      >
+      <FormItem {...formItemLayout} validateStatus={classCodeError ? "error" : "success"} help={classCodeError}>
         {getFieldDecorator("classCode", {
           rules: [
             {
@@ -432,6 +426,9 @@ class StudentSignup extends React.Component {
                           {isUserNameAndPasswordAllowed ? t("component.signup.formboxheading") : null}
                           {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
                         </h5>
+                        {(method === GOOGLE || method === OFFICE) && (
+                          <Description>{t("component.signup.codeFieldDesc")}</Description>
+                        )}
                         <Form onSubmit={this.handleSubmit}>
                           {isUserNameAndPasswordAllowed ? this.renderGeneralFormFields() : null}
                           {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}

@@ -99,7 +99,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       toggleIndexVisibility(!showIndex);
     }
   };
-
   return (
     <CheckBoxTemplateBox>
       {hasGroupResponses && (
@@ -119,12 +118,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               onMouseEnter={handleHover}
               onMouseLeave={handleHover}
             >
-              {showAnswer && (
-                <span style={indexStyle} className="index">
-                  {indexStr}
-                </span>
-              )}
-              <Tooltip title={getLabel(dropTargetIndex)}>
+              <Tooltip overlayClassName="customTooltip" title={getLabel(dropTargetIndex)}>
+                {showAnswer && (
+                  <span style={indexStyle} className="index">
+                    {indexStr}
+                  </span>
+                )}
+
                 <span
                   style={{
                     padding: lessMinWidth ? "8px 0px" : null,
@@ -166,7 +166,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                   {indexStr}
                 </span>
               )}
-              <Tooltip title={getLabel(dropTargetIndex)}>
+              <Tooltip overlayClassName="customTooltip" title={getLabel(dropTargetIndex)}>
                 <span
                   className="text"
                   style={{

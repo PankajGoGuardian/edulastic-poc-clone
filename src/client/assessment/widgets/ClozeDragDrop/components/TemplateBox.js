@@ -81,7 +81,10 @@ const TemplateBox = ({ resprops, id }) => {
             data={`${getData("value")}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />}>
+            <Tooltip
+              overlayClassName="customTooltip"
+              title={<MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />}
+            >
               <MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />
             </Tooltip>
           </Draggable>
@@ -97,7 +100,10 @@ const TemplateBox = ({ resprops, id }) => {
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <Tooltip title={<MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />}>
+            <Tooltip
+              overlayClassName="customTooltip"
+              title={<MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />}
+            >
               <MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />
             </Tooltip>
           </Draggable>

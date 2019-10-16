@@ -87,7 +87,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-          style={{ ...btnStyle, minWidth: "unset", margin: 0 }}
+          style={{ ...btnStyle, minWidth: "unset", margin: "0 2px 4px 0px" }}
           onClick={handleClick}
           onMouseEnter={handleHover}
           onMouseLeave={handleHover}

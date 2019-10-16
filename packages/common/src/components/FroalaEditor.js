@@ -79,70 +79,50 @@ FroalaEditor.VIDEO_PROVIDERS.push({
   html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
   provider: "screencast"
 });
+const buttons = [
+  "bold",
+  "italic",
+  "underline",
+  "fontSize",
+  "indent",
+  "outdent",
+  "paragraphFormat",
+  "insertTable",
+  "math",
+  "insertImage",
+  "insertLink",
+  "align",
+  "backgroundColor",
+  "textColor",
+  "strikeThrough",
+  "subscript",
+  "superscript",
+  "undo",
+  "redo"
+];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
   STD: {
     moreText: {
-      buttons: [
-        "bold",
-        "italic",
-        "underline",
-        "fontFamily",
-        "fontSize",
-        "paragraphFormat",
-        "indent",
-        "outdent",
-        "insertTable",
-        "math",
-        "insertImage",
-        "insertLink",
-        "undo",
-        "redo",
-        "align",
-        "backgroundColor",
-        "textColor",
-        "strikeThrough"
-      ],
+      buttons,
       buttonsVisible: 10
     }
   },
   MD: {
     moreText: {
-      buttons: [
-        "bold",
-        "italic",
-        "underline",
-        "table",
-        "math",
-        "insertImage",
-        "paragraphFormat",
-        "indent",
-        "align",
-        "specialCharacters"
-      ],
+      buttons,
       buttonsVisible: 6
     }
   },
   SM: {
     moreText: {
-      buttons: [
-        "bold",
-        "italic",
-        "underline",
-        "math",
-        "paragraphFormat",
-        "table",
-        "indent",
-        "align",
-        "insertImage",
-        "specialCharacters"
-      ],
+      buttons,
       buttonsVisible: 4
     }
   },
   XS: {
     moreText: {
-      buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
+      buttons,
       buttonsVisible: 2
     }
   }

@@ -328,6 +328,7 @@ const ClassificationPreview = ({
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
+  const correctAnswersContainerWidth = arrayOfCols.length > 4 ? "33.33%" : `${100 / arrayOfCols.length}%`;
 
   return (
     <StyledPaperWrapper
@@ -468,7 +469,15 @@ const ClassificationPreview = ({
       {previewTab === SHOW || isReviewTab ? (
         <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
           {arrayOfCols.map((arr, i) => (
-            <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+            <FlexContainer
+              style={{
+                display: "inline-flex",
+                marginBottom: 40,
+                flexDirection: "column",
+                width: correctAnswersContainerWidth,
+                alignItems: "stretch"
+              }}
+            >
               <Subtitle style={styles.correctAnswersMargins}>
                 <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
               </Subtitle>

@@ -57,6 +57,7 @@ const ChartPreview = ({
     previewTab = CLEAR;
   }
 
+  const { expressGrader } = answerContextConfig;
   const { chart_data = {}, validation, uiStyle } = item;
   const { data = [], name } = chart_data;
   let CurrentChart = null;
@@ -207,7 +208,7 @@ const ChartPreview = ({
           setQuestionData={setQuestionData}
         />
       </StyledChartContainer>
-      {view === PREVIEW && previewTab === SHOW && (
+      {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
         <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
           <CurrentChart
             name={name}

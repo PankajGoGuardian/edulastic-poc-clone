@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { variableTypes } from "@edulastic/constants";
 import { MathInput } from "@edulastic/common";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -56,6 +57,14 @@ const CombinationInput = styled(Input)`
   width: 70px;
   margin-left: 10px;
   margin-right: 10px;
+`;
+
+const DynamicText = styled.div`
+  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
+  }
 `;
 
 class Variables extends Component {
@@ -156,7 +165,9 @@ class Variables extends Component {
       >
         <Subtitle>{t("component.options.dynamicParameters")}</Subtitle>
         <Row gutter={36}>
-          <Col md={24}>{t("component.options.dynamicParametersDescription")}</Col>
+          <Col md={24}>
+            <DynamicText>{t("component.options.dynamicParametersDescription")}</DynamicText>
+          </Col>
         </Row>
         <Row gutter={36}>
           <Col md={24}>

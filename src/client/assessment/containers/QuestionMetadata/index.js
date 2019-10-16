@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Typography, Select } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
 import { ThemeProvider } from "styled-components";
 import _ from "lodash";
-
+import { Subtitle } from "../../styled/Subtitle";
 import { themes } from "../../../theme";
-
-import selectsData from "../../../author/TestPage/components/common/selectsData";
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
@@ -33,14 +30,10 @@ import {
 
 import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
-import { AddButtonContainer } from "./styled/AddButtonContainer";
-import { CustomSelect } from "./styled/SubjectAndGradeSelect";
 import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
 import { getInterestedCurriculumsSelector } from "../../../author/src/selectors/user";
 import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
-
-const { Title } = Typography;
 
 const getNewAlignmentState = () => ({
   curriculum: "",
@@ -130,7 +123,7 @@ const QuestionMetadata = ({
     <ThemeProvider theme={themes.default}>
       <div>
         <Container padding="20px">
-          <Title level={3}>{t("component.options.addSkillsForQuestion")}</Title>
+          <Subtitle>{t("component.options.addSkillsForQuestion")}</Subtitle>
 
           <ShowAlignmentRowsContainer>
             {alignment.map((el, index) => (

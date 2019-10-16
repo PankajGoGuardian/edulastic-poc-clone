@@ -7,7 +7,8 @@ import {
   extraDesktopWidthMax,
   white,
   dashBorderColor,
-  selectColor
+  selectColor,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 
 import { Paper } from "@edulastic/common";
@@ -46,9 +47,13 @@ export const Widget = styled.div`
   .ant-checkbox + span {
     padding-left: 20px;
     padding-right: 20px;
-    font-size: 12px;
+    font-size: ${props => props.theme.standardFont};
     letter-spacing: 0.3px;
     text-transform: uppercase;
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallFontSize};
+    }
   }
 
   .ql-editor {
@@ -72,7 +77,7 @@ export const Widget = styled.div`
 
   .ant-select {
     &-selection-selected-value {
-      font-size: 12px;
+      font-size: ${props => props.theme.standardFont};
       padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
@@ -100,7 +105,7 @@ export const Widget = styled.div`
   }
 
   .ant-input {
-    font-size: 12px;
+    font-size: ${props => props.theme.standardFont};
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
@@ -108,7 +113,7 @@ export const Widget = styled.div`
   }
 
   .ql-container {
-    font-size: 12px;
+    font-size: ${props => props.theme.standardFont};
     letter-spacing: 0.3px;
     font-weight: 600;
     margin-top: 6px !important;
@@ -130,6 +135,13 @@ export const Widget = styled.div`
     color: ${selectColor};
   }
 
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    .ql-container,
+    .ant-input,
+    .ant-input-selection-selected-value {
+      font-size: ${props => props.theme.smallFontSize};
+    }
+  }
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
     min-height: 0;
@@ -144,16 +156,18 @@ export const Widget = styled.div`
 export const WidgetSubHeading = styled.div`
   color: ${fadedBlack};
   margin-bottom: 10px;
-  font-size: 12px;
+  font-size: ${props => props.theme.standardFont};
   line-height: 1.333;
   list-style: none;
   display: block;
   font-weight: 600;
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
+  }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
   }
 `;
 

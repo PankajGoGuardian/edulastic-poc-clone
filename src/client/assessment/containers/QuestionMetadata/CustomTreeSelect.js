@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
 const CustomTreeSelect = ({ children, title, style }) => {
@@ -69,6 +70,14 @@ const Title = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
+
+  span {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallFontSize};
+    }
+  }
 `;
 
 const Main = styled.div`

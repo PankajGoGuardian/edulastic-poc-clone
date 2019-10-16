@@ -12,6 +12,7 @@ import { withNamespaces } from "@edulastic/localization";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import withAddButton from "../../components/HOC/withAddButton";
 import { Subtitle } from "../../styled/Subtitle";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -149,13 +150,13 @@ class RowColumn extends Component {
           <Col data-cy="row-container" span={12}>
             <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
 
-            <Subtitle
+            <Label
               fontSize={theme.widgets.classification.subtitleFontSize}
               color={theme.widgets.classification.subtitleColor}
               margin="20px 0px 10px"
             >
               {t("component.classification.rowsCountSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Select
               data-cy="classification-row-dropdown"
@@ -171,13 +172,13 @@ class RowColumn extends Component {
               ))}
             </Select>
 
-            <Subtitle
+            <Label
               fontSize={theme.widgets.classification.subtitleFontSize}
               color={theme.widgets.classification.subtitleColor}
               margin="20px 0px 10px"
             >
               {t("component.classification.editRowListSubtitle")}
-            </Subtitle>
+            </Label>
 
             <List
               prefix="rows"
@@ -195,13 +196,13 @@ class RowColumn extends Component {
           <Col data-cy="column-container" span={12}>
             <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
 
-            <Subtitle
+            <Label
               fontSize={theme.widgets.classification.subtitleFontSize}
               color={theme.widgets.classification.subtitleColor}
               margin="20px 0px 10px"
             >
               {t("component.classification.columnsCountSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Select
               data-cy="classification-column-dropdown"
@@ -217,13 +218,13 @@ class RowColumn extends Component {
               ))}
             </Select>
 
-            <Subtitle
+            <Label
               fontSize={theme.widgets.classification.subtitleFontSize}
               color={theme.widgets.classification.subtitleColor}
               margin="20px 0px 10px"
             >
               {t("component.classification.editColListSubtitle")}
-            </Subtitle>
+            </Label>
 
             <List
               prefix="columns"

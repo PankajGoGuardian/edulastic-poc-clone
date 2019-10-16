@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, sectionBorder } from "@edulastic/colors";
+import { white, sectionBorder, mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
   width: 100%;
@@ -11,8 +11,12 @@ export const CorrectAnswerHeader = styled.div`
   display: block;
 
   span {
-    font-size: 12px;
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
     text-transform: uppercase;
     font-weight: 600;
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallFontSize};
+    }
   }
 `;

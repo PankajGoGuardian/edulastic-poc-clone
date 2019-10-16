@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const ItemBody = styled.div`
   margin-top: 11px;
@@ -55,6 +55,10 @@ export const ItemBody = styled.div`
     font-weight: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontWeight};
     letter-spacing: 0.2px;
     color: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentColor};
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallFontSize};
+    }
   }
 
   .tagsSelect .ant-select-selection__rendered {

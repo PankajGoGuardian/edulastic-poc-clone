@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { textColor, themeColor, mobileWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth, textColor, themeColor, mobileWidth } from "@edulastic/colors";
 
 export const AdditionalToggle = styled.span`
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: ${props => props.theme.widgetOptions.labelFontSize};
   color: ${textColor};
   position: relative;
   margin-top: 2px;
@@ -21,6 +21,10 @@ export const AdditionalToggle = styled.span`
     border-right: 5px solid transparent;
     transition: all 0.3s ease;
     transform: ${({ active }) => (active ? "rotate(180deg)" : "rotate(0deg)")};
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
   }
 `;
 
@@ -45,8 +49,12 @@ export const AdditionalCompareUsing = styled.div`
     max-width: 260px;
 
     &-selection-selected-value {
-      font-size: 12px;
+      font-size: ${props => props.theme.widgetOptions.labelFontSize};
       padding-left: 15px;
+
+      @media (max-width: ${mediumDesktopExactWidth}) {
+        font-size: ${props => props.theme.smallFontSize};
+      }
     }
   }
 
@@ -78,6 +86,10 @@ export const AdditionalAddRule = styled.span`
   text-transform: uppercase;
   color: ${themeColor};
   display: inline-block;
-  font-size: 11px;
+  font-size: ${props => props.theme.widgetOptions.labelFontSize};
   letter-spacing: 0.4px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
+  }
 `;

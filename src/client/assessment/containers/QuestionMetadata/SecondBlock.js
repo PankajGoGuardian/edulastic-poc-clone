@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select, message } from "antd";
 import { uniqBy } from "lodash";
-
+import { tagsApi } from "@edulastic/api";
+import { Label } from "../../styled/WidgetOptions/Label";
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
 import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
-import { tagsApi } from "@edulastic/api";
 
 const SecondBlock = ({
   t,
@@ -58,9 +58,7 @@ const SecondBlock = ({
       <Row gutter={36}>
         <Col md={8}>
           <ItemBody>
-            <div className="label">
-              <b>{t("component.options.depthOfKnowledge")}</b>
-            </div>
+            <Label>{t("component.options.depthOfKnowledge")}</Label>
             <Select
               style={{ width: "100%" }}
               placeholder={t("component.options.selectDOK")}
@@ -84,9 +82,7 @@ const SecondBlock = ({
         </Col>
         <Col md={8}>
           <ItemBody>
-            <div className="label">
-              <b>{t("component.options.difficultyLevel")}</b>
-            </div>
+            <Label>{t("component.options.difficultyLevel")}</Label>
             <Select
               style={{ width: "100%" }}
               placeholder={t("component.options.selectDifficulty")}
@@ -110,9 +106,7 @@ const SecondBlock = ({
         </Col>
         <Col md={8}>
           <ItemBody>
-            <div className="label">
-              <b>{t("component.options.tags")}</b>
-            </div>
+            <Label>{t("component.options.tags")}</Label>
             {searchValue.length && !searchValue.trim().length ? (
               <Select
                 mode="multiple"

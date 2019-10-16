@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
+import { Label } from "../../styled/WidgetOptions/Label";
 import Question from "../../components/Question";
 
 class CanvasSubtitle extends Component {
@@ -50,13 +51,13 @@ class CanvasSubtitle extends Component {
 
         <Row gutter={70}>
           <Col span={12} style={{ marginBottom: 25 }}>
-            <Subtitle
+            <Label
               fontSize={theme.widgets.shading.subtitleFontSize}
               color={theme.widgets.shading.subtitleColor}
               padding="0 0 16px 0"
             >
               {t("component.shading.rowsCountSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Input
               size="large"
@@ -67,13 +68,13 @@ class CanvasSubtitle extends Component {
             />
           </Col>
           <Col span={12}>
-            <Subtitle
+            <Label
               fontSize={theme.widgets.shading.subtitleFontSize}
               color={theme.widgets.shading.subtitleColor}
               padding="0 0 16px 0"
             >
               {t("component.shading.colsCountSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Input
               size="large"
@@ -87,9 +88,9 @@ class CanvasSubtitle extends Component {
 
         <Row gutter={70}>
           <Col span={12} style={{ marginBottom: 25 }}>
-            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
+            <Label fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.cellWidthSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Input
               size="large"
@@ -100,9 +101,9 @@ class CanvasSubtitle extends Component {
             />
           </Col>
           <Col span={12}>
-            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
+            <Label fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.cellHeightSubtitle")}
-            </Subtitle>
+            </Label>
 
             <Input
               size="large"

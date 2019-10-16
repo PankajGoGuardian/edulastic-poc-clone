@@ -223,7 +223,6 @@ const QuestionWrapper = styled.div`
   position: relative;
   p {
     display: flex;
-    white-space: nowrap;
     align-items: flex-start;
     flex-flow: row wrap;
 

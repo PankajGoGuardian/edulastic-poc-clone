@@ -50,7 +50,7 @@ const ClassificationPreview = ({
   const isLeft = listPosition === "left" || listPosition === "right";
 
   const answerContainerMaxWidth = isLeft ? "20%" : "100%";
-  const TableWrapperMaxWidth = isLeft ? "80%" : "100%";
+  const TableWrapperMaxWidth = isLeft && !isReviewTab ? "80%" : "100%";
 
   const styles = {
     wrapperStyle: {

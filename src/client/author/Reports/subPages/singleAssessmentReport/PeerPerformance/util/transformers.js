@@ -50,9 +50,10 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        const { maxScore = 0, totalScore = 0 } = currentValue;
+        const { maxScore = 0, totalScore = 0, progressStatus } = currentValue;
         return {
-          totalMaxScore: (total.totalMaxScore += maxScore),
+          // progressStatus = 2 is for absent student, needs to be excluded
+          totalMaxScore: (total.totalMaxScore += progressStatus === 2 ? 0 : maxScore),
           totalTotalScore: (total.totalTotalScore += totalScore)
         };
       },
@@ -95,9 +96,10 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
   const arr = Object.keys(groupedData).map((data, index) => {
     let item = groupedData[data].reduce(
       (total, currentValue, currentIndex) => {
-        const { maxScore = 0, totalScore = 0 } = currentValue;
+        const { maxScore = 0, totalScore = 0, progressStatus } = currentValue;
         return {
-          totalMaxScore: (total.totalMaxScore += maxScore),
+          // progressStatus = 2 is for absent student, needs to be excluded
+          totalMaxScore: (total.totalMaxScore += progressStatus === 2 ? 0 : maxScore),
           totalTotalScore: (total.totalTotalScore += totalScore)
         };
       },

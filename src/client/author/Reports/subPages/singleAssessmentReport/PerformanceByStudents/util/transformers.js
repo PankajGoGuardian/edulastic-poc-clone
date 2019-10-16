@@ -98,9 +98,12 @@ export const normaliseTableData = (rawData, data) => {
         return relatedGroup.schoolId === school.schoolId;
       }) || {};
 
+    // progressStatus = 2 is for absent student, needs to be excluded
     const classAvg =
       round(
-        (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
+        (sumBy(classes[studentMetric.groupId], "totalScore") /
+          sumBy(classes[studentMetric.groupId], o => (o.progressStatus === 2 ? 0 : o.maxScore))) *
+          100
       ) || 0;
     let studentScore = 0;
     let assessmentScore = "Absent";
@@ -121,7 +124,7 @@ export const normaliseTableData = (rawData, data) => {
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
       districtAvg: round(districtAvgPerf || 0),
       studentScore,
-      classAvg: classAvg,
+      classAvg,
       assessmentScore,
       assessmentDate: formatDate(studentMetric.timestamp)
     };

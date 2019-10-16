@@ -51,9 +51,15 @@ const ChartPreview = ({
   const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
   const chartType = get(item, "uiStyle.chartType");
   let previewTab = _previewTab;
-  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
-    previewTab = CHECK;
-  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+  const { expressGrader, isAnswerModifiable } = answerContextConfig;
+  /**
+   * in expressGrader modal, previewTab is SHOW and expressGrader is true.
+   * when the edit response is off, isAnswerModifiable is false and will show the correct answer
+   * when the edit response is on, isAnswerModifiable is true and will hide the correct answer
+   */
+  if (expressGrader && !isAnswerModifiable) {
+    previewTab = SHOW;
+  } else if (expressGrader && isAnswerModifiable) {
     previewTab = CLEAR;
   }
 

@@ -486,14 +486,16 @@ class ProfileBody extends React.Component {
                 </SchoolWrapper>
                 <SchoolWrapper>
                   <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                  <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
-                  <div style={{ width: "min-content" }}>
-                    {showSaveStandSetsBtn && (
-                      <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
-                    )}
-                    <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
-                      Select your standard sets
-                    </SelectSetsButton>
+                  <div style={{ width: "100%" }}>
+                    <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                    <StandardSetsButtons>
+                      {showSaveStandSetsBtn && (
+                        <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                      )}
+                      <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                        Select your standard sets
+                      </SelectSetsButton>
+                    </StandardSetsButtons>
                   </div>
                 </SchoolWrapper>
               </>
@@ -615,6 +617,14 @@ const SchoolListWrapper = styled.span`
 
 const StandardSetsList = styled(SchoolListWrapper)`
   width: 100%;
+  margin-bottom: 5px;
+`;
+
+const StandardSetsButtons = styled.div`
+  float: right;
+  .ant-btn {
+    margin: 0px 0px 0px 10px;
+  }
 `;
 
 const StyledTag = styled(Tag)`

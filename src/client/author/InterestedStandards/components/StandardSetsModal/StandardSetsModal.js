@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Col, Form, Input, Modal, Select } from "antd";
+import { Col, Form, Modal, Select } from "antd";
 import { FlexContainer } from "../../../../assessment/themes/common";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { StyledCheckbox } from "../Container/styled";
-import { StyledRow, SubjectContainer, SubjectSelect } from "./styled";
+import { StyledRow, SubjectContainer, SubjectSelect, MyStandardInput } from "./styled";
 
 const Option = Select.Option;
 
@@ -100,7 +100,7 @@ class StandardSetsModal extends Component {
         </StyledRow>
         <StyledRow>
           <Col span={24}>
-            <Input onChange={this.changeSearch} placeholder="Search by name" />
+            <MyStandardInput onChange={this.changeSearch} placeholder="Search by name" />
           </Col>
         </StyledRow>
         <StyledRow>

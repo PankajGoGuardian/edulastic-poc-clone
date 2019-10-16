@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Select, Row } from "antd";
+import { Select, Row, Input } from "antd";
+import { themeColor } from "@edulastic/colors";
 
 export const SubjectContainer = styled.div`
   max-height: 300px;
@@ -19,4 +20,12 @@ export const StyledRow = styled(Row)`
 
 export const SubjectSelect = styled(Select)`
   width: 100%;
+`;
+
+export const MyStandardInput = styled(Input)`
+  &:hover,
+  &:focus {
+    border-color: ${props => props.theme.themeColor};
+    box-shadow: 0 0 0 2px ${props => props.theme.themeColor}33;
+  }
 `;

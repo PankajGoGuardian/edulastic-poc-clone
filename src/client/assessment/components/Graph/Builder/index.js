@@ -476,7 +476,8 @@ class Board {
 
     const margin = Math.min(canvas.margin, layout.width);
     const xMargin = margin / calcUnitX(canvas.xMin, canvas.xMax, layout.width);
-    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin));
+    const yMargin = layout.orientation === "vertical" ? 1 : 0;
+    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin, yMargin));
 
     Numberline.updateCoords(this);
 
@@ -716,17 +717,17 @@ class Board {
       .map(element => {
         switch (element.segmentType) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.getConfig(element);
+            return NumberlinePoint.getConfig(element, this);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-            return NumberlineSegment.getConfig(element);
+            return NumberlineSegment.getConfig(element, this);
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-            return NumberlineVector.getConfig(element);
+            return NumberlineVector.getConfig(element, this);
           default:
             break;
         }
@@ -809,6 +810,7 @@ class Board {
 
   loadSegmentsAnswers(segments) {
     this.answers.push(
+      // eslint-disable-next-line array-callback-return
       ...segments.map(segment => {
         switch (segment.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:

@@ -1,18 +1,19 @@
 import styled from "styled-components";
-import { greenDark, secondaryTextColor, svgDisabledColor, white } from "@edulastic/colors";
+import { svgDisabledColor } from "@edulastic/colors";
 
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
   position: relative;
-  width: 100%;
+  width: ${({ vertical }) => (vertical ? "93px" : "100%")};
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ vertical }) => (vertical ? "column" : "row")};
   align-items: flex-start;
   justify-content: flex-start;
   min-height: 65px;
   padding: 0;
   background-color: ${props => props.theme.widgets.chart.bgColor};
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
+  margin-right: ${({ vertical }) => (vertical ? "8px" : "")};
 
   .toolbar-compact & {
     max-width: 700px;
@@ -153,6 +154,13 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
+  zoom: ${props => props.theme.widgets.chart.chartZoom};
+
+  ${({ vertical }) =>
+    vertical &&
+    `display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;`}
 `;
 
 export const JSXBox = styled.div`

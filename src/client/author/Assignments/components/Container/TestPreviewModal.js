@@ -20,7 +20,6 @@ const TestPreviewModal = ({
     }
   }, [error]);
 
-
   return (
     <StyledModal
       visible={isModalVisible}

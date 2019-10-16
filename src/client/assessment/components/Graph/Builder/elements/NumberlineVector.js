@@ -4,31 +4,33 @@ import {
   findAvailableStackedSegmentPosition,
   getAvailablePositions,
   getClosestTick,
-  calcNumberlinePosition
+  calcNumberlinePosition,
+  checkOrientation
 } from "../utils";
 import { defaultPointParameters } from "../settings";
 
-const handleVectorPointDrag = (board, vector, point, segmentType, yPosition, isStacked = false) => {
+const handleVectorPointDrag = (board, vector, point, segmentType, position, isStacked = false) => {
   let availablePositions = null;
   let lastTruePosition = null;
+  const isVertical = checkOrientation(board);
 
   point.on("drag", e => {
     if (e.movementX === 0 && e.movementY === 0) {
       return;
     }
 
-    const currentPosition = point.X();
-    let newX = currentPosition;
+    let currentPosition = isVertical ? point.Y() : point.X();
 
     if (board.numberlineSnapToTicks) {
-      newX = getClosestTick(currentPosition, board.numberlineAxis);
+      currentPosition = getClosestTick(currentPosition, board.numberlineAxis);
     }
 
-    if (availablePositions.findIndex(pos => newX > pos.start && newX < pos.end) > -1) {
-      lastTruePosition = newX;
+    if (availablePositions.findIndex(pos => currentPosition > pos.start && currentPosition < pos.end) > -1) {
+      lastTruePosition = currentPosition;
     }
 
-    point.setPosition(JXG.COORDS_BY_USER, [lastTruePosition, yPosition]);
+    const coord = isVertical ? [position, lastTruePosition] : [lastTruePosition, position];
+    point.setPosition(JXG.COORDS_BY_USER, coord);
     point.dragged = true;
     board.dragged = true;
   });
@@ -38,12 +40,14 @@ const handleVectorPointDrag = (board, vector, point, segmentType, yPosition, isS
     lastTruePosition = null;
     if (point.dragged) {
       point.dragged = false;
+      const coord = isVertical ? [position, point.Y()] : [point.X(), position];
+      point.setPosition(JXG.COORDS_BY_USER, coord);
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
 
   point.on("down", () => {
-    lastTruePosition = point.X();
+    lastTruePosition = isVertical ? point.Y() : point.X();
     availablePositions = getAvailablePositions(board, vector, isStacked);
     switch (segmentType) {
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
@@ -75,12 +79,12 @@ const drawPoint = (board, x, pointIncluded, fixed, colors, yPosition) => {
     ...styles,
     highlightStrokeColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
-        ? Colors["red"][highlightPointType].highlightStrokeColor
-        : Colors["default"][highlightPointType].highlightStrokeColor,
+        ? Colors.red[highlightPointType].highlightStrokeColor
+        : Colors.default[highlightPointType].highlightStrokeColor,
     highlightFillColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
-        ? Colors["red"][highlightPointType].highlightFillColor
-        : Colors["default"][highlightPointType].highlightFillColor,
+        ? Colors.red[highlightPointType].highlightFillColor
+        : Colors.default[highlightPointType].highlightFillColor,
     ...colors,
     fixed,
     snapToGrid: false
@@ -88,11 +92,15 @@ const drawPoint = (board, x, pointIncluded, fixed, colors, yPosition) => {
 };
 
 // Draw invisible point of vector on proper place
-const drawVectorPoint = (board, toRightDirection, yPosition) => {
-  const xMin = board.numberlineAxis.point1.X();
-  const xMax = board.numberlineAxis.point2.X();
+const drawVectorPoint = (board, toRightDirection, position) => {
+  const isVertical = checkOrientation(board);
+  const min = isVertical ? board.numberlineAxis.point1.Y() : board.numberlineAxis.point1.X();
+  const max = isVertical ? board.numberlineAxis.point2.Y() : board.numberlineAxis.point2.X();
 
-  return board.$board.create("point", [toRightDirection ? xMax : xMin, yPosition], {
+  const invisiblePointX = isVertical ? position : toRightDirection ? max : min;
+  const invisiblePointY = isVertical ? (toRightDirection ? max : min) : position;
+
+  return board.$board.create("point", [invisiblePointX, invisiblePointY], {
     snapToGrid: false,
     visible: false,
     fixed: true
@@ -112,12 +120,12 @@ const drawVectorLine = (board, visiblePoint, invisiblePoint, toRightDirection, c
     ...Colors.default[CONSTANT.TOOLS.LINE],
     highlightStrokeColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
-        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightStrokeColor
-        : Colors["default"][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+        ? Colors.red[CONSTANT.TOOLS.LINE].highlightStrokeColor
+        : Colors.default[CONSTANT.TOOLS.LINE].highlightStrokeColor,
     highlightFillColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
-        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightFillColor
-        : Colors["default"][CONSTANT.TOOLS.LINE].highlightFillColor,
+        ? Colors.red[CONSTANT.TOOLS.LINE].highlightFillColor
+        : Colors.default[CONSTANT.TOOLS.LINE].highlightFillColor,
     ...colors
   });
   vector.segmentType = segmentType;
@@ -125,12 +133,17 @@ const drawVectorLine = (board, visiblePoint, invisiblePoint, toRightDirection, c
 };
 
 const loadVector = (board, element, pointIncluded, toRightDirection, segmentType) => {
+  const isVertical = checkOrientation(board);
   const x = [CONSTANT.TOOLS.RAY_RIGHT_DIRECTION, CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW].includes(segmentType)
     ? element.point1
     : element.point2;
 
   const yPos = board.stackResponses ? element.y : calcNumberlinePosition(board);
-  const visiblePoint = drawPoint(board, x, pointIncluded, false, element.pointColor, yPos);
+
+  const visiblePointX = isVertical ? yPos : x;
+  const visiblePointY = isVertical ? x : yPos;
+  const visiblePoint = drawPoint(board, visiblePointX, pointIncluded, false, element.pointColor, visiblePointY);
+
   const invisiblePoint = drawVectorPoint(board, toRightDirection, yPos);
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, element.colors, segmentType);
 
@@ -147,6 +160,7 @@ const onHandler = (board, coord) => {
   let pointIncluded = true;
   let toRightDirection = true;
   let availablePositions = getAvailablePositions(board, null, board.stackResponses);
+  const isVertical = checkOrientation(board);
 
   switch (board.currentTool) {
     case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
@@ -172,20 +186,23 @@ const onHandler = (board, coord) => {
       break;
   }
 
-  const x = board.getCoords(coord).usrCoords[1];
-  let newStartX = x;
+  const [, x, y] = board.getCoords(coord).usrCoords;
+
+  let newStart = isVertical ? y : x;
 
   if (board.numberlineSnapToTicks) {
-    newStartX = getClosestTick(x, board.numberlineAxis);
+    newStart = getClosestTick(newStart, board.numberlineAxis);
   }
 
-  if (availablePositions.findIndex(pos => newStartX > pos.start && newStartX < pos.end) === -1) {
+  if (availablePositions.findIndex(pos => newStart > pos.start && newStart < pos.end) === -1) {
     return;
   }
 
   if (!board.stackResponses) {
     const yPos = calcNumberlinePosition(board);
-    const visiblePoint = drawPoint(board, newStartX, pointIncluded, false, null, yPos);
+    const newStartX = isVertical ? yPos : newStart;
+    const newStartY = isVertical ? newStart : yPos;
+    const visiblePoint = drawPoint(board, newStartX, pointIncluded, false, null, newStartY);
     const invisiblePoint = drawVectorPoint(board, toRightDirection, yPos);
     const vector = drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, null, board.currentTool);
     handleVectorPointDrag(board, vector, visiblePoint, board.currentTool, yPos);
@@ -193,7 +210,14 @@ const onHandler = (board, coord) => {
   }
 
   const calcedYPosition = findAvailableStackedSegmentPosition(board);
-  const visiblePoint = drawPoint(board, newStartX, pointIncluded, false, null, calcedYPosition);
+  const visiblePoint = drawPoint(
+    board,
+    isVertical ? calcedYPosition : newStart,
+    pointIncluded,
+    false,
+    null,
+    isVertical ? newStart : calcedYPosition
+  );
   const invisiblePoint = drawVectorPoint(board, toRightDirection, calcedYPosition);
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, null, board.currentTool);
   handleVectorPointDrag(board, vector, visiblePoint, board.currentTool, calcedYPosition, true);
@@ -201,15 +225,15 @@ const onHandler = (board, coord) => {
 };
 
 const renderAnswer = (board, config, pointIncluded, toRightDirection) => {
-  const visiblePoint = drawPoint(
-    board,
-    toRightDirection ? config.point1 : config.point2,
-    pointIncluded,
-    true,
-    config.pointColor,
-    config.y
-  );
-  const invisiblePoint = drawVectorPoint(board, toRightDirection, config.y);
+  const isVertical = checkOrientation(board);
+
+  const position = toRightDirection ? config.point1 : config.point2;
+  const visiblePointX = isVertical ? config.y : position;
+  const visiblePointY = isVertical ? position : config.y;
+  const invisiblePointY = config.y;
+
+  const visiblePoint = drawPoint(board, visiblePointX, pointIncluded, true, config.pointColor, visiblePointY);
+  const invisiblePoint = drawVectorPoint(board, toRightDirection, invisiblePointY);
   return drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, config.colors);
 };
 
@@ -228,13 +252,24 @@ const determineAnswerType = (board, config) => {
   }
 };
 
-const getConfig = segment => ({
-  id: segment.id,
-  type: segment.segmentType,
-  point1: segment.point1.X(),
-  point2: segment.point2.X(),
-  y: segment.point1.Y()
-});
+const getConfig = (segment, board) => {
+  const isVertical = checkOrientation(board);
+  return isVertical
+    ? {
+        id: segment.id,
+        type: segment.segmentType,
+        point1: segment.point1.Y(),
+        point2: segment.point2.Y(),
+        y: segment.point1.X()
+      }
+    : {
+        id: segment.id,
+        type: segment.segmentType,
+        point1: segment.point1.X(),
+        point2: segment.point2.X(),
+        y: segment.point1.Y()
+      };
+};
 
 export default {
   onHandler,

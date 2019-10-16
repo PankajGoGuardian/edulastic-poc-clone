@@ -347,8 +347,8 @@ class GraphDisplay extends Component {
       canvas: {
         xMin: parseFloat(canvas.xMin),
         xMax: parseFloat(canvas.xMax),
-        yMin: parseFloat(canvas.yMin),
-        yMax: parseFloat(canvas.yMax),
+        yMin: parseFloat(uiStyle.orientation === "vertical" ? canvas.xMin : canvas.yMin),
+        yMax: parseFloat(uiStyle.orientation === "vertical" ? canvas.xMax : canvas.yMax),
         numberline: true,
         margin: parseFloat(canvas.margin),
         responsesAllowed: parseInt(canvas.responsesAllowed, 10) || 1,
@@ -378,6 +378,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height,
         snapTo: uiStyle.layoutSnapto,
+        orientation: uiStyle.orientation || "horizontal",
         fontSize: getFontSizeVal(uiStyle.currentFontSize),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses ? 75 : parseInt(uiStyle.linePosition, 10),

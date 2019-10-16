@@ -276,7 +276,7 @@ class AxisSegmentsContainer extends PureComponent {
       elements
     } = this.props;
     const { disableResponse: prevDisableResponse } = prevProps;
-    if (disableResponse && prevDisableResponse != disableResponse) {
+    if (disableResponse && prevDisableResponse !== disableResponse) {
       this.onReset();
     }
 
@@ -493,15 +493,9 @@ class AxisSegmentsContainer extends PureComponent {
         };
         return <IconTrash {...newOptions} />;
       },
-      undo: () => {
-        return "Undo";
-      },
-      redo: () => {
-        return "Redo";
-      },
-      reset: () => {
-        return "Reset";
-      }
+      undo: () => "Undo",
+      redo: () => "Redo",
+      reset: () => "Reset"
     };
 
     return iconsByToolName[toolName]();
@@ -510,10 +504,11 @@ class AxisSegmentsContainer extends PureComponent {
   render() {
     const { layout, canvas, elements, tools, disableResponse, view, graphData, setQuestionData } = this.props;
     const { selectedTool } = this.state;
+    const vertical = layout.orientation === "vertical";
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
-        <GraphWrapper>
+        <GraphWrapper vertical={vertical}>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
             <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
@@ -527,6 +522,7 @@ class AxisSegmentsContainer extends PureComponent {
               onSelect={this.onSelectTool}
               fontSize={layout.fontSize}
               responsesAllowed={canvas.responsesAllowed}
+              vertical={vertical}
             />
           )}
         </GraphWrapper>

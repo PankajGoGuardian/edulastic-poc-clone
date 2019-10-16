@@ -167,11 +167,11 @@ export const defaultBgImageParameters = () => ({ ...bgImageParameters });
 
 export const graphParameters2Boundingbox = p => [p.xMin || 0, p.yMax || 0, p.xMax || 0, p.yMin || 0];
 
-export const numberlineGraphParametersToBoundingbox = (coords, margin) => [
-  coords.xMin - margin,
-  coords.yMax,
-  coords.xMax + margin,
-  coords.yMin
+export const numberlineGraphParametersToBoundingbox = (coords, xMargin, yMargin = 0) => [
+  coords.xMin - xMargin,
+  coords.yMax + yMargin,
+  coords.xMax + xMargin,
+  coords.yMin - yMargin
 ];
 
 export const defaultAxesParameters = () => ({ ...axesParameters });

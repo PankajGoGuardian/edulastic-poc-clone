@@ -30,8 +30,6 @@ class AxisSegmentsMoreOptions extends Component {
     } = this.props;
 
     this.state = {
-      layout: "horizontal",
-      minWidth: "550px",
       currentRenderingBaseItem: {
         id: RENDERING_BASE.LINE_MINIMUM_VALUE,
         value: "Line minimum value",
@@ -151,9 +149,21 @@ class AxisSegmentsMoreOptions extends Component {
   };
 
   handleSelect = (name, value) => {
-    this.setState({
-      [name]: value
-    });
+    const { graphData, setOptions } = this.props;
+    const { uiStyle } = graphData;
+
+    const newUiStyle = { ...uiStyle, [name]: value };
+    if (name === "orientation") {
+      const { layoutHeight, layoutWidth } = newUiStyle;
+      if (newUiStyle.orientation === "horizontal") {
+        newUiStyle.layoutWidth = layoutHeight;
+        newUiStyle.layoutHeight = layoutWidth;
+      } else if (newUiStyle.orientation === "vertical") {
+        newUiStyle.layoutWidth = layoutHeight;
+        newUiStyle.layoutHeight = layoutWidth;
+      }
+    }
+    setOptions(newUiStyle);
   };
 
   handleCheckbox = (name, checked) => {
@@ -166,7 +176,9 @@ class AxisSegmentsMoreOptions extends Component {
     const {
       target: { name, value }
     } = event;
-    this.setState({ [name]: value });
+    const { graphData, setOptions } = this.props;
+    const { uiStyle } = graphData;
+    setOptions({ ...uiStyle, [name]: value });
   };
 
   changeFractionsFormat = e => {
@@ -205,9 +217,10 @@ class AxisSegmentsMoreOptions extends Component {
       advancedAreOpen
     } = this.props;
 
-    const { layout, minWidth, currentRenderingBaseItem, ticksDistance } = this.state;
+    const { currentRenderingBaseItem, ticksDistance } = this.state;
     const { canvas, uiStyle, numberlineAxis, toolbar } = graphData;
     const { fractionsFormat } = numberlineAxis;
+    const orientation = uiStyle.orientation || "horizontal";
 
     return (
       <Fragment>
@@ -241,18 +254,18 @@ class AxisSegmentsMoreOptions extends Component {
               <Label>{t("component.options.orientation")}</Label>
               <Select
                 style={{ width: "100%" }}
-                onChange={val => this.handleSelect("layout", val)}
+                onChange={val => this.handleSelect("orientation", val)}
                 options={orientationList}
-                value={layout}
+                value={uiStyle.orientation || orientation}
               >
                 {orientationList.map(option => (
                   <Select.Option data-cy={option.value} key={option.value}>
-                    {option.label}
+                    {t(option.label)}
                   </Select.Option>
                 ))}
               </Select>
             </Col>
-            {layout === "horizontal" && (
+            {orientation === "horizontal" && (
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.width")}</Label>
                 <MoreOptionsInput
@@ -265,11 +278,16 @@ class AxisSegmentsMoreOptions extends Component {
             )}
           </Row>
 
-          {layout === "vertical" && (
+          {orientation === "vertical" && (
             <Row gutter={60}>
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.minWidth")}</Label>
-                <MoreOptionsInput type="text" name="minWidth" onChange={this.handleInputChange} value={minWidth} />
+                <MoreOptionsInput
+                  type="text"
+                  name="layoutWidth"
+                  onChange={this.handleOptionsInputChange}
+                  value={uiStyle.layoutWidth}
+                />
               </Col>
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.height")}</Label>
@@ -346,7 +364,7 @@ class AxisSegmentsMoreOptions extends Component {
               >
                 {fontSizeList.map(option => (
                   <Select.Option data-cy={option.id} key={option.value}>
-                    {t(option.label)}
+                    {option.label}
                   </Select.Option>
                 ))}
               </Select>
@@ -456,7 +474,7 @@ class AxisSegmentsMoreOptions extends Component {
                   >
                     {renderingBaseList.map(option => (
                       <Select.Option data-cy={option.value} key={option.value}>
-                        {t(option.label)}
+                        {option.label}
                       </Select.Option>
                     ))}
                   </Select>

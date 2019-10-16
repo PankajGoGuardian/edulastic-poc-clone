@@ -418,6 +418,17 @@ function getSpecialTicks(axis) {
 }
 
 /**
+ * Returns boolean value if the layout orientation is vertical
+ * @param {object} board
+ */
+export const checkOrientation = board => {
+  const {
+    layout: { orientation }
+  } = board.numberlineSettings;
+  return orientation === "vertical";
+};
+
+/**
  * Returns closest number from array "ticks" to given number "pointX"
  * @param {number} pointX - any number
  * @param {object} axis - jsxgraph axis object with special ticks
@@ -442,7 +453,10 @@ export function getClosestTick(pointX, axis) {
 }
 
 export function getAvailablePositions(board, element, isStacked) {
-  const result = [{ start: board.numberlineAxis.point1.X() }];
+  const isVertical = checkOrientation(board);
+
+  const start = isVertical ? board.numberlineAxis.point1.Y() : board.numberlineAxis.point1.X();
+  const result = [{ start }];
 
   if (!isStacked) {
     const otherElements = element !== null ? board.elements.filter(item => item.id !== element.id) : board.elements;
@@ -463,6 +477,7 @@ export function getAvailablePositions(board, element, isStacked) {
 
     notAvailablePositions.forEach((item, i) => {
       if (Array.isArray(item)) {
+        // eslint-disable-next-line prefer-destructuring
         result[i].end = item[0];
         result.push({ start: item[1] });
       } else {
@@ -472,7 +487,8 @@ export function getAvailablePositions(board, element, isStacked) {
     });
   }
 
-  result[result.length - 1].end = board.numberlineAxis.point2.X();
+  const end = isVertical ? board.numberlineAxis.point2.Y() : board.numberlineAxis.point2.X();
+  result[result.length - 1].end = end;
 
   return result;
 }
@@ -527,7 +543,7 @@ export function getLineFunc(point1, point2) {
 
   // vertical line
   if (x1 === x2) {
-    return (x, y) => x - x1;
+    return x => x - x1;
   }
 
   const a = (y2 - y1) / (x2 - x1);

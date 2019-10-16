@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import { union, isString } from "lodash";
-import { calcMeasure, toFractionHTML } from "../utils";
+import { calcMeasure, toFractionHTML, checkOrientation } from "../utils";
 import { RENDERING_BASE } from "../config/constants";
 
 const LABEL_ROUNDING_FACTOR = 100;
@@ -49,16 +49,17 @@ const onHandler = board => {
     return;
   }
 
+  const isVertical = checkOrientation(board);
   const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const calcY = yMax - (y / 100) * linePosition;
   const axisPadding = ((-xMin + xMax) / 100) * 3.5;
 
+  const x1 = showMin ? xMin - axisPadding : xMin + axisPadding;
+  const x2 = showMax ? xMax + axisPadding : xMax - axisPadding;
+
   const newAxis = board.$board.create(
     "axis",
-    [
-      [showMin ? xMin - axisPadding : xMin + axisPadding, calcY],
-      [showMax ? xMax + axisPadding : xMax - axisPadding, calcY]
-    ],
+    [[isVertical ? calcY : x1, isVertical ? x1 : calcY], [isVertical ? calcY : x2, isVertical ? x2 : calcY]],
     {
       straightFirst: false,
       straightLast: false,
@@ -225,7 +226,7 @@ const onHandler = board => {
     drawLabels: true,
     ticksDistance,
     label: {
-      offset: [0, -15],
+      offset: isVertical ? [-20, parseInt(fontSize, 10) / 2] : [0, -15],
       anchorX: "middle",
       anchorY: "top",
       fontSize,

@@ -49,7 +49,10 @@ const AxisSegmentsOptions = ({
     }
   ];
 
-  const orientationList = [{ value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" }];
+  const orientationList = [
+    { value: "horizontal", label: "component.options.horizontal" },
+    { value: "vertical", label: "component.options.vertical" }
+  ];
 
   const renderingBaseList = [
     {

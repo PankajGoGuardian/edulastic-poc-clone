@@ -12,6 +12,7 @@ const SegmentsTools = ({
   responsesAllowed,
   elementsNumber,
   toolbar,
+  vertical,
   theme
 }) => {
   const segmentsTools = [
@@ -74,24 +75,26 @@ const SegmentsTools = ({
 
   const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
 
-  const getStyle = (theme, fontSize) => {
-    if (ifZoomed(theme?.zoomLevel)) {
+  const getStyle = (_theme, _fontSize) => {
+    if (ifZoomed(_theme?.zoomLevel)) {
       return {
         width: "auto",
         padding: "0px 10px",
-        zoom: theme?.widgets?.graphPlacement?.toolsZoom
+        zoom: _theme?.widgets?.graphPlacement?.toolsZoom
       };
     }
 
-    return {
-      width: fontSize > 20 ? 105 : 93
-    };
+    return !vertical
+      ? {
+          width: _fontSize > 20 ? 105 : 93
+        }
+      : {};
   };
 
-  let toolBtnStyle = getStyle(theme, fontSize);
+  const toolBtnStyle = getStyle(theme, fontSize);
 
   return (
-    <GraphToolbar data-cy="segmentsToolbar" fontSize={fontSize}>
+    <GraphToolbar data-cy="segmentsToolbar" fontSize={fontSize} vertical={vertical}>
       {uiTools.map(
         (uiTool, i) =>
           !uiTool.group && (
@@ -139,6 +142,7 @@ SegmentsTools.propTypes = {
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   responsesAllowed: PropTypes.number.isRequired,
   getIconByToolName: PropTypes.func.isRequired,
+  vertical: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
   fontSize: PropTypes.number,
   elementsNumber: PropTypes.number.isRequired,

@@ -28,7 +28,7 @@ export default CorrectAnswersContainer;
 
 const Container = styled.div`
   margin: 20px 0;
-  padding: 22px 35px;
+  padding: 22px 12px;
   min-height: ${({ minHeight }) => minHeight || 200}px;
   height: auto;
   border-radius: 10px 0px 0px 10px;

@@ -168,8 +168,10 @@ DragItemContainer.defaultProps = {
 };
 
 const InnerWrapper = styled.div`
-  p {
-    width: 151px;
+  p,
+  div {
+    min-width: 120px;
+    width: auto;
   }
 
   .katex .base {

@@ -83,6 +83,9 @@ const loadPoint = (board, element) => {
 };
 
 const onHandler = (board, coord) => {
+  if (!board.numberlineAxis) {
+    return;
+  }
   const availablePositions = getAvailablePositions(board, null, board.stackResponses);
   const x = board.getCoords(coord).usrCoords[1];
   let newX = x;

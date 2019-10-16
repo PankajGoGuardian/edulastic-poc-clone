@@ -299,7 +299,7 @@ class GraphContainer extends PureComponent {
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
       this.setDefaultToolState();
-      this._graph.setTool(tools[0]);
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT);
     }
 
     if (this._graph) {

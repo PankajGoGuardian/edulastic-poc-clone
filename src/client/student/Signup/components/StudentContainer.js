@@ -356,7 +356,6 @@ class StudentSignup extends React.Component {
     const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, windowWidth } = this.props;
 
     const { method } = this.state;
-
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
 
@@ -419,7 +418,7 @@ class StudentSignup extends React.Component {
                     ) : null}
                   </DesktopVieLinks>
                 </BannerText>
-                {windowWidth >= MAX_TAB_WIDTH && (
+                {windowWidth >= MAX_TAB_WIDTH && method !== GOOGLE && method !== OFFICE && (
                   <DesktopViewCopyright>
                     <Col span={24}>{t("common.copyright")}</Col>
                   </DesktopViewCopyright>
@@ -433,9 +432,6 @@ class StudentSignup extends React.Component {
                           {isUserNameAndPasswordAllowed ? t("component.signup.formboxheading") : null}
                           {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
                         </h5>
-                        {(method === GOOGLE || method === OFFICE) && (
-                          <Description>{t("component.signup.codeFieldDesc")}</Description>
-                        )}
                         <Form onSubmit={this.handleSubmit}>
                           {isUserNameAndPasswordAllowed ? this.renderGeneralFormFields() : null}
                           {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
@@ -486,8 +482,8 @@ class StudentSignup extends React.Component {
           <CircleDiv size={64} right={118} top={320} />
           <CircleDiv size={40} right={210} top={432} />
           <CircleDiv size={32} right={72} top={500} />
-          {windowWidth < MAX_TAB_WIDTH && (
-            <Copyright>
+          {(windowWidth < MAX_TAB_WIDTH || method === GOOGLE || method === OFFICE) && (
+            <Copyright sigunpmethod={method}>
               <Col span={24}>{t("common.copyright")}</Col>
             </Copyright>
           )}

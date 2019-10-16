@@ -63,15 +63,15 @@
       "admin": {
         "signupnamelabel": "Administrator Name",
         "signupidlabel": "Username / Email",
-        "signupadminbtn": "SIGN UP AS ADMINISTRATOR",
+        "signupadminbtn": "SIGN UP AS AN ADMINISTRATOR",
         "foradmin": "for Administrators",
         "validinputname": "Please input Administrators Name!"
       },
       "student": {
         "signupclasslabel": "Class Code (provided by your teacher)",
         "signupidlabel": "Username / Email",
-        "signupstudentbtn": "SIGN UP AS STUDENT",
-        "signupentercode": " Enter",
+        "signupstudentbtn": "SIGN UP AS A STUDENT",
+        "signupentercode": " ENTER",
         "forstudent": "for Students",
         "validclasscode": "Please input valid class code!",
         "validinputname": "Please input Student Name!"

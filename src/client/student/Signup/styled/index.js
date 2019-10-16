@@ -11,7 +11,8 @@ import {
   greyGraphstroke,
   greenDark3,
   greenDark2,
-  tabletWidth
+  tabletWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 
 export const FlexWrapper = styled(Row)`
@@ -60,12 +61,15 @@ export const BannerText = styled(Col)`
   color: white;
   h1 {
     color: white;
-    font-size: 46px;
     line-height: 1.3;
     letter-spacing: -2px;
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 15px;
+    font-size: 46px;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 60px;
+    }
   }
   a {
     font-size: 11px;
@@ -153,8 +157,8 @@ export const InfoIcon = styled(Col)`
 
 export const LinkDiv = styled.div`
   a {
-    padding-bottom: 2px;
     border-bottom: 2px ${themeColor} solid;
+    font-size: 14px;
   }
 `;
 

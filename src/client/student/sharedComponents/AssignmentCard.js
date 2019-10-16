@@ -154,24 +154,72 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   if (!releaseScore) {
     releaseScore = data.releaseScore;
   }
+
   const showReviewButton =
     releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
+  const StartButtonContainer =
+    type === "assignment" ? (
+      safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
+        <SafeBrowserButton
+          data-cy="start"
+          testId={testId}
+          testType={testType}
+          testActivityId={lastAttempt._id}
+          assignmentId={assignmentId}
+          btnName={t("common.startAssignment")}
+          startDate={startDate}
+          t={t}
+          startTest={startTest}
+          attempted={attempted}
+          resume={resume}
+        />
+      ) : (
+        <StartButton
+          data-cy="start"
+          safeBrowser={safeBrowser}
+          startDate={startDate}
+          t={t}
+          isPaused={isPaused}
+          startTest={startTest}
+          attempted={attempted}
+          resume={resume}
+        />
+      )
+    ) : (
+      showReviewButton &&
+      !absent && (
+        <ReviewButton
+          data-cy="review"
+          testId={testId}
+          isPaused={isPaused}
+          testActivityId={lastAttempt._id}
+          title={test.title}
+          activityReview={activityReview}
+          t={t}
+          attempted={attempted}
+          classId={currentGroup}
+        />
+      )
+    );
+
   const ScoreDetail = (
     <React.Fragment>
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
-        <AnswerAndScore>
+        <AnswerAndScore xs={6}>
           <span data-cy="score">
             {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
           </span>
           <Title>{t("common.correctAnswer")}</Title>
         </AnswerAndScore>
       )}
-      <AnswerAndScore>
+      <AnswerAndScore xs={6}>
         <span data-cy="percent">{Math.round(scorePercentage)}%</span>
         <Title>{t("common.score")}</Title>
       </AnswerAndScore>
     </React.Fragment>
   );
+
+  const isValidAttempt = attempted && !absent;
 
   return (
     <CardWrapper>
@@ -193,62 +241,26 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
       />
       <ButtonAndDetail>
         <DetailContainer>
-          {attempted && !absent && (
-            <AttemptDetails>
-              <Attempts onClick={toggleAttemptsView}>
-                <span data-cy="attemptsCount">
-                  {attemptCount}/{maxAttempts || attemptCount}
-                </span>
-                <AttemptsTitle data-cy="attemptClick">
-                  {arrow} &nbsp;&nbsp;{t("common.attemps")}
-                </AttemptsTitle>
-              </Attempts>
-              {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
-            </AttemptDetails>
-          )}
-          {type === "assignment" ? (
-            safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
-              <SafeBrowserButton
-                data-cy="start"
-                testId={testId}
-                testType={testType}
-                testActivityId={lastAttempt._id}
-                assignmentId={assignmentId}
-                btnName={t("common.startAssignment")}
-                startDate={startDate}
-                t={t}
-                startTest={startTest}
-                attempted={attempted}
-                resume={resume}
-              />
-            ) : (
-              <StartButton
-                data-cy="start"
-                safeBrowser={safeBrowser}
-                startDate={startDate}
-                t={t}
-                isPaused={isPaused}
-                startTest={startTest}
-                attempted={attempted}
-                resume={resume}
-              />
-            )
-          ) : (
-            showReviewButton &&
-            !absent && (
-              <ReviewButton
-                data-cy="review"
-                testId={testId}
-                isPaused={isPaused}
-                testActivityId={lastAttempt._id}
-                title={test.title}
-                activityReview={activityReview}
-                t={t}
-                attempted={attempted}
-                classId={currentGroup}
-              />
-            )
-          )}
+          <AttemptDetails isValidAttempt={isValidAttempt}>
+            {isValidAttempt && (
+              <React.Fragment>
+                <Attempts xs={6} onClick={toggleAttemptsView}>
+                  <span data-cy="attemptsCount">
+                    {attemptCount}/{maxAttempts || attemptCount}
+                  </span>
+                  <AttemptsTitle data-cy="attemptClick">
+                    {arrow} &nbsp;&nbsp;{t("common.attemps")}
+                  </AttemptsTitle>
+                </Attempts>
+                {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
+              </React.Fragment>
+            )}
+            {StartButtonContainer && (
+              <StyledActionButton isValidAttempt={isValidAttempt} lg={6} sm={isValidAttempt ? 6 : 10}>
+                {StartButtonContainer}
+              </StyledActionButton>
+            )}
+          </AttemptDetails>
         </DetailContainer>
         {showAttempts &&
           newReports.map(attempt => (
@@ -349,11 +361,21 @@ const ButtonAndDetail = styled(Col)`
     `}
 `;
 
-const AttemptDetails = styled(Col)`
-  display: flex;
-  @media screen and (max-width: 768px) {
+const AttemptDetails = styled(Row)`
+  width: 65%;
+
+  ${({ isValidAttempt }) =>
+    !isValidAttempt &&
+    `
+    display: flex;
+    justify-content: flex-end
+  `}
+
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
     justify-content: center;
+    display: flex;
+    margin-top: 10px;
   }
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
     flex: 1;
@@ -365,21 +387,15 @@ const AttemptDetails = styled(Col)`
     `}
 `;
 
-const AnswerAndScore = styled.div`
-  width: 135px;
+const AnswerAndScore = styled(Col)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  span {
+
+  & > span {
     font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
-  }
-  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
-    width: 33%;
-  }
-  @media screen and (max-width: 767px) {
-    width: 33%;
   }
 
   ${({ theme }) =>
@@ -387,6 +403,14 @@ const AnswerAndScore = styled.div`
       width: auto;
       flex-basis: 33%;
     `}
+`;
+
+const StyledActionButton = styled(AnswerAndScore)`
+  @media screen and (max-width: ${mobileWidthMax}) {
+    align-items: center;
+  }
+
+  align-items: ${({ isValidAttempt }) => (!isValidAttempt ? "flex-end" : "center")};
 `;
 
 const Attempts = AnswerAndScore;

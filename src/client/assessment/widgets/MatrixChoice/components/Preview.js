@@ -55,22 +55,24 @@ const Preview = ({
     <div>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        <QuestionContentWrapper>
+          <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          <Matrix
+            stems={item.stems}
+            options={item.options}
+            uiStyle={item.uiStyle}
+            response={userAnswer}
+            isMultiple={item.multipleResponses}
+            onCheck={!disableResponse ? handleCheck : () => {}}
+            validation={item.validation}
+            type={type}
+            smallSize={smallSize}
+            previewTab={previewTab}
+            isReviewTab={isReviewTab}
+          />
+        </QuestionContentWrapper>
       </QuestionTitleWrapper>
 
-      <Matrix
-        stems={item.stems}
-        options={item.options}
-        uiStyle={item.uiStyle}
-        response={userAnswer}
-        isMultiple={item.multipleResponses}
-        onCheck={!disableResponse ? handleCheck : () => {}}
-        validation={item.validation}
-        type={type}
-        smallSize={smallSize}
-        previewTab={previewTab}
-        isReviewTab={isReviewTab}
-      />
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </div>
   );
@@ -101,4 +103,9 @@ export default Preview;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+`;
+
+const QuestionContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

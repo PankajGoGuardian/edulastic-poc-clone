@@ -164,7 +164,7 @@ class AuthorTestItemPreview extends Component {
       showHints
     } = this.props;
 
-    const hints = get(item, "data.questions.[0].hints");
+    const hints = get(item, "data.questions.[0].hints", []);
     const showHintsBtn = hints.length > 0 ? hints[0].label : false;
 
     return (

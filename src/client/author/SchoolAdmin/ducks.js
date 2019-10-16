@@ -244,7 +244,7 @@ export const reducer = createReducer(initialState, {
   },
   [ADD_BULK_TEACHER_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
     state.bulkTeacherData = res;
-    state.data.result = _bulkTeachers;
+    state.data.result = { ..._bulkTeachers, ...state.data.result };
     state.data.totalUsers = state.data.totalUsers + Object.keys(_bulkTeachers).length;
     state.creating = false;
     state.teacherDetailsModalVisible = true;

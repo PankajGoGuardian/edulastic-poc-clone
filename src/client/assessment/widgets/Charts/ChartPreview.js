@@ -5,18 +5,12 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
-import {
-  Stimulus,
-  InstructorStimulus,
-  CorrectAnswersContainer,
-  AnswerContext,
-  QuestionNumberLabel
-} from "@edulastic/common";
+import { Stimulus, CorrectAnswersContainer, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 
 import { setElementsStashAction, setStashIndexAction } from "../../actions/graphTools";
-import { CLEAR, PREVIEW, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, SHOW } from "../../constants/constantsForQuestions";
 
 import { getFontSize } from "../../utils/helpers";
 import LineChart from "./LineChart";
@@ -63,7 +57,6 @@ const ChartPreview = ({
     previewTab = CLEAR;
   }
 
-  const { expressGrader } = answerContextConfig;
   const { chart_data = {}, validation, uiStyle } = item;
   const { data = [], name } = chart_data;
   let CurrentChart = null;

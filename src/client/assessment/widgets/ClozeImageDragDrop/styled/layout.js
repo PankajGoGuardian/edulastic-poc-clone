@@ -7,8 +7,8 @@ export const RightResponseContainer = styled.div.attrs({
   height: auto;
   display: flex;
   justify-content: center;
-  ${({ smallSize, theme }) => `
-      width: ${smallSize ? "120px" : "100%"};
+  ${({ smallSize, theme, width }) => `
+      width: ${smallSize ? "120px" : width ? `${width}px` : "20%"};
       margin: ${smallSize ? "0px" : "10px"};
       border-radius: ${smallSize ? 0 : 10}px;
       background: ${theme.widgets.clozeImageDragDrop.responseBoxBgColor}
@@ -55,7 +55,7 @@ export const LeftResponseContainer = styled.div.attrs({
   background: ${({ theme }) => theme.widgets.clozeImageDragDrop.responseBoxBgColor};
   display: flex;
   justify-content: center;
-  width: 20%;
+  width: ${({ width }) => (width ? `${width}px` : "20%")};
 `;
 
 export const StyledContainer = styled.div`

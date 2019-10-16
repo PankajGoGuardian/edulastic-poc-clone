@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select, TextField, Checkbox } from "@edulastic/common";
+import { Input, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
 
@@ -59,6 +60,10 @@ class Layout extends Component {
     const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
+      if (prop === "responseContainerWidth" && value < 1) {
+        message.error("Width should be greater than 0");
+        return null;
+      }
       onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
@@ -170,6 +175,17 @@ class Layout extends Component {
               />
             </FieldWrapper>
           </Col>
+          <Col md={12}>
+            <Label>{t("component.options.responseContainerWidth")}</Label>
+            <Input
+              type="number"
+              min="1"
+              defaultValue={uiStyle.responseContainerWidth || null}
+              onBlur={event => changeUiStyle("responseContainerWidth", +event.target.value)}
+            />
+          </Col>
+        </Row>
+        <Row gutter={20}>
           <Col md={12}>
             <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
             <FieldWrapper>

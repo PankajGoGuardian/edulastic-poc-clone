@@ -8,7 +8,16 @@ import Draggable from "./Draggable";
 import Droppable from "./Droppable";
 import { StyledResponseDiv, StyledResponseOption } from "../styled/ResponseBox";
 
-const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler, onDrop, theme }) => {
+const ResponseBoxLayout = ({
+  smallSize,
+  hasGroupResponses,
+  responses,
+  fontSize,
+  dragHandler,
+  onDrop,
+  theme,
+  containerPosition
+}) => {
   const handleMove = e => {
     if (e.clientY < 100) {
       window.scrollTo(window.pageXOffset, window.pageYOffset - 10);
@@ -23,6 +32,9 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
       document.body.removeEventListener("dragover", handleMove);
     };
   }, []);
+
+  const horizontallyAligned = containerPosition === "left" || containerPosition === "right";
+
   return (
     <Droppable style={{ display: "block" }} drop={e => e}>
       <StyledResponseDiv
@@ -30,6 +42,9 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
         style={{
           padding: smallSize ? "5px 10px" : 16,
           borderRadius: smallSize ? 0 : 10,
+          display: "flex",
+          flexDirection: horizontallyAligned ? "column" : "row",
+          alignItems: horizontallyAligned ? "flex-start" : "center",
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >
@@ -47,6 +62,9 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                           key={itemIndex}
                           className="draggable_box"
                           style={{
+                            display: "flex",
+                            width: horizontallyAligned ? "100%" : null,
+                            justifyContent: "center",
                             fontSize: smallSize ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize : fontSize
                           }}
                         >
@@ -88,7 +106,10 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                   fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
                   fontWeight: smallSize
                     ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
-                    : theme.widgets.clozeDragDrop.draggableBoxFontWeight
+                    : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
+                  display: "flex",
+                  width: horizontallyAligned ? "100%" : null,
+                  justifyContent: "center"
                 }}
               >
                 {!dragHandler && (
@@ -124,7 +145,8 @@ ResponseBoxLayout.propTypes = {
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
   onDrop: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  containerPosition: PropTypes.string
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -132,7 +154,8 @@ ResponseBoxLayout.defaultProps = {
   fontSize: "13px",
   smallSize: false,
   hasGroupResponses: false,
-  dragHandler: false
+  dragHandler: false,
+  containerPosition: "bottom"
 };
 
 export default withTheme(React.memo(ResponseBoxLayout));

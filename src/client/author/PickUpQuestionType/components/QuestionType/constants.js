@@ -1068,9 +1068,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 0,
+          heightpx: 35,
           wordwrap: false,
-          responsecontainerindividuals: []
+          responsecontainerindividuals: [],
+          responseContainerWidth: 200
         },
         options: [
           { value: uuidsForFill[0], label: "Option 1" },
@@ -1191,7 +1192,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           widthpx: 140,
           heightpx: 35,
           responsecontainerindividuals: [],
-          responsecontainerposition: "bottom"
+          responsecontainerposition: "bottom",
+          responseContainerWidth: 200
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },

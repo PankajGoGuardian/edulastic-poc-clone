@@ -5,7 +5,7 @@ import { differenceBy, findIndex } from "lodash";
 
 import { Select } from "@edulastic/common";
 import { response } from "@edulastic/constants";
-import { Input } from "antd";
+import { Input, message } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Block } from "../../styled/WidgetOptions/Block";
@@ -82,6 +82,10 @@ class Layout extends Component {
     const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
     const { responsecontainerindividuals = [] } = uiStyle;
     const changeUiStyle = (prop, value) => {
+      if (prop === "responseContainerWidth" && value < 1) {
+        message.error("Width cannot be less than 1");
+        return null;
+      }
       onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
@@ -135,7 +139,7 @@ class Layout extends Component {
         <Block style={{ paddingTop: 0 }}>
           <Subtitle>{t("component.options.display")}</Subtitle>
           <Row gutter={20}>
-            <Col md={8}>
+            <Col md={12}>
               <Label>{t("component.options.responsecontainerposition")}</Label>
               <SelectWrapper>
                 <Select
@@ -150,7 +154,18 @@ class Layout extends Component {
                 />
               </SelectWrapper>
             </Col>
-            <Col md={8}>
+            <Col md={12}>
+              <Label>{t("component.options.responseContainerWidth")}</Label>
+              <Input
+                type="number"
+                min="1"
+                defaultValue={uiStyle?.responseContainerWidth || null}
+                onBlur={event => changeUiStyle("responseContainerWidth", +event.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col md={12}>
               <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
               <SelectWrapper>
                 <Select
@@ -170,7 +185,7 @@ class Layout extends Component {
                 />
               </SelectWrapper>
             </Col>
-            <Col md={8}>
+            <Col md={12}>
               <Label>{t("component.options.fontSize")}</Label>
               <SelectWrapper>
                 <Select

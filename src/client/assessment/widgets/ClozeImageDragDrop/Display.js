@@ -404,7 +404,6 @@ class Display extends Component {
       setQuestionData,
       studentReport
     } = this.props;
-
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers, possibleResponses } = this.state;
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
@@ -737,7 +736,10 @@ class Display extends Component {
         )}
         {responseposition === "left" && (
           <LeftContainer>
-            <LeftResponseContainer innerRef={this.responseBoxContainerRef}>
+            <LeftResponseContainer
+              innerRef={this.responseBoxContainerRef}
+              width={uiStyle?.responseContainerWidth || null}
+            >
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </LeftResponseContainer>
             <LeftTemplateContainer studentReport={studentReport} responseBoxContainerWidth={responseBoxContainerWidth}>
@@ -755,7 +757,11 @@ class Display extends Component {
               {templateBoxLayout}
             </RightTemplateContainer>
 
-            <RightResponseContainer smallSize={smallSize} innerRef={this.responseBoxContainerRef}>
+            <RightResponseContainer
+              width={uiStyle?.responseContainerWidth || null}
+              smallSize={smallSize}
+              innerRef={this.responseBoxContainerRef}
+            >
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </RightResponseContainer>
           </RightContainer>

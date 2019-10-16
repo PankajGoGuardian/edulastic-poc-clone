@@ -1085,10 +1085,6 @@ textinput::before {
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 }
 
-.responseboxContainer {
-  max-width: 15vw;
-}
-
 .controls-bar .ant-select-selection {
   display: none;
 }

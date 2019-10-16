@@ -299,7 +299,7 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize);
-    const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
+    const { responsecontainerposition, responsecontainerindividuals, stemNumeration, responseContainerWidth } = uiStyle;
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
@@ -353,6 +353,7 @@ class ClozeDragDropDisplay extends Component {
         fontSize={fontSize}
         dragHandler={dragHandler}
         onDrop={!disableResponse ? this.onDrop : () => {}}
+        containerPosition={responsecontainerposition}
       />
     );
     const correctAnswerBoxLayout = (
@@ -383,7 +384,7 @@ class ClozeDragDropDisplay extends Component {
 
     const responseBoxStyle = {
       height: "100%",
-      maxWidth: "30%",
+      width: responseContainerWidth ? `${responseContainerWidth}px` : null,
       borderRadius: 10,
       marginRight: responsecontainerposition === "left" ? 15 : null,
       marginLeft: responsecontainerposition === "right" ? 15 : null,
@@ -421,12 +422,12 @@ class ClozeDragDropDisplay extends Component {
             <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
             </div>
-            <div style={{ borderRadius: 10, flex: 1 }}>{templateBoxLayoutContainer}</div>
+            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
           </AnswerContainer>
         )}
         {responsecontainerposition === "right" && (
           <AnswerContainer position={responsecontainerposition}>
-            <div style={{ flex: 1, borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
+            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
             <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
             </div>

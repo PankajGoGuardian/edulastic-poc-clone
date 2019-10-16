@@ -730,7 +730,7 @@ export const defaultTheme = {
       wrongIconColor,
       antSelectSelectionBgColor: buttonBackgroundColor,
       antSelectSelectionBorderColor: borderColor,
-      antSelectSelectionFontSize: subtitleFontSize,
+      antSelectSelectionFontSize: "13px",
       antSelectSelectionFontWeight: semiBold,
       antSelectSelectionColor: labelStyle,
       antIconDownColor: actionIconColor,

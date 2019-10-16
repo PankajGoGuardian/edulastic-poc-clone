@@ -62,7 +62,7 @@ const ReportListContainer = ({
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader titleText="common.reportsTitle" />
-      <TestActivitySubHeader title={assignmentItemTitle} />
+      <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
       {isDocBased ? (
         <div style={{ height: "calc(100vh - 130px)" }}>
           <Worksheet key="review" review {...props} viewMode="report" />

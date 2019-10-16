@@ -86,11 +86,11 @@ export const AnswerIndicator = styled.span`
   }
 `;
 
-export const CorrectAnswer = styled.p`
+export const DetailsContainer = styled.p`
   margin: 15px 0 0 5px;
 `;
 
-export const CorrectAnswerTitle = styled.span`
+export const DetailTitle = styled.span`
   display: inline-block;
   margin-right: 5px;
   font-size: 11px;
@@ -98,7 +98,7 @@ export const CorrectAnswerTitle = styled.span`
   color: ${secondaryTextColor};
 `;
 
-export const CorrectAnswerValue = styled.span`
+export const DetailContents = styled.span`
   display: inline-block;
   font-size: 11px;
   font-weight: bold;

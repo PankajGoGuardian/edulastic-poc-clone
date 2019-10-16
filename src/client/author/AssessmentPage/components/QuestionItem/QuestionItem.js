@@ -27,9 +27,9 @@ import {
   EditButton,
   AnswerForm,
   AnswerIndicator,
-  CorrectAnswer,
-  CorrectAnswerTitle,
-  CorrectAnswerValue
+  DetailsContainer,
+  DetailTitle,
+  DetailContents
 } from "./styled";
 
 class QuestionItem extends React.Component {
@@ -140,10 +140,10 @@ class QuestionItem extends React.Component {
     }
 
     return (
-      <CorrectAnswer>
-        <CorrectAnswerTitle>Correct Answer:</CorrectAnswerTitle>
-        <CorrectAnswerValue>{answerRenderer(value, options)}</CorrectAnswerValue>
-      </CorrectAnswer>
+      <DetailsContainer>
+        <DetailTitle>Correct Answer:</DetailTitle>
+        <DetailContents>{answerRenderer(value, options)}</DetailContents>
+      </DetailsContainer>
     );
   };
 
@@ -202,14 +202,23 @@ class QuestionItem extends React.Component {
   };
 
   renderScore = qId => {
-    const { feedback = {}, previousFeedback = [] } = this.props;
+    const { feedback = {}, previousFeedback = [], viewMode } = this.props;
 
-    const { score = 0, maxScore = 0 } = previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
+    const { score = 0, maxScore = 0, feedback: teacherComments } =
+      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
     return (
-      <CorrectAnswer>
-        <CorrectAnswerTitle>Score:</CorrectAnswerTitle>
-        <CorrectAnswerValue>{`${score}/${maxScore}`}</CorrectAnswerValue>
-      </CorrectAnswer>
+      <>
+        <DetailsContainer>
+          <DetailTitle>Score:</DetailTitle>
+          <DetailContents>{`${score}/${maxScore}`}</DetailContents>
+        </DetailsContainer>
+        {!!teacherComments?.text && viewMode === "report" && (
+          <DetailsContainer>
+            <DetailTitle>Feedback:</DetailTitle>
+            <DetailContents>{teacherComments.text}</DetailContents>
+          </DetailsContainer>
+        )}
+      </>
     );
   };
 

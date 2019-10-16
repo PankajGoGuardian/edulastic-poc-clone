@@ -1,9 +1,8 @@
 import React from "react";
-import { Icon } from "antd";
 import { Link } from "react-router-dom";
-import GoogleClassRoomImg from "../../../../../../assets/images/google-classroom.png";
-import { CreateCardBox, CreateClassButton, SyncClassDiv, SyncImg } from "./styled";
+import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
 import GoogleLogin from "react-google-login";
+import { IconPlusCircle, IconGoogleClassroom } from "@edulastic/icons";
 const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList, history }) => {
   const scopes = [
     "https://www.googleapis.com/auth/classroom.courses",
@@ -29,26 +28,21 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
 
   return (
     <CreateCardBox>
-      <Link to={"/author/manageClass/createClass"}>
-        <CreateClassButton>
-          <Icon type="plus" />
+      <Link to={"/author/manageClass/createClass"} style={{ width: "80%" }}>
+        <CreateClassDiv>
+          <IconPlusCircle width={20} height={20} />
           <p>Create new class</p>
-        </CreateClassButton>
+        </CreateClassDiv>
       </Link>
       {allowGoogleLogin !== false && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
           render={renderProps => (
             <>
-              <p>or</p>
-              <SyncClassDiv>
-                <i
-                  style={{ cursor: "pointer", marginLeft: "8px", display: "flex", alignItems: "center" }}
-                  title={"Sync with Google Classroom"}
-                  onClick={renderProps.onClick}
-                >
-                  <SyncImg src={GoogleClassRoomImg} width={35} /> Sync With Google Classroom
-                </i>
+              <p>OR</p>
+              <SyncClassDiv onClick={renderProps.onClick}>
+                <IconGoogleClassroom width={25} height={25} />
+                <p>Sync With Google Classroom</p>
               </SyncClassDiv>
             </>
           )}

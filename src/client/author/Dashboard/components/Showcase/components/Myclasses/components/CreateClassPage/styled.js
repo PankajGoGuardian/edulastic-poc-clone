@@ -1,17 +1,20 @@
 import styled from "styled-components";
-import { lightBlue, white } from "@edulastic/colors";
-import { Button } from "antd";
+import { lightBlue, white, themeColor } from "@edulastic/colors";
 
-export const CreateClassButton = styled(Button)`
+export const CreateClassDiv = styled.div`
   display: flex;
   align-items: center;
-  border: 2px solid ${lightBlue} !important;
-  border-radius: 50px;
-  color: ${lightBlue};
-  width: 160px;
-  &:hover {
-    background: ${lightBlue};
-    color: ${white};
+  justify-content: space-evenly;
+  background: ${themeColor};
+  color: ${white};
+  width: 100%;
+  padding: 10px 0px;
+  border-radius: 4px;
+  & > svg {
+    fill: ${white};
+  }
+  & > p {
+    text-transform: uppercase;
   }
 `;
 export const SyncClassDiv = styled.div`
@@ -20,22 +23,23 @@ export const SyncClassDiv = styled.div`
   align-items: center;
   color: ${lightBlue};
   font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  & > p {
+    color: ${themeColor};
+    text-transform: uppercase;
+    padding-left: 10px;
+  }
 `;
 export const CreateCardBox = styled.div`
   display: flex;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 30px 20px;
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
-  border: 2px dashed ${lightBlue};
+  border: 2px dashed ${themeColor};
   border-radius: 5px;
-  min-height: 230px;
-  width: 270px;
+  min-height: 300px;
+  max-width: 350px;
   margin-top: 1rem;
-`;
-export const SyncImg = styled.img`
-  margin-right: 0.5rem;
-  width: 35px;
-  height: 35px;
 `;

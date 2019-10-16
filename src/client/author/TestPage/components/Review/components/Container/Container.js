@@ -438,8 +438,7 @@ class Review extends PureComponent {
           isModalVisible={isTestPreviewModalVisible}
           testId={currentTestId}
           test={test}
-          hideModal={this.hidePreviewModal}
-          closeTestPreviewModal={this.closeTestPreviewModal}
+          closeTestPreviewModal={this.hidePreviewModal}
         />
       </ReviewPageContainer>
     );

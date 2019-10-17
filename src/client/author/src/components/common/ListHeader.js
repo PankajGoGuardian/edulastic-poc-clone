@@ -113,8 +113,7 @@ ListHeader.defaultProps = {
 const enhance = compose(
   withNamespaces("author"),
   connect(
-    ({ authorUi, user }) => ({
-      isSidebarCollapsed: authorUi.isSidebarCollapsed,
+    ({ user }) => ({
       firstName: user.firstName || ""
     }),
     { toggleSideBar: toggleSideBarAction }

@@ -261,7 +261,6 @@ class ClozeText extends Component {
       userAnswer,
       testItem,
       evaluation,
-      isSidebarCollapsed,
       advancedAreOpen,
       t,
       cleanSections,
@@ -291,7 +290,7 @@ class ClozeText extends Component {
         onLoaded={() => null}
       >
         {view === "edit" && (
-          <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
+          <ContentArea data-cy="question-area">
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
@@ -409,8 +408,7 @@ ClozeText.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  advancedAreOpen: PropTypes.bool
 };
 
 ClozeText.defaultProps = {
@@ -433,9 +431,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    state => ({
-      isSidebarCollapsed: state.authorUi.isSidebarCollapsed
-    }),
+    null,
     {
       setQuestionData: setQuestionDataAction
     }

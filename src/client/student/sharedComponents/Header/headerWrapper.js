@@ -14,9 +14,9 @@ import {
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar, borderBottom }) => (
+const HeaderWrapper = ({ children, toggleSideBar, borderBottom }) => (
   <HeaderContainer>
-    <FixedHeader iscollapsed={isSidebarCollapsed}>
+    <FixedHeader>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <AssignmentsHeader>
         <HeaderRow>
@@ -31,14 +31,11 @@ const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar, borderBott
 
 HeaderWrapper.propTypes = {
   children: PropTypes.object.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   toggleSideBar: PropTypes.func.isRequired
 };
 
 export default connect(
-  ({ ui }) => ({
-    isSidebarCollapsed: ui.isSidebarCollapsed
-  }),
+  null,
   { toggleSideBar: toggleSideBarAction }
 )(HeaderWrapper);
 

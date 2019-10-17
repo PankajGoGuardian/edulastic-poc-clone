@@ -156,7 +156,6 @@ class ClozeImageText extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
-      isSidebarCollapsed,
       ...restProps
     } = this.props;
 
@@ -178,7 +177,7 @@ class ClozeImageText extends Component {
     return (
       <React.Fragment>
         {view === "edit" && (
-          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <ContentArea>
             <React.Fragment>
               <EditorContainer>
                 <div className="authoring">
@@ -317,8 +316,7 @@ ClozeImageText.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  advancedAreOpen: PropTypes.bool
 };
 
 ClozeImageText.defaultProps = {
@@ -339,7 +337,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );

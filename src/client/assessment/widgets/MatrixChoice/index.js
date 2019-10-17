@@ -39,7 +39,6 @@ const MatrixChoice = ({
   checkAnswer,
   fillSections,
   cleanSections,
-  isSidebarCollapsed,
   advancedAreOpen,
   disableResponse,
   changeView,
@@ -83,7 +82,7 @@ const MatrixChoice = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <Fragment>
             <ComposeQuestion
               setQuestionData={setQuestionData}
@@ -186,7 +185,6 @@ MatrixChoice.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   changeView: PropTypes.func.isRequired
 };
 
@@ -206,7 +204,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,

@@ -15,7 +15,6 @@ import ExtraSection from "./components/Extras";
 const FractionEditor = props => {
   const {
     view,
-    isSidebarCollapsed,
     item,
     setQuestionData,
     fillSections,
@@ -34,7 +33,7 @@ const FractionEditor = props => {
   return (
     <>
       {view === EDIT ? (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <ComposeQuestion
             fillSections={fillSections}
             cleanSections={cleanSections}
@@ -99,7 +98,6 @@ FractionEditor.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   showQuestionNumber: PropTypes.bool
 };
 

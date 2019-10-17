@@ -37,7 +37,6 @@ const ClozeMath = ({
   userAnswer,
   fillSections,
   cleanSections,
-  isSidebarCollapsed,
   advancedAreOpen,
   instructorStimulus,
   showQuestionNumber,
@@ -126,7 +125,7 @@ const ClozeMath = ({
       </StyledClozeMathWrapper>
 
       {view === EDIT && (
-        <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea data-cy="question-area">
           {/* <ComposeQuestion
             item={item}
             setQuestionData={_setQuestionData}
@@ -183,7 +182,6 @@ ClozeMath.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   instructorStimulus: PropTypes.string.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool
 };
@@ -203,9 +201,7 @@ ClozeMath.defaultProps = {
 const enhance = compose(
   withTutorial("clozeMath"),
   connect(
-    state => ({
-      isSidebarCollapsed: state.authorUi.isSidebarCollapsed
-    }),
+    null,
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,

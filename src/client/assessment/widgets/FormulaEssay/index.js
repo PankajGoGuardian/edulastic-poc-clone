@@ -37,7 +37,6 @@ const FormulaEssay = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
-  isSidebarCollapsed,
   disableResponse,
   ...restProps
 }) => {
@@ -63,7 +62,7 @@ const FormulaEssay = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <ComposeQuestion
             item={item}
             setQuestionData={setQuestionData}
@@ -122,7 +121,6 @@ FormulaEssay.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   saveAnswer: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   disableResponse: PropTypes.bool
 };
 
@@ -141,7 +139,7 @@ FormulaEssay.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction

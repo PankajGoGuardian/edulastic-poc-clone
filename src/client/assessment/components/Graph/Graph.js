@@ -272,7 +272,6 @@ class Graph extends Component {
       fillSections,
       cleanSections,
       advancedAreOpen,
-      isSidebarCollapsed,
       disableResponse,
       flowLayout,
       showQuestionNumber,
@@ -311,7 +310,7 @@ class Graph extends Component {
       <React.Fragment>
         {view === "edit" && (
           <React.Fragment>
-            <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+            <ContentArea>
               <OptionsComponent
                 graphData={item}
                 canvas={item.canvas}
@@ -453,7 +452,6 @@ Graph.propTypes = {
   evaluation: PropTypes.any,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
   t: PropTypes.func.isRequired,
@@ -476,7 +474,7 @@ Graph.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction }
   )
 );

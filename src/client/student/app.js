@@ -23,7 +23,7 @@ import StartAssignment from "./StartAssignment";
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 
-const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => {
+const StudentApp = ({ match, selectedTheme, zoomLevel }) => {
   let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
@@ -31,7 +31,7 @@ const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => 
   return (
     <ThemeProvider theme={themeToPass}>
       <Layout>
-        <MainContainer isCollapsed={isSidebarCollapsed}>
+        <MainContainer>
           <Sidebar />
           <Wrapper>
             <Switch>
@@ -63,14 +63,12 @@ const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => 
 };
 
 export default connect(({ ui }) => ({
-  isSidebarCollapsed: ui.isSidebarCollapsed,
   selectedTheme: ui.selectedTheme,
   zoomLevel: ui.zoomLevel
 }))(StudentApp);
 
 StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   selectedTheme: PropTypes.string.isRequired
 };
 

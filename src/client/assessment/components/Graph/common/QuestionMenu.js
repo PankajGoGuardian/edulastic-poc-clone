@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
 import { themeColor, desktopWidth, extraDesktopWidthMax, mediumDesktopWidth } from "@edulastic/colors";
@@ -91,11 +90,11 @@ class QuestionMenu extends Component {
   throttledFindActiveTab = throttle(this.findActiveTab, 200);
 
   render() {
-    const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
+    const { main, advanced, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
     const { activeTab } = this.state;
 
     return (
-      <Menu isSidebarCollapsed={isSidebarCollapsed}>
+      <Menu>
         <ScrollbarContainer>
           <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen} windowWidth={windowWidth}>
             {main &&
@@ -139,7 +138,6 @@ QuestionMenu.propTypes = {
   activeTab: PropTypes.number.isRequired,
   main: PropTypes.array,
   advanced: PropTypes.array,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired
@@ -150,9 +148,7 @@ QuestionMenu.defaultProps = {
   advanced: []
 };
 
-export default connect(({ authorUi }) => ({
-  isSidebarCollapsed: authorUi.isSidebarCollapsed
-}))(withWindowSizes(QuestionMenu));
+export default withWindowSizes(QuestionMenu);
 
 const Menu = styled.div`
   position: fixed;

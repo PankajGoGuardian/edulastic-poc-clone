@@ -12,13 +12,13 @@ import EditSortList from "./EditSortList";
 import { ContentArea } from "../../styled/ContentArea";
 
 const SortList = props => {
-  const { item, view, isSidebarCollapsed } = props;
+  const { item, view } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <EditSortList {...props} />
         </ContentArea>
       )}
@@ -37,8 +37,7 @@ SortList.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool
+  advancedAreOpen: PropTypes.bool
 };
 
 SortList.defaultProps = {
@@ -47,13 +46,12 @@ SortList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  isSidebarCollapsed: false,
   advancedAreOpen: false,
   evaluation: ""
 };
 
 const SortListContainer = connect(
-  ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+  null,
   { setQuestionData: setQuestionDataAction }
 )(SortList);
 

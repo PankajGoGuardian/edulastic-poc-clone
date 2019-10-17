@@ -14,7 +14,7 @@ import ClassificationPreview from "./ClassificationPreview";
 import { ContentArea } from "../../styled/ContentArea";
 
 const Classification = props => {
-  const { view, item, isSidebarCollapsed } = props;
+  const { view, item } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
@@ -24,7 +24,7 @@ const Classification = props => {
       onLoaded={() => {}}
     >
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <EditClassification {...props} />
         </ContentArea>
       )}
@@ -43,7 +43,6 @@ Classification.propTypes = {
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
@@ -60,12 +59,4 @@ Classification.defaultProps = {
   cleanSections: () => {}
 };
 
-const enhance = compose(
-  connect(({ authorUi }) => ({
-    isSidebarCollapsed: authorUi.isSidebarCollapsed
-  }))
-);
-
-const ClassificationContainer = enhance(Classification);
-
-export { ClassificationContainer as Classification };
+export { Classification };

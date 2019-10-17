@@ -70,14 +70,12 @@ const PlaylistPage = lazy(() => import("../PlaylistPage"));
 const ClassEnrollment = lazy(() => import("../ClassEnrollment"));
 
 // eslint-disable-next-line react/prop-types
-const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfileLoading, loadDistrictPolicy }) => {
+const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistrictPolicy }) => {
   useEffect(() => {
     if (orgId && ["school-admin", "district-admin"].includes(role)) {
       loadDistrictPolicy({ orgId });
     }
   }, [orgId]);
-  const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
-  const isCollapsed = isPickQuestion || isSidebarCollapsed;
   const isPrintPreview = history.location.pathname.includes("printpreview");
 
   const themeToPass = getZoomedTheme(themes.default, "xs");
@@ -86,7 +84,7 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout>
-          <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
+          <MainContainer isPrintPreview={isPrintPreview}>
             <Spin spinning={districtProfileLoading} />
             <SidebarCompnent isPrintPreview={isPrintPreview} />
             <Wrapper>
@@ -432,7 +430,6 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
 
 export default connect(
   ({ authorUi, ...state }) => ({
-    isSidebarCollapsed: authorUi.isSidebarCollapsed,
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     districtProfile: get(state, ["districtProfileReducer", "data"], {}),

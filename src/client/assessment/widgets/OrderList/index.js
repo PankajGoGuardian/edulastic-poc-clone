@@ -62,7 +62,6 @@ const OrderList = ({
   setQuestionData,
   saveAnswer,
   showQuestionNumber,
-  isSidebarCollapsed,
   advancedAreOpen,
   fillSections,
   cleanSections,
@@ -240,7 +239,7 @@ const OrderList = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea>
           <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
           <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
           <CorrectAnswers
@@ -345,7 +344,6 @@ OrderList.propTypes = {
   testItem: PropTypes.bool,
   qIndex: PropTypes.any.isRequired,
   evaluation: PropTypes.any,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
@@ -375,7 +373,7 @@ const enhance = compose(
   withTheme,
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction }
   )
 );

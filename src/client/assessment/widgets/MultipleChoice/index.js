@@ -210,7 +210,6 @@ class MultipleChoice extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      isSidebarCollapsed,
       advancedAreOpen,
       flowLayout,
       disableResponse,
@@ -234,7 +233,7 @@ class MultipleChoice extends Component {
       <React.Fragment>
         <PaddingDiv>
           {view === EDIT && (
-            <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+            <ContentArea>
               <React.Fragment>
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
                 <Question
@@ -339,7 +338,6 @@ MultipleChoice.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   flowLayout: PropTypes.bool,
   disableResponse: PropTypes.bool,
   col: PropTypes.object.isRequired,
@@ -367,7 +365,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction, changeView: changePreviewAction }
   )
 );

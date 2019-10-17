@@ -146,7 +146,6 @@ class ClozeImageDragDrop extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
-      isSidebarCollapsed,
       setQuestionData,
       ...restProps
     } = this.props;
@@ -167,7 +166,7 @@ class ClozeImageDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <ContentArea>
             <React.Fragment>
               <div className="authoring">
                 <Authoring
@@ -342,7 +341,6 @@ ClozeImageDragDrop.propTypes = {
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
   changePreview: PropTypes.func.isRequired,
   snapItems: PropTypes.array
@@ -370,7 +368,6 @@ const enhance = compose(
   withTheme,
   connect(
     (state, { item }) => ({
-      isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
       snapItems: getSnapItemsByIdSelector(state, item.id)
     }),
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }

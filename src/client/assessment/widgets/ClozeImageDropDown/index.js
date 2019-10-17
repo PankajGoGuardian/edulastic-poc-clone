@@ -170,7 +170,6 @@ class ClozeImageDropDown extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      isSidebarCollapsed,
       advancedAreOpen,
       ...restProps
     } = this.props;
@@ -187,7 +186,7 @@ class ClozeImageDropDown extends Component {
     return (
       <React.Fragment>
         {view === "edit" && (
-          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <ContentArea>
             <React.Fragment>
               <EditorContainer>
                 <div className="authoring">
@@ -321,8 +320,7 @@ ClozeImageDropDown.propTypes = {
   evaluation: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  cleanSections: PropTypes.func
 };
 
 ClozeImageDropDown.defaultProps = {
@@ -344,7 +342,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );

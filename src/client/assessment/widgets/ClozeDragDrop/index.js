@@ -126,7 +126,7 @@ class ClozeDragDrop extends Component {
       theme,
       fillSections,
       cleanSections,
-      isSidebarCollapsed,
+
       advancedAreOpen,
       ...restProps
     } = this.props;
@@ -147,7 +147,7 @@ class ClozeDragDrop extends Component {
         onLoaded={() => null}
       >
         {view === "edit" && (
-          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <ContentArea>
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
@@ -275,8 +275,7 @@ ClozeDragDrop.propTypes = {
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  advancedAreOpen: PropTypes.bool
 };
 
 ClozeDragDrop.defaultProps = {
@@ -298,7 +297,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    null,
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );

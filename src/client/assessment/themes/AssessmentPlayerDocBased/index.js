@@ -118,6 +118,7 @@ class AssessmentPlayerDocBased extends React.Component {
         <Container style={{ paddingTop: "80px" }}>
           <PlayerHeader
             {...this.props}
+            theme={themeToPass}
             dropdownOptions={dropdownOptions}
             onOpenExitPopup={this.openExitPopup}
             currentItem={currentItem}

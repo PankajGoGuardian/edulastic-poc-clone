@@ -95,14 +95,19 @@ class AssessmentPlayerSimple extends React.Component {
     themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     themeToPass = playersZoomTheme(themeToPass);
 
-    const newProps = { ...this.props, theme: themeToPass };
-
     return (
       <ThemeProvider theme={themeToPass}>
         <Container>
-          <PlayerHeader {...newProps} dropdownOptions={dropdownOptions} onOpenExitPopup={this.openExitPopup} t={t} />
+          <PlayerHeader
+            {...this.props}
+            theme={themeToPass}
+            dropdownOptions={dropdownOptions}
+            onOpenExitPopup={this.openExitPopup}
+            t={t}
+          />
           <PlayerMainContentArea
-            {...newProps}
+            {...this.props}
+            theme={themeToPass}
             previewTab={previewTab}
             dropdownOptions={dropdownOptions}
             onCheckAnswer={this.onCheckAnswer}

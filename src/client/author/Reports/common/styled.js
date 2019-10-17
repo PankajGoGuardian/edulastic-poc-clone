@@ -419,7 +419,7 @@ export const StyledDropDownContainer = styled(Col)`
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
-    width: 100%;
+    width: ${props => (props.width ? props.width : "100%")};
   }
 `;
 

@@ -240,7 +240,7 @@ const PerformanceByStandards = ({
                   data={standardsDropdownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={2} sm={2} md={2} lg={2} xl={2}>
+              <StyledDropDownContainer width="44px" xs={2} sm={2} md={2} lg={2} xl={2}>
                 <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
               </StyledDropDownContainer>
             </Row>

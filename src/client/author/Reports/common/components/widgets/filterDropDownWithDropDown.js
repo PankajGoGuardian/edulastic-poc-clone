@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import { NormalDropDown } from "./normalDropDown";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { ControlDropDown } from "./controlDropDown";
 import { IconFilter } from "@edulastic/icons";
 
@@ -39,64 +39,57 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }
   );
 
   return (
-    <div className={`${className || ""}`}>
+    <StyledContainer className={`${className || ""}`}>
       <Dropdown overlay={menu} visible={visible} onVisibleChange={handleVisibleChange} trigger={["click"]}>
         <StyledButton>
-          <IconFilter color={themeColor} width={20} height={20} />
+          <IconFilter color={visible ? white : themeColor} width={20} height={29} />
         </StyledButton>
       </Dropdown>
-    </div>
+    </StyledContainer>
   );
 };
 
 const StyledButton = styled(Button)`
   margin: 5px;
+  width: 44px;
+  padding: 0px;
 `;
 
 const StyledMenu = styled(Menu)`
   min-width: 230px;
+  padding: 5px 0 10px;
 `;
 
 const StyledIcon = styled(Icon)`
   color: ${themeColor};
 `;
 
-const StyledDropDown = styled(NormalDropDown)`
-  max-width: 200px;
-
-  .ant-btn {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &.ant-dropdown-trigger {
-      white-space: nowrap;
-      overflow: hidden;
-      max-width: 100%;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-  }
-
-  .ant-dropdown-menu-item {
-    white-space: normal;
+const StyledContainer = styled.div`
+  .ant-dropdown-open {
+    background: ${themeColor};
   }
 `;
 
 const StyledControlDropDownContainer = styled.div`
-  padding: 10px;
+  padding: 5px 17px;
 
   p.menu-title {
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 12px;
   }
 
   .control-dropdown {
     margin: 0px;
+    padding: 0px;
+    padding-top: 4px;
 
     .ant-btn {
       width: 100%;
+      height: 40px;
+      span {
+        font-size: 12px;
+      }
     }
   }
 `;

@@ -138,10 +138,10 @@ class MainSetting extends Component {
     switch (key) {
       case "testType":
         const testProfileType = testTypeAsProfileNameType[value];
-        const defaultBandId = defaultTestTypeProfiles.performanceBand[testProfileType];
-        const defaultStandardId = defaultTestTypeProfiles.standardProficiency[testProfileType];
-        const performanceBand = performanceBandsData.find(item => item._id === defaultBandId);
-        const standardGradingScale = standardsData.find(item => item._id === defaultStandardId);
+        const defaultBandId = defaultTestTypeProfiles?.performanceBand?.[testProfileType];
+        const defaultStandardId = defaultTestTypeProfiles?.standardProficiency?.[testProfileType];
+        const performanceBand = performanceBandsData.find(item => item._id === defaultBandId) || {};
+        const standardGradingScale = standardsData.find(item => item._id === defaultStandardId) || {};
         if (value === ASSESSMENT || value === COMMON) {
           setMaxAttempts(1);
           setTestData({

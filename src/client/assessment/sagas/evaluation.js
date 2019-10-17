@@ -2,7 +2,6 @@ import { takeEvery, put, all, select, call } from "redux-saga/effects";
 import { message } from "antd";
 import { isEmpty, values } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 
 import { getQuestionIds } from "./items";
 // actions
@@ -15,17 +14,15 @@ import {
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
 import { CHANGE_PREVIEW, CHANGE_VIEW } from "../../author/src/constants/actions";
 
-function* evaluateAnswers() {
+function* evaluateAnswers({ payload: groupId }) {
   try {
     yield put({
       type: CLEAR_ITEM_EVALUATION
     });
-
     const questionIds = yield select(itemQuestionsSelector);
     const allAnswers = yield select(answersForCheck);
     const answerIds = Object.keys(allAnswers);
     const userResponse = {};
-    const groupId = yield select(getCurrentGroupWithAllClasses);
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
     answerIds.forEach(id => {
       if (questionIds.includes(id)) {

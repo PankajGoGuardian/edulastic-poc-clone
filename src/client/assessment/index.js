@@ -68,13 +68,16 @@ const AssessmentPlayer = ({
   if (!isPasswordValidated) {
     return <RequirePassword />;
   }
-
+  const groupId = match.params.groupId || "";
   return (
     <Switch>
-      <Route path={`${match.url}/qid/:qid`} render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} />} />
+      <Route
+        path={`${match.url}/qid/:qid`}
+        render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} groupId={groupId} />}
+      />
       <Route
         path={`${match.url}`}
-        render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} testletType />}
+        render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} testletType groupId={groupId} />}
       />
     </Switch>
   );

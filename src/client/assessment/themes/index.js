@@ -72,7 +72,8 @@ const AssessmentContainer = ({
   testletState,
   testletConfig,
   testType,
-  test
+  test,
+  groupId
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -188,6 +189,7 @@ const AssessmentContainer = ({
         saveProgress={saveProgress}
         gotoSummary={gotoSummary}
         {...props}
+        groupId={groupId}
       />
     );
   }
@@ -201,6 +203,7 @@ const AssessmentContainer = ({
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
         {...test}
+        groupId={groupId}
       />
     );
   }
@@ -208,7 +211,7 @@ const AssessmentContainer = ({
   return (
     <>
       <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
+        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} groupId={groupId} />}
       </ScratchPadContext.Provider>
     </>
   );

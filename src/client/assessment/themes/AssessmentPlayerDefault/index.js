@@ -142,9 +142,9 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   changeTabItemState = value => {
-    const { checkAnswer, answerChecksUsedForItem, settings } = this.props;
+    const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
-    checkAnswer();
+    checkAnswer(groupId);
     this.setState({ testItemState: value });
   };
 

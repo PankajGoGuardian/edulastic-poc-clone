@@ -50,8 +50,8 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   onCheckAnswer = () => {
-    const { checkAnswer, settings, answerChecksUsedForItem } = this.props;
-    if (settings.maxAnswerChecks > answerChecksUsedForItem) checkAnswer();
+    const { checkAnswer, settings, answerChecksUsedForItem, groupId } = this.props;
+    if (settings.maxAnswerChecks > answerChecksUsedForItem) checkAnswer(groupId);
   };
 
   openExitPopup = () => {

@@ -3,7 +3,7 @@ import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage, settingsApi } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
@@ -356,6 +356,8 @@ function* login({ payload }) {
       yield put(receiveRecentPlayListsAction());
     }
 
+    yield call(segmentApi.analyticsIdentify, { user });
+
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
@@ -536,6 +538,7 @@ export function* fetchUser() {
       return;
     }
     const user = yield call(userApi.getUser);
+    yield call(segmentApi.analyticsIdentify, { user });
     const key = localStorage.getItem("defaultTokenKey") + "";
 
     if (key.includes("role:undefined") && user.role) {
@@ -591,6 +594,8 @@ export function* fetchV1Redirect({ payload: id }) {
 
 function* logout() {
   try {
+    const user = yield select(getUser);
+    yield call(segmentApi.unloadIntercom, { user });
     localStorage.clear();
     yield put({ type: "RESET" });
 

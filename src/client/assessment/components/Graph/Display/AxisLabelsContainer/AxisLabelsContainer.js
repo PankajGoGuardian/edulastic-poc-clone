@@ -348,21 +348,23 @@ class AxisLabelsContainer extends PureComponent {
             </StyledToolsContainer>
           )}
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
-            {!disableResponse && (
-              <ResponseBox
-                values={this.getMarkValues()}
-                onAddMark={this.onAddMark}
-                markCount={(list || []).length}
-                separationDistanceX={separationDistanceX}
-                separationDistanceY={separationDistanceY}
-                position={responseBoxPosition}
-                minWidth={layout.width}
-                minHeight={layout.height}
-              />
-            )}
-            <div style={{ position: "relative", overflow: "auto" }}>
-              <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+            <div className="jsxbox-with-response-box-response-options">
+              {!disableResponse && (
+                <ResponseBox
+                  values={this.getMarkValues()}
+                  onAddMark={this.onAddMark}
+                  markCount={(list || []).length}
+                  separationDistanceX={separationDistanceX}
+                  separationDistanceY={separationDistanceY}
+                  position={responseBoxPosition}
+                  minWidth={layout.width}
+                  minHeight={layout.height}
+                />
+              )}
+              <div style={{ position: "relative", overflow: "auto" }}>
+                <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+                <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+              </div>
             </div>
           </ContainerWithResponses>
         </GraphWrapper>

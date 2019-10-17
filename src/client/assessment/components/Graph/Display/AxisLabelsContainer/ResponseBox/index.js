@@ -77,7 +77,7 @@ class ResponseBox extends Component {
             style={{ zIndex: 10 }}
             disableDragging={false}
             enableResizing={false}
-            bounds=".jsxbox-with-response-box"
+            bounds=".jsxbox-with-response-box-response-options"
             className={`mark${draggingMark === i ? " dragging" : ""}`}
           >
             <MarkContainer

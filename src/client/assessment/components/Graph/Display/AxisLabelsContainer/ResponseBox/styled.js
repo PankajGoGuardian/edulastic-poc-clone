@@ -9,7 +9,6 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.div`
-  width: ${props => props.width}px;
   height: ${props => props.height}px;
   line-height: ${props => props.height}px;
   font-size: ${props => props.theme.widgets.axisLabels.responseBoxTitleFontSize};

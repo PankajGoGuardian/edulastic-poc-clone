@@ -39,14 +39,19 @@ export const ContainerWithResponses = styled.div`
     }
   }
   display: flex;
-  flex-direction: ${({ responseBoxPosition }) =>
-    responseBoxPosition === "top"
-      ? "column"
-      : responseBoxPosition === "bottom"
-      ? "column-reverse"
-      : responseBoxPosition === "left"
-      ? "row"
-      : "row-reverse"};
-  justify-content: ${({ responseBoxPosition }) =>
-    responseBoxPosition === "top" || responseBoxPosition === "left" ? "flex-start" : "flex-end"};
+
+  .jsxbox-with-response-box-response-options {
+    display: flex;
+
+    flex-direction: ${({ responseBoxPosition }) =>
+      responseBoxPosition === "top"
+        ? "column"
+        : responseBoxPosition === "bottom"
+        ? "column-reverse"
+        : responseBoxPosition === "left"
+        ? "row"
+        : "row-reverse"};
+    justify-content: ${({ responseBoxPosition }) =>
+      responseBoxPosition === "top" || responseBoxPosition === "left" ? "flex-start" : "flex-end"};
+  }
 `;

@@ -49,14 +49,14 @@ const Display = ({
   };
   return (
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
-      <FlexContainer justifyContent="space-between">
+      <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
         <FlexContainer>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
           <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
         </FlexContainer>
         {hasAnnotations && answerContext.isAnswerModifiable && (
           <FlexContainer>
-            <span>Show Annotatations</span>
+            <span style={{ marginRight: "5px" }}>Show Annotatations</span>
             <SwitchWrapper>
               <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
             </SwitchWrapper>

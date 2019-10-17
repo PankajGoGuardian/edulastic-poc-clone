@@ -38,8 +38,8 @@ const Option = props => {
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
-    const altResponses = validation.altResponses.length > 0 ? validation.altResponses.map(ar => ar.value) : [];
-    correctAnswers = flatten([validation.validResponse.value, ...altResponses]);
+    const altResponses = validation.altResponses?.length > 0 ? validation.altResponses?.map(ar => ar.value) : [];
+    correctAnswers = flatten([validation.validResponse?.value, ...altResponses]);
   }
 
   const [hovered, toggleHover] = useState(false);

@@ -47,7 +47,8 @@ class Item extends Component {
     currentTestId: "",
     owner: false,
     isPreviewModalVisible: false,
-    testItemId: ""
+    testItemId: "",
+    item: {}
   };
 
   state = {
@@ -103,27 +104,18 @@ class Item extends Component {
 
   render() {
     const {
-      item: {
-        title,
-        tags = [],
-        analytics,
-        _source,
-        thumbnail,
-        status,
-        _id: testId,
-        description,
-        permission,
-        collectionName = ""
-      },
+      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description, collectionName = "" },
       item,
       authorName,
       owner,
       isPlaylist,
-      testItemId,
-      likes = analytics ? analytics[0].likes : "0",
-      usage = analytics ? analytics[0].usage : "0"
+      testItemId
     } = this.props;
+
+    const likes = analytics?.[0]?.likes || "0";
+    const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
+
     return (
       <>
         <ViewModal

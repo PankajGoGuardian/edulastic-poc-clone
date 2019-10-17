@@ -57,6 +57,14 @@ class ComposeQuestion extends Component {
       );
     };
 
+    const handleUiStyleLabelChange = (prop, uiStyle) => {
+      setQuestionData(
+        produce(item, draft => {
+          draft.uiStyle[prop] = uiStyle;
+        })
+      );
+    };
+
     const handleUiStyleChange = (prop, uiStyle) => {
       const val = uiStyle <= 0 ? 0 : uiStyle;
       setQuestionData(
@@ -147,7 +155,7 @@ class ComposeQuestion extends Component {
         </div>
 
         <UiInputGroup
-          onChange={handleUiStyleChange}
+          onChange={handleUiStyleLabelChange}
           firstInputType="text"
           secondInputType="text"
           firstAttr="xAxisLabel"

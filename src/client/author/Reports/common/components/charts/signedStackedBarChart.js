@@ -72,7 +72,7 @@ export const SignedStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: 25, fontSize: 14 }
+    Y_AXIS_LABEL: { value: yAxisLabel.toUpperCase(), angle: -90, dx: 25, fontSize: 14 }
   };
 
   if (data !== copyData) {

@@ -220,10 +220,10 @@ const defaultTheme = {
     gradeColumnTagColor: "#4aac8b",
     gradeColumnTagTextSize: "10px",
     tableHeaderBgColor: "#f5f9fe",
-    tableHeaderTextColor: "#434b5d",
+    tableHeaderTextColor: "#AAAFB5",
     tableHeaderHoverBgColor: "#f2f2f2",
     tableHeaderHoverTextColor: "#434b5d",
-    tableHeaderTextSize: "13px",
+    tableHeaderTextSize: "12px",
     tableDataBgColor: "white",
     tableDataBgBorderColor: "#f8f8f8",
     tableDataTextColor: "rgba(0, 0, 0, 0.65)",
@@ -423,6 +423,7 @@ export const themes = {
       helpHeadingTextColor: themeColorsMap.BOR.themeSecondaryColor
     },
     skillReport: {
+      ...defaultTheme.skillReport,
       skillReportTitleColor: title,
       skillReportTitleFontSize: "22px",
       RelationTitleColor: "#434b5d",

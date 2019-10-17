@@ -1293,9 +1293,9 @@ export const defaultTheme = {
   },
   skillReport: {
     skillReportTitleColor: labelStyle,
-    skillReportTitleFontSize: titleSectionFontSize,
+    skillReportTitleFontSize: headerTitle,
     RelationTitleColor: labelStyle,
-    RelationTitleFontSize: standardFont,
+    RelationTitleFontSize: titleSectionFontSize,
     greenColor: progressGreen,
     yellowColor: progressYellow,
     redColor: progressRed,
@@ -1305,14 +1305,17 @@ export const defaultTheme = {
     gradeColumnTagColor: tagTextColor,
     gradeColumnTagTextSize: tagFontSize,
     tableHeaderBgColor: "none",
-    tableHeaderTextColor: labelStyle,
+    tableHeaderTextColor: tableColumnColor,
     tableHeaderHoverBgColor: "none",
     tableHeaderHoverTextColor: "none",
-    tableHeaderTextSize: subtitleFontSize,
+    tableHeaderTextSize: smallFontSize,
+    percentageTagTextSize: smallFontSize,
     tableDataBgColor: tableBgColor,
     tableDataBgBorderColor: "none",
     tableDataTextColor: labelStyle,
-    tableDataFontSize: standardFont
+    tableDataFontSize: standardFont,
+    percentageTagTextColor: triangleBottomColor,
+    semiBold: semiBold
   },
   manageClass: {
     manageClassBgColor: containerWhite,

@@ -6,28 +6,42 @@ import styled from "styled-components";
 import { green, extraDesktopWidthMax, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import { IconFilterClass } from "@edulastic/icons";
 
-import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
+import { getCurrentGroup, changeClassAction } from "../Login/ducks";
 
-const ClassSelector = ({ t, classList, currentGroup, changeClass, archievedClass, allClasses }) => {
+const ClassSelector = ({
+  t,
+  classList,
+  currentGroup,
+  changeClass,
+  archievedClass,
+  allClasses,
+  showAllClassesOption
+}) => {
   const [isShown, setShown] = useState(false);
 
   useEffect(() => {
-    if (currentGroup === "" && classList.length === 1) {
-      //all classes. but really only one classes available
-      changeClass(classList[0]._id);
-    }
-    if (currentGroup != "") {
-      //not all classes
+    if (!showAllClassesOption) {
+      /*For skill report we are not showing "All options", so when we route to the skill-report 
+       page we pick the first class id by default and exit out of useEffect */
+      if (!currentGroup && classList.length) changeClass(classList[0]?._id);
+    } else {
+      if (currentGroup === "" && classList.length === 1) {
+        //all classes. but really only one classes available
+        changeClass(classList[0]._id);
+      }
+      if (currentGroup != "") {
+        //not all classes
 
-      const currentGroupInList = classList.find(x => x._id === currentGroup);
-      if (!currentGroupInList) {
-        //currently selected class is not in the list. so selecting first available class
-        if (classList.length > 0 && !sessionStorage.temporaryClass) {
-          changeClass(classList[0]._id);
+        const currentGroupInList = classList.find(x => x._id === currentGroup);
+        if (!currentGroupInList) {
+          //currently selected class is not in the list. so selecting first available class
+          if (classList.length > 0 && !sessionStorage.temporaryClass) {
+            changeClass(classList[0]._id);
+          }
         }
       }
     }
-  }, [classList, currentGroup]);
+  }, [classList, currentGroup, showAllClassesOption]);
 
   return (
     <Fragment>
@@ -43,7 +57,7 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass, archievedClass
             changeClass(value);
           }}
         >
-          {classList.length > 1 && (
+          {classList.length > 1 && showAllClassesOption && (
             <Select.Option key="all" value="">
               All classes
             </Select.Option>
@@ -70,7 +84,6 @@ ClassSelector.propTypes = {
 };
 
 const stateToProps = state => ({
-  // classes: getClasses(state),
   currentGroup: getCurrentGroup(state),
   allClasses: state.studentEnrollClassList.allClasses
 });

@@ -67,6 +67,25 @@ export const GradeTag = styled.div`
   align-items: center;
 `;
 
+export const DomainTag = styled(GradeTag)`
+  max-width: fit-content;
+  float: left;
+  margin-right: 15px;
+  padding: 0px 15px;
+`;
+
+export const PercentageTag = styled.div`
+  background: ${props => props.color};
+  color: ${props => props.percentageTagTextColor};
+  border-radius: 5px;
+  width: 179px;
+  height: 34px;
+  font-size: ${props => props.theme.skillReport.percentageTagTextSize};
+  line-height: 34px;
+  margin-left: 22px;
+  font-weight: ${props => props.theme.skillReport.semiBold};
+`;
+
 export const IconClose = styled.div`
   position: relative;
   cursor: pointer;
@@ -125,4 +144,12 @@ export const StyledProgress = styled(Progress)`
         ? props.theme.skillReport.yellowColor
         : props.theme.skillReport.redColor};
   }
+`;
+
+export const LoaderConainer = styled.div`
+  margin: 15px 30px 30px 30px;
+  background: white;
+  height: 700px;
+  border-radius: 10px;
+  position: relative;
 `;

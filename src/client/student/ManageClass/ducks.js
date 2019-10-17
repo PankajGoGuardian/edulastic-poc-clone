@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from "reselect";
 import { takeEvery, call, put } from "redux-saga/effects";
 import { enrollmentApi } from "@edulastic/api";
 
@@ -53,3 +54,20 @@ function* getEnrollClass() {
 export function* watcherSaga() {
   yield takeEvery(GET_ENROLL_CLASSES_REQUEST, getEnrollClass);
 }
+
+export const stateSelector = state => state.studentEnrollClassList;
+
+export const getAllClassesSelector = createSelector(
+  stateSelector,
+  state => state.allClasses
+);
+
+export const getFilteredClassesSelector = createSelector(
+  stateSelector,
+  state => state.filteredClasses
+);
+
+export const getLoaderSelector = createSelector(
+  stateSelector,
+  state => state.loading
+);

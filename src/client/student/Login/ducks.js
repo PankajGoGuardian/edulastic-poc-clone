@@ -6,7 +6,6 @@ import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
-import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
   getWordsInURLPathName,
@@ -605,9 +604,7 @@ function* logout() {
 function* changeClass({ payload }) {
   try {
     const url = yield select(routeSelector);
-    if (url.includes("/home/skill-report")) {
-      yield put(fetchSkillReportAction(payload));
-    } else {
+    if (!url.includes("/home/skill-report")) {
       yield put(fetchAssignmentsAction(payload));
     }
   } catch (e) {

@@ -7,20 +7,22 @@ import styled from "styled-components";
 import { greenDark, title, extraDesktopWidth, mediumDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
 import StyledTable from "../styled/Table";
 import * as S from "./styled";
-
+import { getBandWithColor } from "./utils";
 import { Wrapper } from "../styled";
 
 const computeColumns = t => [
   {
     title: t("common.tableHeaderTitleGrade"),
     dataIndex: "grade",
+    align: "left",
     sorter: (a, b) => a.grade - b.grade,
     render: grade => <S.GradeTag>{grade}</S.GradeTag>,
-    width: "15%"
+    width: "10%"
   },
   {
     title: t("common.tableHeaderTitleTopicName"),
     dataIndex: "domain",
+    align: "left",
     sorter: (a, b) => a.domain.length - b.domain.length,
     render: domain => `${domain}`,
     width: "45%"
@@ -28,14 +30,15 @@ const computeColumns = t => [
   {
     title: t("common.tableHeaderTitlePercentScore"),
     dataIndex: "percentage",
+    align: "left",
     sorter: (a, b) => a.percentage - b.percentage,
-    render: percentage =>
+    render: (percentage, record) =>
       isNaN(percentage) ? (
         <Row type="flex" justify="center">
           <Col>-</Col>
         </Row>
       ) : (
-        <StyledProgress percent={Number(percentage.toFixed(1))} />
+        <StyledProgress color={record.color} percent={Number(percentage.toFixed(1))} />
       ),
     width: "20%"
   }
@@ -67,23 +70,26 @@ class DomainDetail extends Component {
       sumData = summary.standards.map(standard => {
         const standardsData = getStandardsScoreDetails(standard._id)[0] || {};
         const percentage = (standardsData.score / standardsData.max_points) * 100;
+        const scale = getBandWithColor(skillReport.reports.scaleInfo, percentage) || {};
         score += standardsData.score || 0;
         maxScore += standardsData.max_points || 1;
         return {
           domain: standard.description || "-",
           grade: standard.identifier || "-",
           total: standardsData.score || "-",
-          percentage
+          percentage,
+          color: scale.color
         };
       });
     }
     const skillPercentage = Number(((score / maxScore) * 100).toFixed(1));
 
+    const scale = getBandWithColor(skillReport.reports.scaleInfo, skillPercentage);
     return (
       <WrapperContent>
         <S.Title onClick={this.handlerTable}>
           <S.RelationTitle>{summary.domain}</S.RelationTitle>
-          {!isNaN(skillPercentage) && <StyledScoreProgress percent={skillPercentage} />}
+          {!isNaN(skillPercentage) && <StyledScoreProgress percent={skillPercentage} color={scale.color || ""} />}
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>
         {isShow && (
@@ -124,12 +130,7 @@ export const StyledScoreProgress = styled(Progress)`
 
   .ant-progress-bg {
     height: 20px !important;
-    background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
-        ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+    background: ${props => props.color};
   }
 
   .ant-progress-text {
@@ -160,12 +161,7 @@ export const StyledProgress = styled(Progress)`
 
   .ant-progress-bg {
     height: 16px !important;
-    background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
-        ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+    background: ${props => props.color};
   }
 `;
 

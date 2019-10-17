@@ -7,6 +7,7 @@ import styled from "styled-components";
 import * as S from "./styled";
 import StyledTable from "../styled/Table";
 import TableSection from "./SkillTableSection";
+import { getBandWithColor } from "./utils";
 
 import { Wrapper } from "../styled";
 
@@ -15,7 +16,11 @@ const computeColumns = t => [
     title: t("common.tableHeaderTitleDomains"),
     dataIndex: "domain",
     sorter: (a, b) => a.domain.length - b.domain.length,
-    render: domain => `${domain}`,
+    render: (domain, record) => (
+      <>
+        <S.DomainTag>{record.identifier}</S.DomainTag> {domain}
+      </>
+    ),
     width: "40%"
   },
   {
@@ -29,10 +34,14 @@ const computeColumns = t => [
     title: t("common.tableHeaderTitlePercentage"),
     dataIndex: "percentage",
     sorter: (a, b) => a.percentage - b.percentage,
-    render: percentage => (
+    render: (percentage, record) => (
       <PercentageWrapper>
         {Number.isNaN(percentage) ? "-" : `${Number(percentage.toFixed(1))}%`}
-        {!Number.isNaN(percentage) && <Circle percentage={percentage} />}
+        {!Number.isNaN(percentage) && (
+          <S.PercentageTag percentage={percentage} color={record.color || ""}>
+            {record.masteryName}
+          </S.PercentageTag>
+        )}
       </PercentageWrapper>
     ),
     width: "20%"
@@ -49,7 +58,6 @@ const computeColumns = t => [
 const SkillReportMainContent = ({ skillReport, t }) => {
   const summaryColumns = computeColumns(t);
   let sumData = [];
-  // console.log('skillReport',skillReport);
   if (skillReport) {
     const getDomainScoreDetails = id =>
       skillReport.reports.reportData.domainLevel &&
@@ -57,12 +65,16 @@ const SkillReportMainContent = ({ skillReport, t }) => {
     sumData = skillReport.reports.curriculum.domains.map(domain => {
       const reportData = getDomainScoreDetails(domain._id)[0] || {};
       const percentage = (reportData.score / reportData.max_points) * 100;
+      const scale = getBandWithColor(skillReport.reports.scaleInfo, percentage) || {};
       return {
         domain: domain.description || "-",
         standards: domain.standards || "-",
         total: reportData.total_questions || "-",
         hints: reportData.hints || "-",
-        percentage
+        percentage,
+        identifier: domain.identifier,
+        color: scale.color,
+        masteryName: scale.masteryName
       };
     });
   }
@@ -89,20 +101,6 @@ SkillReportMainContent.propTypes = {
 const enhance = compose(withNamespaces("reports"));
 
 export default enhance(SkillReportMainContent);
-
-const Circle = styled.div`
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-  background: ${props =>
-    props.percentage >= 50
-      ? props.theme.skillReport.greenColor
-      : props.percentage >= 30
-      ? props.theme.skillReport.yellowColor
-      : props.theme.skillReport.redColor};
-  }
-  margin-left: 18px;
-`;
 
 const ContentWrapper = styled.div`
   padding: 0px 40px;

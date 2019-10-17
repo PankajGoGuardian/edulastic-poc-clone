@@ -141,8 +141,8 @@ const StyledDiv = styled.div`
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
   overflow: auto;
-
   .ant-dropdown-menu-item {
+    padding: 4px 12px;
   }
 
   .ant-dropdown-menu-item-selected,

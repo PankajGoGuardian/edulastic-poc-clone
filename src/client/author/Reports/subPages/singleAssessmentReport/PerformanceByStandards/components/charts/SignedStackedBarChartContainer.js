@@ -135,6 +135,7 @@ const SignedStackedBarChartContainer = ({
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
       filter={getSelectedItems(selectedData)}
+      xTickTooltipPosition={490}
     />
   );
 };

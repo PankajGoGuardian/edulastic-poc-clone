@@ -468,3 +468,20 @@ export const NoDataContainer = styled.div`
   border-radius: 10px;
   font-size: 17px;
 `;
+
+export const CustomXAxisTickTooltipContainer = styled.div`
+  pointer-events: none;
+  visibility: ${props => props.visibility};
+  position: absolute;
+  top: 0px;
+  transform: translate(${props => props.x}, ${props => props.y});
+  padding: 5px;
+  width: ${props => props.width}px;
+  text-align: center;
+  background: white;
+  z-index: 1;
+  background-color: #f0f0f0;
+  color: black;
+  border: solid 0.5px #bebebe;
+  box-shadow: 0 0 8px #c0c0c0;
+`;

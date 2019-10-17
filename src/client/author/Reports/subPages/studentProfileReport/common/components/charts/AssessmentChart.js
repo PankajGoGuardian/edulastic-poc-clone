@@ -5,7 +5,14 @@ import { addColors } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
-const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB, studentInformation = {} }) => {
+const AssessmentChart = ({
+  data,
+  selectedTests,
+  onBarClickCB,
+  onResetClickCB,
+  studentInformation = {},
+  xTickTooltipPosition = 460
+}) => {
   const xDataKey = "uniqId";
 
   const dataWithColors = addColors(data, selectedTests, xDataKey, "score");
@@ -41,6 +48,7 @@ const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB, st
   return (
     <SimpleStackedBarChart
       margin={{ top: 0, right: 50, left: 70, bottom: 0 }}
+      xTickTooltipPosition={xTickTooltipPosition}
       data={dataWithColors}
       xAxisDataKey={xDataKey}
       bottomStackDataKey={"score"}

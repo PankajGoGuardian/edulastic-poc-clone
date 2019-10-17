@@ -14,8 +14,8 @@ import {
   ReferenceLine
 } from "recharts";
 import styled from "styled-components";
-import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
-import { CustomChartXTick } from "./chartUtils/customChartXTick";
+import { StyledCustomChartTooltip, StyledChartNavButton, CustomXAxisTickTooltipContainer } from "../../styled";
+import { CustomChartXTick, calculateXCoordinateOfXAxisToolTip } from "./chartUtils/customChartXTick";
 
 const _yTickFormatter = val => {
   return val + "%";
@@ -34,6 +34,8 @@ const LabelText = props => {
 
 export const SimpleStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
+  xTickTooltipPosition = 460,
+  xTickToolTipWidth = 110,
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -64,6 +66,12 @@ export const SimpleStackedBarChart = ({
   const [copyData, setCopyData] = useState(null);
   const [barIndex, setBarIndex] = useState(null);
   const [isDotActive, setDotActive] = useState(false);
+  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+    visibility: "hidden",
+    x: null,
+    y: null,
+    content: null
+  });
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -133,6 +141,22 @@ export const SimpleStackedBarChart = ({
   const renderToolTipCursor = () =>
     isDotActive ? <TooltipCursor lineYDomain={lineYDomain} yDomain={yDomain} /> : null;
 
+  const onXAxisTickTooltipMouseOver = payload => {
+    const { coordinate } = payload;
+    const content = getXTickText(payload, chartData);
+    data = {
+      visibility: "visible",
+      x: `${calculateXCoordinateOfXAxisToolTip(coordinate, xTickToolTipWidth)}px`,
+      y: `${xTickTooltipPosition}px`,
+      content
+    };
+    setXAxisTickTooltipData(data);
+  };
+
+  const onXAxisTickTooltipMouseOut = () => {
+    setXAxisTickTooltipData({ visibility: "hidden", x: null, y: null, content: null });
+  };
+
   return (
     <StyledStackedBarChartContainer>
       <a
@@ -163,6 +187,15 @@ export const SimpleStackedBarChart = ({
           visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
         }}
       />
+      <CustomXAxisTickTooltipContainer
+        x={xAxisTickTooltipData.x}
+        y={xAxisTickTooltipData.y}
+        visibility={xAxisTickTooltipData.visibility}
+        color={xAxisTickTooltipData.color}
+        width={xTickToolTipWidth}
+      >
+        {xAxisTickTooltipData.content}
+      </CustomXAxisTickTooltipContainer>
       <ResponsiveContainer width={"100%"} height={400}>
         <ComposedChart width={730} height={400} data={chartData} margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
@@ -174,6 +207,8 @@ export const SimpleStackedBarChart = ({
               stroke: "#E5E5E5"
             }}
             tickLine={false}
+            onMouseOver={onXAxisTickTooltipMouseOver}
+            onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
             type={"number"}

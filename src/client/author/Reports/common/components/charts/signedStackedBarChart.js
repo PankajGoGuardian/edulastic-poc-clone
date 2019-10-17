@@ -14,8 +14,8 @@ import {
 } from "recharts";
 import { isEmpty } from "lodash";
 import styled from "styled-components";
-import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
-import { CustomChartXTick } from "./chartUtils/customChartXTick";
+import { StyledCustomChartTooltip, StyledChartNavButton, CustomXAxisTickTooltipContainer } from "../../styled";
+import { CustomChartXTick, calculateXCoordinateOfXAxisToolTip } from "./chartUtils/customChartXTick";
 import { YAxisLabel } from "./chartUtils/yAxisLabel";
 
 const _barsLabelFormatter = val => {
@@ -39,6 +39,8 @@ const LabelText = props => {
 
 export const SignedStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
+  xTickTooltipPosition = 460,
+  xTickToolTipWidth = 110,
   pageSize,
   barsData,
   data = [],
@@ -60,6 +62,12 @@ export const SignedStackedBarChart = ({
   const [copyData, setCopyData] = useState(null);
   const [barIndex, setBarIndex] = useState(null);
   const [activeLegend, setActiveLegend] = useState(null);
+  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+    visibility: "hidden",
+    x: null,
+    y: null,
+    content: null
+  });
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -132,6 +140,22 @@ export const SignedStackedBarChart = ({
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey);
   const onLegendMouseLeave = () => setActiveLegend(null);
 
+  const onXAxisTickTooltipMouseOver = payload => {
+    const { coordinate } = payload;
+    const content = getXTickText(payload, chartData);
+    data = {
+      visibility: "visible",
+      x: `${calculateXCoordinateOfXAxisToolTip(coordinate, xTickToolTipWidth)}px`,
+      y: `${xTickTooltipPosition}px`,
+      content
+    };
+    setXAxisTickTooltipData(data);
+  };
+
+  const onXAxisTickTooltipMouseOut = () => {
+    setXAxisTickTooltipData({ visibility: "hidden", x: null, y: null, content: null });
+  };
+
   return (
     <StyledSignedStackedBarChartContainer>
       <a
@@ -162,6 +186,15 @@ export const SignedStackedBarChart = ({
           visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
         }}
       />
+      <CustomXAxisTickTooltipContainer
+        x={xAxisTickTooltipData.x}
+        y={xAxisTickTooltipData.y}
+        visibility={xAxisTickTooltipData.visibility}
+        color={xAxisTickTooltipData.color}
+        width={xTickToolTipWidth}
+      >
+        {xAxisTickTooltipData.content}
+      </CustomXAxisTickTooltipContainer>
       <ResponsiveContainer width={"100%"} height={400}>
         <BarChart width={730} height={400} data={renderData} stackOffset="sign" margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
@@ -169,6 +202,8 @@ export const SignedStackedBarChart = ({
             dataKey={xAxisDataKey}
             tick={<CustomChartXTick data={renderData} getXTickText={getXTickText} />}
             interval={0}
+            onMouseOver={onXAxisTickTooltipMouseOver}
+            onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
             type={"number"}

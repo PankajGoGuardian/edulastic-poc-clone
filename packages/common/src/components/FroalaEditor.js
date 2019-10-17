@@ -396,6 +396,8 @@ const CustomEditor = ({
           ]
         }
       ],
+      fontSize: ["12", "14", "16", "20"],
+      fontSizeDefaultSelection: "14",
       htmlAllowedTags: [".*"],
       htmlAllowedAttrs: [".*"],
       htmlRemoveTags: ["script"],

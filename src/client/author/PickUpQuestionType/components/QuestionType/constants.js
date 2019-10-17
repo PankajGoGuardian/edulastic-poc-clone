@@ -686,7 +686,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { id: "test24", value: "direction", param: "rtl", active: false },
           { id: "test26", value: "clean", active: false },
           { id: "test27", value: "formula", active: true },
-          { id: "test28", value: "specialCharacters", active: true }
+          { id: "test28", value: "specialCharacters", active: true },
+          { id: "test29", value: "|", active: false },
+          { id: "test21", value: "image", active: false },
+          { id: "test22", value: "link", active: false },
+          { id: "test23", value: "|", active: false }
         ],
         hints: [{ value: uuids[0], label: "" }]
       },

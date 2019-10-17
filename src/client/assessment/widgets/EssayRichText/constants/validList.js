@@ -15,5 +15,7 @@ export const qlToFroalaMapping = {
   directionrtl: "paragraphFormat",
   clean: "clearFormatting",
   formula: "math",
-  specialCharacters: "specialCharacters"
+  specialCharacters: "specialCharacters",
+  image: "insertImage",
+  link: "insertLink"
 };

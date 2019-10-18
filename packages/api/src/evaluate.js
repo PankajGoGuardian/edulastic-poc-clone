@@ -1,22 +1,21 @@
 import API from "./utils/API";
 
 const api = new API(`${process.env.POI_APP_API_URI}`);
-const mathApi = new API(`${process.env.POI_APP_MATH_API}`);
 
 const evaluate = (data, type) =>
   api
     .callApi({
       method: "post",
-      url: `/evaluate/${type}`,
+      url: `mathapi/evaluate/${type}`,
       data
     })
     .then(result => result.data);
 
 const calculate = data =>
-  mathApi
+  api
     .callApi({
       method: "post",
-      url: "/calculate",
+      url: "mathapi/calculate",
       data
     })
     .then(result => result.data);

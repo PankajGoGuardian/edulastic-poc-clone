@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Input, Select } from "antd";
 
-import { lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
+import { lightGreySecondary, secondaryTextColor, inputBorder } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
 export const SummaryInput = styled(Input)`
@@ -58,4 +58,5 @@ export const ColorBox = styled.span`
   border-radius: 5px;
   margin: 5px 5px;
   background-color: ${props => props.background};
+  border: 1px solid ${inputBorder};
 `;

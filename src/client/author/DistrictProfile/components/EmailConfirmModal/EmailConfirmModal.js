@@ -8,9 +8,9 @@ import { themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 
 const EmailConfirmModal = ({ visible, toggleModal, changeEmail }) => {
   const Footer = [
-    <Button ghost onClick={() => toggleModal("EMAIL_CONFIRM", false)}>
+    <NoButton ghost onClick={() => toggleModal("EMAIL_CONFIRM", false)}>
       NO, CANCEL
-    </Button>,
+    </NoButton>,
     <YesButton onClick={changeEmail}>SAVE</YesButton>
   ];
 
@@ -55,4 +55,11 @@ const YesButton = styled(Button)`
   color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
   background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
   border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
+  width: 130px;
+`;
+
+const NoButton = styled(Button)`
+  padding: 5px 30px;
+  width: 130px;
+  margin-right: 30px;
 `;

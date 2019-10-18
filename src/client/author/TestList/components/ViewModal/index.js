@@ -43,6 +43,7 @@ import {
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { Tooltip } from "antd";
 
 const modalStyles = {
   modal: {
@@ -79,10 +80,11 @@ class ViewModal extends React.Component {
       _source
     } = item;
 
+    const titleModified = title?.length > 25 ? `${title.slice(0, 24)?.trim()}...` : title;
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
         <ModalTitle>
-          {title}
+          <Tooltip title={title}>{titleModified}</Tooltip>
           <TestStatus view="tile" status={status}>
             {status}
           </TestStatus>

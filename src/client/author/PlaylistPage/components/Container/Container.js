@@ -6,6 +6,8 @@ import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
 import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
+
+import { themeColor } from "@edulastic/colors";
 import { Content } from "../../../TestPage/components/Container/styled";
 import { get } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
@@ -77,7 +79,7 @@ class Container extends PureComponent {
     current: "summary",
     showModal: false,
     textColor: "#ffffff",
-    backgroundColor: "#0000ff",
+    backgroundColor: themeColor,
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,

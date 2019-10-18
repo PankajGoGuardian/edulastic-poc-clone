@@ -80,7 +80,7 @@ class ComposeQuestion extends Component {
               this.setState({ localSnapTo: val });
               break;
             case "stepSize":
-              draft.uiStyle[prop] = val <= 0 ? 0.1 : val;
+              draft.uiStyle[prop] = val <= 0 ? (((localMaxValue - localMinValue) / 25) * 0.05).toFixed(2) : val;
               break;
             default:
               draft.uiStyle[prop] = val;

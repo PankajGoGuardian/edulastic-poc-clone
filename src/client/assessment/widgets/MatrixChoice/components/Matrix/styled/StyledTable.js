@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "antd";
-import { mobileWidth, desktopWidth, mainTextColor } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, mainTextColor, mediumDesktopWidth } from "@edulastic/colors";
 import { fonts } from "@edulastic/constants";
 
 export const StyledTable = styled(Table)`
@@ -70,6 +70,12 @@ export const StyledTable = styled(Table)`
 
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};
+    }
+  }
+  @media (min-width: ${mediumDesktopWidth}) {
+    .ant-table {
+      width: 100%;
+      overflow: auto;
     }
   }
   @media (max-width: ${mobileWidth}) {

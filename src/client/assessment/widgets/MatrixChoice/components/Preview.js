@@ -108,4 +108,5 @@ const QuestionTitleWrapper = styled.div`
 const QuestionContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;

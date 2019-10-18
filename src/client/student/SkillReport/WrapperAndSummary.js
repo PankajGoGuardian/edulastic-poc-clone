@@ -45,13 +45,6 @@ const computeColumns = t => [
       </PercentageWrapper>
     ),
     width: "20%"
-  },
-  {
-    title: t("common.tableHeaderTitleHints"),
-    dataIndex: "hints",
-    sorter: (a, b) => a.hints - b.hints,
-    render: hints => `${hints}`,
-    width: "20%"
   }
 ];
 

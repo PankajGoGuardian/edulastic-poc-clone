@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
-import { themeColor, desktopWidth } from "@edulastic/colors";
+import { desktopWidth } from "@edulastic/colors";
 import { white, secondaryTextColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
@@ -24,13 +24,13 @@ import {
 } from "@edulastic/icons";
 
 const customizeIcon = icon => styled(icon)`
-  fill: ${themeColor};
+  fill: ${white};
   width: 20px;
   height: 20px;
   margin-left: -5px;
   margin-top: 5px;
   &:hover {
-    fill: ${themeColor};
+    fill: ${white};
   }
 `;
 
@@ -62,15 +62,15 @@ const SelectedIcon = customizeIcon(IconSelected);
 
 const buttonsList = [
   { mode: drawTools.FREE_DRAW, icon: <Pencil />, label: "Pencil" },
-  { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon />, label: "Draw Line" },
-  { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon />, label: "Draw Breaking Line" },
-  { mode: drawTools.DRAW_SQUARE, icon: <SquareIcon />, label: "Draw Square" },
-  { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon />, label: "Draw Triangle" },
-  { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon />, label: "Draw Circle" },
+  { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon color={white} />, label: "Draw Line" },
+  { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon color={white} />, label: "Draw Breaking Line" },
+  { mode: drawTools.DRAW_SQUARE, icon: <SquareIcon color={white} />, label: "Draw Square" },
+  { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon color={white} />, label: "Draw Triangle" },
+  { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon color={white} />, label: "Draw Circle" },
   { mode: drawTools.DRAW_TEXT, icon: <LettersIcon />, label: "Text" },
   { mode: "none", icon: <RootIcon />, label: "Math Equation" },
-  { mode: "none", icon: <SquareTriangleIcon /> },
-  { mode: "none", icon: <SelectedIcon /> }
+  { mode: "none", icon: <SquareTriangleIcon color={white} /> },
+  { mode: "none", icon: <SelectedIcon color={white} /> }
 ];
 
 const Tools = ({
@@ -227,7 +227,7 @@ const BackButton = styled(FlexContainer)`
   cursor: pointer;
   user-select: none;
   text-transform: uppercase;
-  color: ${themeColor};
+  color: ${white};
 `;
 
 const Separator = styled.span`

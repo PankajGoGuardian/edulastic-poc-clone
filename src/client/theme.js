@@ -316,7 +316,7 @@ export const defaultTheme = {
   default: {
     // this default is required for Doc based asseeements
     headerBgColor: themeColor,
-    sideToolbarBgColor: sideBarColor,
+    sideToolbarBgColor: themeColor,
     dropdownHoverBorderColor: borderColor,
     dropdownCaretIconColor: themeColor,
     headerButtonBgColor: playerButtonBackgroundColor,

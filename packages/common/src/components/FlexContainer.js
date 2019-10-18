@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { mobileWidthMax, mediumDesktopWidth } from "@edulastic/colors";
 
+// Only add generic styles in this component. It is being used many places adding styles to its child component may have very bad impact.
+
 const FlexContainer = styled.div`
   display: ${({ display }) => display || "flex"};
   align-items: ${props => (props.alignItems ? props.alignItems : "center")};
@@ -18,9 +20,6 @@ const FlexContainer = styled.div`
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
-    & > * {
-      margin-right: 3px;
-    }
     button svg {
       display: inline-block;
     }

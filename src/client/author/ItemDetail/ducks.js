@@ -1110,9 +1110,6 @@ function* savePassage({ payload }) {
     if (!isEdit) widgetIds.push(widget.reference);
 
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
-    if (!currentItem.content || !currentItem.content.trim().length) {
-      return message.error("Passage content cannot be empty");
-    }
     let currentItemId = currentItem._id;
     if (currentItem._id === "new") {
       const item = yield call(testItemsApi.create, _omit(currentItem, "_id"));

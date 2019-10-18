@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
+import { ContentWrapper, withWindowSizes, Hints, ScrollContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -62,6 +62,7 @@ class Container extends Component {
     };
 
     this.innerDiv = React.createRef();
+    this.scrollRef = React.createRef();
   }
 
   componentDidUpdate = () => {
@@ -398,9 +399,11 @@ class Container extends Component {
             <div>{view === "preview" && this.renderButtons()}</div>
           </RightActionButtons>
         </BreadCrumbBar>
-        <ScrollbarContainer>
-          <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
-        </ScrollbarContainer>
+        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollRef?.current?._ps?.element }}>
+          <ScrollbarContainer innerRef={this.scrollRef}>
+            <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
+          </ScrollbarContainer>
+        </ScrollContext.Provider>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </div>
     );

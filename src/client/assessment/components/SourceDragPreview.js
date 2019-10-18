@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { DragLayer } from "react-dnd";
 import { white, dashBorderColor } from "@edulastic/colors";
+import { ScrollContext } from "@edulastic/common";
 
 function collect(monitor, { isResetOffset }) {
   return {
@@ -12,19 +13,29 @@ function collect(monitor, { isResetOffset }) {
 
 function useDragScroll(sourceOffset) {
   const interval = useRef(null);
+  const scrollContext = useContext(ScrollContext);
+  const scrollEl = scrollContext.getScrollElement();
+
+  const containerBottom = window.innerHeight - 50;
+  const containerTop = scrollEl.offsetTop + 20;
 
   // scroll the page when dragging element reaches top of the view port..
   useEffect(() => {
     const yOffset = sourceOffset?.y;
-    const windowHeight = window.innerHeight;
-    if (interval.current && (yOffset > 50 && yOffset < windowHeight - 50)) {
+    if (!interval.current && scrollEl.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
+      const scrollBy = yOffset < containerTop ? -10 : 10;
+      interval.current = setInterval(() => scrollEl.scrollBy(0, scrollBy), 50);
+    } else if (interval.current && (yOffset > containerTop && yOffset < containerBottom)) {
       clearInterval(interval.current);
       interval.current = null;
-    } else if (!interval.current && (yOffset < 50 || yOffset > windowHeight - 50)) {
-      const scrollBy = yOffset < 50 ? -10 : 10;
-      interval.current = setInterval(() => window.scrollBy(0, scrollBy), 50);
     }
   }, [sourceOffset]);
+
+  useEffect(() => {
+    return () => {
+      clearInterval();
+    };
+  }, []);
 }
 
 const DragPreview = ({ isDragging, children, sourceOffset }) => {

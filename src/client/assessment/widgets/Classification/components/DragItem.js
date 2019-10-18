@@ -6,7 +6,7 @@ import styled, { withTheme } from "styled-components";
 import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { IMAGE_LIST_POSITION_LEFT, IMAGE_LIST_POSITION_RIGHT } from "@edulastic/constants/const/listPosition";
-import DragPreview from "../../../components/DragPreview";
+import DragPreview from "../../../components/SourceDragPreview";
 
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
@@ -104,7 +104,7 @@ const DragItemContainer = ({
 
   return (
     <MainWrapper onMouseMove={handleMouseMove}>
-      <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
+      <DragPreview sourceOffset={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
         {dragItem}
       </DragPreview>
       {item &&

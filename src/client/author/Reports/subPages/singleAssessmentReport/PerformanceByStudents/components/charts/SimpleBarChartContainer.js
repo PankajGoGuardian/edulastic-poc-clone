@@ -12,7 +12,7 @@ const xAxisLabel = {
 };
 
 const yAxisLabel = {
-  value: "Student Count",
+  value: "STUDENT COUNT",
   angle: -90,
   dx: -10
 };

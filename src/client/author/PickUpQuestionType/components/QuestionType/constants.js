@@ -1514,6 +1514,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           drawLabelZero: true,
           displayPositionOnHover: false,
+          displayPositionPoint: true,
           currentStemNum: "numerical",
           currentFontSize: "normal",
           xShowAxisLabel: false,

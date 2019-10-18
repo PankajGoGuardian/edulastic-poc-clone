@@ -198,14 +198,17 @@ class PlacementContainer extends PureComponent {
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
+
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas
       });
+
       this._graph.setPointParameters({
         ...defaultPointParameters(),
         ...pointParameters
       });
+
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
@@ -215,6 +218,7 @@ class PlacementContainer extends PureComponent {
           ...yAxesParameters
         }
       });
+
       this._graph.setGridParameters({
         ...defaultGridParameters(),
         ...gridParams
@@ -279,7 +283,8 @@ class PlacementContainer extends PureComponent {
         pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
         pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
         pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
-        pointParameters.withLabel !== prevProps.pointParameters.withLabel
+        pointParameters.withLabel !== prevProps.pointParameters.withLabel ||
+        pointParameters.size !== prevProps.pointParameters.size
       ) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),

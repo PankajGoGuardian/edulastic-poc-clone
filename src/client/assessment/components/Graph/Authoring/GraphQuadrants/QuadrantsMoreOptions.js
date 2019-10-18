@@ -136,6 +136,7 @@ class QuadrantsMoreOptions extends Component {
     const {
       drawLabelZero,
       displayPositionOnHover,
+      displayPositionPoint,
       currentFontSize,
       xShowAxisLabel,
       xHideTicks,
@@ -283,6 +284,14 @@ class QuadrantsMoreOptions extends Component {
                 name="drawLabelZero"
                 onChange={() => this.handleCheckbox("drawLabelZero", drawLabelZero)}
                 checked={drawLabelZero}
+              />
+            </Col>
+            <Col md={24}>
+              <Checkbox
+                label={t("component.graphing.layoutoptions.displayPositionPoint")}
+                name="displayPositionPoint"
+                onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
+                checked={displayPositionPoint}
               />
             </Col>
           </Row>

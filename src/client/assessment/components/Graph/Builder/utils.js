@@ -246,7 +246,7 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 
   Object.keys(elements).forEach(key => {
     const el = elements[key];
-    if (el.type === JXG.OBJECT_TYPE_POINT) {
+    if (el.type === JXG.OBJECT_TYPE_POINT || el.type === 101) {
       el.setAttribute(attr);
       if (isSwitchToGrid) {
         el.snapToGrid();
@@ -293,6 +293,7 @@ export function updateGrid(grids, parameters) {
   if (!grid) {
     return;
   }
+
   grid.setAttribute({
     gridX: parameters.gridX,
     gridY: parameters.gridY,

@@ -632,6 +632,7 @@
         "fontSize": "Font Size",
         "drawLabelzero": "Draw label zero",
         "displayPositionOnHover": "Display position on hover",
+        "displayPositionPoint": "Display Position Point",
         "showMinArrow": "Show min arrow",
         "showMaxArrow": "Show max arrow",
         "stackResponses": "Stack responses",

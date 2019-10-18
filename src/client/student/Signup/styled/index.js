@@ -123,6 +123,12 @@ export const FormHead = styled(Row)`
     color: white;
     margin: 5px 0px 15px;
   }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    h3 {
+      font-size: 26px;
+    }
+  }
 `;
 
 export const ThirdPartyLoginBtn = styled(Col)`
@@ -137,12 +143,20 @@ export const ThirdPartyLoginBtn = styled(Col)`
     float: left;
     width: 14px;
   }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
+  }
 `;
 
 export const InfoBox = styled(Col)`
   margin-top: 10px;
   font-size: 9px;
   color: white;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
+  }
 `;
 
 export const InfoIcon = styled(Col)`
@@ -217,6 +231,15 @@ export const FormBody = styled(Row)`
   .ant-input-affix-wrapper .ant-input-prefix {
     width: 15px;
   }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    h5 {
+      font-size: 18px;
+    }
+    form .ant-form-item-label label {
+      font-size: 14px;
+    }
+  }
 `;
 
 export const RegisterButton = styled(Button)`
@@ -230,6 +253,10 @@ export const RegisterButton = styled(Button)`
   &:focus {
     border-color: ${themeColor};
     background: ${themeColor};
+  }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
   }
 `;
 

@@ -328,16 +328,6 @@ const CardWrapper = styled(Row)`
     border-radius: 10px;
     margin-top: 20px;
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      flex-direction: column;
-      padding: 24px 0;
-      border: 1px solid
-        ${props => (props.theme.assignment && props.theme.assignment.attemptsReviewRowBgColor) || lightGreySecondary};
-      border-radius: 10px;
-      margin-top: 20px;
-    `}
 `;
 
 const ButtonAndDetail = styled(Col)`
@@ -352,13 +342,6 @@ const ButtonAndDetail = styled(Col)`
     flex-direction: column;
     width: 100%;
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      margin-left: auto;
-      flex-direction: column;
-      width: 100%;
-    `}
 `;
 
 const AttemptDetails = styled(Row)`
@@ -380,11 +363,6 @@ const AttemptDetails = styled(Row)`
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
     flex: 1;
   }
-  ${({ theme }) =>
-    theme.zoomedCss`
-      width: 100%;
-      justify-content: space-around;
-    `}
 `;
 
 const AnswerAndScore = styled(Col)`
@@ -397,12 +375,6 @@ const AnswerAndScore = styled(Col)`
     font-weight: bold;
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      width: auto;
-      flex-basis: 33%;
-    `}
 `;
 
 const StyledActionButton = styled(AnswerAndScore)`
@@ -423,11 +395,6 @@ const DetailContainer = styled.div`
   @media screen and (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      flex-direction: column;
-    `}
 `;
 
 const AttemptsTitle = styled.div`

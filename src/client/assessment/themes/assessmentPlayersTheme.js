@@ -6,6 +6,14 @@ const assessmentZoomMap = {
   xl: 2
 };
 
+const navZoomMap = {
+  xs: 1,
+  sm: 1.23,
+  md: 1.4,
+  lg: 1.6,
+  xl: 1.8
+};
+
 export const playersZoomTheme = theme => {
   return {
     ...theme,
@@ -15,7 +23,16 @@ export const playersZoomTheme = theme => {
       ...theme.default,
       headerButtonFontSize: `${theme.size4}px`,
       headerButtonFontIconWidth: `${theme.size4}px`,
-      headerButtonFontIconHeight: `${theme.size5}px`
+      headerButtonFontIconHeight: `${theme.size5}px`,
+      headerExitButtonFontIconWidth: `${theme.size2 > 64 ? 64 : theme.size2}px`,
+      headerExitButtonFontIconHeight: `${theme.size2 > 64 ? 64 : theme.size2}px`,
+      headerToolbarButtonWidth: `${40 * assessmentZoomMap[(theme?.zoomLevel)]}px`,
+      headerToolbarButtonHeight: `${40 * assessmentZoomMap[(theme?.zoomLevel)]}px`
+    },
+    header: {
+      ...theme.header,
+      headerHeight: `${62 * assessmentZoomMap[(theme?.zoomLevel)]}px`,
+      navZoom: navZoomMap[(theme?.zoomLevel)]
     },
     widgets: {
       ...theme.widgets,

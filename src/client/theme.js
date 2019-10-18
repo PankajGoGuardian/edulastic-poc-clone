@@ -337,7 +337,8 @@ export const defaultTheme = {
     headerTitleFontSize: headerTitle,
     headerTitleSecondaryTextSize: titleSecondarySectionFontSize,
     headerButtonColor: textColorGreenBg,
-    headerButtonHoverColor: themeColor
+    headerButtonHoverColor: themeColor,
+    navZoom: 1
   },
   sideMenu: {
     sidebarBgColor: sideBarColor,
@@ -2312,25 +2313,6 @@ export const themes = {
       ...theme.manageClass,
       NoDataArchiveTextSize: `${theme.size2}px`,
       NoDataArchiveSubTextSize: `${theme.size3}px`
-    },
-    assignment: {
-      ...theme.assignment,
-      cardTitleFontSize: `${theme.size3}px`,
-      cardDefaultBtnFontSize: `${theme.size7}px`,
-      cardTimeTextFontSize: `${theme.size6}px`,
-      cardSubmitLabelFontSize: `${theme.size5}px`,
-      attemptsReviewRowFontSize: `${theme.size4}px`,
-      cardAnswerAndScoreTextSize: `${theme.size1}px`,
-      cardAttemptLinkFontSize: `${theme.size6}px`,
-      cardResponseBoxLabelsFontSize: `${theme.size6}px`
-    },
-    classCard: {
-      ...theme.classCard,
-      cardTitleTextSize: `${theme.size3}px`,
-      cardActiveStatusTextSize: `${theme.size5}px`,
-      cardUserInfoLabelTextSize: `${theme.size4}px`,
-      cardUserInfoContentSize: `${theme.size4}px`,
-      cardVisitClassBtnTextSize: `${theme.size4}px`
     }
   })
 };

@@ -141,11 +141,7 @@ const getStatusBgColor = (props, type) => {
 const Wrapper = React.memo(styled(Col)`
   display: flex;
   flex-direction: row;
-  ${({ theme }) =>
-    theme.zoomedCss`
-      flex-direction: column;
-      align-items: center;
-    `}
+
   @media screen and (max-width: 767px) {
     flex-direction: column;
     align-items: center;
@@ -186,14 +182,6 @@ const Thumbnail = React.memo(styled.img`
     display: block;
     margin: 0 auto;
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      width: calc(100% - 14px);
-      height: 90.5px;
-      display: block;
-      margin: 0 auto;
-    `}
  }
 `);
 
@@ -224,15 +212,6 @@ const CardDetails = React.memo(styled(Col)`
     flex-direction: column;
     margin-top: 10px;
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      margin-top: 10px;
-      width: 100%;
-    `}
 `);
 
 const CardTitle = React.memo(styled.div`

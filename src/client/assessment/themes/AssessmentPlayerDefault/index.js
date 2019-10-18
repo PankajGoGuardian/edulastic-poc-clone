@@ -54,6 +54,7 @@ import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
 import { getZoomedTheme } from "../../../student/zoomTheme";
+import { isZoomGreator } from "../../../common/utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -354,6 +355,10 @@ class AssessmentPlayerDefault extends React.Component {
     themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     themeToPass = playersZoomTheme(themeToPass);
 
+    const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
+
+    const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container
@@ -417,6 +422,7 @@ class AssessmentPlayerDefault extends React.Component {
                       options={dropdownOptions}
                       bookmarks={bookmarksInOrder}
                       skipped={skippedInOrder}
+                      dropdownStyle={navZoomStyle}
                     />
                   )}
 
@@ -428,34 +434,40 @@ class AssessmentPlayerDefault extends React.Component {
                   >
                     {!LCBPreviewModal && (
                       <>
-                        <Tooltip placement="top" title="Previous">
-                          <ControlBtn
-                            prev
-                            skin
-                            data-cy="prev"
-                            type="primary"
-                            icon="left"
-                            disabled={isFirst()}
-                            onClick={moveToPrev}
-                          />
-                        </Tooltip>
-                        <Tooltip placement="top" title="Next">
-                          <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
-                        </Tooltip>
-                        {windowWidth < MEDIUM_DESKTOP_WIDTH && (
-                          <Tooltip placement="top" title="Tool">
-                            <ToolButton
-                              next
+                        <ToolTipContainer>
+                          <Tooltip placement="top" title="Previous" overlayStyle={navZoomStyle}>
+                            <ControlBtn
+                              prev
                               skin
-                              size="large"
+                              data-cy="prev"
                               type="primary"
-                              icon="tool"
-                              data-cy="setting"
-                              onClick={() => {
-                                this.setState({ isToolbarModalVisible: true });
-                              }}
+                              icon="left"
+                              disabled={isFirst()}
+                              onClick={moveToPrev}
                             />
                           </Tooltip>
+                        </ToolTipContainer>
+                        <ToolTipContainer>
+                          <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
+                            <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
+                          </Tooltip>
+                        </ToolTipContainer>
+                        {showSettingIcon && (
+                          <ToolTipContainer>
+                            <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
+                              <ToolButton
+                                next
+                                skin
+                                size="large"
+                                type="primary"
+                                icon="tool"
+                                data-cy="setting"
+                                onClick={() => {
+                                  this.setState({ isToolbarModalVisible: true });
+                                }}
+                              />
+                            </Tooltip>
+                          </ToolTipContainer>
                         )}
                         {windowWidth >= SMALL_DESKTOP_WIDTH && (
                           <TestButton
@@ -470,7 +482,7 @@ class AssessmentPlayerDefault extends React.Component {
                             handleClick={this.showHideHints}
                           />
                         )}
-                        {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
+                        {windowWidth >= MEDIUM_DESKTOP_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
                           <ToolBar
                             settings={settings}
                             calcBrands={calcBrands}
@@ -598,4 +610,8 @@ export default enhance(AssessmentPlayerDefault);
 
 const StyledPaddingDiv = styled(PaddingDiv)`
   padding: 0px 35px;
+`;
+
+const ToolTipContainer = styled.div`
+  zoom: ${({ theme }) => theme?.header?.navZoom};
 `;

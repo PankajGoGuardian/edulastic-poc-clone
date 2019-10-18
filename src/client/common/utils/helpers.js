@@ -4,6 +4,7 @@ import { Partners } from "./static/partnerData";
 import { message } from "antd";
 import styled from "styled-components";
 import { smallestZoomLevel } from "./static/zoom";
+import { breakpoints } from "../../student/zoomTheme";
 
 export const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
@@ -230,3 +231,5 @@ export const addThemeBackgroundColor = elem => styled(elem)`
 `;
 
 export const ifZoomed = zoomLevel => zoomLevel !== smallestZoomLevel;
+
+export const isZoomGreator = (zoomLevel, levelToCheck) => breakpoints[levelToCheck] > breakpoints[zoomLevel];

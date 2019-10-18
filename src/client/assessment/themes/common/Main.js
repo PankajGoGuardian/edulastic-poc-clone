@@ -1,8 +1,15 @@
 import styled from "styled-components";
+import { ifZoomed } from "../../../common/utils/helpers";
 
 const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
-  padding: ${props => (props.skin ? "82px 20px 20px" : "110px 0 0 140px")};
+  padding: ${({ theme, skin }) => {
+    if (ifZoomed(theme?.zoomLevel)) {
+      return skin ? `130px 20px 20px` : "158px 0 0 140px";
+    }
+
+    return skin ? "82px 20px 20px" : "110px 0 0 140px";
+  }};
   display: ${props => (props.skin ? "block" : "flex")};
   flex-direction: ${props => (props.skin ? "initial" : "row")};
   min-height: ${props => (props.skin ? "0" : "100vh")};

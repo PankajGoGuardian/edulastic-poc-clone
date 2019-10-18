@@ -109,6 +109,11 @@ const StyledButton = styled(Button)`
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
 
+  svg {
+    height: ${props => props.theme.default.headerButtonFontIconWidth};
+    width: ${props => props.theme.default.headerButtonFontIconHeight};
+  }
+
   &:focus,
   &:hover,
   &:active {

@@ -7,9 +7,19 @@ import styled from "styled-components";
 
 import SelectContainer from "./SelectContainer";
 
-const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, skinb, t, bookmarks = [], skipped = [] }) => (
-  <SelectContainer skinb={skinb}>
+const QuestionSelectDropdown = ({
+  gotoQuestion,
+  options,
+  currentItem,
+  skinb,
+  t,
+  bookmarks = [],
+  skipped = [],
+  dropdownStyle = {}
+}) => (
+  <SelectContainer style={dropdownStyle} skinb={skinb}>
     <Select
+      dropdownStyle={dropdownStyle}
       defaultValue={currentItem}
       data-cy="options"
       onChange={value => {

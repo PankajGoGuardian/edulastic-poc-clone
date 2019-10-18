@@ -61,4 +61,12 @@ const StyledButton = styled(Button)`
   &:focus {
     background: transparent;
   }
+
+  height: ${props => props.theme.default.headerToolbarButtonWidth};
+  width: ${props => props.theme.default.headerToolbarButtonHeight};
+
+  svg {
+    height: ${props => props.theme.default.headerExitButtonFontIconWidth};
+    width: ${props => props.theme.default.headerExitButtonFontIconHeight};
+  }
 `;

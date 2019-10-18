@@ -81,16 +81,16 @@ export const StandardsGradebookTable = ({
 
   const filteredTableData = getFilteredTableData();
 
-  const getDisplayValue = (item = {}, _analyseBy, data, record) => {
+  const getDisplayValue = (item, _analyseBy, data, record) => {
     let printData;
-    if (item.scorePercent === 0 || item.rawScore === 0 || item.masteryScore === 0) {
+    if (!item || item.scorePercent === 0 || item.rawScore === 0 || item.masteryScore === 0) {
       return "N/A";
     }
 
     if (_analyseBy === "score(%)") {
       printData = item.scorePercent + "%";
     } else if (_analyseBy === "rawScore") {
-      printData = item.totalTotalScore.toFixed(2) + "/" + item.totalMaxScore.toFixed(2);
+      printData = item.totalTotalScore.toFixed(2) + "/" + item.totalMaxScore;
     } else if (_analyseBy === "masteryLevel") {
       printData = item.masteryLevel;
     } else if (_analyseBy === "masteryScore") {

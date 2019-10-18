@@ -364,7 +364,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
         standardId: __item,
         standardName: groupedStandardIds[__item][0][idToLabel["standardId"]],
         scorePercentUnrounded,
-        scorePercent: Number(scorePercentUnrounded.toFixed(2)),
+        scorePercent: Math.round(Number(scorePercentUnrounded)),
 
         rawScoreUnrounded: rawScoreUnrounded,
         rawScore: Number(rawScoreUnrounded.toFixed(2)),
@@ -385,7 +385,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       compareByLabel: groupedData[item][0][idToLabel[compareBy]],
       compareByName: idToName[compareBy],
       scorePercentUnrounded,
-      scorePercent: Number(scorePercentUnrounded.toFixed(2)),
+      scorePercent: Math.round(Number(scorePercentUnrounded)),
 
       rawScoreUnrounded,
       rawScore: Number(rawScoreUnrounded.toFixed(2)),

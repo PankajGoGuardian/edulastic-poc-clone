@@ -50,14 +50,24 @@ const SimpleStackedBarChartContainer = ({
     }
   };
 
-  const barsLabelFormatter = (value, index, startIndex = 0) => {
+  const barsLabelFormatter = (value, index, startIndex = 0, x, y) => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return yTickformatLabel(value);
       case analyzeByMode.RAW_SCORE:
-        return `${round(formattedData[startIndex + index].rawScore, 2)} / ${
-          formattedData[startIndex + index].maxScore
-        }`;
+        return (
+          <>
+            <tspan x={x + 20} dy="-15">
+              {round(formattedData[startIndex + index].rawScore, 2)}
+            </tspan>
+            <tspan x={x + 20} dy="2">
+              _____
+            </tspan>
+            <tspan x={x + 20} dy="15">
+              {formattedData[startIndex + index].maxScore}
+            </tspan>
+          </>
+        );
     }
   };
 

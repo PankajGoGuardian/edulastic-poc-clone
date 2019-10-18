@@ -41,6 +41,10 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
       subjects: [],
       standards: [],
       curriculums: [],
+      data: {
+        questions: [],
+        resources: []
+      },
       itemLevelScoring: true,
       multipartItem: false,
       isPassageWithQuestions: false,

@@ -1111,6 +1111,11 @@ function* savePassage({ payload }) {
 
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
     let currentItemId = currentItem._id;
+
+    if (passageData.some(i => !i.content)) {
+      return message.error("Passage cannot be empty");
+    }
+
     if (currentItem._id === "new") {
       const item = yield call(testItemsApi.create, _omit(currentItem, "_id"));
       yield put({
@@ -1128,6 +1133,7 @@ function* savePassage({ payload }) {
 
     yield put(updatePassageStructureAction(modifiedPassage));
 
+   
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),

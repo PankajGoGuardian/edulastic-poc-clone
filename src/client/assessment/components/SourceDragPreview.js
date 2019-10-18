@@ -25,17 +25,11 @@ function useDragScroll(sourceOffset) {
     if (!interval.current && scrollEl.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
       const scrollBy = yOffset < containerTop ? -10 : 10;
       interval.current = setInterval(() => scrollEl.scrollBy(0, scrollBy), 50);
-    } else if (interval.current && (yOffset > containerTop && yOffset < containerBottom)) {
+    } else if (interval.current && ((yOffset > containerTop && yOffset < containerBottom) || !sourceOffset)) {
       clearInterval(interval.current);
       interval.current = null;
     }
   }, [sourceOffset]);
-
-  useEffect(() => {
-    return () => {
-      clearInterval();
-    };
-  }, []);
 }
 
 const DragPreview = ({ isDragging, children, sourceOffset }) => {

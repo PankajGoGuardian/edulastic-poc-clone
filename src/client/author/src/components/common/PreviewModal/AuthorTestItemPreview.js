@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, white } from "@edulastic/colors";
-import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
+import { Tabs, EduButton, withWindowSizes, ScrollContext } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 import { get } from "lodash";
 import { themes } from "../../../../../theme";
@@ -34,10 +34,15 @@ class AuthorTestItemPreview extends Component {
     student: {}
   };
 
-  state = {
-    value: 0,
-    collapseDirection: ""
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+      collapseDirection: ""
+    };
+
+    this.scrollContainerRef = React.createRef();
+  }
 
   handleTabChange = value => {
     this.setState({
@@ -278,26 +283,29 @@ class AuthorTestItemPreview extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <Container>
-          {cols.map((col, i) => {
-            const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-            if (hideColumn) return "";
-            return (
-              <>
-                {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                <ColumnContentArea
-                  isAuthoring={page === "itemAuthoring"}
-                  width={collapseDirection ? "90%" : col.dimension || "auto"}
-                  hide={hideColumn}
-                >
-                  {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                  {this.renderColumns(col)}
-                </ColumnContentArea>
-                {collapseDirection === "right" && this.renderCollapseButtons(i)}
-              </>
-            );
-          })}
-        </Container>
+        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainerRef.current }}>
+          <Container innerRef={this.scrollContainerRef}>
+            {cols.map((col, i) => {
+              const hideColumn =
+                (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+              if (hideColumn) return "";
+              return (
+                <>
+                  {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
+                  <ColumnContentArea
+                    isAuthoring={page === "itemAuthoring"}
+                    width={collapseDirection ? "90%" : col.dimension || "auto"}
+                    hide={hideColumn}
+                  >
+                    {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
+                    {this.renderColumns(col)}
+                  </ColumnContentArea>
+                  {collapseDirection === "right" && this.renderCollapseButtons(i)}
+                </>
+              );
+            })}
+          </Container>
+        </ScrollContext.Provider>
       </ThemeProvider>
     );
   }

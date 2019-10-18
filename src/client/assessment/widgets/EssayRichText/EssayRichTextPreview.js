@@ -152,6 +152,7 @@ const EssayRichTextPreview = ({
               value={userAnswer}
               spellcheck={!!item.spellcheck}
               toolbarInline={false}
+              toolbarSticky={false}
               initOnClick={false}
               readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
               quickInsertTags={[]}

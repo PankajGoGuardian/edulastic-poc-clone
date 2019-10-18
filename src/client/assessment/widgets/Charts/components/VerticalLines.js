@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import { Line, Text } from "../styled";
+import { Line } from "../styled";
+import { Text } from "@vx/text";
 import { getGridVariables } from "../helpers";
 
 const VerticalLines = ({ lines, gridParams, displayAxisLabel, displayGridlines }) => {
@@ -16,9 +18,11 @@ const VerticalLines = ({ lines, gridParams, displayAxisLabel, displayGridlines }
       {lines.map((dot, index) => (
         <Fragment>
           {displayAxisLabel && (
-            <Text textAnchor="middle" x={getConstantX(index)} y={height}>
-              {dot.x}
-            </Text>
+            <g transform={`translate(${getConstantX(index)},${height})`}>
+              <StyledText textAnchor="middle" verticalAnchor="start" width={70}>
+                {dot.x}
+              </StyledText>
+            </g>
           )}
           {displayGridlines && (
             <Line
@@ -54,5 +58,10 @@ VerticalLines.defaultProps = {
   displayAxisLabel: true,
   displayGridlines: true
 };
+
+const StyledText = styled(Text)`
+  user-select: none;
+  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+`;
 
 export default VerticalLines;

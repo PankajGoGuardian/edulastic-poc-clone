@@ -88,7 +88,9 @@ class DomainDetail extends Component {
     return (
       <WrapperContent>
         <S.Title onClick={this.handlerTable}>
-          <S.RelationTitle>{summary.domain}</S.RelationTitle>
+          <S.RelationTitle>
+            <span>({summary.identifier})</span> {summary.domain}
+          </S.RelationTitle>
           {!isNaN(skillPercentage) && <StyledScoreProgress percent={skillPercentage} color={scale.color || ""} />}
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>

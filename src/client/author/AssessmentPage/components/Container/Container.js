@@ -8,7 +8,7 @@ import { Spin, message } from "antd";
 import { isEmpty, get } from "lodash";
 
 import { white } from "@edulastic/colors";
-import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
+import { IconDescription, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
 import {
@@ -45,7 +45,7 @@ const tabs = {
 
 const buttons = [
   {
-    icon: <IconSelected color={white} width={16} height={16} />,
+    icon: <IconDescription color={white} width={16} height={16} />,
     value: tabs.DESCRIPTION,
     text: "Description"
   },
@@ -55,7 +55,7 @@ const buttons = [
     text: "Worksheet"
   },
   {
-    icon: <IconReview color={white} width={16} height={16} />,
+    icon: <IconReview color={white} width={24} height={24} />,
     value: tabs.REVIEW,
     text: "Review"
   },

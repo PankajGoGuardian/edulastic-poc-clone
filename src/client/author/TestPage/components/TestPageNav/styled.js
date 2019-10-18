@@ -46,6 +46,7 @@ export const Link = styled.div`
 
   svg {
     fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
+    margin-right: 5px;
   }
   &:hover {
     border-bottom: none;

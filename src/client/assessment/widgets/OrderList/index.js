@@ -217,6 +217,9 @@ const OrderList = ({
       columns={columns}
       disableResponse={disableResponse}
       helperClass="sortableHelper"
+      lockToContainerEdges={true}
+      lockOffset={["10%", "0%"]}
+      lockAxis="y"
     />
   ) : (
     <OrderListReport
@@ -325,6 +328,9 @@ const OrderList = ({
               columns={columns}
               disableResponse={disableResponse}
               helperClass="sortableHelper"
+              lockToContainerEdges={true}
+              lockOffset={["10%", "0%"]}
+              lockAxis="y"
             />
           )}
         </Wrapper>

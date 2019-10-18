@@ -20,8 +20,8 @@ const AutocompleteDropDown = ({
   selectCB,
   data = [],
   comData,
-  iconType = "caret-down",
-  iconActiveType = "caret-up"
+  iconType = "down",
+  iconActiveType = "up"
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -194,6 +194,11 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
     font-weight: 900;
     color: ${black};
     cursor: default;
+  }
+
+  .anticon {
+    height: 13px;
+    font-size: 13px;
   }
 `;
 

@@ -98,7 +98,7 @@ const ControlDropDown = ({
       >
         <Button title={title}>
           {(showPrefixOnSelected ? prefix + " " : "") + selected?.title}
-          {isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+          <Icon type={isActive ? "up" : "down"} />
         </Button>
       </Dropdown>
     </StyledDiv>
@@ -127,6 +127,11 @@ const StyledDiv = styled.div`
       }
       i {
         color: ${themeColor};
+      }
+      .anticon {
+        height: 13px;
+        font-size: 13px;
+        transform: none;
       }
     }
 

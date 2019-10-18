@@ -131,7 +131,9 @@ class GraphEditTools extends Component {
       graphData,
       setQuestionData,
       equations,
-      setEquations
+      setEquations,
+      hideEquationTool,
+      hideSettingTool
     } = this.props;
 
     const { selectedTool } = this.state;
@@ -140,20 +142,22 @@ class GraphEditTools extends Component {
       <Fragment>
         {side === "left" && (
           <Wrapper side={side} width={width} margin={margin}>
-            <ToolButton
-              selected={selectedTool === FUNCTIONS_TOOL}
-              onClick={() => this.onToolButtonClick(FUNCTIONS_TOOL)}
-            >
-              <IconFuncSymbol />
-              {selectedTool === FUNCTIONS_TOOL && (
-                <Popup right>
-                  <Overlay onClick={e => this.onOverlayClick(e)} />
-                  <Content>
-                    <Equations equations={equations} setEquations={setEquations} />
-                  </Content>
-                </Popup>
-              )}
-            </ToolButton>
+            {!hideEquationTool && (
+              <ToolButton
+                selected={selectedTool === FUNCTIONS_TOOL}
+                onClick={() => this.onToolButtonClick(FUNCTIONS_TOOL)}
+              >
+                <IconFuncSymbol />
+                {selectedTool === FUNCTIONS_TOOL && (
+                  <Popup right>
+                    <Overlay onClick={e => this.onOverlayClick(e)} />
+                    <Content>
+                      <Equations equations={equations} setEquations={setEquations} />
+                    </Content>
+                  </Popup>
+                )}
+              </ToolButton>
+            )}
             <ToolButton
               selected={selectedTool === ANNOTATIONS_TOOL}
               onClick={() => this.onToolButtonClick(ANNOTATIONS_TOOL)}
@@ -172,17 +176,22 @@ class GraphEditTools extends Component {
         )}
         {side === "right" && (
           <Wrapper side={side} width={width} margin={margin}>
-            <ToolButton selected={selectedTool === SETTINGS_TOOL} onClick={() => this.onToolButtonClick(SETTINGS_TOOL)}>
-              <IconSpanner />
-              {selectedTool === SETTINGS_TOOL && (
-                <Popup left>
-                  <Overlay onClick={e => this.onOverlayClick(e)} />
-                  <Content>
-                    <Settings graphData={graphData} setQuestionData={setQuestionData} />
-                  </Content>
-                </Popup>
-              )}
-            </ToolButton>
+            {!hideSettingTool && (
+              <ToolButton
+                selected={selectedTool === SETTINGS_TOOL}
+                onClick={() => this.onToolButtonClick(SETTINGS_TOOL)}
+              >
+                <IconSpanner />
+                {selectedTool === SETTINGS_TOOL && (
+                  <Popup left>
+                    <Overlay onClick={e => this.onOverlayClick(e)} />
+                    <Content>
+                      <Settings graphData={graphData} setQuestionData={setQuestionData} />
+                    </Content>
+                  </Popup>
+                )}
+              </ToolButton>
+            )}
             <ToolButton onClick={() => this.onToolButtonClick(PLUS_TOOL)}>
               <IconPlus />
             </ToolButton>
@@ -200,14 +209,20 @@ GraphEditTools.propTypes = {
   side: PropTypes.string,
   graphData: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  setEquations: PropTypes.func.isRequired,
-  equations: PropTypes.array.isRequired,
   layout: PropTypes.object.isRequired,
+  equations: PropTypes.array,
+  setEquations: PropTypes.func,
+  hideSettingTool: PropTypes.bool,
+  hideEquationTool: PropTypes.bool,
   margin: PropTypes.object
 };
 
 GraphEditTools.defaultProps = {
   side: "left",
+  equations: [],
+  setEquations: () => {},
+  hideSettingTool: false,
+  hideEquationTool: false,
   margin: { top: 0, left: 0 }
 };
 

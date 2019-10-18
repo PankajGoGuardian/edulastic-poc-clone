@@ -41,6 +41,8 @@ var evaluator =
                     ? 5
                     : _context.t0 === _constants.GraphTypes.AXIS_SEGMENTS
                     ? 6
+                    : _context.t0 === _constants.GraphTypes.NUMBERLINE_PLOT
+                    ? 6
                     : _context.t0 === _constants.GraphTypes.QUADRANTS
                     ? 7
                     : _context.t0 === _constants.GraphTypes.FIRST_QUADRANT

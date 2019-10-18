@@ -5,3 +5,4 @@ export { default as GraphQuadrants } from "./GraphQuadrants";
 export { default as QuestionSection } from "./QuestionSection";
 export { default as SegmentsToolsSettings } from "./SegmentsToolsSettings";
 export { default as ScoreSettings } from "./ScoreSettings";
+export { default as NumberLinePlot } from "./NumberLinePlot";

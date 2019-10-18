@@ -2,6 +2,7 @@ import JXG from "jsxgraph";
 import { union, isString } from "lodash";
 import { calcMeasure, toFractionHTML, checkOrientation } from "../utils";
 import { RENDERING_BASE } from "../config/constants";
+import { Colors } from "../config";
 
 const LABEL_ROUNDING_FACTOR = 100;
 const TICK_ROUNDING_FACTOR = 100000;
@@ -65,8 +66,7 @@ const onHandler = board => {
       straightLast: false,
       firstArrow: leftArrow === true ? { size: 10 } : false,
       lastArrow: rightArrow === true ? { size: 10 } : false,
-      strokeColor: "#d6d6d6",
-      highlightStrokeColor: "#d6d6d6"
+      ...Colors.numberline
     }
   );
 
@@ -135,8 +135,7 @@ const onHandler = board => {
   if (minorTicks) {
     const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
     board.$board.create("ticks", [newAxis, minors], {
-      strokeColor: "#d6d6d6",
-      highlightStrokeColor: "#d6d6d6",
+      ...Colors.numberline,
       majorHeight: 10,
       visible: showTicks
     });
@@ -216,8 +215,7 @@ const onHandler = board => {
     }
   }
   board.$board.create("ticks", [newAxis, ticks], {
-    strokeColor: "#d6d6d6",
-    highlightStrokeColor: "#d6d6d6",
+    ...Colors.numberline,
     visible: true,
     anchor: "middle",
     insertTicks: false,

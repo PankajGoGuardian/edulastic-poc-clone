@@ -9,6 +9,7 @@ import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
 import { PlacementContainer } from "./PlacementContainer";
+import { NumberLinePlot } from "./NumberLinePlot";
 import { smallestZoomLevel } from "../../../../common/utils/static/zoom";
 import { ifZoomed } from "../../../../common/utils/helpers";
 
@@ -159,6 +160,7 @@ class GraphDisplay extends Component {
 
     switch (graphType) {
       case "axisSegments":
+      case "numberLinePlot":
       case "axisLabels":
         this.validateNumberline();
         break;
@@ -177,6 +179,8 @@ class GraphDisplay extends Component {
     switch (graphType) {
       case "axisSegments":
         return AxisSegmentsContainer;
+      case "numberLinePlot":
+        return NumberLinePlot;
       case "axisLabels":
         return AxisLabelsContainer;
       case "quadrantsPlacement":
@@ -195,6 +199,8 @@ class GraphDisplay extends Component {
     switch (graphType) {
       case "axisSegments":
         return this.getAxisSegmentsProps();
+      case "numberLinePlot":
+        return this.getNumberlinePlotProps();
       case "axisLabels":
         return this.getAxisLabelsProps();
       case "quadrants":
@@ -417,6 +423,115 @@ class GraphDisplay extends Component {
         gridY: safeParseFloat(uiStyle.yDistance),
         gridX: safeParseFloat(uiStyle.xDistance),
         showGrid: false
+      },
+      evaluation,
+      tools: toolbar ? toolbar.tools : [],
+      setValue: onChange,
+      elements,
+      altAnswerId,
+      view,
+      previewTab,
+      changePreviewTab,
+      disableResponse,
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
+    };
+  };
+
+  getNumberlinePlotProps = () => {
+    const {
+      view,
+      previewTab,
+      changePreviewTab,
+      graphData,
+      evaluation,
+      onChange,
+      elements,
+      altAnswerId,
+      disableResponse,
+      elementsIsCorrect,
+      setQuestionData
+    } = this.props;
+
+    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData;
+
+    return {
+      canvas: {
+        xMin: parseFloat(canvas.xMin),
+        xMax: parseFloat(canvas.xMax),
+        yMin: parseFloat(canvas.yMin),
+        yMax: parseFloat(canvas.yMax),
+        numberline: true,
+        margin: parseFloat(canvas.margin),
+        title: canvas.title
+      },
+      numberlineAxis: {
+        leftArrow: numberlineAxis && numberlineAxis.leftArrow,
+        rightArrow: numberlineAxis && numberlineAxis.rightArrow,
+        showTicks: numberlineAxis && numberlineAxis.showTicks,
+        snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
+        showMin: numberlineAxis && numberlineAxis.showMin,
+        showMax: numberlineAxis && numberlineAxis.showMax,
+        ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
+        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
+        stackResponses: numberlineAxis && numberlineAxis.stackResponses,
+        stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
+        renderingBase: numberlineAxis && numberlineAxis.renderingBase,
+        specificPoints: numberlineAxis && numberlineAxis.specificPoints,
+        fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat,
+        minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
+        showLabels: numberlineAxis && numberlineAxis.showLabels,
+        labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
+        labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
+      },
+      layout: {
+        width: uiStyle.layoutWidth,
+        margin: uiStyle.layoutMargin,
+        height: uiStyle.layoutHeight,
+        snapTo: uiStyle.layoutSnapto,
+        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        titlePosition: parseInt(uiStyle.titlePosition, 10),
+        linePosition: numberlineAxis.stackResponses ? 75 : parseInt(uiStyle.linePosition, 10),
+        yDistance: safeParseFloat(uiStyle.yDistance),
+        pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10)
+      },
+      pointParameters: {
+        snapToGrid: true,
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
+        showInfoBox: uiStyle.displayPositionOnHover,
+        face: uiStyle.pointFace,
+        size: parseInt(uiStyle.pointSize, 10),
+        strokeWidth: parseInt(uiStyle.pointStrokeWidth, 10),
+        withLabel: false
+      },
+      xAxesParameters: {
+        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
+        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : "",
+        showTicks: !uiStyle.xHideTicks,
+        drawLabels: uiStyle.xDrawLabel,
+        maxArrow: uiStyle.xMaxArrow,
+        minArrow: uiStyle.xMinArrow,
+        drawZero: uiStyle.drawLabelZero,
+        commaInLabel: uiStyle.xCommaInLabel,
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
+      },
+      yAxesParameters: {
+        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
+        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : "",
+        showTicks: !uiStyle.yHideTicks,
+        drawLabels: uiStyle.yDrawLabel,
+        maxArrow: uiStyle.yMaxArrow,
+        minArrow: uiStyle.yMinArrow,
+        commaInLabel: uiStyle.yCommaInLabel,
+        minorTicks: uiStyle.yMinorTicks ? uiStyle.yMinorTicks : 0
+      },
+      gridParams: {
+        gridY: safeParseFloat(uiStyle.yDistance),
+        gridX: safeParseFloat(uiStyle.xDistance),
+        showGrid: uiStyle.showGrid
       },
       evaluation,
       tools: toolbar ? toolbar.tools : [],

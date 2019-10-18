@@ -190,11 +190,12 @@ class GraphAnswers extends Component {
   };
 
   render() {
-    const { graphData, view, previewTab } = this.props;
+    const { graphData, view, previewTab, ...rest } = this.props;
     const { tab } = this.state;
 
     return (
       <CorrectAnswers
+        {...rest}
         correctTab={tab}
         onAdd={this.handleAddAnswer}
         validation={graphData.validation}

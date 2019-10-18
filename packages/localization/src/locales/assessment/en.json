@@ -600,6 +600,7 @@
       },
       "title": "Title",
       "graphline": "Line",
+      "lineplotchart": "Chart",
       "possibleresponses": "Possible responses",
       "graphparameters": "Graph parameters",
       "tools": "Tools",
@@ -637,7 +638,11 @@
         "showMaxArrow": "Show max arrow",
         "stackResponses": "Stack responses",
         "spacingBtwStacked": "Spacing between stacked responses (px)",
-        "minWidth": "Minimum width"
+        "minWidth": "Minimum width",
+        "showGrid": "Show Grid",
+        "displayposition": "Display Position On Hover",
+        "drawLabelZero": "Draw Label Zero",
+        "snapToGrid": "Snap To Grid"
       },
       "ticksoptionstitle": "Ticks",
       "ticksoptions": {

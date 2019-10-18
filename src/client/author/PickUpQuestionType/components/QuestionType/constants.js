@@ -91,275 +91,6 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
   const cards = [
     {
       type: "charts",
-      cardImage: LinePlot,
-      data: {
-        title: "Line plot",
-        firstMount: true,
-        type: "linePlot",
-        stimulus: "Enter your question",
-        chart_data: {
-          data: [
-            {
-              x: "Bar 1",
-              y: 0
-            },
-            {
-              x: "Bar 2",
-              y: 0
-            },
-            {
-              x: "Bar 3",
-              y: 0
-            },
-            {
-              x: "Bar 4",
-              y: 0
-            },
-            {
-              x: "Bar 5",
-              y: 0
-            },
-            {
-              x: "Bar 6",
-              y: 0
-            }
-          ],
-          name: "Chart title"
-        },
-        uiStyle: {
-          xAxisLabel: "X Axis Label",
-          yAxisLabel: "Y Axis Label",
-          yAxisMax: 10,
-          yAxisMin: 0,
-          width: 640,
-          height: 440,
-          margin: 40,
-          stepSize: 1,
-          snapTo: 1,
-          chartType: "linePlot",
-          showGridlines: "y_only"
-        },
-        validation: {
-          scoringType: EXACT_MATCH,
-          validResponse: {
-            score: 1,
-            value: [
-              {
-                x: "Bar 1",
-                y: 0
-              },
-              {
-                x: "Bar 2",
-                y: 0
-              },
-              {
-                x: "Bar 3",
-                y: 0
-              },
-              {
-                x: "Bar 4",
-                y: 0
-              },
-              {
-                x: "Bar 5",
-                y: 0
-              },
-              {
-                x: "Bar 6",
-                y: 0
-              }
-            ]
-          },
-          altResponses: []
-        },
-        xAxisLabel: "X Axis",
-        yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "" }]
-      },
-      onSelectQuestionType
-    },
-    {
-      type: "charts",
-      cardImage: DotPlot,
-      data: {
-        title: "Dot plot",
-        firstMount: true,
-        type: "dots",
-        stimulus: "Enter your question",
-        chart_data: {
-          data: [
-            {
-              x: "Bar 1",
-              y: 0
-            },
-            {
-              x: "Bar 2",
-              y: 0
-            },
-            {
-              x: "Bar 3",
-              y: 0
-            },
-            {
-              x: "Bar 4",
-              y: 0
-            },
-            {
-              x: "Bar 5",
-              y: 0
-            },
-            {
-              x: "Bar 6",
-              y: 0
-            }
-          ],
-          name: "Chart title"
-        },
-        uiStyle: {
-          xAxisLabel: "X Axis Label",
-          yAxisLabel: "Y Axis Label",
-          yAxisMax: 10,
-          yAxisMin: 0,
-          width: 640,
-          height: 440,
-          margin: 40,
-          stepSize: 1,
-          snapTo: 1,
-          chartType: "dots",
-          showGridlines: "both"
-        },
-        validation: {
-          scoringType: EXACT_MATCH,
-          validResponse: {
-            score: 1,
-            value: [
-              {
-                x: "Bar 1",
-                y: 0
-              },
-              {
-                x: "Bar 2",
-                y: 0
-              },
-              {
-                x: "Bar 3",
-                y: 0
-              },
-              {
-                x: "Bar 4",
-                y: 0
-              },
-              {
-                x: "Bar 5",
-                y: 0
-              },
-              {
-                x: "Bar 6",
-                y: 0
-              }
-            ]
-          },
-          altResponses: []
-        },
-        xAxisLabel: "X Axis",
-        yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "" }]
-      },
-      onSelectQuestionType
-    },
-    {
-      type: "charts",
-      cardImage: Histogram,
-      data: {
-        title: "Histogram",
-        firstMount: true,
-        type: "histogram",
-        stimulus: "Enter your question",
-        chart_data: {
-          data: [
-            {
-              x: "Bar 1",
-              y: 70
-            },
-            {
-              x: "Bar 2",
-              y: 70
-            },
-            {
-              x: "Bar 3",
-              y: 70
-            },
-            {
-              x: "Bar 4",
-              y: 70
-            },
-            {
-              x: "Bar 5",
-              y: 70
-            },
-            {
-              x: "Bar 6",
-              y: 70
-            }
-          ],
-          name: "Chart title"
-        },
-        uiStyle: {
-          xAxisLabel: "X Axis Label",
-          yAxisLabel: "Y Axis Label",
-          yAxisMax: 70,
-          yAxisMin: 0,
-          width: 640,
-          height: 440,
-          margin: 40,
-          stepSize: 5,
-          snapTo: 5,
-          chartType: "histogram",
-          fractionFormat: "Decimal",
-          multicolorBars: true,
-          showGridlines: "y_only"
-        },
-        validation: {
-          scoringType: EXACT_MATCH,
-          validResponse: {
-            score: 1,
-            value: [
-              {
-                x: "Bar 1",
-                y: 70
-              },
-              {
-                x: "Bar 2",
-                y: 70
-              },
-              {
-                x: "Bar 3",
-                y: 70
-              },
-              {
-                x: "Bar 4",
-                y: 70
-              },
-              {
-                x: "Bar 5",
-                y: 70
-              },
-              {
-                x: "Bar 6",
-                y: 70
-              }
-            ]
-          },
-          altResponses: []
-        },
-        xAxisLabel: "X Axis",
-        yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "" }]
-      },
-      onSelectQuestionType
-    },
-    {
-      type: "charts",
       cardImage: BarChart,
       data: {
         title: "Bar chart",
@@ -535,6 +266,487 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "charts",
+      cardImage: Histogram,
+      data: {
+        title: "Histogram",
+        firstMount: true,
+        type: "histogram",
+        stimulus: "Enter your question",
+        chart_data: {
+          data: [
+            {
+              x: "Bar 1",
+              y: 70
+            },
+            {
+              x: "Bar 2",
+              y: 70
+            },
+            {
+              x: "Bar 3",
+              y: 70
+            },
+            {
+              x: "Bar 4",
+              y: 70
+            },
+            {
+              x: "Bar 5",
+              y: 70
+            },
+            {
+              x: "Bar 6",
+              y: 70
+            }
+          ],
+          name: "Chart title"
+        },
+        uiStyle: {
+          xAxisLabel: "X Axis Label",
+          yAxisLabel: "Y Axis Label",
+          yAxisMax: 70,
+          yAxisMin: 0,
+          width: 640,
+          height: 440,
+          margin: 40,
+          stepSize: 5,
+          snapTo: 5,
+          chartType: "histogram",
+          fractionFormat: "Decimal",
+          multicolorBars: true,
+          showGridlines: "y_only"
+        },
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [
+              {
+                x: "Bar 1",
+                y: 70
+              },
+              {
+                x: "Bar 2",
+                y: 70
+              },
+              {
+                x: "Bar 3",
+                y: 70
+              },
+              {
+                x: "Bar 4",
+                y: 70
+              },
+              {
+                x: "Bar 5",
+                y: 70
+              },
+              {
+                x: "Bar 6",
+                y: 70
+              }
+            ]
+          },
+          altResponses: []
+        },
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "charts",
+      cardImage: DotPlot,
+      data: {
+        title: "Dot plot",
+        firstMount: true,
+        type: "dots",
+        stimulus: "Enter your question",
+        chart_data: {
+          data: [
+            {
+              x: "Bar 1",
+              y: 0
+            },
+            {
+              x: "Bar 2",
+              y: 0
+            },
+            {
+              x: "Bar 3",
+              y: 0
+            },
+            {
+              x: "Bar 4",
+              y: 0
+            },
+            {
+              x: "Bar 5",
+              y: 0
+            },
+            {
+              x: "Bar 6",
+              y: 0
+            }
+          ],
+          name: "Chart title"
+        },
+        uiStyle: {
+          xAxisLabel: "X Axis Label",
+          yAxisLabel: "Y Axis Label",
+          yAxisMax: 10,
+          yAxisMin: 0,
+          width: 640,
+          height: 440,
+          margin: 40,
+          stepSize: 1,
+          snapTo: 1,
+          chartType: "dots",
+          showGridlines: "both"
+        },
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [
+              {
+                x: "Bar 1",
+                y: 0
+              },
+              {
+                x: "Bar 2",
+                y: 0
+              },
+              {
+                x: "Bar 3",
+                y: 0
+              },
+              {
+                x: "Bar 4",
+                y: 0
+              },
+              {
+                x: "Bar 5",
+                y: 0
+              },
+              {
+                x: "Bar 6",
+                y: 0
+              }
+            ]
+          },
+          altResponses: []
+        },
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "charts",
+      cardImage: DotPlot,
+      data: {
+        title: "Dot Plot - Number Line",
+        type: questionType.GRAPH,
+        stimulus: "Enter your question",
+        firstMount: true,
+        graphType: "numberLinePlot",
+        canvas: {
+          xMax: 10,
+          xMin: 0,
+          yMax: 10,
+          yMin: 0,
+          numberline: true,
+          margin: 75,
+          title: ""
+        },
+        controlbar: {
+          controls: ["undo", "redo", "clear", "trash"],
+          defaultControl: "undo"
+        },
+        toolbar: {
+          tools: [],
+          defaultTool: null
+        },
+        sampleAnswer: "",
+        numberlineAxis: {
+          leftArrow: true,
+          rightArrow: true,
+          showTicks: true,
+          snapToTicks: true,
+          ticksDistance: 1,
+          showMin: true,
+          showMax: true,
+          fontSize: 12,
+          labelShowMax: true,
+          labelShowMin: true,
+          minorTicks: 1,
+          showLabels: true,
+          stackResponses: false,
+          stackResponsesSpacing: 30,
+          renderingBase: "min-value-based",
+          specificPoints: ""
+        },
+        uiStyle: {
+          gridVisible: false,
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: "numerical",
+          currentFontSize: "normal",
+          xShowAxisLabel: false,
+          xHideTicks: true,
+          xDrawLabel: false,
+          xMaxArrow: false,
+          xMinArrow: false,
+          xVisible: false,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yDrawLabel: false,
+          yMaxArrow: false,
+          yMinArrow: false,
+          yCommaInLabel: false,
+          yVisible: false,
+          xDistance: 0.5,
+          yDistance: 0.5,
+          xTickDistance: 1,
+          yTickDistance: 0,
+          layoutWidth: 600,
+          layoutHeight: 440,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
+          xAxisLabel: "X",
+          yAxisLabel: "Y",
+          titlePosition: 15,
+          linePosition: 80,
+          pointBoxPosition: 60,
+          pointFace: "circle",
+          pointSize: 6,
+          pointStrokeWidth: 4
+        },
+        backgroundImage: {
+          src: "",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: false
+        },
+        background_shapes: [],
+        multipleResponses: false,
+        validation: {
+          graphType: "axisSegments",
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: []
+          },
+          altResponses: [],
+          rounding: "none"
+        },
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "charts",
+      cardImage: LinePlot,
+      data: {
+        title: "Line Plot - Categories",
+        firstMount: true,
+        type: "linePlot",
+        stimulus: "Enter your question",
+        chart_data: {
+          data: [
+            {
+              x: "Bar 1",
+              y: 0
+            },
+            {
+              x: "Bar 2",
+              y: 0
+            },
+            {
+              x: "Bar 3",
+              y: 0
+            },
+            {
+              x: "Bar 4",
+              y: 0
+            },
+            {
+              x: "Bar 5",
+              y: 0
+            },
+            {
+              x: "Bar 6",
+              y: 0
+            }
+          ],
+          name: "Chart title"
+        },
+        uiStyle: {
+          xAxisLabel: "X Axis Label",
+          yAxisLabel: "Y Axis Label",
+          yAxisMax: 10,
+          yAxisMin: 0,
+          width: 640,
+          height: 440,
+          margin: 40,
+          stepSize: 1,
+          snapTo: 1,
+          chartType: "linePlot",
+          showGridlines: "y_only"
+        },
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [
+              {
+                x: "Bar 1",
+                y: 0
+              },
+              {
+                x: "Bar 2",
+                y: 0
+              },
+              {
+                x: "Bar 3",
+                y: 0
+              },
+              {
+                x: "Bar 4",
+                y: 0
+              },
+              {
+                x: "Bar 5",
+                y: 0
+              },
+              {
+                x: "Bar 6",
+                y: 0
+              }
+            ]
+          },
+          altResponses: []
+        },
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "charts",
+      cardImage: LinePlot,
+      data: {
+        title: "Line Plot - Number Line",
+        type: questionType.GRAPH,
+        stimulus: "Enter your question",
+        firstMount: true,
+        graphType: "numberLinePlot",
+        canvas: {
+          xMax: 10,
+          xMin: 0,
+          yMax: 10,
+          yMin: 0,
+          numberline: true,
+          margin: 75,
+          title: ""
+        },
+        controlbar: {
+          controls: ["undo", "redo", "clear", "trash"],
+          defaultControl: "undo"
+        },
+        toolbar: {
+          tools: [],
+          defaultTool: null
+        },
+        sampleAnswer: "",
+        numberlineAxis: {
+          leftArrow: true,
+          rightArrow: true,
+          showTicks: true,
+          snapToTicks: true,
+          ticksDistance: 1,
+          showMin: true,
+          showMax: true,
+          fontSize: 12,
+          labelShowMax: true,
+          labelShowMin: true,
+          minorTicks: 1,
+          showLabels: true,
+          stackResponses: false,
+          stackResponsesSpacing: 30,
+          renderingBase: "min-value-based",
+          specificPoints: ""
+        },
+        uiStyle: {
+          gridVisible: false,
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: "numerical",
+          currentFontSize: "normal",
+          xShowAxisLabel: false,
+          xHideTicks: true,
+          xDrawLabel: false,
+          xMaxArrow: false,
+          xMinArrow: false,
+          xVisible: false,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yDrawLabel: false,
+          yMaxArrow: false,
+          yMinArrow: false,
+          yCommaInLabel: false,
+          yVisible: false,
+          xDistance: 0.5,
+          yDistance: 0.5,
+          xTickDistance: 1,
+          yTickDistance: 0,
+          layoutWidth: 600,
+          layoutHeight: 440,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
+          xAxisLabel: "X",
+          yAxisLabel: "Y",
+          titlePosition: 15,
+          linePosition: 80,
+          pointBoxPosition: 60,
+          pointFace: "cross",
+          pointSize: 6,
+          pointStrokeWidth: 4
+        },
+        backgroundImage: {
+          src: "",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: false
+        },
+        background_shapes: [],
+        multipleResponses: false,
+        validation: {
+          graphType: "axisSegments",
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: []
+          },
+          altResponses: [],
+          rounding: "none"
+        },
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType

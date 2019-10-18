@@ -81,7 +81,7 @@ class Scoring extends Component {
           <Subtitle margin={noPaddingLeft ? "0 0 29px -30px" : null}>{t("component.options.scoring")}</Subtitle>
         )}
         {isAutoMarkBtnVisible && (
-          <Row>
+          <Row gutter={60}>
             <Col md={12}>
               <Checkbox
                 data-cy="autoscoreChk"
@@ -92,61 +92,48 @@ class Scoring extends Component {
                 {t("component.options.automarkable")}
               </Checkbox>
             </Col>
+            {isAutomarkChecked && (
+              <Col md={12}>
+                <Checkbox
+                  data-cy="unscoredChk"
+                  checked={questionData.validation.unscored}
+                  onChange={e => handleChangeValidation("unscored", e.target.checked)}
+                  size="large"
+                >
+                  {t("component.options.unscored")}
+                </Checkbox>
+              </Col>
+            )}
           </Row>
         )}
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            <Col md={11}>
-              <Checkbox
-                data-cy="unscoredChk"
-                checked={questionData.validation.unscored}
-                onChange={e => handleChangeValidation("unscored", e.target.checked)}
-                size="large"
-              >
-                {t("component.options.unscored")}
-              </Checkbox>
+            <Col md={12}>
+              <Row>
+                {scoringTypes.length > 1 && showSelect && (
+                  <React.Fragment>
+                    <Col md={24} style={{ margin: 0 }}>
+                      <Label>{t("component.options.scoringType")}</Label>
+                    </Col>
+                    <Col md={24}>
+                      <SelectWrapper
+                        size="large"
+                        data-cy="scoringType"
+                        value={questionData.validation.scoringType}
+                        onChange={value => handleChangeValidation("scoringType", value)}
+                      >
+                        {scoringTypes.map(({ value: val, label }) => (
+                          <Select.Option data-cy={val} key={val} value={val}>
+                            {label}
+                          </Select.Option>
+                        ))}
+                      </SelectWrapper>
+                    </Col>
+                  </React.Fragment>
+                )}
+              </Row>
             </Col>
-            <Col md={13}>
-              <FormGroup center>
-                <Input
-                  type="number"
-                  data-cy="penalty"
-                  value={questionData.validation.penalty}
-                  onChange={e => handleChangeValidation("penalty", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.penalty")}</Label>
-              </FormGroup>
-            </Col>
-          </Row>
-        )}
-
-        {isAutomarkChecked && showSelect && (
-          <Row gutter={60}>
-            {scoringTypes.length > 1 && (
-              <React.Fragment>
-                <Col md={24} style={{ margin: 0 }}>
-                  <Label>{t("component.options.scoringType")}</Label>
-                </Col>
-                <Col md={12}>
-                  <SelectWrapper
-                    size="large"
-                    data-cy="scoringType"
-                    value={questionData.validation.scoringType}
-                    onChange={value => handleChangeValidation("scoringType", value)}
-                  >
-                    {scoringTypes.map(({ value: val, label }) => (
-                      <Select.Option data-cy={val} key={val} value={val}>
-                        {label}
-                      </Select.Option>
-                    ))}
-                  </SelectWrapper>
-                </Col>
-              </React.Fragment>
-            )}
-
             {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>
                 <Label>{t("component.options.rounding")}</Label>
@@ -163,6 +150,25 @@ class Scoring extends Component {
                 </SelectWrapper>
               </Col>
             )}
+            <Col md={12}>
+              <Row>
+                <Col md={24} style={{ margin: 0 }}>
+                  <Label>{t("component.options.penalty")}</Label>
+                </Col>
+                <Col md={24}>
+                  <FormGroup center>
+                    <Input
+                      type="number"
+                      data-cy="penalty"
+                      value={questionData.validation.penalty}
+                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                      size="large"
+                      style={{ width: "100%", borderColor: "#E1E1E1" }}
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+            </Col>
           </Row>
         )}
 

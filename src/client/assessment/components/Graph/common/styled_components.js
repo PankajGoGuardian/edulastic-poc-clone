@@ -14,7 +14,7 @@ import {
   mediumDesktopExactWidth,
   smallDesktopWidth
 } from "@edulastic/colors";
-import { TextField, Paper } from "@edulastic/common";
+import { TextField } from "@edulastic/common";
 import { StyledPaperWrapper } from "../../../styled/Widget";
 
 const createStandardTextSet = element => styled(element)`
@@ -404,6 +404,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   justify-content: space-between;
   min-height: 90px;
   padding: 0 0 10px 0;
+  font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
   background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
 
   ul {
@@ -446,7 +447,7 @@ export const ToolbarItem = styled.div`
 `;
 
 export const ToolbarItemLabel = createStandardTextSet(styled.span`
-  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)}
+  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)};
   font-weight: 600;
   line-height: 19px;
 `);
@@ -475,7 +476,7 @@ export const ToolBtn = styled.li`
   display: inline-block;
   line-height: 1.5em;
   transition: background-color 0.1s ease-in;
-  xuser-select: none;
+  user-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
 
   svg {

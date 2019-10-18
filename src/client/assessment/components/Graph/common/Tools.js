@@ -123,6 +123,16 @@ export default function Tools(props) {
 
         return <IconRedo {...newOptions} />;
       },
+      clear: () => {
+        const newOptions = {
+          ...options,
+          stroke: "transparent !important",
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconEraseText {...newOptions} />;
+      },
       reset: () => {
         const newOptions = {
           ...options,
@@ -132,6 +142,15 @@ export default function Tools(props) {
         };
 
         return <IconEraseText {...newOptions} />;
+      },
+      trash: () => {
+        const newOptions = {
+          ...options,
+          stroke: "transparent !important",
+          height: height + 5
+        };
+
+        return <IconTrash {...newOptions} />;
       },
       delete: () => {
         const newOptions = {

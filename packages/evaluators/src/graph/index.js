@@ -10,6 +10,7 @@ const evaluator = async ({ userResponse = [], validation }) => {
     case GraphTypes.AXIS_LABELS:
       return axisLabelsEvaluator({ userResponse, validation });
     case GraphTypes.AXIS_SEGMENTS:
+    case GraphTypes.NUMBERLINE_PLOT:
       return axisSegmentsEvaluator({ userResponse, validation });
     case GraphTypes.QUADRANTS:
     case GraphTypes.FIRST_QUADRANT:

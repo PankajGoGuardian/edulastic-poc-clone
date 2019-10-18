@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { CorrectAnswersContainer, Paper, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
+import { CorrectAnswersContainer, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 
 import { compose } from "redux";
 import styled from "styled-components";
@@ -12,10 +12,11 @@ import { ContentArea } from "../../styled/ContentArea";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
 import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
+import NumberLinePlotOptions from "./Authoring/NumberLinePlotOptions";
 import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions";
 import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
 import AxisSmallSize from "./components/AxisSmallSize";
-import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
+import { AxisSegments, GraphAxisLabels, GraphQuadrants, NumberLinePlot } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { QuestionTitleWrapper } from "./common/styled_components";
@@ -69,6 +70,8 @@ class Graph extends Component {
     switch (graphType) {
       case "axisSegments":
         return AxisSegments;
+      case "numberLinePlot":
+        return NumberLinePlot;
       case "axisLabels":
         return GraphAxisLabels;
       case "quadrants":
@@ -86,6 +89,8 @@ class Graph extends Component {
     switch (graphType) {
       case "axisSegments":
         return AxisSegmentsOptions; // number line with plot
+      case "numberLinePlot":
+        return NumberLinePlotOptions;
       case "axisLabels": // numberline drag drop
         return AxisLabelsOptions;
       case "quadrants":
@@ -105,6 +110,8 @@ class Graph extends Component {
         return this.getAxisSegmentsOptionsProps();
       case "axisLabels":
         return this.getAxisLabelsOptionsProps();
+      case "numberLinePlot":
+        return this.getAxisLinePlotOptionsProps();
       case "quadrants":
       case "firstQuadrant":
       case "quadrantsPlacement":
@@ -156,6 +163,22 @@ class Graph extends Component {
       setNumberline: this.handleNumberlineChange,
       setCanvas: this.handleCanvasChange,
       setControls: this.handleToolbarChange,
+      graphData: item,
+      fillSections,
+      cleanSections,
+      advancedAreOpen,
+      setValidation: this.handleValidationChange
+    };
+  };
+
+  getAxisLinePlotOptionsProps = () => {
+    const { item, fillSections, cleanSections, advancedAreOpen } = this.props;
+
+    return {
+      setOptions: this.handleOptionsChange,
+      setNumberline: this.handleNumberlineChange,
+      setCanvas: this.handleCanvasChange,
+      setControls: this.handleControlbarChange,
       graphData: item,
       fillSections,
       cleanSections,
@@ -340,7 +363,7 @@ class Graph extends Component {
                   handleNumberlineChange={this.handleNumberlineChange}
                 />
               </Question>
-              {graphType !== "firstQuadrant" && graphType !== "quadrants" && (
+              {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
                 <Question
                   section="main"
                   label="Annotations"

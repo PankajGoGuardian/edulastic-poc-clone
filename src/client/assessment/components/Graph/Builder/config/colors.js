@@ -137,5 +137,9 @@ export default {
       fillColor: "#1fe3a1",
       highlightFillColor: "#1fe3a1"
     }
+  },
+  numberline: {
+    strokeColor: "#434b5d",
+    highlightStrokeColor: "#434b5d"
   }
 };

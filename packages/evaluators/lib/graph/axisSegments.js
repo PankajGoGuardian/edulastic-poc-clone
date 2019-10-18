@@ -37,6 +37,9 @@ var shapesAreEqual = function shapesAreEqual(shape1, shape2) {
         (shape1.point1 === shape2.point2 && shape1.point2 === shape2.point1)
       );
 
+    case _constants.AxisSegmentsShapeTypes.NUMBERLINE_PLOT_POINT:
+      return shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2;
+
     default:
       return false;
   }

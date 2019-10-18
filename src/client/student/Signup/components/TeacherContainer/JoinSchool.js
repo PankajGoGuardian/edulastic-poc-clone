@@ -15,8 +15,8 @@ import {
   fadedGreen,
   cardBg,
   mobileWidthMax,
-  mobileWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
@@ -377,25 +377,31 @@ const BannerText = styled(Col)`
   text-align: center;
   h3 {
     font-size: 40px;
+    font-weight: 600;
+    color: ${title};
     line-height: 1.3;
     letter-spacing: -2px;
     margin-top: 0px;
     margin-bottom: 15px;
-    color: ${title};
   }
   h5 {
-    font-size: 13px;
+    font-size: 24px;
     margin-top: 10px;
     color: ${title};
   }
 
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    h3 {
+      font-size: 36px;
+    }
+    h5 {
+      font-size: 16px;
+    }
+  }
   @media (max-width: ${mobileWidthMax}) {
     margin-bottom: 30px;
     h3 {
       font-weight: 400;
-    }
-    h5 {
-      font-size: 16px;
     }
   }
 `;
@@ -435,7 +441,7 @@ const AnchorBtn = styled.div`
   border-bottom: 2px ${themeColor} solid;
   font-weight: 600;
   padding-bottom: 2px;
-  font-size: 12px;
+  font-size: 11px;
   margin-left: 16px;
   user-select: none;
   cursor: pointer;

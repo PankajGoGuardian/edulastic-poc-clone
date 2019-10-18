@@ -21,4 +21,5 @@ export const WidgetContainer = styled.div`
   display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
   flex-wrap: wrap;
   align-items: center;
+  padding-top: 20px;
 `;

@@ -132,10 +132,10 @@ const TeacherCount = styled.div`
 const CardWrapper = styled.div`
   display: flex;
   align-items: center;
-  width: 60px;
+  width: 50px;
   img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
   }
 `;
@@ -143,10 +143,15 @@ const CardWrapper = styled.div`
 const TeacherInfo = styled.div`
   display: flex;
   flex-direction: column;
+  font-size: 12px;
 `;
 
 const TeacherName = styled.div`
   font-weight: 500;
+  max-width: 49px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const SchoolInfo = styled.div`
@@ -159,17 +164,18 @@ const SchoolInfo = styled.div`
 const SchoolName = styled.div``;
 
 const CircleMark = styled.div`
-  height: 60px;
-  width: 60px;
+  height: 50px;
+  width: 50px;
   background: ${fadedGreen};
   border-radius: 50%;
   border: 2px ${themeColor} solid;
   color: ${themeColor};
-  font-size: 32px;
+  font-size: 25px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0px auto;
 `;
 
 const ArrowBtn = styled(Button)`

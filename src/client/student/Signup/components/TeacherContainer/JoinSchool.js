@@ -376,10 +376,9 @@ const FlexWrapper = styled(Row)`
 const BannerText = styled(Col)`
   text-align: center;
   h3 {
-    font-size: 36px;
+    font-size: 40px;
     line-height: 1.3;
     letter-spacing: -2px;
-    font-weight: 700;
     margin-top: 0px;
     margin-bottom: 15px;
     color: ${title};

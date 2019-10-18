@@ -143,7 +143,13 @@ export const SimpleStackedBarChart = ({
 
   const onXAxisTickTooltipMouseOver = payload => {
     const { coordinate } = payload;
-    const content = getXTickText(payload, chartData);
+    let content;
+    if (getXTickText) {
+      content = getXTickText(payload, chartData);
+    } else {
+      content = payload.value;
+    }
+
     data = {
       visibility: "visible",
       x: `${calculateXCoordinateOfXAxisToolTip(coordinate, xTickToolTipWidth)}px`,

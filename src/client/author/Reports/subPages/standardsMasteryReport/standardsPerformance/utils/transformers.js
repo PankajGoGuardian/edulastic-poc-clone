@@ -1,5 +1,5 @@
 import next from "immer";
-import { groupBy, sumBy, round, forEach, get, maxBy, find, map, orderBy, includes, filter, ceil } from "lodash";
+import { groupBy, sumBy, round, forEach, get, maxBy, find, map, orderBy, includes, filter } from "lodash";
 import { ceilingPercentage, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
 
 const analyseKeys = {
@@ -34,6 +34,27 @@ export const getTicks = maxScore => {
   return ticks;
 };
 
+export const getLeastMasteryLevel = (scaleInfo = []) =>
+  orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
+
+export const getOverallMasteryScore = records =>
+  records.length ? round(sumBy(records, "fmSum") / sumBy(records, domain => parseInt(domain.fmCount, 10)), 2) : 0;
+
+export const getMasteryLevel = (score, scaleInfo) => {
+  for (const obj of scaleInfo) {
+    if (round(score) === obj.score) {
+      return obj || getLeastMasteryLevel(scaleInfo);
+    }
+  }
+
+  return getLeastMasteryLevel(scaleInfo);
+};
+
+const getRecordMasteryLevel = (records, scaleInfo) => {
+  const score = getOverallMasteryScore(records);
+  return getMasteryLevel(score, scaleInfo);
+};
+
 export const getOptionFromKey = (options, key) => find(options, option => option.key === key) || options[0];
 
 export const getMaxMasteryScore = (scaleInfo = []) => {
@@ -42,7 +63,7 @@ export const getMaxMasteryScore = (scaleInfo = []) => {
 };
 
 export const getMasteryLevelOptions = scaleInfo => {
-  let options = [
+  const options = [
     { key: "all", title: "All" },
     ...map(scaleInfo, masteryLevel => ({
       key: masteryLevel.masteryLabel,
@@ -65,11 +86,11 @@ export const groupedByDomain = (metricInfo = [], maxScore, scaleInfo = [], selec
       const domainMetaInformation = find(rawDomainData, rawDomain => rawDomain.tloId === domainId);
 
       return {
-        domainId: domainId,
+        domainId,
         domainName: domainMetaInformation ? domainMetaInformation.tloIdentifier : "",
-        masteryScore: masteryScore,
+        masteryScore,
         diffMasteryScore: maxScore - round(masteryScore, 2),
-        score: score,
+        score,
         rawScore,
         masteryLevel,
         records: domainData,
@@ -154,14 +175,9 @@ export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleI
 // Table column related utils
 export const getScore = record => ceilingPercentage(record.totalScore, record.maxScore);
 export const getOverallScore = records => ceilingPercentage(sumBy(records, "totalScore"), sumBy(records, "maxScore"));
-export const getMasteryScore = record => round(record.fmSum / parseInt(record.fmCount), 2);
+export const getMasteryScore = record => round(record.fmSum / parseInt(record.fmCount, 10), 2);
 export const getMasteryScoreColor = (domain, scaleInfo) => getMasteryLevel(getMasteryScore(domain), scaleInfo).color;
 export const getAnalyseByTitle = key => analyseKeys[key] || "";
-export const getLeastMasteryLevel = (scaleInfo = []) =>
-  orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
-
-export const getOverallMasteryScore = records =>
-  records.length ? round(sumBy(records, "fmSum") / sumBy(records, domain => parseInt(domain.fmCount)), 2) : 0;
 
 export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
   switch (analyseByKey) {
@@ -176,21 +192,6 @@ export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
     default:
       return analyseByKey;
   }
-};
-
-export const getMasteryLevel = (score, scaleInfo) => {
-  for (const obj of scaleInfo) {
-    if (ceil(score) >= obj.score) {
-      return obj || getLeastMasteryLevel(scaleInfo);
-    }
-  }
-
-  return getLeastMasteryLevel(scaleInfo);
-};
-
-const getRecordMasteryLevel = (records, scaleInfo) => {
-  const score = getOverallMasteryScore(records);
-  return getMasteryLevel(score, scaleInfo);
 };
 
 export const getParsedData = (
@@ -209,7 +210,7 @@ export const getParsedData = (
 };
 
 export const getDropDownData = (orgData = [], role = "") => {
-  let groupdIds = processGroupIds(orgData);
+  const groupdIds = processGroupIds(orgData);
 
   let dropDownDataOptions = [];
 

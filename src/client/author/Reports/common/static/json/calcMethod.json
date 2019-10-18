@@ -1,30 +1,9 @@
-[
-  {
-    "calcMethod": 1,
-    "calcType": "Most Recent"
-  },
-  {
-    "calcMethod": 2,
-    "calcType": "Simple Average"
-  },
-  {
-    "calcMethod": 3,
-    "calcType": "Max Score"
-  },
-  {
-    "calcMethod": 4,
-    "calcType": "Power Law"
-  },
-  {
-    "calcMethod": 5,
-    "calcType": "Mode Score"
-  },
-  {
-    "calcMethod": 6,
-    "calcType": "Decaying Average"
-  },
-  {
-    "calcMethod": 7,
-    "calcType": "Moving Average"
-  }
-]
+{
+  "MOST_RECENT": "Most Recent",
+  "MAX_SCORE": "Max Score",
+  "MODE_SCORE": "Mode Score",
+  "AVERAGE": "Simple Average",
+  "DECAYING_AVERAGE": "Decaying Average",
+  "MOVING_AVERAGE": "Moving Average",
+  "POWER_LAW": "Power Law"
+}

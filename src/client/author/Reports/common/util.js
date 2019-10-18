@@ -1,7 +1,7 @@
 import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
-import calcMethod from "./static/json/calcMethod";
 import next from "immer";
 import moment from "moment";
+import calcMethod from "./static/json/calcMethod";
 
 export const testTypeHashMap = {
   common: "common",
@@ -236,7 +236,7 @@ export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) 
   const scoreAvg = round(percentage(obtainedScoreTotal, maxScoreTotal)) || 0;
   const overallScale = scaleInfo.find(s => s.score === round(studentStandardData[0]?.fm || 1));
   const overallStandardBasedScore = `${overallScale?.score || ""}(${overallScale?.masteryLabel || ""})`;
-  const calcType = calcMethod.find(method => method.calcMethod === overallScale?.calcMethod)?.calcType || "";
+  const calcType = calcMethod[(overallScale?.calcType)] || "";
   const overallAssessmentName = `Current Mastery (${calcType})`;
 
   const overallAssignmentDetail = {

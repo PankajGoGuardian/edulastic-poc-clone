@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { questionType } from "@edulastic/constants";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 
 // selectors
 export const answersSelector = state => state.answers;
@@ -53,9 +53,10 @@ export const attemptSummarySelector = createSelector(
   }
 );
 
-export const QuestionsLeftToAttemptSelector = createSelector(
-  attemptSummarySelector,
-  ({ blocks }) => {
-    return Object.values(blocks).filter(_o => !_o).length;
+export const unansweredQuestionCountSelector = createSelector(
+  itemsSelector,
+  answersSelector,
+  (items, answers) => {
+    return items.length - Object.keys(answers).filter(_o => answers[_o] && !isEmpty(answers[_o])).length;
   }
 );

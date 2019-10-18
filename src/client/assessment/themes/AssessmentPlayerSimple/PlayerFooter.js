@@ -16,7 +16,7 @@ const PlayerFooter = ({
   t,
   settings,
   answerChecksUsedForItem,
-  questionsLeftToAttemptCount,
+  unansweredQuestionCount,
   onShowHints,
   showHints,
   questions
@@ -36,7 +36,7 @@ const PlayerFooter = ({
         <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
           <span>
             <IconCorrect color={themeColor} />
-            {questionsLeftToAttemptCount} Left
+            {unansweredQuestionCount} Left
           </span>
         </QuestionsLeftToAttempt>
         {!!showHintButton(questions) && (

@@ -19,7 +19,7 @@ import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
 import { getZoomedTheme } from "../../../student/zoomTheme";
 import { playersZoomTheme } from "../assessmentPlayersTheme";
-import { QuestionsLeftToAttemptSelector } from "../../../student/TestAttemptReview/ducks";
+import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -79,7 +79,7 @@ class AssessmentPlayerSimple extends React.Component {
       settings,
       selectedTheme,
       zoomLevel,
-      questionsLeftToAttemptCount
+      unansweredQuestionCount
     } = this.props;
     const { showExitPopup } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -115,7 +115,7 @@ class AssessmentPlayerSimple extends React.Component {
             items={items}
             settings={settings}
             t={t}
-            questionsLeftToAttemptCount={questionsLeftToAttemptCount}
+            unansweredQuestionCount={unansweredQuestionCount}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>
@@ -133,7 +133,7 @@ export default connect(
     answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
     zoomLevel: state.ui.zoomLevel,
     selectedTheme: state.ui.selectedTheme,
-    questionsLeftToAttemptCount: QuestionsLeftToAttemptSelector(state)
+    unansweredQuestionCount: unansweredQuestionCountSelector(state)
   }),
   {
     checkAnswer: checkAnswerEvaluation

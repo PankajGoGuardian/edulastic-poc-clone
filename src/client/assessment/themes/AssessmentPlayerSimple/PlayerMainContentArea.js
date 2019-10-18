@@ -27,7 +27,7 @@ const PlayerContentArea = ({
   answerChecksUsedForItem,
   settings,
   t,
-  questionsLeftToAttemptCount,
+  unansweredQuestionCount,
   items,
   theme
 }) => {
@@ -63,7 +63,7 @@ const PlayerContentArea = ({
           onShowHints={() => setShowHints(showHint => !showHint)}
           questions={item?.data?.questions || []}
           t={t}
-          questionsLeftToAttemptCount={questionsLeftToAttemptCount}
+          unansweredQuestionCount={unansweredQuestionCount}
         />
       </MainWrapper>
 

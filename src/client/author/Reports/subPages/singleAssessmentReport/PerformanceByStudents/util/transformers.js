@@ -174,7 +174,9 @@ export const getSorter = (columnType, columnKey) => {
     case "string":
       return (a, b) => a[columnKey].localeCompare(b[columnKey]);
     case "name":
-      return (a, b) => a["lastName"].localeCompare(b["lastName"]);
+      // primary sort is on lastName & secondary sort is on firstName
+      return (a, b) =>
+        (a.lastName || "").localeCompare(b.lastName || "") || (a.firstName || "").localeCompare(b.firstName || "");
     default:
       return null;
   }

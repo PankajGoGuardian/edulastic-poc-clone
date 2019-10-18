@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { fadedBlack } from "@edulastic/colors";
-import { StyledTable as Table } from "../../../../common/styled";
 import { ResponsiveContainer } from "recharts";
+import { StyledTable as Table } from "../../../../common/styled";
 
 export const NonSelectableResponsiveContainer = styled(ResponsiveContainer)`
   .recharts-surface {
@@ -50,11 +50,12 @@ export const StyledTable = styled(Table)`
             text-align: right;
           }
           td:nth-last-child(-n + ${props => props.colouredCellsNo}) {
-            padding: 0px;
             div {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
               height: 100%;
               width: 100%;
-              padding: 10px;
             }
           }
         }

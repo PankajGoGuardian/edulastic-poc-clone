@@ -989,7 +989,9 @@ class ClassBoard extends Component {
                         <Select
                           style={{ width: "200px" }}
                           value={
-                            allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId)
+                            allTestActivitiesForStudent.some(
+                              ({ _id }) => _id === (currentTestActivityId || testActivityId)
+                            )
                               ? currentTestActivityId || testActivityId
                               : ""
                           }
@@ -1002,8 +1004,14 @@ class ClassBoard extends Component {
                           }}
                         >
                           {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
-                            <Select.Option key={index} value={testActivityId}>
-                              {`Attempt ${allTestActivitiesForStudent.length - index}`}
+                            <Select.Option
+                              key={index}
+                              value={testActivityId._id}
+                              disabled={testActivityId.status === 2}
+                            >
+                              {`Attempt ${allTestActivitiesForStudent.length - index} ${
+                                testActivityId.status === 2 ? " (Absent)" : ""
+                              }`}
                             </Select.Option>
                           ))}
                         </Select>

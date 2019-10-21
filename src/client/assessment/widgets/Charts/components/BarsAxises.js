@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Text } from "@vx/text";
 
-import { Line, Text } from "../styled";
+import { Line } from "../styled";
 import { getGridVariables } from "../helpers";
 
 const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, setHeightAddition, heightAddition }) => {
@@ -35,13 +37,11 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, set
       {lines.map((dot, index) => (
         <Fragment>
           {displayAxisLabel && (
-            <Text textAnchor="middle" x={getConstantX(index)} y={height + 10}>
-              {getParts(index).map((text, ind) => (
-                <tspan dy="1.2em" x={getConstantX(index)} key={ind}>
-                  {text}
-                </tspan>
-              ))}
-            </Text>
+            <g transform={`translate(${getConstantX(index)}, ${height})`}>
+              <StyledText textAnchor="middle" verticalAnchor="start" width={70}>
+                {lines[index].x}
+              </StyledText>
+            </g>
           )}
           {displayGridlines && (
             <Line
@@ -81,5 +81,10 @@ BarsAxises.defaultProps = {
   heightAddition: 19,
   setHeightAddition: () => {}
 };
+
+const StyledText = styled(Text)`
+  user-select: none;
+  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+`;
 
 export default BarsAxises;

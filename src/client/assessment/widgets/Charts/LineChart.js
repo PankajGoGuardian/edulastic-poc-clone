@@ -30,7 +30,7 @@ const LineChart = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
-  margin = { top: 10, right: 10, left: 10, bottom: 50 }
+  margin = { top: 10, right: 10, left: 10, bottom: 52 }
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams;
 

@@ -341,10 +341,16 @@ export const DragDropValuesContainer = styled.div`
 
   .drag-drop-value {
     background: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
+    white-space: nowrap;
     border-radius: 4px;
     padding: 0 5px;
     display: flex !important;
     overflow: hidden;
+
+    p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
 
     img.fr-dii {
       max-height: 50px !important;

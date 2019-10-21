@@ -130,6 +130,7 @@ const getColumns = (
       title: "Trend",
       dataIndex: "tests",
       width: 150,
+      align: "center",
       visibleOn: ["browser"],
       render: (tests, record) => {
         const augmentedTests = map(tests, (test, testId) => {
@@ -153,6 +154,7 @@ const getColumns = (
       title: "Trend",
       dataIndex: "trend",
       width: 0,
+      align: "center",
       visibleOn: ["csv"],
       render: (trend, record) => capitalize(trend)
     }

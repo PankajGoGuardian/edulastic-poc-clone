@@ -8,7 +8,7 @@ import { trendTypes } from "../../utils/constants";
 
 const TrendColumn = ({ tests, type }) => {
   if (tests.length < 2 || type === "No Trend") {
-    return <StyledCell>No Trend</StyledCell>;
+    return "No Trend";
   }
 
   return (

@@ -23,7 +23,7 @@ const PlayerFooter = ({
 }) => {
   return (
     <MainFooter>
-      <FlexContainer>
+      <TopFlexContainer>
         <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
           <i className="fa fa-angle-left" />
         </PrevButton>
@@ -31,7 +31,7 @@ const PlayerFooter = ({
           <i className="fa fa-angle-right" />
           <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
         </ControlBtn>
-      </FlexContainer>
+      </TopFlexContainer>
       <StyledFlexContainer>
         <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
           <span>
@@ -76,6 +76,10 @@ const MainFooter = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;
   }
+
+  ${({ theme }) => theme.zoomedCss`
+    flex-wrap: wrap;
+  `}
 `;
 
 const CounterCircle = styled.div`
@@ -151,8 +155,28 @@ const QuestionsLeftToAttempt = styled(ControlBtn)`
   color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptTextColor};
 `;
 
+const TopFlexContainer = styled(FlexContainer)`
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-bottom: 10px;
+  }
+
+  ${({ theme }) => theme.zoomedCss`
+    margin-bottom: 10px;
+  `}
+`;
+
 const StyledFlexContainer = styled(FlexContainer)`
   @media (max-width: ${largeDesktopWidth}) {
-    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
+
+  ${({ theme }) => theme.zoomedCss`
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    & > button {
+      margin: 0px 10px 10px 0px;
+    }
+  `}
 `;

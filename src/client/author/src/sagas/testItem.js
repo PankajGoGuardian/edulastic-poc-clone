@@ -143,7 +143,7 @@ function* evaluateAnswers({ payload }) {
       });
       const previewMode = yield select(state => _get(state, "view.preview", null));
       if (previewMode === CHECK) {
-        message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
+        message.success(`score: ${score ? +score.toFixed(2) : 0}/${maxScore}`);
       }
     }
   } catch (err) {

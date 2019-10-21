@@ -4,9 +4,9 @@ import styled from "styled-components";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
-const ProgressContainer = ({ questions, current, desktop }) => {
+const ProgressContainer = ({ questions, current, desktop, isZoomed = true }) => {
   return (
-    <Container desktop={desktop}>
+    <Container desktop={desktop} isZoomed={isZoomed}>
       <CompletedItems data-cy="progressItem">
         {current} / {questions.length} Completed
       </CompletedItems>
@@ -31,7 +31,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: auto;
-  max-width: 425px;
+  max-width: ${({ isZoomed }) => (isZoomed ? 300 : 425)}px;
+
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     width: 100%;
     margin-left: 0;

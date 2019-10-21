@@ -8,6 +8,7 @@ import { boxShadowDefault } from "@edulastic/colors";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 
 import ProgressContainer from "./ProgressContainer";
+import { ifZoomed } from "../../../common/utils/helpers";
 
 const PlayerHeader = ({
   title,
@@ -21,6 +22,9 @@ const PlayerHeader = ({
   showSubmit,
   onSubmit
 }) => {
+  const isZoomed = ifZoomed(theme?.zoomLevel);
+  const InnerContainer = isZoomed ? HeaderInnerContainer : Fragment;
+
   return (
     <Fragment>
       <HeaderPracticePlayer>
@@ -28,35 +32,42 @@ const PlayerHeader = ({
           <LogoCompact color={"#fff"} />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
-          <FlexContainer>
+          <HeaderFlexContainer>
             <PlayerTitle>{title}</PlayerTitle>
-            <ProgressContainer questions={dropdownOptions} current={currentItem + 1} desktop={"true"} />
-            <ContainerRight>
-              <FlexDisplay>
-                {showSubmit && (
-                  <Save onClick={onSubmit} title="Submit">
-                    <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+            <InnerContainer>
+              <ProgressContainer
+                questions={dropdownOptions}
+                current={currentItem + 1}
+                desktop={"true"}
+                isZoomed={isZoomed}
+              />
+              <ContainerRight>
+                <FlexDisplay>
+                  {showSubmit && (
+                    <Save onClick={onSubmit} title="Submit">
+                      <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                    </Save>
+                  )}
+                  <Save onClick={onSaveProgress} title="Save">
+                    <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
-                )}
-                <Save onClick={onSaveProgress} title="Save">
-                  <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                </Save>
-                {onPause && (
-                  <Save onClick={onPause} title="Pause">
-                    <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                  {onPause && (
+                    <Save onClick={onPause} title="Pause">
+                      <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                    </Save>
+                  )}
+                  {!onPause && (
+                    <StyledLink to="/home/assignments">
+                      <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                    </StyledLink>
+                  )}
+                  <Save onClick={onOpenExitPopup} title="Exit">
+                    <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                   </Save>
-                )}
-                {!onPause && (
-                  <StyledLink to="/home/assignments">
-                    <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                  </StyledLink>
-                )}
-                <Save onClick={onOpenExitPopup} title="Exit">
-                  <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                </Save>
-              </FlexDisplay>
-            </ContainerRight>
-          </FlexContainer>
+                </FlexDisplay>
+              </ContainerRight>
+            </InnerContainer>
+          </HeaderFlexContainer>
           <Mobile>
             <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
           </Mobile>
@@ -103,6 +114,13 @@ const PlayerTitle = styled.h1`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  ${({ theme }) => theme.zoomedCss`
+    max-width: calc(100% - 45px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `}
 `;
 const Save = styled.div`
   background: ${props => props.theme.headerIconBgColor};
@@ -139,6 +157,9 @@ const ContainerRight = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   display: flex;
   margin-left: 40px;
+  ${({ theme }) => theme.zoomedCss`
+    margin-left: auto;
+  `}
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     margin-left: auto;
   }
@@ -152,4 +173,15 @@ const HeaderPracticePlayer = styled(Header)`
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;
   }
+`;
+
+const HeaderFlexContainer = styled(FlexContainer)`
+  ${({ theme }) => theme.zoomedCss`
+    flex-direction: column;
+  `}
+`;
+
+const HeaderInnerContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
 `;

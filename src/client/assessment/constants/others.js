@@ -39,8 +39,8 @@ export const IPAD_PORTRAIT_WIDTH = 768;
 export const MAX_MOBILE_WIDTH = 468;
 export const headerOffsetHashMap = {
   xs: 70,
-  sm: 85,
-  md: 95,
-  lg: 105,
-  xl: 115
+  sm: 120,
+  md: 135,
+  lg: 150,
+  xl: 200
 };

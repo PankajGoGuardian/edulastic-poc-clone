@@ -348,7 +348,7 @@ class ClassHeader extends Component {
             <StyledParaSecond>
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-              <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("D MMMM YYYY")})`}</div>
+              <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("MMM DD, YYYY")})`}</div>
             </StyledParaSecond>
           </div>
         </StyledTitle>

@@ -1077,7 +1077,7 @@ class ClassBoard extends Component {
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {`SUBMITTED ON : `}
                         <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("DD MMMM, YYYY")}
+                          {moment(studentTestActivity.endDate).format("MMM DD, YYYY")}
                         </span>
                       </ScoreHeader>
                     </InfoWrapper>

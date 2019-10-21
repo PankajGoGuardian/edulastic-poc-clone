@@ -70,14 +70,14 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
           <Col span={12}>
             <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
             <InfoContent span={16} info>
-              {startDate && moment(startDate).format("DD MMM,YYYY")}
+              {startDate && moment(startDate).format("MMM DD, YYYY")}
             </InfoContent>
           </Col>
 
           <Col span={12}>
             <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
             <InfoContent span={16} info>
-              {endDate && moment(endDate).format("DD MMM,YYYY")}
+              {endDate && moment(endDate).format("MMM DD, YYYY")}
             </InfoContent>
           </Col>
 

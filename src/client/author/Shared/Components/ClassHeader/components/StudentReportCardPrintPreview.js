@@ -86,7 +86,7 @@ const StudentReportCardPrintPreview = props => {
             <p className="test-name">{testData.title}</p>
             <Row className="student-report-card-key-value" type="flex" justify="start">
               <Col className="student-report-card-key">Date: </Col>
-              <Col className="student-report-card-value">{Moment(testData.createdDate).format("Do MMMM YYYY")}</Col>
+              <Col className="student-report-card-value">{Moment(testData.createdDate).format("MMM DD, YYYY")}</Col>
             </Row>
             <Row className="student-report-card-key-value" type="flex" justify="start">
               <Col className="student-report-card-key">Mastery: </Col>

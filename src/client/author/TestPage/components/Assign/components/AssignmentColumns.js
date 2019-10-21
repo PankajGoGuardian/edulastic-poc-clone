@@ -6,7 +6,7 @@ import * as moment from "moment";
 import ClassCell from "./ClassCell";
 import { generate } from "mqtt-packet";
 
-const formatDate = date => moment(date).format("MM-DD-YYYY");
+const formatDate = date => moment(date).format("MMM DD, YYYY");
 const generateAssignmentColumns = group => [
   {
     title: "Class Name",

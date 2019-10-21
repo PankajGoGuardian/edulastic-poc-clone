@@ -41,6 +41,12 @@ const Options = ({
   const mcqOptions = uiStyle.orientation !== "vertical" ? options : updateArrangement(options);
 
   let _startIndex = 0;
+  const optionsIndexMap = {};
+  if (uiStyle.orientation === "vertical") {
+    options.forEach((data, i) => {
+      optionsIndexMap[data.value] = i;
+    });
+  }
 
   const getOption = (startIndex, lastIndex) => (
     <FlexContainer
@@ -51,7 +57,7 @@ const Options = ({
         <Option
           maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
           key={option.value}
-          index={startIndex + index}
+          index={uiStyle.orientation !== "vertical" ? startIndex + index : optionsIndexMap[option.value]}
           uiStyle={uiStyle}
           item={option}
           validation={validation}

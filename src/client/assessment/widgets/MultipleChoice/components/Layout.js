@@ -62,6 +62,7 @@ class Layout extends Component {
     ];
 
     const labelTypeOptions = [
+      { value: "none", label: "\u00A0" },
       { value: "number", label: t("component.options.numerical") },
       {
         value: "upper-alpha",
@@ -128,28 +129,10 @@ class Layout extends Component {
             <FontSizeSelect onChange={fontsize => changeUiStyle("fontsize", fontsize)} value={uiStyle.fontsize} />
           </Col>
         </Row>
-        <Row gutter={60}>
-          <Col md={12}>
-            <Label>{t("component.options.stemNumeration")}</Label>
-            <Select
-              size="large"
-              style={{ width: "100%" }}
-              onChange={val => changeUiStyle("stemNumeration", val)}
-              value={uiStyle.stemNumeration}
-              data-cy="stemNum"
-            >
-              {stemNumerationLayout.map(option => (
-                <Select.Option data-cy={option.value} key={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-        </Row>
         {uiStyle.type === "block" && (
           <Row gutter={60}>
             <Col md={12}>
-              <Label>{t("component.options.labelType")}</Label>
+              <Label>{t("component.options.stemNumeration")}</Label>
               <SelectWrapper
                 size="large"
                 data-cy="labelTypeSelect"

@@ -117,7 +117,7 @@ const Option = props => {
         case "lower-alpha":
           return ALPHABET[inx].toLowerCase();
         default:
-          return inx + 1;
+          return null;
       }
     } else if (uiStyle.type === "standard") {
       switch (uiStyle.stemNumeration) {
@@ -137,7 +137,7 @@ const Option = props => {
 
   const container = (
     <>
-      <OptionsLabel>{getLabel(index)}</OptionsLabel>
+      {uiStyle.type === "block" && uiStyle.choiceLabel && <OptionsLabel>{getLabel(index)}</OptionsLabel>}
       <CheckboxContainer
         smallSize={smallSize}
         uiStyle={uiStyle}
@@ -223,7 +223,7 @@ const Option = props => {
         }
       }}
     >
-      <PaddingDiv top={0} bottom={0}>
+      <PaddingDiv top={5} bottom={5} margin={uiStyle.type === "radioBelow" ? "auto" : null}>
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
           <IconWrapper>

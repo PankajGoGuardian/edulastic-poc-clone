@@ -34,6 +34,8 @@ export const CheckboxContainer = styled.div`
       params.fontSize = props.theme.widgets.multipleChoice.checkboxContainerFontSize;
     }
 
+    if (props.uiStyle.type === "radioBelow") params.marginRight = "";
+
     return `
       width: ${params.width}px;
       height: ${params.height}px;

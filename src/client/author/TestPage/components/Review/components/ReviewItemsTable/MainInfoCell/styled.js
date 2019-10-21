@@ -21,23 +21,8 @@ export const Stimulus = WithMathFormula(styled.div`
   text-overflow: ellipsis;
   padding-right: 15px;
   ${Style}
-
-  em,
-  strong,
-  p,
-  u,
-  div, 
-  & > span,
-  & > p > span,
-  & > p > strong > span,
-  span > *[style*="family"] {
-    ${Style}
-  }
   * {
-    background: transparent !important;
-    font-weight: normal !important;
-    text-decoration: none;
-    color: ${props => props.theme.titleColor} !important;
+    ${Style}
   }
 
   @media (max-width: ${smallDesktopWidth}) {

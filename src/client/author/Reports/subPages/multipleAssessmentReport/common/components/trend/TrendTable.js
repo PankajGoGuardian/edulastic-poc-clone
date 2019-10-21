@@ -94,6 +94,10 @@ const getColumns = (
 
         const { color, value } = getCellAttributes(currentTest, analyseBy);
 
+        if (value === "Absent") {
+          return getCol("Absent", "#cccccc");
+        }
+
         const toolTipText = () => (
           <div>
             <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />

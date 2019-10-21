@@ -188,13 +188,10 @@ class ClozeMathInput extends React.Component {
 
   getStyles = uiStyles => {
     const btnStyle = {};
-    if (uiStyles.fontSize) {
-      btnStyle.fontSize = uiStyles.fontSize;
-    }
     if (uiStyles.width) {
       btnStyle.minWidth = uiStyles.width;
     }
-    return uiStyles;
+    return btnStyle;
   };
 
   get restrictKeys() {

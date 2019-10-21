@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { find } from "lodash";
-import { Tooltip } from "antd";
+import { Popover } from "antd";
 import PropTypes from "prop-types";
 
 import { response } from "@edulastic/constants";
@@ -9,6 +9,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
+import PopoverContent from "../PopoverContent";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -16,6 +17,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
   const {
     evaluation,
+    checkAnswer,
     showAnswer,
     uiStyle = {},
     fontSize,
@@ -24,7 +26,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responsecontainerindividuals,
     responseIds,
     previewTab,
-    changePreviewTab
+    changePreviewTab,
+    isExpressGrader
   } = resprops;
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
   const status = evaluation[choiceId] ? "right" : "wrong";
@@ -48,14 +51,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   btnStyle.height = responseStyle?.heightpx || btnStyle.height;
   const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
-  const indexStyle = {
-    alignSelf: "stretch",
-    height: "auto",
-    display: showAnswer && showIndex ? "block" : "none",
-    width: lessMinWidth ? Math.max(parseInt(btnStyle.width, 10) / 2, 20) : null,
-    maxWidth: "50%",
-    minWidth: lessMinWidth ? "unset" : null
-  };
   const textStyle = {
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
@@ -65,7 +60,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const textContainerStyle = {
     minwidth: "100%",
     width: btnStyle.width,
-    padding: lessMinWidth ? "0 1px" : null,
+    padding: 0,
     height: btnStyle.height,
     display: "flex",
     justifyContent: "flex-start",
@@ -74,43 +69,59 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
   const handleHover = () => {
-    if (showAnswer && lessMinWidth) {
+    if (lessMinWidth) {
       toggleIndexVisibility(!showIndex);
     }
   };
-  return (
-    <Tooltip title={userSelections?.[index]?.value}>
-      <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}>
-        <span
-          className={`
+  const popoverContent = (
+    <PopoverContent
+      stemNumeration={stemNumeration}
+      index={index}
+      fontSize={fontSize}
+      userSelections={userSelections}
+      status={status}
+      btnStyle={btnStyle}
+      textContainerStyle={textContainerStyle}
+      textStyle={textStyle}
+      checkAnswer={checkAnswer}
+      isExpressGrader={isExpressGrader}
+    />
+  );
+
+  const content = (
+    <span
+      title={lessMinWidth ? userSelections?.[index]?.value : null}
+      className="template_box dropdown"
+      style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}
+    >
+      <span
+        className={`
                     response-btn 
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-          style={{ ...btnStyle, minWidth: "unset", margin: "0 2px 4px 0px" }}
-          onClick={handleClick}
-          onMouseEnter={handleHover}
-          onMouseLeave={handleHover}
-        >
-          <span className="index" style={indexStyle}>
-            {indexStr}
-          </span>
-          <div className="text container" style={textContainerStyle}>
-            <span className="text" style={textStyle}>
-              {userSelections?.[index]?.value}
-            </span>
-          </div>
-          <IconWrapper
-            display={!showAnswer || (showAnswer && showIndex) ? "flex" : "none"}
-            rightPosition={lessMinWidth ? "1" : "10"}
-          >
-            {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-            {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
+        style={{ ...btnStyle, minWidth: "unset", margin: "0 2px 4px 0px" }}
+        onClick={handleClick}
+        onMouseEnter={handleHover}
+        onMouseLeave={handleHover}
+      >
+        <span className="index" style={{ display: checkAnswer || lessMinWidth ? "none" : "flex" }}>
+          {indexStr}
         </span>
+        <div className="text container" style={textContainerStyle}>
+          <span className="text" style={textStyle}>
+            {userSelections?.[index]?.value}
+          </span>
+        </div>
+        <IconWrapper rightPosition={lessMinWidth ? "1" : "10"}>
+          {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+          {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+        </IconWrapper>
       </span>
-    </Tooltip>
+    </span>
   );
+
+  return lessMinWidth ? <Popover content={popoverContent}> {content} </Popover> : content;
 };
 
 CheckboxTemplateBoxLayout.propTypes = {

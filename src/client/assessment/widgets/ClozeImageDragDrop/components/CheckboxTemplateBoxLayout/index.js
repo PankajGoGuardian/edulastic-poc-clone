@@ -32,7 +32,8 @@ const CheckboxTemplateBox = ({
   theme,
   showBorder,
   disableResponse,
-  isSnapFitValues
+  isSnapFitValues,
+  isExpressGrader
 }) => {
   const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
 
@@ -108,9 +109,9 @@ const CheckboxTemplateBox = ({
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
   containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
-  const icons = (checkAnswer || (showAnswer && showIndex)) && (
+  const icons = (checkAnswer || (showAnswer && !lessMinWidth)) && (
     <>
-      <IconWrapper right={lessMinWidth && 1}>
+      <IconWrapper rightPosition={lessMinWidth && 1}>
         {isChecked && status === "right" && <RightIcon />}
         {isChecked && status === "wrong" && <WrongIcon />}
       </IconWrapper>
@@ -123,14 +124,15 @@ const CheckboxTemplateBox = ({
 
   const indexBoxRef = useRef();
 
-  const responseBoxIndex = showAnswer && showIndex && (
+  const responseBoxIndex = showAnswer && (
     <div
       style={{
         alignSelf: "stretch",
         height: "auto",
         width: lessMinWidth ? "20px" : null,
         maxWidth: lessMinWidth && "20%",
-        padding: lessMinWidth && "0 8px"
+        padding: lessMinWidth && "0 8px",
+        display: !lessMinWidth ? "flex" : "none"
       }}
       className="index index-box"
       ref={indexBoxRef}
@@ -161,6 +163,10 @@ const CheckboxTemplateBox = ({
           disableResponse={disableResponse}
           dropContainerWidth={dropContainerStyle.width}
           indexBoxRef={indexBoxRef}
+          lessMinWidth={lessMinWidth}
+          className={containerClassName}
+          status={status}
+          isChecked={isChecked}
           style={
             checkAnswer
               ? {
@@ -171,6 +177,7 @@ const CheckboxTemplateBox = ({
                 }
               : { width: responseContainer.width, height: responseContainer.height }
           }
+          isExpressGrader={isExpressGrader}
         />
         {isSnapFitValues && icons}
       </DropContainer>

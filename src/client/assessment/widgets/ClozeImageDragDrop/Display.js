@@ -669,6 +669,7 @@ class Display extends Component {
             onDropHandler={this.onDrop}
             showBorder={showBorder}
             showDropItemBorder={showDropItemBorder}
+            isExpressGrader={isExpressGrader}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>

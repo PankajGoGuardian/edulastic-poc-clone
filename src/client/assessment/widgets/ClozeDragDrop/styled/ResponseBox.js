@@ -8,4 +8,10 @@ export const StyledResponseDiv = styled.div`
 export const StyledResponseOption = styled.div`
   background-color: ${props => props.theme.widgets.clozeDragDrop.responseContainerBgColor};
   border: 1px solid;
+  .katex {
+    .base {
+      white-space: unset;
+      width: auto;
+    }
+  }
 `;

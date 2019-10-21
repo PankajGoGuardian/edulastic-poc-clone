@@ -305,6 +305,7 @@ class ClozeDragDropDisplay extends Component {
       smallSize,
       evaluation,
       showAnswer,
+      checkAnswer,
       userAnswers,
       responseIDs,
       isReviewTab,
@@ -316,7 +317,8 @@ class ClozeDragDropDisplay extends Component {
       globalSettings: uiStyle.globalSettings,
       onDrop: !disableResponse ? this.onDrop : () => {},
       onDropHandler: !disableResponse ? this.onDrop : () => {},
-      cAnswers: get(item, "validation.validResponse.value", [])
+      cAnswers: get(item, "validation.validResponse.value", []),
+      isExpressGrader
     };
     const templateBoxLayoutContainer = (
       <PreWrapper view={view} padding="0px">

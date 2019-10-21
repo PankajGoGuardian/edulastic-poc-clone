@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
-import { Tooltip } from "antd";
+import { Tooltip, Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
@@ -11,10 +11,12 @@ import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
+import PopoverContent from "./components/PopoverContent";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     showAnswer,
+    checkAnswer,
     options = [],
     hasGroupResponses = false,
     responsecontainerindividuals = [],
@@ -24,7 +26,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     evaluation = [],
     onDropHandler = () => {},
     responseIDs,
-    globalSettings
+    globalSettings,
+    isExpressGrader
   } = resprops;
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
   const status =
@@ -99,6 +102,50 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       toggleIndexVisibility(!showIndex);
     }
   };
+
+  const className = `response-btn ${choiceAttempted ? "check-answer" : ""} ${status} ${
+    showAnswer ? "show-answer" : ""
+  }`;
+
+  const answer = getLabel(dropTargetIndex);
+
+  const content = (
+    <div className={className} style={btnStyle} onMouseEnter={handleHover} onMouseLeave={handleHover}>
+      {showAnswer && !lessMinWidth && (
+        <span style={indexStyle} className="index">
+          {indexStr}
+        </span>
+      )}
+
+      <span
+        style={{
+          padding: lessMinWidth ? "8px 0px" : null
+        }}
+        className="text"
+      >
+        {answer}
+      </span>
+
+      {(!showAnswer || (showAnswer && !lessMinWidth)) && (
+        <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
+          {choiceAttempted && status === "right" && <RightIcon />}
+          {choiceAttempted && status === "wrong" && <WrongIcon />}
+        </IconWrapper>
+      )}
+    </div>
+  );
+
+  const popoverContent = (
+    <PopoverContent
+      checkAnswer={checkAnswer}
+      index={dropTargetIndex}
+      answer={answer}
+      status={status}
+      className={className}
+      isExpressGrader={isExpressGrader}
+    />
+  );
+
   return (
     <CheckBoxTemplateBox>
       {hasGroupResponses && (
@@ -108,39 +155,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
               userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
           >
-            <div
-              className={`
-            response-btn 
-            ${choiceAttempted ? "check-answer" : ""}
-            ${status} 
-            ${showAnswer ? "show-answer" : ""}`}
-              style={btnStyle}
-              onMouseEnter={handleHover}
-              onMouseLeave={handleHover}
-            >
-              <Tooltip overlayClassName="customTooltip" title={getLabel(dropTargetIndex)}>
-                {showAnswer && (
-                  <span style={indexStyle} className="index">
-                    {indexStr}
-                  </span>
-                )}
-
-                <span
-                  style={{
-                    padding: lessMinWidth ? "8px 0px" : null,
-                    maxWidth: showAnswer && lessMinWidth ? "50%" : null
-                  }}
-                  className="text"
-                >
-                  {getLabel(dropTargetIndex)}
-                </span>
-              </Tooltip>
-
-              <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
-                {choiceAttempted && status === "right" && <RightIcon />}
-                {choiceAttempted && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
-            </div>
+            {lessMinWidth ? (
+              <Popover overlayClassName="customTooltip" content={popoverContent}>
+                {content}
+              </Popover>
+            ) : (
+              content
+            )}
           </Draggable>
         </Droppable>
       )}
@@ -151,38 +172,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
               userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
           >
-            <div
-              className={`
-            response-btn 
-            ${choiceAttempted ? "check-answer" : ""} 
-            ${status} 
-            ${showAnswer ? "show-answer" : ""}`}
-              style={btnStyle}
-              onMouseEnter={handleHover}
-              onMouseLeave={handleHover}
-            >
-              {showAnswer && showIndex && (
-                <span style={indexStyle} className="index">
-                  {indexStr}
-                </span>
-              )}
-              <Tooltip overlayClassName="customTooltip" title={getLabel(dropTargetIndex)}>
-                <span
-                  className="text"
-                  style={{
-                    padding: lessMinWidth ? "8px 0px" : null
-                  }}
-                >
-                  {getLabel(dropTargetIndex)}
-                </span>
-              </Tooltip>
-              {(!showAnswer || (showAnswer && showIndex)) && (
-                <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
-                  {choiceAttempted && status === "right" && <RightIcon />}
-                  {choiceAttempted && status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-              )}
-            </div>
+            {lessMinWidth ? (
+              <Popover overlayClassName="customTooltip" content={popoverContent}>
+                {content}
+              </Popover>
+            ) : (
+              content
+            )}
           </Draggable>
         </Droppable>
       )}

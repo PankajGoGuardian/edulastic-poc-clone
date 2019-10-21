@@ -181,7 +181,8 @@ class ClozeTextDisplay extends Component {
       onChange: this._changeInput,
       responsecontainerindividuals,
       placeholder: btnStyle.placeholder,
-      cAnswers: get(item, "validation.validResponse.value", [])
+      cAnswers: get(item, "validation.validResponse.value", []),
+      isExpressGrader
     };
 
     const QuestionContent = (

@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
-import { Tooltip } from "antd";
+import { Popover } from "antd";
 
 import DragItem from "../DragItem";
 import Container from "./styled/Container";
+import PopoverContent from "../PopoverContent";
 
 const TextContainer = ({
   dropTargetIndex,
@@ -15,7 +16,12 @@ const TextContainer = ({
   dragItemStyle,
   onDropHandler,
   disableResponse,
-  style
+  style,
+  lessMinWidth,
+  className,
+  status,
+  isChecked,
+  isExpressGrader
 }) => (
   <div className="text container" style={showAnswer || checkAnswer ? { ...style, padding: "0px" } : {}}>
     {userSelections[dropTargetIndex] &&
@@ -24,8 +30,17 @@ const TextContainer = ({
           userSelections[dropTargetIndex].responseBoxID && isSnapFitValues
             ? answer.replace("<p>", "<p class='clipText'>") || ""
             : "";
-        const title = <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />;
-
+        const content = <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />;
+        const popoverContent = (
+          <PopoverContent
+            index={dropTargetIndex}
+            answer={content}
+            status={status}
+            className={className}
+            checkAnswer={checkAnswer}
+            isExpressGrader={isExpressGrader}
+          />
+        );
         return (
           <div style={{ ...style, width: "100%" }}>
             <DragItem
@@ -40,9 +55,13 @@ const TextContainer = ({
             >
               <Container width="100%">
                 <Container width="100%" height="100%">
-                  <Tooltip overlayClassName="customTooltip" placement="right" title={title}>
+                  {lessMinWidth ? (
+                    <Popover overlayClassName="customTooltip" content={popoverContent} isChecked={isChecked}>
+                      <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
+                    </Popover>
+                  ) : (
                     <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-                  </Tooltip>
+                  )}
                 </Container>
               </Container>
             </DragItem>
@@ -61,7 +80,18 @@ TextContainer.propTypes = {
   onDropHandler: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired,
-  style: PropTypes.object.isRequired
+  style: PropTypes.object.isRequired,
+  lessMinWidth: PropTypes.bool,
+  className: PropTypes.string,
+  status: PropTypes.string,
+  isChecked: PropTypes.bool.isRequired,
+  isExpressGrader: PropTypes.bool.isRequired
+};
+
+TextContainer.defaultProps = {
+  lessMinWidth: false,
+  className: "",
+  status: ""
 };
 
 export default TextContainer;

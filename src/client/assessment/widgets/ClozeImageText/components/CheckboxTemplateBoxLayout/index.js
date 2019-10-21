@@ -37,7 +37,8 @@ const CheckboxTemplateBoxLayout = ({
   backgroundColor,
   uiStyle,
   responsecontainerindividuals,
-  onClickHandler
+  onClickHandler,
+  isExpressGrader
 }) => (
   <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
     <StyledPreviewContainer data-cy="image-text-preview-board" width={canvasWidth} height={canvasHeight}>
@@ -80,6 +81,7 @@ const CheckboxTemplateBoxLayout = ({
             indexStr={indexStr}
             lessMinWidth={lessMinWidth}
             checkAnswer={checkAnswer}
+            isExpressGrader={isExpressGrader}
           />
         );
       })}
@@ -104,7 +106,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   canvasWidth: PropTypes.number.isRequired,
   backgroundColor: PropTypes.string.isRequired,
   onClickHandler: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired
+  uiStyle: PropTypes.object.isRequired,
+  isExpressGrader: PropTypes.bool.isRequired
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

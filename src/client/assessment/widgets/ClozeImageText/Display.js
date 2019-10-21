@@ -282,6 +282,7 @@ class Display extends Component {
         evaluation={evaluation}
         uiStyle={uiStyle}
         onClickHandler={this.onClickCheckboxHandler}
+        isExpressGrader={isExpressGrader}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

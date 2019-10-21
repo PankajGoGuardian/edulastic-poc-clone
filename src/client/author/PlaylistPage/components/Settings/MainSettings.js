@@ -11,6 +11,7 @@ import {
   Container
 } from "../../../TestPage/components/Setting/components/MainSetting/styled";
 import styled from "styled-components";
+import { themeColor } from "@edulastic/colors";
 
 const { settingCategories } = playlists;
 
@@ -21,11 +22,12 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
       <Row style={{ padding: 0 }}>
         <Col span={isSmallSize ? 0 : 6}>
           <CustomStyledAnchor affix={false} offsetTop={125}>
-            {settingCategories.map(category => (
+            {settingCategories.map((category, index) => (
               <Anchor.Link
                 key={category.id}
                 href={`${history.location.pathname}#${category.id}`}
                 title={category.title.toLowerCase()}
+                className={index === 0 && "active-link"}
               />
             ))}
           </CustomStyledAnchor>
@@ -55,6 +57,16 @@ const CustomStyledAnchor = styled(StyledAnchor)`
   padding-left: 25px;
   .ant-anchor-link {
     margin: 20px 12px;
+  }
+  .active-link {
+    &.ant-anchor-link {
+      &:after {
+        opacity: 1;
+      }
+      a {
+        color: ${themeColor};
+      }
+    }
   }
 `;
 const StyledBlock = styled(Block)`

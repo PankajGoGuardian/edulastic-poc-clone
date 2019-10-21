@@ -238,11 +238,7 @@ class ClozeDragDropDisplay extends Component {
     //   btnStyle.wordwrap = wordwrap;
     // }
 
-    if (btnStyle && btnStyle.width === 0) {
-      btnStyle.width = responseBtnStyle.widthpx;
-    } else {
-      btnStyle.width = btnStyle.widthpx;
-    }
+    btnStyle.width = "auto";
 
     if (btnStyle && btnStyle.height === 0) {
       btnStyle.height = responseBtnStyle.heightpx;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { greenDark, white, linkColor1 } from "@edulastic/colors";
+import { themeColor, white, linkColor1 } from "@edulastic/colors";
 
 export const Container = styled.div`
   position: relative;
@@ -27,7 +27,7 @@ export const Avatar = styled.div`
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  background: ${greenDark};
+  background: ${themeColor};
   color: ${white};
   font-size: 24px;
   font-weight: 700;
@@ -50,7 +50,7 @@ export const Avatar = styled.div`
 export const CreatedByTitle = styled.div`
   font-size: 14px;
   font-weight: 600;
-  color: ${greenDark};
+  color: ${themeColor};
 `;
 
 export const CreatedByValue = styled.div`

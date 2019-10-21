@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColorLight, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
@@ -29,19 +29,19 @@ export const AnswerActionsWrapper = styled.div`
 export const AnswerAction = styled(Button)`
   width: 120px;
   height: 40px;
-  background: ${({ active }) => (active ? themeColorLight : "transparent")};
-  border: 1px solid ${themeColorLight};
+  background: ${({ active }) => (active ? themeColor : "transparent")};
+  border: 1px solid ${themeColor};
   border-radius: 5px;
   font-size: 11px;
   font-weight: 600;
-  color: ${({ active }) => (active ? white : themeColorLight)};
+  color: ${({ active }) => (active ? white : themeColor)};
   text-transform: uppercase;
 
   &:hover,
   &:active,
   &:focus {
-    background: ${({ active }) => (active ? themeColorLight : "transparent")};
-    color: ${({ active }) => (active ? white : themeColorLight)};
+    background: ${({ active }) => (active ? themeColor : "transparent")};
+    color: ${({ active }) => (active ? white : themeColor)};
   }
 
   margin-right: 25px;

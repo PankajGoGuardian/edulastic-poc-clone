@@ -256,7 +256,7 @@ export const themes = {
       iconTrashColor: "#4aac8b",
       iconHoverTrashColor: "#ee1658",
       iconPencilEditColor: "#fff", // white
-      selectSuffixIconColor: themeColorLight,
+      selectSuffixIconColor: themeColor,
       selectSuffixIconFontSize: "16px"
     },
     widgetOptions: {

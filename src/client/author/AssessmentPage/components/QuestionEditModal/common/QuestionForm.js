@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { Paper } from "@edulastic/common";
-import { secondaryTextColor } from "@edulastic/colors";
+import { secondaryTextColor, themeColor } from "@edulastic/colors";
 
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;
@@ -16,6 +16,12 @@ export const QuestionFormWrapper = styled(Paper)`
 export const FormGroup = styled.div`
   &:not(:last-child) {
     margin-bottom: 28px;
+  }
+  .ant-input {
+    &:focus,
+    &:hover {
+      border-color: ${themeColor};
+    }
   }
 `;
 

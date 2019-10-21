@@ -582,7 +582,7 @@ export const defaultTheme = {
     iconTrashColor: iconDeleteColor,
     iconHoverTrashColor: iconDeleteHoverColor,
     iconPencilEditColor: themeColor,
-    selectSuffixIconColor: themeColorLight,
+    selectSuffixIconColor: themeColor,
     selectSuffixIconFontSize: subtitleFontSize
   },
   widgetOptions: {

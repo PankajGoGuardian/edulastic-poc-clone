@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mainBgColor, themeColorLight, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, mainBgColor, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -71,10 +71,10 @@ export const AddQuestionIcon = styled.span`
 
 export const AddButton = styled(Button)`
   border-radius: 5px;
-  border: 1px solid ${themeColorLight};
+  border: 1px solid ${themeColor};
   width: 120px;
   height: 32px;
-  color: ${themeColorLight};
+  color: ${themeColor};
   font-size: 11px;
   text-transform: uppercase;
   font-weight: 600;

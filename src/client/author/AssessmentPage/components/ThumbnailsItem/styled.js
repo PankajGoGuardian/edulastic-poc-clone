@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-import { white, themeColorLight } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 
 export const ThumbnailsItemWrapper = styled.div`
   margin-bottom: 20px;
   cursor: pointer;
   border-radius: 10px;
-  box-shadow: ${props => (props.active ? `0 0 0 4px ${themeColorLight}` : "none")};
+  box-shadow: ${props => (props.active ? `0 0 0 4px ${themeColor}` : "none")};
   overflow: hidden;
   background: ${white};
 `;
@@ -29,7 +29,7 @@ export const PagePreview = styled.div`
 
 export const PageNumber = styled.span`
   display: block;
-  background: ${themeColorLight};
+  background: ${themeColor};
   text-align: center;
   color: ${white};
   font-size: 13px;

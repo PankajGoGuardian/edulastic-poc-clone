@@ -27,6 +27,7 @@ function Preview({ item, passages }) {
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}
+        isPrintPreview
       />
     </Content>
   );

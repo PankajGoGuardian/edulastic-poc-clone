@@ -57,6 +57,7 @@ import StudentReportFeedback from "../../student/TestAcitivityReport/components/
 import { getFontSize } from "../utils/helpers";
 import { getZoomedTheme } from "../../student/zoomTheme";
 import FeedBackContainer from "./FeedBackContainer";
+import { PrintPreviewScore } from "./printPreviewScore";
 import { playersZoomTheme } from "../themes/assessmentPlayersTheme";
 
 const QuestionContainer = styled.div`
@@ -120,6 +121,11 @@ const QuestionContainer = styled.div`
   }
   .ql-indent-9.ql-direction-rtl.ql-align-right {
     padding-right: 27em;
+  }
+
+  .print-preview-feedback {
+    width: 100%;
+    padding: 0 35px;
   }
 `;
 
@@ -306,6 +312,7 @@ class QuestionWrapper extends Component {
       zoomLevel = "xs",
       selectedTheme = "default",
       displayFeedback = true,
+      isPrintPreview = false,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
@@ -371,7 +378,7 @@ class QuestionWrapper extends Component {
             ""
           )}
           <QuestionContainer
-            className={`fr-view question-container-id-${data.id}`}
+            className={`fr-view question-container question-container-id-${data.id}`}
             disabled={disabled}
             noPadding={noPadding}
             isFlex
@@ -383,7 +390,7 @@ class QuestionWrapper extends Component {
               isV1Multipart={isV1Multipart}
               style={{
                 width: "-webkit-fill-available",
-                maxWidth: studentReportFeedbackVisible && displayFeedback && "75%",
+                maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "75%",
                 display: "flex",
                 flex: 9,
                 boxShadow: "none",
@@ -433,7 +440,7 @@ class QuestionWrapper extends Component {
                 )}
               </StyledFlexContainer>
             </PaperWrapper>
-            {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && (
+            {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && !isPrintPreview && (
               <FeedbackRight
                 // eslint-disable-next-line
                 twoColLayout={this.props.theme?.twoColLayout}
@@ -445,7 +452,7 @@ class QuestionWrapper extends Component {
                 {...presentationModeProps}
               />
             )}
-            {!isEmpty(prevQActivityForQuestion) && (
+            {!isEmpty(prevQActivityForQuestion) && !isPrintPreview && (
               <FeedBackContainer
                 correct={correct}
                 prevScore={prevScore}
@@ -455,8 +462,17 @@ class QuestionWrapper extends Component {
               />
             )}
             {/* STUDENT REPORT PAGE FEEDBACK */}
-            {studentReportFeedbackVisible && displayFeedback && (
+            {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
               <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
+            )}
+
+            {isPrintPreview && (
+              <PrintPreviewScore maxScore={data?.activity?.maxScore || 0} score={data?.activity?.score || 0} />
+            )}
+            {isPrintPreview && (
+              <div className="print-preview-feedback">
+                {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
+              </div>
             )}
           </QuestionContainer>
         </>

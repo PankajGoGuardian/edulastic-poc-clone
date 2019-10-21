@@ -46,6 +46,8 @@ const Container = styled.div`
         : null}
     ${({ imageStyle }) => imageStyle}
   }
+
+  break-inside: avoid;
   h3 {
     margin-bottom: 30px;
   }

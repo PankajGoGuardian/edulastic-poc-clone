@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import * as moment from "moment";
+import { mobileWidthMax } from "@edulastic/colors";
 import StudentQuestionContainer from "../StudentQuestionContiner/StudentQuestionContainer";
 
 import {
@@ -105,7 +107,7 @@ class PrintPreview extends Component {
               </InfoItem>
             </TestInfo>
           </PagePrinterHeader>
-          {renderClassStudentsResponse}
+          <QuestionContentArea>{renderClassStudentsResponse}</QuestionContentArea>
         </PrintPreviewContainer>
       </PrintPreviewBack>
     );
@@ -144,3 +146,18 @@ PrintPreview.propTypes = {
   assignmentIdClassId: PropTypes.object,
   loadClassResponses: PropTypes.func
 };
+
+const QuestionContentArea = styled.div`
+  border-top: 1px solid #59595a;
+
+  .test-item-col {
+    width: 100%;
+    .question-container {
+      flex-wrap: wrap;
+
+      @media (max-width: ${mobileWidthMax}) {
+        flex-direction: row;
+      }
+    }
+  }
+`;

@@ -1,7 +1,10 @@
 import styled from "styled-components";
 
 export const StyledStudentQuestion = styled.div`
-  border-top: 1px solid #59595a;
+  padding: 0 10px;
+  page-break-after: always;
+
+  // break-before: always; experimental so avoiding it right now
 `;
 
 export const StudentInformation = styled.div`

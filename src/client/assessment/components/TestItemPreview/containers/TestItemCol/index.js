@@ -102,8 +102,10 @@ class TestItemCol extends Component {
   render() {
     const { col, style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
+
     return (
       <Container
+        className={"test-item-col"}
         value={value}
         style={style}
         width={col.dimension || "auto"}

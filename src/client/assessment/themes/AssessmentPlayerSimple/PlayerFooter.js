@@ -4,7 +4,7 @@ import { FlexContainer } from "../common";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 import { IconCorrect } from "@edulastic/icons";
-import { themeColor, white } from "@edulastic/colors";
+import { themeColor, white, largeDesktopWidth } from "@edulastic/colors";
 import { showHintButton } from "../../utils/test";
 
 const PlayerFooter = ({
@@ -32,7 +32,7 @@ const PlayerFooter = ({
           <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
         </ControlBtn>
       </FlexContainer>
-      <FlexContainer>
+      <StyledFlexContainer>
         <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
           <span>
             <IconCorrect color={themeColor} />
@@ -58,7 +58,7 @@ const PlayerFooter = ({
             <span>{t("pagination.checkanswer")} </span>
           </ActionsButton>
         )}
-      </FlexContainer>
+      </StyledFlexContainer>
     </MainFooter>
   );
 };
@@ -72,6 +72,10 @@ const MainFooter = styled.div`
   display: flex;
   justify-content: space-between;
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
+
+  @media (max-width: ${largeDesktopWidth}) {
+    flex-wrap: wrap;
+  }
 `;
 
 const CounterCircle = styled.div`
@@ -145,4 +149,10 @@ const QuestionsLeftToAttempt = styled(ControlBtn)`
   width: 150px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptBg};
   color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptTextColor};
+`;
+
+const StyledFlexContainer = styled(FlexContainer)`
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-top: 20px;
+  }
 `;

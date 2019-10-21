@@ -3,19 +3,19 @@ export default class TeacherSideBar {
 
   clickOnDashboard = () =>
     this.menuItems()
-      .eq(0)
+      .get('[data-cy="Dashboard"]')
       .click({ force: true })
       .click({ force: true });
 
   clickOnPlayList = () =>
     this.menuItems()
-      .eq(2)
+      .get('[data-cy="PlayList Library"]')
       .click({ force: true })
       .click({ force: true });
 
   clickOnAssignment = () => {
     this.menuItems()
-      .eq(1)
+      .get('[data-cy="Assignments"]')
       .click({ force: true })
       .click({ force: true });
     cy.wait("@assignment");
@@ -23,21 +23,21 @@ export default class TeacherSideBar {
 
   clickOnReport = () =>
     this.menuItems()
-      .eq(5)
+      .get('[data-cy="Reports"]')
       .click({ force: true })
       .click({ force: true });
 
   clickOnManageClass = () => {
     this.menuItems()
-      .eq(6)
+      .get('[data-cy="Manage Class"]')
       .click({ force: true })
       .click({ force: true });
     cy.wait(2000); // UI renders slow
   };
 
-  clickOnItemLibrary = () =>
+  clickOnItemBank = () =>
     this.menuItems()
-      .eq(4)
+      .get('[data-cy="Item Bank"]')
       .click({ force: true })
       .click({ force: true });
 
@@ -46,6 +46,7 @@ export default class TeacherSideBar {
     cy.route("POST", "**/search/tests").as("searchTest");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     this.menuItems()
+      .get('[data-cy="Test Library"]')
       .eq(3)
       .click({ force: true })
       .click({ force: true });

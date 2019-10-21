@@ -13,7 +13,7 @@ class ItemListPage {
     // cy.route("POST", "**/testitem").as("saveItem");
     //  cy.route("GET", "**/testitem/**").as("reload");
 
-    cy.contains("Create")
+    cy.contains("Create Item")
       .should("be.visible")
       .click();
 

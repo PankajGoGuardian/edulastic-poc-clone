@@ -138,12 +138,13 @@ class Scoring extends Component {
               <Col md={12}>
                 <Label>{t("component.options.rounding")}</Label>
                 <SelectWrapper
+                  data-cy="rounding"
                   size="large"
                   value={questionData.validation.rounding}
                   onChange={value => handleChangeValidation("rounding", value)}
                 >
                   {roundingTypes.map(({ value: val, label }) => (
-                    <Select.Option key={val} value={val}>
+                    <Select.Option data-cy={val} key={val} value={val}>
                       {label}
                     </Select.Option>
                   ))}

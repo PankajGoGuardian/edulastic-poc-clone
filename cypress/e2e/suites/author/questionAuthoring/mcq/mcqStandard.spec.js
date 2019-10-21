@@ -2,6 +2,13 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage.js"
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQStandardPage from "../../../../framework/author/itemList/questionType/mcq/mcqStandardPage.js";
 import FileHelper from "../../../../framework/util/fileHelper";
+import {
+  SCORING_TYPE,
+  STEM,
+  STYLE_TYPE,
+  FONT_SIZE,
+  ORIENTATION
+} from "../../../../framework/constants/questionAuthoring";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
   const queData = {
@@ -79,7 +86,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .find('.ql-formula')
         .should('have.attr', 'data-value', queData.formula);
  */
-      // add formatting
+      /*  // add formatting
       question
         .getQuestionEditor()
         .clear()
@@ -95,8 +102,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .makeSelection();
 
         question.editToolBar
-          .stimulus()
-          .find(sel)
+          .frToolbar()
+          .find(`#${sel}`)
           .click();
 
         question
@@ -105,15 +112,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("have.length", 1);
 
         question.editToolBar
-          .stimulus()
-          .find(sel)
+          .frToolbar()
+          .find(`#${sel}`)
           .click();
 
         question
           .getQuestionEditor()
           .find(tag)
           .should("not.be.exist");
-      });
+      }); */
     });
 
     it(" > [Tc_251]:test => Multiple choices options", () => {
@@ -185,77 +192,77 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it(" > [Tc_253]:test => Advanced Options", () => {
-      // question.clickOnAdvancedOptions();
+      question.clickOnAdvancedOptions();
 
       // scoring
-      question.getMaxScore().verifyNumInput(1);
+      // question.getMaxScore().verifyNumInput(1);
 
+      /*
       question
         .getEnableAutoScoring()
-        .click()
+        // .click({ force: true })
         .then($el => {
           cy.wrap($el).should("have.class", "ant-checkbox-checked");
 
-          question
+           question
             .getCheckAnswerCheckbox()
             .click()
             .should("have.class", "ant-checkbox-checked")
             .click()
             .should("not.have.class", "ant-checkbox-checked");
+ */
+      question.selectScoringType(SCORING_TYPE.EXACT);
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().verifyNumInput(1);
+      // question.getCheckAnsAttempt().verifyNumInput(1);
 
-          question.selectScoringType("Exact match");
+      // question.getMinScore().verifyNumInput(1);
 
-          question.getPanalty().verifyNumInput(1);
+      question
+        .getUnscore()
+        .click()
+        .then($el2 => {
+          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
 
-          question.getCheckAnsAttempt().verifyNumInput(1);
-
-          question.getMinScore().verifyNumInput(1);
-
-          question
-            .getUnscore()
-            .click()
-            .then($el2 => {
-              cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-              question.getMinScore().should("have.attr", "disabled");
-            });
-
-          question
-            .getUnscore()
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
+          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
-        .getEnableAutoScoring()
+        .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
+      // });
+
+      /* question
+        .getEnableAutoScoring()
+        .click()
+        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
-    it(" > [Tc_254]:test => Layout", () => {
+    it(" > [Tc_254]:test => Display", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
-      question.selectFontSize("Small");
+      question.selectFontSize(FONT_SIZE.SMALL);
 
       // orientation select
-      question.selectOrientation("Horizontal");
+      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
-      question.selectChoicesStyle("Block");
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
 
       // label type
       const labels = [
         {
-          label: "Numerical",
+          label: STEM.NUMERICAL,
           key: "1"
         },
         {
-          label: "Uppercase alphabet",
+          label: STEM.UPPERCASE,
           key: "A"
         },
         {
-          label: "Lowercase alphabet",
+          label: STEM.LOWERCASE,
           key: "a"
         }
       ];
@@ -270,12 +277,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("have.text", option.key);
       });
 
-      question.selectChoicesStyle("Standard");
+      question.selectChoicesStyle(STYLE_TYPE.STANDARD);
     });
 
     it(" > [Tc_255]:test => Save question", () => {
       editItem.header.save();
-      cy.contains(queData.formattext).should("be.visible");
+      // cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
@@ -315,12 +322,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.createNewItem();
-      // select que type
-      editItem.chooseQuestion(queData.group, queData.queType);
+      question.createQuestion();
       question.header.save();
       // edit
-      editItem.getEditButton().click();
+      question.header.edit();
+      // editItem.getEditButton().click();
     });
 
     it(" > [Tc_257]:test => Enter question text", () => {
@@ -368,7 +374,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .find('.ql-formula')
         .should('have.attr', 'data-value', queData.formula);
     */
-      // add formatting
+      /*  // add formatting
       question
         .getQuestionEditor()
         .clear()
@@ -384,7 +390,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .makeSelection();
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -394,7 +400,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("have.length", 1);
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -402,7 +408,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .getQuestionEditor()
           .find(tag)
           .should("not.be.exist");
-      });
+      }); */
     });
 
     it(" > [Tc_258]:test => Multiple choices options", () => {
@@ -479,74 +485,73 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // question.clickOnAdvancedOptions();
 
       // scoring
-      question.getMaxScore().verifyNumInput(1);
+      // question.getMaxScore().verifyNumInput(1);
 
-      question
+      /* question
         .getEnableAutoScoring()
-        .click()
+        .click({ force: true })
         .then($el => {
           cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
+ */
+      /* question
             .getCheckAnswerCheckbox()
             .click()
             .should("have.class", "ant-checkbox-checked")
             .click()
             .should("not.have.class", "ant-checkbox-checked");
+ */
+      question.selectScoringType(SCORING_TYPE.EXACT);
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().verifyNumInput(1);
+      // question.getCheckAnsAttempt().verifyNumInput(1);
 
-          question.selectScoringType("Exact match");
+      // question.getMinScore().verifyNumInput(1);
 
-          question.getPanalty().verifyNumInput(1);
+      question
+        .getUnscore()
+        .click()
+        .then($el2 => {
+          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
 
-          question.getCheckAnsAttempt().verifyNumInput(1);
-
-          question.getMinScore().verifyNumInput(1);
-
-          question
-            .getUnscore()
-            .click()
-            .then($el2 => {
-              cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-              question.getMinScore().should("have.attr", "disabled");
-            });
-
-          question
-            .getUnscore()
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
+          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
-        .getEnableAutoScoring()
+        .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
+      // });
+
+      /* question
+        .getEnableAutoScoring()
+        .click()
+        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
-    it(" > [Tc_261]:test => Layout", () => {
+    it(" > [Tc_261]:test => Display", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
-      question.selectFontSize("Small");
+      question.selectFontSize(FONT_SIZE.SMALL);
 
       // orientation select
-      question.selectOrientation("Horizontal");
+      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
-      question.selectChoicesStyle("Block");
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
 
       // label type
       const labels = [
         {
-          label: "Numerical",
+          label: STEM.NUMERICAL,
           key: "1"
         },
         {
-          label: "Uppercase alphabet",
+          label: STEM.UPPERCASE,
           key: "A"
         },
         {
-          label: "Lowercase alphabet",
+          label: STEM.LOWERCASE,
           key: "a"
         }
       ];
@@ -561,14 +566,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("have.text", option.key);
       });
 
-      question.selectChoicesStyle("Standard");
+      question.selectChoicesStyle(STYLE_TYPE.STANDARD);
     });
 
     it(" > [Tc_262]:test => Save question", () => {
-      editItem.header.save();
-
-      cy.contains(queData.formattext).should("be.visible");
-
+      editItem.header.save(true);
       cy.url().should("contain", "item-detail");
     });
 
@@ -593,13 +595,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       preview.header.edit();
     });
 
-    it(" > [Tc_264]:test => Delete question from item", () => {
+    /* it(" > [Tc_264]:test => Delete question from item", () => {
       editItem
         .getDelButton()
         .should("have.length", 1)
         .click()
         .should("have.length", 0);
-    });
+    }); */
   });
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
@@ -722,10 +724,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it(" > [mcq_std_test]:test => Enable multiple responses exact and validate", () => {
-      question.header
-        .edit()
-        .getEditButton()
-        .click();
+      question.header.edit();
+      // .getEditButton()
+      // .click();
 
       // select multiple correct ans
       question.getMultipleResponse().click();
@@ -741,13 +742,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // advanced
       // question.clickOnAdvancedOptions();
 
-      question.getEnableAutoScoring().click();
+      // question.getEnableAutoScoring().click();
 
       // >> exact match
-      question.selectScoringType("Exact match");
+      question.selectScoringType(SCORING_TYPE.EXACT);
 
       // save
-      question.header.save();
+      // question.header.save();
 
       // preview and show ans
       const preview = question.header.preview();
@@ -836,17 +837,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       const preview = question.header.preview();
 
       // partial match
-      preview.header
-        .edit()
-        .getEditButton()
-        .click();
+      preview.header.edit();
+      // .getEditButton()
+      // .click();
 
       // question.clickOnAdvancedOptions();
 
-      question.selectScoringType("Partial match");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       // save
-      question.header.save();
+      // question.header.save();
 
       // show ans
       question.header.preview();
@@ -974,10 +974,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it(" > [mcq_std_scoring]:test => Test score with exact match", () => {
-      question.header
-        .edit()
-        .getEditButton()
-        .click();
+      question.header.edit();
+      // .getEditButton()
+      // .click();
 
       question
         .addAlternate()
@@ -992,13 +991,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // question.clickOnAdvancedOptions();
 
       // enable Auto Scoring option
-      question.getEnableAutoScoring().click();
+      // question.getEnableAutoScoring().click();
 
       // exact match
-      question.selectScoringType("Exact match");
+      question.selectScoringType(SCORING_TYPE.EXACT);
 
       // save
-      question.header.save();
+      // question.header.save();
 
       // preview and check ans
       const preview = question.header.preview();
@@ -1044,7 +1043,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it(" > [mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
+    /*  it(" > [mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
       const preview = question.header.preview();
 
       preview.header
@@ -1126,15 +1125,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .then(() => {
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
-    });
+    }); */
 
     it(" > [mcq_std_scoring]:test => Testing partial match and multiple responses with penalty", () => {
       const preview = question.header.preview();
 
-      preview.header
-        .edit()
-        .getEditButton()
-        .click();
+      preview.header.edit();
+      // .getEditButton()
+      // .click();
 
       // advanced
       // question.clickOnAdvancedOptions();
@@ -1143,10 +1141,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       question
         .getPoints()
-        .clear()
-        .type(8);
+        // .clear()
+        .type("{selectall}8");
 
-      question.selectScoringType("Partial match");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question
         .getAllAnsChoicesLabel()
@@ -1172,17 +1170,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .find("input")
         .should("be.checked");
 
-      question
+      /* question
         .getAlternates()
         .next()
         .click();
-
-      question.getMinScore().clear();
+ */
+      // question.getMinScore().clear();
 
       question.getPanalty().type(4);
 
       // save
-      question.header.save();
+      // question.header.save();
 
       question.header.preview();
 
@@ -1208,7 +1206,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it(" > [mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
+    /*  it(" > [mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
       const preview = question.header.preview();
 
       preview.header
@@ -1253,6 +1251,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .then(() => {
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
-    });
+    }); */
   });
 });

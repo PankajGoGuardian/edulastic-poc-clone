@@ -309,7 +309,12 @@ class SideMenu extends Component {
                     const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                     const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
                     return (
-                      <MenuItem key={index.toString()} onClick={this.toggleMenu} visible={isItemVisible}>
+                      <MenuItem
+                        data-cy={menu.label}
+                        key={index.toString()}
+                        onClick={this.toggleMenu}
+                        visible={isItemVisible}
+                      >
                         <MenuIcon />
                         {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                       </MenuItem>

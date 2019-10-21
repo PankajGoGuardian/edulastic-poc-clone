@@ -135,7 +135,7 @@ class ChoiceMatrixStandardPage {
   }
 
   getPenalty() {
-    return cy.get('[data-cy="penalty"]').should("be.visible");
+    return cy.get('[data-cy="penalty"]');
   }
 
   getMinScore() {
@@ -147,7 +147,7 @@ class ChoiceMatrixStandardPage {
   }
 
   getPoints() {
-    return cy.get('[data-cy="points"]').should("be.visible");
+    return cy.get('[data-cy="points"]');
   }
 
   // correct ans
@@ -159,8 +159,8 @@ class ChoiceMatrixStandardPage {
   }
 
   addAlternate() {
-    cy.get('[data-cy="alternate"]')
-      .should("be.visible")
+    cy.get("body")
+      .contains("Alternative Answer")
       .click();
     return this;
   }
@@ -175,9 +175,9 @@ class ChoiceMatrixStandardPage {
       .click();
 
     // switch back to correct ans tab
-    cy.get("[data-cy=correct]")
+    /* cy.get("[data-cy=correct]")
       .should("be.visible")
-      .click();
+      .click(); */
     return this;
   }
 
@@ -189,7 +189,6 @@ class ChoiceMatrixStandardPage {
   clickOnAdvancedOptions() {
     cy.get("body")
       .contains("ADVANCED OPTIONS")
-      .should("be.visible")
       .click();
     return this;
   }
@@ -197,12 +196,12 @@ class ChoiceMatrixStandardPage {
   selectMatrixStyle(option) {
     const selectOp = `[data-cy="${this.matrixOption[option]}"]`;
     cy.get('[data-cy="matrixStyle"]')
-      .should("be.visible")
+      // .should("be.visible")
       .click()
       .as("matrixStyle");
 
     cy.get(selectOp)
-      .should("be.visible")
+      // .should("be.visible")
       .click();
 
     cy.get("@matrixStyle")
@@ -215,11 +214,11 @@ class ChoiceMatrixStandardPage {
   selectStemNumeration(option) {
     const selectOp = `[data-cy="${this.stemNumerationOption[option]}"]`;
     cy.get('[data-cy="stemNum"]')
-      .should("be.visible")
+      // .should("be.visible")
       .click();
 
     cy.get(selectOp)
-      .should("be.visible")
+      // .should("be.visible")
       .click();
 
     cy.get('[data-cy="stemNum"]')

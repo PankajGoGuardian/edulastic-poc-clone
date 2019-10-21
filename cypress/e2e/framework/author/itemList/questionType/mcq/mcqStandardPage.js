@@ -25,49 +25,17 @@ class MCQStandardPage {
 
     this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
 
+    this.roundingType = { "Round down": "roundDown", None: "none" };
+
     this.editToolBar = new EditToolBar();
 
     this.formates = [
-      {
-        sel: ".ql-bold",
-        tag: "strong"
-      },
-      {
-        sel: ".ql-italic",
-        tag: "em"
-      },
-      {
-        sel: ".ql-underline",
-        tag: "u"
-      },
-      {
-        sel: ".ql-strike",
-        tag: "s"
-      },
-      {
-        sel: '[value="sub"]',
-        tag: "sub"
-      },
-      {
-        sel: '[value="super"]',
-        tag: "sup"
-      },
-      {
-        sel: '[value="1"]',
-        tag: "h1"
-      },
-      {
-        sel: '[value="2"]',
-        tag: "h2"
-      },
-      {
-        sel: ".ql-blockquote",
-        tag: "blockquote"
-      },
-      {
-        sel: ".ql-code-block",
-        tag: "pre"
-      }
+      { tag: "strong", sel: "bold-1" },
+      { tag: "em", sel: "italic-1" },
+      { tag: "u", sel: "underline-1" },
+      { tag: "s", sel: "strikeThrough-1" },
+      { tag: "sub", sel: "subscript-1" },
+      { tag: "sup", sel: "superscript-1" }
     ];
 
     this.header = new Header();
@@ -129,9 +97,10 @@ class MCQStandardPage {
       .contains("label");
 
   addAlternate() {
-    cy.get('[data-cy="alternate"]')
-      .should("be.visible")
-      .click();
+    cy.get("body")
+      .contains("Alternative Answer")
+      // .should("be.visible")
+      .click({ force: true });
     return this;
   }
 
@@ -155,7 +124,7 @@ class MCQStandardPage {
     return this;
   }
 
-  getStyleOption = () => cy.get('[data-cy="styleSelect"]').should("be.visible");
+  getStyleOption = () => cy.get('[data-cy="styleSelect"]');
 
   selectChoicesStyle(option) {
     const selectOp = `[data-cy="${this.styleOptions[option]}"]`;
@@ -232,6 +201,23 @@ class MCQStandardPage {
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
     cy.get('[data-cy="scoringType"]')
+      // .should("be.visible")
+      .click({ force: true });
+
+    cy.get(selectOp)
+      // .should("be.visible")
+      .click({ force: true });
+
+    cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  selectRoundingType(option) {
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
+    cy.get('[data-cy="rounding"]')
       .should("be.visible")
       .click();
 
@@ -239,7 +225,7 @@ class MCQStandardPage {
       .should("be.visible")
       .click();
 
-    cy.get('[data-cy="scoringType"]')
+    cy.get('[data-cy="rounding"]')
       .find(".ant-select-selection-selected-value")
       .should("contain", option);
 
@@ -250,12 +236,10 @@ class MCQStandardPage {
 
   getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
 
-  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]');
-  /* cy
-      .contains("Enable auto scoring")
-      .children()
-      .eq(0)
-      .should("be.visible"); */
+  getEnableAutoScoring = () => {
+    return cy.get('[data-cy="autoscoreChk"]');
+    // return cy.contains("Enable auto scoring").prev();
+  };
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 

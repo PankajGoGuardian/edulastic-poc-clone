@@ -12,17 +12,17 @@ class Helpers {
   static fontSize(font) {
     switch (font) {
       case "small":
-        return { font: getFontSize(font), name: "Small" };
+        return { font: getFontSize(font, false), name: "Small" };
       case "normal":
-        return { font: getFontSize(font), name: "Normal" };
+        return { font: getFontSize(font, false), name: "Normal" };
       case "large":
-        return { font: getFontSize(font), name: "Large" };
+        return { font: getFontSize(font, false), name: "Large" };
       case "xlarge":
-        return { font: getFontSize(font), name: "Extra Large" };
+        return { font: getFontSize(font, false), name: "Extra Large" };
       case "xxlarge":
-        return { font: getFontSize(font), name: "Huge" };
+        return { font: getFontSize(font, false), name: "Huge" };
       default:
-        return { font: getFontSize("normal"), name: "Normal" };
+        return { font: getFontSize("normal", false), name: "Normal" };
     }
   }
 

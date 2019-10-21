@@ -134,9 +134,9 @@ class EditItemPage {
     cy.wait("@getItem");
   }
 
-  createNewItem = onlyItem => {
+  createNewItem = (onlyItem = true) => {
     if (onlyItem) {
-      this.sideBar.clickOnItemLibrary();
+      this.sideBar.clickOnItemBank();
       this.itemList.clickOnCreate();
     } else this.testAddItem.clickOnCreateNewItem();
   };

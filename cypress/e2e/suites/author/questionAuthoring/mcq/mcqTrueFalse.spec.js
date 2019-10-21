@@ -3,6 +3,13 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage.js"
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js";
 import FileHelper from "../../../../framework/util/fileHelper";
+import {
+  SCORING_TYPE,
+  STEM,
+  STYLE_TYPE,
+  FONT_SIZE,
+  ORIENTATION
+} from "../../../../framework/constants/questionAuthoring";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
   const queData = {
@@ -41,7 +48,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .type(queData.queText)
         .should("contain", queData.queText);
 
-      // add formatting
+      /*  // add formatting
       question
         .getQuestionEditor()
         .clear()
@@ -57,7 +64,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .makeSelection();
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -67,7 +74,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .should("have.length", 1);
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -75,7 +82,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .getQuestionEditor()
           .find(tag)
           .should("not.be.exist");
-      });
+      }); */
     });
 
     it(" > [Tc_285]:test => Multiple choices options", () => {
@@ -103,7 +110,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .should("have.length", 0);
 
       // add new
-      const choices = queData.choices;
+      const { choices } = queData;
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
@@ -140,12 +147,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
 
     it(" > [Tc_287]:test => Advanced Options", () => {
-      // question.clickOnAdvancedOptions();
+      question.clickOnAdvancedOptions();
 
       // scoring
-      question.getMaxScore().verifyNumInput(1);
+      // question.getMaxScore().verifyNumInput(1);
 
-      question
+      /* question
         .getEnableAutoScoring()
         .click()
         .then($el => {
@@ -157,60 +164,60 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
             .should("have.class", "ant-checkbox-checked")
             .click()
             .should("not.have.class", "ant-checkbox-checked");
+ */
+      question.selectScoringType(SCORING_TYPE.EXACT);
 
-          question.selectScoringType("Exact match");
+      question.getPanalty().verifyNumInput(1);
 
-          question.getPanalty().verifyNumInput(1);
+      // question.getCheckAnsAttempt().verifyNumInput(1);
 
-          question.getCheckAnsAttempt().verifyNumInput(1);
+      // question.getMinScore().verifyNumInput(1);
 
-          question.getMinScore().verifyNumInput(1);
+      question
+        .getUnscore()
+        .click()
+        .then($el2 => {
+          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
 
-          question
-            .getUnscore()
-            .click()
-            .then($el2 => {
-              cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-              question.getMinScore().should("have.attr", "disabled");
-            });
-
-          question
-            .getUnscore()
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
+          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
-        .getEnableAutoScoring()
+        .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
+      // });
+
+      /* question
+        .getEnableAutoScoring()
+        .click()
+        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
-    it(" > [Tc_288]:test => Layout", () => {
+    it(" > [Tc_288]:test => Display", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
-      question.selectFontSize("Small");
+      question.selectFontSize(FONT_SIZE.SMALL);
 
       // orientation select
-      question.selectOrientation("Horizontal");
+      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
-      question.selectChoicesStyle("Block");
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
 
       // label type
       const labels = [
         {
-          label: "Numerical",
+          label: STEM.NUMERICAL,
           key: "1"
         },
         {
-          label: "Uppercase alphabet",
+          label: STEM.UPPERCASE,
           key: "A"
         },
         {
-          label: "Lowercase alphabet",
+          label: STEM.LOWERCASE,
           key: "a"
         }
       ];
@@ -230,12 +237,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
     it(" > [Tc_289]:test => Save question", () => {
       editItem.header.save();
-      cy.contains(queData.formattext).should("be.visible");
+      // cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
     it(" > [Tc_290]:test => Preview Item", () => {
-      // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
       preview
@@ -271,12 +277,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.createNewItem();
-      // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
+      question.createQuestion();
       question.header.save();
       // edit
-      editItem.getEditButton().click();
+      question.header.edit();
     });
 
     it(" > [Tc_291]:test => Enter question text", () => {
@@ -287,7 +291,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .type(queData.queText)
         .should("contain", queData.queText);
 
-      // add formatting
+      /* // add formatting
       question
         .getQuestionEditor()
         .clear()
@@ -303,7 +307,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .makeSelection();
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -313,7 +317,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .should("have.length", 1);
 
         question.editToolBar
-          .stimulus()
+          .frToolbar()
           .find(sel)
           .click();
 
@@ -321,7 +325,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .getQuestionEditor()
           .find(tag)
           .should("not.be.exist");
-      });
+      }); */
     });
 
     it(" > [Tc_292]:test => Multiple choices options", () => {
@@ -329,8 +333,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question
         .getAllChoices()
         .should("have.length", 2)
-        .and("contain", "True")
-        .and("contain", "False");
+        .and("contain", "right")
+        .and("contain", "wrong");
 
       // edit 1st choice
       question
@@ -349,7 +353,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .should("have.length", 0);
 
       // add new
-      const choices = queData.choices;
+      const { choices } = queData;
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
@@ -378,7 +382,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
       question.getAllAnsChoicesLabel().each($el => {
         cy.wrap($el).click();
-
         cy.wrap($el)
           .find("input")
           .should("be.checked");
@@ -389,74 +392,74 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       // question.clickOnAdvancedOptions();
 
       // scoring
-      question.getMaxScore().verifyNumInput(1);
+      // question.getMaxScore().verifyNumInput(1);
 
+      /*
       question
-        .getEnableAutoScoring()
+        // .getEnableAutoScoring()
         .click()
         .then($el => {
           cy.wrap($el).should("have.class", "ant-checkbox-checked");
 
-          question
+           question
             .getCheckAnswerCheckbox()
             .click()
             .should("have.class", "ant-checkbox-checked")
             .click()
             .should("not.have.class", "ant-checkbox-checked");
+ */
+      question.selectScoringType(SCORING_TYPE.EXACT);
 
-          question.selectScoringType("Exact match");
+      question.getPanalty().verifyNumInput(1);
 
-          question.getPanalty().verifyNumInput(1);
+      // question.getCheckAnsAttempt().verifyNumInput(1);
 
-          question.getCheckAnsAttempt().verifyNumInput(1);
+      // question.getMinScore().verifyNumInput(1);
 
-          question.getMinScore().verifyNumInput(1);
-
-          question
-            .getUnscore()
-            .click()
-            .then($el2 => {
-              cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-              question.getMinScore().should("have.attr", "disabled");
-            });
-
-          question
-            .getUnscore()
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
+      question
+        .getUnscore()
+        .click()
+        .then($el2 => {
+          cy.wrap($el2).should("have.class", "ant-checkbox-checked");
+          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
-        .getEnableAutoScoring()
+        .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
+      // });
+
+      /* question
+        .getEnableAutoScoring()
+        .click()
+        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
-    it(" > [Tc_295]:test => Layout", () => {
+    it(" > [Tc_295]:test => Display", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
-      question.selectFontSize("Small");
+      question.selectFontSize(FONT_SIZE.SMALL);
 
       // orientation select
-      question.selectOrientation("Horizontal");
+      question.selectOrientation(ORIENTATION.HORIZONTAL);
 
       // style select
-      question.selectChoicesStyle("Block");
+      question.selectChoicesStyle(STYLE_TYPE.BLOCK);
 
       // label type
       const labels = [
         {
-          label: "Numerical",
+          label: STEM.NUMERICAL,
           key: "1"
         },
         {
-          label: "Uppercase alphabet",
+          label: STEM.UPPERCASE,
           key: "A"
         },
         {
-          label: "Lowercase alphabet",
+          label: STEM.LOWERCASE,
           key: "a"
         }
       ];
@@ -471,17 +474,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .should("have.text", option.key);
       });
 
-      question.selectChoicesStyle("Standard");
+      question.selectChoicesStyle(STYLE_TYPE.STANDARD);
     });
 
     it(" > [Tc_296]:test => Save question", () => {
-      editItem.header.save();
-      cy.contains(queData.formattext).should("be.visible");
+      editItem.header.save(true);
       cy.url().should("contain", "item-detail");
     });
 
     it(" > [Tc_297]:test => Preview Item", () => {
-      // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
       preview
@@ -502,13 +503,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       preview.header.edit();
     });
 
-    it(" > [Tc_298]:test => Delete question from item", () => {
+    /*  it(" > [Tc_298]:test => Delete question from item", () => {
       editItem
         .getDelButton()
         .should("have.length", 1)
         .click()
         .should("have.length", 0);
-    });
+    }); */
   });
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
@@ -559,7 +560,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .getShowAnswer()
         .click()
         .then(() => {
-          // cy.get("label.wrong").should("have.length", queData.choices.length - 1);
+          cy.get("label.wrong").should("have.length", 0);
 
           cy.get("label.right")
             .should("have.length", 1)
@@ -624,7 +625,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/0");
+          preview.getAntMsg().should("contain", "score: 0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });

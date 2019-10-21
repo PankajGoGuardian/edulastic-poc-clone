@@ -28,7 +28,7 @@ Cypress.LocalStorage.clear = () => {};
 const BASE_URL = Cypress.config("API_URL");
 const DEFAULT_USERS = {
   teacher: {
-    username: "auto.teacher1@snapwiz.com",
+    username: "ashishsnap@snawpiz.com",
     password: "snapwiz"
   },
   student: {
@@ -133,7 +133,11 @@ Cypress.Commands.add("assertHome", () => {
 
 Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") => {
   const postData = {};
-  postData.username = !email ? (role === "teacher" ? DEFAULT_USERS.teacher.email : DEFAULT_USERS.student.email) : email;
+  postData.username = !email
+    ? role === "teacher"
+      ? DEFAULT_USERS.teacher.username
+      : DEFAULT_USERS.student.username
+    : email;
   postData.password = password;
   cy.clearToken();
   /* cy.request({
@@ -152,17 +156,11 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.route("GET", "**curriculum**").as("apiLoad");
   cy.route("GET", "**assignments**").as("assignment");
   cy.route("POST", "**/auth/**").as("auth");
+  cy.route("GET", "**/dashboard/**").as("teacherDashboard");
   login.fillLoginForm(postData.username, postData.password);
   login.onClickSignin();
   cy.wait("@auth");
-  // .then(() => {
-  // TODO: wierd login issue redirects doesn't happens automatically
-  /*   if (role === "teacher") {
-    cy.visit("/author/assignments");
-  } else {
-    cy.visit("/home/assignments");
-  } */
-  // cy.wait("@assignment");
+  if (role === "teacher") cy.wait("@teacherDashboard");
 });
 
 Cypress.Commands.add(

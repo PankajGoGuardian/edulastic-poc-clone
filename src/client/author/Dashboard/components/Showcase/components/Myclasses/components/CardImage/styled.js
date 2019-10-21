@@ -28,13 +28,14 @@ export const IconWrapper = styled.div`
   height: 34px;
   padding: 0.5rem;
   border-radius: 50%;
-  text-align: center;
-  line-height: 1rem;
   background: ${white};
   cursor: pointer;
   position: absolute;
-  top: 2px;
+  top: 0px;
   right: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export const TextDiv = styled.p`
   font-size: 18px;
@@ -49,12 +50,15 @@ export const TextDiv = styled.p`
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;
 `;
-export const SpanRightMargin = styled.span`
-  margin-right: 0.2rem;
-`;
 export const RowWrapperGrade = styled(Row)`
   margin-top: 0.3rem;
 `;
 export const RowWrapperSTudentCount = styled(Row)`
   margin-top: 1.3rem;
+`;
+
+export const StyledRow = styled(Row)`
+  display: flex;
+  height: 34px;
+  align-items: center;
 `;

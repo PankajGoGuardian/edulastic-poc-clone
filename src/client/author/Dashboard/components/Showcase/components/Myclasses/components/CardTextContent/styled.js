@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { fadedGreen, green, greenThird, title } from "@edulastic/colors";
+import { green, title, cardTitleColor, themeColorLighter } from "@edulastic/colors";
 import { Row, Col, Icon } from "antd";
 
 export const IconWrapper = styled.div`
-  width: 45px;
-  height: 45px;
-  background: ${fadedGreen};
+  width: 42px;
+  height: 42px;
+  background: ${themeColorLighter}33;
   border-radius: 50%;
   position: relative;
 `;
@@ -16,7 +16,7 @@ export const OverlayText = styled.div`
   left: 0;
   position: absolute;
   text-align: center;
-  color: ${greenThird};
+  color: ${themeColorLighter};
   font-size: 14px;
   z-index: 30;
   line-height: 2.8rem;
@@ -31,12 +31,14 @@ export const RowWrapper = styled(Row)`
 
 export const LeftCol = styled(Col)`
   width: ${({ width }) => width || "45px"};
-  height: ${({ height }) => height || "45px"};
+  height: 100%;
   margin-right: 15px;
 `;
 
 export const CenterCol = styled(Col)`
   width: calc(100% - 105px);
+  display: flex;
+  flex-direction: column;
 `;
 
 export const RightCol = styled(Col)`
@@ -52,14 +54,15 @@ export const RowWrapper1 = styled(Row)`
   cursor: pointer;
   display: flex;
   align-items: center;
+  height: 31px;
 `;
 
 export const CardText = styled.div`
   margin-top: 1rem;
 `;
 export const Image = styled.img`
-  width: 45px;
-  height: 30px;
+  width: 51px;
+  height: 31px;
   border-radius: 5px;
 `;
 
@@ -75,4 +78,20 @@ export const TextDiv = styled.p`
 export const IconRightArrow = styled(Icon)`
   color: ${green};
   font-size: 20px;
+`;
+
+export const AssignmentStatusText = styled.p`
+  font-size: 9px;
+  font-weight: 600;
+  color: ${cardTitleColor};
+`;
+export const AssignmentTitle = styled.p`
+  font-size: 12px;
+  font-weight: 600;
+`;
+
+export const AssignmentCount = styled.p`
+  font-size: 14px;
+  font-weight: 600;
+  color: #30404f;
 `;

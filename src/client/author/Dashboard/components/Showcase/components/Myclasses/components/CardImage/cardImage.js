@@ -1,7 +1,6 @@
 import React from "react";
 import { Row, Col, Tooltip } from "antd";
 import cardImg from "../../../../../../assets/images/cardImg.png";
-import rightArrow from "../../../../../../assets/svgs/right-arrow.svg";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { TextWrapper } from "../../../../../styledComponents";
@@ -14,8 +13,11 @@ import {
   SpanLeftMargin,
   SpanRightMargin,
   RowWrapperGrade,
-  RowWrapperSTudentCount
+  RowWrapperSTudentCount,
+  StyledRow
 } from "./styled";
+import { IconArrowRight } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
 
 const CardImage = ({ data, history }) => {
   const { name, grades = [], studentCount, subject, thumbnail } = data;
@@ -30,17 +32,19 @@ const CardImage = ({ data, history }) => {
       <OverlayText>
         <Row>
           <Col span={24}>
-            <Row>
+            <StyledRow>
               <Tooltip title={name} placement="topLeft">
                 <TextDiv data-cy="name">{name}</TextDiv>
               </Tooltip>
-            </Row>
+              <IconWrapper onClick={gotoManageClass}>
+                <IconArrowRight color={themeColor} width={15} height={15} />
+              </IconWrapper>
+            </StyledRow>
             <RowWrapperGrade>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 {grades.length ? (
                   <>
-                    <SpanRightMargin data-cy="grades">Grades</SpanRightMargin>{" "}
-                    {grades.join(", ").replace(/O/i, " Other ")}
+                    <span data-cy="grades">Grades</span> {grades.join(", ").replace(/O/i, " Other ")}
                   </>
                 ) : (
                   ""
@@ -63,9 +67,6 @@ const CardImage = ({ data, history }) => {
                 {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
             </RowWrapperSTudentCount>
-            <IconWrapper bgcolor="#FFFFFF" width="34px" height="34px" padding="0.5">
-              <img src={rightArrow} alt="" onClick={gotoManageClass} />
-            </IconWrapper>
           </Col>
         </Row>
       </OverlayText>

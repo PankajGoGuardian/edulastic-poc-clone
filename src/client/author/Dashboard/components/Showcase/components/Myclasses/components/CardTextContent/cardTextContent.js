@@ -2,8 +2,8 @@ import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { Row, Col, Tooltip } from "antd";
 import { compose } from "redux";
-import { IconPlusCircle } from "@edulastic/icons";
-import { themeColorLight, titleColor, cardTitleColor } from "@edulastic/colors";
+import { IconPlusCircle, IconGraphRightArrow } from "@edulastic/icons";
+import { themeColorLight, titleColor, cardTitleColor, themeColor } from "@edulastic/colors";
 import {
   CardText,
   Image,
@@ -11,11 +11,12 @@ import {
   OverlayText,
   RowWrapper,
   RowWrapper1,
-  TextDiv,
-  IconRightArrow,
   LeftCol,
   CenterCol,
-  RightCol
+  RightCol,
+  AssignmentStatusText,
+  AssignmentTitle,
+  AssignmentCount
 } from "./styled";
 import { TextWrapper } from "../../../../../styledComponents";
 
@@ -39,9 +40,7 @@ export const CardTextContent = ({ data, history }) => {
 
         <CenterCol>
           <Link to="/author/assignments">
-            <TextWrapper color={titleColor} size="14px">
-              {totalAssignment > 1 ? "Assignments" : "Assignment"}
-            </TextWrapper>
+            <AssignmentCount>{totalAssignment > 1 ? "Assignments" : "Assignment"}</AssignmentCount>
           </Link>
         </CenterCol>
 
@@ -55,29 +54,20 @@ export const CardTextContent = ({ data, history }) => {
           </RightCol>
         )}
       </RowWrapper>
-      <TextWrapper color={titleColor} size="10px">
-        RECENT:
-      </TextWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
         {asgnTitle ? (
           <>
-            <LeftCol height="auto">
+            <LeftCol>
               <Image src={asgnThumbnail} />
             </LeftCol>
             <CenterCol>
-              <Row>
-                <Tooltip title={asgnTitle} placement="topLeft">
-                  <TextDiv data-cy="assignmentTitle">{asgnTitle}</TextDiv>
-                </Tooltip>
-              </Row>
-              <Row>
-                <TextWrapper data-cy="assignmentStatus" color={cardTitleColor} size="11px" fw="bold">
-                  {asgnStatus}
-                </TextWrapper>
-              </Row>
+              <Tooltip title={asgnTitle} placement="topLeft">
+                <AssignmentTitle data-cy="assignmentTitle">{asgnTitle}</AssignmentTitle>
+              </Tooltip>
+              <AssignmentStatusText data-cy="assignmentStatus">{asgnStatus}</AssignmentStatusText>
             </CenterCol>
             <RightCol height="auto">
-              <IconRightArrow type="right" />
+              <IconGraphRightArrow color={themeColor} />
             </RightCol>
           </>
         ) : (

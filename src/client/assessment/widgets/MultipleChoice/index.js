@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { get, cloneDeep, shuffle } from "lodash";
+import { get, cloneDeep } from "lodash";
 import styled from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
@@ -40,32 +40,8 @@ const Divider = styled.div`
 
 class MultipleChoice extends Component {
   state = {
-    shuffledOptions: [],
     correctTab: 0
   };
-
-  componentWillReceiveProps(nextProps) {
-    const { item } = this.props;
-    if (!nextProps.item.shuffleOptions) {
-      const shuffledOptions = replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable);
-      this.setState({
-        shuffledOptions
-      });
-    } else if (nextProps.item.shuffleOptions === item.shuffleOptions && nextProps.item.shuffleOptions) {
-      const shuffledOptions = replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable);
-      this.setState({
-        shuffledOptions
-      });
-    }
-  }
-
-  componentDidMount() {
-    const { item } = this.props;
-    const shuffledOptions = replaceValues(cloneDeep(shuffle(item.options)), item.variable);
-    this.setState({
-      shuffledOptions
-    });
-  }
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
@@ -95,8 +71,7 @@ class MultipleChoice extends Component {
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.uiStyle,
-      multipleResponses: !!item.multipleResponses,
-      shuffleOptions: !!item.shuffleOptions
+      multipleResponses: !!item.multipleResponses
     };
   };
 
@@ -215,15 +190,8 @@ class MultipleChoice extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const { shuffledOptions, correctTab } = this.state;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      uiStyle,
-      multipleResponses,
-      shuffleOptions
-    } = this.getRenderData();
+    const { correctTab } = this.state;
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, multipleResponses } = this.getRenderData();
     const isV1Multipart = get(col, "isV1Multipart", false);
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
@@ -267,12 +235,6 @@ class MultipleChoice extends Component {
                   >
                     {t("component.multiplechoice.multipleResponses")}
                   </Checkbox>
-                  <Checkbox
-                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                    checked={shuffleOptions}
-                  >
-                    {t("component.multiplechoice.shuffleOptions")}
-                  </Checkbox>
                 </Question>
                 <Options
                   onChange={this.handleOptionsChange}
@@ -295,7 +257,7 @@ class MultipleChoice extends Component {
                   checkAnswer={previewTab === CHECK}
                   view={view}
                   smallSize={smallSize}
-                  options={shuffledOptions}
+                  options={item.options}
                   question={previewStimulus}
                   userSelections={userAnswer}
                   uiStyle={uiStyle}

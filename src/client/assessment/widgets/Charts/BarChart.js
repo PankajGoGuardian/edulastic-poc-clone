@@ -26,8 +26,7 @@ const BarChart = ({
   correct,
   disableResponse,
   deleteMode,
-  toggleBarDragging,
-  margin = { top: 10, right: 10, left: 10, bottom: 52 }
+  toggleBarDragging
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams;
 
@@ -103,51 +102,42 @@ const BarChart = ({
     save();
   };
 
+  const svgHeight = height + 20;
+
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
-      width={width + margin.left + margin.right}
-      height={height + margin.top + margin.bottom}
+      width={width}
+      height={svgHeight}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <g
-        width={width}
-        height={height}
-        style={{
-          marginLeft: `${margin.left}px`,
-          marginRight: `${margin.right}px`,
-          marginTop: `${margin.top}px`,
-          marginBottom: `${margin.bottom}px`
-        }}
-      >
-        <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+      <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-        <HorizontalLines
-          paddingTop={20}
-          gridParams={gridParams}
-          displayGridlines={displayHorizontalLines(showGridlines)}
-        />
+      <HorizontalLines
+        paddingTop={20}
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+      />
 
-        <Bars
-          item={item}
-          saveAnswer={i => saveAnswer(localData, i)}
-          deleteMode={deleteMode}
-          activeIndex={activeIndex}
-          onPointOver={setActive}
-          previewTab={previewTab}
-          bars={localData}
-          view={view}
-          onMouseDown={!disableResponse ? onMouseDown : () => {}}
-          gridParams={gridParams}
-          correct={correct}
-        />
+      <Bars
+        item={item}
+        saveAnswer={i => saveAnswer(localData, i)}
+        deleteMode={deleteMode}
+        activeIndex={activeIndex}
+        onPointOver={setActive}
+        previewTab={previewTab}
+        bars={localData}
+        view={view}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
+        gridParams={gridParams}
+        correct={correct}
+      />
 
-        <ArrowPair getActivePoint={getActivePoint} />
+      <ArrowPair getActivePoint={getActivePoint} />
 
-        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
-      </g>
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

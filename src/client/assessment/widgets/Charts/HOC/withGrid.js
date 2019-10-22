@@ -3,42 +3,28 @@ import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
-import { DOT_PLOT, LINE_PLOT } from "@edulastic/constants/const/questionType";
 
-import { getYAxis, getPadding } from "../helpers";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
-import { Spacing } from "../styled/Spacing";
+import { AxisLabel } from "../styled/AxisLabel";
 
 const withGrid = WrappedComponent => {
   const hocComponent = props => {
     const {
       theme,
       name,
-      gridParams: { width, margin, yAxisMax, yAxisMin, stepSize, xAxisLabel, yAxisLabel },
+      gridParams: { width, xAxisLabel, yAxisLabel },
       view,
       item,
-      setQuestionData
+      setQuestionData,
+      showChartTitle
     } = props;
 
     const [barIsDragging, toggleBarDragging] = useState(false);
 
-    const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
-    const padding = getPadding(yAxis);
-
     return (
       <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor, overflowX: "auto" }}>
-        <FlexContainer
-          style={{
-            transform: "rotate(-90deg)",
-            width: 40,
-            whiteSpace: "nowrap",
-            marginTop: margin,
-            fontWeight: theme.widgets.chart.axisLabelFontWeight
-          }}
-        >
-          {yAxisLabel}
-        </FlexContainer>
+        <AxisLabel axis="y">{yAxisLabel}</AxisLabel>
         <div style={{ position: "relative" }}>
           <AnnotationRnd
             question={item}
@@ -47,22 +33,13 @@ const withGrid = WrappedComponent => {
             isAbove={view === EDIT ? !barIsDragging : false}
             onDoubleClick={() => toggleBarDragging(!barIsDragging)}
           />
-          <FlexContainer style={{ width, marginBottom: 20 }} justifyContent="center">
-            {name}
-          </FlexContainer>
+          {showChartTitle && (
+            <FlexContainer style={{ width, marginBottom: 20 }} justifyContent="center">
+              {name}
+            </FlexContainer>
+          )}
           <WrappedComponent {...props} toggleBarDragging={toggleBarDragging} />
-          <FlexContainer
-            style={{
-              width,
-              marginTop: 10,
-              marginLeft: padding / 2,
-              fontWeight: theme.widgets.chart.axisLabelFontWeight
-            }}
-            justifyContent="center"
-          >
-            {xAxisLabel}
-          </FlexContainer>
-          {(item.type === LINE_PLOT || item.type === DOT_PLOT) && <Spacing />}
+          <AxisLabel>{xAxisLabel}</AxisLabel>
         </div>
       </FlexContainer>
     );
@@ -75,6 +52,7 @@ const withGrid = WrappedComponent => {
     theme: PropTypes.any.isRequired,
     data: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
+    showChartTitle: PropTypes.bool,
     gridParams: PropTypes.shape({
       width: PropTypes.number,
       height: PropTypes.number,
@@ -87,6 +65,7 @@ const withGrid = WrappedComponent => {
   };
 
   hocComponent.defaultProps = {
+    showChartTitle: false,
     gridParams: {
       width: 640,
       height: 440,

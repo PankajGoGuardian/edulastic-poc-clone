@@ -45,7 +45,11 @@ export const convertPxToUnit = (px, { height, margin, yAxisMax, yAxisMin, stepSi
   return normalizeValue(result, { yAxisMax, yAxisMin, snapTo });
 };
 
+/**
+ * need to keep showGridlines === true because:
+ * showGridlines type is boolean or string
+ */
 export const displayVerticalLines = showGridlines =>
-  showGridlines === SHOW_GRIDLINES_X_ONLY || showGridlines === SHOW_GRIDLINES_BOTH;
+  showGridlines === SHOW_GRIDLINES_X_ONLY || showGridlines === SHOW_GRIDLINES_BOTH || showGridlines === true;
 export const displayHorizontalLines = showGridlines =>
-  showGridlines === SHOW_GRIDLINES_Y_ONLY || showGridlines === SHOW_GRIDLINES_BOTH;
+  showGridlines === SHOW_GRIDLINES_Y_ONLY || showGridlines === SHOW_GRIDLINES_BOTH || showGridlines === true;

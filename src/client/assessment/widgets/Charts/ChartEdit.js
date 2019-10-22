@@ -2,34 +2,25 @@ import "rc-color-picker/assets/index.css";
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
-
-import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
-import Annotations from "../../components/Annotations/Annotations";
 
-import CorrectAnswers from "../../components/CorrectAnswers";
-import withPoints from "../../components/HOC/withPoints";
-
+import CorrectAnswers from "./CorrectAnswers";
 import { EDIT } from "../../constants/constantsForQuestions";
 import Options from "./components/Options";
 import ChartPreview from "./ChartPreview";
 import PointsList from "./components/PointsList";
+import AxisOptions from "./AxisOption";
 import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
-import { Widget } from "../../styled/Widget";
 
-const OptionsList = withPoints(ChartPreview);
-
-const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
+const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
   const {
     uiStyle: { yAxisMax, yAxisMin, snapTo },
     type
   } = item;
 
-  const [correctTab, setCorrectTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
   const [firstMount, setFirstMount] = useState(false);
 
   useEffect(() => {
@@ -134,7 +125,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       produce(item, draft => {
         draft.validation.altResponses.splice(tabIndex, 1);
 
-        setCorrectTab(0);
+        setCurrentTab(0);
       })
     );
   };
@@ -159,16 +150,16 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         });
       })
     );
-    setCorrectTab(correctTab + 1);
+    setCurrentTab(currentTab + 1);
   };
 
   const handlePointsChange = val => {
     setQuestionData(
       produce(item, draft => {
-        if (correctTab === 0) {
+        if (currentTab === 0) {
           draft.validation.validResponse.score = val;
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val;
+          draft.validation.altResponses[currentTab - 1].score = val;
         }
       })
     );
@@ -177,31 +168,30 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleAnswerChange = ans => {
     setQuestionData(
       produce(item, draft => {
-        if (correctTab === 0) {
+        if (currentTab === 0) {
           draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.altResponses[correctTab - 1].value = ans;
+          draft.validation.altResponses[currentTab - 1].value = ans;
         }
       })
     );
   };
 
-  const renderOptions = () => (
-    <OptionsList
+  const renderChartPreview = () => (
+    <ChartPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      tab={correctTab}
-      onChangePoints={handlePointsChange}
+      tab={currentTab}
       saveAnswer={handleAnswerChange}
       userAnswer={
-        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
+        currentTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[currentTab - 1].value
       }
       view={EDIT}
       setQuestionData={setQuestionData}
     />
   );
+
+  const points =
+    currentTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[currentTab - 1].score;
 
   return (
     <Fragment>
@@ -212,32 +202,35 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         cleanSections={cleanSections}
       />
 
+      <AxisOptions
+        item={item}
+        setQuestionData={setQuestionData}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
+
       <PointsList
-        showLabelVisibilitySetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         showFractionFormatSetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}
-        buttonText={t("component.chart.addPoint")}
         onAdd={handleAddPoint}
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
 
       <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
+        onTabChange={setCurrentTab}
+        currentTab={currentTab}
         onAdd={handleAddAnswer}
         validation={item.validation}
-        options={renderOptions()}
+        chartPreview={renderChartPreview()}
+        points={points}
+        onChangePoints={handlePointsChange}
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
-
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Annotations question={item} setQuestionData={setQuestionData} editable />
-      </Widget>
 
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>
@@ -247,7 +240,6 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
 ChartEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool
@@ -259,9 +251,4 @@ ChartEdit.defaultProps = {
   cleanSections: () => {}
 };
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  withTheme
-);
-
-export default enhance(ChartEdit);
+export default ChartEdit;

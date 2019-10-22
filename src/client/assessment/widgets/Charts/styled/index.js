@@ -1,12 +1,20 @@
 import styled from "styled-components";
 
-import { dashBorderColor, themeColorLight, darkBlue, red } from "@edulastic/colors";
+import { themeColorLight, darkBlue, red } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
   shape-rendering: crispEdges;
-  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  stroke: ${props => props.theme.widgets.chart.gridColor};
   stroke-width: ${({ strokeWidth }) => strokeWidth};
+`;
+
+export const Axis = styled(Line)`
+  stroke: ${themeColorLight};
+`;
+
+export const Tick = styled(Line)`
+  stroke: ${props => props.theme.widgets.chart.tickColor};
 `;
 
 export const Circle = styled.circle`
@@ -14,8 +22,8 @@ export const Circle = styled.circle`
   cursor: pointer;
   position: relative;
   z-index: 10;
-  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
-  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  stroke: ${props => props.theme.widgets.chart.stockColor};
+  fill: ${props => props.theme.widgets.chart.stockColor};
 `;
 
 export const Bar = styled.rect`
@@ -48,7 +56,10 @@ export const StrokedRect = styled.rect`
 
 export const Text = styled.text`
   user-select: none;
-  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
+  font-size: ${props => props.theme.bodyFontSize};
+  font-weight: ${props => props.theme.bold};
+  text-transform: uppercase;
+  fill: ${props => props.theme.widgets.chart.axisLabel};
 `;
 
 export const Sub = styled.tspan`

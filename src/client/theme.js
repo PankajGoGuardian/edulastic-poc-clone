@@ -140,6 +140,11 @@ const tagTextColor = "#4AAC8B";
 const tagUnactiveBgColor = "#AAAFB5";
 const tagUnactiveTextColor = "#AEAEAE";
 
+const chartGridColor = "#e4e4e4";
+const chartAxisLabelColor = "#aaafb5";
+const chartTickColor = "#434b5d";
+const chartStockColor = "#42d184";
+
 const ThemeZoomMap = {
   xs: 1,
   sm: 1.2,
@@ -1068,6 +1073,10 @@ export const defaultTheme = {
       axisBorderColor: brandGrey,
       labelStrokeColor: textColor,
       labelBgHoverColor: white,
+      gridColor: chartGridColor,
+      axisLabel: chartAxisLabelColor,
+      tickColor: chartTickColor,
+      stockColor: chartStockColor,
       chartZoom: 1
     },
     fractionEditor: {
@@ -1316,7 +1325,7 @@ export const defaultTheme = {
     tableDataTextColor: labelStyle,
     tableDataFontSize: standardFont,
     percentageTagTextColor: triangleBottomColor,
-    semiBold: semiBold
+    semiBold
   },
   manageClass: {
     manageClassBgColor: containerWhite,

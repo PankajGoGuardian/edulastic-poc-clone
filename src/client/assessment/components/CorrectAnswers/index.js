@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { compose } from "redux";
 import { isEmpty } from "lodash";
 
 import { themeColor } from "@edulastic/colors";
@@ -153,6 +152,4 @@ CorrectAnswers.defaultProps = {
   cleanSections: () => {}
 };
 
-const enhance = compose(withNamespaces("assessment"));
-
-export default enhance(CorrectAnswers);
+export default withNamespaces("assessment")(CorrectAnswers);

@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 
 import { setElementsStashAction, setStashIndexAction } from "../../actions/graphTools";
-import { CLEAR, PREVIEW, SHOW } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, SHOW, EDIT } from "../../constants/constantsForQuestions";
 
 import { getFontSize } from "../../utils/helpers";
 import LineChart from "./LineChart";
@@ -20,6 +20,7 @@ import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper } from "./styled/QuestionNumber";
 import { Tools } from "./components/Tools";
+import ChartEditTool from "./components/ChartEditTool";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ChartPreview = ({
@@ -61,7 +62,7 @@ const ChartPreview = ({
   const { data = [], name } = chart_data;
   let CurrentChart = null;
 
-  const [tool, setTool] = useState(0);
+  const [tool, setTool] = useState("");
 
   const getStashId = () => (tab === 0 ? `${item.id}_${view}` : `alt-${tab}-${item.id}_${view}`);
 
@@ -115,10 +116,10 @@ const ChartPreview = ({
   const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR);
 
-    if (tool === 3 && index >= 0) {
+    if (tool === "delete" && index >= 0) {
       const newAnswer = cloneDeep(ans);
       newAnswer[index].y = data[index].y || uiStyle.yAxisMin;
-      setTool(0);
+      setTool("");
       saveAnswer(newAnswer);
       setElementsStash(newAnswer, getStashId());
     } else {
@@ -133,7 +134,7 @@ const ChartPreview = ({
 
   const onReset = () => {
     changePreviewTab(CLEAR);
-    setTool(0);
+    setTool("");
     const answer = data.map(({ x, y }) => ({ x, y }));
     saveAnswer(answer);
     setElementsStash(answer, getStashId());
@@ -141,6 +142,7 @@ const ChartPreview = ({
 
   const onUndo = () => {
     changePreviewTab(CLEAR);
+    setTool("");
     const id = getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
       saveAnswer(stash[id][stashIndex[id] - 1]);
@@ -150,6 +152,7 @@ const ChartPreview = ({
 
   const onRedo = () => {
     changePreviewTab(CLEAR);
+    setTool("");
     const id = getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
       saveAnswer(stash[id][stashIndex[id] + 1]);
@@ -170,19 +173,18 @@ const ChartPreview = ({
     }
   };
 
-  const allControls = ["undo", "redo", "reset", "delete"];
-
   const renderTools = () => (
-    <Tools setTool={setTool} tool={tool} controls={allControls} getHandlerByControlName={getHandlerByControlName} />
+    <Tools
+      setTool={setTool}
+      tools={[tool]}
+      controls={item.controls || []}
+      getHandlerByControlName={getHandlerByControlName}
+      justifyContent="flex-end"
+    />
   );
 
   return (
-    <StyledPaperWrapper
-      className="chart-wrapper"
-      style={{ fontSize }}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <>
       {view === PREVIEW && (
         <Fragment>
           <QuestionTitleWrapper>
@@ -191,61 +193,73 @@ const ChartPreview = ({
           </QuestionTitleWrapper>
         </Fragment>
       )}
-      <StyledChartContainer>
-        {!disableResponse && renderTools()}
-        <CurrentChart
-          name={name}
-          data={answerIsActual() ? userAnswer : data.map(({ x, y }) => ({ x, y }))}
-          gridParams={calculatedParams}
-          deleteMode={tool === 3}
-          view={view}
-          disableResponse={disableResponse}
-          previewTab={previewTab}
-          saveAnswer={saveAnswerHandler}
-          correct={correct}
-          item={item}
-          setQuestionData={setQuestionData}
-        />
-      </StyledChartContainer>
-      {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-        <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
+      {!disableResponse && renderTools()}
+      <StyledPaperWrapper
+        className="chart-wrapper"
+        style={{ fontSize }}
+        padding={smallSize}
+        boxShadow={smallSize ? "none" : ""}
+      >
+        <ChartContainer preview={view === EDIT}>
           <CurrentChart
             name={name}
-            data={answerData}
+            data={answerIsActual() ? userAnswer : data.map(({ x, y }) => ({ x, y }))}
             gridParams={calculatedParams}
-            deleteMode={tool === 3}
+            deleteMode={tool === "delete"}
             view={view}
-            disableResponse
+            disableResponse={disableResponse}
             previewTab={previewTab}
             saveAnswer={saveAnswerHandler}
-            correct={answerCorrect}
+            correct={correct}
             item={item}
             setQuestionData={setQuestionData}
           />
-        </CorrectAnswersContainer>
-      )}
-
-      {view === PREVIEW &&
-        previewTab === SHOW &&
-        altAnswerData.length > 0 &&
-        altAnswerData.map((ans, index) => (
-          <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
-            <CurrentChart
-              name={name}
-              data={ans.value}
-              gridParams={calculatedParams}
-              deleteMode={tool === 3}
-              view={view}
-              disableResponse
-              previewTab={previewTab}
-              saveAnswer={saveAnswerHandler}
-              correct={altAnswerCorrect[index]}
-              item={item}
-              setQuestionData={setQuestionData}
-            />
+          {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
+        </ChartContainer>
+        {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
+          <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
+            <ChartContainer>
+              <CurrentChart
+                name={name}
+                data={answerData}
+                gridParams={calculatedParams}
+                deleteMode={tool === "delete"}
+                view={view}
+                disableResponse
+                previewTab={previewTab}
+                saveAnswer={saveAnswerHandler}
+                correct={answerCorrect}
+                item={item}
+                setQuestionData={setQuestionData}
+              />
+            </ChartContainer>
           </CorrectAnswersContainer>
-        ))}
-    </StyledPaperWrapper>
+        )}
+
+        {view === PREVIEW &&
+          previewTab === SHOW &&
+          altAnswerData.length > 0 &&
+          altAnswerData.map((ans, index) => (
+            <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
+              <ChartContainer>
+                <CurrentChart
+                  name={name}
+                  data={ans.value}
+                  gridParams={calculatedParams}
+                  deleteMode={tool === "delete"}
+                  view={view}
+                  disableResponse
+                  previewTab={previewTab}
+                  saveAnswer={saveAnswerHandler}
+                  correct={altAnswerCorrect[index]}
+                  item={item}
+                  setQuestionData={setQuestionData}
+                />
+              </ChartContainer>
+            </CorrectAnswersContainer>
+          ))}
+      </StyledPaperWrapper>
+    </>
   );
 };
 
@@ -299,6 +313,10 @@ const enhance = compose(
 
 export default enhance(ChartPreview);
 
-const StyledChartContainer = styled.div`
+const ChartContainer = styled.div`
+  position: relative;
+  width: fit-content;
+  margin: 0px auto;
   zoom: ${props => props.theme.widgets.chart.chartZoom};
+  ${({ preview }) => (preview ? "padding: 0px 70px 0px 35px" : "")}
 `;

@@ -1,13 +1,10 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Text } from "@vx/text";
-
-import { Line } from "../styled";
+import { Line, Text, Tick } from "../styled";
 import { getGridVariables } from "../helpers";
 
-const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, setHeightAddition, heightAddition }) => {
-  const { height, margin } = gridParams;
+const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines }) => {
+  const { height, margin, showTicks } = gridParams;
 
   const { padding, step } = getGridVariables(lines, gridParams, true);
 
@@ -23,37 +20,32 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, set
       startIndex += partStep;
       resultArray.push(cloneOfString.slice(startIndex - partStep, startIndex));
     }
-    resultArray.push(cloneOfString.slice(startIndex));
-
-    if (resultArray.length * 17 > heightAddition) {
-      setHeightAddition(resultArray.length * 17);
-    }
 
     return resultArray;
   };
 
+  const y2 = height - margin / 2;
+
   return (
     <g>
-      {lines.map((dot, index) => (
-        <Fragment>
-          {displayAxisLabel && (
-            <g transform={`translate(${getConstantX(index)}, ${height})`}>
-              <StyledText textAnchor="middle" verticalAnchor="start" width={70}>
-                {lines[index].x}
-              </StyledText>
-            </g>
-          )}
-          {displayGridlines && (
-            <Line
-              x1={getConstantX(index)}
-              y1={margin / 4 + 15}
-              x2={getConstantX(index)}
-              y2={height - margin / 2 + 15}
-              strokeWidth={1}
-            />
-          )}
-        </Fragment>
-      ))}
+      {lines.map((_, index) => {
+        const x = getConstantX(index);
+        return (
+          <Fragment>
+            {displayAxisLabel && (
+              <Text textAnchor="middle" x={x} y={showTicks ? height : height - 10}>
+                {getParts(index).map((text, ind) => (
+                  <tspan dy="1.2em" x={x} key={ind}>
+                    {text}
+                  </tspan>
+                ))}
+              </Text>
+            )}
+            {displayGridlines && <Line x1={x} y1={margin} x2={x} y2={y2} strokeWidth={2} />}
+            {showTicks && <Tick x1={x} y1={y2 - 10} x2={x} y2={y2 + 10} strokeWidth={2} />}
+          </Fragment>
+        );
+      })}
     </g>
   );
 };
@@ -70,21 +62,12 @@ BarsAxises.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   displayAxisLabel: PropTypes.bool,
-  displayGridlines: PropTypes.bool,
-  setHeightAddition: PropTypes.func,
-  heightAddition: PropTypes.number
+  displayGridlines: PropTypes.bool
 };
 
 BarsAxises.defaultProps = {
   displayAxisLabel: true,
-  displayGridlines: true,
-  heightAddition: 19,
-  setHeightAddition: () => {}
+  displayGridlines: true
 };
-
-const StyledText = styled(Text)`
-  user-select: none;
-  fill: ${props => props.theme.widgets.chart.labelStrokeColor};
-`;
 
 export default BarsAxises;

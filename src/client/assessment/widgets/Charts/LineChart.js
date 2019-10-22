@@ -3,8 +3,6 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { themeColorLight } from "@edulastic/colors";
-
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
@@ -29,8 +27,7 @@ const LineChart = ({
   correct,
   disableResponse,
   toggleBarDragging,
-  deleteMode,
-  margin = { top: 10, right: 10, left: 10, bottom: 52 }
+  deleteMode
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams;
 
@@ -44,7 +41,7 @@ const LineChart = ({
 
   const [localData, setLocalData] = useState(data);
 
-  const paddingTop = 15;
+  const paddingTop = 20;
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
@@ -107,52 +104,44 @@ const LineChart = ({
     save();
   };
 
+  const svgHeight = height + paddingTop;
+
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
-      width={width + margin.left + margin.right}
-      height={height + margin.top + margin.bottom}
+      width={width}
+      height={svgHeight}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <g
-        width={width}
-        height={height}
-        style={{
-          marginLeft: `${margin.left}px`,
-          marginRight: `${margin.right}px`,
-          marginTop: `${margin.top}px`,
-          marginBottom: `${margin.bottom}px`
-        }}
-      >
-        <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+      <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-        <HorizontalLines
-          gridParams={gridParams}
-          displayGridlines={displayHorizontalLines(showGridlines)}
-          paddingTop={paddingTop}
-        />
+      <HorizontalLines
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+        paddingTop={paddingTop}
+        isLine
+      />
 
-        <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
+      <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" />
 
-        <ArrowPair getActivePoint={getActivePoint} />
+      <ArrowPair getActivePoint={getActivePoint} />
 
-        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
-        <Points
-          item={item}
-          activeIndex={activeIndex}
-          onPointOver={setActive}
-          previewTab={previewTab}
-          circles={localData}
-          view={view}
-          onMouseDown={!disableResponse ? onMouseDown : () => {}}
-          gridParams={gridParams}
-          correct={correct}
-          paddingTop={paddingTop}
-        />
-      </g>
+      <Points
+        item={item}
+        activeIndex={activeIndex}
+        onPointOver={setActive}
+        previewTab={previewTab}
+        circles={localData}
+        view={view}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
+        gridParams={gridParams}
+        correct={correct}
+        paddingTop={paddingTop}
+      />
     </svg>
   );
 };
@@ -188,5 +177,5 @@ LineChart.defaultProps = {
 export default withGrid(LineChart);
 
 const StyledPolyline = styled.polyline`
-  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  stroke: ${props => props.theme.widgets.chart.stockColor};
 `;

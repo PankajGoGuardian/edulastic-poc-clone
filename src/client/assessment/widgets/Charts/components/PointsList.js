@@ -1,16 +1,23 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Select } from "antd";
+import { Checkbox } from "antd";
 
-import { FlexContainer } from "@edulastic/common";
-
-import withAddButton from "../../../components/HOC/withAddButton";
-import UiInputGroup from "./UiInputGroup";
+import { withNamespaces } from "@edulastic/localization";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
 import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../const";
 import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
+import {
+  Row,
+  ColoredRow,
+  StyledTextField,
+  ColumnLabel,
+  RowLabel,
+  FormatedSelect,
+  Col,
+  AddPointBtn
+} from "../styled/Grid";
 
 class PointsList extends Component {
   getHoverSettings = () => {
@@ -34,71 +41,112 @@ class PointsList extends Component {
   render() {
     const {
       points,
+      onAdd,
       handleChange,
       handleDelete,
       t,
       fillSections,
       cleanSections,
-      showLabelVisibilitySetting,
       showFractionFormatSetting
     } = this.props;
+    const isShowFractionField = showFractionFormatSetting;
 
     return (
-      <Fragment>
+      <Question
+        section="main"
+        label={`${t("component.chart.categories")}`}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <Subtitle>{t("component.chart.categories")}</Subtitle>
+
+        <Row gutter={isShowFractionField ? 10 : 30}>
+          <Col md={isShowFractionField ? 3 : 5} />
+          <Col md={4}>
+            <ColumnLabel>{t("component.chart.label")}</ColumnLabel>
+          </Col>
+          <Col md={4}>
+            <ColumnLabel>{t("component.chart.initialValue")}</ColumnLabel>
+          </Col>
+          <Col md={4}>
+            <ColumnLabel>{t("component.chart.showAlways")}</ColumnLabel>
+          </Col>
+          {showFractionFormatSetting && (
+            <Col md={4}>
+              <ColumnLabel>{t("component.options.fractionFormat")}</ColumnLabel>
+            </Col>
+          )}
+          <Col md={isShowFractionField ? 3 : 4}>
+            <ColumnLabel>{t("component.chart.interactive")}</ColumnLabel>
+          </Col>
+          <Col md={isShowFractionField ? 2 : 3} />
+        </Row>
+
         {points.map((dot, index) => (
-          <Question
-            section="main"
-            label={`${t("component.chart.point")} ${index + 1}`}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          >
-            <FlexContainer justifyContent="space-between">
-              <Subtitle>{`${t("component.chart.point")} ${index + 1}`}</Subtitle>
-              <IconTrash onClick={() => handleDelete(index)} />
-            </FlexContainer>
-            <UiInputGroup
-              onChange={handleChange(index)}
-              firstInputType="text"
-              secondInputType="number"
-              firstFieldValue={dot.x}
-              secondFieldValue={dot.y}
-              t={t}
-            />
-            <Checkbox
-              checked={!dot.notInteractive}
-              onChange={() => handleChange(index)("interactive", !dot.notInteractive)}
-            >
-              {t("component.chart.interactive")}
-            </Checkbox>
-            {showLabelVisibilitySetting && (
-              <Select
-                value={dot.labelVisibility || SHOW_ALWAYS}
-                style={{ width: "150px", marginRight: "20px" }}
-                onSelect={value => handleChange(index)("labelVisibility", value)}
-              >
-                {this.getHoverSettings().map((setting, i) => (
-                  <Select.Option key={`setting-${i}`} value={setting.value}>
-                    {setting.label}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-            {showFractionFormatSetting && (
-              <Select
-                value={dot.labelFractionFormat || FRACTION_FORMATS.decimal}
-                style={{ width: "150px" }}
-                onSelect={value => handleChange(index)("labelFractionFormat", value)}
-              >
-                {this.getFractionFormatSettings().map((setting, i) => (
-                  <Select.Option key={`setting-${i}`} value={setting.value}>
-                    {setting.label}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Question>
+          <Fragment>
+            <ColoredRow gutter={isShowFractionField ? 10 : 30}>
+              <Col md={isShowFractionField ? 3 : 5}>
+                <RowLabel>{`${t("component.chart.point")} ${index + 1}`}</RowLabel>
+              </Col>
+              <Col md={4}>
+                <StyledTextField
+                  type="text"
+                  value={dot.x}
+                  onChange={e => handleChange(index)("label", e.target.value)}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={4}>
+                <StyledTextField
+                  type="number"
+                  value={dot.y}
+                  onChange={e => handleChange(index)("value", e.target.value)}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={4}>
+                <FormatedSelect
+                  value={dot.labelVisibility || SHOW_ALWAYS}
+                  onSelect={value => handleChange(index)("labelVisibility", value)}
+                >
+                  {this.getHoverSettings().map((setting, i) => (
+                    <FormatedSelect.Option key={`setting-${i}`} value={setting.value}>
+                      {setting.label}
+                    </FormatedSelect.Option>
+                  ))}
+                </FormatedSelect>
+              </Col>
+              {showFractionFormatSetting && (
+                <Col md={4}>
+                  <FormatedSelect
+                    value={dot.labelFractionFormat || FRACTION_FORMATS.decimal}
+                    onSelect={value => handleChange(index)("labelFractionFormat", value)}
+                  >
+                    {this.getFractionFormatSettings().map((setting, i) => (
+                      <FormatedSelect.Option key={`setting-${i}`} value={setting.value}>
+                        {setting.label}
+                      </FormatedSelect.Option>
+                    ))}
+                  </FormatedSelect>
+                </Col>
+              )}
+              <Col md={isShowFractionField ? 3 : 4}>
+                <Checkbox
+                  checked={!dot.notInteractive}
+                  onChange={() => handleChange(index)("interactive", !dot.notInteractive)}
+                />
+              </Col>
+              <Col md={isShowFractionField ? 2 : 3}>
+                <IconTrash onClick={() => handleDelete(index)} />
+              </Col>
+            </ColoredRow>
+          </Fragment>
         ))}
-      </Fragment>
+
+        <AddPointBtn data-cy="addButton" onClick={onAdd} type="primary">
+          {t("component.chart.addPoint")}
+        </AddPointBtn>
+      </Question>
     );
   }
 }
@@ -106,19 +154,18 @@ class PointsList extends Component {
 PointsList.propTypes = {
   t: PropTypes.func.isRequired,
   points: PropTypes.array.isRequired,
+  onAdd: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  showLabelVisibilitySetting: PropTypes.bool,
   showFractionFormatSetting: PropTypes.bool
 };
 
 PointsList.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  showLabelVisibilitySetting: false,
   showFractionFormatSetting: false
 };
 
-export default withAddButton(PointsList);
+export default withNamespaces("assessment")(PointsList);

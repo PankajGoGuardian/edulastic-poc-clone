@@ -215,7 +215,8 @@
         "decimal": "Decimal",
         "fraction": "Fraction",
         "mixedFraction": "Mixed Fraction"
-      }
+      },
+      "graphControls": "Graph Controls"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -256,6 +257,7 @@
       "chartMainBlockTitle": "Chart",
       "width": "Width (px)",
       "height": "Height (px)",
+      "layoutMargin": "Margin (px)",
       "yAxisMin": "Min Value",
       "yAxisMax": "Max Value",
       "stepSize": "Y Axis Step",
@@ -263,11 +265,21 @@
       "xAxisLabel": "X Axis Label",
       "yAxisLabel": "Y Axis Label",
       "interactive": "Interactive",
-      "addPoint": "Add Point",
+      "addPoint": "Add a New Point",
       "point": "Point",
       "points": "Points",
       "value": "Value",
       "label": "Label",
+      "minimum": "Minimum",
+      "maximum": "Maximun",
+      "majorTicks": "Major Ticks",
+      "minorTicks": "Minor Ticks",
+      "showTicks": "Show Ticks",
+      "xAxis": "X Axis",
+      "yAxis": "Y Axix",
+      "categories": "Categories",
+      "initialValue": "Initial Value",
+      "showAlways": "Show always",
       "chartTitle": "Chart Title",
       "correctAnswer": "Correct Answer",
       "alternateAnswer": "Alternate Answer",
@@ -282,7 +294,11 @@
         "showAlways": "Show always",
         "hidden": "Hidden",
         "showByHover": "Show by hover"
-      }
+      },
+      "showGridlines": "Show Grid",
+      "displayPositionOnHover": "Display position on hover",
+      "drawLabelZero": "Draw Label Zero",
+      "snapToGrid": "Snap To Grid"
     },
     "hotspot": {
       "widthLabel": "Width (px)",

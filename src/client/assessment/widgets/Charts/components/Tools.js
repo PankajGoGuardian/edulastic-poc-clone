@@ -1,45 +1,61 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { IconGraphClear as IconClear } from "@edulastic/icons";
-import { ToolbarRight, ToolBtn, ToolbarItem, ToolbarItemLabel, ToolbarItemIcon } from "../styled/Tools";
+import { IconTrash, IconUndo, IconRedo, IconGraphClear } from "@edulastic/icons";
 
-const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
+import { ToolbarContainer, ToolBtn, ToolbarItem, ToolbarItemLabel, ToolbarItemIcon } from "../styled/Tools";
 
-export const Tools = ({ controls, tool, setTool, getHandlerByControlName, fontSize }) => (
-  <ToolbarRight>
-    {controls.map((control, index) => (
-      <ToolBtn
-        key={`control-${index}`}
-        className={index === 3 && tool === 3 ? "active" : ""}
-        onClick={() => {
-          setTool(index);
-          getHandlerByControlName(control);
-        }}
-        style={{ width: fontSize > 20 ? 105 : 93 }}
-      >
-        <ToolbarItem>
-          <ToolbarItemIcon style={{ marginBottom: fontSize / 2 }}>
-            <IconClear width={fontSize + 2} height={fontSize} />
-          </ToolbarItemIcon>
-          <ToolbarItemLabel style={{ fontSize }} color="#4aac8b">
-            {capitalizeFirstLetter(control)}
-          </ToolbarItemLabel>
-        </ToolbarItem>
-      </ToolBtn>
-    ))}
-  </ToolbarRight>
-);
+export const Tools = ({ controls, tools, setTool, getHandlerByControlName, justifyContent }) => {
+  const getIcon = ctrl => {
+    switch (ctrl) {
+      case "trash":
+      case "delete":
+        return <IconTrash />;
+      case "undo":
+        return <IconUndo />;
+      case "redo":
+        return <IconRedo />;
+      case "reset":
+      case "clear":
+        return <IconGraphClear />;
+      default:
+        break;
+    }
+  };
+
+  const isActive = control => tools.includes(control);
+
+  return (
+    <ToolbarContainer justifyContent={justifyContent}>
+      {controls.map((control, index) => (
+        <ToolBtn
+          key={`control-${index}`}
+          className={isActive(control) ? "active" : ""}
+          onClick={() => {
+            setTool(control);
+            getHandlerByControlName(control);
+          }}
+        >
+          <ToolbarItem>
+            <ToolbarItemIcon>{getIcon(control)}</ToolbarItemIcon>
+            <ToolbarItemLabel>{control}</ToolbarItemLabel>
+          </ToolbarItem>
+        </ToolBtn>
+      ))}
+    </ToolbarContainer>
+  );
+};
 
 Tools.propTypes = {
-  tool: PropTypes.number.isRequired,
-  setTool: PropTypes.func.isRequired,
-  controls: PropTypes.shape.isRequired,
-  getHandlerByControlName: PropTypes.func.isRequired,
-  fontSize: PropTypes.number
+  tools: PropTypes.array,
+  controls: PropTypes.array,
+  justifyContent: PropTypes.string,
+  getHandlerByControlName: PropTypes.func,
+  setTool: PropTypes.func.isRequired
 };
 
 Tools.defaultProps = {
-  tool: 0,
+  tools: [],
   controls: [],
-  fontSize: 14
+  justifyContent: "flex-start",
+  getHandlerByControlName: () => {}
 };

@@ -9,23 +9,30 @@ import Extras from "../../../containers/Extras";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import LayoutsComponent from "./LayoutsComponent";
+import GraphControls from "./GraphControls";
 
-const Options = ({ t, fillSections, cleanSections, advancedAreOpen }) => (
-  <WidgetOptions
-    fillSections={fillSections}
-    cleanSections={cleanSections}
-    showVariables={false}
-    advancedAreOpen={advancedAreOpen}
-    title={t("common.options.title")}
-  >
-    <LayoutsComponent fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+const Options = ({ t, fillSections, cleanSections, advancedAreOpen }) => {
+  const leftSideProp = {
+    fillSections,
+    cleanSections,
+    advancedAreOpen
+  };
+  return (
+    <WidgetOptions
+      showVariables={false}
+      {...leftSideProp}
+      title={t("common.options.title")}
+      renderExtra={<GraphControls {...leftSideProp} />}
+    >
+      <LayoutsComponent {...leftSideProp} />
 
-    <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
-      <Extras.Distractors />
-      <Extras.Hints />
-    </Extras>
-  </WidgetOptions>
-);
+      <Extras {...leftSideProp}>
+        <Extras.Distractors />
+        <Extras.Hints />
+      </Extras>
+    </WidgetOptions>
+  );
+};
 
 Options.propTypes = {
   t: PropTypes.func.isRequired,

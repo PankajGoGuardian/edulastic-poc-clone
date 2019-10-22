@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import { questionType } from "@edulastic/constants";
+import { Checkbox } from "@edulastic/common";
 import { Input } from "antd";
 
 import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
@@ -16,8 +17,6 @@ import Question from "../../../components/Question";
 import PointStyleOption from "./PointStyle";
 import MulticolorBarsOption from "./MulticolorBarsOption";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import GridlinesOption from "./GridlinesOption";
-import { SETTING_NAME_SHOW_GRIDLINES, SHOW_GRIDLINES_BOTH } from "../const";
 
 const InputField = ({ name, value, onChange, type = "number", t }) => (
   <Fragment>
@@ -43,18 +42,22 @@ InputField.defaultProps = {
   type: "number"
 };
 
+const CheckboxField = ({ t, onChange, value, name }) => (
+  <Checkbox label={t(`component.chart.${name}`)} onChange={onChange} checked={value} textTransform="uppercase" />
+);
+
+CheckboxField.propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.any.isRequired,
+  t: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
+};
+
 class LayoutsComponent extends Component {
   render() {
     const { item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t } = this.props;
     const chartType = get(item, "uiStyle.chartType");
-
-    const changeItem = (prop, val) => {
-      setQuestionData(
-        produce(item, draft => {
-          draft[prop] = val;
-        })
-      );
-    };
+    const uiStyle = get(item, "uiStyle", {});
 
     const changeUIStyle = (prop, val) => {
       setQuestionData(
@@ -67,18 +70,25 @@ class LayoutsComponent extends Component {
       );
     };
 
-    const getLayoutSettings = chartType => {
+    const getLayoutSettings = _chartType => {
       const settings = [
         <InputField
           name="width"
-          value={parseInt(item.uiStyle.width, 10) < 1 ? null : item.uiStyle.width}
+          value={parseInt(uiStyle.width, 10) < 1 ? null : uiStyle.width}
           onChange={changeUIStyle}
           type="number"
           t={t}
         />,
         <InputField
           name="height"
-          value={parseInt(item.uiStyle.height, 10) < 1 ? null : item.uiStyle.height}
+          value={parseInt(uiStyle.height, 10) < 1 ? null : uiStyle.height}
+          onChange={changeUIStyle}
+          type="number"
+          t={t}
+        />,
+        <InputField
+          name="layoutMargin"
+          value={parseInt(uiStyle.layoutMargin, 10) < 1 ? null : uiStyle.layoutMargin}
           onChange={changeUIStyle}
           type="number"
           t={t}
@@ -89,20 +99,43 @@ class LayoutsComponent extends Component {
         />
       ];
 
-      if (
-        chartType === questionType.HISTOGRAM ||
-        chartType === questionType.BAR_CHART ||
-        chartType === questionType.LINE_CHART
-      ) {
-        settings.push(
-          <GridlinesOption
-            onChange={val => changeUIStyle(SETTING_NAME_SHOW_GRIDLINES, val)}
-            value={get(item, `uiStyle.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
-          />
-        );
-      }
+      settings.push(
+        <CheckboxField
+          t={t}
+          name="showGridlines"
+          value={uiStyle.showGridlines}
+          onChange={() => changeUIStyle("showGridlines", !uiStyle.showGridlines)}
+        />
+      );
 
-      if (chartType === questionType.LINE_CHART) {
+      settings.push(
+        <CheckboxField
+          t={t}
+          name="displayPositionOnHover"
+          value={uiStyle.displayPositionOnHover}
+          onChange={() => changeUIStyle("displayPositionOnHover", !uiStyle.displayPositionOnHover)}
+        />
+      );
+
+      settings.push(
+        <CheckboxField
+          t={t}
+          name="drawLabelZero"
+          value={uiStyle.drawLabelZero}
+          onChange={() => changeUIStyle("drawLabelZero", !uiStyle.drawLabelZero)}
+        />
+      );
+
+      settings.push(
+        <CheckboxField
+          t={t}
+          name="snapToGrid"
+          value={uiStyle.snapToGrid}
+          onChange={() => changeUIStyle("snapToGrid", !uiStyle.drawLabelZero)}
+        />
+      );
+
+      if (_chartType === questionType.LINE_CHART) {
         settings.push(
           <PointStyleOption
             onChange={val => changeUIStyle("pointStyle", val)}
@@ -111,7 +144,7 @@ class LayoutsComponent extends Component {
         );
       }
 
-      if (chartType === questionType.HISTOGRAM) {
+      if (_chartType === questionType.HISTOGRAM) {
         settings.push(
           <MulticolorBarsOption
             onChange={val => changeUIStyle("multicolorBars", val)}

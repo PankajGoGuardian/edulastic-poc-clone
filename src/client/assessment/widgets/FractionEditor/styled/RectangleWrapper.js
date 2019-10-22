@@ -10,4 +10,5 @@ export default styled.div`
   border-left: 2px solid ${blue};
   border-bottom: 2px solid ${blue};
   margin-bottom: 1em;
+  margin-right: 10px;
 `;

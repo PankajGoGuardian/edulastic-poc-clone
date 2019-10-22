@@ -260,7 +260,7 @@ class ClozeMathWithUnit extends React.Component {
           onChange={this.onChangeUnit}
           onDropdownVisibleChange={this.onDropdownVisibleChange}
           keypadMode={keypadMode}
-          height={height || "auto"}
+          height={btnStyle?.height || height || "auto"}
         />
         {showKeyboard && (
           <KeyboardWrapper innerRef={this.mathKeyboardRef} height={height}>

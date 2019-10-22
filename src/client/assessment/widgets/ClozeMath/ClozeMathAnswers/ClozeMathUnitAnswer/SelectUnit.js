@@ -70,7 +70,7 @@ const StyledSelect = styled(Select)`
   .ant-select-selection {
     display: flex;
     align-items: center;
-    height: ${response.minHeight}px;
+    height: ${props => props.height || response.minHeight + "px"};
     padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
     ${({ preview }) =>
       preview &&

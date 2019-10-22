@@ -13,11 +13,14 @@ export const getParagraphsArray = initialArr =>
 
 export const getSentencesArray = initialArr => {
   const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
+  const imgArray = initialArr.join("").match(/<img(.*?)\/>/g);
+
   let i = 0;
   return (
     initialArr
       .join("")
       .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
+      .replace(/<img(.*?)\/>/g, "<img></img>")
       .match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
   )
     .map(el => {
@@ -28,6 +31,10 @@ export const getSentencesArray = initialArr => {
           i++;
         }
       }
+
+      if (imgArray && imgArray.length > 0 && el.indexOf("<img></img>") !== -1) {
+        el = el.replace("<img></img>", imgArray.shift());
+      }
       return { value: `${el}`, active: true };
     })
     .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
@@ -36,6 +43,7 @@ export const getSentencesArray = initialArr => {
 export const getWordsArray = initialArr => {
   const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
   let stylesArray = initialArr.join("").match(/<span style="(.*?)">/g);
+  const imgArray = initialArr.join("").match(/<img(.*?)\/>/g);
   const styleTemplateArr = initialArr.join("").match(/<span style="(.*?)">(.*?)<\/span>/g);
 
   let initialArrayForWords = initialArr;
@@ -66,6 +74,7 @@ export const getWordsArray = initialArr => {
       .replace("&nbsp;", " ")
       .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
       .replace(/<span style="(.*?)">/g, "<style></style>")
+      .replace(/<img(.*?)\/>/g, "<img></img>")
       .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
   )
     .map(el => {
@@ -79,6 +88,9 @@ export const getWordsArray = initialArr => {
       if (stylesArray && el.indexOf("<style></style>") !== -1) {
         el = el.replace("<style></style>", stylesArray[j]);
         j++;
+      }
+      if (imgArray && imgArray.length > 0 && el.indexOf("<img></img>") !== -1) {
+        el = el.replace("<img></img>", imgArray.shift());
       }
       return el;
     })

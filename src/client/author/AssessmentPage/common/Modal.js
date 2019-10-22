@@ -4,10 +4,14 @@ import { secondaryTextColor, themeColor, white } from "@edulastic/colors";
 
 export const ModalWrapper = styled.div`
   width: 746px;
+  .scrollbar-container {
+    padding: 0 15px;
+  }
 `;
 
 export const ModalHeader = styled.div`
   margin-bottom: 30px;
+  padding: 0 18px;
 `;
 
 export const ModalTitle = styled.h2`

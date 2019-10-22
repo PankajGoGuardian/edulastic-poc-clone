@@ -116,7 +116,7 @@ const ThumbnailsItem = ({
         }
       </Modal>
       <Dropdown overlay={contextMenu} disabled={viewMode !== "edit"} trigger={["contextMenu"]}>
-        <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
+        <ThumbnailsItemWrapper onClick={onClick}>
           <PagePreview rotate={rotate}>
             {url && (
               <Document file={url} renderMode="canvas">
@@ -124,7 +124,7 @@ const ThumbnailsItem = ({
               </Document>
             )}
           </PagePreview>
-          <PageNumber>{index + 1}</PageNumber>
+          <PageNumber active={current === index}>{index + 1}</PageNumber>
         </ThumbnailsItemWrapper>
       </Dropdown>
     </>

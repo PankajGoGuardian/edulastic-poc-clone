@@ -35,7 +35,7 @@ const modalStyles = {
   modal: {
     background: "#f8f8f8",
     borderRadius: "4px 4px 0 0",
-    padding: "19px 28px 40px 28px"
+    padding: "19px 10px 40px 10px"
   }
 };
 

@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor, secondaryTextColor } from "@edulastic/colors";
 
 export const ThumbnailsItemWrapper = styled.div`
   margin-bottom: 20px;
   cursor: pointer;
   border-radius: 10px;
-  box-shadow: ${props => (props.active ? `0 0 0 4px ${themeColor}` : "none")};
   overflow: hidden;
   background: ${white};
 `;
@@ -15,7 +14,7 @@ export const PagePreview = styled.div`
   height: 149px;
   overflow: hidden;
   padding: 10px;
-  transform: ${props => `rotate(${props.rotate}deg)`};
+  transform: ${props => `rotate(${props.rotate || 0}deg)`};
 
   .react-pdf__Page {
     position: relative;
@@ -29,7 +28,7 @@ export const PagePreview = styled.div`
 
 export const PageNumber = styled.span`
   display: block;
-  background: ${themeColor};
+  background: ${props => (props.active ? themeColor : secondaryTextColor)};
   text-align: center;
   color: ${white};
   font-size: 13px;

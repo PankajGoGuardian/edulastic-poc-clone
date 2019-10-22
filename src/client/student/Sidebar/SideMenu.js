@@ -184,15 +184,15 @@ class SideMenu extends Component {
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap" isSidebarCollapsed={isSidebarCollapsed}>
         <Menu isSidebarCollapsed={isSidebarCollapsed} onClick={this.onClickFooterDropDownMenu}>
-          <Menu.Item key="0" className="removeSelectedBorder">
-            <a>
-              <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
-            </a>
-          </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
               <IconDropdown type="user" /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
             </Link>
+          </Menu.Item>
+          <Menu.Item key="0" className="removeSelectedBorder">
+            <a>
+              <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
+            </a>
           </Menu.Item>
         </Menu>
       </FooterDropDown>
@@ -767,7 +767,7 @@ const FooterDropDown = styled.div`
   ul {
     background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid ${white};
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 30px 30px 0px 0px;
     overflow: hidden;
     max-width: 100%;
     padding-bottom: 10px;
@@ -815,7 +815,8 @@ const FooterDropDown = styled.div`
           i {
             color: ${props => props.theme.sideMenu.itemIconColor};
             position: relative;
-            margin-right: 5px;
+            margin-right: 10px;
+            padding-left: 5px;
             top: 2px;
             font-size: ${props => props.theme.sideMenu.userInfoDropdownItemIconSize};
           }
@@ -1003,8 +1004,6 @@ const IconDropdown = styled(AntIcon)`
 `;
 
 const LogoutIcon = styled(IconDropdown)`
-  transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
   color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 

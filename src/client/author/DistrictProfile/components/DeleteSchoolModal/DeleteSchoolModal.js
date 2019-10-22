@@ -55,7 +55,7 @@ const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedS
         </span>
         <span>All assessment and questions shared with {selectedSchool.name} would be moved to private Library.</span>
         <span>
-          This action can NOT be undone, please type <span style={{ color: themeColor }}>REMOVE</span> in the space
+          This action can NOT be undone, please type <strong style={{ color: themeColor }}>REMOVE</strong> in the space
           below to proceed.
         </span>
         <FormItem>

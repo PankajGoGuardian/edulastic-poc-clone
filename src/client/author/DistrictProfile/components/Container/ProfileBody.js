@@ -283,12 +283,12 @@ class ProfileBody extends React.Component {
               {getFieldDecorator("title", {
                 initialValue: user.title
               })(
-                <Select>
+                <TitleSelect>
                   <Option value="Mr.">Mr.</Option>
                   <Option value="Mrs.">Mrs.</Option>
                   <Option value="Ms.">Ms.</Option>
                   <Option value="Dr.">Dr.</Option>
-                </Select>
+                </TitleSelect>
               )}
             </InputItemWrapper>{" "}
           </DetailData>
@@ -486,17 +486,15 @@ class ProfileBody extends React.Component {
                 </SchoolWrapper>
                 <SchoolWrapper>
                   <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                  <div style={{ width: "100%" }}>
-                    <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
-                    <StandardSetsButtons>
-                      {showSaveStandSetsBtn && (
-                        <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
-                      )}
-                      <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
-                        Select your standard sets
-                      </SelectSetsButton>
-                    </StandardSetsButtons>
-                  </div>
+                  <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                  <StandardSetsButtons>
+                    {showSaveStandSetsBtn && (
+                      <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                    )}
+                    <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                      Select your standard sets
+                    </SelectSetsButton>
+                  </StandardSetsButtons>
                 </SchoolWrapper>
               </>
             )}
@@ -622,9 +620,6 @@ const StandardSetsList = styled(SchoolListWrapper)`
 
 const StandardSetsButtons = styled.div`
   float: right;
-  .ant-btn {
-    margin: 0px 0px 0px 10px;
-  }
 `;
 
 const StyledTag = styled(Tag)`
@@ -634,6 +629,7 @@ const StyledTag = styled(Tag)`
   font-weight: 600;
   padding: 2px 5px 2px 10px;
   margin: 5px;
+  white-space: normal;
   i {
     color: ${themeColor} !important;
     margin-left: 10px !important;
@@ -648,7 +644,7 @@ const SubHeader = styled.div`
 
 const Title = styled.h3`
   color: ${title};
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
   float: left;
@@ -685,14 +681,14 @@ const DetailRow = styled.div`
 `;
 
 const DetailTitle = styled.span`
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(0, 0, 0, 0.65);
   font-weight: 600;
   width: 150px;
   display: inline-block;
 `;
 const DetailData = styled.span`
-  font-size: 15px;
+  font-size: 14px;
   color: grey;
   display: inline-block;
   width: calc(100% - 150px);
@@ -737,13 +733,17 @@ const FormItemWrapper = styled(FormItem)`
   width: calc(50% - 10px);
   display: inline-block;
   label {
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(0, 0, 0, 0.65);
     font-weight: 600;
   }
   .ant-form-explain {
     font-size: 12px;
   }
+`;
+
+const TitleSelect = styled(Select)`
+  min-width: 100px;
 `;
 
 const InputItemWrapper = styled(FormItem)`

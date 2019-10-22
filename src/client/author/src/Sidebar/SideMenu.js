@@ -230,20 +230,20 @@ class SideMenu extends Component {
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
         <Menu onClick={this.onClickFooterDropDownMenu}>
-          <Menu.Item key="0" className="removeSelectedBorder">
-            <a>
-              <LogoutIcon type="logout" /> {isCollapsed ? "" : "Sign Out"}
-            </a>
+          <Menu.Item key="1" className="removeSelectedBorder">
+            <Link to="/author/profile">
+              <IconDropdown type="user" /> {isCollapsed ? "" : "My Profile"}
+            </Link>
           </Menu.Item>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
               <DollarIcon type="dollar" /> {isCollapsed ? "" : "Subscription"}
             </a>
           </Menu.Item>
-          <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/author/profile">
-              <IconDropdown type="user" /> {isCollapsed ? "" : "My Profile"}
-            </Link>
+          <Menu.Item key="0" className="removeSelectedBorder">
+            <a>
+              <LogoutIcon type="logout" /> {isCollapsed ? "" : "Sign Out"}
+            </a>
           </Menu.Item>
         </Menu>
       </FooterDropDown>
@@ -758,7 +758,7 @@ const FooterDropDown = styled.div`
   -webkit-transition: 0.2s;
   ul {
     border-bottom: 1px solid #fff;
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 30px 30px 0px 0px;
     overflow: hidden;
     max-width: 100%;
     padding-bottom: 10px;
@@ -806,7 +806,8 @@ const FooterDropDown = styled.div`
           i {
             color: ${props => props.theme.sideMenu.itemIconColor};
             position: relative;
-            margin-right: 5px;
+            margin-right: 10px;
+            padding-left: 5px;
             top: 2px;
             font-size: 20px;
           }
@@ -1021,10 +1022,7 @@ const IconDropdown = styled(AntIcon)`
   position: absolute;
   top: -10px;
 `;
-const LogoutIcon = styled(IconDropdown)`
-  transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
-`;
+const LogoutIcon = styled(IconDropdown)``;
 
 const DollarIcon = styled(IconDropdown)`
   color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};

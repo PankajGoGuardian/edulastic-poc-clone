@@ -1,7 +1,7 @@
 import { Radio, Switch } from "antd";
 import styled from "styled-components";
 
-import { mobileWidth, tabletWidth, white, themeColor, smallDesktopWidth, grey } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, white, themeColor, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -18,7 +18,7 @@ export const Container = styled.div`
     padding-left: 2px;
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${tabletWidth}) {
     .scrollbar-container {
       height: calc(100vh - 90px);
     }
@@ -33,7 +33,7 @@ export const LeftWrapper = styled.div`
   max-width: 230px;
   margin-top: 10px;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     position: fixed;
     top: 50px;
     left: 100px;
@@ -162,7 +162,7 @@ export const FilterButton = styled(Button)`
     color: ${props => (props.isShowFilter ? white : themeColor)};
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     margin-left: ${props => (props.showFilter ? "180px" : "-20px")};
     margin-top: ${props => (props.showFilter ? "-25px" : "34px")};
   }
@@ -171,4 +171,7 @@ export const FilterButton = styled(Button)`
 export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+    width: ${props => props.showFilter && "75%"};
+  }
 `;

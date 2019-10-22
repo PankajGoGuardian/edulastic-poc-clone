@@ -233,7 +233,7 @@ class Assignments extends Component {
                       </FixedWrapper>
                     </LeftWrapper>
                   )}
-                  <TableWrapper>
+                  <TableWrapper showFilter={showFilter}>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter color={showFilter ? white : themeColor} width={20} height={20} />
                     </FilterButton>

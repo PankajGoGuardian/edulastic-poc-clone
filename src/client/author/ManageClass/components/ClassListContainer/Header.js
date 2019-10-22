@@ -12,6 +12,7 @@ import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, But
 // ducks
 import { fetchClassListAction } from "../../ducks";
 import { IconGoogleClassroom } from "@edulastic/icons";
+import styled from "styled-components";
 
 const scopes = [
   "https://www.googleapis.com/auth/classroom.courses",
@@ -46,8 +47,8 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
             buttonText="Sync with Google Classroom"
             render={renderProps => (
               <SyncButtons onClick={renderProps.onClick}>
-                {" "}
-                <IconGoogleClassroom style={{ marginTop: "2px", marginRight: "10px" }} /> SYNC WITH GOOGLE CLASSROOM
+                <IconGoogleClassroom width={20} height={20} />
+                <p>SYNC WITH GOOGLE CLASSROOM</p>
               </SyncButtons>
             )}
             scope={scopes}
@@ -57,11 +58,10 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
             responseType="code"
           />
         )}
-        <Link to={`/author/manageClass/createClass`}>
-          <CreateClassButton data-cy="createClass">
-            <CreateIcon color={themeColor} /> Create Class{" "}
-          </CreateClassButton>
-        </Link>
+        <StyledLink to={`/author/manageClass/createClass`} data-cy="createClass">
+          <CreateIcon color={themeColor} />
+          <p>Create Class</p>
+        </StyledLink>
       </ButtonsWrapper>
     </HeaderWrapper>
   );
@@ -81,3 +81,16 @@ const enhance = compose(
 );
 
 export default enhance(Header);
+
+const StyledLink = styled(Link)`
+  padding: 5px 20px;
+  border: none;
+  text-transform: uppercase;
+  color: ${themeColor};
+  background: ${white};
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 4px;
+`;

@@ -283,6 +283,9 @@ export const AlreadyhaveAccount = styled.span`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
+  }
 `;
 
 export const MobileViewLinks = styled(Col)`

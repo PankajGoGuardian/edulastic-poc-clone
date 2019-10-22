@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { get } from "lodash";
-import { Carousel, Icon, Button } from "antd";
+import { Carousel, Icon, Button, Tooltip } from "antd";
 import { themeColor, fadedGreen } from "@edulastic/colors";
 import Profile from "../../../assets/Profile.png";
 import { getFullNameFromAsString, getInitialsFromName } from "../../../../common/utils/helpers";
@@ -36,6 +36,7 @@ NextButton.defaultProps = {
 };
 
 const Card = ({ teacher }) => {
+  const fullName = getFullNameFromAsString(teacher);
   return (
     <CardWrapper>
       <TeacherInfo>
@@ -44,7 +45,9 @@ const Card = ({ teacher }) => {
         ) : (
           <CircleMark>{getInitialsFromName(teacher)}</CircleMark>
         )}
-        <TeacherName>{getFullNameFromAsString(teacher)}</TeacherName>
+        <Tooltip placement="bottom" title={fullName}>
+          <TeacherName>{fullName}</TeacherName>
+        </Tooltip>
       </TeacherInfo>
     </CardWrapper>
   );

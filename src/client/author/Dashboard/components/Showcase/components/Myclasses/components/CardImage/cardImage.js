@@ -33,7 +33,7 @@ const CardImage = ({ data, history }) => {
         <Row>
           <Col span={24}>
             <StyledRow>
-              <Tooltip title={name} placement="topLeft">
+              <Tooltip title={name} placement="bottomLeft">
                 <TextDiv data-cy="name">{name}</TextDiv>
               </Tooltip>
               <IconWrapper onClick={gotoManageClass}>
@@ -53,7 +53,7 @@ const CardImage = ({ data, history }) => {
                 {subject ? (
                   <>
                     {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ""}
-                    <Tooltip title={subject} placement="topLeft">
+                    <Tooltip title={subject} placement="bottomLeft">
                       <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
                     </Tooltip>
                   </>

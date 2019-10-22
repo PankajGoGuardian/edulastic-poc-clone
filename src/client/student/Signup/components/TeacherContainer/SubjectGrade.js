@@ -121,9 +121,7 @@ class SubjectGrade extends React.Component {
               <Col xs={24} sm={18} md={12}>
                 <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
-                    {getFieldDecorator("grade", {
-                      rules: [{ required: true, message: "Grade is not selected" }]
-                    })(
+                    {getFieldDecorator("grade")(
                       <GradeSelect
                         data-cy="grade"
                         optionFilterProp="children"
@@ -146,9 +144,7 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
 
                   <Form.Item label="Subject">
-                    {getFieldDecorator("subjects", {
-                      rules: [{ required: true, message: "Subject Area is not selected" }]
-                    })(
+                    {getFieldDecorator("subjects")(
                       <GradeSelect
                         data-cy="subject"
                         mode="multiple"
@@ -281,6 +277,9 @@ const SelectForm = styled(Form)`
         fill: ${themeColor};
       }
     }
+  }
+  .ant-form-item-label > label::after {
+    content: "";
   }
 `;
 

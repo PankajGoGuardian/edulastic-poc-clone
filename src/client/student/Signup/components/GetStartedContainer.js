@@ -5,7 +5,14 @@ import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { themeColor, mainTextColor, greyGraphstroke, tabletWidth, mobileWidthMax } from "@edulastic/colors";
+import {
+  themeColor,
+  mainTextColor,
+  greyGraphstroke,
+  tabletWidth,
+  mobileWidthMax,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import { RegistrationHeader, RegistrationBody, Copyright, CircleDiv, AlreadyhaveAccount } from "../styled";
 import {
   getPartnerKeyFromUrl,
@@ -48,9 +55,9 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
         </Col>
         <Col span={12} align="right">
           <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+          <StyledLink to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
             {t("common.signinbtn")}
-          </Link>
+          </StyledLink>
         </Col>
       </RegistrationHeader>
       <RegistrationBody type="flex" align="middle">
@@ -159,11 +166,17 @@ const BannerText = styled(Col)`
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 15px;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 55px;
+    }
   }
   h4 {
     color: white;
     line-height: 1.7;
     font-size: 13px;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 16px;
+    }
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -195,9 +208,15 @@ const ChooseSignupBox = styled(Row)`
     position: relative;
     z-index: 1;
     background: white;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 18px;
+    }
   }
   a {
     color: white;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 11px;
+    }
   }
   .signupbox-container {
     display: flex;
@@ -238,6 +257,9 @@ const StudentSignupBox = styled(Link)`
     font-size: 12px;
     padding: 8px 4px;
     border-radius: 4px;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 11px;
+    }
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -263,4 +285,10 @@ const AdminSignupBox = styled(StudentSignupBox)`
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
+`;
+
+export const StyledLink = styled(Link)`
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
+  }
 `;

@@ -12,6 +12,7 @@ import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
+import BreadCrumb from "../../../src/components/Breadcrumb";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -132,29 +133,38 @@ const ClassList = ({
       }
     }
   });
+  const breadCrumbData = [
+    {
+      title: "MANAGE CLASS",
+      to: "/author/manageClass"
+    }
+  ];
 
   return (
-    <TableWrapper>
-      <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
-      <ClassSelector
-        groups={groups}
-        archiveGroups={archiveGroups}
-        setClassGroups={setClassGroups}
-        filterClass={filterClass}
-        setFilterClass={setFilterClass}
-      />
-      {classGroups.length > 0 ? (
-        <ClassListTable
-          columns={columns}
-          dataSource={classGroups}
-          rowKey={rowKey}
-          onRow={onRow}
-          pagination={classGroups.length > 10}
+    <>
+      <BreadCrumb data={breadCrumbData} style={{ position: "unset", padding: "15px 0px 0px 30px" }} />
+      <TableWrapper>
+        <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
+        <ClassSelector
+          groups={groups}
+          archiveGroups={archiveGroups}
+          setClassGroups={setClassGroups}
+          filterClass={filterClass}
+          setFilterClass={setFilterClass}
         />
-      ) : (
-        <ClassCreatePage filterClass={filterClass} recentInstitute={recentInstitute} />
-      )}
-    </TableWrapper>
+        {classGroups.length > 0 ? (
+          <ClassListTable
+            columns={columns}
+            dataSource={classGroups}
+            rowKey={rowKey}
+            onRow={onRow}
+            pagination={classGroups.length > 10}
+          />
+        ) : (
+          <ClassCreatePage filterClass={filterClass} recentInstitute={recentInstitute} />
+        )}
+      </TableWrapper>
+    </>
   );
 };
 

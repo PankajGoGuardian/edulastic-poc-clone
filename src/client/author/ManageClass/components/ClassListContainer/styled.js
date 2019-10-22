@@ -13,7 +13,7 @@ import {
   smallDesktopWidth
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
-import { IconManage, IconPlus } from "@edulastic/icons";
+import { IconManage, IconPlusCircle } from "@edulastic/icons";
 
 export const ClassCreateContainer = styled.div`
   width: 100%;
@@ -105,8 +105,10 @@ export const IconManageClass = styled(IconManage)`
   margin-right: 10px;
 `;
 
-export const CreateIcon = styled(IconPlus)`
+export const CreateIcon = styled(IconPlusCircle)`
   margin-right: 10px;
+  width: 20px;
+  height: 20px;
 `;
 
 const ShareButtonStyle = css`
@@ -127,6 +129,8 @@ export const CreateClassButton = styled(Button)`
   text-transform: uppercase;
   color: ${themeColor};
   background: ${white};
+  display: flex;
+  align-items: center;
   &:hover {
     background: ${themeColorLight};
     color: ${themeColor};
@@ -136,15 +140,19 @@ export const CreateClassButton = styled(Button)`
 export const SyncButtons = styled(Button)`
   ${ShareButtonStyle}
   color: ${themeColor};
-  padding: 0px 25px;
+  padding: 5px 20px;
   background-color: ${white};
-  border-color: #42d184;
   margin-right: 20px;
-  font-size: 12px;
+  font-size: 11px;
+  display:flex;
+  align-items:center;
+  justify:space-between;
+  border:none;
   &:hover {
     color: ${themeColor};
-    background-color: ${themeColorLight};
-    border-color: #42d184;
+  }
+  & > p{
+    margin-left:8px;
   }
 `;
 export const ButtonsWrapper = styled.div`
@@ -155,7 +163,7 @@ export const ButtonsWrapper = styled.div`
 
 export const TableWrapper = styled.div`
   background: ${white};
-  margin: 30px;
+  margin: 15px 30px 30px;
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: ${boxShadowDefault};

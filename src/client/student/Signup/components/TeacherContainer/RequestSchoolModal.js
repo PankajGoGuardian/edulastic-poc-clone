@@ -7,7 +7,17 @@ import { get, debounce, find } from "lodash";
 import styled from "styled-components";
 import { Form, Modal, Button, Input, Select, Row, Col } from "antd";
 import { userApi } from "@edulastic/api";
-import { lightGrey3, linkColor, themeColor, white, mobileWidthLarge } from "@edulastic/colors";
+import {
+  lightGrey3,
+  linkColor,
+  themeColor,
+  white,
+  mobileWidthLarge,
+  boxShadowDefault,
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+  smallDesktopWidth
+} from "@edulastic/colors";
 import { countryApi } from "@edulastic/api";
 import { withNamespaces } from "@edulastic/localization";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
@@ -165,7 +175,7 @@ class RequestSchool extends React.Component {
     ));
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel} width="450px">
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel}>
         <FormWrapper {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
@@ -242,7 +252,7 @@ class RequestSchool extends React.Component {
           </Form.Item>
           <FlexItems type="flex" align="middle">
             <Col xs={24} sm={4}>
-              <Label>Zip:</Label>
+              <Label>Zip</Label>
             </Col>
             <Col xs={24} sm={8}>
               {getFieldDecorator("zip", {
@@ -254,7 +264,7 @@ class RequestSchool extends React.Component {
               })(<Input data-cy="zip" placeholder="Enter Zip Code" />)}
             </Col>
             <Col xs={24} sm={4}>
-              <Label>State:</Label>
+              <Label>State</Label>
             </Col>
             <Col xs={24} sm={8}>
               {getFieldDecorator("state", {
@@ -315,16 +325,36 @@ const enhance = compose(
 export default enhance(RequestSchoolModal);
 
 const StyledModal = styled(Modal)`
+  min-width: 60vw;
+  top: 50px;
+  .ant-modal-body {
+    padding: 24px 70px 0px 0px;
+    @media (max-width: ${extraDesktopWidthMax}) {
+      padding-right: 80px;
+    }
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      padding-right: 70px;
+    }
+    @media (max-width: ${smallDesktopWidth}) {
+      padding-right: 40px;
+    }
+    @media (max-width: ${mobileWidthLarge}) {
+      padding-right: 10px;
+    }
+  }
   .ant-modal-content,
   .ant-modal-header {
     background-color: ${lightGrey3};
     border-bottom: 0px;
   }
+  .ant-modal-header {
+    padding: 40px 50px 10px;
+  }
   .ant-modal-footer {
     display: flex;
     justify-content: center;
     border-top: 0px;
-    padding: 0px 24px 24px;
+    padding: 10px 24px 40px;
   }
 
   .ant-form-item {
@@ -337,6 +367,13 @@ const StyledModal = styled(Modal)`
   }
   .ant-form-item label {
     font-weight: 600;
+  }
+  .ant-form-item-label {
+    & > label::after {
+      content: "";
+    }
+    align-self: start;
+    padding-top: 5px;
   }
   .ant-select-arrow,
   .ant-modal-close-x {
@@ -374,6 +411,22 @@ const StyledModal = styled(Modal)`
       }
     }
   }
+  .ant-modal-close-x svg {
+    width: 20px;
+    height: 20px;
+  }
+  .ant-select-selection,
+  .ant-input {
+    border: none;
+    box-shadow: ${boxShadowDefault};
+  }
+  .remote-autocomplete-dropdown {
+    border: none;
+    box-shadow: ${boxShadowDefault};
+  }
+  .has-error .ant-input {
+    border: 1px solid red;
+  }
 
   @media (max-width: ${mobileWidthLarge}) {
     &.ant-modal {
@@ -393,7 +446,7 @@ const Label = styled.div`
   font-weight: 600;
   text-align: right;
   color: rgba(0, 0, 0, 0.85);
-  font-size: 14px;
+  font-size: 16px;
   margin-right: 8px;
 
   @media (max-width: ${mobileWidthLarge}) {
@@ -418,7 +471,7 @@ const FormWrapper = styled(Form)`
 
 const ActionButton = styled(Button)`
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   border-radius: 4px;
   height: 32px;
   display: flex;
@@ -441,7 +494,7 @@ const ActionButton = styled(Button)`
 
 const Title = styled.div`
   color: ${linkColor};
-  font-size: 12px;
+  font-size: 16px;
   h4 {
     font-weight: 800;
     font-size: 18px;

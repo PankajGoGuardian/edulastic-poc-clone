@@ -45,7 +45,7 @@ const styles = {
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 },
   dragItemsContainerStyle: {
     display: "flex",
-    alignItems: "flex-start",
+    alignItems: "center",
     flexWrap: "wrap",
     minHeight: 140,
     borderRadius: 4
@@ -219,7 +219,7 @@ const MatchListPreview = ({
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
-
+  const horizontallyAligned = listPosition === "left" || listPosition === "right";
   const wrapperStyle = {
     display: "flex",
     flexDirection: getDirection(listPosition),
@@ -259,7 +259,7 @@ const MatchListPreview = ({
       <div data-cy="previewWrapper" style={wrapperStyle}>
         <FlexContainer
           style={{
-            flex: 3,
+            flex: "1 1 70%",
             marginRight: listPosition === "right" ? 20 : 0,
             marginLeft: listPosition === "left" ? 20 : 0
           }}
@@ -305,8 +305,16 @@ const MatchListPreview = ({
 
         {!disableResponse && (
           <StyledCorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
-            <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
-              <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
+            <DropContainer
+              drop={drop}
+              flag="dragItems"
+              style={{
+                ...styles.dragItemsContainerStyle,
+                justifyContent: horizontallyAligned ? "flex-start" : "center"
+              }}
+              noBorder
+            >
+              <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" maxWidth="100%">
                 {groupPossibleResponses ? (
                   possibleResponseGroups.map((i, index) => (
                     <Fragment key={index}>
@@ -323,7 +331,12 @@ const MatchListPreview = ({
                         >
                           {i.title}
                         </Subtitle>
-                        <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                        <FlexContainer
+                          justifyContent="center"
+                          flexWrap="wrap"
+                          display={horizontallyAligned ? "inline-flex" : "flex"}
+                          flexDirection={horizontallyAligned ? "column" : "row"}
+                        >
                           {!shuffleOptions
                             ? i.responses.map(
                                 (ite, ind) =>
@@ -369,13 +382,12 @@ const MatchListPreview = ({
                   ))
                 ) : (
                   <Fragment>
-                    <FlexContainer
-                      style={{ flex: 1 }}
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="flex-start"
-                    >
-                      <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                    <FlexContainer flexDirection="column" alignItems="center" justifyContent="flex-start">
+                      <FlexContainer
+                        display={horizontallyAligned ? "inline-flex" : "flex"}
+                        flexDirection={horizontallyAligned ? "column" : "row"}
+                        alignItems={horizontallyAligned ? "baseline" : "center"}
+                      >
                         {!shuffleOptions
                           ? dragItems.map(
                               // Here we should shuffle in place

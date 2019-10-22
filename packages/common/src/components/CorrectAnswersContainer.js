@@ -33,7 +33,7 @@ const Container = styled.div`
   height: auto;
   border-radius: 10px 0px 0px 10px;
   background-color: ${dashBorderColor};
-  flex: 2;
+  flex: 1 1 30%;
   max-width: ${({ maxWidth }) => maxWidth || null};
   min-width: 200px;
   img {

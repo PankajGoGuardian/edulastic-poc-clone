@@ -288,7 +288,7 @@ class SideMenu extends Component {
                           <PseudoDiv>{this.getInitials()}</PseudoDiv>
                         )}
                         <StyledTooltip title={userName}>
-                          <div style={{ paddingLeft: 11, width: "140px" }}>
+                          <div style={{ paddingLeft: 11, width: "100px" }}>
                             {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
                             {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
                           </div>
@@ -744,7 +744,6 @@ const UserName = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  width: 80%;
 `;
 
 const UserType = styled.div`

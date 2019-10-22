@@ -17,11 +17,13 @@ const columns = [
   {
     title: "Standard based score",
     key: "standardBasedScore",
+    align: "right",
     dataIndex: "standardBasedScore"
   },
   {
     title: "Raw score",
     key: "maxScore",
+    align: "right",
     dataIndex: "maxScore",
     render: (_, record) => (
       <span>
@@ -32,6 +34,7 @@ const columns = [
   {
     title: "Score (%)",
     key: "score",
+    align: "right",
     dataIndex: "score",
     render: data => <span>{data}%</span>
   }

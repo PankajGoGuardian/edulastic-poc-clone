@@ -20,11 +20,6 @@ export const JSXBox = styled.div`
   border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
 
-  line,
-  path {
-    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
-  }
-
   div {
     color: ${props => props.theme.widgets.chart.labelStrokeColor};
   }

@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
-import { WithMathFormula, Button } from "@edulastic/common";
+import { WithMathFormula } from "@edulastic/common";
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
@@ -29,13 +28,6 @@ export const JSXBox = styled.div`
   border-radius: 0;
   border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
-
-  line,
-  path,
-  ellipse {
-    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
-    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
-  }
 
   text {
     fill: ${props => props.theme.widgets.chart.labelStrokeColor};

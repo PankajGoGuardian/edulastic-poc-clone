@@ -28,6 +28,7 @@ const columns = [
   {
     title: "Standards",
     key: "standards",
+    align: "center",
     dataIndex: "standards",
     width: 335,
     render: (standards, record) => {

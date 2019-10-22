@@ -145,7 +145,14 @@ const StudentMasteryProfile = ({
             </p>
           </Col>
           <DropdownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
-            <ControlDropDown by={selectedDomain} selectCB={onDomainSelect} data={domainOptions} prefix="Domain(s) - " />
+            <StyledLabel>Domain(s)</StyledLabel>
+            <ControlDropDown
+              showPrefixOnSelected={false}
+              by={selectedDomain}
+              selectCB={onDomainSelect}
+              data={domainOptions}
+              prefix="Domain(s)"
+            />
           </DropdownContainer>
         </Row>
       </StyledCard>
@@ -217,4 +224,9 @@ const DropdownContainer = styled(Col)`
       width: 100%;
     }
   }
+`;
+
+const StyledLabel = styled.span`
+  padding: 5px;
+  font-weight: 600;
 `;

@@ -37,7 +37,6 @@ import {
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
-import { addAuthoredItemsAction } from "../../../../QuestionEditor/ducks";
 
 class ButtonBar extends Component {
   constructor(props) {
@@ -67,16 +66,7 @@ class ButtonBar extends Component {
     changePreviewTab("clear");
   };
 
-  handleAddAuthoredItemToTest = () => {
-    const { addAuthoredItemsToTest, match, onSave, isTestFlow, itemStatus } = this.props;
-    if (itemStatus === "draft" && isTestFlow) {
-      return addAuthoredItemsToTest({ testId: match.params.testId, isEditFlow: false });
-    }
-    onSave();
-  };
-
   render() {
-    const { current } = this.state;
     const {
       t,
       onSave,
@@ -158,11 +148,7 @@ class ButtonBar extends Component {
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === "draft" ? (
                     <Tooltip title="Save">
-                      <CustomButton
-                        data-cy="saveButton"
-                        className="save-btn"
-                        onClick={this.handleAddAuthoredItemToTest}
-                      >
+                      <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
                         <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                       </CustomButton>
                     </Tooltip>
@@ -319,8 +305,7 @@ const enhance = compose(
   connect(
     null,
     {
-      clearAnswers: clearAnswersAction,
-      addAuthoredItemsToTest: addAuthoredItemsAction
+      clearAnswers: clearAnswersAction
     }
   )
 );

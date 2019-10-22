@@ -854,7 +854,7 @@ export function* updateItemSaga({ payload }) {
 
       yield put(setTestItemsAction(nextTestItems));
 
-      if (!payload.testId) {
+      if (!payload.testId || payload.testId === "undefined") {
         yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
@@ -1133,7 +1133,6 @@ function* savePassage({ payload }) {
 
     yield put(updatePassageStructureAction(modifiedPassage));
 
-   
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),

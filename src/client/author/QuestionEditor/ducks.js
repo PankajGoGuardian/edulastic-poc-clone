@@ -428,7 +428,8 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
     if (isTestFlow) {
       // user should get redirected to item detail page when multipart or passgae questions are being created from test flow or else save and continue.
-      if (itemDetail.multipartItem || !!item.passageId || item.isPassageWithQuestions) {
+      const isFinalSave = yield select(state => state.router.location.isFinalSave);
+      if ((item.multipartItem || !!item.passageId || item.isPassageWithQuestions) && !isFinalSave) {
         yield put(
           push({
             pathname: `/author/items/${item._id}/item-detail/test/${tId}`,
@@ -436,6 +437,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
               backText: "Back to item bank",
               backUrl: "/author/items",
               itemDetail: false,
+              isFinalSave: true,
               isTestFlow
             }
           })
@@ -444,7 +446,10 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       }
 
       // add item to test entity
-      yield put(addAuthoredItemsAction({ testId: tId, isEditFlow }));
+      yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));
+
+      if (!isEditFlow) return;
+      yield put(changeViewAction("edit"));
       return;
     }
     if (itemDetail) {
@@ -480,11 +485,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
  */
 function* addAuthoredItemsToTestSaga({ payload }) {
   try {
-    const { testId, isEditFlow } = payload;
-
-    //current authored item
-    const item = yield select(getItemDetailSelector);
-    //existing test items from test
+    const { item, tId: testId, isEditFlow } = payload;
     const testItems = yield select(getSelectedItemSelector);
 
     //updated testItems should have the current authored item
@@ -505,8 +506,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     } else {
       yield put(push(!isEditFlow ? `/author/tests/${testId}` : `/author/tests/${testId}/createItem/${item._id}`));
     }
-    if (!isEditFlow) return;
-    yield put(changeViewAction("edit"));
   } catch (e) {
     console.log(e, "error");
     const errorMessage = "Loading Question is failed";

@@ -82,7 +82,16 @@ class ResponseBox extends Component {
           >
             <MarkContainer
               fontSize={12}
-              dangerouslySetInnerHTML={{ __html: `<div class='mark-content'>${value.text}</div>` }}
+              dangerouslySetInnerHTML={{
+                __html: `<div class='mark-content'>${
+                  value.text.indexOf("<p>") === 0
+                    ? `<p title="${value.text.substring(3, value.text.length - 4)}">${value.text.substring(
+                        3,
+                        value.text.length - 4
+                      )}</p>`
+                    : value.text
+                }</div>`
+              }}
             />
           </Rnd>
         ))}

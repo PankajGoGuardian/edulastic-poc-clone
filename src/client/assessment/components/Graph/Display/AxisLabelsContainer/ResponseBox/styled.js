@@ -25,5 +25,11 @@ export const MarkContainer = WithMathFormula(
     text-align: center;
     width: 100%;
     height: 100%;
+
+    .mark-content {
+      p {
+        margin: auto;
+      }
+    }
   `
 );

@@ -28,6 +28,14 @@ export const JSXBox = styled.div`
   div {
     color: ${props => props.theme.widgets.chart.labelStrokeColor};
   }
+
+  .fr-box.mark.mounted {
+    .mark-content {
+      p {
+        margin: auto;
+      }
+    }
+  }
 `;
 
 export const ContainerWithResponses = styled.div`

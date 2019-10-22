@@ -15,14 +15,21 @@ import Breadcrumb from "../../sharedComponents/Breadcrumb";
 
 // styled components
 import { BreadcrumbWrapper } from "../../styled";
+import { setStatusBgColor } from "../../utils";
 
 const breadcrumbData = [{ title: "REPORTS", to: "" }];
 
-const AssignmentSubHeader = ({ t, setFilter, filter }) => {
+const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme }) => {
   const filterItems = Object.keys(FILTERS);
 
   const Filter = ({ value }) => (
-    <FilterBtn data-cy={value} onClick={() => setFilter(FILTERS[value])} enabled={FILTERS[value] === filter}>
+    <FilterBtn
+      data-cy={value}
+      onClick={() => setFilter(FILTERS[value])}
+      enabled={FILTERS[value] === filter}
+      selectedTheme={selectedTheme}
+      filter={filter}
+    >
       {t(FILTERS[value])}
     </FilterBtn>
   );
@@ -43,7 +50,8 @@ const enhance = compose(
   withNamespaces("default"),
   connect(
     state => ({
-      filter: filterSelector(state)
+      filter: filterSelector(state),
+      selectedTheme: state.ui.selectedTheme
     }),
     {
       setFilter: setFilterAction
@@ -76,25 +84,20 @@ const FilterBtn = styled(Button)`
     props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor
       : props.theme.headerFilters.headerFilterTextColor};
-  border: 1px solid ${props => props.theme.headerFilters.headerFilterBgBorderColor};
+  border: 1px solid
+    ${props => (props.enabled ? setStatusBgColor(props) : props.theme.headerFilters.headerFilterBgBorderColor)};
   border-radius: 4px;
   margin-left: 20px;
   min-width: 85px;
   font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
-  background: ${props =>
-    props.enabled
-      ? props.theme.headerFilters.headerSelectedFilterBgColor
-      : props.theme.headerFilters.headerFilterBgColor};
+  background: ${props => setStatusBgColor(props)};
   &:focus,
   &:active {
     color: ${props =>
       props.enabled
         ? props.theme.headerFilters.headerSelectedFilterTextColor
         : props.theme.headerFilters.headerFilterTextColor};
-    background: ${props =>
-      props.enabled
-        ? props.theme.headerFilters.headerSelectedFilterBgColor
-        : props.theme.headerFilters.headerFilterBgColor};
+    background: ${props => setStatusBgColor(props)};
   }
   &:hover {
     color: ${props => props.theme.headerFilters.headerFilterTextHoverColor};

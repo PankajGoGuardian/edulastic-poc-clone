@@ -1270,7 +1270,14 @@ export const defaultTheme = {
     headerFilterBgHoverColor: themeColor,
     headerFilterBgBorderHoverColor: themeColor,
     headerSelectedFilterTextColor: linkFilledBgColor,
-    headerSelectedFilterBgColor: themeColor,
+    headerSelectedFilterBgColor: {
+      all: brandDarkGreen,
+      notStarted: notstartedFilterColor,
+      inProgress: progressFilterColor,
+      submitted: submittedFilterColor,
+      graded: gradedFilterColor,
+      missed: absentFilterColor
+    },
     headerSelectedFilterBgBorderColor: "none"
   },
   breadcrumbs: {

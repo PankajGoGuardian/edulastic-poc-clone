@@ -80,30 +80,35 @@ const getColumns = (handleOnClickStandard, filters) => {
       title: "Assessment#",
       key: "testCount",
       dataIndex: "testCount",
+      align: "right",
       render: renderToolTipColumn("Assessment#")
     },
     {
       title: "Total Questions",
       key: "questionCount",
       dataIndex: "questionCount",
+      align: "right",
       render: renderToolTipColumn("Total Questions")
     },
     {
       title: "Score",
       key: "totalScore",
       dataIndex: "totalScore",
+      align: "right",
       render: renderToolTipColumn("Score")
     },
     {
       title: "Max Possible Score",
       key: "maxScore",
       dataIndex: "maxScore",
+      align: "right",
       render: renderToolTipColumn("Max Possible Score")
     },
     {
       title: "Avg. Score(%)",
       key: "scoreFormatted",
       dataIndex: "scoreFormatted",
+      align: "right",
       render: renderToolTipColumn("Avg. Score(%)")
     }
   ];

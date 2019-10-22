@@ -9,7 +9,6 @@ import {
   CorrectAnswersContainer,
   Stimulus,
   Subtitle,
-  InstructorStimulus,
   MathFormulaDisplay,
   QuestionNumberLabel
 } from "@edulastic/common";
@@ -159,17 +158,22 @@ const ClassificationPreview = ({
    * it is used to filter out responses from the bottom container and place in correct boxes
    * it also used to clear out responses when clear is pressed
    */
+  const updateDragItems = () => {
+    setAnswers(initialAnswers);
+    setDragItems(possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id))));
+  };
+
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
       (!groupPossibleResponses &&
         (possibleResponses.length !== dragItems.length || !isEqual(possibleResponses, dragItems)))
     ) {
-      setAnswers(initialAnswers);
-      const abc = possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id)));
-      setDragItems(abc);
+      updateDragItems();
     }
   }, [userAnswer, possibleResponses]);
+
+  useEffect(updateDragItems, []);
 
   const boxes = createEmptyArrayOfArrays();
 

@@ -57,7 +57,6 @@ const onHandler = board => {
 
   const x1 = showMin ? xMin - axisPadding : xMin + axisPadding;
   const x2 = showMax ? xMax + axisPadding : xMax - axisPadding;
-
   const newAxis = board.$board.create(
     "axis",
     [[isVertical ? calcY : x1, isVertical ? x1 : calcY], [isVertical ? calcY : x2, isVertical ? x2 : calcY]],
@@ -151,7 +150,6 @@ const onHandler = board => {
     : [];
 
   ticks = union(ticks, specificTicks);
-
   /**
    * Ticks labels
    * */
@@ -187,8 +185,6 @@ const onHandler = board => {
     return "";
   });
 
-  labels = labels.map(t => toFractionHTML(t, fractionsFormat));
-
   /**
    * Show Ticks based on showTicks, showMax, and showMin
    */
@@ -214,6 +210,41 @@ const onHandler = board => {
       }
     }
   }
+
+  if (!showLabels) {
+    labels = labels.map((item, index) => {
+      if (item === 0 && index !== 0 && !specificTicks.includes(item)) {
+        return "";
+      }
+      return item;
+    });
+  }
+
+  if (labelsFrequency) {
+    labels = labels.map((item, index) => {
+      if (index % labelsFrequency === 0 || specificTicks.includes(item)) {
+        //
+      } else if (index !== 0 && index !== labels.length - 1) {
+        return "";
+      }
+      return item;
+    });
+  }
+
+  if (!labelShowMin) {
+    let item = labels[0];
+    if (item === xMin && !specificTicks.includes(item)) {
+      labels[0] = "";
+    }
+  }
+
+  if (!labelShowMax) {
+    let item = labels[labels.length - 1];
+    if (item === xMax && !specificTicks.includes(item)) {
+      labels[labels.length - 1] = "";
+    }
+  }
+
   board.$board.create("ticks", [newAxis, ticks], {
     ...Colors.numberline,
     visible: true,
@@ -232,54 +263,11 @@ const onHandler = board => {
       cssClass: "numberline-fraction",
       highlightCssClass: "numberline-fraction"
     },
+    generateLabelText: function(a, b, label) {
+      return toFractionHTML(label, fractionsFormat);
+    },
     labels
   });
-
-  if (!showLabels && newAxis.ticks[1]) {
-    newAxis.ticks[1].labels.forEach((label, index) => {
-      if (parseInt(label.htmlStr, 10) === 0 && index !== 0 && !specificTicks.includes(+label.htmlStr)) {
-        board.$board.removeObject(newAxis.ticks[1].labels[index]);
-      }
-    });
-  }
-
-  if (labelsFrequency && newAxis.ticks[1]) {
-    newAxis.ticks[1].labels.forEach((label, index) => {
-      if (index % labelsFrequency === 0 || specificTicks.includes(+label.htmlStr)) {
-        //
-      } else if (index !== 0 && index !== labels.length - 1) {
-        board.$board.removeObject(newAxis.ticks[1].labels[index]);
-      }
-    });
-  }
-
-  if (!labelShowMin && newAxis.ticks[1]) {
-    newAxis.ticks[1].labels.forEach((label, index) => {
-      let compareValue = label.htmlStr;
-
-      if (compareValue[0] === "−") {
-        compareValue = `-${compareValue.substr(1, compareValue.length - 1)}`;
-      }
-
-      if (parseInt(compareValue, 10) === xMin && !specificTicks.includes(+label.htmlStr)) {
-        board.$board.removeObject(newAxis.ticks[1].labels[index]);
-      }
-    });
-  }
-
-  if (!labelShowMax && newAxis.ticks[1]) {
-    newAxis.ticks[1].labels.forEach((label, index) => {
-      let compareValue = label.htmlStr;
-
-      if (compareValue[0] === "−") {
-        compareValue = `-${compareValue.substr(1, compareValue.length - 1)}`;
-      }
-
-      if (parseInt(compareValue, 10) === xMax && !specificTicks.includes(+label.htmlStr)) {
-        board.$board.removeObject(newAxis.ticks[1].labels[index]);
-      }
-    });
-  }
 
   return newAxis;
 };

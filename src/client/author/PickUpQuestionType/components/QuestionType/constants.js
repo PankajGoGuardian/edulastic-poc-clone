@@ -1483,7 +1483,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           width: 140,
           responsecontainerindividuals: [],
-          widthpx: 200,
+          widthpx: 140,
           heightpx: 35,
           placeholder: "",
           inputtype: "text",

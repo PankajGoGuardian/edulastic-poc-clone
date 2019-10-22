@@ -4,6 +4,6 @@ module.exports = {
   minHeight: 35,
   maxHeight: 200,
   expectedAnsMinHeight: 42,
-  minWidthShowAnswer: 100,
+  minWidthShowAnswer: 111,
   indexSizeSmallBox: 10
 };

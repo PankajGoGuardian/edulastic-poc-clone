@@ -30,9 +30,6 @@ const Response = ({
       toggleIndexVisibility(!showIndex);
     }
   };
-  const textStyle = {
-    maxWidth: showAnswer && showIndex ? "50%" : "75%"
-  };
 
   const className = `imagelabeldragdrop-droppable active ${
     userSelections.length > 0 ? "check-answer" : "noAnswer"
@@ -47,7 +44,6 @@ const Response = ({
       status={status}
       btnStyle={{ ...btnStyle, position: "unset" }}
       // textContainerStyle={textContainerStyle}
-      textStyle={textStyle}
       checkAnswer={checkAnswer}
       className={className}
       isExpressGrader={isExpressGrader}
@@ -67,9 +63,7 @@ const Response = ({
         {indexStr}
       </span>
       <div className="text container" style={{ padding: lessMinWidth ? "0 0 0 4px" : null }}>
-        <div className="clipText" style={textStyle}>
-          {userSelections[dropTargetIndex]}
-        </div>
+        <div className="clipText">{userSelections[dropTargetIndex]}</div>
         {(checkAnswer || (showAnswer && !lessMinWidth)) && (
           <div>
             <IconWrapper rightPosition={10}>

@@ -247,7 +247,9 @@ class GraphContainer extends PureComponent {
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
-          ...xAxesParameters
+          ...xAxesParameters,
+          fill: "red",
+          stockColor: "red"
         },
         y: {
           ...yAxesParameters
@@ -311,12 +313,7 @@ class GraphContainer extends PureComponent {
         this._graph.setEditButtonStatus(true);
       }
 
-      if (
-        canvas.xMin !== prevProps.canvas.xMin ||
-        canvas.xMax !== prevProps.canvas.xMax ||
-        canvas.yMin !== prevProps.canvas.yMin ||
-        canvas.yMax !== prevProps.canvas.yMax
-      ) {
+      if (!isEqual(canvas, prevProps.canvas)) {
         this._graph.setGraphParameters({
           ...defaultGraphParameters(),
           ...canvas
@@ -324,13 +321,7 @@ class GraphContainer extends PureComponent {
         refreshElements = true;
       }
 
-      if (
-        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
-        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
-        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
-        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
-        pointParameters.withLabel !== prevProps.pointParameters.withLabel
-      ) {
+      if (!isEqual(pointParameters, prevProps.pointParameters)) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
           ...pointParameters
@@ -338,24 +329,8 @@ class GraphContainer extends PureComponent {
       }
 
       if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
-        xAxesParameters.name !== prevProps.xAxesParameters.name ||
-        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
-        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
-        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
-        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
-        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
-        xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
-        xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
-        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
-        yAxesParameters.name !== prevProps.yAxesParameters.name ||
-        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
-        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
-        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
-        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
-        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
-        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
+        !isEqual(xAxesParameters, prevProps.xAxesParameters) ||
+        !isEqual(yAxesParameters, prevProps.yAxesParameters)
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -369,29 +344,18 @@ class GraphContainer extends PureComponent {
         });
       }
 
-      if (layout.width !== prevProps.layout.width || layout.height !== prevProps.layout.height) {
+      if (!isEqual(layout, prevProps.layout)) {
         this._graph.resizeContainer(layout.width, layout.height);
       }
 
-      if (
-        gridParams.gridY !== prevProps.gridParams.gridY ||
-        gridParams.gridX !== prevProps.gridParams.gridX ||
-        gridParams.showGrid !== prevProps.gridParams.showGrid
-      ) {
+      if (!isEqual(gridParams, prevProps.gridParams)) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
           ...gridParams
         });
       }
 
-      if (
-        bgImgOptions.urlImg !== prevProps.bgImgOptions.urlImg ||
-        bgImgOptions.opacity !== prevProps.bgImgOptions.opacity ||
-        bgImgOptions.coords[0] !== prevProps.bgImgOptions.coords[0] ||
-        bgImgOptions.coords[1] !== prevProps.bgImgOptions.coords[1] ||
-        bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0] ||
-        bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
-      ) {
+      if (!isEqual(bgImgOptions, prevProps.bgImgOptions)) {
         this._graph.removeBgImage();
         this._graph.setBgImage(bgImgOptions);
       }

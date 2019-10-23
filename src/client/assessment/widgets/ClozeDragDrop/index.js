@@ -88,7 +88,6 @@ class ClozeDragDrop extends Component {
       produce(item, draft => {
         if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
           draft.validation.altResponses.splice(index, 1);
-          setQuestionData(draft);
         }
       })
     );

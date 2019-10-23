@@ -189,7 +189,7 @@ const ChartPreview = ({
         <Fragment>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            <Stimulus style={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
           </QuestionTitleWrapper>
         </Fragment>
       )}

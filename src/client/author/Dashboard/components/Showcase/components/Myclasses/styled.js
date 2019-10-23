@@ -18,8 +18,8 @@ export const Container = styled(Paper)`
 
 export const CardBox = styled.div`
   background: #ffffff;
-  margin-bottom: 0.8rem;
-  padding: 0.5rem;
+  margin-bottom: 16px;
+  padding: 9px 14px 22px;
   border-radius: 8px;
   border: 1px solid #eeeeee;
   box-shadow: none;

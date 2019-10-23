@@ -38,7 +38,7 @@ export const IconWrapper = styled.div`
   align-items: center;
 `;
 export const TextDiv = styled.p`
-  font-size: 18px;
+  font-size: ${props => props.theme.assignment.cardTitleFontSize};
   text-overflow: ellipsis;
   display: block;
   max-width: 100%;

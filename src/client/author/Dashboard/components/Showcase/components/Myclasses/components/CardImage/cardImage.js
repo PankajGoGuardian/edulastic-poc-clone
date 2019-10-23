@@ -41,7 +41,7 @@ const CardImage = ({ data, history }) => {
               </IconWrapper>
             </StyledRow>
             <RowWrapperGrade>
-              <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
+              <TextWrapper color="#FFFFFF" size="12px" fw="600">
                 {grades.length ? (
                   <>
                     <span data-cy="grades">Grades</span> {grades.join(", ").replace(/O/i, " Other ")}
@@ -63,7 +63,7 @@ const CardImage = ({ data, history }) => {
               </TextWrapper>
             </RowWrapperGrade>
             <RowWrapperSTudentCount>
-              <TextWrapper data-cy="studentCount" color="#FFFFFF" size="12px" fw="SemiBold">
+              <TextWrapper data-cy="studentCount" color="#FFFFFF" size="12px" fw="600">
                 {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
             </RowWrapperSTudentCount>

@@ -20,12 +20,13 @@ export const OverlayText = styled.div`
   font-size: 14px;
   z-index: 30;
   line-height: 2.8rem;
+  font-weight: 600;
 `;
 
 export const RowWrapper = styled(Row)`
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 14px;
   cursor: pointer;
 `;
 
@@ -58,7 +59,7 @@ export const RowWrapper1 = styled(Row)`
 `;
 
 export const CardText = styled.div`
-  margin-top: 1rem;
+  margin-top: 14px;
 `;
 export const Image = styled.img`
   width: 51px;

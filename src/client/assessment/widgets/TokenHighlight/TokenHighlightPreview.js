@@ -190,11 +190,10 @@ const TokenHighlightPreview = ({
 
   const rightAnswers = validate();
 
-  const getStyles = (index, disableResp = false, correctAnswers = []) => {
+  const getStyles = (index, correctAnswers = []) => {
     const _answers = correctAnswers.length > 0 ? correctAnswers : answers;
-    const defaultAnswers = disableResp ? validArray : _answers;
     const condition =
-      defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
+      _answers.find(elem => elem.index === index) && _answers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -290,7 +289,7 @@ const TokenHighlightPreview = ({
             <MathSpan
               onClick={!disableResponse ? handleSelect(i) : () => {}}
               dangerouslySetInnerHTML={{ __html: el.value }}
-              style={preview || disableResponse ? getStyles(i, disableResponse) : {}}
+              style={preview || disableResponse ? getStyles(i, userAnswer) : {}}
               key={i}
               className={getClass(i)}
             />
@@ -326,7 +325,7 @@ const TokenHighlightPreview = ({
                   <MathSpan
                     onClick={() => {}}
                     dangerouslySetInnerHTML={{ __html: el.value }}
-                    style={getStyles(i, false, correctAnswers)}
+                    style={getStyles(i, correctAnswers)}
                     key={i}
                   />
                 ) : (

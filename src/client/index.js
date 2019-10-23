@@ -3,7 +3,9 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import i18n, { I18nextProvider } from "@edulastic/localization";
 import { ConnectedRouter } from "connected-react-router";
-import "core-js/features/array/flat-map";
+// will import all features.. optimize.!
+import "core-js/features/array";
+import "core-js/features/object";
 import "font-awesome/css/font-awesome.css";
 import "antd/dist/antd.css";
 import "react-perfect-scrollbar/dist/css/styles.css";

@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import striptags from "striptags";
 
 import { MathSpan } from "@edulastic/common";
 import Droppable from "./Droppable";
 import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
+import { response as Dimensions } from "@edulastic/constants";
 
 import Tooltip from "antd/lib/tooltip";
 
@@ -16,7 +16,7 @@ const TemplateBox = ({ resprops, id }) => {
   const {
     hasGroupResponses,
     responsecontainerindividuals = [],
-    btnStyle,
+    responseBtnStyle,
     smallSize,
     options,
     userAnswers,
@@ -28,22 +28,12 @@ const TemplateBox = ({ resprops, id }) => {
   } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
-  const heightpx = response && response.heightpx;
-  const widthpx = response && response.widthpx;
-  const height = !globalSettings
-    ? heightpx
-      ? `${heightpx}px`
-      : `${btnStyle.height}px` || "auto"
-    : `${btnStyle.height}px` || "auto";
-  const width = !globalSettings
-    ? widthpx
-      ? `${widthpx}px`
-      : `${btnStyle.width}px` || "auto"
-    : `${btnStyle.width}px` || "auto";
+  const minHeight = (response && response.heightpx) || responseBtnStyle.heightpx || Dimensions.minHeight;
+  const minWidth = (response && response.widthpx) || responseBtnStyle.widthpx || Dimensions.minWidth;
   const style = {
-    ...btnStyle,
-    height,
-    width,
+    ...responseBtnStyle,
+    minWidth,
+    minHeight,
     maxWidth: globalSettings ? "400px" : "auto"
   };
   const getData = attr => {

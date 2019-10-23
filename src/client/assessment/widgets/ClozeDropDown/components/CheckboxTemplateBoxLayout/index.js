@@ -15,8 +15,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const {
-    uiStyle,
-    uiStyle: responsecontainerindividuals = [],
+    responsecontainerindividuals,
     responseBtnStyle,
     stemNumeration,
     fontSize,
@@ -29,13 +28,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     disableResponse,
     item: { responseIds }
   } = resprops;
-
   const { index, id: answerId } = find(responseIds, _response => _response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
   const indexStr = getStemNumeration(stemNumeration, index);
   const status = userSelections && evaluation ? (evaluation[answerId] ? "right" : "wrong") : "wrong";
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[index] : null;
-  let btnStyle = responsecontainerindividuals && responsecontainerindividuals[index];
+  let btnStyle =
+    (responsecontainerindividuals && responsecontainerindividuals.find(resp => resp.id === answerId)) ||
+    responseBtnStyle;
 
   const handleClick = () => {
     if (previewTab !== CLEAR && !disableResponse) {
@@ -43,21 +43,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   };
 
-  // TODO  fix multiple style objects -> one object
-  if (btnStyle === undefined) {
-    btnStyle = responseBtnStyle;
-  }
-  if (btnStyle && btnStyle.widthpx !== 0) {
-    btnStyle.width = responseBtnStyle.widthpx;
-  }
-  if (btnStyle && btnStyle.heightpx !== 0) {
-    btnStyle.height = responseBtnStyle.heightpx;
-  }
-  if (btnStyle && isUndefined(btnStyle.wordwrap) && !isUndefined(responseBtnStyle.wordwrap)) {
-    btnStyle.wordwrap = responseBtnStyle.wordwrap;
-  }
-  const _btnStyle = { ...btnStyle, minWidth: "unset" };
-  _btnStyle.width = _btnStyle.widthpx;
+  const _btnStyle = {
+    ...btnStyle,
+    width: btnStyle.widthpx,
+    height: btnStyle.heightpx,
+    minWidth: "unset"
+  };
+  console.log("_btstyle", _btnStyle);
   const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
   const indexStyle = lessMinWidth ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
   const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};

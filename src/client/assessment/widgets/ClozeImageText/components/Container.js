@@ -30,6 +30,7 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
         if (resp.id === id) {
           resp[prop] = value;
         }
+        return resp;
       })
     );
   };

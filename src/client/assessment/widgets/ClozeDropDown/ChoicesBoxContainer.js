@@ -30,14 +30,6 @@ export const StyledChoicesBox = styled(ChoicesBox)`
   }
 `;
 
-const ChoicesBoxContainer = props => (
-  <StyledChoicesBox
-    {...props}
-    style={{
-      width: "auto",
-      height: "auto"
-    }}
-  />
-);
+const ChoicesBoxContainer = props => <StyledChoicesBox {...props} />;
 
 export default ChoicesBoxContainer;

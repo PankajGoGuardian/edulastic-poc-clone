@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { MenuIcon } from "@edulastic/common";
-import { mediumDesktopWidth, themeColor } from "@edulastic/colors";
+import { mediumDesktopWidth, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 const ProfileHeader = ({ t, toggleSideBar }) => (
@@ -40,13 +40,16 @@ const Title = styled.h1`
 
 const ProfileHeaderWrapper = styled.div`
   background: ${props => props.theme.headerBgColor || themeColor};
-  height: 96px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
   width: 100%;
   display: flex;
   align-items: center;
   padding: 0px 30px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
   }
 `;

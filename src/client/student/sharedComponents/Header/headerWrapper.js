@@ -9,20 +9,21 @@ import {
   mobileWidthMax,
   white,
   extraDesktopWidthMax,
-  themeColor
+  themeColor,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const HeaderWrapper = ({ children, toggleSideBar, borderBottom }) => (
+const HeaderWrapper = ({ children, toggleSideBar }) => (
   <HeaderContainer>
     <FixedHeader>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <AssignmentsHeader>
         <HeaderRow>
-          <Col span={24}>
+          <StyledCol span={24}>
             <Wrapper>{children}</Wrapper>
-          </Col>
+          </StyledCol>
         </HeaderRow>
       </AssignmentsHeader>
     </FixedHeader>
@@ -40,17 +41,15 @@ export default connect(
 )(HeaderWrapper);
 
 const HeaderContainer = styled.div`
-  padding-top: 76px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
   margin-bottom: 16px;
   background: ${props => props.theme.header.headerBgColor || themeColor};
 
-  @media screen and (min-width: ${extraDesktopWidthMax}) {
-    padding-top: 96px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
   }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    padding-top: 60px;
-    margin-bottom: 12px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
   }
 
   ${({ theme }) =>
@@ -83,33 +82,29 @@ const AssignmentsHeader = styled(Layout.Header)`
   color: ${props => props.theme.header.headerTitleTextColor};
   display: flex;
   align-items: center;
-  height: 76px;
-  padding: 0px 40px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
+  padding: 0px 30px;
 
-  @media screen and (min-width: ${extraDesktopWidthMax}) {
-    padding: 0px 44px;
-    height: 96px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
   }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    height: 60px;
-    padding: 0px 19px 0 30px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
   }
-
   @media (max-width: ${mobileWidthMax}) {
     padding: 0 26px 0 0;
-  }
-
-  .ant-col-24 {
-    align-items: center;
-    line-height: 1.2;
-    display: flex;
   }
 
   ${({ theme }) =>
     theme.respondTo.xl`
       height: 120px;
     `}
+`;
+
+const StyledCol = styled(Col)`
+  align-items: center;
+  line-height: 1.2;
+  display: flex;
 `;
 
 const HeaderRow = styled(Row)`

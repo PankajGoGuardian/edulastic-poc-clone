@@ -1,11 +1,11 @@
 import {
   mobileWidth,
-  mediumDesktopWidth,
   white,
-  themeColor,
   largeDesktopWidth,
   desktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
@@ -21,10 +21,13 @@ export const Container = styled.div`
   display: flex;
   position: relative;
   background: #f3f3f8;
-  height: calc(100vh - 96px);
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: calc(100vh - 60px);
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
 
   @media (max-width: ${mobileWidth}) {

@@ -1,26 +1,40 @@
-import { largeDesktopWidth, desktopWidth, mediumDesktopWidth, themeColor, mobileWidth, white } from "@edulastic/colors";
+import {
+  largeDesktopWidth,
+  desktopWidth,
+  themeColor,
+  mobileWidth,
+  white,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 export const Container = styled.div`
-  padding-top: 96px;
+  padding-top: ${props => props.theme.HeaderHeight.xs};
   .fixed-header {
     display: flex;
     align-items: center;
     background: ${props => props.theme.header.headerBgColor};
-    height: 96px;
+    height: ${props => props.theme.HeaderHeight.xs};
     padding: 0px 30px;
     & > div {
       width: 100%;
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding-top: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding-top: ${props => props.theme.HeaderHeight.md};
     .fixed-header {
-      height: 60px;
+      height: ${props => props.theme.HeaderHeight.md};
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-top: ${props => props.theme.HeaderHeight.xl};
+    .fixed-header {
+      height: ${props => props.theme.HeaderHeight.xl};
     }
   }
   @media (max-width: ${desktopWidth}) {

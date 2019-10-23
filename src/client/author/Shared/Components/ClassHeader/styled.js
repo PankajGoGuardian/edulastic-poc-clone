@@ -10,7 +10,9 @@ import {
   tabletWidth,
   largeDesktopWidth,
   smallDesktopWidth,
-  mobileWidthMax
+  mobileWidthMax,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../theme";
@@ -36,15 +38,18 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: ${props => props.theme.header.headerBgColor};
-  height: 96px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
   z-index: 1;
   padding: 0px 30px;
   &:hover {
     background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
   }
   @media (max-width: ${mobileWidthMax}) {
     height: auto;

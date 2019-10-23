@@ -1,7 +1,7 @@
 import React, { memo, Component, Fragment } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { mobileWidth, desktopWidth, mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import { desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
 import DragScroll, { UPWARDS, DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
@@ -62,33 +62,33 @@ HeaderWrapper.defaultProps = {
 export default memo(HeaderWrapper);
 
 const HeaderContainer = styled.div`
-  padding-top: 96px;
+  padding-top: ${props => (props.type === "standard" ? "121" : props.theme.HeaderHeight.xs)}px;
 
-  @media (max-width: ${mobileWidth}) {
-    padding-top: ${props => (props.type === "standard" ? "121px" : "62px")};
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding-top: ${props => props.theme.HeaderHeight.md}px;
   }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding-top: 60px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-top: ${props => props.theme.HeaderHeight.xl}px;
   }
-
   @media print {
     padding-top: 0px;
   }
 `;
 
 const Container = styled.div`
-  height: 96px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
   padding: 0px 30px;
   background: ${props => props.theme.header.headerBgColor};
   display: flex;
   justify-content: ${({ justify }) => justify || "space-between"};
   align-items: center;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
   }
-
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
+  }
   @media (max-width: ${desktopWidth}) {
     padding: 0px 20px;
   }

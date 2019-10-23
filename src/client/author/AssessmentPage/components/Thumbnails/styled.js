@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { Button } from "antd";
+import { mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
   width: ${({ review }) => (review ? "243px" : "213px")};
-  height: calc(100vh - 96px);
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow-y: auto;
   padding: 30px 28px;
   padding-right: ${({ review }) => (review ? "28px" : "13px")};
@@ -12,6 +13,13 @@ export const ThumbnailsWrapper = styled.div`
   background: #ebebeb;
   margin-left: ${({ minimized }) => (minimized ? "-183px" : 0)};
   transition: margin-left 300ms ease-in-out;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+  }
 `;
 
 export const ThumbnailsList = styled.div`

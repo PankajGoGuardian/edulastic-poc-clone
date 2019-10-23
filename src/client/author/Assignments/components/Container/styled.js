@@ -1,7 +1,16 @@
 import { Radio, Switch } from "antd";
 import styled from "styled-components";
 
-import { mobileWidth, tabletWidth, white, themeColor, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import {
+  mobileWidth,
+  tabletWidth,
+  white,
+  themeColor,
+  desktopWidth,
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -12,12 +21,22 @@ export const Container = styled.div`
   overflow: auto;
 
   .scrollbar-container {
-    height: calc(100vh - 120px);
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
     width: 100%;
     padding-right: 30px;
     padding-left: 2px;
   }
 
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    .scrollbar-container {
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    .scrollbar-container {
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
+    }
+  }
   @media (max-width: ${tabletWidth}) {
     .scrollbar-container {
       height: calc(100vh - 90px);

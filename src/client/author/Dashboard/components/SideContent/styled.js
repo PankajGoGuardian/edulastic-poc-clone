@@ -1,7 +1,13 @@
-import { Row, Col, Divider, Icon, Button } from "antd";
+import { Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import { mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
+import {
+  mediumDesktopWidth,
+  white,
+  themeColor,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 
 export const SliderButton = styled(Button)`
   width: 40px;
@@ -22,22 +28,28 @@ export const SideContentContainer = styled.div`
   transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
   transition: all 0.5s ease-in-out;
   z-index: 300;
-  top: 96px;
+  top: ${props => props.theme.HeaderHeight.xs}px;
   right: 0;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    top: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    top: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    top: ${props => props.theme.HeaderHeight.xl}px;
   }
 `;
 
 export const SideContentWrapper = styled.div`
-  background: #ffffff;
+  background: ${white};
   padding: 1.2rem;
   width: 275px !important;
-  height: calc(100vh - 96px);
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: calc(100vh - 60px);
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
 `;
 

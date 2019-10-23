@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { green } from "@edulastic/colors";
 import { FlexContainer, MenuIcon } from "@edulastic/common";
-import { HeaderWrapper, TitleWrapper, ManageClassButton, IconPlus, ButtonText } from "./styled";
+import { TitleWrapper, ManageClassButton, IconPlus, ButtonText } from "./styled";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
+import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 const HeaderSection = ({ toggleSideBar }) => (
   <HeaderWrapper>

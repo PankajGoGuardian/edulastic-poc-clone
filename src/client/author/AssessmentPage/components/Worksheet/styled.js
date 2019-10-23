@@ -1,12 +1,19 @@
 import styled from "styled-components";
-import { white, green } from "@edulastic/colors";
+import { white, green, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const WorksheetWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
-  height: calc(100vh - 96px);
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow: auto;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+  }
 `;
 
 export const MinimizeButton = styled.div`

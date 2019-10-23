@@ -1,25 +1,38 @@
-import { largeDesktopWidth, mediumDesktopWidth, themeColor, white, desktopWidth } from "@edulastic/colors";
+import {
+  largeDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  themeColor,
+  white,
+  desktopWidth
+} from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const Container = styled.div`
-  padding-top: 96px;
+  padding-top: ${props => props.theme.HeaderHeight.xs}px;
   .fixed-header {
     display: flex;
     align-items: center;
     background: ${props => props.theme.header.headerBgColor};
-    height: 96px;
+    height: ${props => props.theme.HeaderHeight.xs}px;
     padding: 0px 30px;
     & > div {
       width: 100%;
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding-top: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding-top: ${props => props.theme.HeaderHeight.md}px;
     .fixed-header {
-      height: 60px;
+      height: ${props => props.theme.HeaderHeight.md}px;
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-top: ${props => props.theme.HeaderHeight.xl}px;
+    .fixed-header {
+      height: ${props => props.theme.HeaderHeight.xl}px;
     }
   }
   @media (max-width: ${desktopWidth}) {

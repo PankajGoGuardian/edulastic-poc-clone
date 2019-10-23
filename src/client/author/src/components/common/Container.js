@@ -1,13 +1,16 @@
 import styled from "styled-components";
-import { mobileWidth, mainBgColor, mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidth, mainBgColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 20px 30px;
   background: ${mainBgColor};
-  height: calc(100vh - 96px);
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: calc(100vh - 60px);
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${mobileWidth}) {
     height: initial;

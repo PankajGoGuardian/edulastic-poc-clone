@@ -1,30 +1,9 @@
 import styled from "styled-components";
-import { Layout, Button, Typography } from "antd";
+import { Button, Typography } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
-import { green, mediumDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
+import { green, mediumDesktopWidth, mobileWidthLarge } from "@edulastic/colors";
 
 const { Text } = Typography;
-const { Header } = Layout;
-
-export const HeaderWrapper = styled(Header)`
-  position: fixed;
-  z-index: 300;
-  left: 0px;
-  right: 0px;
-  background: ${props => props.theme.header.headerBgColor};
-  padding: 0px 30px 0px 130px;
-  height: 96px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 60px;
-  }
-  @media (max-width: ${tabletWidth}) {
-    padding: 0px 15px;
-  }
-`;
 
 export const TitleWrapper = styled.h1`
   font-size: ${props => props.theme.header.headerTitleFontSize};

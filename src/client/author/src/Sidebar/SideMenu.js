@@ -11,7 +11,9 @@ import {
   redHeart,
   themeColor,
   mainTextColor,
-  extraDesktopWidth
+  extraDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { get, remove } from "lodash";
 import { withRouter, Link } from "react-router-dom";
@@ -275,17 +277,15 @@ class SideMenu extends Component {
                     <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                   </Col>
                 ) : null}
-                <Col span={18} style={{ textAlign: "left" }}>
+                <Col span={isCollapsed ? 24 : 18} style={{ textAlign: "center" }}>
                   {isCollapsed ? <LogoCompact /> : <Logo />}
                 </Col>
                 {broken ? null : (
                   <Col
-                    span={6}
+                    span={isCollapsed ? 0 : 6}
                     style={{
-                      textAlign: "right",
-                      color: "#1fe3a1",
-                      right: isCollapsed ? "-5px" : "-21px",
-                      top: isCollapsed ? "0" : "-5px"
+                      textAlign: "center",
+                      color: themeColor
                     }}
                   >
                     {!isCollapsed && (
@@ -481,12 +481,6 @@ const SideBar = styled(Layout.Sider)`
   z-index: 22;
   padding-bottom: 0;
 
-  &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 22.5px 20px;
-    @media (max-width: ${mediumDesktopWidth}) {
-      padding: 5px 20px;
-    }
-  }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
@@ -570,13 +564,16 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 39px 39px 31px;
-  text-align: center;
+  height: ${({ theme }) => theme.HeaderHeight.xs}px;
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 20px 39px 14px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${({ theme }) => theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${({ theme }) => theme.HeaderHeight.xl}px;
   }
 `;
 
@@ -984,7 +981,6 @@ const Logo = styled(IconHeader)`
 const LogoCompact = styled(IconLogoCompact)`
   width: 22px;
   height: 22px;
-  margin: 14px 0 9px 19px;
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;

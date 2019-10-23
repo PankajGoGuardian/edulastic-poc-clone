@@ -1,7 +1,15 @@
 import styled from "styled-components";
 import { Pagination, Affix, Input } from "antd";
 
-import { themeColor, desktopWidth, mediumDesktopWidth, textColor, grey } from "@edulastic/colors";
+import {
+  themeColor,
+  desktopWidth,
+  mediumDesktopWidth,
+  textColor,
+  grey,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
@@ -37,10 +45,17 @@ export const Container = styled.div`
 
   .scrollbar-container {
     overflow: auto !important;
-    height: calc(100vh - 125px);
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 40}px)`};
 
     ::-webkit-scrollbar {
       display: none;
+    }
+
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 40}px)`};
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 40}px)`};
     }
   }
 
@@ -89,13 +104,16 @@ export const MobileFilter = styled.div`
 export const Main = styled.div`
   flex: 1;
   background: white;
-  min-height: calc(100vh - 96px);
   box-shadow: -1px 0px 5px 1px ${grey};
   padding: 20px 25px;
   width: calc(100% - 250px);
+  min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    min-height: calc(100vh - 60px);
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     width: 100%;
@@ -128,11 +146,14 @@ export const SearchModalContainer = styled.div`
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 260px;
-  top: 96px;
+  top: ${props => props.theme.HeaderHeight.xs}px;
   padding: 20px 0px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    top: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    top: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    top: ${props => props.theme.HeaderHeight.xl}px;
   }
 `;
 

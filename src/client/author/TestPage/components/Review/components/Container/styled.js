@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import {
-  mediumDesktopWidth,
   mainBgColor,
   mobileWidthMax,
   tabletWidth,
   desktopWidth,
-  smallDesktopWidth
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { Col } from "antd";
 
@@ -13,7 +14,7 @@ export const ReviewPageContainer = styled.div`
   padding: 20px 30px;
   .fixed-second-header {
     background: ${mainBgColor};
-    top: 96px;
+    top: ${props => props.theme.HeaderHeight.xs}px;
     position: fixed;
     left: 100px;
     right: 0;
@@ -27,21 +28,22 @@ export const ReviewPageContainer = styled.div`
         display: none;
       }
     }
-    @media (max-width: ${mediumDesktopWidth}) {
-      top: 59px;
+
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      top: ${props => props.theme.HeaderHeight.md}px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      top: ${props => props.theme.HeaderHeight.xl}px;
     }
     @media (max-width: ${smallDesktopWidth}) {
       padding: 10px 10px 10px 55px;
     }
     @media (max-width: ${desktopWidth}) {
       padding: 10px;
-      top: 45px;
+      top: 0px;
     }
     @media (max-width: ${tabletWidth}) {
       left: 0px;
-    }
-    @media (max-width: ${mobileWidthMax}) {
-      top: 0px;
     }
   }
 `;

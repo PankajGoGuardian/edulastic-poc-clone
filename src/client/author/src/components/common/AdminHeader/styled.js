@@ -1,6 +1,13 @@
 import styled from "styled-components";
 import { Tabs } from "antd";
-import { themeColor, mediumDesktopWidth, white, tabletWidth } from "@edulastic/colors";
+import {
+  themeColor,
+  mediumDesktopWidth,
+  white,
+  tabletWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 
 const TabPane = Tabs.TabPane;
 
@@ -11,12 +18,15 @@ export const AdminHeaderWrapper = styled.div`
   z-index: 20;
   padding: 0px 30px 0px 130px;
   background: ${themeColor};
-  height: 96px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
   display: flex;
   align-items: center;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 60px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
   }
 
   @media (max-width: ${tabletWidth}) {

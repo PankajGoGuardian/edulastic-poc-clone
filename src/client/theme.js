@@ -146,6 +146,12 @@ const chartAxisLabelColor = "#aaafb5";
 const chartTickColor = "#434b5d";
 const chartStockColor = "#42d184";
 
+const HeaderHeight = {
+  xs: 60,
+  md: 76,
+  xl: 96
+};
+
 const ThemeZoomMap = {
   xs: 1,
   sm: 1.2,
@@ -305,7 +311,8 @@ export const allThemeVars = {
   tagBgColor,
   tagTextColor,
   tagUnactiveBgColor,
-  tagUnactiveTextColor
+  tagUnactiveTextColor,
+  HeaderHeight
 };
 
 export const defaultTheme = {

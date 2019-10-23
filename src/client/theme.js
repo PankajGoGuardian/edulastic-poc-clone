@@ -48,6 +48,7 @@ const iconDeleteColor = "#00AD50";
 const iconDeleteHoverColor = "#FF0080";
 const clearIconColor = "#FFFFFF";
 const rightIconColor = "#84cd36";
+const correctBgColor = "#d3fea6";
 const wrongIconColor = "#dd2e44";
 const wrongBgColor = "#fbdfe7";
 const rightBorderColor = "#5EB500";
@@ -627,7 +628,7 @@ export const defaultTheme = {
       indexBoxValidBgColor: checkColor,
       indexBoxNotValidBgColor: closeColor,
       dragItemBgColor: containerWhite,
-      dragItemValidBgColor: rightIconColor,
+      dragItemValidBgColor: correctBgColor,
       dragItemNotValidBgColor: wrongBgColor,
       dragItemBorderColor: borderColor,
       dragItemValidBorderColor: rightIconColor,

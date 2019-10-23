@@ -1,16 +1,17 @@
+/* eslint-disable react/require-default-props */
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import styled, { withTheme } from "styled-components";
 
-import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
-import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
-import { IMAGE_LIST_POSITION_LEFT, IMAGE_LIST_POSITION_RIGHT } from "@edulastic/constants/const/listPosition";
+import { FlexContainer } from "@edulastic/common";
 import DragPreview from "../../../components/SourceDragPreview";
 
+import { IconBox } from "../styled/IconBox";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 import { IndexBox } from "../styled/IndexBox";
+import { AnswerBox } from "../styled/AnswerBox";
 import { getStyles } from "../utils";
 
 function collectSource(connector, monitor) {
@@ -56,8 +57,10 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
         {renderIndex}
       </IndexBox>
     )}
-    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
-    {preview && valid !== undefined && <div>{valid ? <IconCheck /> : <IconClose />}</div>}
+    <AnswerBox checked={preview && valid !== undefined} dangerouslySetInnerHTML={{ __html: item }} />
+    {preview && valid !== undefined && (
+      <IconBox checked={preview && valid !== undefined}>{valid ? <IconCheck /> : <IconClose />}</IconBox>
+    )}
   </FlexContainer>
 );
 
@@ -80,7 +83,6 @@ const DragItemContainer = ({
   theme,
   isTransparent,
   dragHandle,
-  possibilityListPosition,
   isResetOffset
 }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -132,13 +134,7 @@ const DragItemContainer = ({
                   : preview && valid !== undefined
                   ? theme.widgets.classification.dragItemNotValidBorderColor
                   : theme.widgets.classification.dragItemBorderColor,
-                preview && valid !== undefined
-                  ? {
-                      padding: 0,
-                      borderTopLeftRadius: 0,
-                      borderBottomLeftRadius: 0
-                    }
-                  : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
+                preview && valid !== undefined ? { padding: 0, border: 0 } : {}
               )}
             >
               {dragItem}
@@ -156,7 +152,6 @@ DragItemContainer.propTypes = {
   isDragging: PropTypes.bool.isRequired,
   preview: PropTypes.bool.isRequired,
   renderIndex: PropTypes.number.isRequired,
-  possibilityListPosition: PropTypes.string,
   isTransparent: PropTypes.bool,
   dragHandle: PropTypes.bool,
   valid: PropTypes.bool,
@@ -168,11 +163,8 @@ DragItemContainer.defaultProps = {
 };
 
 const InnerWrapper = styled.div`
-  p,
-  div {
-    min-width: 120px;
-    width: auto;
-  }
+  min-width: 120px;
+  width: auto;
 
   .katex .base {
     display: inline;

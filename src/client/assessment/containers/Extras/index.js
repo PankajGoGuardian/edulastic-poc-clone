@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -45,13 +45,15 @@ class Extras extends Component {
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
               <WidgetFRInput>
-                <QuestionTextArea
-                  toolbarId="instructor_stimulus"
-                  toolbarSize="SM"
-                  placeholder={t("component.options.enterDistractorRationaleQuestion")}
-                  onChange={value => _change("instructorStimulus", value)}
-                  value={get(item, "instructorStimulus", "")}
-                />
+                <QuestionContainer>
+                  <QuestionTextArea
+                    toolbarId="instructor_stimulus"
+                    toolbarSize="SM"
+                    placeholder={t("component.options.enterDistractorRationaleQuestion")}
+                    onChange={value => _change("instructorStimulus", value)}
+                    value={get(item, "instructorStimulus", "")}
+                  />
+                </QuestionContainer>
               </WidgetFRInput>
             </Col>
           </Row>
@@ -117,3 +119,11 @@ const enhance = compose(
 );
 
 export default enhance(Extras);
+
+const QuestionContainer = styled.div`
+  .fr-wrapper.show-placeholder .fr-placeholder {
+    word-break: break-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+`;

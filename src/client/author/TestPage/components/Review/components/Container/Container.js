@@ -337,6 +337,7 @@ class Review extends PureComponent {
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
+
     return (
       <ReviewPageContainer>
         <Row>
@@ -377,6 +378,7 @@ class Review extends PureComponent {
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                   isCollapse={isCollapse}
+                  passagesKeyed={passagesKeyed}
                 />
               ) : (
                 <List

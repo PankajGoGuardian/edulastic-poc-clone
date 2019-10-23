@@ -25,7 +25,8 @@ const ItemsTable = ({
   isEditable,
   owner,
   onChangePoints,
-  isCollapse
+  isCollapse,
+  passagesKeyed = {}
 }) => {
   const [expandedRows, setExpandedRows] = useState(-1);
   const handleCheckboxChange = (index, checked) => {
@@ -60,6 +61,7 @@ const ItemsTable = ({
             collapseView={true}
             questions={questions}
             mobile={mobile}
+            passagesKeyed={passagesKeyed}
           />
         ) : (
           <>

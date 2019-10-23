@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Table } from "antd";
-import { mobileWidth, desktopWidth, mainTextColor, mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, mainTextColor, smallDesktopWidth } from "@edulastic/colors";
 import { fonts } from "@edulastic/constants";
 
 export const StyledTable = styled(Table)`
@@ -54,7 +54,7 @@ export const StyledTable = styled(Table)`
         min-width: 110px;
       }
       td div {
-        padding: 5px;
+        padding: 6px;
         word-break: break-word;
       }
       td:nth-of-type(1) div {
@@ -72,7 +72,7 @@ export const StyledTable = styled(Table)`
       font-size: ${fonts.previewFontSizeMobile};
     }
   }
-  @media (min-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${smallDesktopWidth}) {
     .ant-table {
       width: 100%;
       overflow: auto;

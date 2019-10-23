@@ -8,9 +8,11 @@ const ValueLabel = ({ getActivePoint, getActivePointValue, active }) => {
   const margin = 15;
   const symbolWidth = 8;
 
+  const visibleValue = () => +getActivePointValue()?.toFixed(2);
+
   const getWidth = () => {
     if (getActivePoint(0)) {
-      return getActivePointValue().toString().length * symbolWidth + textPaddingLeft * 2;
+      return visibleValue().toString().length * symbolWidth + textPaddingLeft * 2;
     }
     return 0;
   };
@@ -21,7 +23,7 @@ const ValueLabel = ({ getActivePoint, getActivePointValue, active }) => {
     <g opacity={getActivePoint(0) ? 1 : 0} style={{ zIndex: 10 }}>
       <ValueBg x={getX()} y={getActivePoint(1) - 34} width={getWidth()} />
       <text x={getX() + textPaddingLeft} y={getActivePoint(1) - 17}>
-        {getActivePointValue()}
+        {visibleValue()}
       </text>
     </g>
   );

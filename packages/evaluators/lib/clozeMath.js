@@ -89,7 +89,7 @@ var mathEval =
 
                               var data = {
                                 input: value.replace(/\s+/g, " "),
-                                expected: ans ? ans.replace(/\s+/g, " ") : "",
+                                expected: ans ? ans.replace(/s+/g, " ") : "",
                                 checks: checks
                               };
                               return (0, _math.evaluate)(data);

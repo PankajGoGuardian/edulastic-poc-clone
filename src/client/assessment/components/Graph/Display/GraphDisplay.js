@@ -271,7 +271,7 @@ class GraphDisplay extends Component {
         snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
-        size: uiStyle.displayPositionPoint ? 3 : 0
+        size: uiStyle.displayPositionPoint === false ? 0 : 3
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.xTickDistance),

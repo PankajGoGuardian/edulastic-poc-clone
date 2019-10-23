@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { green, title, cardTitleColor, themeColorLighter } from "@edulastic/colors";
 import { Row, Col, Icon } from "antd";
 
@@ -80,14 +80,21 @@ export const IconRightArrow = styled(Icon)`
   font-size: 20px;
 `;
 
+const SharedTextStyle = css`
+  font-weight: 600;
+  width: 98%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 export const AssignmentStatusText = styled.p`
   font-size: 9px;
-  font-weight: 600;
   color: ${cardTitleColor};
+  ${SharedTextStyle}
 `;
 export const AssignmentTitle = styled.p`
   font-size: 12px;
-  font-weight: 600;
+  ${SharedTextStyle}
 `;
 
 export const AssignmentCount = styled.p`

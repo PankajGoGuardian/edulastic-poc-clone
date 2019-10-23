@@ -120,7 +120,7 @@ class ChoicesForResponse extends Component {
         cleanSections={cleanSections}
       >
         {responses.map(response => (
-          <ChoicesConatiner>
+          <ChoicesConatiner data-cy={`choice-response-${response.index}`}>
             <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
             <SortableList
               useDragHandle
@@ -131,7 +131,7 @@ class ChoicesForResponse extends Component {
               onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
             />
             <div>
-              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(response.id)}>
+              <AddNewChoiceBtn data-cy={response.index} onClick={() => this.addNewChoiceBtn(response.id)}>
                 {t("component.cloze.dropDown.addnewchoice")}
               </AddNewChoiceBtn>
             </div>

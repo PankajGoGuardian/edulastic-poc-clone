@@ -107,9 +107,7 @@ class EditItemPage {
   }
 
   getSource() {
-    cy.get('[data-cy="source"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="source"]').click();
   }
 
   cancelSource() {

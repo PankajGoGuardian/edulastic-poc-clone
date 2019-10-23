@@ -1,110 +1,72 @@
 class EditToolBar {
+  frToolbar = () => cy.get(".fr-toolbar");
 
-    stimulus() {
-        return cy.get('#stimulus');
-    }
+  clickOnBold = () =>
+    this.frToolbar()
+      .find('[data-cmd="bold"]')
+      .click();
 
-    fontSelect() {
-        return cy.get('#stimulus').find('.ql-font').should('be.visible');
-    }
+  clickOnItalic = () =>
+    this.frToolbar()
+      .find('[data-cmd="italic"]')
+      .click();
 
-    sizeSelect() {
-        return cy.get('#stimulus').find('.ql-size').should('be.visible');
-    }
+  selectFontSize = fontSize => {
+    this.frToolbar()
+      .find('[data-cmd="fontSize"]')
+      .click();
 
-    bold() {
-        return cy.get('#stimulus').find('.ql-bold').should('be.visible');
-    }
+    cy.xpath(`//a[contains(text(),'${fontSize}')]`).click();
+  };
 
-    italic() {
-        return cy.get('#stimulus').find('.ql-italic').should('be.visible');
-    }
+  clickOnIndent = () =>
+    this.frToolbar()
+      .find('[data-cmd="indent"]')
+      .click();
 
-    underline() {
-        return cy.get('#stimulus').find('.ql-underline').should('be.visible');
-    }
+  clickOnOutdent = () =>
+    this.frToolbar()
+      .find('[data-cmd="outdent"]')
+      .click();
 
-    strike() {
-        return cy.get('#stimulus').find('.ql-strike').should('be.visible');
-    }
+  clickOnFormat = () =>
+    this.frToolbar()
+      .find('[data-cmd="paragraphFormat"]')
+      .click();
 
-    color() {
-        return cy.get('#stimulus').find('.ql-color').color('be.visible');
-    }
+  clickOnTable = () =>
+    this.frToolbar()
+      .find('[data-cmd="insertTable"]')
+      .click();
 
-    background() {
-        return cy.get('#stimulus').find('.ql-background').should('be.visible');
-    }
+  clickOnMath = () =>
+    this.frToolbar()
+      .find('[data-cmd="math"]')
+      .click();
 
-    subScript() {
-        return cy.get('#stimulus').find('.ql-script').find('[value="sub"]').should('be.visible');
-    }
+  clickOnInserImage = () =>
+    this.frToolbar()
+      .find('[data-cmd="insertImage"]')
+      .click();
 
-    superScript() {
-        return cy.get('#stimulus').find('.ql-script').find('[value="super"]').should('be.visible');
-    }
+  clickOnMore = () =>
+    this.frToolbar()
+      .find('[data-cmd="moreText"]')
+      .click();
 
-    headerh1() {
-        return cy.get('#stimulus').find('.ql-header').find('[value="1"]').should('be.visible');
-    }
+  clickOnInserImage = () =>
+    this.frToolbar()
+      .find('[data-cmd="insertImage"]')
+      .click();
 
-    headerh2() {
-        return cy.get('#stimulus').find('.ql-header').find('[value="2"]').should('be.visible');
-    }
+  clickOnInserImage = () =>
+    this.frToolbar()
+      .find('[data-cmd="insertImage"]')
+      .click();
 
-    blockquote() {
-        return cy.get('#stimulus').find('.ql-blockquote').should('be.visible');
-    }
+  textDropDown = () => this.frToolbar().find('[data-cmd="textdropdown"]');
 
-    codeBlock() {
-        return cy.get('#stimulus').find('.ql-code-block').should('be.visible');
-    }
-
-    listOrder() {
-        return cy.get('#stimulus').find('.ql-list').find('[value="ordered"]').should('be.visible');
-    }
-
-    listBullet() {
-        return cy.get('#stimulus').find('.ql-list').find('[value="bullet"]').should('be.visible');
-    }
-
-    indentPlus() {
-        return cy.get('#stimulus').find('.ql-header').find('[value="+1"]').should('be.visible');
-    }
-
-    indentMinus() {
-        return cy.get('#stimulus').find('.ql-header').find('[value="-1"]').should('be.visible');
-    }
-
-    direction() {
-        return cy.get('#stimulus').find('.ql-code-direction').should('be.visible');
-    }
-
-    align() {
-        return cy.get('#stimulus').find('.ql-align').should('be.visible');
-    }
-
-    link() {
-        return cy.get('#stimulus').find('.ql-link').should('be.visible');
-    }
-
-    image() {
-        return cy.get('#stimulus').find('.ql-image').should('be.visible');
-    }
-
-    video() {
-        return cy.get('#stimulus').find('.ql-video').should('be.visible');
-    }
-
-    formula() {
-        return cy.get('#stimulus').find('.ql-formula').should('be.visible');
-    }
-
-    // tooltip for link,video,formula
-
-    toolTip() {
-        return cy.get('.ql-editing').should('be.visible');
-    }
+  textInput = () => this.frToolbar().find('[data-cmd="textinput"]');
 }
 
 export default EditToolBar;

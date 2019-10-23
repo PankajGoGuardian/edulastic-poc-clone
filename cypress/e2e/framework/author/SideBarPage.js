@@ -47,7 +47,6 @@ export default class TeacherSideBar {
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     this.menuItems()
       .get('[data-cy="Test Library"]')
-      .eq(3)
       .click({ force: true })
       .click({ force: true });
     cy.wait("@searchTest");

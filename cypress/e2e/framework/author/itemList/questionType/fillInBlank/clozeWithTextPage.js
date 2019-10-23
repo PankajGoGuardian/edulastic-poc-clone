@@ -10,16 +10,13 @@ class ClozeWithTextPage {
   }
 
   // question content
-  getQuestionEditor = () => cy.get('[data-placeholder="[This is the stem.]"');
-
-  // template content
-  getTemplateEditor = () => cy.get('[data-placeholder="[This is the template markup]"');
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
   addAlternate() {
     cy.get('[data-cy="tabs"]')
       .find("button")
-      .should("be.visible")
       .click();
+
     return this;
   }
 
@@ -28,28 +25,25 @@ class ClozeWithTextPage {
       .get('[data-cy="tabs"]')
       .next()
       .find("input")
-      .eq(0)
-      .should("be.visible");
+      .eq(0);
 
-  getAlternates = () =>
-    cy
-      .contains("div", "Set Correct Answer(s)")
-      .next()
-      .contains("span", "Alternate");
+  getAlternates = () => cy.get('[data-cy="tabs"]').contains("span", "Alternate");
 
   // correct ans response box
   getResponseBoxByIndex = index =>
     cy
-      .get(".template_box")
+      .get('[data-cy="styled-wrapped-component"]')
+      .next()
       .find("input")
       .eq(index);
 
-  clickOnAdvancedOptions = () => {
-    cy.contains("span", "Advanced Options")
+  // advance options
+  clickOnAdvancedOptions() {
+    cy.contains("ADVANCED OPTIONS")
       .should("be.visible")
       .click();
     return this;
-  };
+  }
 
   // on preview
   getResponseOnPreview = () => cy.get(".response-btn").should("be.visible");

@@ -11,7 +11,7 @@ class ClozeDropDownPage {
   }
 
   // question content
-  getQuestionEditor = () => cy.get('[data-placeholder="[This is the stem.]"');
+  getQuestionEditor = () => cy.xpath("//div[@class='fr-wrapper']//div[@class='fr-element fr-view']");
 
   // template content
   getTemplateEditor = () => cy.get('[data-placeholder="[This is the template markup]"');
@@ -19,10 +19,16 @@ class ClozeDropDownPage {
   // choices
   getChoiceByIndexAndResponseIndex = (responseIndex, choiceIndex) =>
     cy
-      .get(`[data-cy=choice-response-${responseIndex}]`)
-      .find("input")
-      .eq(choiceIndex)
+      .get(`[data-cy="choice-response-${responseIndex}"]`)
+      .find(`[data-cy="edit_prefix_${choiceIndex}"]`)
       .should("be.visible");
+
+  // add choice to reponse index
+  addNewChoiceByResponseIndex = responseIndex => {
+    cy.get(`[data-cy="choice-response-${responseIndex}"]`)
+      .contains("Add New Choice")
+      .click();
+  };
 
   getAllAnsChoicesLabel = () =>
     cy
@@ -36,8 +42,15 @@ class ClozeDropDownPage {
     cy
       .get('[data-cy="tabs"]')
       .next()
-      .find("input")
-      .should("be.visible");
+      .find("input");
+
+  // advance options
+  clickOnAdvancedOptions() {
+    cy.contains("ADVANCED OPTIONS")
+      .should("be.visible")
+      .click();
+    return this;
+  }
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
@@ -56,9 +69,9 @@ class ClozeDropDownPage {
     return this;
   }
 
-  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+  getPanalty = () => cy.get('[data-cy="penalty"]');
 
-  getEnableAutoScoring = () => cy.contains("Enable auto scoring").should("be.visible");
+  getEnableAutoScoring = () => cy.contains("Enable auto scoring");
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
@@ -67,16 +80,11 @@ class ClozeDropDownPage {
   addAlternate() {
     cy.get('[data-cy="tabs"]')
       .find("button")
-      .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   }
 
-  getAlternates = () =>
-    cy
-      .contains("div", "Set Correct Answer(s)")
-      .next()
-      .contains("span", "Alternate");
+  getAlternates = () => cy.get('[data-cy="tabs"]').contains("span", "Alternate");
 
   // correct ans response box
   setChoiceForResponseIndex = (index, choice) => {

@@ -3,6 +3,7 @@ import ClozeWithTextPage from "../../../../framework/author/itemList/questionTyp
 import FileHelper from "../../../../framework/util/fileHelper";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Text" type question`, () => {
   const queData = {
@@ -45,14 +46,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .type(queData.queText)
         .should("have.text", queData.queText);
 
-      question
-        .getTemplateEditor()
-        .clear()
-        .type(queData.template)
-        .should("have.text", queData.template);
-
-      question.TemplateMarkupBar.response().click();
-
+      question.getQuestionEditor().click();
+      // text input
+      question.editToolBar.textInput().click();
+      // set ans
       question.getResponseBoxByIndex(0).type(queData.correctAns);
       // save que
       question.header.save();
@@ -137,21 +134,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
       queData.forScoringCorrectAns.forEach((ans, index) => {
         question
           .getResponseBoxByIndex(index)
+          .clear()
           .type(ans)
           .should("have.value", ans);
       });
 
-      question
-        .getPoints()
-        .clear()
-        .type(8);
+      question.getPoints().type("{selectall}8");
 
       question.addAlternate();
 
-      question
-        .getPoints()
-        .clear()
-        .type(4);
+      question.getPoints().type("{selectall}4");
 
       queData.forScoringAltAns.forEach((ans, index) => {
         question
@@ -177,7 +169,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it(" > test score with min score if attempted", () => {
+    /*  it(" > test score with min score if attempted", () => {
       scoringBlock.getEnableAutoScoring().click();
 
       scoringBlock
@@ -197,16 +189,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
           preview.getAntMsg().should("contain", "score: 2/8");
         });
     });
-
+ */
     it(" > test score with partial match and penalty", () => {
-      scoringBlock.getMinScore().clear();
+      question.clickOnAdvancedOptions();
 
-      scoringBlock
-        .getPanalty()
-        .clear()
-        .type(4);
+      scoringBlock.getPanalty().type("{selectall}2");
 
-      scoringBlock.selectScoringType("Partial match");
+      scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
 
       preview = question.header.preview();
 
@@ -221,7 +210,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it(" > test score with max score", () => {
+    /* it(" > test score with max score", () => {
       scoringBlock.selectScoringType("Exact match");
 
       scoringBlock.getEnableAutoScoring().click();
@@ -242,6 +231,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .then(() => {
           preview.getAntMsg().should("contain", "score: 0/10");
         });
-    });
+    }); */
   });
 });

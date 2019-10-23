@@ -20,7 +20,7 @@ class ScoringBlock {
     return this;
   }
 
-  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+  getPanalty = () => cy.get('[data-cy="penalty"]');
 
   getEnableAutoScoring = () =>
     cy

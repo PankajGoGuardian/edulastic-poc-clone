@@ -15,9 +15,6 @@ const Style = css`
 
 const MathSpan = withMathFormula(styled.span`
   ${Style}
-  * {
-    ${Style}
-  }
 `);
 
 const MoveLink = ({ onClick, children }) => (

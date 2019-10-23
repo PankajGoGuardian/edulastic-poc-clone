@@ -118,11 +118,8 @@ class ChoicesForDropDown extends Component {
 
   render() {
     const { t, item, fillSections, cleanSections } = this.props;
-    const {
-      responseIds: { dropDowns = [] },
-      options,
-      stimulus
-    } = item;
+    const { responseIds = {}, options, stimulus } = item;
+    const { dropDowns = [] } = responseIds;
 
     return (
       <WidgetWrapper>

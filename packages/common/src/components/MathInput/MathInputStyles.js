@@ -87,6 +87,7 @@ export const MathInputStyles = styled.div`
       width: 30%;
       background: ${props => props.theme.common.mathResponseEmbedCharBgColor};
       font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
+      font-size: ${({ theme }) => theme.size6}px;
       color: ${props => props.theme.common.mathResponseEmbedCharColor};
       height: 100%;
       display: flex;
@@ -113,6 +114,7 @@ export const MathInputStyles = styled.div`
       border-radius: 5px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      font-size: ${({ theme }) => theme.size6}px;
     }
   }
 

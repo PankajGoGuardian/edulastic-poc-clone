@@ -286,14 +286,16 @@ class QuadrantsMoreOptions extends Component {
                 checked={drawLabelZero}
               />
             </Col>
-            <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.displayPositionPoint")}
-                name="displayPositionPoint"
-                onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
-                checked={displayPositionPoint}
-              />
-            </Col>
+            {this.isQuadrantsPlacement() && (
+              <Col md={24}>
+                <Checkbox
+                  label={t("component.graphing.layoutoptions.displayPositionPoint")}
+                  name="displayPositionPoint"
+                  onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
+                  checked={displayPositionPoint}
+                />
+              </Col>
+            )}
           </Row>
         </Question>
 

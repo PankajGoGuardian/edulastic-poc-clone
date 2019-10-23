@@ -142,9 +142,33 @@ function ProfileRow(props) {
               }}
             />
           )}
-          <Icon type="copy" onClick={onDuplicate} />
-          {props.hideEdit ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
-          {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditing(index)} />}
+          <Icon
+            type="copy"
+            onClick={e => {
+              e.stopPropagation();
+              onDuplicate();
+            }}
+          />
+          {props.hideEdit ? null : (
+            <Icon
+              type="delete"
+              theme="filled"
+              onClick={e => {
+                e.stopPropagation();
+                setConfirmVisible(true);
+              }}
+            />
+          )}
+          {
+            <Icon
+              type={active ? "up" : "down"}
+              theme="outlined"
+              onClick={e => {
+                e.stopPropagation();
+                setEditing(index);
+              }}
+            />
+          }
         </StyledProfileCol>
       </StyledProfileRow>
 

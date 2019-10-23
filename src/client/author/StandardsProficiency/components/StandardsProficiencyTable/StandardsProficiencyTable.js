@@ -414,14 +414,21 @@ const EditableStandardsProficiencyTable = Form.create()(StandardsProficiencyTabl
 
 const enhance = compose(
   connect(
-    (state, ownProps) => ({
-      standardsProficiency: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "scale"], []),
-      userOrgId: getUserOrgId(state),
-      calcType: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcType"], ""),
-      calcDecayingAttr: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcDecayingAttr"], 0),
-      calcMovingAvrAttr: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcMovingAvrAttr"], 0),
-      standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "_id"], "")
-    }),
+    (state, ownProps) => {
+      const calcType = get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcType"], "");
+      const calcAttr = get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcAttribute"], 0);
+      return {
+        standardsProficiency: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "scale"], []),
+        userOrgId: getUserOrgId(state),
+        calcType,
+        /**
+         * NOTE: pay attention here
+         */
+        calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttr : 0,
+        calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttr : 0,
+        standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "_id"], "")
+      };
+    },
     {
       updateStandardsProficiency: updateStandardsProficiencyAction,
       createStandardProficiency: createStandardsProficiencyAction,

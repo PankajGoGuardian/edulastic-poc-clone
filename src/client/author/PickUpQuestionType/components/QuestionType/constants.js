@@ -1501,9 +1501,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           showborder: true
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
-          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { placeholder: "", top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { placeholder: "", top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { placeholder: "", top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
         stimulusReviewonly: "",
         instructorStimulus: "",

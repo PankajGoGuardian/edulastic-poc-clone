@@ -3,16 +3,14 @@ import PropTypes from "prop-types";
 import { Select, Input } from "antd";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
-import { differenceBy, findIndex } from "lodash";
 
 import { response } from "@edulastic/constants";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { OptionSelect } from "../styled/OptionSelect";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 
-const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
+const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
   const inputtypeOptions = [
     { value: "text", label: t("component.options.text") },
     { value: "number", label: t("component.options.number") }
@@ -25,26 +23,8 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
     { value: "bottom", label: t("component.options.bottom") }
   ];
 
-  const { responsecontainerindividuals = [] } = uiStyle;
-
-  const addNewResponseContainer = () => {
-    const diff = differenceBy(responses, responsecontainerindividuals, "id");
-    const _response = diff[0];
-    if (_response) {
-      const index = findIndex(responses, res => res.id === _response.id);
-      responsecontainerindividuals[index] = {
-        index,
-        id: _response.id
-      };
-      onChange("uiStyle", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
-    }
-  };
-
   const changeIndividualUiStyle = (prop, value, id) => {
-    onChange(
+    changeStyle(
       "responses",
       responses.map(resp => {
         if (resp.id === id) {
@@ -54,12 +34,9 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
     );
   };
 
-  const removeIndividual = index => {
-    responsecontainerindividuals[index] = {};
-    onChange("uiStyle", {
-      ...uiStyle,
-      responsecontainerindividuals
-    });
+  const removeIndividual = resId => {
+    const newResponses = responses.filter(resp => resp.id !== resId);
+    changeStyle("responses", newResponses);
   };
 
   return (
@@ -146,69 +123,58 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
           </SelectWrapper>
         </Col>
       </Row>
-      {responsecontainerindividuals &&
-        responsecontainerindividuals.map(responsecontainerindividual => {
-          if (!responsecontainerindividual.id) {
-            return null;
-          }
-          const resIndex = responsecontainerindividual.index;
-          const resId = responsecontainerindividual.id;
-          const response = responses.find(resp => resp.id === resId);
-          return (
-            <IndividualContainer key={resIndex}>
-              <Row gutter={20}>
-                <Col md={12}>
-                  <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-                </Col>
-                <Col md={12}>
-                  <Delete onClick={() => removeIndividual(resIndex)}>X</Delete>
-                </Col>
-              </Row>
-              <Row gutter={20}>
-                <Col md={8}>
-                  <Label>{t("component.options.widthpx")}</Label>
-                  <Input
-                    type="number"
-                    size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
-                    value={parseInt(response.width)}
-                  />
-                </Col>
-                <Col md={8}>
-                  <Label>{t("component.options.heightpx")}</Label>
-                  <Input
-                    type="number"
-                    size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
-                    value={parseInt(response.height, 10)}
-                  />
-                </Col>
-                <Col md={8}>
-                  <Label>{t("component.options.placeholder")}</Label>
-                  <Input
-                    size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resId)}
-                    value={response.placeholder}
-                  />
-                </Col>
-              </Row>
-            </IndividualContainer>
-          );
-        })}
-      <Row gutter={20}>
-        <Col md={6}>
-          <Label>{t("component.options.responsecontainerindividuals")}</Label>
-          <AddNewChoiceBtn onClick={addNewResponseContainer}>
-            {t("component.options.addnewresponsecontainer")}
-          </AddNewChoiceBtn>
-        </Col>
-      </Row>
+      {responses.map((response, resIndex) => {
+        if (!response.id) {
+          return null;
+        }
+        const resId = response.id;
+        return (
+          <IndividualContainer key={resId}>
+            <Row gutter={20}>
+              <Col md={12}>
+                <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
+              </Col>
+              <Col md={12}>
+                <Delete onClick={() => removeIndividual(resId)}>X</Delete>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col md={8}>
+                <Label>{t("component.options.widthpx")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  disabled={false}
+                  containerStyle={{ width: 350 }}
+                  onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
+                  value={parseInt(response.width)}
+                />
+              </Col>
+              <Col md={8}>
+                <Label>{t("component.options.heightpx")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  disabled={false}
+                  containerStyle={{ width: 350 }}
+                  onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
+                  value={parseInt(response.height, 10)}
+                />
+              </Col>
+              <Col md={8}>
+                <Label>{t("component.options.placeholder")}</Label>
+                <Input
+                  size="large"
+                  disabled={false}
+                  containerStyle={{ width: 350 }}
+                  onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resId)}
+                  value={response.placeholder}
+                />
+              </Col>
+            </Row>
+          </IndividualContainer>
+        );
+      })}
     </Fragment>
   );
 };

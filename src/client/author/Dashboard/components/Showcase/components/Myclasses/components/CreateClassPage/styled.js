@@ -7,14 +7,18 @@ export const CreateClassDiv = styled.div`
   justify-content: space-evenly;
   background: ${themeColor};
   color: ${white};
-  width: 100%;
+  width: 207px;
+  height: 40px;
   padding: 10px 0px;
   border-radius: 4px;
   & > svg {
     fill: ${white};
+    width: 19.81px;
+    height: 19.81px;
   }
   & > p {
     text-transform: uppercase;
+    font-size: 12px;
   }
 `;
 export const SyncClassDiv = styled.div`
@@ -29,17 +33,20 @@ export const SyncClassDiv = styled.div`
     color: ${themeColor};
     text-transform: uppercase;
     padding-left: 10px;
+    font-size: 12px;
+  }
+  & > svg {
+    width: 19.81px;
+    height: 19.81px;
   }
 `;
 export const CreateCardBox = styled.div`
   display: flex;
-  padding: 30px 20px;
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
   border: 2px dashed ${themeColor};
-  border-radius: 5px;
-  min-height: 300px;
-  max-width: 350px;
-  margin-top: 1rem;
+  border-radius: 10px;
+  height: 257px;
+  width: 311px;
 `;

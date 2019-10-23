@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
 import GoogleLogin from "react-google-login";
 import { IconPlusCircle, IconGoogleClassroom } from "@edulastic/icons";
+import styled from "styled-components";
 const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList, history }) => {
   const scopes = [
     "https://www.googleapis.com/auth/classroom.courses",
@@ -28,20 +29,20 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
 
   return (
     <CreateCardBox>
-      <Link to={"/author/manageClass/createClass"} style={{ width: "80%" }}>
+      <StyledLink to={"/author/manageClass/createClass"}>
         <CreateClassDiv>
           <IconPlusCircle width={20} height={20} />
           <p>Create new class</p>
         </CreateClassDiv>
-      </Link>
+      </StyledLink>
       {allowGoogleLogin !== false && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
           render={renderProps => (
             <>
-              <p>OR</p>
+              <StyledP>OR</StyledP>
               <SyncClassDiv onClick={renderProps.onClick}>
-                <IconGoogleClassroom width={25} height={25} />
+                <IconGoogleClassroom />
                 <p>Sync With Google Classroom</p>
               </SyncClassDiv>
             </>
@@ -57,3 +58,11 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
   );
 };
 export default CreateClassPage;
+
+const StyledLink = styled(Link)`
+  width: 207px;
+  height: 40px;
+`;
+const StyledP = styled.p`
+  color: #9196a2;
+`;

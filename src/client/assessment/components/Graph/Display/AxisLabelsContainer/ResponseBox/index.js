@@ -1,34 +1,39 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
-import { Container, Title, MarkContainer } from "./styled";
+import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
 
 class ResponseBox extends Component {
   state = {
     draggingMark: null
   };
 
+  titleRef = React.createRef();
+
   handleDragDropValuePosition = (d, value, width, height) => {
-    const { onAddMark, position, markWidth, markHeight, minWidth, minHeight } = this.props;
+    const titleHeight = this.titleRef.current.clientHeight;
+    const { onAddMark, position, markWidth, markHeight, minWidth } = this.props;
     let x = d.x + markWidth / 2;
     let y = d.y + markHeight / 2;
 
+    const _height = height + titleHeight;
     if (position === "top") {
-      y -= height;
+      y -= _height;
     } else if (position === "right") {
       x += minWidth;
+      y += titleHeight;
     } else if (position === "bottom") {
-      y += minHeight;
+      y += _height;
     } else if (position === "left") {
       x -= width;
+      y += titleHeight;
     }
 
     onAddMark(value, x, y);
     this.setState({ draggingMark: null });
-    return false;
   };
 
-  handleDragStart = i => () => {
+  handleDragStart = i => (event, node) => {
     this.setState({ draggingMark: i });
   };
 
@@ -37,7 +42,6 @@ class ResponseBox extends Component {
       values,
       minWidth,
       minHeight,
-      titleHeight,
       titleWidth,
       markCount,
       markWidth,
@@ -48,53 +52,49 @@ class ResponseBox extends Component {
     } = this.props;
 
     const { draggingMark } = this.state;
-
     const width = position === "top" || position === "bottom" ? minWidth : titleWidth;
 
     const markCountInLine = Math.floor((width - separationDistanceX) / (markWidth + separationDistanceX));
     const linesCount = Math.ceil(markCount / markCountInLine);
-    let height = titleHeight + linesCount * (markHeight + separationDistanceY);
-    height =
-      position === "top" || position === "bottom"
-        ? Math.max(height, titleHeight + markHeight + separationDistanceY)
-        : Math.max(height, minHeight);
+    let height = linesCount * (markHeight + separationDistanceY);
+    height = Math.max(height, minHeight);
 
     return (
-      <Container width={width} height={height}>
-        <Title height={titleHeight} width={titleWidth}>
-          DRAG DROP VALUES
-        </Title>
-        {values.map((value, i) => (
-          <Rnd
-            key={value.id}
-            position={{
-              x: separationDistanceX + (i % markCountInLine) * (markWidth + separationDistanceX),
-              y: titleHeight + Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
-            }}
-            size={{ width: markWidth, height: markHeight }}
-            onDragStart={this.handleDragStart(i)}
-            onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
-            style={{ zIndex: 10 }}
-            disableDragging={false}
-            enableResizing={false}
-            bounds=".jsxbox-with-response-box-response-options"
-            className={`mark${draggingMark === i ? " dragging" : ""}`}
-          >
-            <MarkContainer
-              fontSize={12}
-              dangerouslySetInnerHTML={{
-                __html: `<div class='mark-content'>${
-                  value.text.indexOf("<p>") === 0
-                    ? `<p title="${value.text.substring(3, value.text.length - 4)}">${value.text.substring(
-                        3,
-                        value.text.length - 4
-                      )}</p>`
-                    : value.text
-                }</div>`
+      <Container width={width} position={position}>
+        <Title innerRef={this.titleRef}>DRAG DROP VALUES</Title>
+        <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
+          {values.map((value, i) => (
+            <Rnd
+              key={value.id}
+              position={{
+                x: separationDistanceX + (i % markCountInLine) * (markWidth + separationDistanceX),
+                y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
               }}
-            />
-          </Rnd>
-        ))}
+              size={{ width: markWidth, height: markHeight }}
+              onDragStart={this.handleDragStart(i)}
+              onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
+              style={{ zIndex: 10 }}
+              disableDragging={false}
+              enableResizing={false}
+              bounds=".jsxbox-with-response-box-response-options"
+              className={`mark${draggingMark === i ? " dragging" : ""}`}
+            >
+              <MarkContainer
+                fontSize={12}
+                dangerouslySetInnerHTML={{
+                  __html: `<div class='mark-content'>${
+                    value.text.indexOf("<p>") === 0
+                      ? `<p title="${value.text.substring(3, value.text.length - 4)}">${value.text.substring(
+                          3,
+                          value.text.length - 4
+                        )}</p>`
+                      : value.text
+                  }</div>`
+                }}
+              />
+            </Rnd>
+          ))}
+        </DraggableOptionsContainer>
       </Container>
     );
   }

@@ -1,19 +1,16 @@
 import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { connect } from "react-redux";
 import { cloneDeep, isEqual, get, shuffle, identity, keyBy } from "lodash";
-import { withTheme } from "styled-components";
 import { compose } from "redux";
 import {
-  Paper,
   FlexContainer,
   CorrectAnswersContainer,
   Stimulus,
   Subtitle,
   CorItem,
-  InstructorStimulus,
   MathFormulaDisplay,
   Checkbox,
   QuestionNumberLabel
@@ -28,6 +25,7 @@ import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { GroupsSeparator } from "./styled/GroupsSeparator";
 import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -369,14 +367,7 @@ const MatchListPreview = ({
                         </FlexContainer>
                       </FlexContainer>
                       {index !== possibleResponseGroups.length - 1 && (
-                        <div
-                          style={{
-                            width: 0,
-                            marginLeft: 35,
-                            marginRight: 35,
-                            borderLeft: `1px solid ${theme.widgets.matchList.groupSeparatorBorderColor}`
-                          }}
-                        />
+                        <GroupsSeparator horizontallyAligned={horizontallyAligned} />
                       )}
                     </Fragment>
                   ))

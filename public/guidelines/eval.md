@@ -10,3 +10,7 @@ run command `yarn publish-evaluators`
 3.  git remote add evaluators git@github.com:snapwiz/edu-eval.git
 
 4.  git push -f evaluators `<new branch>`:master
+
+#Add last commit id in edu-api repo package.json dependencies
+eg.
+"@edulastic/evaluators":git+ssh://git@github.com:snapwiz/edu-eval#`<lastcommitid>`

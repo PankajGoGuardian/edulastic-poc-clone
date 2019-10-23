@@ -136,7 +136,7 @@ class QuadrantsMoreOptions extends Component {
     const {
       drawLabelZero,
       displayPositionOnHover,
-      displayPositionPoint,
+      displayPositionPoint = true,
       currentFontSize,
       xShowAxisLabel,
       xHideTicks,

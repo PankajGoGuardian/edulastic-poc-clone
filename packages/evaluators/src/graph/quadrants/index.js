@@ -1,10 +1,10 @@
+import axios from "axios";
 import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
-import axios from "axios";
 
 const evaluateApi = data =>
   axios
-    .post("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev", data, {
+    .post("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev/evaluate", data, {
       headers: {
         Authorization: "Bearer Token: U4aJ6616mlTFKK"
       }

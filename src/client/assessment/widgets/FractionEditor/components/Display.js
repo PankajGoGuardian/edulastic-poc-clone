@@ -50,9 +50,12 @@ const Display = ({
   return (
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
       <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
-        <FlexContainer>
+        <FlexContainer width="100%">
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
-          <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
+          <Stimulus
+            style={{ marginTop: "14px", marginRight: "20px", width: "100%" }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </FlexContainer>
         {hasAnnotations && answerContext.isAnswerModifiable && (
           <FlexContainer>

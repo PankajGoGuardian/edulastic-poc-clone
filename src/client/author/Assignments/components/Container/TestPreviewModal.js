@@ -39,6 +39,7 @@ const TestPreviewModal = ({
         testId={testId}
         test={test}
         preview
+        showTools
         isShowStudentWork={isShowStudentWork}
       />
     </StyledModal>

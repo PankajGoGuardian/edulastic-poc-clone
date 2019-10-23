@@ -23,7 +23,8 @@ const AssessmentPlayer = ({
   test,
   LCBPreviewModal,
   closeTestPreviewModal,
-  isShowStudentWork = false
+  isShowStudentWork = false,
+  showTools
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -59,6 +60,7 @@ const AssessmentPlayer = ({
         test={test}
         defaultAP
         preview
+        showTools={showTools}
       />
     );
   }

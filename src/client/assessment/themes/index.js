@@ -73,7 +73,8 @@ const AssessmentContainer = ({
   testletConfig,
   testType,
   test,
-  groupId
+  groupId,
+  showTools
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -171,7 +172,8 @@ const AssessmentContainer = ({
     history,
     previewPlayer: preview,
     LCBPreviewModal,
-    closeTestPreviewModal
+    closeTestPreviewModal,
+    showTools
   };
 
   if (loading) {

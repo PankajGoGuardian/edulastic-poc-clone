@@ -82,6 +82,7 @@ export const FILE_UPLOAD_ERROR = "[test] upload file error";
 // scratchPad
 export const SAVE_USER_WORK = "[userWork] save userWork";
 export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
+export const CLEAR_USER_WORK = "[userWork] clear userWork";
 
 // Test Level User Work
 export const SAVE_TEST_LEVEL_USER_WORK = "[testUserWork] save userWork";

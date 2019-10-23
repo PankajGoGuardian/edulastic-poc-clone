@@ -48,7 +48,7 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
-import { saveUserWorkAction } from "../../actions/userWork";
+import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
@@ -126,7 +126,6 @@ class AssessmentPlayerDefault extends React.Component {
     } else {
       currentToolMode = [val];
     }
-
     if (val === 3) {
       enableCrossAction = !enableCrossAction;
       this.setState({ currentToolMode, enableCrossAction });
@@ -311,7 +310,8 @@ class AssessmentPlayerDefault extends React.Component {
       preview,
       zoomLevel,
       selectedTheme = "default",
-      closeTestPreviewModal
+      closeTestPreviewModal,
+      showTools = true
     } = this.props;
     const {
       testItemState,
@@ -358,7 +358,6 @@ class AssessmentPlayerDefault extends React.Component {
     const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
 
     const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
-
     return (
       <ThemeProvider theme={themeToPass}>
         <Container
@@ -366,7 +365,7 @@ class AssessmentPlayerDefault extends React.Component {
           innerRef={this.scrollElementRef}
           data-cy="assessment-player-default-wrapper"
         >
-          {scratchPadMode && !previewPlayer && (
+          {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
               onFillColorChange={this.onFillColorChange}
               fillColor={fillColor}
@@ -568,6 +567,13 @@ class AssessmentPlayerDefault extends React.Component {
       </ThemeProvider>
     );
   }
+
+  componentWillUnmount() {
+    const { previewPlayer, clearUserWork } = this.props;
+    if (previewPlayer) {
+      clearUserWork();
+    }
+  }
 }
 
 const enhance = compose(
@@ -601,7 +607,8 @@ const enhance = compose(
       redoScratchPad: ActionCreators.redo,
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
-      setUserAnswer: setUserAnswerAction
+      setUserAnswer: setUserAnswerAction,
+      clearUserWork: clearUserWorkAction
     }
   )
 );

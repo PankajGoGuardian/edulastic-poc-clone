@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import React, { Component } from "react";
 import { cloneDeep, get } from "lodash";
-import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
@@ -227,16 +226,6 @@ class ClozeDragDropDisplay extends Component {
       heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 40,
       whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
     };
-
-    // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-    //   const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
-    //   btnStyle.width = widthpx;
-    //   btnStyle.height = heightpx;
-    //   btnStyle.whiteSpace = wordwrap;
-    //   btnStyle.widthpx = widthpx;
-    //   btnStyle.heightpx = heightpx;
-    //   btnStyle.wordwrap = wordwrap;
-    // }
 
     btnStyle.width = "auto";
 

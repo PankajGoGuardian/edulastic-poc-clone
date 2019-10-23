@@ -3,7 +3,36 @@ import PropTypes from "prop-types";
 
 export const UPWARDS = "upwards";
 export const DOWNWARDS = "downwards";
+export const LEFTWARDS = "leftwards";
+export const RIGHTWARDS = "rightwards";
+
 const DRAG_DETECT_TIMEOUT = 600;
+
+const getScrollTo = direction => {
+  switch (direction) {
+    case UPWARDS:
+      return {
+        top: -window.innerHeight / 2
+      };
+    case DOWNWARDS:
+      return {
+        top: window.innerHeight / 2
+      };
+    case LEFTWARDS:
+      return {
+        left: -window.innerWidth / 2
+      };
+    case RIGHTWARDS:
+      return {
+        left: window.innerWidth / 2
+      };
+    default:
+      return {
+        top: 0,
+        left: 0
+      };
+  }
+};
 
 class DragScroll extends Component {
   dragEnterRef = createRef();
@@ -18,20 +47,22 @@ class DragScroll extends Component {
 
   handleDragEnter = () => {
     const { scrollDelay, direction } = this.props;
-    const scrollAmount = direction === UPWARDS ? -window.innerHeight / 2 : window.innerHeight / 2;
+
+    let scrollTo = getScrollTo(direction);
+
     const { context, scrollElement } = this.props;
     const { getScrollElement } = context;
     const scrollContainer = scrollElement || getScrollElement();
 
     scrollContainer.scrollBy({
-      top: scrollAmount,
+      ...scrollTo,
       behavior: "smooth"
     });
 
     // eslint-disable-next-line
     this.intervalId = setInterval(function() {
       scrollContainer.scrollBy({
-        top: scrollAmount,
+        ...scrollTo,
         behavior: "smooth"
       });
     }, scrollDelay);
@@ -102,10 +133,12 @@ class DragScroll extends Component {
     const scrollContainer = scrollElement || getScrollElement();
 
     const height = style.height || "auto";
+    const width = style.width || "auto";
 
     const mergedStyle = {
       ...style,
-      height: isDragging ? height : 0
+      height: isDragging ? height : 0,
+      width: isDragging ? width : 0
     };
 
     const key = scrollContainer && scrollContainer.classList ? scrollContainer.classList.toString() : "window";

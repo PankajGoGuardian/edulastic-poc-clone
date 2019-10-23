@@ -140,6 +140,7 @@ const MainContent = styled.div`
 `;
 
 const MainWrapper = styled.div`
+  position: relative;
   width: ${({ theme, isSidebarVisible }) => {
     if (isSidebarVisible) {
       return ifZoomed(theme?.zoomLevel) ? "75%" : "80%";

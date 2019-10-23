@@ -428,7 +428,7 @@ class ProfileBody extends React.Component {
                   this.setState({ showChangePassword: !showChangePassword });
                 }}
               >
-                <span>CHANGE PASSWORD</span>
+                <span>Change Password</span>
                 <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
               </ChangePasswordToggleButton>
 

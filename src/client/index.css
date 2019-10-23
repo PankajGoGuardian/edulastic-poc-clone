@@ -2020,11 +2020,13 @@ span.token.active-word {
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
 .ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled),
 .ant-input:hover,
+.ant-input:focus,
 .ant-select-focused .ant-select-selection,
 .ant-select-selection:active,
 .ant-select-selection:focus,
 .ant-select-selection:hover {
   border-color: #00ad50;
+  box-shadow: 0 0 0 1px rgba(0, 173, 80, 0.2);
 }
 
 .ant-btn-background-ghost.ant-btn-primary,

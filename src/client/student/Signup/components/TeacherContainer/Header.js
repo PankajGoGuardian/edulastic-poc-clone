@@ -37,7 +37,7 @@ const Header = ({ userInfo, logout }) => {
             <div>
               <img src={Profile} alt="Profile" />
               <UserInfo>
-                <UserName>{userName}</UserName>
+                <UserName>{userName || "Anonymous"}</UserName>
                 <UserType>{role}</UserType>
               </UserInfo>
               <IconDropdown

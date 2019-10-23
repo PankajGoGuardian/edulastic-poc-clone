@@ -82,6 +82,7 @@ const ModalBody = styled.div`
   align-items: center;
   width: 80%;
   margin: auto;
+  font-weight: 600;
   span {
     margin-bottom: 15px;
   }
@@ -94,7 +95,6 @@ const FormItem = styled(Form.Item)`
   .ant-input {
     height: 33px;
     background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
     padding: 10px 24px;
   }
 `;

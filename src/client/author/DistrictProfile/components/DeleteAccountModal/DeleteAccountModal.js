@@ -51,7 +51,7 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
       <ModalBody>
         <span>Are you sure want to delete this account?</span>
         <span>
-          If sure, please type <span style={{ color: themeColor }}>DELETE</span> in the space below to proceed.
+          If sure, please type <strong style={{ color: themeColor }}>DELETE</strong> in the space below to proceed.
         </span>
         <FormItem>
           {form.getFieldDecorator("confirmationText", {
@@ -76,6 +76,7 @@ const ModalBody = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  font-weight: 600;
 `;
 
 const FormItem = styled(Form.Item)`
@@ -85,7 +86,6 @@ const FormItem = styled(Form.Item)`
   .ant-input {
     height: 33px;
     background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
     padding: 10px 24px;
   }
 `;

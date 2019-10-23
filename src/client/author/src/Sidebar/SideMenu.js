@@ -357,7 +357,7 @@ class SideMenu extends Component {
                       )}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11, width: "100px" }}>
-                          {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
+                          {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
                           {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
                         </div>
                       </Tooltip>

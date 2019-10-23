@@ -12,7 +12,8 @@ import {
   mobileWidthMax,
   borders,
   backgrounds,
-  white
+  white,
+  themeColor
 } from "@edulastic/colors";
 import { resetMyPasswordAction } from "../../Login/ducks";
 import { Wrapper } from "../../styled";
@@ -91,15 +92,15 @@ class ProfileContainer extends React.Component {
               <Details>
                 <DetailRow>
                   <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
-                  <DetailData>{user.firstName}</DetailData>
+                  <DetailData>{user.firstName || "Anonymous"}</DetailData>
                 </DetailRow>
                 <DetailRow>
                   <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
-                  <DetailData>{user.lastName || "N/A"}</DetailData>
+                  <DetailData>{user.lastName}</DetailData>
                 </DetailRow>
                 <DetailRow>
                   <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-                  <DetailData>{user.email || "N/A"}</DetailData>
+                  <DetailData>{user.email}</DetailData>
                 </DetailRow>
               </Details>
             </UserDetail>
@@ -108,7 +109,7 @@ class ProfileContainer extends React.Component {
                 this.setState({ showChangePassword: !showChangePassword });
               }}
             >
-              <span>CHANGE PASSWORD</span>
+              <span>Change Password</span>
               <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
             </ChangePasswordToggleButton>
 
@@ -144,12 +145,12 @@ class ProfileContainer extends React.Component {
                 </FormItemWrapper>{" "}
                 <FormButtonWrapper>
                   <FormItem>
-                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
-                      {t("common.title.cancel")}
-                    </CancelButton>
                     <SaveButton type="primary" htmlType="submit">
                       {t("common.title.save")}
                     </SaveButton>
+                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
+                      {t("common.title.cancel")}
+                    </CancelButton>
                   </FormItem>
                 </FormButtonWrapper>
               </FormWrapper>
@@ -351,21 +352,19 @@ const FormButtonWrapper = styled.div`
   }
 `;
 
-const SaveButton = styled(Button)`
-  width: 200px;
-  min-height: 40px;
-  height: auto;
+const ActionButton = styled(Button)`
+  height: 40px;
   margin-left: 15px;
-  float: right;
-  background: ${props => props.theme.profile.saveButtonBgColor};
-  border-color: ${props => props.theme.profile.saveButtonBorderColor};
-  font-size: ${props => props.theme.profile.saveButtonTextSize};
-  color: ${props => props.theme.profile.saveButtonTextColor};
+  background: ${themeColor};
+  border-color: ${themeColor};
+  font-size: 11px;
+  color: ${white};
   text-transform: uppercase;
-  &:hover,
-  &:focus {
-    background: ${props => props.theme.profile.saveButtonBgColor};
-    color: ${props => props.theme.profile.saveButtonTextColor};
+  float: right;
+  font-weight: 600;
+  padding: 0px 30px;
+  i {
+    font-size: 14px;
   }
 
   @media (max-width: ${extraDesktopWidth}) {
@@ -374,27 +373,29 @@ const SaveButton = styled(Button)`
   @media (max-width: ${largeDesktopWidth}) {
     padding: 0px 15px;
   }
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    margin: 8px 0 0 0;
+`;
+
+const SaveButton = styled(ActionButton)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  color: ${white};
+  width: 130px;
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    border-color: ${themeColor};
   }
 `;
 
-const CancelButton = styled(SaveButton)`
-  width: 200px;
-  min-height: 40px;
-  height: auto;
-  margin: 0 15px;
-  background: ${props => props.theme.profile.cancelButtonBgColor};
-  color: ${props => props.theme.profile.cancelButtonTextColor};
-  border: 1px solid ${props => props.theme.profile.cancelButtonTextColor};
+const CancelButton = styled(ActionButton)`
+  background: ${white};
+  color: ${themeColor};
+  border: 1px solid ${themeColor};
+  width: 130px;
   &:hover,
   &:focus {
-    background: ${props => props.theme.profile.cancelButtonBgColor};
-    color: ${props => props.theme.profile.cancelButtonTextColor};
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    margin: 0;
+    background: ${white};
+    color: ${themeColor};
+    border: 1px solid ${themeColor};
   }
 `;

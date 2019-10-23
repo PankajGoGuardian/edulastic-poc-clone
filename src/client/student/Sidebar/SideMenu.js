@@ -289,7 +289,9 @@ class SideMenu extends Component {
                         )}
                         <StyledTooltip title={userName}>
                           <div style={{ paddingLeft: 11, width: "100px" }}>
-                            {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
+                            {!isSidebarCollapsed && (
+                              <UserName>{userName.replace(/\s/g, "").length ? userName : "Anonymous"}</UserName>
+                            )}
                             {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
                           </div>
                         </StyledTooltip>

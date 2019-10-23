@@ -21,6 +21,33 @@ let config = {
       chain
         .plugin("Analyzer")
         .use(BundleAnalyzer, [{ analyzerMode: "static", defaultSizes: "gzip", openAnalyzer: false }]);
+      chain.module
+        .rule("js")
+        .include.add(/node_modules\/\@edulastic/)
+        .add(/node_modules\/query-string/)
+        .add(/node_modules\/qs/)
+        .add(/node_modules\/jsxgraph/)
+        .add(/node_modules\/d3/)
+        .add(/node_modules\/recharts/)
+        .add(/node_modules\/recharts-scale/)
+        .add(/node_modules\/canvas/)
+        .add(/node_modules\/css-to-react-native/)
+        .add(/node_modules\/striptags/)
+        .add(/node_modules\/rc-util/)
+        .add(/node_modules\/react-joyride/)
+        .add(/node_modules\/react-modal/)
+        .add(/node_modules\/dot-prop/)
+        .add(/node_modules\/split-on-first/)
+        .add(/node_modules\/strict-uri-encode/);
+      chain.module
+        .rule("js")
+        .use("babel-loader")
+        .options({
+          cacheDirectory: true,
+          cacheCompression: true,
+          cacheIdentifier: "jsx:react::namedImports:undefined",
+          babelrc: false
+        });
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);

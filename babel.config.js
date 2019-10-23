@@ -1,5 +1,12 @@
 module.exports = {
-  presets: [["poi/babel"]],
+  presets: [
+    [
+      "poi/babel",
+      {
+        targets: { chrome: "39" }
+      }
+    ]
+  ],
   plugins: [
     [
       "import",

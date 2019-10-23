@@ -83,7 +83,7 @@ export const StandardsGradebookTable = ({
 
   const getDisplayValue = (item, _analyseBy, data, record) => {
     let printData;
-    if (!item || item.scorePercent === 0 || item.rawScore === 0 || item.masteryScore === 0) {
+    if (!item) {
       return "N/A";
     }
 
@@ -116,7 +116,7 @@ export const StandardsGradebookTable = ({
             <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
             {_analyseBy === "score(%)" ? (
               <Col className="custom-table-tooltip-value">
-                record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
+                {record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
               </Col>
             ) : null}
             {_analyseBy === "rawScore" ? (

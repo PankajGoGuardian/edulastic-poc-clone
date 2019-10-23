@@ -46,7 +46,7 @@ export const svgMapFillColor = "rgba(0, 176, 255, 0.19)";
 export const svgMapStrokeColor = "rgba(0, 176, 255, 1)";
 export const svgDisabledColor = "#80838b";
 
-export const red = "#FF0080";
+export const red = "#FF0057";
 export const lightRed = "#fbdfe7";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";

@@ -646,7 +646,7 @@ const Title = styled.h3`
   color: ${title};
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 5px 0px;
   float: left;
 `;
 
@@ -719,7 +719,6 @@ const FormWrapper = styled(Form)`
   .ant-input {
     height: 40px;
     background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
     padding: 0 15px;
   }
 
@@ -800,6 +799,7 @@ const EditProfileButton = styled(Button)`
 
   @media (max-width: ${extraDesktopWidth}) {
     height: 36px;
+    padding: 0px 20px;
   }
   @media (max-width: ${largeDesktopWidth}) {
     padding: 0px 15px;

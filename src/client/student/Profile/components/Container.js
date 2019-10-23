@@ -317,7 +317,6 @@ const FormWrapper = styled(Form)`
   .ant-input {
     height: 40px;
     background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
     padding: 0 15px;
   }
 

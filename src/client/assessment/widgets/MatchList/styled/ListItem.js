@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const ListItem = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   word-break: break-word;
   min-height: ${({ smallSize }) => (smallSize ? 26 : 40)}px;

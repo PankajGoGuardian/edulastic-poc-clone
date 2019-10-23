@@ -49,6 +49,7 @@ export const RegistrationHeader = styled(Row)`
     border-radius: 4px;
     background: ${themeColor};
     text-transform: uppercase;
+    font-size: 11px;
 
     @media (max-width: ${mobileWidthMax}) {
       padding: 8px 35px;
@@ -68,7 +69,7 @@ export const BannerText = styled(Col)`
     margin-bottom: 15px;
     font-size: 46px;
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: 60px;
+      font-size: 55px;
     }
   }
   a {
@@ -267,7 +268,7 @@ export const CircleDiv = styled.div`
   left: ${({ left }) => left}px;
   bottom: ${({ bottom }) => bottom}px;
   right: ${({ right }) => right}px;
-  background: ${greenDark3};
+  background: transparent linear-gradient(38deg, #00b0ff 0%, #1fe3a1 100%) 0% 0% no-repeat padding-box;
   border-radius: 50%;
   position: fixed;
   opacity: 0.6;

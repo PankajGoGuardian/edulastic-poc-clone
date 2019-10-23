@@ -108,7 +108,7 @@ const RegistrationHeader = styled(Row)`
   }
 
   span {
-    font-size: 12px;
+    font-size: 14px;
     margin-right: 20px;
   }
   a {
@@ -118,6 +118,7 @@ const RegistrationHeader = styled(Row)`
     text-transform: uppercase;
     border-radius: 4px;
     background: ${themeColor};
+    font-size: 11px;
 
     @media (max-width: ${mobileWidthMax}) {
       padding: 8px 35px;

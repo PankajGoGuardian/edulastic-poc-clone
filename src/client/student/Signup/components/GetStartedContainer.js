@@ -35,20 +35,10 @@ import adminBg from "../../assets/small-bg-adm.png";
 const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
   const partnerKey = getPartnerKeyFromUrl(location.pathname);
   const partner = Partners[partnerKey];
-
   return (
     <RegistrationWrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
-      <RegistrationBg
-        src={
-          generalSettings && isSignupUsingDaURL
-            ? generalSettings.pageBackground
-            : isSignupUsingDaURL
-            ? ""
-            : partner.background
-        }
-        alt="bg"
-      />
+      <RegistrationBg src={generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : ""} alt="bg" />
       <RegistrationHeader type="flex" align="middle">
         <Col span={12}>
           <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
@@ -77,9 +67,6 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
           </Row>
           <ChooseSignupBox>
             <h3>{t("component.signup.getstarted.createaccount")}</h3>
-            <CircleDiv size={60} top={-24} left={30} />
-            <CircleDiv size={45} top={64} left={-30} />
-            <CircleDiv size={30} bottom={35} right={-40} />
             <div className="signupbox-container">
               {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") || !isSignupUsingDaURL ? (
                 <StudentSignupBox
@@ -136,6 +123,7 @@ const enhance = compose(withNamespaces("login"));
 export default enhance(ChooseSignup);
 
 const RegistrationWrapper = styled.div`
+  background: #067059;
   margin: 0px;
   padding: 0px;
   min-height: 100vh;
@@ -148,10 +136,9 @@ const RegistrationWrapper = styled.div`
 const RegistrationBg = styled.img`
   position: absolute;
   bottom: 0px;
-  top: -5px;
-  left: -5px;
+  top: -20px;
+  left: -15px;
   right: 0px;
-  filter: blur(2px);
   width: 102%;
   height: 102%;
 `;
@@ -208,6 +195,8 @@ const ChooseSignupBox = styled(Row)`
     position: relative;
     z-index: 1;
     background: white;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
     @media (min-width: ${extraDesktopWidthMax}) {
       font-size: 18px;
     }
@@ -222,6 +211,7 @@ const ChooseSignupBox = styled(Row)`
     display: flex;
     background: transparent;
     justify-content: center;
+    border-radius: 10px;
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -247,6 +237,7 @@ const StudentSignupBox = styled(Link)`
   position: relative;
   text-align: center;
   overflow: hidden;
+  border-bottom-left-radius: 10px;
   span {
     position: absolute;
     left: 10%;
@@ -285,6 +276,8 @@ const AdminSignupBox = styled(StudentSignupBox)`
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 0px;
 `;
 
 export const StyledLink = styled(Link)`

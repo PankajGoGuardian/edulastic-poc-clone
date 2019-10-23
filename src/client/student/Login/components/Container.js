@@ -12,7 +12,9 @@ import {
   mediumDesktopWidth,
   middleMobileWidth,
   grey,
-  smallDesktopWidth
+  smallDesktopWidth,
+  extraDesktopWidthMax,
+  secondaryTextColor
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
@@ -142,7 +144,8 @@ class LoginContainer extends React.Component {
                         msoLogin();
                       }}
                     >
-                      <img src={icon365} alt="" /> {t("common.office365signinbtn")}
+                      <img src={icon365} alt="" />
+                      {t("common.office365signinbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
                   {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
@@ -154,7 +157,8 @@ class LoginContainer extends React.Component {
                         cleverLogin();
                       }}
                     >
-                      <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
+                      <img src={cleverIcon} alt="" />
+                      {t("common.cleversigninbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
@@ -292,8 +296,7 @@ const FormHead = styled(Row)`
   h3 {
     color: white;
     margin: 5px 0px 15px;
-
-    @media (max-width: ${tabletWidth}) {
+    @media (min-width: ${extraDesktopWidthMax}) {
       font-size: 26px;
     }
   }
@@ -319,7 +322,7 @@ const ThirdPartyLoginBtn = styled(Col)`
     width: 14px;
   }
 
-  @media (max-width: ${tabletWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
 `;
@@ -330,9 +333,13 @@ const FormBody = styled(Row)`
     margin-bottom: 20px;
     margin-top: 5px;
     font-size: 13px;
+    color: ${secondaryTextColor};
 
     @media (max-width: ${tabletWidth}) {
       font-size: 16px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 18px;
     }
   }
   form {
@@ -353,7 +360,7 @@ const FormBody = styled(Row)`
         }
       }
 
-      @media (max-width: ${tabletWidth}) {
+      @media (max-width: ${extraDesktopWidthMax}) {
         padding: 0px;
         label {
           font-size: 14px;
@@ -402,13 +409,16 @@ const ForgetPassword = styled("a")`
     color: ${themeColorLighter};
     border-bottom: 1px ${themeColor} solid;
   }
+  @media (min-width:${extraDesktopWidthMax}{
+    font-size: 14px;
+  })
 `;
 
 const LoginButton = styled(Button)`
   width: 100%;
   background: ${themeColor};
   border-color: ${themeColor};
-  font-size: 13px;
+  font-size: 11px;
   color: white;
   border: 1px solid #1fb58b;
   font-weight: 600;
@@ -427,5 +437,8 @@ const RememberCheckBox = styled(Checkbox)`
   }
   .ant-checkbox-input:focus + .ant-checkbox-inner {
     border-color: ${themeColor};
+  }
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
   }
 `;

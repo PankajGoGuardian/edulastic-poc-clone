@@ -6,7 +6,15 @@ import { isEmpty, filter, map, pick, find, mapKeys, get } from "lodash";
 import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
-import { themeColor, white, title, fadedGrey, mobileWidthMax } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  title,
+  fadedGrey,
+  mobileWidthMax,
+  extraDesktopWidthMax,
+  boxShadowDefault
+} from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
@@ -121,7 +129,14 @@ class SubjectGrade extends React.Component {
               <Col xs={24} sm={18} md={12}>
                 <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
-                    {getFieldDecorator("grade")(
+                    {getFieldDecorator("grade", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Grade is not selected"
+                        }
+                      ]
+                    })(
                       <GradeSelect
                         data-cy="grade"
                         optionFilterProp="children"
@@ -144,7 +159,14 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
 
                   <Form.Item label="Subject">
-                    {getFieldDecorator("subjects")(
+                    {getFieldDecorator("subjects", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Subject Area is not selected"
+                        }
+                      ]
+                    })(
                       <GradeSelect
                         data-cy="subject"
                         mode="multiple"
@@ -231,10 +253,10 @@ const FlexWrapper = styled(Row)`
 const BannerText = styled(Col)`
   text-align: center;
   h3 {
-    font-size: 38px;
+    font-size: 40px;
     line-height: 1.3;
     letter-spacing: -2px;
-    font-weight: 700;
+    font-weight: 600;
     margin-top: 0px;
     margin-bottom: 15px;
     color: ${title};
@@ -254,6 +276,11 @@ const BannerText = styled(Col)`
       font-size: 16px;
     }
   }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    h5 {
+      font-size: 24px;
+    }
+  }
 `;
 
 const SelectForm = styled(Form)`
@@ -270,6 +297,14 @@ const SelectForm = styled(Form)`
     label {
       font-weight: 800;
       font-size: 16px;
+      @media (min-width: ${extraDesktopWidthMax}) {
+        font-size: 18px;
+      }
+    }
+    .ant-select {
+      @media (min-width: ${extraDesktopWidthMax}) {
+        font-size: 14px;
+      }
     }
 
     .ant-select-arrow {
@@ -278,8 +313,19 @@ const SelectForm = styled(Form)`
       }
     }
   }
+  .ant-form-item-required::before {
+    content: "";
+  }
   .ant-form-item-label > label::after {
     content: "";
+  }
+  .ant-form-explain {
+    padding-top: 8px;
+  }
+  .ant-select-selection,
+  .ant-input {
+    border: none;
+    box-shadow: ${boxShadowDefault};
   }
 `;
 
@@ -302,5 +348,8 @@ const ProceedBtn = styled(Button)`
   &:hover {
     background: ${themeColor};
     color: ${white};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
   }
 `;

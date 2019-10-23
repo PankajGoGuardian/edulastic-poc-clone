@@ -52,11 +52,7 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtSh
 export default Login;
 
 const LoginWrapper = styled.div`
-  background: ${props => `#999999 url(${props.image})`};
-  background-position: top center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #067059;
   margin: 0px;
   padding: 0px;
   min-height: 100vh;

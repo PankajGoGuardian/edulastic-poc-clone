@@ -440,16 +440,27 @@ export const getAverageStandardScorePercent = tableData => {
   tableData.forEach(data => {
     const standardsInfo = data.standardsInfo;
     standardsInfo.forEach(standard => {
-      averageScoreInfo[standard.standardName] = averageScoreInfo[standard.standardName]
-        ? averageScoreInfo[standard.standardName] + (standard.scorePercent || 0)
+      if (!averageScoreInfo[standard.standardName]) {
+        averageScoreInfo[standard.standardName] = {};
+      }
+      averageScoreInfo[standard.standardName].scorePercent = averageScoreInfo[standard.standardName].scorePercent
+        ? averageScoreInfo[standard.standardName].scorePercent + (standard.scorePercent || 0)
         : standard.scorePercent || 0;
+      averageScoreInfo[standard.standardName].rawScore = averageScoreInfo[standard.standardName].rawScore
+        ? averageScoreInfo[standard.standardName].rawScore + (standard.rawScore || 0)
+        : standard.rawScore || 0;
+      averageScoreInfo[standard.standardName].totalMaxScore = averageScoreInfo[standard.standardName].totalMaxScore
+        ? averageScoreInfo[standard.standardName].totalMaxScore + (standard.totalMaxScore || 0)
+        : standard.totalMaxScore || 0;
     });
   });
 
   let averageScorePercent = {};
 
   for (let [key, value] of Object.entries(averageScoreInfo)) {
-    averageScorePercent[key] = Math.round(value / tableData.length);
+    if (!averageScorePercent[key]) averageScorePercent[key] = {};
+    averageScorePercent[key].scorePercent = Math.round(value.scorePercent / tableData.length);
+    averageScorePercent[key].rawScore = `${value.rawScore.toFixed(2)}/${value.totalMaxScore}`;
   }
   return averageScorePercent;
 };

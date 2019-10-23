@@ -109,27 +109,27 @@ export const StandardsGradebookTable = ({
           </Row>
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">Standard: </Col>
-            <Col className="custom-table-tooltip-value">{record.standardsInfo[index].standardName}</Col>
+            <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.standardName}</Col>
           </Row>
 
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
             {_analyseBy === "score(%)" ? (
               <Col className="custom-table-tooltip-value">
-                {record.standardsInfo[index][analyseByToKeyToRender[_analyseBy]]}%
+                record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
               </Col>
             ) : null}
             {_analyseBy === "rawScore" ? (
               <Col className="custom-table-tooltip-value">
-                {record.standardsInfo[index].totalTotalScore}/{record.standardsInfo[index].totalMaxScore}
+                {record.standardsInfo[index]?.totalTotalScore}/{record.standardsInfo[index]?.totalMaxScore}
               </Col>
             ) : null}
             {_analyseBy === "masteryLevel" ? (
-              <Col className="custom-table-tooltip-value">{record.standardsInfo[index].masteryName}</Col>
+              <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.masteryName}</Col>
             ) : null}
             {_analyseBy === "masteryScore" ? (
               <Col className="custom-table-tooltip-value">
-                {record.standardsInfo[index][analyseByToKeyToRender[_analyseBy]]}
+                {(record.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
               </Col>
             ) : null}
           </Row>
@@ -207,7 +207,14 @@ export const StandardsGradebookTable = ({
             <>
               <span>{item.standardName}</span>
               <br />
-              <span>{averageStandardScorePercent[item.standardName]}%</span>
+              <span>
+                {
+                  averageStandardScorePercent[item.standardName][
+                    tableDdFilters.analyseBy === "rawScore" ? "rawScore" : "scorePercent"
+                  ]
+                }
+                {tableDdFilters.analyseBy !== "rawScore" && "%"}
+              </span>
             </>
           ),
           dataIndex: item.standardId,

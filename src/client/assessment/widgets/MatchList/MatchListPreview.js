@@ -222,7 +222,7 @@ const MatchListPreview = ({
   const wrapperStyle = {
     display: "flex",
     flexDirection: getDirection(listPosition),
-    alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
+    alignItems: listPosition === "right" || listPosition === "left" ? "flex-start" : "initial"
   };
 
   const allItemsById = keyBy(getPossibleResponses(), "value");
@@ -260,7 +260,8 @@ const MatchListPreview = ({
           style={{
             flex: "1 1 70%",
             marginRight: listPosition === "right" ? 20 : 0,
-            marginLeft: listPosition === "left" ? 20 : 0
+            marginLeft: listPosition === "left" ? 20 : 0,
+            marginTop: listPosition === "right" || listPosition === "left" ? 14 : 0
           }}
           flexDirection="column"
           alignItems="flex-start"

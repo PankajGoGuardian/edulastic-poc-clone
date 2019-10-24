@@ -5,7 +5,8 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage.js"
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with rich text" type question`, () => {
   const queData = {
-    group: "Written & Spoken",
+    //group: "Written & Spoken",
+    group: "Reading & Comprehension",
     queType: "Essay with rich text",
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
@@ -62,12 +63,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
         question
           .getToobar()
           .find(sel)
-          .click();
+          .click({ multiple: true, force: true });
 
         question
           .getTextEditor()
           .contains(tag, text)
           .should("have.length", 1);
+
+        question
+          .getTextEditor()
+          .find("p")
+          .makeSelection();
 
         question
           .getToobar()
@@ -100,9 +106,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
       question.getTextEditor().type(queData.testtext);
 
       // validate
-      question.getMainEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
+      question.getMainEditor().should("have.css", "background-color", "rgba(0, 0, 0, 0)");
 
-      question.getWordCount().should("have.text", "6 / 5 Word limit");
+      question.getWordCount().should("have.text", "6 Words");
     });
   });
 });

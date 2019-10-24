@@ -1,24 +1,14 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Select, Col, message } from "antd";
+import { Select, message } from "antd";
 import { uniqBy } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 
-import { ChromePicker } from "react-color";
 import { selectsData } from "../../../common";
-import {
-  SummaryInput,
-  SummarySelect,
-  SummaryTextArea,
-  SummaryDiv,
-  ColorBox,
-  SummaryButton
-} from "../../common/SummaryForm";
+import { SummaryInput, SummarySelect, SummaryTextArea } from "../../common/SummaryForm";
 import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
 
-import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
-import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
 import { tagsApi } from "@edulastic/api";
 
@@ -38,23 +28,16 @@ const Sidebar = ({
   owner,
   analytics,
   grades,
-  isPlaylist,
   onChangeGrade,
   description,
   createdBy,
   thumbnail,
-  textColor,
   addNewTag,
-  backgroundColor,
-  onChangeColor,
   allTagsData,
-  allPlaylistTagsData,
-  isTextColorPickerVisible,
-  isBackgroundColorPickerVisible,
   windowWidth,
   isEditable
 }) => {
-  const newAllTagsData = uniqBy([...(isPlaylist ? allPlaylistTagsData : allTagsData), ...tags], "tagName");
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
@@ -65,10 +48,10 @@ const Sidebar = ({
       try {
         const { _id, tagName } = await tagsApi.create({
           tagName: tempSearchValue,
-          tagType: isPlaylist ? "playlist" : "test"
+          tagType: "test"
         });
         newTag = { _id, tagName };
-        addNewTag({ tag: newTag, tagType: isPlaylist ? "playlist" : "test" });
+        addNewTag({ tag: newTag, tagType: "test" });
       } catch (e) {
         message.error("Saving tag failed");
       }
@@ -104,13 +87,13 @@ const Sidebar = ({
           onChangeField={onChangeField}
           isEditable={isEditable}
         />
-        <MainTitle>{isPlaylist ? "Play List Name" : "Assessment Name"}</MainTitle>
+        <MainTitle>{"Assessment Name"}</MainTitle>
         <SummaryInput
           value={title}
           data-cy="testname"
           onChange={e => onChangeField("title", e.target.value)}
           size="large"
-          placeholder={isPlaylist ? `Enter a playlist name` : `Enter the test name`}
+          placeholder={`Enter the test name`}
         />
         {!title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
         <MainTitle>Description</MainTitle>
@@ -119,7 +102,6 @@ const Sidebar = ({
           onChange={e => onChangeField("description", e.target.value)}
           size="large"
           placeholder="Enter a description"
-          isplaylist={isPlaylist}
         />
         <MainTitle>Grade</MainTitle>
         <SummarySelect
@@ -158,42 +140,6 @@ const Sidebar = ({
             </Select.Option>
           ))}
         </SummarySelect>
-
-        {isPlaylist && (
-          <div>
-            <Col span={windowWidth > 993 ? 12 : 24}>
-              <MainTitle>Text Color</MainTitle>
-              <SummaryDiv>
-                <ColorBox data-cy="image-text-box-color-picker" background={textColor} />
-                <SummaryButton onClick={() => onChangeColor("isTextColorPickerVisible", true)}>CHOOSE</SummaryButton>
-                {isTextColorPickerVisible && (
-                  <ColorPickerContainer data-cy="image-text-box-color-panel">
-                    <ColorPickerWrapper onClick={() => onChangeColor("isTextColorPickerVisible", false)} />
-                    <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("textColor", color.hex)} />
-                  </ColorPickerContainer>
-                )}
-              </SummaryDiv>
-            </Col>
-            <Col span={windowWidth > 993 ? 12 : 24}>
-              <MainTitle>Background Color</MainTitle>
-              <SummaryDiv>
-                <ColorBox data-cy="image-text-box-color-picker" background={backgroundColor} />
-                <SummaryButton onClick={() => onChangeColor("isBackgroundColorPickerVisible", true)}>
-                  CHOOSE
-                </SummaryButton>
-                {isBackgroundColorPickerVisible && (
-                  <ColorPickerContainer data-cy="image-text-box-color-panel">
-                    <ColorPickerWrapper onClick={() => onChangeColor("isBackgroundColorPickerVisible", false)} />
-                    <ChromePicker
-                      color={backgroundColor}
-                      onChangeComplete={color => onChangeColor("backgroundColor", color.hex)}
-                    />
-                  </ColorPickerContainer>
-                )}
-              </SummaryDiv>
-            </Col>
-          </div>
-        )}
         <MainTitle>Tags</MainTitle>
         <SummarySelect
           data-cy="tagsSelect"
@@ -225,26 +171,6 @@ const Sidebar = ({
         {!!searchValue.length && !searchValue.trim().length && (
           <p style={{ color: "red" }}>Please enter valid characters.</p>
         )}
-        {/* to be done later */}
-        {false && (
-          <>
-            <MainTitle>Collection</MainTitle>
-            <SummarySelect
-              data-cy="CollectionSelect"
-              size="large"
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              defaultValue={subjects}
-              onChange={""}
-            >
-              {selectsData.allCollections.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ))}
-            </SummarySelect>
-          </>
-        )}
       </Block>
     </FlexContainer>
   );
@@ -261,14 +187,8 @@ Sidebar.propTypes = {
   subjects: PropTypes.array.isRequired,
   owner: PropTypes.bool,
   description: PropTypes.string.isRequired,
-  textColor: PropTypes.string.isRequired,
   createdBy: PropTypes.object,
   thumbnail: PropTypes.string,
-  backgroundColor: PropTypes.string,
-  isPlaylist: PropTypes.bool,
-  onChangeColor: PropTypes.func,
-  isTextColorPickerVisible: PropTypes.bool,
-  isBackgroundColorPickerVisible: PropTypes.bool,
   onChangeSubjects: PropTypes.func.isRequired
 };
 

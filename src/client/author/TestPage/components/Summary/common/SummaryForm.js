@@ -1,11 +1,18 @@
 import styled from "styled-components";
 import { Input, Select } from "antd";
 
-import { lightGreySecondary, secondaryTextColor, inputBorder } from "@edulastic/colors";
+import {
+  lightGreySecondary,
+  secondaryTextColor,
+  inputBorder,
+  themeColor,
+  white,
+  largeDesktopWidth
+} from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
 export const SummaryInput = styled(Input)`
-  border: ${props => (props.value ? "" : "1px solid red")};
+  border: ${props => (props.value ? `1px solid #e1e1e1` : "1px solid red")};
   background: ${lightGreySecondary};
   margin-bottom: ${props => (props.value ? "23px" : "5px")};
   &:focus {
@@ -14,16 +21,20 @@ export const SummaryInput = styled(Input)`
 `;
 
 export const SummaryButton = styled(Button)`
-  border: none;
-  background: ${lightGreySecondary};
+  border: 1px solid ${themeColor};
+  background: ${white};
   display: inline-block;
+  border-radius: 5px;
+  &:hover {
+    background: ${white};
+  }
 `;
 
 export const SummarySelect = styled(Select)`
   margin-bottom: 23px;
 
   .ant-select-selection {
-    border: none;
+    border: 1px solid #e1e1e1;
     background: ${lightGreySecondary};
 
     &__placeholder {
@@ -37,16 +48,21 @@ export const SummaryTextArea = styled(Input.TextArea)`
   font-weight: 600;
   color: ${secondaryTextColor};
   min-height: 80px !important;
-  height: 80px !important;
-  max-height: 168px !important;
+  height: ${props => (props.isPlaylist ? "220px" : "80px")} !important;
+  max-height: ${props => (props.isPlaylist ? "none" : "168px")} !important;
   padding: 10px 20px;
-  border: none;
+  border: ${props => (props.isPlaylist ? "1px solid #e1e1e1" : "none")};
   margin-bottom: 23px;
   background: ${lightGreySecondary};
+  ${props =>
+    props.isPlaylist &&
+    `@media(max-width:${largeDesktopWidth}){
+    height:80px !important;
+  }`}
 `;
 
 export const SummaryDiv = styled.div`
-  margin-bottom: 23px;
+  margin-bottom: 12px;
 `;
 
 export const ColorBox = styled.span`
@@ -57,6 +73,7 @@ export const ColorBox = styled.span`
   padding: 5px;
   border-radius: 5px;
   margin: 5px 5px;
+  margin-right: 20px;
   background-color: ${props => props.background};
   border: 1px solid ${inputBorder};
 `;

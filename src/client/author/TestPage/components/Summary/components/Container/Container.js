@@ -1,17 +1,17 @@
 import React, { memo, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Button } from "antd";
+import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniq as _uniq, get } from "lodash";
+import { uniq as _uniq } from "lodash";
 import { IconSource } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { Paper, withWindowSizes } from "@edulastic/common";
+import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { Container, ButtonLink } from "../../../../../src/components/common";
-import Sidebar from "../Sidebar/Sidebar";
+import SummaryCard from "../Sidebar/SideBarSwitch";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
@@ -98,40 +98,33 @@ const Summary = ({
           </Button>
         )}
       </SecondHeader>
-      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "700px" : "100%" }}>
-        <Row gutter={32}>
-          <Col>
-            <Sidebar
-              title={test.title}
-              description={test.description}
-              tags={test.tags}
-              analytics={test.analytics}
-              collection={test.collection}
-              onChangeField={handleChangeField}
-              windowWidth={windowWidth}
-              grades={grades}
-              addNewTag={addNewTag}
-              owner={owner}
-              allTagsData={allTagsData}
-              allPlaylistTagsData={allPlaylistTagsData}
-              isPlaylist={isPlaylist}
-              subjects={subjects}
-              onChangeGrade={onChangeGrade}
-              onChangeSubjects={onChangeSubjects}
-              textColor={textColor}
-              createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
-              thumbnail={defaultThumbnail || test.thumbnail}
-              backgroundColor={backgroundColor}
-              isPlaylist={isPlaylist}
-              description={test.description}
-              onChangeColor={onChangeColor}
-              isTextColorPickerVisible={isTextColorPickerVisible}
-              isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
-              isEditable={isEditable}
-            />
-          </Col>
-        </Row>
-      </Paper>
+      <SummaryCard
+        title={test.title}
+        description={test.description}
+        tags={test.tags}
+        analytics={test.analytics}
+        collection={test.collection}
+        onChangeField={handleChangeField}
+        windowWidth={windowWidth}
+        grades={grades}
+        addNewTag={addNewTag}
+        owner={owner}
+        allTagsData={allTagsData}
+        allPlaylistTagsData={allPlaylistTagsData}
+        isPlaylist={isPlaylist}
+        subjects={subjects}
+        onChangeGrade={onChangeGrade}
+        onChangeSubjects={onChangeSubjects}
+        textColor={textColor}
+        createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
+        thumbnail={defaultThumbnail || test.thumbnail}
+        backgroundColor={backgroundColor}
+        description={test.description}
+        onChangeColor={onChangeColor}
+        isTextColorPickerVisible={isTextColorPickerVisible}
+        isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
+        isEditable={isEditable}
+      />
     </Container>
   );
 };

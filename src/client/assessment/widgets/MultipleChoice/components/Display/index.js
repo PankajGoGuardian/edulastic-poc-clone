@@ -19,14 +19,15 @@ const Display = ({
   showQuestionNumber,
   flowLayout,
   qLabel,
+  fontSize,
   ...restProps
 }) => (
   <div>
     {!flowLayout && (
       <>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
-          <StyledStimulus dangerouslySetInnerHTML={{ __html: question }} />
+          {showQuestionNumber && <QuestionNumberLabel fontSize={fontSize}>{qLabel}:</QuestionNumberLabel>}
+          <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
       </>
     )}
@@ -38,6 +39,7 @@ const Display = ({
       uiStyle={uiStyle}
       styleType={styleType}
       multipleResponses={multipleResponses}
+      fontSize={fontSize}
       {...restProps}
     />
   </div>
@@ -89,6 +91,7 @@ Display.defaultProps = {
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   overflow: hidden;
+  font-size: ${props => props.fontSize};
 
   img {
     padding: 0px;

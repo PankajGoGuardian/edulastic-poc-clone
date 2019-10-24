@@ -33,7 +33,8 @@ const Option = props => {
     maxWidth,
     setCrossAction,
     qId,
-    crossAction
+    crossAction,
+    fontSize
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -49,8 +50,6 @@ const Option = props => {
 
   const isCorrect =
     isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];
-
-  const fontSize = getFontSize(uiStyle.fontsize);
 
   const isCrossAction = crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
 

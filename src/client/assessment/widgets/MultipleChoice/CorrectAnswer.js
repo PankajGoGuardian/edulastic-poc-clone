@@ -53,7 +53,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus, response, uiStyle, styleType, multipleResponses } = this.props;
+    const { t, options, stimulus, response, uiStyle, styleType, multipleResponses, fontSize } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -86,6 +86,7 @@ class CorrectAnswer extends Component {
           onChange={this.handleMultiSelect}
           styleType={styleType}
           multipleResponses={multipleResponses}
+          fontSize={fontSize}
         />
       </div>
     );

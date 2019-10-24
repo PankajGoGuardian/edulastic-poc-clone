@@ -123,7 +123,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
+    const { t, item, setQuestionData, fillSections, cleanSections, fontSize } = this.props;
 
     return (
       <div>
@@ -133,6 +133,7 @@ class Authoring extends Component {
             fillSections={fillSections}
             setQuestionData={setQuestionData}
             cleanSections={cleanSections}
+            fontSize={fontSize}
           />
           <MultipleChoiceOptions
             item={item}

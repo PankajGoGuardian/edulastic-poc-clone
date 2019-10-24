@@ -132,7 +132,17 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, multipleResponses, uiStyle, styleType, correctTab } = this.props;
+    const {
+      validation,
+      stimulus,
+      options,
+      t,
+      multipleResponses,
+      uiStyle,
+      styleType,
+      correctTab,
+      fontSize
+    } = this.props;
     const { value, tabs } = this.state;
     return (
       <div>
@@ -161,6 +171,7 @@ class CorrectAnswers extends Component {
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 styleType={styleType}
+                fontSize={fontSize}
               />
             </TabContainer>
           )}
@@ -179,6 +190,7 @@ class CorrectAnswers extends Component {
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       styleType={styleType}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      fontSize={fontSize}
                     />
                   </TabContainer>
                 );

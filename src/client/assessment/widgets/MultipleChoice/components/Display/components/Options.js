@@ -14,6 +14,7 @@ const Options = ({
   validation,
   styleType,
   multipleResponses,
+  fontSize,
   ...restProps
 }) => {
   const noOfColumns = uiStyle.columns || 1;
@@ -66,6 +67,7 @@ const Options = ({
           correct={evaluation}
           styleType={styleType}
           multipleResponses={multipleResponses}
+          fontSize={fontSize}
           {...restProps}
         />
       ))}
@@ -82,7 +84,11 @@ const Options = ({
     return optionList;
   };
 
-  return <OptionsList styleType={styleType}>{renderOptionList()}</OptionsList>;
+  return (
+    <OptionsList styleType={styleType} fontSize={fontSize}>
+      {renderOptionList()}
+    </OptionsList>
+  );
 };
 
 Options.propTypes = {

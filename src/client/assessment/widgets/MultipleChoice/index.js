@@ -24,6 +24,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { getFontSize } from "../../utils/helpers";
 
 const EmptyWrapper = styled.div``;
 
@@ -193,7 +194,7 @@ class MultipleChoice extends Component {
     const { correctTab } = this.state;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, multipleResponses } = this.getRenderData();
     const isV1Multipart = get(col, "isV1Multipart", false);
-
+    const fontSize = getFontSize(uiStyle?.fontsize);
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     const qId = item.id;
     // const multi_response = this.props.item.multipleResponses;
@@ -203,7 +204,12 @@ class MultipleChoice extends Component {
           {view === EDIT && (
             <ContentArea>
               <React.Fragment>
-                <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                <Authoring
+                  item={itemForEdit}
+                  fillSections={fillSections}
+                  fontSize={fontSize}
+                  cleanSections={cleanSections}
+                />
                 <Question
                   section="main"
                   label={t("component.correctanswers.setcorrectanswers")}
@@ -225,6 +231,7 @@ class MultipleChoice extends Component {
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                     correctTab={correctTab}
+                    fontSize={fontSize}
                     {...restProps}
                   />
                   <Divider />
@@ -272,6 +279,7 @@ class MultipleChoice extends Component {
                   qLabel={item.qLabel}
                   testItem={testItem}
                   styleType="primary"
+                  fontSize={fontSize}
                   {...restProps}
                 />
               ) : null}

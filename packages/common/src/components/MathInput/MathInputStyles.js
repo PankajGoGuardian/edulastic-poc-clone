@@ -13,6 +13,7 @@ export const MathInputStyles = styled.div`
     height: 100%;
     width: 100%;
     min-width: 40px;
+    min-height: 40px;
     display: inline-flex;
     position: relative;
     border-radius: 5px;

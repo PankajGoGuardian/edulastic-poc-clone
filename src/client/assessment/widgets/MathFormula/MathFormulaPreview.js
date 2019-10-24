@@ -306,7 +306,7 @@ class MathFormulaPreview extends Component {
             justifyContent="flex-start"
             style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
           >
-            <MathInputWrapper width={cssStyles.width} style={{ background: statusColor }}>
+            <MathInputWrapper width={cssStyles.width} style={{ background: statusColor, borderRadius: "5px" }}>
               {this.isStatic() && !disableResponse && (
                 <StaticMath
                   symbols={item.symbols}

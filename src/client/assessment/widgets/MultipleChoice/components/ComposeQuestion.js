@@ -99,7 +99,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, toolbarId, fillSections, cleanSections } = this.props;
+    const { t, item, toolbarId, fillSections, cleanSections, fontSize } = this.props;
 
     return (
       <Question
@@ -118,6 +118,7 @@ class ComposeQuestion extends Component {
           toolbarId={toolbarId}
           onChange={this.onChangeQuestion}
           border="border"
+          fontSize={fontSize}
         />
       </Question>
     );

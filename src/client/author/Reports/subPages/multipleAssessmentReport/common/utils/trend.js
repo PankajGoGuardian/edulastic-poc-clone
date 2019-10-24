@@ -11,7 +11,9 @@ const sanitizeNullNumberFields = (records, fields = []) => {
       forEach(fields, field => {
         if (record[field] === null || typeof record[field] === "undefined") {
           draftRecord[field] = 0;
-        } else {
+        }
+        // progressStatus 2 is absent
+        if (allAbsent && record.progressStatus !== 2) {
           allAbsent = false;
         }
       });

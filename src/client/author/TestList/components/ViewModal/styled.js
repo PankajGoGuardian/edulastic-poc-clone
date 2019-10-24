@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
+import Modal from "react-responsive-modal";
 import {
   darkGrey,
   secondaryTextColor,
@@ -18,16 +19,16 @@ export const ModalTitle = styled.h2`
   font-weight: bolder;
   color: ${secondaryTextColor};
   font-size: 22px;
-  text-align: center;
+  margin: 0px;
 `;
 
 export const ModalContainer = styled(Card)`
   color: ${secondaryTextColor};
-  margin-top: 25px;
+  margin-top: 20px;
   .ant-card-body {
     display: flex;
-    padding: 32px;
-    min-width: 750px;
+    padding: 30px;
+    min-width: 100%;
   }
 `;
 
@@ -101,11 +102,11 @@ export const SubjectLabel = styled(Label)``;
 export const Subject = styled.div`
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 20px;
 `;
 
 export const Footer = styled.div`
   display: flex;
+  margin-top: 20px;
 `;
 
 export const FooterIcon = styled.div`
@@ -128,11 +129,11 @@ export const IconText = styled.span`
 export const ButtonContainer = styled.div`
   display: flex;
   margin-bottom: 10px;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 export const ButtonComponent = styled.div`
-  width: ${({ size }) => (size === "large" ? "100%" : "165px")};
+  width: 100%;
   float: right;
   font-size: 12px;
   color: ${({ bgColor }) => (bgColor ? white : themeColor)};
@@ -164,11 +165,12 @@ export const SummaryTitle = styled.div`
 
 export const SummaryCardContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   margin-bottom: 10px;
 `;
 
 export const SummaryCard = styled.div`
-  width: 165px;
+  width: 100%;
   border-radius: 2px;
   background-color: #f8f8f8;
   display: flex;

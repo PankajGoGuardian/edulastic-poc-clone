@@ -48,8 +48,9 @@ import { Tooltip } from "antd";
 const modalStyles = {
   modal: {
     background: backgrounds.primary,
-    padding: "14px 29px 28px 29px",
-    maxWidth: "920px"
+    padding: "20px 29px 28px",
+    maxWidth: "920px",
+    borderRadius: "5px"
   }
 };
 class ViewModal extends React.Component {

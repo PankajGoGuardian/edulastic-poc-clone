@@ -82,6 +82,9 @@ class Container extends Component {
 
   handleChangeView = view => {
     const { changeView } = this.props;
+    this.setState({
+      showHints: false
+    });
     changeView(view);
   };
 

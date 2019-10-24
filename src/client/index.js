@@ -13,6 +13,13 @@ import "./index.css";
 import App from "./App";
 import configureStore, { history } from "./configureStore";
 
+// TODO: conditionally include polyfills either using polyfill.app or await :)
+/**
+ * if (!("scrollBehavior" in document.documentElement.style)) {
+    await import("scroll-behavior-polyfill");
+ */
+import "scroll-behavior-polyfill";
+
 // redux store
 const { store } = configureStore();
 

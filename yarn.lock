@@ -5945,7 +5945,7 @@ dom-converter@^0.2:
   dependencies:
     utila "~0.4"
 
-dom-helpers@^3.2.0, dom-helpers@^3.4.0:
+dom-helpers@^3.2.0, dom-helpers@^3.2.1, dom-helpers@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.4.0.tgz#e9b369700f959f62ecde5a6babde4bccd9169af8"
   integrity sha512-LnuPJ+dwqKDIyotW1VzmOZ5TONUN7CwkCR5hrgawTUbkBGYdeoNLZo6nNfGkCrjtE1nXXaj7iMMpDa8/d9WoIA==
@@ -15294,6 +15294,14 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+scroll-behavior@^0.9.10:
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/scroll-behavior/-/scroll-behavior-0.9.10.tgz#c8953adeeb3586060b903328d860aa8346d62861"
+  integrity sha512-JVJQkBkqMLEM4ATtbHTKare97zhz/qlla9mNttFYY/bcpyOb4BuBGEQ/N9AQWXvshzf6zo9jP60TlphnJ4YPoQ==
+  dependencies:
+    dom-helpers "^3.2.1"
+    invariant "^2.2.2"
 
 scroll-doc@^0.2.1:
   version "0.2.1"

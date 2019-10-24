@@ -195,7 +195,7 @@ export const ToolbarContainer = styled.div.attrs({
   z-index: 1000;
   left: 0px;
   right: 0px;
-  bottom: 105%;
+  bottom: 100%;
   .fr-toolbar .fr-command.fr-btn {
     margin: 0 2px !important;
   }

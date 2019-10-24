@@ -22,6 +22,7 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 import Tools from "../../common/Tools";
 import ResponseBox from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
+import { getAdjustedHeightAndWidth } from "../../common/utils";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -84,6 +85,9 @@ class AxisLabelsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.MIN_WIDTH = 600;
+    this.MIN_HEIGHT = 150;
+
     this._graphId = `jxgbox${Math.random()
       .toString(36)
       .replace(".", "")}`;
@@ -94,6 +98,8 @@ class AxisLabelsContainer extends PureComponent {
     };
 
     this.updateValues = this.updateValues.bind(this);
+
+    this.axisLabelsContainerRef = React.createRef();
   }
 
   componentDidMount() {
@@ -110,12 +116,21 @@ class AxisLabelsContainer extends PureComponent {
       disableResponse,
       view
     } = this.props;
+
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.axisLabelsContainerRef?.current?.clientWidth,
+      this.axisLabelsContainerRef?.current?.clientHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
 
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -143,7 +158,11 @@ class AxisLabelsContainer extends PureComponent {
         ...numberlineAxis,
         shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
       };
-      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout);
+      const _layout = {
+        ...layout,
+        ...adjustedHeightWidth
+      };
+      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout);
 
       this._graph.setMarksDeleteHandler();
 
@@ -165,6 +184,15 @@ class AxisLabelsContainer extends PureComponent {
       elements,
       view
     } = this.props;
+
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.axisLabelsContainerRef?.current?.clientWidth,
+      this.axisLabelsContainerRef?.current?.clientHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
@@ -177,7 +205,12 @@ class AxisLabelsContainer extends PureComponent {
           ...numberlineAxis,
           shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
         };
-        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout);
+
+        const _layout = {
+          ...layout,
+          ...adjustedHeightWidth
+        };
+        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout);
       }
 
       this.setElementsToGraph(prevProps);
@@ -337,8 +370,16 @@ class AxisLabelsContainer extends PureComponent {
       list
     } = this.props;
 
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.axisLabelsContainerRef?.current?.clientWidth,
+      this.axisLabelsContainerRef?.current?.clientHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
     return (
-      <div data-cy="axis-labels-container">
+      <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
           resources={[
             "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
@@ -370,8 +411,8 @@ class AxisLabelsContainer extends PureComponent {
                   separationDistanceX={separationDistanceX}
                   separationDistanceY={separationDistanceY}
                   position={responseBoxPosition}
-                  minWidth={layout.width}
-                  minHeight={layout.height}
+                  minWidth={adjustedHeightWidth.width}
+                  minHeight={adjustedHeightWidth.height}
                 />
               )}
               <div style={{ position: "relative", overflow: "auto" }}>

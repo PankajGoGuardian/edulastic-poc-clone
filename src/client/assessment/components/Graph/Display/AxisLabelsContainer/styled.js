@@ -34,6 +34,7 @@ export const JSXBox = styled.div`
 `;
 
 export const ContainerWithResponses = styled.div`
+  overflow: auto;
   .mark {
     color: ${props => props.theme.widgets.chart.labelStrokeColor};
     border-color: ${props => props.theme.widgets.chart.labelStrokeColor};

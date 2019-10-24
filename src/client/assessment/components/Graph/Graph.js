@@ -329,6 +329,7 @@ class Graph extends Component {
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
     const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+
     return (
       <React.Fragment>
         {view === "edit" && (

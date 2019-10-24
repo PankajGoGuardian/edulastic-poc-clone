@@ -3,3 +3,15 @@ const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.
 export default {
   capitalizeFirstLetter
 };
+
+export const getAdjustedHeightAndWidth = (parentWidth, parentHeight, layout, MIN_WIDTH, MIN_HEIGHT) => {
+  const obj = { width: layout.width, height: layout.height };
+
+  if (parentWidth < layout.width) {
+    obj.width = Math.max(parentWidth, MIN_WIDTH);
+  }
+
+  // have coded the height part cuz I haven't investigated what the problem yet
+
+  return obj;
+};

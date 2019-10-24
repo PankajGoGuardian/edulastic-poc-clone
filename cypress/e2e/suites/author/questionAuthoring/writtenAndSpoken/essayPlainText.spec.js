@@ -6,7 +6,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with plain text" type question`, () => {
   const queData = {
-    group: "Written & Spoken",
+    group: "Reading & Comprehension",
     queType: "Essay with plain text",
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
@@ -101,9 +101,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
       question.getTextEditor().type(queData.testtext);
 
       // validate
-      question.getTextEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
-
-      question.getWordCount().should("have.text", "6 / 5 Word limit");
+      question.getTextEditor().should("have.css", "background-color", "rgb(255, 255, 255)");
+      //question.getTextEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
+      question.getWordCount().should("have.text", "6 Words");
+      //question.getWordCount().should("have.text", "6 / 5 Word limit");
     });
   });
 });

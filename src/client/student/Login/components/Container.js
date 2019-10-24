@@ -14,7 +14,8 @@ import {
   grey,
   smallDesktopWidth,
   extraDesktopWidthMax,
-  secondaryTextColor
+  secondaryTextColor,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
@@ -205,13 +206,17 @@ class LoginContainer extends React.Component {
                           {getFieldDecorator("remember", {
                             valuePropName: "checked",
                             initialValue: true
-                          })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
+                          })(
+                            <RememberCheckBox>
+                              <span>{t("common.remembermetext")}</span>
+                            </RememberCheckBox>
+                          )}
                           <ForgetPassword
                             href="javascript:void(0);"
                             style={{ marginTop: 1 }}
                             onClick={this.onForgotPasswordClick}
                           >
-                            {t("common.forgotpasswordtext")}
+                            <span>{t("common.forgotpasswordtext")}</span>
                           </ForgetPassword>
                           <LoginButton data-cy="login" type="primary" htmlType="submit">
                             {t("common.signinbtn")}
@@ -409,9 +414,14 @@ const ForgetPassword = styled("a")`
     color: ${themeColorLighter};
     border-bottom: 1px ${themeColor} solid;
   }
-  @media (min-width:${extraDesktopWidthMax}{
-    font-size: 14px;
-  })
+  & > span {
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 14px;
+    }
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: 12px;
+    }
+  }
 `;
 
 const LoginButton = styled(Button)`
@@ -438,7 +448,12 @@ const RememberCheckBox = styled(Checkbox)`
   .ant-checkbox-input:focus + .ant-checkbox-inner {
     border-color: ${themeColor};
   }
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 14px;
+  & > span {
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: 12px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 14px;
+    }
   }
 `;

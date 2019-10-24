@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor, greyishDarker2 } from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor, greyishDarker2, cardTitleColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
   box-shadow: none;
   cursor: pointer;
   border-radius: ${props => (props.isPlaylist ? "4px" : "10px")};
-  border: ${props => (props.isPlaylist ? "0" : `1px solid ${greyishDarker2}`)};
+  border: ${props => (props.isPlaylist ? "0" : `1px solid #e1dede`)};
   .ant-card-body {
     padding: 16px;
     box-shadow: ${props => (props.isPlaylist ? "0px 4px 8px 0px #0000005c" : "none")};
@@ -54,7 +54,7 @@ export const Inner = styled.div`
 `;
 
 export const CardDescription = styled.div`
-  font-size: 12px;
+  font-size: 13px;
   height: 55px;
   overflow: hidden;
 `;
@@ -90,6 +90,7 @@ export const Author = styled.div`
 export const PlaylistId = styled(Author)`
   max-width: 50px;
   overflow: hidden;
+  color: ${cardTitleColor};
 `;
 
 export const TagsWrapper = styled.div`
@@ -105,6 +106,7 @@ export const AuthorName = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: ${cardTitleColor};
 `;
 export const AuthorWrapper = styled.span`
   display: flex;
@@ -152,7 +154,7 @@ export const EllipsisWrapper = styled.div`
 
 export const IconText = styled.span`
   font-size: 11px;
-  color: ${darkGrey};
+  color: ${cardTitleColor};
 `;
 export const CardIdWrapper = styled.div`
   color: ${darkGrey};
@@ -225,13 +227,13 @@ Header.displayName = "CardHeader";
 export const Stars = styled(Rate)`
   font-size: 13px;
   position: absolute;
-  right: 10px;
-  bottom: 10px;
+  top: 5px;
+  left: 10px;
   z-index: 1;
 `;
 
 export const StyledLink = styled.a`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   display: inline-block;
   width: 100%;

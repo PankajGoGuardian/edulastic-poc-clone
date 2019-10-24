@@ -32,6 +32,7 @@ import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus, EdulasticVerified } from "../ListItem/styled";
+import { cardTitleColor } from "@edulastic/colors";
 
 class Item extends Component {
   static propTypes = {
@@ -187,13 +188,12 @@ class Item extends Component {
                 </TestStatus>
               )}
             </TagsWrapper>
-            <ViewButton>View</ViewButton>
           </Inner>
           <Footer>
             {authorName && (
               <Author>
                 <AuthorWrapper>
-                  <IconUser /> &nbsp;
+                  <IconUser color={cardTitleColor} /> &nbsp;
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>
@@ -202,11 +202,11 @@ class Item extends Component {
             {status !== "draft" && (
               <>
                 <ShareIcon>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconShare color={cardTitleColor} width={14} height={14} /> &nbsp;
                   <IconText>{usage}</IconText>
                 </ShareIcon>
                 <LikeIcon>
-                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconHeart color={cardTitleColor} width={14} height={14} /> &nbsp;
                   <IconText>{likes}</IconText>
                 </LikeIcon>
               </>

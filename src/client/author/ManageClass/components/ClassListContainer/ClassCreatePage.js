@@ -9,7 +9,7 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {} }) => {
     <>
       <ClassCreateContainer>
         {filterClass === "Archive Classes" ? (
-          <NoClassNotification heading={"No archived classes"} description={"You have no archive classes available"} />
+          <NoClassNotification heading={"No archived classes"} description={"You have no archived classes available"} />
         ) : (
           <>
             <NoClassNotification

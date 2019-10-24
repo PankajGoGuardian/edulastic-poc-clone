@@ -9,7 +9,7 @@ import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import ClassCreatePage from "./ClassCreatePage";
-import { TableWrapper, ClassListTable } from "./styled";
+import { TableWrapper, ClassListTable, Tags } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
@@ -30,6 +30,11 @@ const ClassList = ({
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
+  const findTags = row =>
+    get(row, "tags", [])
+      .map(_o => _o.tagName)
+      .join(", ");
+
   const [filterClass, setFilterClass] = useState(null);
   const [classGroups, setClassGroups] = useState([]);
 
@@ -98,6 +103,25 @@ const ClassList = ({
         );
       },
       width: 150
+    },
+    {
+      title: "Tag",
+      dataIndex: "tags",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => {
+        const prevTags = findTags(a);
+        const nextTags = findTags(b);
+        return prevTags.localeCompare(nextTags);
+      },
+      render: (_, row) => {
+        const tags = findTags(row);
+        return (
+          <Tooltip title={tags} placement="bottomLeft">
+            <Tags>{tags || "--"}</Tags>
+          </Tooltip>
+        );
+      },
+      width: 80
     },
     {
       title: "Students",

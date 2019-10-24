@@ -147,19 +147,26 @@ const ShareButtonStyle = css`
 `;
 
 export const EditButton = styled(Button)`
-  padding: 5px 20px;
+  width: 135px;
+  padding: 0px 1px;
   border: none;
   color: ${themeColor};
   background: ${white};
-  font-weight: 400;
+  font-weight: 600;
+  font-size: 11px;
+  height: 36px;
+  text-transform: uppercase;
   &:hover,
   &:focus {
     color: ${white};
     background: ${themeColorLight};
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 45px;
   }
 `;
 
@@ -244,13 +251,13 @@ export const RightContent = styled.div`
 
 export const AnchorLink = styled(Link)`
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: ${themeColor};
   margin-right: 15px;
 `;
 
 export const ClassCode = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   margin-left: 8px;
   color: ${cardTitleColor};
@@ -325,6 +332,7 @@ export const FieldValue = styled.div`
   div {
     min-width: 100px;
     text-transform: uppercase;
+    font-size: 12px;
   }
 
   &:first-child {
@@ -429,9 +437,10 @@ export const RedirectButton = styled(StyledTabButton)`
   display: flex;
   width: 150px;
   color: ${themeColor};
-  margin-right: 5px;
+  margin-right: 10px;
   position: relative;
   justify-content: center;
+  box-shadow: ${boxShadowDefault};
   &:nth-last-child(1) {
     margin-right: 0px;
   }

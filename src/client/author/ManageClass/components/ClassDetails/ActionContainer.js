@@ -293,12 +293,6 @@ const ActionContainer = ({
             PRINT
           </RedirectButton>
 
-          {active ? (
-            <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
-              ADD MULTIPLE STUDENTS
-            </CustomRedirectButton>
-          ) : null}
-
           <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" groupId={classId}>
             <Dropdown
               overlay={
@@ -332,9 +326,15 @@ const ActionContainer = ({
               }
               placement="bottomRight"
             >
-              <CustomRedirectButton last={true}>ACTIONS</CustomRedirectButton>
+              <RedirectButton last={true}>ACTIONS</RedirectButton>
             </Dropdown>
           </FeaturesSwitch>
+
+          {active ? (
+            <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              ADD MULTIPLE STUDENTS
+            </CustomRedirectButton>
+          ) : null}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

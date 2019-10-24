@@ -10,7 +10,8 @@ import {
   lightGreySecondary,
   secondaryTextColor,
   cardTitleColor,
-  smallDesktopWidth
+  smallDesktopWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlusCircle } from "@edulastic/icons";
@@ -154,6 +155,9 @@ export const SyncButtons = styled(Button)`
   & > p{
     margin-left:8px;
   }
+  @media (min-width:${extraDesktopWidthMax}){
+    height:45px;
+  }
 `;
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -272,4 +276,11 @@ export const BannerDiv = styled.div`
 export const FlexContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+export const Tags = styled.p`
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

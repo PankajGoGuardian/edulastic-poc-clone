@@ -18,11 +18,12 @@ export const ModalTitle = styled.h2`
   font-weight: bolder;
   color: ${secondaryTextColor};
   font-size: 22px;
+  text-align: center;
 `;
 
 export const ModalContainer = styled(Card)`
   color: ${secondaryTextColor};
-  margin-top: 35px;
+  margin-top: 25px;
   .ant-card-body {
     display: flex;
     padding: 32px;

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
 import { get } from "lodash";
 // components
@@ -93,4 +93,7 @@ const StyledLink = styled(Link)`
   font-weight: 600;
   font-size: 11px;
   border-radius: 4px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 45px;
+  }
 `;

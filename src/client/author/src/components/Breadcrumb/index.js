@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Breadcrumb } from "antd";
 import styled from "styled-components";
 
-import { secondaryTextColor, linkColor } from "@edulastic/colors";
+import { secondaryTextColor, linkColor, themeColor } from "@edulastic/colors";
 
 const BreadCrumb = props => {
   const { data, style } = props;
@@ -62,20 +62,25 @@ const Container = styled.div`
     color: ${linkColor};
     text-transform: uppercase;
     font-weight: 700;
-
     a {
       font-size: 11px;
       text-transform: uppercase;
       color: ${linkColor};
-      font-weight: normal;
-
+      font-weight: 600;
       &:hover {
-        text-decoration: underline;
+        color: ${themeColor};
       }
     }
   }
 
   .anticon-left {
     margin-right: 5px;
+  }
+
+  .ant-breadcrumb-link {
+    cursor: pointer;
+    &:hover {
+      color: ${themeColor};
+    }
   }
 `;

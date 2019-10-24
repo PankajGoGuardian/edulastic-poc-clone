@@ -42,7 +42,8 @@ import {
   SMALL_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH,
-  MEDIUM_DESKTOP_WIDTH
+  MEDIUM_DESKTOP_WIDTH,
+  IPAD_LANDSCAPE_WIDTH
 } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -481,7 +482,7 @@ class AssessmentPlayerDefault extends React.Component {
                             handleClick={this.showHideHints}
                           />
                         )}
-                        {windowWidth >= MEDIUM_DESKTOP_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
+                        {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
                           <ToolBar
                             settings={settings}
                             calcBrands={calcBrands}

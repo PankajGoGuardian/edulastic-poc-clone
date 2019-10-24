@@ -10,7 +10,8 @@ export const StyledPreviewTemplateBox = styled.div.attrs({
 
     return theme.zoomLevel !== "xs" ? "auto" : calculatedMaxHeight;
   }};
-  max-width: ${({ maxWidth }) => (!maxWidth ? null : `${maxWidth}px`)};
+  max-width: ${({ maxWidth }) => (!maxWidth ? null : maxWidth)};
+  overflow: auto;
   height: ${({ height }) => (!height ? null : `${height}px`)};
   width: ${({ width }) => (!width ? null : `${width}px`)};
   margin: auto;

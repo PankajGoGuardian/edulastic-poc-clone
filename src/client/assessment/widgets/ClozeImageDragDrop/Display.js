@@ -550,6 +550,7 @@ class Display extends Component {
         smallSize={smallSize}
         fontSize={fontSize}
         height={this.getCalculatedHeight(maxHeight, canvasHeight)}
+        maxWidth="100%"
       >
         <StyledPreviewContainer
           smallSize={smallSize}

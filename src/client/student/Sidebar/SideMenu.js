@@ -17,7 +17,9 @@ import {
   IconReport,
   IconManage,
   IconQuestion,
-  IconSettings
+  IconSettings,
+  IconProfileHighlight,
+  IconSignoutHighlight
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import {
@@ -186,12 +188,12 @@ class SideMenu extends Component {
         <Menu isSidebarCollapsed={isSidebarCollapsed} onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
-              <IconDropdown type="user" /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
+              <IconProfileHighlight /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
             </Link>
           </Menu.Item>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
+              <IconSignoutHighlight /> {isSidebarCollapsed ? "" : t("common.signOutText")}
             </a>
           </Menu.Item>
         </Menu>
@@ -805,22 +807,29 @@ const FooterDropDown = styled.div`
         &:hover,
         &:focus {
           background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+          a {
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+          }
+          svg,
+          svg path {
+            fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+          }
         }
         a {
           color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
           font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
+          display: flex;
+          align-items: center;
           &:hover,
           &:focus {
             color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
           }
-          i {
-            color: ${props => props.theme.sideMenu.itemIconColor};
-            position: relative;
-            margin-right: 10px;
+          svg {
+            margin-right: 15px;
             padding-left: 5px;
-            top: 2px;
-            font-size: ${props => props.theme.sideMenu.userInfoDropdownItemIconSize};
+            height: 23px;
+            width: 23px;
           }
         }
       }

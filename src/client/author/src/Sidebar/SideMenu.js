@@ -32,7 +32,10 @@ import {
   IconItemLibrary,
   IconTestBank,
   IconPlaylist,
-  IconSettings
+  IconSettings,
+  IconSubscriptionHighlight,
+  IconProfileHighlight,
+  IconSignoutHighlight
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
@@ -234,17 +237,17 @@ class SideMenu extends Component {
         <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
-              <IconDropdown type="user" /> {isCollapsed ? "" : "My Profile"}
+              <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
             </Link>
           </Menu.Item>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <DollarIcon type="dollar" /> {isCollapsed ? "" : "Subscription"}
+              <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
             </a>
           </Menu.Item>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <LogoutIcon type="logout" /> {isCollapsed ? "" : "Sign Out"}
+              <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}
             </a>
           </Menu.Item>
         </Menu>
@@ -796,17 +799,24 @@ const FooterDropDown = styled.div`
           color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
           font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
+          display: flex;
+          align-items: center;
           &:hover,
           &:focus {
             color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            a {
+              color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            }
+            svg,
+            svg path {
+              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            }
           }
-          i {
-            color: ${props => props.theme.sideMenu.itemIconColor};
-            position: relative;
-            margin-right: 10px;
+          svg {
+            margin-right: 15px;
             padding-left: 5px;
-            top: 2px;
-            font-size: 20px;
+            height: 23px;
+            width: 23px;
           }
         }
       }
@@ -1017,11 +1027,6 @@ const IconDropdown = styled(AntIcon)`
   color: ${mainTextColor};
   position: absolute;
   top: -10px;
-`;
-const LogoutIcon = styled(IconDropdown)``;
-
-const DollarIcon = styled(IconDropdown)`
-  color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 
 const LabelMenuItem = styled.span`

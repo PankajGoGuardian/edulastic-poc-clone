@@ -185,3 +185,6 @@ export { default as IconTrueFalse } from "./src/IconTrueFalse";
 export { default as IconTextEntry } from "./src/IconTextEntry";
 export { default as IconPencilHollow } from "./src/IconPencilHollow";
 export { default as IconDropDown } from "./src/IconDropDown";
+export { default as IconSubscriptionHighlight } from "./src/IconSubscriptionHighlight";
+export { default as IconProfileHighlight } from "./src/IconProfileHighlight";
+export { default as IconSignoutHighlight } from "./src/IconSignoutHighlight";

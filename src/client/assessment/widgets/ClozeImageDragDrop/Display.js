@@ -409,7 +409,6 @@ class Display extends Component {
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
-
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
     if (preview && shuffleOptions) {
@@ -545,20 +544,22 @@ class Display extends Component {
           )}
         </DropContainer>
       );
+    const maxResponseOffsetTop = responseContainers.reduce((max, resp) => {
+      max = Math.max(max, resp.top + parseInt(resp.height, 10));
+      return max;
+    }, -1);
+    const annotations = item?.annotations || [];
+    const maxAnnotationsOffsetTop = annotations.reduce((max, ann) => {
+      max = Math.max(ann.position.y + parseInt(ann.size.height, 10), max);
+      return max;
+    }, 0);
+    const imageOffsetY = item?.imageOptions?.y || 0;
+    // eslint-disable-next-line max-len
+    const computedHeight = Math.max(maxResponseOffsetTop, maxAnnotationsOffsetTop, imageHeight + imageOffsetY);
+
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        smallSize={smallSize}
-        fontSize={fontSize}
-        height={this.getCalculatedHeight(maxHeight, canvasHeight)}
-        maxWidth="100%"
-      >
-        <StyledPreviewContainer
-          smallSize={smallSize}
-          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
-          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
-          data-cy="preview-contaniner"
-          innerRef={this.previewContainerRef}
-        >
+      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={computedHeight} maxWidth="100%">
+        <StyledPreviewContainer smallSize={smallSize} data-cy="preview-contaniner" innerRef={this.previewContainerRef}>
           {renderAnnotations()}
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
@@ -647,7 +648,7 @@ class Display extends Component {
     );
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize} height={this.getCalculatedHeight(maxHeight, canvasHeight)}>
+      <StyledPreviewTemplateBox fontSize={fontSize} height={computedHeight}>
         <StyledPreviewContainer
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={this.getCalculatedHeight(maxHeight, canvasHeight)}

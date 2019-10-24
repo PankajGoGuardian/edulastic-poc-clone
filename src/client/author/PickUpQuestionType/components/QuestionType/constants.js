@@ -2130,6 +2130,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           widthpx: 140,
+          heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },

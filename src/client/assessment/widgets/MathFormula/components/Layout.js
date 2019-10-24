@@ -30,7 +30,7 @@ class Layout extends Component {
     this.setState({ widthpx: val }, () => {
       onChange("uiStyle", {
         ...uiStyle,
-        minWidth: +val
+        widthpx: +val
       });
     });
   };
@@ -151,8 +151,7 @@ class Layout extends Component {
             <Input
               type="number"
               size="large"
-              value={widthpx || uiStyle.minWidth || minWidth}
-              onChange={this.onChangeWidthPx}
+              defaultValue={uiStyle.widthpx}
               onBlur={this.handleDefaultWidthBlur}
               max={maxWidth}
               min={minWidth}

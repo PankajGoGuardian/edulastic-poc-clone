@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import styled, { withTheme } from "styled-components";
@@ -13,7 +13,8 @@ import {
   CorItem,
   MathFormulaDisplay,
   Checkbox,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  AnswerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -78,6 +79,8 @@ const MatchListPreview = ({
     shuffleOptions,
     duplicatedResponses = false
   } = item;
+  const answerContextConfig = useContext(AnswerContext);
+  const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation.validResponse && itemValidation.validResponse.value;
@@ -285,7 +288,7 @@ const MatchListPreview = ({
                 style={styles.dropContainerStyle(smallSize)}
               >
                 <DragItem
-                  preview={preview}
+                  preview={(preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader)}
                   correct={evaluation[i]}
                   flag="ans"
                   renderIndex={i}

@@ -13,12 +13,12 @@ import { FlexContainer } from "@edulastic/common";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 export const Container = styled.div`
-  padding-top: ${props => props.theme.HeaderHeight.xs};
+  padding-top: ${props => props.theme.HeaderHeight.xs}px;
   .fixed-header {
     display: flex;
     align-items: center;
     background: ${props => props.theme.header.headerBgColor};
-    height: ${props => props.theme.HeaderHeight.xs};
+    height: ${props => props.theme.HeaderHeight.xs}px;
     padding: 0px 30px;
     & > div {
       width: 100%;
@@ -26,15 +26,15 @@ export const Container = styled.div`
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    padding-top: ${props => props.theme.HeaderHeight.md};
+    padding-top: ${props => props.theme.HeaderHeight.md}px;
     .fixed-header {
-      height: ${props => props.theme.HeaderHeight.md};
+      height: ${props => props.theme.HeaderHeight.md}px;
     }
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    padding-top: ${props => props.theme.HeaderHeight.xl};
+    padding-top: ${props => props.theme.HeaderHeight.xl}px;
     .fixed-header {
-      height: ${props => props.theme.HeaderHeight.xl};
+      height: ${props => props.theme.HeaderHeight.xl}px;
     }
   }
   @media (max-width: ${desktopWidth}) {

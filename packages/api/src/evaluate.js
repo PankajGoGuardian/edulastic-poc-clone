@@ -6,7 +6,7 @@ const evaluate = (data, type) =>
   api
     .callApi({
       method: "post",
-      url: `math/evaluate/${type}`,
+      url: `math-api/evaluate/${type}`,
       data
     })
     .then(result => result.data);
@@ -15,7 +15,7 @@ const calculate = data =>
   api
     .callApi({
       method: "post",
-      url: "math/calculate",
+      url: "math-api/calculate",
       data
     })
     .then(result => result.data);

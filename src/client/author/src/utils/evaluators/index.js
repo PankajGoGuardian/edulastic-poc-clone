@@ -1,5 +1,5 @@
 import { questionType } from "@edulastic/constants";
-import { evaluateApi } from "@edulastic/api";
+import { evaluateApi, graphEvaluateApi } from "@edulastic/api";
 
 import {
   multipleChoice,
@@ -19,7 +19,6 @@ import {
   shading,
   choiceMatrix,
   charts,
-  graph,
   // clozeMath,
   fractionEditor,
   matchList
@@ -28,6 +27,10 @@ import {
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
   return await evaluateApi.evaluate(data, type);
+};
+
+const graphEvaluate = async data => {
+  return await graphEvaluateApi.evaluate(data, questionType.GRAPH);
 };
 
 // clozeDropDown and ClozeText shares same logic
@@ -60,7 +63,7 @@ const evaluators = {
   [questionType.TOKEN_HIGHLIGHT]: tokenhighlight,
   [questionType.SHADING]: shading,
   [questionType.FORMULA_ESSAY]: essayRichText,
-  [questionType.GRAPH]: graph,
+  [questionType.GRAPH]: graphEvaluate,
   [questionType.FRACTION_EDITOR]: fractionEditor
 };
 

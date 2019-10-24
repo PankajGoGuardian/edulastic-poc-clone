@@ -1,8 +1,8 @@
 import API from "./utils/API";
 
-const api = new API("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev", "Bearer Token: U4aJ6616mlTFKK");
-const convertLatex2Js = "/convertLatex2Js";
-const graphEvaluate = "/evaluate";
+const api = new API(`${process.env.POI_APP_API_URI}`);
+const convertLatex2Js = "/graph-api/convertLatex2Js";
+const graphEvaluate = "/graph-api/evaluate";
 
 const convert = data =>
   api
@@ -11,18 +11,17 @@ const convert = data =>
       method: "post",
       data
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
-const evaluate = data =>
+const evaluate = (data, type) =>
   api
     .callApi({
-      url: graphEvaluate,
+      url: `${graphEvaluate}/${type}`,
       method: "post",
       data
     })
     .then(result => {
-      console.log("graphApiEvaluate", result.data.result);
-      return result.data.result;
+      return result.data;
     });
 
 export default {

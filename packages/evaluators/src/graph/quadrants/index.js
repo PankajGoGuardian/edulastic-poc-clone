@@ -4,7 +4,7 @@ import CompareShapes from "./compareShapes";
 
 const evaluateApi = data =>
   axios
-    .post("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev/evaluate", data, {
+    .post(`${process.env.MATH_API_URI}evaluate`, data, {
       headers: {
         Authorization: "Bearer Token: U4aJ6616mlTFKK"
       }

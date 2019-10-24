@@ -131,7 +131,7 @@ const StudentProfileSummary = ({
             </StudentDetailsContainer>
           </StyledCol>
           <Col xs={24} sm={24} md={18} lg={18} xl={19}>
-            <AssessmentChart data={data} studentClassInfo={studentClassInfo} xTickTooltipPosition={400} />
+            <AssessmentChart data={data} studentInformation={studentClassInfo} xTickTooltipPosition={400} />
           </Col>
         </Row>
       </StyledCard>

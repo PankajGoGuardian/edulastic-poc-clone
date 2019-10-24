@@ -10,7 +10,7 @@ const MathFormulaDisplay = withTheme(
   })`
     width: ${props => !props.centerContent && "100%"};
     overflow-wrap: ${props => props.centerContent && "initial"};
-    font-size: ${props => props.theme.fontSize};
+    font-size: ${props => props.fontSize || props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
 
     @media (max-width: ${desktopWidth}) {

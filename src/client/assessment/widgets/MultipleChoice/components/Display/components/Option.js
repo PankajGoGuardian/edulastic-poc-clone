@@ -171,7 +171,7 @@ const Option = props => {
               style={{ marginBottom: 17 }}
               isCrossAction={isCrossAction || hovered}
             >
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
           </FlexContainer>
@@ -181,7 +181,7 @@ const Option = props => {
           <FlexContainer alignItems="center">
             <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </FlexContainer>
         );
@@ -191,7 +191,7 @@ const Option = props => {
           <React.Fragment>
             {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </React.Fragment>
         );

@@ -65,6 +65,9 @@ const StudentMasteryProfile = ({
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
   const scaleInfo = selectedStandardProficiency;
 
+  const studentClassData = SPRFilterData?.data?.result?.studentClassData || [];
+  const studentClassInformation = studentClassData[0] || {};
+
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
   const [selectedMastery, setSelectedMastery] = useState([]);
 
@@ -141,7 +144,7 @@ const StudentMasteryProfile = ({
               <b>Grade</b>: {getGrades(studentInformation.grades)}
             </p>
             <p>
-              <b>Subject</b>: {studentInformation.subject}
+              <b>Subject</b>: {studentClassInformation.standardSet}
             </p>
           </Col>
           <DropdownContainer xs={24} sm={24} md={8} lg={8} xl={8}>

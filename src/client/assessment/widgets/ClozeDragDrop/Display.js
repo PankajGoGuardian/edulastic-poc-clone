@@ -506,6 +506,8 @@ export default withTheme(ClozeDragDropDisplay);
 
 const TextWrappedDiv = styled.div`
   word-break: break-all;
+  max-width: 100%;
+  overflow: auto;
 `;
 
 const StyledJsxParserContainer = styled.div`

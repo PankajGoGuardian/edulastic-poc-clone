@@ -16,15 +16,9 @@ import {
   getClassResponseSelector,
   getQLabelsSelector
 } from "../ClassBoard/ducks";
-import {
-  Anchor,
-  AnchorLink,
-  PaginationInfo,
-  StyledFlexContainer,
-  DivWrapper,
-  BodyContainer
-} from "./components/styled";
+import { StyledFlexContainer, DivWrapper, BodyContainer } from "./components/styled";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
+import ClassBreadBrumb from "../Shared/Components/ClassBreadCrumb";
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -71,10 +65,7 @@ class StandardsBasedReport extends Component {
           <HooksContainer classId={classId} assignmentId={assignmentId} />
           <BodyContainer>
             <StyledFlexContainer justifyContent="space-between">
-              <PaginationInfo>
-                &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-                <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
-              </PaginationInfo>
+              <ClassBreadBrumb />
               <PresentationToggleSwitch groupId={classId} />
             </StyledFlexContainer>
 

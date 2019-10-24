@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
+import memoizeOne from "memoize-one";
 import { ThemeProvider } from "styled-components";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
@@ -24,8 +24,8 @@ import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
-import { PaginationInfo, StyledFlexContainer, ExpressGraderDetailContainer } from "./styled";
-import memoizeOne from "memoize-one";
+import { StyledFlexContainer, ExpressGraderDetailContainer } from "./styled";
+import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
 
 /**
  *
@@ -132,11 +132,7 @@ class ExpressGrader extends Component {
           />
           <ExpressGraderDetailContainer>
             <StyledFlexContainer justifyContent="space-between">
-              <PaginationInfo>
-                &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
-                {additionalData && <a>{additionalData.testName}</a>} /{" "}
-                {additionalData && <a>{additionalData.className}</a>}
-              </PaginationInfo>
+              <ClassBreadBrumb />
               <PresentationToggleSwitch groupId={classId} />
             </StyledFlexContainer>
             {!isMobile && (

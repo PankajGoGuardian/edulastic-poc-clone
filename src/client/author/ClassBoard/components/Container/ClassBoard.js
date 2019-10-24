@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import moment from "moment";
 import { get, keyBy, isEmpty, round } from "lodash";
 import { message, Dropdown, Select, Spin } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { black } from "@edulastic/colors";
+
 import {
   IconMarkAsAbsent,
   IconStudentReportCard,
@@ -75,18 +78,9 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 // styled wrappers
 import {
-  Anchor,
-  // BarDiv,
-  // SpaceDiv,
-  // ButtonSpace,
-  AnchorLink,
-  // StyledAnc,
   StyledCard,
-  // StyledButton,
   StyledCheckbox,
-  PaginationInfo,
   CheckContainer,
-  // ButtonGroup,
   GraphContainer,
   StyledFlexContainer,
   StudentButtonDiv,
@@ -110,8 +104,7 @@ import {
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import AddStudentsPopup from "../AddStudentsPopup";
 import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
-import moment from "moment";
-import { black } from "@edulastic/colors";
+import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -719,21 +712,7 @@ class ClassBoard extends Component {
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo xs={24} md={8}>
-              &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp;/&nbsp;
-              <AnchorLink
-                to={
-                  userRole === "teacher"
-                    ? "/author/assignments"
-                    : `/author/assignments/${districtId}/${additionalData.testId}`
-                }
-              >
-                {additionalData.testName}
-              </AnchorLink>{" "}
-              &nbsp;/&nbsp;
-              <Anchor>{additionalData.className}</Anchor>
-            </PaginationInfo>
-
+            <ClassBreadBrumb />
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton

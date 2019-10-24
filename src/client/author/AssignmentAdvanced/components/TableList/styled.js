@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
-import { white, darkGrey, secondaryTextColor, authorAssignment, tabletWidth, testTypeColor } from "@edulastic/colors";
+import {
+  white,
+  cardTitleColor,
+  secondaryTextColor,
+  authorAssignment,
+  tabletWidth,
+  testTypeColor
+} from "@edulastic/colors";
 
 const { assignmentStatusBg } = authorAssignment;
 const {
@@ -79,7 +86,7 @@ export const TableData = styled(Table)`
       font-weight: bold;
       font-size: 12px;
       text-transform: uppercase;
-      color: ${darkGrey};
+      color: ${cardTitleColor};
       white-space: nowrap;
       padding: 0px 16px 24px;
       background: transparent;

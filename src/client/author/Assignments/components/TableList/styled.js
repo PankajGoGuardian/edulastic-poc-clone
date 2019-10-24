@@ -5,7 +5,7 @@ import { IconDownEmptyArrow } from "@edulastic/icons";
 import {
   mobileWidth,
   mediumDesktopWidth,
-  darkGrey,
+  cardTitleColor,
   lightGreySecondary,
   white,
   authorAssignment,
@@ -97,7 +97,7 @@ export const TableData = styled(Table)`
         font-weight: bold;
         font-size: 12px;
         text-transform: uppercase;
-        color: ${darkGrey};
+        color: ${cardTitleColor};
         white-space: nowrap;
         text-align: center;
         &.ant-table-selection-column {
@@ -311,6 +311,7 @@ export const ActionsWrapper = styled.div`
 `;
 
 export const GreyFont = styled.div`
+  max-width: ${props => (props.showEllipsis ? "100px" : "auto")};
   color: ${title};
   font-size: 13px;
   position: relative;

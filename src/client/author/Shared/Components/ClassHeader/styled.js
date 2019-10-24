@@ -91,13 +91,20 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledParaFirst = styled.p`
-  max-width: 130px;
+  max-width: 400px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 20px;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    max-width: 280px;
+  }
   @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
-    max-width: 160px;
+    max-width: 400px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 150px;
   }
 `;
 
@@ -158,10 +165,7 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledTabContainer = styled.div`
-  width: 100%;
-
   @media (max-width: ${mobileWidthMax}) {
-    margin-top: 15px;
     order: 3;
   }
 `;
@@ -177,6 +181,7 @@ export const StyledTabs = styled.div`
   }
   @media (max-width: ${largeDesktopWidth}) {
     min-width: 300px;
+    padding-left: 20px;
   }
 `;
 

@@ -116,7 +116,11 @@ class TableList extends Component {
       {
         dataIndex: "assigned",
         width: "11%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => (
+          <Tooltip title={text} placement="top">
+            <GreyFont showEllipsis={text.length > 15}>{text}</GreyFont>
+          </Tooltip>
+        )
       },
       {
         dataIndex: "status",

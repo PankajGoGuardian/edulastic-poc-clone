@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Card, Checkbox, Button, Menu, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
@@ -9,7 +8,6 @@ import {
   mediumDesktopWidth,
   themeColor,
   white,
-  linkColor,
   tabGrey,
   mainTextColor,
   title,
@@ -22,36 +20,6 @@ import {
 import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
-export const Anchor = styled.a`
-  max-width: 15vw;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  display: inline-block;
-  color: ${linkColor};
-`;
-export const AnchorLink = styled(Link)`
-  display: inline-block;
-  max-width: 20vw;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  color: ${linkColor};
-`;
-
-export const PaginationInfo = styled(Col)`
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  max-width: 100%;
-  font-size: 11px;
-  color: ${linkColor};
-  white-space: nowrap;
-
-  @media (max-width: ${mobileWidthMax}) {
-    display: none;
-  }
-`;
 
 export const CheckContainer = styled.span`
   font-weight: bold;

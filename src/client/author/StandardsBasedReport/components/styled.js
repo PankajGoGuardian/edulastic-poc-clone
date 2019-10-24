@@ -4,7 +4,6 @@ import { Table, Card, Progress } from "antd";
 import {
   white,
   cardTitleColor,
-  linkColor,
   linkColor1,
   lightGrey3,
   lightBlue3,
@@ -50,25 +49,6 @@ export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   }
   img {
     transform: rotate(-270deg);
-  }
-`;
-
-export const Anchor = styled.a`
-  color: ${linkColor};
-`;
-export const AnchorLink = styled(Link)`
-  color: ${linkColor};
-`;
-
-export const PaginationInfo = styled.span`
-  font-weight: 600;
-  display: inline-block;
-  font-size: 11px;
-  word-spacing: 5px;
-  color: ${linkColor};
-  font-family: Open Sans, SemiBold;
-  @media (max-width: ${mobileWidth}) {
-    display: none;
   }
 `;
 

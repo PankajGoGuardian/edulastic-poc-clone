@@ -202,24 +202,40 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
       )
     );
 
+  const isValidAttempt = attempted && !absent;
+
+  const getColSize = type => {
+    let colsCount = 1;
+
+    if (isValidAttempt) {
+      colsCount += 1;
+    }
+
+    if (type == "assignment") {
+      return colsCount;
+    }
+
+    return 4;
+  };
+
+  const selectedColSize = 24 / getColSize(type);
+
   const ScoreDetail = (
     <React.Fragment>
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
-        <AnswerAndScore xs={6}>
+        <AnswerAndScore xs={selectedColSize}>
           <span data-cy="score">
             {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
           </span>
           <Title>{t("common.correctAnswer")}</Title>
         </AnswerAndScore>
       )}
-      <AnswerAndScore xs={6}>
+      <AnswerAndScore xs={selectedColSize}>
         <span data-cy="percent">{Math.round(scorePercentage)}%</span>
         <Title>{t("common.score")}</Title>
       </AnswerAndScore>
     </React.Fragment>
   );
-
-  const isValidAttempt = attempted && !absent;
 
   return (
     <CardWrapper>
@@ -244,7 +260,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
           <AttemptDetails isValidAttempt={isValidAttempt}>
             {isValidAttempt && (
               <React.Fragment>
-                <Attempts xs={6} onClick={toggleAttemptsView}>
+                <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
                   <span data-cy="attemptsCount">
                     {attemptCount}/{maxAttempts || attemptCount}
                   </span>
@@ -256,7 +272,12 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
               </React.Fragment>
             )}
             {StartButtonContainer && (
-              <StyledActionButton isValidAttempt={isValidAttempt} lg={6} sm={isValidAttempt ? 6 : 10}>
+              <StyledActionButton
+                isAssignment={type == "assignment"}
+                isValidAttempt={isValidAttempt}
+                lg={selectedColSize}
+                sm={isValidAttempt ? selectedColSize : 10}
+              >
                 {StartButtonContainer}
               </StyledActionButton>
             )}
@@ -382,7 +403,7 @@ const StyledActionButton = styled(AnswerAndScore)`
     align-items: center;
   }
 
-  align-items: ${({ isValidAttempt }) => (!isValidAttempt ? "flex-end" : "center")};
+  align-items: ${({ isValidAttempt, isAssignment }) => (!isValidAttempt || isAssignment ? "flex-end" : "center")};
 `;
 
 const Attempts = AnswerAndScore;

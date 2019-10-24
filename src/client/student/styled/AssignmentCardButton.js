@@ -4,7 +4,7 @@ import { extraDesktopWidth, largeDesktopWidth, smallDesktopWidth, tabletWidth } 
 
 const StartAssignButton = styled(Button)`
   ${props => (props.theme.zoomLevel == "xs" ? "max-width: 200px; height: 40px;" : "max-width: 300px; height: auto;")}
-  width: 200px;
+  width: 150px;
   border-radius: 4px;
   display: flex;
   align-items: center;

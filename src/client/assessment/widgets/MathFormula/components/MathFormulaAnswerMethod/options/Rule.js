@@ -60,6 +60,7 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
           size="large"
           value={syntax}
           style={{ width: "100%" }}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
           onChange={val => {
             onChange("syntax", val);
           }}
@@ -92,6 +93,7 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
             value={argument || ""}
             style={{ width: "100%" }}
             onChange={val => onChange("argument", val)}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             data-cy="answer-rule-argument-select"
           >
             {["linear", "quadratic"].map(val => (

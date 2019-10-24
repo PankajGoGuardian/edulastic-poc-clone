@@ -58,6 +58,7 @@ class Layout extends Component {
             <Select
               size="large"
               style={{ width: "100%" }}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("type", val)}
               value={uiStyle.type}
               data-cy="matrixStyle"
@@ -77,6 +78,7 @@ class Layout extends Component {
                 style={{ width: "100%" }}
                 onChange={val => changeUiStyle("stemNumeration", val)}
                 value={uiStyle.stemNumeration}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 data-cy="stemNum"
               >
                 {stemNumerationLayout.map(option => (

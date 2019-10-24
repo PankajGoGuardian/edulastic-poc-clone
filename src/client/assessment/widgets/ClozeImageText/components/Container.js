@@ -46,7 +46,12 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
         <Col md={12}>
           <Label>{t("component.options.inputtype")}</Label>
           <SelectWrapper>
-            <OptionSelect size="large" onChange={type => onChange("inputtype", type)} value={uiStyle.inputtype}>
+            <OptionSelect
+              size="large"
+              onChange={type => onChange("inputtype", type)}
+              value={uiStyle.inputtype}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
               {inputtypeOptions.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
                   {label}
@@ -114,7 +119,12 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
         <Col md={12}>
           <Label>{t("component.options.pointers")}</Label>
           <SelectWrapper>
-            <OptionSelect size="large" onChange={val => onChange("pointer", val)} value={uiStyle.pointer}>
+            <OptionSelect
+              size="large"
+              onChange={val => onChange("pointer", val)}
+              value={uiStyle.pointer}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
               {pointerOptions.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
                   {label}

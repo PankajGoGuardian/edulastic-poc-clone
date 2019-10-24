@@ -337,6 +337,7 @@ class AxisLabelsMoreOptions extends Component {
                 data-cy="fontSize"
                 style={{ width: "100%" }}
                 onChange={this.changeFontSize}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 value={this.getFontSizeItem().label}
               >
                 {fontSizeList.map(option => (
@@ -353,6 +354,7 @@ class AxisLabelsMoreOptions extends Component {
                 data-cy="responseBoxPosition"
                 style={{ width: "100%" }}
                 onChange={this.changeResponseBoxPosition}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 value={this.getResponseBoxPositionItem().label}
               >
                 {responseBoxPositionList.map(option => (
@@ -439,6 +441,7 @@ class AxisLabelsMoreOptions extends Component {
                   <Select
                     style={{ width: "100%" }}
                     onChange={this.changeFractionsFormat}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     value={fractionsFormat || FRACTION_FORMATS.decimal}
                   >
                     {this.getFractionFormatSettings().map(option => (
@@ -453,6 +456,7 @@ class AxisLabelsMoreOptions extends Component {
                   <Select
                     style={{ width: "100%" }}
                     onChange={this.changeRenderingBase}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     value={currentRenderingBaseItem.label}
                   >
                     {renderingBaseList.map(option => (

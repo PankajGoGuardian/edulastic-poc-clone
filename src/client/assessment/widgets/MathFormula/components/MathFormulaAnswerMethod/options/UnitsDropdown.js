@@ -88,6 +88,7 @@ const UnitsDropdownPure = ({
         value={preview ? selected : options ? options.unit : ""}
         onChange={handleChange}
         disabled={disabled}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
         style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
         statusColor={statusColor}
       >

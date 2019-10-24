@@ -21,6 +21,7 @@ const AnswerDropdown = ({
       placeholder={placeholder}
       disabled={disabled}
       data-cy={`dropdown-res-${responseIndex}`}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       value={defaultValue || undefined} // placeholder doesn't work if value is empty string
       dropdownStyle={dropdownStyle}
       onChange={value => {

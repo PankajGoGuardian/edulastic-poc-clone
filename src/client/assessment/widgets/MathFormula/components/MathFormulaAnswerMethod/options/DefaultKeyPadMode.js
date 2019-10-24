@@ -13,7 +13,11 @@ const DefaultKeyPadModePure = ({ t, onChange, keypadMode }) => {
     onChange("keypadMode", val);
   };
   return (
-    <StyledSelect onChange={onSelectKeypad} value={keypadMode}>
+    <StyledSelect
+      onChange={onSelectKeypad}
+      value={keypadMode}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
+    >
       {symbolsData.map(({ value: val, label }) => (
         <Option key={val} value={val} data-cy={`text-formatting-options-selected-${val}`}>
           {label}

@@ -16,7 +16,13 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
 
   return (
     <SelectWrapper>
-      <StyledSelect width={width} disabled value={val} style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}>
+      <StyledSelect
+        width={width}
+        disabled
+        value={val}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+        style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}
+      >
         {options &&
           options[id] &&
           options[id].map((response, respID) => (

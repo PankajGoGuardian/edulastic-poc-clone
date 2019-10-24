@@ -206,6 +206,7 @@ class Variables extends Component {
                       size="large"
                       data-cy="variableType"
                       value={variable.type}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
                       onChange={value => handleChangeVariableList(variableName, "type", value)}
                       style={{ width: "100%" }}
                     >

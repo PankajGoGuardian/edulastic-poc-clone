@@ -140,6 +140,7 @@ class GraphAnswers extends Component {
             }}
             onChange={val => handleSelectIgnoreRepeatedShapes(val)}
             options={getIgnoreRepeatedShapesOptions()}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             value={graphData.validation.ignore_repeated_shapes || "no"}
           >
             {getIgnoreRepeatedShapesOptions().map(option => (
@@ -147,7 +148,7 @@ class GraphAnswers extends Component {
                 {option.label}
               </Select.Option>
             ))}
-          </Select>{" "}
+          </Select>
           Ignore repeated shapes
           <Select
             data-cy="ignoreLabels"
@@ -158,6 +159,7 @@ class GraphAnswers extends Component {
             }}
             onChange={val => handleSelectIgnoreLabels(val)}
             options={getIgnoreLabelsOptions()}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             value={graphData.validation.ignoreLabels || "yes"}
           >
             {getIgnoreLabelsOptions().map(option => (
@@ -165,7 +167,7 @@ class GraphAnswers extends Component {
                 {option.label}
               </Select.Option>
             ))}
-          </Select>{" "}
+          </Select>
           Ignore labels
         </Fragment>
       );

@@ -104,6 +104,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
         value={item.grade}
         style={{ width: 300 }}
         placeholder="Please select"
+        getPopupContainer={triggerNode => triggerNode.parentNode}
         onChange={value =>
           setGradeSubjectValue({
             type: "grade",

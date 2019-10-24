@@ -121,6 +121,7 @@ class Scoring extends Component {
                         size="large"
                         data-cy="scoringType"
                         value={questionData.validation.scoringType}
+                        getPopupContainer={triggerNode => triggerNode.parentNode}
                         onChange={value => handleChangeValidation("scoringType", value)}
                       >
                         {scoringTypes.map(({ value: val, label }) => (
@@ -141,6 +142,7 @@ class Scoring extends Component {
                   data-cy="rounding"
                   size="large"
                   value={questionData.validation.rounding}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                   onChange={value => handleChangeValidation("rounding", value)}
                 >
                   {roundingTypes.map(({ value: val, label }) => (

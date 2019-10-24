@@ -75,6 +75,7 @@ const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setO
           <Select
             style={{ width: "100%" }}
             data-cy="fontSize"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={handleChangeFontSize}
             value={getFontSizeItem().label}
           >

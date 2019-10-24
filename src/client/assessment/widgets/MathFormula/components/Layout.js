@@ -135,6 +135,7 @@ class Layout extends Component {
               size="large"
               value={uiStyle.responseFontScale}
               style={{ width: "100%" }}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("responseFontScale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (

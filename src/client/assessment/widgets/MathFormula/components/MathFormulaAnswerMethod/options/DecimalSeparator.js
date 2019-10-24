@@ -42,6 +42,7 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
               <Select
                 size="large"
                 value={options.setDecimalSeparator || decimalSeparators[0].value}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 style={{ marginTop: 15, width: "100%" }}
                 onChange={val => onChange("setDecimalSeparator", val)}
                 data-cy="answer-set-decimal-separator-dropdown"

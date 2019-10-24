@@ -699,7 +699,12 @@ class Authoring extends Component {
                     </ControlButton>
                     <Label top={6}>{t("component.cloze.imageText.pointers")}</Label>
                   </FieldWrapper>
-                  <PointerSelect disabled={!hasActive} defaultValue="none" onChange={this.handlePointersChange}>
+                  <PointerSelect
+                    disabled={!hasActive}
+                    defaultValue="none"
+                    onChange={this.handlePointersChange}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
                     <Option value="none">{t("component.cloze.imageText.none")}</Option>
                     <Option value="top">{t("component.cloze.imageText.top")}</Option>
                     <Option value="bottom">{t("component.cloze.imageText.bottom")}</Option>

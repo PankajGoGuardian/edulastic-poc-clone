@@ -97,6 +97,7 @@ class Layout extends Component {
               data-cy="styleSelect"
               size="large"
               id="select"
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("type", val)}
               value={uiStyle.type}
             >
@@ -136,6 +137,7 @@ class Layout extends Component {
               <SelectWrapper
                 size="large"
                 data-cy="labelTypeSelect"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => changeUiStyle("choiceLabel", val)}
                 value={uiStyle.choiceLabel}
               >

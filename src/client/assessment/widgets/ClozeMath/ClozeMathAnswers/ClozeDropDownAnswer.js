@@ -71,6 +71,7 @@ class ClozeDropDownAnswer extends Component {
                 <AnswerSelect
                   value={answer.value}
                   onChange={text => this.selectChange(text, answer.id)}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                   width={width}
                   height={height}
                 >

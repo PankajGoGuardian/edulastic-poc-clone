@@ -18,7 +18,11 @@ const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, han
     {areaIndexes.length > 0 && (
       <Fragment>
         <Subtitle>{t("component.hotspot.areaSelectLabel")}</Subtitle>
-        <Select value={attributes.area} onChange={handleSelectChange}>
+        <Select
+          value={attributes.area}
+          onChange={handleSelectChange}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
           {areaIndexes.map(index => (
             <Option key={index} value={index}>
               {index + 1}

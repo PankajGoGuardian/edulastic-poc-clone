@@ -240,6 +240,7 @@ class QuadrantsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.fontSize")}</Label>
               <Select
                 size="large"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => this.handleSelect("currentFontSize", val)}
                 value={currentFontSize}
                 data-cy="fontSize"

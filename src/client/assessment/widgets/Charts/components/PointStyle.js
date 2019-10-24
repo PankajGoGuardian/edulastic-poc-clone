@@ -13,6 +13,7 @@ const PointStyle = ({ t, onChange, value, size, options, ...restProps }) => (
       size="large"
       value={value}
       style={{ width: "100%" }}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={onChange}
       {...restProps}
     >

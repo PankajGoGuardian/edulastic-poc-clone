@@ -161,6 +161,7 @@ class MathKeyboard extends React.PureComponent {
                     data-cy="math-keyboard-dropdown"
                     className="keyboard__header__select"
                     size="large"
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     onSelect={this.handleGroupSelect}
                     onDropdownVisibleChange={open => {
                       this.setState({ dropdownOpened: open });

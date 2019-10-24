@@ -254,6 +254,7 @@ class AxisSegmentsMoreOptions extends Component {
               <Label>{t("component.options.orientation")}</Label>
               <Select
                 style={{ width: "100%" }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => this.handleSelect("orientation", val)}
                 options={orientationList}
                 value={uiStyle.orientation || orientation}
@@ -359,6 +360,7 @@ class AxisSegmentsMoreOptions extends Component {
               <Select
                 style={{ width: "100%" }}
                 data-cy="fontSize"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={this.changeFontSize}
                 value={this.getFontSizeItem().label}
               >
@@ -456,6 +458,7 @@ class AxisSegmentsMoreOptions extends Component {
                   <Select
                     style={{ width: "100%" }}
                     onChange={this.changeFractionsFormat}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     value={fractionsFormat || FRACTION_FORMATS.decimal}
                   >
                     {this.getFractionFormatSettings().map(option => (
@@ -469,6 +472,7 @@ class AxisSegmentsMoreOptions extends Component {
                   <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
                   <Select
                     style={{ width: "100%" }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     onChange={this.changeRenderingBase}
                     value={currentRenderingBaseItem.label}
                   >

@@ -34,7 +34,11 @@ const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t, show
 
       <Container style={{ maxWidth: "100%" }} width={`${+width}px`} justifyContent="space-between">
         {line_color.length > 1 && (
-          <StyledSelect value={currentColor} onChange={setCurrentColor}>
+          <StyledSelect
+            value={currentColor}
+            onChange={setCurrentColor}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
             {line_color.map((color, i) => (
               <Option key={i} value={color}>
                 <div className="rc-color-picker-wrap">

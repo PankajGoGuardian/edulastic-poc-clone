@@ -600,7 +600,12 @@ class ComposeQuestion extends Component {
                 </ControlButton>
                 <Label top={6}>{t("component.cloze.imageDropDown.pointers")}</Label>
               </FieldWrapper>
-              <PointerSelect disabled={!hasActive} defaultValue="none" onChange={this.handlePointersChange}>
+              <PointerSelect
+                disabled={!hasActive}
+                defaultValue="none"
+                onChange={this.handlePointersChange}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
                 <Option value="none">{t("component.cloze.imageDropDown.none")}</Option>
                 <Option value="top">{t("component.cloze.imageDropDown.top")}</Option>
                 <Option value="bottom">{t("component.cloze.imageDropDown.bottom")}</Option>

@@ -17,6 +17,7 @@ const FieldPure = ({ value, onChange, t }) => (
       data-cy="answer-field-dropdown"
       value={value}
       style={{ width: "100%" }}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={val => onChange("field", val)}
     >
       {fields.map(val => (

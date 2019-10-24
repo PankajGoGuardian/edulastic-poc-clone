@@ -14,6 +14,7 @@ const ListStyle = ({ t, onChange, value, size, options, ...restProps }) => (
       value={value}
       style={{ width: "100%" }}
       onChange={onChange}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       {...restProps}
     >
       {options.map(({ value: val, label }) => (

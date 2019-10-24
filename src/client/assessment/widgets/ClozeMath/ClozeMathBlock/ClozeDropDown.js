@@ -48,6 +48,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       onChange={text => save({ value: text, index }, "dropDowns", id)}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       value={val}
     >
       {options &&

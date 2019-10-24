@@ -18,7 +18,14 @@ const FontSizeSelect = ({ t, onChange, value }) => {
   return (
     <Fragment>
       <Label>{t("component.options.fontSize")}</Label>
-      <Select data-cy="fontSizeSelect" size="large" value={value} style={{ width: "100%" }} onChange={onChange}>
+      <Select
+        data-cy="fontSizeSelect"
+        size="large"
+        value={value}
+        style={{ width: "100%" }}
+        onChange={onChange}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+      >
         {options.map(({ value: val, label }) => (
           <Select.Option data-cy={val} key={val} value={val}>
             {label}

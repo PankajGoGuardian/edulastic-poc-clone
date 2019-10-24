@@ -264,6 +264,7 @@ class NumberLinePlot extends Component {
             <Col md={6}>
               <LableFormatSelect
                 onChange={this.changeFractionsFormat}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 value={fractionsFormat || FRACTION_FORMATS.decimal}
               >
                 {this.getFractionFormatSettings().map(option => (

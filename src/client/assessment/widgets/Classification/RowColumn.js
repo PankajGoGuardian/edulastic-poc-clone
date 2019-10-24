@@ -163,6 +163,7 @@ class RowColumn extends Component {
               size="large"
               style={{ width: "calc(100% - 30px)" }}
               value={uiStyle.rowCount}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={value => onUiChange("rowCount")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (
@@ -209,6 +210,7 @@ class RowColumn extends Component {
               size="large"
               style={{ width: "calc(100% - 30px)" }}
               value={uiStyle.columnCount}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={value => onUiChange("columnCount")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (

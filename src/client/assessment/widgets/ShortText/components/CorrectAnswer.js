@@ -18,7 +18,13 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
       >
         {t("component.shortText.selectLabel")}
       </Subtitle>
-      <Select size="large" style={{ width: "100%" }} value={selectValue} onChange={onSelectChange}>
+      <Select
+        size="large"
+        style={{ width: "100%" }}
+        value={selectValue}
+        onChange={onSelectChange}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+      >
         {options.map((item, i) => (
           <Select.Option key={i} value={item.value}>
             {item.label}

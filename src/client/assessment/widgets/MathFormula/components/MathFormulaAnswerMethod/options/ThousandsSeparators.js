@@ -48,6 +48,7 @@ const ThousandsSeparators = ({ separators, onChange, t }) => {
                     value={separator}
                     style={{ width: "100%" }}
                     onChange={val => onChange({ val, ind: i })}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     data-cy="thousands-separator-dropdown"
                   >
                     {thousandsSeparators.map(({ value: val, label }) => (

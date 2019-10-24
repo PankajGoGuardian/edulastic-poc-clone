@@ -153,7 +153,11 @@ const ShadingPreview = ({
             >
               {t("component.shading.methodSubtitle")}
             </Subtitle>
-            <AdaptiveSelect value={method} onChange={handleSelectMethod}>
+            <AdaptiveSelect
+              value={method}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              onChange={handleSelectMethod}
+            >
               <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
               <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
             </AdaptiveSelect>

@@ -182,6 +182,7 @@ class Layout extends Component {
                     size="large"
                     onChange={val => changeUiStyle("stemNumeration", val)}
                     value={uiStyle.stemNumeration || "normal"}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {stemnumerationOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -198,6 +199,7 @@ class Layout extends Component {
                     size="large"
                     onChange={fontsize => changeUiStyle("fontsize", fontsize)}
                     value={uiStyle.fontsize || "normal"}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {fontsizeOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -216,6 +218,7 @@ class Layout extends Component {
                     size="large"
                     onChange={inputtype => changeUiStyle("inputtype", inputtype)}
                     value={uiStyle.inputtype || "text"}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {inputtypeOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -271,6 +274,7 @@ class Layout extends Component {
                     size="large"
                     onChange={inputtype => changeUiStyle("pointers", inputtype)}
                     value={uiStyle.pointers}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {pointerOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>

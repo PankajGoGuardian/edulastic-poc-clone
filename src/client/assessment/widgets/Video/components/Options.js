@@ -64,6 +64,7 @@ const Options = ({ setQuestionData, item, t }) => {
             size="large"
             style={{ width: "100%" }}
             value={item.videoType}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={value => handleChange("videoType", value)}
           >
             {rendererOptions.map(({ value: val, label }) => (

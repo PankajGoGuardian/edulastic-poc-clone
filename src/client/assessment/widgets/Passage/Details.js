@@ -218,11 +218,12 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
             size="large"
             value={item.math_renderer}
             style={{ width: "100%" }}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={value => handleChange("math_renderer", value)}
             tabIndex={1}
           >
             {rendererOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
+              <Select.Option key={val} value={val} getPopupContainer={triggerNode => triggerNode.parentNode}>
                 {label}
               </Select.Option>
             ))}

@@ -172,6 +172,7 @@ const Tool = props => {
       <SelectWrapper>
         <Select
           data-cy="segmentTool"
+          getPopupContainer={triggerNode => triggerNode.parentNode}
           style={{ width: selectWidth || "70%", height: "40px" }}
           onChange={onSelectChange}
           options={options}

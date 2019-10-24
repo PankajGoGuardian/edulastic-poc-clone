@@ -75,7 +75,12 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
         <Col span={14}>
           <FlexContainer marginBottom="1em" justifyContent="flex-start">
             <Label>Fraction Model: </Label>
-            <Select value={fractionType} placeholder="Fraction Type" onChange={handleFractionTypeChange}>
+            <Select
+              value={fractionType}
+              placeholder="Fraction Type"
+              onChange={handleFractionTypeChange}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
               <Option value="circles">Circles</Option>
               <Option value="rectangles">Rectangles</Option>
             </Select>

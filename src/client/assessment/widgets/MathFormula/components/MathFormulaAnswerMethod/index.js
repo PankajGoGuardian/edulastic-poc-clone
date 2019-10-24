@@ -419,6 +419,7 @@ const MathFormulaAnswerMethod = ({
                 size="large"
                 value={method}
                 style={{ width: "100%", height: 42 }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => onChange("method", val)}
               >
                 {methods.map(methodKey => (

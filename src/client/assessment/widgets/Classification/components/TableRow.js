@@ -9,7 +9,7 @@ import { CenteredText } from "@edulastic/common";
 
 import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
-
+import { getStemNumeration } from "../../../utils/helpers";
 import DragItem from "./DragItem";
 import { ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
@@ -213,7 +213,10 @@ const TableRow = ({
                   valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={responses.findIndex(_resp => _resp.id === answerValue)}
+                  renderIndex={getStemNumeration(
+                    item?.uiStyle?.validationStemNumeration,
+                    responses.findIndex(_resp => _resp.id === answerValue)
+                  )}
                   onDrop={onDrop}
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}

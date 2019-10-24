@@ -50,7 +50,7 @@ export const getMasteryLevel = (score, scaleInfo) => {
   return getLeastMasteryLevel(scaleInfo);
 };
 
-const getRecordMasteryLevel = (records, scaleInfo) => {
+export const getRecordMasteryLevel = (records, scaleInfo) => {
   const score = getOverallMasteryScore(records);
   return getMasteryLevel(score, scaleInfo);
 };

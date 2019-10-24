@@ -6,12 +6,12 @@ export const CorTitle = styled.div`
   border-radius: 4px;
   width: calc(50% - 50px);
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: #fff;
   margin-right: 44px;
   word-break: break-word;
-  padding: 4px;
+  padding: 8px 12px;
 
   & .katex .base {
     white-space: normal;

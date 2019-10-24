@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 
-import { Paper, AnswerContext } from "@edulastic/common";
+import { AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";

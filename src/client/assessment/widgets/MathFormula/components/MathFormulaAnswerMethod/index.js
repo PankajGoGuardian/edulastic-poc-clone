@@ -67,6 +67,9 @@ const MathFormulaAnswerMethod = ({
   customUnits, // need only for Math w/Unit in cloze Math
   containerHeight,
   allowNumericOnly = null,
+  isClozeMath, // this is from clozemath
+  template = "",
+  useTemplate, // this is from clozemath
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
@@ -329,7 +332,8 @@ const MathFormulaAnswerMethod = ({
   const warningFlag =
     options?.setThousandsSeparator?.[0] === options?.setDecimalSeparator?.[0] &&
     options?.setDecimalSeparator?.[0] !== undefined;
-  const studentTemplate = item.template && item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
+
+  const studentTemplate = template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
   const innerValues = getInnerValuesForStatic(studentTemplate, value);
   const mathInputProps = {
     hideKeypad: item.showDropdown,
@@ -337,13 +341,23 @@ const MathFormulaAnswerMethod = ({
     restrictKeys: isShowDropdown ? [] : restrictKeys,
     allowNumericOnly: allowNumericOnly || false,
     customKeys: isShowDropdown ? [] : customKeys,
+    showResponse: useTemplate,
     numberPad: item.numberPad,
-    onInput: val => {
-      onChange("value", val);
-    },
     onBlur: () => null,
     onChangeKeypad,
     style
+  };
+
+  const handleChangeMathInput = val => {
+    if (isClozeMath && useTemplate) {
+      onChangeAllowedOptions("template", val);
+    } else {
+      onChange("value", val);
+    }
+  };
+
+  const handleChangeStaticMathInput = val => {
+    onChange("value", val);
   };
 
   return (
@@ -354,10 +368,22 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
-                <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />
+                <MathInput
+                  {...mathInputProps}
+                  ALLOW
+                  TOLERANCE
+                  showDropdown
+                  value={isClozeMath && useTemplate ? template : value}
+                  onInput={handleChangeMathInput}
+                />
               )}
-              {item.template && item.templateDisplay && (
-                <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={innerValues} />
+              {((item.template && item.templateDisplay) || useTemplate) && (
+                <StaticMath
+                  {...mathInputProps}
+                  latex={studentTemplate}
+                  innerValues={innerValues}
+                  onInput={handleChangeStaticMathInput}
+                />
               )}
               {renderExtra}
             </MathInputWrapper>
@@ -439,7 +465,16 @@ const MathFormulaAnswerMethod = ({
               </RuleContainer>
             )}
           </FlexContainer>
-          <WidgetMethods>{renderMethodsOptions()}</WidgetMethods>
+          <WidgetMethods>
+            {renderMethodsOptions()}
+            <CheckOption
+              dataCy="use-template"
+              optionKey="useTemplate"
+              options={{ useTemplate }}
+              onChange={onChangeAllowedOptions}
+              label="Use template"
+            />
+          </WidgetMethods>
 
           {/* {index + 1 === answer.length && (
             <AdditionalContainerRule>
@@ -467,6 +502,7 @@ MathFormulaAnswerMethod.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
+  useTemplate: PropTypes.bool,
   allowedVariables: PropTypes.string.isRequired,
   allowNumericOnly: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -474,10 +510,12 @@ MathFormulaAnswerMethod.propTypes = {
   toggleAdditional: PropTypes.func.isRequired,
   keypadMode: PropTypes.string,
   customUnits: PropTypes.string,
+  isClozeMath: PropTypes.bool,
   showDefaultMode: PropTypes.bool,
   containerHeight: PropTypes.any,
   labelValue: PropTypes.string,
-  renderExtra: PropTypes.any
+  renderExtra: PropTypes.any,
+  template: PropTypes.string
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -485,11 +523,15 @@ MathFormulaAnswerMethod.defaultProps = {
   method: "",
   style: {},
   options: {},
+  labelValue: "",
+  isClozeMath: false,
+  useTemplate: false,
   showDefaultMode: false,
   customUnits: "",
   containerHeight: "auto",
   keypadMode: "",
-  renderExtra: null
+  renderExtra: null,
+  template: ""
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

@@ -126,12 +126,6 @@ const ClozeMath = ({
 
       {view === EDIT && (
         <ContentArea data-cy="question-area">
-          {/* <ComposeQuestion
-            item={item}
-            setQuestionData={_setQuestionData}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          /> */}
           <Template
             item={item}
             setQuestionData={_setQuestionData}

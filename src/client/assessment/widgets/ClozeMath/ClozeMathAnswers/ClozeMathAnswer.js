@@ -110,6 +110,9 @@ class ClozeMathAnswer extends Component {
                     onChangeAllowedOptions={onChangeAllowedOptions}
                     allowNumericOnly={answer.allowNumericOnly}
                     allowedVariables={answer.allowedVariables}
+                    useTemplate={answer.useTemplate}
+                    template={answer.template}
+                    isClozeMath
                     toggleAdditional={toggleAdditional}
                     {...method}
                   />

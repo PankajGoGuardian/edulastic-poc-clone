@@ -237,21 +237,42 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
-  // const handleAllowedVariables = mathInputIndex => variables => {
-  //   setQuestionData(
-  //     produce(item, draft => {
-  //       draft.allowedVariables = draft.allowedVariables || {};
-  //       draft.allowedVariables[mathInputIndex] = variables;
-  //     })
-  //   );
-  // };
-
   const handleAllowedOptions = (type, mathInputIndex) => (option, variables) => {
     setQuestionData(
       produce(item, draft => {
         const prop = draft.responseIds[type].find(el => el.index === mathInputIndex);
         if (prop) {
           prop[option] = variables;
+        }
+
+        /**
+         * this part will case useTemplate option is true
+         * if the template is changed, we should be reset correct answer
+         */
+        if (option === "template") {
+          const correctAns = draft.validation.validResponse.value || [];
+          correctAns.forEach(answer => {
+            if (answer) {
+              answer.forEach(ans => {
+                if (ans.value) {
+                  ans.value = "";
+                }
+              });
+            }
+          });
+          if (draft.validation.altResponses) {
+            draft.validation.altResponses.forEach(altAns => {
+              altAns.value.forEach(altAnswer => {
+                if (altAnswer) {
+                  altAnswer.forEach(ans => {
+                    if (ans.value) {
+                      ans.value = "";
+                    }
+                  });
+                }
+              });
+            });
+          }
         }
       })
     );
@@ -330,7 +351,9 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
             index: r.index,
             type: key,
             allowNumericOnly: r.allowNumericOnly,
-            allowedVariables: r.allowedVariables
+            allowedVariables: r.allowedVariables,
+            useTemplate: r.useTemplate,
+            template: r.template
           });
         } else if (key === "dropDowns") {
           const _answer = find(dropDownAnswers, valid => valid.id === r.id);
@@ -393,7 +416,6 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   key={index}
                   onChange={_changeCorrectMethod}
-                  // onChangeAllowedOptions={handleAllowedVariables}
                   onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}

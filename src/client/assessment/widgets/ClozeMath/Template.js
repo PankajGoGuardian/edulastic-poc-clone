@@ -58,8 +58,8 @@ class Template extends Component {
         if (tagName === "textinput") {
           newResponseId.inputs.push({ index, id });
         } else if (tagName === "mathinput") {
-          const { allowNumericOnly, allowedVariables } = maths.find(box => box.id === id) || {};
-          newResponseId.maths.push({ index, id, allowNumericOnly: allowNumericOnly, allowedVariables });
+          const { allowNumericOnly, allowedVariables, useTemplate, template } = maths.find(box => box.id === id) || {};
+          newResponseId.maths.push({ index, id, allowNumericOnly, allowedVariables, useTemplate, template });
         } else if (tagName === "mathunit") {
           const prev = mathUnits.find(m => m.id === id);
           if (prev) {

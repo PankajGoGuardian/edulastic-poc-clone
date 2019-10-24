@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find, isEqual, isEmpty, get } from "lodash";
 import styled from "styled-components";
-import { MathKeyboard } from "@edulastic/common";
+import { MathKeyboard, StaticMath } from "@edulastic/common";
 import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "./CheckedBlock";
@@ -249,12 +249,46 @@ class ClozeMathInput extends React.Component {
   }
 }
 
-const MathInput = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
+const MathInput = ({ resprops = {}, id, responseindex }) => {
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex, save } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+
+  const {
+    responseIds: { maths = [] }
+  } = item;
+  const { useTemplate, template = "" } = find(maths, res => res.id === id) || {};
+  const studentTemplate = template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
+
+  const customKeys = get(item, "customKeys", []);
+  const isShowDropdown = item.isUnits && item.showDropdown;
+
+  const mathInputProps = {
+    hideKeypad: false,
+    symbols: isShowDropdown ? ["basic"] : item.symbols,
+    restrictKeys: [],
+    allowNumericOnly: false,
+    customKeys: isShowDropdown ? [] : customKeys,
+    numberPad: item.numberPad,
+    onBlur: () => null
+  };
+
+  const StaticOrMathInput = useTemplate ? (
+    <StaticMath
+      {...mathInputProps}
+      showResponse
+      latex={studentTemplate}
+      onBlur={val => save({ value: val, index: responseindex }, "maths", id)}
+      onInput={() => null}
+      id={id}
+    />
+  ) : (
+    <ClozeMathInput resprops={resprops} id={id} />
+  );
+
+  // debugger;
 
   return checked ? (
     <CheckedBlock
@@ -270,13 +304,14 @@ const MathInput = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <ClozeMathInput resprops={resprops} id={id} />
+    StaticOrMathInput
   );
 };
 
 MathInput.propTypes = {
   id: PropTypes.string.isRequired,
-  resprops: PropTypes.object.isRequired
+  resprops: PropTypes.object.isRequired,
+  responseindex: PropTypes.string.isRequired
 };
 
 export default MathInput;

@@ -20,7 +20,14 @@ import SubHeader from "./SubHeader";
 import ActionContainer from "./ActionContainer";
 import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
-import { Container, StyledDivider, ButtonWrapper, ButtonRightWrapper, StyledButton } from "./styled";
+import {
+  Container,
+  StyledDivider,
+  ButtonWrapper,
+  ButtonRightWrapper,
+  StyledButton,
+  GoogleClassSyncModal
+} from "./styled";
 import BreadCrumb from "../../../../author/src/components/Breadcrumb";
 
 const ClassDetails = ({
@@ -86,37 +93,21 @@ const ClassDetails = ({
   if (!classLoaded) return <Spin />;
   return (
     <>
-      <Modal
+      <GoogleClassSyncModal
         visible={openGCModal}
         onCancel={() => setOpenGCModal(false)}
         title="Enter Google Classroom Code"
         footer={
           <ButtonWrapper>
-            <StyledButton shape={"round"} onClick={() => setDisabled(false)}>
-              {" "}
-              Change Classroom
+            <StyledButton onClick={() => setOpenGCModal(false)}>Cancel</StyledButton>
+            <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
+              Sync
             </StyledButton>
-            <ButtonRightWrapper>
-              <StyledButton shape={"round"} onClick={() => setOpenGCModal(false)}>
-                {" "}
-                Cancel
-              </StyledButton>
-              <StyledButton
-                style={{ "background-color": themeColorLight, "border-color": themeColorLight }}
-                shape={"round"}
-                loading={syncClassLoading}
-                onClick={handleSyncGC}
-                type={"primary"}
-              >
-                {" "}
-                Sync
-              </StyledButton>
-            </ButtonRightWrapper>
           </ButtonWrapper>
         }
       >
         <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
-      </Modal>
+      </GoogleClassSyncModal>
       <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
         <BreadCrumb data={breadCrumbData} style={{ position: "unset", margin: "10px 0px" }} />

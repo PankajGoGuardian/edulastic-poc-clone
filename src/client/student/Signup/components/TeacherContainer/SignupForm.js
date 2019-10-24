@@ -48,15 +48,13 @@ import {
 } from "../../../../common/utils/helpers";
 import { Partners } from "../../../../common/utils/static/partnerData";
 
-import userIcon from "../../../assets/user-icon.svg";
-import mailIcon from "../../../assets/mail-icon.svg";
-import keyIcon from "../../../assets/key-icon.svg";
-import lockIcon from "../../../assets/lock-icon.svg";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
 import cleverIcon from "../../../assets/clever-icon.svg";
 import { withWindowSizes } from "@edulastic/common";
-import { MAX_TAB_WIDTH } from "../../../../author/src/constants/others";
+import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";
+import { IconLock, IconUser, IconMail } from "@edulastic/icons";
+import { themeColor, white } from "@edulastic/colors";
 
 const FormItem = Form.Item;
 
@@ -210,7 +208,9 @@ class Signup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t("common.edulastictext")} <br /> {t("component.signup.teacher.forteacher")}
+                    {t("common.edulastictext")}
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
+                    {t("component.signup.teacher.forteacher")}
                   </h1>
                   <DesktopVieLinks>
                     {!isSignupUsingDaURL ? (
@@ -284,7 +284,7 @@ class Signup extends React.Component {
 
                       <InfoBox span={20} offset={2}>
                         <InfoIcon span={3}>
-                          <img src={lockIcon} alt="" />
+                          <IconLock color={white} />
                         </InfoIcon>
                         <Col span={21}>{t("component.signup.infotext")}</Col>
                       </InfoBox>
@@ -311,7 +311,7 @@ class Signup extends React.Component {
                               })(
                                 <Input
                                   data-cy="name"
-                                  prefix={<img src={userIcon} alt="" />}
+                                  prefix={<IconUser color={themeColor} />}
                                   placeholder="Enter your full name"
                                   autoComplete="new-password"
                                 />
@@ -352,7 +352,7 @@ class Signup extends React.Component {
                               })(
                                 <Input
                                   data-cy="email"
-                                  prefix={<img src={mailIcon} alt="" />}
+                                  prefix={<IconMail color={themeColor} />}
                                   placeholder="Enter your school email"
                                   type="email"
                                   autoComplete="new-password"
@@ -377,7 +377,7 @@ class Signup extends React.Component {
                               })(
                                 <Input
                                   data-cy="password"
-                                  prefix={<img src={keyIcon} alt="" />}
+                                  prefix={<IconLock color={themeColor} />}
                                   type="password"
                                   placeholder="Enter your password"
                                   autoComplete="new-password"

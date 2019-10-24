@@ -2,7 +2,7 @@ import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Spin } from "antd";
+import { Row, Col, Button, Spin, Tooltip } from "antd";
 import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -12,6 +12,9 @@ import ColWithZoom from "../../../common/components/ColWithZoom";
 const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id === parent.id);
+
+  const allgrades = grades && grades.join(", ").replace(/O/i, " Other ");
+  const allStandardSets = standardSets && standardSets.map(std => std.name).join(",");
 
   const handleVisitClass = () => {
     sessionStorage.setItem("temporaryClass", classItem._id);
@@ -24,7 +27,9 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
       <ManageClassCardContent>
         <CardHeader>
           <Col span={15}>
-            <CardTitle title="Class Name">{name}</CardTitle>
+            <Tooltip placement="bottomLeft" title={name}>
+              <CardTitle>{name}</CardTitle>
+            </Tooltip>
           </Col>
           <Col span={9}>
             <InfoContent width={100} status={status}>
@@ -35,17 +40,21 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
         <CardBody>
           <Col span={12}>
             <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
-            <InfoContent span={16} info>
-              {instructorName}
-            </InfoContent>
+            <Tooltip placement="bottomLeft" title={instructorName}>
+              <InfoContent span={16} info>
+                {instructorName}
+              </InfoContent>
+            </Tooltip>
           </Col>
 
           {grades.length ? (
             <Col span={12}>
               <InfoLabel span={8}>{t("common.grades")}</InfoLabel>
-              <InfoContent span={16} info>
-                {grades.join(", ").replace(/O/i, " Other ")}
-              </InfoContent>
+              <Tooltip placement="bottomLeft" title={allgrades}>
+                <InfoContent span={16} info>
+                  {allgrades}
+                </InfoContent>
+              </Tooltip>
             </Col>
           ) : (
             ""
@@ -53,17 +62,21 @@ const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
 
           <Col span={12}>
             <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
-            <InfoContent span={16} info>
-              {subject}
-            </InfoContent>
+            <Tooltip placement="bottomLeft" title={subject}>
+              <InfoContent span={16} info>
+                {subject}
+              </InfoContent>
+            </Tooltip>
           </Col>
 
           {standardSets.length ? (
             <Col span={12}>
               <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
-              <InfoContent span={16} info>
-                {standardSets && standardSets.map(std => std.name).join(",")}
-              </InfoContent>
+              <Tooltip placement="bottomLeft" title={allStandardSets}>
+                <InfoContent span={16} info>
+                  {allStandardSets}
+                </InfoContent>
+              </Tooltip>
             </Col>
           ) : null}
 

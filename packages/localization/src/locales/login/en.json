@@ -1,6 +1,6 @@
 {
   "common": {
-    "edulastictext": "Edulastic",
+    "edulastictext": "Edulastic ",
     "donthaveanaccount": "Don't have an account yet? ",
     "signupbtn": "SIGN UP",
     "loginboxheading": "Login",
@@ -10,7 +10,7 @@
     "formboxheading": "Or you can always...",
     "loginidinputlabel": "Username / Email",
     "loginpasswordinputlabel": "Password",
-    "remembermetext": "REMEMBER ME",
+    "remembermetext": "Remember me",
     "forgotpasswordtext": "Forgot Password?",
     "signinbtn": "SIGN IN",
     "copyright": "Edulastic @ 2018 - All rights reserved.",

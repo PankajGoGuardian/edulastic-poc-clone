@@ -12,7 +12,9 @@ import {
   greenDark3,
   greenDark2,
   tabletWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+  smallDesktopWidth
 } from "@edulastic/colors";
 
 export const FlexWrapper = styled(Row)`
@@ -41,6 +43,12 @@ export const RegistrationHeader = styled(Row)`
   span {
     font-size: 12px;
     margin-right: 20px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 13px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 14px;
+    }
   }
   a {
     padding: 8px 48px;
@@ -67,9 +75,11 @@ export const BannerText = styled(Col)`
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 15px;
-    font-size: 46px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 40px;
+    }
     @media (min-width: ${extraDesktopWidthMax}) {
-      font-size: 55px;
+      font-size: 60px;
     }
   }
   a {
@@ -100,10 +110,15 @@ export const RegistrationBody = styled(Row)`
 `;
 
 export const Copyright = styled(Row)`
-  font-size: 10px;
   color: ${grey};
   text-align: center;
   margin: 20px 0px;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
+  }
 `;
 
 export const FormWrapper = styled.div`
@@ -278,14 +293,12 @@ export const CircleDiv = styled.div`
 export const Description = styled.p`
   text-align: center;
   margin-bottom: 16px;
+  font-family: Open Sans, SemiBold;
 `;
 
 export const AlreadyhaveAccount = styled.span`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: 14px;
   }
 `;
 
@@ -307,10 +320,15 @@ export const DesktopVieLinks = styled.div`
 export const DesktopViewCopyright = styled(Row)`
   width: 50%;
   text-align: start;
-  font-size: 10px;
   color: ${grey};
   margin: 25px 0px;
   position: absolute;
   left: 0;
   bottom: 0;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
+  }
 `;

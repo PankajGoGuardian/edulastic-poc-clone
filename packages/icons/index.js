@@ -188,3 +188,4 @@ export { default as IconDropDown } from "./src/IconDropDown";
 export { default as IconSubscriptionHighlight } from "./src/IconSubscriptionHighlight";
 export { default as IconProfileHighlight } from "./src/IconProfileHighlight";
 export { default as IconSignoutHighlight } from "./src/IconSignoutHighlight";
+export { default as IconMail } from "./src/IconMail";

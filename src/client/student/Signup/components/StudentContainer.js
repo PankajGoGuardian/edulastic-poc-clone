@@ -44,14 +44,11 @@ import {
 import { Partners } from "../../../common/utils/static/partnerData";
 
 import studentBg from "../../assets/bg-student.png";
-import hashIcon from "../../assets/hashtag-icon.svg";
-import userIcon from "../../assets/user-icon.svg";
-import mailIcon from "../../assets/mail-icon.svg";
-import keyIcon from "../../assets/key-icon.svg";
-import lockIcon from "../../assets/lock-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
-import { MAX_TAB_WIDTH } from "../../../author/src/constants/others";
+import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../author/src/constants/others";
+import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
+import { themeColor, white } from "@edulastic/colors";
 
 const FormItem = Form.Item;
 const GOOGLE = "google";
@@ -219,7 +216,7 @@ class StudentSignup extends React.Component {
             ]
           })(
             <Input
-              prefix={<img src={hashIcon} alt="" />}
+              prefix={<IconHash color={themeColor} />}
               data-cy="classCode"
               placeholder="Class code"
               onChange={this.onChangeClassCode}
@@ -235,12 +232,13 @@ class StudentSignup extends React.Component {
                 message: t("component.signup.student.validinputname")
               }
             ]
-          })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} placeholder="Name" />)}
+          })(<Input data-cy="name" prefix={<IconUser color={themeColor} />} placeholder="Name" />)}
         </FormItem>
         <FormItem
           {...formItemLayout}
           validateStatus={usernameEmailError ? "error" : "success"}
           help={usernameEmailError}
+          label={t("component.signup.student.signupidlabel")}
         >
           {getFieldDecorator("email", {
             validateFirst: true,
@@ -265,7 +263,7 @@ class StudentSignup extends React.Component {
           })(
             <Input
               data-cy="email"
-              prefix={<img src={mailIcon} alt="" />}
+              prefix={<IconMail color={themeColor} />}
               placeholder="Email"
               onChange={this.onChangeEmail}
             />
@@ -279,7 +277,9 @@ class StudentSignup extends React.Component {
                 message: t("common.validation.emptypassword")
               }
             ]
-          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Password" />)}
+          })(
+            <Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" placeholder="Password" />
+          )}
         </FormItem>
       </>
     );
@@ -304,7 +304,7 @@ class StudentSignup extends React.Component {
         ) : null}
         <InfoBox span={20} offset={2}>
           <InfoIcon span={3}>
-            <img src={lockIcon} alt="" />
+            <IconLock color={white} />
           </InfoIcon>
           <Col span={21}>{t("component.signup.infotext")}</Col>
         </InfoBox>
@@ -335,7 +335,7 @@ class StudentSignup extends React.Component {
           ]
         })(
           <Input
-            prefix={<img src={hashIcon} alt="" />}
+            prefix={<IconHash color={themeColor} />}
             data-cy="classCode"
             placeholder="Class code"
             onChange={this.onChangeClassCode}
@@ -387,7 +387,9 @@ class StudentSignup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t("common.edulastictext")} <br /> {t("component.signup.student.forstudent")}
+                    {t("common.edulastictext")}
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
+                    {t("component.signup.student.forstudent")}
                   </h1>
                   <DesktopVieLinks>
                     {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||

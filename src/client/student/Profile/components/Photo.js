@@ -27,6 +27,7 @@ class Photo extends React.Component {
         this.setState({ loading: false });
         return;
       } else if (!beforeUpload(file)) {
+        this.setState({ loading: false });
         return;
       }
       const imageUrl = await uploadToS3(file, `${aws.s3Folders.USER}`, `${user._id}`);

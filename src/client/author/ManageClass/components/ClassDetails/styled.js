@@ -24,7 +24,7 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
+import { Button, Icon, Divider, Menu, Checkbox, Table, Modal } from "antd";
 import { IconManage } from "@edulastic/icons";
 
 import { Paper } from "@edulastic/common";
@@ -392,19 +392,20 @@ export const MenuItem = styled(Menu.Item)`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-export const ButtonRightWrapper = styled.div`
-  display: inline-flex;
+  justify-content: flex-end;
 `;
 
 export const StyledButton = styled(Button)`
-  &:hover,
-  &:focus,
-  &:active {
-    color: ${props => (props.type === "primary" ? white : themeColorLight)};
-    border-color: ${themeColorLight};
-  }
+  border-radius: 4px;
+  width: 114px;
+  height: 36px;
+  font-size: 11px;
+  font-family: Open Sans, Semibold;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: ${props => (props.type === "primary" ? themeColor : white)};
+  color: ${props => (props.type === "primary" ? white : themeColor)};
+  border-color: ${themeColor};
 `;
 
 const StyledTabButton = styled.a`
@@ -557,5 +558,26 @@ export const SwitchBox = styled.span`
 
   @media (max-width: ${mobileWidthLarge}) {
     display: none;
+  }
+`;
+
+export const GoogleClassSyncModal = styled(Modal)`
+  top: 35%;
+  border-radius: 7px;
+  .ant-modal-header {
+    border: none;
+    padding: 20px 24px;
+    .ant-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+  .ant-modal-body {
+    padding: 10px 24px;
+  }
+
+  .ant-modal-footer {
+    border: none;
+    padding: 20px 24px;
   }
 `;

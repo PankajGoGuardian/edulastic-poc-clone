@@ -15,18 +15,19 @@ import {
   smallDesktopWidth,
   extraDesktopWidthMax,
   secondaryTextColor,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  white
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
 import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
 import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
-import mailIcon from "../../assets/mail-icon.svg";
-import keyIcon from "../../assets/key-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
 import cleverIcon from "../../assets/clever-icon.svg";
+
+import { IconLock, IconMail } from "@edulastic/icons";
 
 const FormItem = Form.Item;
 
@@ -190,7 +191,7 @@ class LoginContainer extends React.Component {
                                   isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
                               }
                             ]
-                          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
+                          })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
                           {getFieldDecorator("password", {
@@ -200,17 +201,13 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptypassword")
                               }
                             ]
-                          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
+                          })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
                         </FormItem>
                         <FormItem>
                           {getFieldDecorator("remember", {
                             valuePropName: "checked",
                             initialValue: true
-                          })(
-                            <RememberCheckBox>
-                              <span>{t("common.remembermetext")}</span>
-                            </RememberCheckBox>
-                          )}
+                          })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
                           <ForgetPassword
                             href="javascript:void(0);"
                             style={{ marginTop: 1 }}
@@ -272,7 +269,6 @@ const RegistrationBody = styled(Row)`
 `;
 
 const Copyright = styled(Row)`
-  font-size: 10px;
   color: ${grey};
   text-align: center;
   margin: 25px 0px;
@@ -280,6 +276,12 @@ const Copyright = styled(Row)`
   left: 0;
   right: 0;
   bottom: 0;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
+  }
 `;
 
 const PartnerBoxTitle = styled.img`
@@ -356,7 +358,9 @@ const FormBody = styled(Row)`
       line-height: normal;
       margin-bottom: 3px;
       label {
-        font-size: 12px;
+        font-size: 11px;
+        font-family: Open Sans, SemiBold;
+        font-weight: 600;
         &.ant-form-item-required {
           &:before,
           &:after {
@@ -365,7 +369,14 @@ const FormBody = styled(Row)`
         }
       }
 
-      @media (max-width: ${extraDesktopWidthMax}) {
+      @media (min-width: ${mediumDesktopExactWidth}) {
+        padding: 0px;
+        label {
+          font-size: 12px;
+        }
+      }
+
+      @media (min-width: ${extraDesktopWidthMax}) {
         padding: 0px;
         label {
           font-size: 14px;
@@ -409,17 +420,20 @@ const FormBody = styled(Row)`
 const ForgetPassword = styled("a")`
   float: right;
   color: ${themeColorLighter};
-
   &:hover {
     color: ${themeColorLighter};
     border-bottom: 1px ${themeColor} solid;
   }
+  font-size: 10px;
   & > span {
+    @media (min-width: ${smallDesktopWidth}) {
+      font-size: 11px;
+    }
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 12px;
+    }
     @media (min-width: ${extraDesktopWidthMax}) {
       font-size: 14px;
-    }
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      font-size: 12px;
     }
   }
 `;
@@ -448,8 +462,14 @@ const RememberCheckBox = styled(Checkbox)`
   .ant-checkbox-input:focus + .ant-checkbox-inner {
     border-color: ${themeColor};
   }
-  & > span {
-    @media (max-width: ${mediumDesktopExactWidth}) {
+
+  .ant-checkbox-wrapper + span,
+  .ant-checkbox + span {
+    font-size: 10px;
+    @media (min-width: ${smallDesktopWidth}) {
+      font-size: 11px;
+    }
+    @media (min-width: ${mediumDesktopExactWidth}) {
       font-size: 12px;
     }
     @media (min-width: ${extraDesktopWidthMax}) {

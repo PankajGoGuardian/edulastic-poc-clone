@@ -362,7 +362,8 @@ class QuestionWrapper extends Component {
       <ThemeProvider
         theme={{
           ...themeToPass,
-          fontSize: themeToPass.fontSize || getFontSize(get(data, "uiStyle.fontsize", "normal"))
+          fontSize: themeToPass.fontSize || getFontSize(get(data, "uiStyle.fontsize", "normal")),
+          isV1Migrated: data.isV1Migrated
         }}
       >
         <>

@@ -4,6 +4,7 @@ import Wrapper from "./Wrapper";
 import Title from "./Title";
 import Text from "./Text";
 import { FlexContainer } from "@edulastic/common";
+import { ThemeProvider } from "styled-components";
 
 const Hints = ({ questions = [] }) => {
   /**
@@ -39,20 +40,22 @@ const Hints = ({ questions = [] }) => {
   }, 0);
   if (!validHints) return <Wrapper>No Hints</Wrapper>;
   return (
-    <Wrapper>
-      <Title>Hints</Title>
-      {questions.map(question => {
-        return question.hints ? (
-          <FlexContainer justifyContent="flex-start" marginBottom="1rem">
-            {question.hints.map(hint => (
-              <Text dangerouslySetInnerHTML={{ __html: hint.label }} />
-            ))}
-          </FlexContainer>
-        ) : (
-          ""
-        );
-      })}
-    </Wrapper>
+    <ThemeProvider theme={{ isV1Migrated: questions[0]?.isV1Migrated }}>
+      <Wrapper>
+        <Title>Hints</Title>
+        {questions.map(question => {
+          return question.hints ? (
+            <FlexContainer justifyContent="flex-start" marginBottom="1rem">
+              {question.hints.map(hint => (
+                <Text dangerouslySetInnerHTML={{ __html: hint.label }} />
+              ))}
+            </FlexContainer>
+          ) : (
+            ""
+          );
+        })}
+      </Wrapper>
+    </ThemeProvider>
   );
 };
 

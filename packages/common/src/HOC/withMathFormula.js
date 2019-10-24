@@ -4,6 +4,7 @@ import { withTheme } from "styled-components";
 import { WithResources } from "./withResources";
 
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
+import { MigratedQuestion } from "../components/MigratedQuestion";
 
 export const withMathFormula = WrappedComponent => {
   const MathFormulaWrapped = props => {
@@ -24,7 +25,6 @@ export const withMathFormula = WrappedComponent => {
         setNewInnerHtml(newInnerHtml.replace("<iframe", '<iframe style="display:none" '));
       }
     }, [dangerouslySetInnerHTML, loaded]);
-
     return (
       <WithResources
         resources={[
@@ -37,12 +37,23 @@ export const withMathFormula = WrappedComponent => {
           setLoaded(true);
         }}
       >
-        <WrappedComponent
-          {...props}
-          data-cy="styled-wrapped-component"
-          dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-          style={{ ...style, fontSize: fontSize || theme.fontSize }}
-        />
+        {theme.isV1Migrated ? (
+          <MigratedQuestion>
+            <WrappedComponent
+              {...props}
+              data-cy="styled-wrapped-component"
+              dangerouslySetInnerHTML={{ __html: newInnerHtml }}
+              style={{ ...style, fontSize: fontSize || theme.fontSize }}
+            />
+          </MigratedQuestion>
+        ) : (
+          <WrappedComponent
+            {...props}
+            data-cy="styled-wrapped-component"
+            dangerouslySetInnerHTML={{ __html: newInnerHtml }}
+            style={{ ...style, fontSize: fontSize || theme.fontSize }}
+          />
+        )}
       </WithResources>
     );
   };

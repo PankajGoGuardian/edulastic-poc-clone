@@ -183,6 +183,7 @@ const MatchListPreview = ({
   const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
     display: "flex",
     width: width || "auto",
+    maxWidth: width || "calc(100% - 8px)",
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "center",
     padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
@@ -321,6 +322,7 @@ const MatchListPreview = ({
                         flexDirection="column"
                         alignItems="center"
                         justifyContent="flex-start"
+                        maxWidth="100%"
                       >
                         <Subtitle
                           style={{
@@ -330,6 +332,7 @@ const MatchListPreview = ({
                           {i.title}
                         </Subtitle>
                         <FlexContainer
+                          maxWidth="100%"
                           justifyContent="center"
                           flexWrap="wrap"
                           display={horizontallyAligned ? "inline-flex" : "flex"}
@@ -373,8 +376,14 @@ const MatchListPreview = ({
                   ))
                 ) : (
                   <Fragment>
-                    <FlexContainer flexDirection="column" alignItems="center" justifyContent="flex-start">
+                    <FlexContainer
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="flex-start"
+                      maxWidth="100%"
+                    >
                       <FlexContainer
+                        maxWidth="100%"
                         display={horizontallyAligned ? "inline-flex" : "flex"}
                         flexDirection={horizontallyAligned ? "column" : "row"}
                         alignItems={horizontallyAligned ? "baseline" : "center"}

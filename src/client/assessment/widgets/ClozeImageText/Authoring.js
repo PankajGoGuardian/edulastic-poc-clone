@@ -17,6 +17,7 @@ import { isUndefined, maxBy, get } from "lodash";
 
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
+import { Label } from "../../styled/WidgetOptions/Label";
 import { withNamespaces } from "@edulastic/localization";
 import { clozeImage, aws } from "@edulastic/constants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -648,7 +649,9 @@ class Authoring extends Component {
                       value={imageWidth}
                       onChange={value => this.changeImageDimensions("width", value)}
                     />
-                    <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
+                    <Label top={6} left={20}>
+                      {t("component.cloze.imageText.widthpx")}
+                    </Label>
                   </FieldWrapper>
 
                   <FieldWrapper>
@@ -657,18 +660,24 @@ class Authoring extends Component {
                       value={imageHeight}
                       onChange={value => this.changeImageDimensions("height", value)}
                     />
-                    <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
+                    <Label top={6} left={20}>
+                      {t("component.cloze.imageText.heightpx")}
+                    </Label>
                   </FieldWrapper>
                 </div>
                 <div className="position-controls">
                   <FieldWrapper>
                     <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
-                    <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
+                    <Label top={6} left={20}>
+                      {t("component.cloze.imageText.positionX")}
+                    </Label>
                   </FieldWrapper>
 
                   <FieldWrapper>
                     <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
-                    <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
+                    <Label top={6} left={20}>
+                      {t("component.cloze.imageText.positionY")}
+                    </Label>
                   </FieldWrapper>
                 </div>
               </div>
@@ -688,7 +697,7 @@ class Authoring extends Component {
                     <ControlButton disabled={!hasActive}>
                       <IconPin />
                     </ControlButton>
-                    <span>{t("component.cloze.imageText.pointers")}</span>
+                    <Label top={6}>{t("component.cloze.imageText.pointers")}</Label>
                   </FieldWrapper>
                   <PointerSelect disabled={!hasActive} defaultValue="none" onChange={this.handlePointersChange}>
                     <Option value="none">{t("component.cloze.imageText.none")}</Option>
@@ -709,7 +718,9 @@ class Authoring extends Component {
                 >
                   <FieldWrapper>
                     <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
-                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
+                    <Label top={6} left={20}>
+                      {t("component.cloze.imageDragDrop.fillcolor")}
+                    </Label>
                   </FieldWrapper>
                 </Dropdown>
               </div>

@@ -157,6 +157,7 @@ const EssayRichTextPreview = ({
               readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
               quickInsertTags={[]}
               toolbarButtons={toolbarButtons}
+              placeholder={item?.placeholder}
             />
           </FroalaEditorContainer>
         )}

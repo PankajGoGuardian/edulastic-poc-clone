@@ -114,9 +114,9 @@ export const getLabelPositionParameters = elementType => {
     case JXG.OBJECT_TYPE_POINT:
       return {
         position: "top",
-        offset: [0, 10],
+        offset: [0, 8],
         anchorX: "left",
-        anchorY: "bottom"
+        anchorY: "middle"
       };
     case Sin.jxgType:
       return {

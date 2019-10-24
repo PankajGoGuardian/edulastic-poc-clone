@@ -66,7 +66,7 @@ class Question extends Component {
   };
 
   render() {
-    const { dataCy, children, questionTextArea, advancedAreOpen, position, visible } = this.props;
+    const { dataCy, children, questionTextArea, advancedAreOpen, position, visible, overflowHandlers } = this.props;
 
     return (
       <Widget
@@ -76,6 +76,7 @@ class Question extends Component {
         advancedAreOpen={advancedAreOpen}
         position={position}
         visible={visible}
+        overflowHandlers={overflowHandlers}
       >
         {children}
       </Widget>
@@ -93,7 +94,8 @@ Question.propTypes = {
   questionTextArea: PropTypes.bool,
   advancedAreOpen: PropTypes.bool,
   visible: PropTypes.bool,
-  position: PropTypes.string
+  position: PropTypes.string,
+  overflowHandlers: PropTypes.object
 };
 
 Question.defaultProps = {
@@ -101,7 +103,8 @@ Question.defaultProps = {
   questionTextArea: false,
   visible: true,
   advancedAreOpen: null,
-  position: "relative"
+  position: "relative",
+  overflowHandlers: {}
 };
 
 export default compose(

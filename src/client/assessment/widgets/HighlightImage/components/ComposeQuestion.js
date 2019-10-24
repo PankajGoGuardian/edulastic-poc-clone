@@ -120,6 +120,7 @@ class ComposeQuestion extends Component {
         label={t("component.highlightImage.composeQuestion")}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        overflowHandlers={{ "max-width": "100%", overflow: "auto" }}
       >
         <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
 

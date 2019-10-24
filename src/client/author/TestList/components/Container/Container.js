@@ -383,8 +383,10 @@ class TestList extends Component {
       updateDefaultSubject
     } = this.props;
     clearAllFilters();
-    updateDefaultGrades();
-    updateDefaultSubject();
+    updateDefaultGrades([]);
+    storeInLocalStorage("defaultGrades", []);
+    updateDefaultSubject("All Subjects");
+    storeInLocalStorage("defaultSubjects", "All Subjects");
     receiveTests({ page: 1, limit });
     if (mode !== "embedded") {
       history.push(`/author/tests`);

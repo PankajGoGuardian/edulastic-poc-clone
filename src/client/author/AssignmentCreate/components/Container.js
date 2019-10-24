@@ -6,8 +6,7 @@ import { compose } from "redux";
 import { IconTestBank, IconPlaylist } from "@edulastic/icons";
 import { MenuIcon } from "@edulastic/common";
 import HeaderWrapper from "../../src/mainContent/headerWrapper";
-import Title from "../common/Title";
-import SubTitle from "../common/SubTitle";
+import Title, { AlignMiddle } from "../common/Title";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
 import ContainerWrapper from "../common/ContainerWrapper";
@@ -50,6 +49,7 @@ class Container extends Component {
         <HeaderWrapper justify="flex-start">
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           <Title>New Assignment</Title>
+          <AlignMiddle>SELECT A TEST</AlignMiddle>
         </HeaderWrapper>
         <ContainerWrapper>
           <SecondHeader>

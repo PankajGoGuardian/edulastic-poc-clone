@@ -97,9 +97,7 @@ const ClozeMath = ({
     >
       <StyledClozeMathWrapper>
         <QuestionTitleWrapper>
-          {!flowLayout
-            ? showQuestionNumber && <QuestionNumberLabel fontSize="12">{qLabel}:</QuestionNumberLabel>
-            : null}
+          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
 
           {view === PREVIEW && (
             <StyledPaperWrapper

@@ -18,4 +18,14 @@ const Title = styled.h2`
   }
 `;
 
+const AlignMiddle = styled.div`
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50px, 0px);
+  color: ${white};
+`;
+
 export default Title;
+
+export { AlignMiddle };

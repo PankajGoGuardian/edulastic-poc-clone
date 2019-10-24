@@ -72,7 +72,7 @@ const ListHeader = ({
             shadow="none"
             icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
           >
-            NEW ASSIGNMENT
+            NEW ASSIGNMENTS
           </TestButton>
         </Link>
       )}

@@ -44,7 +44,7 @@ const ResponseBoxLayout = ({
           borderRadius: smallSize ? 0 : 10,
           display: "flex",
           flexDirection: horizontallyAligned ? "column" : "row",
-          alignItems: horizontallyAligned ? "flex-start" : "center",
+          alignItems: horizontallyAligned || hasGroupResponses ? "flex-start" : "center",
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >

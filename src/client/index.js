@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import i18n, { I18nextProvider } from "@edulastic/localization";
 import { ConnectedRouter } from "connected-react-router";
+import smoothscroll from "smoothscroll-polyfill";
 // will import all features.. optimize.!
 import "core-js/features/array";
 import "core-js/features/object";
@@ -13,12 +14,7 @@ import "./index.css";
 import App from "./App";
 import configureStore, { history } from "./configureStore";
 
-// TODO: conditionally include polyfills either using polyfill.app or await :)
-/**
- * if (!("scrollBehavior" in document.documentElement.style)) {
-    await import("scroll-behavior-polyfill");
- */
-import "scroll-behavior-polyfill";
+smoothscroll.polyfill();
 
 // redux store
 const { store } = configureStore();

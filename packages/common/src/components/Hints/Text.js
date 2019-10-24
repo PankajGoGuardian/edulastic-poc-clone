@@ -12,6 +12,11 @@ const Text = styled.div`
   min-width: 80px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+
+  iframe,
+  img {
+    max-width: 100%;
+  }
 `;
 
 export default withMathFormula(Text);

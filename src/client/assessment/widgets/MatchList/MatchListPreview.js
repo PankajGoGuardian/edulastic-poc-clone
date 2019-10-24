@@ -385,6 +385,8 @@ const MatchListPreview = ({
                     >
                       <FlexContainer
                         maxWidth="100%"
+                        flexWrap="wrap"
+                        justifyContent="center"
                         display={horizontallyAligned ? "inline-flex" : "flex"}
                         flexDirection={horizontallyAligned ? "column" : "row"}
                         alignItems={horizontallyAligned ? "baseline" : "center"}

@@ -1576,7 +1576,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           layoutWidth: 600,
           layoutHeight: 600,
           layoutMargin: 0,
-          layoutSnapto: true,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y"
         },
@@ -1656,7 +1656,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           layoutWidth: 600,
           layoutHeight: 600,
           layoutMargin: 0,
-          layoutSnapto: true,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y"
         },

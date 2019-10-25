@@ -36,7 +36,6 @@ class Scoring extends Component {
       cleanSections,
       children
     } = this.props;
-
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData);
 
@@ -111,26 +110,22 @@ class Scoring extends Component {
           <Row gutter={60} center>
             <Col md={12}>
               <Row>
+                <Label>{t("component.options.scoringType")}</Label>
                 {scoringTypes.length > 1 && showSelect && (
                   <React.Fragment>
-                    <Col md={24} style={{ margin: 0 }}>
-                      <Label>{t("component.options.scoringType")}</Label>
-                    </Col>
-                    <Col md={24}>
-                      <SelectWrapper
-                        size="large"
-                        data-cy="scoringType"
-                        value={questionData.validation.scoringType}
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        onChange={value => handleChangeValidation("scoringType", value)}
-                      >
-                        {scoringTypes.map(({ value: val, label }) => (
-                          <Select.Option data-cy={val} key={val} value={val}>
-                            {label}
-                          </Select.Option>
-                        ))}
-                      </SelectWrapper>
-                    </Col>
+                    <SelectWrapper
+                      size="large"
+                      data-cy="scoringType"
+                      value={questionData.validation.scoringType}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                      onChange={value => handleChangeValidation("scoringType", value)}
+                    >
+                      {scoringTypes.map(({ value: val, label }) => (
+                        <Select.Option data-cy={val} key={val} value={val}>
+                          {label}
+                        </Select.Option>
+                      ))}
+                    </SelectWrapper>
                   </React.Fragment>
                 )}
               </Row>
@@ -153,25 +148,6 @@ class Scoring extends Component {
                 </SelectWrapper>
               </Col>
             )}
-            <Col md={12}>
-              <Row>
-                <Col md={24} style={{ margin: 0 }}>
-                  <Label>{t("component.options.penalty")}</Label>
-                </Col>
-                <Col md={24}>
-                  <FormGroup center>
-                    <Input
-                      type="number"
-                      data-cy="penalty"
-                      value={questionData.validation.penalty}
-                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
-                      size="large"
-                      style={{ width: "100%", borderColor: "#E1E1E1" }}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Col>
           </Row>
         )}
 

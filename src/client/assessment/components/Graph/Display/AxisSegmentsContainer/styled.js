@@ -178,38 +178,3 @@ export const JSXBox = styled.div`
     background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   }
 `;
-
-export const DropdownMenu = styled.ul`
-  position: absolute;
-  top: 108%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 150px;
-  margin: 1px 0 0;
-  list-style: none;
-  user-select: none;
-  white-space: nowrap;
-  border: 0;
-  padding: 20px 0;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
-  z-index: 10;
-
-  &:before {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    content: "";
-    transform: translateX(-50%);
-    z-index: 11;
-    width: 12px;
-    height: 10px;
-    border-style: solid;
-    border-width: 0 12px 10px 12px;
-    border-color: transparent transparent #fff transparent;
-  }
-`;

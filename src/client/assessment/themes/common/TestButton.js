@@ -99,10 +99,6 @@ const StyledButton = styled(Button)`
     background: ${props => props.theme.default.headerButtonActiveBgColor};
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
-  ${({ theme }) => theme.zoomedCss`
-      height: ${props => props.theme.default.headerToolbarButtonWidth};
-     width: ${theme.default.headerToolbarButtonHeight};
-  `}
 `;
 
 const StyledButtonLink = styled(ButtonLink)`

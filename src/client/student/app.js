@@ -25,8 +25,8 @@ import { addThemeBackgroundColor } from "../common/utils/helpers";
 
 const StudentApp = ({ match, selectedTheme, zoomLevel }) => {
   let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
-  themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-  themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
+  // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+  // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
   return (
     <ThemeProvider theme={themeToPass}>
@@ -76,7 +76,7 @@ const MainContainer = addThemeBackgroundColor(styled.div`
   padding-left: 100px;
   width: 100%;
 
-  &.zoom1 {
+  /* &.zoom1 {
     -moz-transform: scale(1.2, 1.2);
     zoom: 1.2;
     zoom: 120%;
@@ -98,7 +98,7 @@ const MainContainer = addThemeBackgroundColor(styled.div`
     -moz-transform: scale(2, 2);
     zoom: 2;
     zoom: 200%;
-  }
+  } */
 
   .fixed-header {
     position: fixed;

@@ -69,11 +69,6 @@ const AnswerAndScore = styled(Col)`
     font-weight: bold;
     color: #434b5d;
   }
-  ${({ theme }) =>
-    theme.zoomedCss`
-      width: auto;
-      max-width: fit-content;
-    `}
 `;
 
 const SpaceBetween = styled.div`
@@ -115,11 +110,6 @@ const RowData = styled(Row)`
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
     flex: 1;
   }
-  ${({ theme }) =>
-    theme.zoomedCss`
-      height: auto;
-      justify-content: space-between;
-    `}
   div {
     height: 100%;
     display: flex;

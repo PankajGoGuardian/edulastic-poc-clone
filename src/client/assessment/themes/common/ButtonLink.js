@@ -72,9 +72,6 @@ const Icon = styled.span`
   align-items: center;
   margin-right: 10px;
   font-size: 10px;
-  ${({ theme }) => theme.zoomedCss`
-    margin-right: 0px;
-  `}
 `;
 
 const Container = styled.div`
@@ -106,7 +103,4 @@ const Container = styled.div`
 
 const Text = styled.div`
   margin-top: 1px;
-  ${({ theme }) => theme.zoomedCss`
-    display: none;
-  `}
 `;

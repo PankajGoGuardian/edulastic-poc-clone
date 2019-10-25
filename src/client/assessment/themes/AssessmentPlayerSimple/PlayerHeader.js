@@ -209,13 +209,7 @@ const PlayerTitle = styled.h1`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    max-width: calc(100% - 45px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  `}
+/* 
 `;
 const Save = styled.div`
   background: ${props => props.theme.headerIconBgColor};
@@ -252,9 +246,6 @@ const ContainerRight = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   display: flex;
   margin-left: 40px;
-  ${({ theme }) => theme.zoomedCss`
-    margin-left: auto;
-  `}
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     margin-left: auto;
   }
@@ -267,11 +258,7 @@ const HeaderPracticePlayer = styled(Header)`
   z-index: 1;
 `;
 
-const HeaderFlexContainer = styled(FlexContainer)`
-  ${({ theme }) => theme.zoomedCss`
-    flex-direction: column;
-  `}
-`;
+const HeaderFlexContainer = styled(FlexContainer)``;
 
 const HeaderInnerContainer = styled.div`
   display: flex;

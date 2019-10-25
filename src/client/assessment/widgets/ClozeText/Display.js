@@ -316,10 +316,6 @@ const StyledParser = styled.div`
 
     input {
       font-size: ${props => props.theme.fontSize}px;
-      ${({ theme }) => theme.zoomedCss`
-          height: auto !important;
-          width: 200px !important;
-        `}
     }
   }
 `;

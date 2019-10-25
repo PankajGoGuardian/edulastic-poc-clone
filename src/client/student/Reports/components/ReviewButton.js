@@ -54,9 +54,4 @@ const ReviewButtonLink = styled(Link)`
     width: 80%;
     margin: 10px 0 0;
   }
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      width: 80%;
-      margin: 10px 0 0;
-    `}
 `;

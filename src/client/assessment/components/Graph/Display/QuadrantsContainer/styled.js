@@ -38,13 +38,6 @@ export const JSXBox = styled.div`
     color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
     background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    .graph-shape-label {
-      font-size: ${theme?.fontSize}px !important;
-      background-color: transparent !important;
-    }
-  `}
 `;
 export const LabelTop = WithMathFormula(styled.div`
   height: 20px;

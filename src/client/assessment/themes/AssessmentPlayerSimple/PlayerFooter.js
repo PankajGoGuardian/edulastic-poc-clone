@@ -44,10 +44,6 @@ const MainFooter = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    flex-wrap: wrap;
-  `}
 `;
 
 const CounterCircle = styled.div`
@@ -127,10 +123,6 @@ const TopFlexContainer = styled(FlexContainer)`
   @media (max-width: ${largeDesktopWidth}) {
     margin-bottom: 10px;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    margin-bottom: 10px;
-  `}
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`
@@ -138,13 +130,4 @@ const StyledFlexContainer = styled(FlexContainer)`
     flex-wrap: wrap;
     justify-content: flex-start;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    flex-wrap: wrap;
-    justify-content: flex-start;
-
-    & > button {
-      margin: 0px 10px 10px 0px;
-    }
-  `}
 `;

@@ -42,18 +42,6 @@ const NoDataBox = styled.div`
   img {
     width: 50px;
     margin-bottom: 15px;
-
-    ${({ theme }) =>
-      theme.respondTo.xl`
-        width: 150px;
-        height: 150px;
-      `}
-
-    ${({ theme }) =>
-      theme.respondTo.lg`
-        width: 100px;
-        height: 100px;
-      `}
   }
   h4 {
     color: ${props => (props.theme.assignment && props.theme.assignment.helpHeadingTextColor) || "#304050"};
@@ -64,21 +52,6 @@ const NoDataBox = styled.div`
     color: ${props => (props.theme.assignment && props.theme.assignment.helpTextColor) || "#848993"};
     font-size: ${props => props.theme.noData.NoDataArchiveSubTextSize};
     line-height: 22px;
-
-    ${({ theme }) =>
-      theme.zoomedCss`
-        line-height: normal;
-      `}
   }
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      width: 600px;
-      height: 600px;
-    `}
-
-  ${({ theme }) =>
-    theme.respondTo.lg`
-      width: 500px;
-      height: 500px;
-    `}
+}
 `;

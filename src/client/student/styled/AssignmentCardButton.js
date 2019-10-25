@@ -47,19 +47,6 @@ const StartAssignButton = styled(Button)`
   @media screen and (max-width: ${tabletWidth}) {
     margin-top: 10px;
   }
-
-  ${({ theme }) =>
-    theme.respondTo.lg`
-      max-width: 400px;
-    `}
-
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      margin: 20px auto 0px auto
-      width: 70%;
-      float: none;
-      max-width: 500px;
-    `}
 `;
 
 export default StartAssignButton;

@@ -52,6 +52,14 @@ const getSnapSize = (snapTo, axisDistance) => {
   return snapTo;
 };
 
+const getQuadrantsSnapSize = snapTo => {
+  if (snapTo) {
+    return 1;
+  } else {
+    return 0.000001;
+  }
+};
+
 class GraphDisplay extends Component {
   state = {
     graphIsValid: false
@@ -267,8 +275,8 @@ class GraphDisplay extends Component {
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
-        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
+        snapSizeX: getQuadrantsSnapSize(uiStyle.layoutSnapto),
+        snapSizeY: getQuadrantsSnapSize(uiStyle.layoutSnapto),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
         size: uiStyle.displayPositionPoint === false ? 0 : 3

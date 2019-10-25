@@ -254,13 +254,19 @@ class QuadrantsMoreOptions extends Component {
               </Select>
             </Col>
             <Col md={12}>
-              <Label>{t("component.graphing.layoutoptions.snapTo")}</Label>
+              {/* <Label>{t("component.graphing.layoutoptions.snapTo")}</Label>
               <MoreOptionsInput
                 type="text"
                 defaultValue="grid"
                 name="layoutSnapto"
                 value={layoutSnapto}
                 onChange={this.handleInputChange}
+              /> */}
+              <Checkbox
+                label={t("component.graphing.layoutoptions.snapTo")}
+                name="layoutSnapto"
+                onChange={() => this.handleCheckbox("layoutSnapto", layoutSnapto)}
+                checked={layoutSnapto}
               />
             </Col>
             <Col md={24}>

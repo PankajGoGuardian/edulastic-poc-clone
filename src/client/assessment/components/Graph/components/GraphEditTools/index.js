@@ -2,15 +2,14 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 
+import { Overlay, Popup, PopupContent } from "../../common/styled_components";
+
 import { Wrapper } from "./styled/Wrapper";
 import { ToolButton } from "./styled/ToolButton";
 import { IconFuncSymbol } from "./styled/IconFuncSymbol";
 import { IconPlus } from "./styled/IconPlus";
 import { IconMinus } from "./styled/IconMinus";
 import { IconSpanner } from "./styled/IconSpanner";
-import { Overlay } from "./styled/Overlay";
-import { Popup } from "./styled/Popup";
-import { Content } from "./styled/Content";
 import Equations from "./components/Equations";
 import Settings from "./components/Settings";
 import Annotations from "./components/Annotations";
@@ -149,12 +148,14 @@ class GraphEditTools extends Component {
               >
                 <IconFuncSymbol />
                 {selectedTool === FUNCTIONS_TOOL && (
-                  <Popup right>
+                  <Fragment>
                     <Overlay onClick={e => this.onOverlayClick(e)} />
-                    <Content>
-                      <Equations equations={equations} setEquations={setEquations} />
-                    </Content>
-                  </Popup>
+                    <Popup right>
+                      <PopupContent>
+                        <Equations equations={equations} setEquations={setEquations} />
+                      </PopupContent>
+                    </Popup>
+                  </Fragment>
                 )}
               </ToolButton>
             )}
@@ -164,12 +165,14 @@ class GraphEditTools extends Component {
             >
               T
               {selectedTool === ANNOTATIONS_TOOL && (
-                <Popup right>
+                <Fragment>
                   <Overlay onClick={e => this.onOverlayClick(e)} />
-                  <Content>
-                    <Annotations graphData={graphData} setQuestionData={setQuestionData} />
-                  </Content>
-                </Popup>
+                  <Popup right>
+                    <PopupContent>
+                      <Annotations graphData={graphData} setQuestionData={setQuestionData} />
+                    </PopupContent>
+                  </Popup>
+                </Fragment>
               )}
             </ToolButton>
           </Wrapper>
@@ -183,12 +186,14 @@ class GraphEditTools extends Component {
               >
                 <IconSpanner />
                 {selectedTool === SETTINGS_TOOL && (
-                  <Popup left>
+                  <Fragment>
                     <Overlay onClick={e => this.onOverlayClick(e)} />
-                    <Content>
-                      <Settings graphData={graphData} setQuestionData={setQuestionData} />
-                    </Content>
-                  </Popup>
+                    <Popup left>
+                      <PopupContent>
+                        <Settings graphData={graphData} setQuestionData={setQuestionData} />
+                      </PopupContent>
+                    </Popup>
+                  </Fragment>
                 )}
               </ToolButton>
             )}

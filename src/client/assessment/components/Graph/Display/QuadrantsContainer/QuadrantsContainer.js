@@ -2,6 +2,7 @@ import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, sortBy } from "lodash";
+import produce from "immer";
 
 import { WithResources } from "@edulastic/common";
 
@@ -601,6 +602,16 @@ class GraphContainer extends PureComponent {
     this.setElementsToGraph();
   };
 
+  setTools = tools => {
+    const { graphData, setQuestionData } = this.props;
+
+    setQuestionData(
+      produce(graphData, draft => {
+        draft.toolbar.tools = tools;
+      })
+    );
+  };
+
   render() {
     const {
       toolbar,
@@ -638,7 +649,9 @@ class GraphContainer extends PureComponent {
           {!disableResponse && (
             <StyledToolsContainer>
               <Tools
+                canEditTools={view === EDIT && !bgShapes}
                 tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible() ? [] : tools}
+                setTools={this.setTools}
                 controls={bgShapes ? this.allControls : controls}
                 selected={[selectedTool]}
                 onSelectControl={this.onSelectControl}

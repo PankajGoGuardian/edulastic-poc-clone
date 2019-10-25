@@ -58,6 +58,11 @@ class PreviewModal extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const { clearAnswers } = this.props;
+    clearAnswers();
+  }
+
   componentWillReceiveProps(nextProps) {
     const { flag } = this.state;
     const { isVisible } = nextProps;
@@ -72,7 +77,6 @@ class PreviewModal extends React.Component {
     clearPreview();
     changeView("clear");
     onClose();
-    clearAnswers();
   };
 
   handleDuplicateTestItem = async () => {

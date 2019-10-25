@@ -219,7 +219,7 @@ const OrderList = ({
       helperClass="sortableHelper"
       lockToContainerEdges={true}
       lockOffset={["10%", "0%"]}
-      lockAxis={item?.uiStyle?.type === "inline" ? "x" : "y"}
+      lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
     />
   ) : (
     <OrderListReport
@@ -330,7 +330,7 @@ const OrderList = ({
               helperClass="sortableHelper"
               lockToContainerEdges={true}
               lockOffset={["10%", "0%"]}
-              lockAxis={item?.uiStyle?.type === "inline" ? "x" : "y"}
+              lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
             />
           )}
         </Wrapper>

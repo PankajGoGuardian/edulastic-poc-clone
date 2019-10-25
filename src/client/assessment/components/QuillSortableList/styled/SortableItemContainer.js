@@ -6,7 +6,7 @@ export const SortableItemContainer = styled.div`
   font-size: ${props => props.fontSize || "14px"};
   min-height: 40px;
   margin: ${({ styleType }) =>
-    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 0 0" : "0 0 12px 0"};
+    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 12px 0"};
   display: inline-flex;
   flex-direction: column;
   background: ${white};

@@ -45,19 +45,11 @@ const getFontSizeVal = name => {
 };
 
 const getSnapSize = (snapTo, axisDistance) => {
-  if (snapTo === "grid" || Number.isNaN(parseInt(snapTo, 10))) {
+  if (snapTo) {
     if (axisDistance) return axisDistance;
     return 1; // default
   }
-  return snapTo;
-};
-
-const getQuadrantsSnapSize = snapTo => {
-  if (snapTo) {
-    return 1;
-  } else {
-    return 0.000001;
-  }
+  return 0.000001;
 };
 
 class GraphDisplay extends Component {
@@ -275,8 +267,8 @@ class GraphDisplay extends Component {
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getQuadrantsSnapSize(uiStyle.layoutSnapto),
-        snapSizeY: getQuadrantsSnapSize(uiStyle.layoutSnapto),
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
         size: uiStyle.displayPositionPoint === false ? 0 : 3

@@ -463,6 +463,7 @@ export const ToolbarItemIcon = styled.div`
 `;
 
 export const ToolBtn = styled.li`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -473,13 +474,16 @@ export const ToolBtn = styled.li`
   line-height: 1.5em;
   transition: all 0.1s ease-in;
   user-select: none;
-  box-shadow: 2px 2px 8px #00000026;
+  box-shadow: ${props => (props.bordered ? "none" : "2px 2px 8px #00000026")};
   border-radius: 4px;
+  border: ${props => (props.bordered ? `1px solid ${props.theme.borderColor}` : "none")};
 
-  svg {
-    color: ${props => props.theme.themeColor};
-    stroke: ${props => props.theme.themeColor};
-    fill: ${props => props.theme.themeColor};
+  > ${ToolbarItem} {
+    svg {
+      color: ${props => props.theme.themeColor};
+      stroke: ${props => props.theme.themeColor};
+      fill: ${props => props.theme.themeColor};
+    }
   }
 
   &:hover,
@@ -487,16 +491,70 @@ export const ToolBtn = styled.li`
   &.active {
     background-color: ${props => props.theme.themeColor};
     color: ${props => props.theme.containerWhite};
+    border: none;
 
-    svg {
-      color: ${props => props.theme.containerWhite};
-      stroke: ${props => props.theme.containerWhite};
-      fill: ${props => props.theme.containerWhite};
+    > ${ToolbarItem} {
+      svg {
+        color: ${props => props.theme.containerWhite};
+        stroke: ${props => props.theme.containerWhite};
+        fill: ${props => props.theme.containerWhite};
+      }
     }
   }
 
   &:active,
   &.active {
     box-shadow: none;
+  }
+`;
+
+export const Popup = styled.div`
+  position: absolute;
+  transform: ${props => (props.bottom ? "translate(-50%, 0)" : "none")};
+  left: ${props => (props.right ? "calc(100% + 20px)" : props.bottom ? "50%" : "unset")};
+  right: ${props => (props.left ? "calc(100% + 20px)" : "unset")};
+  top: ${props => (props.bottom ? "calc(100% + 20px)" : 0)};
+  box-shadow: 2px 2px 8px #939495bf;
+  border-radius: 6px;
+  cursor: default;
+  z-index: 10;
+
+  :before {
+    content: "";
+    position: absolute;
+    transform: rotate(45deg);
+    border-radius: 4px;
+    height: 20px;
+    width: 20px;
+    top: ${props => (props.bottom ? "-2px" : "10px")};
+    left: ${props => (props.right ? "-2px" : props.bottom ? "calc(50% - 10px)" : "calc(100% - 18px)")};
+    background: ${props => props.theme.containerWhite};
+    box-shadow: 2px -1px 5px #939495bf;
+  }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
+export const PopupContent = styled.div`
+  position: relative;
+  background: ${props => props.theme.containerWhite};
+  border-radius: 6px;
+  font-size: 14px;
+`;
+
+export const PopupToolsContainer = styled.div`
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+
+  ${ToolBtn} {
+    margin: 0;
   }
 `;

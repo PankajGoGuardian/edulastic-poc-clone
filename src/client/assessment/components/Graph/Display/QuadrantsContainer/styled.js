@@ -3,6 +3,7 @@ import { WithMathFormula } from "@edulastic/common";
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
+  z-index: 40;
 `;
 
 export const GraphWrapper = styled.div`

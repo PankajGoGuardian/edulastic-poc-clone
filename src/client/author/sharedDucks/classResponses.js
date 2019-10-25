@@ -174,7 +174,7 @@ function* receiveStudentQuestionSaga({ payload }) {
 function* receiveClassQuestionSaga({ payload }) {
   try {
     let feedbackResponse;
-    if (payload.testItemId) {
+    if (payload.testItemId || payload.itemId) {
       feedbackResponse = yield call(classResponseApi.questionClassItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);

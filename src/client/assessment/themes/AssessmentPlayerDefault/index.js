@@ -479,7 +479,7 @@ class AssessmentPlayerDefault extends React.Component {
                             checkAnswer={() => this.changeTabItemState("check")}
                             toggleBookmark={() => toggleBookmark(item._id)}
                             isBookmarked={isBookmarked}
-                            handleClick={this.showHideHints}
+                            handletoggleHints={this.showHideHints}
                           />
                         )}
                         {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
@@ -598,8 +598,7 @@ const enhance = compose(
       userAnswers: state.answers,
       zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme,
-      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
-      userAnswers: state.answers
+      previousQuestionActivities: get(state, "previousQuestionActivity", {})
     }),
     {
       changePreview: changePreviewAction,

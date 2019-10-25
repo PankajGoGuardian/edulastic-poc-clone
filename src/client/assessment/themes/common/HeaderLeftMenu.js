@@ -5,7 +5,7 @@ const MobileLeftMenu = css`
   min-width: auto;
   position: absolute;
   left: 10px;
-  top: 20px;
+  top: 5px;
 `;
 const HeaderLeftMenu = styled.div`
   text-align: left;

@@ -24,7 +24,7 @@ const TestButton = ({
   isBookmarked = false,
   items,
   currentItem: currentItemIndex,
-  handleClick
+  handletoggleHints
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
 
@@ -45,7 +45,7 @@ const TestButton = ({
       )}
       {!!showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
-          <StyledButton onClick={handleClick}>
+          <StyledButton onClick={handletoggleHints}>
             <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
               {t("common.test.hint")}
             </StyledButtonLink>

@@ -1,14 +1,37 @@
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useState } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { get } from "lodash";
+import { Tooltip } from "antd";
 import styled from "styled-components";
-import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
-import { IconLogoCompact, IconSave, IconPause, IconLogout, IconSend } from "@edulastic/icons";
-import { IPAD_PORTRAIT_WIDTH, headerOffsetHashMap } from "../../constants/others";
-import { boxShadowDefault } from "@edulastic/colors";
-import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 
-import ProgressContainer from "./ProgressContainer";
+import { nonAutoGradableTypes } from "@edulastic/constants";
+import { IconLogoCompact, IconSave, IconPause, IconLogout, IconSend } from "@edulastic/icons";
+import { withWindowSizes } from "@edulastic/common";
+import { boxShadowDefault } from "@edulastic/colors";
+
+import {
+  Header,
+  FlexContainer,
+  HeaderLeftMenu,
+  MobileMainMenu as Mobile,
+  HeaderMainMenu,
+  TestButton,
+  ToolButton
+} from "../common";
+import {
+  IPAD_PORTRAIT_WIDTH,
+  MEDIUM_DESKTOP_WIDTH,
+  SMALL_DESKTOP_WIDTH,
+  headerOffsetHashMap
+} from "../../constants/others";
+
+import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import { ifZoomed } from "../../../common/utils/helpers";
+import ToolBar from "./ToolBar";
+import { isZoomGreator } from "../../../common/utils/helpers";
+import ToolbarModal from "../common/ToolbarModal";
 
 const PlayerHeader = ({
   title,
@@ -20,57 +43,118 @@ const PlayerHeader = ({
   onPause,
   onSaveProgress,
   showSubmit,
-  onSubmit
+  onSubmit,
+  settings,
+  windowWidth,
+  items,
+  answerChecksUsedForItem,
+  checkAnswer,
+  toggleBookmark,
+  isBookmarked,
+  onshowHideHints,
+  toggleToolsOpenStatus,
+  toolsOpenStatus
 }) => {
+  const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
+
+  const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
+
   const isZoomed = ifZoomed(theme?.zoomLevel);
   const InnerContainer = isZoomed ? HeaderInnerContainer : Fragment;
-
+  const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", theme?.zoomLevel);
+  const navZoomStyle = { zoom: theme?.header?.navZoom };
+  let isNonAutoGradable = false;
+  const item = items[currentItem];
+  if (item.data && item.data.questions) {
+    item.data.questions.forEach(question => {
+      if (nonAutoGradableTypes.includes(question.type)) {
+        isNonAutoGradable = true;
+      }
+    });
+  }
   return (
     <Fragment>
+      <ToolbarModal
+        isVisible={isToolbarModalVisible}
+        onClose={() => setToolbarModalVisible(false)}
+        checkAnswer={checkAnswer}
+        windowWidth={windowWidth}
+      />
       <HeaderPracticePlayer>
         <HeaderLeftMenu skinb={"true"}>
           <LogoCompact color={"#fff"} />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
-          <HeaderFlexContainer>
+          <HeaderFlexContainer justifyContent="space-between">
             <PlayerTitle>{title}</PlayerTitle>
             <InnerContainer>
-              <ProgressContainer
-                questions={dropdownOptions}
-                current={currentItem + 1}
-                desktop={"true"}
-                isZoomed={isZoomed}
-              />
-              <ContainerRight>
-                <FlexDisplay>
-                  {showSubmit && (
-                    <Save onClick={onSubmit} title="Submit">
-                      <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+              <FlexContainer justifyContent="flex-end">
+                {showSettingIcon && (
+                  <ToolTipContainer>
+                    <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
+                      <ToolButton
+                        next
+                        skin
+                        size="large"
+                        type="primary"
+                        icon="tool"
+                        data-cy="setting"
+                        onClick={() => setToolbarModalVisible(true)}
+                      />
+                    </Tooltip>
+                  </ToolTipContainer>
+                )}
+                {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                  <TestButton
+                    answerChecksUsedForItem={answerChecksUsedForItem}
+                    settings={settings}
+                    items={items}
+                    currentItem={currentItem}
+                    isNonAutoGradable={isNonAutoGradable}
+                    checkAnswer={checkAnswer}
+                    toggleBookmark={() => toggleBookmark(item._id)}
+                    isBookmarked={isBookmarked}
+                    handletoggleHints={onshowHideHints}
+                  />
+                )}
+                {windowWidth >= MEDIUM_DESKTOP_WIDTH && !isZoomGreator("md", theme?.zoomLevel) && (
+                  <ToolBar
+                    settings={settings}
+                    calcBrands={calcBrands}
+                    tools={toolsOpenStatus}
+                    changeCaculateMode={() => {}}
+                    toggleToolsOpenStatus={toggleToolsOpenStatus}
+                    qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+                  />
+                )}
+                <ContainerRight>
+                  <FlexDisplay>
+                    {showSubmit && (
+                      <Save onClick={onSubmit} title="Submit">
+                        <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                      </Save>
+                    )}
+                    <Save onClick={onSaveProgress} title="Save">
+                      <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                     </Save>
-                  )}
-                  <Save onClick={onSaveProgress} title="Save">
-                    <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                  </Save>
-                  {onPause && (
-                    <Save onClick={onPause} title="Pause">
-                      <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                    {onPause && (
+                      <Save onClick={onPause} title="Pause">
+                        <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                      </Save>
+                    )}
+                    {!onPause && (
+                      <StyledLink to="/home/assignments">
+                        <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
+                      </StyledLink>
+                    )}
+                    <Save onClick={onOpenExitPopup} title="Exit">
+                      <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
                     </Save>
-                  )}
-                  {!onPause && (
-                    <StyledLink to="/home/assignments">
-                      <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                    </StyledLink>
-                  )}
-                  <Save onClick={onOpenExitPopup} title="Exit">
-                    <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                  </Save>
-                </FlexDisplay>
-              </ContainerRight>
+                  </FlexDisplay>
+                </ContainerRight>
+              </FlexContainer>
             </InnerContainer>
           </HeaderFlexContainer>
-          <Mobile>
-            <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
-          </Mobile>
         </HeaderMainMenu>
       </HeaderPracticePlayer>
       <Mobile>
@@ -90,7 +174,18 @@ PlayerHeader.defaultProps = {
   onSaveProgress: () => {}
 };
 
-export default PlayerHeader;
+const enhance = compose(
+  withRouter,
+  withWindowSizes,
+  connect(
+    state => ({
+      settings: state.test.settings
+    }),
+    null
+  )
+);
+
+export default enhance(PlayerHeader);
 
 const LogoCompact = styled(IconLogoCompact)`
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
@@ -170,9 +265,6 @@ const HeaderPracticePlayer = styled(Header)`
   box-shadow: ${boxShadowDefault};
   height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
   z-index: 1;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    height: 104px;
-  }
 `;
 
 const HeaderFlexContainer = styled(FlexContainer)`
@@ -184,4 +276,8 @@ const HeaderFlexContainer = styled(FlexContainer)`
 const HeaderInnerContainer = styled.div`
   display: flex;
   margin-top: 10px;
+`;
+
+const ToolTipContainer = styled.div`
+  zoom: ${({ theme }) => theme?.header?.navZoom};
 `;

@@ -7,20 +7,7 @@ import { IconCorrect } from "@edulastic/icons";
 import { themeColor, white, largeDesktopWidth } from "@edulastic/colors";
 import { showHintButton } from "../../utils/test";
 
-const PlayerFooter = ({
-  onCheckAnswer,
-  isFirst,
-  isLast,
-  moveToPrev,
-  moveToNext,
-  t,
-  settings,
-  answerChecksUsedForItem,
-  unansweredQuestionCount,
-  onShowHints,
-  showHints,
-  questions
-}) => {
+const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount }) => {
   return (
     <MainFooter>
       <TopFlexContainer>
@@ -39,25 +26,6 @@ const PlayerFooter = ({
             {unansweredQuestionCount} Left
           </span>
         </QuestionsLeftToAttempt>
-        {!!showHintButton(questions) && (
-          <ActionsButton
-            onClick={onShowHints}
-            style={
-              showHints ? { backgroundColor: themeColor, color: white } : { backgroundColor: white, color: themeColor }
-            }
-          >
-            <span>{t("pagination.hints")}</span>
-          </ActionsButton>
-        )}
-        {!!settings.maxAnswerChecks && (
-          <ActionsButton
-            onClick={onCheckAnswer}
-            title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
-          >
-            <CounterCircle>{settings.maxAnswerChecks - answerChecksUsedForItem}</CounterCircle>
-            <span>{t("pagination.checkanswer")} </span>
-          </ActionsButton>
-        )}
       </StyledFlexContainer>
     </MainFooter>
   );

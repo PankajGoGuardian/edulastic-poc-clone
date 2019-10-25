@@ -11,7 +11,7 @@ export const TextWrapper = styled(Text)`
   text-align: ${props => (props.textalign ? props.textalign : "")};
   display: ${props => (props.display ? props.display : "inline-block")};
   margin-bottom: ${props => (props.mb ? props.mb : "")};
-  font-weight: ${props => (props.fw ? props.fw : "SemiBold")};
+  font-weight: ${props => (props.fw ? props.fw : "700")};
   padding: ${props => props.padding};
 `;
 export const LinkWrapper = styled.a`

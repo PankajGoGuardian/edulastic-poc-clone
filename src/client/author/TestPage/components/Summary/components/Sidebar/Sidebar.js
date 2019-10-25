@@ -87,7 +87,7 @@ const Sidebar = ({
           onChangeField={onChangeField}
           isEditable={isEditable}
         />
-        <MainTitle>{"Assessment Name"}</MainTitle>
+        <MainTitle>{"Test Name"}</MainTitle>
         <SummaryInput
           value={title}
           data-cy="testname"

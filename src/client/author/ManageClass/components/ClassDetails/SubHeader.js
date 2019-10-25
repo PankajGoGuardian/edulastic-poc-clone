@@ -70,7 +70,7 @@ const SubHeader = ({
   return (
     <ContainerHeader>
       <RightContent>
-        <AnchorLink to="/author/assignments">View Test</AnchorLink>
+        <AnchorLink to="/author/assignments">VIEW TEST</AnchorLink>
         {allowGoogleLogin !== false &&
           active === 1 &&
           (isUserGoogleLoggedIn ? (

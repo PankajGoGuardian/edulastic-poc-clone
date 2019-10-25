@@ -12,7 +12,8 @@ import {
   themeColor,
   title,
   testTypeColor,
-  smallDesktopWidth
+  smallDesktopWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -222,6 +223,10 @@ export const AssignmentTD = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: ${({ showFilter }) => (showFilter ? "194px" : "250px")};
+  }
 `;
 
 export const IconArrowDown = styled.img`
@@ -283,6 +288,11 @@ export const BtnStatus = styled(Button)`
   text-align: center;
   border-radius: 5px;
   background-color: ${props => defineStatusBg(props.status)};
+  &:hover,
+  &:focus {
+    background-color: ${props => defineStatusBg(props.status)};
+    color: ${white};
+  }
 
   @media (max-width: ${mediumDesktopWidth}) {
     height: 20px;

@@ -64,7 +64,7 @@ const MyClasses = ({
   return (
     <Container>
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
-        My classes
+        My Classes
       </TextWrapper>
       {loading ? (
         <Spin style={{ marginTop: "80px" }} />

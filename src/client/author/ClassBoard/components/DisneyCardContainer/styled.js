@@ -8,7 +8,8 @@ import {
   tabletWidth,
   red,
   themeColor,
-  lightGreen4
+  lightGreen4,
+  extraDesktopWidth
 } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
@@ -147,6 +148,11 @@ export const CircularDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 12px;
+
+  @media (min-width: ${extraDesktopWidth}) {
+    margin-right: 18px;
+  }
 `;
 
 export const StyledFlexDiv = styled.div`

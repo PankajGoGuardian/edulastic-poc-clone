@@ -258,8 +258,8 @@ export const AnchorLink = styled(Link)`
 
 export const ClassCode = styled.div`
   font-size: 12px;
-  font-weight: 600;
-  margin-left: 8px;
+  font-weight: 700;
+  margin: 0px 5px;
   color: ${cardTitleColor};
   text-transform: uppercase;
   span {

@@ -44,6 +44,7 @@ export const SideContentWrapper = styled.div`
   padding: 1.2rem;
   width: 275px !important;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};

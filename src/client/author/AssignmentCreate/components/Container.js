@@ -59,7 +59,7 @@ class Container extends Component {
             <FlexWrapper>
               <FeaturesSwitch inputFeatures="playlist" actionOnInaccessible="hidden" key="playlist">
                 <CardComponent>
-                  <IconWrapper>
+                  <IconWrapper marginBottom="0px">
                     <IconPlaylist style={{ height: "40px", width: "40px" }} />
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
@@ -73,7 +73,7 @@ class Container extends Component {
                 </CardComponent>
               </FeaturesSwitch>
               <CardComponent>
-                <IconWrapper>
+                <IconWrapper marginBottom="0px">
                   <IconTestBank style={{ height: "40px", width: "40px" }} />
                 </IconWrapper>
                 <TitleWrapper>Choose From Library</TitleWrapper>

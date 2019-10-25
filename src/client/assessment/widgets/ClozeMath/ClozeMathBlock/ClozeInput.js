@@ -63,5 +63,5 @@ export default ClozeInput;
 
 const InputDiv = styled.div`
   display: inline-block;
-  margin: 2px 4px;
+  margin: 0px 2px;
 `;

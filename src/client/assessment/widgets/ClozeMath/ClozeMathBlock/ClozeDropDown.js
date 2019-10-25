@@ -17,7 +17,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     checked,
     item,
     onInnerClick,
-    uiStyles = {},
     showIndex
   } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
@@ -71,7 +70,7 @@ export default ClozeDropDown;
 
 const StyledSelect = styled(Select)`
   min-width: 120px;
-  margin: 2px 4px;
+  margin: 0px 2px;
   width: ${props => props.width};
   height: ${props => props.height};
   min-height: 35px;

@@ -1533,7 +1533,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1
         },
         controlbar: {
-          controls: ["undo", "redo"],
+          controls: ["undo", "redo", "reset", "delete"],
           defaultControl: "undo"
         },
         toolbar: {
@@ -1613,7 +1613,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1
         },
         controlbar: {
-          controls: ["undo", "redo"],
+          controls: ["undo", "redo", "reset", "delete"],
           defaultControl: "undo"
         },
         toolbar: {

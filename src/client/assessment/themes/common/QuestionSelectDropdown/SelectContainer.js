@@ -1,7 +1,11 @@
 import styled, { css } from "styled-components";
+import { IPAD_LANDSCAPE_WIDTH, IPAD_PORTRAIT_WIDTH } from "../../../constants/others";
 
 const MobileMenuStyle = css`
-  @media (max-width: 768px) {
+  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
+    top: 120px;
+  }
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     position: absolute;
     top: 120px;
     left: 26px;

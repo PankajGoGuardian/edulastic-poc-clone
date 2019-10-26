@@ -52,11 +52,11 @@ const SettingsModal = ({
         <Col md={12}>Zoom</Col>
         <Col md={12}>
           <Select dropdownStyle={dropdownStyle} style={{ width: "80%" }} value={zoomLevel} onChange={setZoomLevel}>
-            <Select.Option value="xs">No default zoom applied</Select.Option>
-            <Select.Option value="sm">Default level of zoom is set to 1.5X</Select.Option>
-            <Select.Option value="md">Default level of zoom is set to 1.75X</Select.Option>
-            <Select.Option value="lg">Default level of zoom is set to 2.5X</Select.Option>
-            <Select.Option value="xl">Default level of zoom is set to 3X</Select.Option>
+            <Select.Option value="1">No default zoom applied</Select.Option>
+            <Select.Option value="1.5">Default level of zoom is set to 1.5X</Select.Option>
+            <Select.Option value="1.75">Default level of zoom is set to 1.75X</Select.Option>
+            <Select.Option value="2.5">Default level of zoom is set to 2.5X</Select.Option>
+            <Select.Option value="3">Default level of zoom is set to 3X</Select.Option>
           </Select>
         </Col>
       </RowWithMargin>

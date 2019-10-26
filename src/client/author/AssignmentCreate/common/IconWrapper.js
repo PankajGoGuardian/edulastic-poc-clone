@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const IconWrapper = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: ${props => props.marginBottom || "15px"};
 `;
 
 export default IconWrapper;

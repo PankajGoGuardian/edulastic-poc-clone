@@ -163,11 +163,6 @@ const VisitClassButton = styled(Button)`
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
     border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   }
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      padding: 10px 0px;
-    `}
 `;
 
 const CardBody = styled(Row)`

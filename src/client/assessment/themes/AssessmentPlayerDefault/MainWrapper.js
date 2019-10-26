@@ -1,19 +1,19 @@
 import styled from "styled-components";
 
 const MainWrapper = styled.section`
-  width: 100%;
+  width: ${props => props.responsiveWidth}px;
   background-color: ${props =>
     props.hasCollapseButtons ? "transparent" : props.theme.widgets.assessmentPlayers.mainContentBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
   min-height: 100vh;
-  margin: auto;
   box-sizing: border-box;
   padding: 0px;
   text-align: left;
   border-radius: 4px;
   box-shadow: ${props => (props.hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
   max-width: 100%;
-  width: 100%;
+  transform: ${({ zoomLevel }) => zoomLevel && `scale(${zoomLevel})`};
+  transform-origin: top left;
 
   @media (max-width: 1100px) {
     width: 100%;

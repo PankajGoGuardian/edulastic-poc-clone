@@ -151,9 +151,15 @@ const BackgroundStyleWrapper = styled.div.attrs({
       if (centerContent) {
         return `.fr-element p,
         &.show-placeholder .fr-placeholder{
-          margin-left:auto !important;
-          margin-right:auto !important;
-          width: max-content !important;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          overflow-wrap: break-word;
+          img{
+            margin:auto;
+            display:block;
+          }
         }        
         `;
       }

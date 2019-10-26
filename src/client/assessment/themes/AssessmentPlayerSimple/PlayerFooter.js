@@ -7,20 +7,7 @@ import { IconCorrect } from "@edulastic/icons";
 import { themeColor, white, largeDesktopWidth } from "@edulastic/colors";
 import { showHintButton } from "../../utils/test";
 
-const PlayerFooter = ({
-  onCheckAnswer,
-  isFirst,
-  isLast,
-  moveToPrev,
-  moveToNext,
-  t,
-  settings,
-  answerChecksUsedForItem,
-  unansweredQuestionCount,
-  onShowHints,
-  showHints,
-  questions
-}) => {
+const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount }) => {
   return (
     <MainFooter>
       <TopFlexContainer>
@@ -39,25 +26,6 @@ const PlayerFooter = ({
             {unansweredQuestionCount} Left
           </span>
         </QuestionsLeftToAttempt>
-        {!!showHintButton(questions) && (
-          <ActionsButton
-            onClick={onShowHints}
-            style={
-              showHints ? { backgroundColor: themeColor, color: white } : { backgroundColor: white, color: themeColor }
-            }
-          >
-            <span>{t("pagination.hints")}</span>
-          </ActionsButton>
-        )}
-        {!!settings.maxAnswerChecks && (
-          <ActionsButton
-            onClick={onCheckAnswer}
-            title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
-          >
-            <CounterCircle>{settings.maxAnswerChecks - answerChecksUsedForItem}</CounterCircle>
-            <span>{t("pagination.checkanswer")} </span>
-          </ActionsButton>
-        )}
       </StyledFlexContainer>
     </MainFooter>
   );
@@ -76,10 +44,6 @@ const MainFooter = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    flex-wrap: wrap;
-  `}
 `;
 
 const CounterCircle = styled.div`
@@ -159,10 +123,6 @@ const TopFlexContainer = styled(FlexContainer)`
   @media (max-width: ${largeDesktopWidth}) {
     margin-bottom: 10px;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    margin-bottom: 10px;
-  `}
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`
@@ -170,13 +130,4 @@ const StyledFlexContainer = styled(FlexContainer)`
     flex-wrap: wrap;
     justify-content: flex-start;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    flex-wrap: wrap;
-    justify-content: flex-start;
-
-    & > button {
-      margin: 0px 10px 10px 0px;
-    }
-  `}
 `;

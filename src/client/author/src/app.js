@@ -78,7 +78,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
   }, [orgId]);
   const isPrintPreview = history.location.pathname.includes("printpreview");
 
-  const themeToPass = getZoomedTheme(themes.default, "xs");
+  const themeToPass = themes.default;
 
   return (
     <ThemeProvider theme={themeToPass}>

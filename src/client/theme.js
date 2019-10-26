@@ -154,10 +154,10 @@ const HeaderHeight = {
 
 const ThemeZoomMap = {
   xs: 1,
-  sm: 1.2,
-  md: 1.5,
-  lg: 1.8,
-  xl: 2.2
+  sm: 1,
+  md: 1,
+  lg: 1,
+  xl: 1
 };
 
 export const themeColorsMap = {

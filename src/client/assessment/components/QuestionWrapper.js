@@ -355,8 +355,8 @@ class QuestionWrapper extends Component {
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
     let themeToPass = themes[selectedTheme] || themes.default;
-    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-    themeToPass = playersZoomTheme(themeToPass);
+    // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    // themeToPass = playersZoomTheme(themeToPass);
 
     return (
       <ThemeProvider

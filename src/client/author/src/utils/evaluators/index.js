@@ -29,10 +29,6 @@ const mathEvaluate = async (data, type) => {
   return await evaluateApi.evaluate(data, type);
 };
 
-const graphEvaluate = async data => {
-  return await graphEvaluateApi.evaluate(data, questionType.GRAPH);
-};
-
 // clozeDropDown and ClozeText shares same logic
 const evaluators = {
   [questionType.MULTIPLE_CHOICE]: multipleChoice,
@@ -63,7 +59,7 @@ const evaluators = {
   [questionType.TOKEN_HIGHLIGHT]: tokenhighlight,
   [questionType.SHADING]: shading,
   [questionType.FORMULA_ESSAY]: essayRichText,
-  [questionType.GRAPH]: graphEvaluate,
+  [questionType.GRAPH]: mathEvaluate,
   [questionType.FRACTION_EDITOR]: fractionEditor
 };
 

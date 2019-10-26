@@ -76,8 +76,8 @@ class AssessmentPlayerTestlet extends React.Component {
 
     let themeToPass = theme[selectedTheme] || theme.default;
 
-    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-    themeToPass = playersZoomTheme(themeToPass);
+    // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    // themeToPass = playersZoomTheme(themeToPass);
 
     return (
       <ThemeProvider theme={themeToPass}>

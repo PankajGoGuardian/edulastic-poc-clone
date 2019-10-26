@@ -62,11 +62,6 @@ export const AssignmentTitle = styled.div`
   text-align: left;
   color: ${props => props.theme.header.headerTitleTextColor};
 
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      padding-bottom: 20px;
-    `}
-
   @media screen and (max-width: 768px) {
     padding-left: 0;
   }

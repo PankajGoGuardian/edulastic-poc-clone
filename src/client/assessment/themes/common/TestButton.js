@@ -24,7 +24,7 @@ const TestButton = ({
   isBookmarked = false,
   items,
   currentItem: currentItemIndex,
-  handleClick
+  handletoggleHints
 }) => {
   const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
 
@@ -45,7 +45,7 @@ const TestButton = ({
       )}
       {!!showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
-          <StyledButton onClick={handleClick}>
+          <StyledButton onClick={handletoggleHints}>
             <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
               {t("common.test.hint")}
             </StyledButtonLink>
@@ -99,10 +99,6 @@ const StyledButton = styled(Button)`
     background: ${props => props.theme.default.headerButtonActiveBgColor};
     border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
-  ${({ theme }) => theme.zoomedCss`
-      height: ${props => props.theme.default.headerToolbarButtonWidth};
-     width: ${theme.default.headerToolbarButtonHeight};
-  `}
 `;
 
 const StyledButtonLink = styled(ButtonLink)`

@@ -510,11 +510,4 @@ export default GraphComponent;
 const StyledStimulus = styled(Stimulus)`
   word-break: break-all;
   white-space: pre-wrap;
-
-  ${({ theme }) =>
-    theme.zoomedCss`
-      & > p {
-        font-size: ${theme.fontSize}px
-      }
-    `}
 `;

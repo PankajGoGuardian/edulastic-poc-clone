@@ -51,11 +51,6 @@ const HeaderContainer = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props => props.theme.HeaderHeight.xl}px;
   }
-
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      padding-top: 120px;
-    `}
 `;
 
 const FixedHeader = styled(Affix)`
@@ -95,10 +90,11 @@ const AssignmentsHeader = styled(Layout.Header)`
     padding: 0 26px 0 0;
   }
 
-  ${({ theme }) =>
-    theme.respondTo.xl`
-      height: 120px;
-    `}
+  .ant-col-24 {
+    align-items: center;
+    line-height: 1.2;
+    display: flex;
+  }
 `;
 
 const StyledCol = styled(Col)`

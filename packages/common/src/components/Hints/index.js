@@ -41,7 +41,7 @@ const Hints = ({ questions = [] }) => {
   if (!validHints) return <Wrapper>No Hints</Wrapper>;
   return (
     <ThemeProvider theme={{ isV1Migrated: questions[0]?.isV1Migrated }}>
-      <Wrapper>
+      <Wrapper className="fr-view">
         <Title>Hints</Title>
         {questions.map(question => {
           return question.hints ? (

@@ -4,10 +4,10 @@ const desktop = 320;
 
 export const breakpoints = {
   xs: 1,
-  sm: 1.5,
-  md: 2,
-  lg: 3,
-  xl: 4
+  sm: 1,
+  md: 1,
+  lg: 1,
+  xl: 1
 };
 
 const respondToBreakpoint = (zoomLevel, breakpoint) => (...style) => {

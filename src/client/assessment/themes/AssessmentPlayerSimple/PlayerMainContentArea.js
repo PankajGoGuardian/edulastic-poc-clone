@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -18,37 +18,43 @@ const PlayerContentArea = ({
   dropdownOptions,
   currentItem,
   gotoQuestion,
-  onCheckAnswer,
   isFirst,
   isLast,
   moveToPrev,
   moveToNext,
   questions,
-  answerChecksUsedForItem,
-  settings,
   t,
   unansweredQuestionCount,
   items,
-  theme
+  theme,
+  showHints,
+  testItemState
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
   const scrollElementRef = useRef(null);
-  const [showHints, setShowHints] = useState(false);
   const item = items[currentItem];
 
   const toggleSideBar = () => {
     setSidebarVisible(isSidebarVisible => !isSidebarVisible);
   };
 
-  useEffect(() => {
-    setShowHints(false);
-  }, [currentItem]);
   return (
     <Main skinB="true">
       <MainWrapper isSidebarVisible={isSidebarVisible}>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
         <MainContent innerRef={scrollElementRef}>
-          <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
+          {testItemState === "" && (
+            <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
+          )}
+          {testItemState === "check" && (
+            <TestItemPreview
+              cols={itemRows}
+              previewTab={"check"}
+              preview="show"
+              questions={questions}
+              showCollapseBtn
+            />
+          )}
           {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
         </MainContent>
         <PlayerFooter
@@ -56,12 +62,6 @@ const PlayerContentArea = ({
           isFirst={isFirst}
           moveToNext={moveToNext}
           moveToPrev={moveToPrev}
-          onCheckAnswer={onCheckAnswer}
-          answerChecksUsedForItem={answerChecksUsedForItem}
-          settings={settings}
-          showHints={showHints}
-          onShowHints={() => setShowHints(showHint => !showHint)}
-          questions={item?.data?.questions || []}
           t={t}
           unansweredQuestionCount={unansweredQuestionCount}
         />
@@ -157,6 +157,7 @@ const MainWrapper = styled.div`
   }};
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     width: 100%;
+    padding: 0px;
   }
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     padding: 120px 0px;

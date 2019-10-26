@@ -23,6 +23,7 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
+import { setZoomLevelAction } from "../../../student/Sidebar/ducks";
 
 import {
   ControlBtn,
@@ -76,7 +77,9 @@ class AssessmentPlayerDefault extends React.Component {
       calculateMode: `${settings.calcType}_DESMOS`,
       currentToolMode: [0],
       showHints: false,
-      enableCrossAction: false
+      enableCrossAction: false,
+      zoomFactor: 1,
+      minWidth: 350
     };
 
     this.scrollElementRef = React.createRef();
@@ -291,6 +294,7 @@ class AssessmentPlayerDefault extends React.Component {
       itemRows,
       evaluation,
       windowWidth,
+      windowHeight,
       questions,
       moveToNext,
       moveToPrev,
@@ -312,6 +316,7 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel,
       selectedTheme = "default",
       closeTestPreviewModal,
+      setZoomLevel,
       showTools = true
     } = this.props;
     const {
@@ -327,7 +332,9 @@ class AssessmentPlayerDefault extends React.Component {
       calculateMode,
       currentToolMode,
       showHints,
-      enableCrossAction
+      enableCrossAction,
+      minWidth,
+      zoomFactor
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -348,13 +355,22 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const scratchPadMode = currentToolMode.indexOf(5) !== -1;
+    const zoomedWidth = windowWidth * zoomLevel;
+    const availableWidth = windowWidth - 70;
+    let responsiveWidth = availableWidth;
+    if (zoomedWidth > availableWidth) {
+      responsiveWidth = availableWidth / zoomLevel;
+    }
+    // responsiveWidth = Math.max(minWidth,windowWidth/zoomLevel);
+    responsiveWidth = Math.max(minWidth, windowWidth / zoomLevel);
+
     const hasCollapseButtons =
       itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
 
-    let themeToPass = theme[selectedTheme] || theme.default;
+    const themeToPass = theme[selectedTheme] || theme.default;
 
-    themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-    themeToPass = playersZoomTheme(themeToPass);
+    // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
+    // themeToPass = playersZoomTheme(themeToPass);
 
     const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
 
@@ -366,6 +382,7 @@ class AssessmentPlayerDefault extends React.Component {
           innerRef={this.scrollElementRef}
           data-cy="assessment-player-default-wrapper"
         >
+
           {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
               onFillColorChange={this.onFillColorChange}
@@ -411,27 +428,30 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
+                    transform: `scale(${zoomLevel >= "1.75" ? "1.5" : "1.25"})`, // maxScale of 1.5 to header
+                    transformOrigin: "0px 0px",
+                    width: `${zoomLevel >= "1.75" ? "66.67" : "80"}%`,
+                    padding: `${zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
                     justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
                   }}
                 >
-                  {!LCBPreviewModal && (
-                    <QuestionSelectDropdown
-                      key={currentItem}
-                      currentItem={currentItem}
-                      gotoQuestion={gotoQuestion}
-                      options={dropdownOptions}
-                      bookmarks={bookmarksInOrder}
-                      skipped={skippedInOrder}
-                      dropdownStyle={navZoomStyle}
-                    />
-                  )}
-
                   <FlexContainer
                     style={{
-                      flex: 1,
+                      flex: `1 1 ${zoomLevel >= "1.75" ? "70%" : "50%"}`,
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
+                    {!LCBPreviewModal && (
+                      <QuestionSelectDropdown
+                        key={currentItem}
+                        currentItem={currentItem}
+                        gotoQuestion={gotoQuestion}
+                        options={dropdownOptions}
+                        bookmarks={bookmarksInOrder}
+                        skipped={skippedInOrder}
+                        dropdownStyle={navZoomStyle}
+                      />
+                    )}
                     {!LCBPreviewModal && (
                       <>
                         <ToolTipContainer>
@@ -479,7 +499,7 @@ class AssessmentPlayerDefault extends React.Component {
                             checkAnswer={() => this.changeTabItemState("check")}
                             toggleBookmark={() => toggleBookmark(item._id)}
                             isBookmarked={isBookmarked}
-                            handleClick={this.showHideHints}
+                            handletoggleHints={this.showHideHints}
                           />
                         )}
                         {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
@@ -494,6 +514,8 @@ class AssessmentPlayerDefault extends React.Component {
                         )}
                       </>
                     )}
+                  </FlexContainer>
+                  <>
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
@@ -501,7 +523,7 @@ class AssessmentPlayerDefault extends React.Component {
                     {previewPlayer && (
                       <SaveAndExit previewPlayer={previewPlayer} finishTest={() => closeTestPreviewModal()} />
                     )}
-                  </FlexContainer>
+                  </>
                 </FlexContainer>
                 <FlexContainer />
               </HeaderMainMenu>
@@ -520,7 +542,11 @@ class AssessmentPlayerDefault extends React.Component {
               saveHistory={this.saveHistory("scratchpad")}
               history={scratchPad}
             />
-            <MainWrapper hasCollapseButtons={hasCollapseButtons}>
+            <MainWrapper
+              responsiveWidth={responsiveWidth}
+              zoomLevel={zoomLevel}
+              hasCollapseButtons={hasCollapseButtons}
+            >
               {testItemState === "" && (
                 <TestItemPreview
                   LCBPreviewModal={LCBPreviewModal}
@@ -598,8 +624,7 @@ const enhance = compose(
       userAnswers: state.answers,
       zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme,
-      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
-      userAnswers: state.answers
+      previousQuestionActivities: get(state, "previousQuestionActivity", {})
     }),
     {
       changePreview: changePreviewAction,
@@ -609,6 +634,7 @@ const enhance = compose(
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
+      setZoomLevel: setZoomLevelAction,
       clearUserWork: clearUserWorkAction
     }
   )

@@ -105,6 +105,7 @@ class QuestionViewContainer extends Component {
 
     filteredItems = produce(filteredItems, draft => {
       draft.forEach(item => {
+        if (item.itemLevelScoring) return;
         item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
         item.rows = item.rows.map(row => ({
           ...row,

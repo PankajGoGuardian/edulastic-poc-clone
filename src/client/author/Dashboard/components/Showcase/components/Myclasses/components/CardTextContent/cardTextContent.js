@@ -46,7 +46,7 @@ export const CardTextContent = ({ data, history }) => {
 
         {(!totalAssignment || totalAssignment === 0) && (
           <RightCol>
-            <Tooltip title="Create new assignment" placement="topLeft">
+            <Tooltip title="Create New Assignment" placement="topLeft">
               <Link to="/author/assignments/select">
                 <IconPlusCircle color={themeColorLight} width={25} height={25} />
               </Link>

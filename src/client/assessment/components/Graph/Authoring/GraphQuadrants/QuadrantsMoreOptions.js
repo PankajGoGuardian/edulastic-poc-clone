@@ -19,7 +19,7 @@ import { AnnotationSettings, ScoreSettings } from "..";
 import Question from "../../../Question";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import Tools from "../../common/Tools";
-import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../widgets/Charts/styled/Grid";
+import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../styled/Grid";
 
 class QuadrantsMoreOptions extends Component {
   state = {};
@@ -372,7 +372,7 @@ class QuadrantsMoreOptions extends Component {
               style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "0" }}
               span={2}
             >
-              <RowLabel>X AXIS</RowLabel>
+              <RowLabel>{t("component.graphing.grid_options.axis_x")}</RowLabel>
             </Col>
             <Col
               style={{
@@ -609,7 +609,7 @@ class QuadrantsMoreOptions extends Component {
               style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "0" }}
               span={2}
             >
-              <RowLabel>Y AXIS</RowLabel>
+              <RowLabel>{t("component.graphing.grid_options.axis_y")}</RowLabel>
             </Col>
             <Col
               style={{

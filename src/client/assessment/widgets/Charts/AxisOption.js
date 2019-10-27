@@ -8,7 +8,7 @@ import { Checkbox } from "@edulastic/common";
 import Question from "../../components/Question";
 import { Subtitle } from "../../styled/Subtitle";
 
-import { Row, ColumnLabel, ColoredRow, RowLabel, StyledTextField, Col } from "./styled/Grid";
+import { Row, ColumnLabel, ColoredRow, RowLabel, StyledTextField, Col } from "../../styled/Grid";
 
 const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) => {
   const { uiStyle } = item;

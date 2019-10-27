@@ -17,7 +17,7 @@ import {
   FormatedSelect,
   Col,
   AddPointBtn
-} from "../styled/Grid";
+} from "../../../styled/Grid";
 
 class PointsList extends Component {
   getHoverSettings = () => {

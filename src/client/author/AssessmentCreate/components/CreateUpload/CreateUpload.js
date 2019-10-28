@@ -1,40 +1,74 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
 import { IconUpload } from "@edulastic/icons";
-import { grey } from "@edulastic/colors";
 import { formatBytes } from "@edulastic/common";
-import { Progress, Icon, Button } from "antd";
+import { Progress, Icon, Button, message } from "antd";
 import PaperTitle from "../common/PaperTitle";
-import { UploadDescription, CreateUploadContainer } from "./styled";
+import { UploadDescription } from "./styled";
+import { Container, ButtonsContainer, RoundedButton } from "../CreateBlank/styled";
+import { UploadDragger } from "../DropArea/styled";
+import { themeColor } from "@edulastic/colors";
+import GooglePicker from "./GooglePicker";
 
-const iconStyles = {
-  minWidth: "120px",
-  minHeight: "77px",
-  fill: grey,
-  marginBottom: "20px"
-};
-
-const CreateUpload = ({ creating, percent = 0, fileInfo, cancelUpload, isDragging }) => {
+const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, uploadToDrive }) => {
   const onCancel = () => {
     if (cancelUpload) {
       cancelUpload("Cancelled by user");
     }
   };
+
+  const handleAuthFailed = data => {
+    console.error("oth failed:", data);
+    return message.warn("Authetication failed");
+  };
+
+  const handleDriveUpload = ({ action, docs }) => {
+    if (action === "picked" && docs) {
+      const [doc] = docs;
+      uploadToDrive({ id: doc.id, accessToken: window.gapi.auth.getToken().access_token });
+    }
+  };
+
   return (
-    <CreateUploadContainer childMarginRight="0">
-      <IconUpload style={iconStyles} />
-      <PaperTitle>{isDragging ? "Drop File To Upload" : "Upload Files to Get Started"}</PaperTitle>
-      <UploadDescription>Drag and drop any .pdf or browse and select your file</UploadDescription>
-      {creating && !isDragging && !!fileInfo.fileName && (
+    <Container childMarginRight="0">
+      <IconUpload width="45px" height="45px" />
+      <PaperTitle>Upload Files to Get Started</PaperTitle>
+      <UploadDescription>Select questions from the library or author your own.</UploadDescription>
+      <ButtonsContainer>
+        <UploadDragger
+          UploadDragger
+          name="file"
+          onChange={onUpload}
+          disabled={creating}
+          beforeUpload={() => false}
+          accept=".pdf"
+        >
+          <RoundedButton>
+            <IconUpload color={themeColor} />
+          </RoundedButton>
+        </UploadDragger>
+        {/* TODO add proper client ID and developer key via .env files */}
+        <GooglePicker
+          clientId={"835823990898-ulhj06b5p15vo0014a1bbvdbhnm6otuf.apps.googleusercontent.com"}
+          developerKey={"AIzaSyD9ZkpXo8kM2SKVzdxqJ7TlKSJnGwDbxM4"}
+          onChange={handleDriveUpload}
+          onAuthFailed={handleAuthFailed}
+          mimeTypes={["application/pdf"]}
+        >
+          <RoundedButton>G</RoundedButton>
+        </GooglePicker>
+      </ButtonsContainer>
+      {creating && (
         <>
-          <FileInfoCont>
-            <FileName>
-              <Icon type="file-pdf" />
-              <span>{fileInfo.fileName}</span>
-            </FileName>
-            <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
-          </FileInfoCont>
+          {!!fileInfo.name && (
+            <FileInfoCont>
+              <FileName>
+                <Icon type="file-pdf" />
+                <span>{fileInfo.fileName}</span>
+              </FileName>
+              <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
+            </FileInfoCont>
+          )}
           {percent > 0 && percent < 100 && (
             <ProgressCont>
               <ProgressBarWrapper>
@@ -51,7 +85,7 @@ const CreateUpload = ({ creating, percent = 0, fileInfo, cancelUpload, isDraggin
           )}
         </>
       )}
-    </CreateUploadContainer>
+    </Container>
   );
 };
 

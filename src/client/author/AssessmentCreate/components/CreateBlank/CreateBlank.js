@@ -1,31 +1,27 @@
 import React from "react";
-import { Button } from "antd";
 import PropTypes from "prop-types";
 
 import { IconBookmark } from "@edulastic/icons";
-import { grey } from "@edulastic/colors";
 
 import PaperTitle from "../common/PaperTitle";
-import { Description, CreateBlankContainer } from "./styled";
+import { Container } from "./styled";
+import { UploadDescription } from "../CreateUpload/styled";
+import { Button } from "antd";
 
-const iconStyles = {
-  minWidth: "100%",
-  minHeight: "77px",
-  fill: grey,
-  marginBottom: "20px"
+const handleDrop = event => {
+  //TODO handle drop here
+  event.preventDefault();
 };
 
-const handleDrop = event => event.preventDefault();
-
 const CreateBlank = ({ onCreate, loading }) => (
-  <CreateBlankContainer childMarginRight="0" onDrop={handleDrop}>
-    <IconBookmark style={iconStyles} />
+  <Container childMarginRight="0" onDrop={handleDrop} blank>
+    <IconBookmark width="45px" height="45px" />
     <PaperTitle>Answer Only Assessment</PaperTitle>
-    <Description>Want to create an assessment with no content?</Description>
-    <Button type="primary" disabled={loading} onClick={onCreate} block>
+    <UploadDescription>Want to create an assessment with no content?</UploadDescription>
+    <Button type="primary" disabled={loading} onClick={onCreate}>
       Continue with blank
     </Button>
-  </CreateBlankContainer>
+  </Container>
 );
 
 CreateBlank.propTypes = {

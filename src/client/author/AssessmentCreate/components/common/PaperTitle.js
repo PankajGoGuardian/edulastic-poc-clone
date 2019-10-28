@@ -6,7 +6,7 @@ const PaperTitle = styled.p`
   font-size: 20px;
   font-weight: bold;
   color: ${secondaryTextColor};
-  margin-bottom: 16px;
+  margin: 15px 0;
 `;
 
 export default PaperTitle;

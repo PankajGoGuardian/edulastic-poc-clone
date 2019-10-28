@@ -83,6 +83,7 @@ export const ReportTitle = styled.div`
 
 export const DetailCard = styled(StyledCard)`
   width: 48%;
+  margin-left: 10px;
   .ant-card-body {
     padding: 0px;
   }

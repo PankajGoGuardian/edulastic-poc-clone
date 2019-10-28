@@ -79,7 +79,7 @@ class TableDisplay extends Component {
     }
   }
 
-  onCaretClick = (e, id = 0, data, perfomancePercentage = undefined) => {
+  onCaretClick = (id = 0, data, perfomancePercentage = undefined) => {
     if (perfomancePercentage || perfomancePercentage === 0) {
       this.setState({ selectedRow: id, stdId: data, perfomancePercentage });
     } else {
@@ -170,6 +170,7 @@ class TableDisplay extends Component {
       const perfomancePercentage = this.getPerfomancePercentage(std);
       return {
         key: index + 1,
+        stdId: std._id,
         standard: <p className="first-data">{std.identifier}</p>,
         question: [
           ...new Set(
@@ -180,11 +181,11 @@ class TableDisplay extends Component {
         performanceSummary: perfomancePercentage,
         icon: submittedLength ? (
           selectedRow === index + 1 ? (
-            <div onClick={e => this.onCaretClick(e, 0, std._id)}>
+            <div>
               <img src={ArrowRightIcon} alt="right" />
             </div>
           ) : (
-            <div onClick={e => this.onCaretClick(e, index + 1, std._id, perfomancePercentage)}>
+            <div>
               <img src={ArrowLeftIcon} alt="left" />
             </div>
           )
@@ -232,13 +233,27 @@ class TableDisplay extends Component {
         {!isMobile && (
           <StyledCard>
             <ReportTitle>Standard performance</ReportTitle>
-            <TableData columns={columns} dataSource={data} pagination={false} />
+            <TableData
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+              onRow={(rowData, index) => {
+                return {
+                  onClick: () => {
+                    if (selectedRow === index + 1) {
+                      return this.onCaretClick(0, rowData.stdId);
+                    }
+                    return this.onCaretClick(index + 1, rowData.stdId, rowData.perfomancePercentage);
+                  }
+                };
+              }}
+            />
           </StyledCard>
         )}
 
         {selectedRow !== 0 && this.state.stdId != "" && (
           <DetailedDisplay
-            onClose={e => this.onCaretClick(e, 0, stdId)}
+            onClose={() => this.onCaretClick(0, stdId)}
             data={standards.find(std => std._id === stdId)}
             performancePercentage={perfomancePercentage}
             color={getMastery(assignmentMastery, perfomancePercentage || 0).color}

@@ -22,12 +22,12 @@ import Tools from "../../common/Tools";
 import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../styled/Grid";
 
 class QuadrantsMoreOptions extends Component {
-  state = {};
-
-  componentDidMount() {
-    if (this.props.graphData) {
-      this.setState({ ...this.props.graphData.canvas, ...this.props.graphData.uiStyle });
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.props.graphData.canvas,
+      ...this.props.graphData.uiStyle
+    };
   }
 
   handleGridChange = event => this.setState({ [event.target.name]: event.target.value });
@@ -325,520 +325,300 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
-          <Row style={{ display: "flex", alignItems: "center" }} gutter={4}>
-            <Col aligh="center" span={2} />
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "11%" }}>
-              <ColumnLabel>{t("component.graphing.grid_options.label")}</ColumnLabel>
+          <Row gutter={4} type="flex" align="middle">
+            <Col span={13} style={{ marginBottom: "0" }}>
+              <Row type="flex" align="middle">
+                <Col span={3} />
+                <Col align="center" span={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.label")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.min")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.max")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.distance")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.tick_distance")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.ratio")}</ColumnLabel>
+                </Col>
+              </Row>
             </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "9%" }} span={3}>
-              <ColumnLabel>{t("component.graphing.grid_options.min")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "9%" }} span={3}>
-              <ColumnLabel>{t("component.graphing.grid_options.max")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "7%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.distance")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "7%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.tick_distance")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "7%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.ratio")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.show_axis")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.show_label")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.hide_ticks")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.min_arrow")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.max_arrow")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.comma_in_label")}</ColumnLabel>
-            </Col>
-            <Col style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "6%" }} span={2}>
-              <ColumnLabel>{t("component.graphing.grid_options.draw_label")}</ColumnLabel>
+            <Col span={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" align="middle" justify="space-between">
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.show_axis")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.show_label")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.hide_ticks")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.min_arrow")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.max_arrow")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.comma_in_label")}</ColumnLabel>
+                </Col>
+                <Col align="center" span={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.draw_label")}</ColumnLabel>
+                </Col>
+              </Row>
             </Col>
           </Row>
           <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
-            <Col
-              style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "0" }}
-              span={2}
-            >
-              <RowLabel>{t("component.graphing.grid_options.axis_x")}</RowLabel>
+            <Col span={13} style={{ marginBottom: "0" }}>
+              <Col style={{ marginBottom: "0" }} span={3} align="center">
+                <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_x")}</RowLabel>
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="text"
+                  defaultValue="X"
+                  name="xAxisLabel"
+                  value={xAxisLabel}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="xMin"
+                  value={xMin}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="xMax"
+                  value={xMax}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  name="xDistance"
+                  value={xDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  name="xTickDistance"
+                  value={xTickDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="xRatio"
+                  value={xRatio}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleRatioChange}
+                  disabled={false}
+                />
+              </Col>
             </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "11%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="text"
-                defaultValue="X"
-                name="xAxisLabel"
-                value={xAxisLabel}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "9%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="number"
-                name="xMin"
-                value={xMin}
-                onChange={this.handleGridChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "9%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="number"
-                name="xMax"
-                value={xMax}
-                onChange={this.handleGridChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                defaultValue="1"
-                name="xDistance"
-                value={xDistance}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                defaultValue="1"
-                name="xTickDistance"
-                value={xTickDistance}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                name="xRatio"
-                value={xRatio}
-                onChange={this.handleGridChange}
-                onBlur={this.handleRatioChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="xShowAxis"
-                onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
-                checked={xShowAxis}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
-                checked={xShowAxisLabel}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
-                checked={xHideTicks}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
-                checked={xMinArrow}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
-                checked={xMaxArrow}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
-                checked={xCommaInLabel}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
-                checked={xDrawLabel}
-              />
+            <Col span={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" justify="space-between">
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="xShowAxis"
+                    onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
+                    checked={xShowAxis}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
+                    checked={xShowAxisLabel}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
+                    checked={xHideTicks}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
+                    checked={xMinArrow}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
+                    checked={xMaxArrow}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
+                    checked={xCommaInLabel}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
+                    checked={xDrawLabel}
+                  />
+                </Col>
+              </Row>
             </Col>
           </ColoredRow>
           <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
-            <Col
-              style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "0" }}
-              span={2}
-            >
-              <RowLabel>{t("component.graphing.grid_options.axis_y")}</RowLabel>
+            <Col span={13} style={{ marginBottom: "0" }}>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_y")}</RowLabel>
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="text"
+                  defaultValue="X"
+                  name="yAxisLabel"
+                  value={yAxisLabel}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="yMin"
+                  value={yMin}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="yMax"
+                  value={yMax}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  name="yDistance"
+                  value={yDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  name="yTickDistance"
+                  value={yTickDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col span={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="yRatio"
+                  value={yRatio}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleRatioChange}
+                  disabled={false}
+                />
+              </Col>
             </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "11%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="text"
-                defaultValue="X"
-                name="yAxisLabel"
-                value={yAxisLabel}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "9%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="number"
-                name="yMin"
-                value={yMin}
-                onChange={this.handleGridChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "9%",
-                marginBottom: "0"
-              }}
-              span={3}
-            >
-              <StyledTextField
-                type="number"
-                name="yMax"
-                value={yMax}
-                onChange={this.handleGridChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                defaultValue="1"
-                name="yDistance"
-                value={yDistance}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                defaultValue="1"
-                name="yTickDistance"
-                value={yTickDistance}
-                onChange={this.handleGridChange}
-                onBlur={this.handleInputChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "0",
-                width: "7%"
-              }}
-              span={2}
-            >
-              <StyledTextField
-                type="number"
-                name="yRatio"
-                value={yRatio}
-                onChange={this.handleGridChange}
-                onBlur={this.handleRatioChange}
-                disabled={false}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="yShowAxis"
-                onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
-                checked={yShowAxis}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
-                checked={yShowAxisLabel}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
-                checked={yHideTicks}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
-                checked={yMinArrow}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
-                checked={yMaxArrow}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
-                checked={yCommaInLabel}
-              />
-            </Col>
-            <Col
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "6%",
-                marginBottom: "0"
-              }}
-              span={2}
-            >
-              <Checkbox
-                name="drawLabelZero"
-                onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
-                checked={yDrawLabel}
-              />
+            <Col span={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" justify="space-between">
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="yShowAxis"
+                    onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
+                    checked={yShowAxis}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
+                    checked={yShowAxisLabel}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
+                    checked={yHideTicks}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
+                    checked={yMinArrow}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
+                    checked={yMaxArrow}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
+                    checked={yCommaInLabel}
+                  />
+                </Col>
+                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
+                    checked={yDrawLabel}
+                  />
+                </Col>
+              </Row>
             </Col>
           </ColoredRow>
         </Question>

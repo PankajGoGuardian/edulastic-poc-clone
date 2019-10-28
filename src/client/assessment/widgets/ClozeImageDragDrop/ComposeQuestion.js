@@ -125,18 +125,28 @@ class ComposeQuestion extends Component {
 
   onItemPropChange = (prop, value) => {
     const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft[prop] = value;
+        updateVariables(draft);
+      })
+    );
+  };
 
+  onUserDimensionChange = prop => {
+    const { imageWidth, imageHeight } = prop;
+    const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
         // This is when the image gets uploaded so
         // we reset the image to the starting position on canvas
         // we need the updatePosition to nudge the rnd component to re-render
-        if (prop === IMAGE_WIDTH_PROP || prop === IMAGE_HEIGHT_PROP) {
+        if (prop[IMAGE_WIDTH_PROP] || prop[IMAGE_HEIGHT_PROP]) {
           draft.imageOptions = { x: 0, y: 0 };
-          this.imageRndRef.current.updatePosition({ x: 0, y: 0 });
+          this.imageRndRef?.current?.updatePosition({ x: 0, y: 0 });
         }
-
-        draft[prop] = value;
+        draft[IMAGE_WIDTH_PROP] = imageWidth;
+        draft[IMAGE_HEIGHT_PROP] = imageHeight;
         updateVariables(draft);
       })
     );
@@ -251,16 +261,28 @@ class ComposeQuestion extends Component {
     this.setState(prevState => ({ isAnnotationBelow: !prevState.isAnnotationBelow }));
   };
 
-  changeImageHeight = height => {
-    const { maxHeight } = clozeImage;
-    const newHeight = height > 0 ? height : maxHeight;
-    this.onItemPropChange("imageHeight", newHeight);
-  };
+  changeImageDimensions = (prop, value) => {
+    const { item } = this.props;
+    const { imageOriginalWidth, imageOriginalHeight, imageWidth, imageHeight } = item;
+    const keepAspectRatio = get(item, "responseLayout.keepAspectRatio", false);
+    const { maxWidth, maxHeight } = clozeImage;
 
-  changeImageWidth = width => {
-    const { maxWidth } = clozeImage;
-    const newWidth = width > 0 ? width : maxWidth;
-    this.onItemPropChange("imageWidth", newWidth);
+    if (isUndefined(imageOriginalWidth) || isUndefined(imageOriginalHeight)) return;
+
+    let newWidth = prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
+    let newHeight = prop !== "width" && value > 0 ? value : imageHeight || Math.min(imageOriginalHeight, maxHeight);
+
+    if (keepAspectRatio) {
+      [newWidth, newHeight] =
+        prop === "width"
+          ? [newWidth, Math.round((imageOriginalHeight * newWidth) / imageOriginalWidth)]
+          : [Math.round((imageOriginalWidth * newHeight) / imageOriginalHeight), newHeight];
+    }
+
+    this.onUserDimensionChange({
+      imageHeight: newHeight,
+      imageWidth: newWidth
+    });
   };
 
   changeImageLeft = left => {
@@ -367,53 +389,6 @@ class ComposeQuestion extends Component {
     this.canvasRef.current.style.height = `${canvasH}px`;
   };
 
-  getHeight = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageOriginalHeight, imageHeight, responseLayout } = item;
-    const keepAspectRatio = responseLayout && responseLayout.keepAspectRatio;
-    const { maxHeight } = clozeImage;
-    const imageWidth = this.getWidth();
-
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-      return Math.round((imageOriginalHeight * imageWidth) / imageOriginalWidth);
-    }
-
-    if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
-    }
-
-    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
-      return imageOriginalHeight;
-    }
-
-    return maxHeight;
-  };
-
-  getWidth = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageWidth } = item;
-    const { maxWidth } = clozeImage;
-
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-
-    if (!isUndefined(imageWidth)) {
-      return imageWidth > 0 ? imageWidth : maxWidth;
-    }
-
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
-      return imageOriginalWidth;
-    }
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
-      return maxWidth;
-    }
-    return maxWidth;
-  };
-
   getTop = () => {
     const {
       item: { imageOptions = {} }
@@ -503,8 +478,9 @@ class ComposeQuestion extends Component {
       showUploadList: false
     };
 
-    const imageWidth = this.getWidth();
-    const imageHeight = this.getHeight();
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
+    const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
+    const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     const imageTop = this.getTop();
     const imageLeft = this.getLeft();
     let canvasWidth = imageWidth < maxWidth ? maxWidth : imageWidth;
@@ -550,14 +526,22 @@ class ComposeQuestion extends Component {
           <div data-cy="left-buttons">
             <div className="size-controls">
               <FieldWrapper>
-                <InputNumber data-cy="image-width-input" value={imageWidth} onChange={this.changeImageWidth} />
+                <InputNumber
+                  data-cy="image-width-input"
+                  value={imageWidth}
+                  onChange={value => this.changeImageDimensions("width", value)}
+                />
 
                 <Label top={6} left={20}>
                   {t("component.cloze.imageDragDrop.widthpx")}
                 </Label>
               </FieldWrapper>
               <FieldWrapper>
-                <InputNumber data-cy="image-height-input" value={imageHeight} onChange={this.changeImageHeight} />
+                <InputNumber
+                  data-cy="image-height-input"
+                  value={imageHeight}
+                  onChange={value => this.changeImageDimensions("height", value)}
+                />
 
                 <Label top={6} left={20}>
                   {t("component.cloze.imageDragDrop.heightpx")}

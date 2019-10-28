@@ -308,56 +308,6 @@ class Display extends Component {
       return arr;
     });
 
-  getWidth = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageWidth } = item;
-    const { maxWidth } = clozeImage;
-
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-
-    if (!isUndefined(imageWidth)) {
-      return imageWidth > 0 ? imageWidth : maxWidth;
-    }
-
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
-      return imageOriginalWidth;
-    }
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
-      return maxWidth;
-    }
-    return maxWidth;
-  };
-
-  getHeight = () => {
-    const { item } = this.props;
-    const { imageHeight, imageOriginalHeight, imageOriginalWidth } = item;
-    const keepAspectRatio = get(item, "responseLayout.keepAspectRatio", false);
-    const { maxHeight } = clozeImage;
-    const imageWidth = this.getWidth();
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
-    }
-
-    if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
-    }
-
-    if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
-    }
-
-    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
-      return imageOriginalHeight;
-    }
-
-    return maxHeight;
-  };
-
   getCalculatedHeight = (maxHeight, canvasHeight) => {
     const calculatedHeight = canvasHeight > maxHeight ? canvasHeight : maxHeight;
 
@@ -435,8 +385,9 @@ class Display extends Component {
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
-    const imageWidth = this.getWidth();
-    const imageHeight = this.getHeight();
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
+    const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
+    const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     let canvasHeight = imageHeight + (imageOptions.y || 0);
     let canvasWidth = imageWidth + +(imageOptions.x || 0);
 

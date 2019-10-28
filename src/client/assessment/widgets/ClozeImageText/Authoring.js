@@ -273,52 +273,6 @@ class Authoring extends Component {
     img.src = url;
   };
 
-  getWidth = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageWidth } = item;
-    const { maxWidth } = clozeImage;
-
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-
-    if (!isUndefined(imageWidth)) {
-      return imageWidth > 0 ? imageWidth : maxWidth;
-    }
-
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
-      return imageOriginalWidth;
-    }
-    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
-      return maxWidth;
-    }
-    return maxWidth;
-  };
-
-  getHeight = () => {
-    const { item } = this.props;
-    const { imageOriginalWidth, imageOriginalHeight, imageHeight, keepAspectRatio } = item;
-    const { maxHeight } = clozeImage;
-    const imageWidth = this.getWidth();
-
-    // If image uploaded is smaller than the max width, keep it as-is
-    // If image is larger, compress it to max width (keep aspect-ratio by default)
-    // If user changes image size manually to something larger, allow it
-    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-      return Math.round((imageOriginalHeight * imageWidth) / imageOriginalWidth);
-    }
-
-    if (!isUndefined(imageHeight)) {
-      return imageHeight > 0 ? imageHeight : maxHeight;
-    }
-
-    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
-      return imageOriginalHeight;
-    }
-
-    return maxHeight;
-  };
-
   getLeft = () => {
     const {
       item: { imageOptions = {} }
@@ -339,42 +293,23 @@ class Authoring extends Component {
     const { item } = this.props;
     const { imageOriginalWidth, imageOriginalHeight, imageWidth, imageHeight, keepAspectRatio } = item;
     const { maxWidth, maxHeight } = clozeImage;
-    let newHeight = maxHeight;
-    let newWidth = maxWidth;
-    let newDimensions = {};
-    if (prop === "width") {
-      if (keepAspectRatio && !isUndefined(imageOriginalWidth) && !isUndefined(imageHeight)) {
-        newWidth = value;
-        newHeight = Math.round((imageOriginalHeight * newWidth) / imageOriginalWidth);
-      }
 
-      if (!isUndefined(imageWidth) && newWidth === maxWidth) {
-        newWidth = value > 0 ? value : maxHeight;
-      }
+    if (isUndefined(imageOriginalWidth) || isUndefined(imageOriginalHeight)) return;
 
-      if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth && newWidth === maxWidth) {
-        newWidth = imageOriginalWidth;
-      }
+    let newWidth = prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
+    let newHeight = prop !== "width" && value > 0 ? value : imageHeight || Math.min(imageOriginalHeight, maxHeight);
 
-      if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth && newWidth === maxWidth) {
-        newWidth = maxWidth;
-      }
-    } else {
-      if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-        newHeight = value;
-        newWidth = Math.round((imageOriginalWidth * newHeight) / imageOriginalHeight);
-      }
-
-      if (!isUndefined(imageHeight) && newHeight === maxHeight) {
-        newHeight = value > 0 ? value : maxHeight;
-      }
-
-      if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight && newHeight === maxHeight) {
-        newHeight = imageOriginalHeight;
-      }
+    if (keepAspectRatio) {
+      [newWidth, newHeight] =
+        prop === "width"
+          ? [newWidth, Math.round((imageOriginalHeight * newWidth) / imageOriginalWidth)]
+          : [Math.round((imageOriginalWidth * newHeight) / imageOriginalHeight), newHeight];
     }
-    newDimensions = { imageWidth: newWidth, imageHeight: newHeight };
-    this.onUserDimensionChange(newDimensions);
+
+    this.onUserDimensionChange({
+      imageHeight: newHeight,
+      imageWidth: newWidth
+    });
   };
 
   changeImageLeft = left => {

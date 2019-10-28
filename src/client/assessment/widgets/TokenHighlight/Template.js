@@ -205,7 +205,7 @@ const Template = ({
                   __html: customTokenTemplate
                 }}
                 className="token"
-                innerRef={containerRef}
+                ref={containerRef}
               />
             )}
             {mode !== CUSTOM_MODE &&

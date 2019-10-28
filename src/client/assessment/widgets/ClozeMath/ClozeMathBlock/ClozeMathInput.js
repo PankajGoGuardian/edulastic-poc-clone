@@ -231,7 +231,7 @@ class ClozeMathInput extends React.Component {
             }}
           />
           {showKeyboard && (
-            <KeyboardWrapper innerRef={this.mathKeyboardRef} height={height}>
+            <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
               <MathKeyboard
                 onInput={this.onInput}
                 onClose={() => {}}

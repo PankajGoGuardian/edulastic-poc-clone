@@ -140,7 +140,7 @@ class EditableLabel extends React.Component {
               placeholder={valueName}
               readOnly={!editing}
               className={!editing ? "not-editing-input" : null}
-              innerRef={this.inputRef}
+              ref={this.inputRef}
             />
           )}
         </StyledFormItem>

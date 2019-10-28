@@ -234,7 +234,7 @@ class FeedbackRight extends Component {
                   : adaptiveRound(score || 0)
               }
               disabled={isPresentationMode}
-              innerRef={this.scoreInput}
+              ref={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
             />

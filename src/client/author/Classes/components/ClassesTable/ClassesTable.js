@@ -662,7 +662,7 @@ class ClassesTable extends Component {
               onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
-              innerRef={this.filterTextInputRef[i]}
+              ref={this.filterTextInputRef[i]}
             />
           )}
           {i < 2 && (

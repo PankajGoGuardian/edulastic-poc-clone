@@ -42,7 +42,7 @@ const PlayerContentArea = ({
     <Main skinB="true">
       <MainWrapper isSidebarVisible={isSidebarVisible}>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
-        <MainContent innerRef={scrollElementRef}>
+        <MainContent ref={scrollElementRef}>
           {testItemState === "" && (
             <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
           )}

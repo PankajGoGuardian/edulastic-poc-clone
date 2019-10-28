@@ -237,7 +237,7 @@ class QuestionItem extends React.Component {
 
     const check = viewMode === "report" || previewTab === "check";
     return (
-      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} innerRef={this.itemRef}>
+      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} ref={this.itemRef}>
         <AnswerForm>
           <Draggable
             type="question"

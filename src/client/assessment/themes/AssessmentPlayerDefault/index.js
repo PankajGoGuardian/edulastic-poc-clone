@@ -379,10 +379,9 @@ class AssessmentPlayerDefault extends React.Component {
       <ThemeProvider theme={themeToPass}>
         <Container
           scratchPadMode={scratchPadMode}
-          innerRef={this.scrollElementRef}
+          ref={this.scrollElementRef}
           data-cy="assessment-player-default-wrapper"
         >
-
           {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
               onFillColorChange={this.onFillColorChange}

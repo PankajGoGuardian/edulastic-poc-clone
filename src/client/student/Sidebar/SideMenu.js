@@ -206,7 +206,7 @@ class SideMenu extends Component {
           className={`${!isSidebarCollapsed ? "full" : ""}`}
           onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
           isSidebarCollapsed={isSidebarCollapsed}
-          innerRef={this.sideMenuRef}
+          ref={this.sideMenuRef}
         >
           <SettingsModal />
           <SideBar

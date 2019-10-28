@@ -143,7 +143,7 @@ class MobileTableList extends Component {
             onTouchStart={this.handleTouchStart}
             onTouchMove={this.handleTouchMove}
             onTouchEnd={this.handleTouchEnd}
-            innerRef={this.handleSetContainerRef}
+            ref={this.handleSetContainerRef}
           >
             {tests.map(this.renderItem)}
           </Container>

@@ -193,10 +193,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
   }}
 `;
 
-export const ToolbarContainer = styled.div.attrs({
-  className: "froala-toolbar-container",
-  toolbarid: props => props.toolbarId
-})`
+export const ToolbarContainer = styled.div`
   position: absolute;
   z-index: 1000;
   left: 0px;
@@ -308,7 +305,7 @@ const CustomEditor = ({
       tableResizingLimit: 50,
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
-      toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
+      toolbarContainer: toolbarId ? `#froalaToolbarContainer-${toolbarId}` : undefined,
       placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         "textarea",
@@ -809,7 +806,14 @@ const CustomEditor = ({
         theme={theme}
         fontSize={fontSize}
       >
-        {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
+        {toolbarId && (
+          <ToolbarContainer
+            toolbarid={toolbarId}
+            id={`froalaToolbarContainer-${toolbarId}`}
+            ref={toolbarContainerRef}
+            toolbarId={toolbarId}
+          />
+        )}
 
         <Editor
           tag={tag}

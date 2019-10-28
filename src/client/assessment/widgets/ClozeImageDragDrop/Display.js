@@ -510,7 +510,7 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={computedHeight} maxWidth="100%">
-        <StyledPreviewContainer smallSize={smallSize} data-cy="preview-contaniner" innerRef={this.previewContainerRef}>
+        <StyledPreviewContainer smallSize={smallSize} data-cy="preview-contaniner" ref={this.previewContainerRef}>
           {renderAnnotations()}
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
@@ -603,7 +603,7 @@ class Display extends Component {
         <StyledPreviewContainer
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={this.getCalculatedHeight(maxHeight, canvasHeight)}
-          innerRef={this.previewContainerRef}
+          ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
             responseContainers={responseContainers}
@@ -690,10 +690,7 @@ class Display extends Component {
         )}
         {responseposition === "left" && (
           <LeftContainer>
-            <LeftResponseContainer
-              innerRef={this.responseBoxContainerRef}
-              width={uiStyle?.responseContainerWidth || null}
-            >
+            <LeftResponseContainer ref={this.responseBoxContainerRef} width={uiStyle?.responseContainerWidth || null}>
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </LeftResponseContainer>
             <LeftTemplateContainer studentReport={studentReport} responseBoxContainerWidth={responseBoxContainerWidth}>
@@ -714,7 +711,7 @@ class Display extends Component {
             <RightResponseContainer
               width={uiStyle?.responseContainerWidth || null}
               smallSize={smallSize}
-              innerRef={this.responseBoxContainerRef}
+              ref={this.responseBoxContainerRef}
             >
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </RightResponseContainer>

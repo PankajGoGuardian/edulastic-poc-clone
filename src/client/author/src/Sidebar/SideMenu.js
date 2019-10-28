@@ -259,7 +259,7 @@ class SideMenu extends Component {
         className={`${!isCollapsed ? "full" : ""} ${className}`}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
-        innerRef={this.sideMenuRef}
+        ref={this.sideMenuRef}
       >
         <SideBar
           collapsed={isCollapsed}

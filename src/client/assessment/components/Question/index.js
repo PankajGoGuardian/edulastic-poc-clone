@@ -70,7 +70,7 @@ class Question extends Component {
 
     return (
       <Widget
-        innerRef={this.node}
+        ref={this.node}
         data-cy={dataCy}
         questionTextArea={questionTextArea}
         advancedAreOpen={advancedAreOpen}

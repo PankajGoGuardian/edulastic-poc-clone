@@ -634,7 +634,7 @@ class ComposeQuestion extends Component {
               onDragStart={e => e.preventDefault()}
               onDoubleClick={toggleIsAnnotationBelow}
               onClick={this.addNewRespnose}
-              innerRef={this.canvasRef}
+              ref={this.canvasRef}
             >
               <AnnotationRnd
                 style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
@@ -687,7 +687,7 @@ class ComposeQuestion extends Component {
                       maxHeight={maxHeight}
                       onDragStart={e => e.preventDefault()}
                       imageSrc={item.imageUrl}
-                      innerRef={this.imagePreviewRef}
+                      ref={this.imagePreviewRef}
                     />
                   </Rnd>
                   <DropArea

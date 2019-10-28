@@ -626,7 +626,7 @@ class CoursesTable extends React.Component {
             onBlur={e => this.onBlurFilterText(e, i)}
             disabled={isFilterTextDisable}
             value={filtersData[i].filterStr}
-            innerRef={this.filterTextInputRef[i]}
+            ref={this.filterTextInputRef[i]}
           />
           {i < 2 && (
             <StyledFilterButton

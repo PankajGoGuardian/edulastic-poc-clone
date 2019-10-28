@@ -138,7 +138,7 @@ class CustomTextInput extends Component {
   };
 
   render() {
-    const { style, onChange, placeholder, value, onKeyDown, toolbarId, innerRef, fontSize } = this.props;
+    const { style, onChange, placeholder, value, onKeyDown, toolbarId, ref, fontSize } = this.props;
     const { active } = this.state;
 
     return (
@@ -146,7 +146,7 @@ class CustomTextInput extends Component {
         <CustomToolbar active={active} toolbarId={toolbarId} />
         <Wrapper fontSize={fontSize}>
           <ReactQuill
-            ref={innerRef}
+            ref={ref}
             onFocus={this.showToolbar}
             onChange={onChange}
             placeholder={placeholder}
@@ -182,7 +182,7 @@ CustomTextInput.formats = ["bold", "italic", "underline", "list", "bullet", "scr
 CustomTextInput.propTypes = {
   placeholder: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  innerRef: PropTypes.object.isRequired,
+  ref: PropTypes.object.isRequired,
   fontSize: PropTypes.string.isRequired,
   onFocus: PropTypes.func,
   style: PropTypes.object,
@@ -201,4 +201,4 @@ CustomTextInput.defaultProps = {
 
 const Com = enhanceWithClickOutside(CustomTextInput);
 
-export default forwardRef((props, ref) => <Com innerRef={ref} {...props} />);
+export default forwardRef((props, ref) => <Com ref={ref} {...props} />);

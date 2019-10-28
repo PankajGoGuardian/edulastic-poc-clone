@@ -19,7 +19,7 @@ import {
   ContentWrapper,
   ScrollbarContainer
 } from "./styled";
-import Item from "../Item/Item";
+
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
 import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";
@@ -31,13 +31,11 @@ import {
   clearDictStandardsAction
 } from "../../../src/actions/dictionaries";
 import {
-  getTestItemsSelector,
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
   getTestItemsLoadingSelector,
   receiveTestItemsAction,
-  getSelectedItemSelector,
   clearSelectedItemsAction
 } from "../../../TestPage/components/AddItems/ducks";
 import {
@@ -48,19 +46,18 @@ import {
 } from "../../../TestPage/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import { addItemToCartAction } from "../../ducks";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  getUserId,
   getDefaultGradesSelector,
   getDefaultSubjectSelector
 } from "../../../src/selectors/user";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
+
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import ItemListContainer from "./ItemListContainer";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -256,6 +253,7 @@ class Contaier extends Component {
       ...search,
       searchString
     };
+
     this.setState(
       {
         search: updatedKeys
@@ -306,48 +304,6 @@ class Contaier extends Component {
         current={page}
       />
     );
-  };
-
-  renderItems = () => {
-    const {
-      items,
-
-      history,
-      windowWidth,
-      addItemToCart,
-      selectedCartItems,
-      userId,
-      checkAnswer,
-      showAnswer,
-      interestedCurriculums
-    } = this.props;
-    const { search } = this.state;
-    if (items.length < 1) {
-      return (
-        <NoDataNotification
-          heading={"Items Not Available"}
-          description={
-            'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
-          }
-        />
-      );
-    }
-    return items.map(item => (
-      <Item
-        key={`Item_${item._id}`}
-        item={item}
-        history={history}
-        userId={userId}
-        windowWidth={windowWidth}
-        onToggleToCart={addItemToCart}
-        selectedToCart={selectedCartItems ? selectedCartItems.includes(item._id) : false}
-        interestedCurriculums={interestedCurriculums}
-        checkAnswer={checkAnswer}
-        showAnswer={showAnswer}
-        search={search}
-        page="itemList"
-      />
-    ));
   };
 
   toggleFilter = () => {
@@ -414,7 +370,7 @@ class Contaier extends Component {
                     this.itemsScrollBar = e;
                   }}
                 >
-                  {this.renderItems()}
+                  <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
                   <PaginationContainer>{this.renderPagination()}</PaginationContainer>
                 </ScrollbarContainer>
               </ContentWrapper>
@@ -459,8 +415,7 @@ Contaier.propTypes = {
   clearDictStandards: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   setDefaultTestData: PropTypes.func.isRequired,
-  addItemToCart: PropTypes.func.isRequired,
-  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired
+  addItemToCart: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -468,7 +423,6 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({
-      items: getTestItemsSelector(state),
       limit: getTestsItemsLimitSelector(state),
       page: getTestsItemsPageSelector(state),
       count: getTestsItemsCountSelector(state),
@@ -476,12 +430,10 @@ const enhance = compose(
       creating: getTestItemCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      selectedCartItems: getSelectedItemSelector(state),
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      userId: getUserId(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
@@ -496,8 +448,7 @@ const enhance = compose(
       clearSelectedItems: clearSelectedItemsAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
-      getAllTags: getAllTagsAction,
-      addItemToCart: addItemToCartAction
+      getAllTags: getAllTagsAction
     }
   )
 );

@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { memo } from "react";
+import compose from "redux";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -18,75 +19,63 @@ import {
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
 
-class ItemFilter extends Component {
-  renderFullTextSearch = () => {
-    const {
-      onSearchInputChange,
-      search: { searchString }
-    } = this.props;
+const ItemFilter = ({
+  onClearSearch,
+  search,
+  onLabelSearch,
+  curriculums,
+  onSearchFieldChange,
+  onSearchInputChange,
+  curriculumStandards,
+  t,
+  items,
+  toggleFilter
+}) => {
+  const renderFullTextSearch = () => (
+    <SearchWrapper>
+      <HeaderRow>
+        <Input.Search
+          placeholder="Search by skills and keywords"
+          onChange={onSearchInputChange}
+          size="large"
+          value={search.searchString}
+        />
+      </HeaderRow>
+    </SearchWrapper>
+  );
 
-    return (
-      <SearchWrapper>
-        <HeaderRow>
-          <Input.Search
-            placeholder="Search by skills and keywords"
-            onChange={onSearchInputChange}
-            size="large"
-            value={searchString}
-          />
-        </HeaderRow>
-      </SearchWrapper>
-    );
-  };
-
-  render() {
-    const {
-      windowWidth,
-      onClearSearch,
-      search,
-      onLabelSearch,
-      curriculums,
-      onSearchFieldChange,
-      onSearchInputChange,
-      curriculumStandards,
-      t,
-      items,
-      toggleFilter
-    } = this.props;
-
-    return (
-      <>
-        <Backdrop />
-        <Container>
-          <CloseIcon type="close" onClick={toggleFilter} />
-          <PerfectScrollbar>
-            <FixedFilters>
-              {this.renderFullTextSearch()}
-              <MainFilter>
-                <AffixContainer>
-                  <MainFilterHeader>
-                    <Title>{t("component.itemlist.filter.filters")}</Title>
-                    <Clear data-cy="clearAll" onClick={onClearSearch}>
-                      {t("component.itemlist.filter.clearAll")}
-                    </Clear>
-                  </MainFilterHeader>
-                  <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
-                  <Search
-                    search={search}
-                    showStatus={search.filter !== items[0].filter}
-                    curriculums={curriculums}
-                    onSearchFieldChange={onSearchFieldChange}
-                    curriculumStandards={curriculumStandards}
-                  />
-                </AffixContainer>
-              </MainFilter>
-            </FixedFilters>
-          </PerfectScrollbar>
-        </Container>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Backdrop />
+      <Container>
+        <CloseIcon type="close" onClick={toggleFilter} />
+        <PerfectScrollbar>
+          <FixedFilters>
+            {renderFullTextSearch()}
+            <MainFilter>
+              <AffixContainer>
+                <MainFilterHeader>
+                  <Title>{t("component.itemlist.filter.filters")}</Title>
+                  <Clear data-cy="clearAll" onClick={onClearSearch}>
+                    {t("component.itemlist.filter.clearAll")}
+                  </Clear>
+                </MainFilterHeader>
+                <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
+                <Search
+                  search={search}
+                  showStatus={search.filter !== items[0].filter}
+                  curriculums={curriculums}
+                  onSearchFieldChange={onSearchFieldChange}
+                  curriculumStandards={curriculumStandards}
+                />
+              </AffixContainer>
+            </MainFilter>
+          </FixedFilters>
+        </PerfectScrollbar>
+      </Container>
+    </>
+  );
+};
 
 ItemFilter.propTypes = {
   search: PropTypes.object.isRequired,
@@ -108,4 +97,4 @@ ItemFilter.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default ItemFilter;
+export default memo(ItemFilter);

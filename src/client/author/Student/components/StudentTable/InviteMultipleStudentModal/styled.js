@@ -91,8 +91,9 @@ export const ActionButton = styled(Button)`
 `;
 
 export const StyledModal = styled(Modal)`
+  min-width: 600px;
+  padding: 0px;
   .ant-modal-body {
-    width: 600px;
     background: ${lightGrey3};
     box-shadow: ${boxShadowDefault};
     border-radius: 5px;

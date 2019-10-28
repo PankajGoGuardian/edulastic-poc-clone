@@ -325,6 +325,7 @@ class InviteMultipleStudentModal extends Component {
         maskClosable={false}
         footer={null}
         closable={false}
+        centered
       >
         <Row>
           <Col span={13}>

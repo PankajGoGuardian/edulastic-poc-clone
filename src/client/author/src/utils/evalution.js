@@ -9,7 +9,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   let totalScore = 0;
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0;
   /* eslint-disable no-restricted-syntax */
-  const questionsNum = Object.keys(validations).filter(x => validations[x].validation).length;
+  const questionsNum = Object.keys(validations).filter(x => validations?.[x]?.validation).length;
   for (const id of questionIds) {
     let answer = answers[id];
     if (validations && validations[id]) {

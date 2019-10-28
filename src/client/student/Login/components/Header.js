@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { Row, Col, Tooltip, Button } from "antd";
 import { Link } from "react-router-dom";
-import { themeColor, black, mobileWidthMax } from "@edulastic/colors";
+import { themeColor, black, mobileWidthMax, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import {
   getPartnerGetStartedUrl,
   getDistrictGetStartedUrl,
@@ -128,6 +128,13 @@ const RegistrationHeader = styled(Row)`
 `;
 
 const DontHaveAccountText = styled.span`
+  font-size: 12px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 13px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
+  }
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }

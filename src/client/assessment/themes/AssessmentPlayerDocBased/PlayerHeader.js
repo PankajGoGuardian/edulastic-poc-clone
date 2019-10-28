@@ -30,7 +30,7 @@ const PlayerHeader = ({
           <LogoCompact color={"#fff"} />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
-          <HeaderFlexContainer>
+          <FlexContainer>
             <PlayerTitle>{title}</PlayerTitle>
             <InnerContainer>
               <ProgressContainer
@@ -65,7 +65,7 @@ const PlayerHeader = ({
                 </div>
               </ContainerRight>
             </InnerContainer>
-          </HeaderFlexContainer>
+          </FlexContainer>
           <Mobile>
             <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
           </Mobile>
@@ -112,13 +112,6 @@ const PlayerTitle = styled.h1`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  ${({ theme }) => theme.zoomedCss`
-    max-width: calc(100% - 45px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  `}
 `;
 const Save = styled.div`
   background: ${props => props.theme.headerIconBgColor};
@@ -151,9 +144,6 @@ const ContainerRight = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   display: flex;
   margin-left: 40px;
-  ${({ theme }) => theme.zoomedCss`
-    margin-left: auto;
-  `}
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     margin-left: auto;
   }
@@ -164,18 +154,14 @@ const HeaderPracticePlayer = styled(Header)`
   box-shadow: ${boxShadowDefault};
   height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
   z-index: 1;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    height: 104px;
-  }
-`;
-
-const HeaderFlexContainer = styled(FlexContainer)`
-  ${({ theme }) => theme.zoomedCss`
-    flex-direction: column;
-  `}
 `;
 
 const HeaderInnerContainer = styled.div`
   display: flex;
   margin-top: 10px;
+  margin-left: auto;
+`;
+
+const ToolTipContainer = styled.div`
+  zoom: ${({ theme }) => theme?.header?.navZoom};
 `;

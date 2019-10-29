@@ -72,7 +72,7 @@ export const AddQuestionIcon = styled.span`
 export const AddButton = styled(Button)`
   border-radius: 5px;
   border: 1px solid ${themeColor};
-  width: 120px;
+  width: 48%;
   height: 32px;
   color: ${themeColor};
   font-size: 11px;

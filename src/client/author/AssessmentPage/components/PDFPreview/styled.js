@@ -1,13 +1,19 @@
 import styled from "styled-components";
 
-import { white, mediumDesktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import {
+  white,
+  mediumDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  largeDesktopWidth
+} from "@edulastic/colors";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
-  padding: 30px 23px 30px 24px;
+  padding: 30px 23px 30px 65px;
   overflow-y: auto;
-  margin: 0 auto;
+  width: 100%;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
@@ -21,8 +27,14 @@ export const PDFPreviewWrapper = styled.div`
 `;
 
 export const Preview = styled.div`
-  min-width: 600px;
-  min-height: 700px;
+  width: 99%;
+  min-height: 90vh;
   background: ${white};
   position: relative;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  @media (max-width: ${largeDesktopWidth}) {
+    overflow: auto;
+  }
 `;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey } from "@edulastic/colors";
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
@@ -32,18 +32,18 @@ export const ReuploadButtonWrapper = styled.div`
   position: fixed;
   left: 100px;
   bottom: 0;
-  padding: 15px 27px;
+  padding: 15px 22px;
   background: #ebebeb;
 `;
 
 export const ReuploadButton = styled(Button)`
   width: 158px;
   height: 32px;
-  border: 1px solid #aaafb8;
-  color: #aaafb8;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   border-radius: 5px;
-  background: #ebebeb;
+  background: ${borders.default};
+  border: ${borders.default};
+  color: ${tabGrey};
 `;

@@ -29,7 +29,8 @@ import {
   AnswerIndicator,
   DetailsContainer,
   DetailTitle,
-  DetailContents
+  DetailContents,
+  ButtonWrapper
 } from "./styled";
 
 class QuestionItem extends React.Component {
@@ -178,8 +179,12 @@ class QuestionItem extends React.Component {
     const { onOpenEdit, onDelete } = this.props;
     return (
       <EditButton>
-        <IconPencilEdit onClick={onOpenEdit} title="Edit" />
-        <IconTrash onClick={onDelete} title="Delete" />
+        <ButtonWrapper>
+          <IconPencilEdit onClick={onOpenEdit} title="Edit" />
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <IconTrash onClick={onDelete} title="Delete" />
+        </ButtonWrapper>
       </EditButton>
     );
   };
@@ -238,7 +243,7 @@ class QuestionItem extends React.Component {
     const check = viewMode === "report" || previewTab === "check";
     return (
       <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} ref={this.itemRef}>
-        <AnswerForm>
+        <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable
             type="question"
             data={JSON.stringify({ id, index: qIndex || index })}

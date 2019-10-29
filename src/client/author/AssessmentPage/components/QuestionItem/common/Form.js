@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
-import { white, secondaryTextColor, themeColor, green, red, greyishDarker1 } from "@edulastic/colors";
+import {
+  white,
+  secondaryTextColor,
+  themeColor,
+  green,
+  red,
+  greyishDarker1,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 
 const getBackground = ({ selected, checked, correct }) =>
   selected ? (checked ? (correct ? green : red) : themeColor) : white;
@@ -28,6 +36,11 @@ export const QuestionOption = styled.span`
   border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
   &:not(:last-child) {
     margin-right: 5px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-top: 5px;
+    font-size: ${props => props.theme.questionTextextraFontSize};
+    font-weight: bold;
   }
 `;
 

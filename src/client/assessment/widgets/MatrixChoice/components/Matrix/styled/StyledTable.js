@@ -22,13 +22,8 @@ export const StyledTable = styled(Table)`
     }
 
     tr {
-      &:hover:not(.ant-table-expanded-row) {
-        background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-        & > td,
-        & > td div {
-          background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-          color: ${mainTextColor};
-        }
+      &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+        background: none;
       }
 
       th {

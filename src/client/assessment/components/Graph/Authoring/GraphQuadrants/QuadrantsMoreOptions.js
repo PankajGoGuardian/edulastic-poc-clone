@@ -7,7 +7,7 @@ import { Select } from "antd";
 
 import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
-import { MoreOptionsInput, MoreOptionsInputSmall } from "../../common/styled_components";
+import { MoreOptionsInput } from "../../common/styled_components";
 
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -25,8 +25,8 @@ class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ...this.props.graphData.canvas,
-      ...this.props.graphData.uiStyle
+      ...props.graphData.canvas,
+      ...props.graphData.uiStyle
     };
   }
 
@@ -274,34 +274,38 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Checkbox
-                label={t("component.graphing.layoutoptions.snapToGrid")}
-                name="layoutSnapto"
-                onChange={() => this.handleCheckbox("layoutSnapto", layoutSnapto)}
-                checked={layoutSnapto}
-              />
-            </Col>
-            <Col md={24}>
-              <Checkbox
                 label={t("component.graphing.grid_options.show_grid")}
                 name="showGrid"
                 onChange={() => this.handleCheckbox("showGrid", showGrid)}
                 checked={showGrid}
+                textTransform="uppercase"
               />
             </Col>
-            <Col md={24}>
+            <Col md={12}>
               <Checkbox
                 label={t("component.graphing.layoutoptions.displayPositionOnHover")}
                 name="displayPositionOnHover"
                 onChange={() => this.handleCheckbox("displayPositionOnHover", displayPositionOnHover)}
                 checked={displayPositionOnHover}
+                textTransform="uppercase"
               />
             </Col>
-            <Col md={24}>
+            <Col md={12}>
               <Checkbox
                 label={t("component.graphing.layoutoptions.drawLabelzero")}
                 name="drawLabelZero"
                 onChange={() => this.handleCheckbox("drawLabelZero", drawLabelZero)}
                 checked={drawLabelZero}
+                textTransform="uppercase"
+              />
+            </Col>
+            <Col md={12}>
+              <Checkbox
+                label={t("component.graphing.layoutoptions.snapToGrid")}
+                name="layoutSnapto"
+                onChange={() => this.handleCheckbox("layoutSnapto", layoutSnapto)}
+                checked={layoutSnapto}
+                textTransform="uppercase"
               />
             </Col>
             {this.isQuadrantsPlacement() && (
@@ -311,6 +315,7 @@ class QuadrantsMoreOptions extends Component {
                   name="displayPositionPoint"
                   onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
                   checked={displayPositionPoint}
+                  textTransform="uppercase"
                 />
               </Col>
             )}
@@ -326,61 +331,61 @@ class QuadrantsMoreOptions extends Component {
         >
           <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
           <Row gutter={4} type="flex" align="middle">
-            <Col span={13} style={{ marginBottom: "0" }}>
+            <Col md={13} style={{ marginBottom: "0" }}>
               <Row type="flex" align="middle">
-                <Col span={3} />
-                <Col align="center" span={4}>
+                <Col md={3} />
+                <Col align="center" md={4}>
                   <ColumnLabel>{t("component.graphing.grid_options.label")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={4}>
+                <Col align="center" md={4}>
                   <ColumnLabel>{t("component.graphing.grid_options.min")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={4}>
+                <Col align="center" md={4}>
                   <ColumnLabel>{t("component.graphing.grid_options.max")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.distance")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.tick_distance")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.ratio")}</ColumnLabel>
                 </Col>
               </Row>
             </Col>
-            <Col span={11} style={{ marginBottom: "0" }}>
+            <Col md={11} style={{ marginBottom: "0" }}>
               <Row type="flex" align="middle" justify="space-between">
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.show_axis")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.show_label")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.hide_ticks")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.min_arrow")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.max_arrow")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.comma_in_label")}</ColumnLabel>
                 </Col>
-                <Col align="center" span={3}>
+                <Col align="center" md={3}>
                   <ColumnLabel>{t("component.graphing.grid_options.draw_label")}</ColumnLabel>
                 </Col>
               </Row>
             </Col>
           </Row>
           <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
-            <Col span={13} style={{ marginBottom: "0" }}>
-              <Col style={{ marginBottom: "0" }} span={3} align="center">
+            <Col md={13} style={{ marginBottom: "0" }}>
+              <Col style={{ marginBottom: "0" }} md={3} align="center">
                 <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_x")}</RowLabel>
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="text"
                   defaultValue="X"
@@ -391,7 +396,7 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="xMin"
@@ -401,7 +406,7 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="xMax"
@@ -411,10 +416,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   defaultValue="1"
+                  min={0}
                   name="xDistance"
                   value={xDistance}
                   onChange={this.handleGridChange}
@@ -422,10 +428,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   defaultValue="1"
+                  min={0}
                   name="xTickDistance"
                   value={xTickDistance}
                   onChange={this.handleGridChange}
@@ -433,10 +440,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="xRatio"
+                  min={0}
                   value={xRatio}
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
@@ -444,51 +452,51 @@ class QuadrantsMoreOptions extends Component {
                 />
               </Col>
             </Col>
-            <Col span={11} style={{ marginBottom: "0" }}>
+            <Col md={11} style={{ marginBottom: "0" }}>
               <Row type="flex" justify="space-between">
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="xShowAxis"
                     onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
                     checked={xShowAxis}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
                     checked={xShowAxisLabel}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
                     checked={xHideTicks}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
                     checked={xMinArrow}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
                     checked={xMaxArrow}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
                     checked={xCommaInLabel}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
@@ -499,11 +507,11 @@ class QuadrantsMoreOptions extends Component {
             </Col>
           </ColoredRow>
           <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
-            <Col span={13} style={{ marginBottom: "0" }}>
-              <Col span={3} style={{ marginBottom: "0" }}>
+            <Col md={13} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_y")}</RowLabel>
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="text"
                   defaultValue="X"
@@ -514,7 +522,7 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="yMin"
@@ -524,7 +532,7 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={4} style={{ marginBottom: "0" }}>
+              <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="yMax"
@@ -534,10 +542,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   defaultValue="1"
+                  min={0}
                   name="yDistance"
                   value={yDistance}
                   onChange={this.handleGridChange}
@@ -545,10 +554,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   defaultValue="1"
+                  min={0}
                   name="yTickDistance"
                   value={yTickDistance}
                   onChange={this.handleGridChange}
@@ -556,10 +566,11 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col span={3} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
                   type="number"
                   name="yRatio"
+                  min={0}
                   value={yRatio}
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
@@ -567,51 +578,51 @@ class QuadrantsMoreOptions extends Component {
                 />
               </Col>
             </Col>
-            <Col span={11} style={{ marginBottom: "0" }}>
+            <Col md={11} style={{ marginBottom: "0" }}>
               <Row type="flex" justify="space-between">
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="yShowAxis"
                     onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
                     checked={yShowAxis}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
                     checked={yShowAxisLabel}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
                     checked={yHideTicks}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
                     checked={yMinArrow}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
                     checked={yMaxArrow}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
                     checked={yCommaInLabel}
                   />
                 </Col>
-                <Col align="center" span={3} style={{ marginBottom: "0" }}>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
                   <Checkbox
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}

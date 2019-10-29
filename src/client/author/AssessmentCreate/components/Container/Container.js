@@ -20,7 +20,8 @@ import {
   getAssessmentCreatingSelector,
   percentageUploadedSelector,
   fileInfoSelector,
-  setPercentUploadedAction
+  setPercentUploadedAction,
+  uploadToDriveAction
 } from "../../ducks";
 import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -119,7 +120,16 @@ class Container extends React.Component {
   render() {
     let { method } = this.state;
     const newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading, percentageUploaded, fileInfo, isAddPdf, toggleSideBar } = this.props;
+    const {
+      creating,
+      location,
+      assessmentLoading,
+      percentageUploaded,
+      fileInfo,
+      isAddPdf,
+      toggleSideBar,
+      uploadToDrive
+    } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);
@@ -158,6 +168,7 @@ class Container extends React.Component {
               fileInfo={fileInfo}
               isAddPdf={isAddPdf}
               cancelUpload={this.cancelUpload}
+              uploadToDrive={uploadToDrive}
             />
           )}
         </ContainerWrapper>
@@ -179,7 +190,8 @@ const enhance = compose(
       createAssessment: createAssessmentRequestAction,
       receiveTestById: receiveTestByIdAction,
       setPercentUploaded: setPercentUploadedAction,
-      toggleSideBar: toggleSideBarAction
+      toggleSideBar: toggleSideBarAction,
+      uploadToDrive: uploadToDriveAction
     }
   )
 );

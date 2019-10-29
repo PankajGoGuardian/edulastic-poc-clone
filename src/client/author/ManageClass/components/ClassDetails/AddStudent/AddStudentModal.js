@@ -110,7 +110,15 @@ class AddStudentModal extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} textAlign="left">
+      <StyledModal
+        centered
+        title={title}
+        visible={isOpen}
+        onCancel={handleCancel}
+        footer={footer}
+        textAlign="left"
+        padding="0px"
+      >
         <Spin spinning={submitted}>
           <AddForm>
             <BasicFields

@@ -11,7 +11,7 @@ import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
 import ModalDragScrollContainer from "../../../../assessment/components/ModalDragScrollContainer";
 
-const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} innerRef={ref} />);
+const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} ref={ref} />);
 
 class QuestionModal extends React.Component {
   questionWrapperRef = createRef();

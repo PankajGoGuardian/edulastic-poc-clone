@@ -67,7 +67,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
             {index + 1}
           </span>
         )}
-        <span className="value" style={{ width, alignItems: "center" }}>
+        <span className="value" style={{ width, alignItems: "center", fontWeight: "normal" }}>
           {isMath ? (
             <CheckBoxedMathBox
               value={

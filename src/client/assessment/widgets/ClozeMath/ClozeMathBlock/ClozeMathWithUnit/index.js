@@ -236,9 +236,9 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <OuterWrapper innerRef={this.wrappedRef}>
+      <OuterWrapper ref={this.wrappedRef}>
         <ClozeMathInputField
-          innerRef={this.mathRef}
+          ref={this.mathRef}
           onClick={this.showKeyboardModal}
           style={{
             ...btnStyle,
@@ -263,7 +263,7 @@ class ClozeMathWithUnit extends React.Component {
           height={btnStyle.height || height || "auto"}
         />
         {showKeyboard && (
-          <KeyboardWrapper innerRef={this.mathKeyboardRef} height={height}>
+          <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
             <MathKeyboard
               onInput={this.onInput}
               onClose={() => {}}
@@ -291,7 +291,7 @@ const OuterWrapper = styled.div`
 const ClozeMathInputField = styled.span`
   width: ${({ width }) => width};
   min-width: ${({ minWidth }) => minWidth} !important;
-  font-size: ${({ fontSize }) => fontSize} !important;
+  font-size: ${({ fontSize }) => fontSize || "initial"} !important;
   height: ${({ height }) => height};
   margin-right: 0 !important;
   padding: 5px 11px !important;

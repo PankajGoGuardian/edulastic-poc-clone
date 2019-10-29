@@ -285,7 +285,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     >
       <ImageContainer
         src={imageSrc}
-        innerRef={image}
+        ref={image}
         width={+width}
         height={+height}
         preserveAspectRatio="none"

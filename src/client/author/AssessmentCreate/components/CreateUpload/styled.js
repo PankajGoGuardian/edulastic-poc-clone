@@ -4,11 +4,8 @@ import { darkGrey } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 
 export const UploadDescription = styled.p`
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
+  font-size: 14px;
   color: ${darkGrey};
-  margin-top: 5px !important;
 `;
 
 export const CreateUploadContainer = styled(FlexContainer)`

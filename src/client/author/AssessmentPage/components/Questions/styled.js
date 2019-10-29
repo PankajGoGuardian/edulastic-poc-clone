@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white } from "@edulastic/colors";
+import { themeColor, white, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
@@ -13,6 +13,9 @@ export const QuestionsWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 500px;
+  }
 `;
 
 export const AnswerActionsWrapper = styled.div`

@@ -18,11 +18,13 @@ export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment req
 export const CREATE_ASSESSMENT_SUCCESS = "[assessmentPage] create assessment success";
 export const CREATE_ASSESSMENT_ERROR = "[assessmentPage] create assessment error";
 export const SET_PERCENT_LOADED = "[assessmentPage] set assessment uploaded";
+export const UPLOAD_TO_DRIVE_REQUEST = "[assesmentPage] upload to drive request";
 
 export const createAssessmentRequestAction = createAction(CREATE_ASSESSMENT_REQUEST);
 export const createAssessmentSuccessAction = createAction(CREATE_ASSESSMENT_SUCCESS);
 export const createAssessmentErrorAction = createAction(CREATE_ASSESSMENT_ERROR);
 export const setPercentUploadedAction = createAction(SET_PERCENT_LOADED);
+export const uploadToDriveAction = createAction(UPLOAD_TO_DRIVE_REQUEST);
 
 const initialState = {
   creating: false,
@@ -230,8 +232,19 @@ function* createAssessmentSaga({ payload }) {
   }
 }
 
+function* uploadToDriveSaga({ payload }) {
+  try {
+    //TODO call the new api and create test
+  } catch (err) {
+    yield call(message.error, "Upload failed!");
+  }
+}
+
 export function* watcherSaga() {
-  yield all([yield takeLatest(CREATE_ASSESSMENT_REQUEST, createAssessmentSaga)]);
+  yield all([
+    yield takeLatest(CREATE_ASSESSMENT_REQUEST, createAssessmentSaga),
+    yield takeLatest(UPLOAD_TO_DRIVE_REQUEST, uploadToDriveSaga)
+  ]);
 }
 
 const getStateSelector = state => state.assessmentCreate;

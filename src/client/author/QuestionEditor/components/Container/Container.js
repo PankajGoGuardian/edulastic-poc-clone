@@ -403,7 +403,7 @@ class Container extends Component {
           </RightActionButtons>
         </BreadCrumbBar>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollRef?.current?._ps?.element }}>
-          <ScrollbarContainer innerRef={this.scrollRef}>
+          <ScrollbarContainer ref={this.scrollRef}>
             <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
           </ScrollbarContainer>
         </ScrollContext.Provider>

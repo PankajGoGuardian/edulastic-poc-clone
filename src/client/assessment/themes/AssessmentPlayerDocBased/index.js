@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Container } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import PlayerHeader from "../AssessmentPlayerSimple/PlayerHeader";
+import PlayerHeader from "./PlayerHeader";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";

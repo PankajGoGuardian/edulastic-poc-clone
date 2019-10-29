@@ -696,7 +696,7 @@ class ComposeQuestion extends Component {
                   style={{ height: canvasHeight, width: canvasWidth }}
                   onDragStart={e => e.preventDefault()}
                   onClick={this.addNewRespnose}
-                  innerRef={this.canvasRef}
+                  ref={this.canvasRef}
                 >
                   {item.imageUrl && (
                     <React.Fragment>
@@ -742,7 +742,7 @@ class ComposeQuestion extends Component {
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}
                           imageSrc={item.imageUrl}
-                          innerRef={this.imagePreviewRef}
+                          ref={this.imagePreviewRef}
                         />
                       </Rnd>
                       <DropArea

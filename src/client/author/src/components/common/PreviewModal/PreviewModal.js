@@ -228,7 +228,7 @@ class PreviewModal extends React.Component {
         </HeadingWrapper>
         <ModalContentArea>
           {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
-          <QuestionWrapper padding="0px" innerRef={this.mountedQuestion}>
+          <QuestionWrapper padding="0px" ref={this.mountedQuestion}>
             {loading || item === null || passageLoading ? (
               <ProgressContainer>
                 <Spin tip="" />

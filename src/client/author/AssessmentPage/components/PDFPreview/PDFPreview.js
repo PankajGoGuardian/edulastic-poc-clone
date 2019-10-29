@@ -9,6 +9,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
+import { withWindowSizes } from "@edulastic/common";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -42,7 +43,8 @@ const PDFPreview = ({
   answersById,
   viewMode,
   renderExtra = "",
-  previewMode
+  previewMode,
+  windowWidth
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -55,11 +57,15 @@ const PDFPreview = ({
   return (
     <PDFPreviewWrapper>
       <PerfectScrollbar>
-        <Droppable types={["question"]} onDrop={handleDrop(currentPage, onDropAnnotation)}>
+        <Droppable
+          types={["question"]}
+          onDrop={handleDrop(currentPage, onDropAnnotation)}
+          style={{ top: 0, display: "block" }}
+        >
           <Preview onClick={handleRemoveHighlight}>
             {page.URL !== "blank" && (
               <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-                <Page pageNumber={page.pageNo} renderTextLayer={false} />
+                <Page pageNumber={page.pageNo} renderTextLayer={false} width={windowWidth / 2} />
               </Document>
             )}
             {renderExtra}
@@ -98,4 +104,4 @@ PDFPreview.defaultProps = {
   annotations: []
 };
 
-export default connect(state => ({ previewMode: getPreviewSelector(state) }))(PDFPreview);
+export default withWindowSizes(connect(state => ({ previewMode: getPreviewSelector(state) }))(PDFPreview));

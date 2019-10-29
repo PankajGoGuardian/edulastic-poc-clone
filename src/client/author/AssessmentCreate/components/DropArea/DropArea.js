@@ -1,42 +1,23 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-import { FlexContainer } from "@edulastic/common";
-
-import { DropAreaContainer, UploadDragger } from "./styled";
+import { PaperContainer } from "./styled";
 import CreateUpload from "../CreateUpload/CreateUpload";
 import CreateBlank from "../CreateBlank/CreateBlank";
 
-const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload, isAddPdf }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  return (
-    <DropAreaContainer
-      onDragOver={() => {
-        setIsDragging(true);
-      }}
-      onDrop={() => {
-        setIsDragging(false);
-      }}
-      onDragLeave={() => {
-        setIsDragging(false);
-      }}
-    >
-      <UploadDragger isAddPdf={isAddPdf} name="file" onChange={onUpload} disabled={loading} beforeUpload={() => false}>
-        <FlexContainer childMarginRight="0" style={{ height: "100%" }}>
-          <CreateUpload
-            isDragging={isDragging}
-            creating={loading}
-            percent={percent}
-            fileInfo={fileInfo}
-            cancelUpload={cancelUpload}
-          />
-        </FlexContainer>
-      </UploadDragger>
-      {!isAddPdf && <CreateBlank onCreate={onCreateBlank} loading={loading} />}
-    </DropAreaContainer>
-  );
-};
+const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload, uploadToDrive }) => (
+  <PaperContainer>
+    <CreateUpload
+      creating={loading}
+      percent={percent}
+      fileInfo={fileInfo}
+      cancelUpload={cancelUpload}
+      onUpload={onUpload}
+      uploadToDrive={uploadToDrive}
+    />
+    <CreateBlank onCreate={onCreateBlank} loading={loading} />
+  </PaperContainer>
+);
 
 DropArea.propTypes = {
   loading: PropTypes.bool.isRequired,

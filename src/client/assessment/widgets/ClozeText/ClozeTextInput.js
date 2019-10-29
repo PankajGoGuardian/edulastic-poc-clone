@@ -182,7 +182,8 @@ const ClozeTextInput = ({ resprops, id }) => {
           background: item.background,
           padding: width <= 50 ? "3px" : null,
           width: `${width}px` || "auto",
-          height: `${height}px` || "auto"
+          height: `${height}px` || "auto",
+          fontWeight: "normal"
         }}
         placeholder={responsecontainerindividuals[index]?.placeholder || placeholder}
       />

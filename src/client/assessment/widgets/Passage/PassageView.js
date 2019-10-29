@@ -172,7 +172,7 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
       {!item.paginated_content && item.content && (
         <Stimulus
           id="mainContents"
-          innerRef={mainContentsRef}
+          ref={mainContentsRef}
           onMouseUp={handleHighlight}
           onMouseDown={handleMouseDown}
           dangerouslySetInnerHTML={{ __html: getContent() }}

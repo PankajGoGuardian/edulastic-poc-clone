@@ -126,7 +126,12 @@ export default class QuestionChoice extends React.Component {
         {!trueOrFalse && (
           <FormGroup>
             <FormLabel>Options</FormLabel>
-            <Input value={optionsValue} onChange={throttle(this.handleSetOptions, 2000)} autoFocus />
+            <Input
+              value={optionsValue}
+              onChange={throttle(this.handleSetOptions, 2000)}
+              autoFocus
+              style={{ letterSpacing: "8px" }}
+            />
           </FormGroup>
         )}
         <FormGroup>

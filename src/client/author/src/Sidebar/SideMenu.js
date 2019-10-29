@@ -259,7 +259,7 @@ class SideMenu extends Component {
         className={`${!isCollapsed ? "full" : ""} ${className}`}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
-        innerRef={this.sideMenuRef}
+        ref={this.sideMenuRef}
       >
         <SideBar
           collapsed={isCollapsed}
@@ -428,6 +428,7 @@ const TextIcon = styled.div`
   margin-right: 1em;
   width: 22px;
   height: 22px;
+  font-size: 10px;
   background: ${dashBorderColor};
   display: flex;
   align-items: center;
@@ -435,7 +436,7 @@ const TextIcon = styled.div`
   border: 1px solid ${fadedBlack};
   color: ${fadedBlack};
   position: relative;
-  margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1em")};
+  margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1rem")};
   .fa-heart {
     position: absolute;
     color: ${redHeart};

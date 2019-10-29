@@ -51,7 +51,12 @@ const PaginationInfo = styled(Col)`
   font-size: 11px;
   color: ${linkColor};
   white-space: nowrap;
-
+  > a:first-child {
+    &:before {
+      margin-right: 5px;
+      content: "<";
+    }
+  }
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }

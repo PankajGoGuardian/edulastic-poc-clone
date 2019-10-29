@@ -14,7 +14,7 @@ import {
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
-  padding: 30px 30px 15px;
+  padding: 30px;
   left: 0;
   right: 0;
   height: 100%;
@@ -99,7 +99,14 @@ export const StyledCard = styled(Card)`
 
   .ant-card-body {
     padding: 20px 0px 60px;
-    min-height: calc(100vh - 110px);
+    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
+
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
+    }
   }
 `;
 

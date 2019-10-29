@@ -2101,3 +2101,7 @@ span.token.active-word {
 .ant-modal-wrap {
   overflow-y: auto;
 }
+
+.ant-modal-centered .ant-modal {
+  margin: 20px auto;
+}

@@ -14,7 +14,7 @@ export const QuestionItemWrapper = styled.div`
 
 export const AnswerForm = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 export const QuestionNumber = styled.span`
@@ -47,28 +47,24 @@ export const EditButton = styled.span`
   padding: 8px 15px;
   padding-left: 0;
   margin-left: 10px;
-  width: 50px;
-  height: 32px;
+`;
 
+export const ButtonWrapper = styled.span`
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0px 2px 4px rgba(201, 208, 219, 0.5);
+  margin-right: 5px;
+  border-radius:4px;
   svg {
-    fill: ${greenDark};
+    fill: ${themeColor};
     width: 13px;
     height: 13px;
     cursor: pointer;
-
     &:hover {
-      fill: ${greenDark};
-      opacity: 0.7;
-    }
-
-    &:last-child {
-      fill: ${secondaryTextColor};
-
-      &:hover {
-        fill: ${secondaryTextColor};
-      }
+      fill: ${themeColor};
     }
   }
+}
 `;
 
 export const AnswerIndicator = styled.span`

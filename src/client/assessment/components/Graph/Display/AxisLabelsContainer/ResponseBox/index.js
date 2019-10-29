@@ -61,7 +61,7 @@ class ResponseBox extends Component {
 
     return (
       <Container width={width} position={position}>
-        <Title innerRef={this.titleRef}>DRAG DROP VALUES</Title>
+        <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
         <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
           {values.map((value, i) => (
             <Rnd

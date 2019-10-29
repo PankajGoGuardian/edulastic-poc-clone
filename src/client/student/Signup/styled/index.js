@@ -57,11 +57,12 @@ export const RegistrationHeader = styled(Row)`
     border-radius: 4px;
     background: ${themeColor};
     text-transform: uppercase;
-    font-size: 11px;
-
+    font-size: 9px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 11px;
+    }
     @media (max-width: ${mobileWidthMax}) {
       padding: 8px 35px;
-      font-size: 11px;
     }
   }
 `;
@@ -75,6 +76,9 @@ export const BannerText = styled(Col)`
     font-weight: 700;
     margin-top: 0px;
     margin-bottom: 15px;
+    @media (min-width: ${smallDesktopWidth}) {
+      font-size: 26px;
+    }
     @media (min-width: ${mediumDesktopExactWidth}) {
       font-size: 40px;
     }
@@ -138,10 +142,12 @@ export const FormHead = styled(Row)`
   h3 {
     color: white;
     margin: 5px 0px 15px;
-  }
+    font-size: 18px;
 
-  @media (min-width: ${extraDesktopWidthMax}) {
-    h3 {
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 22px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
       font-size: 26px;
     }
   }
@@ -160,7 +166,10 @@ export const ThirdPartyLoginBtn = styled(Col)`
     width: 14px;
   }
 
-  @media (min-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
 `;
@@ -197,8 +206,14 @@ export const FormBody = styled(Row)`
   background: white;
   h5 {
     margin-bottom: 10px;
-    font-size: 13px;
     font-weight: 600;
+    font-size: 13px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 14px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 18px;
+    }
   }
   form {
     .ant-form-item {
@@ -209,13 +224,19 @@ export const FormBody = styled(Row)`
       line-height: normal;
       margin-bottom: 3px;
       label {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         &.ant-form-item-required {
           &:before,
           &:after {
             content: "";
           }
+        }
+        @media (min-width: ${mediumDesktopExactWidth}) {
+          font-size: 12px;
+        }
+        @media (min-width: ${extraDesktopWidthMax}) {
+          font-size: 14px;
         }
       }
       @media (max-width: ${tabletWidth}) {
@@ -262,16 +283,15 @@ export const RegisterButton = styled(Button)`
   width: 100%;
   background: ${themeColor};
   border-color: ${themeColor};
-  font-size: 13px;
   color: white;
   font-weight: 600;
+  font-size: 10px;
   &:hover,
   &:focus {
     border-color: ${themeColor};
     background: ${themeColor};
   }
-
-  @media (min-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
 `;
@@ -312,6 +332,17 @@ export const MobileViewLinks = styled(Col)`
 `;
 
 export const DesktopVieLinks = styled.div`
+  font-family: Open Sans;
+  font-weight: 600;
+  a {
+    font-size: 10px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 12px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 14px;
+    }
+  }
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
@@ -325,9 +356,7 @@ export const DesktopViewCopyright = styled(Row)`
   position: absolute;
   left: 0;
   bottom: 0;
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: 10px;
-  }
+  font-size: 10px;
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }

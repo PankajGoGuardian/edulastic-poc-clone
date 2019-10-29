@@ -57,7 +57,14 @@ export const Label = styled.label`
   position: relative;
   display: inline-block;
   padding: ${props => (props.styleType === "primary" ? "0" : "9px 0px")};
-  padding-left: ${props => (props.styleType === "primary" ? "15px" : "25px")};
+  padding-left: ${props =>
+    props.uiStyle.type === "radioBelow"
+      ? props.showIcon && props.className
+        ? "50px"
+        : "0px"
+      : props.styleType === "primary"
+      ? "15px"
+      : "25px"};
   border: ${props =>
     props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
@@ -86,6 +93,7 @@ export const Label = styled.label`
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? "initial" : "none")};
+  margin-right: 12px;
 
   &.checked {
     background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};

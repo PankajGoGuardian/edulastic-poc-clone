@@ -53,6 +53,8 @@ const Option = props => {
 
   const isCrossAction = crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
 
+  const showIcon = (isSelected && checkAnswer) || showAnswer;
+
   if (showAnswer) {
     let validAnswers = [];
     if (!isEmpty(validation)) {
@@ -207,6 +209,7 @@ const Option = props => {
       className={className}
       showAnswer={showAnswer}
       uiStyle={uiStyle}
+      showIcon={showIcon}
       styleType={styleType}
       selected={isSelected}
       checkAnswer={checkAnswer}
@@ -226,8 +229,8 @@ const Option = props => {
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
           <IconWrapper>
-            {((isSelected && checkAnswer) || showAnswer) && className === "right" && <IconCheck />}
-            {((isSelected && checkAnswer) || showAnswer) && className === "wrong" && <IconClose />}
+            {showIcon && className === "right" && <IconCheck />}
+            {showIcon && className === "wrong" && <IconClose />}
           </IconWrapper>
         </FlexContainer>
       </PaddingDiv>

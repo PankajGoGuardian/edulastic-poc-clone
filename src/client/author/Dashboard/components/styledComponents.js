@@ -1,25 +1,31 @@
 import styled from "styled-components";
-import { Typography, Icon, Col, Row, Divider } from "antd";
+import { Typography, Icon } from "antd";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 // shared styled components
 export const TextWrapper = styled(Text)`
   color: ${props => (props.color ? props.color : "#444444")};
-  font-size: ${props => (props.size ? props.size : "14px")};
-  font-family: "Open Sans";
-  text-align: ${props => (props.textalign ? props.textalign : "")};
-  display: ${props => (props.display ? props.display : "inline-block")};
+  font-size: ${props => (props.rfs ? props.rfs : "16px")};
+  text-align: ${props => (props.textalign ? props.textalign : "left")};
+  display: inline-block;
   margin-bottom: ${props => (props.mb ? props.mb : "")};
-  font-weight: ${props => (props.fw ? props.fw : "700")};
+  font-weight: ${props => (props.fw ? props.fw : "normal")};
   padding: ${props => props.padding};
+  line-height: ${props => props.lh || "normal"};
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => (props.size ? props.size : "18px")};
+  }
 `;
+
 export const LinkWrapper = styled.a`
   color: ${props => (props.color ? props.color : "")};
-  font-size: ${props => props.size};
-  font-family: "Open Sans";
+  font-size: ${props => props.size || "11px"};
   text-align: ${props => (props.textalign ? props.textalign : "")};
   display: ${props => (props.display ? props.display : "inline-block")};
+  font-weight: 600;
 `;
 
 export const IconContainer = styled.span`

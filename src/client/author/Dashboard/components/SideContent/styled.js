@@ -29,7 +29,7 @@ export const SideContentContainer = styled.div`
   transition: all 0.5s ease-in-out;
   z-index: 300;
   top: ${props => props.theme.HeaderHeight.xs}px;
-  right: 0;
+  right: ${props => (props.show ? "0px" : "-8px")};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => props.theme.HeaderHeight.md}px;
@@ -41,8 +41,8 @@ export const SideContentContainer = styled.div`
 
 export const SideContentWrapper = styled.div`
   background: ${white};
-  padding: 1.2rem;
-  width: 275px !important;
+  padding: 20px 30px;
+  width: 358px;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
@@ -55,11 +55,13 @@ export const SideContentWrapper = styled.div`
 `;
 
 export const ScrollbarContainer = styled(PerfectScrollbar)`
-  max-height: calc(100vh - 430px);
+  max-height: calc(100vh - 500px);
   overflow-x: hidden;
+  width: calc(100% + 15px);
+  padding-right: 15px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    max-height: calc(100vh - 400px);
+  @media (min-width: ${extraDesktopWidthMax}) {
+    max-height: calc(100vh - 535px);
   }
 `;
 
@@ -85,12 +87,14 @@ export const Hdivider = styled(Divider)`
 
 export const VideoSection = styled.div`
   position: relative;
-  width: 230px;
+  width: 100%;
   height: 158px;
   overflow: hidden;
-  filter: brightness(50%);
   border-radius: 4px;
-  margin-bottom: 0.4rem;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const VideoPlayer = styled.div`
@@ -100,19 +104,16 @@ export const VideoPlayer = styled.div`
   top: 0;
   left: 0;
   cursor: pointer;
+  filter: brightness(50%);
 `;
 export const VideoOverlay = styled.div`
   position: relative;
-  top: 40%;
-  left: 50%;
-  opacity: 1;
   z-index: 50;
   cursor: pointer;
 `;
 
 export const ChatIconContainer = styled.div`
   text-align: end;
-  margin: 1rem;
   cursor: pointer;
 `;
 export const ChatIcon = styled(Icon)`

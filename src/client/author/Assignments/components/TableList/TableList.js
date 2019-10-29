@@ -246,7 +246,11 @@ class TableList extends Component {
         title: "Type",
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.testType.localeCompare(b.testType),
+        sorter: (a, b) => {
+          // Handling the undefined testtype however All the test should have test type.
+          if (!a.testType || !b.testType) return false;
+          return a.testType.localeCompare(b.testType);
+        },
         width: "10%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },

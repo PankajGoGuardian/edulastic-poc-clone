@@ -267,6 +267,7 @@ export const allThemeVars = {
   titleSectionFontSize,
   headerTitle,
   scoreFontSize,
+  headerFilterFontSize,
 
   questionTextsmallFontSize,
   questionTextnormalFontSize,

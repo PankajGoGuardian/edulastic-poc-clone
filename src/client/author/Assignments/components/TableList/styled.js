@@ -13,7 +13,8 @@ import {
   title,
   testTypeColor,
   smallDesktopWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -96,16 +97,20 @@ export const TableData = styled(Table)`
         padding: 10px 15px 20px;
         border-bottom: none;
         font-weight: bold;
-        font-size: 12px;
         text-transform: uppercase;
         color: ${cardTitleColor};
         white-space: nowrap;
         text-align: center;
+        font-size: ${props => props.theme.headerFilterFontSize};
         &.ant-table-selection-column {
           padding-left: 25px;
         }
-        @media (max-width: ${mediumDesktopWidth}) {
-          font-size: 10px;
+
+        @media (min-width: ${mediumDesktopExactWidth}) {
+          font-size: ${props => props.theme.linkFontSize};
+        }
+        @media (min-width: ${extraDesktopWidthMax}) {
+          font-size: ${props => props.theme.smallFontSize};
         }
 
         &.assignment-name {
@@ -131,7 +136,7 @@ export const TableData = styled(Table)`
             .ant-table-column-sorter {
               &-up,
               &-down {
-                font-size: 10px;
+                font-size: ${props => props.theme.headerFilterFontSize};
               }
             }
           }
@@ -196,10 +201,10 @@ export const TableData = styled(Table)`
   }
   @media (max-width: ${mediumDesktopWidth}) {
     .ant-table-thead > tr > th {
-      font-size: 10px;
+      font-size: ${props => props.theme.headerFilterFontSize};
     }
     .ant-table-tbody > tr > td {
-      font-size: 11px;
+      font-size: ${props => props.theme.linkFontSize};
     }
   }
 `;
@@ -223,9 +228,14 @@ export const AssignmentTD = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: ${props => props.theme.linkFontSize};
 
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.bodyFontSize};
+  }
   @media (min-width: ${extraDesktopWidthMax}) {
     width: ${({ showFilter }) => (showFilter ? "194px" : "250px")};
+    font-size: ${props => props.theme.standardFont};
   }
 `;
 
@@ -240,7 +250,7 @@ export const BtnAction = styled(Button)`
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
   height: 28px;
-  font-size: 11px;
+  font-size: ${props => props.theme.linkFontSize};
   font-weight: 600;
   width: 100%;
   padding: 0px 20px;
@@ -267,7 +277,7 @@ export const TypeIcon = styled.span`
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
-  font-size: 13px;
+  font-size: ${props => props.theme.bodyFontSize};
   line-height: 17px;
   padding-left: 1px;
 `;
@@ -275,7 +285,7 @@ export const TypeIcon = styled.span`
 export const ExpandDivdier = styled.div`
   color: ${themeColor};
   cursor: pointer;
-  font-size: 14px;
+  font-size: ${props => props.theme.standardFont};
 `;
 
 export const BtnStatus = styled(Button)`
@@ -323,7 +333,7 @@ export const ActionsWrapper = styled.div`
 export const GreyFont = styled.div`
   max-width: ${props => (props.showEllipsis ? "100px" : "auto")};
   color: ${title};
-  font-size: 13px;
+  font-size: ${props => props.theme.bodyFontSize};
   position: relative;
   left: ${({ left }) => left || 0}px;
   white-space: nowrap;
@@ -340,7 +350,7 @@ export const GreyFont = styled.div`
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 11px;
+    font-size: ${props => props.theme.linkFontSize};
   }
 `;
 

@@ -60,7 +60,8 @@ export default SelectUnit;
 const StyledSelect = styled(Select)`
   min-width: 118px;
   margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
-  height: ${({ height }) => height || "auto"};
+  align-self: stretch;
+  height: auto;
   ${({ preview }) =>
     preview &&
     `
@@ -70,7 +71,7 @@ const StyledSelect = styled(Select)`
   .ant-select-selection {
     display: flex;
     align-items: center;
-    height: ${props => props.height || response.minHeight + "px"};
+    height: 100%;
     padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
     ${({ preview }) =>
       preview &&

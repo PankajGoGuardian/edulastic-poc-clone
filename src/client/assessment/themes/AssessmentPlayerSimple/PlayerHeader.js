@@ -209,8 +209,8 @@ const PlayerTitle = styled.h1`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-/* 
 `;
+
 const Save = styled.div`
   background: ${props => props.theme.headerIconBgColor};
   border-radius: 5px;

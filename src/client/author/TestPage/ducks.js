@@ -4,7 +4,7 @@ import { test, roleuser, questionType } from "@edulastic/constants";
 import { call, put, all, takeEvery, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
 import moment from "moment";
 import produce from "immer";
@@ -824,13 +824,16 @@ function* setTestDataAndUpdateSaga(payload) {
       .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.alignment || []);
 
-    const subjects = getAlignmentsObject.map(alignment => alignment.subject);
+    const subjects = getAlignmentsObject.map(alignment => alignment.subject).filter(identity);
 
     // domains inside alignment object holds standards with grades
+
     const grades = getAlignmentsObject
-      .flatMap(alignment => alignment.domains)
-      .flatMap(domain => domain.standards)
-      .flatMap(standard => standard.grades);
+      .flatMap(alignment => alignment?.domains)
+      .flatMap(domain => domain?.standards)
+      .flatMap(standard => standard?.grades)
+      .filter(identity);
+
     yield put(
       getItemsSubjectAndGradeAction({
         subjects: _uniq([...subjects, ...questionSubjects]),
@@ -888,6 +891,7 @@ function* setTestDataAndUpdateSaga(payload) {
       yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
     }
   } catch (e) {
+    console.error(e);
     const errorMessage = "Auto Save of Test is failing";
     yield call(message.error, errorMessage);
   }

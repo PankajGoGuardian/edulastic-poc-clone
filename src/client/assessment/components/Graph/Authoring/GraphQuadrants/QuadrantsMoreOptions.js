@@ -7,7 +7,7 @@ import { Select } from "antd";
 
 import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
-import { MoreOptionsInput, MoreOptionsInputSmall } from "../../common/styled_components";
+import { MoreOptionsInput } from "../../common/styled_components";
 
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -19,8 +19,19 @@ import { AnnotationSettings, ScoreSettings } from "..";
 import Question from "../../../Question";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import Tools from "../../common/Tools";
+import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../styled/Grid";
 
 class QuadrantsMoreOptions extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...props.graphData.canvas,
+      ...props.graphData.uiStyle
+    };
+  }
+
+  handleGridChange = event => this.setState({ [event.target.name]: event.target.value });
+
   isQuadrantsPlacement = () => {
     const { graphData } = this.props;
     const { graphType } = graphData;
@@ -131,7 +142,7 @@ class QuadrantsMoreOptions extends Component {
       advancedAreOpen
     } = this.props;
 
-    const { uiStyle, backgroundImage, controlbar, annotation, toolbar, canvas } = graphData;
+    const { uiStyle, backgroundImage, controlbar, annotation, toolbar } = graphData;
 
     const {
       drawLabelZero,
@@ -150,21 +161,29 @@ class QuadrantsMoreOptions extends Component {
       yMaxArrow,
       yMinArrow,
       yCommaInLabel,
-      xDistance,
-      yDistance,
-      xTickDistance,
-      yTickDistance,
       layoutWidth,
       layoutHeight,
       layoutMargin,
       layoutSnapto,
-      xAxisLabel,
-      yAxisLabel,
       xShowAxis = true,
       yShowAxis = true,
       showGrid = true
     } = uiStyle;
 
+    const {
+      yMax,
+      yMin,
+      xMax,
+      xMin,
+      xAxisLabel,
+      yAxisLabel,
+      xRatio,
+      yRatio,
+      xDistance,
+      yDistance,
+      xTickDistance,
+      yTickDistance
+    } = this.state;
     return (
       <Fragment>
         {!this.isQuadrantsPlacement() && (
@@ -254,37 +273,39 @@ class QuadrantsMoreOptions extends Component {
               </Select>
             </Col>
             <Col md={12}>
-              <Label>{t("component.graphing.layoutoptions.snapTo")}</Label>
-              <MoreOptionsInput
-                type="text"
-                defaultValue="grid"
-                name="layoutSnapto"
-                value={layoutSnapto}
-                onChange={this.handleInputChange}
-              />
-            </Col>
-            <Col md={24}>
               <Checkbox
                 label={t("component.graphing.grid_options.show_grid")}
                 name="showGrid"
                 onChange={() => this.handleCheckbox("showGrid", showGrid)}
                 checked={showGrid}
+                textTransform="uppercase"
               />
             </Col>
-            <Col md={24}>
+            <Col md={12}>
               <Checkbox
                 label={t("component.graphing.layoutoptions.displayPositionOnHover")}
                 name="displayPositionOnHover"
                 onChange={() => this.handleCheckbox("displayPositionOnHover", displayPositionOnHover)}
                 checked={displayPositionOnHover}
+                textTransform="uppercase"
               />
             </Col>
-            <Col md={24}>
+            <Col md={12}>
               <Checkbox
                 label={t("component.graphing.layoutoptions.drawLabelzero")}
                 name="drawLabelZero"
                 onChange={() => this.handleCheckbox("drawLabelZero", drawLabelZero)}
                 checked={drawLabelZero}
+                textTransform="uppercase"
+              />
+            </Col>
+            <Col md={12}>
+              <Checkbox
+                label={t("component.graphing.layoutoptions.snapToGrid")}
+                name="layoutSnapto"
+                onChange={() => this.handleCheckbox("layoutSnapto", layoutSnapto)}
+                checked={layoutSnapto}
+                textTransform="uppercase"
               />
             </Col>
             {this.isQuadrantsPlacement() && (
@@ -294,6 +315,7 @@ class QuadrantsMoreOptions extends Component {
                   name="displayPositionPoint"
                   onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
                   checked={displayPositionPoint}
+                  textTransform="uppercase"
                 />
               </Col>
             )}
@@ -308,331 +330,308 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
-          <Row gutter={8}>
-            <Col span={8} />
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Label>AXIS X</Label>
+          <Row gutter={4} type="flex" align="middle">
+            <Col md={13} style={{ marginBottom: "0" }}>
+              <Row type="flex" align="middle">
+                <Col md={3} />
+                <Col align="center" md={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.label")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.min")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={4}>
+                  <ColumnLabel>{t("component.graphing.grid_options.max")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.distance")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.tick_distance")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.ratio")}</ColumnLabel>
+                </Col>
               </Row>
             </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Label>AXIS Y</Label>
+            <Col md={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" align="middle" justify="space-between">
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.show_axis")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.show_label")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.hide_ticks")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.min_arrow")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.max_arrow")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.comma_in_label")}</ColumnLabel>
+                </Col>
+                <Col align="center" md={3}>
+                  <ColumnLabel>{t("component.graphing.grid_options.draw_label")}</ColumnLabel>
+                </Col>
               </Row>
             </Col>
           </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>MIN</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+          <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
+            <Col md={13} style={{ marginBottom: "0" }}>
+              <Col style={{ marginBottom: "0" }} md={3} align="center">
+                <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_x")}</RowLabel>
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="text"
+                  defaultValue="X"
+                  name="xAxisLabel"
+                  value={xAxisLabel}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   name="xMin"
-                  value={canvas.xMin}
-                  onChange={this.handleCanvasChange}
+                  value={xMin}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
                 />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
-                  type="number"
-                  name="yMin"
-                  value={canvas.yMin}
-                  onChange={this.handleCanvasChange}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>MAX</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   name="xMax"
-                  value={canvas.xMax}
-                  onChange={this.handleCanvasChange}
+                  value={xMax}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
                 />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
-                  type="number"
-                  name="yMax"
-                  value={canvas.yMax}
-                  onChange={this.handleCanvasChange}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>DISTANCE</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   defaultValue="1"
+                  min={0}
                   name="xDistance"
                   value={xDistance}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
                 />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   defaultValue="1"
-                  name="yDistance"
-                  value={yDistance}
-                  onChange={this.handleInputChange}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>TICK DISTANCE</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
-                  type="number"
-                  defaultValue="1"
+                  min={0}
                   name="xTickDistance"
                   value={xTickDistance}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
                 />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
-                  type="number"
-                  defaultValue="1"
-                  name="yTickDistance"
-                  value={yTickDistance}
-                  onChange={this.handleInputChange}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>RATIO</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   name="xRatio"
-                  value={canvas.xRatio}
-                  onChange={this.handleRatioChange}
+                  min={0}
+                  value={xRatio}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleRatioChange}
+                  disabled={false}
                 />
+              </Col>
+            </Col>
+            <Col md={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" justify="space-between">
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="xShowAxis"
+                    onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
+                    checked={xShowAxis}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
+                    checked={xShowAxisLabel}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
+                    checked={xHideTicks}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
+                    checked={xMinArrow}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
+                    checked={xMaxArrow}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
+                    checked={xCommaInLabel}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
+                    checked={xDrawLabel}
+                  />
+                </Col>
               </Row>
             </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <MoreOptionsInputSmall
+          </ColoredRow>
+          <ColoredRow style={{ padding: "5px 1px" }} gutter={4}>
+            <Col md={13} style={{ marginBottom: "0" }}>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_y")}</RowLabel>
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="text"
+                  defaultValue="X"
+                  name="yAxisLabel"
+                  value={yAxisLabel}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="yMin"
+                  value={yMin}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={4} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  name="yMax"
+                  value={yMax}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleCanvasChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  min={0}
+                  name="yDistance"
+                  value={yDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
+                  type="number"
+                  defaultValue="1"
+                  min={0}
+                  name="yTickDistance"
+                  value={yTickDistance}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleInputChange}
+                  disabled={false}
+                />
+              </Col>
+              <Col md={3} style={{ marginBottom: "0" }}>
+                <StyledTextField
                   type="number"
                   name="yRatio"
-                  value={canvas.yRatio}
-                  onChange={this.handleRatioChange}
+                  min={0}
+                  value={yRatio}
+                  onChange={this.handleGridChange}
+                  onBlur={this.handleRatioChange}
+                  disabled={false}
                 />
-              </Row>
+              </Col>
             </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>SHOW AXIS</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="xShowAxis"
-                  onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
-                  checked={xShowAxis}
-                />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="yShowAxis"
-                  onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
-                  checked={yShowAxis}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>SHOW AXIS LABEL</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
-                  checked={xShowAxisLabel}
-                />
-              </Row>
-              {xShowAxisLabel && (
-                <Col md={24}>
-                  <MoreOptionsInput
-                    type="text"
-                    defaultValue="X"
-                    name="xAxisLabel"
-                    value={xAxisLabel}
-                    onChange={this.handleInputChange}
+            <Col md={11} style={{ marginBottom: "0" }}>
+              <Row type="flex" justify="space-between">
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="yShowAxis"
+                    onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
+                    checked={yShowAxis}
                   />
                 </Col>
-              )}
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
-                  checked={yShowAxisLabel}
-                />
-              </Row>
-              {yShowAxisLabel && (
-                <Col md={24}>
-                  <MoreOptionsInput
-                    type="text"
-                    defaultValue="X"
-                    name="yAxisLabel"
-                    value={yAxisLabel}
-                    onChange={this.handleInputChange}
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
+                    checked={yShowAxisLabel}
                   />
                 </Col>
-              )}
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>HIDE TICKS</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
-                  checked={xHideTicks}
-                />
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
+                    checked={yHideTicks}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
+                    checked={yMinArrow}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
+                    checked={yMaxArrow}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
+                    checked={yCommaInLabel}
+                  />
+                </Col>
+                <Col align="center" md={3} style={{ marginBottom: "0" }}>
+                  <Checkbox
+                    name="drawLabelZero"
+                    onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
+                    checked={yDrawLabel}
+                  />
+                </Col>
               </Row>
             </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
-                  checked={yHideTicks}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>DRAW LABELS</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
-                  checked={xDrawLabel}
-                />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
-                  checked={yDrawLabel}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>MIN ARROW</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
-                  checked={xMinArrow}
-                />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
-                  checked={yMinArrow}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>MAX ARROW</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
-                  checked={xMaxArrow}
-                />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
-                  checked={yMaxArrow}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={8} type="flex" align="middle">
-            <Col span={8}>
-              <Label>COMMA IN LABEL</Label>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
-                  checked={xCommaInLabel}
-                />
-              </Row>
-            </Col>
-            <Col span={4}>
-              <Row type="flex" justify="center">
-                <Checkbox
-                  name="drawLabelZero"
-                  onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
-                  checked={yCommaInLabel}
-                />
-              </Row>
-            </Col>
-          </Row>
+          </ColoredRow>
         </Question>
 
         <Question

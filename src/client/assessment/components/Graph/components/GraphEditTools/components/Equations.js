@@ -32,6 +32,7 @@ class Equations extends Component {
       showMathModal: false,
       selectedEqIndex: null,
       eqs: props.equations.map(e => e.latex),
+      changedEqs: props.equations.map(() => false),
       newEquation: ""
     };
   }
@@ -44,20 +45,19 @@ class Equations extends Component {
     }
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.timer);
-  }
-
   updateState = () => {
     const { equations } = this.props;
 
-    this.setState({ eqs: equations.map(e => e.latex) });
+    this.setState({
+      eqs: equations.map(e => e.latex),
+      changedEqs: equations.map(() => false)
+    });
   };
 
   setApiLatex = (latex, index = null) => {
     graphEvaluateApi
       .convert({ latex })
-      .then(result => {
+      .then(({ result }) => {
         const { equations, setEquations } = this.props;
         if (index === null) {
           setEquations(
@@ -90,14 +90,15 @@ class Equations extends Component {
   };
 
   handleAddEquation = () => {
-    const { eqs, newEquation } = this.state;
+    const { eqs, changedEqs, newEquation } = this.state;
 
     if (!newEquation) {
       return;
     }
 
     eqs.push(newEquation);
-    this.setState({ eqs, newEquation: "" });
+    changedEqs.push(false);
+    this.setState({ eqs, changedEqs, newEquation: "" });
     this.setApiLatex(eqs[eqs.length - 1]);
   };
 
@@ -115,39 +116,54 @@ class Equations extends Component {
   };
 
   handleInput = (latex, index = null) => {
-    const { eqs } = this.state;
+    const { eqs, changedEqs } = this.state;
 
     if (index === null) {
       this.setState({ newEquation: latex });
     } else {
       eqs[index] = latex;
-      this.setState({ eqs });
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.setApiLatex(eqs[index], index);
-        clearTimeout(this.timer);
-      }, 600);
+      changedEqs[index] = true;
+      this.setState({ eqs, changedEqs });
     }
   };
 
   handleModalSave = latex => {
-    const { eqs, selectedEqIndex } = this.state;
-    const { equations } = this.props;
-    eqs[selectedEqIndex] = latex;
-    this.setState({ eqs });
-    if (
-      eqs[selectedEqIndex] &&
-      equations[selectedEqIndex] &&
-      equations[selectedEqIndex].latex !== eqs[selectedEqIndex]
-    ) {
-      this.setApiLatex(eqs[selectedEqIndex], selectedEqIndex);
+    const { eqs, changedEqs, selectedEqIndex } = this.state;
+
+    if (selectedEqIndex === -1) {
+      if (!latex) {
+        return;
+      }
+      eqs.push(latex);
+      changedEqs.push(false);
+      this.setState({ eqs, changedEqs, newEquation: "" });
+      this.setApiLatex(eqs[eqs.length - 1]);
+    } else {
+      const { equations } = this.props;
+      eqs[selectedEqIndex] = latex;
+      this.setState({ eqs });
+      if (
+        eqs[selectedEqIndex] &&
+        equations[selectedEqIndex] &&
+        equations[selectedEqIndex].latex !== eqs[selectedEqIndex]
+      ) {
+        this.setApiLatex(eqs[selectedEqIndex], selectedEqIndex);
+      }
     }
+
     this.toggleMathModal(false)();
+  };
+
+  saveEquation = index => () => {
+    const { eqs, changedEqs } = this.state;
+    changedEqs[index] = false;
+    this.setState({ changedEqs });
+    this.setApiLatex(eqs[index], index);
   };
 
   render() {
     const { t } = this.props;
-    const { showMathModal, selectedEqIndex, eqs, newEquation } = this.state;
+    const { showMathModal, selectedEqIndex, eqs, changedEqs, newEquation } = this.state;
 
     const btnStyles = {
       height: "40px",
@@ -177,13 +193,25 @@ class Equations extends Component {
             >
               <IconKeyboard color={themeColor} />
             </Button>
-            <Button
-              key={`eq-del-${index}`}
-              style={{ ...btnStyles, backgroundColor: red }}
-              onClick={this.handleDeleteEquation(index)}
-            >
-              <IconTrash color={white} />
-            </Button>
+            {!changedEqs[index] && (
+              <Button
+                key={`eq-del-${index}`}
+                style={{ ...btnStyles, backgroundColor: red, minWidth: "50px", maxWidth: "50px" }}
+                onClick={this.handleDeleteEquation(index)}
+              >
+                <IconTrash color={white} />
+              </Button>
+            )}
+            {changedEqs[index] && (
+              <Button
+                key={`eq-plot-${index}`}
+                style={{ ...btnStyles, minWidth: "50px", maxWidth: "50px" }}
+                onClick={this.saveEquation(index)}
+                color="primary"
+              >
+                {t("component.graphing.settingsPopup.plot")}
+              </Button>
+            )}
           </Wrapper>
         ))}
         <Wrapper key="equation-wrapper-add">
@@ -197,8 +225,15 @@ class Equations extends Component {
             onInput={latex => this.handleInput(latex)}
           />
           <Button
+            key="eq-math-add"
+            style={{ ...btnStyles, backgroundColor: white }}
+            onClick={this.toggleMathModal(true, -1)}
+          >
+            <IconKeyboard color={themeColor} />
+          </Button>
+          <Button
             key="eq-add"
-            style={{ ...btnStyles, minWidth: "85px", maxWidth: "85px" }}
+            style={{ ...btnStyles, minWidth: "50px", maxWidth: "50px" }}
             onClick={this.handleAddEquation}
             color="primary"
           >
@@ -212,7 +247,7 @@ class Equations extends Component {
           showDropdown
           showResposnse={false}
           width="max-content"
-          value={eqs[selectedEqIndex]}
+          value={selectedEqIndex !== -1 ? eqs[selectedEqIndex] : newEquation}
           onSave={latex => this.handleModalSave(latex)}
           onClose={this.toggleMathModal(false)}
         />

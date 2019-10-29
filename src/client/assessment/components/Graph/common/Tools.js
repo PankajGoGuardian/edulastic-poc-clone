@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import {
   IconGraphCircle as IconCircle,
@@ -13,7 +13,8 @@ import {
   IconEraseText,
   IconRedo,
   IconTrash,
-  IconUndo
+  IconUndo,
+  IconPlusCircle
 } from "@edulastic/icons";
 import {
   GraphToolbar,
@@ -22,12 +23,50 @@ import {
   ToolBtn,
   ToolbarItem,
   ToolbarItemLabel,
-  ToolbarItemIcon
+  ToolbarItemIcon,
+  Popup,
+  Overlay,
+  PopupToolsContainer,
+  PopupContent
 } from "./styled_components";
 import utils from "./utils";
 
 export default function Tools(props) {
-  const { toolsAreVisible, selected, tools, controls, onSelectControl, onSelect, fontSize } = props;
+  const {
+    toolsAreVisible,
+    selected,
+    tools,
+    controls,
+    onSelectControl,
+    onSelect,
+    fontSize,
+    setTools,
+    canEditTools
+  } = props;
+
+  const allTools = [
+    "point",
+    "line",
+    "ray",
+    "segment",
+    "vector",
+    "circle",
+    "ellipse",
+    "sine",
+    "tangent",
+    "secant",
+    "exponent",
+    "logarithm",
+    "polynom",
+    "hyperbola",
+    "polygon",
+    "parabola",
+    "area",
+    "dashed"
+  ];
+
+  const [toolsPopupExpanded, setToolsPopupExpanded] = useState(false);
+  const [popupTools, setPopupTools] = useState(tools);
 
   const isActive = tool => selected.includes(tool);
 
@@ -160,10 +199,40 @@ export default function Tools(props) {
         };
 
         return <IconTrash {...newOptions} />;
+      },
+      add: () => {
+        const newOptions = {
+          ...options,
+          stroke: "transparent !important",
+          height: height + 5,
+          width: width + 5
+        };
+
+        return <IconPlusCircle {...newOptions} />;
       }
     };
 
     return iconsByToolName[toolName]();
+  };
+
+  const onSelectPopupTool = tool => {
+    let newTools = [...popupTools];
+    if (newTools.includes(tool)) {
+      newTools = newTools.filter(item => item !== tool);
+    } else {
+      newTools.push(tool);
+    }
+    setPopupTools(newTools);
+  };
+
+  const onOverlayClick = e => {
+    e.stopPropagation();
+    setToolsPopupExpanded(false);
+    setTools(popupTools);
+  };
+
+  const isSelectedPopupTool = tool => {
+    return popupTools.includes(tool);
   };
 
   return (
@@ -185,6 +254,49 @@ export default function Tools(props) {
               </ToolbarItem>
             </ToolBtn>
           ))}
+          {canEditTools && (
+            <ToolBtn
+              style={{ ...getSize(), zIndex: 40 }}
+              className={toolsPopupExpanded ? "active" : ""}
+              onClick={() => setToolsPopupExpanded(true)}
+              key="tool-btn-add"
+            >
+              <ToolbarItem>
+                <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: 0 }}>
+                  {getIconByToolName("add")}
+                </ToolbarItemIcon>
+              </ToolbarItem>
+              {toolsPopupExpanded && (
+                <Fragment>
+                  <Overlay onClick={e => onOverlayClick(e)} />
+                  <Popup bottom>
+                    <PopupContent>
+                      <PopupToolsContainer>
+                        {allTools.map(item => (
+                          <ToolBtn
+                            bordered
+                            style={{ ...getSize() }}
+                            className={isSelectedPopupTool(item) ? "active" : ""}
+                            onClick={() => onSelectPopupTool(item)}
+                            key={`popup-tool-btn-${item}`}
+                          >
+                            <ToolbarItem>
+                              <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                                {getIconByToolName(item)}
+                              </ToolbarItemIcon>
+                              <ToolbarItemLabel style={{ fontSize }}>
+                                {utils.capitalizeFirstLetter(item)}
+                              </ToolbarItemLabel>
+                            </ToolbarItem>
+                          </ToolBtn>
+                        ))}
+                      </PopupToolsContainer>
+                    </PopupContent>
+                  </Popup>
+                </Fragment>
+              )}
+            </ToolBtn>
+          )}
         </ToolbarLeft>
       )}
       <ToolbarRight>
@@ -215,7 +327,9 @@ Tools.propTypes = {
   controls: PropTypes.array,
   onSelectControl: PropTypes.func,
   onSelect: PropTypes.func,
-  fontSize: PropTypes.number
+  fontSize: PropTypes.number,
+  canEditTools: PropTypes.bool,
+  setTools: PropTypes.func
 };
 
 Tools.defaultProps = {
@@ -225,5 +339,7 @@ Tools.defaultProps = {
   controls: [],
   onSelectControl: () => {},
   onSelect: () => {},
-  fontSize: 14
+  fontSize: 14,
+  canEditTools: false,
+  setTools: () => {}
 };

@@ -45,11 +45,11 @@ const getFontSizeVal = name => {
 };
 
 const getSnapSize = (snapTo, axisDistance) => {
-  if (snapTo === "grid" || Number.isNaN(parseInt(snapTo, 10))) {
+  if (snapTo) {
     if (axisDistance) return axisDistance;
     return 1; // default
   }
-  return snapTo;
+  return 0.000001;
 };
 
 class GraphDisplay extends Component {

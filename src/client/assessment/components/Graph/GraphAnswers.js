@@ -153,7 +153,7 @@ class GraphAnswers extends Component {
           <Select
             data-cy="ignoreLabels"
             style={{
-              width: "76px",
+              width: "80px",
               margin: "11px 10px 0 25px",
               borderRadius: "10px"
             }}

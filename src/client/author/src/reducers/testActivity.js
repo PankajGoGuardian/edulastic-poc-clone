@@ -1,5 +1,5 @@
 import { createAction } from "redux-starter-kit";
-import { uniqBy, keyBy } from "lodash";
+import { uniqBy, keyBy, cloneDeep } from "lodash";
 import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
@@ -31,6 +31,12 @@ export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redi
 
 export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT = "[gradebook] realtime close assignment";
 export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT = "[gradebook] realtime gradebook update assignment";
+/**
+ * force rerendering the components that depends on
+ * additional data thus checking
+ * due date / open date to recalculate the status of the assignment
+ */
+export const RECALCULATE_ADDITIONAL_DATA = "[gradebook] recalculate additional data";
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
@@ -41,6 +47,7 @@ export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_
 export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_REDIRECT);
 export const realtimeGradebookCloseAction = createAction(REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT);
 export const realtimeUpdateAssignmentAction = createAction(REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT);
+export const recalculateAdditionalDataAction = createAction(RECALCULATE_ADDITIONAL_DATA);
 
 const initialState = {
   entities: [],
@@ -68,6 +75,17 @@ const reducer = (state = initialState, { type, payload }) => {
         removedStudents: payload.gradebookData.exStudents
       };
 
+    case RECALCULATE_ADDITIONAL_DATA:
+      return {
+        ...state,
+        /**
+         * justified use of cloneDeep because,
+         * I just want to rerender the components
+         * that depends on the additional data
+         * to recheck the assignment start date / due date
+         */
+        additionalData: cloneDeep(state.additionalData)
+      };
     case SET_CURRENT_TESTACTIVITY:
       return {
         ...state,

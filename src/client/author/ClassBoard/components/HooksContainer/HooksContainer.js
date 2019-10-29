@@ -3,6 +3,7 @@ import React from "react";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import useInterval from "@use-it/interval";
 import {
   realtimeGradebookActivityAddAction,
   gradebookTestItemAddAction,
@@ -15,6 +16,7 @@ import {
 } from "../../../src/reducers/testActivity";
 import useRealtimeUpdates from "../../useRealtimeUpdates";
 import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
+import { recalculateAdditionalDataAction } from "../../../src/reducers/testActivity";
 
 const Shell = ({
   addActivity,
@@ -27,12 +29,16 @@ const Shell = ({
   removeQuestions,
   addQuestionsMaxScore,
   closeAssignment,
-  realtimeUpdateAssignment
+  realtimeUpdateAssignment,
+  recalculateAssignment
 }) => {
   const redirectCheck = payload => {
     const { assignmentId, classId } = match.params;
     loadTestActivity(assignmentId, classId);
   };
+
+  useInterval(() => recalculateAssignment(), 60 * 1000);
+
   const client = useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
     addItem,
@@ -61,7 +67,8 @@ export default compose(
       loadTestActivity: receiveTestActivitydAction,
       redirect: realtimeGradebookRedirectAction,
       closeAssignment: realtimeGradebookCloseAction,
-      realtimeUpdateAssignment: realtimeUpdateAssignmentAction
+      realtimeUpdateAssignment: realtimeUpdateAssignmentAction,
+      recalculateAssignment: recalculateAdditionalDataAction
     }
   )
 )(Shell);

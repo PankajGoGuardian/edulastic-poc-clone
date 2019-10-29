@@ -281,8 +281,6 @@ class Contaier extends Component {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
     const _this = this;
-    const spinner = document.querySelector(`.${this.spinner.state.generatedClassName}`);
-    spinner.classList.add("active");
 
     setTimeout(() => {
       receiveItems(search, page, limit);
@@ -354,25 +352,23 @@ class Contaier extends Component {
             <Element>
               <MobileFilterIcon> {this.renderFilterIcon(isShowFilter)} </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
-                <SpinContainer
-                  ref={e => {
-                    this.spinner = e;
-                  }}
-                  className={loading ? "active" : ""}
-                >
-                  <Spin size="large" />
-                </SpinContainer>
-                <ItemsMenu>
-                  <QuestionsFound>{count} questions found</QuestionsFound>
-                </ItemsMenu>
-                <ScrollbarContainer
-                  ref={e => {
-                    this.itemsScrollBar = e;
-                  }}
-                >
-                  <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
-                  <PaginationContainer>{this.renderPagination()}</PaginationContainer>
-                </ScrollbarContainer>
+                {loading && <Spin size="large" />}
+                {!loading && (
+                  <>
+                    <ItemsMenu>
+                      <QuestionsFound>{count} questions found</QuestionsFound>
+                    </ItemsMenu>
+
+                    <ScrollbarContainer
+                      ref={e => {
+                        this.itemsScrollBar = e;
+                      }}
+                    >
+                      <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
+                      <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                    </ScrollbarContainer>
+                  </>
+                )}
               </ContentWrapper>
             </Element>
           </ListItems>

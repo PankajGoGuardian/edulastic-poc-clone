@@ -222,6 +222,7 @@ class Variables extends Component {
                       <MathInput
                         ref={mathFieldRef}
                         symbols={symbols}
+                        fullWidth
                         numberPad={numberPad}
                         value={variable.formula}
                         showResponse={false}

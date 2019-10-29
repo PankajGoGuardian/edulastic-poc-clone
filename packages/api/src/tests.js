@@ -30,6 +30,15 @@ const getById = (id, params = {}) =>
     })
     .then(result => result.data.result);
 
+const getByIdMinimal = (id, params = {}) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/minimal`,
+      method: "get",
+      params
+    })
+    .then(result => result.data.result);
+
 const create = data =>
   api
     .callApi({
@@ -93,6 +102,7 @@ const getDefaultTestSettings = ({ orgId, params = {} }) =>
 export default {
   getAll,
   getById,
+  getByIdMinimal,
   create,
   update,
   getDefaultImage,

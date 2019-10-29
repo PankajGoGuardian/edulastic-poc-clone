@@ -89,7 +89,9 @@ export default createReducer(initialState, {
       }
     } else {
       state.byId[report._id] = report;
-      state.allIds.push(report._id);
+      if (!state.allIds.includes(report._id)) {
+        state.allIds.push(report._id);
+      }
     }
   }
 });

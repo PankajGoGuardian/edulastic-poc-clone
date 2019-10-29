@@ -256,7 +256,7 @@ function* launchAssignment({ payload }) {
         if (assignment.maxAttempts) {
           maxAttempt = assignment.maxAttempts;
         } else {
-          const test = yield call(testsApi.getById, testId);
+          const test = yield call(testsApi.getByIdMinimal, testId);
           maxAttempt = test.maxAttempts;
         }
 

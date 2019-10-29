@@ -26,7 +26,7 @@ function* loadTestActivityReport({ payload }) {
     }
 
     const [test, reports] = yield all([
-      call(testsApi.getById, testId, { data: true, testActivityId, groupId }),
+      call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
     const questions = getQuestions(test.testItems);

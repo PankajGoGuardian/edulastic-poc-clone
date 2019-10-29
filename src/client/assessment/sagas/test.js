@@ -89,7 +89,12 @@ function* loadTest({ payload }) {
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const testRequest = !demo
-      ? call(testsApi.getById, testId, { validation: true, data: true, groupId, testActivityId })
+      ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
+          validation: true,
+          data: true,
+          groupId,
+          testActivityId
+        }) //when preview(author side) use normal non cached api
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {

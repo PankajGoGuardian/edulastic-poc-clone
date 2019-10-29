@@ -2,9 +2,11 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { throttle } from "lodash";
-import { themeColor, desktopWidth, extraDesktopWidthMax, mediumDesktopWidth } from "@edulastic/colors";
+import { themeColor, extraDesktopWidthMax, mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withWindowSizes } from "@edulastic/common";
+
+import AdvancedOptionsLink from "./AdvancedOptionsLink";
 
 class QuestionMenu extends Component {
   state = {
@@ -110,9 +112,7 @@ class QuestionMenu extends Component {
           </MainOptions>
           {advanced.length > 0 && (
             <Fragment>
-              <AdvancedOptionsHeader onClick={handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
-                <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
-              </AdvancedOptionsHeader>
+              <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} />
               {advancedAreOpen && (
                 <AdvancedOptions>
                   {advanced.map((option, index) => (
@@ -149,6 +149,7 @@ QuestionMenu.defaultProps = {
 };
 
 export default withWindowSizes(QuestionMenu);
+export { default as AdvancedOptionsLink } from "./AdvancedOptionsLink";
 
 const Menu = styled.div`
   position: fixed;
@@ -167,7 +168,7 @@ const Menu = styled.div`
     top: 110px;
   }
 
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     display: none;
   }
 `;
@@ -247,37 +248,6 @@ const Option = styled.li`
   @media (min-width: ${extraDesktopWidthMax}) {
     padding-left: 35px;
     margin-bottom: 80px;
-  }
-`;
-const AdvancedOptionsHeader = styled.div`
-  cursor: pointer;
-  display: inline-flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 50px 0px;
-  position: relative;
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: -27px;
-    transform: translateY(-50%) ${props => props.advancedAreOpen && "rotate(180deg)"};
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5.5px solid ${themeColor};
-    transition: all 0.2s ease;
-  }
-  p {
-    margin: 0;
-    font-size: 11px;
-    font-weight: 600;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.36;
-    letter-spacing: 0.2px;
-    text-align: left;
-    color: #434b5d;
   }
 `;
 

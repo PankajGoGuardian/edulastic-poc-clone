@@ -299,6 +299,7 @@ class Graph extends Component {
       flowLayout,
       showQuestionNumber,
       setQuestionData,
+      advancedLink,
       ...restProps
     } = this.props;
 
@@ -364,6 +365,9 @@ class Graph extends Component {
                   handleNumberlineChange={this.handleNumberlineChange}
                 />
               </Question>
+
+              {advancedLink}
+
               {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
                 <Question
                   section="main"
@@ -479,6 +483,7 @@ Graph.propTypes = {
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  advancedLink: PropTypes.any,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool
 };
@@ -491,6 +496,7 @@ Graph.defaultProps = {
   evaluation: null,
   advancedAreOpen: false,
   disableResponse: false,
+  advancedLink: null,
   showQuestionNumber: false,
   flowLayout: false
 };

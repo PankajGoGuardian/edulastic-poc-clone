@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
-import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -28,6 +27,7 @@ const Video = ({
   fillSections,
   cleanSections,
   advancedAreOpen,
+  advancedLink,
   ...restProps
 }) => {
   const Wrapper = smallSize ? EmptyWrapper : StyledPaperWrapper;
@@ -37,6 +37,8 @@ const Video = ({
     return (
       <ContentArea>
         <VideoPlayer item={item} fillSections={fillSections} cleanSections={cleanSections} />
+
+        {advancedLink}
 
         <AdvancedOptions
           setQuestionData={setQuestionData}
@@ -80,11 +82,13 @@ Video.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
 Video.defaultProps = {
   smallSize: false,
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

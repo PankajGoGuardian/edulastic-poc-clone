@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, get } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
+import { Checkbox, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -16,8 +16,6 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
-import { MaxRespCountWrapper } from "./styled/FieldWrapper";
-import { MaxRespCountInput } from "./styled/MaxRespCountInput";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
 import Options from "./components/Options";
 import Display from "./Display";
@@ -153,6 +151,7 @@ class ClozeImageText extends Component {
       t,
       testItem,
       evaluation,
+      advancedLink,
       advancedAreOpen,
       fillSections,
       cleanSections,
@@ -178,87 +177,88 @@ class ClozeImageText extends Component {
       <React.Fragment>
         {view === "edit" && (
           <ContentArea>
-            <React.Fragment>
-              <EditorContainer>
-                <div className="authoring">
-                  <Authoring
-                    item={itemForEdit}
-                    fillSections={fillSections}
-                    cleanSections={cleanSections}
-                    imageWidth={item.imageWidth}
-                  />
-                  <Question
-                    section="main"
-                    label={t("component.correctanswers.setcorrectanswers")}
-                    fillSections={fillSections}
-                    cleanSections={cleanSections}
-                  >
-                    <CorrectAnswers
-                      key={duplicatedResponses || showDraghandle || shuffleOptions}
-                      validation={item.validation}
-                      configureOptions={{
-                        duplicatedResponses,
-                        showDraghandle,
-                        shuffleOptions,
-                        transparentResponses
-                      }}
-                      options={previewDisplayOptions}
-                      imageAlterText={item.imageAlterText}
-                      responses={item.responses}
-                      imageUrl={item.imageUrl}
-                      imageWidth={item.imageWidth}
-                      question={previewStimulus}
-                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                      uiStyle={uiStyle}
-                      backgroundColor={item.background}
-                      maxRespCount={item.maxRespCount}
-                      onAddAltResponses={this.handleAddAltResponses}
-                      onRemoveAltResponses={this.handleRemoveAltResponses}
-                      fillSections={fillSections}
-                      cleanSections={cleanSections}
-                      imageOptions={item.imageOptions}
-                    />
-
-                    <AdditionalContainer>
-                      <Checkbox
-                        className="additional-options"
-                        onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
-                        label={t("component.cloze.dropDown.ignorecase")}
-                        checked={!!ignoreCase}
-                      />
-
-                      <Checkbox
-                        className="additional-options"
-                        onChange={() =>
-                          this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
-                        }
-                        label={t("component.cloze.dropDown.allowsinglelettermistake")}
-                        checked={!!allowSingleLetterMistake}
-                      />
-                      <Checkbox
-                        className="additional-options"
-                        onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
-                        label="Mix-n-Match alternative answers"
-                        checked={!!mixAndMatch}
-                      />
-                    </AdditionalContainer>
-                  </Question>
-                </div>
-              </EditorContainer>
-              <OptionsContainer>
-                <Options
-                  onChange={this.handleOptionsChange}
-                  uiStyle={uiStyle}
-                  outerStyle={{
-                    padding: "16px 60px 7px 60px"
-                  }}
-                  advancedAreOpen={advancedAreOpen}
+            <EditorContainer>
+              <div className="authoring">
+                <Authoring
+                  item={itemForEdit}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
-                  responses={item.responses}
+                  imageWidth={item.imageWidth}
                 />
-              </OptionsContainer>
-            </React.Fragment>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions,
+                      transparentResponses
+                    }}
+                    options={previewDisplayOptions}
+                    imageAlterText={item.imageAlterText}
+                    responses={item.responses}
+                    imageUrl={item.imageUrl}
+                    imageWidth={item.imageWidth}
+                    question={previewStimulus}
+                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                    uiStyle={uiStyle}
+                    backgroundColor={item.background}
+                    maxRespCount={item.maxRespCount}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                    imageOptions={item.imageOptions}
+                  />
+
+                  <AdditionalContainer>
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                      label={t("component.cloze.dropDown.ignorecase")}
+                      checked={!!ignoreCase}
+                    />
+
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() =>
+                        this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                      }
+                      label={t("component.cloze.dropDown.allowsinglelettermistake")}
+                      checked={!!allowSingleLetterMistake}
+                    />
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                      label="Mix-n-Match alternative answers"
+                      checked={!!mixAndMatch}
+                    />
+                  </AdditionalContainer>
+                </Question>
+              </div>
+            </EditorContainer>
+
+            {advancedLink}
+
+            <OptionsContainer>
+              <Options
+                onChange={this.handleOptionsChange}
+                uiStyle={uiStyle}
+                outerStyle={{
+                  padding: "16px 60px 7px 60px"
+                }}
+                advancedAreOpen={advancedAreOpen}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                responses={item.responses}
+              />
+            </OptionsContainer>
           </ContentArea>
         )}
         {view === "preview" && (
@@ -316,6 +316,7 @@ ClozeImageText.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
@@ -328,6 +329,7 @@ ClozeImageText.defaultProps = {
   userAnswer: [],
   testItem: false,
   evaluation: [],
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

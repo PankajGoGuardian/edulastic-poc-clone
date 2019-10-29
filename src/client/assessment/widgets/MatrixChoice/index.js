@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import produce from "immer";
 import { withRouter } from "react-router-dom";
 
-import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -42,6 +41,7 @@ const MatrixChoice = ({
   advancedAreOpen,
   disableResponse,
   changeView,
+  advancedLink,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
@@ -108,6 +108,9 @@ const MatrixChoice = ({
               fillSections={fillSections}
               cleanSections={cleanSections}
             />
+
+            {advancedLink}
+
             <Options
               onChange={handleItemChangeChange}
               uiStyle={item.uiStyle}
@@ -178,6 +181,7 @@ MatrixChoice.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  advancedLink: PropTypes.any,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
   item: PropTypes.object,
@@ -194,6 +198,7 @@ MatrixChoice.defaultProps = {
   item: {},
   userAnswer: null,
   smallSize: false,
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},

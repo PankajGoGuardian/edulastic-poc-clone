@@ -15,7 +15,15 @@ import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 
-const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
+const EditEssayPlainText = ({
+  item,
+  setQuestionData,
+  advancedLink,
+  advancedAreOpen,
+  fillSections,
+  cleanSections,
+  t
+}) => {
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
@@ -36,14 +44,7 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
 
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-      <Scoring
-        isSection
-        t={t}
-        scoringTypes={[]}
-        questionData={item}
-        advancedAreOpen={advancedAreOpen}
-        noPaddingLeft={true}
-      >
+      <Scoring isSection t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen} noPaddingLeft>
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.showWordLimit}
@@ -63,6 +64,8 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
         </Checkbox>
       </Scoring>
 
+      {advancedLink}
+
       <Options
         item={item}
         advancedAreOpen={advancedAreOpen}
@@ -79,11 +82,13 @@ EditEssayPlainText.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
 EditEssayPlainText.defaultProps = {
   advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

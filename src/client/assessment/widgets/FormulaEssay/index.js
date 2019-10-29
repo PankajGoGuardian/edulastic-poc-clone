@@ -7,7 +7,6 @@ import uuidv4 from "uuid/v4";
 import styled from "styled-components";
 import produce from "immer";
 
-import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
@@ -38,6 +37,7 @@ const FormulaEssay = ({
   fillSections,
   cleanSections,
   disableResponse,
+  advancedLink,
   ...restProps
 }) => {
   const resetLines = () => {
@@ -76,6 +76,8 @@ const FormulaEssay = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
+
+          {advancedLink}
 
           <FormulaEssayOptions
             onChange={handleItemChange}
@@ -121,6 +123,7 @@ FormulaEssay.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   saveAnswer: PropTypes.func.isRequired,
+  advancedLink: PropTypes.any,
   disableResponse: PropTypes.bool
 };
 
@@ -131,6 +134,7 @@ FormulaEssay.defaultProps = {
   testItem: false,
   smallSize: false,
   userAnswer: null,
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

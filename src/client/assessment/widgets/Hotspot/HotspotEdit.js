@@ -25,7 +25,16 @@ import Options from "./components/Options";
 
 const OptionsList = withPoints(HotspotPreview);
 
-const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSections, cleanSections }) => {
+const HotspotEdit = ({
+  item,
+  setQuestionData,
+  t,
+  theme,
+  advancedLink,
+  advancedAreOpen,
+  fillSections,
+  cleanSections
+}) => {
   const { areaAttributes, multipleResponses } = item;
 
   const [loading, setLoading] = useState(false);
@@ -170,6 +179,8 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
         </StyledCheckbox>
       </CorrectAnswers>
 
+      {advancedLink}
+
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </ContentArea>
   );
@@ -182,13 +193,15 @@ HotspotEdit.propTypes = {
   theme: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any
 };
 
 HotspotEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedLink: null
 };
 
 const enhance = compose(

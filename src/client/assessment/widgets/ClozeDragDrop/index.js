@@ -8,7 +8,7 @@ import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Checkbox } from "antd";
 
-import { Paper, WithResources, AnswerContext } from "@edulastic/common";
+import { WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -125,7 +125,7 @@ class ClozeDragDrop extends Component {
       theme,
       fillSections,
       cleanSections,
-
+      advancedLink,
       advancedAreOpen,
       ...restProps
     } = this.props;
@@ -209,6 +209,9 @@ class ClozeDragDrop extends Component {
                   </CorrectAnswerOptions>
                 </Question>
               </div>
+
+              {advancedLink}
+
               <div style={{ marginTop: 35 }}>
                 <Options
                   onChange={this.handleOptionsChange}
@@ -274,6 +277,7 @@ ClozeDragDrop.propTypes = {
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
@@ -286,6 +290,7 @@ ClozeDragDrop.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

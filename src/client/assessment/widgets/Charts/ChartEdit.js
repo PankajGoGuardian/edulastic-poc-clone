@@ -14,7 +14,7 @@ import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
 
-const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
+const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
   const {
     uiStyle: { yAxisMax, yAxisMin, snapTo },
     type
@@ -232,6 +232,8 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
         cleanSections={cleanSections}
       />
 
+      {advancedLink}
+
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>
   );
@@ -242,13 +244,15 @@ ChartEdit.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
 ChartEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedLink: null
 };
 
 export default ChartEdit;

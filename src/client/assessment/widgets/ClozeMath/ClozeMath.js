@@ -41,6 +41,7 @@ const ClozeMath = ({
   instructorStimulus,
   showQuestionNumber,
   flowLayout,
+  advancedLink,
   t,
   ...restProps
 }) => {
@@ -141,6 +142,8 @@ const ClozeMath = ({
           />
           <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
+          {advancedLink}
+
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.uiStyle}
@@ -175,7 +178,8 @@ ClozeMath.propTypes = {
   advancedAreOpen: PropTypes.bool,
   instructorStimulus: PropTypes.string.isRequired,
   showQuestionNumber: PropTypes.bool,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  advancedLink: PropTypes.any
 };
 
 ClozeMath.defaultProps = {
@@ -187,7 +191,8 @@ ClozeMath.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
   showQuestionNumber: false,
-  flowLayout: false
+  flowLayout: false,
+  advancedLink: null
 };
 
 const enhance = compose(

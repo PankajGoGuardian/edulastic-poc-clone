@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -7,7 +8,7 @@ import { cloneDeep, isEqual, get, findIndex, clamp } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
-import { Paper, Checkbox, WithResources, AnswerContext } from "@edulastic/common";
+import { Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -265,6 +266,7 @@ class ClozeText extends Component {
       t,
       cleanSections,
       fillSections,
+      advancedLink,
       ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
@@ -291,75 +293,76 @@ class ClozeText extends Component {
       >
         {view === "edit" && (
           <ContentArea data-cy="question-area">
-            <React.Fragment>
-              <div className="authoring">
-                <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
-                <Question
-                  section="main"
-                  label={t("component.correctanswers.setcorrectanswers")}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                >
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      shuffleOptions
-                    }}
-                    options={previewDisplayOptions}
-                    stimulus={previewStimulus}
-                    uiStyle={uiStyle}
-                    responseIds={item.responseIds}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
-                    handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
-                    cleanSections={cleanSections}
-                    fillSections={fillSections}
-                    view={view}
-                    previewTab={previewTab}
-                  />
-                  <div style={{ marginTop: 40 }}>
-                    <Checkbox
-                      className="additional-options"
-                      onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
-                      label={t("component.cloze.dropDown.ignorecase")}
-                      checked={!!ignoreCase}
-                    />
-
-                    <Checkbox
-                      className="additional-options"
-                      onChange={() =>
-                        this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
-                      }
-                      label={t("component.cloze.dropDown.allowsinglelettermistake")}
-                      checked={!!allowSingleLetterMistake}
-                    />
-
-                    <Checkbox
-                      className="additional-options"
-                      onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
-                      label="Mix-n-Match alternative answers"
-                      checked={!!mixAndMatch}
-                    />
-                  </div>
-                </Question>
-                <Options
-                  onChange={this.handleOptionsChange}
-                  uiStyle={uiStyle}
-                  characterMap={item.characterMap}
-                  multipleLine={item.multiple_line}
-                  advancedAreOpen={advancedAreOpen}
-                  cleanSections={cleanSections}
-                  fillSections={fillSections}
-                  responseIds={item.responseIds}
-                  handleIndividualTypeChange={this.handleIndividualTypeChange}
-                  handleGlobalTypeChange={this.handleGlobalTypeChange}
-                  outerStyle={{
-                    padding: "30px 0px"
+            <div className="authoring">
+              <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
+              <Question
+                section="main"
+                label={t("component.correctanswers.setcorrectanswers")}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              >
+                <CorrectAnswers
+                  key={duplicatedResponses || showDraghandle || shuffleOptions}
+                  validation={item.validation}
+                  configureOptions={{
+                    shuffleOptions
                   }}
+                  options={previewDisplayOptions}
+                  stimulus={previewStimulus}
+                  uiStyle={uiStyle}
+                  responseIds={item.responseIds}
+                  onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  view={view}
+                  previewTab={previewTab}
                 />
-              </div>
-            </React.Fragment>
+                <div style={{ marginTop: 40 }}>
+                  <Checkbox
+                    className="additional-options"
+                    onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                    label={t("component.cloze.dropDown.ignorecase")}
+                    checked={!!ignoreCase}
+                  />
+
+                  <Checkbox
+                    className="additional-options"
+                    onChange={() =>
+                      this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                    }
+                    label={t("component.cloze.dropDown.allowsinglelettermistake")}
+                    checked={!!allowSingleLetterMistake}
+                  />
+
+                  <Checkbox
+                    className="additional-options"
+                    onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                    label="Mix-n-Match alternative answers"
+                    checked={!!mixAndMatch}
+                  />
+                </div>
+              </Question>
+
+              {advancedLink}
+
+              <Options
+                onChange={this.handleOptionsChange}
+                uiStyle={uiStyle}
+                characterMap={item.characterMap}
+                multipleLine={item.multiple_line}
+                advancedAreOpen={advancedAreOpen}
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                responseIds={item.responseIds}
+                handleIndividualTypeChange={this.handleIndividualTypeChange}
+                handleGlobalTypeChange={this.handleGlobalTypeChange}
+                outerStyle={{
+                  padding: "30px 0px"
+                }}
+              />
+            </div>
           </ContentArea>
         )}
         {view === "preview" && (
@@ -408,6 +411,7 @@ ClozeText.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
@@ -421,6 +425,7 @@ ClozeText.defaultProps = {
   userAnswer: [],
   testItem: false,
   evaluation: {},
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

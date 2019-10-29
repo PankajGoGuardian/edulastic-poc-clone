@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import produce from "immer";
 import PropTypes from "prop-types";
@@ -25,6 +26,7 @@ const FractionEditor = props => {
     previewTab,
     showQuestionNumber,
     userAnswer,
+    advancedLink,
     disableResponse,
     changePreviewTab,
     isReviewTab,
@@ -66,6 +68,7 @@ const FractionEditor = props => {
           >
             <Annotations question={item} setQuestionData={setQuestionData} editable />
           </Question>
+          {advancedLink}
           <ExtraSection fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
         </ContentArea>
       ) : (
@@ -98,6 +101,7 @@ FractionEditor.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   showQuestionNumber: PropTypes.bool
 };
 
@@ -106,6 +110,7 @@ FractionEditor.defaultProps = {
   item: {},
   userAnswer: [],
   evaluation: [],
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {},
   showQuestionNumber: false

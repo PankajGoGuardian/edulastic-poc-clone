@@ -8,9 +8,8 @@ import styled from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 
-import { PaddingDiv, Paper } from "@edulastic/common";
+import { PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { white } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
@@ -18,7 +17,7 @@ import Options from "./components/Options";
 import Authoring from "./components/Authoring";
 import Display from "./components/Display";
 import CorrectAnswers from "./CorrectAnswers";
-import { replaceVariables, replaceValues } from "../../utils/variables";
+import { replaceVariables } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -188,6 +187,7 @@ class MultipleChoice extends Component {
       cleanSections,
       advancedAreOpen,
       flowLayout,
+      advancedLink,
       disableResponse,
       ...restProps
     } = this.props;
@@ -203,56 +203,57 @@ class MultipleChoice extends Component {
         <PaddingDiv>
           {view === EDIT && (
             <ContentArea>
-              <React.Fragment>
-                <Authoring
-                  item={itemForEdit}
-                  fillSections={fillSections}
-                  fontSize={fontSize}
-                  cleanSections={cleanSections}
-                />
-                <Question
-                  section="main"
-                  label={t("component.correctanswers.setcorrectanswers")}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                >
-                  <CorrectAnswers
-                    uiStyle={uiStyle}
-                    options={previewDisplayOptions}
-                    question={previewStimulus}
-                    multipleResponses={multipleResponses}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
-                    validation={item.validation}
-                    itemLevelScoring={item.itemLevelScoring}
-                    itemLevelScore={item.itemLevelScore}
-                    item={item}
-                    styleType="primary"
-                    fillSections={fillSections}
-                    cleanSections={cleanSections}
-                    correctTab={correctTab}
-                    fontSize={fontSize}
-                    {...restProps}
-                  />
-                  <Divider />
-                  <Checkbox
-                    data-cy="multi"
-                    onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
-                    checked={multipleResponses}
-                  >
-                    {t("component.multiplechoice.multipleResponses")}
-                  </Checkbox>
-                </Question>
-                <Options
-                  onChange={this.handleOptionsChange}
+              <Authoring
+                item={itemForEdit}
+                fillSections={fillSections}
+                fontSize={fontSize}
+                cleanSections={cleanSections}
+              />
+              <Question
+                section="main"
+                label={t("component.correctanswers.setcorrectanswers")}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              >
+                <CorrectAnswers
                   uiStyle={uiStyle}
-                  advancedAreOpen={advancedAreOpen}
+                  options={previewDisplayOptions}
+                  question={previewStimulus}
+                  multipleResponses={multipleResponses}
+                  onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  validation={item.validation}
+                  itemLevelScoring={item.itemLevelScoring}
+                  itemLevelScore={item.itemLevelScore}
+                  item={item}
+                  styleType="primary"
                   fillSections={fillSections}
                   cleanSections={cleanSections}
-                  multipleResponses={multipleResponses}
+                  correctTab={correctTab}
+                  fontSize={fontSize}
                   {...restProps}
                 />
-              </React.Fragment>
+                <Divider />
+                <Checkbox
+                  data-cy="multi"
+                  onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
+                  checked={multipleResponses}
+                >
+                  {t("component.multiplechoice.multipleResponses")}
+                </Checkbox>
+              </Question>
+
+              {advancedLink}
+
+              <Options
+                onChange={this.handleOptionsChange}
+                uiStyle={uiStyle}
+                advancedAreOpen={advancedAreOpen}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                multipleResponses={multipleResponses}
+                {...restProps}
+              />
             </ContentArea>
           )}
           {view === PREVIEW && (
@@ -311,6 +312,7 @@ MultipleChoice.propTypes = {
   flowLayout: PropTypes.bool,
   disableResponse: PropTypes.bool,
   col: PropTypes.object.isRequired,
+  advancedLink: PropTypes.any,
   changeView: PropTypes.func.isRequired
 };
 
@@ -319,6 +321,7 @@ MultipleChoice.defaultProps = {
   item: {
     options: []
   },
+  advancedLink: null,
   smallSize: false,
   history: {},
   userAnswer: [],

@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { Checkbox, Paper, WithResources, AnswerContext } from "@edulastic/common";
+import { Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -122,17 +122,11 @@ class ClozeDropDown extends Component {
       fillSections,
       cleanSections,
       advancedAreOpen,
+      advancedLink,
       ...restProps
     } = this.props;
 
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      itemForPreview,
-      uiStyle,
-      instructorStimulus
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const { shuffleOptions, responseIds } = item;
 
@@ -188,6 +182,9 @@ class ClozeDropDown extends Component {
                   cleanSections={cleanSections}
                 />
               </div>
+
+              {advancedLink}
+
               <div style={{ marginTop: 35 }}>
                 <Options
                   onChange={this.handleOptionsChange}
@@ -251,6 +248,7 @@ ClozeDropDown.propTypes = {
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
@@ -264,6 +262,7 @@ ClozeDropDown.defaultProps = {
   userAnswer: [],
   testItem: false,
   advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

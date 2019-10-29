@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
 
-import { Checkbox, Paper, AnswerContext } from "@edulastic/common";
+import { Checkbox, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -171,6 +171,7 @@ class ClozeImageDropDown extends Component {
       fillSections,
       cleanSections,
       advancedAreOpen,
+      advancedLink,
       ...restProps
     } = this.props;
 
@@ -243,6 +244,9 @@ class ClozeImageDropDown extends Component {
                   </Question>
                 </div>
               </EditorContainer>
+
+              {advancedLink}
+
               <OptionsContainer>
                 <Options
                   questionData={item}
@@ -318,6 +322,7 @@ ClozeImageDropDown.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
@@ -334,6 +339,7 @@ ClozeImageDropDown.defaultProps = {
   testItem: false,
   advancedAreOpen: false,
   evaluation: [],
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

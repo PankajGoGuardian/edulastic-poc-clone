@@ -20,7 +20,15 @@ import Options from "./Options";
 import Scoring from "../../containers/WidgetOptions/components/Scoring";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
+const EditEssayRichText = ({
+  item,
+  setQuestionData,
+  t,
+  fillSections,
+  cleanSections,
+  advancedLink,
+  advancedAreOpen
+}) => {
   const [act, setAct] = useState(item.formattingOptions || []);
 
   useEffect(() => {
@@ -88,6 +96,8 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         </Checkbox>
       </Question>
 
+      {advancedLink}
+
       <Options
         item={item}
         fillSections={fillSections}
@@ -104,11 +114,13 @@ EditEssayRichText.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool
 };
 
 EditEssayRichText.defaultProps = {
   advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

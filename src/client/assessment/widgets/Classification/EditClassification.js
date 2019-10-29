@@ -6,17 +6,15 @@ import { Rnd } from "react-rnd";
 
 import { withTheme } from "styled-components";
 import { compose } from "redux";
-import { uniq, get } from "lodash";
+import { get } from "lodash";
 import produce from "immer";
 import uuid from "uuid/v4";
 
-import { Paper, Checkbox, EduButton, FlexContainer } from "@edulastic/common";
+import { Paper, Checkbox, EduButton, FlexContainer, beforeUpload } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { message, Upload } from "antd";
-import { TokenStorage, API_CONFIG } from "@edulastic/api";
 import { aws, clozeImage } from "@edulastic/constants";
-import { beforeUpload } from "@edulastic/common";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -66,6 +64,7 @@ const EditClassification = ({
   theme,
   t,
   advancedAreOpen,
+  advancedLink,
   fillSections,
   cleanSections
 }) => {
@@ -144,7 +143,7 @@ const EditClassification = ({
         draft[prop] = uiStyle;
         if (prop === "duplicateResponses" && uiStyle === false) {
           const colCount = draft.uiStyle.columnCount;
-          const rowCount = draft.uiStyle.rowCount;
+          const { rowCount } = draft.uiStyle;
           const initialLength = (colCount || 2) * (rowCount || 1);
           draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
 
@@ -172,7 +171,7 @@ const EditClassification = ({
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
         const colCount = draft.uiStyle.columnCount;
-        const rowCount = draft.uiStyle.rowCount;
+        const { rowCount } = draft.uiStyle;
 
         const initialLength = (colCount || 2) * (rowCount || 1);
         draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
@@ -199,13 +198,11 @@ const EditClassification = ({
       produce(item, draft => {
         const responses = draft.possibleResponseGroups[index].responses.flatMap(resp => resp.id);
         responses.forEach(responseID => {
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(arr => {
-            return arr.filter(respID => respID !== responseID);
-          });
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(arr =>
+            arr.filter(respID => respID !== responseID)
+          );
           draft.validation.altResponses.forEach(alt_response => {
-            alt_response.value = alt_response.value.map(arr => {
-              return arr.filter(respID => respID !== responseID);
-            });
+            alt_response.value = alt_response.value.map(arr => arr.filter(respID => respID !== responseID));
           });
         });
         draft.possibleResponseGroups.splice(index, 1);
@@ -290,6 +287,7 @@ const EditClassification = ({
             break;
 
           case actions.REMOVE:
+            // eslint-disable-next-line no-case-declarations
             const respID = get(draft, `possibleResponses[${restProp}].id`, "");
             draft.validation.validResponse.value.forEach(arr => {
               if (arr.includes(respID)) {
@@ -388,7 +386,7 @@ const EditClassification = ({
         draft.uiStyle[prop] = val;
 
         const colCount = draft.uiStyle.columnCount;
-        const rowCount = draft.uiStyle.rowCount;
+        const { rowCount } = draft.uiStyle;
 
         const initialLength = (colCount || 2) * (rowCount || 1);
 
@@ -545,12 +543,10 @@ const EditClassification = ({
             checkboxVal={item.groupPossibleResponses}
             items={
               item.groupPossibleResponses
-                ? item.possibleResponseGroups.map(it => {
-                    return {
-                      title: it.title,
-                      responses: it.responses.map(resp => resp.value)
-                    };
-                  })
+                ? item.possibleResponseGroups.map(it => ({
+                    title: it.title,
+                    responses: it.responses.map(resp => resp.value)
+                  }))
                 : item.possibleResponses.map(ite => ite.value)
             }
             onAddInner={onAddInner}
@@ -611,6 +607,9 @@ const EditClassification = ({
           marginBottom="-50px"
         />
       </Paper>
+
+      {advancedLink}
+
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </Fragment>
   );
@@ -624,11 +623,13 @@ EditClassification.propTypes = {
   fillSections: PropTypes.func,
   t: PropTypes.func.isRequired,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  advancedLink: PropTypes.any
 };
 
 EditClassification.defaultProps = {
   advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

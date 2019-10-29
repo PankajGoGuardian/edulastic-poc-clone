@@ -24,7 +24,7 @@ import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(MatchListPreview);
 
-const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
+const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const _setQuestionData = questionData => {
@@ -305,6 +305,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
+
+        {advancedLink}
+
         <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
       </Paper>
     </ContentArea>
@@ -317,11 +320,13 @@ MatchListEdit.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  advancedLink: PropTypes.any
 };
 
 MatchListEdit.defaultProps = {
   advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

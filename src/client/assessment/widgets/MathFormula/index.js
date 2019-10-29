@@ -39,6 +39,7 @@ const MathFormula = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
+  advancedLink,
   changePreview,
   ...restProps
 }) => {
@@ -84,6 +85,9 @@ const MathFormula = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
+
+          {advancedLink}
+
           <MathFormulaOptions
             onChange={handleItemChangeChange}
             uiStyle={item.uiStyle}
@@ -134,6 +138,7 @@ MathFormula.propTypes = {
   evaluation: PropTypes.any.isRequired,
   userAnswer: PropTypes.any,
   smallSize: PropTypes.bool,
+  advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
@@ -145,6 +150,7 @@ MathFormula.defaultProps = {
   item: {},
   userAnswer: null,
   smallSize: false,
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

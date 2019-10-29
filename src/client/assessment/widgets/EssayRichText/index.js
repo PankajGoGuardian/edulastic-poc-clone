@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { WithResources } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
@@ -8,7 +9,6 @@ import { replaceVariables } from "../../utils/variables";
 
 import EditEssayRichText from "./EditEssayRichText";
 import EssayRichTextPreview from "./EssayRichTextPreview";
-import { WithResources } from "@edulastic/common";
 
 const EssayRichText = props => {
   const { item, view } = props;

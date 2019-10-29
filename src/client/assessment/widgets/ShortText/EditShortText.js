@@ -17,7 +17,7 @@ import Options from "./components/Options";
 
 const OptionsList = withPoints(CorrectAnswer);
 
-const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen, t }) => {
+const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleAddAnswer = () => {
@@ -132,6 +132,8 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         cleanSections={cleanSections}
       />
 
+      {advancedLink}
+
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </ContentArea>
   );
@@ -143,13 +145,15 @@ EditShortText.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  advancedLink: PropTypes.any
 };
 
 EditShortText.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedLink: null
 };
 
 export default withNamespaces("assessment")(EditShortText);

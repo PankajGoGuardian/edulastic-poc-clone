@@ -16,7 +16,7 @@ import ProtractorView from "./ProtractorView";
 
 class Details extends Component {
   render() {
-    const { item, smallSize, setQuestionData, t, fillSections, cleanSections, ...restProps } = this.props;
+    const { item, smallSize, setQuestionData, t, fillSections, advancedLink, cleanSections, ...restProps } = this.props;
 
     const handleItemChangeChange = (prop, value) => {
       setQuestionData(
@@ -35,6 +35,7 @@ class Details extends Component {
         cleanSections={cleanSections}
       >
         <Subtitle>{t("component.protractor.details")}</Subtitle>
+        {advancedLink}
         <Options onChange={handleItemChangeChange} item={item} />
         <ProtractorView smallSize={smallSize} item={item} {...restProps} />
       </Question>
@@ -48,10 +49,12 @@ Details.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   cleanSections: PropTypes.func,
-  fillSections: PropTypes.func
+  fillSections: PropTypes.func,
+  advancedLink: PropTypes.any
 };
 
 Details.defaultProps = {
+  advancedLink: null,
   cleanSections: () => {},
   fillSections: () => {}
 };

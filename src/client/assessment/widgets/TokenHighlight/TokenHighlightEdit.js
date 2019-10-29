@@ -20,7 +20,7 @@ import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, 
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
-const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
+const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const [templateTab, setTemplateTab] = useState(0);
@@ -174,6 +174,8 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         cleanSections={cleanSections}
       />
 
+      {advancedLink}
+
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </ContentArea>
   );
@@ -184,13 +186,15 @@ TokenHighlightEdit.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  advancedLink: PropTypes.any
 };
 
 TokenHighlightEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedLink: null
 };
 
 export default withNamespaces("assessment")(TokenHighlightEdit);

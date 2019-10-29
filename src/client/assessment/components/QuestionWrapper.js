@@ -9,11 +9,11 @@ import { compose } from "redux";
 import { get, round, isEmpty } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, themeColor } from "@edulastic/colors";
+import { mobileWidthMax, smallDesktopWidth, themeColor } from "@edulastic/colors";
 import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
-import QuestionMenu from "./Graph/common/QuestionMenu";
+import QuestionMenu, { AdvancedOptionsLink } from "./QuestionMenu";
 
 import { OrderList } from "../widgets/OrderList";
 import { SortList } from "../widgets/SortList";
@@ -358,6 +358,13 @@ class QuestionWrapper extends Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
+    const showQuestionMenu = windowWidth > parseInt(smallDesktopWidth, 10);
+
+    const advancedLink =
+      !showQuestionMenu && advanced.length > 0 ? (
+        <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom />
+      ) : null;
+
     return (
       <ThemeProvider
         theme={{
@@ -400,7 +407,7 @@ class QuestionWrapper extends Component {
               flowLayout={flowLayout}
               twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
             >
-              {view === "edit" && (
+              {view === "edit" && showQuestionMenu && (
                 <QuestionMenu
                   activeTab={activeTab}
                   main={main}
@@ -417,6 +424,7 @@ class QuestionWrapper extends Component {
                   view={view}
                   changePreviewTab={changePreviewTab}
                   qIndex={qIndex}
+                  advancedLink={advancedLink}
                   advancedAreOpen={advancedAreOpen}
                   cleanSections={this.cleanSections}
                   fillSections={this.fillSections}

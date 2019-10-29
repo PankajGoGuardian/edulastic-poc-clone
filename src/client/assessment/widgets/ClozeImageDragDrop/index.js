@@ -9,7 +9,7 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
+import { PaddingDiv, AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -146,6 +146,7 @@ class ClozeImageDragDrop extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
+      advancedLink,
       setQuestionData,
       ...restProps
     } = this.props;
@@ -265,6 +266,9 @@ class ClozeImageDragDrop extends Component {
                   <Annotations question={item} setQuestionData={setQuestionData} editable />
                 </Question>
               </div>
+
+              {advancedLink}
+
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
@@ -343,7 +347,8 @@ ClozeImageDragDrop.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   changePreview: PropTypes.func.isRequired,
-  snapItems: PropTypes.array
+  snapItems: PropTypes.array,
+  advancedLink: PropTypes.any
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -356,6 +361,7 @@ ClozeImageDragDrop.defaultProps = {
   userAnswer: [],
   snapItems: [],
   testItem: false,
+  advancedLink: null,
   advancedAreOpen: false,
   evaluation: [],
   fillSections: () => {},

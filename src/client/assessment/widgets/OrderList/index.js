@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState, useEffect, useContext } from "react";
+import React, { Fragment, useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -9,8 +9,6 @@ import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
 import {
-  Paper,
-  InstructorStimulus,
   CorrectAnswersContainer,
   FlexContainer,
   MathFormulaDisplay,
@@ -69,6 +67,7 @@ const OrderList = ({
   disableResponse,
   t,
   changePreviewTab,
+  advancedLink,
   isReviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -217,7 +216,7 @@ const OrderList = ({
       columns={columns}
       disableResponse={disableResponse}
       helperClass="sortableHelper"
-      lockToContainerEdges={true}
+      lockToContainerEdges
       lockOffset={["10%", "0%"]}
       lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
     />
@@ -255,6 +254,9 @@ const OrderList = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
+
+          {advancedLink}
+
           <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
         </ContentArea>
       )}
@@ -328,7 +330,7 @@ const OrderList = ({
               columns={columns}
               disableResponse={disableResponse}
               helperClass="sortableHelper"
-              lockToContainerEdges={true}
+              lockToContainerEdges
               lockOffset={["10%", "0%"]}
               lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
             />
@@ -346,7 +348,7 @@ OrderList.propTypes = {
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.any,
+  userAnswer: PropTypes.any.isRequired,
   testItem: PropTypes.bool,
   qIndex: PropTypes.any.isRequired,
   evaluation: PropTypes.any,
@@ -357,6 +359,7 @@ OrderList.propTypes = {
   theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool,
+  advancedLink: PropTypes.any,
   isReviewTab: PropTypes.bool
 };
 
@@ -366,6 +369,7 @@ OrderList.defaultProps = {
   item: {},
   testItem: false,
   evaluation: "",
+  advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},

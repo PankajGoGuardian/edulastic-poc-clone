@@ -6,9 +6,10 @@ import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 import Options from "./components/Options";
 
-const TextContent = ({ item, setQuestionData, t, fillSections, cleanSections }) => (
+const TextContent = ({ item, setQuestionData, t, advancedLink, fillSections, cleanSections }) => (
   <Question section="main" label={t("component.text.text")} fillSections={fillSections} cleanSections={cleanSections}>
     <Subtitle>{t("component.text.text")}</Subtitle>
+    {advancedLink}
     <Options setQuestionData={setQuestionData} item={item} t={t} />
   </Question>
 );
@@ -22,10 +23,12 @@ TextContent.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
+  advancedLink: PropTypes.any,
   cleanSections: PropTypes.func
 };
 
 TextContent.defaultProps = {
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

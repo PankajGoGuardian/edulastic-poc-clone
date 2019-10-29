@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { smallDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const ContentArea = styled.div`
   width: 100%;
@@ -9,7 +9,7 @@ export const ContentArea = styled.div`
     padding-left: 325px;
   }
 
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     max-width: 100%;
     padding-left: 0;
   }

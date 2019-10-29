@@ -22,7 +22,16 @@ import Options from "./components/Options";
 
 const OptionsList = withPoints(ShadingPreview);
 
-const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen, fillSections, cleanSections }) => {
+const ShadingEdit = ({
+  item,
+  setQuestionData,
+  theme,
+  saveAnswer,
+  advancedLink,
+  advancedAreOpen,
+  fillSections,
+  cleanSections
+}) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleAddAnswer = () => {
@@ -146,6 +155,8 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
         cleanSections={cleanSections}
       />
 
+      {advancedLink}
+
       <Options
         saveAnswer={saveAnswer}
         advancedAreOpen={advancedAreOpen}
@@ -163,13 +174,15 @@ ShadingEdit.propTypes = {
   theme: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedLink: PropTypes.any
 };
 
 ShadingEdit.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedLink: null
 };
 
 const enhance = compose(

@@ -12,17 +12,7 @@ import TextContentPreview from "./TextContentPreview";
 
 const EmptyWrapper = styled.div``;
 
-const Text = ({
-  item,
-  view,
-  smallSize,
-  setQuestionData,
-  t,
-  fillSections,
-  cleanSections,
-  advancedAreOpen,
-  ...restProps
-}) => {
+const Text = ({ item, view, smallSize, setQuestionData, t, fillSections, cleanSections, advancedLink }) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper;
 
   if (view === "edit") {
@@ -32,6 +22,7 @@ const Text = ({
           item={item}
           setQuestionData={setQuestionData}
           t={t}
+          advancedLink={advancedLink}
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
@@ -58,12 +49,12 @@ Text.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedLink: PropTypes.any
 };
 
 Text.defaultProps = {
   smallSize: false,
-  advancedAreOpen: false,
+  advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

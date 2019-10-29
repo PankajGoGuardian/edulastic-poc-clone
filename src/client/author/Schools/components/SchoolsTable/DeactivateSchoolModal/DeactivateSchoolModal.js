@@ -33,6 +33,7 @@ class DeactivateSchoolModal extends React.Component {
         onOk={this.onDeactivateSchool}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
           <Button onClick={this.onCloseModal} ghost type="primary">
             No, Cancel

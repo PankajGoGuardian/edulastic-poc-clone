@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, whiteSmoke, numBtnColors, themeColor } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { Input, Col, Button } from "antd";
 import { ConfirmationModal } from "../../../../../src/client/author/src/components/common/ConfirmationModal";
 
@@ -18,6 +18,7 @@ export const StyledInput = styled(Input)`
   width: 100%;
   text-align: center;
   margin-top: 20px;
+  border: ${props => (props.errorMsg ? "1px solid red" : `1px solid ${themeColor}`)};
 `;
 
 export const StyledP = styled.p`
@@ -25,9 +26,10 @@ export const StyledP = styled.p`
 `;
 
 export const YesButton = styled(Button)`
-  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
-  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
-  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
+  min-width: 180px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid ${themeColor};
 `;
 
 export const StyledModal = styled(ConfirmationModal)`
@@ -35,4 +37,14 @@ export const StyledModal = styled(ConfirmationModal)`
     display: block !important;
     padding: 50px;
   }
+`;
+
+export const ErrorMessage = styled.div`
+  color: red;
+  text-align: start;
+  padding-top: 5px;
+`;
+
+export const CancelButton = styled(Button)`
+  min-width: 180px;
 `;

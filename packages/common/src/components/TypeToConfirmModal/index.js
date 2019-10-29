@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import { Row, Col, Button } from "antd";
 import PropTypes from "prop-types";
-import { StyledCol, StyledP, StyledInput, LightGreenSpan, YesButton, StyledModal } from "./styled";
+import {
+  StyledCol,
+  StyledP,
+  StyledInput,
+  LightGreenSpan,
+  YesButton,
+  StyledModal,
+  ErrorMessage,
+  CancelButton
+} from "./styled";
 
 class TypeToConfirmModal extends Component {
   state = {
-    textValue: ""
+    textValue: "",
+    errorMsg: null
   };
 
   onCloseModal = () => {
@@ -14,12 +24,29 @@ class TypeToConfirmModal extends Component {
   };
 
   onChangeInput = e => {
-    this.setState({ textValue: e.target.value });
+    this.setState({ textValue: e.target.value, errorMsg: null });
+  };
+
+  onProceed = () => {
+    const { textValue } = this.state;
+    const { wordToBeTyped, handleOnOkClick } = this.props;
+    if (textValue.toLowerCase() !== wordToBeTyped.toLowerCase()) {
+      this.setState({
+        ...this.state,
+        errorMsg: textValue.trim().length ? "Confirmation text did not match." : "Please enter confimation text."
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        errorMsg: null
+      });
+      handleOnOkClick();
+    }
   };
 
   render() {
     const { modalVisible, title, handleOnOkClick, wordToBeTyped, primaryLabel, secondaryLabel } = this.props;
-    const { textValue } = this.state;
+    const { textValue, errorMsg } = this.state;
 
     return (
       <StyledModal
@@ -28,16 +55,12 @@ class TypeToConfirmModal extends Component {
         onOk={handleOnOkClick}
         onCancel={this.onCloseModal}
         maskClosable={false}
-        modalWidth="max-content"
+        centered
         footer={[
-          <Button key="cancelButton" onClick={this.onCloseModal} ghost type="primary">
+          <CancelButton key="cancelButton" onClick={this.onCloseModal} ghost type="primary">
             No, Cancel
-          </Button>,
-          <YesButton
-            key="okButton"
-            onClick={handleOnOkClick}
-            disabled={textValue.toLowerCase() !== wordToBeTyped.toLowerCase()}
-          >
+          </CancelButton>,
+          <YesButton key="okButton" onClick={this.onProceed}>
             {`Yes, ${title} >`}
           </YesButton>
         ]}
@@ -58,9 +81,11 @@ class TypeToConfirmModal extends Component {
               onChange={this.onChangeInput}
               // here paste is not allowed, and user has to manually type in ARCHIVE
               onPaste={evt => evt.preventDefault()}
+              errorMsg={errorMsg}
             />
           </StyledCol>
         </Row>
+        {errorMsg ? <ErrorMessage>{errorMsg}</ErrorMessage> : null}
       </StyledModal>
     );
   }

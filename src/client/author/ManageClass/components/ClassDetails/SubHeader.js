@@ -113,10 +113,10 @@ const SubHeader = ({
         {showModal && (
           <TypeToConfirmModal
             modalVisible={showModal}
-            title="Archive Class"
+            title="Archive Class(es)"
             handleOnOkClick={handleArchiveClass}
             wordToBeTyped="ARCHIVE"
-            primaryLabel="Are you sure you want to archive the class ?"
+            primaryLabel="Are you sure want to archive the following class(es)?"
             closeModal={handleArchiveClassCancel}
           />
         )}

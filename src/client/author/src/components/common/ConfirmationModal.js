@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { white, themeColor, title, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { white, themeColor, title, titleColor, lightGreySecondary, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const ConfirmationModal = styled(Modal)`
@@ -10,15 +10,22 @@ export const ConfirmationModal = styled(Modal)`
     padding: 20px;
     .ant-modal-close {
       color: ${title};
+      svg {
+        width: 20px;
+        height: 20px;
+      }
     }
     .ant-modal-header {
-      padding: 0px 0px 15px;
+      padding: 0px 0px 25px;
       background: ${lightGreySecondary};
       border: none;
       .ant-modal-title {
-        font-size: 18px;
+        font-size: 16px;
         color: ${title};
-        font-weight: 600;
+        font-weight: 700;
+        @media (min-width: ${mediumDesktopExactWidth}) {
+          font-size: 22px;
+        }
       }
     }
     .ant-modal-body {
@@ -30,8 +37,9 @@ export const ConfirmationModal = styled(Modal)`
       text-align: ${props => (props.textAlign ? props.textAlign : "center")};
       min-height: ${({ bodyHeight }) => bodyHeight || "180px"};
       p {
-        font-size: 16px;
+        font-size: 14px;
         color: ${titleColor};
+        font-weight: 600;
       }
       margin-top: ${props => (!props.title ? "30px" : 0)};
     }
@@ -39,14 +47,16 @@ export const ConfirmationModal = styled(Modal)`
       border: none;
       display: flex;
       justify-content: center;
-      padding: 15px 0px 0px;
+      padding: 25px 16px 0px;
       .ant-btn {
         font-size: 11px;
-        padding: 5px 50px;
+        padding: 20px 50px;
         border-radius: 4px;
         background: ${themeColor};
         border-color: ${themeColor};
         color: ${white};
+        line-height: 0;
+        text-transform: uppercase;
         &[disabled],
         &[disabled]:hover,
         &[disabled]:active {

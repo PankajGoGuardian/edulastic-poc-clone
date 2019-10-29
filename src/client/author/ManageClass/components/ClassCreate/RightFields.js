@@ -63,7 +63,7 @@ const RightFields = ({
     <>
       <StyledFlexContainer>
         <FieldLabel label="Class Name" {...restProps} fiedlName="name">
-          <Input placeholder="Enter the name of your class" />
+          <Input placeholder="Enter the name of your class" maxLength="256" />
         </FieldLabel>
       </StyledFlexContainer>
 

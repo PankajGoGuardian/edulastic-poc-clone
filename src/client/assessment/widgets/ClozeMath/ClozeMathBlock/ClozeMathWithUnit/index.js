@@ -291,7 +291,7 @@ const OuterWrapper = styled.div`
 const ClozeMathInputField = styled.span`
   width: ${({ width }) => width};
   min-width: ${({ minWidth }) => minWidth} !important;
-  font-size: ${({ fontSize }) => fontSize} !important;
+  font-size: ${({ fontSize }) => fontSize || "initial"} !important;
   height: ${({ height }) => height};
   margin-right: 0 !important;
   padding: 5px 11px !important;

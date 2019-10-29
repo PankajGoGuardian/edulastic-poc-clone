@@ -64,7 +64,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     height: btnStyle.height,
     display: "flex",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
+    fontWeight: "normal"
   };
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);

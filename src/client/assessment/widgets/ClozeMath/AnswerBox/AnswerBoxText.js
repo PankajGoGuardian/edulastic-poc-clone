@@ -43,4 +43,5 @@ const Text = styled.div`
   min-width: 80px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  font-weight: 600;
 `;

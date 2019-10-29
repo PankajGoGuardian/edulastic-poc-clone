@@ -80,7 +80,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           )}
           <Tooltip title={userSelection?.value}>
             <span className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
-              <span style={textStyle} className="clipText">
+              <span style={{ ...textStyle, fontWeight: "normal" }} className="clipText">
                 {userSelection?.value}
               </span>
             </span>
@@ -111,7 +111,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           )}
           <Tooltip title={userSelection?.value}>
             <div className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
-              <div className="clipText" style={textStyle}>
+              <div className="clipText" style={{ ...textStyle, fontWeight: "normal" }}>
                 {userSelection && userSelection.value}
               </div>
             </div>

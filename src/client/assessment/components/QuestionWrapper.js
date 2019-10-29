@@ -566,4 +566,5 @@ export default enhance(QuestionWrapper);
 
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${props => props.theme.fontSize}px;
+  overflow: auto;
 `;

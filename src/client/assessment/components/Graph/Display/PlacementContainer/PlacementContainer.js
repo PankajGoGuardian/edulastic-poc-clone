@@ -35,23 +35,23 @@ import Tools from "../../common/Tools";
 import DragDropValues from "./DragDropValues";
 
 const valueHeightHashMap = {
-  xs: {
+  "1": {
     width: 150,
     height: 50
   },
-  sm: {
+  "1.5": {
     width: 175,
     height: 70
   },
-  md: {
+  "1.75": {
     width: 200,
     height: 90
   },
-  lg: {
+  "2.5": {
     width: 250,
     height: 120
   },
-  xl: {
+  "3": {
     width: 300,
     height: 150
   }

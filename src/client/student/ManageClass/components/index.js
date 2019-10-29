@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Layout, Spin } from "antd";
 // components
 import ManageHeader from "../../sharedComponents/Header";
-import SubHeader from "./SubHeader";
 import ManageClassContainer from "./Container";
 import { getEnrollClassAction, setFilterClassAction } from "../ducks";
 
@@ -33,7 +32,6 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
         setShowClass={setShowClass}
       />
       <ContentWrapper>
-        <SubHeader />
         <ManageClassContainer classList={filterClasses} loading={loading} showClass={showClass} />
       </ContentWrapper>
     </Wrapper>

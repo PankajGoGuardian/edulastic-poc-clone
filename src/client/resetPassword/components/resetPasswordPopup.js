@@ -111,7 +111,6 @@ const InputPasswordForm = props => {
     setFields({ newPassword: { value: passwd, errors: undefined } });
     setFields({ confirmPassword: { value: confPasswd, errors: undefined } });
   }
-
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
       <Form.Item validateStatus={newPasswordError ? "error" : "success"} help={newPasswordError}>

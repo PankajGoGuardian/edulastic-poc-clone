@@ -6,6 +6,7 @@ const LogoCompactIcon = styled(IconLogoCompact)`
   fill: ${white};
   width: 21px;
   height: 21px;
+  margin-right: ${({ marginRight }) => marginRight};
 `;
 
 export default LogoCompactIcon;

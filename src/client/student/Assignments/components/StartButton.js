@@ -9,7 +9,6 @@ import StartButton from "../../styled/AssignmentCardButton";
 
 const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
-
   return new Date(startDate) > new Date() || !startDate || isPaused ? (
     <NotAvailableButton disabled>
       <span>
@@ -37,7 +36,6 @@ AssignmentButton.propTypes = {
 const NotAvailableButton = styled(StartButton)`
   display: flex;
   justify-content: space-evenly;
-
   &.ant-btn[disabled] {
     background: transparent;
     position: relative;

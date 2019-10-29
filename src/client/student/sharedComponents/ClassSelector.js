@@ -18,7 +18,6 @@ const ClassSelector = ({
   showAllClassesOption
 }) => {
   const [isShown, setShown] = useState(false);
-
   useEffect(() => {
     if (!showAllClassesOption) {
       /*For skill report we are not showing "All options", so when we route to the skill-report 
@@ -94,8 +93,8 @@ export default connect(
 
 const ClassLabel = styled.span`
   display: flex;
-  font-size: ${props => props.theme.headerClassTitleFontSize};
-  color: ${props => props.theme.headerClassTitleColor};
+  font-size: ${props => props.theme.header.headerClassTitleFontSize};
+  color: ${props => props.theme.header.headerClassTitleColor};
   font-weight: 600;
   margin-right: 30px;
   align-items: center;
@@ -132,7 +131,7 @@ const AssignmentSelectClass = styled.div`
   .ant-select-selection {
     background-color: ${props => props.theme.headerDropdownBgColor};
     color: ${props => props.theme.headerDropdownTextColor};
-    font-size: ${props => props.theme.headerDropdownFontSize};
+    font-size: ${props => props.theme.classNameFontSize};
     border: ${props =>
       props.theme.headerDropdownBorderColor ? `1px solid ${props.theme.headerDropdownBorderColor}` : "0px"};
   }
@@ -140,7 +139,7 @@ const AssignmentSelectClass = styled.div`
   .ant-select-dropdown-menu-item {
     background-color: ${props => props.theme.headerDropdownItemBgColor};
     color: ${props => props.theme.headerDropdownTextColor};
-
+    font-size: ${props => props.theme.classNameFontSize};
     &.ant-select-dropdown-menu-item-selected {
       background-color: ${props => props.theme.headerDropdownItemBgSelectedColor};
       color: ${props => props.theme.headerDropdownItemTextSelectedColor};
@@ -157,7 +156,7 @@ const AssignmentSelectClass = styled.div`
     align-items: center;
     display: flex !important;
     padding-left: 15px;
-    font-size: ${props => props.theme.headerDropdownFontSize};
+    font-size: ${props => props.theme.classNameFontSize};
 
     @media (max-width: ${largeDesktopWidth}) {
       padding-left: 2px;

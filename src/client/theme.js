@@ -89,9 +89,12 @@ const keyboardFontSize = "16px";
 const titleSectionFontSize = "16px";
 const titleSecondarySectionFontSize = "18px";
 const headerTitle = "22px";
+const reviewPageHeaderFontSize = "18px";
 const scoreFontSize = "31px";
 const tableDataFont = "14px";
-
+const headerFilterFontSize = "10px";
+const classNameFontSize = "12px";
+const formInputLabelSize = "12px";
 const questionTextsmallFontSize = "13px";
 const questionTextnormalFontSize = "14px";
 const questionTextlargeFontSize = "15px";
@@ -245,7 +248,7 @@ export const allThemeVars = {
   descriptionColor,
   breadcrumbColor,
   titleColor,
-
+  classNameFontSize,
   sidebarBgColorPlayer,
   sidebarFontColorPlayer,
 
@@ -351,7 +354,8 @@ export const defaultTheme = {
     headerTitleSecondaryTextSize: titleSecondarySectionFontSize,
     headerButtonColor: textColorGreenBg,
     headerButtonHoverColor: themeColor,
-    navZoom: 1
+    navZoom: 1,
+    headerClassTitleFontSize: "13px"
   },
   sideMenu: {
     sidebarBgColor: sideBarColor,
@@ -1251,7 +1255,6 @@ export const defaultTheme = {
     cardAbsentLabelBorderColor: "none",
     cardAbsentLabelBgColor: absentFilterColor,
     cardAbsentLabelTextColor: linkFilledBgColor,
-
     cardDefaultBtnFontSize: linkFontSize,
     cardDefaultBtnBgColor: buttonBackgroundColor,
     cardDefaultBtnBgHoverColor: themeColor,
@@ -1267,10 +1270,11 @@ export const defaultTheme = {
     attemptsReviewRowTextColor: attemptTextColor,
     attemptsReviewRowFontSize: subtitleFontSize,
     attemptsRowReviewLinkSize: linkFontSize,
-    attemptsRowReviewLinkColor: themeColorLight
+    attemptsRowReviewLinkColor: themeColorLight,
+    dueDateFontSize: smallFontSize
   },
   headerFilters: {
-    headerFilterTextSize: subtitleFontSize,
+    headerFilterTextSize: headerFilterFontSize,
     headerFilterTextColor: themeColor,
     headerFilterBgColor: labelBgOverlayingContContainer,
     headerFilterBgBorderColor: themeColor,
@@ -1290,7 +1294,7 @@ export const defaultTheme = {
   },
   breadcrumbs: {
     breadcrumbTextColor: breadcrumbColor,
-    breadcrumbTextSize: linkFontSize,
+    breadcrumbTextSize: smallLinkFontSize,
     breadcrumbLinkColor: breadcrumbColor
   },
   reportList: {
@@ -1372,7 +1376,7 @@ export const defaultTheme = {
     cardVisitClassBtnBorderColor: themeColor,
     cardVisitClassBtnTextSize: linkFontSize,
     cardUserInfoLabelColor: tableColumnColor,
-    cardUserInfoLabelTextSize: linkFontSize,
+    cardUserInfoLabelTextSize: smallFontSize,
     cardUserInfoContentColor: labelStyle,
     cardActiveStatusBgColor: notstartedBgColor,
     cardActiveStatusTextColor: themeColor,
@@ -1389,7 +1393,7 @@ export const defaultTheme = {
     userSubTitleTextSize: subtitleFontSize,
     userSubTitleTextColor: labelStyle,
     uploadIconBgColor: actionIconColor,
-    formInputLabelSize: subtitleFontSize,
+    formInputLabelSize,
     formInputLabelColor: textColor,
     profileDetailFontSize: standardFont,
     saveButtonTextSize: linkFontSize,
@@ -1415,16 +1419,16 @@ export const defaultTheme = {
   attemptReview: {
     logoutIconColor: buttonBackgroundColor,
     logoutIconHoverColor: buttonBackgroundHoverColor,
-    headingTextSize: headerTitle,
+    headingTextSize: reviewPageHeaderFontSize,
     headingColor: labelStyle,
     titleDescriptionTextSize: bodyFontSize,
     titleDescriptionTextColor: labelStyle,
     markedAnswerBoxColor: markedAnswer, // BlueColor
     markedSkippedBoxColor: markedSkipped, // GrayColor
     markedForReviewBoxColor: markedForReview, // YellowColor
-    descriptionTextSize: subtitleFontSize,
+    descriptionTextSize: smallFontSize,
     descriptionTextColor: descriptionColor,
-    questiontextSize: questionTextnormalFontSize,
+    questiontextSize: questionTextextraFontSize,
     questiontextColor: questionTextColor,
     shortDescriptionTextSize: bodyFontSize,
     shortDescriptionTextColor: labelStyle,

@@ -237,7 +237,9 @@ const defaultTheme = {
     NoDataArchiveSubTextColor: "#434b5d",
     NoDataArchiveSubTextSize: "15px"
   },
-
+  testing: {
+    color: "some random color"
+  },
   noData: {
     NoDataBgColor: "#efefef",
     NoDataBgBorderColor: "#e9e9e9",

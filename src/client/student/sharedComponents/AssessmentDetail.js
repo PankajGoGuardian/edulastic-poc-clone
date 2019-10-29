@@ -49,7 +49,7 @@ const AssessmentDetails = ({
       </Col>
       <CardDetails>
         <CardTitle>
-          {title}
+          <span style={{ fontSize: "14px" }}>{title}</span>
           <TestType data-cy="testType" type={testType}>
             {testType === PRACTICE
               ? t("common.practice")
@@ -275,6 +275,7 @@ const CardDate = React.memo(styled.div`
 
 const DueDetails = React.memo(styled.span`
   padding-left: 10px;
+  font-size: ${({ theme }) => theme.assignment.dueDateFontSize};
 `);
 
 const StatusWrapper = styled.div`

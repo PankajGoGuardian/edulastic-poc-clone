@@ -12,7 +12,8 @@ import SummaryTest from "./Content";
 import { finishTestAcitivityAction } from "../../../assessment/actions/test";
 import SubmitConfirmation from "../../../assessment/themes/common/SubmitConfirmation";
 
-const SummaryContainer = ({ finishTest, history }) => {
+const SummaryContainer = props => {
+  const { finishTest, history } = props;
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true);

@@ -35,7 +35,8 @@ import {
   TestButton,
   ToolBar,
   SaveAndExit,
-  CalculatorContainer
+  CalculatorContainer,
+  LogoCompact
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
@@ -373,7 +374,7 @@ class AssessmentPlayerDefault extends React.Component {
     // themeToPass = playersZoomTheme(themeToPass);
 
     const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
-
+    const isZoomApplied = zoomLevel > "1";
     const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
     return (
       <ThemeProvider theme={themeToPass}>
@@ -427,19 +428,20 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    transform: `scale(${zoomLevel >= "1.75" ? "1.5" : "1.25"})`, // maxScale of 1.5 to header
+                    transform: isZoomApplied && `scale(${zoomLevel >= "1.75" ? "1.5" : "1.25"})`, // maxScale of 1.5 to header
                     transformOrigin: "0px 0px",
-                    width: `${zoomLevel >= "1.75" ? "66.67" : "80"}%`,
-                    padding: `${zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
+                    width: isZoomApplied && `${zoomLevel >= "1.75" ? "66.67" : "80"}%`,
+                    padding: `${isZoomApplied && zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
                     justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
                   }}
                 >
                   <FlexContainer
                     style={{
-                      flex: `1 1 ${zoomLevel >= "1.75" ? "70%" : "50%"}`,
+                      flex: isZoomApplied && `1 1 ${zoomLevel >= "1.75" ? "70%" : "50%"}`,
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
+                    <LogoCompact marginRight="12px" />
                     {!LCBPreviewModal && (
                       <QuestionSelectDropdown
                         key={currentItem}

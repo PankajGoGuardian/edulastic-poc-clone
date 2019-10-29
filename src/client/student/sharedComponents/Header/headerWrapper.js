@@ -78,7 +78,7 @@ const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
   height: ${props => props.theme.HeaderHeight.xs}px;
-  padding: 0px 30px;
+  padding: 0px 40px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.theme.HeaderHeight.md}px;

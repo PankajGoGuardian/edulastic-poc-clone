@@ -53,7 +53,7 @@ const Wrapper = styled.div`
 
 export const AssignmentTitle = styled.div`
   font-family: Open Sans;
-  font-size: ${props => props.theme.headerTitleFontSize};
+  font-size: ${props => props.theme.header.headerTitleFontSize};
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;

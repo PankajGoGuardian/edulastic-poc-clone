@@ -22,7 +22,6 @@ const QuestionSelectDropdown = ({
       dropdownStyle={dropdownStyle}
       defaultValue={currentItem}
       data-cy="options"
-      getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={value => {
         gotoQuestion(parseInt(value, 10));
       }}

@@ -66,11 +66,8 @@ DragPreview.defaultProps = {
 
 export default DragLayer(collect)(DragPreview);
 
-const PreviewContainer = styled.div.attrs({
-  style: ({ left, top }) => ({
-    transform: `translate(${left || 0}px, ${top || 0}px)`
-  })
-})`
+const PreviewContainer = styled.div`
+  transform: ${({ left, top }) => `translate(${left || 0}px, ${top || 0}px)`};
   background: ${white};
   border: 2px ${dashBorderColor} dotted;
   padding: 8px 20px;

@@ -48,10 +48,10 @@ const iconDeleteColor = "#00AD50";
 const iconDeleteHoverColor = "#FF0057";
 const clearIconColor = "#FFFFFF";
 const rightIconColor = "#84cd36";
-const correctBgColor = "#d3fea6";
 const incorrectBgColor = "#fce0e8";
+const rightBgColor = "#00AD5030";
 const wrongIconColor = "#dd2e44";
-const wrongBgColor = "#fbdfe7";
+const wrongBgColor = "#EE165826";
 const rightBorderColor = "#5EB500";
 const wrongBorderColor = "#DD2E44";
 const checkColor = "#5EB500";
@@ -641,7 +641,7 @@ export const defaultTheme = {
       indexBoxValidBgColor: checkColor,
       indexBoxNotValidBgColor: closeColor,
       dragItemBgColor: containerWhite,
-      dragItemValidBgColor: correctBgColor,
+      dragItemValidBgColor: rightBgColor,
       dragItemNotValidBgColor: wrongBgColor,
       dragItemBorderColor: borderColor,
       dragItemValidBorderColor: rightIconColor,
@@ -993,7 +993,7 @@ export const defaultTheme = {
       labelCheckedBorderColor: rightBorderColor,
       labelCheckedBgColor: rightIconColor,
       labelRightBorderColor: rightBorderColor,
-      labelRightBgColor: rightIconColor,
+      labelRightBgColor: rightBgColor,
       labelWrongBorderColor: wrongBorderColor,
       labelWrongBgColor: wrongBgColor,
       labelIconFontSize: questionTexthugeFontSize,
@@ -1104,7 +1104,7 @@ export const defaultTheme = {
       buttonActiveLabelStroke: themeColor,
       buttonActiveBgColor: brandWhite,
       buttonHoverBgColor: brandWhite,
-      correctAnswerItemBgColor: correctBgColor,
+      correctAnswerItemBgColor: rightBgColor,
       correctAnswerItemIconColor: rightIconColor,
       correctAnswerItemTextColor: descriptionColor,
       incorrectAnswerItemBgColor: incorrectBgColor,

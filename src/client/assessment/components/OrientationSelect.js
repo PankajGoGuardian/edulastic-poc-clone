@@ -15,7 +15,14 @@ const OrientationSelect = ({ t, onChange, value }) => {
   return (
     <Fragment>
       <Label>{t("component.options.orientation")}</Label>
-      <Select data-cy="orientationSelect" size="large" value={value} style={{ width: "100%" }} onChange={onChange}>
+      <Select
+        data-cy="orientationSelect"
+        size="large"
+        value={value}
+        style={{ width: "100%" }}
+        onChange={onChange}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+      >
         {options.map(({ value: val, label }) => (
           <Select.Option data-cy={val} key={val} value={val}>
             {label}

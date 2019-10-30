@@ -74,12 +74,6 @@ class Layout extends Component {
       }
     ];
 
-    const stemNumerationLayout = [
-      { value: "number", label: t("component.options.numerical") },
-      { value: "upper-alpha", label: t("component.options.uppercase") },
-      { value: "lower-alpha", label: t("component.options.lowercase") }
-    ];
-
     return (
       <Question
         section="advanced"

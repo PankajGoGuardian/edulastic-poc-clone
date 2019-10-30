@@ -64,7 +64,6 @@ export const StyledCard = styled(Card)`
     margin-right: 5px;
     .ant-card-body {
       padding: 18px;
-      width: 300px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -84,19 +83,18 @@ export const ReportTitle = styled.div`
 export const DetailCard = styled(StyledCard)`
   width: 48%;
   margin-left: 10px;
+  margin-bottom: 10px;
   .ant-card-body {
     padding: 0px;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: 100%;
+    width: 38%;
   }
   @media (max-width: ${mobileWidthMax}) {
     width: 100%;
     margin-top: 10px;
-    .ant-card-body {
-      width: 100%;
-    }
+    margin-left: 0px;
   }
 `;
 
@@ -104,8 +102,9 @@ export const DetailCardHeader = styled.div`
   background-color: ${lightGreySecondary};
   padding: 30px 24px;
   border-radius: 10px 10px 0px 0px;
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${mobileWidthMax}) {
     padding: 30px 15px 25px 15px;
+    width: 100%;
   }
 `;
 export const DetailCardTitle = styled.div`
@@ -172,8 +171,9 @@ export const DetailTable = styled(Table)`
     background-color: ${lightGreySecondary};
     border-bottom: 10px solid white;
   }
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${mobileWidthMax}) {
     padding: 0px;
+    width: 100%;
   }
   i.anticon.anticon-caret-up,
   i.anticon.anticon-caret-down {

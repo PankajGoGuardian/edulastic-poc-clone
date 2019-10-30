@@ -700,7 +700,7 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
-        <HooksContainer classId={classId} assignmentId={assignmentId} />
+        <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}
           active="classboard"

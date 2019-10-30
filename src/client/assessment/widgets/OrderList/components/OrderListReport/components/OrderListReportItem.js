@@ -12,13 +12,10 @@ import { Text } from "../styled/Text";
 import { Index } from "../styled/Index";
 import { CorrectAnswerItem } from "../styled/CorrectAnswerItem";
 import { QuestionText } from "../styled/QuestionText";
-import { IconWrapper } from "../styled/IconWrapper";
-import { IconCheck } from "../styled/IconCheck";
-import { IconClose } from "../styled/IconClose";
+import { IconCorrectWrapper, IconCloseWrapper } from "../styled/IconWrapper";
 
 const OrderListReportItem = SortableElement(
   ({ children, correctText, correct, showAnswers, ind, t, theme, columns, styleType }) => {
-    console.log("correct is", correct);
     return (
       <Fragment>
         <Container styleType={styleType} columns={columns} correct={correct}>
@@ -27,16 +24,8 @@ const OrderListReportItem = SortableElement(
             <FlexContainer justifyContent="center">
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
             </FlexContainer>
-            {correct && (
-              <IconWrapper color={theme.widgets.orderList.correctIconWrapperColor}>
-                <IconCheck />
-              </IconWrapper>
-            )}
-            {correct === false && (
-              <IconWrapper color={theme.widgets.orderList.incorrectIconWrapperColor}>
-                <IconClose />
-              </IconWrapper>
-            )}
+            {correct && <IconCorrectWrapper color={theme.widgets.orderList.correctIconWrapperColor} />}
+            {correct === false && <IconCloseWrapper color={theme.widgets.orderList.incorrectIconWrapperColor} />}
           </Text>
         </Container>
         {showAnswers && !correct && (

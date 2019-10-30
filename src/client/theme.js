@@ -1024,7 +1024,7 @@ export const defaultTheme = {
       indexColor: labelStyle,
       incorrectIndexColor: labelStyle,
       iconWrapperFontSize: headerTitle,
-      correctAnswerItemBgColor: rightIconColor,
+      correctAnswerItemBgColor: containerWhite,
       correctAnswerItemBorderColor: labelStyle,
       correctContainerBgColor: rightIconColor,
       incorrectContainerBgColor: wrongBgColor,

@@ -13,7 +13,6 @@ import { IconSettings } from "@edulastic/icons";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
-import { playersZoomTheme } from "../assessmentPlayersTheme";
 import { themes } from "../../../theme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
@@ -24,7 +23,7 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
-import { setZoomLevelAction, setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
+import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import {
@@ -58,7 +57,6 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
-import { getZoomedTheme } from "../../../student/zoomTheme";
 import { isZoomGreator } from "../../../common/utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
@@ -282,8 +280,10 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentDidUpdate(previousProps) {
-    if (this.props.currentItem !== previousProps.currentItem) {
+    const { currentItem } = this.props;
+    if (currentItem !== previousProps.currentItem) {
       this.scrollElementRef.current.scrollTop = 0;
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ showHints: false });
     }
   }
@@ -297,7 +297,6 @@ class AssessmentPlayerDefault extends React.Component {
       itemRows,
       evaluation,
       windowWidth,
-      windowHeight,
       questions,
       moveToNext,
       moveToPrev,
@@ -319,7 +318,6 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel,
       selectedTheme = "default",
       closeTestPreviewModal,
-      setZoomLevel,
       showTools = true,
       setSettingsModalVisibility
     } = this.props;
@@ -337,8 +335,7 @@ class AssessmentPlayerDefault extends React.Component {
       currentToolMode,
       showHints,
       enableCrossAction,
-      minWidth,
-      zoomFactor
+      minWidth
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -433,7 +430,7 @@ class AssessmentPlayerDefault extends React.Component {
                     transform: isZoomApplied && `scale(${zoomLevel >= "1.75" ? "1.35" : "1.25"})`, // maxScale of 1.5 to header
                     transformOrigin: "0px 0px",
                     width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-                    padding: `${isZoomApplied && zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
+                    padding: `${isZoomApplied && zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 10px"}`,
                     justifyContent: "space-between"
                   }}
                 >
@@ -643,7 +640,6 @@ const enhance = compose(
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
-      setZoomLevel: setZoomLevelAction,
       clearUserWork: clearUserWorkAction,
       setSettingsModalVisibility: setSettingsModalVisibilityAction
     }

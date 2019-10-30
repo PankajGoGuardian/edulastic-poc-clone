@@ -1,10 +1,8 @@
-/* eslint-disable react/prop-types */
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
-import { helpers } from "@edulastic/common";
 import { ReviewTableWrapper } from "./styled";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
@@ -12,6 +10,7 @@ import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
 import { SortableItem } from "../List/List";
+import { helpers } from "@edulastic/common";
 
 const ItemsTable = ({
   items,
@@ -59,7 +58,7 @@ const ItemsTable = ({
             onChangePoints={onChangePoints}
             onPreview={handlePreview}
             selected={selected}
-            collapseView
+            collapseView={true}
             questions={questions}
             mobile={mobile}
             passagesKeyed={passagesKeyed}
@@ -83,11 +82,11 @@ const ItemsTable = ({
   ];
 
   const audioStatus = item => {
-    const _questions = get(item, "data.questions", []);
-    const getAllTTS = _questions.filter(_item => _item.tts).map(_item => _item.tts);
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const audio = {};
     if (getAllTTS.length) {
-      const ttsSuccess = getAllTTS.filter(_item => _item.taskStatus !== "COMPLETED").length === 0;
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
       audio.ttsSuccess = ttsSuccess;
     }
     return audio;
@@ -147,8 +146,9 @@ const ItemsTable = ({
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
-  isEditable: PropTypes.bool.isRequired,
-  handlePreview: PropTypes.func.isRequired,
+  types: PropTypes.object.isRequired,
+  isEditable: PropTypes.bool,
+  handlePreview: PropTypes.func,
   standards: PropTypes.object.isRequired
 };
 

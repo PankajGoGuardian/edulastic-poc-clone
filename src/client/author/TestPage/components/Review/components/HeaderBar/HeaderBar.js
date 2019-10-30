@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { message } from "antd";
+import { Checkbox, message, Button } from "antd";
 
 import { themeColor } from "@edulastic/colors";
-import { IconClose, IconMoveTo, IconCollapse, IconEye, IconReport } from "@edulastic/icons";
+import { IconClose, IconMoveTo, IconCollapse, IconEye } from "@edulastic/icons";
 
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
@@ -23,10 +21,7 @@ const HeaderBar = ({
   windowWidth,
   setCollapse,
   onShowTestPreview,
-  hasStickyHeader,
-  onShowSummary,
-  summaryOpen,
-  mobile
+  hasStickyHeader
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -60,22 +55,19 @@ const HeaderBar = ({
           </SelectAllCheckbox>
         </Item>
       ) : (
-        // this empty span can fix some alignment issues when there is no select all button exists. dont remove it.
+        //this empty span can fix some alignment issues when there is no select all button exists. dont remove it.
         <span />
       )}
       <MobileButtomContainer>
-        {!mobile && (
-          <ActionButton data-cy="viewAsStudent">
-            <ButtonLink
-              onClick={onShowTestPreview}
-              color="primary"
-              icon={<IconEye color={themeColor} width={12} height={12} />}
-            >
-              {windowWidth > 767 && <span>View as Student</span>}
-            </ButtonLink>
-          </ActionButton>
-        )}
-
+        <ActionButton data-cy="viewAsStudent">
+          <ButtonLink
+            onClick={onShowTestPreview}
+            color="primary"
+            icon={<IconEye color={themeColor} width={12} height={12} />}
+          >
+            {windowWidth > 767 && <span>View as Student</span>}
+          </ButtonLink>
+        </ActionButton>
         {owner && isEditable && (
           <ActionButton data-cy="removeSelected">
             <ButtonLink
@@ -114,18 +106,6 @@ const HeaderBar = ({
             {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
           </ButtonLink>
         </ActionButton>
-
-        {mobile && (
-          <ActionButton data-cy="showSummary">
-            <ButtonLink
-              onClick={onShowSummary}
-              color="primary"
-              icon={<IconReport color={themeColor} width={12} height={12} />}
-            >
-              {windowWidth > 767 && <span>{summaryOpen ? "Hide Summary" : "Show Summary"}</span>}
-            </ButtonLink>
-          </ActionButton>
-        )}
       </MobileButtomContainer>
     </Container>
   );

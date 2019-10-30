@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined, get, maxBy } from "lodash";
-import { helpers, QuestionTitle } from "@edulastic/common";
+import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
@@ -17,6 +17,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import { Pointer } from "../../styled/Pointer";
@@ -308,7 +309,10 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
-        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={question} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <TemplateBoxContainer flexDirection="column">
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
           {answerBox}

@@ -4,9 +4,17 @@ import { cloneDeep, get } from "lodash";
 import { Select, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { FlexContainer, CorrectAnswersContainer, QuestionTitle } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  CorrectAnswersContainer,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import {
   PREVIEW,
   BY_LOCATION_METHOD,
@@ -128,7 +136,13 @@ const ShadingPreview = ({
 
   return (
     <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+        {view === PREVIEW && !smallSize && (
+          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        )}
+      </QuestionTitleWrapper>
+
       <FlexContainer alignItems="flex-start" flexDirection="column" padding="15px">
         {view === EDIT && (
           <Fragment>

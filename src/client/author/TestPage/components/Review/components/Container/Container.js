@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
@@ -7,7 +6,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { Paper, withWindowSizes, helpers } from "@edulastic/common";
-import { mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
@@ -26,18 +24,10 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import {
-  SecondHeader,
-  ReviewPageContainer,
-  ReviewSummaryWrapper,
-  ReviewSummaryBar,
-  TestItemsRow,
-  TestItemsCol
-} from "./styled";
+import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
-import CollapseButton from "./CollapseButton";
 
 const getTotalScore = ({ testItems = [], scoring = {} }) =>
   testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
@@ -82,7 +72,7 @@ export const createSummaryData = (items = [], scoring) => {
       }
     }
     if (summary.standards.length > 0) {
-      const standardSummary = groupBy(summary.standards, "curriculumId");
+      let standardSummary = groupBy(summary.standards, "curriculumId");
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, "identifier");
         const standardObj = map(obj, (elements, identifier) => ({
@@ -123,8 +113,7 @@ class Review extends PureComponent {
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: "",
-    hasStickyHeader: false,
-    summaryOpen: false
+    hasStickyHeader: false
   };
 
   componentWillUnmount() {
@@ -282,13 +271,12 @@ class Review extends PureComponent {
     this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
   };
 
-  handleScroll = () => {
-    const { hasStickyHeader } = this.state;
+  handleScroll = e => {
     if (this.secondHeaderRef.current) {
-      if (window.scrollY > 50 && !hasStickyHeader) {
+      if (window.scrollY > 50 && !this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.add("fixed-second-header");
         this.setState({ hasStickyHeader: true });
-      } else if (window.scrollY <= 50 && hasStickyHeader) {
+      } else if (window.scrollY <= 50 && this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
         this.setState({ hasStickyHeader: false });
       }
@@ -297,10 +285,6 @@ class Review extends PureComponent {
 
   closeTestPreviewModal = () => {
     this.setState({ isTestPreviewModalVisible: false });
-  };
-
-  handleSummaryOpen = () => {
-    this.setState(preState => ({ summaryOpen: !preState.summaryOpen }));
   };
 
   render() {
@@ -320,15 +304,7 @@ class Review extends PureComponent {
       checkAnswer,
       showAnswer
     } = this.props;
-    const {
-      isCollapse,
-      isModalVisible,
-      item,
-      isTestPreviewModalVisible,
-      currentTestId,
-      hasStickyHeader,
-      summaryOpen
-    } = this.state;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId, hasStickyHeader } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -356,9 +332,7 @@ class Review extends PureComponent {
       }
     ];
 
-    const isSmallSize = windowWidth <= parseInt(smallDesktopWidth, 10);
-    const isMediumSize =
-      windowWidth <= parseInt(mediumDesktopWidth, 10) && windowWidth > parseInt(smallDesktopWidth, 10);
+    const isSmallSize = windowWidth > 993 ? 1 : 0;
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     const passages = get(test, "passages", []);
@@ -384,17 +358,12 @@ class Review extends PureComponent {
                   setCollapse={isCollapse}
                   onShowTestPreview={this.showTestPreviewModal}
                   hasStickyHeader={hasStickyHeader}
-                  mobile={isSmallSize}
-                  summaryOpen={summaryOpen}
-                  onShowSummary={this.handleSummaryOpen}
                 />
               </SecondHeader>
             </div>
           </Col>
-        </Row>
-        <TestItemsRow>
-          <TestItemsCol xs={24} lg={18} showSummary={isMediumSize && summaryOpen}>
-            <Paper padding="15px 25px">
+          <Col xs={24} lg={18}>
+            <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
                   items={test.testItems}
@@ -405,7 +374,7 @@ class Review extends PureComponent {
                   scoring={test.scoring}
                   questions={questions}
                   rows={rows}
-                  mobile={isSmallSize}
+                  mobile={!isSmallSize}
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                   isCollapse={isCollapse}
@@ -426,16 +395,14 @@ class Review extends PureComponent {
                   isEditable={isEditable}
                   scoring={test.scoring}
                   questions={questions}
-                  mobile={isSmallSize}
+                  mobile={!isSmallSize}
                   passagesKeyed={passagesKeyed}
                   useDragHandle
                 />
               )}
             </Paper>
-            {isMediumSize && <CollapseButton open={summaryOpen} onClick={this.handleSummaryOpen} />}
-            {isMediumSize && !summaryOpen && <ReviewSummaryBar />}
-          </TestItemsCol>
-          <ReviewSummaryWrapper xs={24} lg={6} show={(isMediumSize || isSmallSize) && summaryOpen}>
+          </Col>
+          <ReviewSummaryWrapper xs={24} lg={6}>
             <ReviewSummary
               tableData={this.tableData}
               questionsCount={questionsCount}
@@ -451,7 +418,7 @@ class Review extends PureComponent {
               onChangeSubjects={onChangeSubjects}
             />
           </ReviewSummaryWrapper>
-        </TestItemsRow>
+        </Row>
         {isModalVisible && (
           <PreviewModal
             testId={get(this.props, "match.params.id", false)}

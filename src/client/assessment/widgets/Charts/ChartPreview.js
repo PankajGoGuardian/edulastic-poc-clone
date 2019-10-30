@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
-import { CorrectAnswersContainer, AnswerContext, QuestionTitle } from "@edulastic/common";
+import { Stimulus, CorrectAnswersContainer, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 
@@ -18,6 +18,7 @@ import BarChart from "./BarChart";
 import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
+import { QuestionTitleWrapper } from "./styled/QuestionNumber";
 import { Tools } from "./components/Tools";
 import ChartEditTool from "./components/ChartEditTool";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -184,7 +185,14 @@ const ChartPreview = ({
 
   return (
     <>
-      {view === PREVIEW && <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />}
+      {view === PREVIEW && (
+        <Fragment>
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            <Stimulus style={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          </QuestionTitleWrapper>
+        </Fragment>
+      )}
       {!disableResponse && renderTools()}
       <StyledPaperWrapper
         className="chart-wrapper"
@@ -307,8 +315,7 @@ export default enhance(ChartPreview);
 
 const ChartContainer = styled.div`
   position: relative;
-  width: 100%;
-  overflow: auto;
+  width: fit-content;
   margin: 0px auto;
   zoom: ${props => props.theme.widgets.chart.chartZoom};
   ${({ preview }) => (preview ? "padding: 0px 70px 0px 35px" : "")}

@@ -3,7 +3,6 @@ import * as StyledComponents from "./src/components/StyledComponents";
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
 export { default as QuestionNumberLabel } from "./src/components/QuestionNumberLabel";
-export { default as QuestionTitle } from "./src/components/QuestionTitle";
 export { default as Progress } from "./src/components/Progress";
 export { default as Pagination } from "./src/components/Pagination";
 export { default as FlexContainer } from "./src/components/FlexContainer";

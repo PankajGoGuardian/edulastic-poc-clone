@@ -3,14 +3,26 @@ import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
 import produce from "immer";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
-import { MathSpan, CorrectAnswersContainer, AnswerContext, QuestionTitle } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  InstructorStimulus,
+  MathSpan,
+  CorrectAnswersContainer,
+  QuestionNumberLabel,
+  AnswerContext
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
 
 const TokenHighlightPreview = ({
   view,
@@ -266,7 +278,11 @@ const TokenHighlightPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
+
       {!isExpressGrader &&
         tokenList.map((el, i) =>
           el.active ? (

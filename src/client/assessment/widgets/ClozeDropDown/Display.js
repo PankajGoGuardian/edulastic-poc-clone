@@ -5,7 +5,7 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash"
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { helpers, QuestionTitle } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
@@ -39,7 +39,7 @@ class ClozeDropDownDisplay extends Component {
       produce(userSelections, draft => {
         // answers are null for all the lower indices if a higher index is answered
         // TODO fix the way answers are stored
-        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
         draft[index] = value;
         if (changedIndex !== -1) {
           draft[changedIndex] = { value, index, id };
@@ -114,6 +114,7 @@ class ClozeDropDownDisplay extends Component {
       showAnswer,
       checkAnswer,
       evaluation,
+      instructorStimulus,
       item,
       disableResponse,
       showQuestionNumber,
@@ -201,12 +202,11 @@ class ClozeDropDownDisplay extends Component {
 
     return (
       <div>
-        <QuestionTitle
-          show={showQuestionNumber}
-          label={item.qLabel}
-          stimulus={question}
-          question={!question && questionContent}
-        />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && questionContent}
+        </QuestionTitleWrapper>
         {question && questionContent}
         {answerBox}
       </div>
@@ -229,6 +229,7 @@ ClozeDropDownDisplay.propTypes = {
   uiStyle: PropTypes.object,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.func.isRequired,
+  instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
@@ -268,6 +269,13 @@ ClozeDropDownDisplay.defaultProps = {
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+  iframe {
+    max-width: 100%;
+  }
+`;
 
 const ContentWrapper = styled.div`
   p {

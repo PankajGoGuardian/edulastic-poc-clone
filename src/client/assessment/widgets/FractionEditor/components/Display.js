@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import React, { useContext, useState } from "react";
 import { withTheme } from "styled-components";
 import get from "lodash/get";
 import PropTypes from "prop-types";
 import Switch from "antd/lib/switch";
 
-import { FlexContainer, QuestionTitle, AnswerContext } from "@edulastic/common";
+import { Stimulus, FlexContainer, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
@@ -25,9 +24,9 @@ const Display = ({
   isReviewTab
 }) => {
   const { fractionProperties = {}, annotations = [] } = item;
-  const { fractionType } = fractionProperties;
+  const fractionType = fractionProperties.fractionType;
   const count = fractionProperties.count || 1;
-  const selected = userAnswer;
+  let selected = userAnswer;
   const answerContext = useContext(AnswerContext);
   const hasAnnotations = annotations.length > 0;
   const [showAnnotations, toggleAnnotationsVibility] = useState(hasAnnotations);
@@ -51,7 +50,13 @@ const Display = ({
   return (
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
       <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
-        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={stimulus} />
+        <FlexContainer width="100%">
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
+          <Stimulus
+            style={{ marginTop: "14px", marginRight: "20px", width: "100%" }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
+        </FlexContainer>
         {hasAnnotations && answerContext.isAnswerModifiable && (
           <FlexContainer>
             <span style={{ marginRight: "5px" }}>Show Annotatations</span>
@@ -76,13 +81,13 @@ const Display = ({
         <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
           {Array(count)
             .fill()
-            .map((_, index) =>
-              fractionType === "circles" ? (
+            .map((_, index) => {
+              return fractionType === "circles" ? (
                 <Circles
                   fractionNumber={index}
                   sectors={fractionProperties.sectors}
                   selected={selected}
-                  sectorClick={_index => handleSelect(_index)}
+                  sectorClick={index => handleSelect(index)}
                   previewTab={previewTab}
                   isExpressGrader={answerContext.expressGrader}
                   isAnswerModifiable={answerContext.isAnswerModifiable}
@@ -95,15 +100,15 @@ const Display = ({
                   rows={fractionProperties.rows}
                   columns={fractionProperties.columns}
                   selected={selected}
-                  onSelect={_index => handleSelect(_index)}
+                  onSelect={index => handleSelect(index)}
                   previewTab={previewTab}
                   isExpressGrader={answerContext.expressGrader}
                   isAnswerModifiable={answerContext.isAnswerModifiable}
                   evaluation={evaluation}
                   isReviewTab={isReviewTab}
                 />
-              )
-            )}
+              );
+            })}
         </FlexContainer>
         {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
         {previewTab === SHOW && (

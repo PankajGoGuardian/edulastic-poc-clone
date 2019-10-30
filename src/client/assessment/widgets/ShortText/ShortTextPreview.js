@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
@@ -6,10 +5,10 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isEmpty } from "lodash";
 
-import { CorrectAnswersContainer, QuestionTitle } from "@edulastic/common";
+import { Paper, Stimulus, CorrectAnswersContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
+import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from "../../constants/constantsForQuestions";
 
 import { SmallContainer } from "./styled/SmallContainer";
 import { SmallStim } from "./styled/SmallStim";
@@ -17,9 +16,11 @@ import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
 import { Addon } from "./styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 import { InputWrapper } from "./styled/InputWrapper";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ShortTextPreview = ({
+  view,
   saveAnswer,
   t,
   item,
@@ -29,6 +30,7 @@ const ShortTextPreview = ({
   theme,
   disableResponse,
   showQuestionNumber,
+  qIndex,
   evaluation
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
@@ -88,7 +90,11 @@ const ShortTextPreview = ({
 
   return (
     <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
+
       {smallSize && (
         <SmallContainer>
           <SmallStim bold>{t("component.shortText.smallSizeTitle")}</SmallStim>

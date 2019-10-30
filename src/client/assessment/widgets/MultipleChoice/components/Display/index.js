@@ -1,9 +1,10 @@
-/* eslint-disable react/prop-types */
 import React from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
-import { QuestionTitle } from "@edulastic/common";
+import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import Options from "./components/Options";
+import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
   qIndex,
@@ -22,7 +23,14 @@ const Display = ({
   ...restProps
 }) => (
   <div>
-    {!flowLayout && <QuestionTitle show={showQuestionNumber} label={qLabel} stimulus={question} />}
+    {!flowLayout && (
+      <>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel fontSize={fontSize}>{qLabel}:</QuestionNumberLabel>}
+          <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
+      </>
+    )}
 
     <Options
       view={view}
@@ -79,5 +87,14 @@ Display.defaultProps = {
   styleType: "default",
   multipleResponses: false
 };
+
+const StyledStimulus = styled(Stimulus)`
+  word-break: break-word;
+  font-size: ${props => props.fontSize};
+
+  img {
+    padding: 0px;
+  }
+`;
 
 export default Display;

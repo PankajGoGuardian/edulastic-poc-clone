@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers, QuestionTitle } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -228,13 +228,11 @@ class ClozeTextDisplay extends Component {
         {instructorStimulus && instructorStimulus !== "<p><br></p>" && (
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
-        <QuestionTitle
-          show={showQuestionNumber}
-          label={item.qLabel}
-          stimulus={question}
-          smallSize={smallSize}
-          question={!question && QuestionContent}
-        />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && QuestionContent}
+        </QuestionTitleWrapper>
         {question && QuestionContent}
         {answerBox}
       </div>
@@ -299,6 +297,16 @@ ClozeTextDisplay.defaultProps = {
 };
 
 export default ClozeTextDisplay;
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+  iframe {
+    max-width: 100%;
+  }
+  .jsx-parser {
+    width: 100%;
+  }
+`;
 
 const StyledParser = styled.div`
   .jsx-parser {

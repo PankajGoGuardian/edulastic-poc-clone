@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button, Input, Checkbox } from "antd";
 
-import { grey, themeColor, lightGreySecondary, secondaryTextColor, smallDesktopWidth } from "@edulastic/colors";
+import { grey, themeColor, lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
@@ -25,11 +25,7 @@ export const PreviewButton = styled(Button)`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 8px;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    margin-right: 24px;
-  }
+  margin-top: 25px;
 `;
 
 export const PointsLabel = styled.label`
@@ -39,10 +35,6 @@ export const PointsLabel = styled.label`
   text-align: center;
   margin-right: 0;
   margin-bottom: 8px;
-  @media (max-width: ${smallDesktopWidth}) {
-    margin-right: 16px;
-    margin-bottom: 0px;
-  }
 `;
 
 export const PointsInput = styled(Input)`
@@ -68,7 +60,7 @@ export const QuestionIndex = styled.span`
 
 export const QuestionCheckbox = styled(Checkbox)`
   display: block;
-  margin-top: 6px;
+  margin-top: 10px;
 
   .ant-checkbox-inner {
     width: 18px;

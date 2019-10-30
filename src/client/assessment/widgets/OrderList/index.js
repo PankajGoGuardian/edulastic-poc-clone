@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment, useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -13,7 +12,7 @@ import {
   CorrectAnswersContainer,
   FlexContainer,
   MathFormulaDisplay,
-  QuestionTitle,
+  QuestionNumberLabel,
   AnswerContext
 } from "@edulastic/common";
 
@@ -23,6 +22,7 @@ import { ItemsWrapper } from "./styled/ItemsWrapper";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
+import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -42,9 +42,14 @@ import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
 const OptionsList = withPoints(QuillSortableList);
 
 const OrderList = ({
+  qIndex,
   view,
   previewTab,
   smallSize,
@@ -257,12 +262,15 @@ const OrderList = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          <QuestionTitle
-            show={showQuestionNumber}
-            label={item.qLabel}
-            stimulus={itemForPreview.stimulus}
-            smallSize={smallSize}
-          />
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            <QuestionHeader
+              qIndex={qIndex}
+              smallSize={smallSize}
+              padding="0px"
+              dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
+            />
+          </QuestionTitleWrapper>
 
           {previewTab === CHECK && checkAnswerOptionComponent}
 
@@ -342,6 +350,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   testItem: PropTypes.bool,
+  qIndex: PropTypes.any.isRequired,
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,

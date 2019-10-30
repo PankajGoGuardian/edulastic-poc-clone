@@ -1,21 +1,43 @@
-/* eslint-disable react/prop-types */
 import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { isNaN } from "lodash";
+import { Select } from "antd";
+import { get, isNaN } from "lodash";
 
-import { withWindowSizes, ScratchPadContext, QuestionTitle } from "@edulastic/common";
+import {
+  Stimulus,
+  InstructorStimulus,
+  withWindowSizes,
+  ScratchPadContext,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 import { canvasDimensions } from "@edulastic/constants";
 
+import { PREVIEW } from "../../constants/constantsForQuestions";
+
 import { PreviewContainer } from "./styled/PreviewContainer";
+import { Container } from "./styled/Container";
+import { StyledSelect } from "./styled/StyledSelect";
+import { Button } from "./styled/Button";
+import { Text } from "./styled/Text";
 import { CanvasContainer } from "./styled/CanvasContainer";
+import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
+import { getFontSize } from "../../utils/helpers";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
+
+const { Option } = Select;
 
 const HighlightImagePreview = ({
+  view,
   item = {},
+  windowWidth,
   smallSize,
   saveAnswer,
   userAnswer,
+  t,
   showQuestionNumber,
+  qIndex,
   disableResponse,
   theme
 }) => {
@@ -28,11 +50,11 @@ const HighlightImagePreview = ({
 
   const { image, line_color = [] } = item;
 
-  const [currentColor] = useState(line_color[0]);
+  const [currentColor, setCurrentColor] = useState(line_color[0]);
 
-  const [width] = useState(image ? `${image.width}px` : "auto");
-  const [height] = useState(image ? `${image.height}px` : 470);
-  const [canvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
+  const [width, setWidth] = useState(image ? `${image.width}px` : "auto");
+  const [height, setHeight] = useState(image ? `${image.height}px` : 470);
+  const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
@@ -124,6 +146,42 @@ const HighlightImagePreview = ({
     }
   };
 
+  const onClearClick = () => {
+    ctx.clearRect(0, 0, width, height);
+    setCtx(ctx);
+    const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
+    setHistory(newHistory);
+    setHistoryTab(newHistory.length - 1);
+  };
+
+  const onUndoClick = () => {
+    const img = new Image();
+
+    img.onload = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      setHistoryTab(historyTab - 1);
+      setCtx(ctx);
+    };
+    img.src = history[historyTab - 1];
+    saveAnswer(history[historyTab - 1]);
+  };
+
+  const onRedoClick = () => {
+    const img = new Image();
+
+    img.onload = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      setHistoryTab(historyTab + 1);
+      setCtx(ctx);
+    };
+    img.src = history[historyTab + 1];
+    saveAnswer(history[historyTab + 1]);
+  };
+
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
+
   const renderImage = () =>
     file ? (
       <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
@@ -151,7 +209,10 @@ const HighlightImagePreview = ({
         }}
       >
         <CanvasContainer>
-          <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+          </QuestionTitleWrapper>
           {item.image && item.image.source && renderImage()}
           {enableQuestionLevelScratchPad && (
             <canvas
@@ -170,14 +231,19 @@ const HighlightImagePreview = ({
 HighlightImagePreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
+  windowWidth: PropTypes.any.isRequired,
+  view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number,
   disableResponse: PropTypes.bool
 };
 
 HighlightImagePreview.defaultProps = {
   showQuestionNumber: false,
+  qIndex: null,
   smallSize: false,
   disableResponse: false
 };

@@ -268,6 +268,7 @@ export const allThemeVars = {
   keyboardFontSize,
   titleSectionFontSize,
   headerTitle,
+  reviewPageHeaderFontSize,
   scoreFontSize,
   headerFilterFontSize,
   largeFontSize,

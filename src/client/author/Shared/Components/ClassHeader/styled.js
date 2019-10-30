@@ -91,20 +91,16 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledParaFirst = styled.p`
-  max-width: 400px;
+  max-width: 200px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   padding-right: 20px;
-  @media (max-width: ${extraDesktopWidthMax}) {
-    max-width: 280px;
-  }
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  font-size: ${props => props.theme.reviewPageHeaderFontSize};
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.headerTitle};
     max-width: 400px;
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    max-width: 150px;
   }
 `;
 

@@ -48,52 +48,58 @@ const ResponseBoxLayout = ({
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >
-        {hasGroupResponses &&
-          responses.map((groupResponse, index) => {
-            if (groupResponse !== null && typeof groupResponse === "object") {
-              return (
-                <div key={index} className="group">
-                  <h3>{groupResponse.title}</h3>
-                  {groupResponse.options &&
-                    groupResponse.options.map((option, itemIndex) => {
-                      const { value, label = "" } = option;
-                      return (
-                        <div
-                          key={itemIndex}
-                          className="draggable_box"
-                          style={{
-                            display: "flex",
-                            width: horizontallyAligned ? "100%" : null,
-                            justifyContent: "center",
-                            fontSize: smallSize ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize : fontSize
-                          }}
-                        >
-                          {!dragHandler && (
-                            <Draggable onDrop={onDrop} data={`${value}_${index}`}>
-                              <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                            </Draggable>
-                          )}
-                          {dragHandler && (
-                            <React.Fragment>
+        {hasGroupResponses && (
+          <GroupWrapper horizontallyAligned={horizontallyAligned}>
+            {responses.map((groupResponse, index) => {
+              if (groupResponse !== null && typeof groupResponse === "object") {
+                return (
+                  <div key={index} className="group">
+                    <h3>{groupResponse.title}</h3>
+                    {groupResponse.options &&
+                      groupResponse.options.map((option, itemIndex) => {
+                        const { value, label = "" } = option;
+                        return (
+                          <div
+                            key={itemIndex}
+                            className="draggable_box"
+                            style={{
+                              display: "flex",
+                              width: horizontallyAligned ? "100%" : null,
+                              justifyContent: "center",
+                              fontSize: smallSize
+                                ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
+                                : fontSize
+                            }}
+                          >
+                            {!dragHandler && (
                               <Draggable onDrop={onDrop} data={`${value}_${index}`}>
-                                <i
-                                  className="fa fa-arrows-alt"
-                                  style={{
-                                    fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                  }}
-                                />
                                 <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                               </Draggable>
-                            </React.Fragment>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              );
-            }
-            return <React.Fragment key={index} />;
-          })}
+                            )}
+                            {dragHandler && (
+                              <React.Fragment>
+                                <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                  <i
+                                    className="fa fa-arrows-alt"
+                                    style={{
+                                      fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                                    }}
+                                  />
+                                  <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                </Draggable>
+                              </React.Fragment>
+                            )}
+                          </div>
+                        );
+                      })}
+                  </div>
+                );
+              }
+              return <React.Fragment key={index} />;
+            })}
+          </GroupWrapper>
+        )}
+
         {!hasGroupResponses &&
           responses.map((option, index) => {
             const { label, value } = option;
@@ -157,5 +163,25 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false,
   containerPosition: "bottom"
 };
+
+const GroupWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  ${({ horizontallyAligned }) => {
+    if (horizontallyAligned) {
+      return `
+      flex-direction: column;
+      .group {
+        border-right: none;
+        border-bottom: 1px solid black;
+      }
+      .group:last-child {
+        border-bottom: none;
+      }
+      `;
+    }
+    return `flex-direction: row`;
+  }}
+`;
 
 export default withTheme(React.memo(ResponseBoxLayout));

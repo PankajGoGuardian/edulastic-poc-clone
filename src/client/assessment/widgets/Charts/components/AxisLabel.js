@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import { Text, VxText } from "../styled";
 
 import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
 import { convertNumberToFraction } from "../../../utils/helpers";
@@ -10,14 +11,23 @@ const AxisLabel = ({ value, fractionFormat }) => {
 
   return (
     <Fragment>
-      {result.main !== null && <tspan>{result.main}</tspan>}
-      {result.main !== null && result.sup !== null && result.sub !== null && <tspan> </tspan>}
-      {result.sup !== null && result.sub !== null && (
-        <Fragment>
-          <Sup dy={-5}>{result.sup}</Sup>
-          <tspan dy={5}>/</tspan>
-          <Sub dy={5}>{result.sub}</Sub>
-        </Fragment>
+      {fractionFormat === "Decimal" && (
+        <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+          {result.main}
+        </VxText>
+      )}
+      {fractionFormat !== "Decimal" && (
+        <Text textAnchor="middle">
+          {result.main !== null && <tspan>{result.main}</tspan>}
+          {result.main !== null && result.sup !== null && result.sub !== null && <tspan> </tspan>}
+          {result.sup !== null && result.sub !== null && (
+            <Fragment>
+              <Sup dy={-5}>{result.sup}</Sup>
+              <tspan dy={5}>/</tspan>
+              <Sub dy={5}>{result.sub}</Sub>
+            </Fragment>
+          )}
+        </Text>
       )}
     </Fragment>
   );

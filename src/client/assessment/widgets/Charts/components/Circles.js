@@ -131,15 +131,14 @@ const Circles = ({
               />
             </Fragment>
           )}
-          <Text
+          <g
             onMouseEnter={() => handleLabelVisibility(index)}
             onMouseLeave={() => handleLabelVisibility(null)}
-            textAnchor="middle"
-            x={getCenterX(index) + step / 2}
-            y={height + 20}
+            // "height +2" added to hide the fourth line in x-axis label
+            transform={`translate(${getCenterX(index) + step / 2}, ${height + 2})`}
           >
             {labelIsVisible(index) && <AxisLabel fractionFormat={data[index].labelFractionFormat} value={dot.x} />}
-          </Text>
+          </g>
         </Fragment>
       ))}
     </Fragment>

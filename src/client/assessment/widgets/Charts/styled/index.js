@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Text as vxText } from "@vx/text";
 
 import { themeColorLight, darkBlue, red } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
@@ -55,6 +56,14 @@ export const StrokedRect = styled.rect`
 `;
 
 export const Text = styled.text`
+  user-select: none;
+  font-size: ${props => props.theme.bodyFontSize};
+  font-weight: ${props => props.theme.bold};
+  text-transform: uppercase;
+  fill: ${props => props.theme.widgets.chart.axisLabel};
+`;
+
+export const VxText = styled(vxText)`
   user-select: none;
   font-size: ${props => props.theme.bodyFontSize};
   font-weight: ${props => props.theme.bold};

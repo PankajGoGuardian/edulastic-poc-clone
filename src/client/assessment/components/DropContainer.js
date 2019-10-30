@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DropTarget } from "react-dnd";
 import { withTheme } from "styled-components";
-import { dashBorderColor, green } from "@edulastic/colors";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -50,7 +49,7 @@ const DropContainer = ({
       data-cy={`drag-drop-board-${index}`}
       id={`drag-drop-board-${index}${flag === "selected" ? "-target" : ""}`}
       style={{
-        zIndex: 1,
+        zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
         borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border,

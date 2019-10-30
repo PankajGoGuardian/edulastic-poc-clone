@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -28,9 +29,8 @@ import {
 } from "../../constants/others";
 
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import { ifZoomed } from "../../../common/utils/helpers";
+import { ifZoomed, isZoomGreator } from "../../../common/utils/helpers";
 import ToolBar from "./ToolBar";
-import { isZoomGreator } from "../../../common/utils/helpers";
 import ToolbarModal from "../common/ToolbarModal";
 
 const PlayerHeader = ({
@@ -255,7 +255,7 @@ const HeaderPracticePlayer = styled(Header)`
   background: ${props => props.theme.headerBg};
   box-shadow: ${boxShadowDefault};
   height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
-  z-index: 1;
+  z-index: 1000;
 `;
 
 const HeaderFlexContainer = styled(FlexContainer)``;

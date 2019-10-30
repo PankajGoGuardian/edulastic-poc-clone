@@ -101,7 +101,7 @@ export const HeaderPracticePlayer = styled(Header)`
   background: ${props => props.theme.header.headerBg};
   box-shadow: ${boxShadowDefault};
   height: 70px;
-  z-index: 1;
+  z-index: 1000;
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     height: 104px;
   }

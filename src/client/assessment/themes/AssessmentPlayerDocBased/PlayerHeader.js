@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import { IconLogoCompact, IconSave, IconPause, IconLogout, IconSend } from "@edulastic/icons";
-import { IPAD_PORTRAIT_WIDTH, headerOffsetHashMap } from "../../constants/others";
 import { boxShadowDefault } from "@edulastic/colors";
+import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
+import { IPAD_PORTRAIT_WIDTH, headerOffsetHashMap } from "../../constants/others";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import { ifZoomed } from "../../../common/utils/helpers";
 import ProgressContainer from "../AssessmentPlayerTestlet/ProgressContainer";
@@ -27,7 +28,7 @@ const PlayerHeader = ({
     <Fragment>
       <HeaderPracticePlayer>
         <HeaderLeftMenu skinb={"true"}>
-          <LogoCompact color={"#fff"} />
+          <LogoCompact color="#fff" />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
           <FlexContainer>
@@ -153,15 +154,11 @@ const HeaderPracticePlayer = styled(Header)`
   background: ${props => props.theme.headerBg};
   box-shadow: ${boxShadowDefault};
   height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
-  z-index: 1;
+  z-index: 1000;
 `;
 
 const HeaderInnerContainer = styled.div`
   display: flex;
   margin-top: 10px;
   margin-left: auto;
-`;
-
-const ToolTipContainer = styled.div`
-  zoom: ${({ theme }) => theme?.header?.navZoom};
 `;

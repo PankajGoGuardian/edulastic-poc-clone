@@ -9,6 +9,7 @@ import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB } from "@edulastic/common";
+import { IconSettings } from "@edulastic/icons";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
@@ -23,8 +24,9 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
-import { setZoomLevelAction } from "../../../student/Sidebar/ducks";
+import { setZoomLevelAction, setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 
+import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import {
   ControlBtn,
   ToolButton,
@@ -318,7 +320,8 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = "default",
       closeTestPreviewModal,
       setZoomLevel,
-      showTools = true
+      showTools = true,
+      setSettingsModalVisibility
     } = this.props;
     const {
       testItemState,
@@ -369,7 +372,6 @@ class AssessmentPlayerDefault extends React.Component {
       itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
 
     const themeToPass = theme[selectedTheme] || theme.default;
-
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
@@ -428,16 +430,15 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    transform: isZoomApplied && `scale(${zoomLevel >= "1.75" ? "1.5" : "1.25"})`, // maxScale of 1.5 to header
+                    transform: isZoomApplied && `scale(${zoomLevel >= "1.75" ? "1.35" : "1.25"})`, // maxScale of 1.5 to header
                     transformOrigin: "0px 0px",
-                    width: isZoomApplied && `${zoomLevel >= "1.75" ? "66.67" : "80"}%`,
+                    width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
                     padding: `${isZoomApplied && zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
-                    justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
+                    justifyContent: "space-between"
                   }}
                 >
                   <FlexContainer
                     style={{
-                      flex: isZoomApplied && `1 1 ${zoomLevel >= "1.75" ? "70%" : "50%"}`,
                       justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
@@ -516,7 +517,13 @@ class AssessmentPlayerDefault extends React.Component {
                       </>
                     )}
                   </FlexContainer>
-                  <>
+                  <FlexContainer>
+                    <IconSettings
+                      color={themeToPass?.default?.headerButtonIconColor}
+                      height={themeToPass?.default?.headerToolbarButtonHeight}
+                      width={themeToPass?.default?.headerToolbarButtonWidth}
+                      onClick={() => setSettingsModalVisibility(true)}
+                    />
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
@@ -524,7 +531,7 @@ class AssessmentPlayerDefault extends React.Component {
                     {previewPlayer && (
                       <SaveAndExit previewPlayer={previewPlayer} finishTest={() => closeTestPreviewModal()} />
                     )}
-                  </>
+                  </FlexContainer>
                 </FlexContainer>
                 <FlexContainer />
               </HeaderMainMenu>
@@ -533,6 +540,7 @@ class AssessmentPlayerDefault extends React.Component {
             </Header>
           </Affix>
           <Main skin>
+            <SettingsModal />
             <SvgDraw
               activeMode={activeMode}
               scratchPadMode={scratchPadMode}
@@ -636,7 +644,8 @@ const enhance = compose(
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
       setZoomLevel: setZoomLevelAction,
-      clearUserWork: clearUserWorkAction
+      clearUserWork: clearUserWorkAction,
+      setSettingsModalVisibility: setSettingsModalVisibilityAction
     }
   )
 );

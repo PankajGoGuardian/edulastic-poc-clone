@@ -9,7 +9,7 @@ export const SET_SETTINGS_MODAL_VISIBILITY = "[homeUI] set settings modal visibi
 const initialState = {
   isSidebarCollapsed: true,
   isResponsive: false,
-  zoomLevel: localStorage.getItem("zoomLevel") || "xs",
+  zoomLevel: "1",
   selectedTheme: localStorage.getItem("selectedTheme") || "default",
   settingsModalVisible: false
 };

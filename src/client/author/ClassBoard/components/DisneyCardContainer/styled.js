@@ -9,7 +9,8 @@ import {
   red,
   themeColor,
   lightGreen4,
-  extraDesktopWidth
+  extraDesktopWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
@@ -65,30 +66,34 @@ export const StyledCard = styled(Card)`
   margin-right: 15px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
   .ant-card-body {
     padding: 19px 22px;
   }
-  @media (min-width: 1201px) {
-    width: calc((100% - 45px) / 4);
-    &:nth-child(4n) {
-      margin-right: 0px;
-    }
-  }
-  @media only screen and (max-width: ${largeDesktopWidth}) and (min-width: 769px) {
-    width: calc((100% - 30px) / 3);
-    &:nth-child(3n) {
-      margin-right: 0px;
-    }
-  }
-  @media only screen and (max-width: ${tabletWidth}) and (min-width: 481px) {
+
+  @media (min-width: ${mobileWidth}) and (max-width: 767px) {
     width: calc((100% - 15px) / 2);
     &:nth-child(2n) {
       margin-right: 0px;
     }
   }
-  @media only screen and (max-width: ${mobileWidth}) {
-    width: 100%;
-    margin-right: 0px;
+  @media (min-width: ${tabletWidth}) and (max-width: 1199px) {
+    width: calc((100% - 30px) / 3);
+    &:nth-child(3n) {
+      margin-right: 0px;
+    }
+  }
+  @media (min-width: ${largeDesktopWidth}) and (max-width: 1599px) {
+    width: calc((100% - 45px) / 4);
+    &:nth-child(4n) {
+      margin-right: 0px;
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: calc((100% - 60px) / 5);
+    &:nth-child(5n) {
+      margin-right: 0px;
+    }
   }
 `;
 

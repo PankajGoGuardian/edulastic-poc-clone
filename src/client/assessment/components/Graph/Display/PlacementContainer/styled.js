@@ -142,6 +142,8 @@ export const GraphWrapper = styled.div`
 `;
 
 export const JSXBox = styled.div`
+  // IMPORTANT: TRY NOT TO WRITE SVG ELEMENTS STYLE HERE CUZ ATTRIBUTES GET OVERRIDEN
+
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
@@ -151,20 +153,53 @@ export const JSXBox = styled.div`
   border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
 
-  line,
-  path,
-  ellipse {
-    stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
-    fill: ${props => props.theme.widgets.chart.labelStrokeColor};
-  }
-
   text {
     fill: ${props => props.theme.widgets.chart.labelStrokeColor};
   }
 
   div {
-    color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
+    color: ${props => props.theme.widgets.chart.labelStrokeColor};
+    background-color: ${props => props.theme.widgets.chart.bgColor};
+  }
+
+  .drag-drop-content {
+    .drag-drop-icon {
+      height: 18px;
+      width: 18px;
+      border-radius: 9px;
+
+      position: relative;
+    }
+  }
+
+  .drag-drop-content-correct {
+    > :first-child {
+      width: calc(100% - 18px);
+    }
+
+    background-color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemBgColor};
+    color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemTextColor};
+
+    .drag-drop-icon {
+      background-color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemBgColor};
+      fill: ${props => props.theme.widgets.graphPlacement.correctAnswerItemIconColor};
+      margin: 0 2px;
+    }
+  }
+
+  .drag-drop-content-incorrect {
+    > :first-child {
+      width: calc(100% - 18px);
+    }
+
+    background-color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemBgColor};
+    color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemTextColor};
+
+    .drag-drop-icon {
+      background-color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemBgColor};
+      fill: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemIconColor};
+      margin: 0 2px;
+    }
   }
 `;
 

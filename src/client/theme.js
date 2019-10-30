@@ -49,6 +49,7 @@ const iconDeleteHoverColor = "#FF0057";
 const clearIconColor = "#FFFFFF";
 const rightIconColor = "#84cd36";
 const correctBgColor = "#d3fea6";
+const incorrectBgColor = "#fce0e8";
 const wrongIconColor = "#dd2e44";
 const wrongBgColor = "#fbdfe7";
 const rightBorderColor = "#5EB500";
@@ -1102,7 +1103,14 @@ export const defaultTheme = {
       buttonLabelStroke: textColor,
       buttonActiveLabelStroke: themeColor,
       buttonActiveBgColor: brandWhite,
-      buttonHoverBgColor: brandWhite
+      buttonHoverBgColor: brandWhite,
+      correctAnswerItemBgColor: correctBgColor,
+      correctAnswerItemIconColor: rightIconColor,
+      correctAnswerItemTextColor: descriptionColor,
+      incorrectAnswerItemBgColor: incorrectBgColor,
+      incorrectAnswerItemIconColor: wrongIconColor,
+      incorrectAnswerItemTextColor: descriptionColor,
+      backgroundShapes: breadcrumbColor
     },
     quadrants: {
       dragDropTitleFontWeight: bold,

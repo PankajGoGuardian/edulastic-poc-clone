@@ -1,5 +1,8 @@
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
+import { IconCloseTextFormat } from "@edulastic/icons";
+import { IconCorrectTextFormat } from "@edulastic/icons";
+
 import { CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
 import { Point } from ".";
@@ -11,6 +14,9 @@ const deleteIconPattern =
   '<path id="{iconId}" d="M57.546 80.756h8.939l.642-12.412H56.9zm5.486-9.511h1.107v6.325h-1.107zm-3.14 0H61v6.325h-1.108z"transform="translate(-14.87 -65.054)"/>' +
   "</g>" +
   "</svg>";
+
+const IconClose = `<svg class="drag-drop-icon drag-drop-icon-incorrect" ${IconCloseTextFormat.substring(5)}`;
+const IconCorrect = `<svg class="drag-drop-icon drag-drop-icon-correct" ${IconCorrectTextFormat.substring(5)}`;
 
 const jxgType = 101;
 
@@ -27,18 +33,20 @@ function drawPoint(board, object, settings) {
   }
   const { fixed = false } = settings;
   const { x, y, priorityColor } = object;
+
   const point = board.$board.create("point", [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Point.getColorParams(priorityColor || board.priorityColor),
     fixed
   });
+
   return point;
 }
 
 function create(board, object, settings) {
   const { fixed = false } = settings;
 
-  const { id = null, x, y, text } = object;
+  const { id = null, x, y, text, customOptions = {} } = object;
 
   const point = drawPoint(board, object, settings);
 
@@ -49,7 +57,14 @@ function create(board, object, settings) {
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
   }
 
-  content = `<div class='drag-drop-content'>${content}</div>`;
+  content = `<div class='drag-drop-content ${
+    customOptions.isCorrect
+      ? "drag-drop-content-correct"
+      : customOptions.isCorrect === false
+      ? "drag-drop-content-incorrect"
+      : ""
+  }'>${content}${customOptions.isCorrect ? IconCorrect : customOptions.isCorrect === false ? IconClose : ""}</div>`;
+
   const cssClass = "fr-box drag-drop";
 
   const mark = board.$board.create("text", [x, y, content], {

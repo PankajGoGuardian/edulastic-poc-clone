@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { withTheme } from "styled-components";
+import { compose } from "redux";
 
 import { fractionStringToNumber } from "../../../utils/helpers";
 import { CLEAR } from "../../../constants/constantsForQuestions";
@@ -659,6 +661,7 @@ class GraphDisplay extends Component {
 
   render() {
     const { graphIsValid } = this.state;
+    const { theme } = this.props;
 
     const GraphContainer = this.getGraphContainer();
 
@@ -666,7 +669,7 @@ class GraphDisplay extends Component {
       <Fragment>
         {graphIsValid ? (
           <Fragment>
-            <GraphContainer {...this.getGraphContainerProps()} />
+            <GraphContainer theme={theme} {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
           <div>Wrong parameters</div>
@@ -711,9 +714,14 @@ GraphDisplay.defaultProps = {
   elementsIsCorrect: false
 };
 
-export default connect(
-  null,
-  {
-    setQuestionData: setQuestionDataAction
-  }
-)(GraphDisplay);
+const enhance = compose(
+  withTheme,
+  connect(
+    null,
+    {
+      setQuestionData: setQuestionDataAction
+    }
+  )
+);
+
+export default enhance(GraphDisplay);

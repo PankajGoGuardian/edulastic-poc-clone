@@ -57,12 +57,10 @@ const valueHeightHashMap = {
   }
 };
 
-const trueColor = "#1fe3a1";
-const errorColor = "#ee1658";
-const defaultColor = "#00b2ff";
-const bgColor = "#69727e";
+const getColoredElems = (elements, compareResult, theme) => {
+  const correctAnswerItemIconColor = theme.widgets.graphPlacement.correctAnswerItemIconColor;
+  const incorrectAnswerItemIconColor = theme.widgets.graphPlacement.incorrectAnswerItemIconColor;
 
-const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
     const subElems = [];
@@ -76,13 +74,19 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: trueColor
+            priorityColor: correctAnswerItemIconColor,
+            customOptions: {
+              isCorrect: true
+            }
           };
           result = true;
         } else {
           newEl = {
             ...el,
-            priorityColor: errorColor
+            priorityColor: incorrectAnswerItemIconColor,
+            customOptions: {
+              isCorrect: false
+            }
           };
         }
 
@@ -106,12 +110,18 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: trueColor
+            priorityColor: correctAnswerItemIconColor,
+            customOptions: {
+              isCorrect: true
+            }
           };
         } else {
           newEl = {
             ...el,
-            priorityColor: errorColor
+            priorityColor: incorrectAnswerItemIconColor,
+            customOptions: {
+              isCorrect: false
+            }
           };
         }
         return newEl;
@@ -123,11 +133,16 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
-const getCorrectAnswer = answerArr => {
+const getCorrectAnswer = (answerArr, theme) => {
+  const correctAnswerItemIconColor = theme.widgets.graphPlacement.correctAnswerItemIconColor;
+
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
       ...el,
-      priorityColor: trueColor
+      priorityColor: correctAnswerItemIconColor,
+      customOptions: {
+        isCorrect: true
+      }
     }));
   }
   return answerArr;
@@ -183,12 +198,16 @@ class PlacementContainer extends PureComponent {
       backgroundShapes,
       setElementsStash,
       graphType,
-      disableResponse
+      disableResponse,
+      theme
     } = this.props;
 
     const { resourcesLoaded } = this.state;
 
     this._graph = makeBorder(this._graphId, graphType);
+
+    const defaultColor = theme.widgets.chart.labelStrokeColor;
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
 
     if (this._graph) {
       if (!disableResponse) {
@@ -255,10 +274,13 @@ class PlacementContainer extends PureComponent {
       disableResponse,
       previewTab,
       changePreviewTab,
-      elements
+      elements,
+      theme
     } = this.props;
 
     const { resourcesLoaded } = this.state;
+
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -444,13 +466,13 @@ class PlacementContainer extends PureComponent {
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements, this.props.theme));
       return;
     }
 
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
+      const coloredElements = getColoredElems(elements, compareResult, this.props.theme);
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadAnswersFromConfig(coloredElements);
@@ -459,7 +481,7 @@ class PlacementContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
+      const coloredElements = getColoredElems(elements, compareResult, this.props.theme);
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(coloredElements);
@@ -492,8 +514,10 @@ class PlacementContainer extends PureComponent {
   };
 
   resourcesOnLoaded = () => {
-    const { backgroundShapes } = this.props;
     const { resourcesLoaded } = this.state;
+    const { backgroundShapes, theme } = this.props;
+    const bgColor = theme.widgets.graphPlacement.backgroundShapes;
+
     if (resourcesLoaded) {
       return;
     }

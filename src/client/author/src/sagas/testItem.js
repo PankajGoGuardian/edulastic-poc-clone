@@ -107,9 +107,9 @@ function* evaluateAnswers({ payload }) {
     // User is at the question level
     if (payload === "question" || payload?.mode === "show") {
       const answers = yield select(state => _get(state, "answers", []));
-
       const question = yield select(getCurrentQuestionSelector);
       const { evaluation, score, maxScore } = yield evaluateItem(answers, { [question?.id]: question });
+
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {

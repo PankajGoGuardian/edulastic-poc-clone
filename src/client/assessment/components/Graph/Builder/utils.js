@@ -365,7 +365,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, text = null, dashed = false } = element;
+      const { id, type, subElement = false, text = null, dashed = false, customOptions = {} } = element;
 
       if (type === CONSTANT.TOOLS.EQUATION) {
         acc[id] = element;
@@ -396,7 +396,9 @@ export function flat2nestedConfig(config) {
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
         }
+        acc[id].customOptions = customOptions;
       }
+
       return acc;
     }, {})
   );

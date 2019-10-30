@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { Card } from "antd";
-import { white, mobileWidth } from "@edulastic/colors";
+import {
+  white,
+  mobileWidth,
+  extraDesktopWidthMax,
+  mediumDesktopWidth,
+  mediumDesktopExactWidth
+} from "@edulastic/colors";
 
 import { CustomTooltip } from "./CustomTooltip";
 
@@ -46,22 +52,30 @@ export const MainDiv = styled.div`
 export const StyledCustomTooltip = styled(CustomTooltip)`
   padding: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  font-size: 12px
+  font-size: ${props => props.theme.commentFontSize};
   white-space: pre;
   background-color: ${white};
   border-radius: 10px;
 
   .classboard-tooltip-title {
     font-weight: 900;
-    font-size: 14px;
+    font-size: ${props => props.theme.smallFontSize};
   }
-
-  .classboard-tooltip-key{
-
-  }
-
-  .classboard-tooltip-value{
+  .classboard-tooltip-value {
     font-weight: 900;
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
+    .classboard-tooltip-title {
+      font-size: ${props => props.theme.standardFont};
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.standardFont};
+    .classboard-tooltip-title {
+      font-size: ${props => props.theme.titleSectionFontSize};
+    }
   }
 `;
 

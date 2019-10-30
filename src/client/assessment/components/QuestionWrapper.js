@@ -307,7 +307,7 @@ class QuestionWrapper extends Component {
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
-      zoomLevel = "xs",
+      zoomLevel = "1",
       selectedTheme = "default",
       displayFeedback = true,
       isPrintPreview = false,

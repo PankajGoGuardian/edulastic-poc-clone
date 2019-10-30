@@ -15,11 +15,15 @@ const QuestionSelectDropdown = ({
   t,
   bookmarks = [],
   skipped = [],
-  dropdownStyle = {}
+  dropdownStyle = {},
+  zoomLevel
 }) => (
   <SelectContainer style={dropdownStyle} skinb={skinb}>
     <Select
-      dropdownStyle={dropdownStyle}
+      dropdownStyle={{
+        transform: `scale(${zoomLevel})`,
+        transformOrigin: "0px 0px"
+      }}
       defaultValue={currentItem}
       data-cy="options"
       onChange={value => {
@@ -48,7 +52,12 @@ QuestionSelectDropdown.propTypes = {
   gotoQuestion: PropTypes.func.isRequired,
   currentItem: PropTypes.number.isRequired,
   bookmarks: PropTypes.array.isRequired,
-  skipped: PropTypes.array.isRequired
+  skipped: PropTypes.array.isRequired,
+  zoomLevel: PropTypes.string
+};
+
+QuestionSelectDropdown.defaultProps = {
+  zoomLevel: localStorage.getItem("zoomLevel") || "1"
 };
 
 export default withNamespaces("student")(QuestionSelectDropdown);

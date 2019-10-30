@@ -375,6 +375,10 @@ class AssessmentPlayerDefault extends React.Component {
     const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
     const isZoomApplied = zoomLevel > "1";
     const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
+    let headerZoom = 1;
+    if (isZoomApplied) {
+      headerZoom = zoomLevel >= "1.75" ? "1.35" : "1.25";
+    }
     return (
       <ThemeProvider theme={themeToPass}>
         <Container
@@ -427,10 +431,12 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    transform: isZoomApplied && `scale(${zoomLevel >= "1.75" ? "1.35" : "1.25"})`, // maxScale of 1.5 to header
+                    transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
                     transformOrigin: "0px 0px",
                     width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-                    padding: `${isZoomApplied && zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 10px"}`,
+                    padding: `${
+                      isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "10px 10px 15px"
+                    }`,
                     justifyContent: "space-between"
                   }}
                 >
@@ -449,6 +455,7 @@ class AssessmentPlayerDefault extends React.Component {
                         bookmarks={bookmarksInOrder}
                         skipped={skippedInOrder}
                         dropdownStyle={navZoomStyle}
+                        zoomLevel={headerZoom}
                       />
                     )}
                     {!LCBPreviewModal && (

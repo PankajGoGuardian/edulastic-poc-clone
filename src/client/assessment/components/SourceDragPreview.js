@@ -15,16 +15,16 @@ function useDragScroll(sourceOffset) {
   const interval = useRef(null);
   const scrollContext = useContext(ScrollContext);
   const scrollEl = scrollContext.getScrollElement();
-
+  // /TODO: fix once perfect scroll-bar is fixed
   const containerBottom = window.innerHeight - 50;
-  const containerTop = scrollEl.offsetTop + 20;
+  const containerTop = scrollEl?.offsetTop + 20;
 
   // scroll the page when dragging element reaches top of the view port..
   useEffect(() => {
     const yOffset = sourceOffset?.y;
-    if (!interval.current && scrollEl.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
+    if (!interval.current && scrollEl?.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
       const scrollBy = yOffset < containerTop ? -10 : 10;
-      interval.current = setInterval(() => scrollEl.scrollBy(0, scrollBy), 50);
+      interval.current = setInterval(() => scrollEl?.scrollBy(0, scrollBy), 50);
     } else if (interval.current && ((yOffset > containerTop && yOffset < containerBottom) || !sourceOffset)) {
       clearInterval(interval.current);
       interval.current = null;

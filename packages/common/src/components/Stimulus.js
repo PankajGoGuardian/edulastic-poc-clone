@@ -10,6 +10,7 @@ const Stimulus = withTheme(
     img {
       max-height: unset !important;
     }
+    word-break: break-word;
     font-size: ${props => props.fontSize};
     font-weight: ${fonts.previewFontWeight};
     user-select: ${props => (props.userSelect ? "text !important" : "none")};

@@ -29,6 +29,7 @@ export const QuestionOption = styled.span`
   padding-top: 10px;
   border: 1px solid ${getBorder};
   font-size: 10px;
+  margin-bottom: 2px;
   text-align: center;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};

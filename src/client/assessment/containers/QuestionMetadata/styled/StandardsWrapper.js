@@ -5,8 +5,9 @@ const StandardsWrapper = styled.div`
   display: flex;
   align-items: center;
   color: ${darkGrey1};
-  padding: 5px 10px;
+  padding: ${props => (props.isDocBased ? "5px 10px" : "5px 10px 5px 5%")};
   margin: 5px 0px;
+  width: ${props => !props.isDocBased && "90%"};
 `;
 
 export const RecentStandards = styled.div`

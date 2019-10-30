@@ -89,7 +89,7 @@ export default class AddBulkModal extends React.Component {
               />
             </FormGroup>
           </QuestionFormWrapper>
-          <ModalFooter>
+          <ModalFooter marginTop="35px">
             <Button onClick={onCancel}>Cancel</Button>
             <Button onClick={this.handleApply}>Apply</Button>
           </ModalFooter>

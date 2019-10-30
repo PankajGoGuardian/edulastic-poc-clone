@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Checkbox, InputNumber, Radio } from "antd";
+import { Input, InputNumber, Radio } from "antd";
 import { throttle, isArray } from "lodash";
 
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
-import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
+import { QuestionFormWrapper, FormGroup, FormLabel, Points, CheckboxGroupStyled } from "../../common/QuestionForm";
+import { inputBgGrey, inputBorder } from "@edulastic/colors";
 
-const { Group: CheckboxGroup } = Checkbox;
 const { Group: RadioGroup } = Radio;
 
 const defaultState = {
@@ -130,7 +130,12 @@ export default class QuestionChoice extends React.Component {
               value={optionsValue}
               onChange={throttle(this.handleSetOptions, 2000)}
               autoFocus
-              style={{ letterSpacing: "8px" }}
+              style={{
+                letterSpacing: "8px",
+                background: inputBgGrey,
+                border: `1px solid ${inputBorder}`,
+                borderRadius: "0px"
+              }}
             />
           </FormGroup>
         )}
@@ -139,7 +144,7 @@ export default class QuestionChoice extends React.Component {
           {trueOrFalse ? (
             <RadioGroup options={options} value={correctAnswers[0]} onChange={this.handleSetCorrectAnswers} />
           ) : (
-            <CheckboxGroup options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />
+            <CheckboxGroupStyled options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />
           )}
           <InputNumber min={0} value={score} onChange={this.handleSetScore} />
           <Points>Points</Points>

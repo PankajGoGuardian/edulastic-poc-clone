@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  width: 345px;
+  width: 30%;
   height: calc(100% - 140px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
   padding: 30px 10px 30px 10px;
@@ -13,9 +13,6 @@ export const QuestionsWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 500px;
-  }
 `;
 
 export const AnswerActionsWrapper = styled.div`
@@ -30,8 +27,8 @@ export const AnswerActionsWrapper = styled.div`
 `;
 
 export const AnswerAction = styled(Button)`
-  width: 120px;
-  height: 40px;
+  width: 136px;
+  height: 32px;
   background: ${({ active }) => (active ? themeColor : "transparent")};
   border: 1px solid ${themeColor};
   border-radius: 5px;
@@ -39,6 +36,7 @@ export const AnswerAction = styled(Button)`
   font-weight: 600;
   color: ${({ active }) => (active ? white : themeColor)};
   text-transform: uppercase;
+  margin-right: 15px;
 
   &:hover,
   &:active,
@@ -46,8 +44,6 @@ export const AnswerAction = styled(Button)`
     background: ${({ active }) => (active ? themeColor : "transparent")};
     color: ${({ active }) => (active ? white : themeColor)};
   }
-
-  margin-right: 25px;
   &:last-child {
     margin-right: 0;
   }

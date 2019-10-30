@@ -287,7 +287,7 @@ const AlignmentRow = ({
                 <Select
                   data-cy="searchStandardSelect"
                   mode="multiple"
-                  style={{ width: isDocBased ? "90%" : "100%" }}
+                  style={{ width: "90%", margin: "auto", display: "block" }}
                   placeholder={t("component.options.searchStandards")}
                   filterOption={false}
                   value={standardsArr}
@@ -342,6 +342,7 @@ const AlignmentRow = ({
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>
             <RecentStandardsList
+              isDocBased
               recentStandardsList={recentStandardsList}
               standardsArr={standardsArr}
               handleAddStandard={handleAddStandard}

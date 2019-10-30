@@ -24,9 +24,8 @@ export const ModalTitle = styled.h2`
 
 export const ModalFooter = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 35px;
-
+  justify-content: center;
+  margin-top: ${props => props.marginTop};
   .ant-btn {
     width: 222px;
     height: 40px;
@@ -35,6 +34,7 @@ export const ModalFooter = styled.div`
     color: ${white};
     border: none;
     text-transform: uppercase;
+    margin: 0 20px;
 
     &:first-child {
       border: 1px solid ${themeColor};

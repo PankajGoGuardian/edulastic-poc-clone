@@ -46,15 +46,13 @@ class QuestionItem extends React.Component {
     previewMode: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired,
     highlighted: PropTypes.bool.isRequired,
-    answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-    centered: PropTypes.bool
+    answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
   };
 
   static defaultProps = {
     evaluation: undefined,
     userAnswer: undefined,
-    answer: undefined,
-    centered: false
+    answer: undefined
   };
 
   state = {
@@ -236,13 +234,12 @@ class QuestionItem extends React.Component {
       viewMode,
       previewTab,
       previewMode,
-      centered,
       highlighted
     } = this.props;
 
     const check = viewMode === "report" || previewTab === "check";
     return (
-      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted} ref={this.itemRef}>
+      <QuestionItemWrapper id={id} highlighted={highlighted} ref={this.itemRef}>
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable
             type="question"

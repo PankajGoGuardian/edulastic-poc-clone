@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth, inputBorder, themeColor } from "@edulastic/colors";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
 const CustomTreeSelect = ({ children, title, style }) => {
@@ -59,6 +59,10 @@ export default CustomTreeSelect;
 
 const Wrapper = styled.div`
   position: relative;
+  border: 1px solid ${inputBorder};
+  &:hover {
+    border: 1px solid ${themeColor};
+  }
 `;
 
 const Title = styled.div`

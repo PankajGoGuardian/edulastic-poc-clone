@@ -1,18 +1,16 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey } from "@edulastic/colors";
+import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgrounds } from "@edulastic/colors";
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
-  width: ${({ review }) => (review ? "243px" : "213px")};
+  width: 15%;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow-y: auto;
   padding: 30px 28px;
   padding-right: ${({ review }) => (review ? "28px" : "13px")};
   padding-bottom: 0;
-  background: #ebebeb;
-  margin-left: ${({ minimized }) => (minimized ? "-183px" : 0)};
-  transition: margin-left 300ms ease-in-out;
+  background: ${backgrounds.primary};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
@@ -29,11 +27,14 @@ export const ThumbnailsList = styled.div`
 `;
 
 export const ReuploadButtonWrapper = styled.div`
+  text-align: center;
   position: fixed;
-  left: 100px;
+  left: ${props => (props.noCheck ? 0 : "100px")};
   bottom: 0;
+  width: 14%;
   padding: 15px 22px;
-  background: #ebebeb;
+  background: ${backgrounds.primary};
+  z-index: 1;
 `;
 
 export const ReuploadButton = styled(Button)`
@@ -46,4 +47,12 @@ export const ReuploadButton = styled(Button)`
   background: ${borders.default};
   border: ${borders.default};
   color: ${tabGrey};
+`;
+
+export const ToolBarToggleBtn = styled(Button)`
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  padding: 0;
 `;

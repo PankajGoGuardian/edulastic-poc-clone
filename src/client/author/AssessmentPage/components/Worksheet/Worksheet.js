@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
@@ -7,7 +6,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { isEmpty, get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB } from "@edulastic/common";
+import { hexToRGB, withWindowSizes } from "@edulastic/common";
 
 import { Modal, message } from "antd";
 import { IconGraphRightArrow } from "@edulastic/icons";
@@ -88,7 +87,8 @@ class Worksheet extends React.Component {
     deleteConfirmation: false,
     deleteMode: false,
     minimized: false,
-    lineWidth: 6
+    lineWidth: 6,
+    isToolBarVisible: true
   };
 
   componentDidMount() {
@@ -483,9 +483,12 @@ class Worksheet extends React.Component {
   };
 
   toggleMinimized = () => {
-    this.setState(prevProps => ({ ...prevProps, minimized: !prevProps.minimized }));
+    this.setState(prevProps => ({ minimized: !prevProps.minimized, isToolBarVisible: true }));
   };
 
+  toggleToolBarVisiblity = () => {
+    this.setState(prev => ({ isToolBarVisible: !prev.isToolBarVisible }));
+  };
   // setup for scratchpad ends
   render() {
     const {
@@ -500,7 +503,8 @@ class Worksheet extends React.Component {
       isAddPdf,
       selected,
       minimized,
-      lineWidth
+      lineWidth,
+      isToolBarVisible
     } = this.state;
     const {
       docUrl,
@@ -516,10 +520,10 @@ class Worksheet extends React.Component {
       fileInfo,
       pageStructure,
       scratchPad = {},
-      freeFormNotes = {}
+      freeFormNotes = {},
+      windowWidth
     } = this.props;
 
-    const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
     const selectedPage = pageStructure[currentPage] || defaultPage;
     const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
 
@@ -537,6 +541,11 @@ class Worksheet extends React.Component {
         top={0}
       />
     );
+    let pdfAreaWidthInPercentage = 55;
+    if (minimized) {
+      pdfAreaWidthInPercentage += 15;
+    }
+    const pdfWidth = Math.floor((windowWidth * pdfAreaWidthInPercentage) / 100 - 130);
 
     return (
       <WorksheetWrapper>
@@ -575,27 +584,32 @@ class Worksheet extends React.Component {
             <IconGraphRightArrow />
           </MinimizeButton>
         )}
-        <Thumbnails
-          annotations={annotations}
-          list={pageStructure}
-          currentPage={currentPage}
-          onReupload={this.handleReupload}
-          onAddPdf={this.handleAddPdf}
-          onPageChange={this.handleChangePage}
-          onAddBlankPage={this.handleAppendBlankPage}
-          onDeletePage={this.handleDeletePage}
-          setDeleteConfirmation={this.setDeleteConfirmation}
-          onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-          onMovePageUp={this.handleMovePageUp}
-          onMovePageDown={this.handleMovePageDown}
-          onInsertBlankPage={this.handleInsertBlankPage}
-          onRotate={this.handleRotate}
-          minimized={minimized}
-          viewMode={viewMode}
-          review={review}
-        />
+        {!minimized && (
+          <Thumbnails
+            annotations={annotations}
+            list={pageStructure}
+            currentPage={currentPage}
+            onReupload={this.handleReupload}
+            onAddPdf={this.handleAddPdf}
+            onPageChange={this.handleChangePage}
+            onAddBlankPage={this.handleAppendBlankPage}
+            onDeletePage={this.handleDeletePage}
+            setDeleteConfirmation={this.setDeleteConfirmation}
+            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+            onMovePageUp={this.handleMovePageUp}
+            onMovePageDown={this.handleMovePageDown}
+            onInsertBlankPage={this.handleInsertBlankPage}
+            onRotate={this.handleRotate}
+            viewMode={viewMode}
+            review={review}
+            isToolBarVisible={isToolBarVisible}
+            toggleToolBarVisiblity={this.toggleToolBarVisiblity}
+            noCheck={noCheck}
+          />
+        )}
+
         <Fragment>
-          <div style={{ position: "relative", display: "flex", width: "calc(100% - 513px)" }}>
+          <div style={{ position: "relative", display: "flex", width: `${pdfAreaWidthInPercentage}%` }}>
             <PDFPreview
               page={selectedPage}
               currentPage={currentPage + 1}
@@ -607,8 +621,10 @@ class Worksheet extends React.Component {
               answersById={answersById}
               renderExtra={svgContainer}
               viewMode={viewMode}
+              isToolBarVisible={isToolBarVisible}
+              pdfWidth={pdfWidth}
             />
-            {viewMode !== "report" && (
+            {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools
                 isWorksheet
                 onFillColorChange={this.onFillColorChange}
@@ -631,7 +647,6 @@ class Worksheet extends React.Component {
           viewMode={viewMode}
           questionsById={questionsById}
           answersById={answersById}
-          centered={!shouldRenderDocument}
           highlighted={highlightedQuestion}
           onDragStart={this.onDragStart}
         />
@@ -641,6 +656,7 @@ class Worksheet extends React.Component {
 }
 
 const enhance = compose(
+  withWindowSizes,
   withRouter,
   connect(
     state => ({

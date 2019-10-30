@@ -17,8 +17,7 @@ import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Works
 import { changeViewAction } from "../../../author/src/actions/view";
 import { questionType } from "@edulastic/constants";
 import { testLoadingSelector } from "../../selectors/test";
-import { getZoomedTheme } from "../../../student/zoomTheme";
-import { playersZoomTheme } from "../assessmentPlayersTheme";
+import { withWindowSizes } from "@edulastic/common";
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -97,7 +96,6 @@ class AssessmentPlayerDocBased extends React.Component {
       pageStructure = [],
       freeFormNotes,
       gotoSummary,
-      zoomLevel,
       selectedTheme
     } = this.props;
 
@@ -110,8 +108,6 @@ class AssessmentPlayerDocBased extends React.Component {
     let themeToPass = theme[selectedTheme] || theme.default;
 
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
-    // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
-    // themeToPass = playersZoomTheme(themeToPass);
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -150,11 +146,11 @@ class AssessmentPlayerDocBased extends React.Component {
 }
 
 const enhance = compose(
+  withWindowSizes,
   withNamespaces("common"),
   connect(
     state => ({
       loading: testLoadingSelector(state),
-      zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme
     }),
     {

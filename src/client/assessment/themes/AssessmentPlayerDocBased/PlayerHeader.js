@@ -8,7 +8,6 @@ import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, Header
 import { IPAD_PORTRAIT_WIDTH, headerOffsetHashMap } from "../../constants/others";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import { ifZoomed } from "../../../common/utils/helpers";
-import ProgressContainer from "../AssessmentPlayerTestlet/ProgressContainer";
 
 const PlayerHeader = ({
   title,
@@ -20,7 +19,9 @@ const PlayerHeader = ({
   onPause,
   onSaveProgress,
   showSubmit,
-  onSubmit
+  onSubmit,
+  zoomLevel,
+  windowWidth
 }) => {
   const isZoomed = ifZoomed(theme?.zoomLevel);
   const InnerContainer = isZoomed ? HeaderInnerContainer : Fragment;
@@ -31,15 +32,17 @@ const PlayerHeader = ({
           <LogoCompact color="#fff" />
         </HeaderLeftMenu>
         <HeaderMainMenu skinb={"true"}>
-          <FlexContainer>
+          <FlexContainer
+            style={{
+              transform: `scale(${zoomLevel >= "1.75" ? "1.5" : "1.25"})`, // maxScale of 1.5 to header
+              transformOrigin: "0px 0px",
+              width: `${zoomLevel >= "1.75" ? "66.67" : "80"}%`,
+              padding: `${zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px"}`,
+              justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
+            }}
+          >
             <PlayerTitle>{title}</PlayerTitle>
             <InnerContainer>
-              <ProgressContainer
-                questions={dropdownOptions}
-                current={currentItem + 1}
-                desktop={"true"}
-                isZoomed={isZoomed}
-              />
               <ContainerRight>
                 <div style={{ display: "flex" }}>
                   {showSubmit && (
@@ -67,9 +70,6 @@ const PlayerHeader = ({
               </ContainerRight>
             </InnerContainer>
           </FlexContainer>
-          <Mobile>
-            <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
-          </Mobile>
         </HeaderMainMenu>
       </HeaderPracticePlayer>
       <Mobile>

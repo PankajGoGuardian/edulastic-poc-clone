@@ -3,9 +3,9 @@ import StandardTags from "./styled/StandardTags";
 import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
 import { themeColor, grey } from "@edulastic/colors";
 
-const RecentStandardsList = ({ recentStandardsList, standardsArr, handleAddStandard }) => {
+const RecentStandardsList = ({ recentStandardsList, standardsArr, handleAddStandard, isDocBased }) => {
   return (
-    <StandardsWrapper>
+    <StandardsWrapper isDocBased={isDocBased}>
       <div>RECENTLY USED:</div>
       <RecentStandards>
         {recentStandardsList.map(recentStandard => (

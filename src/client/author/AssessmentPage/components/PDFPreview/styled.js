@@ -11,10 +11,10 @@ import {
 export const PDFPreviewWrapper = styled.div`
   position: relative;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
-  padding: 30px 23px 30px 65px;
+  padding: ${({ isToolBarVisible }) => (isToolBarVisible ? "30px 23px 30px 100px" : "30px 23px 30px 30px")};
   overflow-y: auto;
   width: 100%;
-
+  transition: padding 0.2s ease-in;
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }
@@ -22,7 +22,7 @@ export const PDFPreviewWrapper = styled.div`
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${mediumDesktopWidth}) {
-    padding: 30px 0px 30px 54px;
+    padding: ${({ isToolBarVisible }) => (isToolBarVisible ? "30px 0px 30px 54px" : "30px 0px 30px 0")};
   }
 `;
 

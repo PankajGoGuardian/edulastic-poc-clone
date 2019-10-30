@@ -22,6 +22,7 @@ import StandardSet from "./common/StandardSet/StandardSet";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { FormLabel } from "./common/QuestionForm";
 import { selectsData } from "../../../TestPage/components/common";
+import { StandardSelectWrapper } from "./common/StandardSet/styled";
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
@@ -99,57 +100,59 @@ export default class QuestionEditModal extends React.Component {
             <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
 
-          <div style={{ height: "50vh", overflow: "hidden auto", paddingBottom: "10px" }}>
+          <div style={{ maxHeight: "50vh", overflow: "hidden auto", paddingBottom: "10px" }}>
             <PerfectScrollbar>
               {this.renderForm(type)}
-              <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased />
-              <Row style={{ marginTop: "10px" }}>
-                <Col md={12}>
-                  <FormLabel>DOK</FormLabel>
-                  <Select
-                    style={{ width: "95%" }}
-                    placeholder={"Select DOK"}
-                    onSelect={val => onUpdate({ depthOfKnowledge: val })}
-                    value={depthOfKnowledge}
-                  >
-                    <Select.Option key={"Select DOK"} value={""}>
-                      {"Select DOK"}
-                    </Select.Option>
-                    {selectsData.allDepthOfKnowledge.map(
-                      el =>
-                        el.value && (
-                          <Select.Option key={el.value} value={el.value}>
-                            {el.text}
-                          </Select.Option>
-                        )
-                    )}
-                  </Select>
-                </Col>
-                <Col md={12} style={{ paddingLeft: "5%" }}>
-                  <FormLabel>Difficulty</FormLabel>
-                  <Select
-                    style={{ width: "100%" }}
-                    placeholder={"Select Difficulty Level"}
-                    onSelect={val => onUpdate({ authorDifficulty: val })}
-                    value={authorDifficulty}
-                  >
-                    <Select.Option key={"Select Difficulty Level"} value={""}>
-                      {"Select Difficulty Level"}
-                    </Select.Option>
-                    {selectsData.allAuthorDifficulty.map(
-                      el =>
-                        el.value && (
-                          <Select.Option key={el.value} value={el.value}>
-                            {el.text}
-                          </Select.Option>
-                        )
-                    )}
-                  </Select>
-                </Col>
-              </Row>
+              <StandardSelectWrapper>
+                <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased />
+                <Row style={{ marginTop: "10px" }}>
+                  <Col md={12}>
+                    <FormLabel>DOK</FormLabel>
+                    <Select
+                      style={{ width: "95%" }}
+                      placeholder={"Select DOK"}
+                      onSelect={val => onUpdate({ depthOfKnowledge: val })}
+                      value={depthOfKnowledge}
+                    >
+                      <Select.Option key={"Select DOK"} value={""}>
+                        {"Select DOK"}
+                      </Select.Option>
+                      {selectsData.allDepthOfKnowledge.map(
+                        el =>
+                          el.value && (
+                            <Select.Option key={el.value} value={el.value}>
+                              {el.text}
+                            </Select.Option>
+                          )
+                      )}
+                    </Select>
+                  </Col>
+                  <Col md={12} style={{ paddingLeft: "5%" }}>
+                    <FormLabel>Difficulty</FormLabel>
+                    <Select
+                      style={{ width: "100%" }}
+                      placeholder={"Select Difficulty Level"}
+                      onSelect={val => onUpdate({ authorDifficulty: val })}
+                      value={authorDifficulty}
+                    >
+                      <Select.Option key={"Select Difficulty Level"} value={""}>
+                        {"Select Difficulty Level"}
+                      </Select.Option>
+                      {selectsData.allAuthorDifficulty.map(
+                        el =>
+                          el.value && (
+                            <Select.Option key={el.value} value={el.value}>
+                              {el.text}
+                            </Select.Option>
+                          )
+                      )}
+                    </Select>
+                  </Col>
+                </Row>
+              </StandardSelectWrapper>
             </PerfectScrollbar>
           </div>
-          <ModalFooter>
+          <ModalFooter marginTop="20px">
             <Button onClick={onCurrentChange(index - 1)} disabled={index === 0}>
               Previous
             </Button>

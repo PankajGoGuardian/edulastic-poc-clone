@@ -210,7 +210,6 @@ class Questions extends React.Component {
     viewMode: PropTypes.string.isRequired,
     noCheck: PropTypes.bool,
     answersById: PropTypes.object,
-    centered: PropTypes.bool,
     highlighted: PropTypes.string
   };
 
@@ -219,7 +218,6 @@ class Questions extends React.Component {
     questionsById: {},
     noCheck: false,
     answersById: {},
-    centered: false,
     highlighted: undefined
   };
 
@@ -379,7 +377,6 @@ class Questions extends React.Component {
       viewMode,
       noCheck,
       answersById,
-      centered,
       highlighted,
       list,
       onDragStart,
@@ -396,7 +393,7 @@ class Questions extends React.Component {
     }
     return (
       <Fragment>
-        <QuestionsWrapper centered={centered} ref={this.containerRef}>
+        <QuestionsWrapper ref={this.containerRef}>
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
@@ -419,7 +416,6 @@ class Questions extends React.Component {
                   previewMode={previewMode}
                   viewMode={viewMode}
                   answer={answersById[question.id]}
-                  centered={centered}
                   feedback={feedback}
                   previousFeedback={
                     Object.values(previousQuestionActivities) && Object.values(previousQuestionActivities)[0]
@@ -446,9 +442,7 @@ class Questions extends React.Component {
               <AnswerAction active={previewMode === "show"} onClick={this.handleShowAnswer}>
                 Show Answer
               </AnswerAction>
-              <AnswerAction active={previewMode === "clear"} onClick={this.handleClear}>
-                Clear
-              </AnswerAction>
+              <AnswerAction onClick={this.handleClear}>Clear</AnswerAction>
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>

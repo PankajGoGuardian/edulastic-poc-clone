@@ -4,7 +4,9 @@ import { Dropdown, Menu } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
-import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList } from "./styled";
+import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, ToolBarToggleBtn } from "./styled";
+import { IconPencilEdit } from "@edulastic/icons";
+import { white, themeColor } from "@edulastic/colors";
 
 const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
@@ -33,13 +35,14 @@ const Thumbnails = ({
   onAddPdf,
   viewMode,
   review,
-  minimized,
-  currentPage
+  currentPage,
+  isToolBarVisible,
+  toggleToolBarVisiblity,
+  noCheck
 }) => {
   const onChangePage = page => () => onPageChange(page);
-
   return (
-    <ThumbnailsWrapper review={review} minimized={minimized}>
+    <ThumbnailsWrapper review={review}>
       <PerfectScrollbar>
         <ThumbnailsList>
           {list.map((item, key) => (
@@ -69,6 +72,16 @@ const Thumbnails = ({
             <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}>
               <ReuploadButton>Manage document</ReuploadButton>
             </Dropdown>
+          </ReuploadButtonWrapper>
+        )}
+        {review && (
+          <ReuploadButtonWrapper noCheck={noCheck}>
+            <ToolBarToggleBtn
+              style={{ background: !isToolBarVisible ? white : themeColor }}
+              onClick={toggleToolBarVisiblity}
+            >
+              <IconPencilEdit title="tool bar" color={isToolBarVisible ? white : themeColor} />
+            </ToolBarToggleBtn>
           </ReuploadButtonWrapper>
         )}
       </PerfectScrollbar>

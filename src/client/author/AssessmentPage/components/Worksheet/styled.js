@@ -4,7 +4,6 @@ import { white, green, mediumDesktopExactWidth, extraDesktopWidthMax } from "@ed
 export const WorksheetWrapper = styled.div`
   position: relative;
   display: flex;
-  justify-content: space-between;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow: auto;
 
@@ -19,7 +18,7 @@ export const WorksheetWrapper = styled.div`
 export const MinimizeButton = styled.div`
   position: absolute;
   z-index: 1;
-  left: ${({ minimized }) => (minimized ? "40px" : "210px")};
+  left: ${({ minimized }) => (minimized ? "40px" : "13%")};
   width: 32px;
   height: 32px;
   padding: 9px;

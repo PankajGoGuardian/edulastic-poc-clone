@@ -6,7 +6,6 @@ export const QuestionItemWrapper = styled.div`
   margin-bottom: 10px;
   padding: 19px 0 18px 13px;
   background: ${white};
-  border-radius: ${({ centered }) => (centered ? "10px" : "unset")};
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
@@ -36,7 +35,6 @@ export const QuestionNumber = styled.span`
 export const QuestionForm = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 180px;
   margin-left: 13px;
 `;
 

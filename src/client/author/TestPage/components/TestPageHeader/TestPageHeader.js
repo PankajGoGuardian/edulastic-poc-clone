@@ -221,7 +221,7 @@ const TestPageHeader = ({
             )}
             {showShareButton && owner && (
               <EduButton title="Share" data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
-                <IconShare color={themeColor} />
+                <IconShare color={themeColor} style={{ transform: "rotate(180deg)" }} />
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && (

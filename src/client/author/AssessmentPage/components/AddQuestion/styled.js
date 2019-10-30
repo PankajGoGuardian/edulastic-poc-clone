@@ -9,10 +9,6 @@ export const AddQuestionWrapper = styled.div`
   bottom: 0;
   padding: 15px 0;
   background: ${mainBgColor};
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: auto;
-    right: 0;
-  }
 `;
 
 export const ContentWrapper = styled.div`
@@ -21,13 +17,7 @@ export const ContentWrapper = styled.div`
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   box-sizing: border-box;
-  width: 300px;
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 420px;
-    margin-right: 10px;
-    margin-left: auto;
-  }
+  width: 26%;
 `;
 
 export const QuestionTypes = styled.div`

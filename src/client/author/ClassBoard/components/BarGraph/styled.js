@@ -7,8 +7,8 @@ import { CustomTooltip } from "./CustomTooltip";
 export const MainDiv = styled.div`
   width: 100%;
   position: relative;
-  padding-left: 27px;
-  padding-right: 27px;
+  padding-left: 25px;
+  padding-right: 25px;
 
   .navigator {
     z-index: 1000;

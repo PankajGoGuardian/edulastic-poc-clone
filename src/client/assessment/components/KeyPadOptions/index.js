@@ -172,7 +172,7 @@ class KeyPadOptions extends Component {
 
         <StyledRow gutter={60}>
           <Col span={24}>
-            <FlexContainer justifyContent="flex-start">
+            <FlexContainer justifyContent="flex-start" flexWrap="wrap">
               {symbol === "qwerty" && <Keyboard onInput={() => {}} />}
               {symbol !== "qwerty" && (
                 <>

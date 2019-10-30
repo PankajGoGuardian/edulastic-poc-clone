@@ -55,10 +55,8 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
-import { getZoomedTheme } from "../../student/zoomTheme";
 import FeedBackContainer from "./FeedBackContainer";
 import { PrintPreviewScore } from "./printPreviewScore";
-import { playersZoomTheme } from "../themes/assessmentPlayersTheme";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -565,6 +563,6 @@ const enhance = compose(
 export default enhance(QuestionWrapper);
 
 const StyledFlexContainer = styled(FlexContainer)`
-  font-size: ${props => props.theme.fontSize}px;
+  font-size: ${props => props.theme.fontSize};
   overflow: auto;
 `;

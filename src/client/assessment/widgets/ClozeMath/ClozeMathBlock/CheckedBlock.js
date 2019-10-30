@@ -61,7 +61,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
         )
       }
     >
-      <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height }}>
+      <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height, width }}>
         {showIndex && (
           <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
             {index + 1}

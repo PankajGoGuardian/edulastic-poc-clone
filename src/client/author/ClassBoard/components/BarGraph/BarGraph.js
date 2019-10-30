@@ -20,6 +20,7 @@ import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion, getItemSummary } from "../../ducks";
 import memoizeOne from "memoize-one";
 import { scrollTo } from "@edulastic/common";
+import { MAX_XGA_WIDTH, NORMAL_MONITOR_WIDTH, LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../src/constants/others";
 
 /**
  * @param {string} qid
@@ -55,12 +56,28 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
 };
 
 export default class BarGraph extends Component {
-  isMobile = () => window.innerWidth < 480;
+  isMobile = () => {
+    window.innerWidth < 480;
+  };
 
   constructor(props) {
     super(props);
     let page = props.pageSize || 20;
+    const windowWidth = window.innerWidth;
     if (this.isMobile()) {
+      page = 5;
+    } else if (windowWidth >= LARGE_DESKTOP_WIDTH) {
+      page = 20;
+    } else if (windowWidth >= NORMAL_MONITOR_WIDTH && windowWidth < LARGE_DESKTOP_WIDTH) {
+      page = 15;
+    } else if (windowWidth >= MAX_XGA_WIDTH && windowWidth < NORMAL_MONITOR_WIDTH) {
+      page = 10;
+    } else if (windowWidth >= MAX_TAB_WIDTH && windowWidth < MAX_XGA_WIDTH) {
+      page = 7;
+    } else {
+      /**
+       * unknown small resolutions
+       */
       page = 5;
     }
 

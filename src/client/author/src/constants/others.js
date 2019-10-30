@@ -35,5 +35,7 @@ export const ASSESSMENTID = "AssessmentId";
 export const LARGE_DESKTOP_WIDTH = 1600;
 export const MEDIUM_DESKTOP_WIDTH = 1300;
 export const SMALL_DESKTOP_WIDTH = 993;
+export const NORMAL_MONITOR_WIDTH = 1366;
+export const MAX_XGA_WIDTH = 1024;
 export const MAX_TAB_WIDTH = 768;
 export const MAX_MOBILE_WIDTH = 468;

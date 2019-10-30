@@ -587,12 +587,13 @@ function* calculateFormulaSaga() {
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex, isPassageWidget = false } = payload;
+    console.log("data is", data);
     const pathname = yield select(state => state.router.location.pathname);
     yield put(changeCurrentQuestionAction(data.reference));
     if (pathname.includes("tests")) {
       yield put(
         push({
-          pathname: `${pathname}/questions/edit`,
+          pathname: `${pathname}/questions/edit/${data.type}`,
           state: {
             backText: "question edit",
             backUrl: pathname,
@@ -604,7 +605,7 @@ function* loadQuestionSaga({ payload }) {
     } else {
       yield put(
         push({
-          pathname: "/author/questions/edit",
+          pathname: `/author/questions/edit/${data.type}`,
           state: {
             backText: "question edit",
             backUrl: pathname,

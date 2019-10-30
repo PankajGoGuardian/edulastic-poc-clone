@@ -121,7 +121,7 @@ function* loadQuestionSaga({ payload }) {
 
     yield put(changeCurrentQuestionAction(data.reference));
     yield call(history.push, {
-      pathname: "/author/questions/edit",
+      pathname: `/author/questions/edit/${data.type}`,
       state: {
         backText: "question edit",
         backUrl: pathname,

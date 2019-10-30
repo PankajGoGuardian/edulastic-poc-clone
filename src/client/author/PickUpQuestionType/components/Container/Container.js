@@ -111,7 +111,7 @@ class Container extends Component {
 
     if (isTestFlow) {
       history.push({
-        pathname: `/author/tests/${testId}/createItem/${itemId}/questions/create`,
+        pathname: `/author/tests/${testId}/createItem/${itemId}/questions/create/${question.type}`,
         state: {
           ...history.location.state,
           backUrl: match.url,
@@ -122,7 +122,7 @@ class Container extends Component {
     }
 
     history.push({
-      pathname: "/author/questions/create",
+      pathname: `/author/questions/create/${question.type}`,
       state: {
         ...history.location.state,
         backUrl: match.url,

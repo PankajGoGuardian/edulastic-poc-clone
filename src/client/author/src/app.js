@@ -382,7 +382,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                   />
                   <Route
                     exact
-                    path="/author/tests/:testId/createItem/:itemId/questions/create"
+                    path="/author/tests/:testId/createItem/:itemId/questions/create/:questionType"
                     render={props => (
                       <Suspense fallback={<Progress />}>
                         <QuestionEditor isTestFlow {...props} />
@@ -391,7 +391,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                   />
                   <Route
                     exact
-                    path="/author/tests/:testId/createItem/:itemId/questions/edit"
+                    path="/author/tests/:testId/createItem/:itemId/questions/edit/:questionType"
                     render={props => (
                       <Suspense fallback={<Progress />}>
                         <QuestionEditor isTestFlow isEditFlow {...props} />
@@ -399,8 +399,8 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     )}
                   />
                   <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
-                  <Route exact path="/author/questions/create" component={QuestionEditor} />
-                  <Route exact path="/author/questions/edit" component={QuestionEditor} />
+                  <Route exact path="/author/questions/create/:questionType" component={QuestionEditor} />
+                  <Route exact path="/author/questions/edit/:questionType" component={QuestionEditor} />
                   <Route path="/author/reports/:reportType?" component={Reports} />
                   <Route exact path="/author/profile" component={Profile} />
                   <Route exact path="/author/districtprofile" component={DistrictProfile} />

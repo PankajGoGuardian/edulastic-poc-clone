@@ -60,11 +60,11 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
       changeAnswers(val, index, id);
     }
   };
-
   return (
     <SelectWrapper ref={selectWrapperRef} className={className}>
       <Select
-        value={userAnswer ? userAnswer.value : ""}
+        // setting value as  "" or null will not display placeholder
+        defaultValue={userAnswer?.value}
         style={{
           ...styles,
           minWidth: styles.width || 100,

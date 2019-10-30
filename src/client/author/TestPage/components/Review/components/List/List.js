@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import { SortableContainer } from "react-sortable-hoc";
@@ -15,18 +16,16 @@ const transformItemRow = ([row], qid) => [
     widgets: row.widgets.filter(x => {
       if (x.widgetType === "question") {
         return x.reference === qid;
-      } else {
-        return true;
       }
+      return true;
     })
   }
 ];
 
-const splitItems = (item, testItem) => {
-  return testItem.data?.questions.map(({ id }) => ({
+const splitItems = (item, testItem) =>
+  testItem.data?.questions.map(({ id }) => ({
     item: transformItemRow(item, id)
   }));
-};
 
 export const SortableItem = ({
   indx,
@@ -49,7 +48,7 @@ export const SortableItem = ({
   /**
    * @type {{item:Object,question:Object}[]}
    */
-  let items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
+  const items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
   }
@@ -57,7 +56,7 @@ export const SortableItem = ({
     <TestItemWrapper data-cy={metaInfoData.id}>
       {mobile ? (
         <FlexContainer flexDirection="column" alignItems="flex-start">
-          <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
+          <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
             {isEditable && !collapseView && (
               <FlexContainer flexDirection="column" justifyContent="center">
                 <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
@@ -67,7 +66,7 @@ export const SortableItem = ({
               <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
                 Preview
               </PreviewButton>
-              <FlexContainer flexDirection="column">
+              <FlexContainer>
                 <PointsLabel>Points</PointsLabel>
                 <PointsInput
                   data-cy="points"
@@ -83,7 +82,7 @@ export const SortableItem = ({
           <FlexContainer>
             <AnswerContext.Provider value={{ isAnswerModifiable: false, hideAnswers: true }}>
               <TestItemPreview
-                style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
+                style={{ marginTop: -25, padding: 0, boxShadow: "none", display: "flex" }}
                 cols={item}
                 metaData={metaInfoData.id}
                 preview="show"
@@ -104,7 +103,7 @@ export const SortableItem = ({
             <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
               {!collapseView && (
                 <FlexContainer
-                  style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", width: "5%" }}
+                  style={{ marginTop: 15, visibility: index === 0 ? "visible" : "hidden" }}
                   flexDirection="column"
                   justifyContent="center"
                 >
@@ -134,23 +133,25 @@ export const SortableItem = ({
               </AnswerContext.Provider>
             </FlexContainer>
             <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
-              <FlexContainer flexDirection="column" style={{ margin: 0 }}>
-                <PointsLabel>Points</PointsLabel>
-                <PointsInput
-                  size="large"
-                  type="number"
-                  disabled={!owner || !isEditable}
-                  value={points}
-                  onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
-                />
+              <FlexContainer alignItems="flex-end">
+                {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+                <FlexContainer alignItems="center" flexDirection="column">
+                  <PointsLabel>Points</PointsLabel>
+                  <PointsInput
+                    size="large"
+                    type="number"
+                    disabled={!owner || !isEditable}
+                    value={points}
+                    onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+                  />
+                </FlexContainer>
               </FlexContainer>
-              {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
             </FlexContainer>
           </FlexContainer>
         ))
       )}
       <FlexContainer style={{ margin: "20px 0" }}>
-        <MetaInfoCell data={metaInfoData} itemTableView={true} />
+        <MetaInfoCell data={metaInfoData} itemTableView />
       </FlexContainer>
     </TestItemWrapper>
   );
@@ -164,7 +165,6 @@ const List = SortableContainer(
     testItems,
     onChangePoints,
     isEditable = false,
-    standards,
     scoring,
     onPreview,
     owner,
@@ -182,11 +182,11 @@ const List = SortableContainer(
     };
 
     const audioStatus = item => {
-      const questions = get(item, "data.questions", []);
-      const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+      const _questions = get(item, "data.questions", []);
+      const getAllTTS = _questions.filter(_tem => _tem.tts).map(_item => _item.tts);
       const audio = {};
       if (getAllTTS.length) {
-        const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+        const ttsSuccess = getAllTTS.filter(_item => _item.taskStatus !== "COMPLETED").length === 0;
         audio.ttsSuccess = ttsSuccess;
       }
       return audio;

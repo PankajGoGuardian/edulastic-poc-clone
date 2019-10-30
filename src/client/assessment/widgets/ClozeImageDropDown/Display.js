@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
+import { shuffle, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { QuestionTitle } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -14,8 +14,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
+import { topAndLeftRatio } from "../../utils/helpers";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
@@ -307,10 +306,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
+        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={question} smallSize={smallSize} />
         <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
           {answerBox}
@@ -332,7 +328,6 @@ Display.propTypes = {
   configureOptions: PropTypes.any.isRequired,
   preview: PropTypes.bool.isRequired,
   showDashedBorder: PropTypes.bool,
-  question: PropTypes.string.isRequired,
   changePreview: PropTypes.func.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.array,

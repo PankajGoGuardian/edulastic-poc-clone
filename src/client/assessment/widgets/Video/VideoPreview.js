@@ -4,8 +4,7 @@ import { Media, controls } from "react-media-player";
 
 import { videoTypes } from "@edulastic/constants";
 
-import { FlexContainer, QuestionNumberLabel } from "@edulastic/common";
-import { Subtitle } from "../../styled/Subtitle";
+import { FlexContainer, QuestionTitle } from "@edulastic/common";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Player } from "./styled/Player";
 import PlayPause from "./styled/PlayPause";
@@ -13,16 +12,12 @@ import Fullscreen from "./styled/Fullscreen";
 import MuteUnmute from "./styled/MuteUnmute";
 import SeekBar from "./styled/SeekBar";
 import Volume from "./styled/Volume";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const { CurrentTime, Duration } = controls;
 
-const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
+const VideoPreview = ({ item, showQuestionNumber }) => (
   <div>
-    <QuestionTitleWrapper>
-      {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-      {item.heading && <Subtitle>{item.heading}</Subtitle>}
-    </QuestionTitleWrapper>
+    <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.heading} />
     {item.summary && <Label>{item.summary}</Label>}
     {item && item.uiStyle && (
       <Media>
@@ -77,12 +72,10 @@ VideoPreview.propTypes = {
       hideControls: PropTypes.bool.isRequired
     }).isRequired
   }).isRequired,
-  showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  showQuestionNumber: PropTypes.bool
 };
 VideoPreview.defaultProps = {
-  showQuestionNumber: false,
-  qIndex: null
+  showQuestionNumber: false
 };
 
 export default VideoPreview;

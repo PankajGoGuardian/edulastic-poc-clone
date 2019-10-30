@@ -4,14 +4,7 @@ import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import "core-js/features/array/flat";
-import {
-  FlexContainer,
-  CorrectAnswersContainer,
-  Stimulus,
-  Subtitle,
-  MathFormulaDisplay,
-  QuestionNumberLabel
-} from "@edulastic/common";
+import { FlexContainer, CorrectAnswersContainer, Subtitle, MathFormulaDisplay, QuestionTitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import TableLayout from "./components/TableLayout";
 
@@ -24,7 +17,6 @@ import TableRow from "./components/TableRow";
 import { getStyles } from "./utils";
 import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { TableWrapper } from "./styled/TableWrapper";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const ClassificationPreview = ({
@@ -87,7 +79,6 @@ const ClassificationPreview = ({
     possibleResponses: posResponses = [],
     groupPossibleResponses,
     possibleResponseGroups = [],
-    stimulus,
     imageUrl,
     imageOptions = {},
     shuffleOptions,
@@ -342,10 +333,7 @@ const ClassificationPreview = ({
       boxShadow={smallSize ? "none" : ""}
     >
       {!smallSize && view === PREVIEW && (
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-        </QuestionTitleWrapper>
+        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
       )}
 
       <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>

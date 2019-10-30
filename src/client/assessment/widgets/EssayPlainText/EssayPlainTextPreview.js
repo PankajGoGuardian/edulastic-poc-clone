@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
@@ -5,23 +6,21 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
+import { FlexContainer, QuestionTitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
+import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
 import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/helpers";
 import Character from "./components/Character";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EssayPlainTextPreview = ({
   col,
-  view,
   saveAnswer,
   t,
   item,
@@ -29,9 +28,6 @@ const EssayPlainTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  location,
-  testItem,
-  qIndex,
   disableResponse
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
@@ -131,10 +127,7 @@ const EssayPlainTextPreview = ({
 
   return (
     <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
+      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} smallSize={smallSize} />
 
       <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">

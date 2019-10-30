@@ -1,30 +1,20 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes, { element } from "prop-types";
+import PropTypes from "prop-types";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 import { get } from "lodash";
-import stripTags from "striptags";
-import { AnswerContext } from "@edulastic/common";
-
-import {
-  Paper,
-  Stimulus,
-  FlexContainer,
-  FroalaEditor,
-  MathFormulaDisplay,
-  QuestionNumberLabel
-} from "@edulastic/common";
+import { AnswerContext, FlexContainer, FroalaEditor, MathFormulaDisplay, QuestionTitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import { calculateWordsCount } from "@edulastic/common/src/helpers";
 import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
-import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
+import { ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
 import { ValidList, qlToFroalaMapping } from "./constants/validList";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
-import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const getToolBarButtons = item =>
@@ -40,7 +30,6 @@ const getToolBarButtons = item =>
 
 const EssayRichTextPreview = ({
   col,
-  view,
   saveAnswer,
   t,
   item,
@@ -48,9 +37,6 @@ const EssayRichTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  qIndex,
-  testItem,
-  location,
   disableResponse,
   previewTab
 }) => {
@@ -122,10 +108,7 @@ const EssayRichTextPreview = ({
 
   return item.id ? (
     <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
+      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} smallSize={smallSize} />
 
       <div style={{ position: "relative" }}>
         <div style={{ position: "relative" }}>
@@ -196,23 +179,17 @@ EssayRichTextPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
   showQuestionNumber: PropTypes.bool,
-  location: PropTypes.any.isRequired,
-  testItem: PropTypes.bool,
-  qIndex: PropTypes.number,
   col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
   userAnswer: "",
-  testItem: false,
-  showQuestionNumber: false,
-  qIndex: null
+  showQuestionNumber: false
 };
 
 const toolbarOptions = options => {

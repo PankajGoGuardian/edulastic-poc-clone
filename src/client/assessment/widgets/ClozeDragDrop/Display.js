@@ -7,7 +7,7 @@ import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { PreWrapper, helpers, QuestionNumberLabel } from "@edulastic/common";
+import { PreWrapper, helpers, QuestionTitle } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
@@ -15,7 +15,6 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
@@ -260,7 +259,6 @@ class ClozeDragDropDisplay extends Component {
       responseIDs,
       disableResponse,
       isReviewTab,
-      flowLayout,
       showQuestionNumber,
       isExpressGrader,
       question,
@@ -425,10 +423,11 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <TextWrappedDiv style={{ fontSize }}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
-          {!question && questionContent}
-        </QuestionTitleWrapper>
+        <QuestionTitle
+          show={showQuestionNumber && !flowLayout}
+          label={item.qLabel}
+          question={!question && questionContent}
+        />
         {question && questionContent}
         {answerBox}
       </TextWrappedDiv>
@@ -456,7 +455,6 @@ ClozeDragDropDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  flowLayout: PropTypes.bool,
   isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   view: PropTypes.string,
@@ -496,7 +494,6 @@ ClozeDragDropDisplay.defaultProps = {
     responsecontainerindividuals: []
   },
   showQuestionNumber: false,
-  flowLayout: false,
   isExpressGrader: false,
   isReviewTab: false
   // qIndex: null

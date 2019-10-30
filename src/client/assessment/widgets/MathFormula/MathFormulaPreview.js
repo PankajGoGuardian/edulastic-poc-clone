@@ -6,10 +6,9 @@ import { isEmpty, get } from "lodash";
 import {
   MathInput,
   StaticMath,
-  MathFormulaDisplay,
   MathDisplay,
   FlexContainer,
-  QuestionNumberLabel,
+  QuestionTitle,
   getInnerValuesForStatic
 } from "@edulastic/common";
 
@@ -20,7 +19,6 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import { UnitsDropdown } from "./components/MathFormulaAnswerMethod/options";
 
 import MathInputWrapper from "./styled/MathInputWrapper";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
@@ -276,15 +274,7 @@ class MathFormulaPreview extends Component {
 
     return (
       <div>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <MathFormulaDisplay
-            data-cy="preview-header"
-            style={{ marginBottom: 15 }}
-            dangerouslySetInnerHTML={{ __html: item.stimulus }}
-          />
-        </QuestionTitleWrapper>
-
+        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
         {testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
             <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />

@@ -3,14 +3,7 @@ import PropTypes from "prop-types";
 import { isEqual, get } from "lodash";
 import produce from "immer";
 
-import {
-  Paper,
-  FlexContainer,
-  Stimulus,
-  InstructorStimulus,
-  QuestionNumberLabel,
-  AnswerContext
-} from "@edulastic/common";
+import { FlexContainer, QuestionTitle, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -28,7 +21,6 @@ import { FlexCol } from "./styled/FlexCol";
 import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const styles = {
@@ -63,7 +55,7 @@ const SortListPreview = ({
     previewTab = CLEAR;
   }
 
-  const { source = [], instructorStimulus, stimulus } = item;
+  const { source = [], stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {
@@ -208,11 +200,7 @@ const SortListPreview = ({
 
   return (
     <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
-      </QuestionTitleWrapper>
-
+      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={stimulus} />
       <FlexContainer
         data-cy="sortListComponent"
         flexDirection={flexDirection}
@@ -318,7 +306,6 @@ SortListPreview.propTypes = {
   userAnswer: PropTypes.any.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
   changePreviewTab: PropTypes.func.isRequired,
   isReviewTab: PropTypes.bool
@@ -329,7 +316,6 @@ SortListPreview.defaultProps = {
   smallSize: false,
   item: {},
   showQuestionNumber: false,
-  qIndex: null,
   disableResponse: false,
   isReviewTab: false
 };

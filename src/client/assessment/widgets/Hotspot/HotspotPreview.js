@@ -2,21 +2,19 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 
-import { Stimulus, InstructorStimulus, CorrectAnswersContainer, QuestionNumberLabel } from "@edulastic/common";
+import { CorrectAnswersContainer, QuestionTitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { PREVIEW, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
 import BlockContainer from "./styled/BlockContainer";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { ImageContainer } from "./styled/ImageContainer";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const HotspotPreview = ({
-  view,
   item,
   smallSize,
   saveAnswer,
@@ -64,13 +62,7 @@ const HotspotPreview = ({
 
   return (
     <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && (
-          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        )}
-      </QuestionTitleWrapper>
-
+      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={item.stimulus} />
       <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} width={+width} height={+height} justifyContent="center">
         <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
         <Svg data-cy="answer-container" width={+width} height={+height}>
@@ -169,7 +161,6 @@ const HotspotPreview = ({
 HotspotPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
-  view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   userAnswer: PropTypes.array,

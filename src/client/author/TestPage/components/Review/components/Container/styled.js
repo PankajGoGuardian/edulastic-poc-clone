@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import {
   mainBgColor,
-  mobileWidthMax,
+  fadedGrey,
   tabletWidth,
   desktopWidth,
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { Col } from "antd";
+import { Col, Row } from "antd";
 
 export const ReviewPageContainer = styled.div`
   padding: 20px 30px;
@@ -48,15 +48,6 @@ export const ReviewPageContainer = styled.div`
   }
 `;
 
-export const ReviewSummaryWrapper = styled(Col)`
-  padding-left: 20px;
-
-  @media (max-width: 991px) {
-    padding-left: 0px;
-    margin-top: 15px;
-  }
-`;
-
 export const SecondHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -74,5 +65,63 @@ export const SecondHeader = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     flex-direction: column;
+  }
+`;
+
+export const TestItemsRow = styled(Row)`
+  @media (max-width: ${smallDesktopWidth}) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+`;
+
+export const ReviewSummaryWrapper = styled(Col)`
+  padding-left: 20px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    display: ${({ show }) => (show ? "block" : "none")};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0px;
+    margin-bottom: 16px;
+  }
+
+  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+    width: 100%;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
+    padding-left: 0px;
+    margin-top: 15px;
+  }
+`;
+
+export const ReviewSummaryBar = styled.div`
+  display: none;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    display: block;
+    top: 0px;
+    right: -30px;
+    z-index: 0;
+    width: 20px;
+    height: 70vh;
+    position: absolute;
+    border-radius: 4px;
+    background: ${fadedGrey};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    display: none;
+  }
+`;
+
+export const TestItemsCol = styled(Col)`
+  position: relative;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    ${({ showSummary }) => !showSummary && "width: 100%;"}
   }
 `;

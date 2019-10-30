@@ -8,24 +8,22 @@ import { compose } from "redux";
 import {
   FlexContainer,
   CorrectAnswersContainer,
-  Stimulus,
   Subtitle,
   CorItem,
   MathFormulaDisplay,
   Checkbox,
-  QuestionNumberLabel,
+  QuestionTitle,
   AnswerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import DropContainer from "../../components/DropContainer";
-import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
+import { CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
 import DragItem from "./components/DragItem";
 import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { GroupsSeparator } from "./styled/GroupsSeparator";
 import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -253,11 +251,7 @@ const MatchListPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
-      </QuestionTitleWrapper>
-
+      <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={stimulus} />
       <div data-cy="previewWrapper" style={wrapperStyle}>
         <FlexContainer
           style={{

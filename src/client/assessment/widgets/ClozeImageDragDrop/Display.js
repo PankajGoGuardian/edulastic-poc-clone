@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy, minBy, uniqBy } from "lodash";
 import { withTheme } from "styled-components";
-import { InstructorStimulus, Stimulus, MathSpan, QuestionNumberLabel } from "@edulastic/common";
+import { MathSpan, QuestionTitle } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -12,7 +12,6 @@ import DragItem from "./components/DragItem";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -342,7 +341,6 @@ class Display extends Component {
       imageAlterText,
       showDashedBorder,
       backgroundColor,
-      instructorStimulus,
       theme,
       showQuestionNumber,
       disableResponse,
@@ -668,10 +666,7 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
+        <QuestionTitle show={showQuestionNumber} label={item.qLabel} stimulus={question} />
         {responseposition === "top" && (
           <React.Fragment>
             <StyledContainer>

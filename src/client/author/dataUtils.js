@@ -22,9 +22,9 @@ export const getTestItemAuthorName = item => {
   }
   if (owner) {
     const author = authors.find(item => item._id === owner) || {};
-    return author.name || authors[0].name;
+    return author.name || authors?.[0]?.name || "Anonymous";
   }
-  return authors.length && authors[0].name;
+  return (authors.length && authors?.[0]?.name) || "Anonymous";
 };
 
 export const getPlaylistAuthorName = item => {

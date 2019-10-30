@@ -1063,7 +1063,7 @@ function* convertToPassageWithQuestions({ payload }) {
     yield put(setQuestionCategory("multiple-choice"));
     yield put(
       push({
-        pathname: "/author/questions/create",
+        pathname: `/author/questions/create/${questionType.PASSAGE}`,
         state: {
           isPassageWithQuestions: true,
           canAddMultipleItems: !!canAddMultipleItems,
@@ -1185,7 +1185,7 @@ function* addWidgetToPassage({ payload }) {
 
     yield put(
       push({
-        pathname: "/author/questions/create",
+        pathname: `/author/questions/create/${questionType.PASSAGE}`,
         state: {
           isPassageWithQuestions: true,
           backUrl,

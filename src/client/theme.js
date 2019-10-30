@@ -102,6 +102,7 @@ const questionTextlargeFontSize = "15px";
 const questionTextextraFontSize = "16px";
 const questionTexthugeFontSize = "17px";
 const questionTexticonFontSize = "20px";
+const largeFontSize = "26px";
 
 const brandBlue = "#00b0ff";
 const brandGreen = "#1FE3A1";
@@ -269,6 +270,8 @@ export const allThemeVars = {
   headerTitle,
   scoreFontSize,
   headerFilterFontSize,
+  largeFontSize,
+  titleSecondarySectionFontSize,
 
   questionTextsmallFontSize,
   questionTextnormalFontSize,

@@ -5,7 +5,7 @@ const FlexWrapper = styled.div`
   display: flex;
   width: 100%;
   max-width: 800px;
-  justify-content: space-around;
+  justify-content: ${props => props.justifyContent || "space-between"};
   margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
 
   @media (max-width: ${mobileWidthMax}) {

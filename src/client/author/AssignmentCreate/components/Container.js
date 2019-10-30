@@ -77,7 +77,9 @@ class Container extends Component {
                   <IconTestBank style={{ height: "40px", width: "40px" }} />
                 </IconWrapper>
                 <TitleWrapper>Choose From Library</TitleWrapper>
-                <TextWrapper> Select pre built assessment from the Edulastic Library</TextWrapper>
+                <TextWrapper>
+                  Select pre built assessment from the <br /> Edulastic Library
+                </TextWrapper>
                 <Link to="/author/tests">
                   <ButtonComponent type="primary">Browse All</ButtonComponent>
                 </Link>
@@ -86,7 +88,7 @@ class Container extends Component {
                 <TextWrapperBold>Pre-built assessment in Library</TextWrapperBold>
               </CardComponent>
             </FlexWrapper>
-            <FlexWrapper marginBottom="0px">
+            <FlexWrapper justifyContent="center" marginBottom="0px">
               <Link to="/author/tests/select">
                 <LinkWrapper marginBottom="0px"> Or Author a Test >></LinkWrapper>
               </Link>

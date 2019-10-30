@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { lightGrey, mobileWidthMax } from "@edulastic/colors";
 
 const CardComponent = styled.div`
-  flex-basis: 47%;
+  flex-basis: calc(50% - 20px);
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -10,7 +10,7 @@ const CardComponent = styled.div`
   padding: 30px;
   background-color: ${lightGrey};
   border-radius: 10px;
-  min-height: 420px;
+  min-height: 400px;
 
   @media (max-width: ${mobileWidthMax}) {
     min-height: unset;

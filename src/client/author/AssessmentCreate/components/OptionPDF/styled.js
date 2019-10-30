@@ -31,8 +31,19 @@ export const Divider = styled.div`
 `;
 
 export const DesriptionBottom = styled.p`
-  font-size: 14px;
+  font-size: ${props => props.theme.standardFont};
   padding: 0 23px;
   font-weight: 600;
   color: ${secondaryTextColor};
+`;
+
+export const SnapQuiz = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: ${props => props.theme.largeFontSize};
+  color: ${props => props.theme.textColor};
+  font-weight: bold;
+  span {
+    color: ${props => props.theme.tagTextColor};
+  }
 `;

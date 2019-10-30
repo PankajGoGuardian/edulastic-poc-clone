@@ -2,12 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import snapwizQuiz from "../../../src/assets/snap-quiz.png";
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
 import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
 import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
+
+import { SnapQuiz } from "./styled";
+
 const descriptionBottom = `
   Upload your assessment in PDF format and proceed to create an Edulastic Assessment
 `;
@@ -15,7 +17,9 @@ const descriptionBottom = `
 const OptionPDF = ({ onClick }) => (
   <CardComponent>
     <IconWrapper>
-      <img src={snapwizQuiz} />
+      <SnapQuiz>
+        <span>Snap</span>Quiz
+      </SnapQuiz>
     </IconWrapper>
     <TitleWrapper>Create from PDF</TitleWrapper>
 

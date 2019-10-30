@@ -48,7 +48,7 @@ export const StyledClassID = styled.div`
 `;
 
 export const StyledSelect = styled(Select)`
-  width: 120px;
+  min-width: 130px;
   display: inline-block;
   &.ant-select {
     width: auto;

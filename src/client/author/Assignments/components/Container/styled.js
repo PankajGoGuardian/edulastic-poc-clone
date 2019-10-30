@@ -9,7 +9,8 @@ import {
   desktopWidth,
   smallDesktopWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  mediumDesktopWidth
 } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
@@ -36,6 +37,9 @@ export const Container = styled.div`
     .scrollbar-container {
       height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
     }
+  }
+  @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+    padding: 30px 30px 10px;
   }
   @media (max-width: ${tabletWidth}) {
     .scrollbar-container {
@@ -106,6 +110,9 @@ export const StyledCard = styled(Card)`
     }
     @media (min-width: ${extraDesktopWidthMax}) {
       min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
+    }
+    @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+      padding-top: 10px;
     }
   }
 `;

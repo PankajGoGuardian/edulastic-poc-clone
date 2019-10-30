@@ -14,7 +14,8 @@ import {
   testTypeColor,
   smallDesktopWidth,
   extraDesktopWidthMax,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  desktopWidth
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -112,6 +113,9 @@ export const TableData = styled(Table)`
         @media (min-width: ${extraDesktopWidthMax}) {
           font-size: ${props => props.theme.smallFontSize};
         }
+        @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+          padding: 8px 15px;
+        }
 
         &.assignment-name {
           text-align: left !important;
@@ -171,6 +175,10 @@ export const TableData = styled(Table)`
       &.ant-table-selection-column {
         padding: 10px 15px 10px 25px;
       }
+
+      @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+        padding: 7px 0;
+      }
     }
   }
 
@@ -189,10 +197,10 @@ export const TableData = styled(Table)`
   .ant-table-row-expand-icon {
     display: none;
   }
-  @media (max-width: 1300px) and (min-width: 980px) {
+  @media (max-width: ${mediumDesktopExactWidth}) and (min-width: ${desktopWidth}) {
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr > td {
-      max-width: 100px;
+      max-width: 50px;
     }
     .ant-table-thead > tr > th .ant-table-column-sorters {
       padding-left: 0px;
@@ -224,7 +232,7 @@ export const AssignmentTD = styled.div`
   text-align: left;
   padding-left: 0px !important;
   padding-right: 0px !important;
-  width: ${({ showFilter }) => (showFilter ? "94px" : "150px")};
+  width: ${({ showFilter }) => (showFilter ? "90px" : "150px")};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -234,7 +242,7 @@ export const AssignmentTD = styled.div`
     font-size: ${props => props.theme.bodyFontSize};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    width: ${({ showFilter }) => (showFilter ? "194px" : "250px")};
+    width: ${({ showFilter }) => (showFilter ? "190px" : "250px")};
     font-size: ${props => props.theme.standardFont};
   }
 `;
@@ -253,7 +261,7 @@ export const BtnAction = styled(Button)`
   font-size: ${props => props.theme.linkFontSize};
   font-weight: 600;
   width: 100%;
-  padding: 0px 20px;
+  padding: 0px;
   text-align: center;
   &:hover,
   &:focus {
@@ -345,7 +353,7 @@ export const GreyFont = styled.div`
     text-align: right;
     padding-right: 50px;
     @media (max-width: ${smallDesktopWidth}) {
-      padding-right: 0px;
+      padding-right: 20px;
     }
   }
 

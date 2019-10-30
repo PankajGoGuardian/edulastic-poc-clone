@@ -361,7 +361,7 @@ class TableList extends Component {
           expandRowByClick={details}
           onExpandedRowsChange={this.handleExpandedRowsChange}
           defaultExpandedRowKeys={expandedRows}
-          scroll={{ x: windowWidth <= 1024 ? 1024 : false }}
+          scroll={{ x: windowWidth <= 1023 ? 1023 : false }}
         />
       </Container>
     );

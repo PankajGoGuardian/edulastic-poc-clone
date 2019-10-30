@@ -210,9 +210,11 @@ class ClassBoard extends Component {
     ) {
       // first load for question-activity page
       const questions = testActivity[0].questionActivities;
-      const question = questions.find(item => item._id === state.selectedQid);
+      const questionIndex = questions.findIndex(item => item._id === state.selectedQid);
+
+      const question = questions[questionIndex];
       if (question) {
-        newState = { ...newState, itemId: question.testItemId };
+        newState = { ...newState, itemId: question.testItemId, selectedQuestion: questionIndex };
       }
     }
 

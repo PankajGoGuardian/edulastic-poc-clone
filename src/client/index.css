@@ -1905,6 +1905,11 @@ span.token.active-word {
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
+
+span.mfrac{
+  font-size: calc(100% + 0.45em);
+}
+
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;

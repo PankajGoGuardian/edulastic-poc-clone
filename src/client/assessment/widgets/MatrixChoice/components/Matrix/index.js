@@ -151,10 +151,6 @@ const Matrix = props => {
       checked = data.value.includes(columnIndex);
     }
 
-    if (isReviewTab && correct === true) {
-      checked = true;
-    }
-
     const handleChange = e => {
       const checkData = {
         columnIndex,

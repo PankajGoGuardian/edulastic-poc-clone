@@ -45,8 +45,11 @@ const Option = props => {
 
   const [hovered, toggleHover] = useState(false);
 
-  const isSelected =
-    isReviewTab || testItem ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
+  const isSelected = isReviewTab
+    ? false
+    : testItem
+    ? correctAnswers.includes(item.value)
+    : userSelections.includes(item.value);
 
   const isCorrect =
     isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];

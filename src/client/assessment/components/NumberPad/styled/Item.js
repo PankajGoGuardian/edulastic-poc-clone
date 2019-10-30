@@ -1,8 +1,13 @@
 import styled from "styled-components";
+import { math } from "@edulastic/constants";
+
+const {
+  KeyboardSize: { width, height }
+} = math;
 
 export const Item = styled.div`
-  width: 65px;
-  height: 65px;
+  width: ${width}px;
+  height: ${height}px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -145,6 +145,8 @@ const methodOptions = {
   [methods.CHECK_IF_TRUE]: ["notExpected"]
 };
 
+const KeyboardSize = { width: 47, height: 47 };
+
 module.exports = {
   methods,
   methodOptions,
@@ -158,5 +160,6 @@ module.exports = {
   modes,
   mathRenderOptions,
   templateFontScaleOption,
-  EMBED_RESPONSE
+  EMBED_RESPONSE,
+  KeyboardSize
 };

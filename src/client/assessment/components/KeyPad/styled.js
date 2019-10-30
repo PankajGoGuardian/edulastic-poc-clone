@@ -1,17 +1,22 @@
 import styled from "styled-components";
+import { math } from "@edulastic/constants";
+
+const {
+  KeyboardSize: { width, height }
+} = math;
 
 export const SymbolsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: ${({ cols, isAll }) => `${isAll ? cols * 65 + 20 : cols * 65}px`}; /* 20 is scrollbar width */
-  height: ${`${65 * 4}px`};
+  width: ${({ cols, isAll }) => `${isAll ? cols * width + 20 : cols * width}px`}; /* 20 is scrollbar width */
+  height: ${`${width * 4}px`};
   flex-direction: ${({ isAll }) => (isAll ? "row" : "column")};
   overflow-y: auto;
 `;
 
 export const Symbol = styled.div`
-  width: 65px;
-  height: 65px;
+  width: ${width}px;
+  height: ${height}px;
   display: flex;
   justify-content: center;
   align-items: center;

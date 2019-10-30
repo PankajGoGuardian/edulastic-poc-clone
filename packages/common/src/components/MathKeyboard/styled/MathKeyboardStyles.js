@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import { math } from "@edulastic/constants";
+
+const {
+  KeyboardSize: { width: keyWidth }
+} = math;
 
 export const MathKeyboardStyles = styled.div`
   .keyboard {
@@ -61,12 +66,12 @@ export const MathKeyboardStyles = styled.div`
   }
 
   .numberpad {
-    width: calc(65px * 4); /* 65px is number button width */
+    width: ${keyWidth * 4}px; /* 65px is number button width */
   }
 
   .num {
-    width: 65px;
-    height: 65px;
+    width: ${keyWidth}px;
+    height: ${keyWidth}px;
     border-color: ${props => props.theme.mathKeyboard.numBorderColor};
     border-radius: 0;
     font-family: ${props => props.theme.mathKeyboard.numFontFamily};
@@ -198,8 +203,8 @@ export const MathKeyboardStyles = styled.div`
 `;
 
 export const SymbolContainer = styled.div`
-  width: ${({ cols, isAll }) => `${isAll ? cols * 65 + 20 : cols * 65}px`}; /* 20 is scrollbar width */
-  height: ${`${65 * 4}px`};
+  width: ${({ cols, isAll }) => `${isAll ? cols * keyWidth + 20 : cols * keyWidth}px`}; /* 20 is scrollbar width */
+  height: ${`${keyWidth * 4}px`};
   flex-direction: ${({ isAll }) => (isAll ? "row" : "column")};
   overflow-y: ${({ isAll }) => (isAll ? "auto" : "hidden")};
 `;

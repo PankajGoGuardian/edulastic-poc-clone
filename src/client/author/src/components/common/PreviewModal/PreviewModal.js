@@ -6,7 +6,7 @@ import { get, keyBy, intersection, uniq } from "lodash";
 import { Spin, Button, Modal, message } from "antd";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-
+import { withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
@@ -176,7 +176,8 @@ class PreviewModal extends React.Component {
       preview,
       passage,
       questions = keyBy(get(item, "data.questions", []), "id"),
-      page
+      page,
+      windowWidth
     } = this.props;
 
     const { scrollElement, passageLoading, showHints } = this.state;
@@ -197,10 +198,14 @@ class PreviewModal extends React.Component {
     if (!!item.passageId && !!passage) {
       allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
     }
+
+    const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
+
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 30 }}
-        width={window.innerWidth < SMALL_DESKTOP_WIDTH ? "90%" : "70%"}
+        isSmallSize={isSmallSize}
+        width={isSmallSize ? "100%" : "70%"}
         visible={isVisible}
         onCancel={this.closeModal}
         footer={null}
@@ -286,7 +291,8 @@ PreviewModal.propTypes = {
   clearAnswers: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   testId: PropTypes.string.isRequired,
-  history: PropTypes.any.isRequired
+  history: PropTypes.any.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 PreviewModal.defaultProps = {
@@ -299,6 +305,7 @@ PreviewModal.defaultProps = {
 
 const enhance = compose(
   withRouter,
+  withWindowSizes,
   connect(
     (state, ownProps) => {
       const itemId = (ownProps.data || {}).id;
@@ -338,6 +345,7 @@ const ProgressContainer = styled.div`
 `;
 
 const PreviewModalWrapper = styled(Modal)`
+  height: ${({ isSmallSize }) => (isSmallSize ? "100%" : "auto")};
   border-radius: 5px;
   background: #f7f7f7;
   top: 30px;

@@ -17,6 +17,7 @@ import FontSizeSelect from "../../../components/FontSizeSelect";
 import Question from "../../../components/Question";
 
 import { Subtitle } from "../../../styled/Subtitle";
+import { StyledTextField, StyledSelect } from "../../../components/Common/InputField";
 
 class Layout extends Component {
   static propTypes = {
@@ -104,7 +105,7 @@ class Layout extends Component {
           </Col>
           <Col md={12}>
             <Label>{t("component.options.columns")}</Label>
-            <TextField
+            <StyledTextField
               type="number"
               data-cy="columns"
               disabled={false}
@@ -157,6 +158,6 @@ const enhance = compose(
 
 export default enhance(Layout);
 
-const SelectWrapper = styled(Select)`
+const SelectWrapper = styled(StyledSelect)`
   width: 100%;
 `;

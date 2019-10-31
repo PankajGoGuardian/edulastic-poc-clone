@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../styled/WidgetOptions/Label";
+import { StyledSelect } from "./Common/InputField";
 
 const FontSizeSelect = ({ t, onChange, value }) => {
   const options = [
@@ -18,7 +18,7 @@ const FontSizeSelect = ({ t, onChange, value }) => {
   return (
     <Fragment>
       <Label>{t("component.options.fontSize")}</Label>
-      <Select
+      <StyledSelect
         data-cy="fontSizeSelect"
         size="large"
         value={value}
@@ -27,11 +27,11 @@ const FontSizeSelect = ({ t, onChange, value }) => {
         getPopupContainer={triggerNode => triggerNode.parentNode}
       >
         {options.map(({ value: val, label }) => (
-          <Select.Option data-cy={val} key={val} value={val}>
+          <StyledSelect.Option data-cy={val} key={val} value={val}>
             {label}
-          </Select.Option>
+          </StyledSelect.Option>
         ))}
-      </Select>
+      </StyledSelect>
     </Fragment>
   );
 };

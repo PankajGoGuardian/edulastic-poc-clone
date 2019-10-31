@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get } from "lodash";
-import { Input, Checkbox, Select } from "antd";
+import { Select } from "antd";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -18,6 +18,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 import { Subtitle } from "../../../styled/Subtitle";
 import { FormGroup } from "../styled/FormGroup";
+import { StyledSelect, StyledInput, StyledCheckbox } from "../../../components/Common/InputField";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
@@ -82,25 +83,25 @@ class Scoring extends Component {
         {isAutoMarkBtnVisible && (
           <Row gutter={60}>
             <Col md={12}>
-              <Checkbox
+              <StyledCheckbox
                 data-cy="autoscoreChk"
                 checked={isAutomarkChecked}
                 onChange={e => handleChangeValidation("automarkable", e.target.checked)}
                 size="large"
               >
                 {t("component.options.automarkable")}
-              </Checkbox>
+              </StyledCheckbox>
             </Col>
             {isAutomarkChecked && (
               <Col md={12}>
-                <Checkbox
+                <StyledCheckbox
                   data-cy="unscoredChk"
                   checked={questionData.validation.unscored}
                   onChange={e => handleChangeValidation("unscored", e.target.checked)}
                   size="large"
                 >
                   {t("component.options.unscored")}
-                </Checkbox>
+                </StyledCheckbox>
               </Col>
             )}
           </Row>
@@ -148,6 +149,25 @@ class Scoring extends Component {
                 </SelectWrapper>
               </Col>
             )}
+            <Col md={12}>
+              <Row>
+                <Col md={24} style={{ margin: 0 }}>
+                  <Label>{t("component.options.penalty")}</Label>
+                </Col>
+                <Col md={24}>
+                  <FormGroup center>
+                    <StyledInput
+                      type="number"
+                      data-cy="penalty"
+                      value={questionData.validation.penalty}
+                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                      size="large"
+                      style={{ width: "100%", borderColor: "#E1E1E1" }}
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+            </Col>
           </Row>
         )}
 
@@ -155,7 +175,7 @@ class Scoring extends Component {
           <Row gutter={60} center>
             <ColWrapper noPaddingLeft={noPaddingLeft}>
               <FormGroup center>
-                <Input
+                <StyledInput
                   data-cy="maxscore"
                   type="number"
                   value={maxScore}
@@ -214,6 +234,6 @@ const enhance = compose(
 
 export default enhance(Scoring);
 
-const SelectWrapper = styled(Select)`
+const SelectWrapper = styled(StyledSelect)`
   width: 100%;
 `;

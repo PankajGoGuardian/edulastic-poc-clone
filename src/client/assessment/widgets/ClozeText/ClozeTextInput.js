@@ -150,7 +150,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (uiStyle.globalSettings) {
     // width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-    const splitWidth = Math.max(value.split("").length * 9, 100);
+    const splitWidth = Math.max(value.split("").length * 9, 140);
     width = Math.min(splitWidth, 400);
     height = style.height || "auto";
   } else {

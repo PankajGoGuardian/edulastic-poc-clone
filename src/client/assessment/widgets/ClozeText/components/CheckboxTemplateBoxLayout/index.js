@@ -42,7 +42,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (uiStyle.globalSettings) {
     let width = responseStyle?.previewWidth || btnStyle.width;
     const answerWidth = userSelections?.[index] ? userSelections[index].value.split("").length * 9 : width;
-    const splitWidth = Math.max(answerWidth || width, 100);
+    const splitWidth = Math.max(answerWidth || width, 140);
     width = Math.min(splitWidth, 400);
     btnStyle.width = width;
   } else {

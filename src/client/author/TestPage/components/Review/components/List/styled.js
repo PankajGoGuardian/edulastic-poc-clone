@@ -7,7 +7,6 @@ export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
   margin-bottom: 40px;
   max-width: 100%;
-  overflow: auto;
   :last-child {
     margin-bottom: 0;
     border-bottom: none;

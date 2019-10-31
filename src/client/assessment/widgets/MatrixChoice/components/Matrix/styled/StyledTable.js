@@ -71,6 +71,7 @@ export const StyledTable = styled(Table)`
     .ant-table {
       width: 100%;
       overflow: auto;
+      margin: 0px 6px 0px 0px;
     }
   }
   @media (max-width: ${mobileWidth}) {

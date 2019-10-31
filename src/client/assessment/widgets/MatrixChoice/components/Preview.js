@@ -52,7 +52,7 @@ const Preview = ({
   };
 
   return (
-    <div>
+    <QuestionWrapper>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <QuestionContentWrapper>
@@ -74,7 +74,7 @@ const Preview = ({
       </QuestionTitleWrapper>
 
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
-    </div>
+    </QuestionWrapper>
   );
 };
 
@@ -109,4 +109,8 @@ const QuestionContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+`;
+
+const QuestionWrapper = styled.div`
+  width: max-content;
 `;

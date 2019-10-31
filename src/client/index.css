@@ -1906,7 +1906,7 @@ span.token.active-word {
   min-height: 1vh !important;
 }
 
-span.mfrac{
+span.mfrac {
   font-size: calc(100% + 0.45em);
 }
 
@@ -2109,4 +2109,9 @@ span.mfrac{
 
 .ant-modal-centered .ant-modal {
   margin: 20px auto;
+}
+
+iframe {
+  width: 100%;
+  overflow: auto;
 }

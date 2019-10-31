@@ -24,7 +24,9 @@ import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQ
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div`
+  width: fit-content;
+`;
 
 const MatrixChoice = ({
   view,

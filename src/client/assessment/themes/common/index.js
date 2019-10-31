@@ -1,3 +1,4 @@
+export { default as HeaderWrapper } from "./HeaderWrapper";
 export { default as HeaderLeftMenu } from "./HeaderLeftMenu";
 export { default as HeaderRightMenu } from "./HeaderRightMenu";
 export { default as MobileMainMenu } from "./MobileMainMenu";
@@ -18,3 +19,5 @@ export { default as SavePauseMobile } from "./SavePauseMobile";
 export { default as SaveAndExit } from "./SaveAndExit";
 export { default as ToolButton } from "./ToolButton";
 export { default as CalculatorContainer } from "./CalculatorContainer";
+export { default as ToolTipContainer } from "./ToolTipContainer";
+export { default as MainActionWrapper } from "./MainActionWrapper";

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -63,8 +64,6 @@ const ToolBar = ({ settings, tools, qType, toggleToolsOpenStatus }) => {
 };
 
 ToolBar.propTypes = {
-  changeCaculateMode: PropTypes.func.isRequired,
-  tool: PropTypes.array.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired
 };

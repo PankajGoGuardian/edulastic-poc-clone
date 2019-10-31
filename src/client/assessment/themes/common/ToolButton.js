@@ -9,6 +9,7 @@ const ToolButton = styled(Button)`
       ? props.theme.default.headerButtonActiveBgColor
       : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
   border: 1px solid ${props => props.theme.default.headerButtonActiveBgColor};
+  margin-left: 10px;
 
   &:hover,
   &:focus,

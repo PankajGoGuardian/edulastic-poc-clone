@@ -5,11 +5,13 @@ import { Button } from "antd";
 import { IconCircleLogout, IconContrast } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
-const SaveAndExit = ({ finishTest, previewPlayer, openSettings }) => (
+const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn }) => (
   <FlexContainer>
-    <StyledButton onClick={openSettings}>
-      <IconContrast />
-    </StyledButton>
+    {showZoomBtn && (
+      <StyledButton onClick={openSettings}>
+        <IconContrast />
+      </StyledButton>
+    )}
     <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
       <IconCircleLogout />
     </StyledButton>
@@ -18,12 +20,15 @@ const SaveAndExit = ({ finishTest, previewPlayer, openSettings }) => (
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
-  openSettings: PropTypes.func.isRequired,
-  previewPlayer: PropTypes.bool
+  openSettings: PropTypes.func,
+  previewPlayer: PropTypes.bool,
+  showZoomBtn: PropTypes.bool
 };
 
 SaveAndExit.defaultProps = {
-  previewPlayer: false
+  showZoomBtn: false,
+  previewPlayer: false,
+  openSettings: () => null
 };
 
 export default SaveAndExit;

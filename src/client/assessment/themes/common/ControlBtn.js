@@ -22,7 +22,7 @@ const ControlBtn = styled(Button)`
   justify-content: center;
   padding-bottom: ${props => (props.next ? "2px" : "0")};
   padding-right: ${props => (props.next ? "0" : "3px")};
-  margin-right: 10px;
+  margin-left: 10px;
   cursor: normal;
 
   &:hover {

@@ -16,7 +16,6 @@ import { themes } from "../../../theme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
 import HeaderMainMenu from "../common/HeaderMainMenu";
-import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
@@ -30,12 +29,15 @@ import {
   ToolButton,
   Main,
   Header,
+  HeaderWrapper,
   Container,
   FlexContainer,
   TestButton,
   ToolBar,
   SaveAndExit,
   CalculatorContainer,
+  ToolTipContainer,
+  MainActionWrapper,
   LogoCompact
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
@@ -396,9 +398,11 @@ class AssessmentPlayerDefault extends React.Component {
       <SaveAndExit
         openSettings={() => setSettingsModalVisibility(true)}
         previewPlayer={previewPlayer}
+        showZoomBtn
         finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
       />
     );
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container
@@ -451,11 +455,8 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer style={headerStyleWidthZoom}>
                   <HeaderWrapper>
-                    <LogoCompactContainer>
-                      <LogoCompact marginRight="12px" />
-                      {isMobile && rightButtons}
-                    </LogoCompactContainer>
-                    <ButtonsWrapper>
+                    <LogoCompact isMobile={isMobile} buttons={rightButtons} />
+                    <MainActionWrapper>
                       {!LCBPreviewModal && (
                         <QuestionSelectDropdown
                           key={currentItem}
@@ -524,13 +525,11 @@ class AssessmentPlayerDefault extends React.Component {
                           )}
                         </ToolTipContainer>
                       )}
-                    </ButtonsWrapper>
+                    </MainActionWrapper>
                   </HeaderWrapper>
-                  {!isMobile && <FlexContainer>{rightButtons}</FlexContainer>}
+                  {!isMobile && rightButtons}
                 </FlexContainer>
-                <FlexContainer />
               </HeaderMainMenu>
-              <HeaderRightMenu skin />
               <DragScrollContainer scrollWrraper={this.scrollElementRef.current} />
             </Header>
           </Affix>
@@ -648,32 +647,4 @@ export default enhance(AssessmentPlayerDefault);
 
 const StyledPaddingDiv = styled(PaddingDiv)`
   padding: 0px 35px;
-`;
-
-const ToolTipContainer = styled.div`
-  zoom: ${({ theme }) => theme?.header?.navZoom};
-  display: flex;
-  align-items: center;
-`;
-
-const HeaderWrapper = styled(FlexContainer)`
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    flex-direction: column;
-    width: 100%;
-  }
-`;
-
-const LogoCompactContainer = styled(FlexContainer)`
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    width: 100%;
-    justify-content: space-between;
-  }
-`;
-
-const ButtonsWrapper = styled(FlexContainer)`
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    margin-left: 0px;
-    width: 100%;
-    justify-content: space-between;
-  }
 `;

@@ -1,4 +1,4 @@
-import { keyBy, identity, flatten } from "lodash";
+import { keyBy, identity, flatten, groupBy } from "lodash";
 import { questionType } from "@edulastic/constants";
 import { markQuestionLabel } from "../ClassBoard/Transformer";
 
@@ -31,6 +31,8 @@ const createAnswer = q => {
   switch (q.type) {
     case questionType.MULTIPLE_CHOICE:
       return createAnswerMultipleChoiceAnswer(q);
+    case questionType.CLOZE_TEXT:
+      return createClozeTextAnswerChoice(q);
     case questionType.ESSAY_RICH_TEXT:
     case questionType.HIGHLIGHT_IMAGE:
     case questionType.ESSAY_PLAIN_TEXT:
@@ -70,4 +72,16 @@ const createAnswerMultipleChoiceAnswer = (question = {}) => {
     })
     .join(" ");
   return answers;
+};
+
+const createClozeTextAnswerChoice = question => {
+  const altResp = (question?.validation?.altResponses || []).map(i => i?.value) || [];
+  let answers = groupBy([...(question?.validation?.validResponse.value || []), ...flatten(altResp)], "index");
+  let keys = Object.keys(answers);
+  let answerString = "";
+  for (let key of keys) {
+    let tempAns = answers[key].map(i => i?.value).join(",");
+    answerString = `${answerString} ${Number(key) + 1}. ${tempAns}`;
+  }
+  return answerString;
 };

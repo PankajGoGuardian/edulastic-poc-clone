@@ -147,7 +147,8 @@ class ClozeTextDisplay extends Component {
       responseIds,
       isReviewTab,
       isExpressGrader,
-      view
+      view,
+      isPrint
     } = this.props;
 
     const { parsedTemplate } = this.state;
@@ -191,7 +192,7 @@ class ClozeTextDisplay extends Component {
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
-            textinput: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ClozeTextInput,
+            textinput: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}

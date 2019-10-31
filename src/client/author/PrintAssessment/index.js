@@ -59,6 +59,7 @@ const PrintAssessment = ({ match }) => {
               previewTab="clear"
               qIndex={index}
               data={{ ...question, smallSize: true }}
+              isPrint
             />
             <hr />
           </>

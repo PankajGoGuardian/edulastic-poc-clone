@@ -32,6 +32,7 @@ const StudentReportCardPrintPreviewContainer = lazy(() =>
 const SummaryBoard = lazy(() => import("../SummaryBoard"));
 const ClassResponses = lazy(() => import("../ClassResponses"));
 const PrintPreview = lazy(() => import("../PrintPreview"));
+const PrintAssessment = lazy(() => import("../PrintAssessment"));
 const ExpressGrader = lazy(() => import("../ExpressGrader"));
 const TestList = lazy(() => import("../TestList"));
 const TestPage = lazy(() => import("../TestPage"));
@@ -76,9 +77,11 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
       loadDistrictPolicy({ orgId });
     }
   }, [orgId]);
-  const isPrintPreview = history.location.pathname.includes("printpreview");
 
   const themeToPass = themes.default;
+
+  const isPrintPreview =
+    history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment");
 
   return (
     <ThemeProvider theme={themeToPass}>
@@ -144,7 +147,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                   <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
                   <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                   <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
-
+                  <Route exact path={`${match.url}/printAssessment/:testId`} component={PrintAssessment} />
                   <Route exact path={`${match.url}/manageClass/printPreview`} component={PrintPreviewClass} />
                   <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
                   <Route exact path={`${match.url}/manageClass`} component={ManageClass} />

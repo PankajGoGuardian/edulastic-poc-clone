@@ -1,18 +1,15 @@
 import React from "react";
 import { Menu } from "antd";
-import { test } from "@edulastic/constants";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 
-import simpleIcon from "../../assets/icon.svg";
+import { IconPrint } from "@edulastic/icons";
+
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
 import viewIcon from "../../assets/view.svg";
 import infomationIcon from "../../assets/information.svg";
 import responsiveIcon from "../../assets/responses.svg";
-import toolsIcon from "../../assets/printing-tool.svg";
-import devIcon from "../../assets/dev.svg";
-import googleIcon from "../../assets/Google Classroom.svg";
 
 import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
 
@@ -42,7 +39,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={copyItem} />
             <SpaceElement />
-            Duplicate
+            Duplicate IT
           </StyledLink>
         </Menu.Item>
         <Menu.Item data-cy="preview" key="preview" onClick={() => showPreviewModal(currentTestId)}>
@@ -57,6 +54,13 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
             <img alt="icon" src={infomationIcon} />
             <SpaceElement />
             View Details
+          </Link>
+        </Menu.Item>
+        <Menu.Item data-cy="print-assignment" key="print-assignment">
+          <Link to={`/author/printAssessment/${currentTestId}`} rel="noopener noreferrer">
+            <IconPrint />
+            <SpaceElement />
+            PRINT
           </Link>
         </Menu.Item>
         <Menu.Item

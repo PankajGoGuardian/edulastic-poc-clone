@@ -2,71 +2,59 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
-import { white } from "@edulastic/colors";
-import { IconSave, IconPause, IconLogout } from "@edulastic/icons";
+import { IconCircleLogout, IconContrast } from "@edulastic/icons";
+import { FlexContainer } from "@edulastic/common";
 
-const SaveAndExit = ({ finishTest, previewPlayer }) => (
-  <Container>
-    <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
-      <LogoutIcon />
+const SaveAndExit = ({ finishTest, previewPlayer, openSettings }) => (
+  <FlexContainer>
+    <StyledButton onClick={openSettings}>
+      <IconContrast />
     </StyledButton>
-  </Container>
+    <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
+      <IconCircleLogout />
+    </StyledButton>
+  </FlexContainer>
 );
 
 SaveAndExit.propTypes = {
-  finishTest: PropTypes.func.isRequired
+  finishTest: PropTypes.func.isRequired,
+  openSettings: PropTypes.func.isRequired,
+  previewPlayer: PropTypes.bool
+};
+
+SaveAndExit.defaultProps = {
+  previewPlayer: false
 };
 
 export default SaveAndExit;
 
-const Container = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  padding-top: 2px;
-`;
-
-const SaveIcon = styled(IconSave)`
-  fill: ${white};
-  width: 24px;
-  height: 24px;
-  &:hover {
-    fill: #23e7ab;
-  }
-`;
-
-const PauseIcon = styled(IconPause)`
-  fill: ${white};
-  width: 24px;
-  height: 24px;
-  &:hover {
-    fill: #23e7ab;
-  }
-`;
-
-const LogoutIcon = styled(IconLogout)`
-  fill: ${props => props.theme.header.headerButtonColor};
-  width: 24px;
-  height: 24px;
-  &:hover {
-    fill: ${props => props.theme.header.headerButtonColor};
-  }
-`;
-
 const StyledButton = styled(Button)`
-  width: 45px;
-  background: transparent;
   border: none;
-  &:hover,
-  &:focus {
-    background: transparent;
-  }
-
+  margin-left: 10px;
+  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
 
   svg {
-    height: ${props => props.theme.default.headerExitButtonFontIconWidth};
-    width: ${props => props.theme.default.headerExitButtonFontIconHeight};
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    height: ${props => props.theme.default.headerRightButtonFontIconHeight};
+    width: ${props => props.theme.default.headerRightButtonFontIconWidth};
+    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+  }
+
+  &:first-child {
+    margin-left: 0px;
+  }
+
+  &:hover,
+  &:focus {
+    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+
+    svg {
+      fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    }
   }
 `;

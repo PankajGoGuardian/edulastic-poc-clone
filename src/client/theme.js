@@ -6,7 +6,7 @@ const defaultFontFamily = "Open Sans";
 
 const themeColorHover = "#029D49";
 const playerButtonBackgroundColor = "rgba(255, 255, 255, 0.15)";
-const playerButtonBackgroundHoverColor = "rgba(255, 255, 255, 0.5)";
+const playerButtonBackgroundHoverColor = "#FFFFFF";
 const buttonBackgroundColor = "#FFFFFF";
 const buttonBackgroundHoverColor = "#F0F0F0";
 const textColor = "#434B5D";
@@ -346,12 +346,37 @@ export const defaultTheme = {
     headerButtonBgHoverColor: playerButtonBackgroundHoverColor,
     headerButtonIconColor: "white",
     headerButtonIconActiveColor: themeColor,
-    headerButtonBorderColor: "none",
-    headerButtonFontSize: "12px",
+    headerButtonBorderColor: "white",
+    headerButtonFontSize: "10px",
     headerButtonFontIconWidth: `12px`,
     headerButtonFontIconHeight: `9px`,
     headerToolbarButtonWidth: `40px`,
-    headerToolbarButtonHeight: `40px`
+    headerToolbarButtonHeight: `40px`,
+    headerRightButtonBgColor: buttonBackgroundColor,
+    headerRightButtonBgHoverColor: buttonBackgroundHoverColor,
+    headerRightButtonIconColor: actionIconColor,
+    headerRightButtonFontIconWidth: `20px`, // save and exit button size
+    headerRightButtonFontIconHeight: `20px`,
+    headerScratchPadIconHeight: `23px`,
+    headerScratchPadIconWidth: `20px`,
+    headerProtactorIconWidth: `25px`,
+    headerProtactorIconHeight: `25px`,
+    headerCloseIconWidth: `16px`,
+    headerCloseIconHeight: `16px`,
+    headerCaculatorIconWidth: `19px`,
+    headerCaculatorIconHeight: `19px`,
+    headerInRulerIconWidth: `21px`,
+    headerInRulerIconHeight: `21px`,
+    headerCursorIconWidth: `10px`,
+    headerCursorIconHeight: `15px`,
+    headerLeftButtonHeight: `24px`,
+    headerCheckIconWidth: `16px`,
+    headerCheckIconHeight: `12px`,
+    headerLightBulbIconWidth: `10px`,
+    headerLightBulbIconHeight: `13px`,
+    headerBookmarkIconWidth: `11px`,
+    headerBookmarkIconHeight: `12px`,
+    headerLeftButtonBgHoverColor: buttonBackgroundColor
   },
   header: {
     headerBgColor: themeColor, // greenDark

@@ -3,16 +3,12 @@ import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
+import { smallDesktopWidth } from "@edulastic/colors";
 import get from "lodash/get";
-import ButtonLink from "./ButtonLink";
 import { showHintButton } from "../../utils/test";
-
-const customizeIcon = icon => styled(icon)`
-  fill: ${props => props.theme.header.headerButtonColor};
-`;
 
 const TestButton = ({
   t,
@@ -37,32 +33,25 @@ const TestButton = ({
             data-cy="checkAnswer"
             title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
           >
-            <StyledButtonLink color="primary" icon={<StyledIconCheck />}>
-              {t("common.test.checkanswer")}
-            </StyledButtonLink>
+            <StyledIconCheck />
+            <span> {t("common.test.checkanswer")}</span>
           </StyledButton>
         </Tooltip>
       )}
-      {!!showHintButton(questions) ? (
+
+      {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
-            <StyledButtonLink color="primary" icon={<StyledIconLightBulb />}>
-              {t("common.test.hint")}
-            </StyledButtonLink>
+            <StyledIconLightBulb />
+            <span>{t("common.test.hint")}</span>
           </StyledButton>
         </Tooltip>
       ) : null}
+
       <Tooltip placement="top" title="Bookmark">
-        <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
-          <StyledButtonLink
-            color={isBookmarked ? "success" : "primary"}
-            isBookmarked={isBookmarked}
-            onClick={toggleBookmark}
-            icon={<StyledIconBookmark color={isBookmarked ? "#f8c165" : ""} width={10} height={16} />}
-            style={{ color: isBookmarked ? "#f8c165" : "" }}
-          >
-            {t("common.test.bookmark")}
-          </StyledButtonLink>
+        <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+          <StyledIconBookmark />
+          <span>{t("common.test.bookmark")}</span>
         </StyledButton>
       </Tooltip>
     </Container>
@@ -79,42 +68,71 @@ export default enhance(TestButton);
 
 const Container = styled.div`
   margin-left: 60px;
+  display: flex;
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled.div`
   margin-right: 10px;
-  background: transparent;
-  height: auto;
-  &[disabled] {
-    cursor: pointer;
-    &:hover {
-      background: transparent;
-    }
-    background: transparent;
-  }
-  border-color: ${props => props.theme.default.headerButtonBorderColor};
-  &:hover,
-  &:focus,
-  &:active {
-    background: ${props => props.theme.default.headerButtonActiveBgColor};
-    border-color: ${props => props.theme.default.headerButtonActiveBgColor};
-  }
-`;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  border: 1px solid;
+  cursor: pointer;
 
-const StyledButtonLink = styled(ButtonLink)`
-  font-size: ${props => props.theme.default.headerButtonFontSize};
-  color: ${props => props.theme.header.headerButtonColor};
-  span {
+  ${({ theme, active }) => `
+    height: ${theme.default.headerLeftButtonHeight};
+    font-size: ${theme.default.headerButtonFontSize};
+    color: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+    background: ${active ? theme.default.headerLeftButtonBgHoverColor : "transparent"};
+    border-color: ${theme.default.headerButtonBorderColor};
+    
+    &:hover,
+    &:focus,
+    &:active {
+      background: ${theme.default.headerLeftButtonBgHoverColor};
+      border-color: ${theme.default.headerLeftButtonBgHoverColor};
+      color: ${theme.header.headerButtonHoverColor};
+      svg {
+        fill: ${theme.header.headerButtonHoverColor};
+      }
+    }
     svg {
-      width: ${props => props.theme.default.headerButtonFontIconWidth};
-      height: ${props => props.theme.default.headerButtonFontIconHeight};
+      margin-right: 10px;
+      fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+      &:hover {
+        fill: ${theme.header.headerButtonHoverColor};
+      }
     }
-  }
-  &:hover {
-    color: ${props => props.theme.header.headerButtonHoverColor};
+  `}
+
+  @media (max-width: ${smallDesktopWidth}) {
+    span {
+      display: none;
+    }
+    svg {
+      margin-right: 0px;
+    }
   }
 `;
 
-const StyledIconCheck = customizeIcon(IconCheck);
-const StyledIconLightBulb = customizeIcon(IconLightBulb);
-const StyledIconBookmark = customizeIcon(IconBookmark);
+const StyledIconCheck = styled(IconCheck)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCheckIconWidth};
+    height: ${theme.default.headerCheckIconHeight};
+  `}
+`;
+const StyledIconLightBulb = styled(IconLightBulb)`
+  ${({ theme }) => `
+    width: ${theme.default.headerLightBulbIconWidth};
+    height: ${theme.default.headerLightBulbIconHeight};
+  `}
+`;
+const StyledIconBookmark = styled(IconBookmark)`
+  ${({ theme }) => `
+    width: ${theme.default.headerBookmarkIconWidth};
+    height: ${theme.default.headerBookmarkIconHeight};
+  `}
+`;

@@ -173,7 +173,8 @@ const AssessmentContainer = ({
     previewPlayer: preview,
     LCBPreviewModal,
     closeTestPreviewModal,
-    showTools
+    showTools,
+    groupId
   };
 
   if (loading) {
@@ -191,7 +192,6 @@ const AssessmentContainer = ({
         saveProgress={saveProgress}
         gotoSummary={gotoSummary}
         {...props}
-        groupId={groupId}
       />
     );
   }
@@ -205,7 +205,6 @@ const AssessmentContainer = ({
         saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
         {...test}
-        groupId={groupId}
       />
     );
   }
@@ -213,7 +212,7 @@ const AssessmentContainer = ({
   return (
     <>
       <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} groupId={groupId} />}
+        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
       </ScratchPadContext.Provider>
     </>
   );

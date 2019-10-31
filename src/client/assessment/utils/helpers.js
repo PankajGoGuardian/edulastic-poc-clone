@@ -1,5 +1,6 @@
 import { groupBy, difference, isEmpty } from "lodash";
 import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -389,4 +390,16 @@ export const fractionStringToNumber = fString => {
   const sup = parseFloat(split[1]);
 
   return +(main + sup / sub).toFixed(8);
+};
+
+export const createStandardTextStyle = props => {
+  const fontSize = props?.fontSize || `${props?.theme?.common?.standardFont || "14px"}`;
+
+  return `
+      font-size: ${fontSize};
+
+      @media screen and (max-width: ${mediumDesktopExactWidth}) {
+          font-size: ${props?.theme?.common?.smallFontSize || "12px"};
+      }
+  `;
 };

@@ -23,6 +23,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
+import { StyledCheckbox } from "../../../components/Common/InputField";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
@@ -171,14 +172,14 @@ class Variables extends Component {
         </Row>
         <Row gutter={36}>
           <Col md={24}>
-            <Checkbox
+            <StyledCheckbox
               data-cy="variableEnabled"
               checked={variableEnabled}
               onChange={e => handleChangeVariable("enabled", e.target.checked)}
               size="large"
             >
               {t("component.options.checkVariables")}
-            </Checkbox>
+            </StyledCheckbox>
           </Col>
         </Row>
         {variableEnabled && Object.keys(variables).length > 0 && (

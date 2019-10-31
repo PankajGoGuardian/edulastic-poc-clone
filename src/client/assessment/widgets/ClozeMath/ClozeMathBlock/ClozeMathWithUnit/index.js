@@ -234,7 +234,6 @@ class ClozeMathWithUnit extends React.Component {
     const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
-
     return (
       <OuterWrapper ref={this.wrappedRef}>
         <ClozeMathInputField
@@ -260,6 +259,7 @@ class ClozeMathWithUnit extends React.Component {
           onChange={this.onChangeUnit}
           onDropdownVisibleChange={this.onDropdownVisibleChange}
           keypadMode={keypadMode}
+          dropdownStyle={{ fontSize: btnStyle.fontSize }}
         />
         {showKeyboard && (
           <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
@@ -290,7 +290,7 @@ const OuterWrapper = styled.div`
 const ClozeMathInputField = styled.span`
   width: ${({ width }) => width};
   min-width: ${({ minWidth }) => minWidth} !important;
-  font-size: ${({ fontSize }) => fontSize || "initial"} !important;
+  font-size: ${({ fontSize }) => fontSize || "initial"};
   height: ${({ height }) => height};
   margin-right: 0 !important;
   padding: 5px 11px !important;

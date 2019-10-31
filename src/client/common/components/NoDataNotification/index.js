@@ -30,7 +30,7 @@ const Wrapper = styled.div`
   }
 `;
 const NoDataBox = styled.div`
-  width: 300px;
+  width: 328px;
   height: 300px;
   border-radius: 6px;
   text-align: center;
@@ -40,7 +40,7 @@ const NoDataBox = styled.div`
   align-items: center;
   padding: 30px;
   img {
-    width: 50px;
+    width: 66px;
     margin-bottom: 15px;
   }
   h4 {

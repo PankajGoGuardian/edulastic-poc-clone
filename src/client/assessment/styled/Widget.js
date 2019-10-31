@@ -12,6 +12,7 @@ import {
 } from "@edulastic/colors";
 
 import { Paper } from "@edulastic/common";
+import { createStandardTextStyle } from "../utils/helpers";
 
 export const WidgetWrapper = styled.div`
   margin-top: 30px;
@@ -48,13 +49,9 @@ export const Widget = styled.div`
   .ant-checkbox + span {
     padding-left: 20px;
     padding-right: 20px;
-    font-size: ${props => props.theme.standardFont};
     letter-spacing: 0.3px;
     text-transform: uppercase;
-
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      font-size: ${props => props.theme.smallFontSize};
-    }
+    ${props => createStandardTextStyle(props)}
   }
 
   .ql-editor {
@@ -78,7 +75,7 @@ export const Widget = styled.div`
 
   .ant-select {
     &-selection-selected-value {
-      font-size: ${props => props.theme.standardFont};
+      ${props => createStandardTextStyle(props)}
       padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
@@ -106,7 +103,7 @@ export const Widget = styled.div`
   }
 
   .ant-input {
-    font-size: ${props => props.theme.standardFont};
+    ${props => createStandardTextStyle(props)}
     padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
@@ -114,7 +111,7 @@ export const Widget = styled.div`
   }
 
   .ql-container {
-    font-size: ${props => props.theme.standardFont};
+    ${props => createStandardTextStyle(props)}
     letter-spacing: 0.3px;
     font-weight: 600;
     margin-top: 6px !important;
@@ -210,6 +207,7 @@ export const WidgetFRInput = styled.div`
       width: 100%;
       min-height: 100%;
       padding: 9px 21px;
+      ${props => createStandardTextStyle(props)}
     }
   }
 `;

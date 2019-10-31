@@ -212,34 +212,6 @@ class Layout extends Component {
             </MarginRow>
             <MarginRow gutter={20}>
               <Col md={12}>
-                <Label>{t("component.options.inputtype")}</Label>
-                <SelectWrapper>
-                  <OptionSelect
-                    size="large"
-                    onChange={inputtype => changeUiStyle("inputtype", inputtype)}
-                    value={uiStyle.inputtype || "text"}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                  >
-                    {inputtypeOptions.map(({ value: val, label }) => (
-                      <Select.Option key={val} value={val}>
-                        {label}
-                      </Select.Option>
-                    ))}
-                  </OptionSelect>
-                </SelectWrapper>
-              </Col>
-              <Col md={12}>
-                <Label>{t("component.options.placeholder")}</Label>
-                <Input
-                  disabled={false}
-                  size="large"
-                  onChange={e => changeUiStyle("placeholder", e.target.value)}
-                  value={uiStyle.placeholder}
-                />
-              </Col>
-            </MarginRow>
-            <MarginRow gutter={20}>
-              <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
                 <Input
                   type="number"
@@ -267,6 +239,15 @@ class Layout extends Component {
               </Col>
             </MarginRow>
             <MarginRow gutter={20}>
+              <Col md={12}>
+                <Label>{t("component.options.placeholder")}</Label>
+                <Input
+                  disabled={false}
+                  size="large"
+                  onChange={e => changeUiStyle("placeholder", e.target.value)}
+                  value={uiStyle.placeholder}
+                />
+              </Col>
               <Col md={12}>
                 <Label>{t("component.options.pointers")}</Label>
                 <SelectWrapper>

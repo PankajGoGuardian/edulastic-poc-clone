@@ -14,12 +14,12 @@ export const Subtitle = styled.div`
   margin: ${props => (props.margin ? props.margin : "0 0 25px")};
 
   @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize};
+    font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize || "18px"};
   }
   @media (max-width: ${desktopWidth}) {
     margin-bottom: 20px;
   }
   @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${({ theme }) => theme?.common?.titleSectionFontSize};
+    font-size: ${({ theme }) => theme?.common?.titleSectionFontSize || "16px"};
   }
 `;

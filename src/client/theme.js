@@ -104,6 +104,8 @@ const questionTexthugeFontSize = "17px";
 const questionTexticonFontSize = "20px";
 const largeFontSize = "26px";
 
+const notificationTitle = "18px";
+
 const brandBlue = "#00b0ff";
 const brandGreen = "#1FE3A1";
 const brandDarkGreen = "#00AD50";
@@ -1388,7 +1390,7 @@ export const defaultTheme = {
     manageClassBgColor: containerWhite,
     manageClassBgBorderColor: borderColor,
     manageClassTdFontSize: tableDataFont,
-    NoDataArchiveTextColor: labelStyle,
+    NoDataArchiveTextColor: notificationTitle,
     NoDataArchiveTextSize: headerTitle,
     NoDataArchiveSubTextColor: questionTextColor,
     NoDataArchiveSubTextSize: standardFont
@@ -1398,7 +1400,7 @@ export const defaultTheme = {
     NoDataBgColor: containerWhite,
     NoDataBgBorderColor: borderColor,
     NoDataArchiveTextColor: labelStyle,
-    NoDataArchiveTextSize: headerTitle,
+    NoDataArchiveTextSize: notificationTitle,
     NoDataArchiveSubTextColor: questionTextColor,
     NoDataArchiveSubTextSize: standardFont
   },

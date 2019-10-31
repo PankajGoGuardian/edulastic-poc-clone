@@ -24,11 +24,11 @@ const createStandardTextSet = element => styled(element)`
   }};
 
   @media screen and (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${({ theme }) => theme?.common?.bodyFontSize};
+    font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
   }
 
   @media screen and (max-width: ${smallDesktopWidth}) {
-    font-size: ${({ theme }) => theme?.common?.commentFontSize};
+    font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
   }
 `;
 

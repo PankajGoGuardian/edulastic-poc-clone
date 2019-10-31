@@ -25,6 +25,10 @@ export const Stimulus = WithMathFormula(styled.div`
     ${Style}
   }
 
+  div:nth-of-type(1) {
+    display: contents;
+  }
+
   @media (max-width: ${smallDesktopWidth}) {
     word-break: break-all;
   }

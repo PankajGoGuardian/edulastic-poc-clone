@@ -29,7 +29,9 @@ import {
   extraDesktopWidthMax,
   mainTextColor,
   themeColor,
-  extraDesktopWidth
+  extraDesktopWidth,
+  mediumDesktopWidth,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import SettingsModal from "../sharedComponents/SettingsModal";
 import { toggleSideBarAction, setSettingsModalVisibilityAction } from "./ducks";
@@ -72,14 +74,6 @@ const menuItems = [
     path: ""
   }
 ];
-
-const responsiveSidebarWidth = {
-  xs: 245,
-  sm: 300,
-  md: 375,
-  lg: 425,
-  xl: 500
-};
 
 class SideMenu extends Component {
   constructor(props) {
@@ -214,7 +208,7 @@ class SideMenu extends Component {
             collapsible
             breakpoint="md"
             onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-            width={responsiveSidebarWidth[theme.zoomLevel]}
+            width="245"
             collapsedWidth={broken ? "0" : "100"}
             className="sideBarwrapper"
             data-cy="side-wrapper"
@@ -223,15 +217,32 @@ class SideMenu extends Component {
               {isMobile ? (
                 <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
               ) : (
-                <LogoWrapper isSidebarCollapsed={isSidebarCollapsed} className="logoWrapper">
+                <LogoWrapper className="logoWrapper">
                   {broken ? (
                     <Col span={3}>
                       <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                     </Col>
                   ) : null}
-                  <Col span={18} style={{ textAlign: "left" }}>
+                  <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "left" }}>
                     {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
                   </Col>
+                  {broken ? null : (
+                    <Col
+                      span={isSidebarCollapsed ? 0 : 6}
+                      style={{
+                        textAlign: "center",
+                        color: themeColor
+                      }}
+                    >
+                      {!isSidebarCollapsed && (
+                        <AntIcon
+                          className="trigger"
+                          type={isSidebarCollapsed ? "right" : "left"}
+                          onClick={this.toggleMenu}
+                        />
+                      )}
+                    </Col>
+                  )}
                 </LogoWrapper>
               )}
               <LogoDash />
@@ -389,8 +400,6 @@ const FixedSidebar = styled.div`
 const SideBar = styled(Layout.Sider)`
   min-height: 100vh;
   width: 245px;
-  max-width: 245px;
-  min-width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: ${props => props.theme.sideMenu.sidebarBgColor};
   z-index: 22;
@@ -499,17 +508,16 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  zoom: ${props => (props.isSidebarCollapsed ? 1 : props.theme.sideMenu.zoom)};
-  padding: 39px 39px 31px;
-  text-align: center;
+  height: ${({ theme }) => theme.HeaderHeight.xs}px;
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  @media (min-width: ${largeDesktopWidth}) and (max-width: 1599.98px) {
-    padding: 27px 39px 22px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${({ theme }) => theme.HeaderHeight.md}px;
   }
-  @media (max-width: ${largeDesktopWidth}) {
-    padding: 20px 39px 14px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${({ theme }) => theme.HeaderHeight.xl}px;
   }
 `;
 
@@ -528,21 +536,16 @@ const MenuWrapper = styled.div`
   padding: 8px 0px;
   min-height: calc(100% - 100px);
 
-  @media (min-width: ${largeDesktopWidth}) and (max-width: 1599.98px) {
-    min-height: calc(100% - 80px);
-  }
-  @media (max-width: ${largeDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     min-height: calc(100% - 65px);
   }
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
-    display: ${props => (props.isSidebarCollapsed ? "none" : "flex")};
   }
 `;
 
 const Menu = styled(AntMenu)`
   background: transparent;
-  zoom: ${props => (props.isSidebarCollapsed ? 1 : props.theme.sideMenu.zoom)};
   
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
@@ -701,7 +704,6 @@ const MenuFooter = styled.div`
 `;
 
 const QuestionButton = styled.div`
-  zoom: ${props => props.theme.sideMenu.zoom};
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
@@ -726,9 +728,6 @@ const QuestionButton = styled.div`
     svg {
       fill: ${props => props.theme.sideMenu.helpIconHoverColor};
     }
-  }
-  &.active {
-    zoom: 1;
   }
   @media (max-width: ${tabletWidth}) {
     width: 60px;

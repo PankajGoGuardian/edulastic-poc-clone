@@ -17,10 +17,10 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     checked,
     item,
     onInnerClick,
-    showIndex
+    showIndex,
+    uiStyles
   } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
-
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
   const {
     responseIds: { dropDowns }
@@ -49,6 +49,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onChange={text => save({ value: text, index }, "dropDowns", id)}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       value={val}
+      dropdownStyle={uiStyles}
     >
       {options &&
         options[id] &&
@@ -63,7 +64,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
 
 ClozeDropDown.propTypes = {
   resprops: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  uiStyles: PropTypes.object
+};
+
+ClozeDropDown.defaultProps = {
+  uiStyles: {}
 };
 
 export default ClozeDropDown;

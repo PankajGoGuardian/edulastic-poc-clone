@@ -45,12 +45,12 @@ const AssessmentPlayer = ({
     return "Are you sure you want to quit";
   };
 
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", confirmBeforeQuitting);
-  //   return () => {
-  //     window.removeEventListener("beforeunload", confirmBeforeQuitting);
-  //   };
-  // }, []);
+  useEffect(() => {
+    window.addEventListener("beforeunload", confirmBeforeQuitting);
+    return () => {
+      window.removeEventListener("beforeunload", confirmBeforeQuitting);
+    };
+  }, []);
 
   if (preview) {
     return (

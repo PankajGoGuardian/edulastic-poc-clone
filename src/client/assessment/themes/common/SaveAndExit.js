@@ -2,14 +2,19 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
-import { IconCircleLogout, IconContrast } from "@edulastic/icons";
+import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
-const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn }) => (
+const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn, onSubmit }) => (
   <FlexContainer>
     {showZoomBtn && (
       <StyledButton onClick={openSettings}>
         <IconContrast />
+      </StyledButton>
+    )}
+    {onSubmit && (
+      <StyledButton onClick={onSubmit}>
+        <IconSend />
       </StyledButton>
     )}
     <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
@@ -20,6 +25,7 @@ const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn }) =
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
   openSettings: PropTypes.func,
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool
@@ -28,7 +34,8 @@ SaveAndExit.propTypes = {
 SaveAndExit.defaultProps = {
   showZoomBtn: false,
   previewPlayer: false,
-  openSettings: () => null
+  openSettings: () => null,
+  onSubmit: null
 };
 
 export default SaveAndExit;

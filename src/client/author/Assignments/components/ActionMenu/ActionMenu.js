@@ -39,7 +39,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={copyItem} />
             <SpaceElement />
-            Duplicate IT
+            Duplicate
           </StyledLink>
         </Menu.Item>
         <Menu.Item data-cy="preview" key="preview" onClick={() => showPreviewModal(currentTestId)}>

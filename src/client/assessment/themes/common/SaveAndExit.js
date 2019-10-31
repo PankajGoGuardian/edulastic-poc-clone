@@ -2,14 +2,21 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
-import { IconCircleLogout, IconContrast } from "@edulastic/icons";
+import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
-const SaveAndExit = ({ finishTest, previewPlayer, openSettings }) => (
+const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn, onSubmit }) => (
   <FlexContainer>
-    <StyledButton onClick={openSettings}>
-      <IconContrast />
-    </StyledButton>
+    {showZoomBtn && (
+      <StyledButton onClick={openSettings}>
+        <IconContrast />
+      </StyledButton>
+    )}
+    {onSubmit && (
+      <StyledButton onClick={onSubmit}>
+        <IconSend />
+      </StyledButton>
+    )}
     <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
       <IconCircleLogout />
     </StyledButton>
@@ -18,12 +25,17 @@ const SaveAndExit = ({ finishTest, previewPlayer, openSettings }) => (
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
-  openSettings: PropTypes.func.isRequired,
-  previewPlayer: PropTypes.bool
+  onSubmit: PropTypes.func,
+  openSettings: PropTypes.func,
+  previewPlayer: PropTypes.bool,
+  showZoomBtn: PropTypes.bool
 };
 
 SaveAndExit.defaultProps = {
-  previewPlayer: false
+  showZoomBtn: false,
+  previewPlayer: false,
+  openSettings: () => null,
+  onSubmit: null
 };
 
 export default SaveAndExit;

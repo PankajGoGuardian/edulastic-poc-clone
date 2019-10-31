@@ -63,24 +63,29 @@ class AssessmentPlayerSimple extends React.Component {
     showExitPopup: false,
     showHints: false,
     testItemState: "",
-    toolsOpenStatus: {
-      Pointer: false,
-      Ruler: false,
-      Calculator: false,
-      CrossButton: false,
-      Protactor: false,
-      ScratchPad: false
-    },
+    toolsOpenStatus: [0],
     history: [{ points: [], pathes: [], figures: [], texts: [] }]
   };
 
-  toggleToolsOpenStatus = (tool, state = "no state") => {
-    this.setState(prevState => ({
-      toolsOpenStatus: {
-        ...prevState.toolsOpenStatus,
-        [tool]: state === "no state" ? !prevState.toolsOpenStatus[tool] : state
+  toggleToolsOpenStatus = tool => {
+    let { toolsOpenStatus, enableCrossAction } = this.state;
+    if (tool === 3 || tool === 5) {
+      const index = toolsOpenStatus.indexOf(tool);
+      if (index !== -1) {
+        toolsOpenStatus.splice(index, 1);
+      } else {
+        toolsOpenStatus.push(tool);
       }
-    }));
+      toolsOpenStatus = toolsOpenStatus.filter(m => m === 3 || m === 5);
+    } else {
+      toolsOpenStatus = [tool];
+    }
+    if (tool === 3) {
+      enableCrossAction = !enableCrossAction;
+      this.setState({ toolsOpenStatus, enableCrossAction });
+    } else {
+      this.setState({ toolsOpenStatus });
+    }
   };
 
   changeTabItemState = value => {
@@ -202,7 +207,8 @@ class AssessmentPlayerSimple extends React.Component {
       deleteMode,
       currentColor,
       activeMode,
-      lineWidth
+      lineWidth,
+      enableCrossAction
     } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -216,10 +222,10 @@ class AssessmentPlayerSimple extends React.Component {
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-    const scratchPadMode = toolsOpenStatus.ScratchPad;
+    const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
     return (
       <ThemeProvider theme={themeToPass}>
-        <Container>
+        <Container scratchPadMode={scratchPadMode}>
           {scratchPadMode && !previewPlayer && (
             <Tools
               onFillColorChange={this.onFillColorChange}
@@ -264,6 +270,7 @@ class AssessmentPlayerSimple extends React.Component {
             settings={settings}
             testItemState={testItemState}
             t={t}
+            enableCrossAction={enableCrossAction}
             unansweredQuestionCount={unansweredQuestionCount}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />

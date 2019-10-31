@@ -8,6 +8,8 @@ import { isEmpty, sortBy } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { questionType } from "@edulastic/constants";
+import { withWindowSizes } from "@edulastic/common";
 import { Container } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import PlayerHeader from "./PlayerHeader";
@@ -15,9 +17,7 @@ import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
-import { questionType } from "@edulastic/constants";
 import { testLoadingSelector } from "../../selectors/test";
-import { withWindowSizes } from "@edulastic/common";
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {

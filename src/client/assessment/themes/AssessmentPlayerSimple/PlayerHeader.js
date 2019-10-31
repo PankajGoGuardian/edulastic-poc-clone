@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment, useState } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
@@ -8,29 +8,26 @@ import { Tooltip } from "antd";
 import styled from "styled-components";
 
 import { nonAutoGradableTypes } from "@edulastic/constants";
-import { IconLogoCompact, IconSave, IconPause, IconLogout, IconSend } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { boxShadowDefault } from "@edulastic/colors";
 
 import {
   Header,
   FlexContainer,
-  HeaderLeftMenu,
-  MobileMainMenu as Mobile,
+  HeaderWrapper,
   HeaderMainMenu,
   TestButton,
-  ToolButton
+  ToolButton,
+  SaveAndExit,
+  LogoCompact,
+  ToolBar,
+  ToolTipContainer,
+  MainActionWrapper
 } from "../common";
-import {
-  IPAD_PORTRAIT_WIDTH,
-  MEDIUM_DESKTOP_WIDTH,
-  SMALL_DESKTOP_WIDTH,
-  headerOffsetHashMap
-} from "../../constants/others";
+
+import { MEDIUM_DESKTOP_WIDTH, MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import { ifZoomed, isZoomGreator } from "../../../common/utils/helpers";
-import ToolBar from "./ToolBar";
+import { isZoomGreator } from "../../../common/utils/helpers";
 import ToolbarModal from "../common/ToolbarModal";
 
 const PlayerHeader = ({
@@ -40,10 +37,6 @@ const PlayerHeader = ({
   onOpenExitPopup,
   theme,
   gotoQuestion,
-  onPause,
-  onSaveProgress,
-  showSubmit,
-  onSubmit,
   settings,
   windowWidth,
   items,
@@ -58,11 +51,7 @@ const PlayerHeader = ({
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
   const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
-
-  const isZoomed = ifZoomed(theme?.zoomLevel);
-  const InnerContainer = isZoomed ? HeaderInnerContainer : Fragment;
-  const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", theme?.zoomLevel);
-  const navZoomStyle = { zoom: theme?.header?.navZoom };
+  const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", theme.zoomLevel);
   let isNonAutoGradable = false;
   const item = items[currentItem];
   if (item.data && item.data.questions) {
@@ -72,6 +61,10 @@ const PlayerHeader = ({
       }
     });
   }
+
+  const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
+  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} />;
+
   return (
     <Fragment>
       <ToolbarModal
@@ -80,18 +73,24 @@ const PlayerHeader = ({
         checkAnswer={checkAnswer}
         windowWidth={windowWidth}
       />
-      <HeaderPracticePlayer>
-        <HeaderLeftMenu skinb={"true"}>
-          <LogoCompact color={"#fff"} />
-        </HeaderLeftMenu>
-        <HeaderMainMenu skinb={"true"}>
-          <HeaderFlexContainer justifyContent="space-between">
-            <PlayerTitle>{title}</PlayerTitle>
-            <InnerContainer>
-              <FlexContainer justifyContent="flex-end">
+      <Header>
+        <HeaderMainMenu skinb="true">
+          <HeaderPracticePlayer>
+            <HeaderWrapper>
+              <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
+              <MainActionWrapper>
+                {isMobile && (
+                  <QuestionSelectDropdown
+                    key={currentItem}
+                    currentItem={currentItem}
+                    gotoQuestion={gotoQuestion}
+                    options={dropdownOptions}
+                    skinb="true"
+                  />
+                )}
                 {showSettingIcon && (
                   <ToolTipContainer>
-                    <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
+                    <Tooltip placement="top" title="Tool">
                       <ToolButton
                         next
                         skin
@@ -104,7 +103,7 @@ const PlayerHeader = ({
                     </Tooltip>
                   </ToolTipContainer>
                 )}
-                {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                {windowWidth >= IPAD_LANDSCAPE_WIDTH && (
                   <TestButton
                     answerChecksUsedForItem={answerChecksUsedForItem}
                     settings={settings}
@@ -117,55 +116,22 @@ const PlayerHeader = ({
                     handletoggleHints={onshowHideHints}
                   />
                 )}
-                {windowWidth >= MEDIUM_DESKTOP_WIDTH && !isZoomGreator("md", theme?.zoomLevel) && (
+                {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", theme.zoomLevel) && (
                   <ToolBar
                     settings={settings}
                     calcBrands={calcBrands}
-                    tools={toolsOpenStatus}
+                    tool={toolsOpenStatus}
                     changeCaculateMode={() => {}}
-                    toggleToolsOpenStatus={toggleToolsOpenStatus}
+                    changeTool={toggleToolsOpenStatus}
                     qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
                   />
                 )}
-                <ContainerRight>
-                  <FlexDisplay>
-                    {showSubmit && (
-                      <Save onClick={onSubmit} title="Submit">
-                        <IconSend color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                      </Save>
-                    )}
-                    <Save onClick={onSaveProgress} title="Save">
-                      <IconSave color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                    </Save>
-                    {onPause && (
-                      <Save onClick={onPause} title="Pause">
-                        <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                      </Save>
-                    )}
-                    {!onPause && (
-                      <StyledLink to="/home/assignments">
-                        <IconPause color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                      </StyledLink>
-                    )}
-                    <Save onClick={onOpenExitPopup} title="Exit">
-                      <IconLogout color={theme.widgets.assessmentPlayerSimple.headerIconColor} />
-                    </Save>
-                  </FlexDisplay>
-                </ContainerRight>
-              </FlexContainer>
-            </InnerContainer>
-          </HeaderFlexContainer>
+              </MainActionWrapper>
+            </HeaderWrapper>
+            {!isMobile && rightButtons}
+          </HeaderPracticePlayer>
         </HeaderMainMenu>
-      </HeaderPracticePlayer>
-      <Mobile>
-        <QuestionSelectDropdown
-          key={currentItem}
-          currentItem={currentItem}
-          gotoQuestion={gotoQuestion}
-          options={dropdownOptions}
-          skinb={"true"}
-        />
-      </Mobile>
+      </Header>
     </Fragment>
   );
 };
@@ -187,84 +153,10 @@ const enhance = compose(
 
 export default enhance(PlayerHeader);
 
-const LogoCompact = styled(IconLogoCompact)`
-  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
-  width: 21px;
-  height: 21px;
-  margin: 10px;
-  fill: ${props => props.theme.widgets.assessmentPlayers.logoColor};
-  &:hover {
-    fill: ${props => props.theme.widgets.assessmentPlayers.logoColor};
+const HeaderPracticePlayer = styled(FlexContainer)`
+  padding: 11px 15px;
+  justify-content: space-between;
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    padding: 0px;
   }
-`;
-
-const PlayerTitle = styled.h1`
-  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0;
-  color: #fff;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
-
-const Save = styled.div`
-  background: ${props => props.theme.headerIconBgColor};
-  border-radius: 5px;
-  padding: 13px;
-  margin-left: 10px;
-  cursor: pointer;
-  display: flex;
-  &:hover {
-    svg {
-      fill: ${props => props.theme.headerIconHoverColor};
-    }
-  }
-`;
-
-const StyledLink = styled(Link)`
-  background: ${props => props.theme.headerIconBgColor};
-  border-radius: 5px;
-  padding: 12px 14px;
-  margin-left: 10px;
-  cursor: pointer;
-  &:hover {
-    svg {
-      fill: ${props => props.theme.headerIconHoverColor};
-    }
-  }
-`;
-
-const FlexDisplay = styled.div`
-  display: flex;
-`;
-
-const ContainerRight = styled.div`
-  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
-  display: flex;
-  margin-left: 40px;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    margin-left: auto;
-  }
-`;
-
-const HeaderPracticePlayer = styled(Header)`
-  background: ${props => props.theme.headerBg};
-  box-shadow: ${boxShadowDefault};
-  height: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
-  z-index: 1000;
-`;
-
-const HeaderFlexContainer = styled(FlexContainer)``;
-
-const HeaderInnerContainer = styled.div`
-  display: flex;
-  margin-top: 10px;
-`;
-
-const ToolTipContainer = styled.div`
-  zoom: ${({ theme }) => theme?.header?.navZoom};
 `;

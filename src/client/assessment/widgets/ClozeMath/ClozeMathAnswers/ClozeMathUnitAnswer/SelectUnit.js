@@ -7,7 +7,16 @@ import { response } from "@edulastic/constants";
 
 const { Option } = Select;
 
-const SelectUnit = ({ onChange, onDropdownVisibleChange, unit, customUnits, keypadMode, preview, height }) => {
+const SelectUnit = ({
+  onChange,
+  onDropdownVisibleChange,
+  unit,
+  customUnits,
+  keypadMode,
+  preview,
+  height,
+  dropdownStyle
+}) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
   if (keypadMode === "custom") {
@@ -29,6 +38,7 @@ const SelectUnit = ({ onChange, onDropdownVisibleChange, unit, customUnits, keyp
       height={height}
       getPopupContainer={trigger => trigger.parentNode}
       onDropdownVisibleChange={onDropdownVisibleChange}
+      dropdownStyle={dropdownStyle}
     >
       {allBtns.map((btn, i) => (
         <Option value={btn.handler} key={i}>
@@ -46,13 +56,15 @@ SelectUnit.propTypes = {
   unit: PropTypes.string.isRequired,
   customUnits: PropTypes.string,
   height: PropTypes.string,
-  preview: PropTypes.bool
+  preview: PropTypes.bool,
+  dropdownStyle: PropTypes.object
 };
 
 SelectUnit.defaultProps = {
   height: "",
   customUnits: "",
-  preview: false
+  preview: false,
+  dropdownStyle: {}
 };
 
 export default SelectUnit;

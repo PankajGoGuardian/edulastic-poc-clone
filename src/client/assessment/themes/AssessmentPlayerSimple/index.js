@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -20,8 +21,6 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
-import { getZoomedTheme } from "../../../student/zoomTheme";
-import { playersZoomTheme } from "../assessmentPlayersTheme";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
 import { toggleBookmarkAction } from "../../sharedDucks/bookmark";
 import Tools from "../AssessmentPlayerDefault/Tools";
@@ -44,7 +43,7 @@ class AssessmentPlayerSimple extends React.Component {
     title: PropTypes.string.isRequired,
     evaluate: PropTypes.any.isRequired,
     checkAnswer: PropTypes.func.isRequired,
-    itemRows: PropTypes.any.isRequired,
+    itemRows: PropTypes.any,
     view: PropTypes.string.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired
@@ -54,6 +53,7 @@ class AssessmentPlayerSimple extends React.Component {
     theme: themes,
     itemRows: []
   };
+
   state = {
     currentColor: "#ff0000",
     fillColor: "#ff0000",
@@ -75,15 +75,14 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   toggleToolsOpenStatus = (tool, state = "no state") => {
-    this.setState(prevState => {
-      return {
-        toolsOpenStatus: {
-          ...prevState.toolsOpenStatus,
-          [tool]: state === "no state" ? !prevState.toolsOpenStatus[tool] : state
-        }
-      };
-    });
+    this.setState(prevState => ({
+      toolsOpenStatus: {
+        ...prevState.toolsOpenStatus,
+        [tool]: state === "no state" ? !prevState.toolsOpenStatus[tool] : state
+      }
+    }));
   };
+
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
@@ -111,7 +110,9 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   componentDidUpdate(previousProps) {
-    if (this.props.currentItem !== previousProps.currentItem) {
+    const { currentItem } = this.props;
+    if (currentItem !== previousProps.currentItem) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ showHints: false, testItemState: "" });
     }
   }
@@ -188,7 +189,6 @@ class AssessmentPlayerSimple extends React.Component {
       view: previewTab,
       settings,
       selectedTheme,
-      zoomLevel,
       unansweredQuestionCount,
       previewPlayer,
       scratchPad

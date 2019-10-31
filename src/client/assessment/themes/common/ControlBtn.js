@@ -1,6 +1,4 @@
-/* eslint-disable */
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
 import { Button } from "antd";
 
 const ControlBtn = styled(Button)`
@@ -24,11 +22,18 @@ const ControlBtn = styled(Button)`
   justify-content: center;
   padding-bottom: ${props => (props.next ? "2px" : "0")};
   padding-right: ${props => (props.next ? "0" : "3px")};
+  margin-right: 10px;
   cursor: normal;
 
   &:hover {
     background: ${props => props.theme.default.headerButtonBgHoverColor};
+    i {
+      svg {
+        fill: ${props => props.theme.header.headerButtonHoverColor};
+      }
+    }
   }
+
   &[disabled] {
     background: ${props => props.theme.default.headerButtonBgColor};
     cursor: not-allowed;
@@ -47,6 +52,11 @@ const ControlBtn = styled(Button)`
         ? props.theme.default.headerButtonActiveBgColor
         : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
     border: none;
+    i {
+      svg {
+        fill: ${props => props.theme.header.headerButtonHoverColor};
+      }
+    }
   }
 
   & > span {

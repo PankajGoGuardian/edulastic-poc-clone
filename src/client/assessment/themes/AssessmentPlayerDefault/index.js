@@ -9,7 +9,6 @@ import { Affix, Tooltip } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB } from "@edulastic/common";
-import { IconSettings } from "@edulastic/icons";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
@@ -43,7 +42,6 @@ import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
 import {
   SMALL_DESKTOP_WIDTH,
-  IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
   IPAD_LANDSCAPE_WIDTH
@@ -379,6 +377,28 @@ class AssessmentPlayerDefault extends React.Component {
     if (isZoomApplied) {
       headerZoom = zoomLevel >= "1.75" ? "1.35" : "1.25";
     }
+
+    const headerStyleWidthZoom = {
+      transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
+      transformOrigin: "0px 0px",
+      width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
+      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "11px 15px"}`,
+      justifyContent: "space-between"
+    };
+
+    const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
+
+    if (isMobile) {
+      headerStyleWidthZoom.padding = 0;
+    }
+
+    const rightButtons = (
+      <SaveAndExit
+        openSettings={() => setSettingsModalVisibility(true)}
+        previewPlayer={previewPlayer}
+        finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
+      />
+    );
     return (
       <ThemeProvider theme={themeToPass}>
         <Container
@@ -429,37 +449,26 @@ class AssessmentPlayerDefault extends React.Component {
           <Affix>
             <Header LCBPreviewModal={LCBPreviewModal}>
               <HeaderMainMenu skin>
-                <FlexContainer
-                  style={{
-                    transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
-                    transformOrigin: "0px 0px",
-                    width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-                    padding: `${
-                      isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "10px 10px 15px"
-                    }`,
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <FlexContainer
-                    style={{
-                      justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
-                    }}
-                  >
-                    <LogoCompact marginRight="12px" />
-                    {!LCBPreviewModal && (
-                      <QuestionSelectDropdown
-                        key={currentItem}
-                        currentItem={currentItem}
-                        gotoQuestion={gotoQuestion}
-                        options={dropdownOptions}
-                        bookmarks={bookmarksInOrder}
-                        skipped={skippedInOrder}
-                        dropdownStyle={navZoomStyle}
-                        zoomLevel={headerZoom}
-                      />
-                    )}
-                    {!LCBPreviewModal && (
-                      <>
+                <FlexContainer style={headerStyleWidthZoom}>
+                  <HeaderWrapper>
+                    <LogoCompactContainer>
+                      <LogoCompact marginRight="12px" />
+                      {isMobile && rightButtons}
+                    </LogoCompactContainer>
+                    <ButtonsWrapper>
+                      {!LCBPreviewModal && (
+                        <QuestionSelectDropdown
+                          key={currentItem}
+                          currentItem={currentItem}
+                          gotoQuestion={gotoQuestion}
+                          options={dropdownOptions}
+                          bookmarks={bookmarksInOrder}
+                          skipped={skippedInOrder}
+                          dropdownStyle={navZoomStyle}
+                          zoomLevel={headerZoom}
+                        />
+                      )}
+                      {!LCBPreviewModal && (
                         <ToolTipContainer>
                           <Tooltip placement="top" title="Previous" overlayStyle={navZoomStyle}>
                             <ControlBtn
@@ -472,14 +481,10 @@ class AssessmentPlayerDefault extends React.Component {
                               onClick={moveToPrev}
                             />
                           </Tooltip>
-                        </ToolTipContainer>
-                        <ToolTipContainer>
                           <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
                             <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                           </Tooltip>
-                        </ToolTipContainer>
-                        {showSettingIcon && (
-                          <ToolTipContainer>
+                          {showSettingIcon && (
                             <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
                               <ToolButton
                                 next
@@ -493,49 +498,35 @@ class AssessmentPlayerDefault extends React.Component {
                                 }}
                               />
                             </Tooltip>
-                          </ToolTipContainer>
-                        )}
-                        {windowWidth >= SMALL_DESKTOP_WIDTH && (
-                          <TestButton
-                            answerChecksUsedForItem={answerChecksUsedForItem}
-                            settings={settings}
-                            items={items}
-                            currentItem={currentItem}
-                            isNonAutoGradable={isNonAutoGradable}
-                            checkAnswer={() => this.changeTabItemState("check")}
-                            toggleBookmark={() => toggleBookmark(item._id)}
-                            isBookmarked={isBookmarked}
-                            handletoggleHints={this.showHideHints}
-                          />
-                        )}
-                        {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
-                          <ToolBar
-                            settings={settings}
-                            calcBrands={calcBrands}
-                            tool={currentToolMode}
-                            changeCaculateMode={this.handleModeCaculate}
-                            changeTool={this.changeTool}
-                            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-                          />
-                        )}
-                      </>
-                    )}
-                  </FlexContainer>
-                  <FlexContainer>
-                    <IconSettings
-                      color={themeToPass?.default?.headerButtonIconColor}
-                      height={themeToPass?.default?.headerToolbarButtonHeight}
-                      width={themeToPass?.default?.headerToolbarButtonWidth}
-                      onClick={() => setSettingsModalVisibility(true)}
-                    />
-                    {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
-                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
-                    )}
-
-                    {previewPlayer && (
-                      <SaveAndExit previewPlayer={previewPlayer} finishTest={() => closeTestPreviewModal()} />
-                    )}
-                  </FlexContainer>
+                          )}
+                          {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                            <TestButton
+                              answerChecksUsedForItem={answerChecksUsedForItem}
+                              settings={settings}
+                              items={items}
+                              currentItem={currentItem}
+                              isNonAutoGradable={isNonAutoGradable}
+                              checkAnswer={() => this.changeTabItemState("check")}
+                              toggleBookmark={() => toggleBookmark(item._id)}
+                              isBookmarked={isBookmarked}
+                              handletoggleHints={this.showHideHints}
+                            />
+                          )}
+                          {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
+                            <ToolBar
+                              settings={settings}
+                              calcBrands={calcBrands}
+                              tool={currentToolMode}
+                              changeCaculateMode={this.handleModeCaculate}
+                              changeTool={this.changeTool}
+                              qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+                            />
+                          )}
+                        </ToolTipContainer>
+                      )}
+                    </ButtonsWrapper>
+                  </HeaderWrapper>
+                  {!isMobile && <FlexContainer>{rightButtons}</FlexContainer>}
                 </FlexContainer>
                 <FlexContainer />
               </HeaderMainMenu>
@@ -661,4 +652,28 @@ const StyledPaddingDiv = styled(PaddingDiv)`
 
 const ToolTipContainer = styled.div`
   zoom: ${({ theme }) => theme?.header?.navZoom};
+  display: flex;
+  align-items: center;
+`;
+
+const HeaderWrapper = styled(FlexContainer)`
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    flex-direction: column;
+    width: 100%;
+  }
+`;
+
+const LogoCompactContainer = styled(FlexContainer)`
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+const ButtonsWrapper = styled(FlexContainer)`
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    margin-left: 0px;
+    width: 100%;
+    justify-content: space-between;
+  }
 `;

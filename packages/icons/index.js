@@ -189,3 +189,5 @@ export { default as IconSubscriptionHighlight } from "./src/IconSubscriptionHigh
 export { default as IconProfileHighlight } from "./src/IconProfileHighlight";
 export { default as IconSignoutHighlight } from "./src/IconSignoutHighlight";
 export { default as IconMail } from "./src/IconMail";
+export { default as IconCircleLogout } from "./src/IconCircleLogout";
+export { default as IconContrast } from "./src/IconContrast";

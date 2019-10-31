@@ -5,7 +5,6 @@ import { Button, Tooltip } from "antd";
 
 import { test, questionType } from "@edulastic/constants";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
-import { MEDIUM_DESKTOP_WIDTH } from "../../constants/others";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {
@@ -32,19 +31,19 @@ class ToolBar extends Component {
     return (
       <Container>
         <Tooltip placement="top" title="Pointer">
-          <StyledButton enable={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)}>
+          <StyledButton active={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)}>
             <CursorIcon />
           </StyledButton>
         </Tooltip>
 
         <Tooltip placement="top" title="Ruler">
-          <StyledButton enable={tool === 1} onClick={() => this.toolbarHandler(1)}>
+          <StyledButton active={tool === 1} onClick={() => this.toolbarHandler(1)}>
             <InRulerIcon />
           </StyledButton>
         </Tooltip>
         {calcType !== calculatorTypes.NONE && (
           <Tooltip placement="top" title="Calculator">
-            <StyledButton enable={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
+            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
               <CaculatorIcon />
             </StyledButton>
           </Tooltip>
@@ -55,7 +54,7 @@ class ToolBar extends Component {
           title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
         >
           <StyledButton
-            enable={tool.indexOf(3) !== -1}
+            active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn}
             onClick={() => this.toolbarHandler(3)}
           >
@@ -64,13 +63,13 @@ class ToolBar extends Component {
         </Tooltip>
 
         <Tooltip placement="top" title="Protactor">
-          <StyledButton enable={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)}>
+          <StyledButton active={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)}>
             <ProtactorIcon />
           </StyledButton>
         </Tooltip>
 
         <Tooltip placement="top" title="Scratch Pad">
-          <StyledButton enable={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
+          <StyledButton active={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
             <ScratchPadIcon />
           </StyledButton>
         </Tooltip>
@@ -91,49 +90,83 @@ export default ToolBar;
 
 const Container = styled.div`
   margin-left: 60px;
-`;
-
-const customizeIcon = icon => styled(icon)`
-  fill: ${props => props.theme.header.headerButtonColor};
-  margin-left: -3px;
-  margin-top: 3px;
-  &:hover {
-    fill: ${props => props.theme.header.headerButtonColor};
-  }
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const StyledButton = styled(Button)`
+  border: none;
   margin-right: 10px;
-  background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
-  border-color: ${props => props.theme.default.headerButtonBorderColor};
-  height: ${props => props.theme.default.headerToolbarButtonWidth};
-  width: ${props => props.theme.default.headerToolbarButtonHeight};
+  border-radius: 5px;
 
-  svg {
-    height: ${props => props.theme.default.headerButtonFontIconWidth};
-    width: ${props => props.theme.default.headerButtonFontIconHeight};
-  }
+  ${({ theme, active }) => `
+    background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+    height: ${theme.default.headerToolbarButtonWidth};
+    width: ${theme.default.headerToolbarButtonHeight};
 
-  &:focus,
-  &:hover,
-  &:active {
-    background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
-    border-color: ${props => props.theme.default.headerButtonActiveBgColor};
-  }
-  :disabled {
-    opacity: 0.4;
-    background: transparent;
-  }
+    svg {
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+    }
+
+    &:focus,
+    &:hover,
+    &:active {
+      background: ${theme.default.headerButtonBgHoverColor};
+
+      svg {
+        fill: ${theme.header.headerButtonHoverColor};
+      }
+    }
+
+    :disabled {
+      opacity: 0.4;
+      background: ${theme.default.headerButtonBgColor};
+    }
+  `}
 `;
 
-const CursorIcon = customizeIcon(IconCursor);
+const CursorIcon = styled(IconCursor)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCursorIconWidth};
+    height: ${theme.default.headerCursorIconHeight};
+  `}
+`;
 
-const InRulerIcon = customizeIcon(IconInRuler);
+const InRulerIcon = styled(IconInRuler)`
+  ${({ theme }) => `
+    width: ${theme.default.headerInRulerIconWidth};
+    height: ${theme.default.headerInRulerIconHeight};
+  `}
+`;
 
-const CaculatorIcon = customizeIcon(IconCalculator);
+const CaculatorIcon = styled(IconCalculator)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCaculatorIconWidth};
+    height: ${theme.default.headerCaculatorIconHeight};
+  `}
+`;
 
-const CloseIcon = customizeIcon(IconClose);
+const CloseIcon = styled(IconClose)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCloseIconWidth};
+    height: ${theme.default.headerCloseIconHeight};
+  `}
+`;
 
-const ProtactorIcon = customizeIcon(IconProtactor);
+const ProtactorIcon = styled(IconProtactor)`
+  ${({ theme }) => `
+    width: ${theme.default.headerProtactorIconWidth};
+    height: ${theme.default.headerProtactorIconHeight};
+  `}
+`;
 
-const ScratchPadIcon = customizeIcon(IconScratchPad);
+const ScratchPadIcon = styled(IconScratchPad)`
+  ${({ theme }) => `
+    width: ${theme.default.headerScratchPadIconWidth};
+    height: ${theme.default.headerScratchPadIconHeight};
+  `}
+`;

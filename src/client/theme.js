@@ -333,8 +333,9 @@ export const defaultTheme = {
   confirmationPopupTextColor: textColor,
   confirmationPopupButtonTextColor: themeColor,
   confirmationPopupButtonTextHoverColor: linkFilledBgColor,
-  confirmationPopupButtonTextSize: bodyFontSize,
-  confirmationPopupTitleTextSize: headerTitle,
+  confirmationPopupButtonTextSize: linkFontSize,
+  confirmationPopupBodyTextSize: bodyFontSize,
+  confirmationPopupTitleTextSize: notificationTitle,
 
   default: {
     // this default is required for Doc based asseeements
@@ -1442,7 +1443,7 @@ export const defaultTheme = {
     cancelButtonBgColor: buttonBackgroundColor
   },
   confirmation: {
-    titleTextSize: headerTitle,
+    titleTextSize: notificationTitle,
     titleColor: labelStyle,
     descriptionTextSize: bodyFontSize,
     descriptionTextColor: labelStyle,

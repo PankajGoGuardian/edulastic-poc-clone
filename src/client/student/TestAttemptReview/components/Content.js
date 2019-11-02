@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import styled, { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider, css } from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button } from "antd";
@@ -15,6 +15,7 @@ import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
+import { largeDesktopWidth, desktopWidth } from "@edulastic/colors";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
@@ -343,31 +344,41 @@ const AnsweredTypeButtonContainer = styled.div`
   }
 `;
 
+const EnabeldButtonStyle = css`
+  color: ${props => props.theme.headerFilters.headerFilterTextHoverColor};
+  background: ${props => props.theme.headerFilters.headerFilterBgHoverColor};
+`;
+
 const StyledButton = styled(Button)`
   height: 24px;
-  float: left;
-  color: ${props => (props.enabled ? props.theme.filterButtonActiveColor : props.theme.filterButtonColor)};
-  background: ${props => (props.enabled ? props.theme.filterButtonBgActiveColor : props.theme.filterButtonBgColor)};
-  border: 1px solid ${props => props.theme.filterButtonBorderColor};
+  width: auto;
+  padding: 5px 32px;
+  color: ${props => props.theme.headerFilters.headerFilterTextColor};
+  border: 1px solid ${props => props.theme.headerFilters.headerFilterBgBorderColor};
   border-radius: 4px;
-  margin-right: 20px;
+  margin-left: 20px;
   min-width: 85px;
+  font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
   &:focus,
   &:active,
   &:hover {
-    color: ${props => (props.enabled ? props.theme.filterButtonActiveColor : props.theme.filterButtonColor)};
-    background: ${props => (props.enabled ? props.theme.filterButtonBgActiveColor : props.theme.filterButtonBgColor)};
-    border-color: ${props => props.theme.filterButtonBorderActiveColor};
+    ${EnabeldButtonStyle}
   }
+  ${props => props.enabled && EnabeldButtonStyle}
+
   span {
-    font-size: 10px;
     font-weight: 600;
   }
-  @media screen and (max-width: 992px) {
-    margin-top: 20px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-left: 10px;
+    min-width: 85px;
+    font-size: 8px;
   }
-  @media screen and (max-width: 768px) {
-    margin-right: 10px;
+
+  @media screen and (max-width: ${desktopWidth}) {
+    margin: 5px 10px 0px 0px;
+    min-width: auto;
   }
 `;
 

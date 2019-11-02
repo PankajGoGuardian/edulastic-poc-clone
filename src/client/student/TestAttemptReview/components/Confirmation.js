@@ -16,10 +16,10 @@ class Confirmation extends Component {
         showCloseIcon={false}
         styles={{
           modal: {
-            maxWidth: "640px",
+            maxWidth: "582px",
             borderRadius: 5,
             textAlign: "center",
-            padding: "20px 30px"
+            padding: "86px 57px 35px 57px"
           }
         }}
         center
@@ -62,7 +62,6 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px 0px;
 `;
 
 const Title = styled.div`
@@ -75,12 +74,12 @@ const TitleDescription = styled.div`
   font-size: ${props => props.theme.confirmation.descriptionTextSize};
   color: ${props => props.theme.confirmation.descriptionTextColor};
   font-weight: 600;
-  margin-top: 12px;
+  margin-top: 14px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  width: 80%;
+  width: 100%;
   margin-top: 60px;
 `;
 

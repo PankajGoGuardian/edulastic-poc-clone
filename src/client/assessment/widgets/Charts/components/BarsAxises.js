@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Line, Text, Tick } from "../styled";
+import { Line, Text, Tick, VxText } from "../styled";
 import { getGridVariables } from "../helpers";
 
 const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines }) => {
@@ -33,13 +33,11 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines }) =
         return (
           <Fragment>
             {displayAxisLabel && (
-              <Text textAnchor="middle" x={x} y={showTicks ? height : height - 10}>
-                {getParts(index).map((text, ind) => (
-                  <tspan dy="1.2em" x={x} key={ind}>
-                    {text}
-                  </tspan>
-                ))}
-              </Text>
+              <g transform={`translate(${getConstantX(index)}, ${height})`}>
+                <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                  {lines[index].x}
+                </VxText>
+              </g>
             )}
             {displayGridlines && <Line x1={x} y1={margin} x2={x} y2={y2} strokeWidth={2} />}
             {showTicks && <Tick x1={x} y1={y2 - 10} x2={x} y2={y2 + 10} strokeWidth={2} />}

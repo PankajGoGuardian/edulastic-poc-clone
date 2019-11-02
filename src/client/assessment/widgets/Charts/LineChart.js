@@ -27,7 +27,8 @@ const LineChart = ({
   correct,
   disableResponse,
   toggleBarDragging,
-  deleteMode
+  deleteMode,
+  margin = { top: 0, right: 0, left: 0, bottom: 50 }
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams;
 
@@ -104,44 +105,53 @@ const LineChart = ({
     save();
   };
 
-  const svgHeight = height + paddingTop;
-
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
-      width={width}
-      height={svgHeight}
+      width={width + margin.left + margin.right}
+      height={height + margin.top + margin.bottom}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+      <g
+        width={width}
+        height={height}
+        style={{
+          marginLeft: `${margin.left}px`,
+          marginRight: `${margin.right}px`,
+          marginTop: `${margin.top}px`,
+          marginBottom: `${margin.bottom}px`
+        }}
+      >
+        <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-      <HorizontalLines
-        gridParams={gridParams}
-        displayGridlines={displayHorizontalLines(showGridlines)}
-        paddingTop={paddingTop}
-        isLine
-      />
+        <HorizontalLines
+          gridParams={gridParams}
+          displayGridlines={displayHorizontalLines(showGridlines)}
+          paddingTop={paddingTop}
+          isLine
+        />
 
-      <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" />
+        <StyledPolyline points={getPolylinePoints()} strokeWidth={3} fill="none" />
 
-      <ArrowPair getActivePoint={getActivePoint} />
+        <ArrowPair getActivePoint={getActivePoint} />
 
-      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
-      <Points
-        item={item}
-        activeIndex={activeIndex}
-        onPointOver={setActive}
-        previewTab={previewTab}
-        circles={localData}
-        view={view}
-        onMouseDown={!disableResponse ? onMouseDown : () => {}}
-        gridParams={gridParams}
-        correct={correct}
-        paddingTop={paddingTop}
-      />
+        <Points
+          item={item}
+          activeIndex={activeIndex}
+          onPointOver={setActive}
+          previewTab={previewTab}
+          circles={localData}
+          view={view}
+          onMouseDown={!disableResponse ? onMouseDown : () => {}}
+          gridParams={gridParams}
+          correct={correct}
+          paddingTop={paddingTop}
+        />
+      </g>
     </svg>
   );
 };

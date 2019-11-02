@@ -42,6 +42,7 @@ import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import { getUserFeatures } from "../../../student/Login/ducks";
+import { roleuser } from "@edulastic/constants";
 
 const menuItems = [
   {
@@ -232,6 +233,13 @@ class SideMenu extends Component {
       menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false))
     );
 
+    const _userRole =
+      userRole === roleuser.TEACHER
+        ? "Teacher"
+        : userRole === roleuser.SCHOOL_ADMIN
+        ? "School-Admin"
+        : "District-Admin";
+
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
         <Menu onClick={this.onClickFooterDropDownMenu}>
@@ -361,7 +369,7 @@ class SideMenu extends Component {
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11, width: "100px" }}>
                           {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
-                          {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
+                          {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
                         </div>
                       </Tooltip>
 

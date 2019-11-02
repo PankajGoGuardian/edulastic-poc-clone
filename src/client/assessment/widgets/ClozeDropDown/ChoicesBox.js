@@ -67,7 +67,6 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
         defaultValue={userAnswer?.value}
         style={{
           ...styles,
-          minWidth: styles.width || 100,
           overflow: "hidden"
         }}
         placeholder={individualPlacholder || placeholder}

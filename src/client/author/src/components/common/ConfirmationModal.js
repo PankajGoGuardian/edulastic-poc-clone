@@ -50,7 +50,7 @@ export const ConfirmationModal = styled(Modal)`
       padding: 25px 16px 0px;
       .ant-btn {
         font-size: 11px;
-        padding: 20px 50px;
+        padding: 19px 50px;
         border-radius: 4px;
         background: ${themeColor};
         border-color: ${themeColor};

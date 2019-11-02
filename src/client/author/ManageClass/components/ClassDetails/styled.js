@@ -462,9 +462,6 @@ export const RedirectButton = styled(StyledTabButton)`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    width: 130px;
-  }
   @media (max-width: ${mobileWidthLarge}) {
     width: auto;
     padding: 6px 12px;

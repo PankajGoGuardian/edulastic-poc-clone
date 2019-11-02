@@ -88,8 +88,6 @@ class AddStudentModal extends React.Component {
 
         <ActionButton data-cy="addButton" onClick={isUpdate ? this.enrollStudent : handleAdd} type="primary">
           {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
-
-          <Icon type="right" />
         </ActionButton>
       </>
     );

@@ -1409,7 +1409,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           heightpx: 35,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
-          responseContainerWidth: 200
+          responseContainerWidth: 200,
+          fontsize: "normal"
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },

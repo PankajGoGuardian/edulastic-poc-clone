@@ -181,6 +181,8 @@ const Matrix = props => {
     );
   };
 
+  let hideEmptycell = false;
+
   const getColumns = () => {
     const isTable = uiStyle.type === "table";
 
@@ -188,7 +190,7 @@ const Matrix = props => {
       title: isTable ? (
         <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: option }} />
       ) : (
-        ""
+        (() => (hideEmptycell = true))()
       ),
       dataIndex: `${i}`,
       width: uiStyle.optionWidth || "auto",
@@ -268,6 +270,7 @@ const Matrix = props => {
       pagination={false}
       maxWidth={uiStyle.maxWidth}
       hasOptionRow={!helpers.isEmpty(uiStyle.optionRowTitle)}
+      hideEmptycell={hideEmptycell}
     />
   );
 };

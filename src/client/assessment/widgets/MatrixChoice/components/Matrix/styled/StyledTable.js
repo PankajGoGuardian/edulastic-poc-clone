@@ -19,6 +19,10 @@ export const StyledTable = styled(Table)`
       tr:not(:last-child) > th[colspan] {
         display: ${({ hasOptionRow }) => (!hasOptionRow ? "none" : null)};
       }
+
+      tr:nth-of-type(2) {
+        display: ${props => !!props.hideEmptycell && "none"};
+      }
     }
 
     tr {

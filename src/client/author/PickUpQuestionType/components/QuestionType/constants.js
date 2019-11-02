@@ -529,7 +529,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           pointBoxPosition: 60,
           pointFace: "circle",
           pointSize: 6,
-          pointStrokeWidth: 4
+          pointStrokeWidth: 4,
+          maxPointsCount: 12
         },
         backgroundImage: {
           src: "",
@@ -724,7 +725,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           pointBoxPosition: 60,
           pointFace: "cross",
           pointSize: 6,
-          pointStrokeWidth: 4
+          pointStrokeWidth: 4,
+          maxPointsCount: 12
         },
         backgroundImage: {
           src: "",

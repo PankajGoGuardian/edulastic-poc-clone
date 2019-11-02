@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
@@ -26,53 +26,13 @@ const getColoredElems = (elements, compareResult) => {
       const detail = compareResult.details.find(det => det.shape.id === el.id);
 
       const red = Colors.red[CONSTANT.TOOLS.POINT];
-      const redHollow = Colors.red[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT];
-
       const green = Colors.green[CONSTANT.TOOLS.POINT];
-      const greenHollow = Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT];
 
       switch (el.type) {
         case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
           return {
             colors: detail && detail.result ? green : red,
             pointColor: detail && detail.result ? green : red,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          return {
-            lineColor: detail && detail.result ? green : red,
-            leftPointColor: detail && detail.result ? green : red,
-            rightPointColor: detail && detail.result ? green : red,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          return {
-            lineColor: detail && detail.result ? green : red,
-            leftPointColor: detail && detail.result ? greenHollow : redHollow,
-            rightPointColor: detail && detail.result ? greenHollow : redHollow,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          return {
-            lineColor: detail && detail.result ? green : red,
-            leftPointColor: detail && detail.result ? greenHollow : redHollow,
-            rightPointColor: detail && detail.result ? green : red,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          return {
-            lineColor: detail && detail.result ? green : red,
-            leftPointColor: detail && detail.result ? green : red,
-            rightPointColor: detail && detail.result ? greenHollow : redHollow,
-            ...el
-          };
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-          return {
-            colors: detail && detail.result ? green : red,
-            pointColor: detail && detail.result ? greenHollow : redHollow,
             ...el
           };
         default:
@@ -89,46 +49,9 @@ const getCorrectAnswer = answerArr => {
     return answerArr.map(el => {
       switch (el.type) {
         case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
           return {
             colors: Colors.green[CONSTANT.TOOLS.POINT],
             pointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          return {
-            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          return {
-            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT],
-            rightPointColor: Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          return {
-            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT],
-            rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          return {
-            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
-            rightPointColor: Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-          return {
-            colors: Colors.green[CONSTANT.TOOLS.POINT],
-            pointColor: Colors.green[CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT],
             ...el
           };
         default:
@@ -261,6 +184,8 @@ class NumberLinePlotContainer extends PureComponent {
         !isEqual(layout, prevProps.layout)
       ) {
         this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
+        this._graph.segmentsReset();
+        this._graph.loadSegments(elements);
       }
 
       if (
@@ -359,6 +284,7 @@ class NumberLinePlotContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.updateValues());
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.updateValues());
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.updateValues());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, () => this.updateValues());
   };
 
   setElementsToGraph = (prevProps = {}) => {
@@ -414,20 +340,24 @@ class NumberLinePlotContainer extends PureComponent {
         <GraphWrapper>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <GraphEditTools
-              side="left"
-              hideEquationTool
-              graphData={graphData}
-              setQuestionData={setQuestionData}
-              layout={layout}
-            />
-            <GraphEditTools
-              side="right"
-              hideSettingTool
-              graphData={graphData}
-              setQuestionData={setQuestionData}
-              layout={layout}
-            />
+            {view === EDIT && !disableResponse && (
+              <Fragment>
+                <GraphEditTools
+                  side="left"
+                  hideEquationTool
+                  graphData={graphData}
+                  setQuestionData={setQuestionData}
+                  layout={layout}
+                />
+                <GraphEditTools
+                  side="right"
+                  hideSettingTool
+                  graphData={graphData}
+                  setQuestionData={setQuestionData}
+                  layout={layout}
+                />
+              </Fragment>
+            )}
             <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
           </div>
         </GraphWrapper>

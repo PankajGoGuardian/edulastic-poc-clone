@@ -110,16 +110,16 @@ class NumberLinePlot extends Component {
           <Row gutter={8}>
             <Col md={3} />
             <Col md={3}>
-              <ColumnLabel>Minimum</ColumnLabel>
+              <ColumnLabel>{t("component.graphing.ticksoptions.minimum")}</ColumnLabel>
             </Col>
             <Col md={3}>
-              <ColumnLabel>Maximum</ColumnLabel>
+              <ColumnLabel>{t("component.graphing.ticksoptions.maximum")}</ColumnLabel>
             </Col>
             <Col md={3}>
-              <ColumnLabel>Major Ticks</ColumnLabel>
+              <ColumnLabel>{t("component.graphing.ticksoptions.tickdistance")}</ColumnLabel>
             </Col>
             <Col md={3}>
-              <ColumnLabel>Minor Ticks</ColumnLabel>
+              <ColumnLabel>{t("component.graphing.ticksoptions.minorTicks")}</ColumnLabel>
             </Col>
             <Col md={3}>
               <ColumnLabel>{t("component.graphing.ticksoptions.showticks")}</ColumnLabel>
@@ -156,9 +156,10 @@ class NumberLinePlot extends Component {
             <Col md={3}>
               <StyledTextField
                 type="number"
-                name="majorTicks"
+                name="ticksDistance"
+                min={0}
                 disabled={false}
-                value={numberlineAxis.majorTicks}
+                value={numberlineAxis.ticksDistance}
                 onChange={this.handleNumberlineInputChange}
               />
             </Col>
@@ -166,6 +167,7 @@ class NumberLinePlot extends Component {
               <StyledTextField
                 type="number"
                 name="minorTicks"
+                min={0}
                 disabled={false}
                 value={numberlineAxis.minorTicks}
                 onChange={this.handleNumberlineInputChange}
@@ -190,68 +192,6 @@ class NumberLinePlot extends Component {
                 name="showMin"
                 onChange={this.handleNumberlineCheckboxChange("showMin")}
                 checked={numberlineAxis.showMin}
-              />
-            </CenteredCol>
-          </ColoredRow>
-          <ColoredRow gutter={8}>
-            <Col md={3}>
-              <RowLabel>y axis</RowLabel>
-            </Col>
-            <Col md={3}>
-              <StyledTextField
-                type="number"
-                name="yMin"
-                disabled={false}
-                value={canvas.yMin}
-                onChange={this.handleCanvasChange}
-              />
-            </Col>
-            <Col md={3}>
-              <StyledTextField
-                type="number"
-                name="yMax"
-                disabled={false}
-                value={canvas.yMax}
-                onChange={this.handleCanvasChange}
-              />
-            </Col>
-            <Col md={3}>
-              <StyledTextField
-                type="number"
-                name="yMajorTicks"
-                disabled={false}
-                value={numberlineAxis.yMajorTicks}
-                onChange={this.handleNumberlineInputChange}
-              />
-            </Col>
-            <Col md={3}>
-              <StyledTextField
-                type="number"
-                name="yMinorTicks"
-                disabled={false}
-                value={numberlineAxis.yMinorTicks}
-                onChange={this.handleNumberlineInputChange}
-              />
-            </Col>
-            <CenteredCol md={3}>
-              <Checkbox
-                name="yShowTicks"
-                onChange={this.handleNumberlineCheckboxChange("yShowTicks")}
-                checked={numberlineAxis.yShowTicks}
-              />
-            </CenteredCol>
-            <CenteredCol md={3}>
-              <Checkbox
-                name="yShowMax"
-                onChange={this.handleNumberlineCheckboxChange("yShowMax")}
-                checked={numberlineAxis.yShowMax}
-              />
-            </CenteredCol>
-            <CenteredCol md={3}>
-              <Checkbox
-                name="yShowMin"
-                onChange={this.handleNumberlineCheckboxChange("yShowMin")}
-                checked={numberlineAxis.yShowMin}
               />
             </CenteredCol>
           </ColoredRow>

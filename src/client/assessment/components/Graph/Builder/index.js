@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import { isNumber, maxBy } from "lodash";
+import { isNumber } from "lodash";
 import getDefaultConfig, { CONSTANT } from "./config";
 import {
   Area,
@@ -68,10 +68,6 @@ class Board {
      * Bg elements on the board
      */
     this.bgElements = [];
-    /**
-     * Elements only on the board, not in React Component
-     */
-    this.tempElements = [];
     /**
      * Static unitX
      */
@@ -595,8 +591,6 @@ class Board {
   segmentsReset() {
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
-    this.tempElements.map(this.removeObject.bind(this));
-    this.tempElements = [];
   }
 
   cleanToolTempPoints() {
@@ -622,7 +616,7 @@ class Board {
   removeObjectsUnderMouse(event) {
     const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
     if (this.graphType === "numberLinePlot") {
-      return this.removeTempEelemt(elementsUnderMouse);
+      return NumberLineDotPlotPoint.removeElementUnderMouse(this, elementsUnderMouse);
     }
     const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
 
@@ -632,33 +626,6 @@ class Board {
 
     this.elements = this.elements.filter(el => elementsToDelete.findIndex(etd => etd.id === el.id) === -1);
     elementsToDelete.forEach(el => {
-      this.removeObject(el);
-    });
-
-    return true;
-  }
-
-  removeTempEelemt(emsUnderMouse) {
-    const point = emsUnderMouse.find(em => em.elType === "point");
-    if (!point) {
-      return;
-    }
-    const _x = point.X();
-    const _y = point.Y();
-
-    const tempEmsToDelete = this.tempElements.filter(el => _y <= el.Y() && _x === el.X());
-
-    if (tempEmsToDelete.length === 0) {
-      return false;
-    }
-
-    this.tempElements = this.tempElements.filter(el => tempEmsToDelete.findIndex(etd => etd.id === el.id) === -1);
-    const newElement = maxBy(this.tempElements.filter(el => el.X() === _x), el => el.Y());
-    this.elements = this.elements.filter(el => el.X() !== _x);
-    if (newElement) {
-      this.elements.push(newElement);
-    }
-    tempEmsToDelete.forEach(el => {
       this.removeObject(el);
     });
 
@@ -752,28 +719,26 @@ class Board {
   }
 
   getSegments() {
-    return this.elements
-      .filter(element => element.elType === "segment" || element.elType === "point")
-      .map(element => {
-        switch (element.segmentType) {
-          case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.getConfig(element, this);
-          case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-            return NumberLineDotPlotPoint.getConfig(element, this);
-          case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-            return NumberlineSegment.getConfig(element, this);
-          case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-          case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-          case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-          case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-            return NumberlineVector.getConfig(element, this);
-          default:
-            break;
-        }
-      });
+    return this.elements.map(element => {
+      switch (element.segmentType) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+          return NumberlinePoint.getConfig(element, this);
+        case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
+          return NumberLineDotPlotPoint.getConfig(element, this);
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
+        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
+        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
+          return NumberlineSegment.getConfig(element, this);
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
+          return NumberlineVector.getConfig(element, this);
+        default:
+          break;
+      }
+    });
   }
 
   // settings
@@ -793,7 +758,6 @@ class Board {
     const isSwitchToGrid =
       this.parameters.pointParameters && !this.parameters.pointParameters.snapToGrid && pointParameters.snapToGrid;
     updatePointParameters(this.elements, pointParameters, isSwitchToGrid);
-    updatePointParameters(this.tempElements, pointParameters, isSwitchToGrid);
     this.parameters.pointParameters = {
       ...this.parameters.pointParameters,
       ...pointParameters
@@ -859,7 +823,7 @@ class Board {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
             return NumberlinePoint.renderAnswer(this, segment);
           case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-            return NumberLineDotPlotPoint.renderAnswer(this, segment);
+            return NumberLineDotPlotPoint.render(this, segment);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
@@ -916,7 +880,7 @@ class Board {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
             return NumberlinePoint.loadPoint(this, element);
           case CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT:
-            return NumberLineDotPlotPoint.loadPoint(this, element);
+            return NumberLineDotPlotPoint.render(this, element);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
             return NumberlineSegment.loadSegment(this, element, true, true, CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
@@ -1181,10 +1145,6 @@ class Board {
       default:
         throw new Error("Unknown element:", object);
     }
-  }
-
-  setTempElements(element) {
-    this.tempElements.push(element);
   }
 
   /**

@@ -727,38 +727,6 @@ export const toFractionHTML = (value, fractionsFormat) => {
   return `<span>${main}${space}${fracs}</span>`;
 };
 
-/**
- * Returns boolean value based on existing elements, pointX, and pointY
- * If the new element is overlap with existing, return value is false.
- * if pointY is over than max value, the return value is false.
- * if pointY is less than min value, the return value is false.
- * other cases will be true.
- * @param {object} board
- * @param {number} pointX
- * @param {number} pointY
- */
-
-export const canCreatePoint = (board, pointX, pointY) => {
-  const {
-    canvas: { yMax }
-  } = board.numberlineSettings;
-  const calcyMin = calcNumberlinePosition(board);
-  const calcyMax = yMax - calcyMin / 2;
-
-  if (pointY < calcyMin || pointY > calcyMax) {
-    return false;
-  }
-
-  return board.elements
-    .filter(em => em.elType === "point")
-    .every(em => {
-      if (em.X() === pointX && em.Y() === pointY) {
-        return false;
-      }
-      return true;
-    });
-};
-
 /*
  * check can add dragged value to board
  * @param {object} board

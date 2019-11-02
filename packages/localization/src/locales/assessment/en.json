@@ -664,7 +664,9 @@
         "tickdistance": "Tick distance",
         "snaptoticks": "Snap to ticks",
         "renderingbase": "Rendering base",
-        "minorTicks": "Minor ticks"
+        "minorTicks": "Minor ticks",
+        "minimum": "Minimum",
+        "maximum": "Maximum"
       },
       "labelstitle": "Labels",
       "labelsoptions": {

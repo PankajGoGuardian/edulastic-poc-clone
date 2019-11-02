@@ -497,7 +497,8 @@ class GraphDisplay extends Component {
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses ? 75 : parseInt(uiStyle.linePosition, 10),
         yDistance: safeParseFloat(uiStyle.yDistance),
-        pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10)
+        pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10),
+        maxPointsCount: parseInt(uiStyle.maxPointsCount, 10) || 12
       },
       pointParameters: {
         snapToGrid: true,

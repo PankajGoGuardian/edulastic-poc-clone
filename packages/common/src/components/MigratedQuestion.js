@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const MigratedQuestion = styled.div`
   display: inline-block;
+  width: 100%;
   pre {
     display: block;
     padding: 9.5px;

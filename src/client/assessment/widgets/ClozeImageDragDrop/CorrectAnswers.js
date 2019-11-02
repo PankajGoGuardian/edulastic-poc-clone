@@ -6,13 +6,13 @@ import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
+import { Tab, Tabs, TabContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import CorrectAnswer from "./CorrectAnswer";
-import { IconPlus } from "./styled/IconPlus";
+import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
 
 class CorrectAnswers extends Component {
   state = {
@@ -52,24 +52,15 @@ class CorrectAnswers extends Component {
   };
 
   renderPlusButton = () => {
-    const { onAddAltResponses, validation } = this.props;
+    const { onAddAltResponses, validation, t } = this.props;
 
     return (
-      <Button
-        style={{
-          minWidth: 20,
-          minHeight: 20,
-          width: 20,
-          padding: 0,
-          marginLeft: 20
-        }}
-        icon={<IconPlus data-cy="alternate" />}
-        onClick={() => {
+      <AddAlternateAnswerButton
+        onClickHandler={() => {
           this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();
         }}
-        color="primary"
-        variant="extendedFab"
+        text={`+${t("component.correctanswers.alternativeAnswer")}`}
       />
     );
   };

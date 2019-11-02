@@ -58,8 +58,8 @@ const valueHeightHashMap = {
 };
 
 const getColoredElems = (elements, compareResult, theme) => {
-  const correctAnswerItemIconColor = theme.widgets.graphPlacement.correctAnswerItemIconColor;
-  const incorrectAnswerItemIconColor = theme.widgets.graphPlacement.incorrectAnswerItemIconColor;
+  const rightIconColor = theme.widgets.graphPlacement.rightIconColor;
+  const wrongIconColor = theme.widgets.graphPlacement.wrongIconColor;
 
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
@@ -74,7 +74,7 @@ const getColoredElems = (elements, compareResult, theme) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: correctAnswerItemIconColor,
+            priorityColor: rightIconColor,
             customOptions: {
               isCorrect: true
             }
@@ -83,7 +83,7 @@ const getColoredElems = (elements, compareResult, theme) => {
         } else {
           newEl = {
             ...el,
-            priorityColor: incorrectAnswerItemIconColor,
+            priorityColor: wrongIconColor,
             customOptions: {
               isCorrect: false
             }
@@ -110,7 +110,7 @@ const getColoredElems = (elements, compareResult, theme) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: correctAnswerItemIconColor,
+            priorityColor: rightIconColor,
             customOptions: {
               isCorrect: true
             }
@@ -118,7 +118,7 @@ const getColoredElems = (elements, compareResult, theme) => {
         } else {
           newEl = {
             ...el,
-            priorityColor: incorrectAnswerItemIconColor,
+            priorityColor: wrongIconColor,
             customOptions: {
               isCorrect: false
             }
@@ -134,12 +134,12 @@ const getColoredElems = (elements, compareResult, theme) => {
 };
 
 const getCorrectAnswer = (answerArr, theme) => {
-  const correctAnswerItemIconColor = theme.widgets.graphPlacement.correctAnswerItemIconColor;
+  const rightIconColor = theme.widgets.graphPlacement.rightIconColor;
 
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
       ...el,
-      priorityColor: correctAnswerItemIconColor,
+      priorityColor: rightIconColor,
       customOptions: {
         isCorrect: true
       }

@@ -177,12 +177,12 @@ export const JSXBox = styled.div`
       width: calc(100% - 18px);
     }
 
-    background-color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemBgColor};
-    color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemTextColor};
+    background-color: ${props => props.theme.widgets.graphPlacement.rightBgColor};
+    color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {
-      background-color: ${props => props.theme.widgets.graphPlacement.correctAnswerItemBgColor};
-      fill: ${props => props.theme.widgets.graphPlacement.correctAnswerItemIconColor};
+      background-color: transparent;
+      fill: ${props => props.theme.widgets.graphPlacement.rightIconColor};
       margin: 0 2px;
     }
   }
@@ -192,12 +192,12 @@ export const JSXBox = styled.div`
       width: calc(100% - 18px);
     }
 
-    background-color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemBgColor};
-    color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemTextColor};
+    background-color: ${props => props.theme.widgets.graphPlacement.wrongBgColor};
+    color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {
-      background-color: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemBgColor};
-      fill: ${props => props.theme.widgets.graphPlacement.incorrectAnswerItemIconColor};
+      background-color: transparent;
+      fill: ${props => props.theme.widgets.graphPlacement.wrongIconColor};
       margin: 0 2px;
     }
   }

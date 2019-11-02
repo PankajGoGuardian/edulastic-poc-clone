@@ -514,6 +514,6 @@ const GraphComponent = enhance(Graph);
 export default GraphComponent;
 
 const StyledStimulus = styled(Stimulus)`
-  word-break: break-all;
+  word-break: break-word;
   white-space: pre-wrap;
 `;

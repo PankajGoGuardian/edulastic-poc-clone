@@ -109,11 +109,11 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            <Col md={12}>
+            <Col md={12} style={{ alignSelf: "flex-start" }}>
               <Row>
-                <Label>{t("component.options.scoringType")}</Label>
                 {scoringTypes.length > 1 && showSelect && (
                   <React.Fragment>
+                    <Label>{t("component.options.scoringType")}</Label>
                     <SelectWrapper
                       size="large"
                       data-cy="scoringType"
@@ -131,40 +131,44 @@ class Scoring extends Component {
                 )}
               </Row>
             </Col>
-            {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
-              <Col md={12}>
-                <Label>{t("component.options.rounding")}</Label>
-                <SelectWrapper
-                  data-cy="rounding"
-                  size="large"
-                  value={questionData.validation.rounding}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  onChange={value => handleChangeValidation("rounding", value)}
-                >
-                  {roundingTypes.map(({ value: val, label }) => (
-                    <Select.Option data-cy={val} key={val} value={val}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </SelectWrapper>
-              </Col>
-            )}
             <Col md={12}>
               <Row>
-                <Col md={24} style={{ margin: 0 }}>
-                  <Label>{t("component.options.penalty")}</Label>
-                </Col>
-                <Col md={24}>
-                  <FormGroup center>
-                    <StyledInput
-                      type="number"
-                      data-cy="penalty"
-                      value={questionData.validation.penalty}
-                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
+                  <Col md={24}>
+                    <Label>{t("component.options.rounding")}</Label>
+                    <SelectWrapper
+                      data-cy="rounding"
                       size="large"
-                      style={{ width: "100%", borderColor: "#E1E1E1" }}
-                    />
-                  </FormGroup>
+                      value={questionData.validation.rounding}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                      onChange={value => handleChangeValidation("rounding", value)}
+                    >
+                      {roundingTypes.map(({ value: val, label }) => (
+                        <Select.Option data-cy={val} key={val} value={val}>
+                          {label}
+                        </Select.Option>
+                      ))}
+                    </SelectWrapper>
+                  </Col>
+                )}
+                <Col md={24}>
+                  <Row>
+                    <Col md={24} style={{ margin: 0 }}>
+                      <Label>{t("component.options.penalty")}</Label>
+                    </Col>
+                    <Col md={24}>
+                      <FormGroup center>
+                        <StyledInput
+                          type="number"
+                          data-cy="penalty"
+                          value={questionData.validation.penalty}
+                          onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                          size="large"
+                          style={{ width: "100%", borderColor: "#E1E1E1" }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Col>

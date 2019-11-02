@@ -15,8 +15,8 @@ class NumberLinePlotMoreOptions extends Component {
 
   scoringTypes = [
     { label: "Exact match", value: "exactMatch" },
-    { label: "Partial match", value: "partialMatch" },
-    { label: "Partial match per response", value: "partialMatchV2" }
+    { label: "Partial match", value: "partialMatch" }
+    // { label: "Partial match per response", value: "partialMatchV2" }
   ];
 
   onSelectControl = control => {

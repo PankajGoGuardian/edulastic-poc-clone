@@ -83,9 +83,10 @@ class GraphDisplay extends Component {
     }
 
     return {
-      width: defaultStyle.layoutWidth * multiplier,
-      height: defaultStyle.layoutHeight * multiplier,
-      fontSize
+      width: defaultStyle.layoutWidth,
+      height: defaultStyle.layoutHeight,
+      fontSize,
+      multiplier
     };
   };
 
@@ -566,8 +567,9 @@ class GraphDisplay extends Component {
     } = this.props;
 
     const { uiStyle, canvas, numberlineAxis, list } = graphData;
-
-    const { width = 0, height = 0, fontSize } = this.getGraphDimensions(uiStyle, numberlineAxis);
+    const { fontSize, multiplier } = this.getGraphDimensions(uiStyle, numberlineAxis);
+    const width = uiStyle.layoutWidth;
+    const height = uiStyle.layoutHeight;
 
     return {
       canvas: {
@@ -655,7 +657,8 @@ class GraphDisplay extends Component {
       disableResponse,
       elementsIsCorrect,
       setQuestionData,
-      graphData
+      graphData,
+      zoom: multiplier
     };
   };
 

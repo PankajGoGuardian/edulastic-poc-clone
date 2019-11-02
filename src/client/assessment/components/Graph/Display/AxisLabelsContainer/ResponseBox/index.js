@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
 
+export const titleWidth = 150;
+
 class ResponseBox extends Component {
   state = {
     draggingMark: null
@@ -121,7 +123,7 @@ ResponseBox.defaultProps = {
   minWidth: 600,
   minHeight: 150,
   titleHeight: 30,
-  titleWidth: 150,
+  titleWidth: titleWidth,
   markCount: 0,
   markWidth: 120, // from .mark class
   markHeight: 45, // from .mark class

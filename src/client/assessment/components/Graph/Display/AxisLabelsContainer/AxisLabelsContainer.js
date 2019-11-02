@@ -20,7 +20,7 @@ import { CONSTANT } from "../../Builder/config";
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
-import ResponseBox from "./ResponseBox";
+import ResponseBox, { titleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 import { getAdjustedHeightAndWidth } from "../../common/utils";
 
@@ -85,7 +85,7 @@ class AxisLabelsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.MIN_WIDTH = 600;
+    this.MIN_WIDTH = 500;
     this.MIN_HEIGHT = 150;
 
     this._graphId = `jxgbox${Math.random()
@@ -96,6 +96,9 @@ class AxisLabelsContainer extends PureComponent {
     this.state = {
       resourcesLoaded: false
     };
+
+    this.parentWidth = 0;
+    this.parentHeight = 0;
 
     this.updateValues = this.updateValues.bind(this);
 
@@ -114,15 +117,21 @@ class AxisLabelsContainer extends PureComponent {
       graphData,
       setElementsStash,
       disableResponse,
-      view
+      view,
+      numberlineAxis: { responseBoxPosition }
     } = this.props;
 
+    this.parentWidth = this.axisLabelsContainerRef?.current?.clientWidth;
+    this.parentHeight = this.axisLabelsContainerRef?.current?.clientHeight;
+
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.axisLabelsContainerRef?.current?.clientWidth,
-      this.axisLabelsContainerRef?.current?.clientHeight,
+      this.parentWidth,
+      this.parentHeight,
       layout,
       this.MIN_WIDTH,
-      this.MIN_HEIGHT
+      this.MIN_HEIGHT,
+      responseBoxPosition,
+      responseBoxTitleWidth
     );
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
@@ -182,15 +191,18 @@ class AxisLabelsContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view
+      view,
+      numberlineAxis: { responseBoxPosition }
     } = this.props;
 
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.axisLabelsContainerRef?.current?.clientWidth,
-      this.axisLabelsContainerRef?.current?.clientHeight,
+      this.parentWidth,
+      this.parentHeight,
       layout,
       this.MIN_WIDTH,
-      this.MIN_HEIGHT
+      this.MIN_HEIGHT,
+      responseBoxPosition,
+      responseBoxTitleWidth
     );
 
     if (this._graph) {
@@ -371,11 +383,13 @@ class AxisLabelsContainer extends PureComponent {
     } = this.props;
 
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.axisLabelsContainerRef?.current?.clientWidth,
-      this.axisLabelsContainerRef?.current?.clientHeight,
+      this.parentWidth,
+      this.parentHeight,
       layout,
       this.MIN_WIDTH,
-      this.MIN_HEIGHT
+      this.MIN_HEIGHT,
+      responseBoxPosition,
+      responseBoxTitleWidth
     );
 
     return (
@@ -411,7 +425,7 @@ class AxisLabelsContainer extends PureComponent {
                   separationDistanceX={separationDistanceX}
                   separationDistanceY={separationDistanceY}
                   position={responseBoxPosition}
-                  minWidth={adjustedHeightWidth.width}
+                  minWidth={Math.min(adjustedHeightWidth.width, this.parentWidth)}
                   minHeight={adjustedHeightWidth.height}
                 />
               )}

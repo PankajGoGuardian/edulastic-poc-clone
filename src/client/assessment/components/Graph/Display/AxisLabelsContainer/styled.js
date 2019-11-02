@@ -48,6 +48,7 @@ export const ContainerWithResponses = styled.div`
   display: flex;
 
   .jsxbox-with-response-box-response-options {
+    width: 100%;
     display: flex;
 
     flex-direction: ${({ responseBoxPosition }) =>

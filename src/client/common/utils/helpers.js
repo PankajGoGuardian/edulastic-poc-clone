@@ -230,6 +230,6 @@ export const addThemeBackgroundColor = elem => styled(elem)`
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
-export const ifZoomed = zoomLevel => zoomLevel !== smallestZoomLevel;
+export const ifZoomed = zoomLevel => zoomLevel && zoomLevel !== smallestZoomLevel;
 
 export const isZoomGreator = (zoomLevel, levelToCheck) => breakpoints[levelToCheck] > breakpoints[zoomLevel];

@@ -27,13 +27,14 @@ class FocusInput extends Component {
   }
 
   onFocus(evt) {
+    // TODO fix the implementation
     const { dirty, value } = this.state;
     const { onChange, onFocus } = this.props;
     if (!dirty) {
       this.setState({
-        value: ""
+        value
       });
-      this.inputRef.current.value = "";
+      this.inputRef.current.value = value;
       onChange({
         target: this.inputRef.current
       });

@@ -12,7 +12,8 @@ const TestPreviewModal = ({
   test,
   error,
   closeTestPreviewModal,
-  isShowStudentWork = false
+  isShowStudentWork = false,
+  isStudentReport
 }) => {
   useEffect(() => {
     if (error) {
@@ -39,7 +40,7 @@ const TestPreviewModal = ({
         testId={testId}
         test={test}
         preview
-        showTools
+        showTools={!isStudentReport}
         isShowStudentWork={isShowStudentWork}
       />
     </StyledModal>

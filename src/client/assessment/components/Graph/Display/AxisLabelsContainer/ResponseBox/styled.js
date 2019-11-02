@@ -24,6 +24,10 @@ export const MarkContainer = WithMathFormula(
     height: 100%;
 
     .mark-content {
+      div {
+        margin: auto;
+      }
+
       p {
         margin: auto;
       }

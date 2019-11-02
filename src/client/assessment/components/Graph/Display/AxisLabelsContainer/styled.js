@@ -26,6 +26,9 @@ export const JSXBox = styled.div`
 
   .fr-box.mark.mounted {
     .mark-content {
+      div {
+        margin: auto;
+      }
       p {
         margin: auto;
       }

@@ -10,6 +10,15 @@ import {
   IconGraphSegment as IconSegment,
   IconGraphSine as IconSine,
   IconGraphVector as IconVector,
+  IconGraphEllipse as IconEllipse,
+  IconGraphHyperbola as IconHyperbola,
+  IconGraphTangent as IconTangent,
+  IconGraphSecant as IconSecant,
+  IconGraphExponent as IconExponent,
+  IconGraphLogarithm as IconLogarithm,
+  IconGraphPolynom as IconPolynom,
+  IconGraphArea as IconArea,
+  IconGraphDashed as IconDashed,
   IconEraseText,
   IconRedo,
   IconTrash,
@@ -81,8 +90,7 @@ export default function Tools(props) {
   const getIconByToolName = (toolName = "point") => {
     const options = {
       width: fontSize + 2,
-      height: fontSize + 2,
-      color: ""
+      height: fontSize + 2
     };
     const { width, height } = options;
 
@@ -125,14 +133,58 @@ export default function Tools(props) {
         return <IconVector {...newOptions} />;
       },
       circle: () => <IconCircle {...options} />,
-      ellipse: () => "ellipse",
-      hyperbola: () => "hyperbola",
-      tangent: () => "tangent",
-      secant: () => "secant",
-      exponent: () => "exponent",
-      logarithm: () => "logarithm",
-      polynom: () => "polynom",
-      parabola: () => <IconParabola {...options} />,
+      ellipse: () => {
+        const newOptions = {
+          ...options,
+          width: width + 4
+        };
+
+        return <IconEllipse {...newOptions} />;
+      },
+      hyperbola: () => <IconHyperbola {...options} />,
+      tangent: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 16
+        };
+
+        return <IconTangent {...newOptions} />;
+      },
+      secant: () => {
+        const newOptions = {
+          ...options,
+          width: width + 6,
+          height: height + 6
+        };
+
+        return <IconSecant {...newOptions} />;
+      },
+      exponent: () => <IconExponent {...options} />,
+      logarithm: () => {
+        const newOptions = {
+          ...options,
+          width: width + 4
+        };
+
+        return <IconLogarithm {...newOptions} />;
+      },
+      polynom: () => {
+        const newOptions = {
+          ...options,
+          width: width + 30
+        };
+
+        return <IconPolynom {...newOptions} />;
+      },
+      parabola: () => {
+        const newOptions = {
+          ...options,
+          width: width + 6
+        };
+
+        return <IconParabola {...newOptions} />;
+      },
       sine: () => {
         const newOptions = {
           ...options,
@@ -142,8 +194,15 @@ export default function Tools(props) {
         return <IconSine {...newOptions} />;
       },
       polygon: () => <IconPolygon {...options} />,
-      area: () => "area",
-      dashed: () => "dashed",
+      area: () => <IconArea {...options} />,
+      dashed: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10
+        };
+
+        return <IconDashed {...newOptions} />;
+      },
       undo: () => {
         const newOptions = {
           ...options,
@@ -247,7 +306,12 @@ export default function Tools(props) {
               key={`tool-btn-${item}`}
             >
               <ToolbarItem>
-                <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                <ToolbarItemIcon
+                  className="tool-btn-icon"
+                  style={{
+                    marginBottom: item === "tangent" ? 0 : fontSize / 2
+                  }}
+                >
                   {getIconByToolName(item)}
                 </ToolbarItemIcon>
                 <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(item)}</ToolbarItemLabel>
@@ -281,7 +345,12 @@ export default function Tools(props) {
                             key={`popup-tool-btn-${item}`}
                           >
                             <ToolbarItem>
-                              <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                              <ToolbarItemIcon
+                                className="tool-btn-icon"
+                                style={{
+                                  marginBottom: item === "tangent" ? 0 : fontSize / 2
+                                }}
+                              >
                                 {getIconByToolName(item)}
                               </ToolbarItemIcon>
                               <ToolbarItemLabel style={{ fontSize }}>

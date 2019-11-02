@@ -359,7 +359,13 @@ const ClassificationPreview = ({
             style={styles.correctAnswerContainerStyle}
           >
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
-              <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
+              <FlexContainer
+                style={{ width: "100%" }}
+                alignItems="stretch"
+                flexDirection={isLeft ? "column" : "row"}
+                justifyContent="center"
+                maxWidth="100%"
+              >
                 {groupPossibleResponses ? (
                   verifiedGroupDragItems.map((i, index) => (
                     <Fragment key={index}>
@@ -368,6 +374,7 @@ const ClassificationPreview = ({
                         flexDirection="column"
                         alignItems="center"
                         justifyContent="flex-start"
+                        maxWidth="100%"
                       >
                         <Subtitle
                           style={{
@@ -376,7 +383,11 @@ const ClassificationPreview = ({
                         >
                           {get(item, `possibleResponseGroups[${index}].title`, "")}
                         </Subtitle>
-                        <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                        <FlexContainer
+                          maxWidth="100%"
+                          justifyContent="center"
+                          style={{ width: "100%", flexWrap: "wrap" }}
+                        >
                           {i.map((ite, ind) =>
                             duplicateResponses ? (
                               <DragItem
@@ -427,8 +438,13 @@ const ClassificationPreview = ({
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="flex-start"
+                      maxWidth="100%"
                     >
-                      <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                      <FlexContainer
+                        maxWidth="100%"
+                        justifyContent="center"
+                        style={{ width: "100%", flexWrap: "wrap" }}
+                      >
                         {verifiedDragItems.map((ite, ind) =>
                           duplicateResponses ? (
                             <DragItem

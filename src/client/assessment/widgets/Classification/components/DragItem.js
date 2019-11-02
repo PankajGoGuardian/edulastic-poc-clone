@@ -172,6 +172,8 @@ const InnerWrapper = styled.div`
   }
 `;
 
-const MainWrapper = styled.div``;
+const MainWrapper = styled.div`
+  max-width: 100%;
+`;
 
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

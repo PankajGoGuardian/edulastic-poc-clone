@@ -266,6 +266,10 @@ const enhance = compose(
 export default enhance(EssayRichTextPreview);
 
 const FroalaEditorContainer = styled.div`
+  & * {
+    user-select: text !important;
+  }
+
   .fr-box.fr-basic .fr-element {
     font-size: ${props => props.theme.fontSize}px;
   }

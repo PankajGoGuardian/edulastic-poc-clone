@@ -261,7 +261,7 @@ const MatchListPreview = ({
       <div data-cy="previewWrapper" style={wrapperStyle}>
         <FlexContainer
           style={{
-            flex: "1 1 70%",
+            flex: listPosition === "right" || listPosition === "left" ? "1 1 70%" : "1 1 auto",
             marginRight: listPosition === "right" ? 20 : 0,
             marginLeft: listPosition === "left" ? 20 : 0,
             marginTop: listPosition === "right" || listPosition === "left" ? 14 : 0
@@ -307,7 +307,10 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <StyledCorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <StyledCorrectAnswersContainer
+            style={{ flex: listPosition === "right" || listPosition === "left" ? "1 1 30%" : "1 1 auto" }}
+            title={t("component.matchList.dragItemsTitle")}
+          >
             <DropContainer
               drop={drop}
               flag="dragItems"

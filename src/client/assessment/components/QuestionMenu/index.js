@@ -51,7 +51,11 @@ class QuestionMenu extends Component {
     const summaryScrollHeight = document.querySelector("#react-app").scrollHeight;
     const { el } = options[index];
     const activeOption = document.querySelector(".option.active");
-    const scrollBarOptions = document.querySelector(".option.active").parentNode.parentNode;
+    const scrollBarOptions = document.querySelector(".option.active")?.parentNode?.parentNode;
+
+    if (!scrollBarOptions) {
+      return;
+    }
 
     scrollBarOptions.scrollTo({
       top: activeOption.offsetTop,

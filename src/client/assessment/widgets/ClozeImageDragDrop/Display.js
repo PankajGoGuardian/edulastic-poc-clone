@@ -95,19 +95,13 @@ const findClosestResponseBoxIndex = (containers, answer) => {
 
 const getInitialResponses = ({ options, userSelections, configureOptions }) => {
   const { duplicatedResponses: isDuplicated } = configureOptions;
-
   let possibleResps = [];
   possibleResps = cloneDeep(options);
   userSelections = flattenDeep(userSelections);
   if (!isDuplicated) {
-    for (let j = 0; j < userSelections.length; j++) {
-      for (let i = 0; i < possibleResps.length; i++) {
-        if (userSelections[j] && userSelections[j].value.includes(possibleResps[i])) {
-          possibleResps.splice(i, 1);
-          break;
-        }
-      }
-    }
+    // remove all the options that are chosen from the available options
+    const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.value || []), []);
+    possibleResps = possibleResps.filter(resp => !_userSelections.includes(resp));
   }
   return possibleResps;
 };
@@ -137,7 +131,6 @@ class Display extends Component {
         item: { isSnapFitValues }
       } = nextProps;
       let possibleResponses = getInitialResponses(nextProps);
-
       if (nextProps.previewTab === "check" || !isSnapFitValues) {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
       }
@@ -282,7 +275,6 @@ class Display extends Component {
       };
     }
 
-    this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
 
     const { changePreview, changePreviewTab, previewTab } = this.props;

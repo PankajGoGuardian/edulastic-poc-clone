@@ -109,9 +109,21 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            <Col md={12} style={{ alignSelf: "flex-start" }}>
-              <Row>
-                {scoringTypes.length > 1 && showSelect && (
+            {!isAutoMarkBtnVisible && isAutomarkChecked && (
+              <Col md={12}>
+                <StyledCheckbox
+                  data-cy="unscoredChk"
+                  checked={questionData.validation.unscored}
+                  onChange={e => handleChangeValidation("unscored", e.target.checked)}
+                  size="large"
+                >
+                  {t("component.options.unscored")}
+                </StyledCheckbox>
+              </Col>
+            )}
+            {scoringTypes.length > 1 && showSelect && (
+              <Col md={12} style={{ alignSelf: "flex-start" }}>
+                <Row>
                   <React.Fragment>
                     <Label>{t("component.options.scoringType")}</Label>
                     <SelectWrapper
@@ -128,9 +140,9 @@ class Scoring extends Component {
                       ))}
                     </SelectWrapper>
                   </React.Fragment>
-                )}
-              </Row>
-            </Col>
+                </Row>
+              </Col>
+            )}
             <Col md={12}>
               <Row>
                 {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (

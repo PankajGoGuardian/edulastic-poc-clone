@@ -12,6 +12,7 @@ import { ON_LIMIT, ALWAYS, OFF } from "../../constants/constantsForQuestions";
 import { AdaptiveRow } from "./styled/AdaptiveRow";
 
 import { LabelText } from "./styled/LabelText";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 const { Option } = Select;
 
@@ -72,14 +73,14 @@ class WordLimitAndCount extends Component {
             </Select>
           </Col>
           <Col span={12}>
-            <FlexContainer style={{ marginTop: 31 }}>
+            <FlexContainer style={{ marginTop: 31, paddingTop: "10px" }}>
               <Input
                 size="large"
                 style={{ width: 120 }}
                 value={inputValue}
                 onChange={e => onChange("maxWord", e.target.value)}
               />
-              <LabelText>{t("component.essayText.wordsLimitTitle")}</LabelText>
+              <Label>{t("component.essayText.wordsLimitTitle")}</Label>
             </FlexContainer>
           </Col>
         </AdaptiveRow>

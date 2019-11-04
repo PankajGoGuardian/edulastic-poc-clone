@@ -64,7 +64,7 @@ const EditEssayRichText = ({
       />
 
       <Question
-        section="main"
+        section="advanced"
         label={t("component.options.scoring")}
         fillSections={fillSections}
         cleanSections={cleanSections}

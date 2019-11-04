@@ -513,7 +513,7 @@ export const defaultTheme = {
     dropDownShadowColor: "rgba(219, 219, 219, 0.55)",
     dropDownBgColor: containerWhite,
     dropDownColor: labelStyle,
-    dropDownFontSize: subtitleFontSize,
+    dropDownFontSize: standardFont,
     dropDownFontWeight: semiBold,
     dropDownFontStyle: "normal",
     dropDownFontStretch: "normal",

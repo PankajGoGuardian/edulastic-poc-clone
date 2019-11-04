@@ -61,7 +61,6 @@ class LayoutComponent extends Component {
           <Row gutter={36}>
             <Col md={12}>
               <SpecialCharactersOption
-                disabled
                 onChange={checked => {
                   if (checked) {
                     changeItem("characterMap", []);
@@ -92,8 +91,8 @@ class LayoutComponent extends Component {
             </Col>
             <Col md={12}>
               <MaxHeightOption
-                onChange={val => changeUIStyle("max_height", +val)}
-                value={get(item, "uiStyle.max_height", 0)}
+                onChange={val => changeUIStyle("maxHeight", +val)}
+                value={get(item, "uiStyle.maxHeight", 300)}
               />
             </Col>
           </Row>

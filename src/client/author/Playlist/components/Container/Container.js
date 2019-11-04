@@ -58,9 +58,11 @@ const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
   { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
   { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" },
-  { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
+
+  // These two filters are to be enabled later so, commented out
+  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
 ];
 
 export const getClearSearchState = () => ({

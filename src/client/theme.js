@@ -1008,7 +1008,7 @@ export const defaultTheme = {
     matrixChoice: {
       quillBorderColor: borderColor,
       inlineLabelColor: themeColor,
-      correctCellInputWrapperBgColor: rightIconColor,
+      correctCellInputWrapperBgColor: rightBgColor,
       incorrectCellInputWrapperBgColor: wrongBgColor,
       tableStyledHeaderColor: themeColor,
       styledTableBorderColor: borderColor,

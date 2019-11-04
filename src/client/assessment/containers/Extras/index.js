@@ -24,12 +24,21 @@ import Question from "../../components/Question";
 
 class Extras extends Component {
   render() {
-    const { t, children, item, setQuestionData, isSection, fillSections, cleanSections, advancedAreOpen } = this.props;
-
+    const {
+      t,
+      children,
+      theme,
+      item,
+      setQuestionData,
+      isSection,
+      fillSections,
+      cleanSections,
+      advancedAreOpen
+    } = this.props;
     const _change = change({ item, setQuestionData });
 
     return (
-      <Fragment>
+      <QuestionContainer fontSize={theme?.fontSize}>
         <Question
           section="advanced"
           label={t("component.options.solution")}
@@ -45,15 +54,13 @@ class Extras extends Component {
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
               <WidgetFRInput>
-                <QuestionContainer>
-                  <QuestionTextArea
-                    toolbarId="instructor_stimulus"
-                    toolbarSize="SM"
-                    placeholder={t("component.options.enterDistractorRationaleQuestion")}
-                    onChange={value => _change("instructorStimulus", value)}
-                    value={get(item, "instructorStimulus", "")}
-                  />
-                </QuestionContainer>
+                <QuestionTextArea
+                  toolbarId="instructor_stimulus"
+                  toolbarSize="SM"
+                  placeholder={t("component.options.enterDistractorRationaleQuestion")}
+                  onChange={value => _change("instructorStimulus", value)}
+                  value={get(item, "instructorStimulus", "")}
+                />
               </WidgetFRInput>
             </Col>
           </Row>
@@ -78,7 +85,7 @@ class Extras extends Component {
         </Question>
 
         {children}
-      </Fragment>
+      </QuestionContainer>
     );
   }
 }
@@ -94,7 +101,8 @@ Extras.propTypes = {
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  theme: PropTypes.object.isRequired
 };
 
 Extras.defaultProps = {
@@ -125,5 +133,8 @@ const QuestionContainer = styled.div`
     word-break: break-all;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  span.fr-placeholder {
+    font-size: ${({ fontSize }) => `${fontSize} !important`};
   }
 `;

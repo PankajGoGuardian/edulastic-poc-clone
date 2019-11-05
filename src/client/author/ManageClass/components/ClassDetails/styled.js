@@ -105,6 +105,14 @@ export const StudentsTable = styled(Table)`
     }
   }
 `;
+
+export const HeaderTitle = styled.div`
+  max-width: calc(100vw - 350px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
 export const Title = styled.div`
   display: flex;
   flex-direction: column;
@@ -114,12 +122,8 @@ export const Title = styled.div`
   text-align: left;
   display: flex;
   color: ${white};
-  div {
-    margin-left: 10px;
-  }
   span {
     font-weight: 300;
-    margin-left: 10px;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

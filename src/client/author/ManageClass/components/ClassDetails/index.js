@@ -110,7 +110,11 @@ const ClassDetails = ({
       </GoogleClassSyncModal>
       <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
-        <BreadCrumb data={breadCrumbData} style={{ position: "unset", margin: "10px 0px" }} />
+        <BreadCrumb
+          ellipsis="calc(100% - 200px)"
+          data={breadCrumbData}
+          style={{ position: "unset", margin: "10px 0px" }}
+        />
         <MainInfo
           entity={selectedClass}
           fetchClassList={fetchClassList}

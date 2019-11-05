@@ -2,14 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Breadcrumb } from "antd";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { secondaryTextColor, linkColor, themeColor } from "@edulastic/colors";
 
 const BreadCrumb = props => {
-  const { data, style } = props;
+  const { data, style, ellipsis } = props;
   return (
-    <Container style={style} hasStickyHeader={props.hasStickyHeader}>
+    <Container ellipsis={ellipsis} style={style} hasStickyHeader={props.hasStickyHeader}>
       <Breadcrumb>
         {Array.isArray(data) &&
           data.map((breadCrumb, index) => (
@@ -39,6 +39,15 @@ BreadCrumb.defaultProps = {
 
 export default BreadCrumb;
 
+const EllipsisStyle = css`
+  max-width: ${props => props.ellipsis || ""};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+`;
+
 const Container = styled.div`
   position: fixed;
   top: 80px;
@@ -62,6 +71,7 @@ const Container = styled.div`
     color: ${linkColor};
     text-transform: uppercase;
     font-weight: 700;
+    ${props => props.ellipsis && EllipsisStyle}
     a {
       font-size: 11px;
       text-transform: uppercase;

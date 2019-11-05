@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { white } from "@edulastic/colors";
 // components
-import { Title, IconManageClass, EditButton } from "./styled";
+import { Title, HeaderTitle, EditButton } from "./styled";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 // ducks
 import { fetchClassListAction, getSelectedClass } from "../../ducks";
@@ -14,7 +14,7 @@ const Header = ({ onEdit, activeClass, selectedClass }) => {
   return (
     <HeaderWrapper>
       <Title>
-        <div>{name}</div>
+        <HeaderTitle title={name}>{name}</HeaderTitle>
         <span>{institutionName}</span>
       </Title>
 

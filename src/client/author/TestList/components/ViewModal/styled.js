@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
-import Modal from "react-responsive-modal";
 import {
-  darkGrey,
   secondaryTextColor,
   themeColor,
   fadedGrey,
@@ -11,7 +9,8 @@ import {
   greenDark,
   greyDarken,
   borders,
-  publishStatusColor
+  publishStatusColor,
+  themeLightGrayColor
 } from "@edulastic/colors";
 import { Status } from "../../../AssessmentPage/components/Header/styled";
 
@@ -27,29 +26,45 @@ export const ModalContainer = styled(Card)`
   margin-top: 20px;
   .ant-card-body {
     display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     padding: 30px;
     min-width: 100%;
+    &:before,
+    &:after {
+      content: unset;
+    }
   }
 `;
 
 export const Image = styled.div`
-  min-height: 150px;
-  height: auto;
-  width: 95%;
+  width: 100%;
+  height: 150px;
   position: relative;
   background: ${props =>
     props.src ? `url(${props.src})` : `url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg")`};
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  background-position: center center;
   border-radius: 4px;
-  margin-bottom: 15px;
 `;
 
 export const ModalColumn = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: ${props => props.justify || ""};
+  width: calc(50% - 15px);
+  position: relative;
+  .scrollbar-container {
+    position: absolute;
+    top: 120px;
+    left: 0px;
+    width: 100%;
+    max-height: calc(100% - 120px);
+  }
 `;
+
+export const SummaryScrollbar = styled.div``;
 
 const Label = styled.div`
   font-size: 13px;
@@ -110,6 +125,7 @@ export const Footer = styled.div`
 `;
 
 export const FooterIcon = styled.div`
+  display: flex;
   align-items: center;
   margin-left: 15px;
   &:first-child {
@@ -122,8 +138,10 @@ export const FooterIcon = styled.div`
 `;
 
 export const IconText = styled.span`
-  font-size: 11px;
-  color: ${darkGrey};
+  font-size: 10px;
+  color: ${themeLightGrayColor};
+  margin-left: 5px;
+  font-weight: 600;
 `;
 
 export const ButtonContainer = styled.div`
@@ -193,10 +211,7 @@ export const SummaryCardValue = styled.div`
   margin-right: 15px;
 `;
 
-export const SummaryList = styled.div`
-  margin-top: 15px;
-  max-height: 45vh;
-`;
+export const SummaryList = styled.div``;
 export const ListHeader = styled.div`
   display: flex;
   padding: 5px 10px;
@@ -240,14 +255,15 @@ export const IconWrapper = styled.span`
   top: 3px;
 `;
 
-export const TestStatus = styled(Status)`
+export const TestStatus = styled.span`
   margin-left: 10px;
-  padding: 0;
-  margin-top: 0;
+  padding: 2px 20px;
   position: relative;
-  top: -6px;
+  font-size: 9px;
+  top: -5px;
   color: ${greyDarken};
   background-color: ${props => (props.status === "draft" ? white : publishStatusColor)};
-  border-radius: 5px;
+  border-radius: 4px;
   border: 1px solid ${borders.tag};
+  text-transform: uppercase;
 `;

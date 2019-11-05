@@ -56,6 +56,7 @@ class CardWrapper extends Component {
             authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
             testItemId={itemId}
             isPlaylist={isPlaylist}
+            windowWidth={windowWidth}
           />
         </Col>
       );

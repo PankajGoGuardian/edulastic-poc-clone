@@ -110,7 +110,8 @@ class Item extends Component {
       authorName,
       owner,
       isPlaylist,
-      testItemId
+      testItemId,
+      windowWidth
     } = this.props;
 
     const likes = analytics?.[0]?.likes || "0";
@@ -129,6 +130,7 @@ class Item extends Component {
           owner={owner}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
+          windowWidth={windowWidth}
         />
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}

@@ -20,7 +20,7 @@ import { CONSTANT } from "../../Builder/config";
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
-import ResponseBox, { titleWidth as responseBoxTitleWidth } from "./ResponseBox";
+import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 import { getAdjustedHeightAndWidth } from "../../common/utils";
 
@@ -405,16 +405,6 @@ class AxisLabelsContainer extends PureComponent {
           <span />
         </WithResources>
         <GraphWrapper>
-          {!disableResponse && (
-            <StyledToolsContainer>
-              <Tools
-                controls={this.controls}
-                onSelectControl={this.onSelectControl}
-                onSelect={() => {}}
-                fontSize={layout?.fontSize}
-              />
-            </StyledToolsContainer>
-          )}
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
             <div className="jsxbox-with-response-box-response-options">
               {!disableResponse && (
@@ -430,6 +420,16 @@ class AxisLabelsContainer extends PureComponent {
                 />
               )}
               <div style={{ position: "relative", overflow: "auto" }}>
+                {!disableResponse && (
+                  <StyledToolsContainer>
+                    <Tools
+                      controls={this.controls}
+                      onSelectControl={this.onSelectControl}
+                      onSelect={() => {}}
+                      fontSize={layout?.fontSize}
+                    />
+                  </StyledToolsContainer>
+                )}
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
                 <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               </div>

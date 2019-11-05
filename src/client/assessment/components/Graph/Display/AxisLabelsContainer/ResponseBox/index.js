@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
 
-export const titleWidth = 150;
+export const defaultTitleWidth = 150;
 
 class ResponseBox extends Component {
   state = {
@@ -35,7 +35,7 @@ class ResponseBox extends Component {
     this.setState({ draggingMark: null });
   };
 
-  handleDragStart = i => (event, node) => {
+  handleDragStart = i => () => {
     this.setState({ draggingMark: i });
   };
 
@@ -107,7 +107,6 @@ ResponseBox.propTypes = {
   onAddMark: PropTypes.func,
   minWidth: PropTypes.number,
   minHeight: PropTypes.number,
-  titleHeight: PropTypes.number,
   titleWidth: PropTypes.number,
   markCount: PropTypes.number,
   markWidth: PropTypes.number,
@@ -122,8 +121,7 @@ ResponseBox.defaultProps = {
   onAddMark: () => {},
   minWidth: 600,
   minHeight: 150,
-  titleHeight: 30,
-  titleWidth: titleWidth,
+  titleWidth: defaultTitleWidth,
   markCount: 0,
   markWidth: 120, // from .mark class
   markHeight: 45, // from .mark class

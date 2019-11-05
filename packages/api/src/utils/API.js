@@ -66,7 +66,7 @@ export default class API {
       data => {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
-            localStorage.clear();
+            sessionStorage.clear();
             if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
               localStorage.setItem("loginRedirectUrl", getCurrentPath());
             }

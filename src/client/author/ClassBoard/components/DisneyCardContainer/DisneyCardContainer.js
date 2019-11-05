@@ -266,17 +266,17 @@ class DisneyCardContainer extends Component {
                 .map((questionAct, questionIndex) => {
                   const weight = questionAct.weight;
                   if (questionAct.notStarted) {
-                    return <SquareColorDisabled weight={weight} key={questionIndex} />;
+                    return <SquareColorDisabled key={questionIndex} />;
                   } else if (questionAct.skipped && questionAct.score === 0) {
                     return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
                   } else if (questionAct.graded === false) {
-                    return <SquareColorBlue weight={weight} key={questionIndex} />;
+                    return <SquareColorBlue key={questionIndex} />;
                   } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
-                    return <SquareColorDivGreen weight={weight} key={questionIndex} />;
+                    return <SquareColorDivGreen key={questionIndex} />;
                   } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
-                    return <SquareColorDivYellow weight={weight} key={questionIndex} />;
+                    return <SquareColorDivYellow key={questionIndex} />;
                   } else if (questionAct.score === 0) {
-                    return <SquareColorDivPink weight={weight} key={questionIndex} />;
+                    return <SquareColorDivPink key={questionIndex} />;
                   }
                   return null;
                 })}

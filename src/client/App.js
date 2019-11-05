@@ -62,6 +62,10 @@ if (query.token && query.userId && query.role) {
 }
 
 const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap"];
+const getCurrentPath = () => {
+  const location = window.location;
+  return `${location.pathname}${location.search}${location.hash}`;
+};
 
 class App extends Component {
   static propTypes = {
@@ -87,6 +91,9 @@ class App extends Component {
   }
 
   render() {
+    /**
+     * NOTE:  this logic would be called multiple times, even after redirect
+     */
     const { user, tutorial, location, history } = this.props;
     if (location.hash.includes("#renderResource/close/")) {
       const v1Id = location.hash.split("/")[2];
@@ -140,6 +147,9 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
       ) {
       } else {
+        if (!getCurrentPath().includes("/login")) {
+          localStorage.setItem("loginRedirectUrl", getCurrentPath());
+        }
         redirectRoute = "/login";
       }
     }

@@ -138,10 +138,10 @@ class CalculatorContainer extends Component {
         </StyledDraggableF>
 
         <StyledDraggableF>
-          <StyledDiv visible={calculateMode === "BASIC_GEOGEBRASCIENTIFIC"}>
+          <StyledDiv visible={calculateMode === "BASIC_EDULASTIC"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
             <StyledTitle>Basic Calculator</StyledTitle>
-            <BasicCalculator id="geogebra-basiccalculator" />
+            <BasicCalculator id="edulastic-basiccalculator" />
           </StyledDiv>
         </StyledDraggableF>
 

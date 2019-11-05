@@ -13,7 +13,7 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 // components
 
-import { Container } from "../common";
+import { Container, CalculatorContainer } from "../common";
 import PlayerHeader from "./PlayerHeader";
 import PlayerMainContentArea from "./PlayerMainContentArea";
 
@@ -64,7 +64,10 @@ class AssessmentPlayerSimple extends React.Component {
     showHints: false,
     testItemState: "",
     toolsOpenStatus: [0],
-    history: [{ points: [], pathes: [], figures: [], texts: [] }]
+    history: [{ points: [], pathes: [], figures: [], texts: [] }],
+    calcBrand: "EDULASTIC"
+
+
   };
 
   toggleToolsOpenStatus = tool => {
@@ -260,6 +263,9 @@ class AssessmentPlayerSimple extends React.Component {
             toolsOpenStatus={toolsOpenStatus}
             t={t}
           />
+          {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
+            <CalculatorContainer calculateMode={`${settings.calcType}_${this.state.calcBrand}`} />
+          ) : null}
           <PlayerMainContentArea
             {...this.props}
             theme={themeToPass}

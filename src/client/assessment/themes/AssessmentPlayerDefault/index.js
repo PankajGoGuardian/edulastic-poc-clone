@@ -75,7 +75,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
-      calculateMode: `${settings.calcType}_DESMOS`,
+      calculateMode: `${settings.calcType}_EDULASTIC`,
       currentToolMode: [0],
       showHints: false,
       enableCrossAction: false,
@@ -339,7 +339,7 @@ class AssessmentPlayerDefault extends React.Component {
       minWidth,
       defaultContentWidth
     } = this.state;
-    const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
+    const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];

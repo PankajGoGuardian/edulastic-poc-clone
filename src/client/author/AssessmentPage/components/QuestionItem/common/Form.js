@@ -36,12 +36,12 @@ export const QuestionOption = styled.span`
   cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
   border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
   &:not(:last-child) {
-    margin-right: 5px;
+    margin-right: 4px;
   }
+  font-weight: bold;
   @media (min-width: ${extraDesktopWidthMax}) {
     padding-top: 5px;
     font-size: ${props => props.theme.questionTextextraFontSize};
-    font-weight: bold;
   }
 `;
 

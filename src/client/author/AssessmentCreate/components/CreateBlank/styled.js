@@ -50,4 +50,10 @@ export const RoundedButton = styled(Button)`
     width: 20px;
     height: 20px;
   }
+  &:hover {
+    background: ${themeColor};
+    svg {
+      fill: ${white} !important;
+    }
+  }
 `;

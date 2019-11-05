@@ -6,10 +6,7 @@ const TextWrapper = styled.div`
   text-align: center;
   color: ${textColor};
   line-height: 20px;
-  font-size: ${props => props.theme.smallFontSize};
-
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.standardFont};
     line-height: 26px;
   }
 `;

@@ -1,13 +1,22 @@
 import styled from "styled-components";
 
-import { white, secondaryTextColor, greenDark, green, red, themeColor } from "@edulastic/colors";
+import {
+  white,
+  secondaryTextColor,
+  greenDark,
+  green,
+  red,
+  themeColor,
+  sectionBorder,
+  greyScoreCardTitleColor
+} from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
   margin-bottom: 10px;
   padding: 19px 0 18px 13px;
   background: ${white};
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
+  border: 1px solid ${sectionBorder};
   box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
 `;
 
@@ -89,7 +98,7 @@ export const DetailTitle = styled.span`
   margin-right: 5px;
   font-size: 11px;
   text-transform: uppercase;
-  color: ${secondaryTextColor};
+  color: ${greyScoreCardTitleColor};
 `;
 
 export const DetailContents = styled.span`

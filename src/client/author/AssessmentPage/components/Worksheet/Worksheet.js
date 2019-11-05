@@ -541,11 +541,9 @@ class Worksheet extends React.Component {
         top={0}
       />
     );
-    let pdfAreaWidthInPercentage = 55;
-    if (minimized) {
-      pdfAreaWidthInPercentage += 15;
-    }
-    const pdfWidth = Math.floor((windowWidth * pdfAreaWidthInPercentage) / 100 - 130);
+
+    //450 IS THE TOTAL WIDTH OF RIGHT QUESTION AREA AND LEFT THUMBNAILS AREA 220 IS THE THUMBNAILS AREA WIDTH WHEN MINIMIZED REDUCE 220 AND USE that space for PDF AREA
+    const pdfWidth = minimized ? windowWidth - 450 : windowWidth - 450 - 220;
 
     return (
       <WorksheetWrapper>
@@ -609,7 +607,7 @@ class Worksheet extends React.Component {
         )}
 
         <Fragment>
-          <div style={{ position: "relative", display: "flex", width: `${pdfAreaWidthInPercentage}%` }}>
+          <div style={{ position: "relative", display: "flex", width: `${pdfWidth}px` }}>
             <PDFPreview
               page={selectedPage}
               currentPage={currentPage + 1}
@@ -622,7 +620,7 @@ class Worksheet extends React.Component {
               renderExtra={svgContainer}
               viewMode={viewMode}
               isToolBarVisible={isToolBarVisible}
-              pdfWidth={pdfWidth}
+              pdfWidth={pdfWidth - 100}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools

@@ -5,10 +5,10 @@ import { themeColor, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  width: 30%;
+  width: 330px;
   height: calc(100% - 140px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
-  padding: 30px 10px 30px 10px;
+  padding: 30px 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

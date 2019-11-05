@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mainBgColor, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, mainBgColor, themeColor, sectionBorder } from "@edulastic/colors";
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -14,21 +14,18 @@ export const AddQuestionWrapper = styled.div`
 export const ContentWrapper = styled.div`
   padding: 19px 18px 15px 18px;
   background: ${white};
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
   box-sizing: border-box;
-  width: 26%;
+  width: 330px;
+  border: 1px solid ${sectionBorder};
 `;
 
 export const QuestionTypes = styled.div`
   display: flex;
   justify-content: space-between;
-  flex-direction: ${props => props.flexDirection || "row"};
+  flex-direction: row;
   &:last-child {
     margin-top: 20px;
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    flex-direction: row;
   }
 `;
 
@@ -48,13 +45,10 @@ export const AddQuestionIcon = styled.span`
     }
   }
 
-  &:not(:first-child) {
-    margin-left: 30px;
-  }
-
   svg {
     fill: ${white};
-    width: 20px;
+    width: 21px;
+    height: 19px;
     height: unset;
   }
 `;

@@ -18,7 +18,7 @@ export const WorksheetWrapper = styled.div`
 export const MinimizeButton = styled.div`
   position: absolute;
   z-index: 1;
-  left: ${({ minimized }) => (minimized ? "40px" : "13%")};
+  left: ${({ minimized }) => (minimized ? "40px" : "190px")};
   width: 32px;
   height: 32px;
   padding: 9px;

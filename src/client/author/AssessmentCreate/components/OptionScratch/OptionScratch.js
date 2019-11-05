@@ -18,10 +18,10 @@ const descriptionBottom = (
 const OptionScratch = () => (
   <CardComponent>
     <IconWrapper>
-      <IconNewFile style={{ height: "44px", width: "34px" }} />
+      <IconNewFile style={{ height: "43px", width: "34px" }} />
     </IconWrapper>
     <TitleWrapper>Create from Scratch</TitleWrapper>
-    <TextWrapper>{descriptionBottom}</TextWrapper>
+    <TextWrapper style={{ padding: "0 40px" }}>{descriptionBottom}</TextWrapper>
     <Link to="/author/tests/create">
       <ButtonComponent type="primary" block>
         CREATE TEST

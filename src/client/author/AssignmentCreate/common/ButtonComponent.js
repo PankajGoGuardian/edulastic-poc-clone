@@ -4,13 +4,15 @@ import { themeColor, white } from "@edulastic/colors";
 const ButtonComponent = styled.button`
   ${props => {
     let style = {
+      width: "234px",
+      height: "45px",
       fontWeight: 600,
       fontSize: "11px",
       padding: "15px 50px",
       textTransform: "uppercase",
       borderRadius: "5px",
       cursor: "pointer",
-      boxShadow: "3px 7px 20px 0px rgba(0, 0, 0, 0.1)",
+      boxShadow: "0px 2px 4px rgba(201, 208, 219, 0.5)",
       marginBottom: "10px",
       whiteSpace: "nowrap"
     };

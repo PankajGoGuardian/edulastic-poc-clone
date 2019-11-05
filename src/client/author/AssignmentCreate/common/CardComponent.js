@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightGrey, mobileWidthMax } from "@edulastic/colors";
+import { mobileWidthMax, backgrounds } from "@edulastic/colors";
 
 const CardComponent = styled.div`
   flex-basis: calc(50% - 20px);
@@ -10,7 +10,9 @@ const CardComponent = styled.div`
   padding: 30px;
   background-color: ${props => props.theme.brandLightGrey};
   border-radius: 10px;
-  min-height: 400px;
+  width: 414px;
+  height: 446px;
+  background-color: ${backgrounds.default};
 
   @media (max-width: ${mobileWidthMax}) {
     min-height: unset;

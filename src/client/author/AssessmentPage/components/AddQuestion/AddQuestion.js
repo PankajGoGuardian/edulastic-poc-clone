@@ -45,40 +45,36 @@ class AddQuestion extends React.Component {
       <AddQuestionWrapper>
         <ContentWrapper>
           <QuestionTypes flexDirection="column">
-            <Row type="flex" justify="space-between" style={{ marginBottom: "10px" }}>
-              <Tooltip placement="top" title="Multiple Choice">
-                <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
-                  <IconNewList />
-                </AddQuestionIcon>
-              </Tooltip>
-              <Tooltip placement="top" title="Short Text">
-                <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
-                  <IconTextEntry />
-                </AddQuestionIcon>
-              </Tooltip>
-              <Tooltip placement="top" title="Drop down">
-                <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
-                  <IconDropDown />
-                </AddQuestionIcon>
-              </Tooltip>
-            </Row>
-            <Row type="flex" justify="space-between">
-              <Tooltip placement="top" title="Math">
-                <AddQuestionIcon onClick={onAddQuestion(MATH)}>
-                  <IconMath />
-                </AddQuestionIcon>
-              </Tooltip>
-              <Tooltip placement="top" title="True/False">
-                <AddQuestionIcon onClick={onAddQuestion(TRUE_OR_FALSE)}>
-                  <IconTrueFalse />
-                </AddQuestionIcon>
-              </Tooltip>
-              <Tooltip placement="top" title="Essay">
-                <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
-                  <IconPencilHollow />
-                </AddQuestionIcon>
-              </Tooltip>
-            </Row>
+            <Tooltip placement="top" title="Multiple Choice">
+              <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+                <IconNewList />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Short Text">
+              <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
+                <IconTextEntry />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Drop down">
+              <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+                <IconDropDown />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Math">
+              <AddQuestionIcon onClick={onAddQuestion(MATH)}>
+                <IconMath />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="True/False">
+              <AddQuestionIcon onClick={onAddQuestion(TRUE_OR_FALSE)}>
+                <IconTrueFalse />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Essay">
+              <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+                <IconPencilHollow />
+              </AddQuestionIcon>
+            </Tooltip>
           </QuestionTypes>
           <QuestionTypes>
             <AddButton onClick={this.toggleBulkModal}>Add Bulk</AddButton>

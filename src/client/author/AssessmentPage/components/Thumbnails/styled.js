@@ -4,7 +4,7 @@ import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgr
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
-  width: 15%;
+  width: 220px;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow-y: auto;
   padding: 30px 28px;
@@ -31,7 +31,7 @@ export const ReuploadButtonWrapper = styled.div`
   position: fixed;
   left: ${props => (props.noCheck ? 0 : "100px")};
   bottom: 0;
-  width: 14%;
+  width: 220px;
   padding: 15px 22px;
   background: ${backgrounds.primary};
   z-index: 1;

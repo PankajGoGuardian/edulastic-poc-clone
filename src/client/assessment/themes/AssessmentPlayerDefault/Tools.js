@@ -23,6 +23,8 @@ import {
   IconSelected
 } from "@edulastic/icons";
 
+import { LARGE_DESKTOP_WIDTH } from "../../constants/others";
+
 const customizeIcon = icon => styled(icon)`
   fill: ${white};
   width: 20px;
@@ -202,6 +204,9 @@ const ToolBox = styled(FlexContainer)`
   z-index: 500;
   border-radius: 4px;
   padding: 10px 0;
+  @media (max-width: ${LARGE_DESKTOP_WIDTH - 1}px) {
+    top: ${props => props.isWorksheet && "105px"};
+  }
   @media (max-width: ${desktopWidth}) {
     top: ${props => props.isWorksheet && "160px"};
   }

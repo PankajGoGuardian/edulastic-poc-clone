@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 import { IconNewFile } from "@edulastic/icons";
-import { Button } from "antd";
-import { Container } from "./styled";
+
+import CardComponent from "../../../AssignmentCreate/common/CardComponent";
+import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
 import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
@@ -13,18 +15,16 @@ const handleDrop = event => {
 };
 
 const CreateBlank = ({ onCreate, loading }) => (
-  <Container childMarginRight="0" onDrop={handleDrop} blank>
+  <CardComponent childMarginRight="0" onDrop={handleDrop} blank>
     <IconWrapper>
       <IconNewFile style={{ height: "44px", width: "34px", transform: "scaleY(-1)" }} />
     </IconWrapper>
     <TitleWrapper>Answer Only Assessment</TitleWrapper>
-    <TextWrapper>
-      Want to create an assessment with <br /> no content?
-    </TextWrapper>
-    <Button type="primary" disabled={loading} onClick={onCreate}>
+    <TextWrapper style={{ padding: "0 40px" }}>Want to create an assessment with no content?</TextWrapper>
+    <ButtonComponent type="primary" disabled={loading} onClick={onCreate} block>
       Continue with blank
-    </Button>
-  </Container>
+    </ButtonComponent>
+  </CardComponent>
 );
 
 CreateBlank.propTypes = {

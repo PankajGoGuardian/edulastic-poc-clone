@@ -277,7 +277,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <StyledMathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
+                <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -465,7 +465,7 @@ const MatchListPreview = ({
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
                   <MathFormulaDisplay
@@ -482,7 +482,7 @@ const MatchListPreview = ({
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
-                    <MathFormulaDisplay centerContent dangerouslySetInnerHTML={{ __html: list[i] }} />
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
                   <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />

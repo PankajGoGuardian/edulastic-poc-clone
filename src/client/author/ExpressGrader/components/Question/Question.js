@@ -41,6 +41,7 @@ class Question extends Component {
 
     selectedItems = produce(selectedItems, draft => {
       draft.forEach(item => {
+        if (item.itemLevelScoring) return;
         item.data.questions = item.data.questions.filter(({ id }) => id === record._id);
         item.rows = item.rows.map(row => ({
           ...row,

@@ -824,7 +824,7 @@
       "multipleResponses": "Multiple responses",
       "enterQuestion": "Enter your question",
       "multipleChoiceOptions": "Multiple Choice Options",
-      "steams": "Steams"
+      "stems": "Stems"
     },
     "passage": {
       "mathJax": "MathJax (response inputs renderer with MathQuill)",

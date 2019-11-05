@@ -82,11 +82,11 @@ class Steams extends Component {
     return (
       <Question
         section="main"
-        label={t("component.matrix.steams")}
+        label={t("component.matrix.stems")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.matrix.steams")}</Subtitle>
+        <Subtitle>{t("component.matrix.stems")}</Subtitle>
         <List
           items={item.options}
           onSortEnd={handleSortEndOptions}

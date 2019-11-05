@@ -110,7 +110,7 @@ const MainContent = styled.div`
   text-align: left;
   font-size: 18px;
   overflow: auto;
-  height: 100%;
+  height: calc(100vh - 44px);
   padding: 70px 40px 70px 40px;
 
   & * {
@@ -133,14 +133,14 @@ const MainContent = styled.div`
 
 const MainWrapper = styled.div`
   position: relative;
-  width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 204px)" : "calc(100% - 65px)")};
+  width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 220px)" : "calc(100% - 65px)")};
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
     width: 100%;
   }
 `;
 
 const Sidebar = styled.div`
-  width: ${({ isVisible }) => (isVisible ? 204 : 65)}px;
+  width: ${({ isVisible }) => (isVisible ? 220 : 65)}px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
   padding-top: 85px;

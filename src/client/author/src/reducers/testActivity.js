@@ -37,6 +37,10 @@ export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT = "[gradebook] realtime gradeb
  * due date / open date to recalculate the status of the assignment
  */
 export const RECALCULATE_ADDITIONAL_DATA = "[gradebook] recalculate additional data";
+/**
+ * in student view , setting correct/wrong/partially correct/not graded filter
+ */
+export const SET_STUDENT_VIEW_FILTER = "[gradebook] set studentview filter";
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
@@ -49,6 +53,8 @@ export const realtimeGradebookCloseAction = createAction(REALTIME_GRADEBOOK_CLOS
 export const realtimeUpdateAssignmentAction = createAction(REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT);
 export const recalculateAdditionalDataAction = createAction(RECALCULATE_ADDITIONAL_DATA);
 
+export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER);
+
 const initialState = {
   entities: [],
   removedStudents: [],
@@ -57,7 +63,8 @@ const initialState = {
   allTestActivitiesForStudent: [],
   error: null,
   loading: false,
-  presentationMode: false
+  presentationMode: false,
+  studentViewFilter: null
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -332,6 +339,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         classStudents: payload
+      };
+    case SET_STUDENT_VIEW_FILTER:
+      return {
+        ...state,
+        studentViewFilter: payload
       };
     case SET_STUDENTS_GRADEBOOK:
       //take out newly added students from class students

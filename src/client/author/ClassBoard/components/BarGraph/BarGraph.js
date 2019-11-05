@@ -99,7 +99,7 @@ export default class BarGraph extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { gradebook, studentview, studentId, testActivity, studentResponse } = props;
+    const { gradebook, studentview, studentViewFilter, studentId, testActivity, studentResponse } = props;
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
       const filtered = _getAggregateByQuestion(testActivity, studentId);
@@ -109,6 +109,24 @@ export default class BarGraph extends Component {
           itemsSummary = filtered.itemsSummary;
         } else {
           itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
+        }
+
+        if (studentViewFilter) {
+          itemsSummary = itemsSummary.filter(x => {
+            if (studentViewFilter === "correct" && x.correctNum > 0) {
+              return true;
+            } else if (studentViewFilter === "wrong" && x.wrongNum > 0) {
+              return true;
+            } else if (studentViewFilter === "partial" && x.partialNum > 0) {
+              return true;
+            } else if (studentViewFilter === "skipped" && x.skippedNum > 0) {
+              return true;
+            } else if (studentViewFilter === "notGraded" && x.manualGradedNum > 0) {
+              return true;
+            } else {
+              return false;
+            }
+          });
         }
       }
     }
@@ -270,104 +288,109 @@ export default class BarGraph extends Component {
             visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
           }}
         />
+
         <ResponsiveContainer width="100%" height={240}>
-          <ComposedChart barGap={1} barSize={36} data={renderData}>
-            <XAxis
-              dataKey="name"
-              tickSize={0}
-              dy={8}
-              tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
-              padding={{ left: 20, right: 20 }}
-              cursor="pointer"
-              onClick={({ index }) => {
-                this.handleClick(renderData[index], index);
-              }}
-            />
-            <YAxis
-              domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}
-              yAxisId="left"
-              allowDecimals={false}
-              label={{
-                value: "ATTEMPTS",
-                dx: -10,
-                angle: -90,
-                fill: dropZoneTitleColor,
-                fontSize: "10px"
-              }}
-            />
-            <YAxis
-              yAxisId="right"
-              domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
-              allowDecimals={false}
-              label={{
-                value: "AVG TIME (SECONDS)",
-                angle: -90,
-                dx: 10,
-                fill: dropZoneTitleColor,
-                fontSize: "10px"
-              }}
-              orientation="right"
-              ticks={ticks(0, maxTimeSpent + 10000, 10)}
-              tickFormatter={val => Math.round(val / 1000)}
-            />
-            <Bar
-              className="correctAttemps"
-              yAxisId="left"
-              stackId="a"
-              dataKey="correctAttemps"
-              fill="#5eb500"
-              shape={<RectangleBar dataKey="correctAttemps" />}
-              onClick={this.handleClick}
-            />
-            <Bar
-              className="incorrectAttemps"
-              yAxisId="left"
-              stackId="a"
-              dataKey="incorrectAttemps"
-              fill={incorrect}
-              shape={<RectangleBar dataKey="incorrectAttemps" />}
-              onClick={this.handleClick}
-            />
-            <Bar
-              className="partialAttempts"
-              yAxisId="left"
-              stackId="a"
-              dataKey="partialAttempts"
-              fill={yellow}
-              shape={<RectangleBar dataKey="partialAttempts" />}
-              onClick={this.handleClick}
-            />
-            <Bar
-              className="skippedNum"
-              yAxisId="left"
-              stackId="a"
-              dataKey="skippedNum"
-              fill={themes.default.classboard.SkippedColor}
-              shape={<RectangleBar dataKey="skippedNum" />}
-              onClick={this.handleClick}
-            />
+          {chartData.length === 0 ? (
+            <h3 style={{ textAlign: "center" }}> No Question found </h3>
+          ) : (
+            <ComposedChart barGap={1} barSize={36} data={renderData}>
+              <XAxis
+                dataKey="name"
+                tickSize={0}
+                dy={8}
+                tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
+                padding={{ left: 20, right: 20 }}
+                cursor="pointer"
+                onClick={({ index }) => {
+                  this.handleClick(renderData[index], index);
+                }}
+              />
+              <YAxis
+                domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}
+                yAxisId="left"
+                allowDecimals={false}
+                label={{
+                  value: "ATTEMPTS",
+                  dx: -10,
+                  angle: -90,
+                  fill: dropZoneTitleColor,
+                  fontSize: "10px"
+                }}
+              />
+              <YAxis
+                yAxisId="right"
+                domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
+                allowDecimals={false}
+                label={{
+                  value: "AVG TIME (SECONDS)",
+                  angle: -90,
+                  dx: 10,
+                  fill: dropZoneTitleColor,
+                  fontSize: "10px"
+                }}
+                orientation="right"
+                ticks={ticks(0, maxTimeSpent + 10000, 10)}
+                tickFormatter={val => Math.round(val / 1000)}
+              />
+              <Bar
+                className="correctAttemps"
+                yAxisId="left"
+                stackId="a"
+                dataKey="correctAttemps"
+                fill="#5eb500"
+                shape={<RectangleBar dataKey="correctAttemps" />}
+                onClick={this.handleClick}
+              />
+              <Bar
+                className="incorrectAttemps"
+                yAxisId="left"
+                stackId="a"
+                dataKey="incorrectAttemps"
+                fill={incorrect}
+                shape={<RectangleBar dataKey="incorrectAttemps" />}
+                onClick={this.handleClick}
+              />
+              <Bar
+                className="partialAttempts"
+                yAxisId="left"
+                stackId="a"
+                dataKey="partialAttempts"
+                fill={yellow}
+                shape={<RectangleBar dataKey="partialAttempts" />}
+                onClick={this.handleClick}
+              />
+              <Bar
+                className="skippedNum"
+                yAxisId="left"
+                stackId="a"
+                dataKey="skippedNum"
+                fill={themes.default.classboard.SkippedColor}
+                shape={<RectangleBar dataKey="skippedNum" />}
+                onClick={this.handleClick}
+              />
 
-            <Bar
-              className="manualGradedNum"
-              yAxisId="left"
-              stackId="a"
-              dataKey="manualGradedNum"
-              fill="rgb(56, 150, 190)"
-              shape={<RectangleBar dataKey="manualGradedNum" />}
-              onClick={this.handleClick}
-            />
+              <Bar
+                className="manualGradedNum"
+                yAxisId="left"
+                stackId="a"
+                dataKey="manualGradedNum"
+                fill="rgb(56, 150, 190)"
+                shape={<RectangleBar dataKey="manualGradedNum" />}
+                onClick={this.handleClick}
+              />
 
-            <Line
-              yAxisId="right"
-              dataKey="avgTimeSpent"
-              stroke={blue}
-              strokeWidth="3"
-              type="monotone"
-              dot={{ stroke: blue, strokeWidth: 6, fill: white }}
-            />
+              <Line
+                yAxisId="right"
+                dataKey="avgTimeSpent"
+                stroke={blue}
+                strokeWidth="3"
+                type="monotone"
+                dot={{ stroke: blue, strokeWidth: 6, fill: white }}
+              />
 
-            <Tooltip content={<StyledCustomTooltip />} cursor={false} />
-          </ComposedChart>
+              <Tooltip content={<StyledCustomTooltip />} cursor={false} />
+            </ComposedChart>
+          )}
         </ResponsiveContainer>
       </MainDiv>
     );

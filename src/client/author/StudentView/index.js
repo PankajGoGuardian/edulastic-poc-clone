@@ -31,6 +31,7 @@ import {
   saveOverallFeedbackAction,
   updateOverallFeedbackAction
 } from "../src/actions/classBoard";
+import { setStudentViewFilterAction } from "../src/reducers/testActivity";
 // selectors
 import {
   getAssignmentClassIdSelector,
@@ -84,7 +85,7 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
   });
 
 class StudentViewContainer extends Component {
-  state = { filter: null, showFeedbackPopup: false, showTestletPlayer: false, hasStickyHeader: false };
+  state = { showFeedbackPopup: false, showTestletPlayer: false, hasStickyHeader: false };
 
   feedbackRef = React.createRef();
   questionsContainerRef = React.createRef();
@@ -158,10 +159,12 @@ class StudentViewContainer extends Component {
       selectedStudent,
       variableSetIds,
       isPresentationMode,
-      testItemsOrder
+      testItemsOrder,
+      filter,
+      setFilter
     } = this.props;
 
-    const { loading, filter, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
+    const { loading, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
@@ -230,25 +233,22 @@ class StudentViewContainer extends Component {
         <StyledFlexContainer justifyContent="space-between" hasStickyHeader={hasStickyHeader}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton active={filter === null} onClick={() => this.setState({ filter: null })}>
+              <AllButton active={filter === null} onClick={() => setFilter(null)}>
                 ALL ({totalNumber})
               </AllButton>
-              <CorrectButton active={filter === "correct"} onClick={() => this.setState({ filter: "correct" })}>
+              <CorrectButton active={filter === "correct"} onClick={() => setFilter("correct")}>
                 CORRECT ({correctNumber})
               </CorrectButton>
-              <WrongButton active={filter === "wrong"} onClick={() => this.setState({ filter: "wrong" })}>
+              <WrongButton active={filter === "wrong"} onClick={() => setFilter("wrong")}>
                 WRONG ({wrongNumber})
               </WrongButton>
-              <WrongButton active={filter === "partial"} onClick={() => this.setState({ filter: "partial" })}>
+              <WrongButton active={filter === "partial"} onClick={() => setFilter("partial")}>
                 PARTIALLY CORRECT ({partiallyCorrectNumber})
               </WrongButton>
-              <WrongButton active={filter === "skipped"} onClick={() => this.setState({ filter: "skipped" })}>
+              <WrongButton active={filter === "skipped"} onClick={() => setFilter("skipped")}>
                 SKIPPED ({skippedNumber})
               </WrongButton>
-              <PartiallyCorrectButton
-                active={filter === "notGraded"}
-                onClick={() => this.setState({ filter: "notGraded" })}
-              >
+              <PartiallyCorrectButton active={filter === "notGraded"} onClick={() => setFilter("notGraded")}>
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
@@ -308,12 +308,14 @@ const enhance = compose(
       variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", []),
-      entities: get(state, "author_classboard_testActivity.entities", [])
+      entities: get(state, "author_classboard_testActivity.entities", []),
+      filter: state?.author_classboard_testActivity?.studentViewFilter
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,
       saveOverallFeedback: saveOverallFeedbackAction,
-      updateOverallFeedback: updateOverallFeedbackAction
+      updateOverallFeedback: updateOverallFeedbackAction,
+      setFilter: setStudentViewFilterAction
     }
   )
 );

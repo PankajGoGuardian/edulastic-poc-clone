@@ -149,7 +149,13 @@ class InviteMultipleStudentModal extends Component {
   handleChange = value => {
     const { setProvider } = this.props;
     this.setState({ curSel: value });
-    setProvider(value);
+    setProvider && setProvider(value);
+    /**
+     * when the type of provider changes we need to update their validation also
+     */
+    this.props.form.setFieldsValue({ students: this.props.form.getFieldValue("students") }, () => {
+      this.props.form.validateFields(["students"], { force: true });
+    });
   };
 
   handleSearch = async e => {

@@ -600,7 +600,8 @@ class ClassBoard extends Component {
       loadStudentResponses,
       getAllTestActivitiesForStudent,
       enrollmentStatus,
-      isItemsVisible
+      isItemsVisible,
+      studentViewFilter
     } = this.props;
 
     const {
@@ -963,6 +964,7 @@ class ClassBoard extends Component {
                       testActivity={testActivity}
                       studentId={selectedStudentId}
                       studentview
+                      studentViewFilter={studentViewFilter}
                       studentResponse={studentResponse}
                     />
                     <InfoWrapper>
@@ -1140,7 +1142,8 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       labels: getQLabelsSelector(state),
-      removedStudents: removedStudentsSelector(state)
+      removedStudents: removedStudentsSelector(state),
+      studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

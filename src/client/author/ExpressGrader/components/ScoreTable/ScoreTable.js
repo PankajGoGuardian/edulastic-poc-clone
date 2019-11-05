@@ -80,7 +80,7 @@ class ScoreTable extends Component {
       {
         title: <TableTitle>Score Grid</TableTitle>,
         // Make score grid column fixed when more than 10 questions data exist
-        fixed: length > 10 ? "left" : false,
+        fixed: length > 7 ? "left" : false,
         width: 300,
         children: [
           {
@@ -201,7 +201,7 @@ class ScoreTable extends Component {
           //Columns length will be the number of questions
           //Column data length will be number of students
           scroll={{
-            x: columnsLength > 10 ? scrollX : false,
+            x: columnsLength > 7 ? scrollX : false,
             y: columnData.length > 6 ? scrollY : false
           }}
           rowKey={(record, i) => i}

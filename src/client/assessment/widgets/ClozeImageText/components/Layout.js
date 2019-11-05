@@ -96,20 +96,6 @@ class Layout extends Component {
                 />
               </Col>
             </Row>
-            <Row gutter={20}>
-              <Col md={12}>
-                <ImageScaleOption
-                  checked={get(item, "imagescale", false)}
-                  onChange={val => changeItem("imagescale", val)}
-                />
-              </Col>
-              <Col md={12}>
-                <VerticalTopOption
-                  checked={get(item, "verticaltop", false)}
-                  onChange={val => changeItem("verticaltop", val)}
-                />
-              </Col>
-            </Row>
             <SpecialCharacters />
             <Row gutter={20}>
               <Col md={12}>

@@ -156,26 +156,6 @@ class Layout extends Component {
             <Subtitle>{t("component.options.display")}</Subtitle>
             <MarginRow gutter={20}>
               <Col md={12}>
-                <OptionCheckbox
-                  checked={questionData.imagescale}
-                  onChange={e => onChange("imagescale", e.target.checked)}
-                  size="large"
-                >
-                  {t("component.options.imagescale")}
-                </OptionCheckbox>
-              </Col>
-              <Col md={12}>
-                <OptionCheckbox
-                  checked={questionData.verticaltop}
-                  onChange={e => onChange("verticaltop", e.target.checked)}
-                  size="large"
-                >
-                  {t("component.options.verticaltop")}
-                </OptionCheckbox>
-              </Col>
-            </MarginRow>
-            <MarginRow gutter={20}>
-              <Col md={12}>
                 <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
                 <SelectWrapper>
                   <OptionSelect

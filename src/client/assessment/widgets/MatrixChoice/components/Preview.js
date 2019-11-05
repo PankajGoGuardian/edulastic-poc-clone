@@ -112,5 +112,6 @@ const QuestionContentWrapper = styled.div`
 `;
 
 const QuestionWrapper = styled.div`
+  max-width: 100%;
   width: max-content;
 `;

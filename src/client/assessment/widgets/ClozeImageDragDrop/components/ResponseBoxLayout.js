@@ -4,7 +4,7 @@ import { withTheme } from "styled-components";
 import { DropTarget } from "react-dnd";
 import { compose } from "redux";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, FlexContainer } from "@edulastic/common";
 
 import DragItem from "./DragItem";
 import { StyledResponseDiv, StyledResponseOption } from "../../ClozeDragDrop/styled/ResponseBox";
@@ -35,7 +35,9 @@ const ResponseBoxLayout = ({
   transparentResponses,
   connectDropTarget,
   isOver,
-  responseContainerPosition
+  responseContainerPosition,
+  getHeading,
+  theme
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   return connectDropTarget(
@@ -46,38 +48,53 @@ const ResponseBoxLayout = ({
         style={{
           padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
           height: horizontallyAligned && "100%",
-          border: "2px dashed transparent",
+          border: `1px solid ${theme?.widgets?.clozeDragDrop?.correctAnswerBoxBorderColor}`,
           ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
         }}
       >
-        {responses.map((option = "", index) => (
-          <StyledResponseOption
-            key={index}
-            className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+        <FlexContainer flexDirection="column">
+          <div
             style={{
-              fontSize: smallSize ? 10 : fontSize,
-              width: horizontallyAligned && "100%"
+              margin: "0 auto 1rem 8px",
+              color: theme?.textColor,
+              fontWeight: theme?.bold,
+              fontSize: theme?.smallFontSize,
+              lineHeight: theme?.headerLineHeight
             }}
           >
-            {!dragHandler && (
-              <DragItem
-                style={{ width: "100%" }}
-                index={index}
-                onDrop={onDrop}
-                item={option}
-                data={`${option}_null_${index}`}
+            {getHeading("component.cloze.dragDrop.optionContainerHeading")}
+          </div>
+          <div>
+            {responses.map((option = "", index) => (
+              <StyledResponseOption
+                key={index}
+                className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+                style={{
+                  fontSize: smallSize ? 10 : fontSize,
+                  width: horizontallyAligned && "100%"
+                }}
               >
-                <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-              </DragItem>
-            )}
-            {dragHandler && (
-              <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
-                <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
-                <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-              </DragItem>
-            )}
-          </StyledResponseOption>
-        ))}
+                {!dragHandler && (
+                  <DragItem
+                    style={{ width: "100%" }}
+                    index={index}
+                    onDrop={onDrop}
+                    item={option}
+                    data={`${option}_null_${index}`}
+                  >
+                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+                  </DragItem>
+                )}
+                {dragHandler && (
+                  <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
+                    <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+                  </DragItem>
+                )}
+              </StyledResponseOption>
+            ))}
+          </div>
+        </FlexContainer>
       </StyledResponseDiv>
     </div>
   );

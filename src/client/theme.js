@@ -60,6 +60,7 @@ const questionTextBorderColor = "#d9d9d9";
 const triangleBottomColor = "#000000";
 const uploadIcon = "#E6E6E6";
 const zoneDropFontColor = "#E6E6E6";
+const correctAnswerBoxBorderColor = "#E6E6E6";
 const zoneDropFontColorAlt = "#B1B1B1";
 const liColor = themeColor;
 const checkboxBgColor = "#F8F8FB";
@@ -103,6 +104,7 @@ const questionTextextraFontSize = "16px";
 const questionTexthugeFontSize = "17px";
 const questionTexticonFontSize = "20px";
 const largeFontSize = "26px";
+const headerLineHeight = "17px";
 
 const notificationTitle = "18px";
 
@@ -282,6 +284,7 @@ export const allThemeVars = {
   questionTextextraFontSize,
   questionTexthugeFontSize,
   questionTexticonFontSize,
+  headerLineHeight,
 
   brandBlue,
   brandGreen,
@@ -688,11 +691,12 @@ export const defaultTheme = {
     clozeDragDrop: {
       editViewBgColor: containerWhite,
       previewTemplateBoxSmallFontSize: questionTextnormalFontSize,
-      responseBoxBgColor: containerGrey,
+      responseBoxBgColor: white,
       iconPlusColor: themeColor,
       groupResponseFieldsetBorderColor: borderColor,
       addGroupButtonBgColor: themeColor,
-      responseContainerBgColor: containerWhite,
+      responseContainerBgColor: brandLightGrey,
+      correctAnswerBoxBorderColor,
       responseContainerSmallBorderColor: borderColor,
       responseContainerBorderColor: borderColor,
       groupDraggableBoxSmallFontSize: subtitleFontSize,
@@ -733,6 +737,7 @@ export const defaultTheme = {
       correctAnswerBoxSubtitleColor: labelStyle,
       correctAnswerBoxTextContainerFontWeight: semiBold,
       correctAnswerBoxTextContainerBgColor: containerWhite,
+      correctAnswerBoxBorderColor,
       rightIconColor,
       wrongIconColor,
       imageZoom: 1

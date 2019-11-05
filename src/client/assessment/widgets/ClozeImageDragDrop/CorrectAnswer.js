@@ -127,6 +127,7 @@ class CorrectAnswer extends Component {
           showBorder={false}
           item={item}
           setQuestionData={setQuestionData}
+          getHeading={t}
         />
       </div>
     );

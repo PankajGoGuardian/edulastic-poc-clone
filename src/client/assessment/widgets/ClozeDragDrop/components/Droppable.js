@@ -29,7 +29,7 @@ const Droppable = ({ connectDropTarget, children, style, isOver }) =>
         display: "inline-flex",
         verticalAlign: "middle",
         borderRadius: 10,
-        border: "2px dotted",
+        border: "2px dashed #E6E6E6",
         ...style,
         ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
       }}

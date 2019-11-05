@@ -86,6 +86,7 @@ class CorrectAnswer extends Component {
           onChange={this.handleMultiSelect}
           hasGroupResponses={hasGroupResponses}
           responseIDs={responseIDs}
+          t={t}
         />
       </div>
     );

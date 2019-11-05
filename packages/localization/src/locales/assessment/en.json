@@ -456,7 +456,8 @@
         "shuffleoptions": "Shuffle Options",
         "addgroup": "Add Group",
         "newChoice": "New Choice",
-        "title": "Title"
+        "title": "Title",
+        "optionContainerHeading": "DRAG & DROP THE ANSWER"
       },
       "text": {
         "templatemarkup": "Template Markup",

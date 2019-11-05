@@ -253,6 +253,7 @@ class ClozeDragDrop extends Component {
               validation={item.validation}
               key={previewDisplayOptions && previewStimulus && uiStyle}
               isExpressGrader={expressGrader && previewTab === "show"}
+              t={t}
               {...restProps}
             />
           </Wrapper>

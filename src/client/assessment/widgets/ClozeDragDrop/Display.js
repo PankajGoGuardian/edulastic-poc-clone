@@ -264,9 +264,9 @@ class ClozeDragDropDisplay extends Component {
       showQuestionNumber,
       isExpressGrader,
       question,
-      view
+      view,
+      t
     } = this.props;
-
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
 
@@ -341,6 +341,7 @@ class ClozeDragDropDisplay extends Component {
         dragHandler={dragHandler}
         onDrop={!disableResponse ? this.onDrop : () => {}}
         containerPosition={responsecontainerposition}
+        getHeading={t}
       />
     );
     const correctAnswerBoxLayout = (
@@ -378,7 +379,7 @@ class ClozeDragDropDisplay extends Component {
       background: theme.widgets.clozeDragDrop.responseBoxBgColor
     };
     const questionContent = (
-      <div>
+      <div style={{ width: "100%" }}>
         {responsecontainerposition === "top" && (
           <React.Fragment>
             <div style={{ marginBottom: 15, borderRadius: 10 }}>{responseBoxLayout}</div>

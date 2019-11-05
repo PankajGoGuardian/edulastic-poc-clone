@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, FlexContainer } from "@edulastic/common";
 
 import Draggable from "./Draggable";
 import Droppable from "./Droppable";
@@ -16,7 +16,8 @@ const ResponseBoxLayout = ({
   dragHandler,
   onDrop,
   theme,
-  containerPosition
+  containerPosition,
+  getHeading
 }) => {
   const handleMove = e => {
     if (e.clientY < 100) {
@@ -36,7 +37,10 @@ const ResponseBoxLayout = ({
   const horizontallyAligned = containerPosition === "left" || containerPosition === "right";
 
   return (
-    <Droppable style={{ display: "block" }} drop={e => e}>
+    <Droppable
+      style={{ display: "block", border: `1px solid ${theme?.widgets?.clozeDragDrop?.correctAnswerBoxBorderColor}` }}
+      drop={e => e}
+    >
       <StyledResponseDiv
         className="responses_box"
         style={{
@@ -48,97 +52,112 @@ const ResponseBoxLayout = ({
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >
-        {hasGroupResponses && (
-          <GroupWrapper horizontallyAligned={horizontallyAligned}>
-            {responses.map((groupResponse, index) => {
-              if (groupResponse !== null && typeof groupResponse === "object") {
-                return (
-                  <div key={index} className="group">
-                    <h3>{groupResponse.title}</h3>
-                    {groupResponse.options &&
-                      groupResponse.options.map((option, itemIndex) => {
-                        const { value, label = "" } = option;
-                        return (
-                          <div
-                            key={itemIndex}
-                            className="draggable_box"
-                            style={{
-                              display: "flex",
-                              width: horizontallyAligned ? "100%" : null,
-                              justifyContent: "center",
-                              fontSize: smallSize
-                                ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
-                                : fontSize
-                            }}
-                          >
-                            {!dragHandler && (
-                              <Draggable onDrop={onDrop} data={`${value}_${index}`}>
-                                <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                              </Draggable>
-                            )}
-                            {dragHandler && (
-                              <React.Fragment>
-                                <Draggable onDrop={onDrop} data={`${value}_${index}`}>
-                                  <i
-                                    className="fa fa-arrows-alt"
-                                    style={{
-                                      fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                    }}
-                                  />
-                                  <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                </Draggable>
-                              </React.Fragment>
-                            )}
-                          </div>
-                        );
-                      })}
-                  </div>
-                );
-              }
-              return <React.Fragment key={index} />;
-            })}
-          </GroupWrapper>
-        )}
+        <FlexContainer flexDirection="column">
+          <div
+            style={{
+              margin: "0 auto 1rem 8px",
+              color: theme?.textColor,
+              fontWeight: theme?.bold,
+              fontSize: theme?.smallFontSize,
+              lineHeight: theme?.headerLineHeight
+            }}
+          >
+            {getHeading("component.cloze.dragDrop.optionContainerHeading")}
+          </div>
+          <FlexContainer flexDirection={horizontallyAligned ? "column" : "row"}>
+            {hasGroupResponses && (
+              <GroupWrapper horizontallyAligned={horizontallyAligned}>
+                {responses.map((groupResponse, index) => {
+                  if (groupResponse !== null && typeof groupResponse === "object") {
+                    return (
+                      <div key={index} className="group">
+                        <h3>{groupResponse.title}</h3>
+                        {groupResponse.options &&
+                          groupResponse.options.map((option, itemIndex) => {
+                            const { value, label = "" } = option;
+                            return (
+                              <div
+                                key={itemIndex}
+                                className="draggable_box"
+                                style={{
+                                  display: "flex",
+                                  width: horizontallyAligned ? "100%" : null,
+                                  justifyContent: "center",
+                                  fontSize: smallSize
+                                    ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
+                                    : fontSize
+                                }}
+                              >
+                                {!dragHandler && (
+                                  <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                  </Draggable>
+                                )}
+                                {dragHandler && (
+                                  <React.Fragment>
+                                    <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                      <i
+                                        className="fa fa-arrows-alt"
+                                        style={{
+                                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                                        }}
+                                      />
+                                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                    </Draggable>
+                                  </React.Fragment>
+                                )}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    );
+                  }
+                  return <React.Fragment key={index} />;
+                })}
+              </GroupWrapper>
+            )}
 
-        {!hasGroupResponses &&
-          responses.map((option, index) => {
-            const { label, value } = option;
-            return (
-              <StyledResponseOption
-                id={`response-item-${index}`}
-                key={value}
-                className="draggable_box"
-                style={{
-                  fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
-                  fontWeight: smallSize
-                    ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
-                    : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
-                  display: "flex",
-                  width: horizontallyAligned ? "100%" : null,
-                  justifyContent: "center"
-                }}
-              >
-                {!dragHandler && (
-                  <Draggable onDrop={onDrop} data={value}>
-                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                  </Draggable>
-                )}
-                {dragHandler && (
-                  <React.Fragment>
-                    <Draggable onDrop={onDrop} data={value}>
-                      <i
-                        className="fa fa-arrows-alt"
-                        style={{
-                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                        }}
-                      />
-                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                    </Draggable>
-                  </React.Fragment>
-                )}
-              </StyledResponseOption>
-            );
-          })}
+            {!hasGroupResponses &&
+              responses.map((option, index) => {
+                const { label, value } = option;
+                return (
+                  <StyledResponseOption
+                    id={`response-item-${index}`}
+                    key={value}
+                    className="draggable_box"
+                    style={{
+                      fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
+                      fontWeight: smallSize
+                        ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
+                        : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
+                      display: "flex",
+                      width: horizontallyAligned ? "100%" : null,
+                      justifyContent: "center"
+                    }}
+                  >
+                    {!dragHandler && (
+                      <Draggable onDrop={onDrop} data={value}>
+                        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                      </Draggable>
+                    )}
+                    {dragHandler && (
+                      <React.Fragment>
+                        <Draggable onDrop={onDrop} data={value}>
+                          <i
+                            className="fa fa-arrows-alt"
+                            style={{
+                              fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                            }}
+                          />
+                          <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                        </Draggable>
+                      </React.Fragment>
+                    )}
+                  </StyledResponseOption>
+                );
+              })}
+          </FlexContainer>
+        </FlexContainer>
       </StyledResponseDiv>
     </Droppable>
   );

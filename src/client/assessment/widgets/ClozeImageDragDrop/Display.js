@@ -352,7 +352,8 @@ class Display extends Component {
       isReviewTab,
       isExpressGrader,
       setQuestionData,
-      studentReport
+      studentReport,
+      getHeading
     } = this.props;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers, possibleResponses } = this.state;
@@ -639,6 +640,9 @@ class Display extends Component {
         dragHandler={dragHandler}
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
+        getHeading={getHeading}
+        headingTextColor={theme?.textColor}
+        reponseContainerBgColor={theme?.brandLightGrey}
       />
     );
 

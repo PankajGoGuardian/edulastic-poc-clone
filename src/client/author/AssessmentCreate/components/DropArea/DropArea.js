@@ -1,22 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { PaperContainer } from "./styled";
+import BodyWrapper from "../../../AssignmentCreate/common/BodyWrapper";
+import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
 import CreateUpload from "../CreateUpload/CreateUpload";
 import CreateBlank from "../CreateBlank/CreateBlank";
 
 const DropArea = ({ onUpload, onCreateBlank, loading, percent, fileInfo, cancelUpload, uploadToDrive }) => (
-  <PaperContainer>
-    <CreateUpload
-      creating={loading}
-      percent={percent}
-      fileInfo={fileInfo}
-      cancelUpload={cancelUpload}
-      onUpload={onUpload}
-      uploadToDrive={uploadToDrive}
-    />
-    <CreateBlank onCreate={onCreateBlank} loading={loading} />
-  </PaperContainer>
+  <BodyWrapper>
+    <FlexWrapper marginBottom="0px">
+      <CreateUpload
+        creating={loading}
+        percent={percent}
+        fileInfo={fileInfo}
+        cancelUpload={cancelUpload}
+        onUpload={onUpload}
+        uploadToDrive={uploadToDrive}
+      />
+      <CreateBlank onCreate={onCreateBlank} loading={loading} />
+    </FlexWrapper>
+  </BodyWrapper>
 );
 
 DropArea.propTypes = {

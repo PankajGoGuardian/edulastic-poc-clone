@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { darkGrey, extraDesktopWidthMax } from "@edulastic/colors";
+import { textColor, extraDesktopWidthMax } from "@edulastic/colors";
 
 const TextWrapper = styled.div`
   margin-bottom: 20px;
   text-align: center;
-  color: ${darkGrey};
+  color: ${textColor};
   line-height: 20px;
   font-size: ${props => props.theme.smallFontSize};
 

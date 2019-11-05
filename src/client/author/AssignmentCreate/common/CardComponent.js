@@ -8,7 +8,7 @@ const CardComponent = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 30px;
-  background-color: ${lightGrey};
+  background-color: ${props => props.theme.brandLightGrey};
   border-radius: 10px;
   min-height: 400px;
 

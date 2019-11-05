@@ -1,18 +1,7 @@
 import { Upload } from "antd";
 import styled from "styled-components";
 
-import { Paper } from "@edulastic/common";
-
 const { Dragger } = Upload;
-
-export const PaperContainer = styled(Paper)`
-  display: flex;
-  justify-content: center;
-  border-radius: 10px;
-  padding: 100px 0;
-  min-height: 70vh;
-  margin-top: 20px;
-`;
 
 export const UploadDragger = styled(Dragger)`
   .ant-upload-list {

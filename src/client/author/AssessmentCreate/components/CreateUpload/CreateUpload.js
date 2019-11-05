@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { IconUpload } from "@edulastic/icons";
+import { IconUpload, IconGdrive, IconCloudUpload } from "@edulastic/icons";
 import { formatBytes } from "@edulastic/common";
 import { Progress, Icon, Button, message } from "antd";
-import PaperTitle from "../common/PaperTitle";
-import { UploadDescription } from "./styled";
+import { themeColor } from "@edulastic/colors";
 import { Container, ButtonsContainer, RoundedButton } from "../CreateBlank/styled";
 import { UploadDragger } from "../DropArea/styled";
-import { themeColor } from "@edulastic/colors";
 import GooglePicker from "./GooglePicker";
+import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
+import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
+import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
 
 const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, uploadToDrive }) => {
   const onCancel = () => {
@@ -31,9 +32,13 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
 
   return (
     <Container childMarginRight="0">
-      <IconUpload width="45px" height="45px" />
-      <PaperTitle>Upload Files to Get Started</PaperTitle>
-      <UploadDescription>Select questions from the library or author your own.</UploadDescription>
+      <IconWrapper>
+        <IconUpload width="34px" height="44px" />
+      </IconWrapper>
+      <TitleWrapper>Upload Files to Get Started</TitleWrapper>
+      <TextWrapper>
+        Select questions from the library or <br /> author your own.
+      </TextWrapper>
       <ButtonsContainer>
         <UploadDragger
           UploadDragger
@@ -44,7 +49,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
           accept=".pdf"
         >
           <RoundedButton>
-            <IconUpload color={themeColor} />
+            <IconCloudUpload color={themeColor} />
           </RoundedButton>
         </UploadDragger>
         {/* TODO add proper client ID and developer key via .env files */}
@@ -55,7 +60,9 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
           onAuthFailed={handleAuthFailed}
           mimeTypes={["application/pdf"]}
         >
-          <RoundedButton>G</RoundedButton>
+          <RoundedButton>
+            <IconGdrive color={themeColor} />
+          </RoundedButton>
         </GooglePicker>
       </ButtonsContainer>
       {creating && (

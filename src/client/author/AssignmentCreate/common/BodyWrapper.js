@@ -9,6 +9,8 @@ const BodyWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${white};
+  box-shadow: 0px 3px 10px #0000001a;
+  border-radius: 10px;
   min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {

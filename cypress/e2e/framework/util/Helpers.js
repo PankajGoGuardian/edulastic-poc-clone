@@ -1,6 +1,23 @@
-import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
+// import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
 class Helpers {
+  static getFontSize = (fontSize, withRem = true) => {
+    switch (fontSize) {
+      case "small":
+        return withRem ? "0.8rem" : "11px";
+      case "normal":
+        return withRem ? "1rem" : "14px";
+      case "large":
+        return withRem ? "1.2rem" : "17px";
+      case "xlarge":
+        return withRem ? "1.4rem" : "20px";
+      case "xxlarge":
+        return withRem ? "1.6rem" : "24px";
+      default:
+        return withRem ? "1rem" : "14px";
+    }
+  };
+
   static stringTypes = () => {
     return { ALPHA: "Alphabetical", ALPHA_NUM: "Alpha Numreric", NUMERIC: "Numeric" };
   };
@@ -12,17 +29,17 @@ class Helpers {
   static fontSize(font) {
     switch (font) {
       case "small":
-        return { font: getFontSize(font, false), name: "Small" };
+        return { font: this.getFontSize(font, false), name: "Small" };
       case "normal":
-        return { font: getFontSize(font, false), name: "Normal" };
+        return { font: this.getFontSize(font, false), name: "Normal" };
       case "large":
-        return { font: getFontSize(font, false), name: "Large" };
+        return { font: this.getFontSize(font, false), name: "Large" };
       case "xlarge":
-        return { font: getFontSize(font, false), name: "Extra Large" };
+        return { font: this.getFontSize(font, false), name: "Extra Large" };
       case "xxlarge":
-        return { font: getFontSize(font, false), name: "Huge" };
+        return { font: this.getFontSize(font, false), name: "Huge" };
       default:
-        return { font: getFontSize("normal", false), name: "Normal" };
+        return { font: this.getFontSize("normal", false), name: "Normal" };
     }
   }
 

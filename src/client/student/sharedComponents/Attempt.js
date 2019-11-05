@@ -106,7 +106,7 @@ const RowData = styled(Row)`
     justify-content: space-between;
     width: 100%;
   }
-  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+  @media only screen and (min-width: ${mobileWidthMax}) {
     flex: 1;
   }
   div {

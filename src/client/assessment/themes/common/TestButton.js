@@ -81,7 +81,7 @@ const StyledButton = styled.div`
   border-radius: 4px;
   border: 1px solid;
   cursor: pointer;
-
+  font-weight:600;
   ${({ theme, active }) => `
     height: ${theme.default.headerLeftButtonHeight};
     font-size: ${theme.default.headerButtonFontSize};

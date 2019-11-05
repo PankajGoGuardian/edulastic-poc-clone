@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const SelectContainer = styled.div`
   position: relative;
-  width: 200px;
+  width: 196px;
   display: flex;
   align-items: center;
 

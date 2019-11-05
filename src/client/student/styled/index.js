@@ -131,6 +131,7 @@ export const BreadcrumbWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0px;
+  margin-top: 0;
 
   .ant-breadcrumb-link {
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};

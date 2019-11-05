@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
-import { Col, Button } from "antd";
+import { Col } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import Tags from "../../../src/components/common/Tags";
 import {
@@ -26,7 +26,6 @@ import {
   CardIdWrapper,
   CardId,
   Footer,
-  ButtonWrapper,
   AddButton,
   TestStatus,
   EdulasticVerified
@@ -143,40 +142,11 @@ class ListItem extends Component {
         />
         <Container onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
-            <Col span={18}>
+            <Col span={24}>
               <ListCard
                 title={
                   <Header src={thumbnailData}>
                     <Stars size="small" />
-                    <ButtonWrapper className="showHover">
-                      {owner && testStatus === "draft" && (
-                        <Button type="primary" onClick={this.moveToItem}>
-                          Edit
-                        </Button>
-                      )}
-
-                      {testStatus === "draft" && (
-                        <Button type="primary" onClick={this.duplicate}>
-                          duplicate
-                        </Button>
-                      )}
-                      {testStatus === "published" && (
-                        <Button
-                          type="primary"
-                          onClick={e => {
-                            e.stopPropagation();
-                            this.showPreviewModal(testId);
-                          }}
-                        >
-                          Preview
-                        </Button>
-                      )}
-                      {testStatus === "published" && (
-                        <Button type="primary" onClick={this.assignTest}>
-                          Assign
-                        </Button>
-                      )}
-                    </ButtonWrapper>
                   </Header>
                 }
               />

@@ -131,7 +131,7 @@ export const EllipsisWrapper = styled.div`
   min-height: 18px;
   position: relative;
   overflow: hidden;
-  text-align: ${props => (props.view === "list" ? "left" : "center")};
+  text-align: ${props => (props.view === "list" ? "justify" : "center")};
   text-overflow: hidden;
   &:before {
     content: "...";

@@ -6,25 +6,18 @@ import IconELogo from "@edulastic/icons/src/IconELogo";
 
 export const Container = styled.div`
   display: flex;
-  padding: 30px 0px;
+  padding: 20px 0px 15px;
   border-bottom: 1px solid ${fadedGrey};
 `;
 
 export const ListCard = styled(Card)`
-  width: 180px;
-  height: 90px;
+  width: 115px;
   border-radius: 5px;
   display: inline-block;
   vertical-align: middle;
-
-  .ant-card-body {
-    padding: 0;
-  }
-
-  .ant-card-head {
-    padding: 0;
-  }
-
+  overflow: hidden;
+  .ant-card-body,
+  .ant-card-head,
   .ant-card-head-title {
     padding: 0;
   }
@@ -32,7 +25,7 @@ export const ListCard = styled(Card)`
 
 export const Inner = styled.div`
   padding: 0px 0px 0px 25px;
-  width: calc(100% - 190px);
+  width: calc(100% - 125px);
   display: inline-block;
   vertical-align: middle;
 `;
@@ -116,8 +109,8 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const Header = styled.div`
-  min-height: 90px;
-  min-width: 180px;
+  height: 65px;
+  width: 100%;
   position: relative;
   background: url(${props =>
     props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
@@ -135,11 +128,14 @@ export const Header = styled.div`
 `;
 
 export const Stars = styled(Rate)`
-  font-size: 13px;
+  font-size: 10px;
   position: absolute;
   left: 10px;
   top: 5px;
   z-index: 1;
+  .ant-rate-star {
+    margin-right: 3px;
+  }
 `;
 
 export const StyledLink = styled.a`
@@ -150,6 +146,7 @@ export const StyledLink = styled.a`
   text-decoration: none;
   color: #00ad50;
   cursor: pointer;
+  text-align: justify;
 
   :hover {
     color: #00ad50;

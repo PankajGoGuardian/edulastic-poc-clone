@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
 export const IconWrapper = styled.div`
-  position: absolute;
-  right: 10px;
+  position: relative;
   width: 30px;
   display: flex;
   align-items: center;

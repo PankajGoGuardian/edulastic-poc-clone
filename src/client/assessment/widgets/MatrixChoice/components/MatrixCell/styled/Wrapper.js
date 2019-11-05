@@ -18,4 +18,7 @@ export const Wrapper = styled.div`
   background: ${props => getCellColor(props.correct, props.theme)};
   padding: ${props => (props.smallSize ? 1 : 15)}px;
   position: relative;
+  .inline-label {
+    margin-right: 10px;
+  }
 `;

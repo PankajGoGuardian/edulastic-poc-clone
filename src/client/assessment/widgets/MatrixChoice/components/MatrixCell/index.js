@@ -18,7 +18,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   return (
     <Wrapper smallSize={smallSize} correct={correct}>
       {input}
-      {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} />}
+      {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} className={"inline-label"} />}
       {children}
     </Wrapper>
   );
@@ -43,10 +43,12 @@ MatrixCell.defaultProps = {
 export default MatrixCell;
 
 const StyledCheckbox = styled(Checkbox)`
+  margin-left: 8px;
   border-color: red;
 `;
 
 const StyledRadio = styled(Radio)`
+  margin-left: 8px;
   .ant-radio-checked .ant-radio-inner {
     border-color: ${props => props.theme.widgets.matrixChoice.inlineLabelColor};
     &:after {

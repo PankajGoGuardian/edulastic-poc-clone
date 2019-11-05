@@ -64,19 +64,11 @@ const EditEssayRichText = ({
       />
 
       <Question
-        section="advanced"
-        label={t("component.options.scoring")}
+        section="main"
+        label={t("component.essayText.wordsLimitTitle")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Scoring
-          setQuestionData={setQuestionData}
-          t={t}
-          scoringTypes={[]}
-          questionData={item}
-          advancedAreOpen={advancedAreOpen}
-          noPaddingLeft
-        />
         <WordLimitAndCount
           withOutTopMargin
           onChange={handleItemChangeChange}
@@ -87,6 +79,7 @@ const EditEssayRichText = ({
           advancedAreOpen={advancedAreOpen}
           showHeading={false}
         />
+
         <Checkbox
           style={{ marginTop: 32 }}
           defaultChecked={item.showWordCount}
@@ -95,6 +88,14 @@ const EditEssayRichText = ({
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
       </Question>
+
+      <Scoring
+        setQuestionData={setQuestionData}
+        t={t}
+        scoringTypes={[]}
+        questionData={item}
+        advancedAreOpen={advancedAreOpen}
+      />
 
       {advancedLink}
 

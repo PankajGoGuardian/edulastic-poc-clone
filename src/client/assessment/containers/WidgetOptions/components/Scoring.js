@@ -109,16 +109,22 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            {!isAutoMarkBtnVisible && isAutomarkChecked && (
+            {!isAutoMarkBtnVisible && (
               <Col md={12}>
-                <StyledCheckbox
-                  data-cy="unscoredChk"
-                  checked={questionData.validation.unscored}
-                  onChange={e => handleChangeValidation("unscored", e.target.checked)}
-                  size="large"
-                >
-                  {t("component.options.unscored")}
-                </StyledCheckbox>
+                <ColWrapper noPaddingLeft={noPaddingLeft}>
+                  <Label>{t("component.options.maxScore")}</Label>
+                  <FormGroup center>
+                    <StyledInput
+                      data-cy="maxscore"
+                      type="number"
+                      value={maxScore}
+                      min={1}
+                      onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
+                      size="large"
+                      style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
+                    />
+                  </FormGroup>
+                </ColWrapper>
               </Col>
             )}
             {scoringTypes.length > 1 && showSelect && (
@@ -184,25 +190,6 @@ class Scoring extends Component {
                 </Col>
               </Row>
             </Col>
-          </Row>
-        )}
-
-        {!isAutoMarkBtnVisible && (
-          <Row gutter={60} center>
-            <ColWrapper noPaddingLeft={noPaddingLeft}>
-              <FormGroup center>
-                <StyledInput
-                  data-cy="maxscore"
-                  type="number"
-                  value={maxScore}
-                  min={1}
-                  onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.maxScore")}</Label>
-              </FormGroup>
-            </ColWrapper>
           </Row>
         )}
 

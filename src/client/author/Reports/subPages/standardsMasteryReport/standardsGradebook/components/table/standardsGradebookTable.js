@@ -19,8 +19,7 @@ import {
   getMasteryDropDown,
   idToName,
   analyseByToKeyToRender,
-  analyseByToName,
-  getAverageStandardScorePercent
+  analyseByToName
 } from "../../utils/transformers";
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
@@ -32,7 +31,8 @@ export const StandardsGradebookTable = ({
   isCsvDownloading,
   role,
   filters = {},
-  handleOnClickStandard
+  handleOnClickStandard,
+  standardsData
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
@@ -62,7 +62,11 @@ export const StandardsGradebookTable = ({
     );
   }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
 
-  const averageStandardScorePercent = useMemo(() => getAverageStandardScorePercent(tableData), [tableData]);
+  const getCurrentStandard = (standardId, analyseBy) => {
+    const currentStandard = standardsData.find(s => s.standardId === standardId);
+    if (analyseBy === "score(%)") return `${currentStandard.score}%`;
+    return currentStandard[analyseBy];
+  };
 
   const getFilteredTableData = () => {
     return next(tableData, arr => {
@@ -224,14 +228,7 @@ export const StandardsGradebookTable = ({
             <>
               <span>{item.standardName}</span>
               <br />
-              <span>
-                {
-                  averageStandardScorePercent[item.standardName][
-                    tableDdFilters.analyseBy === "rawScore" ? "rawScore" : "scorePercent"
-                  ]
-                }
-                {tableDdFilters.analyseBy !== "rawScore" && "%"}
-              </span>
+              <span>{getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}</span>
             </>
           ),
           dataIndex: item.standardId,

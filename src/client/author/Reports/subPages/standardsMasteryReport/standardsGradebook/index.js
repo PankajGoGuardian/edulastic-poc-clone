@@ -18,7 +18,8 @@ import {
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
   getSelectedStandardProficiency,
-  getFiltersSelector
+  getFiltersSelector,
+  getReportsStandardsBrowseStandards
 } from "../common/filterDataDucks";
 
 import {
@@ -32,7 +33,14 @@ import {
 
 import { getCsvDownloadingState } from "../../../ducks";
 
-import { getFilterDropDownData, getDenormalizedData, getFilteredDenormalizedData } from "./utils/transformers";
+import {
+  getFilterDropDownData,
+  getDenormalizedData,
+  getFilteredDenormalizedData,
+  groupedByStandard
+} from "./utils/transformers";
+
+import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
@@ -130,7 +138,14 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter);
   };
 
-  const masteryScale = selectedStandardProficiency;
+  const masteryScale = selectedStandardProficiency || {};
+  const maxMasteryScore = getMaxMasteryScore(masteryScale);
+
+  const standardsData = useMemo(() => groupedByStandard(filteredDenormalizedData, maxMasteryScore, masteryScale), [
+    filteredDenormalizedData,
+    maxMasteryScore,
+    masteryScale
+  ]);
 
   const handleOnClickStandard = (params, standard, studentName) => {
     getStudentStandardsAction(params);
@@ -189,6 +204,7 @@ const StandardsGradebook = ({
               role={role}
               filters={filters}
               handleOnClickStandard={handleOnClickStandard}
+              standardsData={standardsData}
             />
           </TableContainer>
           {showStudentAssignmentModal && (

@@ -1,4 +1,4 @@
-import { groupBy, keyBy, isEmpty, get, values, round } from "lodash";
+import { groupBy, keyBy, isEmpty, get, values, round, sumBy, orderBy } from "lodash";
 import group from "@edulastic/api/src/group";
 import { getHSLFromRange1, getProficiencyBand } from "../../../../common/util";
 import { white } from "@edulastic/colors";
@@ -434,33 +434,36 @@ export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, 
   return filteredData;
 };
 
-export const getAverageStandardScorePercent = tableData => {
-  let averageScoreInfo = {};
-
-  tableData.forEach(data => {
-    const standardsInfo = data.standardsInfo;
-    standardsInfo.forEach(standard => {
-      if (!averageScoreInfo[standard.standardName]) {
-        averageScoreInfo[standard.standardName] = {};
-      }
-      averageScoreInfo[standard.standardName].scorePercent = averageScoreInfo[standard.standardName].scorePercent
-        ? averageScoreInfo[standard.standardName].scorePercent + (standard.scorePercent || 0)
-        : standard.scorePercent || 0;
-      averageScoreInfo[standard.standardName].rawScore = averageScoreInfo[standard.standardName].rawScore
-        ? averageScoreInfo[standard.standardName].rawScore + (standard.rawScore || 0)
-        : standard.rawScore || 0;
-      averageScoreInfo[standard.standardName].totalMaxScore = averageScoreInfo[standard.standardName].totalMaxScore
-        ? averageScoreInfo[standard.standardName].totalMaxScore + (standard.totalMaxScore || 0)
-        : standard.totalMaxScore || 0;
-    });
-  });
-
-  let averageScorePercent = {};
-
-  for (let [key, value] of Object.entries(averageScoreInfo)) {
-    if (!averageScorePercent[key]) averageScorePercent[key] = {};
-    averageScorePercent[key].scorePercent = Math.round(value.scorePercent / tableData.length);
-    averageScorePercent[key].rawScore = `${value.rawScore.toFixed(2)}/${value.totalMaxScore}`;
+export const getMasteryLevel = (score, scaleInfo) => {
+  for (const obj of scaleInfo) {
+    if (round(score) === obj.score) {
+      return obj || getLeastMasteryLevel(scaleInfo);
+    }
   }
-  return averageScorePercent;
+  return getLeastMasteryLevel(scaleInfo);
+};
+
+export const getLeastMasteryLevel = (scaleInfo = []) =>
+  orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
+
+export const groupedByStandard = (metricInfo = [], maxScore, scaleInfo = []) => {
+  const standards = groupBy(metricInfo, "standardId");
+  return Object.keys(standards).map(standardId => {
+    const standardData = standards[standardId] || [];
+
+    const masteryScore = (sumBy(standardData, "fm") / standardData.length).toFixed(2);
+    const score = round((sumBy(standardData, "totalScore") / sumBy(standardData, "maxScore")) * 100);
+    const rawScore = `${sumBy(standardData, "totalScore").toFixed(2)} / ${sumBy(standardData, "maxScore")}`;
+    const masteryLevel = getMasteryLevel(masteryScore, scaleInfo).masteryLabel;
+
+    return {
+      standardId,
+      masteryScore,
+      diffMasteryScore: maxScore - round(masteryScore, 2),
+      score,
+      rawScore,
+      masteryLevel,
+      records: standardData
+    };
+  });
 };

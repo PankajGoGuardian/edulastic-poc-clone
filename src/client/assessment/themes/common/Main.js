@@ -1,14 +1,23 @@
 import styled from "styled-components";
-// import { ifZoomed } from "../../../common/utils/helpers";
 
 const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
-  padding: ${({ theme, skin }) => {
-    // if (ifZoomed(theme?.zoomLevel)) {
-    //   return skin ? `130px 20px 20px` : "158px 0 0 140px";
-    // }
-
-    return skin ? "82px 20px 20px" : "110px 0 0 140px";
+  padding: ${({ zoomed, zoomLevel, skin }) => {
+    if (!zoomed) {
+      return skin ? "82px 20px 20px" : "110px 0 0 140px";
+    }
+    if (zoomed) {
+      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+        return "100px 30px 20px";
+      }
+      if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+        return "115px 35px 20px";
+      }
+      if (zoomLevel >= 2.5) {
+        return "115px 35px 20px";
+      }
+      return "82px 20px 20px";
+    }
   }};
   display: ${props => (props.skin ? "block" : "flex")};
   flex-direction: ${props => (props.skin ? "initial" : "row")};
@@ -20,7 +29,7 @@ const Main = styled.main`
   }
 
   @media (max-width: 768px) {
-    padding: 174px 26px 0;
+    padding: 120px 26px 0;
   }
 `;
 

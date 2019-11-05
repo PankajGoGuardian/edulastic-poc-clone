@@ -80,7 +80,8 @@ class AssessmentPlayerDefault extends React.Component {
       showHints: false,
       enableCrossAction: false,
       zoomFactor: 1,
-      minWidth: 350
+      minWidth: 480,
+      defaultContentWidth: 900
     };
 
     this.scrollElementRef = React.createRef();
@@ -315,7 +316,7 @@ class AssessmentPlayerDefault extends React.Component {
       previousQuestionActivities,
       LCBPreviewModal,
       preview,
-      zoomLevel,
+      zoomLevel: _zoomLevel,
       selectedTheme = "default",
       closeTestPreviewModal,
       showTools = true,
@@ -335,7 +336,8 @@ class AssessmentPlayerDefault extends React.Component {
       currentToolMode,
       showHints,
       enableCrossAction,
-      minWidth
+      minWidth,
+      defaultContentWidth
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -356,14 +358,20 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const scratchPadMode = currentToolMode.indexOf(5) !== -1;
-    const zoomedWidth = windowWidth * zoomLevel;
+
+    // calculate width of question area
     const availableWidth = windowWidth - 70;
     let responsiveWidth = availableWidth;
-    if (zoomedWidth > availableWidth) {
-      responsiveWidth = availableWidth / zoomLevel;
+    let zoomLevel = _zoomLevel;
+
+    if (defaultContentWidth * zoomLevel > availableWidth) {
+      if (availableWidth / zoomLevel < minWidth) {
+        zoomLevel = availableWidth / minWidth;
+        responsiveWidth = minWidth;
+      } else {
+        responsiveWidth = availableWidth / zoomLevel;
+      }
     }
-    // responsiveWidth = Math.max(minWidth,windowWidth/zoomLevel);
-    responsiveWidth = Math.max(minWidth, windowWidth / zoomLevel);
 
     const hasCollapseButtons =
       itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
@@ -384,7 +392,7 @@ class AssessmentPlayerDefault extends React.Component {
       transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
       transformOrigin: "0px 0px",
       width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "11px 15px"}`,
+      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 32px" : "10px 5px 25px 5px") : "11px 15px"}`,
       justifyContent: "space-between"
     };
 
@@ -533,7 +541,7 @@ class AssessmentPlayerDefault extends React.Component {
               <DragScrollContainer scrollWrraper={this.scrollElementRef.current} />
             </Header>
           </Affix>
-          <Main skin>
+          <Main skin zoomed={isZoomApplied} zoomLevel={zoomLevel}>
             <SettingsModal />
             <SvgDraw
               activeMode={activeMode}

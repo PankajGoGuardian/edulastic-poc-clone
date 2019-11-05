@@ -1,16 +1,16 @@
+/* eslint-disable react/prop-types */
 import React, { useRef, useState } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+import { Hints } from "@edulastic/common";
 import TestItemPreview from "../../components/TestItemPreview";
 import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
 import DragScrollContainer from "../../components/DragScrollContainer";
 
-import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, headerOffsetHashMap } from "../../constants/others";
-import { Hints } from "@edulastic/common";
-import { ifZoomed } from "../../../common/utils/helpers";
+import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
 
 const PlayerContentArea = ({
   itemRows,
@@ -35,11 +35,21 @@ const PlayerContentArea = ({
   const item = items[currentItem];
 
   const toggleSideBar = () => {
-    setSidebarVisible(isSidebarVisible => !isSidebarVisible);
+    setSidebarVisible(!isSidebarVisible);
   };
 
   return (
     <Main skinB="true">
+      <Sidebar isVisible={isSidebarVisible}>
+        <SidebarQuestionList
+          questions={dropdownOptions}
+          selectedQuestion={currentItem}
+          gotoQuestion={gotoQuestion}
+          toggleSideBar={toggleSideBar}
+          isSidebarVisible={isSidebarVisible}
+          theme={theme}
+        />
+      </Sidebar>
       <MainWrapper isSidebarVisible={isSidebarVisible}>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
         <MainContent ref={scrollElementRef}>
@@ -47,13 +57,7 @@ const PlayerContentArea = ({
             <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
           )}
           {testItemState === "check" && (
-            <TestItemPreview
-              cols={itemRows}
-              previewTab={"check"}
-              preview="show"
-              questions={questions}
-              showCollapseBtn
-            />
+            <TestItemPreview cols={itemRows} previewTab="check" preview="show" questions={questions} showCollapseBtn />
           )}
           {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
         </MainContent>
@@ -66,17 +70,6 @@ const PlayerContentArea = ({
           unansweredQuestionCount={unansweredQuestionCount}
         />
       </MainWrapper>
-
-      <Sidebar isVisible={isSidebarVisible}>
-        <SidebarQuestionList
-          questions={dropdownOptions}
-          selectedQuestion={currentItem}
-          gotoQuestion={gotoQuestion}
-          toggleSideBar={toggleSideBar}
-          isSidebarVisible={isSidebarVisible}
-          theme={theme}
-        />
-      </Sidebar>
     </Main>
   );
 };
@@ -87,14 +80,11 @@ PlayerContentArea.propTypes = {
   dropdownOptions: PropTypes.array,
   currentItem: PropTypes.number.isRequired,
   gotoQuestion: PropTypes.func.isRequired,
-  onCheckAnswer: PropTypes.func.isRequired,
   isFirst: PropTypes.func.isRequired,
   isLast: PropTypes.func.isRequired,
   moveToPrev: PropTypes.func.isRequired,
   moveToNext: PropTypes.func.isRequired,
   questions: PropTypes.object.isRequired,
-  answerChecksUsedForItem: PropTypes.number.isRequired,
-  settings: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };
 
@@ -108,73 +98,52 @@ export default PlayerContentArea;
 const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    padding: 174px 26px 0;
-  }
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    justify-content: center;
-  }
 `;
 
 const MainContent = styled.div`
-  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
+  /* background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor}; */
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
   border-radius: 10px;
-  height: 67vh;
-  padding: 40px;
   text-align: left;
   font-size: 18px;
   overflow: auto;
+  height: 100%;
+  padding: 70px 40px 70px 40px;
 
   & * {
     -webkit-touch-callout: none;
     user-select: none;
   }
 
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+    padding: 70px 35px 70px 35px;
+  }
+
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    padding: 24px;
+    padding: 65px 35px 70px 35px;
+  }
+
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    padding: 80px 16px 70px 16px;
   }
 `;
 
 const MainWrapper = styled.div`
   position: relative;
-  width: ${({ theme, isSidebarVisible }) => {
-    if (isSidebarVisible) {
-      return ifZoomed(theme?.zoomLevel) ? "75%" : "80%";
-    }
-    return "95%";
-  }};
-  padding: ${({ theme, isSidebarVisible }) => {
-    if (isSidebarVisible) {
-      return ifZoomed(theme?.zoomLevel)
-        ? `${120 - headerOffsetHashMap["xs"] + headerOffsetHashMap[(theme?.zoomLevel)]}px 100px`
-        : "120px 100px";
-    }
-    return "120px 50px 100px 100px";
-  }};
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
+  width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 204px)" : "calc(100% - 65px)")};
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
     width: 100%;
-    padding: 0px;
-  }
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    padding: 120px 0px;
   }
 `;
 
 const Sidebar = styled.div`
-  width: ${({ theme, isVisible }) => {
-    if (isVisible) {
-      return ifZoomed(theme?.zoomLevel) ? "25%" : "20%";
-    }
-    return "5%";
-  }};
-  padding-top: ${({ theme }) => headerOffsetHashMap[(theme?.zoomLevel)]}px;
-  padding-right: 20px;
+  width: ${({ isVisible }) => (isVisible ? 204 : 65)}px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
+  padding-top: 85px;
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     display: none;
   }

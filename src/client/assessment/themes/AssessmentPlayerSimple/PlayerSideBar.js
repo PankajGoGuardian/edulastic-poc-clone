@@ -1,48 +1,44 @@
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
+import { IconGraphRightArrow } from "@edulastic/icons";
 import FlexContainer from "../common/FlexContainer";
 import Circle from "../common/Circle";
-import { IconGraphRightArrow } from "@edulastic/icons";
 
-const SidebarQuestionList = ({
-  questions,
-  selectedQuestion,
-  gotoQuestion,
-  t,
-  isSidebarVisible,
-  toggleSideBar,
-  theme
-}) => (
+const SidebarQuestionList = ({ questions, selectedQuestion, gotoQuestion, t, isSidebarVisible, toggleSideBar }) => (
   <SidebarWrapper>
     <MinimizeButton onClick={toggleSideBar} minimized={isSidebarVisible}>
       <IconGraphRightArrow />
     </MinimizeButton>
+    {isSidebarVisible && <Title>{t("common.layout.questionlist.heading")} </Title>}
     {isSidebarVisible && (
-      <div>
-        <Title>{t("common.layout.questionlist.heading")} </Title>
-        {questions.map((item, index) => {
-          const active = selectedQuestion === index;
-          return (
-            <ItemContainer
-              active={active}
-              key={index}
-              onClick={() => {
-                gotoQuestion(index);
-              }}
-            >
-              <FlexContainer alignItems="center" justifyContent="center">
-                <Circle data-cy={`queCircle-${index + 1}`} r={6} active={active} />
-                <Content active={active}>
-                  {t("common.layout.questionlist.question")} {index + 1}
-                </Content>
-              </FlexContainer>
-            </ItemContainer>
-          );
-        })}
-      </div>
+      <Questions>
+        <PerfectScrollbar>
+          {questions.map((item, index) => {
+            const active = selectedQuestion === index;
+            return (
+              <ItemContainer
+                active={active}
+                key={index}
+                onClick={() => {
+                  gotoQuestion(index);
+                }}
+              >
+                <FlexContainer alignItems="center" justifyContent="center">
+                  <Circle data-cy={`queCircle-${index + 1}`} r={6} active={active} />
+                  <Content active={active}>
+                    {t("common.layout.questionlist.question")} {index + 1}
+                  </Content>
+                </FlexContainer>
+              </ItemContainer>
+            );
+          })}
+        </PerfectScrollbar>
+      </Questions>
     )}
   </SidebarWrapper>
 );
@@ -79,22 +75,20 @@ const Content = styled.div`
 
 const SidebarWrapper = styled.div`
   position: relative;
-  zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
 `;
 
 const Title = styled(Content)`
   text-transform: uppercase;
-  padding: 30px 0px;
   text-align: center;
   font-size: 15px;
 `;
 
 export const MinimizeButton = styled.div`
   position: absolute;
-  left: ${({ minimized }) => (minimized ? "40px" : "210px")};
-  top: 25px;
-  left: -10px;
+  top: -7px;
+  right: -15px;
   padding: 9px;
+  z-index: 10;
   background: ${props => props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor};
   border-radius: 2px;
   display: flex;
@@ -105,7 +99,7 @@ export const MinimizeButton = styled.div`
 
   svg {
     fill: ${props => props.theme.widgets.assessmentPlayers.sidebarActiveTextColor};
-    transform: rotate(${({ minimized }) => (minimized ? 0 : "-180deg")});
+    transform: rotate(${({ minimized }) => (!minimized ? 0 : "-180deg")});
     transition: transform 300ms ease-in-out;
 
     &:hover,
@@ -114,4 +108,10 @@ export const MinimizeButton = styled.div`
       fill: ${props => props.theme.widgets.assessmentPlayers.sidebarActiveTextColor};
     }
   }
+`;
+
+const Questions = styled.div`
+  height: 80vh;
+  overflow: auto;
+  margin-top: 20px;
 `;

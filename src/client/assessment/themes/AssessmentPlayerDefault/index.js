@@ -191,7 +191,7 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
-  handleToolChange = value => () => {
+  handleScratchToolChange = value => () => {
     const { activeMode } = this.state;
 
     if (value === "deleteMode") {
@@ -271,10 +271,6 @@ class AssessmentPlayerDefault extends React.Component {
       };
 
       return nextState;
-    }
-
-    if (next.scratchPad && prevState.currentToolMode.indexOf(5) === -1) {
-      return { currentToolMode: [5], history: 0, activeMode: "" };
     }
 
     return null;
@@ -424,7 +420,7 @@ class AssessmentPlayerDefault extends React.Component {
               fillColor={fillColor}
               deleteMode={deleteMode}
               currentColor={currentColor}
-              onToolChange={this.handleToolChange}
+              onToolChange={this.handleScratchToolChange}
               activeMode={activeMode}
               undo={this.handleUndo}
               redo={this.handleRedo}

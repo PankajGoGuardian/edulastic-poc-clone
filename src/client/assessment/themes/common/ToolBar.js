@@ -21,8 +21,6 @@ class ToolBar extends Component {
     changeCaculateMode(value);
   };
 
-  componentDidMount() {}
-
   render() {
     const { settings, tool, qType } = this.props;
     const { calcType } = settings;

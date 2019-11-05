@@ -8,16 +8,18 @@ import { Row, Col } from "antd";
 import { formatDateAndTime } from "../utils";
 
 const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels, classId }) => {
-  const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = data;
-  const total = correct + wrong;
+  const { maxScore = 0, score = 0 } = data;
   const percentage = (score / maxScore) * 100 || 0;
+
+  const btnWrapperSize =
+    releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : releaseScore === releaseGradeLabels.WITH_ANSWERS ? 6 : 12;
   return (
     <AttemptsData>
       <RowData pagetype={type === "reports"}>
-        <AnswerAndScore sm={6}>
+        <AnswerAndScore sm={type === "assignment" ? 12 : 6} date>
           <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
         </AnswerAndScore>
-        {releaseScore !== releaseGradeLabels.DONT_RELEASE && (
+        {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && (
           <React.Fragment>
             {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
               <AnswerAndScore sm={6}>
@@ -32,10 +34,10 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
           </React.Fragment>
         )}
         {type === "reports" && activityReview && showReviewButton ? (
-          <AnswerAndScoreReview sm={6}>
-            <Link to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
+          <AnswerAndScoreReview sm={btnWrapperSize}>
+            <ReviewBtn to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
               <span data-cy="review">REVIEW</span>
-            </Link>
+            </ReviewBtn>
           </AnswerAndScoreReview>
         ) : (
           (showReviewButton || type !== "reports") && <EmptyScoreBox />
@@ -65,23 +67,20 @@ const AnswerAndScore = styled(Col)`
   align-items: center;
   flex-direction: column;
   span {
-    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
+    font-size: ${props =>
+      props.date
+        ? props.theme.assignment.cardResponseBoxLabelsFontSize
+        : props.theme.assignment.attemptsReviewRowFontSize};
     font-weight: bold;
-    color: #434b5d;
-  }
-`;
-
-const SpaceBetween = styled.div`
-  width: 10px;
-  @media screen and (max-width: 1024px) {
-    display: ${props => (props.pagetype ? "initial" : "none !important")};
+    color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
+    ${props => props.date && "text-align:center;"}
   }
 `;
 
 const AnswerAndScoreReview = styled(AnswerAndScore)`
   span {
-    color: #00b0ff;
     cursor: pointer;
+    font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
   }
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 33%;
@@ -128,4 +127,10 @@ const RowData = styled(Row)`
       color: ${themeColor};
     }
   }
+`;
+
+const ReviewBtn = styled(Link)`
+  width: 150px;
+  margin-left: auto;
+  text-align: center;
 `;

@@ -82,6 +82,7 @@ const tagFontSize = "10px";
 const linkFontSize = "11px";
 const commentFontSize = "11px";
 const subtitleFontSize = "20px";
+const scoreTitleFontSize = "12px";
 const smallFontSize = "12px";
 const bodyFontSize = "13px";
 const standardFont = "14px";
@@ -90,7 +91,7 @@ const titleSectionFontSize = "16px";
 const titleSecondarySectionFontSize = "18px";
 const headerTitle = "22px";
 const reviewPageHeaderFontSize = "18px";
-const scoreFontSize = "31px";
+const scoreFontSize = "26px";
 const tableDataFont = "14px";
 const headerFilterFontSize = "10px";
 const classNameFontSize = "12px";
@@ -1300,14 +1301,14 @@ export const defaultTheme = {
     cardDefaultBtnTextColor: themeColor,
     cardDefaultBtnTextHoverColor: linkFilledBgColor,
     cardAttemptLinkTextColor: themeColor,
-    cardAttemptLinkFontSize: linkFontSize,
+    cardAttemptLinkFontSize: scoreTitleFontSize,
     cardResponseBoxLabelsColor: labelStyle,
-    cardResponseBoxLabelsFontSize: subtitleFontSize,
+    cardResponseBoxLabelsFontSize: scoreTitleFontSize,
     cardAnswerAndScoreTextSize: scoreFontSize,
     cardAnswerAndScoreTextColor: labelStyle,
     attemptsReviewRowBgColor: tableBgColor,
     attemptsReviewRowTextColor: attemptTextColor,
-    attemptsReviewRowFontSize: subtitleFontSize,
+    attemptsReviewRowFontSize: standardFont,
     attemptsRowReviewLinkSize: linkFontSize,
     attemptsRowReviewLinkColor: themeColorLight,
     dueDateFontSize: smallFontSize

@@ -396,3 +396,24 @@ export const getAssignmentsSelector = createSelector(
   filterSelector,
   (assignments, filter) => assignments.filter(statusFilter(filter))
 );
+
+export const assignmentsCountByFilerNameSelector = createSelector(
+  getAllAssignmentsSelector,
+  assignments => {
+    let IN_PROGRESS = 0,
+      NOT_STARTED = 0;
+    assignments.forEach(assignment => {
+      const attempts = (assignment.reports && assignment.reports.length) || 0;
+      if (attempts === 0) {
+        NOT_STARTED++;
+      } else if (attempts > 0) {
+        IN_PROGRESS++;
+      }
+    });
+    return {
+      ALL: assignments.length,
+      NOT_STARTED,
+      IN_PROGRESS
+    };
+  }
+);

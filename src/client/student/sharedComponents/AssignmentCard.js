@@ -219,6 +219,13 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   };
 
   const selectedColSize = 24 / getColSize(type);
+  let btnWrapperSize = 24;
+  if (type !== "assignment") {
+    btnWrapperSize =
+      releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : releaseScore === releaseGradeLabels.WITH_ANSWERS ? 6 : 12;
+  } else if (isValidAttempt) {
+    btnWrapperSize = 12;
+  }
 
   const ScoreDetail = (
     <React.Fragment>
@@ -275,8 +282,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
               <StyledActionButton
                 isAssignment={type == "assignment"}
                 isValidAttempt={isValidAttempt}
-                lg={selectedColSize}
-                sm={isValidAttempt ? selectedColSize : 10}
+                sm={btnWrapperSize}
               >
                 {StartButtonContainer}
               </StyledActionButton>

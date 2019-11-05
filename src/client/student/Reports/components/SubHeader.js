@@ -8,7 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 // actions
 import { setFilterAction } from "../../sharedDucks/ReportsModule/ducks";
-import { filterSelector, FILTERS } from "../ducks";
+import { filterSelector, FILTERS, assignmentsCountByFilerNameSelector } from "../ducks";
 
 // components
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
@@ -19,7 +19,7 @@ import { setStatusBgColor } from "../../utils";
 
 const breadcrumbData = [{ title: "REPORTS", to: "" }];
 
-const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme }) => {
+const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsCountByFilerName }) => {
   const filterItems = Object.keys(FILTERS);
 
   const Filter = ({ value }) => (
@@ -30,7 +30,7 @@ const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme }) => {
       selectedTheme={selectedTheme}
       filter={filter}
     >
-      {t(FILTERS[value])}
+      {assignmentsCountByFilerName[value]}&nbsp;{t(FILTERS[value])}
     </FilterBtn>
   );
 
@@ -51,7 +51,8 @@ const enhance = compose(
   connect(
     state => ({
       filter: filterSelector(state),
-      selectedTheme: state.ui.selectedTheme
+      selectedTheme: state.ui.selectedTheme,
+      assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state)
     }),
     {
       setFilter: setFilterAction
@@ -87,7 +88,7 @@ const FilterBtn = styled(Button)`
   border: 1px solid
     ${props => (props.enabled ? setStatusBgColor(props) : props.theme.headerFilters.headerFilterBgBorderColor)};
   border-radius: 4px;
-  margin-left: 20px;
+  margin-left: 10px;
   min-width: 85px;
   font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
   background: ${props => setStatusBgColor(props)};

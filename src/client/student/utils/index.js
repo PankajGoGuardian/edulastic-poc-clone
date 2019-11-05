@@ -18,7 +18,7 @@ export const formatTime = time => {
 };
 
 export const formatDateAndTime = time => {
-  return moment(normaliseTime(time)).format("MMM DD, HH:mm A");
+  return moment(normaliseTime(time)).format("MMM DD, YYYY hh:mm A");
 };
 
 export const setStatusBgColor = ({ selectedTheme, filter, theme, enabled }) => {

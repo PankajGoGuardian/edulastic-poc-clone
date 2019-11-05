@@ -138,3 +138,32 @@ export const getAssignmentsSelector = createSelector(
   filterSelector,
   (assignments, filter) => assignments.filter(statusFilter(filter))
 );
+
+export const assignmentsCountByFilerNameSelector = createSelector(
+  getAllAssignmentsSelector,
+  assignments => {
+    let MISSED = 0,
+      SUBMITTED = 0,
+      GRADED = 0;
+    assignments.forEach(assignment => {
+      const lastAttempt = last(assignment.reports) || {};
+      const isSubmitted =
+        (assignment.reports.length === 1 && lastAttempt.status === 1) || assignment.reports.length > 1;
+      const isAbsent = lastAttempt.status === 2 || !assignment.reports.length;
+      const isGraded = lastAttempt.graded == testActivityConstants.studentAssignmentConstants.assignmentStatus.GRADED;
+      if (isAbsent) {
+        MISSED++;
+      } else if (isSubmitted && !isGraded) {
+        SUBMITTED++;
+      } else if (isGraded) {
+        GRADED++;
+      }
+    });
+    return {
+      ALL: assignments.length,
+      MISSED,
+      SUBMITTED,
+      GRADED
+    };
+  }
+);

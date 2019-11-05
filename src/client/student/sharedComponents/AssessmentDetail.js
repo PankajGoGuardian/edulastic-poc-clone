@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Col, Icon } from "antd";
+import { Col, Icon, Tooltip } from "antd";
 import {
   white,
   testTypeColor,
@@ -12,7 +12,7 @@ import {
   mediumDesktopWidth
 } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
-import { formatTime } from "../utils";
+import { formatDateAndTime } from "../utils";
 
 const {
   studentAssignmentConstants: { assignmentStatus }
@@ -49,7 +49,9 @@ const AssessmentDetails = ({
       </Col>
       <CardDetails>
         <CardTitle>
-          <span style={{ fontSize: "14px" }}>{title}</span>
+          <Tooltip title={title}>
+            <AssignmentTitle>{title}</AssignmentTitle>
+          </Tooltip>
           <TestType data-cy="testType" type={testType}>
             {testType === PRACTICE
               ? t("common.practice")
@@ -64,10 +66,10 @@ const AssessmentDetails = ({
             <DueDetails data-cy="date">
               {type === "assignment"
                 ? new Date(startDate) > new Date()
-                  ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+                  ? `${t("common.opensIn")} ${formatDateAndTime(startDate)} and ${t("common.dueOn")}`
                   : t("common.dueOn")
                 : t("common.finishedIn")}{" "}
-              {formatTime(dueDate)}
+              {formatDateAndTime(dueDate)}
             </DueDetails>
           </CardDate>
         )}
@@ -183,6 +185,15 @@ const Thumbnail = React.memo(styled.img`
     margin: 0 auto;
   }
  }
+`);
+
+const AssignmentTitle = React.memo(styled.span`
+  font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
+  max-width: 176px;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `);
 
 const CardDetails = React.memo(styled(Col)`
@@ -325,7 +336,7 @@ const TestType = React.memo(styled.span`
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
-  font-size: 14px;
+  font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
   line-height: 19px;
   margin: 0px 10px;
   display: inline-block;

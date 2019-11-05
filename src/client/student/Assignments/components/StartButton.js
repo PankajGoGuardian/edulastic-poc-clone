@@ -36,6 +36,9 @@ AssignmentButton.propTypes = {
 const NotAvailableButton = styled(StartButton)`
   display: flex;
   justify-content: space-evenly;
+  height: 40px;
+  margin-left: auto;
+  margin-top: 5px;
   &.ant-btn[disabled] {
     background: transparent;
     position: relative;

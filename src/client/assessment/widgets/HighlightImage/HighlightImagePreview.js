@@ -1,43 +1,27 @@
+/* eslint-disable react/prop-types */
 import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
-import { get, isNaN } from "lodash";
+import { isNaN } from "lodash";
 
-import {
-  Stimulus,
-  InstructorStimulus,
-  withWindowSizes,
-  ScratchPadContext,
-  QuestionNumberLabel
-} from "@edulastic/common";
+import { Stimulus, withWindowSizes, ScratchPadContext, QuestionNumberLabel, isMobileDevice } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 import { canvasDimensions } from "@edulastic/constants";
 
 import { PREVIEW } from "../../constants/constantsForQuestions";
 
 import { PreviewContainer } from "./styled/PreviewContainer";
-import { Container } from "./styled/Container";
-import { StyledSelect } from "./styled/StyledSelect";
-import { Button } from "./styled/Button";
-import { Text } from "./styled/Text";
 import { CanvasContainer } from "./styled/CanvasContainer";
-import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
-import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
-const { Option } = Select;
+const isMobile = !!isMobileDevice.any();
 
 const HighlightImagePreview = ({
   view,
   item = {},
-  windowWidth,
   smallSize,
   saveAnswer,
   userAnswer,
-  t,
   showQuestionNumber,
-  qIndex,
   disableResponse,
   theme
 }) => {
@@ -47,18 +31,29 @@ const HighlightImagePreview = ({
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
-
   const { image, line_color = [] } = item;
 
-  const [currentColor, setCurrentColor] = useState(line_color[0]);
+  const [currentColor] = useState(line_color[0]);
 
-  const [width, setWidth] = useState(image ? `${image.width}px` : "auto");
-  const [height, setHeight] = useState(image ? `${image.height}px` : 470);
-  const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
+  const [width] = useState(image ? `${image.width}px` : "auto");
+  const [height] = useState(image ? `${image.height}px` : 470);
+  const [canvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
   const { enableQuestionLevelScratchPad = true } = useContext(ScratchPadContext);
+
+  useEffect(() => {
+    if (isMobile) {
+      if (mouseDown) {
+        document.ontouchmove = e => {
+          e.preventDefault();
+        };
+      } else {
+        document.ontouchmove = null;
+      }
+    }
+  }, [mouseDown]);
 
   const renderImg = context => {
     const img = new Image();
@@ -111,10 +106,21 @@ const HighlightImagePreview = ({
     }
   }, [canvasContainerRef.current && canvasContainerRef.current.clientHeight]);
 
+  const getCoords = (e, end = false) => {
+    if (isMobile) {
+      if (end) {
+        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      }
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  };
+
   const onCanvasMouseDown = e => {
     const bounded = canvas.current.getBoundingClientRect();
+    const coords = getCoords(e);
     ctx.beginPath();
-    ctx.moveTo(e.clientX - bounded.left, e.clientY - bounded.top);
+    ctx.moveTo(coords.x - bounded.left, coords.y - bounded.top);
     setCtx(ctx);
     setMouseDown(true);
   };
@@ -122,7 +128,8 @@ const HighlightImagePreview = ({
   const onCanvasMouseUp = e => {
     if (mouseDown) {
       const bounded = canvas.current.getBoundingClientRect();
-      ctx.lineTo(e.clientX - bounded.left, e.clientY - bounded.top);
+      const coords = getCoords(e, true);
+      ctx.lineTo(coords.x - bounded.left, coords.y - bounded.top);
       ctx.strokeStyle = currentColor;
       ctx.stroke();
       ctx.closePath();
@@ -138,49 +145,13 @@ const HighlightImagePreview = ({
   const onCanvasMouseMove = e => {
     if (mouseDown) {
       const bounded = canvas.current.getBoundingClientRect();
-
-      ctx.lineTo(e.clientX - bounded.left, e.clientY - bounded.top);
+      const coords = getCoords(e);
+      ctx.lineTo(coords.x - bounded.left, coords.y - bounded.top);
       ctx.strokeStyle = currentColor;
       ctx.stroke();
       setCtx(ctx);
     }
   };
-
-  const onClearClick = () => {
-    ctx.clearRect(0, 0, width, height);
-    setCtx(ctx);
-    const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
-    setHistory(newHistory);
-    setHistoryTab(newHistory.length - 1);
-  };
-
-  const onUndoClick = () => {
-    const img = new Image();
-
-    img.onload = () => {
-      ctx.clearRect(0, 0, width, height);
-      ctx.drawImage(img, 0, 0, width, height);
-      setHistoryTab(historyTab - 1);
-      setCtx(ctx);
-    };
-    img.src = history[historyTab - 1];
-    saveAnswer(history[historyTab - 1]);
-  };
-
-  const onRedoClick = () => {
-    const img = new Image();
-
-    img.onload = () => {
-      ctx.clearRect(0, 0, width, height);
-      ctx.drawImage(img, 0, 0, width, height);
-      setHistoryTab(historyTab + 1);
-      setCtx(ctx);
-    };
-    img.src = history[historyTab + 1];
-    saveAnswer(history[historyTab + 1]);
-  };
-
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
 
   const renderImage = () =>
     file ? (
@@ -217,8 +188,11 @@ const HighlightImagePreview = ({
           {enableQuestionLevelScratchPad && (
             <canvas
               onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
+              onTouchStart={!disableResponse ? onCanvasMouseDown : () => {}}
               onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
+              onTouchEnd={!disableResponse ? onCanvasMouseUp : () => {}}
               onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
+              onTouchMove={!disableResponse ? onCanvasMouseMove : () => {}}
               ref={canvas}
             />
           )}
@@ -231,19 +205,15 @@ const HighlightImagePreview = ({
 HighlightImagePreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
-  windowWidth: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
   disableResponse: PropTypes.bool
 };
 
 HighlightImagePreview.defaultProps = {
   showQuestionNumber: false,
-  qIndex: null,
   smallSize: false,
   disableResponse: false
 };

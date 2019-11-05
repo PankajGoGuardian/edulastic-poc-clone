@@ -13,7 +13,7 @@ import { PreviewContainer } from "./styled/PreviewContainer";
 import { CanvasContainer } from "./styled/CanvasContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
-const isMobile = !!isMobileDevice.any();
+const isMobile = isMobileDevice();
 
 const HighlightImagePreview = ({
   view,

@@ -406,31 +406,18 @@ export const formatBytes = (bytes = 0, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-export const isMobileDevice = {
-  Android() {
-    return navigator.userAgent.match(/Android/i);
-  },
-  BlackBerry() {
-    return navigator.userAgent.match(/BlackBerry/i);
-  },
-  iOS() {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-  },
-  Opera() {
-    return navigator.userAgent.match(/Opera Mini/i);
-  },
-  Windows() {
-    return navigator.userAgent.match(/IEMobile/i);
-  },
-  any() {
-    return (
-      isMobileDevice.Android() ||
-      isMobileDevice.BlackBerry() ||
-      isMobileDevice.iOS() ||
-      isMobileDevice.Opera() ||
-      isMobileDevice.Windows()
-    );
+export const isMobileDevice = () => {
+  const prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
+  const mq = query => {
+    return window.matchMedia(query).matches;
+  };
+
+  if ("ontouchstart" in window || (window.DocumentTouch && document instanceof DocumentTouch)) {
+    return true;
   }
+
+  const query = ["(", prefixes.join("touch-enabled),("), "heartz", ")"].join("");
+  return mq(query);
 };
 
 export default {

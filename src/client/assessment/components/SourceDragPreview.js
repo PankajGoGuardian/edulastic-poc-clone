@@ -21,13 +21,15 @@ function useDragScroll(sourceOffset) {
 
   // scroll the page when dragging element reaches top of the view port..
   useEffect(() => {
-    const yOffset = sourceOffset?.y;
-    if (!interval.current && scrollEl?.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
-      const scrollBy = yOffset < containerTop ? -10 : 10;
-      interval.current = setInterval(() => scrollEl?.scrollBy(0, scrollBy), 50);
-    } else if (interval.current && ((yOffset > containerTop && yOffset < containerBottom) || !sourceOffset)) {
-      clearInterval(interval.current);
-      interval.current = null;
+    if (scrollEl) {
+      const yOffset = sourceOffset?.y;
+      if (!interval.current && scrollEl.scrollBy && (yOffset < containerTop || yOffset > containerBottom)) {
+        const scrollBy = yOffset < containerTop ? -10 : 10;
+        interval.current = setInterval(() => scrollEl.scrollBy(0, scrollBy), 50);
+      } else if (interval.current && ((yOffset > containerTop && yOffset < containerBottom) || !sourceOffset)) {
+        clearInterval(interval.current);
+        interval.current = null;
+      }
     }
   }, [sourceOffset]);
 }

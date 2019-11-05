@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
@@ -8,6 +9,7 @@ import { get } from "lodash";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
+import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 
 import {
   Container,
@@ -252,7 +254,7 @@ class AuthorTestItemPreview extends Component {
     );
   }
 
-  renderCollapseButtons = i => {
+  renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
@@ -281,6 +283,8 @@ class AuthorTestItemPreview extends Component {
       return null;
     }
 
+    const scrollElement = this.scrollContainerRef.current;
+
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainerRef.current }}>
@@ -305,6 +309,7 @@ class AuthorTestItemPreview extends Component {
               );
             })}
           </Container>
+          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
         </ScrollContext.Provider>
       </ThemeProvider>
     );

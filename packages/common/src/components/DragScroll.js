@@ -48,7 +48,7 @@ class DragScroll extends Component {
   handleDragEnter = () => {
     const { scrollDelay, direction } = this.props;
 
-    let scrollTo = getScrollTo(direction);
+    const scrollTo = getScrollTo(direction);
 
     const { context, scrollElement } = this.props;
     const { getScrollElement } = context;
@@ -138,7 +138,7 @@ class DragScroll extends Component {
     const mergedStyle = {
       ...style,
       height: isDragging ? height : 0,
-      width: isDragging ? width : 0
+      width
     };
 
     const key = scrollContainer && scrollContainer.classList ? scrollContainer.classList.toString() : "window";

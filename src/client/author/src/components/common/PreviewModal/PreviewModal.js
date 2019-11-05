@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
@@ -11,7 +12,6 @@ import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import Hints from "@edulastic/common/src/components/Hints";
-import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
@@ -37,7 +37,6 @@ class PreviewModal extends React.Component {
 
     this.state = {
       flag: false,
-      scrollElement: null,
       passageLoading: false,
       showHints: false
     };
@@ -45,7 +44,7 @@ class PreviewModal extends React.Component {
 
   componentDidMount() {
     const { item, addPassage } = this.props;
-    if (!!item.passageId) {
+    if (item.passageId) {
       this.setState({ passageLoading: true });
       try {
         passageApi.getById(item.passageId).then(response => {
@@ -72,7 +71,7 @@ class PreviewModal extends React.Component {
   }
 
   closeModal = () => {
-    const { onClose, changeView, clearAnswers, clearPreview } = this.props;
+    const { onClose, changeView, clearPreview } = this.props;
     this.setState({ flag: false });
     clearPreview();
     changeView("clear");
@@ -108,12 +107,6 @@ class PreviewModal extends React.Component {
     const { changeView, clearAnswers } = this.props;
     changeView("clear");
     clearAnswers();
-  };
-
-  mountedQuestion = node => {
-    if (node) {
-      this.setState({ scrollElement: node });
-    }
   };
 
   goToItem = page => {
@@ -162,7 +155,7 @@ class PreviewModal extends React.Component {
     }));
   };
 
-  //TODO consistency for question and resources for previeew
+  // TODO consistency for question and resources for previeew
   render() {
     const {
       isVisible,
@@ -180,7 +173,7 @@ class PreviewModal extends React.Component {
       windowWidth
     } = this.props;
 
-    const { scrollElement, passageLoading, showHints } = this.state;
+    const { passageLoading, showHints } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -232,8 +225,7 @@ class PreviewModal extends React.Component {
           )}
         </HeadingWrapper>
         <ModalContentArea>
-          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
-          <QuestionWrapper padding="0px" ref={this.mountedQuestion}>
+          <QuestionWrapper padding="0px">
             {loading || item === null || passageLoading ? (
               <ProgressContainer>
                 <Spin tip="" />
@@ -286,6 +278,7 @@ PreviewModal.propTypes = {
   currentAuthorId: PropTypes.string.isRequired,
   collections: PropTypes.any.isRequired,
   loading: PropTypes.bool,
+  gotoSummary: PropTypes.func,
   checkAnswer: PropTypes.func,
   showAnswer: PropTypes.func,
   clearAnswers: PropTypes.func.isRequired,
@@ -390,13 +383,17 @@ const ButtonsWrapper = styled.div`
     &:hover {
       color: ${themeColor};
     }
-    &:active,&:focus{
+    &:active,
+    &:focus {
       background-color: ${props => (!props.added ? "#fff" : themeColor)};
       color: ${props => (!props.added ? themeColor : "#fff")};
     }
-    &:hover,&:active,&:focus{
-      span{
-      position:absolute;
+    &:hover,
+    &:active,
+    &:focus {
+      span {
+        position: absolute;
+      }
     }
   }
   * {

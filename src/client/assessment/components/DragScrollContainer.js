@@ -12,7 +12,7 @@ const DragScrollContainer = ({ scrollWrraper, height }) => (
         bottom: 0,
         left: 0,
         right: 0,
-        height: 300
+        height: 50
       }}
       direction={UPWARDS}
     />

@@ -300,14 +300,19 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     )}
                   />
                   <Route
-                    exacts
+                    exact
                     path="/author/tests/create"
-                    render={props => (
-                      <Suspense fallback={<Progress />}>
-                        <TestPage {...props} />
-                      </Suspense>
-                    )}
+                    render={props => <TestPage {...props} currentTab="description" />}
                   />
+
+                  {["description", "addItems", "review", "settings"].map(x => (
+                    <Route
+                      exact
+                      path={`/author/tests/create/${x}`}
+                      render={props => <TestPage {...props} currentTab={x} />}
+                    />
+                  ))}
+
                   <Route
                     exact
                     path="/author/tests/:id"

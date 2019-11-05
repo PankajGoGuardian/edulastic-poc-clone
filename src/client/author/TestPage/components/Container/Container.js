@@ -78,20 +78,26 @@ class Container extends PureComponent {
     isTestLoading: PropTypes.bool.isRequired,
     clearSelectedItems: PropTypes.func.isRequired,
     saveCurrentEditingTestId: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    currentTab: PropTypes.string
   };
 
   static defaultProps = {
     test: null,
-    user: {}
+    user: {},
+    currentTab: "review"
   };
   sebPasswordRef = React.createRef();
   state = {
-    current: "review",
     showModal: false,
     editEnable: false,
     showShareModal: false,
     isShowFilter: true
+  };
+
+  gotoTab = tab => {
+    const { history } = this.props;
+    history.push(`/author/tests/create/${tab}`);
   };
 
   componentDidMount() {
@@ -114,12 +120,14 @@ class Container extends PureComponent {
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
     } else if (createdItems.length > 0) {
-      this.setState({ current: "addItems", editEnable: true });
+      this.setState({ editEnable: true }, () => {
+        this.gotoTab("addItems");
+      });
       message.success(
         <span>
           {" "}
           New item has been created and added to the current test. Click{" "}
-          <span onClick={() => self.setState({ current: "review" })} style={{ color: themeColor, cursor: "pointer" }}>
+          <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
             here
           </span>{" "}
           to see it.
@@ -130,7 +138,7 @@ class Container extends PureComponent {
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id, true, editAssigned);
     } else {
-      this.setState({ current: "description" });
+      this.gotoTab("description");
       clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
@@ -218,9 +226,7 @@ class Container extends PureComponent {
       return;
     }
 
-    this.setState({
-      current: value
-    });
+    this.gotoTab(value);
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
     if (isEditable && testItems.length > 0 && updated && !firstFlow) {
@@ -291,7 +297,8 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { params = {} } = match;
-    const { current, editEnable, isShowFilter } = this.state;
+    const { editEnable, isShowFilter } = this.state;
+    const current = this.props.currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
@@ -523,7 +530,8 @@ class Container extends PureComponent {
 
   render() {
     const { creating, windowWidth, test, testStatus, userId, updated, showWarningModal, proceedPublish } = this.props;
-    const { showShareModal, current, editEnable, isShowFilter } = this.state;
+    const { showShareModal, editEnable, isShowFilter } = this.state;
+    const current = this.props.currentTab;
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;

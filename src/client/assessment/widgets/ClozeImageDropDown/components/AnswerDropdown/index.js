@@ -13,9 +13,10 @@ const AnswerDropdown = ({
   disabled,
   options,
   defaultValue,
-  placeholder
+  placeholder,
+  fontSize
 }) => (
-  <SelectContainer style={style} backgroundColor={backgroundColor}>
+  <SelectContainer style={style} fontSize={fontSize} backgroundColor={backgroundColor}>
     <Select
       style={style}
       placeholder={placeholder}

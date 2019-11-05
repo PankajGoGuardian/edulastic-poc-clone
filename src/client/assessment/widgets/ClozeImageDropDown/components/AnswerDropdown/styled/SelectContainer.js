@@ -38,7 +38,7 @@ export const SelectContainer = styled.div`
   }
 
   .ant-select-selection-selected-value {
-    font-size: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
+    font-size: ${props => props.fontSize || props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
     font-weight: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};
     letter-spacing: 0.2px;
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};

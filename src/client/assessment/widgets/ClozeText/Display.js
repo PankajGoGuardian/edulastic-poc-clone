@@ -312,11 +312,11 @@ const QuestionTitleWrapper = styled.div`
 const StyledParser = styled.div`
   .jsx-parser {
     p {
-      font-size: ${props => props.theme.fontSize}px;
+      font-size: ${props => props.theme.fontSize};
     }
 
     input {
-      font-size: ${props => props.theme.fontSize}px;
+      font-size: ${props => props.theme.fontSize};
     }
   }
 `;

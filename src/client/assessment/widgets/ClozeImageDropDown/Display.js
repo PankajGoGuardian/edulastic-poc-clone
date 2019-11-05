@@ -142,7 +142,8 @@ class Display extends Component {
       newOptions = options;
     }
     // Layout Options
-    const fontSize = theme.fontsize;
+    const fontSize = theme.fontsize || getFontSize(fontsize);
+
     const { heightpx, wordwrap, responsecontainerindividuals = [], stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
@@ -230,6 +231,7 @@ class Display extends Component {
                         width: `100%`,
                         height: `100%`
                       }}
+                      fontSize={fontSize}
                       dropdownStyle={{ zoom: theme.widgets.clozeImageDropDown.imageZoom }}
                       disabled={disableResponse}
                       backgroundColor={backgroundColor}

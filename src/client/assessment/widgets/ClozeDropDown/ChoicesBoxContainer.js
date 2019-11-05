@@ -25,6 +25,10 @@ export const StyledChoicesBox = styled(ChoicesBox)`
     line-height: ${({ theme }) => theme?.fontSize}px;
     white-space: normal;
   }
+
+  .ant-select-selection-selected-value {
+    font-size: ${({ theme }) => theme?.fontSize};
+  }
 `;
 
 const ChoicesBoxContainer = props => <StyledChoicesBox {...props} />;

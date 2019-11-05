@@ -63,8 +63,7 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
   return (
     <SelectWrapper ref={selectWrapperRef} className={className}>
       <Select
-        // setting value as  "" or null will not display placeholder
-        defaultValue={userAnswer?.value}
+        value={userAnswer?.value}
         style={{
           ...styles,
           overflow: "hidden"

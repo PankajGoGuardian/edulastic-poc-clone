@@ -49,7 +49,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     height: btnStyle.heightpx,
     minWidth: "unset"
   };
-  console.log("_btstyle", _btnStyle);
   const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
   const indexStyle = lessMinWidth ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
   const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};

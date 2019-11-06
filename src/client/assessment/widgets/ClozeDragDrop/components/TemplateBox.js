@@ -70,6 +70,7 @@ const TemplateBox = ({ resprops, id }) => {
             onDrop={onDrop}
             data={`${getData("value")}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
           >
             <Tooltip
               overlayClassName="customTooltip"

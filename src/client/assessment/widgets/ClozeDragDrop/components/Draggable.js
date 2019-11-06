@@ -26,10 +26,10 @@ const specSource = {
   }
 };
 
-const Draggable = ({ connectDragSource, title, data, children, className, ...restProps }) =>
+const Draggable = ({ connectDragSource, title, data, children, className, style, ...restProps }) =>
   data &&
   connectDragSource(
-    <div title={title} className={className} draggable>
+    <div title={title} className={className} style={style} draggable>
       <DragPreview {...restProps}>{children}</DragPreview>
       {children}
     </div>

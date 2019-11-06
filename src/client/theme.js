@@ -1238,9 +1238,13 @@ export const defaultTheme = {
       mainContentTextColor: questionTextColor,
       mainContentBgColor: containerWhite,
       sidebarBgColor: sidebarBgColorPlayer,
-      sidebarFontSize: standardFont,
+      sidebarFontSize: smallFontSize,
       sidebarActiveTextColor: actionIconColor,
-      sidebarTextColor: sidebarFontColorPlayer
+      sidebarTextColor: sidebarFontColorPlayer,
+      footerButtonFontSizeLarge: linkFontSize,
+      footerButtonFontSizeSmall: smallLinkFontSize,
+      headerTitleFontSizeLarge: questionTexticonFontSize,
+      headerFilterFontSizeSmall: reviewPageHeaderFontSize
     }
   },
   classboard: {

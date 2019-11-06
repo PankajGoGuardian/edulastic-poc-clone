@@ -5,7 +5,7 @@ import { IconCorrect } from "@edulastic/icons";
 import { themeColor, largeDesktopWidth } from "@edulastic/colors";
 import { FlexContainer } from "../common";
 
-import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 
 const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount }) => (
   <MainFooter>
@@ -65,8 +65,11 @@ const ControlBtn = styled.button`
     top: 5px;
   }
   span {
-    font-size: 14px;
     display: block;
+    font-size: ${props => props.theme.widgets.assessmentPlayerSimple.footerButtonFontSizeLarge};
+    @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+      font-size: ${props => props.theme.widgets.assessmentPlayerSimple.footerButtonFontSizeSmall};
+    }
     @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
       display: none;
     }
@@ -87,15 +90,21 @@ const NextButton = styled(ControlBtn)`
 `;
 
 const QuestionsLeftToAttempt = styled(ControlBtn)`
-  font-size: 14px;
+  width: 135px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  span {
-  }
-  width: 135px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptBg};
   color: ${props => props.theme.widgets.assessmentPlayers.questionsToAttemptTextColor};
+  font-size: ${props => props.theme.widgets.assessmentPlayerSimple.footerButtonFontSizeLarge};
+
+  @media (min-width: ${LARGE_DESKTOP_WIDTH}px) {
+    width: 187px;
+  }
+
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+    font-size: ${props => props.theme.widgets.assessmentPlayerSimple.footerButtonFontSizeSmall};
+  }
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`

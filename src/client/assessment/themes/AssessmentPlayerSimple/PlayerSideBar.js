@@ -66,7 +66,7 @@ const Content = styled.div`
     props.active
       ? props.theme.widgets.assessmentPlayers.sidebarActiveTextColor
       : props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  font-size: ${props => props.theme.widgets.assessmentPlayers.sidebarFontSize};
+  font-size: ${props => props.theme.widgets.assessmentPlayerSimple.sidebarFontSize};
   line-height: 1;
   letter-spacing: 0.2px;
   text-transform: capitalize;

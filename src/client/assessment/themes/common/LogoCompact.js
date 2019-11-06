@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import { IconLogoCompact } from "@edulastic/icons";
-import { MAX_MOBILE_WIDTH, IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { MAX_MOBILE_WIDTH, IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
 const LogoCompact = ({ isMobile, buttons, title }) => (
   <LogoCompactContainer>
@@ -46,11 +46,14 @@ const LogoCompactIcon = styled(IconLogoCompact)`
 
 const PlayerTitle = styled.h1`
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
-  font-size: 20px;
+  font-size: ${props => props.theme.widgets.assessmentPlayerSimple.headerTitleFontSizeLarge};
   font-weight: bold;
   margin: 0;
   margin-right: 24px;
   color: ${white};
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+    font-size: ${props => props.theme.widgets.assessmentPlayerSimple.headerFilterFontSizeSmall};
+  }
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     overflow: hidden;
     text-overflow: ellipsis;

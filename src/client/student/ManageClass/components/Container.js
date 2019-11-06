@@ -20,7 +20,9 @@ const ManageClassContainer = ({ t, classList, loading, showClass }) => {
     <CustomWrapper>
       <Title>{t("common.myClasses")}</Title>
       {classList.length ? (
-        <Row gutter={25}>{<ClassCards classList={classList} t={t} />}</Row>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          <ClassCards classList={classList} t={t} />
+        </div>
       ) : (
         <NoDataBox>
           <img src={NoDataIcon} alt="noData" />
@@ -47,8 +49,8 @@ ManageClassContainer.propTypes = {
 };
 
 const CustomWrapper = styled(Wrapper)`
-  padding: 5px 25px;
+  padding: 30px 48px;
   @media (max-width: 768px) {
-    padding: 0px 15px;
+    padding: 15px;
   }
 `;

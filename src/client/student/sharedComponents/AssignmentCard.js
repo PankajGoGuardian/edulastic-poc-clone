@@ -387,7 +387,7 @@ const AttemptDetails = styled(Row)`
     display: flex;
     margin-top: 10px;
   }
-  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+  @media only screen and (min-width: ${mobileWidthMax}) {
     flex: 1;
   }
 `;

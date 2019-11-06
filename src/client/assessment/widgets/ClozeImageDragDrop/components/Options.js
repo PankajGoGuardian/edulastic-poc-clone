@@ -8,7 +8,7 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "../../../containers/Extras";
 import Layout from "../Layout";
 
-const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
 
 const Options = ({ onChange, uiStyle, responses, outerStyle, advancedAreOpen, fillSections, cleanSections }) => (
   <WidgetOptions

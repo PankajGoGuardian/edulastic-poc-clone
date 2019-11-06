@@ -11,7 +11,7 @@ import Extras from "../../../containers/Extras";
 
 import Layout from "./Layout";
 
-const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
 
 function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen }) {
   return (

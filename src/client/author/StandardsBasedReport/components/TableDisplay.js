@@ -63,7 +63,6 @@ class TableDisplay extends Component {
     super(props);
     this.state = {
       stdId: "",
-      selectedRow: 0,
       perfomancePercentage: undefined
     };
     this.dataLoaded = false;
@@ -73,17 +72,23 @@ class TableDisplay extends Component {
     const { additionalData: { standards = [] } = {} } = props;
     const submittedActs = props.testActivities.filter(x => x.status === "submitted");
     if (submittedActs.length && !state.dataLoaded) {
-      const firstStandard = standards.sort((a, b) => (b.masterySummary || 0) - (a.masterySummary || 0))[0];
-      const perfomancePercentage = getPerfomancePercentage(props.testActivities, firstStandard);
-      return { selectedRow: 1, stdId: firstStandard ? firstStandard._id : "", perfomancePercentage, dataLoaded: true };
+      const standardsByMasterySummary = standards.map(std => {
+        const masterySummary = getPerfomancePercentage(props.testActivities, std);
+        return { masterySummary, _id: std._id };
+      });
+      const firstStandard = standardsByMasterySummary?.sort(
+        (a, b) => (b.masterySummary || 0) - (a.masterySummary || 0)
+      )[0];
+      const perfomancePercentage = firstStandard?.masterySummary;
+      return { stdId: firstStandard ? firstStandard._id : "", perfomancePercentage, dataLoaded: true };
     }
   }
 
-  onCaretClick = (id = 0, data, perfomancePercentage = undefined) => {
+  onCaretClick = (data, perfomancePercentage = undefined) => {
     if (perfomancePercentage || perfomancePercentage === 0) {
-      this.setState({ selectedRow: id, stdId: data, perfomancePercentage });
+      this.setState(prev => ({ stdId: prev.stdId === data ? "" : data, perfomancePercentage }));
     } else {
-      this.setState({ selectedRow: id, stdId: data });
+      this.setState(prev => ({ stdId: prev.stdId === data ? "" : data }));
     }
   };
 
@@ -120,7 +125,7 @@ class TableDisplay extends Component {
   };
 
   render() {
-    const { selectedRow, stdId, perfomancePercentage } = this.state;
+    const { stdId, perfomancePercentage } = this.state;
     const { additionalData: { standards = [], assignmentMastery = [] } = {} } = this.props;
     const columns = [
       {
@@ -180,7 +185,7 @@ class TableDisplay extends Component {
         masterySummary: perfomancePercentage,
         performanceSummary: perfomancePercentage,
         icon: submittedLength ? (
-          selectedRow === index + 1 ? (
+          stdId === std._id ? (
             <div>
               <img src={ArrowRightIcon} alt="right" />
             </div>
@@ -237,13 +242,13 @@ class TableDisplay extends Component {
               columns={columns}
               dataSource={data}
               pagination={false}
-              onRow={(rowData, index) => {
+              onRow={rowData => {
                 return {
                   onClick: () => {
-                    if (selectedRow === index + 1) {
-                      return this.onCaretClick(0, rowData.stdId);
+                    if (stdId === rowData.stdId) {
+                      return this.onCaretClick(rowData.stdId);
                     }
-                    return this.onCaretClick(index + 1, rowData.stdId, rowData.perfomancePercentage);
+                    return this.onCaretClick(rowData.stdId, rowData.perfomancePercentage);
                   }
                 };
               }}
@@ -251,9 +256,9 @@ class TableDisplay extends Component {
           </StyledCard>
         )}
 
-        {selectedRow !== 0 && this.state.stdId != "" && (
+        {stdId !== "" && (
           <DetailedDisplay
-            onClose={() => this.onCaretClick(0, stdId)}
+            onClose={() => this.onCaretClick(stdId)}
             data={standards.find(std => std._id === stdId)}
             performancePercentage={perfomancePercentage}
             color={getMastery(assignmentMastery, perfomancePercentage || 0).color}

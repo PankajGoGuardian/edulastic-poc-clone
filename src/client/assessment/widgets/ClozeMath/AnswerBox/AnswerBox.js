@@ -48,12 +48,23 @@ const AnswerBox = ({
   });
 
   mathUnitAnswers.map(ans => {
+    const specialCharMap = {
+      "#": "\\#",
+      "\\$": "\\$",
+      "%": "\\%",
+      "&": "\\&",
+      "{": "\\{",
+      "}": "\\}",
+      _: "\\_"
+    };
     const { index } = find(mathUnits, d => d.id === ans.id) || { index: 0 };
     let { unit = "" } = ans.options;
+    unit = unit.trim();
 
-    if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
-      unit = `\\text{${unit}}`;
-    }
+    Object.keys(specialCharMap).map(sChar => {
+      const regExp = new RegExp(sChar, "g");
+      unit = unit.replace(regExp, specialCharMap[sChar]);
+    });
 
     return validAnswers.push({
       index,

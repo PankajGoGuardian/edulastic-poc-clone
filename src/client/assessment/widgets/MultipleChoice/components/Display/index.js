@@ -90,6 +90,7 @@ Display.defaultProps = {
 
 const StyledStimulus = styled(Stimulus)`
   word-break: break-word;
+  overflow: hidden;
   font-size: ${props => props.fontSize};
 
   img {

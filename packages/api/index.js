@@ -36,3 +36,4 @@ export { default as dashboardApi } from "./src/dashboard";
 export { default as segmentApi } from "./src/segment";
 export { default as passageApi } from "./src/passage";
 export { default as tagsApi } from "./src/tags";
+export { default as contentErrorApi } from "./src/contentError";

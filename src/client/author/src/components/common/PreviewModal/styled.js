@@ -94,6 +94,13 @@ export const EvaluateButton = styled(Button)`
   }
 `;
 
+export const ReportIssueButton = styled(Button)`
+  font-size: 16px;
+  width: max-content !important;
+  height: 28px;
+  padding: 0px 10px;
+`;
+
 export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
@@ -187,4 +194,43 @@ export const CollapseBtn = styled.i`
 
 export const IconArrow = styled(Icon)`
   color: ${props => props.theme.testItemPreview.iconArrowColor};
+`;
+
+export const ReportHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+  span {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  span > i {
+    color: red;
+    padding-right: 5px;
+  }
+`;
+
+export const ReportIssueContainer = styled.div`
+  textarea:hover,
+  textarea:focus {
+    border-color: red;
+  }
+`;
+
+export const CloseButton = styled(Button)`
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+`;
+
+export const TextAreaSendButton = styled(Button)`
+  float: right;
+  margin-top: 10px;
+  background: ${themeColor};
+  color: ${white};
+  &:hover,
+  &:focus {
+    color: ${themeColor};
+  }
 `;

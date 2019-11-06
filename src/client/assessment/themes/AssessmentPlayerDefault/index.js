@@ -22,6 +22,7 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
+import ReportIssuePopover from "../common/ReportIssuePopover";
 
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import {
@@ -594,6 +595,9 @@ class AssessmentPlayerDefault extends React.Component {
               )}
             </MainWrapper>
           </Main>
+
+          <ReportIssuePopover item={item} />
+
           {currentToolMode.indexOf(2) !== -1 && (
             <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
           )}
@@ -651,4 +655,8 @@ export default enhance(AssessmentPlayerDefault);
 
 const StyledPaddingDiv = styled(PaddingDiv)`
   padding: 0px 35px;
+`;
+
+const ReportIssueContainer = styled.div`
+  float: right;
 `;

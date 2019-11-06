@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { message } from "antd";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
-import { testItemsApi } from "@edulastic/api";
+import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
+import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
 
@@ -14,6 +14,7 @@ export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
 export const SET_TEST_ITEM_REQUEST = "[addItems] set passage item request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
+export const REPORT_CONTENT_ERROR_REQUEST = "[addItems] report content error request";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -57,6 +58,11 @@ export const clearSelectedItemsAction = () => ({
 
 export const getItemsSubjectAndGradeAction = data => ({
   type: GET_ITEMS_SUBJECT_AND_GRADE,
+  payload: data
+});
+
+export const reportContentErrorAction = data => ({
+  type: REPORT_CONTENT_ERROR_REQUEST,
   payload: data
 });
 
@@ -141,8 +147,21 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
   }
 }
 
+function* reportContentErrorSaga({ payload }) {
+  try {
+    yield call(contentErrorApi.reportContentError, payload);
+    yield call(message.success, "Issue reported successfully.");
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to report issue.");
+  }
+}
+
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga)]);
+  yield all([
+    yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga)
+  ]);
 }
 
 // selectors

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
-import { Pagination } from "antd";
+import { Pagination, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, white } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes, ScrollContext } from "@edulastic/common";
@@ -16,6 +16,7 @@ import {
   ButtonsContainer,
   ColumnContentArea,
   EvaluateButton,
+  ReportIssueButton,
   PassageNavigation,
   Divider,
   CollapseBtn,
@@ -168,7 +169,8 @@ class AuthorTestItemPreview extends Component {
       clearView,
       page,
       handleShowHints,
-      showHints
+      showHints,
+      toggleReportIssue
     } = this.props;
 
     const hints = get(item, "data.questions.[0].hints", []);
@@ -203,6 +205,10 @@ class AuthorTestItemPreview extends Component {
             </>
           )}
           {page !== "itemAuthoring" && <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>}
+
+          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
+            <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+          </ReportIssueButton>
         </ButtonsWrapper>
       </>
     );

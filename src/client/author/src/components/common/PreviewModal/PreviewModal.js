@@ -29,6 +29,7 @@ import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPag
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
+import ReportIssue from "./ReportIssue";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -38,7 +39,8 @@ class PreviewModal extends React.Component {
     this.state = {
       flag: false,
       passageLoading: false,
-      showHints: false
+      showHints: false,
+      showReportIssueField: false
     };
   }
 
@@ -155,7 +157,11 @@ class PreviewModal extends React.Component {
     }));
   };
 
-  // TODO consistency for question and resources for previeew
+  toggleReportIssue = () => {
+    this.setState(prevState => ({ showReportIssueField: !prevState.showReportIssueField }));
+  };
+
+  //TODO consistency for question and resources for previeew
   render() {
     const {
       isVisible,
@@ -173,7 +179,7 @@ class PreviewModal extends React.Component {
       windowWidth
     } = this.props;
 
-    const { passageLoading, showHints } = this.state;
+    const { passageLoading, showHints, showReportIssueField } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -244,6 +250,7 @@ class PreviewModal extends React.Component {
                   handleCheckAnswer={checkAnswer}
                   handleShowAnswer={showAnswer}
                   handleShowHints={this.toggleHints}
+                  toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
                   isEditable={isEditable && authorHasPermission}
@@ -259,6 +266,9 @@ class PreviewModal extends React.Component {
                   showCollapseBtn
                 />
                 {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+                {showReportIssueField && (
+                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
+                )}
               </>
             )}
           </QuestionWrapper>

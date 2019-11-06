@@ -202,7 +202,7 @@ class Container extends Component {
         to: "/author/items"
       },
       {
-        title: "ITEM DETAIL",
+        title: "SELECT THE TYPE OF WIDGET",
         to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
       },
       {

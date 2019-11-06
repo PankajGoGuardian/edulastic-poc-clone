@@ -36,7 +36,7 @@ SecondHeadBar.defaultProps = {
       to: "/author/items"
     },
     {
-      title: "ITEM DETAIL",
+      title: "ADD NEW",
       to: breadCrumbTarget
     }
   ]

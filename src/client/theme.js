@@ -1450,7 +1450,9 @@ export const defaultTheme = {
     saveButtonBgColor: themeColor,
     saveButtonBorderColor: themeColor,
     cancelButtonTextColor: themeColor,
-    cancelButtonBgColor: buttonBackgroundColor
+    cancelButtonBgColor: buttonBackgroundColor,
+    changePasswordTextSize: linkFontSize,
+    userDetailsTextColor: "#a5acb4"
   },
   confirmation: {
     titleTextSize: notificationTitle,

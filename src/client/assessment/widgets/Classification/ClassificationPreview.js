@@ -80,7 +80,7 @@ const ClassificationPreview = ({
     correctAnswerContainerStyle: isLeft
       ? { textAlign: "center" }
       : { textAlign: "left", minHeight: "unset", paddingBottom: 30 },
-    correctAnswersMargins: { marginBottom: 0, marginRight: 30, width: "100%" }
+    correctAnswersMargins: { marginBottom: 0, marginRight: 30, width: "100%", textAlign: "center" }
   };
 
   const {
@@ -529,7 +529,15 @@ const ClassificationPreview = ({
                 {`${t("component.classification.alternateAnswer")} ${ind + 1}`}
               </Subtitle>
               {arrays.map((arr, i) => (
-                <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                <FlexContainer
+                  style={{
+                    display: "inline-flex",
+                    marginBottom: 40,
+                    flexDirection: "column",
+                    width: correctAnswersContainerWidth,
+                    alignItems: "stretch"
+                  }}
+                >
                   <Subtitle style={styles.correctAnswersMargins}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
                   </Subtitle>

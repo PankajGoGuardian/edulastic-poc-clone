@@ -6,6 +6,7 @@ import { questionGroup, questionTypeMap } from "../framework/constants/questionT
 import Header from "../framework/author/itemList/itemDetail/header";
 import EditItemPage from "../framework/author/itemList/itemDetail/editPage";
 import ItemListPage from "../framework/author/itemList/itemListPage";
+import { draftTests, getQuestions } from "../framework/testdata/visualRegression";
 
 const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
 const SCREEN_SIZES = [[1600, 900], [1366, 768], [1024, 650]]; // Cypress.config("SCREEN_SIZES");
@@ -16,59 +17,7 @@ const editItem = new EditItemPage();
 const itemPage = new ItemListPage();
 const search = new SearchFilters();
 
-/* const questions = {
-  "Cloze with Text": "5d8e084aca293d1c3e684ca0",
-  "Bar chart": "5d8e084aca293d1c3e684ca1",
-  "Cloze with Drop Down": "5d8e084bca293d1c3e684ca2",
-  "Math, Text & Dropdown": "5d8e084bca293d1c3e684ca3",
-  "Highlight Image": "5d8e084cca293d1c3e684ca4",
-  "Label Image with Drag & Drop": "5d8e084cca293d1c3e684ca5",
-  "Label Image with Text": "5d8e084cca293d1c3e684ca6",
-  "Match list": "5d8e084dca293d1c3e684ca7",
-  "Token highlight": "5d8e084dca293d1c3e684ca8",
-  "Number line with drag & drop": "5d8e084dca293d1c3e684ca9",
-  "True or false": "5d8e084eca293d1c3e684caa",
-  "Line plot": "5d8e084eca293d1c3e684cab",
-  "Essay with rich text": "5d8e084fca293d1c3e684cae",
-  Graphing: "5d8e0850ca293d1c3e684cb0",
-  "Cloze with Drag & Drop": "5d8e0850ca293d1c3e684cb1",
-  "Graph Placement": "5d8e0851ca293d1c3e684cb2",
-  "Fraction Editor": "5d8e0851ca293d1c3e684cb3",
-  "Choice matrix - standard": "5d8e0852ca293d1c3e684cb5",
-  Classification: "5d8e0853ca293d1c3e684cb7",
-  OrderList: "5d8e0853ca293d1c3e684cb8",
-  "Multiple choice - multiple response": "5d8e0854ca293d1c3e684cb9",
-  "Multiple choice - standard": "5d8e0854ca293d1c3e684cba",
-  "Number line with plot": "5d8e0855ca293d1c3e684cbb"
-}; */
-
-const questions = {
-  "Multiple choice - standard": ["5d9ee2eee8643b0b75f17509"],
-  "Multiple choice - multiple response": ["5d9ee3550ba990deb2773c23"],
-  "Label Image with Drag & Drop": ["5d9ef7577fe54765293be58f"],
-  OrderList: ["5d9ef813236a6d40c08ca88c"],
-  "Math, Text & Dropdown": ["5d9ef859236a6d0aaa8ca88e", "5d9f09a1487008f9f0bcf4bb", "5d08d76d38a00c59ea2d8203"],
-  "Fraction Editor": ["5d9efa42930e8afa87b3f73d"],
-  "Token highlight": ["5d9efa82930e8ae8f5b3f73f"],
-  "Match list": ["5d9efb1ad88319032295da4a"],
-  "Graph Placement": ["5d9efb5ed88319e3b095da4b"],
-  "Cloze with Text": ["5d9efc08b0801c844df2a906", "5d70d5a0fa159fecca51cb96"],
-  "Label Image with Drop Down": ["5d9efc55d8831934aa95da4c"],
-  "Choice matrix - labels": ["5d9efc96b0801c7d91f2a907"],
-  "Number line with drag & drop": ["5d9efcc6d88319394b95da4d"],
-  Classification: ["5d9efdf2d88319c83695da4f"],
-  "Dot plot": ["5d9efe34236a6d4ce68ca88f"],
-  "Essay with rich text": ["5d9efe8c7fe547a8e63be591", "5d9efec4236a6d85ee8ca890", "5d9eff34d8831976da95da51"],
-  Graphing: ["5d9efef0236a6d7b3d8ca892", "5d9eff657fe54768593be593"],
-  "Bar chart": ["5d9effaa930e8a7f3eb3f740", "5d9efff0d883198b5a95da52"],
-  "Cloze with Drag & Drop": ["5d9579778644f4f04cc5781e"],
-  "Label Image with Text": ["5d70d595fa159fecca51ca77"],
-  "Choice matrix - standard": ["5d96052ffa159fecca7178dd"],
-  "True or false": ["5d270250305f9c1ef0ae03fa"],
-  "Highlight Image": ["5d96053afa159fecca71e66d"],
-  "Number line with plot": ["5d2d63ab305f9c1ef0b85a50"],
-  "Line plot": ["5d15c5c2305f9c1ef02a187c"]
-};
+const questions = getQuestions(draftTests);
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
@@ -136,11 +85,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     const isSizeSmall = size[0] < SMALL_DESKTOP_WIDTH;
     const scrollOffset = size[1] > MAX_TAB_WIDTH ? 60 : 120;
     context("create item", () => {
-      /* before(() => {
-        cy.setResolution(size);
-        cy.visit(`/${pageURL}`);
-      }); */
-
       beforeEach(() => {
         cy.setResolution(size);
       });
@@ -181,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   cy.contains("Question");
                 });
 
-                it(`when resolution is ${size} - 'edit'`, () => {
+                it(`-${size}-'edit'`, () => {
                   cy.wait(1000);
                   cy.matchImageSnapshotWithSize();
 
@@ -190,7 +134,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   });
                 });
 
-                it(`when resolution is ${size} - 'preview'`, () => {
+                it(`-${size}-'preview'`, () => {
                   itemHeader.preview();
                   cy.isPageScrollPresent().then(({ hasScroll }) => {
                     cy.wait(1000);
@@ -203,7 +147,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                 });
 
                 if (queType !== "Essay with rich text") {
-                  it(`when resolution is ${size} - 'preview-showAns'`, () => {
+                  it(`-${size}-'preview-showAns'`, () => {
                     itemHeader
                       .preview()
                       .getShowAnswer()
@@ -219,7 +163,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   });
                 }
 
-                it(`when resolution is ${size} - 'preview-clear'`, () => {
+                it(`-${size}-'preview-clear'`, () => {
                   itemHeader
                     .preview()
                     .getClear()
@@ -235,7 +179,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   });
                 });
 
-                it(`when resolution is ${size} - 'metadata'`, () => {
+                it(`-${size}-'metadata'`, () => {
                   itemHeader.metadata();
                   cy.wait(1000);
                   cy.matchImageSnapshotWithSize();

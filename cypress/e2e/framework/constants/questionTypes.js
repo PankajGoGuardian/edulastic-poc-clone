@@ -5,7 +5,22 @@ export const questionType = {
   MCQ_BLOCK: "Multiple choice - block layout",
   CHOICE_STD: "Choice matrix - standard",
   CHOICE_INLINE: "Choice matrix - inline",
-  CHOICE_LABEL: "Choice matrix - labels"
+  CHOICE_LABEL: "Choice matrix - labels",
+  CLOZE_DRAG_DROP: "Cloze with Drag & Drop",
+  CLOZE_DROP_DOWN: "Cloze with Drop Down",
+  CLOZE_TEXT: "Cloze with Text",
+  IMAGE_DRAG_DROP: "Label Image with Drag & Drop",
+  IMAGE_DROP_DOWN: "Label Image with Drop Down",
+  IMAGE_TEXT: "Label Image with Text",
+  SORT_LIST: "Sort List",
+  CLASSIFICATION: "Classification",
+  MATCH_LIST: "Match list",
+  ORDERLIST: "OrderList",
+  ESSAY_RICH: "Essay with rich text",
+  ESSAY_PLAIN: "Essay with plain text",
+  ESSAY_SHORT: "Short text",
+  PASSAGE_MULTIPART: "Passage with Multiple parts",
+  PASSAGE_QUE: "Passage with Questions"
 };
 
 export const questionTypeKey = {
@@ -22,17 +37,20 @@ export const attemptTypes = {
   RIGHT: "right",
   WRONG: "wrong",
   SKIP: "skip",
-  PARTIAL_CORRECT: "partialCorrect"
+  PARTIAL_CORRECT: "partialCorrect",
+  NO_ATTEMPT: "noattempt"
 };
 
 export const queColor = {
   RIGHT: "rgb(94, 181, 0)",
   WRONG: "rgb(243, 95, 95)",
-  SKIP: "rgb(229, 229, 229)",
+  SKIP: "rgb(106, 115, 127)",
+  NO_ATTEMPT: "rgb(229, 229, 229)",
+  YELLOW: "rgb(253, 204, 59)",
   GREEN: "rgb(23, 116, 240)",
   CLEAR_DAY: "rgb(225, 251, 242)",
-  LIGHT_GREEN: "rgba(31, 227, 161, 0.118)",
-  LIGHT_RED: "rgba(238, 22, 88, 0.118)",
+  LIGHT_GREEN: "rgba(0, 173, 80, 0.19)",
+  LIGHT_RED: "rgba(238, 22, 88, 0.15)",
   GREEN_1: "rgb(66, 209, 132)"
 };
 

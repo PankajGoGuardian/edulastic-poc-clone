@@ -2,7 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { get, isUndefined, toNumber, round, isNaN } from "lodash";
+import { get, isUndefined, toNumber, round } from "lodash";
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -76,7 +76,7 @@ class FeedbackRight extends Component {
 
   onScoreSubmit() {
     const { score, maxScore } = this.state;
-    if (isNaN(score)) {
+    if (!score || isNaN(score)) {
       message.warn("Score should be a valid numerical");
       return;
     }
@@ -150,7 +150,7 @@ class FeedbackRight extends Component {
   };
   onChangeScore = e => {
     const value = e.target.value;
-    if (!window.isNaN(value)) {
+    if (!window.isNaN(value) || value === ".") {
       this.setState({ score: value, changed: true });
     }
   };

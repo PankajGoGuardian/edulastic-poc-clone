@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -6,6 +5,40 @@ import { yellow, greenDark3, red } from "@edulastic/colors";
 import { IconCorrect, IconRemove, IconWrong } from "@edulastic/icons";
 import { Divider } from "antd";
 
+const TeacherResponseContainer = ({
+  correct,
+  answerIcon,
+  answer,
+  isResponseVisible,
+  prevScore,
+  prevMaxScore,
+  prevFeedback
+}) => (
+  <TeacherResponse>
+    <FlexBox>
+      <div>
+        {correct !== undefined && (
+          <span>
+            {answerIcon} {`  ${answer}`}
+          </span>
+        )}
+      </div>
+      {isResponseVisible && (
+        <div>
+          <IconRemove height={20} width={20} />
+        </div>
+      )}
+    </FlexBox>
+    {(prevScore || prevScore === 0) && (
+      <FlexBox column>
+        <ScoreWrapper>{prevScore}</ScoreWrapper>
+        <ScoreDevider />
+        <ScoreWrapper>{prevMaxScore}</ScoreWrapper>
+      </FlexBox>
+    )}
+    {!!prevFeedback?.text && <div>{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
+  </TeacherResponse>
+);
 const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId }) => {
   const [feedbackView, setFeedbackView] = useState(false);
   const toggleFeedbackView = () => {
@@ -27,40 +60,24 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
             answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={yellow} />
           }
       : { answer: "Incorrect", answerIcon: <IconWrong height={iconHeight2} width={iconHeight2} color={red} /> };
+  const isResponseVisible = (!feedbackView && correct !== undefined) || feedbackView;
+  const props = { correct, answerIcon, answer, isResponseVisible, prevScore, prevMaxScore, prevFeedback };
+  if ((!isResponseVisible && prevFeedback?.text) || !isNaN(prevScore)) {
+    return (
+      <Wrapper visible={true}>
+        <TeacherResponseContainer {...props} />
+      </Wrapper>
+    );
+  }
   return (
-    <Wrapper onClick={toggleFeedbackView} visible={(!feedbackView && correct !== undefined) || feedbackView}>
+    <Wrapper onClick={toggleFeedbackView} visible={isResponseVisible}>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: "100px" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>{answerIcon}</div>
           <div style={{ textAlign: "center" }}>{`Thats ${answer}`}</div>
         </div>
       )}
-      {feedbackView && (
-        <div style={{ width: "120px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>
-              {correct !== undefined && (
-                <span>
-                  {answerIcon} {`  ${answer}`}
-                </span>
-              )}
-            </div>
-            <div>
-              <IconRemove height={20} width={20} />
-            </div>
-          </div>
-          {(prevScore || prevScore === 0) && (
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-              <div style={{ textAlign: "center", fontSize: "20px" }}>{prevScore}</div>
-              <Divider
-                style={{ height: "3px", width: "50%", minWidth: "50%", backgroundColor: "black", margin: "3px auto" }}
-              />
-              <div style={{ textAlign: "center", fontSize: "20px" }}>{prevMaxScore}</div>
-            </div>
-          )}
-          {!!prevFeedback && <div>{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
-        </div>
-      )}
+      {feedbackView && <TeacherResponseContainer {...props} />}
     </Wrapper>
   );
 };
@@ -85,4 +102,24 @@ const Wrapper = styled.div`
   top: 40px;
   padding: 20px 15px;
   background-color: white;
+`;
+
+const TeacherResponse = styled.div`
+  width: 120px;
+`;
+const FlexBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  ${props => props.column && "flex-direction:column;"}
+`;
+
+const ScoreWrapper = styled.div`
+  text-align: center;
+  font-size: 20px;
+`;
+const ScoreDevider = styled(Divider)`
+  height: 3px;
+  width: 50%;
+  background-color: black;
+  margin: 3px auto;
 `;

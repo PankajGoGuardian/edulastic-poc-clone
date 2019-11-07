@@ -515,7 +515,7 @@ export const isItemVisibiltySelector = createSelector(
     }
     return (
       contentVisibility === testContentVisibility.ALWAYS ||
-      (assignmentStatus === "IN GRADING" && testContentVisibility.GRADING)
+      (assignmentStatus === "IN GRADING" && contentVisibility === testContentVisibility.GRADING)
     );
   }
 );

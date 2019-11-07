@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { throttle } from "lodash";
-import { themeColor, extraDesktopWidthMax, mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import { themeColor, extraDesktopWidthMax, smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withWindowSizes } from "@edulastic/common";
 
@@ -157,30 +157,22 @@ export { default as AdvancedOptionsLink } from "./AdvancedOptionsLink";
 
 const Menu = styled.div`
   position: fixed;
-  left: 160px;
-  top: 150px;
   width: 230px;
-  padding: 40px 0 0;
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 300px;
-    padding-left: 43px;
-    padding-top: 46px;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    top: 110px;
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    display: none;
-  }
+  padding: 30px 0px;
 `;
 
 const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-top: 10px;
   padding-left: 10px;
-  max-height: calc(100vh - 255px);
+  max-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
+  /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    max-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 110}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    max-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 110}px)`};
+  }
 `;
 
 const MainOptions = styled.ul`

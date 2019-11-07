@@ -390,6 +390,17 @@ class QuestionWrapper extends Component {
             isFlex
             data-cy="question-container"
           >
+            {view === "edit" && showQuestionMenu && (
+              <QuestionMenuWrapper>
+                <QuestionMenu
+                  activeTab={activeTab}
+                  main={main}
+                  advanced={advanced}
+                  advancedAreOpen={advancedAreOpen}
+                  handleAdvancedOpen={handleAdvancedOpen}
+                />
+              </QuestionMenuWrapper>
+            )}
             <PaperWrapper
               // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
               disabled={disabled}
@@ -405,15 +416,6 @@ class QuestionWrapper extends Component {
               flowLayout={flowLayout}
               twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
             >
-              {view === "edit" && showQuestionMenu && (
-                <QuestionMenu
-                  activeTab={activeTab}
-                  main={main}
-                  advanced={advanced}
-                  advancedAreOpen={advancedAreOpen}
-                  handleAdvancedOpen={handleAdvancedOpen}
-                />
-              )}
               <StyledFlexContainer>
                 <Question
                   {...restProps}
@@ -564,4 +566,13 @@ export default enhance(QuestionWrapper);
 
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${props => props.theme.fontSize};
+`;
+
+const QuestionMenuWrapper = styled.div`
+  position: relative;
+  width: 250px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    display: none;
+  }
 `;

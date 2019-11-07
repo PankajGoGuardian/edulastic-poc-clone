@@ -10,10 +10,6 @@ const ContentWrapper = styled.div`
   padding: 0px 30px 30px;
   overflow: visible;
 
-  @media (min-width: ${extraDesktopWidthMax}) {
-    padding: 0px 45px 45px;
-  }
-
   @media (max-width: ${mobileWidth}) {
     padding: 0px 25px;
   }

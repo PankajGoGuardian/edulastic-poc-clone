@@ -62,7 +62,6 @@ class Container extends Component {
     };
 
     this.innerDiv = React.createRef();
-    this.scrollRef = React.createRef();
   }
 
   componentDidUpdate = () => {
@@ -402,11 +401,7 @@ class Container extends Component {
             <div>{view === "preview" && this.renderButtons()}</div>
           </RightActionButtons>
         </BreadCrumbBar>
-        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollRef?.current?._ps?.element }}>
-          <ScrollbarContainer innerRef={this.scrollRef}>
-            <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
-          </ScrollbarContainer>
-        </ScrollContext.Provider>
+        <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </div>
     );

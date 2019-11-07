@@ -211,10 +211,6 @@ class TestList extends Component {
         grades = interestedGrades;
         updateDefaultGrades(grades);
       }
-      if (!subject) {
-        subject = interestedSubjects[0] || "";
-        updateDefaultSubject(subject);
-      }
 
       // update default grades and subject.
       updateAllTestFilters(searchFilters);
@@ -270,7 +266,6 @@ class TestList extends Component {
       clearDictStandards,
       history,
       limit,
-      mode,
       getCurriculumStandards,
       updateDefaultGrades,
       updateDefaultSubject,
@@ -346,7 +341,7 @@ class TestList extends Component {
     clearSelectedItems();
   };
 
-  handlePaginationChange = page => {
+  updateTestList = (page, checkMode) => {
     const { receiveTests, limit, history, mode, testFilters, defaultGrades, defaultSubject } = this.props;
 
     const searchFilters = {
@@ -356,8 +351,22 @@ class TestList extends Component {
     };
 
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    history.push(`/author/tests?${queryParams}`);
+    if (checkMode && mode !== "embedded" || !checkMode) history.push(`/author/tests?${queryParams}`);
     receiveTests({ page, limit, search: searchFilters });
+  };
+
+  handlePaginationChange = page => {
+    this.updateTestList(page, false);
+  };
+
+  handleClearFilter = () => {
+    const { clearAllFilters, updateDefaultGrades, updateDefaultSubject } = this.props;
+    clearAllFilters();
+    updateDefaultGrades([]);
+    storeInLocalStorage("defaultGrades", []);
+    updateDefaultSubject("");
+    storeInLocalStorage("defaultSubject", "");
+    this.updateTestList(1, true);
   };
 
   handleStyleChange = blockStyle => {
@@ -372,27 +381,6 @@ class TestList extends Component {
 
   closeSearchModal = () => {
     this.setState({ isShowFilter: false });
-  };
-
-  handleClearFilter = () => {
-    const {
-      clearAllFilters,
-      limit,
-      receiveTests,
-      mode,
-      history,
-      updateDefaultGrades,
-      updateDefaultSubject
-    } = this.props;
-    clearAllFilters();
-    updateDefaultGrades([]);
-    storeInLocalStorage("defaultGrades", []);
-    updateDefaultSubject("All Subjects");
-    storeInLocalStorage("defaultSubjects", "All Subjects");
-    receiveTests({ page: 1, limit });
-    if (mode !== "embedded") {
-      history.push(`/author/tests`);
-    }
   };
 
   typeCheck = (parsedQueryData, search) => {
@@ -626,7 +614,7 @@ class TestList extends Component {
     const search = {
       ...testFilters,
       grades: defaultGrades || interestedGrades,
-      subject: defaultSubject || interestedSubjects?.[0]
+      subject: defaultSubject || ""
     };
 
     const { searchString } = search;

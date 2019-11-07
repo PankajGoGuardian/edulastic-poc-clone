@@ -169,7 +169,7 @@ const TestListFilters = ({
             placeholder={filterItem.placeholder}
             filterOption={filterItem.filterOption}
             optionFilterProp={filterItem.optionFilterProp}
-            defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].text}
+            defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value}
             value={search[filterItem.onChange]}
             onChange={value => onChange(filterItem.onChange, value)}
             disabled={filterItem.disabled}

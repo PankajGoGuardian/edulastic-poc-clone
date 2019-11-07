@@ -59,7 +59,7 @@ const emptyFilters = {
   standardIds: [],
   tags: [],
   searchString: "",
-  filter: ""
+  filter: "ENTIRE_LIBRARY"
 };
 
 // reducer

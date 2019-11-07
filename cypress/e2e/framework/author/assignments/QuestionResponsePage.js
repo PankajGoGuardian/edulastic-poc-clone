@@ -145,12 +145,12 @@ export default class QuestionResponsePage {
   selectQuestion = queNum => {
     // const questionSelect = `Question ${queNum.slice(1)}`;
     cy.server();
-    cy.route("GET", "**/question/**").as("question");
+    cy.route("GET", "**/item/**").as("item");
     this.getDropDown().click();
     this.getDropDownMenu()
-      .contains(queNum)
+      .contains(`Question ${queNum.slice(1)}`)
       .click({ force: true });
-    if (queNum !== "Q1") cy.wait("@question");
+    if (queNum !== "Q1") cy.wait("@item");
   };
 
   getQuestionContainer = cardIndex => cy.get('[data-cy="question-container"]').eq(cardIndex);
@@ -218,7 +218,7 @@ export default class QuestionResponsePage {
               .find("input")
               .eq(steams.indexOf(correct[chKey]))
               .closest("div")
-              .should("have.css", "background-color", queColor.CLEAR_DAY);
+              .should("have.css", "background-color", queColor.LIGHT_GREEN);
           });
       });
     });

@@ -71,8 +71,8 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
       allStandards = Cypress._.union(allStandards, stdPerQue);
     });
 
-    allStandards.forEach(standard => {
-      this.verifyStanadardPerformanceForStandard(standard, performanceData[standard]);
+    allStandards.forEach((standard, index) => {
+      this.verifyStanadardPerformanceForStandard(standard, performanceData[standard], index);
     });
   };
 
@@ -130,7 +130,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
       });
   };
 
-  verifyStanadardPerformanceForStandard = (standard, performanceData) => {
+  verifyStanadardPerformanceForStandard = (standard, performanceData, index) => {
     const stdPerf = this.calculateScoreAndPerfForStandard(performanceData);
     const { questions, students } = performanceData;
 
@@ -153,11 +153,12 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
           .should("have.text", `${stdPerf}`);
       });
 
-    cy.get("@row")
-      .find("td")
-      .last()
-      .click();
-
+    if (index > 0) {
+      cy.get("@row")
+        .find("td")
+        .last()
+        .click();
+    }
     this.verifyStudentPerformance(students);
   };
 }

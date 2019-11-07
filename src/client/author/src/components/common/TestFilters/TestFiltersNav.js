@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Menu, Icon } from "antd";
 import styled from "styled-components";
 
-import { white, mainTextColor } from "@edulastic/colors";
+import { white, mainTextColor, smallDesktopWidth, themeColor } from "@edulastic/colors";
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
   let selected = items[0].path;
@@ -50,19 +50,28 @@ const Item = styled(Menu.Item)`
   }
 
   :hover {
-    color: #00ad50;
+    color: ${themeColor};
   }
 
   &.ant-menu-item {
     font-size: 13px;
     display: flex;
     align-items: center;
+
+    @media (max-width: ${smallDesktopWidth}) {
+      height: 30px;
+      line-height: 30px;
+      svg {
+        width: 17px;
+        height: 17px;
+      }
+    }
   }
 
   &.ant-menu-item-selected {
-    border-left: 3px solid #00ad50 !important;
+    border-left: 3px solid ${themeColor} !important;
     background-color: ${white} !important;
-    color: #00ad50;
+    color: ${themeColor};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
     border-radius: 0px 10px 10px 0px;
   }

@@ -407,7 +407,7 @@ class AddItems extends PureComponent {
                   }}
                 >
                   {this.renderItems()}
-                  <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                 </ScrollbarContainer>
               </ContentWrapper>
             </Element>

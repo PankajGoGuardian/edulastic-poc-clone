@@ -12,7 +12,8 @@ import {
   white,
   themeColorTagsBg,
   themeColorLighter,
-  tabGrey
+  tabGrey,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
@@ -43,6 +44,11 @@ export const FilterContainer = styled.div`
           height: 24px;
           line-height: 24px;
           margin-top: 7px;
+
+          @media (max-width: ${smallDesktopWidth}) {
+            height: 20px;
+            line-height: 20px;
+          }
         }
       }
     }

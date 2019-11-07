@@ -1,5 +1,6 @@
 import {
   mediumDesktopWidth,
+  smallDesktopWidth,
   white,
   tabletWidth,
   textColor,
@@ -103,6 +104,9 @@ const ButtonStyle = styled(Button)`
   @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 30px;
+  }
   @media (max-width: ${tabletWidth}) {
     &.ant-btn {
       justify-content: center;
@@ -168,8 +172,9 @@ export const ViewButtonStyled = styled(ButtonStyle)`
   color: ${themeColor};
   display: flex;
   align-items: center;
+  padding: 0px 40px 0px 15px;
   svg {
-    margin-right: 15px;
+    margin-right: 25px;
   }
   &:hover,
   &:focus {
@@ -267,14 +272,14 @@ export const DetailCategory = styled.div`
 export const CategoryName = styled.span`
   display: flex;
   align-items: baseline;
-  font-size: 12px;
+  font-size: ${props => props.theme.smallLinkFontSize};
   font-weight: 600;
   margin-right: 5px;
   color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     display: block;
-    font-size: 14px;
+    font-size: ${props => props.theme.standardFont};
     margin: 0 auto;
   }
 `;
@@ -343,13 +348,13 @@ export const LabelText = styled.span`
 export const Text = styled.span`
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: ${props => props.theme.smallLinkFontSize};
   font-weight: 600;
   color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 8px;
-    font-size: 14px;
+    font-size: ${props => props.theme.standardFont};
   }
 `;
 

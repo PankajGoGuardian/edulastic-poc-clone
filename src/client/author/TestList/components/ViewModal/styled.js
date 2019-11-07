@@ -152,17 +152,19 @@ export const ButtonContainer = styled.div`
 
 export const ButtonComponent = styled.div`
   width: 100%;
-  float: right;
-  font-size: 12px;
+  font-size: ${props => props.theme.linkFontSize};
   color: ${({ bgColor }) => (bgColor ? white : themeColor)};
   background: ${({ bgColor }) => bgColor || "white"};
   padding: 8px;
-  box-shadow: 0px 1px 1px 1px ${fadedGrey};
   border-radius: 4px;
+  border: 1px solid ${themeColor};
   font-weight: 600;
-  text-align: center;
   margin-right: 10px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
   &:hover {
     background: ${({ bgColor }) => (bgColor ? themeColor : lightGrey)};
   }
@@ -250,9 +252,9 @@ export const SammaryMark = styled.div`
 `;
 
 export const IconWrapper = styled.span`
-  margin-right: 4px;
+  margin-right: 15px;
   position: relative;
-  top: 3px;
+  line-height: 11px;
 `;
 
 export const TestStatus = styled.span`

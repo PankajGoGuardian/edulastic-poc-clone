@@ -4,20 +4,8 @@ import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
 import GoogleLogin from "react-google-login";
 import { IconPlusCircle, IconGoogleClassroom } from "@edulastic/icons";
 import styled from "styled-components";
+import { scopes } from "../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage";
 const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList, history }) => {
-  const scopes = [
-    "https://www.googleapis.com/auth/classroom.courses",
-    "https://www.googleapis.com/auth/classroom.rosters",
-    "https://www.googleapis.com/auth/classroom.coursework.me",
-    "https://www.googleapis.com/auth/classroom.coursework.students",
-    "https://www.googleapis.com/auth/classroom.announcements",
-    "https://www.googleapis.com/auth/classroom.guardianlinks.students",
-    "https://www.googleapis.com/auth/classroom.guardianlinks.me.readonly",
-    "https://www.googleapis.com/auth/classroom.profile.photos",
-    "https://www.googleapis.com/auth/classroom.profile.emails",
-    "https://www.googleapis.com/auth/userinfo.profile"
-  ].join(" ");
-
   const handleLoginSucess = data => {
     fetchClassList({ data });
     history.push("/author/manageClass");

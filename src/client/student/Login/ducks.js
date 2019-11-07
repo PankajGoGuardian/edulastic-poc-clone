@@ -284,6 +284,11 @@ export default createReducer(initialState, {
   }
 });
 
+export const getUserDetails = createSelector(
+  ["user.user"],
+  user => user
+);
+
 export const getClasses = createSelector(
   ["user.user.orgData.classList"],
   classes => classes

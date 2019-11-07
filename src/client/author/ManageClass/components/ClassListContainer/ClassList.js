@@ -10,9 +10,10 @@ import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable, Tags } from "./styled";
-import { fetchStudentsByIdAction } from "../../ducks";
+import { fetchStudentsByIdAction, fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
+import { getUserDetails } from "../../../../student/Login/ducks";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -24,7 +25,9 @@ const ClassList = ({
   syncClassLoading,
   showBanner,
   institutions,
-  history
+  history,
+  user,
+  fetchClassList
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -185,7 +188,12 @@ const ClassList = ({
             pagination={classGroups.length > 10}
           />
         ) : (
-          <ClassCreatePage filterClass={filterClass} recentInstitute={recentInstitute} />
+          <ClassCreatePage
+            filterClass={filterClass}
+            recentInstitute={recentInstitute}
+            user={user}
+            fetchClassList={fetchClassList}
+          />
         )}
       </TableWrapper>
     </>
@@ -202,10 +210,12 @@ const enhance = compose(
   withRouter,
   connect(
     state => ({
-      institutions: get(state, "user.user.orgData.schools")
+      institutions: get(state, "user.user.orgData.schools"),
+      user: getUserDetails(state)
     }),
     {
-      loadStudents: fetchStudentsByIdAction
+      loadStudents: fetchStudentsByIdAction,
+      fetchClassList: fetchClassListAction
     }
   )
 );

@@ -66,8 +66,6 @@ class AssessmentPlayerSimple extends React.Component {
     toolsOpenStatus: [0],
     history: [{ points: [], pathes: [], figures: [], texts: [] }],
     calcBrand: "EDULASTIC"
-
-
   };
 
   toggleToolsOpenStatus = tool => {

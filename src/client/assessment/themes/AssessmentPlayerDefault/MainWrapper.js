@@ -28,6 +28,10 @@ const MainWrapper = styled.section`
     user-select: none;
   }
 
+  & input {
+    user-select: text;
+  }
+
   @media (max-width: 468px) {
     border-radius: 10px;
   }

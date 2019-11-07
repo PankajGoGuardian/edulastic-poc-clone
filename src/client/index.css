@@ -2114,3 +2114,6 @@ iframe {
   width: 100%;
   overflow: auto;
 }
+.noOverFlowModal {
+  overflow: hidden;
+}

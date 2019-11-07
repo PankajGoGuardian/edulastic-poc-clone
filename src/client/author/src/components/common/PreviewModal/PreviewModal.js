@@ -209,6 +209,7 @@ class PreviewModal extends React.Component {
         onCancel={this.closeModal}
         footer={null}
         centered
+        className="noOverFlowModal"
       >
         <HeadingWrapper>
           <Title>Preview</Title>

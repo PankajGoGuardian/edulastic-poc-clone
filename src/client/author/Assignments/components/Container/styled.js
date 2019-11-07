@@ -56,7 +56,7 @@ export const LeftWrapper = styled.div`
   max-width: 230px;
   margin-top: 10px;
 
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     position: fixed;
     top: 50px;
     left: 100px;
@@ -195,7 +195,7 @@ export const FilterButton = styled(Button)`
     color: ${props => (props.isShowFilter ? white : themeColor)};
   }
 
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     margin-left: ${props => (props.showFilter ? "180px" : "-20px")};
     margin-top: ${props => (props.showFilter ? "-25px" : "34px")};
   }
@@ -204,7 +204,4 @@ export const FilterButton = styled(Button)`
 export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
-  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
-    width: ${props => props.showFilter && "75%"};
-  }
 `;

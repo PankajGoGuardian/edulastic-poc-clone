@@ -482,7 +482,8 @@ var mixAndMatchMathEvaluator =
                                 });
                                 var expected = validAnswer.value || "";
                                 var input = userResponse[id].value;
-                                var options = validAnswer.options;
+                                var _validAnswer$options = validAnswer.options,
+                                  options = _validAnswer$options === void 0 ? {} : _validAnswer$options;
 
                                 if (options.unit) {
                                   expected = combineUnitAndExpression(validAnswer.value, options.unit);

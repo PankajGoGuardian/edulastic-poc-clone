@@ -190,7 +190,7 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
       let expected = validAnswer.value || "";
       let input = userResponse[id].value;
 
-      const { options } = validAnswer;
+      const { options = {} } = validAnswer;
       if (options.unit) {
         expected = combineUnitAndExpression(validAnswer.value, options.unit);
       }

@@ -64,13 +64,10 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
 
 ClozeDropDown.propTypes = {
   resprops: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired,
-  uiStyles: PropTypes.object
+  id: PropTypes.string.isRequired
 };
 
-ClozeDropDown.defaultProps = {
-  uiStyles: {}
-};
+ClozeDropDown.defaultProps = {};
 
 export default ClozeDropDown;
 
@@ -80,6 +77,7 @@ const StyledSelect = styled(Select)`
   width: ${props => props.width};
   height: ${props => props.height};
   min-height: 35px;
+  vertical-align: middle;
 
   .ant-select-selection__rendered {
     line-height: 35px;

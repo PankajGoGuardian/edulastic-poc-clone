@@ -301,6 +301,7 @@ export default ClozeTextDisplay;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  margin-top: 25px;
   iframe {
     max-width: 100%;
   }

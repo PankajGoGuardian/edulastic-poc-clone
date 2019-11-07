@@ -379,7 +379,7 @@ class ClozeDragDropDisplay extends Component {
       background: theme.widgets.clozeDragDrop.responseBoxBgColor
     };
     const questionContent = (
-      <div style={{ width: "100%" }}>
+      <div style={{ width: ["right", "left"].includes(responsecontainerposition) ? "auto" : "100%" }}>
         {responsecontainerposition === "top" && (
           <React.Fragment>
             <div style={{ marginBottom: 15, borderRadius: 10 }}>{responseBoxLayout}</div>

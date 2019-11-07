@@ -16,7 +16,11 @@ import StandardsModal from "./StandardsModal";
 import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import { storeInLocalStorage, removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../student/Login/ducks";
-import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../../../author/src/selectors/user";
+import {
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  getInterestedGradesSelector
+} from "../../../author/src/selectors/user";
 import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
 import RecentStandardsList from "./RecentStandardsList";
 
@@ -36,6 +40,7 @@ const AlignmentRow = ({
   createUniqGradeAndSubjects,
   formattedCuriculums,
   defaultGrades,
+  interestedGrades,
   updateDefaultCurriculum,
   defaultSubject,
   defaultCurriculumId,
@@ -170,14 +175,15 @@ const AlignmentRow = ({
           subject: defaultSubject,
           curriculum: defaultCurriculumName,
           curriculumId: defaultCurriculumId,
-          grades: defaultGrades || []
+          grades: defaultGrades || interestedGrades || []
         });
       } else if (interestedCurriculums && interestedCurriculums.length > 0) {
+        console.log({ defaultGrades });
         editAlignment(alignmentIndex, {
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,
           curriculumId: interestedCurriculums[0]._id,
-          grades: defaultGrades || []
+          grades: defaultGrades || interestedGrades || []
         });
       } else {
         editAlignment(alignmentIndex, {
@@ -372,6 +378,7 @@ export default connect(
     defaultCurriculumName: get(state, "dictionaries.defaultCurriculumName"),
     formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment),
     defaultGrades: getDefaultGradesSelector(state),
+    interestedGrades: getInterestedGradesSelector(state),
     defaultSubject: getDefaultSubjectSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state)
   }),

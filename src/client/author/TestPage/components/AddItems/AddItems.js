@@ -275,9 +275,6 @@ class AddItems extends PureComponent {
     const { search } = this.state;
     const { receiveTestItems, limit } = this.props;
     const _this = this;
-    const spinner = document.querySelector(`.${this.spinner.state.generatedClassName}`);
-    spinner.classList.add("active");
-
     setTimeout(() => {
       receiveTestItems(search, page, limit);
       _this.itemsScrollBar._container.scrollTop = 0;
@@ -378,14 +375,7 @@ class AddItems extends PureComponent {
                 <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
               </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
-                <SpinContainer
-                  ref={e => {
-                    this.spinner = e;
-                  }}
-                  className={loading ? "active" : ""}
-                >
-                  <Spin size="large" />
-                </SpinContainer>
+                {loading && <Spin size="large" />}
                 <ItemsMenu>
                   <QuestionsFound>{count} questions found</QuestionsFound>
                   <FlexContainer alignItems="center" justifyContent="space-between">
@@ -401,14 +391,17 @@ class AddItems extends PureComponent {
                     </StyledButton>
                   </FlexContainer>
                 </ItemsMenu>
-                <ScrollbarContainer
-                  ref={e => {
-                    this.itemsScrollBar = e;
-                  }}
-                >
-                  {this.renderItems()}
-                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
-                </ScrollbarContainer>
+
+                {!loading && (
+                  <ScrollbarContainer
+                    ref={e => {
+                      this.itemsScrollBar = e;
+                    }}
+                  >
+                    {this.renderItems()}
+                    {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                  </ScrollbarContainer>
+                )}
               </ContentWrapper>
             </Element>
           </ListItems>

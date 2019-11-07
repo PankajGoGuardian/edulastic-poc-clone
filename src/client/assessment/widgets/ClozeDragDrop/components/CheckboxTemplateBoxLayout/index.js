@@ -119,6 +119,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
       <span
         style={{
+          justifyContent: "center",
           padding: lessMinWidth ? "8px 0px" : null
         }}
         className="text"

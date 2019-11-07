@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { themeColor, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
@@ -235,6 +235,11 @@ const Container = styled.div`
           height: 24px;
           line-height: 24px;
           margin-top: 7px;
+
+          @media (max-width: ${smallDesktopWidth}) {
+            height: 20px;
+            line-height: 20px;
+          }
         }
       }
     }

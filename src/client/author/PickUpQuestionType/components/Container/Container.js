@@ -290,10 +290,6 @@ class Container extends Component {
                     <IconBarChart />
                     {"Charts"}
                   </Menu.Item>
-                  <Menu.Item key="chemistry">
-                    <IconMolecule />
-                    {"Chemistry"}
-                  </Menu.Item>
                   <Menu.Item key="multipart">
                     <IconMultipart />
                     {"Multipart"}
@@ -400,10 +396,6 @@ class Container extends Component {
               <Menu.Item key="charts" onClick={this.toggleCategories}>
                 <IconBarChart />
                 {"Charts"}
-              </Menu.Item>
-              <Menu.Item key="chemistry" onClick={this.toggleCategories}>
-                <IconMolecule />
-                {"Chemistry"}
               </Menu.Item>
               <Menu.Item key="multipart">
                 <IconMultipart />

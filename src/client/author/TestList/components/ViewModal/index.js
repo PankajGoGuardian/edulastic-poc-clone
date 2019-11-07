@@ -116,7 +116,7 @@ class ViewModal extends React.Component {
                 <IconWrapper>
                   <IconDescription color={themeColor} />
                 </IconWrapper>
-                DETAILS
+                <span>DETAILS</span>
               </ButtonComponent>
               <ButtonComponent
                 onClick={() => {
@@ -126,7 +126,7 @@ class ViewModal extends React.Component {
                 <IconWrapper>
                   <IconCopy color={themeColor} />
                 </IconWrapper>
-                DUPLICATE
+                <span>DUPLICATE</span>
               </ButtonComponent>
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (

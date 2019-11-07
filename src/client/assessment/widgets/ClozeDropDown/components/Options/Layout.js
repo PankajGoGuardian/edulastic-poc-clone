@@ -246,7 +246,7 @@ class Layout extends Component {
                 </Col>
               </Row>
               <Row gutter={20}>
-                <Col md={8}>
+                <Col md={12}>
                   <Label>{t("component.options.widthpx")}</Label>
                   <TextField
                     ref={ref => {
@@ -260,7 +260,7 @@ class Layout extends Component {
                     value={getIndividualWidthInputValue(responsecontainerindividual, respIndex)}
                   />
                 </Col>
-                <Col md={8}>
+                <Col md={12}>
                   <Label>{t("component.options.heightpx")}</Label>
                   <TextField
                     type="number"
@@ -268,14 +268,6 @@ class Layout extends Component {
                     onBlur={() => this.handleBlurIndividualHeight(respIndex)}
                     onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, respIndex)}
                     value={responsecontainerindividual.heightpx}
-                  />
-                </Col>
-                <Col md={8}>
-                  <Label>{t("component.options.placeholder")}</Label>
-                  <TextField
-                    disabled={false}
-                    onChange={e => changeIndividualUiStyle("placeholder", e.target.value, respIndex)}
-                    value={responsecontainerindividual.placeholder}
                   />
                 </Col>
               </Row>

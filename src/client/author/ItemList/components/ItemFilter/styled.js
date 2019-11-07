@@ -6,24 +6,28 @@ import {
   textColor,
   greenDark,
   dropZoneTitleColor,
-  mediumDesktopWidth,
   lightGreySecondary,
   mobileWidthLarge,
-  themeColor
+  themeColor,
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
 
 export const Container = styled.div`
-  width: 280px;
+  width: 240px;
   height: 100%;
   overflow: auto;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    width: 235px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    width: 260px;
   }
-
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 370px;
+  }
   @media (max-width: ${desktopWidth}) {
     background: ${lightGreySecondary};
     width: 450px;
@@ -70,7 +74,11 @@ export const Backdrop = styled.div`
 `;
 
 export const FixedFilters = styled.div`
-  padding: 25px 25px 0px;
+  padding: 25px 29px 0px;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 25px 50px 0px;
+  }
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;

@@ -17,7 +17,6 @@ import {
   IconReport,
   IconManage,
   IconQuestion,
-  IconSettings,
   IconProfileHighlight,
   IconSignoutHighlight
 } from "@edulastic/icons";
@@ -33,8 +32,7 @@ import {
   mediumDesktopWidth,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import SettingsModal from "../sharedComponents/SettingsModal";
-import { toggleSideBarAction, setSettingsModalVisibilityAction } from "./ducks";
+import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
 const getIndex = (page, items) => {
@@ -67,11 +65,6 @@ const menuItems = [
     label: "Manage Class",
     icon: IconManage,
     path: "home/manage"
-  },
-  {
-    label: "Settings",
-    icon: IconSettings,
-    path: ""
   }
 ];
 
@@ -107,16 +100,9 @@ class SideMenu extends Component {
       this.toggleMenu();
     }
 
-    if (e.key == 4) {
-      this.openSettingsModal();
-    } else if (menuItems[e.key].path !== undefined) {
+    if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
     }
-  };
-
-  openSettingsModal = () => {
-    const { setSettingsModalVisibility } = this.props;
-    setSettingsModalVisibility(true);
   };
 
   toggleMenu = () => {
@@ -202,7 +188,6 @@ class SideMenu extends Component {
           isSidebarCollapsed={isSidebarCollapsed}
           ref={this.sideMenuRef}
         >
-          <SettingsModal />
           <SideBar
             collapsed={isSidebarCollapsed}
             collapsible
@@ -356,8 +341,7 @@ const enhance = compose(
     }),
     {
       logout: logoutAction,
-      toggleSideBar: toggleSideBarAction,
-      setSettingsModalVisibility: setSettingsModalVisibilityAction
+      toggleSideBar: toggleSideBarAction
     }
   )
 );

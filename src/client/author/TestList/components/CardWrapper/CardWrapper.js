@@ -57,6 +57,7 @@ class CardWrapper extends Component {
             testItemId={itemId}
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
+            standards={standards}
           />
         </Col>
       );

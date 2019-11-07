@@ -227,7 +227,7 @@ class Layout extends Component {
                   </Col>
                 </Row>
                 <Row gutter={20}>
-                  <Col md={8}>
+                  <Col md={12}>
                     <Label>{t("component.options.widthpx")}</Label>
                     <Input
                       type="number"
@@ -238,7 +238,7 @@ class Layout extends Component {
                       value={parseInt(response.width, 10)}
                     />
                   </Col>
-                  <Col md={8}>
+                  <Col md={12}>
                     <Label>{t("component.options.heightpx")}</Label>
                     <Input
                       type="number"
@@ -247,16 +247,6 @@ class Layout extends Component {
                       containerStyle={{ width: 350 }}
                       onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
                       value={parseInt(response.height, 10)}
-                    />
-                  </Col>
-                  <Col md={8}>
-                    <Label>{t("component.options.placeholder")}</Label>
-                    <Input
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resId)}
-                      value={response.placeholder}
                     />
                   </Col>
                 </Row>

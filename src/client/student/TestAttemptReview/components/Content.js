@@ -115,7 +115,6 @@ class SummaryTest extends Component {
                     <MarkedForReview />
                     <SpaceLeft>
                       <Description>{t("common.markedForReview")}</Description>
-                      <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                 </ColorDescriptionRow>
@@ -218,7 +217,7 @@ export default enhance(SummaryTest);
 const AssignmentContentWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 5px 30px;
+  padding: 0px 80px;
   background: ${props => props.theme.assignment.cardContainerBgColor};
   margin-bottom: 1rem;
   @media screen and (max-width: 767px) {
@@ -227,7 +226,7 @@ const AssignmentContentWrapper = styled.div`
 `;
 
 const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
-  margin: 24px 95px;
+  margin: 24px 43px;
   @media screen and (max-width: 992px) {
     margin: 15px 26px;
   }
@@ -241,7 +240,7 @@ const Container = styled.div`
 
 const Header = styled(Container)`
   max-width: 531px;
-  margin-top: 52px;
+  margin-top: 50px;
   @media screen and (max-width: 768px) {
     margin-top: 20px;
   }
@@ -266,7 +265,6 @@ const TitleDescription = styled.div`
 const MainContent = styled.div`
   margin-top: 22.5px;
   width: 100%;
-  border-top: 1px solid #f2f2f2;
   padding-top: 38px;
   @media screen and (max-width: 768px) {
     padding-top: 20px;
@@ -309,7 +307,6 @@ const ColorDescriptionRow = styled(Row)`
 const FlexCol = styled(Col)`
   display: flex;
   align-items: center;
-  margin: 15px 0px;
 `;
 
 const SpaceLeft = styled.div`
@@ -317,7 +314,7 @@ const SpaceLeft = styled.div`
 `;
 
 const Questions = styled.div`
-  margin-top: 60px;
+  margin-top: 50px;
   @media screen and (max-width: 768px) {
     margin-top: 20px;
   }
@@ -325,7 +322,7 @@ const Questions = styled.div`
 
 const QuestionText = styled(Col)`
   font-size: ${props => props.theme.attemptReview.questiontextSize};
-  color: ${props => props.theme.attemptReview.questiontextColor};
+  color: ${props => props.theme.attemptReview.titleDescriptionTextColor};
   font-weight: bold;
   @media screen and (max-width: 768px) {
     text-align: center;
@@ -385,7 +382,7 @@ const StyledButton = styled(Button)`
 const QuestionBlock = styled.div`
   display: flex;
   flex-flow: wrap;
-  margin-top: 30px;
+  margin-top: 31px;
   @media screen and (max-width: 768px) {
     margin-top: 20px;
     justify-content: center;
@@ -425,7 +422,7 @@ const QuestionColorBlock = styled.div`
 `;
 
 const Footer = styled(Container)`
-  margin-top: 186px;
+  margin-top: 121px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -441,7 +438,7 @@ const ShortDescription = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
-  margin: 62px 0px;
+  margin: 60px 0px 44px 0px;
   width: 200px;
   height: 40px;
   border-radius: 4px;

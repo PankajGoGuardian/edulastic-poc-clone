@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tabletWidth, secondaryTextColor, title, themeColor } from "@edulastic/colors";
+import { tabletWidth, secondaryTextColor, title, themeColor, smallDesktopWidth } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
   padding-left: ${props => {
@@ -200,6 +200,13 @@ export const MainContainer = styled.div`
         fill: ${themeColor};
         width: 12px;
         height: 12px;
+      }
+
+      @media (max-width: ${smallDesktopWidth}) {
+        height: 20px !important;
+        &__content {
+          height: 20px;
+        }
       }
     }
   }

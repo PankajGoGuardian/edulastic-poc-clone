@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { withTheme } from "styled-components";
-import { Modal, Select, Button, Row, Col } from "antd";
+import { Select, Button } from "antd";
 import { connect } from "react-redux";
 import { themeColorsMap } from "../../theme";
 
 import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
+import { ModalWrapper, InitOptions } from "../../common/components/ConfirmationModal/styled";
+import { IconSelectCaretDown } from "@edulastic/icons";
+import { themeColor, white, lightGreySecondary, title, tabletWidth, mobileWidthMax } from "@edulastic/colors";
 
 const SettingsModal = ({
   selectedTheme,
@@ -15,52 +18,77 @@ const SettingsModal = ({
   setZoomLevel,
   theme
 }) => {
-  const onThemeChange = theme => setSelectedTheme(theme);
+  const bodyStyle = {
+    padding: "29px 47px",
+    marginBottom: "15px",
+    textAlign: "left",
+    fontSize: theme.smallFontSize,
+    fontWeight: 600,
+    boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.07)"
+  };
+
+  const [tempTheme, setTempTheme] = useState({ selectedTheme, zoomLevel });
+
+  useEffect(() => {
+    setTempTheme({ selectedTheme, zoomLevel });
+  }, []);
+
   const closeModal = () => setSettingsModalVisibility(false);
-
-  const dropdownStyle = { zoom: theme.confirmation.modalWidth };
-
+  const handleCancel = () => {
+    setSelectedTheme(tempTheme.selectedTheme);
+    setZoomLevel(tempTheme.zoomLevel);
+    closeModal();
+  };
   return (
-    <StyledModal
-      id="student-settings-modal"
+    <ModifyModalWrapper
+      centered
+      title={<b>Zoom & Contrast</b>}
       visible={settingsModalVisible}
-      onCancel={closeModal}
+      onCancel={handleCancel}
+      width={"573px"}
+      style={{ borderRadius: "5px" }}
+      destroyOnClose={true}
       footer={[
-        <StyledButton key="submit" type="primary" onClick={closeModal}>
-          Done
+        <StyledButton ghost key="cancel" onClick={handleCancel} cancel>
+          CANCEL
+        </StyledButton>,
+        <StyledButton key="submit" onClick={closeModal}>
+          APPLY
         </StyledButton>
       ]}
     >
-      <RowWithMargin>
-        <Col md={12}>Color Contrast</Col>
-        <Col md={12}>
-          <Select
-            dropdownStyle={dropdownStyle}
-            style={{ width: "80%" }}
+      <InitOptions bodyStyle={bodyStyle}>
+        <div>
+          <CustomColumn>COLOR CONTRAST</CustomColumn>
+          <StyledSelect
             value={selectedTheme}
             onChange={setSelectedTheme}
+            suffixIcon={<IconSelectCaretDown color={themeColor} />}
+            style={{ marginBottom: "10px" }}
           >
             <Select.Option value="default">Default</Select.Option>
             {Object.keys(themeColorsMap).map(key => {
               const item = themeColorsMap[key];
               return <Select.Option value={key}>{item.title}</Select.Option>;
             })}
-          </Select>
-        </Col>
-      </RowWithMargin>
-      <RowWithMargin>
-        <Col md={12}>Zoom</Col>
-        <Col md={12}>
-          <Select dropdownStyle={dropdownStyle} style={{ width: "80%" }} value={zoomLevel} onChange={setZoomLevel}>
-            <Select.Option value="1">Standard (no zoom)</Select.Option>
+          </StyledSelect>
+        </div>
+        <div>
+          <CustomColumn>ZOOM</CustomColumn>
+          <StyledSelect
+            value={zoomLevel}
+            onChange={setZoomLevel}
+            suffixIcon={<IconSelectCaretDown color={themeColor} />}
+          >
+            <Select.Option value="1">No defalut zoom</Select.Option>
             <Select.Option value="1.5">1.5X standard</Select.Option>
             <Select.Option value="1.75">1.75X standard</Select.Option>
             <Select.Option value="2.5">2.5X standard</Select.Option>
             <Select.Option value="3">3X standard</Select.Option>
-          </Select>
-        </Col>
-      </RowWithMargin>
-    </StyledModal>
+          </StyledSelect>
+        </div>
+      </InitOptions>
+    </ModifyModalWrapper>
   );
 };
 
@@ -77,67 +105,46 @@ const enhance = connect(
   }
 );
 
-const StyledModal = styled(Modal)`
-  zoom: ${props => props.theme.confirmation.modalWidth};
-
-  .ant-modal-content {
-    background-color: ${props => props.theme.sectionBackgroundColor};
-    color: ${props => props.theme.confirmation.descriptionTextColor};
-
-    .ant-modal-close-icon {
-      svg {
-        fill: ${props => props.theme.confirmation.descriptionTextColor};
-      }
-    }
+export const ModifyModalWrapper = styled(ModalWrapper)`
+  .ant-modal-footer {
+    text-align: center;
   }
-
-  .ant-select-selection {
-    background-color: ${props => props.theme.headerDropdownBgColor};
-    color: ${props => props.theme.headerDropdownTextColor};
-    border: ${props =>
-      props.theme.headerDropdownBorderColor ? `1px solid ${props.theme.headerDropdownBorderColor}` : "0px"};
+  .ant-modal-title {
+    color: ${title};
+    font-size: ${props => props.theme.header.headerTitleSecondaryTextSize};
   }
-
-  .ant-select-dropdown-menu-item {
-    background-color: ${props => props.theme.headerDropdownItemBgColor};
-    color: ${props => props.theme.headerDropdownTextColor};
-
-    &.ant-select-dropdown-menu-item-selected {
-      background-color: ${props => props.theme.headerDropdownItemBgSelectedColor};
-      color: ${props => props.theme.headerDropdownItemTextSelectedColor};
-    }
-
-    &:hover {
-      background-color: ${props => props.theme.headerDropdownItemBgHoverColor} !important;
-      color: ${props => props.theme.headerDropdownItemTextHoverColor} !important;
-    }
-  }
-
-  .ant-select-selection__rendered {
-    height: 100%;
-    align-items: center;
-    display: flex !important;
-    padding-left: 15px;
-  }
-  .anticon-down {
-    svg {
-      fill: ${props => props.theme.headerDropdownTextColor};
-    }
+  @media (min-width: ${tabletWidth}) {
+    height: 367px;
   }
 `;
 
-const RowWithMargin = styled(Row)`
-  margin-bottom: 10px;
+export const CustomColumn = styled.div`
+  margin-bottom: 8px;
+`;
+
+export const StyledSelect = styled(Select)`
+  width: 100%;
+  .ant-select-selection {
+    height: 36px;
+    border: 1px solid ${props => props.theme.header.settingsInputBorder};
+    background: ${lightGreySecondary};
+    color: ${title};
+  }
+  .ant-select-selection__rendered {
+    margin: 2px 15px;
+  }
 `;
 
 const StyledButton = styled(Button)`
-  background-color: ${props => props.theme.confirmation.submitButtonBgColor};
-  border-color: ${props => props.theme.confirmation.submitButtonBgColor};
-  color: ${props => props.theme.confirmation.submitButtonTextColor};
-  &:hover {
-    background-color: ${props => props.theme.confirmation.submitButtonBgColor};
-    border-color: ${props => props.theme.confirmation.submitButtonBgColor};
-    color: ${props => props.theme.confirmation.submitButtonTextColor};
+  width: 200px;
+  height: 40px;
+  font-size: ${props => props.theme.linkFontSize};
+  background-color: ${props => (props.cancel ? white : props.theme.header.headerBgColor)};
+  border-color: ${props => props.theme.header.headerBgColor};
+  color: ${props => (props.cancel ? props.theme.header.headerBgColor : white)};
+  margin-left: ${props => !props.cancel && "20px"};
+  @media (max-width: ${mobileWidthMax}) {
+    margin: 10px;
   }
 `;
 

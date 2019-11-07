@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import NoDataIcon from "./nodata.svg";
 import { mobileWidth } from "@edulastic/colors";
+import NoDataIcon from "./nodata.svg";
 
 const NoDataNotification = ({ heading, description }) => (
   <Wrapper>

@@ -10,7 +10,6 @@ import {
   largeDesktopWidth,
   desktopWidth,
   mobileWidthMax,
-  borders,
   backgrounds,
   white,
   themeColor
@@ -74,20 +73,20 @@ class ProfileContainer extends React.Component {
       form: { getFieldDecorator }
     } = this.props;
 
-    const { flag, t, user } = this.props;
+    const { t, user } = this.props;
     const { showChangePassword } = this.state;
     return (
-      <LayoutContent flag={flag}>
+      <LayoutContent>
         <ProfileWrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
-            <Photo height={200} windowWidth={200} />
+            <Photo height={224} windowWidth={224} />
           </ProfileImgWrapper>
           <ProfileContentWrapper>
             <TitleName>Welcome {user.firstName}</TitleName>
             <ProfileImgMobileWrapper>
-              <Photo height={100} windowWidth={100} mode="small" />
+              <Photo height={224} windowWidth={100} mode="small" />
             </ProfileImgMobileWrapper>
-            <UserDetail>
+            <div>
               <Title>{t("common.title.student")}</Title>
               <Details>
                 <DetailRow>
@@ -103,14 +102,14 @@ class ProfileContainer extends React.Component {
                   <DetailData>{user.email}</DetailData>
                 </DetailRow>
               </Details>
-            </UserDetail>
+            </div>
             <ChangePasswordToggleButton
               onClick={() => {
                 this.setState({ showChangePassword: !showChangePassword });
               }}
             >
-              <span>Change Password</span>
-              <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
+              <span>CHANGE PASSWORD</span>
+              <CaretIcon type={showChangePassword ? "caret-up" : "caret-down"} />
             </ChangePasswordToggleButton>
 
             {showChangePassword && (
@@ -144,14 +143,14 @@ class ProfileContainer extends React.Component {
                   })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
                 </FormItemWrapper>{" "}
                 <FormButtonWrapper>
-                  <FormItem>
+                  <FormButtonsWrapper>
                     <SaveButton type="primary" htmlType="submit">
                       {t("common.title.save")}
                     </SaveButton>
                     <CancelButton type="primary" ghost onClick={this.handleCancel}>
                       {t("common.title.cancel")}
                     </CancelButton>
-                  </FormItem>
+                  </FormButtonsWrapper>
                 </FormButtonWrapper>
               </FormWrapper>
             )}
@@ -168,7 +167,6 @@ const enhance = compose(
   Form.create(),
   connect(
     state => ({
-      flag: state.ui.flag,
       user: state.user.user
     }),
     {
@@ -180,7 +178,6 @@ const enhance = compose(
 export default enhance(ProfileContainer);
 
 ProfileContainer.propTypes = {
-  flag: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
@@ -190,7 +187,7 @@ const LayoutContent = styled(Layout.Content)`
 `;
 
 const ProfileWrapper = styled(Wrapper)`
-  padding: 30px;
+  padding: 30px 46px;
   margin: 0px;
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 20px;
@@ -198,12 +195,11 @@ const ProfileWrapper = styled(Wrapper)`
 `;
 
 const ProfileContentWrapper = styled.div`
-  width: calc(100% - 370px);
+  width: calc(100% - 409px);
   background-color: white;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  padding: 20px;
-
+  padding: 32px 50px 22px 30px;
   @media (max-width: ${largeDesktopWidth}) {
     width: calc(100% - 270px);
   }
@@ -212,13 +208,11 @@ const ProfileContentWrapper = styled.div`
   }
 `;
 
-const UserDetail = styled.div``;
-
 const Title = styled.h3`
   color: ${props => props.theme.profile.userHeadingTextColor};
   font-size: ${props => props.theme.profile.userHeadingTextSize};
   font-weight: ${props => props.theme.profile.userHeadingTextWeight};
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 
   @media (max-width: ${mobileWidthMax}) {
     display: none;
@@ -244,8 +238,8 @@ const ProfileImgMobileWrapper = styled.div`
 `;
 
 const ProfileImgWrapper = styled.div`
-  width: 350px;
-  height: 300px;
+  width: 381px;
+  height: 323px;
   position: relative;
   background-color: ${white};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
@@ -264,30 +258,28 @@ const ProfileImgWrapper = styled.div`
 `;
 
 const Details = styled.div`
-  padding: 20px;
+  padding: 50px 0px 0 20px;
 `;
 
 const DetailRow = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px 0px 20px;
+  padding: 0px 0px 33px;
 `;
 
 const DetailTitle = styled.span`
   font-size: ${props => props.theme.profile.profileDetailFontSize};
   color: ${props => props.theme.profile.formInputLabelColor};
   font-weight: 600;
-  min-width: 40%;
-  width: 150px;
+  width: 220px;
   display: inline-block;
 `;
 
 const DetailData = styled.span`
-  margin-left: 20px;
   font-size: ${props => props.theme.profile.profileDetailFontSize};
-  color: grey;
+  color: ${props => props.theme.profile.userDetailsTextColor};
+  font-weight: 600;
   display: inline-block;
-  width: calc(100% - 150px);
 `;
 
 const Label = styled.label`
@@ -299,23 +291,26 @@ const ChangePasswordToggleButton = styled.div`
   font-size: ${props => props.theme.profile.changePasswordTextSize};
   padding-left: 20px;
   cursor: pointer;
-  width: fit-content;
   span {
-    margin-right: 20px;
+    margin-right: 28px;
     font-weight: 600;
   }
+`;
+
+const CaretIcon = styled(Icon)`
+  font-size: 15px;
 `;
 
 const FormWrapper = styled(Form)`
   width: 100%;
   text-align: left;
-  padding: 30px 20px 5px;
+  padding: 40px 0px 0px 20px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 
   .ant-input {
-    height: 40px;
+    height: 36px;
     background: ${backgrounds.primary};
     padding: 0 15px;
   }
@@ -327,9 +322,10 @@ const FormWrapper = styled(Form)`
 `;
 
 const FormItemWrapper = styled(FormItem)`
-  width: calc(50% - 10px);
+  width: calc(50% - 17.5px);
   display: inline-block;
   padding: 0px;
+  margin-bottom: 20px;
   label {
     font-size: ${props => props.theme.profile.formInputLabelSize};
     color: ${props => props.theme.profile.formInputLabelColor};
@@ -338,6 +334,10 @@ const FormItemWrapper = styled(FormItem)`
   .ant-form-explain {
     font-size: 12px;
   }
+`;
+
+const FormButtonsWrapper = styled(FormItem)`
+  margin-bottom: 0;
 `;
 
 const FormButtonWrapper = styled.div`
@@ -352,7 +352,8 @@ const FormButtonWrapper = styled.div`
 `;
 
 const ActionButton = styled(Button)`
-  height: 40px;
+  height: 36px;
+  width: 150px;
   margin-left: 15px;
   background: ${themeColor};
   border-color: ${themeColor};
@@ -375,10 +376,6 @@ const ActionButton = styled(Button)`
 `;
 
 const SaveButton = styled(ActionButton)`
-  background: ${themeColor};
-  border-color: ${themeColor};
-  color: ${white};
-  width: 130px;
   &:hover,
   &:focus {
     background: ${themeColor};
@@ -390,7 +387,6 @@ const CancelButton = styled(ActionButton)`
   background: ${white};
   color: ${themeColor};
   border: 1px solid ${themeColor};
-  width: 130px;
   &:hover,
   &:focus {
     background: ${white};

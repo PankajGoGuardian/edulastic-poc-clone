@@ -48,7 +48,8 @@ const ClozeMathPreview = ({
   responseIds,
   isExpressGrader,
   changePreviewTab, // Question level
-  changePreview // Item level
+  changePreview, // Item level,
+  isV1Migrated
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
@@ -163,7 +164,8 @@ const ClozeMathPreview = ({
             showIndex: type === SHOW,
             onInnerClick,
             uiStyles,
-            responseContainers: item.responseContainers
+            responseContainers: item.responseContainers,
+            isV1Migrated
           }
         }}
         showWarnings

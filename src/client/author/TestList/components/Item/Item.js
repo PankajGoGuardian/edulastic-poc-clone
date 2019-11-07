@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
-import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId, IconDraft } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
 import { Button } from "antd";
 import { assignmentApi } from "@edulastic/api";
+import { cardTitleColor } from "@edulastic/colors";
 import {
   Container,
   Inner,
-  CardDescription,
   Footer,
   Author,
   AuthorName,
@@ -22,17 +20,15 @@ import {
   AuthorWrapper,
   IconText,
   ButtonWrapper,
-  DraftIconWrapper,
   TagsWrapper,
-  EllipsisWrapper,
-  ViewButton,
-  PlaylistId
+  PlaylistId,
+  StatusRow,
+  Qcount
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus, EdulasticVerified } from "../ListItem/styled";
-import { cardTitleColor } from "@edulastic/colors";
 
 class Item extends Component {
   static propTypes = {
@@ -105,15 +101,27 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description, collectionName = "" },
+      item: {
+        title,
+        tags = [],
+        analytics,
+        _source,
+        thumbnail,
+        status,
+        _id: testId,
+        description,
+        collectionName = "",
+        summary = {}
+      },
       item,
       authorName,
       owner,
       isPlaylist,
       testItemId,
-      windowWidth
+      windowWidth,
+      standards
     } = this.props;
-
+    const standardsIdentifiers = standards.map(item => item.identifier);
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
@@ -174,22 +182,24 @@ class Item extends Component {
         >
           <TestInfo>
             <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-            <CardDescription title={isPlaylist ? _source.description : description}>
-              <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
-            </CardDescription>
+            <TagsWrapper>
+              <Tags showInline show={2} tags={standardsIdentifiers} key="standards" isStandards />
+              <Tags showInline show={2} tags={tags} key="tags" />
+            </TagsWrapper>
           </TestInfo>
 
           <Inner>
-            <TagsWrapper>
-              <div>
-                <Tags show={1} tags={isPlaylist ? _source.tags : tags} />
-              </div>
+            <StatusRow>
+              <Qcount>
+                <span>Item(s):</span>
+                <span>{summary.totalItems}</span>
+              </Qcount>
               {!isPlaylist && (
                 <TestStatus status={status} view="tile">
                   {status}
                 </TestStatus>
               )}
-            </TagsWrapper>
+            </StatusRow>
           </Inner>
           <Footer>
             {authorName && (

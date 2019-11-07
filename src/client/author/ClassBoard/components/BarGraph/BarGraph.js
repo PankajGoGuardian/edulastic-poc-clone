@@ -8,10 +8,9 @@ import {
   pointColor,
   dropZoneTitleColor,
   secondaryTextColor,
-  green,
   incorrect,
-  blue,
-  yellow
+  yellow,
+  themeColor
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
@@ -382,10 +381,10 @@ export default class BarGraph extends Component {
               <Line
                 yAxisId="right"
                 dataKey="avgTimeSpent"
-                stroke={blue}
+                stroke={themeColor}
                 strokeWidth="3"
                 type="monotone"
-                dot={{ stroke: blue, strokeWidth: 6, fill: white }}
+                dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
               />
 
               <Tooltip content={<StyledCustomTooltip />} cursor={false} />

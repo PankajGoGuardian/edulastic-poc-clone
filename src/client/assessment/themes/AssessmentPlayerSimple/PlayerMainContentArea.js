@@ -117,6 +117,9 @@ const MainContent = styled.div`
     -webkit-touch-callout: none;
     user-select: none;
   }
+  
+  & input {
+    user-select: text;
 
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
     padding: 70px 35px 70px 35px;

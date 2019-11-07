@@ -1,6 +1,13 @@
 import styled from "styled-components";
 import { Row, Select, DatePicker, Table } from "antd";
-import { white, secondaryTextColor, themeColor, themeColorLight, lightGreySecondary } from "@edulastic/colors";
+import {
+  white,
+  secondaryTextColor,
+  themeColor,
+  themeColorLight,
+  lightGreySecondary,
+  smallDesktopWidth
+} from "@edulastic/colors";
 
 export const OptionConationer = styled.div`
   margin-top: 20px;
@@ -193,6 +200,11 @@ export const ClassListFilter = styled.div`
           height: 24px;
           line-height: 24px;
           margin-top: 7px;
+
+          @media (max-width: ${smallDesktopWidth}) {
+            height: 20px;
+            line-height: 20px;
+          }
         }
       }
     }

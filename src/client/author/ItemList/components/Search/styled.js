@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, themeColor, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
+import { white, themeColor, secondaryTextColor, lightGrey4, smallDesktopWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 0 0 20px;
@@ -9,10 +9,28 @@ export const Container = styled.div`
     min-width: 100%;
   }
 
-  .ant-select-lg .ant-select-selection--multiple .ant-select-selection__rendered li {
-    height: 24px;
-    line-height: 24px;
-    margin-top: 8px;
+  .ant-select-lg {
+    .ant-select-selection--multiple {
+      .ant-select-selection__rendered li {
+        height: 24px;
+        line-height: 24px;
+        margin-top: 8px;
+      }
+    }
+
+    @media (max-width: ${smallDesktopWidth}) {
+      .ant-select-selection {
+        min-height: 30px;
+        height: 30px;
+        .ant-select-selection__rendered {
+          line-height: 30px;
+          li {
+            height: 20px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
   }
 
   .ant-select-selection--multiple .ant-select-selection__rendered {
@@ -126,5 +144,13 @@ export const ItemBody = styled.div`
 
   .ant-select-arrow-icon {
     color: ${themeColor};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-top: 10px;
+    height: 30px;
+    .ant-select-selection {
+      min-height: 30px;
+    }
   }
 `;

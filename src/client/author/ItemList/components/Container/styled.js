@@ -53,10 +53,8 @@ export const ContentWrapper = styled(Paper)`
 `;
 
 export const MobileFilterIcon = styled.div`
-  display: none;
-  @media (max-width: ${largeDesktopWidth}) {
-    display: block;
-  }
+  display: block;
+
   @media (max-width: ${desktopWidth}) {
     display: none;
   }

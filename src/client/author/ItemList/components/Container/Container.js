@@ -367,7 +367,7 @@ class Contaier extends Component {
                       }}
                     >
                       <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
-                      <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                     </ScrollbarContainer>
                   </>
                 )}

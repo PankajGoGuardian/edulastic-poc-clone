@@ -77,7 +77,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06 6th",
         status: "Not Started",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "skip", Q7: "skip" }
+        attempt: {
+          Q1: "noattempt",
+          Q2: "noattempt",
+          Q3: "noattempt",
+          Q4: "noattempt",
+          Q5: "noattempt",
+          Q6: "noattempt",
+          Q7: "noattempt"
+        }
       }
     ]
   };

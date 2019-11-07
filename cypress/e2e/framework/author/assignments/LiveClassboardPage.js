@@ -1,7 +1,7 @@
 import LCBHeader from "./lcbHeader";
 import { studentSide as asgnStatus, studentSide, teacherSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
-import { attemptTypes } from "../../constants/questionTypes";
+import { attemptTypes, queColor } from "../../constants/questionTypes";
 
 class LiveClassboardPage {
   constructor() {
@@ -212,24 +212,12 @@ class LiveClassboardPage {
     });
 
   verifyQuestionCards = (index, queCards) => {
-    const attemptType = {
-      RIGHT: "right",
-      WRONG: "wrong",
-      SKIP: "skip"
-    };
-
-    const queColor = {
-      RIGHT: "rgb(94, 181, 0)",
-      WRONG: "rgb(243, 95, 95)",
-      SKIP: "rgb(229, 229, 229)"
-    };
-
     cy.get('[data-cy="questions"]')
       .eq(index)
       .then(ele => {
         queCards.forEach((que, qindex) => {
           switch (que) {
-            case attemptType.RIGHT:
+            case attemptTypes.RIGHT:
               expect(
                 ele
                   .find("div")
@@ -238,7 +226,7 @@ class LiveClassboardPage {
               ).to.eq(queColor.RIGHT);
               break;
 
-            case attemptType.WRONG:
+            case attemptTypes.WRONG:
               expect(
                 ele
                   .find("div")
@@ -247,7 +235,16 @@ class LiveClassboardPage {
               ).to.eq(queColor.WRONG);
               break;
 
-            case attemptType.SKIP:
+            case attemptTypes.PARTIAL_CORRECT:
+              expect(
+                ele
+                  .find("div")
+                  .eq(qindex)
+                  .css("background-color")
+              ).to.eq(queColor.YELLOW);
+              break;
+
+            case attemptTypes.SKIP:
               expect(
                 ele
                   .find("div")
@@ -257,6 +254,12 @@ class LiveClassboardPage {
               break;
 
             default:
+              expect(
+                ele
+                  .find("div")
+                  .eq(qindex)
+                  .css("background-color")
+              ).to.eq(queColor.NO_ATTEMPT);
               break;
           }
         });

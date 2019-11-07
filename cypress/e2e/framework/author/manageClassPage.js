@@ -199,8 +199,8 @@ export default class TeacherManageClassPage {
         const classCode = $ele.eq(1).text();
         const grades = $ele.eq(2).text();
         const subject = $ele.eq(3).text();
-        const students = $ele.eq(4).text();
-        const assignments = $ele.eq(5).text();
+        const students = $ele.eq(5).text();
+        const assignments = $ele.eq(6).text();
         return { name, classCode, grades, subject, students, assignments };
       });
 

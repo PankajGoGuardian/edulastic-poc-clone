@@ -95,7 +95,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "GRAPHING_DESMOS"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Desmos Graphing Calculator</StyledTitle>
+            <StyledTitle>Graphing Calculator</StyledTitle>
             <DesmosGraphingCalculator
               id="demos-graphiccalculator"
               ref={ref => {
@@ -108,7 +108,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "BASIC_DESMOS"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Desmos Basic Calculator</StyledTitle>
+            <StyledTitle>Basic Calculator</StyledTitle>
             <DesmosBasicCalculator
               ref={ref => {
                 this.desmosBasicRef = ref;
@@ -120,7 +120,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "SCIENTIFIC_DESMOS"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Desmos Scientific Calculator</StyledTitle>
+            <StyledTitle>Scientific Calculator</StyledTitle>
             <DesmosScientificCalculator
               ref={ref => {
                 this.desmosScientificRef = ref;
@@ -132,7 +132,7 @@ class CalculatorContainer extends Component {
         <StyledDraggableF>
           <StyledDiv visible={calculateMode === "GRAPHING_GEOGEBRASCIENTIFIC"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>GeoGebra Graphing Calculator</StyledTitle>
+            <StyledTitle>Graphing Calculator</StyledTitle>
             <GeoGebracalculator id="geogebra-graphingculator" />
           </StyledDiv>
         </StyledDraggableF>
@@ -148,7 +148,7 @@ class CalculatorContainer extends Component {
         <StyledDraggableF>
           <StyledDiv visible={calculateMode === "SCIENTIFIC_GEOGEBRASCIENTIFIC"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>GeoGebra Scientific Calculator</StyledTitle>
+            <StyledTitle>Scientific Calculator</StyledTitle>
             <GeoGebracalculator id="geogebra-scientificcalculator" />
           </StyledDiv>
         </StyledDraggableF>

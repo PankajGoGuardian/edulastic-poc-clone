@@ -379,8 +379,8 @@ function* login({ payload }) {
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
     console.error(err);
-    const errorMessage = "Invalid username or password";
-    yield call(message.error, get(err, "data.message", errorMessage));
+    const errorMessage = "You have entered an invalid email/username or password.";
+    yield call(message.error, errorMessage);
   }
 }
 

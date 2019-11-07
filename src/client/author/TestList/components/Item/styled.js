@@ -12,7 +12,7 @@ export const Container = styled(Card)`
     padding: 16px;
     box-shadow: ${props => (props.isPlaylist ? "0px 4px 8px 0px #0000005c" : "none")};
     border-radius: 10px;
-    min-height: 210px;
+    min-height: 185px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -50,13 +50,19 @@ export const Container = styled(Card)`
 `;
 
 export const Inner = styled.div`
-  margin: 10px 0px 15px;
+  margin: 10px 0px;
 `;
 
 export const CardDescription = styled.div`
   font-size: 13px;
-  height: 55px;
+  height: 50px;
   overflow: hidden;
+`;
+
+export const TagsWrapper = styled.div`
+  height: 50px;
+  overflow: hidden;
+  text-align: left;
 `;
 
 export const Footer = styled.div`
@@ -93,13 +99,22 @@ export const PlaylistId = styled(Author)`
   color: ${cardTitleColor};
 `;
 
-export const TagsWrapper = styled.div`
+export const StatusRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
   height: 30px;
   overflow: hidden;
+`;
+
+export const Qcount = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: ${props => props.theme.smallFontSize};
+  font-weight: 600;
+  span:first-child {
+    margin-right: 5px;
+  }
 `;
 
 export const AuthorName = styled.span`

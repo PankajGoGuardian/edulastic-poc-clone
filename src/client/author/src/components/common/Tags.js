@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
 import { Dropdown } from "antd";
 
-const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
+const Tags = ({ tags = [], labelStyle, type, show, isStandards, showInline }) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);
@@ -13,7 +13,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   const popup = (
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
-        <Label marginBottom="5px" style={labelStyle} key={i} type={type}>
+        <Label style={labelStyle} key={i} type={type}>
           {isStandards ? tag : tag.tagName}
         </Label>
       ))}
@@ -21,7 +21,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   );
 
   return (
-    <Labels>
+    <Labels showInline>
       {visibleTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
           {isStandards ? tag : tag.tagName}
@@ -74,7 +74,7 @@ const getLabelStyle = type => {
 };
 
 const Labels = styled.div`
-  display: flex;
+  display: ${props => (props.showInline ? "inline-block" : "flex")};
   flex-wrap: wrap;
 `;
 
@@ -99,8 +99,8 @@ const Label = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 5px;
-  margin-bottom: ${({ marginBottom }) => marginBottom || "0px"};
+  margin-right: 3px;
+  margin-bottom: ${({ marginBottom }) => marginBottom || "3px"};
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
 `;

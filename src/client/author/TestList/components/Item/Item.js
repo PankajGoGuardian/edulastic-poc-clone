@@ -183,15 +183,15 @@ class Item extends Component {
           <TestInfo>
             <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
             <TagsWrapper>
-              <Tags showInline show={2} tags={standardsIdentifiers} key="standards" isStandards />
-              <Tags showInline show={2} tags={tags} key="tags" />
+              <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
+              <Tags show={2} tags={tags} key="tags" />
             </TagsWrapper>
           </TestInfo>
 
           <Inner>
             <StatusRow>
               <Qcount>
-                <span>Item(s):</span>
+                <span>Total Item(s):</span>
                 <span>{summary.totalItems}</span>
               </Qcount>
               {!isPlaylist && (

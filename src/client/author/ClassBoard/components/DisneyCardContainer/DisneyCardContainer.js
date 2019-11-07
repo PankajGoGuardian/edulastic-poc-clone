@@ -164,6 +164,7 @@ class DisneyCardContainer extends Component {
                   style={{
                     color: student.color,
                     fontSize: "32px",
+                    marginRight: "12px",
                     cursor: viewResponseStatus.includes(status.status) ? "pointer" : "default"
                   }}
                   className={`fa fa-${student.icon}`}

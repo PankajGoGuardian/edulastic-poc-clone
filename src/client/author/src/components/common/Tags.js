@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
 import { Dropdown } from "antd";
 
-const Tags = ({ tags = [], labelStyle, type, show, isStandards, showInline }) => {
+const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);
@@ -21,7 +21,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards, showInline }) =>
   );
 
   return (
-    <Labels showInline>
+    <Labels>
       {visibleTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
           {isStandards ? tag : tag.tagName}
@@ -74,7 +74,7 @@ const getLabelStyle = type => {
 };
 
 const Labels = styled.div`
-  display: ${props => (props.showInline ? "inline-block" : "flex")};
+  display: flex;
   flex-wrap: wrap;
 `;
 

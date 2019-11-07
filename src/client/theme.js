@@ -392,7 +392,8 @@ export const defaultTheme = {
     headerButtonColor: textColorGreenBg,
     headerButtonHoverColor: themeColor,
     navZoom: 1,
-    headerClassTitleFontSize: "13px"
+    headerClassTitleFontSize: "13px",
+    settingsInputBorder: "#e1e1e1"
   },
   sideMenu: {
     sidebarBgColor: sideBarColor,

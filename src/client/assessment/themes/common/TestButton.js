@@ -27,12 +27,11 @@ const TestButton = ({
   return (
     <Container>
       {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-        <Tooltip placement="top" title="Check Answer">
-          <StyledButton
-            onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
-            data-cy="checkAnswer"
-            title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
-          >
+        <Tooltip
+          placement="top"
+          title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
+        >
+          <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
             <StyledIconCheck />
             <span> {t("common.test.checkanswer")}</span>
           </StyledButton>

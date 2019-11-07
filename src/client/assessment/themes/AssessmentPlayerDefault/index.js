@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { Affix, Tooltip } from "antd";
+import { Affix, Tooltip, message } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB } from "@edulastic/common";
@@ -150,7 +150,8 @@ class AssessmentPlayerDefault extends React.Component {
 
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
-    if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
+    if (answerChecksUsedForItem >= settings.maxAnswerChecks)
+      return message.warn("Check answer limit exceeded for the item.");
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };

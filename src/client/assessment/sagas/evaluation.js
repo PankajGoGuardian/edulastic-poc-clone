@@ -86,7 +86,7 @@ function* evaluateAnswers({ payload: groupId }) {
     });
     message.success(`score: ${score.toFixed()}/${maxScore}`);
   } catch (err) {
-    if (err.status === 403) message.error("Check answer limit exceeded for the item");
+    if (err.status === 403) message.warn("Check answer limit exceeded for the item.");
     else message.error("Check answer failed");
     console.log(err);
   }

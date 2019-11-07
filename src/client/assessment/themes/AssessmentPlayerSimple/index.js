@@ -4,6 +4,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
+import { message } from "antd";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { hexToRGB } from "@edulastic/common";
@@ -91,7 +92,8 @@ class AssessmentPlayerSimple extends React.Component {
 
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
-    if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
+    if (answerChecksUsedForItem >= settings.maxAnswerChecks)
+      return message.warn("Check answer limit exceeded for the item.");
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };

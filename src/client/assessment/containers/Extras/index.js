@@ -53,7 +53,7 @@ class Extras extends Component {
             <Col md={17}>
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
-              <WidgetFRInput>
+              <WidgetFRInput fontSize={theme?.fontSize}>
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
@@ -69,7 +69,7 @@ class Extras extends Component {
             <Col md={17}>
               <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
 
-              <WidgetFRInput>
+              <WidgetFRInput fontSize={theme?.fontSize}>
                 <QuestionTextArea
                   placeholder={t("component.options.enterSampleAnswer")}
                   toolbarId="sample_answer"
@@ -136,5 +136,6 @@ const QuestionContainer = styled.div`
   }
   span.fr-placeholder {
     font-size: ${({ fontSize }) => `${fontSize} !important`};
+    line-height: 1.5 !important;
   }
 `;

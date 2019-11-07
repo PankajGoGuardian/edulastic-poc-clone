@@ -66,7 +66,10 @@ export default class API {
       data => {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
-            sessionStorage.clear();
+            // Needs proper fixing, patching it to fix infinite reload
+            const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");
+            localStorage.clear();
+            localStorage.setItem("loginRedirectUrl", loginRedirectUrl);
             if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
               localStorage.setItem("loginRedirectUrl", getCurrentPath());
             }

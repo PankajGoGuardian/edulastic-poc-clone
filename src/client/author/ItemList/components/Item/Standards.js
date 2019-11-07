@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { uniqBy } from "lodash";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { StandardContent, LabelStandard, LabelStandardText, CountGreen } from "./styled";
+import Tags from "../../../src/components/common/Tags";
 const Standards = ({ item, interestedCurriculums, search }) => {
   const outStandardsCount = 1;
   const { curriculumId } = search;
@@ -33,22 +34,8 @@ const Standards = ({ item, interestedCurriculums, search }) => {
     domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
   }
 
-  standards = uniqBy(standards, "_id");
-  return standards.length ? (
-    <StandardContent>
-      {standards.map((standard, index) =>
-        index + 1 <= outStandardsCount ? (
-          <LabelStandard key={`Standard_${standard.name}_${index}`}>
-            <LabelStandardText>{standard.name}</LabelStandardText>
-          </LabelStandard>
-        ) : (
-          index + 1 === standards.length && (
-            <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
-          )
-        )
-      )}
-    </StandardContent>
-  ) : null;
+  standards = uniqBy(standards, "id");
+  return standards.length ? <Tags tags={standards.map(item => ({ ...item, tagName: item.name }))} show={1} /> : null;
 };
 
 export default connect(

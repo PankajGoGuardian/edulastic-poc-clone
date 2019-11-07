@@ -48,7 +48,7 @@ const AlignmentRow = ({
 }) => {
   let {
     subject = "Mathematics",
-    curriculumId = "d6ec0d994eaf3f4c805c8011",
+    curriculumId = 212,
     curriculum = "Math - Common Core",
     grades = ["7"],
     standards = []
@@ -163,6 +163,7 @@ const AlignmentRow = ({
 
   useEffect(() => {
     const { grades: alGrades, subject: alSubject, curriculum: alCurriculum, curriculumId: alCurriculumId } = alignment;
+
     if (!alCurriculumId) {
       if (defaultSubject && defaultCurriculumId) {
         editAlignment(alignmentIndex, {
@@ -176,12 +177,12 @@ const AlignmentRow = ({
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,
           curriculumId: interestedCurriculums[0]._id,
-          grades: interestedCurriculums[0].grades || []
+          grades: defaultGrades || []
         });
       } else {
         editAlignment(alignmentIndex, {
           subject: "Mathematics",
-          curriculumId: "d6ec0d994eaf3f4c805c8011",
+          curriculumId: 212,
           curriculum: "Math - Common Core",
           grades: ["7"],
           standards: []

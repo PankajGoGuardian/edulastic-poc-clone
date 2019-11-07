@@ -37,7 +37,7 @@ const initialItemsState = {
     error: null
   },
   defaultCurriculumName: getFromLocalStorage("defaultCurriculumName"),
-  defaultCurriculumId: getFromLocalStorage("defaultCurriculumId"),
+  defaultCurriculumId: parseInt(getFromLocalStorage("defaultCurriculumId")) || "",
   recentStandardsList: getFromLocalStorage("recentStandards") ? JSON.parse(getFromLocalStorage("recentStandards")) : [],
   alignments: [getNewAlignmentState()]
 };

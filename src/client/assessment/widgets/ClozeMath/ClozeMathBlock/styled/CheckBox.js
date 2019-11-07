@@ -8,7 +8,7 @@ export const CheckBox = styled.div`
   position: relative;
   width: auto;
   height: auto;
-  margin: 0px 2px;
+  margin: 0px 2px 2px 2px;
   font-weight: 700;
   color: ${textColor};
   align-items: center;

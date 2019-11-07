@@ -206,7 +206,7 @@ class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { responseContainers, item, uiStyles = {} } = resprops;
+    const { responseContainers, item, uiStyles = {}, isV1Migrated } = resprops;
     const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
@@ -217,7 +217,12 @@ class ClozeMathInput extends React.Component {
     return (
       <div
         ref={this.wrappedRef}
-        style={{ ...btnStyle, margin: "0 2px", display: "inline-block", position: "relative" }}
+        style={{
+          ...btnStyle,
+          margin: isV1Migrated ? "0px 2px 4px 2px" : "0 2px",
+          display: "inline-block",
+          position: "relative"
+        }}
       >
         <Wrapper>
           <span

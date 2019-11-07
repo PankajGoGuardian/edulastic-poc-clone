@@ -84,8 +84,7 @@ const ClozeMath = ({
 
   const itemForPreview = replaceVariables(item);
   const isV1Multipart = get(col, "isV1Multipart", false);
-  const { qLabel } = item;
-
+  const { qLabel, isV1Migrated = false } = item;
   return (
     <WithResources
       resources={[
@@ -116,6 +115,7 @@ const ClozeMath = ({
                 check={checkAnswer}
                 userAnswer={userAnswer}
                 evaluation={evaluation}
+                isV1Migrated={isV1Migrated}
                 {...restProps}
               />
             </StyledPaperWrapper>

@@ -173,6 +173,7 @@ class DisneyCardContainer extends Component {
               ) : (
                 <CircularDiv
                   isLink={viewResponseStatus.includes(status.status)}
+                  title={isPresentationMode ? "" : student.userName}
                   onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
                 >
                   {getAvatarName(student.studentName)}
@@ -183,7 +184,7 @@ class DisneyCardContainer extends Component {
                   isLink={viewResponseStatus.includes(status.status)}
                   data-cy="studentName"
                   disabled={!isItemsVisible}
-                  title={isPresentationMode ? undefined : student.userName}
+                  title={isPresentationMode ? "" : student.userName}
                   onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
                 >
                   {name}

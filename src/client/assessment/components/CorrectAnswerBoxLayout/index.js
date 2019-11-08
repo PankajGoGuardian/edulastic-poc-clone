@@ -17,6 +17,7 @@ const CorrectAnswerBoxLayout = ({
   groupResponses,
   btnStyle,
   stemNumeration,
+  alignText = false,
   t
 }) => {
   let results;
@@ -63,7 +64,7 @@ const CorrectAnswerBoxLayout = ({
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer" style={btnStyle}>
                   <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-                  <span className="text" style={{ justifyContent: "center" }}>
+                  <span className="text" style={{ justifyContent: alignText && "center" }}>
                     {Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}
                   </span>
                 </div>
@@ -74,7 +75,7 @@ const CorrectAnswerBoxLayout = ({
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer" style={btnStyle}>
               <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-              <span className="text" style={{ justifyContent: "center" }}>
+              <span className="text" style={{ justifyContent: alignText && "center" }}>
                 {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
               </span>
             </div>

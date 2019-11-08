@@ -120,7 +120,7 @@ const RedirectPopUp = ({
           CANCEL
         </Button>,
         <Button loading={loading} key="submit" onClick={submitAction}>
-          SUBMIT
+          REDIRECT
         </Button>
       ]}
     >

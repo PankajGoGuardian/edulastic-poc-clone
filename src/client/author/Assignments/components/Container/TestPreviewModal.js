@@ -13,7 +13,8 @@ const TestPreviewModal = ({
   error,
   closeTestPreviewModal,
   isShowStudentWork = false,
-  isStudentReport
+  isStudentReport,
+  showScratchPad = false
 }) => {
   useEffect(() => {
     if (error) {
@@ -42,6 +43,7 @@ const TestPreviewModal = ({
         preview
         showTools={!isStudentReport}
         isShowStudentWork={isShowStudentWork}
+        showScratchPad={showScratchPad}
       />
     </StyledModal>
   );

@@ -324,6 +324,7 @@ class AddItems extends PureComponent {
         search={search}
         test={test}
         testItemsList={testItemsList}
+        current={this.props.current}
         setDataAndSave={setDataAndSave}
         setTestItems={setTestItems}
         selectedRows={selectedRows}

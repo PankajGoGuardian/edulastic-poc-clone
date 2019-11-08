@@ -197,10 +197,10 @@ class Item extends Component {
           return this.setState({ selectedId: "", passageConfirmModalVisible: true });
         }
       }
-      setDataAndSave({ addToTest: true, item });
+      setDataAndSave({ addToTest: true, item, current: this.props.current });
     } else {
       keys = keys.filter(item => item !== row._id);
-      setDataAndSave({ addToTest: false, item: { _id: row._id } });
+      setDataAndSave({ addToTest: false, item: { _id: row._id }, current: this.props.current });
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });

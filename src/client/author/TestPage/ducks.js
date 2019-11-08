@@ -572,7 +572,11 @@ function* createTestSaga({ payload }) {
 
     const hash = payload.toReview ? "#review" : "";
     yield put(createTestSuccessAction(entity));
-    yield put(replace(`/author/tests/${entity._id}${hash}`));
+    if (payload.currentTab) {
+      yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}${hash}`));
+    } else {
+      yield put(replace(`/author/tests/${entity._id}${hash}`));
+    }
 
     yield call(message.success, "Test created");
   } catch (err) {
@@ -883,7 +887,12 @@ function* setTestDataAndUpdateSaga(payload) {
           entity
         }
       });
-      yield put(replace(`/author/tests/${entity._id}`));
+
+      if (payload.current) {
+        yield put(replace(`/author/tests/tab/${payload.current}/id/${entity._id}`));
+      } else {
+        yield put(replace(`/author/tests/${entity._id}`));
+      }
       message.config({
         top: 5,
         getContainer: () => document.getElementById("messageContainer")

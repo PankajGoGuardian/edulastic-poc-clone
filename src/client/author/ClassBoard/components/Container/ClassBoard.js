@@ -1103,8 +1103,11 @@ class ClassBoard extends Component {
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {
+                      const { assignmentId, classId } = this.props.match.params;
+
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
+                      this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${qid}`);
+                      this.setState({ selectedQuestion: value, selectedQid: qid, itemId: testItemId });
                     }}
                   />
                 </QuestionContainer>

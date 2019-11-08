@@ -82,14 +82,8 @@ class InviteMultipleStudentModal extends Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { curSel } = this.state;
-        let studentsList = [];
         let provider = "fl";
-        const lines = row.students.split(/;|\n/);
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i] !== "") {
-            studentsList.push(lines[i]);
-          }
-        }
+        const studentsList = row.students.split(/;|\n/).filter(_o => _o.length);
         this.props.inviteStudents({
           userDetails: studentsList,
           institutionId: row.institutionId,
@@ -101,16 +95,9 @@ class InviteMultipleStudentModal extends Component {
 
   validateStudentsList = (rule, value, callback) => {
     const { curSel } = this.state;
-    const lines = value.split("\n");
+    const lines = value.split(/;|\n/);
     let isValidate = true;
-    if (curSel === "fl" || curSel === "lf") {
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].split(" ").length > 2) {
-          isValidate = false;
-          break;
-        }
-      }
-    } else if (curSel === "google" || curSel === "mso") {
+    if (curSel === "google" || curSel === "mso") {
       for (let i = 0; i < lines.length; i++) {
         if (!this.checkValidEmail(lines[i])) {
           isValidate = false;
@@ -123,10 +110,7 @@ class InviteMultipleStudentModal extends Component {
       callback();
       return;
     } else {
-      if (curSel === "fl") callback('Username should be in "FirstName LastName"');
-      else if (curSel === "lf") {
-        callback('Username should be in "LastName FirstName"');
-      } else if (curSel === "google" || curSel === "mso") {
+      if (curSel === "google" || curSel === "mso") {
         callback("Username should be in email format");
       }
     }
@@ -153,9 +137,21 @@ class InviteMultipleStudentModal extends Component {
     /**
      * when the type of provider changes we need to update their validation also
      */
-    this.props.form.setFieldsValue({ students: this.props.form.getFieldValue("students") }, () => {
-      this.props.form.validateFields(["students"], { force: true });
-    });
+    const textValue = this.props.form.getFieldValue("students") || "";
+    if (textValue.length) {
+      this.props.form.setFieldsValue({ students: this.props.form.getFieldValue("students") }, () => {
+        this.props.form.validateFields(["students"], { force: true });
+      });
+    } else {
+      /**
+       * to remove the require field validator on provider type change
+       */
+      this.props.form.setFields({
+        students: {
+          error: null
+        }
+      });
+    }
   };
 
   handleSearch = async e => {

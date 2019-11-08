@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
 import { Select, message } from "antd";
 import { uniqBy } from "lodash";
@@ -40,6 +40,12 @@ const Sidebar = ({
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
+  const testTitleInput = createRef();
+  useEffect(() => {
+    if (testTitleInput.current) {
+      testTitleInput.current.input.focus();
+    }
+  }, []);
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
@@ -94,8 +100,9 @@ const Sidebar = ({
           onChange={e => onChangeField("title", e.target.value)}
           size="large"
           placeholder={`Enter the test name`}
+          ref={testTitleInput}
         />
-        {!title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
+        {title !== undefined && !title.trim().length ? <ErrorWrapper>Please enter test title.</ErrorWrapper> : null}
         <MainTitle>Description</MainTitle>
         <SummaryTextArea
           value={description}

@@ -21,7 +21,7 @@ export const getDefaultGradesSelector = createSelector(
 
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
-  state => state.user.orgData.selectedSubject
+  state => state.user.orgData.selectedSubject || ""
 );
 
 export const getUserNameSelector = createSelector(

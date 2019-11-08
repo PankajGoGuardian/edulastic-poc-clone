@@ -343,7 +343,6 @@ class TestList extends Component {
 
   updateTestList = (page, checkMode) => {
     const { receiveTests, limit, history, mode, testFilters, defaultGrades, defaultSubject } = this.props;
-
     const searchFilters = {
       ...testFilters,
       grades: defaultGrades,
@@ -351,7 +350,7 @@ class TestList extends Component {
     };
 
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    if (checkMode && mode !== "embedded" || !checkMode) history.push(`/author/tests?${queryParams}`);
+    if ((checkMode && mode !== "embedded") || !checkMode) history.push(`/author/tests?${queryParams}`);
     receiveTests({ page, limit, search: searchFilters });
   };
 
@@ -614,7 +613,7 @@ class TestList extends Component {
     const search = {
       ...testFilters,
       grades: defaultGrades || interestedGrades,
-      subject: defaultSubject || ""
+      subject: defaultSubject
     };
 
     const { searchString } = search;

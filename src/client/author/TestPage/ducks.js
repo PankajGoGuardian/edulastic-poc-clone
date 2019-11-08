@@ -202,7 +202,7 @@ export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 // reducer
 export const createBlankTest = () => ({
-  title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
+  title: undefined,
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,

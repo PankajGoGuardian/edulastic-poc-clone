@@ -12,11 +12,11 @@ import {
 import { Button } from "@edulastic/common";
 
 export const SummaryInput = styled(Input)`
-  border: ${props => (props.value ? `1px solid #e1e1e1` : "1px solid red")};
+  border: ${props => (props.value !== undefined && !props.value.trim().length ? "1px solid red" : "1px solid #e1e1e1")};
   background: ${lightGreySecondary};
-  margin-bottom: ${props => (props.value ? "23px" : "5px")};
+  margin-bottom: ${props => (props.value !== undefined && !props.value.trim().length ? "15px" : "5px")};
   &:focus {
-    border: ${props => (props.value ? "" : "1px solid red")};
+    border: ${props => (props.value !== undefined && !props.value.trim().length ? "1px solid red !important" : "")};
   }
 `;
 

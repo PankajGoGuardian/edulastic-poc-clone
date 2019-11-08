@@ -8,7 +8,7 @@ import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/d
 import { createTestFromCartAction } from "../../ducks";
 import styled from "styled-components";
 
-const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSelectedItems }) => {
+const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, selectedItems }) => {
   const inputRef = useRef(null);
   const handleProceed = () => {
     if (!inputRef.current.state.value) {
@@ -32,7 +32,7 @@ const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSele
 
   return (
     <Modal
-      title={`Creating a new test with ${amountOfSelectedItems} items`}
+      title={`Creating a new test with ${selectedItems?.length} items`}
       applyLabel="Proceed"
       onClose={onCancel}
       onApply={handleProceed}
@@ -51,12 +51,12 @@ ModalCreateTest.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onProceed: PropTypes.func.isRequired,
   createTestFromCart: PropTypes.func.isRequired,
-  amountOfSelectedItems: PropTypes.number.isRequired
+  selectedItems: PropTypes.array.isRequired
 };
 
 export default connect(
   state => ({
-    amountOfSelectedItems: getSelectedItemSelector(state).length
+    selectedItems: getSelectedItemSelector(state)
   }),
   {
     createTestFromCart: createTestFromCartAction

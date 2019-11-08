@@ -84,6 +84,7 @@ const linkFontSize = "11px";
 const commentFontSize = "11px";
 const subtitleFontSize = "20px";
 const scoreTitleFontSize = "12px";
+const extraSmallFontSize = "9px";
 const smallFontSize = "12px";
 const bodyFontSize = "13px";
 const standardFont = "14px";
@@ -267,6 +268,7 @@ export const allThemeVars = {
   commentFontSize,
   subtitleFontSize,
   bodyFontSize,
+  extraSmallFontSize,
   smallFontSize,
   standardFont,
   keyboardFontSize,

@@ -19,7 +19,7 @@ class Confirmation extends Component {
             maxWidth: "582px",
             borderRadius: 5,
             textAlign: "center",
-            padding: "86px 57px 35px 57px"
+            padding: "86px 57px 41px 57px"
           }
         }}
         center

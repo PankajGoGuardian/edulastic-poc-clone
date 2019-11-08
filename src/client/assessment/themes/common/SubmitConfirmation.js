@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import styled, { withTheme } from "styled-components";
 import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
-import { Button, Row, Col } from "antd";
+import { Button, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-
-import { secondaryTextColor } from "@edulastic/colors";
 import ColWithZoom from "../../../common/components/ColWithZoom";
 
 class SubmitConfirmation extends Component {
@@ -13,7 +11,7 @@ class SubmitConfirmation extends Component {
     const { isVisible, onClose, finishTest, t, theme } = this.props;
 
     return (
-      <ModalConfirmation
+      <Modal
         open={isVisible}
         onClose={onClose}
         showCloseIcon={false}
@@ -22,7 +20,7 @@ class SubmitConfirmation extends Component {
             maxWidth: "582px",
             borderRadius: 5,
             textAlign: "center",
-            padding: "86px 57px 35px 57px",
+            padding: "86px 57px 41px 57px",
             backgroundColor: theme.sectionBackgroundColor
           }
         }}
@@ -46,7 +44,7 @@ class SubmitConfirmation extends Component {
             </Row>
           </ButtonContainer>
         </ModalContainer>
-      </ModalConfirmation>
+      </Modal>
     );
   }
 }
@@ -59,13 +57,6 @@ SubmitConfirmation.propTypes = {
 };
 
 export default withTheme(withNamespaces("common")(SubmitConfirmation));
-
-const ModalConfirmation = styled(Modal)`
-  border-radius: 5;
-  @media screen and (min-width: 768px) {
-    min-width: 630px;
-  }
-`;
 
 const ModalContainer = styled.div`
   display: flex;

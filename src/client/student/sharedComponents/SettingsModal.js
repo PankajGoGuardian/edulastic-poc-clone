@@ -124,6 +124,7 @@ export const CustomColumn = styled.div`
 
 export const StyledSelect = styled(Select)`
   width: 100%;
+  font-size: ${props => props.theme.smallFontSize};
   .ant-select-selection {
     height: 36px;
     border: 1px solid ${props => props.theme.header.settingsInputBorder};

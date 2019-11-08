@@ -10,6 +10,7 @@ import { message } from "antd";
 import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
 import ModalDragScrollContainer from "../../../../assessment/components/ModalDragScrollContainer";
+import { getTeacherEditedScoreSelector } from "../../ducks";
 
 const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} ref={ref} />);
 
@@ -136,13 +137,16 @@ class QuestionModal extends React.Component {
         groupId,
         userResponse
      */
-    const { groupId, userResponse: _userResponse, allResponse, submitResponse } = this.props;
+    const { groupId, userResponse: _userResponse, allResponse, submitResponse, teacherEditedScore } = this.props;
     const { testActivityId, testItemId: itemId } = question;
     if (!isEmpty(_userResponse)) {
       /**
        * allResponse is empty when the questionActivity is empty.
        * In that case only send currenytly attempted _userResponse
        */
+
+      const scores = isEmpty(teacherEditedScore) ? undefined : teacherEditedScore;
+
       const userResponse =
         allResponse.length > 0
           ? allResponse.reduce((acc, cur) => {
@@ -150,7 +154,7 @@ class QuestionModal extends React.Component {
               return acc;
             }, {})
           : _userResponse;
-      submitResponse({ testActivityId, itemId, groupId, userResponse });
+      submitResponse({ testActivityId, itemId, groupId, userResponse, scores });
     }
   };
 
@@ -255,7 +259,8 @@ QuestionModal.defaultProps = {
 export default connect(
   state => ({
     userResponse: stateExpressGraderAnswerSelector(state),
-    allResponse: getStudentQuestionSelector(state)
+    allResponse: getStudentQuestionSelector(state),
+    teacherEditedScore: getTeacherEditedScoreSelector(state)
   }),
   { submitResponse: submitResponseAction }
 )(QuestionModal);

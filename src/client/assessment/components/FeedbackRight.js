@@ -22,6 +22,7 @@ import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
 import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
 import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../author/src/selectors/feedback";
+import { setTeacherEditedScore } from "../../author/ExpressGrader/ducks";
 
 const { TextArea } = Input;
 
@@ -96,6 +97,8 @@ class FeedbackRight extends Component {
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
+
+    this.props.setTeacherEditedScore({ [id]: _score });
 
     updateQuestionActivityScore({
       score: _score,
@@ -292,7 +295,8 @@ const enhance = compose(
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,
-      updateQuestionActivityScore: updateStudentQuestionActivityScoreAction
+      updateQuestionActivityScore: updateStudentQuestionActivityScoreAction,
+      setTeacherEditedScore
     }
   )
 );

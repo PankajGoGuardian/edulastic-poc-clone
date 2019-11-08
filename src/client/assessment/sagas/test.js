@@ -129,12 +129,10 @@ function* loadTest({ payload }) {
     let { testItems, passages, testType } = test;
 
     const settings = {
-      calcType:
-        (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE,
-      maxAnswerChecks:
-        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.maxAnswerChecks) || 0,
-      requirePassword:
-        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.requirePassword) || false
+      calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
+      maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
+      requirePassword: testActivity?.assignmentSettings?.requirePassword || false,
+      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE"
     };
     const answerCheckByItemId = {};
     (testActivity.questionActivities || []).map(item => {

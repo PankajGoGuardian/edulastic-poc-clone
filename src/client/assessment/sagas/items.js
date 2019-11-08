@@ -1,8 +1,9 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
-import { itemsApi, testItemActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { maxBy } from "lodash";
+import { itemsApi, testItemActivityApi } from "@edulastic/api";
+import { assignmentPolicyOptions } from "@edulastic/constants";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
   RECEIVE_ITEM_REQUEST,
@@ -14,6 +15,8 @@ import {
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS
 } from "../constants/actions";
+import { getPreviousAnswersListSelector } from "../selectors/answers";
+import { redirectPolicySelector } from "../selectors/test";
 
 function* receiveItemsSaga() {
   try {
@@ -90,13 +93,23 @@ function* saveUserResponse({ payload }) {
 
     const questions = getQuestionIds(currentItem);
     const bookmarked = !!(yield select(state => state.assessmentBookmarks[currentItem._id]));
-
+    const userPrevAnswer = yield select(getPreviousAnswersListSelector);
+    const redirectPolicy = yield select(redirectPolicySelector);
     const itemAnswers = {};
     const shuffles = {};
     const timesSpent = {};
     questions.forEach(question => {
       timesSpent[question] = ts / questions.length;
       itemAnswers[question] = answers[question];
+      //Redirect flow user hasnt selected new answer for this question.
+      // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
+      if (
+        redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK &&
+        !answers[question] &&
+        !!userPrevAnswer[question]
+      ) {
+        itemAnswers[question] = userPrevAnswer[question];
+      }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question];
       }

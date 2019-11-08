@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { Divider } from "antd";
 import styled from "styled-components";
 import { yellow, greenDark3, red } from "@edulastic/colors";
 import { IconCorrect, IconRemove, IconWrong } from "@edulastic/icons";
-import { Divider } from "antd";
+import { assignmentPolicyOptions } from "@edulastic/constants";
+import { redirectPolicySelector } from "../selectors/test";
 
 const TeacherResponseContainer = ({
   correct,
@@ -39,12 +42,11 @@ const TeacherResponseContainer = ({
     {!!prevFeedback?.text && <div>{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
   </TeacherResponse>
 );
-const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId }) => {
+const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId, redirectPolicy }) => {
   const [feedbackView, setFeedbackView] = useState(false);
   const toggleFeedbackView = () => {
     setFeedbackView(!feedbackView);
   };
-
   useEffect(() => {
     setFeedbackView(false);
   }, [itemId]);
@@ -60,9 +62,10 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
             answerIcon: <IconCorrect height={iconHeight} width={iconHeight} color={yellow} />
           }
       : { answer: "Incorrect", answerIcon: <IconWrong height={iconHeight2} width={iconHeight2} color={red} /> };
-  const isResponseVisible = (!feedbackView && correct !== undefined) || feedbackView;
+  const isResponseVisible =
+    redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK;
   const props = { correct, answerIcon, answer, isResponseVisible, prevScore, prevMaxScore, prevFeedback };
-  if ((!isResponseVisible && prevFeedback?.text) || !isNaN(prevScore)) {
+  if (!isResponseVisible) {
     return (
       <Wrapper visible={true}>
         <TeacherResponseContainer {...props} />
@@ -90,7 +93,10 @@ FeedBackContainer.propTypes = {
 
 FeedBackContainer.defaultProps = {};
 
-export default FeedBackContainer;
+export default connect(
+  state => ({ redirectPolicy: redirectPolicySelector(state) }),
+  null
+)(FeedBackContainer);
 
 const Wrapper = styled.div`
   position: absolute;

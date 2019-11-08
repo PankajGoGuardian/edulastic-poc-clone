@@ -69,7 +69,6 @@ function* submitResponse({ payload }) {
     });
     yield call(message.success, "updated response successfully");
     const { questionActivities } = scoreRes;
-    console.log("questionActivities", questionActivities);
     yield put(
       gradebookTestItemAddAction(
         questionActivities.map(({ qid: _id, score, maxScore, testActivityId }) => ({

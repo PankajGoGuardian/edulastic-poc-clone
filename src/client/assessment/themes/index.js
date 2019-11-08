@@ -74,7 +74,8 @@ const AssessmentContainer = ({
   testType,
   test,
   groupId,
-  showTools
+  showTools,
+  showScratchPad
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -174,7 +175,8 @@ const AssessmentContainer = ({
     LCBPreviewModal,
     closeTestPreviewModal,
     showTools,
-    groupId
+    groupId,
+    showScratchPad
   };
 
   if (loading) {

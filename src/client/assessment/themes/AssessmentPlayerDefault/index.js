@@ -318,7 +318,8 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = "default",
       closeTestPreviewModal,
       showTools = true,
-      setSettingsModalVisibility
+      setSettingsModalVisibility,
+      showScratchPad
     } = this.props;
     const {
       testItemState,
@@ -355,7 +356,7 @@ class AssessmentPlayerDefault extends React.Component {
       });
     }
 
-    const scratchPadMode = currentToolMode.indexOf(5) !== -1;
+    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad;
 
     // calculate width of question area
     const availableWidth = windowWidth - 70;

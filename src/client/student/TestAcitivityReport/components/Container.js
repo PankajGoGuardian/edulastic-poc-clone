@@ -59,6 +59,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
           isModalVisible={showModal}
           closeTestPreviewModal={closeModal}
           test={{ testItems: [item] }}
+          showScratchPad={hasUserWork && showModal}
           LCBPreviewModal
           isStudentReport
         />

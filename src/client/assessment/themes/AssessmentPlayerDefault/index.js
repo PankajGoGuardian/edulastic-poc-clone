@@ -609,8 +609,8 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork } = this.props;
-    if (previewPlayer) {
+    const { previewPlayer, clearUserWork, showScratchPad } = this.props;
+    if (previewPlayer && !showScratchPad) {
       clearUserWork();
     }
   }

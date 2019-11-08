@@ -303,6 +303,7 @@ class ClassQuestions extends Component {
           closeTestPreviewModal={this.hideStudentWork}
           test={test}
           isShowStudentWork
+          isStudentReport
           LCBPreviewModal
         />
         {testItemsPreview}

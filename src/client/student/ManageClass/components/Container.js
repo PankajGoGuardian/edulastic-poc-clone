@@ -23,6 +23,8 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
     const { email, firstName, role } = studentData;
     if (classCode && classCode.trim().length) {
       joinClass({ classCode, email, firstName, role });
+    } else {
+      setClassCode("");
     }
   };
   const closeModalHandler = () => {

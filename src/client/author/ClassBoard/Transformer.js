@@ -212,7 +212,7 @@ export const transformGradeBookResponse = (
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
-  for (const itemId of Object.keys(questionActivitiesGrouped)) {
+  for (const itemId of Object.keys(questionActivitiesGrouped).filter(x => testItemIds.includes(x))) {
     const notGradedPresent = questionActivitiesGrouped[itemId].find(x => x.graded === false);
     const { itemLevelScoring } = testItemsDataKeyed[itemId];
     if (itemLevelScoring && notGradedPresent) {

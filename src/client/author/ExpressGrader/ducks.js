@@ -60,6 +60,7 @@ function* submitResponse({ payload }) {
   const { testActivityId, itemId, groupId, userResponse, scores } = payload;
 
   try {
+    yield put(removeTeacherEditedScoreAction());
     const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {
       testActivityId,
       itemId,
@@ -79,7 +80,6 @@ function* submitResponse({ payload }) {
         }))
       )
     );
-    yield put(removeTeacherEditedScoreAction());
   } catch (e) {
     console.error(e);
     yield call(message.error, "edit response failed");

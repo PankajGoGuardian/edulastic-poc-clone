@@ -145,7 +145,7 @@ class QuestionModal extends React.Component {
        * In that case only send currenytly attempted _userResponse
        */
 
-      const scores = isEmpty(teacherEditedScore) ? undefined : teacherEditedScore;
+      const scores = isEmpty(teacherEditedScore) ? undefined : { ...teacherEditedScore };
 
       const userResponse =
         allResponse.length > 0

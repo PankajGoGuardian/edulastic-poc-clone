@@ -313,13 +313,7 @@ class QuestionWrapper extends Component {
       isPrintPreview = false,
       ...restProps
     } = this.props;
-    const {
-      score: prevScore,
-      maxScore: prevMaxScore,
-      feedback: prevFeedback,
-      correct,
-      userResponse
-    } = prevQActivityForQuestion;
+    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -473,7 +467,6 @@ class QuestionWrapper extends Component {
                 prevScore={prevScore}
                 prevMaxScore={prevMaxScore}
                 prevFeedback={prevFeedback}
-                userResponse={userResponse}
                 itemId={data.id}
               />
             )}

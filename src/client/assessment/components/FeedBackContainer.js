@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 import { Divider } from "antd";
 import styled from "styled-components";
 import { yellow, greenDark3, red } from "@edulastic/colors";
@@ -42,7 +43,7 @@ const TeacherResponseContainer = ({
     {!!prevFeedback?.text && <div>{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
   </TeacherResponse>
 );
-const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId, redirectPolicy }) => {
+const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId, userAnswers, redirectPolicy }) => {
   const [feedbackView, setFeedbackView] = useState(false);
   const toggleFeedbackView = () => {
     setFeedbackView(!feedbackView);
@@ -65,6 +66,10 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
   const isResponseVisible =
     redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK;
   const props = { correct, answerIcon, answer, isResponseVisible, prevScore, prevMaxScore, prevFeedback };
+  const currentUserAnswer = userAnswers?.[itemId];
+  if (!isEmpty(currentUserAnswer)) {
+    return null;
+  }
   if (!isResponseVisible) {
     return (
       <Wrapper visible={true}>
@@ -94,7 +99,7 @@ FeedBackContainer.propTypes = {
 FeedBackContainer.defaultProps = {};
 
 export default connect(
-  state => ({ redirectPolicy: redirectPolicySelector(state) }),
+  state => ({ redirectPolicy: redirectPolicySelector(state), userAnswers: state.answers }),
   null
 )(FeedBackContainer);
 

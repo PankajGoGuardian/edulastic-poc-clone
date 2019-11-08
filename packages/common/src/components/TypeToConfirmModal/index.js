@@ -45,8 +45,18 @@ class TypeToConfirmModal extends Component {
   };
 
   render() {
-    const { modalVisible, title, handleOnOkClick, wordToBeTyped, primaryLabel, secondaryLabel } = this.props;
+    const {
+      modalVisible,
+      title,
+      handleOnOkClick,
+      wordToBeTyped,
+      primaryLabel,
+      secondaryLabel,
+      okButtonText
+    } = this.props;
     const { textValue, errorMsg } = this.state;
+
+    const btnText = "Yes, " + (okButtonText ? okButtonText : title);
 
     return (
       <StyledModal
@@ -61,7 +71,7 @@ class TypeToConfirmModal extends Component {
             No, Cancel
           </CancelButton>,
           <YesButton key="okButton" onClick={this.onProceed}>
-            {`Yes, ${title} >`}
+            {btnText}
           </YesButton>
         ]}
       >
@@ -70,7 +80,7 @@ class TypeToConfirmModal extends Component {
             <StyledP>{primaryLabel}</StyledP>
             {secondaryLabel}
             <StyledP>
-              If Yes type <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space given below and proceed.
+              If Yes, please type <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space below to proceed.
             </StyledP>
           </Col>
         </Row>

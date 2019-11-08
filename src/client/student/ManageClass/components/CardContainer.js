@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
@@ -92,12 +93,18 @@ const ClassCard = ({ t, classItem, history, changeClass }) => {
   );
 };
 
-export default connect(
-  state => {},
-  {
-    changeClass: changeClassAction
-  }
-)(withWindowSizes(withRouter(ClassCard)));
+const enhance = compose(
+  withWindowSizes,
+  withRouter,
+  connect(
+    null,
+    {
+      changeClass: changeClassAction
+    }
+  )
+);
+
+export default enhance(ClassCard);
 
 ClassCard.propTypes = {
   t: PropTypes.func.isRequired

@@ -175,7 +175,7 @@ class RequestSchool extends React.Component {
     ));
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel} centered>
         <FormWrapper {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
@@ -326,7 +326,6 @@ export default enhance(RequestSchoolModal);
 
 const StyledModal = styled(Modal)`
   min-width: 60vw;
-  top: 50px;
   .ant-modal-body {
     padding: 24px 70px 0px 0px;
     @media (max-width: ${extraDesktopWidthMax}) {
@@ -367,6 +366,7 @@ const StyledModal = styled(Modal)`
   }
   .ant-form-item label {
     font-weight: 600;
+    font-size: 16px;
   }
   .ant-form-item-label {
     & > label::after {
@@ -482,6 +482,7 @@ const ActionButton = styled(Button)`
   background: ${themeColor};
   color: ${white};
   border: 0px;
+  min-height: 40px;
 
   &:hover {
     background: ${themeColor};
@@ -494,10 +495,25 @@ const ActionButton = styled(Button)`
 
 const Title = styled.div`
   color: ${linkColor};
-  font-size: 16px;
   h4 {
-    font-weight: 800;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 16px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 18px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 22px;
+    }
+  }
+  span {
+    font-size: 13px;
+    letter-spacing: -0.7px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: 14px;
+    }
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 16px;
+    }
   }
 
   @media (max-width: ${mobileWidthLarge}) {

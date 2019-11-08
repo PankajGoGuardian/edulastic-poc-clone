@@ -118,6 +118,7 @@ const SubHeader = ({
             wordToBeTyped="ARCHIVE"
             primaryLabel="Are you sure want to archive the following class(es)?"
             closeModal={handleArchiveClassCancel}
+            okButtonText="Archive"
           />
         )}
       </RightContent>

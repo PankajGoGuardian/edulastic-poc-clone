@@ -6,6 +6,8 @@ import { Layout, Spin } from "antd";
 import ManageHeader from "../../sharedComponents/Header";
 import ManageClassContainer from "./Container";
 import { getEnrollClassAction, setFilterClassAction } from "../ducks";
+import { joinClassAction } from "../ducks";
+import { getUser } from "../../../author/src/selectors/user";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -15,7 +17,7 @@ const ContentWrapper = styled.div`
   padding: 0px 40px;
 `;
 
-const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList }) => {
+const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList, joinClass, studentData }) => {
   useEffect(() => {
     loadAllClasses();
   }, []);
@@ -32,7 +34,13 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
         setShowClass={setShowClass}
       />
       <ContentWrapper>
-        <ManageClassContainer classList={filterClasses} loading={loading} showClass={showClass} />
+        <ManageClassContainer
+          classList={filterClasses}
+          loading={loading}
+          showClass={showClass}
+          joinClass={joinClass}
+          studentData={studentData}
+        />
       </ContentWrapper>
     </Wrapper>
   );
@@ -42,10 +50,12 @@ export default connect(
   state => ({
     allClasses: state.studentEnrollClassList.allClasses,
     filterClasses: state.studentEnrollClassList.filteredClasses,
-    loading: state.studentEnrollClassList.loading
+    loading: state.studentEnrollClassList.loading,
+    studentData: getUser(state)
   }),
   {
     loadAllClasses: getEnrollClassAction,
-    setClassList: setFilterClassAction
+    setClassList: setFilterClassAction,
+    joinClass: joinClassAction
   }
 )(ManageClass);

@@ -13,6 +13,10 @@
     "subject": "Subject",
     "standard": "Standard",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "joinClass": "Join Class",
+    "join": "Join",
+    "enterClassCode": "Enter Class Code",
+    "cancel": "Cancel"
   }
 }

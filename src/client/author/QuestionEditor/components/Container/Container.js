@@ -216,7 +216,7 @@ class Container extends Component {
         to: "/author/items"
       },
       {
-        title: "ITEM DETAIL",
+        title: "SELECT THE TYPE OF WIDGET",
         to: `/author/items/${testItemId}/item-detail`
       },
       {

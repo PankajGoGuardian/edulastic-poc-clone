@@ -1041,6 +1041,7 @@ export const defaultTheme = {
       labelIconBgCheckColor: themeColor,
       labelIconSelectedCheckColor: themeColor,
       labelIconTimesColor: closeColor,
+      labelOptionFontSize: questionTexticonFontSize,
       checkboxContainerBorderColor: borderColor,
       checkboxContainerBgColor: checkboxBgColor,
       checkboxContainerSmallFontSize: subtitleFontSize,

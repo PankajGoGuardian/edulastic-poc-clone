@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
 import produce from "immer";
 import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
-
+import styled from "styled-components";
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
 import { MultiChoiceContent, MultipleChoiceLabelContainer } from "../styled/MultiChoiceContent";
@@ -11,7 +11,7 @@ import { Label, OptionsLabel } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
-import { getFontSize } from "../../../../../utils/helpers";
+import { themeColor, white, grey } from "@edulastic/colors";
 
 const Option = props => {
   const {
@@ -139,6 +139,10 @@ const Option = props => {
     }
   };
 
+  const getOptionLabel = index => {
+    return ALPHABET[index].toUpperCase();
+  };
+
   const container = (
     <>
       {uiStyle.type === "block" && uiStyle.choiceLabel && <OptionsLabel>{getLabel(index)}</OptionsLabel>}
@@ -150,6 +154,7 @@ const Option = props => {
       >
         <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChangeHandler} />
         <span
+          className="labelOnly"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -159,7 +164,6 @@ const Option = props => {
         >
           {getLabel(index)}
         </span>
-        <div />
       </CheckboxContainer>
     </>
   );
@@ -182,22 +186,24 @@ const Option = props => {
         );
       case "block":
         return (
-          <FlexContainer alignItems="center">
+          <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
+            <span className="labelOnly">{getOptionLabel(index)}</span>
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
-              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay paddingLeft fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
-          </FlexContainer>
+          </StyledOptionsContainer>
         );
       case "standard":
       default:
         return (
-          <React.Fragment>
+          <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             {container}
+            <span className="labelOnly">{getOptionLabel(index)}</span>
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
               <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
-          </React.Fragment>
+          </StyledOptionsContainer>
         );
     }
   };
@@ -240,6 +246,29 @@ const Option = props => {
     </Label>
   );
 };
+
+const StyledOptionsContainer = styled.div`
+  display: flex;
+  position: relative;
+
+  span.labelOnly {
+    width: 36px;
+    height: 36px;
+    position: absolute;
+    overflow: hidden;
+    border: 1px solid ${grey};
+    text-align: center;
+    font-size: ${props => props.theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
+    margin-top: -18px;
+    left: 0;
+    top: 50%;
+    border-radius: ${props => (props.multipleResponses ? "0" : "100%")};
+    color: ${props => (props.isSelected ? white : themeColor)};
+    background: ${props => (props.isSelected ? themeColor : white)};
+    font-weight: 600;
+    padding-top: 2px;
+  }
+`;
 
 Option.propTypes = {
   index: PropTypes.number.isRequired,

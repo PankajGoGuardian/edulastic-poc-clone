@@ -12,6 +12,7 @@ const MathFormulaDisplay = withTheme(
     overflow-wrap: ${props => props.centerContent && "initial"};
     font-size: ${props => props.fontSize || props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
+    padding-left: ${props => props.paddingLeft && "50px"};
 
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};

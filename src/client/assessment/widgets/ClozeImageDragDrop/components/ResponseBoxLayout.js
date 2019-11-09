@@ -41,7 +41,7 @@ const ResponseBoxLayout = ({
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   return connectDropTarget(
-    <div>
+    <div style={{ width: "fit-content" }}>
       <StyledResponseDiv
         className="responses_box"
         data-cy="responses-box"

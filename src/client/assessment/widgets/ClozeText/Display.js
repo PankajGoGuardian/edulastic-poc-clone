@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import produce from "immer";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 
@@ -148,9 +148,10 @@ class ClozeTextDisplay extends Component {
       isReviewTab,
       isExpressGrader,
       view,
-      isPrint
+      isPrint,
+      theme
     } = this.props;
-
+    console.log(theme);
     const { parsedTemplate } = this.state;
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
@@ -297,12 +298,12 @@ ClozeTextDisplay.defaultProps = {
   qIndex: null
 };
 
-export default ClozeTextDisplay;
+export default withTheme(ClozeTextDisplay);
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
   padding: 15px;
-  border: solid 1px #dfdfdf;
+  border: solid 1px ${props => props.theme.numberpadBgHoverColor};
   border-radius: 10px;
 
   iframe {

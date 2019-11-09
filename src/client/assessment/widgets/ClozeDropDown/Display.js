@@ -272,6 +272,10 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  padding: 15px;
+  border: solid 1px ${props => props.theme.numberpadBgHoverColor};
+  border-radius: 10px;
+
   iframe {
     max-width: 100%;
   }

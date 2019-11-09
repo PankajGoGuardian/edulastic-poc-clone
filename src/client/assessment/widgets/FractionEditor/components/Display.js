@@ -59,7 +59,7 @@ const Display = ({
         </FlexContainer>
         {hasAnnotations && answerContext.isAnswerModifiable && (
           <FlexContainer>
-            <span style={{ marginRight: "5px" }}>Show Annotatations</span>
+            <span style={{ marginRight: "5px" }}>Show Annotations</span>
             <SwitchWrapper>
               <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
             </SwitchWrapper>

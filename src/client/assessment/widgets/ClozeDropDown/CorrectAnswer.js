@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { withNamespaces } from "@edulastic/localization";
+import { selectColor } from "@edulastic/colors";
 
+import { EDIT } from "../../constants/constantsForQuestions";
 import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 import Display from "./Display";
-import { selectColor } from "@edulastic/colors";
+
 class CorrectAnswer extends Component {
   static propTypes = {
     response: PropTypes.object.isRequired,
@@ -84,6 +86,7 @@ class CorrectAnswer extends Component {
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
           hasGroupResponses={hasGroupResponses}
+          view={EDIT}
         />
       </div>
     );

@@ -715,7 +715,8 @@ export const defaultTheme = {
       iconPlusColor: themeColor,
       deleteBgColor: themeColor,
       rightIconColor,
-      wrongIconColor
+      wrongIconColor,
+      questionContainerBorderColor: "#dfdfdf"
     },
     clozeImageDragDrop: {
       editViewBgColor: containerWhite,
@@ -849,7 +850,8 @@ export const defaultTheme = {
       deleteBgColor: containerGrey,
       rightIconColor,
       wrongIconColor,
-      textZoom: 1
+      textZoom: 1,
+      questionContainerBorderColor: "#dfdfdf"
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,

@@ -41,7 +41,7 @@ const TableLayout = ({
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
-  const responses = item.group_possible_responses
+  const responses = item.groupPossibleResponses
     ? item.possibleResponseGroups.flatMap(group => group.responses)
     : item.possibleResponses;
   const columnTitles = [];

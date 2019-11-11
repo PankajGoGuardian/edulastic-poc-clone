@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
@@ -40,6 +40,7 @@ import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
 import { publishForRegradeAction } from "../../ducks";
+import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 const { statusConstants } = test;
 
 export const navButtonsTest = [
@@ -137,13 +138,25 @@ const TestPageHeader = ({
   test,
   updated,
   toggleFilter,
-  isShowFilter
+  isShowFilter,
+  fetchAssignments,
+  testAssignments,
+  match
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
+
+  useEffect(() => {
+    if (match?.params?.oldId) {
+      fetchAssignments(match?.params?.oldId);
+    } else if (test?._id) {
+      fetchAssignments(test?._id);
+    }
+  }, [test?._id, match?.params?.oldId]);
+
   const onRegradeConfirm = () => {
     publishForRegrade(test._id);
   };
@@ -161,7 +174,8 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
+
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
@@ -341,9 +355,14 @@ const enhance = compose(
   withRouter,
   connect(
     state => ({
-      test: state.tests.entity
+      test: state.tests.entity,
+      testAssignments: getAssignmentsSelector(state)
     }),
-    { toggleSideBar: toggleSideBarAction, publishForRegrade: publishForRegradeAction }
+    {
+      toggleSideBar: toggleSideBarAction,
+      publishForRegrade: publishForRegradeAction,
+      fetchAssignments: fetchAssignmentsAction
+    }
   )
 );
 export default enhance(TestPageHeader);

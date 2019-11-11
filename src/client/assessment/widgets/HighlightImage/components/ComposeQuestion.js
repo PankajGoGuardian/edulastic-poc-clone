@@ -136,8 +136,8 @@ class ComposeQuestion extends Component {
             <CustomInput
               size="large"
               type="number"
-              value={+width}
-              onBlur={val => handleImageToolbarChange("width", val)}
+              value={item?.image?.width || maxWidth}
+              onChange={val => handleImageToolbarChange("width", val)}
               placeholder={t("component.hotspot.widthLabel")}
             />
             <Label>{t("component.hotspot.widthLabel")}</Label>
@@ -146,8 +146,8 @@ class ComposeQuestion extends Component {
             <CustomInput
               size="large"
               type="number"
-              value={+height}
-              onBlur={val => handleImageToolbarChange("height", val)}
+              value={item?.image?.height || maxHeight}
+              onChange={val => handleImageToolbarChange("height", val)}
               placeholder={t("component.hotspot.heightLabel")}
             />
             <Label>{t("component.hotspot.heightLabel")}</Label>
@@ -157,7 +157,7 @@ class ComposeQuestion extends Component {
               size="large"
               type="text"
               value={altText}
-              onBlur={val => handleImageToolbarChange("altText", val)}
+              onChange={val => handleImageToolbarChange("altText", val)}
               placeholder={t("component.hotspot.altTextLabel")}
             />
             <Label>{t("component.hotspot.altTextLabel")}</Label>

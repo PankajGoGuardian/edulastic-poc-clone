@@ -406,9 +406,10 @@ class AxisLabelsContainer extends PureComponent {
         </WithResources>
         <GraphWrapper>
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
-            <div className="jsxbox-with-response-box-response-options">
+            <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
                 <ResponseBox
+                  bounds={`.jsxbox-with-response-box-response-options.${this._graphId}`}
                   values={this.getMarkValues()}
                   onAddMark={this.onAddMark}
                   markCount={(list || []).length}

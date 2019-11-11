@@ -1,10 +1,9 @@
 import styled, { css } from "styled-components";
-import { white, greyDarken, red, mediumDesktopWidth } from "@edulastic/colors";
-import { Button } from "antd";
+import { white, red, mediumDesktopWidth, themeColor, title } from "@edulastic/colors";
+import { Button, Col, Row } from "antd";
 import { IconManage } from "@edulastic/icons";
-import { Paper, FlexContainer } from "@edulastic/common";
 
-export const StyledFlexContainer = styled(FlexContainer)`
+export const StyledFlexContainer = styled(Row)`
   .ant-select-selection__placeholder {
     margin-left: 6px;
   }
@@ -72,29 +71,37 @@ export const ButtonsWrapper = styled.div`
 
 // main content
 
-export const Container = styled(Paper)`
-  margin: 25px auto 0 auto;
-  border-radius: 0px;
-  width: 80%;
+export const Container = styled.div`
+  padding: 30px;
+
+  .ant-form-item-control {
+    line-height: normal;
+    .ant-input,
+    .ant-select-selection {
+      min-height: 40px;
+      background: #f8f8f8;
+      .ant-select-selection__rendered {
+        line-height: 40px;
+      }
+    }
+    .ant-calendar-picker-icon {
+      color: ${themeColor};
+    }
+  }
 `;
 
 export const FormTitle = styled(Title)`
-  color: ${greyDarken};
-  font-weight: 500;
-  font-size: 20px;
+  color: ${title};
+  font-size: ${props => props.theme.subtitleFontSize};
   line-height: 1;
+  margin-bottom: 25px;
 `;
 
 export const MainContainer = styled.div``;
 
-export const LeftContainer = styled.div`
-  flex: 1;
-  padding-right: 15px;
-`;
+export const LeftContainer = styled(Col)``;
 
-export const RightContainer = styled.div`
-  flex: 2;
-`;
+export const RightContainer = styled(Col)``;
 
 export const StandardsValidationMSG = styled.div`
   color: ${red};

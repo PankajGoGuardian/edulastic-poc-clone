@@ -5,12 +5,12 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, beforeUpload } from "@edulastic/common";
 import { Upload } from "antd";
 import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
-import { beforeUpload } from "@edulastic/common";
+import { LARGE_DESKTOP_WIDTH } from "../../../../assessment/constants/others";
 
 class Uploader extends React.Component {
   state = {};
@@ -35,11 +35,11 @@ class Uploader extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, url } = this.props;
-
+    const { windowWidth, url } = this.props;
+    const height = windowWidth >= LARGE_DESKTOP_WIDTH ? 216 : this.props.height;
     const uploadButton = (
       <Container height={height}>
-        <Image src={url} alt="Test" />
+        <Image height={height} src={url} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
@@ -59,7 +59,7 @@ class Uploader extends React.Component {
         <Upload {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
-              {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
+              {imageUrl ? <Image height={height} src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
             </ImageContainer>
             <Camera>
               <IconPhotoCamera color={white} width="20px" />
@@ -113,7 +113,7 @@ const UploadWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? "unset" : "100%")};
+  height: ${props => props.height}px;
   border-radius: 5px;
 `;
 
@@ -124,7 +124,7 @@ const Camera = styled.div`
   height: 40px;
   position: absolute;
   right: 20px;
-  bottom: -10px;
+  bottom: -17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

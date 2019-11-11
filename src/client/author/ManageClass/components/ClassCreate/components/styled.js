@@ -6,10 +6,11 @@ export const Field = styled.fieldset`
   padding: 0px;
 
   legend {
-    font-size: 16px;
+    font-size: ${props => props.theme.smallFontSize};
     font-weight: 600;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
     border: 0px;
+    text-transform: uppercase;
   }
 
   &:first-child {
@@ -22,8 +23,8 @@ export const Field = styled.fieldset`
 `;
 
 export const Optional = styled.span`
-  font-style: italic;
-  font-size: 14px;
+  font-size: ${props => props.theme.smallFontSize};
   color: ${darkGrey};
   margin-left: 10px;
+  text-transform: lowercase;
 `;

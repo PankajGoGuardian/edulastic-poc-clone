@@ -53,7 +53,7 @@ export default props => {
 
   return (
     <>
-      <FieldLabel label="Class Image" optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>
+      <FieldLabel label="Class Image" {...props} fiedlName="thumbnail" initialValue={thumbnail}>
         <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
       <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(tag => tag._id)}>

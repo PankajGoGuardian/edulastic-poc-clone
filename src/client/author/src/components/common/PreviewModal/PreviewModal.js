@@ -86,7 +86,7 @@ class PreviewModal extends React.Component {
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
     if (testId) {
-      history.push(`/author/tests/${testId}/createItem/${duplicatedItem._id}`);
+      history.push(`/author/items/${duplicatedItem._id}/item-detail/test/${testId}`);
     } else {
       history.push(`/author/items/${duplicatedItem._id}/item-detail`);
     }
@@ -99,7 +99,7 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
     clearItemStore();
     if (testId) {
-      history.push(`/author/tests/${testId}/createItem/${itemId}`);
+      history.push(`/author/items/${itemId}/item-detail/test/${testId}`);
     } else {
       history.push(`/author/items/${itemId}/item-detail`);
     }

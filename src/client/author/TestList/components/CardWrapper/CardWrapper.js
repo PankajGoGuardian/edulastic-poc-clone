@@ -4,6 +4,7 @@ import { Col } from "antd";
 import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
+import { CardBox } from "../Container/styled";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -47,7 +48,7 @@ class CardWrapper extends Component {
 
     if (blockStyle === "tile") {
       return (
-        <Col data-cy={item._id} key={item._id} xs={24} md={12} xl={8} xxl={6} style={{ marginBottom: 20 }}>
+        <CardBox data-cy={item._id} key={item._id} style={{ marginBottom: 20 }}>
           <Item
             owner={owner}
             item={item}
@@ -59,7 +60,7 @@ class CardWrapper extends Component {
             windowWidth={windowWidth}
             standards={standards}
           />
-        </Col>
+        </CardBox>
       );
     }
 

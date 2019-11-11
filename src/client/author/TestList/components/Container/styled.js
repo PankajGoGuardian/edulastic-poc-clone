@@ -19,6 +19,10 @@ export const ScrollBox = styled.div`
   }
 `;
 
+export const CardBox = styled.div`
+  width: 280px;
+`;
+
 export const Container = styled.div`
   padding: 0px 0px 0px 20px;
   left: 0;

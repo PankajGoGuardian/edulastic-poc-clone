@@ -69,6 +69,11 @@ export const answerChecksByIdSelector = createSelector(
   state => state.answerCheckByItemId
 );
 
+export const redirectPolicySelector = createSelector(
+  stateSelector,
+  state => state.settings.showPreviousAttempt
+);
+
 export const currentItemIdSelector = createSelector(
   currentItemSelector,
   state => state._id

@@ -345,7 +345,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     path="/author/tests/:id/editAssigned"
                     render={props => (
                       <Suspense fallback={<Progress />}>
-                        <TestPage {...props} editAssigned />
+                        <TestPage {...props} currentTab="description" editAssigned />
                       </Suspense>
                     )}
                   />
@@ -374,7 +374,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     path="/author/tests/:id/versioned/old/:oldId"
                     render={props => (
                       <Suspense fallback={<Progress />}>
-                        <TestPage {...props} versioned />
+                        <TestPage {...props} currentTab="review" versioned />
                       </Suspense>
                     )}
                   />

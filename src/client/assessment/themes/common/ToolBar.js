@@ -29,19 +29,20 @@ class ToolBar extends Component {
     return (
       <Container>
         <Tooltip placement="top" title="Pointer">
-          <StyledButton active={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)}>
+          {/* hidden prop in StyledButton can hide the button enable it whenever required by removing them. */}
+          <StyledButton active={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)} hidden>
             <CursorIcon />
           </StyledButton>
         </Tooltip>
 
         <Tooltip placement="top" title="Ruler">
-          <StyledButton active={tool === 1} onClick={() => this.toolbarHandler(1)}>
+          <StyledButton active={tool === 1} onClick={() => this.toolbarHandler(1)} hidden>
             <InRulerIcon />
           </StyledButton>
         </Tooltip>
         {calcType !== calculatorTypes.NONE && (
           <Tooltip placement="top" title="Calculator">
-            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
+            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)} hidden>
               <CaculatorIcon />
             </StyledButton>
           </Tooltip>
@@ -61,7 +62,7 @@ class ToolBar extends Component {
         </Tooltip>
 
         <Tooltip placement="top" title="Protactor">
-          <StyledButton active={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)}>
+          <StyledButton active={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)} hidden>
             <ProtactorIcon />
           </StyledButton>
         </Tooltip>
@@ -96,7 +97,7 @@ const StyledButton = styled(Button)`
   border: none;
   margin-right: 10px;
   border-radius: 5px;
-
+  ${props => props.hidden && "display:none"}
   ${({ theme, active }) => `
     background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
     height: ${theme.default.headerToolbarButtonWidth};

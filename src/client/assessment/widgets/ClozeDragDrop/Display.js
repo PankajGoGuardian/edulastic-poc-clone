@@ -347,6 +347,7 @@ class ClozeDragDropDisplay extends Component {
     const correctAnswerBoxLayout = (
       <>
         <CorrectAnswerBoxLayout
+          centerText
           hasGroupResponses={hasGroupResponses}
           fontSize={fontSize}
           groupResponses={options}
@@ -356,6 +357,7 @@ class ClozeDragDropDisplay extends Component {
         />
         {((item.validation && item.validation.altResponses) || []).map((ele, ind) => (
           <CorrectAnswerBoxLayout
+            centerText
             hasGroupResponses={hasGroupResponses}
             fontSize={fontSize}
             groupResponses={options}

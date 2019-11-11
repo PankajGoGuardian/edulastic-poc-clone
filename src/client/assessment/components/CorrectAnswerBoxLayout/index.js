@@ -17,6 +17,7 @@ const CorrectAnswerBoxLayout = ({
   groupResponses,
   btnStyle,
   stemNumeration,
+  centerText,
   t
 }) => {
   let results;
@@ -63,7 +64,9 @@ const CorrectAnswerBoxLayout = ({
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer" style={btnStyle}>
                   <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-                  <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}</span>
+                  <span className="text" style={{ justifyContent: centerText && "center" }}>
+                    {Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -72,7 +75,7 @@ const CorrectAnswerBoxLayout = ({
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer" style={btnStyle}>
               <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-              <span className="text">
+              <span className="text" style={{ justifyContent: centerText && "center" }}>
                 {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
               </span>
             </div>
@@ -91,7 +94,8 @@ CorrectAnswerBoxLayout.propTypes = {
   cleanValue: PropTypes.bool,
   btnStyle: PropTypes.object,
   altAnsIndex: PropTypes.number,
-  stemNumeration: PropTypes.string
+  stemNumeration: PropTypes.string,
+  centerText: PropTypes.bool
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -102,7 +106,8 @@ CorrectAnswerBoxLayout.defaultProps = {
   cleanValue: false,
   altAnsIndex: 0,
   stemNumeration: "numerical",
-  btnStyle: {}
+  btnStyle: {},
+  centerText: false
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

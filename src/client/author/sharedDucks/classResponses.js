@@ -28,6 +28,7 @@ import {
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 
 import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Transformer";
+import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
@@ -155,6 +156,8 @@ function* receiveStudentQuestionSaga({ payload }) {
       feedbackResponse = yield call(classResponseApi.receiveStudentItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.receiveStudentQuestionResponse, payload);
+      const { qid, score } = feedbackResponse;
+      yield put(setTeacherEditedScore({ [qid]: score }));
     }
 
     yield put({

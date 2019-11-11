@@ -5,6 +5,7 @@ import testItem from "./testItem";
 import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
 import { reportReducer } from "../../Reports/ducks";
+import { expressGraderReducer } from "../../ExpressGrader/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -61,6 +62,7 @@ const authorReducers = {
   authorQuestions,
   author_assignments,
   reportReducer,
+  expressGraderReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

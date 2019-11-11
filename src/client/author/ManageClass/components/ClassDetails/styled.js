@@ -310,7 +310,8 @@ export const Image = styled.img`
   min-width: 200px;
   min-height: 100px;
   border-radius: 5px;
-  @media (max-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 200px;
     height: 60%;
   }
   @media (max-width: ${mediumDesktopExactWidth}) {
@@ -532,11 +533,18 @@ export const CaretUp = styled.i`
 
 export const ImageContainer = styled.div`
   width: 25%;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 200px;
+  }
 `;
 
 export const ClassInfoContainer = styled.div`
   width: 74%;
   padding: 0 1.2rem;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 0 120px 0 30px;
+    width: 100%;
+  }
 `;
 
 export const FlexDiv = styled.div`

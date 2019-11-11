@@ -82,28 +82,33 @@ class InviteMultipleStudentModal extends Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { curSel } = this.state;
-        let provider = "fl";
-        const studentsList = row.students.split(/;|\n/).filter(_o => _o.length);
-        this.props.inviteStudents({
-          userDetails: studentsList,
-          institutionId: row.institutionId,
-          provider: curSel
-        });
+        const studentsList = row.students ? row.students.split(/;|\n/).filter(_o => _o.trim().length) : [];
+        if (studentsList.length) {
+          this.props.inviteStudents({
+            userDetails: studentsList,
+            institutionId: row.institutionId,
+            provider: curSel
+          });
+        }
       }
     });
   };
 
   validateStudentsList = (rule, value, callback) => {
     const { curSel } = this.state;
-    const lines = value.split(/;|\n/);
+    const lines = value ? value.split(/;|\n/).filter(_o => _o.trim().length) : [];
     let isValidate = true;
-    if (curSel === "google" || curSel === "mso") {
-      for (let i = 0; i < lines.length; i++) {
-        if (!this.checkValidEmail(lines[i])) {
-          isValidate = false;
-          break;
+    if (lines.length) {
+      if (curSel === "google" || curSel === "mso") {
+        for (let i = 0; i < lines.length; i++) {
+          if (!this.checkValidEmail(lines[i])) {
+            isValidate = false;
+            break;
+          }
         }
       }
+    } else {
+      callback("No user information added.");
     }
 
     if (isValidate) {
@@ -405,11 +410,7 @@ class InviteMultipleStudentModal extends Component {
                   {getFieldDecorator("students", {
                     rules: [
                       {
-                        required: true,
-                        message: "No user Informtaion added."
-                      },
-                      {
-                        validator: !placeHolderVisible && this.validateStudentsList
+                        validator: this.validateStudentsList
                       }
                     ]
                   })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}

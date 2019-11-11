@@ -204,7 +204,9 @@ class ClozeDropDownDisplay extends Component {
       <div>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!!question && (
+            <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          )}
           {!question && questionContent}
         </QuestionTitleWrapper>
         {question && questionContent}

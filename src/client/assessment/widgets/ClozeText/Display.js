@@ -8,6 +8,7 @@ import JsxParser from "react-jsx-parser";
 import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
+import { EDIT } from "../../constants/constantsForQuestions";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
@@ -187,7 +188,7 @@ class ClozeTextDisplay extends Component {
     };
 
     const QuestionContent = (
-      <StyledParser>
+      <StyledParser view={view}>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
@@ -301,6 +302,7 @@ export default ClozeTextDisplay;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+
   iframe {
     max-width: 100%;
   }
@@ -310,6 +312,12 @@ const QuestionTitleWrapper = styled.div`
 `;
 
 const StyledParser = styled.div`
+  padding: ${props => (props.view === EDIT ? 15 : 0)}px;
+  border: ${props =>
+    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
+  border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
+  width: 100%;
+
   .jsx-parser {
     p {
       font-size: ${props => props.theme.fontSize};

@@ -5,7 +5,9 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash"
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+
+import { EDIT } from "../../constants/constantsForQuestions";
 
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
@@ -114,7 +116,6 @@ class ClozeDropDownDisplay extends Component {
       showAnswer,
       checkAnswer,
       evaluation,
-      instructorStimulus,
       item,
       disableResponse,
       showQuestionNumber,
@@ -123,7 +124,8 @@ class ClozeDropDownDisplay extends Component {
       isExpressGrader,
       theme,
       previewTab,
-      changePreviewTab
+      changePreviewTab,
+      view
     } = this.props;
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -187,7 +189,7 @@ class ClozeDropDownDisplay extends Component {
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
     const questionContent = (
-      <ContentWrapper fontSize={fontSize}>
+      <ContentWrapper view={view} fontSize={fontSize}>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
@@ -231,14 +233,14 @@ ClozeDropDownDisplay.propTypes = {
   uiStyle: PropTypes.object,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.func.isRequired,
-  instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
   isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  theme: PropTypes.object
+  theme: PropTypes.object,
+  view: PropTypes.string.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -274,12 +276,19 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+
   iframe {
     max-width: 100%;
   }
 `;
 
 const ContentWrapper = styled.div`
+  padding: ${props => (props.view === EDIT ? 15 : 0)}px;
+  border: ${props =>
+    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
+  border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
+  width: 100%;
+
   p {
     font-size: ${({ fontSize }) => fontSize || "auto"};
   }

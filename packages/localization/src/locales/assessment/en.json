@@ -894,6 +894,9 @@
       "ignoreCase": "Ignore Case",
       "mixNmatch": "Mix-n-Match alternative answers",
       "allowsinglelettermistake": "Allow single letter mistake"
+    },
+    "fractionEditor": {
+      "showAnnotations": "Show Annotations"
     }
   }
 }

@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 
 import { Input } from "antd";
 
-const CustomInput = ({ size, type, value, placeholder, onBlur }) => {
-  const handleInputBlur = event => onBlur(event.target.value);
-
+const CustomInput = ({ size, type, value, placeholder, onChange }) => {
+  const handleInputChange = event => onChange(event.target.value);
   // eslint-disable-next-line max-len
-  return <Input size={size} type={type} defaultValue={value} onBlur={handleInputBlur} placeholder={placeholder} />;
+  return <Input size={size} type={type} value={value} onChange={handleInputChange} placeholder={placeholder} />;
 };
 
 CustomInput.propTypes = {
@@ -15,14 +14,13 @@ CustomInput.propTypes = {
   type: PropTypes.string,
   value: PropTypes.number.isRequired,
   placeholder: PropTypes.string,
-  onBlur: PropTypes.func
+  onChange: PropTypes.func.isRequired
 };
 
 CustomInput.defaultProps = {
   size: "default",
   type: "text",
-  placeholder: "",
-  onBlur: () => {}
+  placeholder: ""
 };
 
 export default CustomInput;

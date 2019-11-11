@@ -32,8 +32,6 @@ class ComposeQuestion extends Component {
     const height = image ? image.height : maxHeight;
     const altText = image ? image.altText : "";
 
-    console.log("image", image);
-
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
         produce(item, draft => {
@@ -116,7 +114,6 @@ class ComposeQuestion extends Component {
     };
 
     const thumb = image[SOURCE] && <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
-    console.log(`width and height ${width}x${height}`);
     return (
       <Question
         section="main"

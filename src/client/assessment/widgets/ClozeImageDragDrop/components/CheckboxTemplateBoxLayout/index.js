@@ -33,10 +33,9 @@ const CheckboxTemplateBox = ({
   showBorder,
   disableResponse,
   isSnapFitValues,
-  isExpressGrader
+  isExpressGrader,
+  lessMinWidth
 }) => {
-  const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
-
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
 
   const handleHover = () => {
@@ -187,6 +186,9 @@ const CheckboxTemplateBox = ({
 
 const CheckboxTemplateBoxLayout = props => {
   const { checkAnswer, responseContainers, annotations, image, snapItems, isSnapFitValues, showDropItemBorder } = props;
+  const lessMinWidth = responseContainers.some(
+    responseContainer => parseInt(responseContainer.width, 10) < response.minWidthShowAnswer
+  );
   return (
     <>
       {annotations}
@@ -196,7 +198,15 @@ const CheckboxTemplateBoxLayout = props => {
         if (!isSnapFitValues && checkAnswer && !showDropItemBorder) {
           return null;
         }
-        return <CheckboxTemplateBox key={index} index={index} responseContainer={responseContainer} {...props} />;
+        return (
+          <CheckboxTemplateBox
+            key={index}
+            index={index}
+            responseContainer={responseContainer}
+            {...props}
+            lessMinWidth={lessMinWidth}
+          />
+        );
       })}
     </>
   );

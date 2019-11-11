@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { greyDarken, greenDark } from "@edulastic/colors";
-
-import {
-  ContainerHeader,
-  LeftContent,
-  RightContent,
-  TitleWarapper,
-  StyledIcon,
-  AnchorLink,
-  ClassCode,
-  IconArchiveClass
-} from "./styled";
 import { message, Tooltip } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import { TypeToConfirmModal } from "@edulastic/common";
+import { ContainerHeader, RightContent, AnchorLink, ClassCode, IconArchiveClass } from "./styled";
+import { scopes } from "../ClassListContainer/ClassCreatePage";
+
 const SubHeader = ({
   name,
   districtName,
@@ -33,19 +23,6 @@ const SubHeader = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalInputVal, setModalInputVal] = useState("");
-
-  const scopes = [
-    "https://www.googleapis.com/auth/classroom.courses",
-    "https://www.googleapis.com/auth/classroom.rosters",
-    "https://www.googleapis.com/auth/classroom.coursework.me",
-    "https://www.googleapis.com/auth/classroom.coursework.students",
-    "https://www.googleapis.com/auth/classroom.announcements",
-    "https://www.googleapis.com/auth/classroom.guardianlinks.students",
-    "https://www.googleapis.com/auth/classroom.guardianlinks.me.readonly",
-    "https://www.googleapis.com/auth/classroom.profile.photos",
-    "https://www.googleapis.com/auth/classroom.profile.emails",
-    "https://www.googleapis.com/auth/userinfo.profile"
-  ].join(" ");
 
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });

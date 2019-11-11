@@ -160,7 +160,7 @@ const PerformanceByStandards = ({
 
   const standardsDropdownData = useMemo(() => {
     const { standardsMap } = reportWithFilteredSkills;
-    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: item, name: standardsMap[item] }));
+    const standardsMapArr = Object.keys(standardsMap).map(item => ({ _id: +item, name: standardsMap[item] }));
     let intersected = intersectionBy(standardsMapArr, interestedCurriculums, "_id");
     intersected = intersected.map(item => ({ key: item._id, title: item.name }));
     return intersected || [];

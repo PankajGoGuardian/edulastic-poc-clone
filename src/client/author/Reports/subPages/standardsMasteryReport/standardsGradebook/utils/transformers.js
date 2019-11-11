@@ -164,15 +164,17 @@ export const getDenormalizedData = rawData => {
     });
 
   let denormalizedEnhancedRawMetricInfo = [];
-  enhancedRawMetricInfo.map((item, index) => {
-    item.groupIds.map((_item, index) => {
-      let obj = {
-        ...item,
-        groupId: _item
-      };
-      denormalizedEnhancedRawMetricInfo.push(obj);
+  enhancedRawMetricInfo
+    .filter(i => i.groupIds)
+    .map((item, index) => {
+      item.groupIds.map((_item, index) => {
+        let obj = {
+          ...item,
+          groupId: _item
+        };
+        denormalizedEnhancedRawMetricInfo.push(obj);
+      });
     });
-  });
 
   let rawTeacherInfo = get(rawData, "data.result.teacherInfo", []);
   let teacherInfoMap = keyBy(rawTeacherInfo, "groupId");

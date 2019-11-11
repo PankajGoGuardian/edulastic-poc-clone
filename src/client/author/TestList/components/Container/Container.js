@@ -23,7 +23,8 @@ import {
   CardContainer,
   PaginationWrapper,
   AffixWrapper,
-  StyleChangeWrapper
+  StyleChangeWrapper,
+  CardBox
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -509,10 +510,12 @@ class TestList extends Component {
         />
       );
     }
+    const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
+    const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
 
     if (blockStyle === "tile") {
       return (
-        <Row gutter={24} type="flex">
+        <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
           {tests.map((item, index) => (
             <CardWrapper
               item={item}
@@ -525,6 +528,8 @@ class TestList extends Component {
               standards={getInterestedStandards(item.summary, interestedCurriculums)}
             />
           ))}
+
+          {windowWidth > 1024 && countModular.map(index => <CardBox key={index} />)}
         </Row>
       );
     }

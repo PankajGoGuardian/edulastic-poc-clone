@@ -52,7 +52,10 @@ const analyticsIdentify = ({ user }) => {
         {
           Intercom: {
             hideDefaultLauncher: false,
-            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
+            // Keep your secret key safe! Never commit it directly to your repository,
+            // client-side code, or anywhere a third party can find it.
+            // send it from backend ???
+            user_hash: createHmac("sha256", "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH")
               .update(userId)
               .digest("hex")
           }
@@ -75,7 +78,10 @@ const unloadIntercom = ({ user }) => {
         {
           Intercom: {
             hideDefaultLauncher: true,
-            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
+            // Keep your secret key safe! Never commit it directly to your repository,
+            // client-side code, or anywhere a third party can find it.
+            // send it from backend ???
+            user_hash: createHmac("sha256", "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH")
               .update(userId)
               .digest("hex")
           }

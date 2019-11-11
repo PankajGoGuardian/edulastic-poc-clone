@@ -236,7 +236,8 @@ class Item extends Component {
       showAnswer,
       page,
       passageItemsCount,
-      gotoSummary
+      gotoSummary,
+      test
     } = this.props;
     const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
@@ -253,6 +254,7 @@ class Item extends Component {
             data={{ ...item, id: item._id }}
             isEditable={isEditable}
             owner={owner}
+            testId={test?._id}
             checkAnswer={() => checkAnswer({ ...item, isItem: true })}
             showAnswer={() => showAnswer(item)}
             gotoSummary={gotoSummary}

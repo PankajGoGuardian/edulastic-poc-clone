@@ -83,7 +83,7 @@ export const groupedByDomain = (metricInfo = [], maxScore, scaleInfo = [], selec
       const score = round((sumBy(domainData, "totalScore") / sumBy(domainData, "maxScore")) * 100);
       const rawScore = `${sumBy(domainData, "totalScore").toFixed(2)} / ${sumBy(domainData, "maxScore")}`;
       const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo).masteryLabel;
-      const domainMetaInformation = find(rawDomainData, rawDomain => rawDomain.tloId === domainId);
+      const domainMetaInformation = find(rawDomainData, rawDomain => `${rawDomain.tloId}` === `${domainId}`);
 
       return {
         domainId,

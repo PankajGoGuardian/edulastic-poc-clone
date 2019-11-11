@@ -1,5 +1,6 @@
 import { takeEvery, takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
+import { uniq } from "lodash";
 import produce from "immer";
 import { setTestItemsAction } from "../TestPage/components/AddItems/ducks";
 import { setTestDataAction, createTestAction, getTestEntitySelector } from "../TestPage/ducks";
@@ -48,12 +49,20 @@ export function* addItemToCartSaga({ payload }) {
 
 export function* createTestFromCart({ payload: { testName = "Author Test" } }) {
   const test = yield select(getTestEntitySelector);
-
+  const questionGrades = test.testItems
+    .flatMap(item => (item.data && item.data.questions) || [])
+    .flatMap(question => question.grades || []);
+  const questionSubjects = test.testItems
+    .flatMap(item => (item.data && item.data.questions) || [])
+    .flatMap(question => question.subjects || []);
+  const grades = test.testItems.flatMap(item => item.grades);
+  const subjects = test.testItems.flatMap(item => item.subjects);
   const updatedTest = {
     ...test,
-    title: testName
+    title: testName,
+    grades: uniq([...grades, ...questionGrades]),
+    subjects: uniq([...subjects, ...questionSubjects])
   };
-
   yield call(message.info, "Creating a test with selected items");
   yield put(createTestAction(updatedTest, true, true));
 }

@@ -220,7 +220,8 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, testItems = [] } = test;
     const { editEnable } = this.state;
-    if (!this.props.test?.title?.trim().length) {
+
+    if (!this.props.test?.title?.trim()?.length) {
       return;
     }
 

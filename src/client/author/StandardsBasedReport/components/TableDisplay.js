@@ -10,6 +10,7 @@ import { getStandardWisePerformanceMemoized } from "../Transformer";
 
 import { getAdditionalDataSelector, getTestActivitySelector } from "../../ClassBoard/ducks";
 import styled from "styled-components";
+import { smallDesktopWidth } from "@edulastic/colors";
 
 import {
   TableData,
@@ -280,6 +281,9 @@ const CustomQuestionCell = styled(QuestionCell)`
   max-width: 100px;
   div {
     margin: 0px auto;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 80px;
   }
 `;
 

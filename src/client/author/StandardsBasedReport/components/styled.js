@@ -15,7 +15,8 @@ import {
   greenThird,
   smallDesktopWidth,
   mobileWidth,
-  mobileWidthMax
+  mobileWidthMax,
+  extraDesktopWidth
 } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
@@ -157,6 +158,9 @@ export const DetailTable = styled(Table)`
             font-size: 10px;
           }
         }
+        @media (max-width: ${smallDesktopWidth}) {
+          left: 0px;
+        }
       }
     }
   }
@@ -164,6 +168,9 @@ export const DetailTable = styled(Table)`
     @media (max-width: ${mobileWidth}) {
       padding-right: 15px !important;
       background-color: white;
+    }
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 8px 5px;
     }
   }
   .ant-table-tbody > tr > td {
@@ -179,12 +186,21 @@ export const DetailTable = styled(Table)`
   i.anticon.anticon-caret-down {
     display: none;
   }
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 12px;
+  }
 `;
 
 export const StudnetCell = styled.div`
   color: ${secondaryTextColor};
   font-size: 14px;
   font-weight: 600;
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 60px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 `;
 
 export const MasteryCell = styled.div`
@@ -340,6 +356,9 @@ export const TableData = styled(Table)`
           }
         }
       }
+    }
+    @media (max-width: ${extraDesktopWidth}) {
+      padding: 10px 8px;
     }
   }
   @media (max-width: 920px) {

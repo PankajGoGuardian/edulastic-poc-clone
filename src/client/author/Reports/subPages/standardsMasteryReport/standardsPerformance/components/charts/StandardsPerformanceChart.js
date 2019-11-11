@@ -28,7 +28,7 @@ const StandardsPerformanceChart = ({
   const getTooltipJSX = data => {
     const [domain = {}] = data;
     const { payload = {} } = domain;
-    const domainInfo = find(rawDomainData, domain => domain.tloId === payload.domainId) || {};
+    const domainInfo = find(rawDomainData, d => `${d.tloId}` === `${payload.domainId}`) || {};
     const studentCount = sumBy(payload.records, record => parseInt(record.totalStudents));
 
     return (

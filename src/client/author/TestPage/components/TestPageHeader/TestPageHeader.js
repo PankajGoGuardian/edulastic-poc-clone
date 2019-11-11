@@ -174,7 +174,6 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-    const oldId = match?.params?.oldId;
 
     if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("publish");

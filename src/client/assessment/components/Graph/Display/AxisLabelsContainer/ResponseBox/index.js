@@ -50,7 +50,8 @@ class ResponseBox extends Component {
       markHeight,
       separationDistanceX,
       separationDistanceY,
-      position
+      position,
+      bounds
     } = this.props;
 
     const { draggingMark } = this.state;
@@ -78,7 +79,7 @@ class ResponseBox extends Component {
               style={{ zIndex: 10 }}
               disableDragging={false}
               enableResizing={false}
-              bounds=".jsxbox-with-response-box-response-options"
+              bounds={bounds}
               className={`mark${draggingMark === i ? " dragging" : ""}`}
             >
               <MarkContainer
@@ -103,6 +104,7 @@ class ResponseBox extends Component {
 }
 
 ResponseBox.propTypes = {
+  bounds: PropTypes.string.isRequired,
   values: PropTypes.array,
   onAddMark: PropTypes.func,
   minWidth: PropTypes.number,

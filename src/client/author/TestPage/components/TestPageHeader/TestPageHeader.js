@@ -181,8 +181,6 @@ const TestPageHeader = ({
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
-    if (oldId) {
-    }
     onPublish();
   };
 

@@ -21,7 +21,7 @@ const Text = styled.div`
   padding: 0 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   background: ${white};
   min-width: 80px;
   border-top-right-radius: 5px;

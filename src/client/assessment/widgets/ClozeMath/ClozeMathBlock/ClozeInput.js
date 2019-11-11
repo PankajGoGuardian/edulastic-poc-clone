@@ -47,7 +47,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
           ...uiStyles,
           width: !width ? "auto" : width,
           height: !height ? "auto" : height,
-          minHeight: "35px"
+          minHeight: "35px",
+          textAlign: "left"
         }}
       />
     </InputDiv>

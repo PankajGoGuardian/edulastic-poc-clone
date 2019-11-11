@@ -14,7 +14,7 @@ export const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: 100px;
-    z-index: 999;
+    z-index: 100001; /*(EV-9461): making it have more z-index than dropdowns(100000) */
   }
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;

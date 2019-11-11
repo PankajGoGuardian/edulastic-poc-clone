@@ -24,7 +24,8 @@ import {
   LOAD_PREVIOUS_ANSWERS,
   ADD_ITEM_EVALUATION,
   LOAD_PREVIOUS_RESPONSES_REQUEST,
-  REMOVE_PREVIOUS_ANSWERS
+  REMOVE_PREVIOUS_ANSWERS,
+  CLEAR_USER_WORK
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
@@ -222,7 +223,6 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item;
         }
       });
-
       if (Object.keys(scratchPadData).length) {
         yield put({
           type: LOAD_SCRATCH_PAD,
@@ -342,6 +342,9 @@ function* submitTest() {
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: "" }
+    });
+    yield put({
+      type: CLEAR_USER_WORK
     });
   } catch (err) {
     if (err.status === 403) {

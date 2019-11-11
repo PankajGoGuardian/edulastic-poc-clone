@@ -5,8 +5,7 @@ import { createSelector } from "reselect";
 
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
-import { test, roleuser } from "@edulastic/constants";
-
+import { test, testActivity } from "@edulastic/constants";
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -50,7 +49,13 @@ import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
 import { getAllQids } from "../SummaryBoard/Transformer";
-import { getUserRole } from "../../student/Login/ducks";
+import { getUserId } from "../../student/Login/ducks";
+
+const {
+  authorAssignmentConstants: {
+    assignmentStatus: { IN_GRADING, DONE }
+  }
+} = testActivity;
 
 const { testContentVisibility } = test;
 
@@ -499,23 +504,31 @@ export const getMarkAsDoneEnableSelector = createSelector(
   (classes, currentClass) => classes.includes(currentClass)
 );
 
+export const getAssignedBySelector = createSelector(
+  getAdditionalDataSelector,
+  state => get(state, "assignedBy", {})
+);
+
 export const isItemVisibiltySelector = createSelector(
   stateTestActivitySelector,
   getAdditionalDataSelector,
-  getUserRole,
-  (state, additionalData, role) => {
+  getUserId,
+  getAssignedBySelector,
+  (state, additionalData, userId, assignedBy) => {
     const assignmentStatus = state?.data?.status;
     const contentVisibility = additionalData?.testContentVisibility;
-    //Item can be visible for da and sa
-    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+    //For assigned by user content will be always visible.
+    if (userId === assignedBy?._id) {
       return true;
     }
+    //No key called testContentVisibility ?
     if (!additionalData?.hasOwnProperty("testContentVisibility")) {
       return true;
     }
+    // Enable for contentVisibility settings ALWAYS or settings GRADING and assignment status is grading or done.
     return (
       contentVisibility === testContentVisibility.ALWAYS ||
-      (assignmentStatus === "IN GRADING" && contentVisibility === testContentVisibility.GRADING)
+      ([IN_GRADING, DONE].includes(assignmentStatus) && contentVisibility === testContentVisibility.GRADING)
     );
   }
 );

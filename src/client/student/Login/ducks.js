@@ -335,6 +335,11 @@ export const getUserRole = createSelector(
   r => r
 );
 
+export const getUserId = createSelector(
+  ["user.user._id"],
+  _id => _id
+);
+
 export const getUserFeatures = createSelector(
   ["user.user.features"],
   features => features

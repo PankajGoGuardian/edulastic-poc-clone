@@ -21,4 +21,5 @@ export const Wrapper = styled.div`
   .inline-label {
     margin-right: 10px;
   }
+  height: 100%;
 `;

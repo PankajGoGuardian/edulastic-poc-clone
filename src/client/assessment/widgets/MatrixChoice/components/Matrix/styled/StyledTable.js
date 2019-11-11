@@ -51,6 +51,7 @@ export const StyledTable = styled(Table)`
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
         color: ${mainTextColor};
         min-width: 110px;
+        height: 50px;
       }
       td div {
         padding: 6px;

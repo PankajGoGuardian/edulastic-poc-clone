@@ -94,7 +94,9 @@ const validatedAnswers = (answers, responses, matrix, type) => {
   return result;
 };
 
-const MathSpan = WithMathFormula(styled.div``);
+const MathSpan = WithMathFormula(styled.div`
+  height: 100%;
+`);
 
 const Matrix = props => {
   const {

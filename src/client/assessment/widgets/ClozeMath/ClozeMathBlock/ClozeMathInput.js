@@ -221,7 +221,8 @@ class ClozeMathInput extends React.Component {
           ...btnStyle,
           margin: isV1Migrated ? "0px 2px 4px 2px" : "0 2px",
           display: "inline-block",
-          position: "relative"
+          position: "relative",
+          verticalAlign: "middle"
         }}
       >
         <Wrapper>

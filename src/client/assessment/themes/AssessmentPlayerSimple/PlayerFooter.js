@@ -36,6 +36,7 @@ const MainFooter = styled.div`
   position: absolute;
   bottom: 0px;
   padding: 22px 35px;
+  z-index: 1;
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;

@@ -27,7 +27,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
+const Header = ({ classHeader, fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
     fetchClassList({ data });
   };
@@ -41,6 +41,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
         <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
       </Title>
       <ButtonsWrapper>
+        {classHeader}
         {allowGoogleLogin !== false && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}

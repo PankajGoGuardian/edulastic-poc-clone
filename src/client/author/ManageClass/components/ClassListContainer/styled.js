@@ -11,7 +11,8 @@ import {
   secondaryTextColor,
   cardTitleColor,
   smallDesktopWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlusCircle } from "@edulastic/icons";
@@ -138,12 +139,38 @@ export const CreateClassButton = styled(Button)`
   }
 `;
 
-export const SyncButtons = styled(Button)`
+const ResponsiveButton = styled(Button)`
+  height: 36px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 45px;
+  }
+`;
+
+export const ClassStatusButton = styled(ResponsiveButton)`
+  width: 180px;
+  height: 36px;
+  font-size: ${props => props.theme.smallFontSize};
+  margin-right: 15px;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  svg {
+    fill: ${themeColor};
+  }
+`;
+
+export const SyncButtons = styled(ResponsiveButton)`
   ${ShareButtonStyle}
   color: ${themeColor};
   padding: 5px 20px;
   background-color: ${white};
-  margin-right: 20px;
+  margin-right: 15px;
   font-size: 11px;
   display:flex;
   align-items:center;
@@ -155,10 +182,8 @@ export const SyncButtons = styled(Button)`
   & > p{
     margin-left:8px;
   }
-  @media (min-width:${extraDesktopWidthMax}){
-    height:45px;
-  }
 `;
+
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
@@ -187,9 +212,7 @@ export const ClassSelect = styled.div`
     }
   }
 `;
-export const LabelMyClasses = styled.span`
-  margin-right: 10px;
-`;
+
 export const ClassListTable = styled(Table)`
   margin-top: 20px;
   .ant-table {

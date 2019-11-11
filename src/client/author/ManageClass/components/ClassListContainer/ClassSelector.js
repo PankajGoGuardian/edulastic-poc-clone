@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Menu, Dropdown } from "antd";
-
-import { ClassSelect, LabelMyClasses } from "./styled";
+import { Menu, Dropdown, Icon } from "antd";
+import { themeColor } from "@edulastic/colors";
+import { ClassSelect, ClassStatusButton } from "./styled";
 
 const options = ["Active Classes", "Archive Classes"];
 
@@ -28,8 +28,11 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
 
   return (
     <ClassSelect>
-      <LabelMyClasses>My Classes</LabelMyClasses>
-      <Dropdown.Button overlay={menu}> {filterClass || options[0]} </Dropdown.Button>
+      <Dropdown overlay={menu}>
+        <ClassStatusButton>
+          {filterClass || options[0]} <Icon color={themeColor} type="down" />
+        </ClassStatusButton>
+      </Dropdown>
     </ClassSelect>
   );
 };

@@ -6,8 +6,8 @@ import { SMALL_DESKTOP_WIDTH } from "../../constants/others";
 
 class ToolbarModal extends React.Component {
   checkAnswer = () => {
-    const { onClose, checkanswer } = this.props;
-    checkanswer();
+    const { onClose, checkAnswer } = this.props;
+    checkAnswer();
     onClose();
   };
 
@@ -60,6 +60,7 @@ class ToolbarModal extends React.Component {
         closable={false}
         bodyStyle={{ padding: 20 }}
         footer={null}
+        centered
         width="390px"
       >
         <Container>
@@ -71,12 +72,24 @@ class ToolbarModal extends React.Component {
             </>
           )}
 
-          <StyledButton onClick={() => this.pointer()}>Pointer</StyledButton>
-          <StyledButton onClick={() => this.inchRuler()}>Inch Ruler</StyledButton>
-          <StyledButton onClick={() => this.centimeterRuler()}>Centimeter Ruler</StyledButton>
-          <StyledButton onClick={() => this.calculator()}>Calculator</StyledButton>
-          <StyledButton onClick={() => this.eliminationQuestion()}>Elimination Question</StyledButton>
-          <StyledButton onClick={() => this.procractorRuler()}>Procractor Ruler</StyledButton>
+          <StyledButton onClick={() => this.pointer()} hidden>
+            Pointer
+          </StyledButton>
+          <StyledButton onClick={() => this.inchRuler()} hidden>
+            Inch Ruler
+          </StyledButton>
+          <StyledButton onClick={() => this.centimeterRuler()} hidden>
+            Centimeter Ruler
+          </StyledButton>
+          <StyledButton onClick={() => this.calculator()} hidden>
+            Calculator
+          </StyledButton>
+          <StyledButton onClick={() => this.eliminationQuestion()} hidden>
+            Elimination Question
+          </StyledButton>
+          <StyledButton onClick={() => this.procractorRuler()} hidden>
+            Procractor Ruler
+          </StyledButton>
           <StyledButton>Scratchpad</StyledButton>
         </Container>
       </Modal>
@@ -110,6 +123,7 @@ const StyledButton = styled(Button)`
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.3px;
+  ${props => props.hidden && "display:none"}
   &:active,
   &:focus,
   &:hover {

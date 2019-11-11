@@ -39,7 +39,7 @@ class Uploader extends React.Component {
 
     const uploadButton = (
       <Container height={height}>
-        <Image src={url} alt="Test" />
+        <Image height={height} src={url} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
@@ -59,7 +59,7 @@ class Uploader extends React.Component {
         <Upload {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
-              {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
+              {imageUrl ? <Image height={height} src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
             </ImageContainer>
             <Camera>
               <IconPhotoCamera color={white} width="20px" />
@@ -113,7 +113,7 @@ const UploadWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? "unset" : "100%")};
+  min-height: ${props => props.height}px;
   border-radius: 5px;
 `;
 

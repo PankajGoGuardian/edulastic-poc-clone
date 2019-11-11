@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { isEmpty, find, get } from "lodash";
-import { Form, Divider, Spin } from "antd";
+import { Form, Spin, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer } from "@edulastic/common";
+import { Paper } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { updateClassAction, fetchStudentsByIdAction, setSubjectAction } from "../../ducks";
@@ -168,45 +168,45 @@ class ClassEdit extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Header classId={classId} />
         <Spin spinning={updating}>
-          <Container padding="30px">
-            <Divider orientation="left">
+          <Container>
+            <Paper padding="40px">
               <FormTitle>Class Details</FormTitle>
-            </Divider>
-            <FlexContainer alignItems="baseline">
-              <LeftContainer>
-                <LeftFields
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  thumbnailUri={thumbnail}
-                  tags={tags}
-                  setFieldsValue={setFieldsValue}
-                  allTagsData={allTagsData}
-                  addNewTag={addNewTag}
-                />
-              </LeftContainer>
-              <RightContainer>
-                <RightFields
-                  defaultName={name}
-                  defaultStartDate={startDate}
-                  defaultEndDate={endDate}
-                  defaultGrade={grades}
-                  defaultSubject={subject}
-                  defaultStandardSets={standardSets}
-                  defaultCourse={course}
-                  defaultSchool={institutionId}
-                  curriculums={curriculums}
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  courseList={courseList}
-                  searchCourse={this.searchCourse}
-                  isSearching={isSearching}
-                  clearStandards={this.clearStandards}
-                  filteredCurriculums={filteredCurriculums}
-                  setSubject={setSubject}
-                  subject={selectedSubject}
-                />
-              </RightContainer>
-            </FlexContainer>
+              <Row gutter={36}>
+                <LeftContainer xs={8}>
+                  <LeftFields
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                    thumbnailUri={thumbnail}
+                    tags={tags}
+                    setFieldsValue={setFieldsValue}
+                    allTagsData={allTagsData}
+                    addNewTag={addNewTag}
+                  />
+                </LeftContainer>
+                <RightContainer xs={16}>
+                  <RightFields
+                    defaultName={name}
+                    defaultStartDate={startDate}
+                    defaultEndDate={endDate}
+                    defaultGrade={grades}
+                    defaultSubject={subject}
+                    defaultStandardSets={standardSets}
+                    defaultCourse={course}
+                    defaultSchool={institutionId}
+                    curriculums={curriculums}
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                    courseList={courseList}
+                    searchCourse={this.searchCourse}
+                    isSearching={isSearching}
+                    clearStandards={this.clearStandards}
+                    filteredCurriculums={filteredCurriculums}
+                    setSubject={setSubject}
+                    subject={selectedSubject}
+                  />
+                </RightContainer>
+              </Row>
+            </Paper>
           </Container>
         </Spin>
       </Form>

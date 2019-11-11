@@ -5,6 +5,7 @@ const Container = styled.div`
   width: 100%;
   overflow: auto;
   position: ${props => (props.scratchPadMode ? "relative" : "")};
+  overflow-y: hidden;
 `;
 
 export default Container;

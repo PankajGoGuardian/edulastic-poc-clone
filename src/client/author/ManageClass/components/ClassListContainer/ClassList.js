@@ -14,6 +14,7 @@ import { fetchStudentsByIdAction, fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
+import Header from "./Header";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -167,18 +168,22 @@ const ClassList = ({
     }
   ];
 
+  const classHeader = (
+    <ClassSelector
+      groups={groups}
+      archiveGroups={archiveGroups}
+      setClassGroups={setClassGroups}
+      filterClass={filterClass}
+      setFilterClass={setFilterClass}
+    />
+  );
+
   return (
     <>
+      <Header classHeader={classHeader} groups={groups} setShowDetails={setShowDetails} archiveGroups={archiveGroups} />
       <BreadCrumb data={breadCrumbData} style={{ position: "unset", padding: "15px 0px 0px 30px" }} />
       <TableWrapper>
         <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
-        <ClassSelector
-          groups={groups}
-          archiveGroups={archiveGroups}
-          setClassGroups={setClassGroups}
-          filterClass={filterClass}
-          setFilterClass={setFilterClass}
-        />
         {classGroups.length > 0 ? (
           <ClassListTable
             columns={columns}

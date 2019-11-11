@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import Header from "./Header";
 import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
-import { Spin } from "antd";
 import ShowSyncDetailsModal from "./ShowSyncDetailsModal";
 
 // eslint-disable-next-line max-len
@@ -30,7 +28,6 @@ const ClassListContainer = ({
 
   return (
     <React.Fragment>
-      <Header allowGoogleLogin={allowGoogleLogin} />
       <ClassSelectModal
         style={{ width: "700px" }}
         visible={isModalVisible}

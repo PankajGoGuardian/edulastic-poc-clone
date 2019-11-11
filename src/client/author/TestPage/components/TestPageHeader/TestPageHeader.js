@@ -143,7 +143,6 @@ const TestPageHeader = ({
   testAssignments,
   match
 }) => {
-  console.log("match", match);
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);

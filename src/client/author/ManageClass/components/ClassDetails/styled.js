@@ -317,6 +317,9 @@ export const Image = styled.img`
   @media (max-width: ${mediumDesktopExactWidth}) {
     height: 100%;
   }
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 60%;
+  }
 `;
 
 export const MidWrapper = styled.div``;

@@ -147,7 +147,7 @@ class Container extends PureComponent {
       clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
-      if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.DISTRICT_ADMIN) {
+      if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
         setData({ testType: test.type.COMMON });
       }
     }

@@ -191,7 +191,7 @@ class ClassEdit extends React.Component {
                     defaultGrade={grades}
                     defaultSubject={subject}
                     defaultStandardSets={standardSets}
-                    defaultCourse={course}
+                    defaultCourse={course || undefined}
                     defaultSchool={institutionId}
                     curriculums={curriculums}
                     getFieldDecorator={getFieldDecorator}

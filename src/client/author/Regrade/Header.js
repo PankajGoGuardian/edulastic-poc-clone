@@ -1,7 +1,7 @@
 import React from "react";
+import { FlexContainer } from "@edulastic/common";
 import HeaderWrapper from "../src/mainContent/headerWrapper";
 import { Title, ApplyButton } from "./styled";
-import { FlexContainer } from "@edulastic/common";
 
 const Header = ({ onApplySettings, onCancelRegrade }) => {
   return (

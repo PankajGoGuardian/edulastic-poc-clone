@@ -1,5 +1,5 @@
-import { Button, Table } from "antd";
-import { white, boxShadowDefault, themeColor } from "@edulastic/colors";
+import { Table, Button } from "antd";
+import { white, boxShadowDefault, themeColor, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -18,11 +18,22 @@ export const Title = styled.h1`
 
 export const ApplyButton = styled(Button)`
   background: ${white};
-  border: 0;
   color: ${themeColor};
-  padding: 6px 35px;
-  font-size: 16px;
-  height: auto;
+  padding: 0px 30px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  font-weight: 600;
+  &:hover,
+  &:focus {
+    background: ${white};
+    color: ${themeColor};
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 45px;
+  }
 `;
 
 export const StyledTable = styled(Table)`

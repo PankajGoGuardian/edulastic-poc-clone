@@ -156,8 +156,10 @@ function* receiveStudentQuestionSaga({ payload }) {
       feedbackResponse = yield call(classResponseApi.receiveStudentItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.receiveStudentQuestionResponse, payload);
-      const { qid, score } = feedbackResponse;
-      yield put(setTeacherEditedScore({ [qid]: score }));
+      const { qid, score, autoGrade } = feedbackResponse;
+      if (!autoGrade) {
+        yield put(setTeacherEditedScore({ [qid]: score }));
+      }
     }
 
     yield put({

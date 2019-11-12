@@ -30,9 +30,14 @@ const reducer = (state = initialState, { type, payload }) => {
       }
       return produce(state, _state => {
         _state.data.testActivity = testActivity;
-        for (const [index, qAct] of questionActivities.entries()) {
+        for (const qAct of questionActivities) {
           const { testActivityId, score, maxScore, ...questionItem } = qAct;
-          Object.assign(_state.data.questionActivities[index], { ...questionItem, score });
+          const qActPayload = _state.data.questionActivities.find(({ qid }) => qAct.qid === qid);
+          if (qActPayload) {
+            Object.assign(qActPayload, { ...questionItem, score });
+          } else {
+            console.warn("Payload qAct.id is missing in the state qAct.id", qAct);
+          }
         }
       });
     case RECEIVE_STUDENT_RESPONSE_ERROR:

@@ -65,7 +65,7 @@ class AssessmentPlayerSimple extends React.Component {
     showHints: false,
     testItemState: "",
     toolsOpenStatus: [0],
-    history: [{ points: [], pathes: [], figures: [], texts: [] }],
+    history: 0,
     calcBrand: "EDULASTIC"
   };
 
@@ -146,6 +146,7 @@ class AssessmentPlayerSimple extends React.Component {
   handleUndo = () => {
     const { undoScratchPad } = this.props;
     const { history } = this.state;
+    console.log(history);
     if (history > 0) {
       this.setState(
         state => ({ history: state.history - 1 }),

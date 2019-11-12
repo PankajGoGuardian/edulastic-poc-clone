@@ -2,9 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Modal } from "antd";
-import { SMALL_DESKTOP_WIDTH } from "../../constants/others";
+import { get } from "lodash";
+import { showHintButton } from "../../utils/test";
 
 class ToolbarModal extends React.Component {
+  toolbarHandler = value => {
+    const { changeTool, onClose } = this.props;
+    changeTool(value);
+    onClose();
+  };
   checkAnswer = () => {
     const { onClose, checkAnswer } = this.props;
     checkAnswer();
@@ -52,7 +58,18 @@ class ToolbarModal extends React.Component {
   };
 
   render() {
-    const { isVisible, onClose, windowWidth } = this.props;
+    const {
+      settings,
+      isVisible,
+      onClose,
+      isNonAutoGradable = false,
+      toggleBookmark,
+      isBookmarked = false,
+      items,
+      currentItem: currentItemIndex,
+      handletoggleHints
+    } = this.props;
+    const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
     return (
       <Modal
         visible={isVisible}
@@ -64,14 +81,13 @@ class ToolbarModal extends React.Component {
         width="390px"
       >
         <Container>
-          {windowWidth <= SMALL_DESKTOP_WIDTH && (
-            <>
-              <StyledButton onClick={() => this.checkAnswer()}>Check Answer</StyledButton>
-              <StyledButton onClick={() => this.hint()}>Hint</StyledButton>
-              <StyledButton onClick={() => this.bookmark()}>Bookmark</StyledButton>
-            </>
+          {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
+            <StyledButton onClick={() => this.checkAnswer()}>Check Answer</StyledButton>
           )}
-
+          {!!showHintButton(questions) && <StyledButton onClick={handletoggleHints}>Hint</StyledButton>}
+          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+            Bookmark
+          </StyledButton>
           <StyledButton onClick={() => this.pointer()} hidden>
             Pointer
           </StyledButton>
@@ -90,7 +106,7 @@ class ToolbarModal extends React.Component {
           <StyledButton onClick={() => this.procractorRuler()} hidden>
             Procractor Ruler
           </StyledButton>
-          <StyledButton>Scratchpad</StyledButton>
+          <StyledButton onClick={() => this.toolbarHandler(5)}>Scratchpad</StyledButton>
         </Container>
       </Modal>
     );

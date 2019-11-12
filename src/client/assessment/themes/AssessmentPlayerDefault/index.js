@@ -21,7 +21,6 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
-import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 import ReportIssuePopover from "../common/ReportIssuePopover";
 
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
@@ -43,12 +42,7 @@ import {
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
-import {
-  SMALL_DESKTOP_WIDTH,
-  MAX_MOBILE_WIDTH,
-  MEDIUM_DESKTOP_WIDTH,
-  IPAD_LANDSCAPE_WIDTH
-} from "../../constants/others";
+import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
@@ -75,7 +69,7 @@ class AssessmentPlayerDefault extends React.Component {
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
-      history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
+      history: 0,
       calculateMode: `${settings.calcType}_EDULASTIC`,
       currentToolMode: [0],
       showHints: false,
@@ -381,7 +375,7 @@ class AssessmentPlayerDefault extends React.Component {
 
     const navZoomStyle = { zoom: themeToPass?.header?.navZoom };
     const isZoomApplied = zoomLevel > "1";
-    const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
+    const showSettingIcon = windowWidth < IPAD_LANDSCAPE_WIDTH || isZoomGreator("md", themeToPass?.zoomLevel);
     let headerZoom = 1;
     if (isZoomApplied) {
       headerZoom = zoomLevel >= "1.75" ? "1.35" : "1.25";
@@ -403,7 +397,6 @@ class AssessmentPlayerDefault extends React.Component {
 
     const rightButtons = (
       <SaveAndExit
-        openSettings={() => setSettingsModalVisibility(true)}
         previewPlayer={previewPlayer}
         showZoomBtn
         finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
@@ -441,6 +434,16 @@ class AssessmentPlayerDefault extends React.Component {
               onClose={() => this.closeToolbarModal()}
               checkAnswer={() => this.changeTabItemState("check")}
               windowWidth={windowWidth}
+              answerChecksUsedForItem={answerChecksUsedForItem}
+              settings={settings}
+              items={items}
+              currentItem={currentItem}
+              isNonAutoGradable={isNonAutoGradable}
+              checkAnswer={() => this.changeTabItemState("check")}
+              toggleBookmark={() => toggleBookmark(item._id)}
+              isBookmarked={isBookmarked}
+              handletoggleHints={this.showHideHints}
+              changeTool={this.changeTool}
             />
           </FeaturesSwitch>
           {!previewPlayer && (
@@ -507,7 +510,7 @@ class AssessmentPlayerDefault extends React.Component {
                               />
                             </Tooltip>
                           )}
-                          {windowWidth >= SMALL_DESKTOP_WIDTH && (
+                          {!showSettingIcon && (
                             <TestButton
                               answerChecksUsedForItem={answerChecksUsedForItem}
                               settings={settings}
@@ -520,7 +523,7 @@ class AssessmentPlayerDefault extends React.Component {
                               handletoggleHints={this.showHideHints}
                             />
                           )}
-                          {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", themeToPass?.zoomLevel) && (
+                          {!showSettingIcon && (
                             <ToolBar
                               settings={settings}
                               calcBrands={calcBrands}
@@ -647,8 +650,7 @@ const enhance = compose(
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
-      clearUserWork: clearUserWorkAction,
-      setSettingsModalVisibility: setSettingsModalVisibilityAction
+      clearUserWork: clearUserWorkAction
     }
   )
 );

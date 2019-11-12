@@ -104,33 +104,30 @@ const Main = styled.main`
 `;
 
 const MainContent = styled.div`
-  /* background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor}; */
+  background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
   border-radius: 10px;
-  text-align: left;
   font-size: 18px;
   overflow: auto;
-  height: calc(100vh - 44px);
-  padding: 70px 40px 70px 40px;
-
+  height: calc(100vh - 200px);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  margin: 90px 40px 45px 40px;
+  border-radius: 10px;
   & * {
     -webkit-touch-callout: none;
     user-select: none;
   }
-  
+
   & input {
     user-select: text;
-
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
-    padding: 70px 35px 70px 35px;
   }
 
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    padding: 65px 35px 70px 35px;
+    margin: 90px 10px 45px 10px;
   }
 
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    padding: 80px 16px 70px 16px;
+    margin-top: 110px;
   }
 `;
 

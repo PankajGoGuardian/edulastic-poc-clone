@@ -24,8 +24,9 @@ import {
   MainActionWrapper
 } from "../common";
 
-import { MEDIUM_DESKTOP_WIDTH, MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
+import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import { isZoomGreator } from "../../../common/utils/helpers";
 import ToolbarModal from "../common/ToolbarModal";
@@ -51,7 +52,7 @@ const PlayerHeader = ({
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
   const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
-  const showSettingIcon = windowWidth < MEDIUM_DESKTOP_WIDTH || isZoomGreator("md", theme.zoomLevel);
+  const showSettingIcon = windowWidth < IPAD_LANDSCAPE_WIDTH || isZoomGreator("md", theme.zoomLevel);
   let isNonAutoGradable = false;
   const item = items[currentItem];
   if (item.data && item.data.questions) {
@@ -63,7 +64,7 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
-  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} />;
+  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} showZoomBtn />;
 
   return (
     <Fragment>
@@ -72,7 +73,18 @@ const PlayerHeader = ({
         onClose={() => setToolbarModalVisible(false)}
         checkAnswer={checkAnswer}
         windowWidth={windowWidth}
+        answerChecksUsedForItem={answerChecksUsedForItem}
+        settings={settings}
+        items={items}
+        currentItem={currentItem}
+        isNonAutoGradable={isNonAutoGradable}
+        checkAnswer={checkAnswer}
+        toggleBookmark={() => toggleBookmark(item._id)}
+        isBookmarked={isBookmarked}
+        handletoggleHints={onshowHideHints}
+        changeTool={toggleToolsOpenStatus}
       />
+      <SettingsModal />
       <Header>
         <HeaderMainMenu skinb="true">
           <HeaderPracticePlayer>
@@ -103,7 +115,7 @@ const PlayerHeader = ({
                     </Tooltip>
                   </ToolTipContainer>
                 )}
-                {windowWidth >= IPAD_LANDSCAPE_WIDTH && (
+                {!showSettingIcon && (
                   <TestButton
                     answerChecksUsedForItem={answerChecksUsedForItem}
                     settings={settings}
@@ -116,7 +128,7 @@ const PlayerHeader = ({
                     handletoggleHints={onshowHideHints}
                   />
                 )}
-                {windowWidth >= IPAD_LANDSCAPE_WIDTH && !isZoomGreator("md", theme.zoomLevel) && (
+                {!showSettingIcon && (
                   <ToolBar
                     settings={settings}
                     calcBrands={calcBrands}

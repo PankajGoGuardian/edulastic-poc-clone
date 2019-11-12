@@ -1,14 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
+import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 
-const SaveAndExit = ({ finishTest, previewPlayer, openSettings, showZoomBtn, onSubmit }) => (
+const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, showZoomBtn, onSubmit }) => (
   <FlexContainer>
     {showZoomBtn && (
-      <StyledButton onClick={openSettings}>
+      <StyledButton onClick={() => setSettingsModalVisibility(true)}>
         <IconContrast />
       </StyledButton>
     )}
@@ -38,7 +40,12 @@ SaveAndExit.defaultProps = {
   onSubmit: null
 };
 
-export default SaveAndExit;
+export default connect(
+  null,
+  {
+    setSettingsModalVisibility: setSettingsModalVisibilityAction
+  }
+)(SaveAndExit);
 
 const StyledButton = styled(Button)`
   border: none;

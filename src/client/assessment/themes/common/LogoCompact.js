@@ -5,12 +5,17 @@ import { FlexContainer } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import { IconLogoCompact } from "@edulastic/icons";
 import { MAX_MOBILE_WIDTH, IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import { Tooltip } from "antd";
 
 const LogoCompact = ({ isMobile, buttons, title }) => (
   <LogoCompactContainer>
     <LogoCompactIcon marginRight="12px" />
     {isMobile && buttons}
-    {title && <PlayerTitle>{title}</PlayerTitle>}
+    {title && (
+      <Tooltip title={title}>
+        <PlayerTitle>{title}</PlayerTitle>
+      </Tooltip>
+    )}
   </LogoCompactContainer>
 );
 
@@ -45,6 +50,10 @@ const LogoCompactIcon = styled(IconLogoCompact)`
 `;
 
 const PlayerTitle = styled.h1`
+  max-width: 350px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   zoom: ${({ theme }) => theme?.widgets?.assessmentPlayers?.textZoom};
   font-size: ${props => props.theme.widgets.assessmentPlayerSimple.headerTitleFontSizeLarge};
   font-weight: bold;
@@ -55,9 +64,7 @@ const PlayerTitle = styled.h1`
     font-size: ${props => props.theme.widgets.assessmentPlayerSimple.headerFilterFontSizeSmall};
   }
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    max-width: 160px;
   }
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     display: none;

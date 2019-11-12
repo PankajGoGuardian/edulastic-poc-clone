@@ -70,10 +70,11 @@ function create(board, object, settings = {}) {
 
 function onHandler(board, event, id = null) {
   const coords = board.getCoords(event).usrCoords;
+  const elements = board.elements.concat(board.getTempPoints(), board.bgElements);
   const object = {
     x: coords[1],
     y: coords[2],
-    label: nameGen(board.elements.concat(board.getTempPoints())),
+    label: nameGen(elements),
     labelIsVisible: true,
     pointIsVisible: true,
     baseColor: colorGenerator(board.elements.length),

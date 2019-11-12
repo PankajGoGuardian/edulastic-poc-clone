@@ -5,7 +5,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" type question`, () => {
   const queData = {
-    group: "Written & Spoken",
+    group: "Reading & Comprehension",
     queType: "Short text",
     queText: "What is the capital of India?",
     extlink: "www.testdomain.com",
@@ -84,9 +84,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
     it(" > [essay_short_s3] => preview - validate ans with partial match option", () => {
       // change setting to partial matchs
       question.header.edit();
-      editItem.getEditButton().click();
+      //editItem.getEditButton().click();
       question.selectAllowType(ALLOW_METHOD.partial);
-      question.header.save();
+      // question.header.save();
 
       preview = editItem.header.preview();
       // verify right ans

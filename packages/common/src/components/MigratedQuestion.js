@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const MigratedQuestion = styled.div`
-  display: inline-block;
+  display: inline;
   width: 100%;
   height: 100%;
   pre {

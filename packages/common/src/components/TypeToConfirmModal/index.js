@@ -33,7 +33,7 @@ class TypeToConfirmModal extends Component {
     if (textValue.toLowerCase() !== wordToBeTyped.toLowerCase()) {
       this.setState({
         ...this.state,
-        errorMsg: textValue.trim().length ? "Confirmation text did not match." : "Please enter confimation text."
+        errorMsg: textValue.trim().length ? "Confirmation text did not match." : "Please enter confirmation text."
       });
     } else {
       this.setState({

@@ -208,11 +208,13 @@ export const transformGradeBookResponse = (
     return testItem;
   });
   const testItemIds = test.testItems.map(o => o._id);
+  const testItemIdsSet = new Set(testItemIds);
+  testQuestionActivities = testQuestionActivities.filter(x => testItemIdsSet.has(x.testItemId));
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
-  for (const itemId of Object.keys(questionActivitiesGrouped).filter(x => testItemIds.includes(x))) {
+  for (const itemId of Object.keys(questionActivitiesGrouped)) {
     const notGradedPresent = questionActivitiesGrouped[itemId].find(x => x.graded === false);
     const { itemLevelScoring } = testItemsDataKeyed[itemId];
     if (itemLevelScoring && notGradedPresent) {

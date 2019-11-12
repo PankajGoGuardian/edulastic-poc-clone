@@ -622,7 +622,13 @@ function* updateTestSaga({ payload }) {
       payload.data.testItems.map(o => ({
         itemId: o._id,
         maxScore: scoring[o._id] || helpers.getPoints(o),
-        questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
+        questions: o.data
+          ? helpers.getQuestionLevelScore(
+              o.data.questions,
+              helpers.getPoints(o),
+              scoring[o._id] || helpers.getPoints(o)
+            )
+          : {}
       }));
 
     const entity = yield call(testsApi.update, payload);

@@ -79,7 +79,7 @@ const Shell = ({
     addItem,
     submitActivity,
     redirect: redirectCheck,
-    "assignment:close": closeAssignment,
+    // "assignment:close": closeAssignment,
     assignment: realtimeUpdateAssignment
     //TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,

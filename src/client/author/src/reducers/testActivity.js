@@ -139,10 +139,11 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT:
       nextState = produce(state, _st => {
-        const { testActivityId } = payload;
+        const { testActivityId, graded } = payload;
         const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
         if (entityIndex != -1) {
           _st.entities[entityIndex].status = "submitted";
+          _st.entities[entityIndex].graded = graded;
           for (let qAct of _st.entities[entityIndex].questionActivities) {
             if (qAct.notStarted) {
               qAct.skipped = true;
@@ -286,7 +287,7 @@ const reducer = (state = initialState, { type, payload }) => {
         additionalData: {
           ...state.additionalData,
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId),
-          closed: true,
+          // closed: true,
           classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
         }
       };

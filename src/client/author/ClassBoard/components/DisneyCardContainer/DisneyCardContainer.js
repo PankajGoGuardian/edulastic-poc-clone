@@ -118,10 +118,12 @@ class DisneyCardContainer extends Component {
           status.status = "In Progress";
           status.color = yellow;
         } else if (student.status === "submitted") {
-          if (student.graded) {
+          if (student?.graded === "GRADED") {
             status.status = "Graded";
+          } else if (student?.graded === "IN GRADING") {
+            status.status = "In Grading";
           } else {
-            status.status = "Submitted";
+            status.status = student?.graded;
           }
           status.color = themeColorLighter;
         } else if (student.status === "redirected") {

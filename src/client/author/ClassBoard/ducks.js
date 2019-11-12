@@ -17,7 +17,8 @@ import {
   setCurrentTestActivityIdAction,
   setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
-  updateSubmittedStudentsAction
+  updateSubmittedStudentsAction,
+  receiveTestActivitydAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -155,6 +156,7 @@ function* closeAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.closeAssignment, payload);
     yield put(updateCloseAssignmentsAction(payload.classId));
+    yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
     yield call(message.error, "Failed to close");

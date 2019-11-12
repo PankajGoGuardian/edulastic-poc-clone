@@ -293,7 +293,7 @@ export const transformGradeBookResponse = (
         //TODO: for now always present
         const present = true;
         //TODO: no graded status now. using submitted as a substitute for graded
-        const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
+        const graded = testActivity.graded;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
         const { _id: testActivityId, groupId, previouslyRedirected: redirected } = testActivity;

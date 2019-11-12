@@ -161,6 +161,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   login.onClickSignin();
   cy.wait("@auth");
   if (role === "teacher") cy.wait("@teacherDashboard");
+  else cy.wait("@assignment");
 });
 
 Cypress.Commands.add(

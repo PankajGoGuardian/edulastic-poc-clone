@@ -61,11 +61,16 @@ class StudentTestPage {
   }
 
   //  click on finish test
-  clickOnExitTest = () =>
-    cy
-      .get("[data-cy=finishTest]")
-      .should("be.visible")
-      .click();
+  clickOnExitTest = () => {
+    cy.url().then(url => {
+      if (Cypress.$('[data-cy="finishTest"]').length === 1) {
+        cy.get("[data-cy=finishTest]")
+          .should("be.visible")
+          .click();
+        this.clickOnProceed();
+      }
+    });
+  };
 
   clickOnCancel = () =>
     cy
@@ -575,6 +580,10 @@ class StudentTestPage {
     cy.get('[data-cy="progressItem"]').should("contain.text", `${qIndex + 1} / ${total} Completed`);
   };
 
+  verifyQuestionLeft = (qIndex, total) => {
+    cy.get('[data-cy="questionLeftToAttempt"]').should("contain.text", `${total - qIndex} Left`);
+  };
+
   attemptAssignment = (email, status, attempt, questionTypeMap, password, aType = "CLASS_ASSESSMENT") => {
     if (status !== studentSide.NOT_STARTED) {
       cy.login("student", email, password);
@@ -584,7 +593,8 @@ class StudentTestPage {
         const { attemptData } = questionTypeMap[queNum];
         if (aType === "PRACTICE_ASSESSMENT") {
           this.verifySideBar(index);
-          this.verifyTopProgress(index, att.length);
+          // this.verifyTopProgress(index, att.length);
+          this.verifyQuestionLeft(index, att.length);
         }
         this.attemptQuestion(queType, attempt[queNum], attemptData);
         this.clickOnNext();

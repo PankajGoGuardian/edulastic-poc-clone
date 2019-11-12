@@ -51,7 +51,7 @@ export const queColor = {
   CLEAR_DAY: "rgb(225, 251, 242)",
   LIGHT_GREEN: "rgba(0, 173, 80, 0.19)",
   LIGHT_RED: "rgba(238, 22, 88, 0.15)",
-  GREEN_1: "rgb(66, 209, 132)"
+  GREEN_1: "rgb(0, 173, 80)"
 };
 
 export const questionGroup = {

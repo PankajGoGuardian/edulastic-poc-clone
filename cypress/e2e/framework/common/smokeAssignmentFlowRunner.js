@@ -83,6 +83,10 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
   context("> scoring policy - 'Release scores only'", () => {
     const { email, status, attempt, stuName } = attemptsData[1];
+    // TODO: remove below once find permanent solution for Leave Site pop up
+    before(() => {
+      test.clickOnExitTest();
+    });
 
     it(`> teacher update release grade policy - ${releaseGradeTypes.SCORE_ONLY}`, () => {
       cy.login("teacher", teacher, password);
@@ -103,6 +107,10 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
   context("> scoring policy - 'Release scores and student responses'", () => {
     const { email, status, attempt, stuName } = attemptsData[2];
+    // TODO: remove below once find permanent solution for Leave Site pop up
+    before(() => {
+      test.clickOnExitTest();
+    });
 
     it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_RESPONSE}`, () => {
       cy.login("teacher", teacher, password);
@@ -128,6 +136,10 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
   context("> scoring policy - 'Release scores,student responses and correct answers'", () => {
     const { email, status, attempt, stuName } = attemptsData[3];
+    // TODO: remove below once find permanent solution for Leave Site pop up
+    before(() => {
+      test.clickOnExitTest();
+    });
 
     it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_ANSWERS}`, () => {
       cy.login("teacher", teacher, password);
@@ -153,6 +165,8 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
   context("> verify teacher lcb", () => {
     before(() => {
+      // TODO: remove below once find permanent solution for Leave Site pop up
+      test.clickOnExitTest();
       cy.login("teacher", teacher, password);
       teacherSideBar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);

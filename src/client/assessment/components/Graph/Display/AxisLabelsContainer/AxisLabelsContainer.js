@@ -405,6 +405,16 @@ class AxisLabelsContainer extends PureComponent {
           <span />
         </WithResources>
         <GraphWrapper>
+          {!disableResponse && (
+            <StyledToolsContainer>
+              <Tools
+                controls={this.controls}
+                onSelectControl={this.onSelectControl}
+                onSelect={() => {}}
+                fontSize={layout?.fontSize}
+              />
+            </StyledToolsContainer>
+          )}
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
@@ -421,16 +431,6 @@ class AxisLabelsContainer extends PureComponent {
                 />
               )}
               <div style={{ position: "relative", overflow: "auto" }}>
-                {!disableResponse && (
-                  <StyledToolsContainer>
-                    <Tools
-                      controls={this.controls}
-                      onSelectControl={this.onSelectControl}
-                      onSelect={() => {}}
-                      fontSize={layout?.fontSize}
-                    />
-                  </StyledToolsContainer>
-                )}
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
                 <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               </div>

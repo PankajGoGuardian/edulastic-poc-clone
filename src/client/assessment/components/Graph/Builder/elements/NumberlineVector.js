@@ -227,13 +227,14 @@ const onHandler = (board, coord) => {
 const renderAnswer = (board, config, pointIncluded, toRightDirection) => {
   const isVertical = checkOrientation(board);
 
+  const yPos = board.stackResponses ? config.y : calcNumberlinePosition(board);
+
   const position = toRightDirection ? config.point1 : config.point2;
-  const visiblePointX = isVertical ? config.y : position;
-  const visiblePointY = isVertical ? position : config.y;
-  const invisiblePointY = config.y;
+  const visiblePointX = isVertical ? yPos : position;
+  const visiblePointY = isVertical ? position : yPos;
 
   const visiblePoint = drawPoint(board, visiblePointX, pointIncluded, true, config.pointColor, visiblePointY);
-  const invisiblePoint = drawVectorPoint(board, toRightDirection, invisiblePointY);
+  const invisiblePoint = drawVectorPoint(board, toRightDirection, yPos);
   return drawVectorLine(board, visiblePoint, invisiblePoint, toRightDirection, config.colors);
 };
 

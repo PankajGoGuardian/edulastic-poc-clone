@@ -288,7 +288,6 @@ class AxisSegmentsContainer extends PureComponent {
     }
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-
       if (
         numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
         numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing ||

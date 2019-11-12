@@ -89,6 +89,7 @@ export const MetaTitle = styled.span`
   font-size: 10px;
   font-weight: 600;
   color: #bbbfc4;
+  margin-left: 5px;
 `;
 
 export const AnalyticsContainer = styled(FlexContainer)`
@@ -96,7 +97,7 @@ export const AnalyticsContainer = styled(FlexContainer)`
 `;
 
 export const AnalyticsItem = styled(FlexContainer)`
-  margin-right: 31px;
+  margin-left: 20px;
 `;
 
 export const ErrorWrapper = styled.div`

@@ -8,6 +8,7 @@ const SVG = styled("svg")`
   left: ${({ left }) => left}px;
   stroke: ${({ stroke }) => (stroke === themeColor ? `${stroke} !important` : stroke)};
   background: ${({ backgroundColor }) => backgroundColor};
+  margin: ${({ margin }) => margin};
 
   :hover {
     fill: ${({ hoverColor }) => hoverColor};

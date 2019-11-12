@@ -14,7 +14,7 @@ import { tagsApi } from "@edulastic/api";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
-    <Icon color="#bbbfc4" width={20} height={20} />
+    <Icon color="#bbbfc4" width={15} height={15} />
     <MetaTitle>{title}</MetaTitle>
   </AnalyticsItem>
 );

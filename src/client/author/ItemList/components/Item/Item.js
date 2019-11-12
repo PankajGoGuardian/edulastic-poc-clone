@@ -109,7 +109,7 @@ class Item extends Component {
   };
 
   renderDetails = () => {
-    const { item } = this.props;
+    const { item, windowWidth } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const details = [
@@ -127,8 +127,8 @@ class Item extends Component {
         type: "id"
       },
       {
-        name: <ShareIcon />,
-        text: "9578 (1)"
+        name: windowWidth > 1024 ? <ShareIcon /> : "",
+        text: windowWidth > 1024 ? "9578 (1)" : ""
       },
       {
         name: <HeartIcon />,

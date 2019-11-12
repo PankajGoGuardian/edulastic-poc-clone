@@ -125,7 +125,7 @@ const ButtonStyle = styled(Button)`
 
 export const AddRemoveBtn = styled(ButtonStyle)`
   &.ant-btn {
-    border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)};
+    border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)} !important;
     color: ${props => (props.isAddOrRemove ? themeColor : red)};
     margin-top: 15px;
     justify-content: center;
@@ -249,6 +249,9 @@ export const DetailCategory = styled.div`
     }
   }
 
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-left: 10px;
+  }
   @media (max-width: ${tabletWidth}) {
     width: auto;
     margin-right: 0px;
@@ -301,9 +304,10 @@ export const Label = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  min-height: 26px;
-  padding: 6px 14px;
-  margin-right: 8px;
+  min-height: 23px;
+  padding: 4px 14px;
+  margin-right: 5px;
+  margin-bottom: 3px;
   border-radius: 5px;
   background: ${themeLightGrayBgColor};
 

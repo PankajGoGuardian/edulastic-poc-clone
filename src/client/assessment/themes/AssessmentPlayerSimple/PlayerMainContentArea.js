@@ -137,7 +137,7 @@ const MainContent = styled.div`
 const MainWrapper = styled.div`
   position: relative;
   width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 220px)" : "calc(100% - 65px)")};
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     width: 100%;
   }
 `;
@@ -147,7 +147,7 @@ const Sidebar = styled.div`
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
   padding-top: 85px;
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     display: none;
   }
 `;

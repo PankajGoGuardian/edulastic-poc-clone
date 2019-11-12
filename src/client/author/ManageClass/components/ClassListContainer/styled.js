@@ -10,12 +10,14 @@ import {
   lightGreySecondary,
   secondaryTextColor,
   cardTitleColor,
-  smallDesktopWidth,
   extraDesktopWidthMax,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  smallDesktopWidth,
+  borderGrey
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlusCircle } from "@edulastic/icons";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ClassCreateContainer = styled.div`
   width: 100%;
@@ -306,4 +308,175 @@ export const Tags = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const GoogleClassroomModal = styled(ConfirmationModal)`
+  min-width: 90%;
+  .ant-modal-content {
+    border-radius: 10px;
+    padding: 45px;
+    .ant-modal-header {
+      padding: 0px 0px 25px;
+      border: none;
+      .ant-modal-title {
+        span {
+          padding-bottom: 20px;
+          display: inline-block;
+          font-size: ${props => props.theme.headerTitle};
+          font-weight: ${props => props.theme.bold};
+        }
+        p {
+          font-size: ${props => props.theme.standardFont};
+          font-weight: ${props => props.theme.semiBold};
+        }
+      }
+    }
+    .ant-modal-body {
+      border-radius: 10px;
+    }
+    .ant-modal-footer {
+      .ant-btn {
+        width: 200px;
+        height: 40px;
+        border-radius: 4px;
+        font-size: ${props => props.theme.linkFontSize};
+        text-transform: uppercase;
+      }
+      .cancel-button {
+        background: transparent;
+        border: 1px solid ${themeColor};
+        color: ${themeColor};
+      }
+      .import-button {
+        background: ${themeColor};
+        border: 1px solid ${themeColor};
+        color: ${white};
+      }
+    }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    min-width: 95%;
+    .ant-modal-content {
+      padding: 25px;
+      .ant-modal-header {
+        padding: 0px 0px 25px;
+        .ant-modal-title {
+          span {
+            padding-bottom: 15px;
+            font-size: ${props => props.theme.titleSectionFontSize};
+            font-weight: ${props => props.theme.bold};
+          }
+          p {
+            font-size: ${props => props.theme.smallFontSize};
+            font-weight: ${props => props.theme.semiBold};
+          }
+        }
+      }
+
+      .ant-modal-footer {
+        .ant-btn {
+          width: 200px;
+          height: 36px;
+        }
+      }
+    }
+  }
+`;
+
+export const GoogleClassroomTable = styled(Table)`
+  .ant-table {
+    .ant-table-content {
+      .ant-table-body {
+        table {
+          border: none;
+          .ant-table-thead {
+            th {
+              border: none;
+              .ant-table-column-title {
+                white-space: nowrap;
+                font-size: ${props => props.theme.smallFontSize};
+              }
+            }
+            tr {
+              background: ${white};
+            }
+          }
+          .ant-table-tbody {
+            tr {
+              border-bottom: 11px solid ${white};
+            }
+            td {
+              border: none;
+              padding: 6px;
+              background: ${lightGreySecondary};
+              &.ant-table-selection-column {
+                background: ${white};
+              }
+            }
+          }
+        }
+        .ant-input,
+        .ant-select-selection {
+          border-radius: 2px;
+          border: 1px solid ${borderGrey};
+          .ant-select-selection__choice {
+            background: ${themeColor}33;
+            border-radius: 5px;
+            color: ${themeColor};
+            font-weight: ${props => props.theme.semiBold};
+            text-transform: uppercase;
+            font-size: ${props => props.theme.tagFontSize};
+            border: none;
+            border-radius: 2px;
+            i {
+              color: ${themeColor};
+            }
+          }
+        }
+      }
+      .ant-table-placeholder {
+        border: none;
+      }
+    }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    .ant-table {
+      .ant-table-content {
+        .ant-table-body {
+          table {
+            .ant-table-thead {
+              th {
+                .ant-table-column-title {
+                  font-size: ${props => props.theme.linkFontSize};
+                }
+              }
+            }
+            .ant-table-tbody {
+              tr {
+                border-bottom: 10px solid ${white};
+              }
+              td {
+                border: none;
+                padding: 6px;
+                background: ${lightGreySecondary};
+                &.ant-table-selection-column {
+                  background: ${white};
+                }
+              }
+            }
+          }
+          .ant-input,
+          .ant-select-selection {
+            font-size: ${props => props.theme.linkFontSize};
+            .ant-select-selection__choice {
+              font-weight: ${props => props.theme.semiBold};
+              font-size: ${props => props.theme.tagFontSize};
+            }
+          }
+        }
+      }
+    }
+  }
 `;

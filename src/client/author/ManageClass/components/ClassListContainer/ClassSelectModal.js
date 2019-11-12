@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Modal, Table, Select, Input, message, Button } from "antd";
+import { Table, Select, Input, message, Button } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { StyledSelect } from "./styled";
+import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { themeColorLight, white } from "@edulastic/colors";
+import { themeColorLight, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ClassListModal = ({
@@ -68,13 +68,15 @@ const ClassListModal = ({
       title: <b>{"GOOGLE CLASS CODE"}</b>,
       key: "enrollmentCode",
       width: "5%",
-      dataIndex: "enrollmentCode"
+      dataIndex: "enrollmentCode",
+      align: "left"
     },
     {
       title: <b>{"CLASS NAME"}</b>,
       key: "name",
       width: "20%",
       dataIndex: "name",
+      align: "center",
       render: (name, row, ind) => (
         <Input
           style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", width: "100%" }}
@@ -90,6 +92,7 @@ const ClassListModal = ({
       key: "grades",
       width: "15%",
       dataIndex: "grades",
+      align: "center",
       render: (_, row, ind) => (
         <StyledSelect
           disabled={selectedGroups.includes(row.enrollmentCode)}
@@ -113,6 +116,7 @@ const ClassListModal = ({
       key: "subject",
       width: "15%",
       dataIndex: "subject",
+      align: "center",
       render: (_, row, ind) => (
         <StyledSelect
           style={{ minWidth: "80px" }}
@@ -142,6 +146,7 @@ const ClassListModal = ({
       key: "standards",
       width: "30%",
       dataIndex: "standards",
+      align: "center",
       render: (_, row, ind) => {
         const standardsList = getFormattedCurriculumsSelector(state, { subject: row.subject });
         return (
@@ -174,6 +179,7 @@ const ClassListModal = ({
       key: "course",
       width: "15%",
       dataIndex: "course",
+      align: "center",
       render: (_, row, ind) => (
         <StyledSelect
           showSearch
@@ -215,15 +221,22 @@ const ClassListModal = ({
   };
 
   return (
-    <Modal
+    <GoogleClassroomModal
       visible={visible}
       onCancel={close}
       onOk={addGroups}
-      style={{ maxHeight: "80vh" }}
-      title={<b>{"Import Classes and Students from Google"}</b>}
-      width={"90%"}
-      bodyStyle={{ height: "calc(80vh - 150px)" }}
-      okText="SYNC"
+      centered={true}
+      title={
+        <>
+          <span>{"Import Classes and Students from Google"}</span>
+          <p>The following classes will be imported from you Google Classroom account.</p>
+          <p>
+            Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
+            successful, Students accounts will be automatically created in Edulastic.{" "}
+          </p>
+        </>
+      }
+      okText="IMPORT"
       cancelText="CANCEL"
       okButtonProps={{
         style: { "background-color": themeColorLight, "border-color": themeColorLight },
@@ -232,50 +245,24 @@ const ClassListModal = ({
       }}
       footer={
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            style={{ "border-color": themeColorLight, color: themeColorLight, padding: "5px 30px" }}
-            onClick={close}
-          >
+          <Button className="cancel-button" onClick={close}>
             CANCEL
           </Button>
-          <Button
-            onClick={addGroups}
-            loading={syncClassLoading}
-            style={{
-              color: white,
-              padding: "5px 30px",
-              borderColor: themeColorLight,
-              backgroundColor: themeColorLight
-            }}
-          >
-            SYNC
+          <Button className="import-button" onClick={addGroups} loading={syncClassLoading}>
+            IMPORT
           </Button>
         </div>
       }
-      cancelButtonProps={{}}
     >
-      <PerfectScrollbar>
-        <>
-          <p>
-            <b>The following classes will be imported from you Google Classroom account.</b>
-          </p>
-          <p>
-            <b>
-              Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import
-              is successful, Students accounts will be automatically created in Edulastic.{" "}
-            </b>
-          </p>
-          <Table
-            style={{ marginTop: "20px" }}
-            columns={columns}
-            dataSource={groups}
-            bordered
-            rowSelection={rowSelection}
-            pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
-          />
-        </>
-      </PerfectScrollbar>
-    </Modal>
+      <GoogleClassroomTable
+        style={{ width: "100%" }}
+        columns={columns}
+        dataSource={groups}
+        bordered
+        rowSelection={rowSelection}
+        pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
+      />
+    </GoogleClassroomModal>
   );
 };
 

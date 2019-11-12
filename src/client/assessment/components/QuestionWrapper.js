@@ -472,7 +472,7 @@ class QuestionWrapper extends Component {
             )}
             {/* STUDENT REPORT PAGE FEEDBACK */}
             {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
-              <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />
+              <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
             )}
 
             {isPrintPreview && (

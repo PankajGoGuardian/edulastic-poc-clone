@@ -88,20 +88,12 @@ ReportListContent.defaultProps = {
 };
 
 const Wrapper = styled.div`
-  padding: 1rem 0rem;
+  padding: 5px;
 `;
 
 const AssignmentsContent = styled.div`
   border-radius: 10px;
   z-index: 0;
   position: relative;
-  @media (min-width: 1200px) {
-    margin: ${props => (props.hasCollapseButtons ? "0px 30px 30px 30px" : "30px 30px")};
-  }
-  @media (max-width: 1060px) {
-    padding: 1.3rem 2rem 5rem 2rem;
-  }
-  @media (max-width: 480px) {
-    padding: 1rem 1rem 0rem 1rem;
-  }
+  margin: ${props => (props.hasCollapseButtons ? "0px 30px 30px 45px" : "16px 30px 30px 45px")};
 `;

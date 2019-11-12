@@ -33,7 +33,7 @@ TestActivitySubHeader.defaultProps = {
 };
 
 const Container = styled.div`
-  padding: 20px 40px 0px 40px;
+  padding: 0px 40px 0px 45px;
   display: flex;
 `;
 

@@ -147,7 +147,7 @@ const Sidebar = styled.div`
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
   padding-top: 85px;
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH}px) {
     display: none;
   }
 `;

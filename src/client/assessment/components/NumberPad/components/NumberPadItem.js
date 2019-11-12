@@ -6,9 +6,12 @@ import { withNamespaces } from "@edulastic/localization";
 
 import CharacterMap from "./CharacterMap";
 import NumberPadButton from "./NumberPadButton";
+import { EmptyWrapper } from "../styled/EmptyWrapper";
 
 const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
   const [visible, setVisible] = useState(false);
+
+  const isEmpty = label => label === "empty";
 
   return (
     <Popover
@@ -20,7 +23,7 @@ const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
       onVisibleChange={() => setVisible(!visible)}
     >
       <NumberPadButton buttonStyle={buttonStyle} onClick={() => setVisible(!visible)}>
-        {item.label}
+        {isEmpty(item.label) ? <EmptyWrapper>{item.label}</EmptyWrapper> : item.label}
       </NumberPadButton>
     </Popover>
   );

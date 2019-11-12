@@ -4,9 +4,12 @@ import PropTypes from "prop-types";
 import { NumberPadContext } from "..";
 import { ButtonWrapper } from "../styled/ButtonWrapper";
 import NumberPadButton from "./NumberPadButton";
+import { EmptyWrapper } from "../styled/EmptyWrapper";
 
 const CharacterMap = ({ onClick, buttonStyle }) => {
   const items = useContext(NumberPadContext);
+
+  const isEmpty = label => label === "empty";
 
   return (
     <ButtonWrapper style={{ flexWrap: "wrap" }}>
@@ -16,7 +19,7 @@ const CharacterMap = ({ onClick, buttonStyle }) => {
           onClick={() => onClick(item.value)}
           key={index}
         >
-          {item.label}
+          {isEmpty(item.label) ? <EmptyWrapper>{item.label}</EmptyWrapper> : item.label}
         </NumberPadButton>
       ))}
     </ButtonWrapper>

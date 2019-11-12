@@ -21,7 +21,8 @@ const Display = ({
   showQuestionNumber,
   userAnswer,
   changePreviewTab,
-  isReviewTab
+  isReviewTab,
+  t
 }) => {
   const { fractionProperties = {}, annotations = [] } = item;
   const fractionType = fractionProperties.fractionType;
@@ -59,7 +60,7 @@ const Display = ({
         </FlexContainer>
         {hasAnnotations && answerContext.isAnswerModifiable && (
           <FlexContainer>
-            <span style={{ marginRight: "5px" }}>Show Annotatations</span>
+            <span style={{ marginRight: "5px" }}>{t("component.fractionEditor.showAnnotations")}</span>
             <SwitchWrapper>
               <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
             </SwitchWrapper>
@@ -125,6 +126,7 @@ const Display = ({
 };
 
 Display.propTypes = {
+  t: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   item: PropTypes.object,
   saveAnswer: PropTypes.func.isRequired,

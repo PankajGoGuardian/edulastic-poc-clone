@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useRef } from "react";
 import { Select } from "antd";
 
 import { SelectContainer } from "./styled/SelectContainer";
@@ -15,28 +15,41 @@ const AnswerDropdown = ({
   defaultValue,
   placeholder,
   fontSize
-}) => (
-  <SelectContainer style={style} fontSize={fontSize} backgroundColor={backgroundColor}>
-    <Select
+}) => {
+  const dropdownContainerRef = useRef(null);
+  const menuStyle = {
+    top: `${dropdownContainerRef.current?.clientHeight}px !important` || "auto",
+    left: "0 !important"
+  };
+  return (
+    <SelectContainer
+      menuStyle={menuStyle}
+      ref={dropdownContainerRef}
       style={style}
-      placeholder={placeholder}
-      disabled={disabled}
-      data-cy={`dropdown-res-${responseIndex}`}
-      getPopupContainer={triggerNode => triggerNode.parentNode}
-      value={defaultValue || undefined} // placeholder doesn't work if value is empty string
-      dropdownStyle={dropdownStyle}
-      onChange={value => {
-        onChange(value);
-      }}
+      fontSize={fontSize}
+      backgroundColor={backgroundColor}
     >
-      {options.map((item, index) => (
-        <Select.Option data-cy={`dropdown-res-item-${responseIndex}-${index}`} key={index} value={item.value}>
-          {item.label}
-        </Select.Option>
-      ))}
-    </Select>
-  </SelectContainer>
-);
+      <Select
+        style={style}
+        placeholder={placeholder}
+        disabled={disabled}
+        data-cy={`dropdown-res-${responseIndex}`}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+        value={defaultValue || undefined} // placeholder doesn't work if value is empty string
+        dropdownStyle={dropdownStyle}
+        onChange={value => {
+          onChange(value);
+        }}
+      >
+        {options.map((item, index) => (
+          <Select.Option data-cy={`dropdown-res-item-${responseIndex}-${index}`} key={index} value={item.value}>
+            {item.label}
+          </Select.Option>
+        ))}
+      </Select>
+    </SelectContainer>
+  );
+};
 
 AnswerDropdown.propTypes = {
   responseIndex: PropTypes.number,

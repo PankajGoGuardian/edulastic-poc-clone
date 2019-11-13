@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -82,23 +82,26 @@ const UnitsDropdownPure = ({
     }
   }, [keypadOffset]);
 
+  const dropdownWrapper = useRef(null);
+  const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
   return (
     <>
-      <UniteSelet
-        value={preview ? selected : options ? options.unit : ""}
-        onChange={handleChange}
-        disabled={disabled}
-        getPopupContainer={triggerNode => triggerNode.parentNode}
-        style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
-        statusColor={statusColor}
-      >
-        {allBtns.map((btn, i) => (
-          <Option value={btn.handler} key={i}>
-            {getLabel(btn.handler)}
-          </Option>
-        ))}
-      </UniteSelet>
-
+      <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
+        <Select
+          value={preview ? selected : options ? options.unit : ""}
+          onChange={handleChange}
+          disabled={disabled}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+          style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
+          statusColor={statusColor}
+        >
+          {allBtns.map((btn, i) => (
+            <Option value={btn.handler} key={i}>
+              {getLabel(btn.handler)}
+            </Option>
+          ))}
+        </Select>
+      </DropdownWrapper>
       {!preview && (
         <FlexContainer justifyContent="center" style={{ width: "50%" }}>
           <FlexContainer alignItems="center" flexDirection="row">
@@ -159,14 +162,20 @@ const enhance = compose(
 
 export const UnitsDropdown = enhance(UnitsDropdownPure);
 
-const UniteSelet = styled(Select)`
-  min-width: 85px;
+const DropdownWrapper = styled.span`
+  position: relative;
+  .ant-select-dropdown {
+    ${({ menuStyle }) => menuStyle};
+  }
+  .ant-select {
+    min-width: 85px;
+    svg {
+      display: inline-block;
+    }
+  }
   .ant-select-selection {
     padding: 5px 2px;
     background: ${({ statusColor }) => statusColor || white};
-  }
-  svg {
-    display: inline-block;
   }
 `;
 

@@ -665,15 +665,21 @@ class GraphDisplay extends Component {
 
   render() {
     const { graphIsValid } = this.state;
-    const { theme } = this.props;
-
+    const { theme, zoomLevel } = this.props;
+    const zl = parseFloat(zoomLevel) || 1;
     const GraphContainer = this.getGraphContainer();
 
     return (
       <Fragment>
         {graphIsValid ? (
           <Fragment>
-            <GraphContainer theme={theme} {...this.getGraphContainerProps()} />
+            {/* zoomLevel change css transform: scale() style,
+                after changing this style you need to do full reinit of component with jsxgraph object */}
+            {zl === 1 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
+            {zl === 1.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
+            {zl === 1.75 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
+            {zl === 2.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
+            {zl === 3 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
           </Fragment>
         ) : (
           <div>Wrong parameters</div>
@@ -699,7 +705,8 @@ GraphDisplay.propTypes = {
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
   elementsIsCorrect: PropTypes.bool,
-  advancedElementSettings: PropTypes.bool
+  advancedElementSettings: PropTypes.bool,
+  zoomLevel: PropTypes.number
 };
 
 GraphDisplay.defaultProps = {
@@ -715,13 +722,16 @@ GraphDisplay.defaultProps = {
   showQuestionNumber: false,
   qIndex: null,
   disableResponse: false,
-  elementsIsCorrect: false
+  elementsIsCorrect: false,
+  zoomLevel: 1
 };
 
 const enhance = compose(
   withTheme,
   connect(
-    null,
+    state => ({
+      zoomLevel: state.ui.zoomLevel
+    }),
     {
       setQuestionData: setQuestionDataAction
     }

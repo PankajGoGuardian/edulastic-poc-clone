@@ -76,6 +76,7 @@ class Question extends Component {
             classResponse={{ testItems: selectedItems }}
             qIndex={qIndex}
             isPresentationMode={isPresentationMode}
+            testActivityId={record.testActivityId}
           />
         </ScratchPadContext.Provider>
       </AnswerContext.Provider>

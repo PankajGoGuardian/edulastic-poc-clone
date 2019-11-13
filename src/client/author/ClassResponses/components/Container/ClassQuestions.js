@@ -110,7 +110,8 @@ class ClassQuestions extends Component {
       studentViewFilter: filter,
       labels = {},
       isQuestionView = false,
-      testItemsData
+      testItemsData,
+      testActivityId
     } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
@@ -165,12 +166,17 @@ class ClassQuestions extends Component {
         let questions = data.questions
           .map(question => {
             const { id } = question;
-            let qActivities = questionActivities.filter(({ qid }) => qid === id);
+            let qActivities = questionActivities.filter(({ qid, id: altId }) => qid === id || altId === id);
             if (qActivities.length > 1) {
               /**
                * taking latest qActivity for a qid
                */
-              qActivities = [qActivities[qActivities.length - 1]];
+              const qActivity = qActivities.find(o => o.testActivityId === testActivityId);
+              if (qActivity) {
+                qActivities = [qActivity];
+              } else {
+                qActivities = [qActivities[qActivities.length - 1]];
+              }
             }
             qActivities = qActivities.map(q => ({
               ...q,

@@ -35,7 +35,7 @@ const mathEval = async ({ userResponse, validation }) => {
 
       const data = {
         input: value.replace(/\s+/g, " "),
-        expected: ans ? ans.replace(/s+/g, " ") : "",
+        expected: ans ? ans.replace(/\s+/g, " ") : "",
         checks
       };
 

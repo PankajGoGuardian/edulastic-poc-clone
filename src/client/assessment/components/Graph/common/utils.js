@@ -11,7 +11,8 @@ export const getAdjustedHeightAndWidth = (
   MIN_WIDTH,
   MIN_HEIGHT,
   responseBoxPosition,
-  responseBoxTitleWidth
+  responseBoxTitleWidth,
+  disableResponse
 ) => {
   const obj = { width: layout.width, height: layout.height };
 
@@ -19,7 +20,7 @@ export const getAdjustedHeightAndWidth = (
     obj.width = Math.max(parentWidth, MIN_WIDTH);
   }
 
-  if (responseBoxPosition === "left" || responseBoxPosition === "right") {
+  if ((responseBoxPosition === "left" || responseBoxPosition === "right") && !disableResponse) {
     obj.width -= responseBoxTitleWidth;
   }
 

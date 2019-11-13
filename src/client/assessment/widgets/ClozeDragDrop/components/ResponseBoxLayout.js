@@ -52,7 +52,7 @@ const ResponseBoxLayout = ({
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" width={hasGroupResponses ? "100%" : "auto"}>
           <div
             style={{
               margin: "0 auto 1rem 8px",

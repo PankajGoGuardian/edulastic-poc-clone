@@ -316,6 +316,7 @@ export default enhance(ChartPreview);
 const ChartContainer = styled.div`
   position: relative;
   width: fit-content;
+  max-width: 100%;
   margin: 0px auto;
   zoom: ${props => props.theme.widgets.chart.chartZoom};
   ${({ preview }) => (preview ? "padding: 0px 70px 0px 35px" : "")}

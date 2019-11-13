@@ -77,7 +77,7 @@ const onHandler = (board, value) => {
 
 const getConfig = mark => ({
   position: +mark.X().toFixed(4),
-  point: mark.labelHTML,
+  point: mark.orgText,
   id: mark.id
 });
 

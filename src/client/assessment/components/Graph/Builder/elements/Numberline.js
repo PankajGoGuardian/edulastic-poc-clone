@@ -53,7 +53,7 @@ const onHandler = board => {
   const isVertical = checkOrientation(board);
   const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const calcY = yMax - (y / 100) * linePosition;
-  const axisPadding = ((-xMin + xMax) / 100) * 3.5;
+  const axisPadding = ((-xMin + xMax) / 100) * 5;
 
   const x1 = showMin ? xMin - axisPadding : xMin + axisPadding;
   const x2 = showMax ? xMax + axisPadding : xMax - axisPadding;

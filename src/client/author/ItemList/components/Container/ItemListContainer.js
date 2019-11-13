@@ -23,7 +23,7 @@ const ItemListContainer = ({
   if (!items.length) {
     return (
       <NoDataNotification
-        heading={"Items Not Available"}
+        heading="Items Not Available"
         description={
           'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
         }

@@ -7,14 +7,13 @@ import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
+import { get } from "lodash";
 import { themes } from "../../theme";
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
-import { get } from "lodash";
 import { getUserOrgId, getUserRole } from "./selectors/user";
 import { receiveDistrictPolicyAction } from "../DistrictPolicy/ducks";
-import { getZoomedTheme } from "../../student/zoomTheme";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -109,7 +108,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
 
                   <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
 
-                  <Route exact path={`/author/dashboard`} component={Dashboard} />
+                  <Route exact path="/author/dashboard" component={Dashboard} />
 
                   <Route
                     exact
@@ -235,12 +234,12 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                   <Route
                     exact
                     path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
-                    component={props => <AssignTest {...props} isPlaylist={true} />}
+                    component={props => <AssignTest {...props} isPlaylist />}
                   />
                   <Route
                     exact
                     path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
-                    component={props => <AssignTest {...props} isPlaylist={true} />}
+                    component={props => <AssignTest {...props} isPlaylist />}
                   />
                   <Route
                     exact

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -8,7 +8,6 @@ import { Hints } from "@edulastic/common";
 import TestItemPreview from "../../components/TestItemPreview";
 import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
-import DragScrollContainer from "../../components/DragScrollContainer";
 
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
 
@@ -31,7 +30,6 @@ const PlayerContentArea = ({
   testItemState
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
-  const scrollElementRef = useRef(null);
   const item = items[currentItem];
 
   const toggleSideBar = () => {
@@ -51,8 +49,7 @@ const PlayerContentArea = ({
         />
       </Sidebar>
       <MainWrapper isSidebarVisible={isSidebarVisible}>
-        {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
-        <MainContent ref={scrollElementRef}>
+        <MainContent>
           {testItemState === "" && (
             <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
           )}

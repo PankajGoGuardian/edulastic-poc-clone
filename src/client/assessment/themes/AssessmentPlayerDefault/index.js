@@ -12,6 +12,8 @@ import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
+import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
+
 import { themes } from "../../../theme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
@@ -41,7 +43,6 @@ import {
   LogoCompact
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
-import DragScrollContainer from "../../components/DragScrollContainer";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -78,8 +79,6 @@ class AssessmentPlayerDefault extends React.Component {
       minWidth: 480,
       defaultContentWidth: 900
     };
-
-    this.scrollElementRef = React.createRef();
   }
 
   static propTypes = {
@@ -113,6 +112,8 @@ class AssessmentPlayerDefault extends React.Component {
   static defaultProps = {
     theme: themes
   };
+
+  scrollElementRef = React.createRef();
 
   changeTool = val => {
     let { currentToolMode, enableCrossAction } = this.state;
@@ -439,7 +440,6 @@ class AssessmentPlayerDefault extends React.Component {
               items={items}
               currentItem={currentItem}
               isNonAutoGradable={isNonAutoGradable}
-              checkAnswer={() => this.changeTabItemState("check")}
               toggleBookmark={() => toggleBookmark(item._id)}
               isBookmarked={isBookmarked}
               handletoggleHints={this.showHideHints}
@@ -540,7 +540,6 @@ class AssessmentPlayerDefault extends React.Component {
                   {!isMobile && rightButtons}
                 </FlexContainer>
               </HeaderMainMenu>
-              <DragScrollContainer scrollWrraper={this.scrollElementRef.current} />
             </Header>
           </Affix>
           <Main skin zoomed={isZoomApplied} zoomLevel={zoomLevel}>
@@ -602,6 +601,8 @@ class AssessmentPlayerDefault extends React.Component {
           </Main>
 
           <ReportIssuePopover item={item} />
+
+          <VerticalScrollContainer scrollWrraper={this.scrollElementRef.current} />
 
           {currentToolMode.indexOf(2) !== -1 && (
             <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />

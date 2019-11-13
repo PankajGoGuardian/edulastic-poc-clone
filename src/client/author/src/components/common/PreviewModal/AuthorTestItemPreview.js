@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
-import { Pagination, Icon } from "antd";
+import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, white } from "@edulastic/colors";
-import { Tabs, EduButton, withWindowSizes, ScrollContext } from "@edulastic/common";
+import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
+import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 import { get } from "lodash";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
-import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 
 import {
   Container,
@@ -207,7 +207,7 @@ class AuthorTestItemPreview extends Component {
           {page !== "itemAuthoring" && <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>}
 
           <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
-            <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+            <i className="fa fa-exclamation-triangle" aria-hidden="true" />
           </ReportIssueButton>
         </ButtonsWrapper>
       </>
@@ -289,34 +289,29 @@ class AuthorTestItemPreview extends Component {
       return null;
     }
 
-    const scrollElement = this.scrollContainerRef.current;
-
     return (
       <ThemeProvider theme={themes.default}>
-        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainerRef.current }}>
-          <Container ref={this.scrollContainerRef}>
-            {cols.map((col, i) => {
-              const hideColumn =
-                (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-              if (hideColumn) return "";
-              return (
-                <>
-                  {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                  <ColumnContentArea
-                    isAuthoring={page === "itemAuthoring"}
-                    width={collapseDirection ? "90%" : col.dimension || "auto"}
-                    hide={hideColumn}
-                  >
-                    {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                    {this.renderColumns(col)}
-                  </ColumnContentArea>
-                  {collapseDirection === "right" && this.renderCollapseButtons(i)}
-                </>
-              );
-            })}
-          </Container>
-          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
-        </ScrollContext.Provider>
+        <Container ref={this.scrollContainerRef}>
+          {cols.map((col, i) => {
+            const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+            if (hideColumn) return "";
+            return (
+              <>
+                {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
+                <ColumnContentArea
+                  isAuthoring={page === "itemAuthoring"}
+                  width={collapseDirection ? "90%" : col.dimension || "auto"}
+                  hide={hideColumn}
+                >
+                  {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
+                  {this.renderColumns(col)}
+                </ColumnContentArea>
+                {collapseDirection === "right" && this.renderCollapseButtons(i)}
+              </>
+            );
+          })}
+          <VerticalScrollContainer scrollWrraper={this.scrollContainerRef.current} />
+        </Container>
       </ThemeProvider>
     );
   }

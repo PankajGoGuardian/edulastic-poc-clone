@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { get } from "lodash";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -7,7 +8,8 @@ import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { ContentWrapper, withWindowSizes, Hints, ScrollContext } from "@edulastic/common";
+import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
+import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -33,7 +35,7 @@ import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import { BackLink, ScrollbarContainer } from "./styled";
+import { BackLink } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
@@ -44,7 +46,7 @@ const shouldHideScoringBlock = (item, currentQuestionId) => {
   let canHideScoringBlock = true;
   if (questions.length === 0) {
     canHideScoringBlock = false;
-  } else if (questions.length == 1 && !newQuestionTobeAdded) {
+  } else if (questions.length === 1 && !newQuestionTobeAdded) {
     canHideScoringBlock = false;
   }
   const hideScoringBlock = canHideScoringBlock ? itemLevelScoring : false;
@@ -146,14 +148,14 @@ class Container extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question, preview } = this.props;
+    const { view, question, preview, itemFromState } = this.props;
     const { saveClicked, showHints } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
     }
     if (questionType) {
-      const hidingScoringBlock = shouldHideScoringBlock(this.props.itemFromState, this.props.question.id);
+      const hidingScoringBlock = shouldHideScoringBlock(itemFromState, question.id);
       return (
         <HideScoringBlackContext.Provider value={hidingScoringBlock}>
           <QuestionWrapper
@@ -176,9 +178,7 @@ class Container extends Component {
     const {
       question,
       testItemId,
-      modalItemId,
       navigateToPickupQuestionType,
-      navigateToItemDetail,
       testName,
       testId,
       location,
@@ -271,7 +271,6 @@ class Container extends Component {
       preview,
       view,
       isTestFlow,
-      saveItem,
       isEditable,
       setShowSettings
     } = this.props;
@@ -362,7 +361,7 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth, isItem, showWarningModal, proceedSave } = this.props;
+    const { view, question, history, windowWidth, showWarningModal, proceedSave } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -379,7 +378,7 @@ class Container extends Component {
     const itemId = question === null ? "" : question._id;
 
     return (
-      <div ref={this.innerDiv}>
+      <EditorContainer ref={this.innerDiv}>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question, null, 4)}
@@ -403,7 +402,8 @@ class Container extends Component {
         </BreadCrumbBar>
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
-      </div>
+        <VerticalScrollContainer scrollWrraper={this.innerDiv.current} />
+      </EditorContainer>
     );
   }
 }
@@ -490,4 +490,9 @@ const RightActionButtons = styled(Col)`
   div {
     float: right;
   }
+`;
+
+const EditorContainer = styled.div`
+  height: 100vh;
+  overflow: auto;
 `;

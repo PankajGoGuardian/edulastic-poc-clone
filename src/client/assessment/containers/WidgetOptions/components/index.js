@@ -25,3 +25,5 @@ export { default as MultipleLineOption } from "./MultipleLineCheckbox";
 export { default as SpecialCharacters } from "./SpecialCharacters";
 export { default as Scoring } from "./Scoring";
 export { default as Layout } from "./Layout";
+
+export { default as NumberInput } from "./NumberInput";

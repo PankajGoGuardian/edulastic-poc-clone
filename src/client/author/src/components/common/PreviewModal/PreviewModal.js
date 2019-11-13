@@ -161,7 +161,7 @@ class PreviewModal extends React.Component {
     this.setState(prevState => ({ showReportIssueField: !prevState.showReportIssueField }));
   };
 
-  //TODO consistency for question and resources for previeew
+  // TODO consistency for question and resources for previeew
   render() {
     const {
       isVisible,

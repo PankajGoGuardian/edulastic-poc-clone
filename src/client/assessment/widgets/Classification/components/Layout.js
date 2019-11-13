@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { get } from "lodash";
 import produce from "immer";
 import PropTypes from "prop-types";
-
+import { ChoiceDimensions } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 
 import {
@@ -13,12 +13,14 @@ import {
   RowTitlesWidthOption,
   RowMinHeightOption,
   ResponseContainerPositionOption,
-  StemNumerationOption
+  StemNumerationOption,
+  NumberInput
 } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import Question from "../../../components/Question";
 
+const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class LayoutWrapper extends Component {
   render() {
     const { item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t } = this.props;
@@ -91,6 +93,23 @@ class LayoutWrapper extends Component {
               <MaximumResponsesPerCellOption
                 onChange={val => changeItem("maxResponsePerCell", +val)}
                 value={get(item, "maxResponsePerCell", "")}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={36}>
+            <Col md={12}>
+              <NumberInput
+                label={t("component.options.choiceMinWidth")}
+                onChange={val => changeUIStyle("choiceMinWidth", +val)}
+                value={get(item, "uiStyle.choiceMinWidth", choiceMinW)}
+              />
+            </Col>
+            <Col md={12}>
+              <NumberInput
+                label={t("component.options.choiceMaxWidth")}
+                onChange={val => changeUIStyle("choiceMaxWidth", +val)}
+                value={get(item, "uiStyle.choiceMaxWidth", choiceMaxW)}
               />
             </Col>
           </Row>

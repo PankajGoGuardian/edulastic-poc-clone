@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useLayoutEffect, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
@@ -21,7 +20,6 @@ const dropContainerHeightList = [];
 const TableRow = ({
   startIndex,
   colCount,
-  arrayOfRows,
   rowTitles,
   colTitles,
   drop,
@@ -40,7 +38,8 @@ const TableRow = ({
   isReviewTab,
   view,
   setQuestionData,
-  rowHeader
+  rowHeader,
+  dragItemSize
 }) => {
   const wrapperRef = useRef();
 
@@ -71,7 +70,7 @@ const TableRow = ({
     let maxH = 0;
     for (let i = 0; i < dropContainerHeightList.length; i += 1) {
       const { y = 0, height: _h = 0 } = responseOptions[i] || {};
-      const _containerH = y + (_h || dropContainerHeightList[i]);
+      const _containerH = y + (_h > dropContainerHeightList[i] ? _h : dropContainerHeightList[i]);
       if (maxH < _containerH) {
         maxH = _containerH;
       }
@@ -94,8 +93,6 @@ const TableRow = ({
   };
 
   const cols = [];
-  // eslint-disable-next-line no-unused-vars
-  let validIndex = -1;
   const rndX = get(item, `rowTitle.x`, 0);
   const rndY = get(item, `rowTitle.y`, rowHeader ? 40 : 0);
 
@@ -203,7 +200,6 @@ const TableRow = ({
             answers[index].length > 0 &&
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
-              validIndex += 1;
               const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
               const valid = get(validArray, [index, resp.id], undefined);
               return (
@@ -223,6 +219,7 @@ const TableRow = ({
                   isResetOffset
                   noPadding
                   from="column"
+                  {...dragItemSize}
                 />
               );
             })}
@@ -263,7 +260,6 @@ TableRow.propTypes = {
   startIndex: PropTypes.number.isRequired,
   colCount: PropTypes.number.isRequired,
   dragHandle: PropTypes.any.isRequired,
-  arrayOfRows: PropTypes.object.isRequired,
   colTitles: PropTypes.array.isRequired,
   rowTitles: PropTypes.array.isRequired,
   isTransparent: PropTypes.any.isRequired,
@@ -280,7 +276,8 @@ TableRow.propTypes = {
   isResizable: PropTypes.bool.isRequired,
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
-  rowHeader: PropTypes.string
+  rowHeader: PropTypes.string,
+  dragItemSize: PropTypes.object.isRequired
 };
 
 TableRow.defaultProps = {

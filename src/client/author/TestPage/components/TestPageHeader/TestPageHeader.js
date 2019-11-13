@@ -174,7 +174,6 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-
     if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);

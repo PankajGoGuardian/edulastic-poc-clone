@@ -7,6 +7,12 @@ const Subtitle = styled.h3`
   letter-spacing: 0.2px;
   color: ${mainTextColor};
   text-transform: uppercase;
+  text-align: ${({ direction }) => {
+    if (direction === "row" || direction === "row-reverse") {
+      return "center";
+    }
+    return "left";
+  }};
 `;
 
 export default Subtitle;

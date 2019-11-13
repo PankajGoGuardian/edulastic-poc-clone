@@ -28,6 +28,8 @@
     "addANewHint": "Add a new hint",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
+      "choiceMaxWidth": "Choice Max Width",
+      "choiceMinWidth": "Choice Min Width",
       "autoexpandoninput": "AUTO EXPAND ON INPUT",
       "instant_feedback": "Check answer button",
       "check_answer": "Check answer",

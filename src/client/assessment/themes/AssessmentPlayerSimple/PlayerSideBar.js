@@ -8,6 +8,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { IconGraphRightArrow } from "@edulastic/icons";
 import FlexContainer from "../common/FlexContainer";
 import Circle from "../common/Circle";
+import { desktopWidth, smallDesktopWidth } from "@edulastic/colors";
 
 const SidebarQuestionList = ({ questions, selectedQuestion, gotoQuestion, t, isSidebarVisible, toggleSideBar }) => (
   <SidebarWrapper>
@@ -58,7 +59,6 @@ const ItemContainer = styled.div`
   box-sizing: border-box;
   background: ${props =>
     props.active ? props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor : "transparent"};
-  border-radius: 4px;
 `;
 
 const Content = styled.div`
@@ -71,6 +71,11 @@ const Content = styled.div`
   letter-spacing: 0.2px;
   text-transform: capitalize;
   cursor: pointer;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.linkFontSize};
+    line-height: 10px;
+  }
 `;
 
 const SidebarWrapper = styled.div`

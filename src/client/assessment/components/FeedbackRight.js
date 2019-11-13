@@ -39,14 +39,19 @@ class FeedbackRight extends Component {
   constructor(props) {
     super(props);
 
-    const { score, maxScore } = props?.widget?.activity || {};
+    let { score, maxScore } = props?.widget?.activity || {};
+
+    if (!maxScore) {
+      maxScore = props?.widget?.validation?.validResponse?.score || 0;
+    }
+
     this.state = { score, maxScore };
     this.scoreInput = React.createRef();
   }
 
   static getDerivedStateFromProps(
     {
-      widget: { activity }
+      widget: { activity, validation }
     },
     preState
   ) {
@@ -60,14 +65,20 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      const { score: _score, maxScore: _maxScore } = activity;
+      let { score: _score, maxScore: _maxScore } = activity;
       const _feedback = get(activity, "feedback.text", "");
       if (_score !== score) {
         newState = { ...newState, score: _score };
       }
+
+      if (!_maxScore) {
+        _maxScore = validation?.validResponse?.score || 0;
+      }
+
       if (_maxScore !== maxScore) {
         newState = { ...newState, maxScore: _maxScore };
       }
+
       if (_feedback !== feedback) {
         newState = { ...newState, feedback: _feedback };
       }

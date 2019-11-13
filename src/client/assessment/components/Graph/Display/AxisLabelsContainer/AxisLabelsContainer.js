@@ -120,9 +120,9 @@ class AxisLabelsContainer extends PureComponent {
       view,
       numberlineAxis: { responseBoxPosition }
     } = this.props;
-
-    this.parentWidth = this.axisLabelsContainerRef?.current?.clientWidth;
-    this.parentHeight = this.axisLabelsContainerRef?.current?.clientHeight;
+    // -2 done to make room for the border when width is an integer but the actual width is slightly less
+    this.parentWidth = this.axisLabelsContainerRef?.current?.clientWidth - 2;
+    this.parentHeight = this.axisLabelsContainerRef?.current?.clientHeight - 2;
 
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
       this.parentWidth,
@@ -131,7 +131,8 @@ class AxisLabelsContainer extends PureComponent {
       this.MIN_WIDTH,
       this.MIN_HEIGHT,
       responseBoxPosition,
-      responseBoxTitleWidth
+      responseBoxTitleWidth,
+      disableResponse
     );
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
@@ -202,7 +203,8 @@ class AxisLabelsContainer extends PureComponent {
       this.MIN_WIDTH,
       this.MIN_HEIGHT,
       responseBoxPosition,
-      responseBoxTitleWidth
+      responseBoxTitleWidth,
+      disableResponse
     );
 
     if (this._graph) {
@@ -381,7 +383,6 @@ class AxisLabelsContainer extends PureComponent {
       setQuestionData,
       list
     } = this.props;
-
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
       this.parentWidth,
       this.parentHeight,
@@ -389,7 +390,8 @@ class AxisLabelsContainer extends PureComponent {
       this.MIN_WIDTH,
       this.MIN_HEIGHT,
       responseBoxPosition,
-      responseBoxTitleWidth
+      responseBoxTitleWidth,
+      disableResponse
     );
 
     return (

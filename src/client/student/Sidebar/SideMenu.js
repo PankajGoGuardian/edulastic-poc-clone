@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -118,7 +119,7 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
-  onClickFooterDropDownMenu = ({ item, key, keyPath, domEvent }) => {
+  onClickFooterDropDownMenu = ({ key }) => {
     const { logout } = this.props;
     if (key === "0") {
       // onClickLogout
@@ -139,11 +140,12 @@ class SideMenu extends Component {
       this.setState({ isVisible: false });
     }
   };
+
   getInitials = () => {
     const { firstName, lastName } = this.props;
     if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    else if (firstName) return `${firstName.substr(0, 2)}`;
-    else if (lastName) return `${lastName.substr(0, 2)}`;
+    if (firstName) return `${firstName.substr(0, 2)}`;
+    if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
   render() {
@@ -156,8 +158,7 @@ class SideMenu extends Component {
       lastName,
       isSidebarCollapsed,
       t,
-      profileThumbnail,
-      theme
+      profileThumbnail
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
@@ -168,12 +169,14 @@ class SideMenu extends Component {
         <Menu isSidebarCollapsed={isSidebarCollapsed} onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
-              <IconProfileHighlight /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
+              <IconProfileHighlight />
+              <span>{isSidebarCollapsed ? "" : t("common.myProfileText")}</span>
             </Link>
           </Menu.Item>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
-              <IconSignoutHighlight /> {isSidebarCollapsed ? "" : t("common.signOutText")}
+              <IconSignoutHighlight />
+              <span>{isSidebarCollapsed ? "" : t("common.signOutText")}</span>
             </a>
           </Menu.Item>
         </Menu>
@@ -524,7 +527,7 @@ const MenuWrapper = styled.div`
     min-height: calc(100% - 65px);
   }
   @media (max-width: ${tabletWidth}) {
-    min-height: 100%;
+    min-height: calc(100% - 20px);
   }
 `;
 
@@ -832,7 +835,12 @@ const FooterDropDown = styled.div`
 
         a {
           height: 20px;
-          font-size: 0 !important;
+          span {
+            display: none;
+          }
+          svg {
+            margin-right: 10px !important;
+          }
         }
       }
     }
@@ -995,10 +1003,6 @@ const IconDropdown = styled(AntIcon)`
   color: ${mainTextColor};
   position: absolute;
   top: -10px;
-`;
-
-const LogoutIcon = styled(IconDropdown)`
-  color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
 `;
 
 const IconBars = styled(AntIcon)`

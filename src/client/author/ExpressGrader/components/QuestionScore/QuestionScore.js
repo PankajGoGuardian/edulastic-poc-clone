@@ -1,22 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { StyledText, StyledWrapper } from "./styled";
-
-// function getScoreColor(value, maxScore) {
-//   let color;
-//   switch (value) {
-//     case 0:
-//       color = "red";
-//       break;
-//     case maxScore:
-//       color = "green";
-//       break;
-//     default:
-//       color = "yellow";
-//       break;
-//   }
-//   return color;
-// }
+import { round } from "lodash";
 
 class QuestionScore extends Component {
   render() {
@@ -34,7 +19,7 @@ class QuestionScore extends Component {
         {isTest ? (
           <StyledWrapper onClick={() => showQuestionModal(question, tableData)}>
             {/* color={getScoreColor(score, maxScore)} */}
-            <StyledText>{studentScore}</StyledText>
+            <StyledText>{round(studentScore, 2)}</StyledText>
           </StyledWrapper>
         ) : (
           <StyledWrapper>

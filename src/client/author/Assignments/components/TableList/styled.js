@@ -352,6 +352,7 @@ export const GreyFont = styled.div`
     white-space: initial;
     text-align: right;
     padding-right: 50px;
+    word-break: break-word;
     @media (max-width: ${smallDesktopWidth}) {
       padding-right: 20px;
     }

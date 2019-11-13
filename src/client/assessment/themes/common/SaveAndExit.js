@@ -6,9 +6,10 @@ import { Button } from "antd";
 import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, showZoomBtn, onSubmit }) => (
-  <FlexContainer>
+  <FlexContainer marginLeft="30px">
     {showZoomBtn && (
       <StyledButton onClick={() => setSettingsModalVisibility(true)}>
         <IconContrast />
@@ -49,7 +50,7 @@ export default connect(
 
 const StyledButton = styled(Button)`
   border: none;
-  margin-left: 10px;
+  margin-left: 2px;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
@@ -75,5 +76,15 @@ const StyledButton = styled(Button)`
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
     }
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
+    width: 40px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    margin-left: 5px;
+    height: 45px;
+    width: 45px;
   }
 `;

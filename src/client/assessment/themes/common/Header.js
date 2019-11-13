@@ -1,9 +1,10 @@
 import styled from "styled-components";
+import { smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const Header = styled.div`
   width: 100%;
   height: ${props => props?.theme?.header?.headerHeight};
-  padding: 0 20px;
+  padding: 0 40px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -15,6 +16,12 @@ const Header = styled.div`
   background: ${props => props.theme.header.headerBgColor};
   z-index: 50;
 
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    padding: 0 30px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0 21px;
+  }
   @media (max-width: 768px) {
     flex-direction: column;
     height: auto;

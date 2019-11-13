@@ -10,6 +10,7 @@ const FlexContainer = styled.div`
   align-items: ${({ alignItems }) => alignItems || null};
   flex-direction: ${props => (props.flexDirection ? props.flexDirection : "row")};
   margin-bottom: ${({ marginBottom }) => (!marginBottom ? null : marginBottom)};
+  margin-left: ${({ marginLeft }) => marginLeft || "0px"};
   padding: ${props => (props.padding ? props.padding : "0px")};
   flex-wrap: ${({ flexWrap }) => flexWrap || null};
   width: ${({ width }) => width || "auto"};

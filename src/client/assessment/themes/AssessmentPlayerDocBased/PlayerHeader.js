@@ -16,7 +16,7 @@ const PlayerHeader = ({ title, onOpenExitPopup, zoomLevel, windowWidth, onSubmit
     transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
     transformOrigin: "0px 0px",
     width: isZoomApplied ? `${zoomLevel >= "1.75" ? "75" : "80"}%` : "100%",
-    padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "11px 15px"}`,
+    padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "12px 0px"}`,
     justifyContent: "space-between"
   };
 

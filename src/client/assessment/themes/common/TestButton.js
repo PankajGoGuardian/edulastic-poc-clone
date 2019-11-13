@@ -66,7 +66,7 @@ const enhance = compose(withNamespaces("student"));
 export default enhance(TestButton);
 
 const Container = styled.div`
-  margin-left: 60px;
+  margin-left: 10px;
   display: flex;
 `;
 

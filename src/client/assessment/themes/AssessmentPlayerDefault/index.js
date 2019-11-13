@@ -386,7 +386,7 @@ class AssessmentPlayerDefault extends React.Component {
       transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
       transformOrigin: "0px 0px",
       width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 32px" : "10px 5px 25px 5px") : "11px 15px"}`,
+      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 32px" : "10px 5px 25px 5px") : "11px 0px"}`,
       justifyContent: "space-between"
     };
 
@@ -464,23 +464,21 @@ class AssessmentPlayerDefault extends React.Component {
             <Header LCBPreviewModal={LCBPreviewModal}>
               <HeaderMainMenu skin>
                 <FlexContainer style={headerStyleWidthZoom}>
-                  <HeaderWrapper>
-                    <LogoCompact isMobile={isMobile} buttons={rightButtons} />
+                  <HeaderWrapper justifyContent="space-between">
                     <MainActionWrapper>
+                      <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                       {!LCBPreviewModal && (
-                        <QuestionSelectDropdown
-                          key={currentItem}
-                          currentItem={currentItem}
-                          gotoQuestion={gotoQuestion}
-                          options={dropdownOptions}
-                          bookmarks={bookmarksInOrder}
-                          skipped={skippedInOrder}
-                          dropdownStyle={navZoomStyle}
-                          zoomLevel={headerZoom}
-                        />
-                      )}
-                      {!LCBPreviewModal && (
-                        <ToolTipContainer>
+                        <>
+                          <QuestionSelectDropdown
+                            key={currentItem}
+                            currentItem={currentItem}
+                            gotoQuestion={gotoQuestion}
+                            options={dropdownOptions}
+                            bookmarks={bookmarksInOrder}
+                            skipped={skippedInOrder}
+                            dropdownStyle={navZoomStyle}
+                            zoomLevel={headerZoom}
+                          />
                           <Tooltip placement="top" title="Previous" overlayStyle={navZoomStyle}>
                             <ControlBtn
                               prev
@@ -495,6 +493,12 @@ class AssessmentPlayerDefault extends React.Component {
                           <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
                             <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                           </Tooltip>
+                        </>
+                      )}
+                    </MainActionWrapper>
+                    <MainActionWrapper>
+                      {!LCBPreviewModal && (
+                        <ToolTipContainer>
                           {showSettingIcon && (
                             <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
                               <ToolButton
@@ -536,8 +540,8 @@ class AssessmentPlayerDefault extends React.Component {
                         </ToolTipContainer>
                       )}
                     </MainActionWrapper>
+                    {!isMobile && rightButtons}
                   </HeaderWrapper>
-                  {!isMobile && rightButtons}
                 </FlexContainer>
               </HeaderMainMenu>
             </Header>

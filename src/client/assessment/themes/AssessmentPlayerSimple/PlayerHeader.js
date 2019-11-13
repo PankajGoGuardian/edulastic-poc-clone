@@ -30,6 +30,7 @@ import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import { isZoomGreator } from "../../../common/utils/helpers";
 import ToolbarModal from "../common/ToolbarModal";
+import { smallDesktopWidth, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const PlayerHeader = ({
   title,
@@ -88,7 +89,7 @@ const PlayerHeader = ({
       <Header>
         <HeaderMainMenu skinb="true">
           <HeaderPracticePlayer>
-            <HeaderWrapper>
+            <HeaderWrapper justifyContent="space-between">
               <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
               <MainActionWrapper>
                 {isMobile && (
@@ -139,8 +140,8 @@ const PlayerHeader = ({
                   />
                 )}
               </MainActionWrapper>
+              {!isMobile && rightButtons}
             </HeaderWrapper>
-            {!isMobile && rightButtons}
           </HeaderPracticePlayer>
         </HeaderMainMenu>
       </Header>
@@ -166,8 +167,15 @@ const enhance = compose(
 export default enhance(PlayerHeader);
 
 const HeaderPracticePlayer = styled(FlexContainer)`
-  padding: 11px 15px;
+  padding: 12px 0px;
   justify-content: space-between;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding: 11px 0px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 8.5px 0px;
+  }
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     padding: 0px;
   }

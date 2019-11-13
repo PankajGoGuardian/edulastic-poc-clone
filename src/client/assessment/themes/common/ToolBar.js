@@ -5,6 +5,7 @@ import { Button, Tooltip } from "antd";
 
 import { test, questionType } from "@edulastic/constants";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {
@@ -88,14 +89,18 @@ ToolBar.propTypes = {
 export default ToolBar;
 
 const Container = styled.div`
-  margin-left: 60px;
+  margin-left: 10px;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  span {
+    line-height: 11px;
+  }
 `;
 
 const StyledButton = styled(Button)`
   border: none;
-  margin-right: 10px;
+  margin-right: 3px;
   border-radius: 5px;
   ${props => props.hidden && "display:none"}
   ${({ theme, active }) => `
@@ -126,6 +131,14 @@ const StyledButton = styled(Button)`
       background: ${theme.default.headerButtonBgColor};
     }
   `}
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
+    width: 40px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    margin-right: 10px;
+  }
 `;
 
 const CursorIcon = styled(IconCursor)`

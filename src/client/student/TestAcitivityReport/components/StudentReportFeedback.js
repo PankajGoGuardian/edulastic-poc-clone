@@ -89,8 +89,8 @@ const QuestionText = styled.span`
 `;
 
 const FeedbackGiven = styled.div`
-  max-height: 150px;
-  overflow-y: scroll;
+  max-height: 400px;
+  overflow-y: auto;
   line-height: 2.5;
   padding: 0px 0px 0px 28px;
   color: #878282;

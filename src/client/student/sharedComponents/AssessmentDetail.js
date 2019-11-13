@@ -161,6 +161,10 @@ const ImageWrapper = React.memo(styled.div`
     margin-right: 20px;
   }
 
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-right: 10px;
+  }
+
   @media screen and (max-width: 767px) {
     max-width: 100%;
     margin: 0;
@@ -194,6 +198,9 @@ const AssignmentTitle = React.memo(styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 125px;
+  }
 `);
 
 const CardDetails = React.memo(styled(Col)`
@@ -210,7 +217,7 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${smallDesktopWidth}) {
-    width: 18vw;
+    width: 22vw;
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -287,6 +294,10 @@ const CardDate = React.memo(styled.div`
 const DueDetails = React.memo(styled.span`
   padding-left: 10px;
   font-size: ${({ theme }) => theme.assignment.dueDateFontSize};
+  @media (max-width: ${smallDesktopWidth}) {
+    padding-left: 5px;
+    font-size: ${props => props.theme.smallLinkFontSize};
+  }
 `);
 
 const StatusWrapper = styled.div`

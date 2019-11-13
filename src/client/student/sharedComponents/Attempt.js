@@ -2,7 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { themeColor, mobileWidthMax, lightGreySecondary, extraDesktopWidth } from "@edulastic/colors";
+import {
+  themeColor,
+  mobileWidthMax,
+  lightGreySecondary,
+  extraDesktopWidth,
+  smallDesktopWidth,
+  largeDesktopWidth
+} from "@edulastic/colors";
 import { Row, Col } from "antd";
 
 import { formatDateAndTime } from "../utils";
@@ -74,6 +81,9 @@ const AnswerAndScore = styled(Col)`
     font-weight: bold;
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
     ${props => props.date && "text-align:center;"}
+    @media (max-width: ${smallDesktopWidth}) {
+      font-size: ${props => props.theme.smallLinkFontSize};
+    }
   }
 `;
 
@@ -81,6 +91,9 @@ const AnswerAndScoreReview = styled(AnswerAndScore)`
   span {
     cursor: pointer;
     font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
+    @media (max-width: ${smallDesktopWidth}) {
+      font-size: ${props => props.theme.smallLinkFontSize};
+    }
   }
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 33%;
@@ -104,10 +117,12 @@ const RowData = styled(Row)`
   @media screen and (max-width: ${mobileWidthMax}) {
     height: auto;
     justify-content: space-between;
-    width: 100%;
   }
-  @media only screen and (min-width: ${mobileWidthMax}) {
+  @media only screen and (min-width: ${largeDesktopWidth}) {
     flex: 1;
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 100%;
   }
   div {
     height: 100%;

@@ -3,7 +3,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, mobileWidthMax, smallDesktopWidth, lightGreySecondary } from "@edulastic/colors";
+import {
+  extraDesktopWidth,
+  mobileWidthMax,
+  smallDesktopWidth,
+  lightGreySecondary,
+  largeDesktopWidth,
+  desktopWidth
+} from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
@@ -365,6 +372,12 @@ const ButtonAndDetail = styled(Col)`
   @media screen and (min-width: 1025px) {
     margin-left: auto;
   }
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 55%;
+  }
+  @media (max-width: ${desktopWidth}) {
+    width: 50%;
+  }
   @media screen and (max-width: 767px) {
     flex-direction: column;
     width: 100%;
@@ -387,8 +400,11 @@ const AttemptDetails = styled(Row)`
     display: flex;
     margin-top: 10px;
   }
-  @media only screen and (min-width: ${mobileWidthMax}) {
+  @media only screen and (min-width: ${largeDesktopWidth}) {
     flex: 1;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    width:100%;
   }
 `;
 
@@ -401,6 +417,9 @@ const AnswerAndScore = styled(Col)`
     font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
+    @media (max-width: ${smallDesktopWidth}) {
+      font-size: ${props => props.theme.subtitleFontSize};
+    }
   }
 `;
 
@@ -429,6 +448,9 @@ const AttemptsTitle = styled.div`
   font-weight: 600;
   color: ${props => props.theme.assignment.cardAttemptLinkTextColor};
   cursor: pointer;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.smallLinkFontSize};
+  }
 `;
 
 const Title = styled.div`
@@ -436,4 +458,7 @@ const Title = styled.div`
   font-weight: 600;
   color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
   text-align: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.smallLinkFontSize};
+  }
 `;

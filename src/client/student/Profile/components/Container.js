@@ -43,6 +43,7 @@ class ProfileContainer extends React.Component {
     e.preventDefault();
     const { form } = this.props;
     form.resetFields();
+    this.setState({ showChangePassword: false });
   };
 
   handleConfirmBlur = ({ target: { value } }) => {

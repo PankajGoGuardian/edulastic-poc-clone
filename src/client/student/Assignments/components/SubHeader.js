@@ -113,7 +113,6 @@ const FilterBtn = styled(Button)`
   @media (max-width: ${largeDesktopWidth}) {
     margin-left: 10px;
     min-width: 85px;
-    font-size: 8px;
   }
 
   @media screen and (max-width: 992px) {

@@ -12,6 +12,7 @@ import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
+import { smallDesktopWidth } from "@edulastic/colors";
 
 const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading }) => {
   useEffect(() => {
@@ -69,4 +70,7 @@ const Wrapper = styled.div`
   background-color: ${props => props.theme.assignment.cardContainerBgColor};
   padding: 5px 15px;
   position: relative;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 5px;
+  }
 `;

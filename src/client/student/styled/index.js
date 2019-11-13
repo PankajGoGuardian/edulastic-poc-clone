@@ -5,6 +5,7 @@ import {
   largeDesktopWidth,
   extraDesktopWidthMax,
   mobileWidthMax,
+  smallDesktopWidth,
   textColor,
   titleColor,
   title,
@@ -21,7 +22,9 @@ export const Wrapper = styled.div`
   position: relative;
   display: ${props => (props.display ? props.display : "")};
   justify-content: ${props => (props.display === "flex" ? "space-between" : "")};
-
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 5px;
+  }
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 0px;
     display: block;

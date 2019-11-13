@@ -35,6 +35,7 @@ import {
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
+import { IPAD_LANDSCAPE_WIDTH } from "../../assessment/constants/others";
 
 const getIndex = (page, items) => {
   let index;
@@ -197,7 +198,7 @@ class SideMenu extends Component {
             breakpoint="md"
             onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
             width="245"
-            collapsedWidth={broken ? "0" : "100"}
+            collapsedWidth={broken ? "0" : windowWidth <= IPAD_LANDSCAPE_WIDTH ? "90" : "100"}
             className="sideBarwrapper"
             data-cy="side-wrapper"
           >

@@ -9,6 +9,7 @@ import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 import { changeClassAction, logoutAction } from "../../Login/ducks";
+import { smallDesktopWidth } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -16,6 +17,9 @@ const Wrapper = styled(Layout)`
 `;
 const ContentWrapper = styled.div`
   padding: 0px 40px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0px 20px 0px 30px;
+  }
 `;
 
 const Assignments = ({ activeClasses, allClasses, loadAllClasses, changeClass, loading, location, logout }) => {

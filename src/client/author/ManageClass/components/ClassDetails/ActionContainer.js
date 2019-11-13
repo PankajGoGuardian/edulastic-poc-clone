@@ -11,7 +11,12 @@ import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 
-import { addStudentRequestAction, updateStudentRequestAction, changeTTSRequestAction } from "../../ducks";
+import {
+  addStudentRequestAction,
+  updateStudentRequestAction,
+  changeTTSRequestAction,
+  selectStudentAction
+} from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
@@ -57,7 +62,8 @@ const ActionContainer = ({
   changeTTS,
   loadStudents,
   features,
-  history
+  history,
+  setSelectedStudents
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -126,13 +132,13 @@ const ActionContainer = ({
               "username",
               "contactEmails"
             ]);
-            const contactEmails = get(stdData, "contactEmails");
-            if (contactEmails) {
+            const contactEmails = get(stdData, "contactEmails", "");
+            if (contactEmails?.trim().length) {
               stdData.contactEmails = [contactEmails];
             }
             updateStudentRequest({
               userId,
-              data: stdData
+              data: pickBy(stdData, identity)
             });
             setModalStatus(false);
           } else {
@@ -165,6 +171,7 @@ const ActionContainer = ({
         }
       });
     }
+    setSelectedStudents([]);
   };
 
   const saveFormRef = node => {
@@ -386,6 +393,7 @@ export default connect(
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
-    changeTTS: changeTTSRequestAction
+    changeTTS: changeTTSRequestAction,
+    setSelectedStudents: selectStudentAction
   }
 )(ActionContainer);

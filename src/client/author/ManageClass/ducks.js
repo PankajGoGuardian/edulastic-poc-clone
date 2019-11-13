@@ -251,12 +251,21 @@ const selectStudent = (state, { payload }) => {
   state.selectedStudent = payload;
 };
 
-const updateStudent = (state, { payload }) => {
+const updateStudent = state => {
+  state.updating = true;
+};
+
+const updateStudentSuccess = (state, { payload }) => {
   const stdList = state.studentsList;
   const updatedIndex = findIndex(stdList, std => std._id === payload._id || std.userId === payload._id);
   if (updatedIndex !== -1) {
     state.studentsList.splice(updatedIndex, 1, payload);
   }
+  state.updating = false;
+};
+
+const updateStudentFailed = state => {
+  state.updating = false;
 };
 
 const updateStudentsAfterTTSChange = (state, { payload }) => {
@@ -315,7 +324,9 @@ export default createReducer(initialState, {
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
   [SELECT_STUDENTS]: selectStudent,
-  [UPDATE_STUDENT_SUCCESS]: updateStudent,
+  [UPDATE_STUDENT_REQUEST]: updateStudent,
+  [UPDATE_STUDENT_SUCCESS]: updateStudentSuccess,
+  [UPDATE_STUDENT_FAILDED]: updateStudentFailed,
   [SYNC_BY_CODE_MODAL]: openOrCloseModal,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
   [SET_SUBJECT]: setSubject,
@@ -450,10 +461,9 @@ function* updateStudentRequest({ payload }) {
   try {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
-    yield put(updateStudentSuccessAction(result));
     const updatedStudent = {
       ...result,
-      enrollmentStatus: "1"
+      enrollmentStatus: 1
     };
     yield put(updateStudentSuccessAction(updatedStudent));
     const msg = "Successfully Updated student.";

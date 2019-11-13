@@ -16,7 +16,7 @@ class DragDropValues extends Component {
   };
 
   render() {
-    const { values, width, height, valueHeight, dragDropBoundsClassName } = this.props;
+    const { values, width, height, valueHeight, dragDropBoundsClassName, scale } = this.props;
 
     const containerStyle = {
       position: "relative",
@@ -45,6 +45,7 @@ class DragDropValues extends Component {
                 enableResizing={false}
                 bounds={dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : ""}
                 className="drag-drop-value"
+                scale={scale}
               >
                 <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
               </Rnd>
@@ -65,7 +66,8 @@ DragDropValues.propTypes = {
   titleOffset: PropTypes.number,
   margin: PropTypes.number,
   onAddDragDropValue: PropTypes.func,
-  onDrawDragDropValue: PropTypes.func
+  onDrawDragDropValue: PropTypes.func,
+  scale: PropTypes.number
 };
 
 DragDropValues.defaultProps = {
@@ -77,7 +79,8 @@ DragDropValues.defaultProps = {
   margin: 0,
   onDrawDragDropValue: () => {},
   onAddDragDropValue: () => {},
-  dragDropBoundsClassName: ""
+  dragDropBoundsClassName: "",
+  scale: 1
 };
 
 export default DragDropValues;

@@ -578,6 +578,7 @@ class PlacementContainer extends PureComponent {
           <JSXBoxWithDropValues className={dragDropBoundsClassName}>
             {!disableResponse && (
               <DragDropValues
+                scale={zoomLevel}
                 height={layout.height}
                 margin={margin}
                 values={this.getDragDropValues()}

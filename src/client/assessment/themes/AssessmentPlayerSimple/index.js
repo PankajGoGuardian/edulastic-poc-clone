@@ -265,7 +265,7 @@ class AssessmentPlayerSimple extends React.Component {
             t={t}
           />
           {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
-            <CalculatorContainer calculateMode={`${settings.calcType}_${this.state.calcBrand}`} />
+            <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
           ) : null}
           <PlayerMainContentArea
             {...this.props}

@@ -71,7 +71,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: 0,
-      calculateMode: `${settings.calcType}_EDULASTIC`,
+      calculateMode: `${settings.calcType}_${settings.calcProvider}`,
       currentToolMode: [0],
       showHints: false,
       enableCrossAction: false,

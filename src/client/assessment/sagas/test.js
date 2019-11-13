@@ -130,10 +130,11 @@ function* loadTest({ payload }) {
     let { testItems, passages, testType } = test;
 
     const settings = {
+      calcProvider: testActivity?.calculatorProvider,
       calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       requirePassword: testActivity?.assignmentSettings?.requirePassword || false,
-      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE"
+      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
     };
     const answerCheckByItemId = {};
     (testActivity.questionActivities || []).map(item => {

@@ -149,40 +149,21 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   return (
     <CheckBoxTemplateBox>
-      {hasGroupResponses && (
-        <Droppable drop={() => ({ dropTargetIndex })}>
-          <Draggable
-            onDrop={onDropHandler}
-            data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
-              userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-          >
-            {lessMinWidth ? (
-              <Popover overlayClassName="customTooltip" content={popoverContent}>
-                {content}
-              </Popover>
-            ) : (
-              content
-            )}
-          </Draggable>
-        </Droppable>
-      )}
-      {!hasGroupResponses && (
-        <Droppable drop={() => ({ dropTargetIndex })}>
-          <Draggable
-            onDrop={onDropHandler}
-            data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
-              userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-          >
-            {lessMinWidth ? (
-              <Popover overlayClassName="customTooltip" content={popoverContent}>
-                {content}
-              </Popover>
-            ) : (
-              content
-            )}
-          </Draggable>
-        </Droppable>
-      )}
+      <Droppable style={{ border: "none" }} drop={() => ({ dropTargetIndex })}>
+        <Draggable
+          onDrop={onDropHandler}
+          data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
+            userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+        >
+          {lessMinWidth ? (
+            <Popover overlayClassName="customTooltip" content={popoverContent}>
+              {content}
+            </Popover>
+          ) : (
+            content
+          )}
+        </Draggable>
+      </Droppable>
     </CheckBoxTemplateBox>
   );
 };

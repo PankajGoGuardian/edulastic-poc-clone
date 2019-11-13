@@ -5,12 +5,10 @@ import Uploader from "./Uploader";
 import { getThumbnail } from "../ClassSectionThumbnailsBySubjectGrade";
 import { tagsApi } from "@edulastic/api";
 
-const defultImage = "https://fakeimg.pl/1000x500/";
-
 export default props => {
   useEffect(() => {
     const thumbNailImage = getThumbnail();
-    setThumbnail(thumbNailImage || defultImage);
+    setThumbnail(thumbNailImage);
   }, []);
   const [thumbnail, setThumbnail] = useState("");
   const { tags = [], allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;

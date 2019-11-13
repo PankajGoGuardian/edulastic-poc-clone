@@ -381,7 +381,8 @@ class AxisLabelsContainer extends PureComponent {
       view,
       graphData,
       setQuestionData,
-      list
+      list,
+      zoomLevel
     } = this.props;
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
       this.parentWidth,
@@ -421,6 +422,7 @@ class AxisLabelsContainer extends PureComponent {
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
                 <ResponseBox
+                  scale={zoomLevel}
                   bounds={`.jsxbox-with-response-box-response-options.${this._graphId}`}
                   values={this.getMarkValues()}
                   onAddMark={this.onAddMark}
@@ -467,7 +469,8 @@ AxisLabelsContainer.propTypes = {
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
-  elementsIsCorrect: PropTypes.bool
+  elementsIsCorrect: PropTypes.bool,
+  zoomLevel: PropTypes.number
 };
 
 AxisLabelsContainer.defaultProps = {
@@ -479,13 +482,15 @@ AxisLabelsContainer.defaultProps = {
   disableResponse: false,
   previewTab: CLEAR,
   changePreviewTab: () => {},
-  elementsIsCorrect: false
+  elementsIsCorrect: false,
+  zoomLevel: 1
 };
 
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex
+    stashIndex: state.graphTools.stashIndex,
+    zoomLevel: state.ui.zoomLevel
   }),
   {
     setElementsStash: setElementsStashAction,

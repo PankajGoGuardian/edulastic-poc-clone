@@ -51,7 +51,8 @@ class ResponseBox extends Component {
       separationDistanceX,
       separationDistanceY,
       position,
-      bounds
+      bounds,
+      scale
     } = this.props;
 
     const { draggingMark } = this.state;
@@ -81,6 +82,7 @@ class ResponseBox extends Component {
               enableResizing={false}
               bounds={bounds}
               className={`mark${draggingMark === i ? " dragging" : ""}`}
+              scale={scale}
             >
               <MarkContainer
                 fontSize={12}
@@ -115,7 +117,8 @@ ResponseBox.propTypes = {
   markHeight: PropTypes.number,
   separationDistanceX: PropTypes.number,
   separationDistanceY: PropTypes.number,
-  position: PropTypes.string
+  position: PropTypes.string,
+  scale: PropTypes.number
 };
 
 ResponseBox.defaultProps = {
@@ -129,7 +132,8 @@ ResponseBox.defaultProps = {
   markHeight: 45, // from .mark class
   separationDistanceX: 10,
   separationDistanceY: 20,
-  position: "bottom"
+  position: "bottom",
+  scale: 1
 };
 
 export default ResponseBox;

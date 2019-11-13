@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -6,6 +6,8 @@ import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import { mediumDesktopWidth } from "@edulastic/colors";
+
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import QuillSortableHintsList from "../../components/QuillSortableHintsList";
@@ -137,5 +139,13 @@ const QuestionContainer = styled.div`
   span.fr-placeholder {
     font-size: ${({ fontSize }) => `${fontSize} !important`};
     line-height: 1.5 !important;
+  }
+
+  &:not(:first-child) {
+    margin-top: 30px;
+
+    @media (max-width: ${mediumDesktopWidth}) {
+      margin-top: 10px;
+    }
   }
 `;

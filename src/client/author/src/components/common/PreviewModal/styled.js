@@ -180,7 +180,7 @@ export const CollapseBtn = styled.i`
     if (props.left) {
       return `border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
-        background-color:${props.collapseDirection === "right" ? themeColor : "#fff"}
+        background-color:${props.collapseDirection === "right" ? themeColor : "#fff"};
         color:${props.collapseDirection === "right" ? "#fff" : themeColor};
         svg{
           fill:${props.collapseDirection === "right" ? "#fff" : themeColor};

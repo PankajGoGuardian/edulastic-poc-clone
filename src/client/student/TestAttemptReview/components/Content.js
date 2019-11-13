@@ -15,7 +15,7 @@ import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
-import { largeDesktopWidth, desktopWidth } from "@edulastic/colors";
+import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
@@ -140,29 +140,25 @@ class SummaryTest extends Component {
                 </Row>
                 <QuestionBlock>
                   {itemIds.map((item, index) => {
-                    let returnObj = [];
-                    returnObj = [
-                      ...returnObj,
-                      ...itemWiseQids[item].map((q, qIndex) => {
-                        const qInd = isDocBased
-                          ? qIndex + 1
-                          : `${index + 1}${
-                              itemWiseQids[item].length > 1
-                                ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
-                                : ""
-                            }`;
-                        return (
-                          <QuestionColorBlock
-                            key={index * 100 + qIndex}
-                            type={questionList[q]}
-                            isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                            onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
-                          >
-                            <span> {qInd} </span>
-                          </QuestionColorBlock>
-                        );
-                      })
-                    ];
+                    let returnObj = itemWiseQids[item].map((q, qIndex) => {
+                      const qInd = isDocBased
+                        ? qIndex + 1
+                        : `${index + 1}${
+                            itemWiseQids[item].length > 1
+                              ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
+                              : ""
+                          }`;
+                      return (
+                        <QuestionColorBlock
+                          key={index * 100 + qIndex}
+                          type={questionList[q]}
+                          isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                          onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                        >
+                          <span> {qInd} </span>
+                        </QuestionColorBlock>
+                      );
+                    });
                     return returnObj;
                   })}
                 </QuestionBlock>
@@ -214,20 +210,32 @@ const enhance = compose(
 
 export default enhance(SummaryTest);
 
-const AssignmentContentWrapper = styled.div`
+const ShareWrapperCss = css`
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   padding: 0px 80px;
   background: ${props => props.theme.assignment.cardContainerBgColor};
   margin-bottom: 1rem;
-  @media screen and (max-width: 767px) {
+`;
+const AssignmentContentWrapper = styled.div`
+  ${ShareWrapperCss};
+  @media (max-width: 767px) {
     padding: 0px 15px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    margin: 30px 34px;
+    padding: 0px 45px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    padding: 0px 25px;
+    margin: 15px 15px;
   }
 `;
 
 const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
+  ${ShareWrapperCss};
   margin: 24px 43px;
-  @media screen and (max-width: 992px) {
+  @media (max-width: ${desktopWidth}) {
     margin: 15px 26px;
   }
 `;
@@ -241,7 +249,7 @@ const Container = styled.div`
 const Header = styled(Container)`
   max-width: 531px;
   margin-top: 50px;
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     margin-top: 20px;
   }
 `;
@@ -252,6 +260,9 @@ const Title = styled.div`
   font-weight: bold;
   letter-spacing: -1px;
   text-align: center;
+  @media (min-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.titleSectionFontSize};
+  }
 `;
 
 const TitleDescription = styled.div`
@@ -260,13 +271,16 @@ const TitleDescription = styled.div`
   margin-top: 13px;
   font-weight: 600;
   text-align: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.linkFontSize};
+  }
 `;
 
 const MainContent = styled.div`
   margin-top: 22.5px;
   width: 100%;
   padding-top: 38px;
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     padding-top: 20px;
   }
 `;
@@ -298,6 +312,9 @@ const Description = styled.div`
   font-size: ${props => props.theme.attemptReview.descriptionTextSize};
   color: ${props => props.theme.attemptReview.descriptionTextColor};
   font-weight: 600;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.linkFontSize};
+  }
 `;
 
 const ColorDescriptionRow = styled(Row)`
@@ -307,15 +324,27 @@ const ColorDescriptionRow = styled(Row)`
 const FlexCol = styled(Col)`
   display: flex;
   align-items: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0 !important;
+  }
+  @media (max-width: ${desktopWidth}) {
+    margin-top: 10px;
+  }
 `;
 
 const SpaceLeft = styled.div`
   margin-left: 22px;
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-left: 10px;
+  }
 `;
 
 const Questions = styled.div`
   margin-top: 50px;
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-top: 40px;
+  }
+  @media (max-width: ${tabletWidth}) {
     margin-top: 20px;
   }
 `;
@@ -324,20 +353,18 @@ const QuestionText = styled(Col)`
   font-size: ${props => props.theme.attemptReview.questiontextSize};
   color: ${props => props.theme.attemptReview.titleDescriptionTextColor};
   font-weight: bold;
-  @media screen and (max-width: 768px) {
-    text-align: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.questionTextnormalFontSize};
   }
 `;
 
 const AnsweredTypeButtonContainer = styled.div`
-  @media screen and (min-width: 992px) {
+  @media (min-width: ${desktopWidth}) {
     float: right;
     padding-left: 20px;
   }
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     display: flex;
-    justify-content: center;
-    padding-left: 10px;
   }
 `;
 
@@ -370,12 +397,15 @@ const StyledButton = styled(Button)`
   @media (max-width: ${largeDesktopWidth}) {
     margin-left: 10px;
     min-width: 85px;
-    font-size: 8px;
   }
 
-  @media screen and (max-width: ${desktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     margin: 5px 10px 0px 0px;
     min-width: auto;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    margin: 5px 5px 0px 0px;
+    padding: 5px 15px;
   }
 `;
 
@@ -383,10 +413,11 @@ const QuestionBlock = styled.div`
   display: flex;
   flex-flow: wrap;
   margin-top: 31px;
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${smallDesktopWidth}) {
     margin-top: 20px;
-    justify-content: center;
-    padding-left: 20px;
+  }
+  @media (max-width: ${tabletWidth}) {
+    margin-top: 20px;
   }
 `;
 
@@ -415,8 +446,11 @@ const QuestionColorBlock = styled.div`
     font-weight: 600;
     color: #ffffff;
     letter-spacing: 0.3px;
+    @media (max-width: ${smallDesktopWidth}) {
+      font-size: ${props => props.theme.smallFontSize};
+    }
   }
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     margin-right: 20px;
   }
 `;
@@ -426,15 +460,20 @@ const Footer = styled(Container)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-top: 43px;
+  }
+  @media (max-width: ${tabletWidth}) {
     margin-top: 20px;
-    text-align: center;
   }
 `;
 
 const ShortDescription = styled.div`
   font-size: 12px;
   color: #1e1e1e;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.linkFontSize};
+  }
 `;
 
 const SubmitButton = styled(Button)`
@@ -449,13 +488,21 @@ const SubmitButton = styled(Button)`
     color: ${props => props.theme.attemptReview.submitButtonTextColor};
     font-weight: 600;
     letter-spacing: 0.2px;
+    @media (max-width: ${smallDesktopWidth}) {
+      font-size: ${props => props.theme.smallLinkFontSize};
+    }
   }
   &:hover,
   &:focus {
     border-color: ${props => props.theme.attemptReview.submitButtonBgColor};
     background-color: ${props => props.theme.attemptReview.submitButtonBgColor};
   }
-  @media screen and (max-width: 768px) {
+  @media (max-width: ${smallDesktopWidth}) {
+    margin: 30px 0px;
+    width: 160px;
+    height: 36px;
+  }
+  @media (max-width: ${tabletWidth}) {
     margin: 20px 0px;
   }
 `;

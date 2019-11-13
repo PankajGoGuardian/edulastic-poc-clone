@@ -7,6 +7,7 @@ import { compose } from "redux";
 import HeaderWrapper from "./headerWrapper";
 import ClassSelect from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
+import { smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 
 const Header = ({
   t,
@@ -61,8 +62,10 @@ export const AssignmentTitle = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.header.headerTitleTextColor};
-
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.titleSecondarySectionFontSize};
+  }
+  @media screen and (max-width: ${tabletWidth}) {
     padding-left: 0;
   }
 `;

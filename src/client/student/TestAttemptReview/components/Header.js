@@ -5,6 +5,7 @@ import { Affix, Layout, Row, Col } from "antd";
 import { IconLogout } from "@edulastic/icons";
 
 import { LogoCompact } from "../../../assessment/themes/common";
+import { mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 const SummaryHeader = ({ showConfirmationModal }) => (
   <Affix>
@@ -28,12 +29,20 @@ SummaryHeader.propTypes = {
 export default memo(SummaryHeader);
 
 const AssignmentsHeader = styled(Layout.Header)`
+  border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
+  background-color: ${props => props.theme.header.headerBgColor || themeColor};
+  color: ${props => props.theme.header.headerTitleTextColor};
   display: flex;
   align-items: center;
-  background-color: ${props => props.theme.header.headerBgColor};
-  height: 62px;
-  color: ${props => props.theme.header.headerTitleTextColor};
-  padding: 0 40px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
+  padding: 0px 40px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
+  }
 
   .ant-col-24 {
     align-items: center;

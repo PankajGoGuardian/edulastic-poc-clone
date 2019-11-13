@@ -8,7 +8,7 @@ import ClassCard from "./CardContainer";
 import { Wrapper, NoDataBox, Title } from "../../styled";
 import NoDataIcon from "../../assets/nodata.svg";
 import styled from "styled-components";
-import { themeColor, white } from "@edulastic/colors";
+import { themeColor, white, tabletWidth, smallDesktopWidth } from "@edulastic/colors";
 import { IconPlus } from "@edulastic/icons";
 
 const ClassCards = ({ classList, t }) => {
@@ -96,7 +96,10 @@ ManageClassContainer.propTypes = {
 
 const CustomWrapper = styled(Wrapper)`
   padding: 30px 48px;
-  @media (max-width: 768px) {
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 5px 34px;
+  }
+  @media (max-width:$${tabletWidth}) {
     padding: 15px;
   }
 `;

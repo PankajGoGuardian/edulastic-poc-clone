@@ -65,8 +65,6 @@ const ResponseRnd = props => {
   return (
     <Rnd
       style={{
-        display: "flex",
-        flexDirection: "column",
         padding: "2px",
         border: `1px solid ${lightGrey}`
       }}

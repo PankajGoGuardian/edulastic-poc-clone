@@ -539,7 +539,7 @@ function* receiveTestByIdSaga({ payload }) {
 function* createTestSaga({ payload }) {
   const { _id: oldId, versioned: regrade = false, title, requirePassword = false } = payload.data;
   try {
-    if (!title) {
+    if (title !== undefined && !title.trim().length) {
       return yield call(message.error(" Name field cannot be empty "));
     }
     if (!requirePassword) {

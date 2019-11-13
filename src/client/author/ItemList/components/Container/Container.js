@@ -22,7 +22,6 @@ import {
 
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
-import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";
 import ListHeader from "../../../src/components/common/ListHeader";
 import { createTestItemAction } from "../../../src/actions/testItem";
 import {
@@ -58,6 +57,7 @@ import {
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
+import { createTestFromCartAction } from "../../ducks";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -87,8 +87,7 @@ export const getClearSearchState = () => ({
 class Contaier extends Component {
   state = {
     search: getClearSearchState(),
-    isShowFilter: true,
-    modalCreateTestVisible: false
+    isShowFilter: true
   };
 
   componentDidMount() {
@@ -290,8 +289,6 @@ class Contaier extends Component {
     }, 350);
   };
 
-  handleToggleModalCreateTest = value => () => this.setState({ modalCreateTestVisible: value });
-
   renderPagination = () => {
     const { count, page } = this.props;
     return (
@@ -314,14 +311,21 @@ class Contaier extends Component {
     });
   };
 
-  renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
+  renderCartButton = () => (
+    <CartButton
+      onClick={() => {
+        const { createTestFromCart } = this.props;
+        createTestFromCart();
+      }}
+    />
+  );
 
   renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
   render() {
     const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
 
-    const { search, isShowFilter, modalCreateTestVisible } = this.state;
+    const { search, isShowFilter } = this.state;
 
     return (
       <div>
@@ -375,12 +379,6 @@ class Contaier extends Component {
             </Element>
           </ListItems>
         </Container>
-        {modalCreateTestVisible && (
-          <ModalCreateTest
-            onProceed={this.handleToggleModalCreateTest(false)}
-            onCancel={this.handleToggleModalCreateTest(false)}
-          />
-        )}
       </div>
     );
   }
@@ -446,7 +444,8 @@ const enhance = compose(
       clearSelectedItems: clearSelectedItemsAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
-      getAllTags: getAllTagsAction
+      getAllTags: getAllTagsAction,
+      createTestFromCart: createTestFromCartAction
     }
   )
 );

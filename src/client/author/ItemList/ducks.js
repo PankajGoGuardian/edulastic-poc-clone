@@ -47,7 +47,7 @@ export function* addItemToCartSaga({ payload }) {
   yield put(setTestDataAction(updatedTest));
 }
 
-export function* createTestFromCart({ payload: { testName = "Author Test" } }) {
+export function* createTestFromCart({ payload: { testName } }) {
   const test = yield select(getTestEntitySelector);
   const questionGrades = test.testItems
     .flatMap(item => (item.data && item.data.questions) || [])
@@ -64,7 +64,7 @@ export function* createTestFromCart({ payload: { testName = "Author Test" } }) {
     subjects: uniq([...subjects, ...questionSubjects])
   };
   yield call(message.info, "Creating a test with selected items");
-  yield put(createTestAction(updatedTest, true, true));
+  yield put(createTestAction(updatedTest, false, true));
 }
 
 export function* watcherSaga() {

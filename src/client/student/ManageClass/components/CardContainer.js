@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Button, Tooltip } from "antd";
 import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
-import { tabletWidth, smallDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { tabletWidth, desktopWidth, largeDesktopWidth } from "@edulastic/colors";
 import { changeClassAction } from "../../Login/ducks";
 
 const ClassCard = ({ t, classItem, history, changeClass }) => {
@@ -114,27 +114,20 @@ const ManageClassCardContent = styled.div`
   background: ${props => props.theme.classCard.cardBg};
   border-radius: 10px;
   border: 1px solid ${props => props.theme.classCard.cardBorderColor};
-  width: 255px;
+  width: 24%;
   height: 285px;
-  margin: 0 15px 15px 0;
   padding: 5px 15px 5px 20px;
+  margin: 5px 5px 15px 5px;
   text-align: center;
-  @media (min-width: ${extraDesktopWidthMax}) {
-    margin: 0 30px 30px 0;
-    width: 300px;
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 32%;
   }
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
+    margin: 0px 0px 15px;
     width: 49%;
-    &:nth-child(even) {
-      margin-right: 0;
-    }
-    &:nth-child(odd) {
-      margin-right: 2%;
-    }
   }
   @media (max-width: ${tabletWidth}) {
     width: 100%;
-    margin-right: 0;
   }
 `;
 

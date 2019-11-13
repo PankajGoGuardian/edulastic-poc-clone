@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Row, Spin, Button, Modal, Input } from "antd";
+import { Spin, Button, Modal, Input } from "antd";
 import ClassCard from "./CardContainer";
 
 import { Wrapper, NoDataBox, Title } from "../../styled";
@@ -66,9 +66,9 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
       </HeaderWrapper>
 
       {classList.length ? (
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <ClassCardWrapper>
           <ClassCards classList={classList} t={t} />
-        </div>
+        </ClassCardWrapper>
       ) : (
         <NoDataBox>
           <img src={NoDataIcon} alt="noData" />
@@ -98,6 +98,16 @@ const CustomWrapper = styled(Wrapper)`
   padding: 30px 48px;
   @media (max-width: 768px) {
     padding: 15px;
+  }
+`;
+
+const ClassCardWrapper = styled.div`
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  &:after {
+    content: "";
+    flex: auto;
   }
 `;
 

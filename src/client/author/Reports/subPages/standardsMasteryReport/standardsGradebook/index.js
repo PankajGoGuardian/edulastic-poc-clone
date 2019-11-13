@@ -148,7 +148,7 @@ const StandardsGradebook = ({
   ]);
 
   const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandardsAction(params);
+    getStudentStandardsAction({ ...params, testId: settings.selectedTest.key });
     setClickedStandard(standard);
     setStudentAssignmentModal(true);
     setClickedStudentName(studentName);

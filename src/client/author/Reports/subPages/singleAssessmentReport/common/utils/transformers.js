@@ -144,7 +144,7 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       if (
         item.termId === currentFilter.termId &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
+        (item.grades === currentFilter.grade || currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
@@ -157,7 +157,7 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       if (
         item.termId === currentFilter.termId &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
+        (item.grades === currentFilter.grade || currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")

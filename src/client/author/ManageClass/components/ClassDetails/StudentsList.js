@@ -11,7 +11,16 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
-const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, selectedClass }) => {
+const StudentsList = ({
+  loaded,
+  students,
+  selectStudents,
+  selectedStudent,
+  features,
+  groupList,
+  selectedClass,
+  updating
+}) => {
   const { groupId, active } = selectedClass;
   const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 
@@ -92,7 +101,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
 
   return (
     <div style={{ textAlign: "end" }}>
-      {!loaded ? (
+      {!loaded || updating ? (
         <Spin />
       ) : empty ? (
         <NoStudents>
@@ -136,7 +145,8 @@ export default connect(
     students: get(state, "manageClass.studentsList", []),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
     features: getUserFeatures(state),
-    groupList: getGroupList(state)
+    groupList: getGroupList(state),
+    updating: state.manageClass.updating
   }),
   {
     selectStudents: selectStudentAction

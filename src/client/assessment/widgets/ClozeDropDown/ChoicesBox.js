@@ -8,8 +8,12 @@ import { Select } from "antd";
 const { Option } = Select;
 
 const SelectWrapper = styled.span`
+  position: relative;
   margin: 0px 4px 5px 5px;
   display: inline-flex;
+  .ant-select-dropdown {
+    ${({ dropdownMenuStyle }) => dropdownMenuStyle};
+  }
   .ant-select-dropdown-menu-item {
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -60,8 +64,13 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
       changeAnswers(val, index, id);
     }
   };
+
+  const dropdownMenuStyle = {
+    top: styles?.height ? `${styles.height}px !important` : null,
+    left: `0px !important`
+  };
   return (
-    <SelectWrapper ref={selectWrapperRef} className={className}>
+    <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef} className={className}>
       <Select
         value={userAnswer?.value}
         style={{
@@ -69,7 +78,7 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
           overflow: "hidden"
         }}
         placeholder={individualPlacholder || placeholder}
-        getPopupContainer={() => findDOMNode(selectWrapperRef.current)}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}

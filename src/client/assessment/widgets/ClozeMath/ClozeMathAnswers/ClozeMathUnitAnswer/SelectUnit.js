@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
@@ -30,22 +30,28 @@ const SelectUnit = ({
     onChange("unit", v);
   };
 
+  const dropdownWrapper = useRef(null);
+
+  const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+
   return (
-    <StyledSelect
-      onChange={onChangeUnit}
-      value={unit}
-      preview={preview}
-      height={height}
-      getPopupContainer={trigger => trigger.parentNode}
-      onDropdownVisibleChange={onDropdownVisibleChange}
-      dropdownStyle={dropdownStyle}
-    >
-      {allBtns.map((btn, i) => (
-        <Option value={btn.handler} key={i}>
-          {btn.label}
-        </Option>
-      ))}
-    </StyledSelect>
+    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle}>
+      <StyledSelect
+        onChange={onChangeUnit}
+        value={unit}
+        preview={preview}
+        height={height}
+        getPopupContainer={trigger => trigger.parentNode}
+        onDropdownVisibleChange={onDropdownVisibleChange}
+        dropdownStyle={dropdownStyle}
+      >
+        {allBtns.map((btn, i) => (
+          <Option value={btn.handler} key={i}>
+            {btn.label}
+          </Option>
+        ))}
+      </StyledSelect>
+    </DropDownWrapper>
   );
 };
 
@@ -69,11 +75,20 @@ SelectUnit.defaultProps = {
 
 export default SelectUnit;
 
+const DropDownWrapper = styled.div`
+  disply: flex;
+  align-self: stretch;
+  height: auto;
+  position: relative;
+  .ant-select-dropdown {
+    ${({ menuStyle }) => menuStyle};
+  }
+`;
+
 const StyledSelect = styled(Select)`
   min-width: 118px;
   margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
-  align-self: stretch;
-  height: auto;
+  height: 100%;
   ${({ preview }) =>
     preview &&
     `

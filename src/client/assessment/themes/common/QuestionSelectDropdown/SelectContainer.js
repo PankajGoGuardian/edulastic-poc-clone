@@ -6,6 +6,10 @@ const SelectContainer = styled.div`
   display: flex;
   align-items: center;
 
+  .ant-select-dropdown {
+    ${({ menuStyle }) => menuStyle};
+  }
+
   .ant-select {
     height: 40px;
     width: 100%;

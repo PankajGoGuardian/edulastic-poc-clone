@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
@@ -30,6 +30,9 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
+  const dropDownWrapper = useRef(null);
+  const menuStyle = { top: `${dropDownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+
   return checked ? (
     <CheckedBlock
       width={width}
@@ -43,22 +46,22 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <StyledSelect
-      width={width}
-      height={height}
-      onChange={text => save({ value: text, index }, "dropDowns", id)}
-      getPopupContainer={triggerNode => triggerNode.parentNode}
-      value={val}
-      dropdownStyle={uiStyles}
-    >
-      {options &&
-        options[id] &&
-        options[id].map((option, respID) => (
-          <Option value={option} key={respID}>
-            {option}
-          </Option>
-        ))}
-    </StyledSelect>
+    <DropdownWrapper ref={dropDownWrapper} width={width} height={height} menuStyle={menuStyle}>
+      <Select
+        onChange={text => save({ value: text, index }, "dropDowns", id)}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+        value={val}
+        dropdownStyle={uiStyles}
+      >
+        {options &&
+          options[id] &&
+          options[id].map((option, respID) => (
+            <Option value={option} key={respID}>
+              {option}
+            </Option>
+          ))}
+      </Select>
+    </DropdownWrapper>
   );
 };
 
@@ -71,15 +74,21 @@ ClozeDropDown.defaultProps = {};
 
 export default ClozeDropDown;
 
-const StyledSelect = styled(Select)`
-  min-width: 120px;
-  margin: 0px 2px;
-  width: ${props => props.width};
-  height: ${props => props.height};
-  min-height: 35px;
-  vertical-align: middle;
+const DropdownWrapper = styled.span`
+  position: relative;
+  .ant-select {
+    min-width: 120px;
+    margin: 0px 2px;
+    width: ${props => props.width};
+    height: ${props => props.height};
+    min-height: 35px;
+    vertical-align: middle;
 
-  .ant-select-selection__rendered {
-    line-height: 35px;
+    .ant-select-selection__rendered {
+      line-height: 35px;
+    }
+  }
+  .ant-select-dropdown {
+    ${({ menuStyle }) => menuStyle};
   }
 `;

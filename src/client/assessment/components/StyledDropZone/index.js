@@ -41,25 +41,23 @@ const StyledDropZone = ({
         <Loading type="loading" />
       </div>
     ) : (
-      thumb || (
-        <Fragment>
-          <FlexContainer
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            style={{ height: "100%", width: "100%" }}
-          >
-            <IconUpload isDragActive={isDragActive} />
-            <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
-            <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
-            <ZoneTitle isComment>
-              {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
-              {maxSize}KB MAX.)
-            </ZoneTitle>
-          </FlexContainer>
-          {children}
-        </Fragment>
-      )
+      <Fragment>
+        <FlexContainer
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          style={{ height: "100%", width: "100%" }}
+        >
+          <IconUpload isDragActive={isDragActive} />
+          <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
+          <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
+          <ZoneTitle isComment>
+            {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
+            {maxSize}KB MAX.)
+          </ZoneTitle>
+        </FlexContainer>
+        {children}
+      </Fragment>
     )}
   </Container>
 );

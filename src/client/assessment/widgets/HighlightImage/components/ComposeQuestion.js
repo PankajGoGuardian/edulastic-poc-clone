@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import Dropzone from "react-dropzone";
+import { message } from "antd";
 
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img, uploadToS3, beforeUpload, FlexContainer } from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
@@ -20,9 +21,28 @@ import Question from "../../../components/Question";
 import CustomInput from "../../../components/Input";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
-import { Label } from "../../../components/DropZoneToolbar/styled/Label";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import ResizableImage from "./Resizeable";
+import Dragger from "antd/lib/upload/Dragger";
+import UpdateImageButton from "../styled/UpdateImageButton";
 
 class ComposeQuestion extends Component {
+  imageContainerRef = React.createRef();
+
+  handleResizing = (e, direction, ref, delta, position) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.image = {
+          ...draft.image,
+          ...position,
+          [HEIGHT]: parseInt(ref.style.height, 10),
+          [WIDTH]: parseInt(ref.style.width, 10)
+        };
+      })
+    );
+  };
+
   render() {
     const { item, setQuestionData, loading, setLoading, t, fillSections, cleanSections } = this.props;
     const { image } = item;
@@ -113,7 +133,40 @@ class ComposeQuestion extends Component {
       }
     };
 
-    const thumb = image[SOURCE] && <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
+    const handleUpdateImage = async ({ file }) => {
+      try {
+        const canUpload = beforeUpload(file);
+        if (!canUpload) {
+          return false;
+        }
+        const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
+        getImageDimensions(imageUrl);
+      } catch (e) {
+        console.error("error in image upload", e);
+        message.error(`${t("component.cloze.imageText.fileUploadFailed")}`);
+      }
+    };
+
+    const uploadProps = {
+      beforeUpload: () => false,
+      onChange: handleUpdateImage,
+      accept: "image/*",
+      multiple: false,
+      showUploadList: false
+    };
+
+    const thumb = image[SOURCE] && (
+      <ResizableImage
+        handleResizing={this.handleResizing}
+        height={height}
+        width={width}
+        x={image.x}
+        y={image.y}
+        src={image[SOURCE]}
+        altText={altText}
+      />
+    );
+    // <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
     return (
       <Question
         section="main"
@@ -131,10 +184,11 @@ class ComposeQuestion extends Component {
           border="border"
         />
 
-        <FlexContainer marginBottom="1rem">
-          <FlexContainer>
+        <FlexContainer paddding="1rem 0">
+          <FlexContainer style={{ marginRight: `1rem` }}>
             <CustomInput
               size="large"
+              style={{ width: `70%`, marginRight: `5px` }}
               type="number"
               value={item?.image?.width || maxWidth}
               onChange={val => handleImageToolbarChange("width", val)}
@@ -142,9 +196,10 @@ class ComposeQuestion extends Component {
             />
             <Label>{t("component.hotspot.widthLabel")}</Label>
           </FlexContainer>
-          <FlexContainer>
+          <FlexContainer style={{ marginRight: `1rem` }}>
             <CustomInput
               size="large"
+              style={{ width: `70%`, marginRight: `5px` }}
               type="number"
               value={item?.image?.height || maxHeight}
               onChange={val => handleImageToolbarChange("height", val)}
@@ -152,9 +207,10 @@ class ComposeQuestion extends Component {
             />
             <Label>{t("component.hotspot.heightLabel")}</Label>
           </FlexContainer>
-          <FlexContainer flexProps={{ flex: "1 1 33%" }}>
+          <FlexContainer>
             <CustomInput
               size="large"
+              style={{ marginRight: `5px` }}
               type="text"
               value={altText}
               onChange={val => handleImageToolbarChange("altText", val)}
@@ -164,36 +220,44 @@ class ComposeQuestion extends Component {
           </FlexContainer>
         </FlexContainer>
 
-        <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
-          {({ getRootProps, getInputProps, isDragActive }) => (
-            <div
-              style={{
-                margin: "0 auto",
-                outline: "none"
-              }}
-              data-cy="dropzone-image-container"
-              {...getRootProps()}
-              className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
-            >
-              <input {...getInputProps()} />
-
-              <StyledDropZone
-                style={{
-                  justifyContent: "flex-start !important",
-                  alignItems: "flex-start !important",
-                  minHeight: maxHeight,
-                  minWidth: maxWidth,
-                  maxWidth: canvasDimensions.maxWidth,
-                  maxHeight: canvasDimensions.maxHeight,
-                  margin: "0 auto"
-                }}
-                loading={loading}
-                isDragActive={isDragActive}
-                thumb={thumb}
-              />
+        {thumb ? (
+          <FlexContainer className="imageContainer" flexDirection="column" marginBottom="1rem">
+            {thumb}
+            <div style={{ marginRight: "auto" }}>
+              <UpdateImageButton {...uploadProps}>
+                <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")} </EduButton>
+              </UpdateImageButton>
             </div>
-          )}
-        </Dropzone>
+          </FlexContainer>
+        ) : (
+          <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
+            {({ getRootProps, getInputProps, isDragActive }) => (
+              <div
+                style={{
+                  margin: "0 auto",
+                  outline: "none",
+                  border: `1px solid black`
+                }}
+                data-cy="dropzone-image-container"
+                {...getRootProps()}
+                className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
+              >
+                <input {...getInputProps()} />
+
+                <StyledDropZone
+                  style={{
+                    justifyContent: "flex-start !important",
+                    alignItems: "flex-start !important",
+                    margin: "0 auto",
+                    position: `relative`
+                  }}
+                  loading={loading}
+                  isDragActive={isDragActive}
+                />
+              </div>
+            )}
+          </Dropzone>
+        )}
       </Question>
     );
   }

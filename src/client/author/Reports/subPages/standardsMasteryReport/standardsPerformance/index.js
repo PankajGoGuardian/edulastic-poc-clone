@@ -90,6 +90,7 @@ const StandardsPerformance = ({
 
     if (termId) {
       getStandardsPerformanceSummaryRequestAction({
+        testId: settings.selectedTest.key,
         termId,
         domainIds,
         compareBy: tableFilters.compareBy.key,

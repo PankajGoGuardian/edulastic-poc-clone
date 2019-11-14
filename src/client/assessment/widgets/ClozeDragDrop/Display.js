@@ -508,7 +508,7 @@ ClozeDragDropDisplay.defaultProps = {
 export default withTheme(ClozeDragDropDisplay);
 
 const TextWrappedDiv = styled.div`
-  word-break: break-all;
+  word-break: break-word;
   max-width: 100%;
   overflow: auto;
 `;

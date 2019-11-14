@@ -65,10 +65,7 @@ const TestListFilters = ({
       text: item.identifier
     }));
 
-    const standardsPlaceholder = !curriculumId.length
-      ? "Available with Curriculum"
-      : 'Type to Search, for example "k.cc"';
-
+    const standardsPlaceholder = !curriculumId ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
@@ -94,7 +91,7 @@ const TestListFilters = ({
           placeholder: standardsPlaceholder,
           title: "Standards",
           filterOption: false,
-          disabled: !curriculumId.length || !formattedStandards.length,
+          disabled: !curriculumId || !formattedStandards.length,
           onChange: "standardIds",
           optionFilterProp: "children",
           data: formattedStandards,
@@ -128,7 +125,7 @@ const TestListFilters = ({
   };
 
   const handleSetShowModal = () => {
-    if (!search.curriculumId.length || !curriculumStandards.elo.length) return;
+    if (!search.curriculumId || !curriculumStandards.elo.length) return;
     setShowModal(true);
   };
 
@@ -154,10 +151,8 @@ const TestListFilters = ({
       <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
       {mappedfilterData.map((filterItem, index) => (
         <FilterItemWrapper key={index}>
-          {filterItem.isStandardSelect ? (
+          {filterItem.isStandardSelect && (
             <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
-          ) : (
-            ""
           )}
           <SubTitle>{filterItem.title}</SubTitle>
           <Select

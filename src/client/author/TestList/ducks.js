@@ -57,6 +57,7 @@ const emptyFilters = {
   curriculumId: "",
   status: "",
   standardIds: [],
+  grades: [],
   tags: [],
   searchString: "",
   filter: "ENTIRE_LIBRARY"

@@ -165,7 +165,7 @@ class ClassEdit extends React.Component {
     } = selctedClass;
     if (!classLoaded) return <Spin />;
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit} style={{ position: "relative" }}>
         <Header classId={classId} />
         <Spin spinning={updating}>
           <Container>

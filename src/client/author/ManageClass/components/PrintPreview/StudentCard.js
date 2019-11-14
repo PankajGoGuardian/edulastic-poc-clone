@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Title from "./Title";
 import { StyledCard, BoldText, ParaP, StudnetName, UserInfo } from "./styled";
 
-const StudentCard = ({ student: { firstName, lastName, email, username }, code }) => (
+const StudentCard = ({ student: { firstName, lastName, email, username }, code, appLoginUrl }) => (
   <StyledCard>
     <Title bgColor={white} align="center" />
     <ParaP>
@@ -22,7 +22,7 @@ const StudentCard = ({ student: { firstName, lastName, email, username }, code }
       </div>
     </UserInfo>
     <ParaP>
-      <a href="https://app.edulastic.com/login">https://app.edulastic.com/login</a>
+      <a href={appLoginUrl}>{appLoginUrl}</a>
     </ParaP>
   </StyledCard>
 );

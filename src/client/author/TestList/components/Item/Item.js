@@ -29,6 +29,7 @@ import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus, EdulasticVerified } from "../ListItem/styled";
+import { getAuthorCollectionMap } from "../../../dataUtils";
 
 class Item extends Component {
   static propTypes = {
@@ -174,9 +175,8 @@ class Item extends Component {
                   </Button>
                 )}
               </ButtonWrapper>
-              {(collectionName === "edulastic_certified" || collectionName === "engage_ny") && (
-                <EdulasticVerified width={30} height={30} />
-              )}
+              {(collectionName === "edulastic_certified" || collectionName === "engage_ny") &&
+                getAuthorCollectionMap(false, 30, 30)[collectionName].icon}
             </Header>
           }
         >

@@ -1,8 +1,25 @@
 import { get } from "lodash";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
+import { UserIcon } from "./ItemList/components/Item/styled";
+import { EdulasticVerified } from "./TestList/components/ListItem/styled";
 
 const { PASSAGE } = questionType;
+
+export const getAuthorCollectionMap = (isBottom, width, height) => {
+  return {
+    edulastic_certified: {
+      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+      displayName: "Edulastic Certified"
+    },
+    engage_ny: {
+      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+      displayName: "Edulastic Certified"
+    },
+    Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
+    PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
+  };
+};
 
 export const getTestAuthorName = item => {
   const { createdBy = {}, collectionName = "", authors = [] } = item;
@@ -17,14 +34,24 @@ export const getTestAuthorName = item => {
 export const getTestItemAuthorName = item => {
   const { owner = "", collectionName = "", authors = [] } = item;
   if (collectionName) {
-    const collectionNameMap = { Great_Minds_DATA: "Eureka Math", PROGRESS_DATA: "PROGRESS Bank" };
-    return collectionNameMap[collectionName] ? collectionNameMap[collectionName] : collectionName;
+    const collectionMap = getAuthorCollectionMap(true, 15, 15);
+    return collectionMap[collectionName] ? collectionMap[collectionName].displayName : collectionName;
   }
   if (owner) {
     const author = authors.find(item => item._id === owner) || {};
     return author.name || authors?.[0]?.name || "Anonymous";
   }
   return (authors.length && authors?.[0]?.name) || "Anonymous";
+};
+``;
+
+export const getTestItemAuthorIcon = item => {
+  const { collectionName = "" } = item;
+  const collectionMap = getAuthorCollectionMap(true, 15, 15);
+  if (collectionName && collectionMap[collectionName]) {
+    return collectionMap[collectionName].icon;
+  }
+  return <UserIcon />;
 };
 
 export const getPlaylistAuthorName = item => {

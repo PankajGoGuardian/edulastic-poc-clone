@@ -10,7 +10,7 @@ import { question } from "@edulastic/constants";
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
-import { getTestItemAuthorName, getQuestionType } from "../../../dataUtils";
+import { getTestItemAuthorName, getQuestionType, getTestItemAuthorIcon } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
 import {
@@ -118,7 +118,7 @@ class Item extends Component {
         text: (questions.find(item => item.depthOfKnowledge) || {}).depthOfKnowledge
       },
       {
-        name: <UserIcon />,
+        name: getTestItemAuthorIcon(item),
         text: getTestItemAuthorName(item)
       },
       {

@@ -33,6 +33,7 @@ import {
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { EllipsisWrapper } from "../Item/styled";
+import { getAuthorCollectionMap } from "../../../dataUtils";
 
 class ListItem extends Component {
   static propTypes = {
@@ -197,9 +198,8 @@ class ListItem extends Component {
                     </TestStatus>
                   </>
                 )}
-                {(collectionName === "edulastic_certified" || collectionName === "engage_ny") && (
-                  <EdulasticVerified bottom width={30} height={30} />
-                )}
+                {(collectionName === "edulastic_certified" || collectionName === "engage_ny") &&
+                  getAuthorCollectionMap(true, 30, 30)[collectionName].icon}
               </TagsWrapper>
 
               <ItemInformation span={12}>

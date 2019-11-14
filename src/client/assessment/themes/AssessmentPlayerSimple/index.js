@@ -232,7 +232,6 @@ class AssessmentPlayerSimple extends React.Component {
       enableCrossAction
     } = this.state;
 
-    console.log("toolopenStatus", toolsOpenStatus);
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];

@@ -225,12 +225,10 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, testItems = [] } = test;
     const { editEnable } = this.state;
-
     if (!this.props.test?.title?.trim()?.length) {
-      this.gotoTab(value);
+      message.warn("Please enter test name.");
       return;
     }
-
     if (value === "source") {
       this.setState({
         showModal: true

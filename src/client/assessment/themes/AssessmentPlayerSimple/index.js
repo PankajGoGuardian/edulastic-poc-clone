@@ -117,11 +117,28 @@ class AssessmentPlayerSimple extends React.Component {
     }));
   };
 
+  // if scratchpad data is present on mount, then open scratchpad
+  componentDidMount() {
+    const { scratchPad } = this.props;
+    if (scratchPad) {
+      this.setState({
+        toolsOpenStatus: [5]
+      });
+    }
+  }
+
   componentDidUpdate(previousProps) {
-    const { currentItem } = this.props;
+    const { currentItem, scratchPad } = this.props;
     if (currentItem !== previousProps.currentItem) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ showHints: false, testItemState: "" });
+      // if scratchpad data is present while navigating to next question
+      // open scratchpad
+      if (scratchPad) {
+        this.setState({
+          toolsOpenStatus: [5]
+        });
+      }
     }
   }
 
@@ -214,6 +231,8 @@ class AssessmentPlayerSimple extends React.Component {
       lineWidth,
       enableCrossAction
     } = this.state;
+
+    console.log("toolopenStatus", toolsOpenStatus);
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];

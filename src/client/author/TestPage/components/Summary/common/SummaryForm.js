@@ -11,10 +11,12 @@ import {
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
+const FieldsMargin = "23px";
+
 export const SummaryInput = styled(Input)`
   border: ${props => (props.value !== undefined && !props.value.trim().length ? "1px solid red" : "1px solid #e1e1e1")};
   background: ${lightGreySecondary};
-  margin-bottom: ${props => (props.value !== undefined && !props.value.trim().length ? "15px" : "5px")};
+  margin-bottom: ${FieldsMargin};
   &:focus {
     border: ${props => (props.value !== undefined && !props.value.trim().length ? "1px solid red !important" : "")};
   }
@@ -31,7 +33,7 @@ export const SummaryButton = styled(Button)`
 `;
 
 export const SummarySelect = styled(Select)`
-  margin-bottom: 23px;
+  margin-bottom: ${FieldsMargin};
 
   .ant-select-selection {
     border: 1px solid #e1e1e1;
@@ -52,12 +54,12 @@ export const SummaryTextArea = styled(Input.TextArea)`
   max-height: ${props => (props.isPlaylist ? "none" : "168px")} !important;
   padding: 10px 20px;
   border: ${props => (props.isPlaylist ? "1px solid #e1e1e1" : "none")};
-  margin-bottom: 23px;
+  margin-bottom: ${FieldsMargin};
   background: ${lightGreySecondary};
   ${props =>
     props.isPlaylist &&
     `@media(max-width:${largeDesktopWidth}){
-    height:80px !important;
+      height:80px !important;
   }`}
 `;
 

@@ -27,6 +27,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { CheckContainer } from "./styled/CheckContainer";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import AppConfig from "../../../../../app-config";
 
 const EmptyWrapper = styled.div``;
 
@@ -140,11 +141,7 @@ class ClozeDragDrop extends Component {
     const isShowAnswer = previewTab === "show" && !expressGrader;
 
     return (
-      <WithResources
-        resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
-        fallBack={<span />}
-        onLoaded={() => null}
-      >
+      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
         {view === "edit" && (
           <ContentArea>
             <React.Fragment>

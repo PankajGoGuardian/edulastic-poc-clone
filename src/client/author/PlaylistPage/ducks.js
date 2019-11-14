@@ -136,7 +136,7 @@ const initialPlaylistState = {
     _id: "",
     name: ""
   },
-  thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
+  thumbnail: "",
   derivedFrom: {
     name: ""
   },

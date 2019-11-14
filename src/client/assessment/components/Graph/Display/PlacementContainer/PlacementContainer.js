@@ -33,6 +33,7 @@ import {
 } from "./styled";
 import Tools from "../../common/Tools";
 import DragDropValues from "./DragDropValues";
+import AppConfig from "../../../../../../../app-config";
 
 const valueHeightHashMap = {
   "1": {
@@ -559,10 +560,7 @@ class PlacementContainer extends PureComponent {
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
-          resources={[
-            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
-          ]}
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >

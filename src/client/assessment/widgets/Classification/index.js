@@ -10,17 +10,14 @@ import EditClassification from "./EditClassification";
 import ClassificationPreview from "./ClassificationPreview";
 
 import { ContentArea } from "../../styled/ContentArea";
+import AppConfig from "../../../../../app-config";
 
 const Classification = props => {
   const { view, item } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
-    <WithResources
-      resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
-      fallBack={<span />}
-      onLoaded={() => {}}
-    >
+    <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => {}}>
       {view === EDIT && (
         <ContentArea>
           <EditClassification {...props} />

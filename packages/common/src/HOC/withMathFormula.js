@@ -5,6 +5,7 @@ import { WithResources } from "./withResources";
 
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
 import { MigratedQuestion } from "../components/MigratedQuestion";
+import AppConfig from "../../../../app-config";
 
 export const withMathFormula = WrappedComponent => {
   const MathFormulaWrapped = props => {
@@ -28,9 +29,9 @@ export const withMathFormula = WrappedComponent => {
     return (
       <WithResources
         resources={[
-          "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-          "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css",
-          "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          `${AppConfig.jqueryPath}/jquery.min.js`,
+          `${AppConfig.katexPath}/katex.min.css`,
+          `${AppConfig.katexPath}/katex.min.js`
         ]}
         fallBack={<span />}
         onLoaded={() => {

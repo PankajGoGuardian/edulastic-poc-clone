@@ -23,6 +23,7 @@ import Tools from "../../common/Tools";
 import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 import { getAdjustedHeightAndWidth } from "../../common/utils";
+import AppConfig from "../../../../../../../app-config";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -397,10 +398,7 @@ class AxisLabelsContainer extends PureComponent {
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
-          resources={[
-            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
-          ]}
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >

@@ -203,7 +203,7 @@ export const addNewTagAction = createAction(ADD_NEW_TAG);
 export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 
-export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
+export const defaultImage = "";
 // reducer
 export const createBlankTest = () => ({
   title: undefined,

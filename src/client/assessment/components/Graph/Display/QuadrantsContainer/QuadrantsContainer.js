@@ -36,6 +36,7 @@ import Tools from "../../common/Tools";
 import GraphEditTools from "../../components/GraphEditTools";
 import DrawingObjects from "./DrawingObjects";
 import { ElementSettingsMenu } from "./ElementSettingsMenu";
+import AppConfig from "../../../../../../../app-config";
 
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
@@ -635,10 +636,7 @@ class GraphContainer extends PureComponent {
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
-          resources={[
-            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
-          ]}
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >

@@ -8,24 +8,12 @@ import { GoogleLogin } from "react-google-login";
 import { get } from "lodash";
 // components
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
+import { Title, IconManageClass, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
 // ducks
 import { fetchClassListAction } from "../../ducks";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import styled from "styled-components";
-
-const scopes = [
-  "https://www.googleapis.com/auth/classroom.courses",
-  "https://www.googleapis.com/auth/classroom.rosters",
-  "https://www.googleapis.com/auth/classroom.coursework.me",
-  "https://www.googleapis.com/auth/classroom.coursework.students",
-  "https://www.googleapis.com/auth/classroom.announcements",
-  "https://www.googleapis.com/auth/classroom.guardianlinks.students",
-  "https://www.googleapis.com/auth/classroom.guardianlinks.me.readonly",
-  "https://www.googleapis.com/auth/classroom.profile.photos",
-  "https://www.googleapis.com/auth/classroom.profile.emails",
-  "https://www.googleapis.com/auth/userinfo.profile"
-].join(" ");
+import { scopes } from "./ClassCreatePage";
 
 const Header = ({ classHeader, fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {

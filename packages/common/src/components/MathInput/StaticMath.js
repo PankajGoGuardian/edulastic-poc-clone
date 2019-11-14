@@ -4,6 +4,7 @@ import { MathKeyboard } from "@edulastic/common";
 
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
+import AppConfig from "../../../../../app-config";
 
 const StaticMath = ({
   style,
@@ -244,9 +245,9 @@ StaticMath.defaultProps = {
 const StaticMathWithResources = props => (
   <WithResources
     resources={[
-      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+      `${AppConfig.jqueryPath}/jquery.min.js`,
+      `${AppConfig.mathquillPath}/mathquill.css`,
+      `${AppConfig.mathquillPath}/mathquill.min.js`
     ]}
     fallBack={<span />}
   >

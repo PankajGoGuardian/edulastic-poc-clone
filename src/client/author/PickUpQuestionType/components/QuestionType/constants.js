@@ -814,7 +814,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         stimulus: "<p>Enter your question</p>",
         type: questionType.HOTSPOT,
         image: {
-          source: "https://assets.learnosity.com/organisations/1/bead7655-fb71-41af-aeea-9e08a47eac68.png",
+          source: "",
           width: 700,
           altText: "",
           height: 600
@@ -1390,7 +1390,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
-        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        imageUrl: "https://cdn2.edulastic.com/default/1558946005996_transparent.png",
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1436,7 +1436,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         stimulus: "Sample image background with overlaid drop downs",
         imageWidth: 0,
-        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        imageUrl: "https://cdn2.edulastic.com/default/1558946005996_transparent.png",
         keepAspectRatio: true,
         options: [[defaultOptions[0], defaultOptions[1]], [defaultOptions[2], defaultOptions[3]]],
         validation: {
@@ -1481,7 +1481,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "Sample image background with overlaid text fields",
         options: [],
-        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        imageUrl: "https://cdn2.edulastic.com/default/1558946005996_transparent.png",
         keepAspectRatio: true,
         uiStyle: {
           width: 140,

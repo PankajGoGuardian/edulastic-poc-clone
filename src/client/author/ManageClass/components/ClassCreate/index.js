@@ -192,6 +192,10 @@ class ClassCreate extends React.Component {
                     setSubject={setSubject}
                     userOrgData={userOrgData}
                     clearStandards={this.clearStandards}
+                    tags={tags}
+                    setFieldsValue={setFieldsValue}
+                    allTagsData={allTagsData}
+                    addNewTag={addNewTag}
                   />
                 </RightContainer>
               </Row>

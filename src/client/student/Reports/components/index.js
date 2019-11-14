@@ -8,7 +8,7 @@ import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
-import { smallDesktopWidth } from "@edulastic/colors";
+import { smallDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -18,6 +18,9 @@ const ContentWrapper = styled.div`
   padding: 0px 40px;
   @media (max-width: ${smallDesktopWidth}) {
     padding: 0px 20px 0px 30px;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 0px 10px;
   }
 `;
 

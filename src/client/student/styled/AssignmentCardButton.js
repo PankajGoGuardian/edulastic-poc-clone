@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { extraDesktopWidth, largeDesktopWidth, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
+import {
+  extraDesktopWidth,
+  largeDesktopWidth,
+  smallDesktopWidth,
+  tabletWidth,
+  mobileWidthMax
+} from "@edulastic/colors";
 
 const StartAssignButton = styled(Button)`
   ${props => (props.theme.zoomLevel == "xs" ? "max-width: 200px; height: 40px;" : "max-width: 300px; height: auto;")}
@@ -45,7 +51,10 @@ const StartAssignButton = styled(Button)`
     width: 120px;
   }
   @media screen and (max-width: ${tabletWidth}) {
-    margin-top: 10px;
+    margin-top: 0px;
+  }
+  @media screen and (max-width: ${mobileWidthMax}) {
+    ${props => props.assessment && "margin-top: 10px;margin-left:0px;"}
   }
 `;
 

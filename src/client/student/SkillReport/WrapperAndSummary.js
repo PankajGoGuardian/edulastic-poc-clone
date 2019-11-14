@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { extraDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import styled from "styled-components";
 import * as S from "./styled";
 import StyledTable from "../styled/Table";
@@ -97,6 +97,9 @@ export default enhance(SkillReportMainContent);
 
 const ContentWrapper = styled.div`
   padding: 0px 40px;
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 0px 10px;
+  }
 `;
 
 const WrapperContent = styled(Wrapper)`

@@ -64,7 +64,11 @@ const SafeBrowserButton = ({
   }
 
   url += `/token/${token}/settings.seb`;
-  return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
+  return (
+    <SafeStartAssignButton href={url} assessment>
+      {startButtonText}
+    </SafeStartAssignButton>
+  );
 };
 
 const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
@@ -182,6 +186,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         />
       ) : (
         <StartButton
+          assessment
           data-cy="start"
           safeBrowser={safeBrowser}
           startDate={startDate}
@@ -376,7 +381,7 @@ const ButtonAndDetail = styled(Col)`
     width: 55%;
   }
   @media (max-width: ${desktopWidth}) {
-    width: 50%;
+    width: 64%;
   }
   @media screen and (max-width: 767px) {
     flex-direction: column;
@@ -403,7 +408,7 @@ const AttemptDetails = styled(Row)`
   @media only screen and (min-width: ${largeDesktopWidth}) {
     flex: 1;
   }
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${largeDesktopWidth}) {
     width:100%;
   }
 `;
@@ -420,6 +425,9 @@ const AnswerAndScore = styled(Col)`
     @media (max-width: ${smallDesktopWidth}) {
       font-size: ${props => props.theme.subtitleFontSize};
     }
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    flex: 1;
   }
 `;
 

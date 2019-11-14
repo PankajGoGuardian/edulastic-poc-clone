@@ -8,6 +8,7 @@ import ManageClassContainer from "./Container";
 import { getEnrollClassAction, setFilterClassAction } from "../ducks";
 import { joinClassAction } from "../ducks";
 import { getUser } from "../../../author/src/selectors/user";
+import { mobileWidthMax } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -15,6 +16,9 @@ const Wrapper = styled(Layout)`
 `;
 const ContentWrapper = styled.div`
   padding: 0px 40px;
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 0px 10px;
+  }
 `;
 
 const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList, joinClass, studentData }) => {

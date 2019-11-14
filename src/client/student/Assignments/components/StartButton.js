@@ -7,7 +7,7 @@ import lockIcon from "../../assets/lock-icon.svg";
 // components
 import StartButton from "../../styled/AssignmentCardButton";
 
-const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused }) => {
+const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused, assessment }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
   return new Date(startDate) > new Date() || !startDate || isPaused ? (
     <NotAvailableButton disabled>
@@ -20,7 +20,7 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused
       </span>
     </NotAvailableButton>
   ) : (
-    <StartButton onClick={startTest}>
+    <StartButton onClick={startTest} assessment={assessment}>
       <span data-cy="assignmentButton">{startButtonText}</span>
     </StartButton>
   );

@@ -9,7 +9,7 @@ import {
   largeDesktopWidth,
   mobileWidthMax,
   smallDesktopWidth,
-  mediumDesktopWidth
+  desktopWidth
 } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatDateAndTime } from "../utils";
@@ -181,6 +181,10 @@ const Thumbnail = React.memo(styled.img`
     width: 130px;
     height: 77px;
   }
+  @media(max-width: ${desktopWidth}) {
+    width: 100px;
+    height: 90px;
+  }
   
   @media(max-width: ${mobileWidthMax}) {
     width: calc(100% - 14px);
@@ -201,6 +205,9 @@ const AssignmentTitle = React.memo(styled.span`
   @media (max-width: ${smallDesktopWidth}) {
     max-width: 125px;
   }
+  @media (max-width: ${desktopWidth}) {
+    max-width: 98px;
+  }
 `);
 
 const CardDetails = React.memo(styled(Col)`
@@ -213,11 +220,11 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
-    width: 20vw;
+    width: 22vw;
   }
 
-  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${smallDesktopWidth}) {
-    width: 22vw;
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${desktopWidth}) {
+    width: 18vw;
   }
 
   @media (max-width: ${mobileWidthMax}) {

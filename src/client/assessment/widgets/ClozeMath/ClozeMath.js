@@ -25,6 +25,7 @@ import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
+import AppConfig from "../../../../../app-config";
 
 const ClozeMath = ({
   view,
@@ -88,9 +89,9 @@ const ClozeMath = ({
   return (
     <WithResources
       resources={[
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+        `${AppConfig.jqueryPath}/jquery.min.js`,
+        `${AppConfig.mathquillPath}/mathquill.css`,
+        `${AppConfig.mathquillPath}/mathquill.min.js`
       ]}
       fallBack={<span />}
       onLoaded={() => {}}

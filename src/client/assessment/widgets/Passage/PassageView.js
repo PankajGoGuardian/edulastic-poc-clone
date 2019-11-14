@@ -12,6 +12,7 @@ import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import ColorPicker from "./ColorPicker";
 import { ColorPickerContainer, Overlay } from "./styled/ColorPicker";
+import AppConfig from "../../../../../app-config";
 
 const ContentsTitle = Heading;
 let startedSelectingText = false;
@@ -154,11 +155,7 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
   }, []);
 
   return (
-    <WithResources
-      resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
-      fallBack={<div />}
-      onLoaded={loadInit}
-    >
+    <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<div />} onLoaded={loadInit}>
       {item.instructorStimulus && !flowLayout && (
         <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructorStimulus }} />
       )}

@@ -8,6 +8,7 @@ import { IconPlayFilled, IconAudioPause, IconStop } from "@edulastic/icons";
 
 import { curentPlayerDetailsSelector } from "./selectors/test";
 import { setCurrentAudioDetailsAction } from "./actions/test";
+import AppConfig from "../../../app-config";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -88,7 +89,7 @@ const AudioControls = ({
       if (questionData.type === "multipleChoice") {
         const optionUrls = questionData.tts.optionUrls;
         const audioLoad = [];
-        const choicePrefix = "https://cdneduv2.snapwiz.net/media/choice-";
+        const choicePrefix = `${AppConfig.ttsChoicesPath}/choice-`;
         const optionKeys = (optionUrls && Object.keys(optionUrls)) || [];
         optionKeys.forEach((item, i) => {
           const choiceVal = ALPHABET[i];

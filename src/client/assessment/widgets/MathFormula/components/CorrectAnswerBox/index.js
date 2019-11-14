@@ -6,6 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Wrapper } from "./styled/Wrapper";
 import { Answer } from "./styled/Answer";
+import AppConfig from "../../../../../../../app-config";
 
 const CorrectAnswerBox = ({ children, t, altAnswers }) => {
   const answerRef = useRef();
@@ -42,9 +43,9 @@ const CorrectAnswerBoxComponent = enhance(CorrectAnswerBox);
 const CorrectAnswerBoxWithResources = ({ ...props }) => (
   <WithResources
     resources={[
-      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+      `${AppConfig.jqueryPath}/jquery.min.js`,
+      `${AppConfig.mathquillPath}/mathquill.css`,
+      `${AppConfig.mathquillPath}/mathquill.min.js`
     ]}
     fallBack={<span />}
   >

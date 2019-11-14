@@ -34,12 +34,7 @@ export const Container = styled(Card)`
         right: 24px;
         border-radius: 4px;
         opacity: 0.3;
-        background: url(${props =>
-          props.isPlaylist
-            ? props.src
-              ? props.src
-              : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"
-            : ""});
+        background: url(${props => (props.isPlaylist ? (props.src ? props.src : "") : "")});
       }
     }
   }
@@ -225,8 +220,7 @@ export const Header = styled.div`
   min-height: 120px;
   padding: 10px 15px;
   position: relative;
-  background: url(${props =>
-    props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
+  background: url(${props => (props.src ? props.src : "")});
   background-repeat: no-repeat;
   background-size: cover;
   &:hover {

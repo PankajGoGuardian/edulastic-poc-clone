@@ -22,6 +22,7 @@ import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import AppConfig from "../../../../../app-config";
 
 const EmptyWrapper = styled.div``;
 
@@ -286,11 +287,7 @@ class ClozeText extends Component {
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
     return (
-      <WithResources
-        resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
-        fallBack={<span />}
-        onLoaded={() => null}
-      >
+      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
         {view === "edit" && (
           <ContentArea data-cy="question-area">
             <div className="authoring">

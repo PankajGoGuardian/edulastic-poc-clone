@@ -6,6 +6,7 @@ import { WithResources } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import BasicCalculator from "./BasicCalculator";
 import { Spin } from "antd";
+import AppConfig from "../../../../../app-config";
 
 class CalculatorContainer extends Component {
   constructor(props) {
@@ -217,10 +218,7 @@ const CloseIcon = styled(IconClose)`
 
 const CalculatorContainerWithResources = ({ ...props }) => (
   <WithResources
-    resources={[
-      "https://www.desmos.com/api/v1.2/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&ext.js",
-      "https://cdn.geogebra.org/apps/deployggb.js"
-    ]}
+    resources={[`${AppConfig.desmosPath}/calculator.js`, `${AppConfig.geoGebraPath}/deployggb.js`]}
     fallBack={<Spin />}
   >
     <CalculatorContainer {...props} />

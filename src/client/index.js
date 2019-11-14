@@ -13,8 +13,67 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 import "./index.css";
 import App from "./App";
 import configureStore, { history } from "./configureStore";
+import AppConfig from "../../app-config";
+
+if (process.env.POI_APP_SENTRY_URI) {
+  window.Raven.config(process.env.POI_APP_SENTRY_URI, {
+    whitelistUrls: [AppConfig.sentryWhiteListURLRegex]
+  }).install();
+}
 
 smoothscroll.polyfill();
+
+!(function() {
+  var analytics = (window.analytics = window.analytics || []);
+  if (!analytics.initialize)
+    if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice.");
+    else {
+      analytics.invoked = !0;
+      analytics.methods = [
+        "trackSubmit",
+        "trackClick",
+        "trackLink",
+        "trackForm",
+        "pageview",
+        "identify",
+        "reset",
+        "group",
+        "track",
+        "ready",
+        "alias",
+        "debug",
+        "page",
+        "once",
+        "off",
+        "on"
+      ];
+      analytics.factory = function(t) {
+        return function() {
+          var e = Array.prototype.slice.call(arguments);
+          e.unshift(t);
+          analytics.push(e);
+          return analytics;
+        };
+      };
+      for (var t = 0; t < analytics.methods.length; t++) {
+        var e = analytics.methods[t];
+        analytics[e] = analytics.factory(e);
+      }
+      analytics.load = function(t, e) {
+        var n = document.createElement("script");
+        n.type = "text/javascript";
+        n.async = !0;
+        // download the file from by passing the key https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js
+        // and upload it to s3
+        n.src = "https://cdn2.edulastic.com/JS/thirdpartylib/segmentjs/v4.2.1/analytics.js";
+        var a = document.getElementsByTagName("script")[0];
+        a.parentNode.insertBefore(n, a);
+        analytics._loadOptions = e;
+      };
+      analytics.SNIPPET_VERSION = "4.2.1";
+      analytics.load();
+    }
+})();
 
 // redux store
 const { store } = configureStore();

@@ -41,8 +41,7 @@ export const Image = styled.div`
   width: 100%;
   height: 150px;
   position: relative;
-  background: ${props =>
-    props.src ? `url(${props.src})` : `url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg")`};
+  background: ${props => (props.src ? `url(${props.src})` : `url("")`)};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

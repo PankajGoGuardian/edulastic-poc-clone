@@ -54,8 +54,8 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
         </UploadDragger>
         {/* TODO add proper client ID and developer key via .env files */}
         <GooglePicker
-          clientId={"835823990898-ulhj06b5p15vo0014a1bbvdbhnm6otuf.apps.googleusercontent.com"}
-          developerKey={"AIzaSyD9ZkpXo8kM2SKVzdxqJ7TlKSJnGwDbxM4"}
+          clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+          developerKey={process.env.POI_APP_GOOGLE_KEY}
           onChange={handleDriveUpload}
           onAuthFailed={handleAuthFailed}
           mimeTypes={["application/pdf"]}

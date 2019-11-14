@@ -2,6 +2,7 @@ import React from "react";
 import { WithResources } from "../../HOC/withResources";
 
 import MathInput from "./MathInput";
+import AppConfig from "../../../../../app-config";
 
 class MathInputWithResources extends React.PureComponent {
   mathInputRef = React.createRef();
@@ -16,9 +17,9 @@ class MathInputWithResources extends React.PureComponent {
     return (
       <WithResources
         resources={[
-          "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-          "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-          "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+          `${AppConfig.jqueryPath}/jquery.min.js`,
+          `${AppConfig.mathquillPath}/mathquill.css`,
+          `${AppConfig.mathquillPath}/mathquill.min.js`
         ]}
         fallBack={<span />}
       >

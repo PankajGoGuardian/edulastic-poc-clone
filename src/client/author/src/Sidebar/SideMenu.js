@@ -62,12 +62,14 @@ const menuItems = [
     ],
     path: "author/assignments"
   },
-  {
-    label: "PlayList Library",
-    icon: IconPlaylist,
-    allowedPathPattern: [/author\/playlists/],
-    path: "author/playlists"
-  },
+
+  //hiding playlist library as this feature is not yet to be released.
+  // {
+  //   label: "PlayList Library",
+  //   icon: IconPlaylist,
+  //   allowedPathPattern: [/author\/playlists/],
+  //   path: "author/playlists"
+  // },
 
   {
     label: "Test Library",

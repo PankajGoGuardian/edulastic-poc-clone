@@ -83,6 +83,8 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
   const isPrintPreview =
     history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment");
 
+  const assessmentTabs = ["description", "addItems", "review", "settings"];
+
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
@@ -247,7 +249,8 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     path="/author/playlists/:id/editAssigned"
                     render={props => (
                       <Suspense fallback={<Progress />}>
-                        <PlayList {...props} editAssigned />
+                        {/* coming from editAssessment in assignment dropdown should land   `Review` tab */}
+                        <PlayList {...props} currentTab="review" editAssigned />
                       </Suspense>
                     )}
                   />
@@ -315,7 +318,10 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     )}
                   />
 
-                  {["description", "addItems", "review", "settings"].map(x => (
+                  {/**
+                   * before saving the test
+                   *  */}
+                  {assessmentTabs.map(x => (
                     <Route
                       exact
                       path={`/author/tests/create/${x}`}
@@ -323,10 +329,24 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                     />
                   ))}
 
-                  {["description", "addItems", "review", "settings"].map(x => (
+                  {/**
+                   * After saving the test with id
+                   *  */}
+                  {assessmentTabs.map(x => (
                     <Route
                       exact
                       path={`/author/tests/tab/${x}/id/:id`}
+                      render={props => <TestPage {...props} currentTab={x} />}
+                    />
+                  ))}
+
+                  {/**
+                   * After versioned
+                   */}
+                  {assessmentTabs.map(x => (
+                    <Route
+                      exact
+                      path={`/author/tests/tab/${x}/id/:id/old/:oldId`}
                       render={props => <TestPage {...props} currentTab={x} />}
                     />
                   ))}

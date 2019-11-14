@@ -90,6 +90,8 @@ export const RECEIVE_DEFAULT_TEST_SETTINGS = "[tests] receive default test setti
 export const SET_DEFAULT_TEST_TYPE_PROFILES = "[tests] set default test type profiles";
 export const PUBLISH_FOR_REGRADE = "[tests] publish test for regrade";
 export const DELETE_ANNOTATION = "[tests] delete annotations from test";
+export const SET_LOADING_TEST_PAGE = "[tests] set loading";
+export const DUPLICATE_TEST_REQUEST = "[tests] duplicate request";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -102,6 +104,8 @@ export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT);
 export const setAllTagsAction = createAction(SET_ALL_TAGS);
 export const getDefaultTestSettingsAction = createAction(RECEIVE_DEFAULT_TEST_SETTINGS);
 export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
+export const setTestsLoadingAction = createAction(SET_LOADING_TEST_PAGE);
+export const duplicateTestRequestAction = createAction(DUPLICATE_TEST_REQUEST);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -479,6 +483,8 @@ export const reducer = (state = initialState, { type, payload }) => {
           standardGradingScale
         }
       };
+    case SET_LOADING_TEST_PAGE:
+      return { ...state, loading: payload };
     default:
       return state;
   }
@@ -588,7 +594,8 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
-    const { scoring = {} } = payload.data;
+    yield put(setTestsLoadingAction(true));
+    const { scoring = {}, currentTab } = payload.data;
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
     delete payload.data.updatedDate;
@@ -600,6 +607,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.isUsed;
     delete payload.data.scoring;
     delete payload.data.sharedType;
+    delete payload.data.currentTab;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -637,15 +645,21 @@ function* updateTestSaga({ payload }) {
     if (oldId != newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");
-        yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
+        let url = `/author/tests/${newId}/versioned/old/${oldId}`;
+        if (currentTab) {
+          url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`;
+        }
+        yield put(push(url));
       }
     } else if (!payload.assignFlow) {
       yield call(message.success, "Test saved as Draft");
     }
+    yield put(setTestsLoadingAction(false));
   } catch (err) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
     yield put(updateTestErrorAction(errorMessage));
+    yield put(setTestsLoadingAction(false));
   }
 }
 
@@ -1035,6 +1049,20 @@ function* getDefaultTestSettingsSaga() {
   }
 }
 
+function* duplicateTestSaga({ payload }) {
+  yield put(setTestsLoadingAction(true));
+  try {
+    const { _id, title, currentTab } = payload;
+    const data = yield call(assignmentApi.duplicateAssignment, { _id, title });
+    yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`));
+    yield put(setTestsLoadingAction(false));
+    yield put(receiveTestByIdAction(data._id, true));
+  } catch (e) {
+    yield put(setTestsLoadingAction(false));
+    console.warn("error", e, e.stack);
+  }
+}
+
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -1051,7 +1079,8 @@ export function* watcherSaga() {
     yield takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
     yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
-    yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade)
+    yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
+    yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);

@@ -1,14 +1,14 @@
 import styled from "styled-components";
-import { Pagination, Affix, Input } from "antd";
+import { Pagination, Affix } from "antd";
 
 import {
   themeColor,
   desktopWidth,
-  mediumDesktopWidth,
   textColor,
   grey,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  placeholderGray
 } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
@@ -31,12 +31,16 @@ export const Container = styled.div`
   overflow: auto;
 
   .ant-input {
-    font-size: 13px;
+    font-size: ${props => props.theme.bodyFontSize};
     letter-spacing: 0.2px;
-    color: #b1b1b1;
+    color: ${placeholderGray};
     ::placeholder {
-      font-style: italic;
-      color: #b1b1b1;
+      font-size: ${props => props.theme.smallFontSize};
+      color: ${placeholderGray};
+
+      @media (max-width: ${mediumDesktopExactWidth}) {
+        font-size: ${props => props.theme.smallLinkFontSize};
+      }
     }
   }
 

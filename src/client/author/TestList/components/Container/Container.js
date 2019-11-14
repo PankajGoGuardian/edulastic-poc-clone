@@ -720,7 +720,7 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <Input
+                      <Input.Search
                         placeholder="Search by skills and keywords"
                         onChange={this.handleSearchInputChange}
                         size="large"

@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 import compose from "redux";
 import PropTypes from "prop-types";
-import { Input } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Container,
@@ -14,7 +13,8 @@ import {
   HeaderRow,
   MainFilter,
   MainFilterHeader,
-  AffixContainer
+  AffixContainer,
+  SearchInput
 } from "./styled";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
@@ -34,7 +34,7 @@ const ItemFilter = ({
   const renderFullTextSearch = () => (
     <SearchWrapper>
       <HeaderRow>
-        <Input.Search
+        <SearchInput
           placeholder="Search by skills and keywords"
           onChange={onSearchInputChange}
           size="large"

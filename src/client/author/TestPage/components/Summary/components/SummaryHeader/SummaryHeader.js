@@ -33,7 +33,7 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
       </ContainerLeft>
       <ContainerRight>
         <AvatarContainer>
-          <FlexContainer alignItems="flex-start">
+          <FlexContainer justifyContent="flex-start" alignItems="center">
             <Avatar>{avatar}</Avatar>
             <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-start">
               <CreatedByTitle style={{ marginRight: 0 }}>Created by:</CreatedByTitle>
@@ -45,7 +45,12 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
           </FlexContainer>
         </AvatarContainer>
         <Block>
-          <AnalyticsContainer style={{ marginBottom: windowWidth > 993 ? "0" : "15px" }}>
+          <AnalyticsContainer
+            justifyContent="flex-start"
+            alignItems="center"
+            style={{ marginBottom: windowWidth > 993 ? "0" : "15px" }}
+            padding="10px 10px 10px 50px"
+          >
             {renderAnalytics((analytics && analytics.usage) || 0, IconShare)}
             {renderAnalytics((analytics && analytics.likes) || 0, IconHeart)}
           </AnalyticsContainer>

@@ -16,7 +16,7 @@ export const ContainerRight = styled.div`
 `;
 
 export const AvatarContainer = styled.div`
-  padding: 20px 10px;
+  padding: 20px 10px 20px 50px;
 `;
 
 export const Avatar = styled.div`
@@ -31,7 +31,7 @@ export const Avatar = styled.div`
   color: ${white};
   font-size: 24px;
   font-weight: 700;
-  padding-right: 5px;
+  padding-right: 0px;
   margin-right: 24px;
 
   &:after {

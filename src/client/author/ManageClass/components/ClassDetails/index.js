@@ -90,7 +90,7 @@ const ClassDetails = ({
   ];
 
   const viewAssessmentHandler = () => {};
-  if (!classLoaded) return <Spin />;
+  if (!classLoaded) return <Spin spinning />;
   return (
     <>
       <GoogleClassSyncModal

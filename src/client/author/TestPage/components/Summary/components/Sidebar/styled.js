@@ -93,7 +93,7 @@ export const MetaTitle = styled.span`
 `;
 
 export const AnalyticsContainer = styled(FlexContainer)`
-  margin-top: 23px;
+  margin-top: 0px;
 `;
 
 export const AnalyticsItem = styled(FlexContainer)`

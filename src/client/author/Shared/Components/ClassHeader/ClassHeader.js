@@ -262,7 +262,7 @@ class ClassHeader extends Component {
       assignmentStatus !== "DONE" &&
       canCloseClass.includes(classId) &&
       !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
-    const canPause = (startDate || open) && !closed;
+    const canPause = (startDate || open) && !closed && (endDate > Date.now() || !endDate);
     const assignmentStatusForDisplay =
       assignmentStatus === "NOT OPEN" && startDate && startDate < moment()
         ? "IN PROGRESS"

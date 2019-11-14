@@ -70,6 +70,9 @@ const quadrantsDefaultConfig = {
         size: 5
       }
     }
+  },
+  pan: {
+    enabled: false
   }
 };
 

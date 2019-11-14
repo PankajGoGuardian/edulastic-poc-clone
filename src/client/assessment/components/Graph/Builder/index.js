@@ -44,7 +44,9 @@ import {
   updateAxe,
   updateGrid,
   updatePointParameters,
-  canAddElementToBoard
+  canAddElementToBoard,
+  getEventName,
+  isTouchDevice
 } from "./utils";
 import _events from "./events";
 
@@ -337,7 +339,7 @@ class Board {
    * Add event 'Up'
    */
   setCreatingHandler() {
-    this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
+    this.$board.on(getEventName("up"), event => {
       if (this.disableResponse) {
         return;
       }
@@ -399,7 +401,7 @@ class Board {
   }
 
   handleElementMouseOver(element, event) {
-    if (this.editButton.disabled) {
+    if (this.editButton.disabled || isTouchDevice()) {
       return;
     }
     if (this.checkEditButtonCall(element)) {
@@ -570,9 +572,7 @@ class Board {
   }
 
   getCoords(e) {
-    // index of the finger that is used to extract the coordinates
-    const i = e[JXG.touchProperty] ? 1 : 0;
-    const pos = i ? this.$board.getMousePosition(e) : this.$board.getMousePosition(e, 0);
+    const pos = !isTouchDevice() ? this.$board.getMousePosition(e) : this.$board.getMousePosition(e, 0);
 
     return new JXG.Coords(JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
   }

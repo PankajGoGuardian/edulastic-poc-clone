@@ -10,6 +10,21 @@ import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
 import Polygon from "./elements/Polygon";
 
+export function isTouchDevice() {
+  return typeof window === "object" && typeof document === "object" && window.ontouchstart !== undefined;
+}
+
+export function getEventName(name) {
+  switch (name) {
+    case "up":
+      return isTouchDevice() ? "touchend" : "up";
+    // case "down": return isTouchDevice() ? "touchstart" : "down";
+    // case "drag": return isTouchDevice() ? "touchdrag" : "drag";
+    default:
+      return name;
+  }
+}
+
 // Calculate amount of units in chosen amount of pixels
 export const calcMeasure = (x, y, board) => [x / board.$board.unitX, y / board.$board.unitY];
 

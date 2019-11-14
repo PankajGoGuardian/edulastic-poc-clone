@@ -171,6 +171,8 @@ class TestList extends Component {
     // propagate filter from query params to the store (test.filters)
     const searchParams = qs.parse(location.search);
     if (Object.keys(params).length) {
+      searchParams.curriculumId = Number(searchParams.curriculumId) || "";
+      searchParams.standardIds = Number(searchParams.standardIds) ? [Number(searchParams.standardIds)] : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
@@ -226,8 +228,8 @@ class TestList extends Component {
     }
 
     if (searchFilters.curriculumId) {
-      const { curriculumId, grades } = testFilters;
-      const gradeArray = Array.isArray(grades) ? grades : [grades];
+      const { curriculumId, grades = [] } = searchFilters;
+      const gradeArray = !grades ? [] : Array.isArray(grades) ? grades : [grades];
       clearDictStandards();
       getCurriculumStandards(curriculumId, gradeArray, "");
     }
@@ -297,7 +299,8 @@ class TestList extends Component {
       updatedKeys = {
         ...testFilters,
         [name]: value,
-        curriculumId: ""
+        curriculumId: "",
+        standardIds: []
       };
       updateDefaultSubject(value);
       storeInLocalStorage("defaultSubject", value);
@@ -426,7 +429,7 @@ class TestList extends Component {
     updateAllTestFilters(searchClone);
 
     const { curriculumId, grade } = searchClone;
-    if (curriculumId.length && parsedQueryData.standardQuery.length >= 2) {
+    if (curriculumId && parsedQueryData.standardQuery.length >= 2) {
       getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
     }
     receiveTests({

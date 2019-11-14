@@ -406,7 +406,7 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               isV1Multipart={isV1Multipart}
               style={{
-                width: `${view === "edit" ? "calc(100% - 250px)" : "100%"}`,
+                width: `${view === "edit" && showQuestionMenu ? "calc(100% - 250px)" : "100%"}`,
                 maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
                 display: "flex",
                 flex: 9,

@@ -141,6 +141,7 @@ const TestPageHeader = ({
   isShowFilter,
   fetchAssignments,
   testAssignments,
+  isTestLoading,
   match
 }) => {
   let navButtons =
@@ -228,12 +229,25 @@ const TestPageHeader = ({
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
             {showShareButton && false && (
-              <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
+              <EduButton
+                data-cy="source"
+                style={{ width: 42, padding: 0 }}
+                size="large"
+                onClick={onShowSource}
+                disabled={isTestLoading}
+              >
                 <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
               </EduButton>
             )}
             {showShareButton && owner && (
-              <EduButton title="Share" data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+              <EduButton
+                title="Share"
+                data-cy="share"
+                style={{ width: 42, padding: 0 }}
+                size="large"
+                onClick={onShare}
+                disabled={isTestLoading}
+              >
                 <IconShare color={themeColor} style={{ transform: "rotate(180deg)" }} />
               </EduButton>
             )}
@@ -244,6 +258,7 @@ const TestPageHeader = ({
                 style={{ width: 42, padding: 0 }}
                 size="large"
                 onClick={onSave}
+                disabled={isTestLoading}
               >
                 <IconDiskette color={themeColor} />
               </EduButton>
@@ -255,14 +270,15 @@ const TestPageHeader = ({
                 style={{ width: 42, padding: 0 }}
                 size="large"
                 onClick={handlePublish}
+                disabled={isTestLoading}
               >
                 <IconSend color={themeColor} stroke={themeColor} />
               </EduButton>
             )}
-            {showShareButton && showEditButton && (
+            {showEditButton && (
               <EduButton
                 title="Edit Test"
-                disabled={editEnable}
+                disabled={editEnable || isTestLoading}
                 data-cy="edit"
                 style={{ width: 42 }}
                 size="large"
@@ -272,7 +288,7 @@ const TestPageHeader = ({
               </EduButton>
             )}
             {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
-              <AssignButton data-cy="assign" size="large" onClick={handleAssign}>
+              <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
                 Assign
               </AssignButton>
             )}
@@ -292,7 +308,7 @@ const TestPageHeader = ({
                 </MobileHeaderFilterIcon>
               )}
               {owner && (
-                <EduButton data-cy="share" size="large" onClick={onShare}>
+                <EduButton data-cy="share" disabled={isTestLoading} size="large" onClick={onShare}>
                   <ShareIcon color={themeColor} />
                 </EduButton>
               )}
@@ -304,6 +320,7 @@ const TestPageHeader = ({
                   style={{ width: 42, padding: 0 }}
                   size="large"
                   onClick={onSave}
+                  disabled={isTestLoading}
                 >
                   <IconDiskette color={themeColor} />
                 </EduButton>
@@ -315,12 +332,13 @@ const TestPageHeader = ({
                   style={{ width: 42, padding: 0 }}
                   size="large"
                   onClick={handlePublish}
+                  disabled={isTestLoading}
                 >
                   <IconSend color={themeColor} stroke={themeColor} />
                 </EduButton>
               )}
               {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
-                <AssignButton data-cy="assign" size="large" onClick={handleAssign}>
+                <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
                   Assign
                 </AssignButton>
               )}

@@ -319,9 +319,13 @@ const reducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             status: "submitted",
-            graded: updatedActivity.gradedAll,
+            graded: updatedActivity.gradedAll ? "GRADED" : "IN GRADING",
             score: updatedActivity.score,
-            testActivityId: updatedActivity._id
+            testActivityId: updatedActivity._id,
+            questionActivities: item.questionActivities.map(qAct => ({
+              ...qAct,
+              ...(qAct.notStarted ? { skipped: true, score: 0, notStarted: undefined } : {})
+            }))
           };
         }
         return item;

@@ -30,7 +30,8 @@ import {
   setRegradeOldIdAction,
   getTestCreatedItemsSelector,
   getDefaultTestSettingsAction,
-  updateDocBasedTestAction
+  updateDocBasedTestAction,
+  duplicateTestRequestAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -98,11 +99,15 @@ class Container extends PureComponent {
   gotoTab = tab => {
     const { history, match } = this.props;
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
-    if (id) {
-      history.push(`/author/tests/tab/${tab}/id/${id}`);
-    } else {
-      history.push(`/author/tests/create/${tab}`);
+    const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
+    let url = `/author/tests/create/${tab}`;
+    if (id && oldId) {
+      url = `/author/tests/tab/${tab}/id/${id}/old/${oldId}`;
+    } else if (id) {
+      url = `/author/tests/tab/${tab}/id/${id}`;
     }
+
+    history.push(url);
   };
 
   componentDidMount() {
@@ -222,6 +227,7 @@ class Container extends PureComponent {
     const { editEnable } = this.state;
 
     if (!this.props.test?.title?.trim()?.length) {
+      this.gotoTab(value);
       return;
     }
 
@@ -420,7 +426,7 @@ class Container extends PureComponent {
       return message.error("Please add a valid password");
     }
     if (test._id) {
-      updateTest(test._id, newTest);
+      updateTest(test._id, { ...newTest, currentTab: this.props.currentTab });
     } else {
       createTest({ ...newTest, currentTab: this.props.currentTab });
     }
@@ -504,12 +510,21 @@ class Container extends PureComponent {
     const { _id } = test;
     if (this.validateTest(test)) {
       const newTest = this.modifyTest();
-      publishTest({ _id, oldId: match.params.oldId, test: newTest, assignFlow });
+      publishTest({ _id, oldId: match.params.oldId, test: newTest, assignFlow, currentTab: this.props.currentTab });
       this.setState({ editEnable: false });
     }
   };
 
   onEnableEdit = () => {
+    const { test, testStatus, userId, duplicateTest } = this.props;
+    const { _id: testId, status, authors, title } = test;
+    const canEdit = authors && authors.some(x => x._id === userId);
+    if (canEdit) {
+      this.handleSave();
+    } else {
+      duplicateTest({ currentTab: this.props.currentTab, title, _id: testId });
+    }
+
     this.setState({ editEnable: true });
   };
 
@@ -535,19 +550,24 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, test, testStatus, userId, updated, showWarningModal, proceedPublish } = this.props;
+    const {
+      creating,
+      windowWidth,
+      test,
+      testStatus,
+      userId,
+      updated,
+      showWarningModal,
+      proceedPublish,
+      isTestLoading
+    } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
-    const showEditButton =
-      authors &&
-      authors.some(x => x._id === userId) &&
-      testStatus &&
-      testStatus === statusConstants.PUBLISHED &&
-      !editEnable;
+    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable;
 
     const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
     const gradeSubject = { grades, subjects };
@@ -587,6 +607,7 @@ class Container extends PureComponent {
           updated={updated}
           toggleFilter={this.toggleFilter}
           isShowFilter={isShowFilter}
+          isTestLoading={isTestLoading}
         />
         <Content>{this.renderContent()}</Content>
       </>
@@ -634,7 +655,8 @@ const enhance = compose(
       receiveItemDetailById: getItemDetailByIdAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
-      getDefaultTestSettings: getDefaultTestSettingsAction
+      getDefaultTestSettings: getDefaultTestSettingsAction,
+      duplicateTest: duplicateTestRequestAction
     }
   )
 );

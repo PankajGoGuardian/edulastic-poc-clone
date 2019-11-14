@@ -90,45 +90,53 @@ const ClassDetails = ({
   ];
 
   const viewAssessmentHandler = () => {};
-  if (!classLoaded) return <Spin spinning />;
   return (
     <>
-      <GoogleClassSyncModal
-        visible={openGCModal}
-        onCancel={() => setOpenGCModal(false)}
-        title="Enter Google Classroom Code"
-        footer={
-          <ButtonWrapper>
-            <StyledButton onClick={() => setOpenGCModal(false)}>Cancel</StyledButton>
-            <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
-              Sync
-            </StyledButton>
-          </ButtonWrapper>
-        }
-      >
-        <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
-      </GoogleClassSyncModal>
-      <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
-      <Container>
-        <BreadCrumb
-          ellipsis="calc(100% - 200px)"
-          data={breadCrumbData}
-          style={{ position: "unset", margin: "10px 0px" }}
-        />
-        <MainInfo
-          entity={selectedClass}
-          fetchClassList={fetchClassList}
-          viewAssessmentHandler={viewAssessmentHandler}
-          isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-          allowGoogleLogin={allowGoogleLogin}
-          syncGCModal={() => setOpenGCModal(true)}
-          archiveClass={archiveClass}
-        />
+      {!classLoaded ? (
+        <div className="spinContainer">
+          <Spin />
+        </div>
+      ) : (
+        <>
+          <GoogleClassSyncModal
+            visible={openGCModal}
+            onCancel={() => setOpenGCModal(false)}
+            title="Enter Google Classroom Code"
+            footer={
+              <ButtonWrapper>
+                <StyledButton onClick={() => setOpenGCModal(false)}>Cancel</StyledButton>
+                <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
+                  Sync
+                </StyledButton>
+              </ButtonWrapper>
+            }
+          >
+            <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
+          </GoogleClassSyncModal>
+          <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
+          <Container>
+            <BreadCrumb
+              ellipsis="calc(100% - 200px)"
+              data={breadCrumbData}
+              style={{ position: "unset", margin: "10px 0px" }}
+            />
 
-        <ActionContainer loadStudents={loadStudents} history={history} />
+            <MainInfo
+              entity={selectedClass}
+              fetchClassList={fetchClassList}
+              viewAssessmentHandler={viewAssessmentHandler}
+              isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+              allowGoogleLogin={allowGoogleLogin}
+              syncGCModal={() => setOpenGCModal(true)}
+              archiveClass={archiveClass}
+            />
 
-        <StudentsList selectStudent selectedClass={selectedClass} />
-      </Container>
+            <ActionContainer loadStudents={loadStudents} history={history} />
+
+            <StudentsList selectStudent selectedClass={selectedClass} />
+          </Container>
+        </>
+      )}
     </>
   );
 };

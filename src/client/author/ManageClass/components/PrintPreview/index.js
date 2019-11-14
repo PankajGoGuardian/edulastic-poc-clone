@@ -51,6 +51,7 @@ class PrintPreviewClass extends React.Component {
   }
 
   render() {
+    const appLoginUrl = window.location.origin + "/login";
     const { selctedClass, students, selectedStudent } = this.props;
     const { code, name: className, owners = [] } = selctedClass;
     const teacherName = owners[0].name;
@@ -84,8 +85,7 @@ class PrintPreviewClass extends React.Component {
           </ParagraphDiv>
 
           <Description>
-            Please ask the student to navigate to{" "}
-            <a href="https://app.edulastic.com/login">https://app.edulastic.com/login</a>. The default password for all
+            Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for all
             students is set to the class code. Please ask the student to log in using the username below and enter the
             password as <ClassCode>{code}</ClassCode>.
           </Description>
@@ -97,7 +97,7 @@ class PrintPreviewClass extends React.Component {
           <PrintPreviewContainer key={i}>
             <CardContainer>
               {tableData.slice(i * numOfCard, i * numOfCard + numOfCard).map((student, index) => (
-                <StudentCard student={student} key={index} code={code} />
+                <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
               ))}
             </CardContainer>
           </PrintPreviewContainer>

@@ -1947,7 +1947,15 @@ span.mfrac {
 
 /* Modified - Ant design default CSS */
 /*Loader*/
-.ant-spin {
+.spinContainer {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+}
+.ant-spin,
+.ant-spin-nested-loading > div > .ant-spin {
   position: absolute;
   top: 50%;
   left: 50%;

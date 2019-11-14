@@ -289,10 +289,29 @@ const getPoints = item => {
   );
 };
 
-const getQuestionLevelScore = (questions, totalMaxScore, newMaxScore) => {
+const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
   let questionScore = {};
   if (!newMaxScore) {
-    questions.forEach(o => (questionScore[o.id] = o.itemScore || get(o, ["validation", "validResponse", "score"], 0)));
+    if (item.itemLevelScoring === true) {
+      questions.forEach((o, i) => {
+        if (i === 0) {
+          questionScore[o.id] = item.itemLevelScore;
+        } else {
+          questionScore[o.id] = 0;
+        }
+      });
+    } else {
+      const devidedScore = parseFloat((item.itemLevelScore / questions.length).toFixed(2));
+      let currentTotal = 0;
+      questions.forEach((o, i) => {
+        if (i === questions.length - 1) {
+          questionScore[o.id] = parseFloat((item.itemLevelScore - currentTotal).toFixed(2));
+        } else {
+          questionScore[o.id] = devidedScore;
+        }
+        currentTotal += devidedScore;
+      });
+    }
     return questionScore;
   }
   let currScore = 0;

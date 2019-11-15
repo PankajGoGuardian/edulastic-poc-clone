@@ -489,11 +489,24 @@ class AssessmentPlayerDefault extends React.Component {
                               type="primary"
                               icon="left"
                               disabled={isFirst()}
-                              onClick={moveToPrev}
+                              onClick={e => {
+                                moveToPrev();
+                                e.target.blur();
+                              }}
                             />
                           </Tooltip>
                           <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
-                            <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
+                            <ControlBtn
+                              next
+                              skin
+                              type="primary"
+                              data-cy="next"
+                              icon="right"
+                              onClick={e => {
+                                moveToNext();
+                                e.target.blur();
+                              }}
+                            />
                           </Tooltip>
                           {showSettingIcon && (
                             <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>

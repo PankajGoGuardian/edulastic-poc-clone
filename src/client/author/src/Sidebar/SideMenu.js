@@ -19,7 +19,7 @@ import { get, remove } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip, message } from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -212,6 +212,14 @@ class SideMenu extends Component {
     else if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
+  componentDidMount() {
+    const { userRole, history } = this.props;
+    if (userRole === roleuser.STUDENT) {
+      message.warn("Redirecting to the student dashboard");
+      history.push("/");
+    }
+  }
+
   render() {
     const { broken, isVisible } = this.state;
     const {
@@ -233,12 +241,18 @@ class SideMenu extends Component {
       menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false))
     );
 
-    const _userRole =
-      userRole === roleuser.TEACHER
-        ? "Teacher"
-        : userRole === roleuser.SCHOOL_ADMIN
-        ? "School-Admin"
-        : "District-Admin";
+    let _userRole = null;
+    if (userRole === roleuser.TEACHER) {
+      _userRole = "Teacher";
+    } else if (userRole === roleuser.SCHOOL_ADMIN) {
+      _userRole = "School-Admin";
+    } else if (userRole === roleuser.DISTRICT_ADMIN) {
+      _userRole = "District-Admin";
+    } else if (userRole === roleuser.STUDENT) {
+      _userRole = "Student";
+    } else {
+      _userRole = "Unknown";
+    }
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>

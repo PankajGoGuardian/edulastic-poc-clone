@@ -31,12 +31,14 @@ const SelectUnit = ({
   };
 
   const dropdownWrapper = useRef(null);
-
-  const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+  const menuStyle = {
+    top: `${dropdownWrapper.current?.clientHeight}px !important`,
+    left: `${preview ? 0 : 24}px !important`
+  };
 
   return (
-    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle}>
-      <StyledSelect
+    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle} preview={preview}>
+      <Select
         onChange={onChangeUnit}
         value={unit}
         preview={preview}
@@ -50,7 +52,7 @@ const SelectUnit = ({
             {btn.label}
           </Option>
         ))}
-      </StyledSelect>
+      </Select>
     </DropDownWrapper>
   );
 };
@@ -76,38 +78,36 @@ SelectUnit.defaultProps = {
 export default SelectUnit;
 
 const DropDownWrapper = styled.div`
-  disply: flex;
+  display: flex;
   align-self: stretch;
   height: auto;
   position: relative;
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
   }
-`;
-
-const StyledSelect = styled(Select)`
-  min-width: 118px;
-  margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
-  height: 100%;
-  ${({ preview }) =>
-    preview &&
-    `
-      vertical-align: middle;
-    `}
-
-  .ant-select-selection {
-    display: flex;
-    align-items: center;
+  .ant-select {
+    min-width: 118px;
+    margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
     height: 100%;
-    padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
     ${({ preview }) =>
       preview &&
       `
+      vertical-align: middle;
+    `}
+    .ant-select-selection {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
+      ${({ preview }) =>
+        preview &&
+        `
         border-top-left-radius: 0px;
         border-bottom-left-radius: 0px;
       `}
-  }
-  svg {
-    display: inline-block;
+    }
+    svg {
+      display: inline-block;
+    }
   }
 `;

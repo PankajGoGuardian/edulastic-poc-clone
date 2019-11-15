@@ -14,7 +14,7 @@ export const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: 100px;
-    z-index: 1051;
+    z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;

@@ -1324,6 +1324,10 @@ span.token.active-word {
   justify-content: space-between;
 }
 
+.ant-select-dropdown {
+  z-index: 100000;
+}
+
 .template_box .ant-select-selection {
   border-color: #fff;
 }

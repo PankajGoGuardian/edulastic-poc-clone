@@ -239,6 +239,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     const { assignmentId, groupId, studentId } = payload;
     const result = yield call(classBoardApi.testActivitiesForStudent, { assignmentId, groupId, studentId });
     yield put(setAllTestActivitiesForStudentAction(result));
+    yield put(setCurrentTestActivityIdAction(""));
   } catch (err) {
     yield call(message.error, "fetching all test activities failed");
   }

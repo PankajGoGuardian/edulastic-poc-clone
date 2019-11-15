@@ -948,6 +948,7 @@ class ClassBoard extends Component {
                     selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
                     handleChange={(value, testActivityId) => {
+                      setCurrentTestActivityId(testActivityId);
                       getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
                       this.setState({ selectedStudentId: value });
                       this.props.history.push(

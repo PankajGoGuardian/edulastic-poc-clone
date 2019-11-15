@@ -405,7 +405,8 @@ class AssessmentPlayerDefault extends React.Component {
     );
 
     return (
-      <ThemeProvider theme={themeToPass}>
+      // zoom only in student side, otherwise not
+      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true }}>
         <Container
           scratchPadMode={scratchPadMode}
           ref={this.scrollElementRef}

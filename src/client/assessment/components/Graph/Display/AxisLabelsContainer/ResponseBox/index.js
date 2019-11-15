@@ -52,7 +52,8 @@ class ResponseBox extends Component {
       separationDistanceY,
       position,
       bounds,
-      scale
+      scale,
+      shouldZoom
     } = this.props;
 
     const { draggingMark } = this.state;
@@ -82,7 +83,7 @@ class ResponseBox extends Component {
               enableResizing={false}
               bounds={bounds}
               className={`mark${draggingMark === i ? " dragging" : ""}`}
-              scale={scale}
+              scale={shouldZoom ? scale : 1}
             >
               <MarkContainer
                 fontSize={12}

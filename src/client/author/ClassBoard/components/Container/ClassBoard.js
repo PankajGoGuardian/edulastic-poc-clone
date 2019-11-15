@@ -903,7 +903,6 @@ class ClassBoard extends Component {
                       return;
                     }
                     getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
-                    loadStudentResponses({ testActivityId, groupId: classId, studentId: selected });
                     this.onTabChange(e, "Student", selected, testActivityId);
                   }}
                   isPresentationMode={isPresentationMode}

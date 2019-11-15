@@ -29,6 +29,7 @@ import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 
 import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Transformer";
 import { setTeacherEditedScore } from "../ExpressGrader/ducks";
+import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
@@ -58,6 +59,7 @@ function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
+    yield put(setCurrentTestActivityIdAction(payload.testActivityId));
     /**
      * transforming questionActivities to support chart/question labels, etc.,
      */

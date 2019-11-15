@@ -68,7 +68,7 @@ const { Option } = Select;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
-  [ASSESSMENT]: "Class Asessment",
+  [ASSESSMENT]: "Class Assessment",
   [PRACTICE]: "Practice"
 };
 

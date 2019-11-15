@@ -463,7 +463,7 @@ const FixedSidebar = styled.div`
   left: 0px;
   top: 0px;
   bottom: 0px;
-  z-index: 1002;
+  z-index: 1052;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
   .scrollbar-container {
     max-height: 100vh;

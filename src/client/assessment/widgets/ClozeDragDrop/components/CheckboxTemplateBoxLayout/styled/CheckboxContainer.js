@@ -7,6 +7,6 @@ export const CheckboxContainer = styled.span`
     white-space: nowrap;
     overflow: hidden;
     display: block;
-    width: ${({ width }) => width - 60}px;
+    width: ${({ width }) => (width ? `${parseInt(width, 10)}px` : "auto")};
   }
 `;

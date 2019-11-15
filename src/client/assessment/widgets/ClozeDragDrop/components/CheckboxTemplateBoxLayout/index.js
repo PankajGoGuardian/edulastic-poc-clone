@@ -41,16 +41,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
   const widthpx = response && response.widthpx;
-  btnStyle.width = !globalSettings
-    ? widthpx
-      ? `${widthpx}px`
-      : `${btnStyle.widthpx}px` || "auto"
-    : `${btnStyle.widthpx}px` || "auto";
-  btnStyle.height = !globalSettings
-    ? heightpx
-      ? `${heightpx}px`
-      : `${btnStyle.heightpx}px` || "auto"
-    : `${btnStyle.heightpx}px` || "auto";
+  btnStyle.width = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
+  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
 
   if (globalSettings) {
     btnStyle.maxWidth = "400px";
@@ -90,7 +82,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   };
 
   const getLabel = () => (
-    <CheckboxContainer width={btnStyle.widthpx}>
+    <CheckboxContainer width={btnStyle.width}>
       <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
     </CheckboxContainer>
   );

@@ -290,6 +290,15 @@ class ClozeDragDropDisplay extends Component {
     const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize);
     const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
+    const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
+    const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
+
+    const dragItemStyle = {
+      minWidth: dragItemMinWidth,
+      maxWidth: dragItemMaxWidth,
+      overflow: "hidden"
+    };
+
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
     const resProps = {
@@ -335,15 +344,6 @@ class ClozeDragDropDisplay extends Component {
         </div>
       </PreWrapper>
     );
-
-    const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
-    const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
-
-    const dragItemStyle = {
-      minWidth: dragItemMinWidth,
-      maxWidth: dragItemMaxWidth,
-      overflow: "hidden"
-    };
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout

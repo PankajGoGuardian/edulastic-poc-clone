@@ -298,6 +298,7 @@ class ClassBoard extends Component {
   };
 
   onTabChange = (e, name, selectedStudentId, testActivityId) => {
+    const { setCurrentTestActivityId } = this.props;
     const { assignmentId, classId } = this.props.match.params;
     this.setState({
       selectedTab: name,
@@ -308,6 +309,7 @@ class ClassBoard extends Component {
       this.props.history.push(`/author/classboard/${assignmentId}/${classId}`);
     } else if (name === "Student") {
       this.props.history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
+      setCurrentTestActivityId(testActivityId);
     }
   };
 

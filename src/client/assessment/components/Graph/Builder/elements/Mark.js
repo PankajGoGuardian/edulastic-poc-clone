@@ -1,4 +1,5 @@
 import JXG from "jsxgraph";
+import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 import { calcMeasure, getClosestTick } from "../utils";
@@ -48,12 +49,18 @@ const onHandler = (board, value) => {
 
   let content = replaceLatexesWithMathHtml(value.point);
 
+  const regExp = new RegExp('<span class="input__math"', "g");
+  let title = "";
+  if (!regExp.test(content)) {
+    title = striptags(content);
+  }
+
   if (!value.fixed) {
     const deleteIconId = `mark-delete-${value.id}`;
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
   }
 
-  content = `<div class='mark-content'>${content}</div>`;
+  content = `<div class='mark-content' title='${title}'>${content}</div>`;
 
   const cssClass = `fr-box mark mounted ${value.className ? value.className : ""}`;
 
@@ -77,7 +84,7 @@ const onHandler = (board, value) => {
 
 const getConfig = mark => ({
   position: +mark.X().toFixed(4),
-  point: mark.orgText,
+  point: mark.labelHTML,
   id: mark.id
 });
 

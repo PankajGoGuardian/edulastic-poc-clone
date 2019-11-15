@@ -1,5 +1,6 @@
 import { questionType } from "@edulastic/constants";
 import { evaluateApi, graphEvaluateApi } from "@edulastic/api";
+import { produce } from "immer";
 
 import {
   multipleChoice,
@@ -26,7 +27,25 @@ import {
 
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
-  return await evaluateApi.evaluate(data, type);
+  const _data = produce(data, draft => {
+    // remove units form payload when method is equiSymbolic
+    for (let [index, [key, value]] of Object.entries(Object.entries(draft?.userResponse?.mathUnits))) {
+      if (draft?.validation?.validResponse?.mathUnits?.value?.[index]?.method === "equivSymbolic") {
+        // get correct answer unit and user answer unit
+        const validRespUnit = draft?.validation?.validResponse?.mathUnits?.value?.[index]?.options?.unit;
+        const userResponseUnit = value.unit;
+        // append the value with respective units
+        draft.validation.validResponse.mathUnits.value[index].value += validRespUnit;
+        draft.userResponse.mathUnits[key].value += userResponseUnit;
+        // remove the units
+        delete draft?.validation?.validResponse?.mathUnits?.value?.[index]?.options?.unit;
+        delete draft?.userResponse?.mathUnits[key]?.unit;
+      }
+    }
+    return draft;
+  });
+
+  return await evaluateApi.evaluate(_data, type);
 };
 
 // clozeDropDown and ClozeText shares same logic

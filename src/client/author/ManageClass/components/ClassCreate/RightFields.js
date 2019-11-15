@@ -7,6 +7,7 @@ import { FieldLabel } from "./components";
 import { StyledFlexContainer, StandardsValidationMSG } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import Tags from "./components/Tags";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -188,6 +189,9 @@ const RightFields = ({
                 ))}
               </Select>
             </FieldLabel>
+          </Col>
+          <Col xs={12}>
+            <Tags {...restProps} />
           </Col>
         </StyledFlexContainer>
       )}

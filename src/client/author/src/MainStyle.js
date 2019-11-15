@@ -185,7 +185,7 @@ export const MainContainer = styled.div`
       background: ${themeColor}20;
       color: ${themeColor};
       font-weight: 600;
-      margin: 6px 5px 0px 3px !important;
+      margin: 8px 5px 0px 3px !important;
       &__content {
         font-size: 10px;
         text-transform: uppercase;
@@ -203,6 +203,7 @@ export const MainContainer = styled.div`
       }
 
       @media (max-width: ${smallDesktopWidth}) {
+        margin: 10px 5px 0px 3px !important;
         height: 20px !important;
         &__content {
           height: 20px;

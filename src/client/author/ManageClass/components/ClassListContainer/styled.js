@@ -156,12 +156,12 @@ export const ClassStatusButton = styled(ResponsiveButton)`
   width: 180px;
   height: 36px;
   font-size: ${props => props.theme.smallFontSize};
-  margin-right: 15px;
   padding: 0px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-weight: 600;
+  border: none;
   svg {
     fill: ${themeColor};
   }
@@ -194,7 +194,7 @@ export const ButtonsWrapper = styled.div`
 
 export const TableWrapper = styled.div`
   background: ${white};
-  margin: 15px 30px 30px;
+  margin: 12px 30px 30px;
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: ${boxShadowDefault};
@@ -308,6 +308,13 @@ export const Tags = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const SubHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px 0px;
 `;
 
 export const GoogleClassroomModal = styled(ConfirmationModal)`

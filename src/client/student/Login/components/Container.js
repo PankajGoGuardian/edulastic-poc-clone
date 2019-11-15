@@ -130,9 +130,10 @@ class LoginContainer extends React.Component {
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
-                      onClick={() => {
-                        googleLogin();
-                      }}
+                      disabled
+                      // onClick={() => {
+                      //   googleLogin();
+                      // }}
                     >
                       <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
                     </ThirdPartyLoginBtn>
@@ -142,9 +143,10 @@ class LoginContainer extends React.Component {
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
-                      onClick={() => {
-                        msoLogin();
-                      }}
+                      disabled
+                      // onClick={() => {
+                      //   msoLogin();
+                      // }}
                     >
                       <img src={icon365} alt="" />
                       {t("common.office365signinbtn")}
@@ -155,9 +157,10 @@ class LoginContainer extends React.Component {
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
-                      onClick={() => {
-                        cleverLogin();
-                      }}
+                      disabled
+                      // onClick={() => {
+                      //   cleverLogin();
+                      // }}
                     >
                       <img src={cleverIcon} alt="" />
                       {t("common.cleversigninbtn")}
@@ -324,6 +327,10 @@ const ThirdPartyLoginBtn = styled(Col)`
   font-size: 10px;
   padding: 8px;
   cursor: pointer;
+  &[disabled] {
+    pointer-events: none;
+    cursor: default;
+  }
   img {
     float: left;
     width: 14px;

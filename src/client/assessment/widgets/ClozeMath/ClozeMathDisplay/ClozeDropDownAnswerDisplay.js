@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
@@ -14,9 +14,12 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
   const responseContainer = find(responseContainers || [], cont => cont.id === id);
   const width = (responseContainer ? responseContainer.widthpx : item.uiStyle.minWidth) || "auto";
 
+  const dropDownWrapper = useRef(null);
+  const menuStyle = { top: `${dropDownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+
   return (
-    <SelectWrapper>
-      <StyledSelect
+    <SelectWrapper ref={dropDownWrapper} menuStyle={menuStyle}>
+      <Select
         width={width}
         disabled
         value={val}
@@ -30,7 +33,7 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
               {response}
             </Option>
           ))}
-      </StyledSelect>
+      </Select>
     </SelectWrapper>
   );
 };
@@ -42,13 +45,17 @@ ClozeDropDownAnswerDisplay.propTypes = {
 
 export default ClozeDropDownAnswerDisplay;
 
-const StyledSelect = styled(Select)`
-  min-width: 120px;
-  margin: 0px 4px;
-  min-height: 35px;
-`;
+const StyledSelect = styled(Select)``;
 
 const SelectWrapper = styled.span`
+  display: inline-block;
+  position: relative;
+  min-height: 35px;
+  .ant-select {
+    min-width: 120px;
+    margin: 0px 4px;
+    min-height: 35px;
+  }
   .ant-select-disabled .ant-select-selection {
     background: #fff;
     color: rgba(0, 0, 0, 0.65);

@@ -894,6 +894,7 @@ class ClassBoard extends Component {
                   closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected, testActivityId) => {
+                    setCurrentTestActivityId(testActivityId);
                     if (!isItemsVisible) {
                       return;
                     }

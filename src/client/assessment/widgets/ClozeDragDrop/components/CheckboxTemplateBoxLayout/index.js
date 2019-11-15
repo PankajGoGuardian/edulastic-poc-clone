@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
-import { Tooltip, Popover } from "antd";
+import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
@@ -89,13 +89,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     return formulaLabel;
   };
 
-  const getLabel = () => {
-    return (
-      <CheckboxContainer width={btnStyle.width}>
-        <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
-      </CheckboxContainer>
-    );
-  };
+  const getLabel = () => (
+    <CheckboxContainer width={btnStyle.widthpx}>
+      <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
+    </CheckboxContainer>
+  );
 
   const handleHover = () => {
     if (showAnswer && lessMinWidth) {

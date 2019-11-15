@@ -11,7 +11,7 @@ import vectorConfig from "./elements/Vector";
 import Polygon from "./elements/Polygon";
 
 export function isTouchDevice() {
-  return typeof window === "object" && typeof document === "object" && window.ontouchstart !== undefined;
+  return JXG.isTouchDevice();
 }
 
 export function getEventName(name) {
@@ -23,6 +23,23 @@ export function getEventName(name) {
     default:
       return name;
   }
+}
+
+export function getAllObjectsUnderMouse(board, evt) {
+  const cPos = board.$board.getCoordsTopLeftCorner();
+  const absPos = JXG.getPosition(evt, 0, board.$board.document);
+  const dx = absPos[0] - cPos[0];
+  const dy = absPos[1] - cPos[1];
+  const elList = [];
+
+  for (let el = 0; el < board.$board.objectsList.length; el++) {
+    const pEl = board.$board.objectsList[el];
+    if (pEl.visPropCalc.visible && pEl.hasPoint && pEl.hasPoint(dx, dy)) {
+      elList[elList.length] = pEl;
+    }
+  }
+
+  return elList;
 }
 
 // Calculate amount of units in chosen amount of pixels

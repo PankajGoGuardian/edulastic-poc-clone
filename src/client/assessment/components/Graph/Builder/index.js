@@ -46,7 +46,8 @@ import {
   updatePointParameters,
   canAddElementToBoard,
   getEventName,
-  isTouchDevice
+  isTouchDevice,
+  getAllObjectsUnderMouse
 } from "./utils";
 import _events from "./events";
 
@@ -430,9 +431,9 @@ class Board {
           return;
         }
         if (this.checkEditButtonCall(element)) {
-          const pointsUnderMouse = this.$board
-            .getAllObjectsUnderMouse(event)
-            .filter(mouseElement => mouseElement.elType === "point");
+          const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
+            mouseElement => mouseElement.elType === "point"
+          );
 
           if (pointsUnderMouse.length === 0) {
             this.stacksUnderMouse = false;
@@ -614,7 +615,7 @@ class Board {
   }
 
   removeObjectsUnderMouse(event) {
-    const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
+    const elementsUnderMouse = getAllObjectsUnderMouse(this, event);
     if (this.graphType === "numberLinePlot") {
       return NumberLineDotPlotPoint.removeElementUnderMouse(this, elementsUnderMouse);
     }

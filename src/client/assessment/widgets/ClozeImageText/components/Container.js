@@ -35,11 +35,6 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
     );
   };
 
-  const removeIndividual = resId => {
-    const newResponses = responses.filter(resp => resp.id !== resId);
-    changeStyle("responses", newResponses);
-  };
-
   return (
     <Fragment>
       <Row gutter={20}>
@@ -144,9 +139,6 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
             <Row gutter={20}>
               <Col md={12}>
                 <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-              </Col>
-              <Col md={12}>
-                <Delete onClick={() => removeIndividual(resId)}>X</Delete>
               </Col>
             </Row>
             <Row gutter={20}>

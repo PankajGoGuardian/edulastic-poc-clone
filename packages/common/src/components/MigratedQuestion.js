@@ -20,4 +20,8 @@ export const MigratedQuestion = styled.div`
   del {
     background-color: #ffc6c6;
   }
+  table thead td {
+    border-bottom: 3px solid #000 !important;
+    font-weight: bold !important;
+  }
 `;

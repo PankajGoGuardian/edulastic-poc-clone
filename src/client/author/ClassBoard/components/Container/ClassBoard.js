@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import moment from "moment";
 import { get, keyBy, isEmpty, round } from "lodash";
-import { message, Dropdown, Select, Spin } from "antd";
-import { withWindowSizes } from "@edulastic/common";
+import { message, Dropdown, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { black } from "@edulastic/colors";
 
@@ -371,8 +370,6 @@ class ClassBoard extends Component {
     this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${data.qid}`);
   };
 
-  isMobile = () => window.innerWidth < 480;
-
   handleReleaseScore = () => {
     const { match, setReleaseScore, showScore, additionalData } = this.props;
     const { assignmentId, classId } = match.params;
@@ -626,8 +623,6 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
-    const classname = additionalData ? additionalData.classes : [];
-    const isMobile = this.isMobile();
     let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
     studentTestActivity.timeSpent = Math.floor(
       ((studentResponse &&
@@ -1120,7 +1115,6 @@ class ClassBoard extends Component {
 }
 
 const enhance = compose(
-  withWindowSizes,
   withNamespaces("classBoard"),
   connect(
     state => ({

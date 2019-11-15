@@ -1326,7 +1326,7 @@ span.token.active-word {
 
 .ant-select-dropdown,
 .ant-dropdown {
-  z-index: 998; /*EV-9461 header has z-index 999 */
+  z-index: 998; /*  header has z-index 999 */
 }
 
 .template_box .ant-select-selection {
@@ -1335,7 +1335,6 @@ span.token.active-word {
 
 .template_box .anticon svg {
   fill: #0e93dc;
-  :nonline ;
 }
 
 .ant-input {

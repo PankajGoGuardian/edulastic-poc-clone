@@ -301,15 +301,15 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
       }
     });
   } else {
-    const dividedScore = round(maxScore / questions.length, 2);
     let currentTotal = 0;
     questions.forEach((o, i) => {
       if (i === questions.length - 1) {
         questionScore[o.id] = round(maxScore - currentTotal, 2);
       } else {
-        questionScore[o.id] = dividedScore;
+        const score = round(get(o, ["validation", "validResponse", "score"], 0) * (maxScore / totalMaxScore), 2);
+        questionScore[o.id] = score;
+        currentTotal += score;
       }
-      currentTotal += dividedScore;
     });
   }
   return questionScore;

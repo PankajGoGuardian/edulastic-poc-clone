@@ -291,39 +291,27 @@ const getPoints = item => {
 
 const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
   let questionScore = {};
-  if (!newMaxScore) {
-    if (item.itemLevelScoring === true) {
-      questions.forEach((o, i) => {
-        if (i === 0) {
-          questionScore[o.id] = item.itemLevelScore;
-        } else {
-          questionScore[o.id] = 0;
-        }
-      });
-    } else {
-      const devidedScore = parseFloat((item.itemLevelScore / questions.length).toFixed(2));
-      let currentTotal = 0;
-      questions.forEach((o, i) => {
-        if (i === questions.length - 1) {
-          questionScore[o.id] = parseFloat((item.itemLevelScore - currentTotal).toFixed(2));
-        } else {
-          questionScore[o.id] = devidedScore;
-        }
-        currentTotal += devidedScore;
-      });
-    }
-    return questionScore;
+  const maxScore = newMaxScore || totalMaxScore;
+  if (item.itemLevelScoring === true) {
+    questions.forEach((o, i) => {
+      if (i === 0) {
+        questionScore[o.id] = maxScore;
+      } else {
+        questionScore[o.id] = 0;
+      }
+    });
+  } else {
+    const dividedScore = round(maxScore / questions.length, 2);
+    let currentTotal = 0;
+    questions.forEach((o, i) => {
+      if (i === questions.length - 1) {
+        questionScore[o.id] = round(maxScore - currentTotal, 2);
+      } else {
+        questionScore[o.id] = dividedScore;
+      }
+      currentTotal += dividedScore;
+    });
   }
-  let currScore = 0;
-  questions.forEach((o, index) => {
-    if (index === questions.length - 1) {
-      questionScore[o.id] = newMaxScore - currScore;
-    } else {
-      const score = round(get(o, ["validation", "validResponse", "score"], 0) * (newMaxScore / totalMaxScore), 2);
-      currScore += score;
-      questionScore[o.id] = score;
-    }
-  });
   return questionScore;
 };
 

@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 import memoizeOne from "memoize-one";
 import { ThemeProvider } from "styled-components";
+import { withWindowSizes } from "@edulastic/common";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -112,7 +113,8 @@ class ExpressGrader extends Component {
       additionalData,
       match,
       classResponse = {},
-      isPresentationMode
+      isPresentationMode,
+      windowWidth
     } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
@@ -140,6 +142,7 @@ class ExpressGrader extends Component {
                 testActivity={testActivity}
                 showQuestionModal={this.showQuestionModal}
                 isPresentationMode={isPresentationMode}
+                windowWidth={windowWidth}
               />
             )}
 
@@ -166,6 +169,7 @@ class ExpressGrader extends Component {
 }
 
 const enhance = compose(
+  withWindowSizes,
   connect(
     state => ({
       testActivity: getTestActivitySelector(state),

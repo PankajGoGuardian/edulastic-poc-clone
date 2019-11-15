@@ -91,7 +91,7 @@ class StudentViewContainer extends Component {
   questionsContainerRef = React.createRef();
 
   handleScroll = e => {
-    const elementTop = this.questionsContainerRef.current.getBoundingClientRect().top;
+    const elementTop = this.questionsContainerRef.current?.getBoundingClientRect().top || 0;
     if (elementTop < 100 && !this.state.hasStickyHeader) {
       this.setState({ hasStickyHeader: true });
     } else if (elementTop > 100 && this.state.hasStickyHeader) {
@@ -270,8 +270,8 @@ class StudentViewContainer extends Component {
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
 
-        {!loading && (
-          <div ref={this.questionsContainerRef}>
+        <div ref={this.questionsContainerRef}>
+          {!loading && (
             <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
               <ThemeProvider
                 theme={{ twoColLayout: { first: "calc(75% - 15px) !important", second: "25% !important" } }}
@@ -290,8 +290,8 @@ class StudentViewContainer extends Component {
                 />
               </ThemeProvider>
             </AnswerContext.Provider>
-          </div>
-        )}
+          )}
+        </div>
       </React.Fragment>
     );
   }

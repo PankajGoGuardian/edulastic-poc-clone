@@ -14542,6 +14542,13 @@ redux-devtools-extension@^2.13.5, redux-devtools-extension@^2.13.8:
   resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
   integrity sha512-8qlpooP2QqPtZHQZRhx3x3OP5skEV1py/zUdMY28WNAocbafxdG2tRD1MWE7sp8obGMNYuLWanhhQ7EQvT1FBg==
 
+redux-ignore@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/redux-ignore/-/redux-ignore-1.2.5.tgz#66f22866e31c8fa771c766d1e45a6dd111a97c54"
+  integrity sha512-dDTTbGLwcpsKifcoV3STKdIJ9aauj0zmz937BKWZw0y1AfqsNDFTL5kZG/QNNYhZq8K/jCHib1CWjKrbV26V8g==
+  dependencies:
+    redux "^3.3.1"
+
 redux-immutable-state-invariant@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/redux-immutable-state-invariant/-/redux-immutable-state-invariant-2.1.0.tgz#308fd3cc7415a0e7f11f51ec997b6379c7055ce1"
@@ -14623,7 +14630,7 @@ redux-undo@^0.6.1:
   dependencies:
     redux "^3.0.2"
 
-redux@^3.0.2:
+redux@^3.0.2, redux@^3.3.1:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   integrity sha512-pNqnf9q1hI5HHZRBkj3bAngGZW/JMCmexDlOxw4XagXY2o1327nHH54LoTjiPJ0gizoqPDRqWyX/00g0hD6w+A==

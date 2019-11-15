@@ -268,16 +268,30 @@ class AxisLabelsContainer extends PureComponent {
 
     const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
+    let _elements = elements.map(item => {
+      let point = item.point;
+      if (item.point.indexOf("<p>") === 0) {
+        point = `<p title="${item.point.substring(3, item.point.length - 4)}">${item.point.substring(
+          3,
+          item.point.length - 4
+        )}</p>`;
+      }
+      return {
+        ...item,
+        point
+      };
+    });
+
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(getCorrectAnswer(elements));
+      this._graph.loadMarksAnswers(getCorrectAnswer(_elements));
       return;
     }
 
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
+      const coloredElements = getColoredElems(_elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       this._graph.loadMarksAnswers(coloredElements);
@@ -286,7 +300,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult);
+      const coloredElements = getColoredElems(_elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       this._graph.renderMarks(coloredElements);
@@ -294,12 +308,12 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     if (
-      !isEqual(elements, this._graph.getMarks()) ||
+      !isEqual(_elements, this._graph.getMarks()) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(elements);
+      this._graph.renderMarks(_elements);
     }
   };
 

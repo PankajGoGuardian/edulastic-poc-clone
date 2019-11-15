@@ -145,13 +145,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
             userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
         >
-          {lessMinWidth ? (
-            <Popover overlayClassName="customTooltip" content={popoverContent}>
-              {content}
-            </Popover>
-          ) : (
-            content
-          )}
+          <Popover overlayClassName="customTooltip" visible content={popoverContent}>
+            {content}
+          </Popover>
         </Draggable>
       </Droppable>
     </CheckBoxTemplateBox>

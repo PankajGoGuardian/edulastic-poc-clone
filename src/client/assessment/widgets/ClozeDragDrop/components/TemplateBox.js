@@ -2,12 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { MathSpan } from "@edulastic/common";
+import { response as Dimensions } from "@edulastic/constants";
+import Tooltip from "antd/lib/tooltip";
 import Droppable from "./Droppable";
 import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
-import { response as Dimensions } from "@edulastic/constants";
-
-import Tooltip from "antd/lib/tooltip";
 
 const TemplateBox = ({ resprops, id }) => {
   if (!id) {
@@ -28,12 +27,12 @@ const TemplateBox = ({ resprops, id }) => {
   } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
-  const minHeight = (response && response.heightpx) || responseBtnStyle.heightpx || Dimensions.minHeight;
-  const minWidth = (response && response.widthpx) || responseBtnStyle.widthpx || Dimensions.minWidth;
+  const height = (response && response.heightpx) || responseBtnStyle.heightpx || Dimensions.minHeight;
+  const width = (response && response.widthpx) || responseBtnStyle.widthpx || Dimensions.minWidth;
   const style = {
     ...responseBtnStyle,
-    minWidth,
-    minHeight,
+    height: response ? height : "auto",
+    width: response ? width : "auto",
     maxWidth: globalSettings ? "400px" : "auto"
   };
   const getData = attr => {

@@ -520,6 +520,7 @@ export const getCanCloseAssignmentSelector = createSelector(
     return (
       additionalData?.canCloseClass.includes(currentClass) &&
       status !== "DONE" &&
+      status !== "NOT OPEN" &&
       !(
         additionalData?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
         userRole === roleuser.TEACHER

@@ -65,7 +65,7 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
-  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} showZoomBtn />;
+  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} />;
 
   return (
     <Fragment>

@@ -68,7 +68,8 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
     }
   } catch (err) {
     console.error(err);
-    yield call(message.error, "create item failed");
+    const errorMessage = "create item failed";
+    yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }

@@ -78,12 +78,11 @@ function* receiveGradeBookSaga({ payload }) {
   }
 }
 
-function* receiveTestActivitySaga({ payload }) {
+export function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
     const classResponse = yield call(classResponseApi.classResponse, { ...payload, testId: additionalData.testId });
-
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: classResponse

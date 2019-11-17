@@ -569,6 +569,27 @@ class ClassBoard extends Component {
     downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
   };
 
+  onClickPrint = event => {
+    event.preventDefault();
+
+    const { testActivity, selectedStudents, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentsKeys = Object.keys(selectedStudents);
+
+    const studentsMap = keyBy(testActivity, "studentId");
+
+    const isPrintable = !selectedStudentsKeys.some(
+      item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
+    );
+
+    if (isPrintable && selectedStudentsKeys.length) {
+      const selectedStudentsStr = selectedStudentsKeys.join(",");
+      window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`);
+    } else {
+      message.error("You can print only after the assignment has been submitted by the student(s).");
+    }
+  };
+
   render() {
     const {
       gradebook,
@@ -782,7 +803,8 @@ class ClassBoard extends Component {
                       disabled={!isItemsVisible}
                       first={true}
                       data-cy="printButton"
-                      onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
+                      target="_blank"
+                      onClick={this.onClickPrint}
                     >
                       <ButtonIconWrap>
                         <IconPrint />

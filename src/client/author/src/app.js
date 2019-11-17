@@ -147,7 +147,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
                   />
                   <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
                   <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
-                  <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
+                  <Route exact path={`${match.url}/printpreview/:assignmentId/:classId`} component={PrintPreview} />
                   <Route exact path={`${match.url}/printAssessment/:testId`} component={PrintAssessment} />
                   <Route exact path={`${match.url}/manageClass/printPreview`} component={PrintPreviewClass} />
                   <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />

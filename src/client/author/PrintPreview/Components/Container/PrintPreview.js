@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import queryString from "query-string";
 import * as moment from "moment";
 import { mobileWidthMax } from "@edulastic/colors";
 import StudentQuestionContainer from "../StudentQuestionContiner/StudentQuestionContainer";
@@ -19,7 +20,7 @@ import {
 } from "./styled";
 
 // actions
-import { receiveClassStudentResponseAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
+import { fetchPrintPreviewEssentialsAction } from "../../ducks";
 // selectors
 import {
   getClassResponseSelector,
@@ -35,31 +36,18 @@ class PrintPreview extends Component {
   }
 
   componentDidMount() {
-    const {
-      loadClassStudentResponse,
-      testActivity,
-      additionalData,
-      history,
-      loadClassResponses,
-      selectedStudents
-    } = this.props;
-    if (testActivity.length === 0) {
-      return history.goBack();
+    const { fetchPrintPreviewEssentialsAction, match, location } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudents = queryString.parse(location.search, { arrayFormat: "comma" });
+
+    let _selectedStudents;
+    if (typeof selectedStudents.selectedStudents === "string") {
+      _selectedStudents = [selectedStudents.selectedStudents];
+    } else {
+      _selectedStudents = selectedStudents.selectedStudents;
     }
 
-    const { testId, classId } = additionalData;
-    let selectedStudentIds = Object.keys(selectedStudents);
-    let selectedActivities = [];
-    for (let i = 0; i < selectedStudentIds.length; i++) {
-      testActivity.map(student => {
-        if (student.studentId === selectedStudentIds[i]) {
-          if (student.testActivityId) selectedActivities.push(student.testActivityId);
-        }
-      });
-    }
-
-    loadClassStudentResponse({ selectedActivities, groupId: classId });
-    loadClassResponses({ testId });
+    fetchPrintPreviewEssentialsAction({ assignmentId, classId, selectedStudents: _selectedStudents });
   }
 
   render() {
@@ -76,10 +64,10 @@ class PrintPreview extends Component {
         const renderStudentResponse = (
           <StudentQuestionContainer
             testActivity={testActivity}
-            classResponse={classResponse}
-            additionalData={additionalData}
-            studentResponse={studentResponse}
             assignmentIdClassId={assignmentIdClassId}
+            classResponse={classResponse}
+            studentResponse={studentResponse}
+            additionalData={additionalData}
           />
         );
         renderClassStudentsResponse.push(renderStudentResponse);
@@ -117,16 +105,14 @@ class PrintPreview extends Component {
 const enhance = compose(
   connect(
     state => ({
+      testActivity: getTestActivitySelector(state),
+      assignmentIdClassId: getAssignmentClassIdSelector(state),
       classResponse: getClassResponseSelector(state),
       classStudentResponse: getClassStudentResponseSelector(state),
-      testActivity: getTestActivitySelector(state),
-      additionalData: getAdditionalDataSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state),
-      selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {})
+      additionalData: getAdditionalDataSelector(state)
     }),
     {
-      loadClassStudentResponse: receiveClassStudentResponseAction,
-      loadClassResponses: receiveClassResponseAction
+      fetchPrintPreviewEssentialsAction
     }
   )
 );

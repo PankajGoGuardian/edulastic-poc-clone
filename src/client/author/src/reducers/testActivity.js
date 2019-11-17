@@ -269,7 +269,8 @@ const reducer = (state = initialState, { type, payload }) => {
         },
         additionalData: {
           ...state.additionalData,
-          canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
+          canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId),
+          open: true
         }
       };
 

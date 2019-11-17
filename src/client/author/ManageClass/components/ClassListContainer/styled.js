@@ -178,11 +178,11 @@ export const SyncButtons = styled(ResponsiveButton)`
   align-items:center;
   justify:space-between;
   border:none;
-  &:hover {
+  &:hover, &:focus {
     color: ${themeColor};
   }
-  & > p{
-    margin-left:8px;
+  & > p {
+    margin-left: 8px;
   }
 `;
 

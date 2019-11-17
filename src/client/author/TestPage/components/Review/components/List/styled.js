@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Button, Input, Checkbox } from "antd";
-
-import { grey, themeColor, lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
+import { grey, themeColor, lightGreySecondary, secondaryTextColor, white } from "@edulastic/colors";
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
@@ -25,6 +24,11 @@ export const PreviewButton = styled(Button)`
   border-radius: 4px;
   cursor: pointer;
   margin-top: 25px;
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    color: ${white};
+  }
 `;
 
 export const PointsLabel = styled.label`

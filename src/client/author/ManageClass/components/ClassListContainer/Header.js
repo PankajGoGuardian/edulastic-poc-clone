@@ -81,6 +81,12 @@ const StyledLink = styled(Link)`
   font-weight: 600;
   font-size: 11px;
   border-radius: 4px;
+  &:hover,
+  &:focus {
+    background: ${white};
+    color: ${themeColor};
+  }
+
   @media (min-width: ${extraDesktopWidthMax}) {
     height: 45px;
   }

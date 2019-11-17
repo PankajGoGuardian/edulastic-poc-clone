@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, red, mediumDesktopWidth, themeColor, title } from "@edulastic/colors";
+import { white, red, mediumDesktopWidth, themeColor, title, themeColorLight } from "@edulastic/colors";
 import { Button, Col, Row } from "antd";
 import { IconManage } from "@edulastic/icons";
 
@@ -44,11 +44,12 @@ export const SaveClassBtn = styled(Button)`
   padding: 5px 20px;
   border: none;
   color: ${white};
-  background: #42d184;
+  background: ${themeColorLight};
   margin-left: 20px;
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${white};
-    background: #42d184;
+    background: ${themeColorLight};
   }
 `;
 
@@ -56,11 +57,12 @@ export const CancelClassBtn = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
   border: none;
-  color: #42d184;
+  color: ${themeColorLight};
   background: ${white};
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${white};
-    background: #42d184;
+    background: ${themeColorLight};
   }
 `;
 

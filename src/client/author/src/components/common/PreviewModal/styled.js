@@ -84,6 +84,11 @@ export const EvaluateButton = styled(Button)`
   height: 28px;
   color: ${themeColor};
   border-color: ${themeColor};
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    color: ${white};
+  }
 
   @media (max-width: ${desktopWidth}) {
     flex-basis: 100%;

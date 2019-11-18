@@ -25,7 +25,7 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case RESPONSE_ENTRY_SCORE_SUCCESS:
       const { testActivity, questionActivities } = payload;
-      if (state.data.testActivity._id !== testActivity._id) {
+      if (state.data?.testActivity?._id !== testActivity?._id) {
         return state;
       }
       return produce(state, _state => {

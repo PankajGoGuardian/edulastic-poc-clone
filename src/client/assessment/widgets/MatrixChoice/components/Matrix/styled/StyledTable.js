@@ -6,7 +6,7 @@ import { fonts } from "@edulastic/constants";
 export const StyledTable = styled(Table)`
   table {
     max-width: ${props => props.maxWidth && `${props.maxWidth}px !important`};
-    width: ${props => (props.maxWidth ? "max-content" : "100%")};
+    width: ${props => (props.maxWidth ? "auto" : "100%")};
     font-size: ${props => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
@@ -75,7 +75,8 @@ export const StyledTable = styled(Table)`
   @media (min-width: ${smallDesktopWidth}) {
     .ant-table {
       width: 100%;
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
       margin: 0px 6px 0px 0px;
     }
   }

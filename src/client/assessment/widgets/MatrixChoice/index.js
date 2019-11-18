@@ -25,7 +25,7 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div`
-  width: fit-content;
+  width: auto;
 `;
 
 const MatrixChoice = ({

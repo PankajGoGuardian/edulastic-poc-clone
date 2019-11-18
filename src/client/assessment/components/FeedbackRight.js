@@ -104,7 +104,7 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} }
     } = this.props;
 
-    const { testActivityId, groupId, testItemId } = activity;
+    const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }

@@ -158,7 +158,7 @@ function* receiveStudentQuestionSaga({ payload }) {
       feedbackResponse = yield call(classResponseApi.receiveStudentItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.receiveStudentQuestionResponse, payload);
-      const { qid, score, autoGrade } = feedbackResponse;
+      const { qid, score, autoGrade } = feedbackResponse || {};
       if (!autoGrade) {
         yield put(setTeacherEditedScore({ [qid]: score }));
       }
@@ -169,6 +169,7 @@ function* receiveStudentQuestionSaga({ payload }) {
       payload: feedbackResponse
     });
   } catch (err) {
+    console.error(err);
     const errorMessage = "Receive answer is failing";
     yield call(message.error, errorMessage);
     yield put({

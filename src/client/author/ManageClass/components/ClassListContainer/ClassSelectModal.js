@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Table, Select, Input, message, Button } from "antd";
+import { Select, Input, message, Button } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { themeColorLight, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
+import { themeColorLight } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ClassListModal = ({
@@ -100,6 +100,7 @@ const ClassListModal = ({
           mode="multiple"
           placeholder="Please select any grade"
           onChange={val => handleChange(ind, "grades", val)}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {selectsData.allGrades.map(allGrade => {
             return (
@@ -128,6 +129,7 @@ const ClassListModal = ({
             handleChange(ind, "standardSets", []);
             handleChange(ind, "subject", val);
           }}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {selectsData.allSubjects.map(allSubject => {
             return (
@@ -162,6 +164,7 @@ const ClassListModal = ({
             onChange={(val, options) => {
               handleStandardsChange(ind, "standards", val, options);
             }}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {standardsList.map(standard => {
               return (
@@ -193,6 +196,7 @@ const ClassListModal = ({
             handleCourseChange(ind, option);
             handleChange(ind, "courseId", val);
           }}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {courseList &&
             courseList.map(course => {

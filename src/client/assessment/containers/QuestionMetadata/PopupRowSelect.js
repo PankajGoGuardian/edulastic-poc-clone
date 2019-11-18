@@ -21,7 +21,12 @@ const PopupRowSelect = ({
       <Col md={8}>
         <ItemBody>
           <div className="select-label">{t("component.options.subject")}</div>
-          <Select style={{ width: "100%" }} value={subject} onChange={handleChangeSubject}>
+          <Select
+            style={{ width: "100%" }}
+            value={subject}
+            onChange={handleChangeSubject}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
             {selectsData.allSubjects.map(({ text, value }) =>
               value ? (
                 <Select.Option key={value} value={value}>
@@ -43,6 +48,7 @@ const PopupRowSelect = ({
             filterOption
             value={standard.curriculum}
             onChange={handleChangeStandard}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {formattedCuriculums.map(({ value, text, disabled }) => (
               <Select.Option key={value} value={text} disabled={disabled}>
@@ -55,7 +61,14 @@ const PopupRowSelect = ({
       <Col md={8}>
         <ItemBody>
           <div className="select-label">{t("component.options.grade")}</div>
-          <Select mode="multiple" showSearch style={{ width: "100%" }} value={grades} onChange={handleChangeGrades}>
+          <Select
+            mode="multiple"
+            showSearch
+            style={{ width: "100%" }}
+            value={grades}
+            onChange={handleChangeGrades}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
             {selectsData.allGrades.map(({ text, value }) => (
               <Select.Option key={text} value={value}>
                 {text}

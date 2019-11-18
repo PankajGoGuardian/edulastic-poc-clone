@@ -82,7 +82,7 @@ export const AssessmentStatisticTable = props => {
       }
       let avgScore = 0;
       if (sumTotalScore) {
-        avgScore = (sumTotalScore / (sumSampleCount - (sumStudentsAbsent || 0))).toFixed(2);
+        avgScore = (sumTotalScore / sumStudentsGraded || 0).toFixed(2);
       }
       const result = {
         ...obj,

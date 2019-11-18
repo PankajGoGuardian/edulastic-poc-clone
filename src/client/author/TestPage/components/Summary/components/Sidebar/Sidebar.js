@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect, createRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Select, message } from "antd";
 import { uniqBy } from "lodash";
@@ -37,7 +37,7 @@ const Sidebar = ({
   windowWidth,
   isEditable
 }) => {
-  const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
   const testTitleInput = createRef();
@@ -81,6 +81,8 @@ const Sidebar = ({
       setSearchValue(value);
     }
   };
+
+  const selectedTags = useMemo(() => tags.map(t => t._id), [tags]);
   return (
     <FlexContainer padding="30px" flexDirection="column">
       <Block>
@@ -156,7 +158,7 @@ const Sidebar = ({
           style={{ marginBottom: 0 }}
           optionLabelProp="title"
           placeholder="Please select"
-          value={tags.map(t => t._id)}
+          value={selectedTags}
           onSearch={searchTags}
           onSelect={selectTags}
           onDeselect={deselectTags}

@@ -118,8 +118,10 @@ class CalculatorContainer extends Component {
           </StyledDiv>
         </StyledDraggable>
 
+        {/* We are Displaying desmos scientific calc for Edulastic scientific as well since there is no implementation yet done for edulastic scientific
+         calculator. But once implementation for edulastic scientific is done the below condition needs to be changed to only desmos scientific*/}
         <StyledDraggable>
-          <StyledDiv visible={calculateMode === "SCIENTIFIC_DESMOS"}>
+          <StyledDiv visible={["SCIENTIFIC_DESMOS", "SCIENTIFIC_EDULASTIC"].includes(calculateMode)}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
             <StyledTitle>Scientific Calculator</StyledTitle>
             <DesmosScientificCalculator

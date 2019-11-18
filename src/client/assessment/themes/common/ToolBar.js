@@ -43,7 +43,7 @@ class ToolBar extends Component {
         </Tooltip>
         {calcType !== calculatorTypes.NONE && (
           <Tooltip placement="top" title="Calculator">
-            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)} hidden>
+            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
               <CaculatorIcon />
             </StyledButton>
           </Tooltip>

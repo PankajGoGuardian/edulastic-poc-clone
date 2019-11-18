@@ -155,7 +155,6 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: "sub-thead-th th-border-bottom",
-            width: 100,
             render: record => {
               const { columnData: tableData } = this.state;
               const isTest = record && record.testActivityId;

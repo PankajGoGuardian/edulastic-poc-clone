@@ -243,7 +243,12 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
               value={
-                activity && activity.graded === false && activity.score === 0 && !score && !this.state.changed
+                activity &&
+                activity.graded === false &&
+                activity.score === 0 &&
+                !score &&
+                !this.state.changed &&
+                !activity.skipped
                   ? ""
                   : adaptiveRound(score || 0)
               }

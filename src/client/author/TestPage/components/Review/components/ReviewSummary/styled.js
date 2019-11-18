@@ -2,37 +2,57 @@ import styled from "styled-components";
 import { Col, Row } from "antd";
 
 import { Paper } from "@edulastic/common";
-import { lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark } from "@edulastic/colors";
+import {
+  lightGreySecondary,
+  secondaryTextColor,
+  dropZoneTitleColor,
+  greenDark,
+  smallDesktopWidth,
+  extraDesktopWidth,
+  mediumDesktopExactWidth
+} from "@edulastic/colors";
 
 export const Container = styled(Paper)`
   padding: 16px;
 `;
 
 export const SummaryInfoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 5px 10px;
   border-radius: 2px;
   background: ${lightGreySecondary};
-  min-width: ${props => (props.minWidth ? props.minWidth : "")};
-  width: 100%;
+  width: calc(50% - 5px);
   height: 40px;
+  line-height: 28px;
+  text-align: center;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 5px;
+  }
 `;
 
 export const SummaryInfoNumber = styled.span`
-  display: block;
-  font-size: 18px;
+  font-size: ${props => props.theme.subtitleFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
+  float: left;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    font-size: ${props => props.theme.titleSecondarySectionFontSize};
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: ${props => props.theme.standardFont};
+  }
 `;
 
 export const SummaryInfoTitle = styled.span`
-  display: block;
-  font-size: 12px;
+  display: inline-block;
+  font-size: ${props => props.theme.smallFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
-  margin-left: 5px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallLinkFontSize};
+  }
 `;
 
 export const TableHeaderCol = styled(Col)`
@@ -59,6 +79,9 @@ export const TableBodyCol = styled(Col)`
   color: ${secondaryTextColor};
   text-align: center;
   padding: 7px 0;
+  &:first-child {
+    padding-left: 7px;
+  }
 `;
 
 export const Standard = styled.span`

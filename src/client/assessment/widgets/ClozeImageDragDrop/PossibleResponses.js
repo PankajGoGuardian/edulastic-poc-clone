@@ -78,21 +78,24 @@ class PossibleResponses extends Component {
 
   editOptions = (index, value) => {
     const { item, setQuestionData } = this.props;
-
     setQuestionData(
       produce(item, draft => {
         draft.validation.validResponse.value.forEach(arr => {
-          if (arr.value.includes(draft.options[index])) {
+          // arr is null for indices 0 and 1 if we drop answer on 3rd directly
+          // so adding optional chaining will prevent page crash
+          if (arr?.value.includes(draft.options[index])) {
             arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
           }
         });
 
         draft.validation.altResponses.forEach(overArr => {
-          overArr.value.forEach(arr => {
-            if (arr.value.includes(draft.options[index])) {
-              arr.value.splice(arr.value.indexOf(draft.options[index]), 1, value);
-            }
-          });
+          if (overArr) {
+            overArr.value.forEach(arr => {
+              if (arr?.value.includes(draft.options[index])) {
+                arr.value.splice(arr.value.indexOf(draft.options[index]), 1, value);
+              }
+            });
+          }
         });
 
         draft.options[index] = value;

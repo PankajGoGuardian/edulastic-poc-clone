@@ -32,6 +32,7 @@ const createAnswer = q => {
     case questionType.MULTIPLE_CHOICE:
       return createAnswerMultipleChoiceAnswer(q);
     case questionType.CLOZE_TEXT:
+    case questionType.CLOZE_DROP_DOWN:
       return createClozeTextAnswerChoice(q);
     case questionType.ESSAY_RICH_TEXT:
     case questionType.HIGHLIGHT_IMAGE:
@@ -76,12 +77,14 @@ const createAnswerMultipleChoiceAnswer = (question = {}) => {
 
 const createClozeTextAnswerChoice = question => {
   const altResp = (question?.validation?.altResponses || []).map(i => i?.value) || [];
-  let answers = groupBy([...(question?.validation?.validResponse.value || []), ...flatten(altResp)], "index");
+  const groupByKey = question.type === question.CLOZE_TEXT ? "index" : "id";
+  let answers = groupBy([...(question?.validation?.validResponse.value || []), ...flatten(altResp)], groupByKey);
   let keys = Object.keys(answers);
+  let index = 0;
   let answerString = "";
   for (let key of keys) {
     let tempAns = answers[key].map(i => i?.value).join(",");
-    answerString = `${answerString} ${Number(key) + 1}. ${tempAns}`;
+    answerString = `${answerString} ${Number(++index)}. ${tempAns}`;
   }
   return answerString;
 };

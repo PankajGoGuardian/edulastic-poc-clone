@@ -20,6 +20,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     stemNumeration,
     fontSize,
     showAnswer,
+    isPrint,
     userSelections,
     evaluation,
     hasGroupResponses = false,
@@ -54,7 +55,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
   const handleHover = () => {
-    if (showAnswer && lessMinWidth) {
+    if ((showAnswer || isPrint) && lessMinWidth) {
       toggleIndexVisibility(!showIndex);
     }
   };
@@ -72,7 +73,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           onMouseEnter={handleHover}
           onMouseLeave={handleHover}
         >
-          {showAnswer && (
+          {(showAnswer || isPrint) && (
             <span className="index" style={indexStyle}>
               {indexStr}
             </span>
@@ -103,7 +104,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           onMouseEnter={handleHover}
           onMouseLeave={handleHover}
         >
-          {showAnswer && showIndex && (
+          {(showAnswer || isPrint) && showIndex && (
             <span className="index" style={indexStyle}>
               {indexStr}
             </span>

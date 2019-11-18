@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import produce from "immer";
 import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
+import DisplayOptions from "./components/DisplayOptions";
 import JsxParser from "react-jsx-parser";
 
 import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
@@ -125,8 +126,10 @@ class ClozeDropDownDisplay extends Component {
       theme,
       previewTab,
       changePreviewTab,
-      view
+      view,
+      isPrint
     } = this.props;
+
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
     let responses = cloneDeep(options);
@@ -171,6 +174,7 @@ class ClozeDropDownDisplay extends Component {
       fontSize,
       btnStyle,
       showAnswer,
+      isPrint,
       isReviewTab,
       placeholder,
       disableResponse,
@@ -194,7 +198,7 @@ class ClozeDropDownDisplay extends Component {
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
-            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBoxContainer,
+            textdropdown: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ChoicesBoxContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -213,6 +217,7 @@ class ClozeDropDownDisplay extends Component {
         </QuestionTitleWrapper>
         {question && questionContent}
         {answerBox}
+        {isPrint && <DisplayOptions options={options} responseIds={item.responseIds} />}
       </div>
     );
   }

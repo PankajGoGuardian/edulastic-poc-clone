@@ -297,7 +297,7 @@ class TestList extends Component {
     }
     if (name === "subject") {
       updatedKeys = {
-        ...testFilters,
+        ...updatedKeys,
         [name]: value,
         curriculumId: "",
         standardIds: []
@@ -345,8 +345,8 @@ class TestList extends Component {
     clearSelectedItems();
   };
 
-  updateTestList = (page, checkMode) => {
-    const { receiveTests, limit, history, mode, testFilters, defaultGrades, defaultSubject } = this.props;
+  updateTestList = page => {
+    const { receiveTests, limit, history, testFilters, defaultGrades, defaultSubject } = this.props;
     const searchFilters = {
       ...testFilters,
       grades: defaultGrades,
@@ -354,22 +354,20 @@ class TestList extends Component {
     };
 
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    if ((checkMode && mode !== "embedded") || !checkMode) history.push(`/author/tests?${queryParams}`);
+    history.push(`/author/tests?${queryParams}`);
     receiveTests({ page, limit, search: searchFilters });
   };
 
   handlePaginationChange = page => {
-    this.updateTestList(page, false);
+    this.updateTestList(page);
   };
 
   handleClearFilter = () => {
-    const { clearAllFilters, updateDefaultGrades, updateDefaultSubject } = this.props;
+    const { clearAllFilters, history, mode, limit } = this.props;
     clearAllFilters();
-    updateDefaultGrades([]);
     storeInLocalStorage("defaultGrades", []);
-    updateDefaultSubject("");
     storeInLocalStorage("defaultSubject", "");
-    this.updateTestList(1, true);
+    if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
   };
 
   handleStyleChange = blockStyle => {

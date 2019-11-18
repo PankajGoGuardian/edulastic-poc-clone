@@ -43,6 +43,11 @@ const ControlBtn = styled(Button)`
       background: ${props => props.theme.default.headerButtonBgColor};
       border-color: ${props => props.theme.default.headerButtonBgColor};
     }
+    i {
+      svg {
+        fill: ${props => props.theme.header.headerButtonHoverColor};
+      }
+    }
   }
   &:focus,
   &:active {

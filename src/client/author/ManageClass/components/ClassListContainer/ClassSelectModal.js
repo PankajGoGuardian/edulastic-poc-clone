@@ -67,14 +67,14 @@ const ClassListModal = ({
     {
       title: <b>{"GOOGLE CLASS CODE"}</b>,
       key: "enrollmentCode",
-      width: "5%",
+      width: "15%",
       dataIndex: "enrollmentCode",
       align: "left"
     },
     {
       title: <b>{"CLASS NAME"}</b>,
       key: "name",
-      width: "20%",
+      width: "15%",
       dataIndex: "name",
       align: "center",
       render: (name, row, ind) => (
@@ -146,7 +146,7 @@ const ClassListModal = ({
     {
       title: <b>{"STANDARDS"}</b>,
       key: "standards",
-      width: "30%",
+      width: "20%",
       dataIndex: "standards",
       align: "center",
       render: (_, row, ind) => {
@@ -180,7 +180,7 @@ const ClassListModal = ({
     {
       title: <b>{"COURSE"}</b>,
       key: "course",
-      width: "15%",
+      width: "20%",
       dataIndex: "course",
       align: "center",
       render: (_, row, ind) => (

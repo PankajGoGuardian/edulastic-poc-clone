@@ -340,6 +340,7 @@ export const GoogleClassroomModal = styled(ConfirmationModal)`
     }
     .ant-modal-body {
       border-radius: 10px;
+      padding: 15px 10px;
     }
     .ant-modal-footer {
       .ant-btn {
@@ -398,27 +399,28 @@ export const GoogleClassroomTable = styled(Table)`
         table {
           border: none;
           .ant-table-thead {
-            th {
-              border: none;
-              .ant-table-column-title {
-                white-space: nowrap;
-                font-size: ${props => props.theme.smallFontSize};
-              }
-            }
             tr {
               background: ${white};
+              th {
+                border: none;
+                padding: 16px 6px;
+                .ant-table-column-title {
+                  white-space: nowrap;
+                  font-size: ${props => props.theme.smallFontSize};
+                }
+              }
             }
           }
           .ant-table-tbody {
             tr {
               border-bottom: 11px solid ${white};
-            }
-            td {
-              border: none;
-              padding: 6px;
-              background: ${lightGreySecondary};
-              &.ant-table-selection-column {
-                background: ${white};
+              td {
+                border: none;
+                padding: 6px;
+                background: ${lightGreySecondary};
+                &.ant-table-selection-column {
+                  background: ${white};
+                }
               }
             }
           }
@@ -427,6 +429,18 @@ export const GoogleClassroomTable = styled(Table)`
         .ant-select-selection {
           border-radius: 2px;
           border: 1px solid ${borderGrey};
+          min-width: 120px;
+          max-width: 120px;
+          margin: auto;
+
+          @media (min-width: ${mediumDesktopExactWidth}) {
+            min-width: 150px;
+            max-width: 180px;
+          }
+          @media (min-width: ${extraDesktopWidthMax}) {
+            min-width: 180px;
+            max-width: 280px;
+          }
           .ant-select-selection__choice {
             background: ${themeColor}33;
             border-radius: 5px;

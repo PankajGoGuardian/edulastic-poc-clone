@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded, blue, white } from "@edulastic/colors";
+import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, white, themeColor } from "@edulastic/colors";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import {
@@ -292,11 +292,11 @@ class QuestionViewContainer extends Component {
                 />
                 <Line
                   dataKey="avgTimeSpent"
-                  stroke={blue}
+                  stroke={themeColor}
                   strokeWidth="3"
                   type="monotone"
                   yAxisId={1}
-                  dot={{ stroke: white, strokeWidth: 6, fill: white }}
+                  dot={{ stroke: themeColor, strokeWidth: 6, fill: white }}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={false} />
               </ComposedChart>

@@ -96,7 +96,7 @@ class ClassCreate extends React.Component {
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
         values.courseId = isEmpty(courseId) ? "" : courseId;
-        values.grades = isEmpty(grades) ? ["Other"] : grades;
+        values.grades = isEmpty(grades) ? ["O"] : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
         values.tags = tags?.map(t => allTagsData.find(o => o._id === t));
 

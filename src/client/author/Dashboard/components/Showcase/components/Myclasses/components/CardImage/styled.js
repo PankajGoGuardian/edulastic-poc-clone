@@ -4,7 +4,7 @@ import { white } from "@edulastic/colors";
 
 export const Image = styled.img`
   width: 100%;
-  height: 120px;
+  height: 162px;
   position: relative;
   filter: brightness(50%);
   border: none;

@@ -1,4 +1,4 @@
-import { flatten, groupBy, identity, get, maxBy } from "lodash";
+import { flatten, groupBy, identity, get, maxBy, cloneDeep } from "lodash";
 import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
 
@@ -12,10 +12,12 @@ const combineUnitAndExpression = (expression, unit) => {
 };
 
 const mathEval = async ({ userResponse, validation }) => {
-  const validResponses = groupBy(flatten(validation.validResponse.value), "id");
+  const _validation = cloneDeep(validation);
+  const _userResponse = cloneDeep(userResponse);
+  const validResponses = groupBy(flatten(_validation.validResponse.value), "id");
   const evaluation = {};
   // parallelize network request!!
-  for (const id of Object.keys(userResponse)) {
+  for (const id of Object.keys(_userResponse)) {
     const checks = getChecks({ value: validResponses[id] });
 
     const answers = (validResponses[id] || []).map(item => {
@@ -27,15 +29,14 @@ const mathEval = async ({ userResponse, validation }) => {
     });
 
     const requests = answers.map(ans => {
-      let { value } = userResponse[id];
-      const { unit } = userResponse[id];
+      let { value } = _userResponse[id];
+      const { unit } = _userResponse[id];
       if (unit) {
         value = combineUnitAndExpression(value, unit);
       }
-
       const data = {
-        input: value.replace(/\s+/g, " "),
-        expected: ans ? ans.replace(/\s+/g, " ") : "",
+        input: value.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
+        expected: ans ? ans.replace(/\s+/g, " ").replace(/[$]/g, "\\$") : "",
         checks
       };
 
@@ -175,31 +176,35 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
  *
  */
 const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
-  const answersArray = [...(validation.validResponse.value || [])];
-  for (const altResp of validation.altResponses) {
+  const _validation = cloneDeep(validation);
+  const _userResponse = cloneDeep(userResponse);
+  const answersArray = _validation.validResponse.value || [];
+  for (const altResp of _validation.altResponses) {
     if (altResp.value && Array.isArray(altResp.value)) answersArray.push(...altResp.value);
   }
   const answersById = groupBy(flatten(answersArray), "id");
   const evaluations = {};
 
   // parallelize this at some point
-  for (const id of Object.keys(userResponse)) {
+  for (const id of Object.keys(_userResponse)) {
     const validAnswers = answersById[id];
     const calculations = validAnswers.map(validAnswer => {
       const checks = getChecks({ value: [validAnswer] });
       let expected = validAnswer.value || "";
-      let input = userResponse[id].value;
-
+      let input = _userResponse[id].value;
       const { options = {} } = validAnswer;
       if (options.unit) {
         expected = combineUnitAndExpression(validAnswer.value, options.unit);
       }
 
-      if (userResponse[id].unit) {
-        input = combineUnitAndExpression(userResponse[id].value, userResponse[id].unit);
+      if (_userResponse[id].unit) {
+        input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
       }
-
-      return evaluate({ checks, input: input.replace(/\s+/g, " "), expected: expected.replace(/\s+/g, " ") });
+      return evaluate({
+        checks,
+        input: input.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
+        expected: expected.replace(/\s+/g, " ").replace(/[$]/g, "\\$")
+      });
     });
 
     const result = await Promise.all(calculations);

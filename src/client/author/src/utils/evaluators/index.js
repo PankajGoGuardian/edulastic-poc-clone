@@ -25,32 +25,9 @@ import {
   matchList
 } from "@edulastic/evaluators";
 
-const escapeSpecialChars = raw => raw.replace(/[$]/g, "\\$");
-
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
-  const _data = produce(data, draft => {
-    // remove units form payload when method is equiSymbolic
-    for (let [index, [key, value]] of Object.entries(Object.entries(draft?.userResponse?.mathUnits || {}) || {})) {
-      const validResponse = draft?.validation?.validResponse?.mathUnits?.value?.[index];
-      if (validResponse?.method === "equivSymbolic") {
-        // get correct answer unit and user answer unit
-        const validRespUnit = validResponse?.options?.unit;
-        const userResponseUnit = value.unit;
-        // append the value with respective units
-        const validValue = draft.validation.validResponse.mathUnits.value[index].value;
-        const userValue = draft.userResponse.mathUnits[key].value;
-        draft.validation.validResponse.mathUnits.value[index].value = escapeSpecialChars(validValue + validRespUnit);
-        draft.userResponse.mathUnits[key].value = escapeSpecialChars(userValue + userResponseUnit);
-        // remove the units
-        delete validResponse?.options?.unit;
-        delete draft?.userResponse?.mathUnits[key]?.unit;
-      }
-    }
-    return draft;
-  });
-
-  return await evaluateApi.evaluate(_data, type);
+  return await evaluateApi.evaluate(data, type);
 };
 
 // clozeDropDown and ClozeText shares same logic

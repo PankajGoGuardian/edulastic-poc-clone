@@ -10,7 +10,7 @@ const FixedHeaderStyle = css`
   top: 0;
   right: 30px;
   background: #fff;
-  z-index: 2;
+  z-index: 999;
   left: 130px;
   box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
   padding: 5px;

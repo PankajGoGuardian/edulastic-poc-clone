@@ -334,7 +334,7 @@ class LeftFilter extends React.Component {
     const classListActive = classListByTerm.filter(item => item.active === 1);
     const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
-      <FilterContainer id={"filter-container"}>
+      <FilterContainer>
         <FolderActionModal
           title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
@@ -415,7 +415,7 @@ class LeftFilter extends React.Component {
               placeholder="All grades"
               value={grades}
               onChange={this.handleChange("grades")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -432,7 +432,7 @@ class LeftFilter extends React.Component {
               placeholder="All subjects"
               value={subject}
               onChange={this.handleChange("subject")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -446,7 +446,7 @@ class LeftFilter extends React.Component {
               placeholder="All years"
               value={termId}
               onChange={this.handleChange("termId")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               <Select.Option key="all" value="">
                 {"All years"}
@@ -463,7 +463,7 @@ class LeftFilter extends React.Component {
               placeholder="All"
               value={testType}
               onChange={this.handleChange("testType")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {roleBasedTestType.map(({ value, text }, index) => (
                 <Select.Option key={index} value={value}>
@@ -481,7 +481,7 @@ class LeftFilter extends React.Component {
                   placeholder="All"
                   value={classId}
                   onChange={this.handleChange("classId")}
-                  getPopupContainer={() => document.getElementById("filter-container")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   <Select.Option key={"all"} value={""}>
                     {"All classes"}

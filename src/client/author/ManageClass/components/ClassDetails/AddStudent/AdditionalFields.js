@@ -38,25 +38,25 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
         <Input placeholder="Enter Student Number" />
       </Field>
       <Field label="Free Reduced Lunch" {...restProps} fiedlName="frlStatus" initialValue={frlStatus}>
-        <Select>
+        <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
           <Option value="active">Yes</Option>
           <Option value="deActive">No</Option>
         </Select>
       </Field>
       <Field label="Individual Education Plan" {...restProps} fiedlName="iepStatus" initialValue={iepStatus}>
-        <Select>
+        <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
           <Option value="active">Yes</Option>
           <Option value="deActive">No</Option>
         </Select>
       </Field>
       <Field label="English Language Learner" {...restProps} fiedlName="ellStatus" initialValue={ellStatus}>
-        <Select>
+        <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
           <Option value="active">Yes</Option>
           <Option value="deActive">No</Option>
         </Select>
       </Field>
       <Field label="Special ED" {...restProps} fiedlName="sedStatus" initialValue={sedStatus}>
-        <Select>
+        <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
           <Option value="active">Yes</Option>
           <Option value="deActive">No</Option>
         </Select>
@@ -68,7 +68,7 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
         <DatePicker format="DD MMM, YYYY" />
       </Field>
       <Field label="Gender" {...restProps} fiedlName="gender" initialValue={gender}>
-        <Select>
+        <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
           <Option value="male">Male</Option>
           <Option value="female">Female</Option>
           <Option value="other">Other</Option>
@@ -80,7 +80,7 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
 
       {showTtsField && (
         <Field label="Enable Text to Speech" {...restProps} fiedlName="tts">
-          <Select>
+          <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
             <Option value="yes">Yes</Option>
             <Option value="no">No</Option>
           </Select>

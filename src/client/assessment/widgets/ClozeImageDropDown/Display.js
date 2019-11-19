@@ -170,17 +170,22 @@ class Display extends Component {
       canvasWidth = responseBoxMaxLeft;
     }
     const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
+    let containerHeight = 0;
+    // calculate the dropdown menu height, its top relative to container, for each responseContainer
+    let tops = [];
+    responseContainers.map((responseContainer, i) => {
+      const delta = parseFloat(responseContainer?.height) + (newOptions?.[i]?.length * 32 || 110);
+      tops.push(topAndLeftRatio(responseContainer?.top, imagescale, fontsize, smallSize) + delta);
+    });
+
+    containerHeight = Math.max(canvasHeight, maxHeight, Math.max(...tops));
 
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        smallSize={smallSize}
-        fontSize={fontSize}
-        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
-      >
+      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={containerHeight}>
         <StyledPreviewContainer
           smallSize={smallSize}
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
-          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+          height={containerHeight}
         >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}

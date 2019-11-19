@@ -3,6 +3,7 @@ export { default as IconCarets } from "./src/IconCarets";
 export { default as IconCaretDown } from "./src/IconCaretDown";
 export { default as IconTrash } from "./src/IconTrash";
 export { default as IconTranslator } from "./src/IconTranslator";
+export { default as IconImage } from "./src/IconImage";
 export { default as IconTrashAlt, IconTrashAltTextFormat } from "./src/IconTrashAlt";
 export { default as IconMoveArrows } from "./src/IconMoveArrows";
 export { default as IconEye } from "./src/IconEye";

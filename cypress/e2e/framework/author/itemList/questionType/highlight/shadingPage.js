@@ -14,12 +14,12 @@ class ShadingPage {
   getPoints = () => cy.get('[data-cy="points"]').should("be.visible");
 
   getStimulus() {
-    return cy.get('[data-cy="stimulus"');
+    return cy.get('[data-cy="styled-wrapped-component"]');
   }
 
   addAlternate = () => {
-    cy.get('[data-cy="tabs"]')
-      .find("button")
+    cy.get("body")
+      .contains("+ Alternative Answer")
       .click();
     return this;
   };
@@ -47,7 +47,7 @@ class ShadingPage {
 
   // question content
   getQuestionEditor() {
-    return cy.get('[data-placeholder="Enter question"');
+    return cy.get("[contenteditable=true]").eq(0);
   }
 
   // shading
@@ -61,28 +61,42 @@ class ShadingPage {
   }
 
   // correct ans
-  getCorrectAnsRowByIndex(index) {
+  getCorrectAnsRowByIndex() {
     return cy
-      .get("body")
-      .contains("Set Correct Answer(s)")
-      .siblings()
-      .find("ul")
-      .eq(index);
+      .get('[data-cy="tabs"]')
+      .parent()
+      .parent();
   }
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
-    cy.get('[data-cy="scoringType"]')
-      .should("be.visible")
+    cy.get("body")
+      .contains(" ADVANCED OPTIONS")
+      .then(ele => {
+        //const a=cy.wrap(ele);
+        if (ele.parent().siblings().length === 3) {
+          cy.wrap(ele).click({ force: true });
+        }
+      });
+
+    //.click({ force: true });
+
+    cy.wait(500);
+
+    cy.get("body")
+      .contains("Scoring type")
+      .parent()
+      .find("i")
+      .children()
       .click();
 
     cy.get(selectOp)
       .should("be.visible")
       .click();
 
-    cy.get('[data-cy="scoringType"]')
-      .find(".ant-select-selection-selected-value")
-      .should("contain", option);
+    // cy.get('[data-cy="scoringType"]')
+    //   .find(".ant-select-selection-selected-value")
+    //   .should("contain", option);
 
     return this;
   }
@@ -107,9 +121,8 @@ class ShadingPage {
       .get("body")
       .contains(que)
       .parent()
-      .siblings()
-      .find("ul")
-      .eq(index);
+      .parent()
+      .parent();
   }
 
   getLayout() {
@@ -117,7 +130,11 @@ class ShadingPage {
   }
 
   getMaxSelection() {
-    return Helpers.getElement("maxSelectionOption");
+    return cy
+      .get("body")
+      .contains("Max selection")
+      .parent()
+      .find("input");
   }
 
   getBorderTypeSelect() {

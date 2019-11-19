@@ -154,6 +154,7 @@ const RedirectPopUp = ({
             style={{ width: "100%" }}
             placeholder="Select the students"
             value={Object.keys(selectedStudents)}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={v => {
               setSelected(v);
             }}
@@ -178,7 +179,12 @@ const RedirectPopUp = ({
           <Col span={12}>
             <h4>Questions delivery</h4>
             <Row>
-              <Select defaultValue={qDeliveryState} onChange={val => setQDeliveryState(val)} style={{ width: "100%" }}>
+              <Select
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                defaultValue={qDeliveryState}
+                onChange={val => setQDeliveryState(val)}
+                style={{ width: "100%" }}
+              >
                 {Object.keys(QuestionDelivery).map(item => (
                   <Option key="1" value={item}>
                     {QuestionDelivery[item]}
@@ -212,7 +218,12 @@ const RedirectPopUp = ({
           <Col span={12}>
             <h4>Show Previous attempt</h4>
             <Row>
-              <Select value={showPrevAttempt} onChange={val => setshowPrevAttempt(val)} style={{ width: "100%" }}>
+              <Select
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={showPrevAttempt}
+                onChange={val => setshowPrevAttempt(val)}
+                style={{ width: "100%" }}
+              >
                 {Object.keys(ShowPreviousAttempt).map((item, index) => (
                   <Option key={index} value={item}>
                     {ShowPreviousAttempt[item]}

@@ -65,6 +65,7 @@ const SettingsModal = ({
             onChange={setSelectedTheme}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
             style={{ marginBottom: "10px" }}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             <Select.Option value="default">Default</Select.Option>
             {Object.keys(themeColorsMap).map(key => {
@@ -76,6 +77,7 @@ const SettingsModal = ({
         <div>
           <CustomColumn>ZOOM</CustomColumn>
           <StyledSelect
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             value={zoomLevel}
             onChange={setZoomLevel}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}

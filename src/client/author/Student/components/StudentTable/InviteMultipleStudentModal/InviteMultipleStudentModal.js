@@ -395,7 +395,12 @@ class InviteMultipleStudentModal extends Component {
             <SelUserKindDiv>
               <Col span={11}>Add students by their name</Col>
               <Col span={13}>
-                <Select data-cy="studentType" onChange={this.handleChange} defaultValue="google">
+                <Select
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  data-cy="studentType"
+                  onChange={this.handleChange}
+                  defaultValue="google"
+                >
                   <Option value="google">Google Usernames</Option>
                   <Option value="mso">Office 365 Usernames</Option>
                   <Option value="fl">Frist Name and Last Name</Option>
@@ -441,7 +446,7 @@ class InviteMultipleStudentModal extends Component {
                       ],
                       initialValue: defaultSchoolId
                     })(
-                      <Select placeholder="Select school">
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
                         {schools.map(school => (
                           <Option key={school._id} value={school._id}>
                             {school.name}

@@ -122,7 +122,8 @@ class AssessmentPlayerSimple extends React.Component {
     const { scratchPad } = this.props;
     if (scratchPad) {
       this.setState({
-        toolsOpenStatus: [5]
+        toolsOpenStatus: [5],
+        activeMode: ""
       });
     }
   }
@@ -130,15 +131,8 @@ class AssessmentPlayerSimple extends React.Component {
   componentDidUpdate(previousProps) {
     const { currentItem, scratchPad } = this.props;
     if (currentItem !== previousProps.currentItem) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ showHints: false, testItemState: "" });
-      // if scratchpad data is present while navigating to next question
-      // open scratchpad
-      if (scratchPad) {
-        this.setState({
-          toolsOpenStatus: [5]
-        });
-      }
+      const toolsOpenStatus = scratchPad ? [5] : [];
+      this.setState({ showHints: false, testItemState: "", toolsOpenStatus, activeMode: "" });
     }
   }
 
@@ -150,7 +144,6 @@ class AssessmentPlayerSimple extends React.Component {
 
   handleToolChange = value => () => {
     const { activeMode } = this.state;
-
     if (value === "deleteMode") {
       this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
     } else if (activeMode === value) {

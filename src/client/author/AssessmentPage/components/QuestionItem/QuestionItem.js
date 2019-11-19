@@ -2,7 +2,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
+import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject } from "lodash";
+import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
   SHORT_TEXT,
@@ -261,4 +263,9 @@ class QuestionItem extends React.Component {
   }
 }
 
-export default withAnswerSave(QuestionItem);
+export default withAnswerSave(
+  connect(state => ({
+    previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
+    feedback: FeedbackByQIdSelector(state)
+  }))(QuestionItem)
+);

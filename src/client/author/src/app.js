@@ -82,7 +82,7 @@ const Author = ({ match, history, role, orgId, districtProfileLoading, loadDistr
   const isPrintPreview =
     history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment");
 
-  const assessmentTabs = ["description", "addItems", "review", "settings"];
+  const assessmentTabs = ["description", "addItems", "review", "settings", "worksheet"];
 
   return (
     <ThemeProvider theme={themeToPass}>

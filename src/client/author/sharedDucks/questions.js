@@ -17,6 +17,7 @@ import { UPDATE_TEST_DOC_BASED_REQUEST } from "../TestPage/ducks";
 export const LOAD_QUESTIONS = "[author questions] load questions";
 export const ADD_ITEMS_QUESTION = "[author question] load question";
 export const UPDATE_QUESTION = "[author questions] update questions";
+export const UPDATE_QUESTION_NUMBER = "[author questions] update question number (doc based)";
 export const SET_FIRST_MOUNT = "[author questions] set first mount";
 export const CHANGE_ITEM = "[author questions] change item";
 export const CHANGE_ITEM_UI_STYLE = "[author questions] change item uiStyle";
@@ -38,6 +39,7 @@ export const changeCurrentQuestionAction = createAction(CHANGE_CURRENT_QUESTION)
 export const addAlignmentAction = createAction(ADD_ALIGNMENT);
 export const removeAlignmentAction = createAction(REMOVE_ALIGNMENT);
 export const deleteQuestionAction = createAction(DELETE_QUESTION);
+export const updateQuestionNumberAction = createAction(UPDATE_QUESTION_NUMBER);
 
 // initialState
 const initialState = {
@@ -216,6 +218,19 @@ export default createReducer(initialState, {
         }
       }
     }
+  },
+  [UPDATE_QUESTION_NUMBER]: (state, { payload }) => {
+    // allow user to change question number in doc-based view
+    const { newIndex, oldIndex } = payload;
+    const qids = Object.values(state.byId)
+      .sort((a, b) => a.qIndex - b.qIndex)
+      .map(obj => obj.id);
+    const id = qids[oldIndex];
+    qids.splice(qids.indexOf(id), 1);
+    qids.splice(newIndex, 0, id);
+    qids.forEach((id, i) => {
+      state.byId[id].qIndex = i + 1;
+    });
   }
 });
 

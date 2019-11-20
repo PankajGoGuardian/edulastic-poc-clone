@@ -21,6 +21,7 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
             fetchStudents({ classId });
           }}
           value={selectedGroups}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {group.map(data => (
             <Select.Option data-cy="class" key={data._id} value={data._id}>

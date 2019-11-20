@@ -330,6 +330,7 @@ class AddTeacherModal extends React.Component {
                   filterOption={false}
                   onSearch={this.fetchSchool}
                   onChange={this.handleChange}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolsState.list.map(school => (
                     <Option key={school._id} value={school._id}>

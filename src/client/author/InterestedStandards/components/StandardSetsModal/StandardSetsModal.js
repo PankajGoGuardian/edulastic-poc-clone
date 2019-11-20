@@ -90,9 +90,9 @@ class StandardSetsModal extends Component {
         <StyledRow>
           <Col span={24}>
             <SubjectSelect
-              getPopupContainer={triggerNode => triggerNode.parentNode}
               placeholder="Select Subject"
               onChange={this.changeSubject}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               <Option value="Mathematics">Mathematics</Option>
               <Option value="ELA">ELA</Option>

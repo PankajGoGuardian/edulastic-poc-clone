@@ -171,7 +171,13 @@ class CreateSchoolModal extends Component {
             <ModalFormItem label="State">
               {getFieldDecorator("state", { initialValue: states[0] })(
                 country === "US" ? (
-                  <Select showSearch showArrow={false} placeholder="Select state" style={{ width: "100%" }}>
+                  <Select
+                    showSearch
+                    showArrow={false}
+                    placeholder="Select state"
+                    style={{ width: "100%" }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
                     {stateOptions}
                   </Select>
                 ) : (
@@ -195,6 +201,7 @@ class CreateSchoolModal extends Component {
                   notFoundContent={null}
                   onChange={this.changeCountryHandler}
                   onInputKeyDown={this.onCountryKeyDown}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {CountryOptions}
                 </StyledSelect>

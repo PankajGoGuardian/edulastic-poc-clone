@@ -245,7 +245,7 @@ class Container extends React.Component {
 
     switch (currentTab) {
       case tabs.DESCRIPTION:
-        return <Description setData={setTestData} assessment={assessment} />;
+        return <Description setData={setTestData} assessment={assessment} owner={owner} />;
       case tabs.WORKSHEET:
         return <Worksheet key="worksheet" {...props} />;
       case tabs.REVIEW:

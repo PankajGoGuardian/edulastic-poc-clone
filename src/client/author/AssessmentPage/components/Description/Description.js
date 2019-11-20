@@ -9,7 +9,7 @@ import {
 } from "../../../TestPage/components/AddItems/ducks";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 
-const Description = ({ setData, getItemsSubjectAndGrade, assessment, itemsSubjectAndGrade }) => {
+const Description = ({ setData, getItemsSubjectAndGrade, assessment, itemsSubjectAndGrade, owner }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleChangeGrade = grades => {
@@ -46,6 +46,7 @@ const Description = ({ setData, getItemsSubjectAndGrade, assessment, itemsSubjec
         current="Description"
         onChangeGrade={handleChangeGrade}
         onChangeSubjects={handleChangeSubject}
+        owner={owner}
       />
       {showModal && (
         <SourceModal onClose={handleToggleSource} onApply={handleApplySource}>

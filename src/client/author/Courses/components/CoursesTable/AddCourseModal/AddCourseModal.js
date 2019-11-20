@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { ModalFormItem, StyledSpinContainer, StyledSpin } from "./styled";
+import { StyledSpinContainer, StyledSpin } from "./styled";
+
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { courseApi } from "@edulastic/api";
 
@@ -131,16 +133,18 @@ class AddCourseModal extends React.Component {
     const { nameValidate, numberValidate, showSpin } = this.state;
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Add Course"
         onOk={this.onAddCourse}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button type="primary" key="submit" onClick={this.onAddCourse}>
-            Add Course >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onAddCourse}>Yes, Add</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
@@ -174,7 +178,7 @@ class AddCourseModal extends React.Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </Modal>
+      </StyledModal>
     );
   }
 }

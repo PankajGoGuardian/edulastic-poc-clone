@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Modal, Spin } from "antd";
-const Option = Select.Option;
-import { ModalFormItem } from "./styled";
+import { Form, Input, Row, Col } from "antd";
+
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { authApi } from "@edulastic/api";
 
@@ -109,19 +109,18 @@ class CreateDistrictAdminModal extends React.Component {
     const { emailValidateStatus, emailValidateMsg, fetching } = this.state;
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Create District Admin"
         onOk={this.onCreateDistrictAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
-            No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onCreateDistrictAdmin}>
-            Yes, Create >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onCreateDistrictAdmin}>Yes, Create</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
@@ -165,7 +164,7 @@ class CreateDistrictAdminModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

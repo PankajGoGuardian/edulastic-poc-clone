@@ -1,61 +1,22 @@
 import styled from "styled-components";
-import { Button, Select, Input, Dropdown, Pagination, Icon } from "antd";
-import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+import { Icon, Button } from "antd";
+import { StyledTable } from "../../../../common/styled";
 
-export const StyledTableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 20px;
-
-  .ant-table-wrapper {
-    width: 100%;
-  }
-
-  input {
-    border: 1px solid #d9d9d9;
-  }
-`;
-export const StyledTable = styled(Table)`
+export const ClassTable = styled(StyledTable)`
   .ant-table {
-    &-row:hover {
-      a {
-        visibility: visible;
-      }
-    }
-    &-tbody,
-    &-thead {
-      & > tr :nth-last-of-type(-n + 2) {
-        text-align: end;
+    &-tbody {
+      & > tr > th :nth-last-of-type(-n + 2) {
+        text-align: center;
       }
     }
   }
 `;
-
-export const StyledTableButton = styled.a`
-  margin-right: 20px;
-  font-size: 20px;
-  visibility: hidden;
-  &:last-child {
-    margin-right: 0;
-  }
-`;
-
 export const TeacherSpan = styled.span`
   margin-right: 10px;
 
   &:not(:last-child):after {
     content: ",";
   }
-`;
-
-export const StyledPagination = styled(Pagination)`
-  margin-top: 15px;
-  align-self: flex-end;
-`;
-
-export const StyledFilterButton = styled(Button)`
-  margin-left: 20px;
 `;
 
 export const StyledHeaderColumn = styled.div`
@@ -83,4 +44,8 @@ export const StyledSortIcon = styled(Icon)`
   font-size: 11px;
   margin-top: 0.125em;
   color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
+`;
+
+export const StyledCreateSchoolBtn = styled(Button)`
+  font-size: 11px;
 `;

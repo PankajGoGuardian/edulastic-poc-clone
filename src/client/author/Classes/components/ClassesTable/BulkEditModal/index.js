@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message } from "antd";
+import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message, Col } from "antd";
 import { StyledComponents } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
@@ -7,6 +7,8 @@ import { compose } from "redux";
 import { getUser } from "../../../../src/selectors/user";
 import { debounce } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
+
+import { ButtonsContainer, OkButton, CancelButton, StyledModal } from "../../../../../common/styled";
 
 const { Button } = StyledComponents;
 const { Option } = Select;
@@ -31,7 +33,8 @@ function BulkEditModal({
   userDetails,
   form,
   allTagsData,
-  addNewTag
+  addNewTag,
+  t
 }) {
   const [value, setValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -118,7 +121,7 @@ function BulkEditModal({
       case "course":
         return (
           <div>
-            <span>Choose course to update all selected classes</span>
+            <span>{t("class.components.bulkedit.chosecourse")}</span>
             <Select
               style={{ width: "100%" }}
               showSearch
@@ -138,7 +141,7 @@ function BulkEditModal({
       case "tags":
         return (
           <div>
-            <div>Add tag(s) to all selected classes</div>
+            <div>{t("class.components.bulkedit.addtags")}</div>
             {getFieldDecorator("tags")(
               <Select
                 data-cy="tagsSelect"
@@ -171,30 +174,35 @@ function BulkEditModal({
       case "endDate":
         return (
           <div>
-            <span>Choose an end date to update all selected classes</span>
+            <span>{t("class.components.bulkedit.choseenddate")}</span>
             <DatePicker onChange={date => setValue(date.valueOf())} />
           </div>
         );
       default:
-        return <span>Default</span>;
+        return <span>{t("class.components.bulkedit.default")}</span>;
     }
   };
 
   return (
-    <Modal
+    <StyledModal
       visible={showModal}
-      title="Bulk Update Class(es)"
+      title={t("class.components.bulkedit.title")}
       onCancel={onCloseModal}
       maskClosable={false}
       footer={[
         updateView ? (
           <AntdButton key="update" onClick={handleSubmit}>
-            Update Classes
+            {t("class.components.bulkedit.updateclasses")}
           </AntdButton>
         ) : (
-          <AntdButton type="primary" key="proceed" onClick={() => setBulkEditUpdateView(true)}>
-            Proceed
-          </AntdButton>
+          <ButtonsContainer gutter={5}>
+            <Col span={10}>
+              <CancelButton onClick={onCloseModal}>{t("class.components.bulkedit.cancel")}</CancelButton>
+            </Col>
+            <Col span={11}>
+              <OkButton onClick={() => setBulkEditUpdateView(true)}>{t("class.components.bulkedit.proceed")}</OkButton>
+            </Col>
+          </ButtonsContainer>
         )
       ]}
     >
@@ -202,7 +210,7 @@ function BulkEditModal({
         <>
           <Button onClick={() => setBulkEditUpdateView(false)} noStyle>
             <Icon type="left" />
-            Back
+            {t("class.components.bulkedit.back")}
           </Button>
           <Table
             rowKey={record => record._id}
@@ -248,18 +256,18 @@ function BulkEditModal({
           } Class(es) to update, please select the bulk action required`}</h4>
           <Radio.Group onChange={evt => setBulkEditMode(evt.target.value)} value={updateMode}>
             <Radio style={radioStyle} value="course">
-              Change course association for selected classes
+              {t("class.components.bulkedit.changecourseassociation")}
             </Radio>
             <Radio style={radioStyle} value="tags">
-              Update tags for selected classes
+              {t("class.components.bulkedit.updatetags")}
             </Radio>
             <Radio style={radioStyle} value="endDate">
-              Update end date of selected classes
+              {t("class.components.bulkedit.updateenddate")}
             </Radio>
           </Radio.Group>
         </>
       )}
-    </Modal>
+    </StyledModal>
   );
 }
 

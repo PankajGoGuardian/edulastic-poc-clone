@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Select, Checkbox, Pagination, Icon } from "antd";
-import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+import { StyledTable } from "../../../../common/styled";
 import { grey } from "@edulastic/colors";
 
 export const StyledTableContainer = styled.div`
@@ -26,26 +26,12 @@ export const StyledFilterSelect = styled(Select)`
   }
 `;
 
-export const StyledTable = styled(Table)`
-  .ant-table-row {
-    &: hover {
-      a {
-        opacity: 100;
-      }
-    }
-  }
-  .ant-table {
-    &-tbody,
-    &-thead {
-      & > tr :nth-last-of-type(-n + 2) {
-        text-align: end;
-      }
-    }
-  }
-`;
+export const StyledCoursesTable = styled(StyledTable)``;
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
+  font-size: 11px;
+  text-transform: uppercase;
 `;
 
 export const StyledTableButton = styled.a`
@@ -105,4 +91,9 @@ export const UserName = styled.div`
   border-radius: 10px;
   margin-right: 2px;
   margin-bottom: 2px;
+`;
+
+export const CreateCourseBtn = styled(Button)`
+  text-transform: uppercase;
+  font-size: 11px;
 `;

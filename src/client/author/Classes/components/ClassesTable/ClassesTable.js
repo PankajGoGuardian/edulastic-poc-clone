@@ -9,15 +9,26 @@ import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import {
   StyledControlDiv,
   StyledFilterDiv,
-  RightFilterDiv,
   StyledFilterSelect,
   StyledFilterInput,
-  StyledSchoolSearch as StyledSearch,
   StyledActionDropDown,
   StyledClassName,
   StyledAddFilterButton
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTableContainer, StyledTable, StyledTableButton, TeacherSpan, StyledPagination } from "./styled";
+import { TeacherSpan, ClassTable, StyledCreateSchoolBtn } from "./styled";
+
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledPagination,
+  StyledSchoolSearch,
+  StyledTableButton,
+  RightFilterDiv,
+  LeftFilterDiv
+} from "../../../../common/styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
 import EditClassModal from "./EditClassModal/EditClassModal";
@@ -42,6 +53,10 @@ import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
 import { addNewTagAction, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { IconPencilEdit, IconTrash, IconNotes } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 
 const { Option } = Select;
 
@@ -94,7 +109,8 @@ class ClassesTable extends Component {
       },
       currentPage: 1,
       selectedArchiveClasses: [],
-      showActive: true
+      showActive: true,
+      refineButtonActive: false
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
@@ -163,6 +179,10 @@ class ClassesTable extends Component {
       selectedArchiveClasses: [key],
       archiveClassModalVisible: true
     });
+  };
+  handleBulkEdit = () => {
+    const { setBulkEditVisibility } = this.props;
+    setBulkEditVisibility(true);
   };
 
   onSelectChange = selectedRowKeys => {
@@ -283,6 +303,10 @@ class ClassesTable extends Component {
       searchQuery: this.getSearchQuery()
     };
     this.props.bulkUpdateClasses(_obj);
+  };
+
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -465,28 +489,61 @@ class ClassesTable extends Component {
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
+    const {
+      dataSource,
+      selectedRowKeys,
+      addClassModalVisible,
+      editClassModalVisible,
+      filtersData,
+      archiveClassModalVisible,
+      editClassKey,
+      currentPage,
+      selectedArchiveClasses,
+      showActive,
+      refineButtonActive
+    } = this.state;
+
+    const {
+      userOrgId,
+      searchCourseList,
+      coursesForDistrictList,
+      totalClassCount,
+      schoolsData,
+      teacherList,
+      bulkEditData,
+      setBulkEditVisibility,
+      setBulkEditMode,
+      setBulkEditUpdateView,
+      bulkUpdateClasses,
+      allTagsData,
+      addNewTag,
+      t
+    } = this.props;
+
     const columnsData = [
       {
-        title: "Class Name",
+        title: t("class.name"),
         dataIndex: "_source.name",
         editable: true,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.name.localeCompare(b._source.name),
-        width: 200
+        render: name => <span>{name}</span>,
+        width: 300
       },
       {
-        title: "Class Code",
+        title: t("class.code"),
         dataIndex: "_source.code",
         editable: true,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.code.localeCompare(b._source.code),
-        width: 100
+        render: code => <span>{code}</span>,
+        width: 150
       },
       {
-        title: "Course",
+        title: t("class.course"),
         dataIndex: "_source.course",
         editable: true,
-        render: course => (course ? course.name : "-"),
+        render: course => <span>{course ? course.name : "-"}</span>,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.course.name", "");
@@ -496,7 +553,7 @@ class ClassesTable extends Component {
         width: 200
       },
       {
-        title: "Teacher",
+        title: t("class.teacher"),
         dataIndex: "_source.owners",
         editable: true,
         render: (owners = []) => {
@@ -506,16 +563,14 @@ class ClassesTable extends Component {
           return <React.Fragment>{teachers}</React.Fragment>;
         },
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
-        width: 100
+        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
       },
       {
-        title: "Users",
+        title: t("class.users"),
         dataIndex: "_source.studentCount",
         editable: true,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.studentCount - b._source.studentCount,
-        width: 50,
         render: (_, record) => {
           const studentCount = get(record, "_source.studentCount", 0);
           const classCode = get(record, "_source.code", "");
@@ -540,48 +595,31 @@ class ClassesTable extends Component {
         dataIndex: "_id",
         render: id => {
           return (
-            <React.Fragment>
+            <div style={{ whiteSpace: "nowrap" }}>
               <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
-                <Icon type="edit" theme="twoTone" />
+                <IconPencilEdit color={themeColor} />
               </StyledTableButton>
               <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
-                <Icon type="delete" theme="twoTone" />
+                <IconTrash color={themeColor} />
               </StyledTableButton>
-            </React.Fragment>
+              <StyledTableButton onClick={this.handleBulkEdit} title="Bulk edit">
+                <IconNotes color={themeColor} />
+              </StyledTableButton>
+            </div>
           );
-        },
-        width: 100
+        }
       }
     ];
-
-    const {
-      dataSource,
-      selectedRowKeys,
-      addClassModalVisible,
-      editClassModalVisible,
-      filtersData,
-      archiveClassModalVisible,
-      editClassKey,
-      currentPage,
-      selectedArchiveClasses,
-      showActive
-    } = this.state;
-
-    const {
-      userOrgId,
-      searchCourseList,
-      coursesForDistrictList,
-      totalClassCount,
-      schoolsData,
-      teacherList,
-      bulkEditData,
-      setBulkEditVisibility,
-      setBulkEditMode,
-      setBulkEditUpdateView,
-      bulkUpdateClasses,
-      allTagsData,
-      addNewTag
-    } = this.props;
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/districtprofile"
+      },
+      {
+        title: "CLASSES",
+        to: ""
+      }
+    ];
 
     const rowSelection = {
       selectedRowKeys,
@@ -591,9 +629,9 @@ class ClassesTable extends Component {
     const selectedClass = dataSource[editClassKey];
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit class">Edit Class</Menu.Item>
-        <Menu.Item key="archive selected class">Archive selected Class(es)</Menu.Item>
-        <Menu.Item key="bulk edit">Bulk Edit</Menu.Item>
+        <Menu.Item key="edit class">{t("class.editclass")}</Menu.Item>
+        <Menu.Item key="archive selected class">{t("class.archiveclass")}</Menu.Item>
+        <Menu.Item key="bulk edit">{t("class.bulkedit")}</Menu.Item>
       </Menu>
     );
 
@@ -605,37 +643,37 @@ class ClassesTable extends Component {
 
       const optValues = [];
       if (filtersColumn === "subjects" || filtersColumn === "grades" || filtersColumn === "active") {
-        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
       } else {
         optValues.push(
           <Option value="" disabled={true}>
-            Select a value
+            {t("common.selectvalue")}
           </Option>
         );
-        optValues.push(<Option value="eq">Equals</Option>);
-        optValues.push(<Option value="cont">Contains</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
+        optValues.push(<Option value="cont">{t("common.contains")}</Option>);
       }
 
       SearchRows.push(
         <StyledControlDiv>
           <StyledFilterSelect
-            placeholder="Select a column"
+            placeholder={t("common.selectcolumn")}
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
             <Option value="" disabled={true}>
-              Select a column
+              {t("common.selectcolumn")}
             </Option>
-            <Option value="codes">Class Code</Option>
-            <Option value="courses">Course</Option>
-            <Option value="teachers">Teacher</Option>
-            <Option value="grades">Grade</Option>
-            <Option value="subjects">Subject</Option>
-            <Option value="institutionNames">School Name</Option>
-            <Option value="active">Status</Option>
+            <Option value="codes">{t("class.code")}</Option>
+            <Option value="courses">{t("class.course")}</Option>
+            <Option value="teachers">{t("class.teacher")}</Option>
+            <Option value="grades">{t("class.grade")}</Option>
+            <Option value="subjects">{t("class.subject")}</Option>
+            <Option value="institutionNames">{t("class.schoolname")}</Option>
+            <Option value="active">{t("class.status")}</Option>
           </StyledFilterSelect>
           <StyledFilterSelect
-            placeholder="Select a value"
+            placeholder={t("common.selectvalue")}
             onChange={e => this.changeFilterValue(e, i)}
             value={filtersValue}
           >
@@ -656,7 +694,7 @@ class ClassesTable extends Component {
             </StyledFilterSelect>
           ) : (
             <StyledFilterInput
-              placeholder="Enter text"
+              placeholder={t("common.entertext")}
               onChange={e => this.changeFilterText(e, i)}
               onSearch={(v, e) => this.onSearchFilter(v, e, i)}
               onBlur={e => this.onBlurFilterText(e, i)}
@@ -671,66 +709,74 @@ class ClassesTable extends Component {
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
-              + Add Filter
+              {t("common.addfilter")}
             </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              - Remove Filter
+              {t("common.removefilter")}
             </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
     return (
-      <StyledTableContainer>
-        <StyledFilterDiv>
-          <div>
-            <Button type="primary" onClick={this.showAddClassModal}>
-              + Create new class
-            </Button>
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            {t("common.refineresults")}
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
 
-            <StyledSearch
-              placeholder="Search by name"
+        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+
+        <StyledFilterDiv>
+          <LeftFilterDiv width={60}>
+            <StyledSchoolSearch
+              placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
-          </div>
+            <StyledCreateSchoolBtn type="primary" onClick={this.showAddClassModal}>
+              {t("class.createnewclass")}
+            </StyledCreateSchoolBtn>
+          </LeftFilterDiv>
 
-          <RightFilterDiv>
+          <RightFilterDiv width={35}>
             <Checkbox
               checked={this.state.showActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "active")}
-              style={{ margin: "auto" }}
               value={showActive}
               onChange={this.onChangeShowActive}
             >
-              Show Active Classes
+              {t("class.showactiveclass")}
             </Checkbox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <Button>
-                Actions <Icon type="down" />
+                {t("common.actions")} <Icon type="down" />
               </Button>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
-        {SearchRows}
-        <StyledTable
-          rowKey={record => record._id}
-          rowSelection={rowSelection}
-          dataSource={Object.values(dataSource)}
-          columns={columnsData}
-          pagination={false}
-          scroll={{ y: 500 }}
-        />
-        <StyledPagination
-          defaultCurrent={1}
-          current={currentPage}
-          pageSize={25}
-          total={totalClassCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
+        <TableContainer>
+          <ClassTable
+            rowKey={record => record._id}
+            rowSelection={rowSelection}
+            dataSource={Object.values(dataSource)}
+            columns={columnsData}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalClassCount}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
+          />
+        </TableContainer>
         {editClassModalVisible && (
           <EditClassModal
             selClassData={selectedClass}
@@ -744,6 +790,7 @@ class ClassesTable extends Component {
             coursesForDistrictList={coursesForDistrictList}
             allTagsData={allTagsData}
             addNewTag={addNewTag}
+            t={t}
           />
         )}
 
@@ -757,6 +804,7 @@ class ClassesTable extends Component {
             coursesForDistrictList={coursesForDistrictList}
             allTagsData={allTagsData}
             addNewTag={addNewTag}
+            t={t}
           />
         )}
 
@@ -769,6 +817,7 @@ class ClassesTable extends Component {
               const { _source = {} } = dataSource[id];
               return <StyledClassName key={id}>{_source.name}</StyledClassName>;
             })}
+            t={t}
           />
         )}
         <BulkEditModal
@@ -783,13 +832,15 @@ class ClassesTable extends Component {
           searchCourseList={searchCourseList}
           coursesForDistrictList={coursesForDistrictList}
           allTagsData={allTagsData}
+          t={t}
         />
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

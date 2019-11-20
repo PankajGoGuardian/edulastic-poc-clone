@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button } from "antd";
+import { Form, Input, Row, Col } from "antd";
 
-import { StyledModal, ModalFormItem } from "./styled";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 class EditDistrictAdminModal extends React.Component {
   onSaveDistrictAdmin = () => {
@@ -37,13 +37,12 @@ class EditDistrictAdminModal extends React.Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         width="800px"
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
-            No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onSaveDistrictAdmin}>
-            Yes, Update >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onSaveDistrictAdmin}>Yes, Update</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>

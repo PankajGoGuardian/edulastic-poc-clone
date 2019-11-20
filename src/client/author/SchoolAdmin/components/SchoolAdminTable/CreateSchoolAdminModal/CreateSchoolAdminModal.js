@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Modal, Spin } from "antd";
+import { Form, Input, Row, Col, Button, Select, Spin } from "antd";
 const Option = Select.Option;
-import { ModalFormItem } from "./styled";
+
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { authApi, schoolApi } from "@edulastic/api";
 
@@ -139,19 +140,18 @@ class CreateSchoolAdminModal extends React.Component {
     const { emailValidateStatus, emailValidateMsg, fetching, schoolList } = this.state;
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Create School Admin"
         onOk={this.onCreateSchoolAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
-            No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onCreateSchoolAdmin}>
-            Yes, Create >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onCreateSchoolAdmin}>Yes, Create</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
@@ -227,7 +227,7 @@ class CreateSchoolAdminModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

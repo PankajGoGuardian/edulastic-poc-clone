@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Form } from "antd";
-import { title, themeColor } from "@edulastic/colors";
+import { title, themeColor, boxShadowDefault } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
 export const StyledModal = styled(ConfirmationModal)`
@@ -9,6 +9,7 @@ export const StyledModal = styled(ConfirmationModal)`
   min-width: 520px;
   padding: ${props => props.padding || "24px"};
   .ant-modal-content {
+    padding: 20px 35px;
     .ant-modal-body {
       padding: 0px;
       background: none;
@@ -86,6 +87,8 @@ export const AddForm = styled(Form)`
   .ant-collapse {
     border: none;
     background: white;
+    box-shadow: ${boxShadowDefault};
+    border-radius: 2px;
     & > .ant-collapse-item {
       border: none;
       width: 100%;

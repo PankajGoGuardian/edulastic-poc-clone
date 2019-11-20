@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button } from "antd";
+import { Form, Input, Row, Col } from "antd";
 
-import { StyledEditTeacherModal, ModalFormItem } from "./styled";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 class EditTeacherModal extends Component {
   onSaveTeacher = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        const { teacherData, saveTeacher, userOrgId } = this.props;
-        saveTeacher({
-          userId: teacherData._id,
+        const { data, editTeacher, userOrgId } = this.props;
+        editTeacher({
+          userId: data?._id,
           data: Object.assign(row, {
             districtId: userOrgId
           })
@@ -26,28 +26,26 @@ class EditTeacherModal extends Component {
   render() {
     const {
       modalVisible,
-      teacherData: { _source },
+      data: { _source },
       form: { getFieldDecorator }
     } = this.props;
     return (
-      <StyledEditTeacherModal
+      <StyledModal
         visible={modalVisible}
         title="Edit School Admin"
         onOk={this.onSaveTeacher}
         onCancel={this.onCloseModal}
         maskClosable={false}
-        width="800px"
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
-            No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onSaveTeacher}>
-            Yes, Update >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onSaveTeacher}>Yes, Update</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
-          <Col span={12}>
+          <Col span={24}>
             <ModalFormItem label="First Name">
               {getFieldDecorator("firstName", {
                 rules: [
@@ -56,11 +54,11 @@ class EditTeacherModal extends Component {
                     message: "Please input First Name"
                   }
                 ],
-                initialValue: _source.firstName
+                initialValue: _source?.firstName
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
-          <Col span={12}>
+          <Col span={24}>
             <ModalFormItem label="Last Name">
               {getFieldDecorator("lastName", {
                 rules: [
@@ -69,7 +67,7 @@ class EditTeacherModal extends Component {
                     message: "Please input Last Name"
                   }
                 ],
-                initialValue: _source.lastName
+                initialValue: _source?.lastName
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -88,12 +86,12 @@ class EditTeacherModal extends Component {
                     message: "The input is not valid E-mail"
                   }
                 ],
-                initialValue: _source.email
+                initialValue: _source?.email
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledEditTeacherModal>
+      </StyledModal>
     );
   }
 }

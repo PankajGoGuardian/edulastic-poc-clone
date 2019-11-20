@@ -10,24 +10,20 @@ export const TeacherDiv = styled.div`
 `;
 
 export const StyledContent = styled(Content)`
-  width: 100%;
-  padding: 126px 30px 30px;
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 90px 30px 30px;
-  }
+  width: 80%;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 80px 20px 20px 20px;
 `;
 
 export const StyledLayout = styled(Layout)`
   position: relative;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius:10px;
-  padding: 30px;
-  background: #fff;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
+  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")};
   min-height: 400px;
+  background: transparent;
 `;
 
 export const SpinContainer = styled.div`

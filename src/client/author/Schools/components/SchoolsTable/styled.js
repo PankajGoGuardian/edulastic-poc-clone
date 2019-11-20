@@ -1,56 +1,17 @@
 import styled from "styled-components";
-import { Icon, Pagination, Input, Button } from "antd";
-import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+import { Icon, Button } from "antd";
+import { StyledTable } from "../../../../common/styled";
 
-export const StyledTableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 20px;
-
-  .ant-table-wrapper {
-    width: 100%;
+export const StyledSchoolTable = styled(StyledTable)`
+  .ant-table-tbody > tr > td:nth-last-of-type(-n + 4) {
+    text-align: center;
   }
-
-  input {
-    border: 1px solid #d9d9d9;
-  }
-`;
-
-export const StyledTable = styled(Table)`
-  .ant-table-row {
-    &: hover {
-      a {
-        opacity: 100;
-      }
-    }
-  }
-  .ant-table {
-    table-layout: fixed;
-    &-tbody,
-    &-thead {
-      & > tr :nth-last-of-type(-n + 4) {
-        text-align: end;
-      }
-    }
-  }
-`;
-
-export const StyledTableButton = styled.a`
-  opacity: 0;
-  margin-right: 20px;
-  font-size: 20px;
-  &:last-child {
-    margin-right: 0;
-  }
-`;
-
-export const StyledSchoolSearch = styled(Input.Search)`
-  width: 465px;
 `;
 
 export const StyledCreateSchoolButton = styled(Button)`
-  margin-right: 20px;
+  margin-right: 10px;
+  text-transform: uppercase;
+  font-size: 11px;
 `;
 
 export const StyledHeaderColumn = styled.div`
@@ -78,9 +39,4 @@ export const StyledSortIcon = styled(Icon)`
   font-size: 11px;
   margin-top: 0.125em;
   color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
-`;
-
-export const StyledPagination = styled(Pagination)`
-  align-self: flex-end;
-  margin-top: 15px;
 `;

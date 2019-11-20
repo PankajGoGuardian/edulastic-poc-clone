@@ -4,10 +4,14 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { StudentDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
-
+import {
+  MainWrapper,
+  StyledContent,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin
+} from "../../../../admin/Common/StyledComponents";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 
 import StudentTable from "../StudentTable/StudentTable";
 
@@ -26,20 +30,19 @@ class Student extends Component {
     // we are setting parent component div key as router location key, so that it re-renders on change.
 
     return (
-      <StudentDiv key={routeKey}>
+      <MainWrapper key={routeKey}>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
-            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <StudentTable dataPassedWithRoute={dataPassedWithRoute} />
+            <StudentTable dataPassedWithRoute={dataPassedWithRoute} history={history} />
           </StyledLayout>
         </StyledContent>
-      </StudentDiv>
+      </MainWrapper>
     );
   }
 }

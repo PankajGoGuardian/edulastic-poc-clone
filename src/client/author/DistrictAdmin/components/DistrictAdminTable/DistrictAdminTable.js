@@ -7,20 +7,28 @@ import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
-  StyledPagination,
   StyledTableContainer,
   StyledControlDiv,
   StyledFilterDiv,
-  RightFilterDiv,
   StyledFilterSelect,
   StyledAddFilterButton,
   StyledFilterInput,
-  StyledSchoolSearch,
-  StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
 
-import { StyledTable, StyledTableButton } from "./styled";
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledPagination,
+  StyledSchoolSearch,
+  LeftFilterDiv,
+  RightFilterDiv
+} from "../../../../common/styled";
+
+import { StyledDistrictAdminTable } from "./styled";
 
 import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
 import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";
@@ -47,6 +55,11 @@ import {
 } from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
+import { withNamespaces } from "@edulastic/localization";
+const menuActive = { mainMenu: "Users", subMenu: "District Admin" };
 
 const { Option } = Select;
 
@@ -82,11 +95,13 @@ class DistrictAdminTable extends Component {
           filterAdded: false
         }
       ],
-      currentPage: 1
+      currentPage: 1,
+      refineButtonActive: false
     };
+    const { t } = this.props;
     this.columns = [
       {
-        title: "Name",
+        title: t("districtadmin.name"),
         render: (_, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
@@ -105,7 +120,7 @@ class DistrictAdminTable extends Component {
         width: 200
       },
       {
-        title: "Username",
+        title: t("districtadmin.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -116,7 +131,7 @@ class DistrictAdminTable extends Component {
         width: 200
       },
       {
-        title: "SSO",
+        title: t("districtadmin.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 200
@@ -194,6 +209,10 @@ class DistrictAdminTable extends Component {
 
   setPageNo = page => {
     this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
@@ -423,9 +442,9 @@ class DistrictAdminTable extends Component {
       editDistrictAdminKey,
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
-
       filtersData,
-      currentPage
+      currentPage,
+      refineButtonActive
     } = this.state;
 
     const rowSelection = {
@@ -448,118 +467,137 @@ class DistrictAdminTable extends Component {
       changeFilterValue,
       loadAdminData,
       addFilter,
-      removeFilter
+      removeFilter,
+      history,
+      t
     } = this.props;
 
-    return (
-      <>
-        <StyledTableContainer>
-          <StyledFilterDiv>
-            <div>
-              <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
-                + Create District Admin
-              </Button>
-              <StyledSchoolSearch
-                placeholder="Search by name"
-                onSearch={this.handleSearchName}
-                onChange={this.onChangeSearch}
-              />
-            </div>
-            <RightFilterDiv>
-              <Checkbox
-                checked={this.state.showActive}
-                onChange={this.onChangeShowActive}
-                disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-              >
-                Show current users only
-              </Checkbox>
-            </RightFilterDiv>
-          </StyledFilterDiv>
-          {createDistrictAdminModalVisible && (
-            <CreateDistrictAdminModal
-              modalVisible={createDistrictAdminModalVisible}
-              createDistrictAdmin={this.createUser}
-              closeModal={this.closeCreateUserModal}
-              userOrgId={userOrgId}
-            />
-          )}
-          {filtersData.map((item, i) => {
-            const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-            const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
-            const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/districtprofile"
+      },
+      {
+        title: "USERS",
+        to: ""
+      }
+    ];
 
-            return (
-              <StyledControlDiv key={i}>
-                <StyledFilterSelect
-                  placeholder="Select a column"
-                  onChange={e => this.changeFilterColumn(e, i)}
-                  value={filtersColumn ? filtersColumn : undefined}
-                >
-                  <Option value="other" disabled={true}>
-                    Select a column
-                  </Option>
-                  <Option value="username">Username</Option>
-                  <Option value="email">Email</Option>
-                  <Option value="status">Status</Option>
-                </StyledFilterSelect>
-                <StyledFilterSelect
-                  placeholder="Select a value"
-                  onChange={e => this.changeFilterValue(e, i)}
-                  value={filtersValue ? filtersValue : undefined}
-                >
-                  <Option value="" disabled={true}>
-                    Select a value
-                  </Option>
-                  <Option value="eq">Equals</Option>
-                  {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
-                </StyledFilterSelect>
-                {!filterStrDD[filtersColumn] ? (
-                  <StyledFilterInput
-                    placeholder="Enter text"
-                    onChange={e => this.changeFilterText(e, i)}
-                    onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                    onBlur={e => this.onBlurFilterText(e, i)}
-                    value={filterStr ? filterStr : undefined}
-                    disabled={isFilterTextDisable}
-                    ref={this.filterTextInputRef[i]}
-                  />
-                ) : (
+    return (
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            {t("common.refineresults")}
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
+        <AdminSubHeader active={menuActive} history={history} />
+
+        {refineButtonActive && (
+          <FilterWrapper>
+            {filtersData.map((item, i) => {
+              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
+              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const isAddFilterDisable =
+                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+
+              return (
+                <StyledControlDiv key={i}>
                   <StyledFilterSelect
-                    placeholder={filterStrDD[filtersColumn].placeholder}
-                    onChange={v => this.changeStatusValue(v, i)}
-                    value={filterStr !== "" ? filterStr : undefined}
+                    placeholder={t("common.selectcolumn")}
+                    onChange={e => this.changeFilterColumn(e, i)}
+                    value={filtersColumn ? filtersColumn : undefined}
                   >
-                    {filterStrDD[filtersColumn].list.map(item => (
-                      <Option key={item.title} value={item.value} disabled={item.disabled}>
-                        {item.title}
-                      </Option>
-                    ))}
+                    <Option value="other" disabled={true}>
+                      {t("common.selectcolumn")}
+                    </Option>
+                    <Option value="username">{t("districtadmin.username")}</Option>
+                    <Option value="email">{t("districtadmin.email")}</Option>
+                    <Option value="status">{t("districtadmin.status")}</Option>
                   </StyledFilterSelect>
-                )}
-                {i < 2 && (
-                  <StyledAddFilterButton
-                    type="primary"
-                    onClick={e => this.addFilter(e, i)}
-                    disabled={isAddFilterDisable || i < filtersData.length - 1}
+                  <StyledFilterSelect
+                    placeholder={t("common.selectvalue")}
+                    onChange={e => this.changeFilterValue(e, i)}
+                    value={filtersValue ? filtersValue : undefined}
                   >
-                    + Add Filter
-                  </StyledAddFilterButton>
-                )}
-                {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                  <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                    - Remove Filter
-                  </StyledAddFilterButton>
-                )}
-              </StyledControlDiv>
-            );
-          })}
-          <StyledTable
+                    <Option value="" disabled={true}>
+                      {t("common.selectvalue")}
+                    </Option>
+                    <Option value="eq">{t("common.equals")}</Option>
+                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                  </StyledFilterSelect>
+                  {!filterStrDD[filtersColumn] ? (
+                    <StyledFilterInput
+                      placeholder={t("common.entertext")}
+                      onChange={e => this.changeFilterText(e, i)}
+                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                      onBlur={e => this.onBlurFilterText(e, i)}
+                      value={filterStr ? filterStr : undefined}
+                      disabled={isFilterTextDisable}
+                      innerRef={this.filterTextInputRef[i]}
+                    />
+                  ) : (
+                    <StyledFilterSelect
+                      placeholder={filterStrDD[filtersColumn].placeholder}
+                      onChange={v => this.changeStatusValue(v, i)}
+                      value={filterStr !== "" ? filterStr : undefined}
+                    >
+                      {filterStrDD[filtersColumn].list.map(item => (
+                        <Option key={item.title} value={item.value} disabled={item.disabled}>
+                          {item.title}
+                        </Option>
+                      ))}
+                    </StyledFilterSelect>
+                  )}
+                  {i < 2 && (
+                    <StyledAddFilterButton
+                      type="primary"
+                      onClick={e => this.addFilter(e, i)}
+                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                    >
+                      {t("common.addfilter")}
+                    </StyledAddFilterButton>
+                  )}
+                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+                      {t("common.removefilter")}
+                    </StyledAddFilterButton>
+                  )}
+                </StyledControlDiv>
+              );
+            })}
+          </FilterWrapper>
+        )}
+
+        <StyledFilterDiv>
+          <LeftFilterDiv width={60}>
+            <StyledSchoolSearch
+              placeholder={t("common.searchbyname")}
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+            <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
+              + Create District Admin
+            </Button>
+          </LeftFilterDiv>
+          <RightFilterDiv width={35}>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              {t("common.showcurrent")}
+            </Checkbox>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+        <TableContainer>
+          <StyledDistrictAdminTable
             rowKey={record => record._id}
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
             pagination={false}
-            scroll={{ y: 500 }}
           />
           <StyledPagination
             defaultCurrent={1}
@@ -569,44 +607,54 @@ class DistrictAdminTable extends Component {
             onChange={page => this.setPageNo(page)}
             hideOnSinglePage={true}
           />
-          {editDistrictAdminModaVisible && (
-            <EditDistrictAdminModal
-              districtAdminData={result[editDistrictAdminKey]}
-              modalVisible={editDistrictAdminModaVisible}
-              updateDistrictAdmin={updateAdminUser}
-              closeModal={this.closeEditDistrictAdminModal}
-              userOrgId={userOrgId}
-            />
-          )}
-          {deactivateAdminModalVisible && (
-            <TypeToConfirmModal
-              modalVisible={deactivateAdminModalVisible}
-              title="Deactivate"
-              handleOnOkClick={this.confirmDeactivate}
-              wordToBeTyped="DEACTIVATE"
-              primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
-              secondaryLabel={selectedAdminsForDeactivate.map(id => {
-                const { _source: { firstName, lastName } = {} } = result[id];
-                return (
-                  <StyledClassName key={id}>
-                    {firstName} {lastName}
-                  </StyledClassName>
-                );
-              })}
-              closeModal={() =>
-                this.setState({
-                  deactivateAdminModalVisible: false
-                })
-              }
-            />
-          )}
-        </StyledTableContainer>
-      </>
+        </TableContainer>
+        {createDistrictAdminModalVisible && (
+          <CreateDistrictAdminModal
+            modalVisible={createDistrictAdminModalVisible}
+            createDistrictAdmin={this.createUser}
+            closeModal={this.closeCreateUserModal}
+            userOrgId={userOrgId}
+          />
+        )}
+
+        {editDistrictAdminModaVisible && (
+          <EditDistrictAdminModal
+            districtAdminData={result[editDistrictAdminKey]}
+            modalVisible={editDistrictAdminModaVisible}
+            updateDistrictAdmin={updateAdminUser}
+            closeModal={this.closeEditDistrictAdminModal}
+            userOrgId={userOrgId}
+          />
+        )}
+        {deactivateAdminModalVisible && (
+          <TypeToConfirmModal
+            modalVisible={deactivateAdminModalVisible}
+            title="Deactivate"
+            handleOnOkClick={this.confirmDeactivate}
+            wordToBeTyped="DEACTIVATE"
+            primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
+            secondaryLabel={selectedAdminsForDeactivate.map(id => {
+              const { _source: { firstName, lastName } = {} } = result[id];
+              return (
+                <StyledClassName key={id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              );
+            })}
+            closeModal={() =>
+              this.setState({
+                deactivateAdminModalVisible: false
+              })
+            }
+          />
+        )}
+      </MainContainer>
     );
   }
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

@@ -8,22 +8,29 @@ import { get, isEmpty } from "lodash";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 import {
-  StyledPagination,
-  StyledTableContainer,
   StyledControlDiv,
   StyledFilterDiv,
-  RightFilterDiv,
   StyledFilterSelect,
   StyledAddFilterButton,
   StyledFilterInput,
-  StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTable, StyledTableButton } from "./styled";
-
-import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledPagination,
+  StyledSchoolSearch,
+  LeftFilterDiv,
+  RightFilterDiv,
+  StyledTableButton
+} from "../../../../common/styled";
+import { StyledTeacherTable } from "./styled";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
+import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 
@@ -53,6 +60,13 @@ import {
 } from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
+
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
 const { Option } = Select;
 
@@ -89,11 +103,13 @@ class TeacherTable extends Component {
           filterAdded: false
         }
       ],
-      currentPage: 1
+      currentPage: 1,
+      refineButtonActive: false
     };
+    const { t } = this.props;
     this.columns = [
       {
-        title: "Name",
+        title: t("teacher.name"),
         render: (_, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
@@ -108,11 +124,10 @@ class TeacherTable extends Component {
           const prev = get(a, "_source.firstName", "");
           const next = get(b, "_source.firstName", "");
           return next.localeCompare(prev);
-        },
-        width: 200
+        }
       },
       {
-        title: "Username",
+        title: t("teacher.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -123,21 +138,19 @@ class TeacherTable extends Component {
         width: 200
       },
       {
-        title: "SSO",
+        title: t("teacher.sso"),
         dataIndex: "_source.lastSigninSSO",
-        render: (sso = "N/A") => sso,
-        width: 100
+        render: (sso = "N/A") => sso
       },
       {
-        title: "School",
+        title: t("teacher.school"),
         dataIndex: "_source.institutionDetails",
         render: (schools = []) => schools.map(school => school.name),
-        width: 150
+        width: 200
       },
       {
-        title: "Classes",
+        title: t("teacher.classes"),
         dataIndex: "classCount",
-        width: 50,
         render: (classCount, record) => {
           const username = get(record, "_source.username", "");
           return (
@@ -159,15 +172,18 @@ class TeacherTable extends Component {
       },
       {
         dataIndex: "_id",
-        render: id => [
-          <StyledTableButton key={`${id}0`} onClick={() => this.onEditTeacher(id)} title="Edit">
-            <Icon type="edit" theme="twoTone" />
-          </StyledTableButton>,
-          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
-            <Icon type="delete" theme="twoTone" />
-          </StyledTableButton>
-        ],
-        width: 100
+        render: id => (
+          <div style={{ whiteSpace: "nowrap" }}>
+            <>
+              <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
+                <IconPencilEdit color={themeColor} />
+              </StyledTableButton>
+              <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                <IconTrash color={themeColor} />
+              </StyledTableButton>
+            </>
+          </div>
+        )
       }
     ];
 
@@ -301,6 +317,10 @@ class TeacherTable extends Component {
 
   setPageNo = page => {
     this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
@@ -498,7 +518,8 @@ class TeacherTable extends Component {
       selectedAdminsForDeactivate,
 
       filtersData,
-      currentPage
+      currentPage,
+      refineButtonActive
     } = this.state;
 
     const {
@@ -518,7 +539,9 @@ class TeacherTable extends Component {
       addFilter,
       removeFilter,
       addTeachers,
-      teacherDetailsModalVisible
+      teacherDetailsModalVisible,
+      history,
+      t
     } = this.props;
     const rowSelection = {
       selectedRowKeys,
@@ -527,41 +550,161 @@ class TeacherTable extends Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="add teacher">Add Teacher</Menu.Item>
-        <Menu.Item key="edit user">Update Selected User</Menu.Item>
-        <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
+        <Menu.Item key="add teacher">{t("teacher.addteacher")}</Menu.Item>
+        <Menu.Item key="edit user">{t("teacher.updateuser")}</Menu.Item>
+        <Menu.Item key="deactivate user">{t("teacher.deactivateuser")}</Menu.Item>
       </Menu>
     );
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/districtprofile"
+      },
+      {
+        title: "USERS",
+        to: ""
+      }
+    ];
 
     return (
-      <StyledTableContainer>
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            {t("common.refineresults")}
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
+        <AdminSubHeader active={menuActive} history={history} />
+
+        {refineButtonActive && (
+          <FilterWrapper>
+            {filtersData.map((item, i) => {
+              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
+              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const isAddFilterDisable =
+                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+
+              return (
+                <StyledControlDiv key={i}>
+                  <StyledFilterSelect
+                    placeholder={t("common.selectcolumn")}
+                    onChange={e => this.changeFilterColumn(e, i)}
+                    value={filtersColumn ? filtersColumn : undefined}
+                  >
+                    <Option value="other" disabled={true}>
+                      Select a column
+                    </Option>
+                    <Option value="username">Username</Option>
+                    <Option value="email">Email</Option>
+                    <Option value="status">Status</Option>
+                    {/* TO DO: Uncomment after backend is done */}
+                    {/* <Option value="institutionNames">School</Option> */}
+                  </StyledFilterSelect>
+                  <StyledFilterSelect
+                    placeholder={t("common.selectvalue")}
+                    onChange={e => this.changeFilterValue(e, i)}
+                    value={filtersValue ? filtersValue : undefined}
+                  >
+                    <Option value="" disabled={true}>
+                      {t("common.selectvalue")}
+                    </Option>
+                    <Option value="eq">{t("common.equals")}</Option>
+                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                  </StyledFilterSelect>
+                  {!filterStrDD[filtersColumn] ? (
+                    <StyledFilterInput
+                      placeholder={t("common.entertext")}
+                      onChange={e => this.changeFilterText(e, i)}
+                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                      onBlur={e => this.onBlurFilterText(e, i)}
+                      value={filterStr ? filterStr : undefined}
+                      disabled={isFilterTextDisable}
+                      innerRef={this.filterTextInputRef[i]}
+                    />
+                  ) : (
+                    <StyledFilterSelect
+                      placeholder={filterStrDD[filtersColumn].placeholder}
+                      onChange={v => this.changeStatusValue(v, i)}
+                      value={filterStr !== "" ? filterStr : undefined}
+                    >
+                      {filterStrDD[filtersColumn].list.map(item => (
+                        <Option key={item.title} value={item.value} disabled={item.disabled}>
+                          {item.title}
+                        </Option>
+                      ))}
+                    </StyledFilterSelect>
+                  )}
+
+                  {i < 2 && (
+                    <StyledAddFilterButton
+                      type="primary"
+                      onClick={e => this.addFilter(e, i)}
+                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                    >
+                      {t("common.addfilter")}
+                    </StyledAddFilterButton>
+                  )}
+                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+                      {t("common.removefilter")}
+                    </StyledAddFilterButton>
+                  )}
+                </StyledControlDiv>
+              );
+            })}
+          </FilterWrapper>
+        )}
         <StyledFilterDiv>
-          <div>
-            <Button type="primary" onClick={this.showInviteTeacherModal}>
-              + Invite Multiple Teachers
-            </Button>
+          <LeftFilterDiv width={50}>
             <StyledSchoolSearch
-              placeholder="Search by name"
+              placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
-          </div>
+            <Button type="primary" onClick={this.showInviteTeacherModal}>
+              {t("teacher.inviteteachers")}
+            </Button>
+          </LeftFilterDiv>
 
-          <RightFilterDiv>
+          <RightFilterDiv width={40}>
             <Checkbox
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
-              Show current users only
+              {t("common.showcurrent")}
             </Checkbox>
             <StyledActionDropDown overlay={actionMenu}>
               <Button>
-                Actions <Icon type="down" />
+                {t("common.actions")} <Icon type="down" />
               </Button>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
+        <TableContainer>
+          <StyledTeacherTable
+            rowKey={record => record._id}
+            rowSelection={rowSelection}
+            dataSource={Object.values(result)}
+            columns={this.columns}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalUsers}
+            onChange={page => this.setPageNo(page)}
+            hideOnSinglePage={true}
+            pagination={{
+              current: pageNo,
+              total: totalUsers,
+              pageSize: 25,
+              onChange: page => setPageNo(page)
+            }}
+          />
+        </TableContainer>
         {inviteTeacherModalVisible && (
           <InviteMultipleTeacherModal
             modalVisible={inviteTeacherModalVisible}
@@ -570,110 +713,12 @@ class TeacherTable extends Component {
             userOrgId={userOrgId}
           />
         )}
-        {filtersData.map((item, i) => {
-          const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-          const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
-          const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
-
-          return (
-            <StyledControlDiv key={i}>
-              <StyledFilterSelect
-                placeholder="Select a column"
-                onChange={e => this.changeFilterColumn(e, i)}
-                value={filtersColumn ? filtersColumn : undefined}
-              >
-                <Option value="other" disabled={true}>
-                  Select a column
-                </Option>
-                <Option value="username">Username</Option>
-                <Option value="email">Email</Option>
-                <Option value="status">Status</Option>
-                {/* TO DO: Uncomment after backend is done */}
-                {/* <Option value="institutionNames">School</Option> */}
-              </StyledFilterSelect>
-              <StyledFilterSelect
-                placeholder="Select a value"
-                onChange={e => this.changeFilterValue(e, i)}
-                value={filtersValue ? filtersValue : undefined}
-              >
-                <Option value="" disabled={true}>
-                  Select a value
-                </Option>
-                <Option value="eq">Equals</Option>
-                {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
-              </StyledFilterSelect>
-              {!filterStrDD[filtersColumn] ? (
-                <StyledFilterInput
-                  placeholder="Enter text"
-                  onChange={e => this.changeFilterText(e, i)}
-                  onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                  onBlur={e => this.onBlurFilterText(e, i)}
-                  value={filterStr ? filterStr : undefined}
-                  disabled={isFilterTextDisable}
-                  ref={this.filterTextInputRef[i]}
-                />
-              ) : (
-                <StyledFilterSelect
-                  placeholder={filterStrDD[filtersColumn].placeholder}
-                  onChange={v => this.changeStatusValue(v, i)}
-                  value={filterStr !== "" ? filterStr : undefined}
-                >
-                  {filterStrDD[filtersColumn].list.map(item => (
-                    <Option key={item.title} value={item.value} disabled={item.disabled}>
-                      {item.title}
-                    </Option>
-                  ))}
-                </StyledFilterSelect>
-              )}
-
-              {i < 2 && (
-                <StyledAddFilterButton
-                  type="primary"
-                  onClick={e => this.addFilter(e, i)}
-                  disabled={isAddFilterDisable || i < filtersData.length - 1}
-                >
-                  + Add Filter
-                </StyledAddFilterButton>
-              )}
-              {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                  - Remove Filter
-                </StyledAddFilterButton>
-              )}
-            </StyledControlDiv>
-          );
-        })}
-        <StyledTable
-          rowKey={record => record._id}
-          rowSelection={rowSelection}
-          dataSource={Object.values(result)}
-          columns={this.columns}
-          pagination={false}
-          scroll={{ y: 500 }}
-        />
-        <StyledPagination
-          defaultCurrent={1}
-          current={currentPage}
-          pageSize={25}
-          total={totalUsers}
-          onChange={page => this.setPageNo(page)}
-          hideOnSinglePage={true}
-          pagination={{
-            current: pageNo,
-            total: totalUsers,
-            pageSize: 25,
-            onChange: page => setPageNo(page)
-          }}
-        />
         {editTeacherModaVisible && (
           <EditTeacherModal
-            showModal={editTeacherModaVisible}
-            role="teacher"
-            formTitle="Update User"
-            showAdditionalFields={false}
+            modalVisible={editTeacherModaVisible}
             userOrgId={userOrgId}
-            modalData={result[editTeacherKey]}
-            modalFunc={updateAdminUser}
+            data={result[editTeacherKey]}
+            editTeacher={updateAdminUser}
             closeModal={this.closeEditTeacherModal}
           />
         )}
@@ -715,12 +760,13 @@ class TeacherTable extends Component {
             title="Teacher Details"
           />
         )}
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

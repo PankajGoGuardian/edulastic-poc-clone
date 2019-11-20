@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Modal, Form, Input, Row, Col, Button, Select } from "antd";
+import { Form, Input, Row, Col, Button, Select } from "antd";
 import { states } from "../../../../../student/Signup/components/TeacherContainer/constants";
-import { StyledDescription, ModalFormItem, StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
+import { StyledDescription, StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { countryApi, schoolApi } from "@edulastic/api";
 
@@ -107,7 +108,7 @@ class CreateSchoolModal extends Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { countryList, nameValidateStatus, nameValidateMsg, showSpin, stateList } = this.state;
 
     const CountryOptions = Object.entries(countryList).map(([key, value]) => <Option value={key}>{value}</Option>);
@@ -120,68 +121,78 @@ class CreateSchoolModal extends Component {
     ));
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
-        title={"Create New School"}
+        title={t("school.createschool")}
         onOk={this.onCreateSchool}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button key="submit" type="primary" onClick={this.onCreateSchool} disabled={showSpin}>
-            Create New School >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
+            <OkButton onClick={this.onCreateSchool} disabled={showSpin}>
+              {t("school.createnewschool")}
+            </OkButton>
+          </ButtonsContainer>
         ]}
       >
-        <StyledDescription>Please fill the details below to add new school.</StyledDescription>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name" validateStatus={nameValidateStatus} help={nameValidateMsg} required={true}>
-              <Input placeholder="Enter School Name" onChange={this.changeSchoolName} />
+            <ModalFormItem label={t("school.name")} required={true}>
+              {getFieldDecorator("name", {
+                rules: [
+                  {
+                    required: true,
+                    message: t("school.validations.name")
+                  }
+                ]
+              })(<Input placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Address">
-              {getFieldDecorator("address", {})(<Input placeholder="Enter School Address" />)}
+            <ModalFormItem label={t("school.address")}>
+              {getFieldDecorator("address", {})(<Input placeholder={t("school.components.createschool.address")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="City">
-              {getFieldDecorator("city", {})(<Input placeholder="Enter City Name" />)}
+            <ModalFormItem label={t("school.city")}>
+              {getFieldDecorator("city", {})(<Input placeholder={t("school.components.createschool.city")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={11}>
-            <ModalFormItem label="Zip">
+            <ModalFormItem label={t("school.zip")}>
               {getFieldDecorator("zip", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input zip code"
+                    message: t("school.validations.zip")
                   }
                 ]
-              })(<Input placeholder="Enter Zip Code" />)}
+              })(<Input placeholder={t("school.components.createschool.zip")} />)}
             </ModalFormItem>
           </Col>
           <Col span={11} offset={2}>
-            <ModalFormItem label="State">
+            <ModalFormItem label={t("school.state")}>
               {getFieldDecorator("state", { initialValue: states[0] })(
                 country === "US" ? (
                   <Select
                     showSearch
                     showArrow={false}
-                    placeholder="Select state"
+                    placeholder={t("school.components.createschool.selectstate")}
                     style={{ width: "100%" }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {stateOptions}
                   </Select>
                 ) : (
-                  <Input placeholder="Enter state" />
+                  <Input placeholder={t("school.components.createschool.state")} />
                 )
               )}
             </ModalFormItem>
@@ -189,13 +200,13 @@ class CreateSchoolModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Country">
+            <ModalFormItem label={t("school.country")}>
               {getFieldDecorator("country", {
                 initialValue: "US"
               })(
                 <StyledSelect
                   showSearch
-                  placeholder="Select Country"
+                  placeholder={t("school.components.createschool.country")}
                   showArrow={false}
                   optionFilterProp={"children"}
                   notFoundContent={null}
@@ -214,7 +225,7 @@ class CreateSchoolModal extends Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </Modal>
+      </StyledModal>
     );
   }
 }

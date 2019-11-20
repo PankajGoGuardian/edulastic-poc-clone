@@ -7,10 +7,8 @@ import { Form } from "antd";
 import { Field } from "./styled";
 import { userApi } from "@edulastic/api";
 import styled from "styled-components";
-import hashIcon from "../../../../../student/assets/hashtag-icon.svg";
-import userIcon from "../../../../../student/assets/user-icon.svg";
-import mailIcon from "../../../../../student/assets/mail-icon.svg";
-import keyIcon from "../../../../../student/assets/key-icon.svg";
+import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
+import { themeColor, boxShadowDefault } from "@edulastic/colors";
 const BasicFields = ({
   stds,
   isEdit,
@@ -125,7 +123,7 @@ const BasicFields = ({
             })(
               <Input
                 data-cy="classCode"
-                prefix={<img src={hashIcon} alt="" />}
+                prefix={<IconHash color={themeColor} />}
                 onBlur={evt => {
                   const classCode = evt.target.value.trim();
                   if (classCode.length) fetchClassDetailsUsingCode(classCode);
@@ -149,7 +147,7 @@ const BasicFields = ({
             {getFieldDecorator("email", {
               validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
-            })(<Input data-cy="username" prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
+            })(<Input data-cy="username" prefix={<IconMail color={themeColor} />} placeholder="Enter Username" />)}
           </Form.Item>
         </Field>
       ) : (
@@ -162,7 +160,7 @@ const BasicFields = ({
             })(
               <Input
                 data-cy="username"
-                prefix={<img src={mailIcon} alt="" />}
+                prefix={<IconUser color={themeColor} />}
                 placeholder="Enter Username"
                 disabled={googleId || canvasId || cliId || cleverId}
               />
@@ -186,7 +184,7 @@ const BasicFields = ({
             })(
               <Input
                 data-cy="fullName"
-                prefix={<img src={userIcon} alt="" />}
+                prefix={<IconUser color={themeColor} />}
                 placeholder="Enter the name of the user"
                 disabled={enroll}
               />
@@ -206,7 +204,7 @@ const BasicFields = ({
               })(
                 <Input
                   data-cy="fname"
-                  prefix={<img src={userIcon} alt="" />}
+                  prefix={<IconUser color={themeColor} />}
                   placeholder="Enter the first name of the user"
                 />
               )}
@@ -220,7 +218,7 @@ const BasicFields = ({
               })(
                 <Input
                   data-cy="lname"
-                  prefix={<img src={userIcon} alt="" />}
+                  prefix={<IconUser color={themeColor} />}
                   placeholder="Enter the last name of the user"
                 />
               )}
@@ -242,7 +240,7 @@ const BasicFields = ({
               })(
                 <Input
                   data-cy="password"
-                  prefix={<img src={keyIcon} alt="" />}
+                  prefix={<IconLock color={themeColor} />}
                   type="password"
                   placeholder="Enter Password"
                   disabled={enroll}
@@ -258,7 +256,7 @@ const BasicFields = ({
               })(
                 <Input
                   data-cy="confirmPassword"
-                  prefix={<img src={keyIcon} alt="" />}
+                  prefix={<IconLock color={themeColor} />}
                   type="password"
                   placeholder="Confirm Password"
                   disabled={enroll}
@@ -273,7 +271,7 @@ const BasicFields = ({
             <legend>Password</legend>
             <Form.Item>
               {getFieldDecorator("password", {})(
-                <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+                <Input prefix={<IconLock color={themeColor} />} type="password" placeholder="Enter Password" />
               )}
             </Form.Item>
           </Field>
@@ -282,7 +280,7 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-              })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
+              })(<Input prefix={<IconLock color={themeColor} />} type="password" placeholder="Confirm Password" />)}
             </Form.Item>
           </Field>
         </>
@@ -311,6 +309,8 @@ const FormBody = styled.div`
   background: white;
   padding: 2rem 2rem 1.2rem 2rem;
   margin-bottom: 20px;
+  box-shadow: ${boxShadowDefault};
+  border-radius: 2px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {
       width: 15px;

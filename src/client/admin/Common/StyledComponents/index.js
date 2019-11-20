@@ -1,8 +1,10 @@
 import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
-import { Select, Button as AntdButton, Input, Dropdown, Pagination } from "antd";
+import { Select, Button as AntdButton, Input, Dropdown, Pagination, Layout, Spin } from "antd";
 import { StyledTable as AntdTable } from "../../../common/styled";
+import { white, boxShadowDefault, lightGrey, mobileWidthMax } from "@edulastic/colors";
 const { Search } = Input;
+const { Content } = Layout;
 
 export const Logo = styled(IconHeader)`
   width: 119px;
@@ -81,10 +83,15 @@ export const StyledControlDiv = styled.div`
 export const StyledFilterDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  background: whitesmoke;
-  padding: 1rem;
+  background: ${white};
+  padding: 1.5rem;
   align-items: center;
-  /* margin-top: 10px; */
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: ${boxShadowDefault};
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
 `;
 
 export const RightFilterDiv = styled.div`
@@ -97,6 +104,10 @@ export const StyledFilterSelect = styled(Select)`
   margin-left: 20px;
   &:first-child {
     margin-left: 0;
+  }
+  .ant-select-selection {
+    background: ${lightGrey};
+    border: 1px solid #e1e1e1;
   }
 `;
 
@@ -185,6 +196,8 @@ export const StyledTable = styled(AntdTable)`
 `;
 export const StyledAddFilterButton = styled(AntdButton)`
   margin-left: 20px;
+  font-size: 11px;
+  text-transform: uppercase;
 `;
 
 export const StyledTableButton = styled.a`
@@ -201,7 +214,6 @@ export const StyledSchoolSearch = styled(Search)`
   width: 350px;
 `;
 export const StyledActionDropDown = styled(Dropdown)`
-  margin-left: auto;
   width: 200px;
   display: flex;
   align-items: center;
@@ -216,4 +228,41 @@ export const StyledClassName = styled.p`
 export const StyledPagination = styled(Pagination)`
   margin-top: 15px;
   align-self: flex-end;
+`;
+
+export const MainWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const StyledContent = styled(Content)`
+  width: 80%;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 80px 20px 20px 20px;
+`;
+
+export const StyledLayout = styled(Layout)`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  pointer-events: ${props => (props.loading === "true" ? "none" : "auto")};
+  min-height: 400px;
+  background: transparent;
+`;
+
+export const SpinContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+`;
+
+export const StyledSpin = styled(Spin)`
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
 `;

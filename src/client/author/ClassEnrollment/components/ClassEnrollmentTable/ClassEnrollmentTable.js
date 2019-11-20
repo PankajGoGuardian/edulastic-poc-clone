@@ -6,20 +6,7 @@ import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { AddNewUserModal } from "../Common/AddNewUser";
-import {
-  StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
-  StyledTable,
-  StyledFilterInput,
-  StyledSearch,
-  StyledActionDropDown,
-  StyledPagination,
-  StyledFilterButton,
-  UserNameContainer,
-  UserName,
-  StyledTableButton
-} from "./styled";
+import { StyledTable, UserNameContainer, UserName } from "./styled";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
 import { getUserOrgId, getUser } from "../../../src/selectors/user";
@@ -34,6 +21,30 @@ import {
   fetchClassDetailsUsingCodeAction,
   moveUsersToOtherClassAction
 } from "../../../Student/ducks";
+
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledSchoolSearch,
+  StyledTableButton,
+  RightFilterDiv,
+  LeftFilterDiv,
+  StyledPagination
+} from "../../../../common/styled";
+import {
+  StyledFilterDiv,
+  StyledControlDiv,
+  StyledFilterInput,
+  StyledFilterSelect,
+  StyledActionDropDown,
+  StyledAddFilterButton
+} from "../../../../admin/Common/StyledComponents";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { IconTrash } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
 
 const { Option } = Select;
 
@@ -58,7 +69,8 @@ class ClassEnrollmentTable extends React.Component {
       selectedUserIds: [],
       selectedUsersInfo: [],
       addStudentsModalVisible: false,
-      moveUsersModalVisible: false
+      moveUsersModalVisible: false,
+      refineButtonActive: false
     };
   }
 
@@ -403,6 +415,10 @@ class ClassEnrollmentTable extends React.Component {
     this.setState({ searchByName: value }, this.loadClassEnrollmentList);
   };
 
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
+  };
+
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
@@ -418,7 +434,8 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsModalVisible,
       moveUsersModalVisible,
       currentPage,
-      pageNo
+      pageNo,
+      refineButtonActive
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -500,7 +517,7 @@ class ClassEnrollmentTable extends React.Component {
         render: (_, record) => {
           return (
             <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
-              <Icon type="delete" theme="twoTone" />
+              <IconTrash color={themeColor} />
             </StyledTableButton>
           );
         },
@@ -508,6 +525,18 @@ class ClassEnrollmentTable extends React.Component {
         width: 100
       }
     ];
+
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/Class-Enrollment"
+      },
+      {
+        title: "CLASSES",
+        to: ""
+      }
+    ];
+
     const roleFilterOptions = ["Teacher", "Student"];
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
@@ -573,57 +602,72 @@ class ClassEnrollmentTable extends React.Component {
             />
           )}
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
 
     return (
-      <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.onOpenaddNewUserModal}>
-            + Add New User
-          </Button>
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            REFINE RESULTS
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
 
-          <StyledSearch
-            placeholder="Search by class name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <StyledActionDropDown overlay={actionMenu}>
-            <Button>
-              Actions <Icon type="down" />
+        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+
+        <StyledFilterDiv>
+          <LeftFilterDiv width={60}>
+            <StyledSchoolSearch
+              placeholder="Search by class name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+            <Button type="primary" onClick={this.onOpenaddNewUserModal}>
+              + Add New User
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
-        {SearchRows}
-        <StyledTable
-          rowSelection={rowSelection}
-          dataSource={tableDataSource}
-          columns={columnsData}
-          pagination={false}
-          scroll={{ y: 500 }}
-        />
-        <StyledPagination
-          defaultCurrent={1}
-          current={currentPage}
-          pageSize={25}
-          total={totalUsers}
-          hideOnSinglePage={true}
-          onChange={page => this.setPageNo(page)}
-        />
+          </LeftFilterDiv>
+
+          <RightFilterDiv width={35}>
+            <StyledActionDropDown overlay={actionMenu}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
+        <TableContainer>
+          <StyledTable
+            rowSelection={rowSelection}
+            dataSource={tableDataSource}
+            columns={columnsData}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalUsers}
+            hideOnSinglePage={true}
+            onChange={page => this.setPageNo(page)}
+          />
+        </TableContainer>
         <ConfirmationModal
           title="Remove Student(s)"
           show={removeStudentsModalVisible}
@@ -681,7 +725,7 @@ class ClassEnrollmentTable extends React.Component {
           selectedUsersInfo={selectedUsersInfo}
           askUserConfirmation
         />
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }

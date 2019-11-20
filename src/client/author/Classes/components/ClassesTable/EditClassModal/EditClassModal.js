@@ -4,9 +4,9 @@ import moment from "moment";
 import { debounce } from "lodash";
 const Option = Select.Option;
 import selectsData from "../../../../TestPage/components/common/selectsData";
-import { ModalFormItem, StyledModal } from "./styled";
 const { allGrades, allSubjects } = selectsData;
 import { tagsApi } from "@edulastic/api";
+import { ButtonsContainer, OkButton, CancelButton, ModalFormItem, StyledModal } from "../../../../../common/styled";
 class EditClassModal extends Component {
   constructor(props) {
     super(props);
@@ -106,7 +106,7 @@ class EditClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList, allTagsData } = this.props;
+    const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList, allTagsData, t } = this.props;
     const { searchValue } = this.state;
     const {
       _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate, course } = {}
@@ -136,42 +136,49 @@ class EditClassModal extends Component {
     const subjects = allSubjects.filter(el => el.value !== "");
 
     const { getFieldDecorator } = this.props.form;
-    const {} = this.props;
     return (
       <StyledModal
         visible={modalVisible}
-        title="Edit Class"
+        title={t("class.components.editclass.title")}
         onOk={this.onSaveClass}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button type="primary" key="submit" onClick={this.onSaveClass}>
-            Save Class >
-          </Button>
+          <ButtonsContainer gutter={5}>
+            <Col span={10}>
+              <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
+            </Col>
+            <Col span={11}>
+              <OkButton onClick={this.onSaveClass}>{t("class.components.addclass.saveclass")}</OkButton>
+            </Col>
+          </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Class Name">
+            <ModalFormItem label={t("class.components.addclass.classname")}>
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input class name"
+                    message: t("class.components.addclass.validation.class")
                   }
                 ],
                 initialValue: name
-              })(<Input placeholder="Class name" />)}
+              })(<Input placeholder={t("class.components.addclass.classname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Subject">
+            <ModalFormItem label={t("class.components.addclass.subject")}>
               {getFieldDecorator("subject", {
                 initialValue: subject
               })(
-                <Select placeholder="Select Subject" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                <Select
+                  placeholder={t("class.components.addclass.selectsubject")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {subjects.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}
@@ -184,12 +191,12 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Grades">
+            <ModalFormItem label={t("class.components.addclass.grade")}>
               {getFieldDecorator("grades", {
                 initialValue: grades
               })(
                 <Select
-                  placeholder="Select Grades"
+                  placeholder={t("class.components.addclass.selectgrade")}
                   mode="multiple"
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
@@ -205,13 +212,13 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Course">
+            <ModalFormItem label={t("class.components.addclass.course")}>
               {getFieldDecorator("courseId", {
                 initialValue: course && course.id
               })(
                 <Select
                   showSearch
-                  placeholder="Please enter 1 or more characters"
+                  placeholder={t("class.components.addclass.placeholder.course")}
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -226,12 +233,12 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Tags">
+            <ModalFormItem label={t("class.components.addclass.tags")}>
               {getFieldDecorator("tags", {
                 initialValue: alreadySelectedTags
               })(
                 <Select
-                  placeholder="Please enter 2 or more characters"
+                  placeholder={t("class.components.addclass.placeholder.tags")}
                   data-cy="tagsSelect"
                   mode="multiple"
                   style={{ marginBottom: 0 }}
@@ -263,12 +270,12 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Teacher Name">
+            <ModalFormItem label={t("class.components.addclass.teachername")}>
               {getFieldDecorator("teacher", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select teacher"
+                    message: t("class.components.addclass.validation.teacher")
                   }
                 ],
                 initialValue: ownersData
@@ -282,17 +289,20 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="School">
+            <ModalFormItem label={t("class.components.addclass.schoolname")}>
               {getFieldDecorator("institutionId", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
+                    message: t("class.components.addclass.validation.school")
                   }
                 ],
                 initialValue: institutionId
               })(
-                <Select placeholder="Select School" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                <Select
+                  placeholder={t("class.components.addclass.selectschool")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {schoolsOptions}
                 </Select>
               )}
@@ -301,10 +311,10 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="End Date">
+            <ModalFormItem label={t("class.components.editclass.enddate")}>
               {getFieldDecorator("endDate", {
                 initialValue: moment(endDate)
-              })(<DatePicker />)}
+              })(<DatePicker style={{ width: "100%" }} />)}
             </ModalFormItem>
           </Col>
         </Row>

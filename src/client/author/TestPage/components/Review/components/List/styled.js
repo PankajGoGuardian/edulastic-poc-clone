@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { Button, Input, Checkbox } from "antd";
-import { grey, themeColor, lightGreySecondary, secondaryTextColor, white } from "@edulastic/colors";
+import {
+  grey,
+  themeColor,
+  lightGreySecondary,
+  secondaryTextColor,
+  white,
+  smallDesktopWidth,
+  largeDesktopWidth
+} from "@edulastic/colors";
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
@@ -9,6 +17,15 @@ export const TestItemWrapper = styled.div`
   :last-child {
     margin-bottom: 0;
     border-bottom: none;
+  }
+
+  .expanded-rows {
+    .question-wrapper {
+      padding: 0px 25px 25px;
+      & [class*="QuestionContentWrapper"] {
+        width: calc(100% - 50px); /* 50px is width of question label */
+      }
+    }
   }
 `;
 
@@ -28,6 +45,10 @@ export const PreviewButton = styled(Button)`
   &:focus {
     background: ${themeColor};
     color: ${white};
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 80px;
   }
 `;
 
@@ -50,6 +71,11 @@ export const PointsInput = styled(Input)`
   color: ${secondaryTextColor};
   text-align: center;
   padding-left: 20px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 10px;
+    width: 80px;
+  }
 `;
 
 export const QuestionIndex = styled.span`

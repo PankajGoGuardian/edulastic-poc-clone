@@ -401,6 +401,7 @@ class Review extends PureComponent {
                   mobile={!isSmallSize}
                   passagesKeyed={passagesKeyed}
                   useDragHandle
+                  isCollapse={isCollapse}
                 />
               )}
             </Paper>

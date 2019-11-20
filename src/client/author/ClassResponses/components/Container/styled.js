@@ -71,10 +71,6 @@ export const StyledFlexContainer = styled(FlexContainer)`
   p {
     padding: 0px;
   }
-  .question-wrapper {
-    max-width: calc(100vw - 490px);
-    min-width: calc(100vw - 490px);
-  }
 `;
 
 export const StyledCard = styled(Card)`

@@ -37,7 +37,6 @@ export const JSXBox = styled.div`
 
   div {
     color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;
-    background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   }
 `;
 export const LabelTop = WithMathFormula(styled.div`

@@ -9,7 +9,7 @@ export const getFontSize = (fontSize, withRem = true) => {
     case "small":
       return withRem ? "0.6875rem" : "11px";
     case "normal":
-      return withRem ? "0.875rem" : "14px";
+      return withRem ? (window.innerWidth <= 1024 ? "0.75rem" : "0.875rem") : "14px";
     case "large":
       return withRem ? "1.0625rem" : "17px"; // 16PX = 1REM (BASE)
     case "xlarge":

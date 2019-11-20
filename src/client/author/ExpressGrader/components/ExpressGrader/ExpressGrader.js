@@ -158,6 +158,7 @@ class ExpressGrader extends Component {
                   hideQuestionModal={this.hideQuestionModal}
                   isPresentationMode={isPresentationMode}
                   groupId={classId}
+                  windowWidth={windowWidth}
                 />
               </ThemeProvider>
             )}

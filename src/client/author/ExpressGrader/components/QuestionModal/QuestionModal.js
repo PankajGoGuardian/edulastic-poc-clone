@@ -185,7 +185,7 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData, record, isPresentationMode } = this.props;
+    const { isVisibleModal, tableData, record, isPresentationMode, windowWidth } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
     const scrollContainer = this.questionWrapperRef && this.questionWrapperRef.current;
@@ -214,7 +214,10 @@ class QuestionModal extends React.Component {
         <ModalDragScrollContainer scrollWrraper={scrollContainer} height={50} />
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <QuestionWrapper ref={this.questionWrapperRef} style={{ marginBottom: "5%" }}>
+            <QuestionWrapper
+              ref={this.questionWrapperRef}
+              style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}
+            >
               <Question
                 record={question}
                 key={question.id}

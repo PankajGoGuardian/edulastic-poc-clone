@@ -1,6 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
+import { isMobileDevice } from "@edulastic/common";
 import DragPreview from "../../../components/SourceDragPreview";
 
 function collectSource(connector, monitor) {
@@ -30,7 +31,7 @@ const Draggable = ({ connectDragSource, title, data, children, className, style,
   data &&
   connectDragSource(
     <div title={title} className={className} style={{ width: "100%" }} draggable>
-      <DragPreview {...restProps}>{children}</DragPreview>
+      {!isMobileDevice() && <DragPreview {...restProps}>{children}</DragPreview>}
       {children}
     </div>
   );

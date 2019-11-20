@@ -33,6 +33,7 @@ const StudentsSelector = ({ specificStudents, students = [], updateStudents, onC
               mode="multiple"
               onChange={updateStudents}
               value={studentNames}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {students.map(({ _id, firstName, lastName, groupId }) => (
                 <Select.Option key={_id} value={_id}>

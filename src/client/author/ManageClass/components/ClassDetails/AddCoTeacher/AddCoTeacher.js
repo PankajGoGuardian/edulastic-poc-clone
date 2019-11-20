@@ -123,6 +123,7 @@ class AddCoTeacher extends React.Component {
           onChange={this.onChangeHandler}
           notFoundContent={notFoundText}
           onSearch={this.onSearchHandler}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {coTeachers.map((el, index) => (
             <Select.Option key={index} value={el._id}>

@@ -19,6 +19,7 @@ const PolicySelector = ({ openPolicy, closePolicy, changeField }) => (
           style={{ width: "100%" }}
           value={openPolicy}
           onChange={changeField("openPolicy")}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {selectsData.openPolicy.map(({ value, text }) => (
             <Select.Option key={value} value={value} data-cy="open">
@@ -35,6 +36,7 @@ const PolicySelector = ({ openPolicy, closePolicy, changeField }) => (
           style={{ width: "100%" }}
           value={closePolicy}
           onChange={changeField("closePolicy")}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {selectsData.closePolicy.map(({ value, text }) => (
             <Select.Option key={value} value={value} data-cy="close">

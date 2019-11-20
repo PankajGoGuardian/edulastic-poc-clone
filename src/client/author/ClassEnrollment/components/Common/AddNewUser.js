@@ -207,7 +207,11 @@ class AddNewUserForm extends React.Component {
                 <legend>Role</legend>
                 <Form.Item>
                   {getFieldDecorator("role", { initialValue: "student" })(
-                    <Select disabled={!usernameFieldValue.trim().length} onSelect={this.onRoleChange}>
+                    <Select
+                      disabled={!usernameFieldValue.trim().length}
+                      onSelect={this.onRoleChange}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                    >
                       <Option value="role" disabled>
                         Role
                       </Option>
@@ -263,6 +267,7 @@ class AddNewUserForm extends React.Component {
                         filterOption={false}
                         onSearch={this.fetchSchool}
                         onChange={this.handleChange}
+                        getPopupContainer={triggerNode => triggerNode.parentNode}
                       >
                         {schoolsState.list.map(school => (
                           <Option key={school._id} value={school._id}>
@@ -292,7 +297,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Free Reduced Lunch</legend>
                 <Form.Item>
                   {getFieldDecorator("frlStatus")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
                     </Select>
@@ -303,7 +308,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Individual Education Plan</legend>
                 <Form.Item>
                   {getFieldDecorator("iepStatus")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
                     </Select>
@@ -314,7 +319,7 @@ class AddNewUserForm extends React.Component {
                 <legend>English Language Learner</legend>
                 <Form.Item>
                   {getFieldDecorator("ellStatus")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
                     </Select>
@@ -325,7 +330,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Special ED</legend>
                 <Form.Item>
                   {getFieldDecorator("sedStatus")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="active">Yes</Option>
                       <Option value="deActive">No</Option>
                     </Select>
@@ -345,7 +350,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Gender</legend>
                 <Form.Item>
                   {getFieldDecorator("gender")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="male">Male</Option>
                       <Option value="female">Female</Option>
                       <Option value="other">Other</Option>
@@ -361,7 +366,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Enable Text To Speech</legend>
                 <Form.Item>
                   {getFieldDecorator("tts")(
-                    <Select>
+                    <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                       <Option value="yes">Yes</Option>
                       <Option value="no">No</Option>
                     </Select>

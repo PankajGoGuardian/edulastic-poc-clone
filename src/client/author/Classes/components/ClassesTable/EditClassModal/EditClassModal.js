@@ -171,7 +171,7 @@ class EditClassModal extends Component {
               {getFieldDecorator("subject", {
                 initialValue: subject
               })(
-                <Select placeholder="Select Subject">
+                <Select placeholder="Select Subject" getPopupContainer={triggerNode => triggerNode.parentNode}>
                   {subjects.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}
@@ -188,7 +188,11 @@ class EditClassModal extends Component {
               {getFieldDecorator("grades", {
                 initialValue: grades
               })(
-                <Select placeholder="Select Grades" mode="multiple">
+                <Select
+                  placeholder="Select Grades"
+                  mode="multiple"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {allGrades.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}
@@ -210,6 +214,7 @@ class EditClassModal extends Component {
                   placeholder="Please enter 1 or more characters"
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {coursesForDistrictList.map(course => (
                     <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
@@ -237,6 +242,7 @@ class EditClassModal extends Component {
                   filterOption={(input, option) =>
                     option.props.title.toLowerCase().includes(input.trim().toLowerCase())
                   }
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {!!searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
@@ -266,7 +272,11 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: ownersData
-              })(<Select placeholder="Search by Username">{teacherOptions}</Select>)}
+              })(
+                <Select placeholder="Search by Username" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {teacherOptions}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -281,7 +291,11 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: institutionId
-              })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
+              })(
+                <Select placeholder="Select School" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {schoolsOptions}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

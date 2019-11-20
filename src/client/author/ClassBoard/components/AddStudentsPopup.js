@@ -74,6 +74,7 @@ const AddStudentsPopup = ({
             style={{ width: "100%" }}
             onChange={value => setSelectedStudent(value)}
             placeholder="Select the students"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {studentsList.map(
               x =>

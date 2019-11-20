@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { WithResources } from "./withResources";
+import { RefContext } from "@edulastic/common";
 
+import { WithResources } from "./withResources";
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
 import { MigratedQuestion } from "../components/MigratedQuestion";
 import AppConfig from "../../../../app-config";
@@ -12,6 +13,7 @@ export const withMathFormula = WrappedComponent => {
     /**
      * this whole component needs rethinking.
      */
+    const contextConfig = useContext(RefContext);
     const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {} } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
@@ -42,6 +44,7 @@ export const withMathFormula = WrappedComponent => {
           <MigratedQuestion>
             <WrappedComponent
               {...props}
+              ref={contextConfig?.forwardedRef}
               data-cy="styled-wrapped-component"
               dangerouslySetInnerHTML={{ __html: newInnerHtml }}
               style={{ ...style, fontSize: fontSize || theme.fontSize }}
@@ -50,6 +53,7 @@ export const withMathFormula = WrappedComponent => {
         ) : (
           <WrappedComponent
             {...props}
+            ref={contextConfig?.forwardedRef}
             data-cy="styled-wrapped-component"
             dangerouslySetInnerHTML={{ __html: newInnerHtml }}
             style={{ ...style, fontSize: fontSize || theme.fontSize }}

@@ -63,6 +63,7 @@ export {
 export { default as AnswerContext } from "./src/contexts/AnswerContext";
 export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 export { default as ScrollContext } from "./src/contexts/ScrollContext";
+export { default as RefContext } from "./src/contexts/RefContext";
 // realtime hook
 export { default as useRealtimeV2 } from "./src/useRealtimeV2";
 

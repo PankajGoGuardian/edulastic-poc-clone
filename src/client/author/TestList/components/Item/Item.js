@@ -59,7 +59,7 @@ class Item extends Component {
     if (isPlaylist) {
       history.push(`/author/playlists/${item._id}#review`);
     } else {
-      history.push(`/author/tests/${item._id}#review`);
+      history.push(`/author/tests/tab/review/id/${item._id}`);
     }
   };
 

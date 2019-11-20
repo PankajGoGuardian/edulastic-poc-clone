@@ -207,6 +207,7 @@ class QuestionItem extends React.Component {
   };
 
   renderComments = qId => {
+    const { feedback = {} } = this.props;
     const { feedback: teacherComments } =
       this.props?.previousFeedback?.find(pf => pf.qid === qId) || feedback[qId] || {};
 

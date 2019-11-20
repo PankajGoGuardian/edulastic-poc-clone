@@ -20,9 +20,28 @@ export const Stimulus = WithMathFormula(styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 15px;
+  height: ${({ isCollapse }) => isCollapse && "25px"};
   ${Style}
   * {
     ${Style}
+  }
+
+  * {
+    display: ${({ isCollapse }) => isCollapse && "inline"};
+    margin: 0;
+    padding: 0;
+  }
+
+  img,
+  table,
+  br,
+  iframe,
+  mathinput,
+  mathunit,
+  textinput,
+  textdropdown,
+  response {
+    display: ${({ isCollapse }) => isCollapse && "none"};
   }
 
   div:nth-of-type(1) {

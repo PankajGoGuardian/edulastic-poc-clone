@@ -6,18 +6,18 @@ import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
 import { convertNumberToFraction } from "../../../utils/helpers";
 import { Sub, Sup } from "../styled";
 
-const AxisLabel = ({ value, fractionFormat }) => {
+const AxisLabel = ({ value, fractionFormat, textAnchor = "middle", verticalAnchor = "start" }) => {
   const result = convertNumberToFraction(value, fractionFormat);
 
   return (
     <Fragment>
       {fractionFormat === "Decimal" && (
-        <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+        <VxText textAnchor={textAnchor} verticalAnchor={verticalAnchor} width={70}>
           {result.main}
         </VxText>
       )}
       {fractionFormat !== "Decimal" && (
-        <Text textAnchor="middle">
+        <Text textAnchor={textAnchor}>
           {result.main !== null && <tspan>{result.main}</tspan>}
           {result.main !== null && result.sup !== null && result.sub !== null && <tspan> </tspan>}
           {result.sup !== null && result.sub !== null && (

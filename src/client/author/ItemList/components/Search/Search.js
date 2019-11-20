@@ -28,7 +28,8 @@ const Search = ({
   curriculumStandards,
   showStatus = false,
   collections,
-  formattedCuriculums
+  formattedCuriculums,
+  defaultQuestionTypes = []
 }) => {
   const [showModal, setShowModalValue] = useState(false);
 
@@ -49,8 +50,20 @@ const Search = ({
   ];
   const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0);
   const standardsPlaceholder = isStandardsDisabled ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
+
+  const questionsType = [
+    { value: "", text: "All Types" },
+    { value: "multipleChoice", text: "Multiple Choice" },
+    { value: "math", text: "Math" },
+    { value: "passageWithQuestions", text: "Passage with Questions" },
+    { value: "dash", text: "--------------------", disabled: true },
+    ...questionTypes.selectsData
+      .filter(el => !["", "multipleChoice", "math", "passageWithQuestions"].includes(el.value))
+      .sort((a, b) => (a.value > b.value ? 1 : -1))
+  ];
+
   return (
-    <MainFilterItems id="filter-container">
+    <MainFilterItems>
       {showModal ? (
         <StandardsSearchModal
           setShowModal={setShowModal}
@@ -71,7 +84,7 @@ const Search = ({
             placeholder="All Grades"
             value={grades}
             onChange={onSearchFieldChange("grades")}
-            getPopupContainer={() => document.getElementById("filter-container")}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {selectsData.allGrades.map(el => (
               <Select.Option key={el.value} value={el.value}>
@@ -88,7 +101,7 @@ const Search = ({
               onSelect={onSearchFieldChange("subject")}
               value={subject}
               size="large"
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {selectsData.allSubjects.map(el => (
                 <Select.Option key={el.value} value={el.value}>
@@ -110,7 +123,7 @@ const Search = ({
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               value={curriculumId}
               defaultValue=""
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               <Select.Option key="" value="">
                 All Standard set
@@ -140,7 +153,7 @@ const Search = ({
             onChange={onSearchFieldChange("standardIds")}
             value={standardIds}
             disabled={isStandardsDisabled}
-            getPopupContainer={() => document.getElementById("filter-container")}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {curriculumStandards.elo.map(el => (
               <Select.Option key={el._id} value={el._id}>
@@ -160,10 +173,10 @@ const Search = ({
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               onSelect={onSearchFieldChange("questionType")}
               value={questionType}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
-              {questionTypes.selectsData.map(el => (
-                <Select.Option key={el.value} value={el.value}>
+              {questionsType.map(el => (
+                <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
                   {el.text}
                 </Select.Option>
               ))}
@@ -178,7 +191,7 @@ const Search = ({
               size="large"
               onSelect={onSearchFieldChange("depthOfKnowledge")}
               value={depthOfKnowledge}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {selectsData.allDepthOfKnowledge.map((el, index) => (
                 <Select.Option key={el.value} value={el.value}>
@@ -196,7 +209,7 @@ const Search = ({
               size="large"
               onSelect={onSearchFieldChange("authorDifficulty")}
               value={authorDifficulty}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {selectsData.allAuthorDifficulty.map(el => (
                 <Select.Option key={el.value} value={el.value}>
@@ -214,13 +227,13 @@ const Search = ({
               size="large"
               onSelect={onSearchFieldChange("collectionName")}
               value={collectionName}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {collectionData.map(el => (
                 <Select.Option
                   key={el.value}
                   value={el.value}
-                  getPopupContainer={() => document.getElementById("filter-container")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {el.text}
                 </Select.Option>
@@ -238,7 +251,7 @@ const Search = ({
                 size="large"
                 onSelect={onSearchFieldChange("status")}
                 value={status}
-                getPopupContainer={() => document.getElementById("filter-container")}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 {selectsData.allStatus.map(el => (
                   <Select.Option key={el.value} value={el.value}>
@@ -259,7 +272,7 @@ const Search = ({
               onChange={onSearchFieldChange("tags")}
               value={tags}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {allTagsData.map(el => (
                 <Select.Option key={el._id} value={el._id}>

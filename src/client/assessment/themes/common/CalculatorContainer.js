@@ -6,6 +6,7 @@ import { WithResources } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import BasicCalculator from "./BasicCalculator";
 import { Spin } from "antd";
+import AppConfig from "../../../../../app-config";
 
 class CalculatorContainer extends Component {
   constructor(props) {
@@ -117,8 +118,10 @@ class CalculatorContainer extends Component {
           </StyledDiv>
         </StyledDraggable>
 
+        {/* We are Displaying desmos scientific calc for Edulastic scientific as well since there is no implementation yet done for edulastic scientific
+         calculator. But once implementation for edulastic scientific is done the below condition needs to be changed to only desmos scientific*/}
         <StyledDraggable>
-          <StyledDiv visible={calculateMode === "SCIENTIFIC_DESMOS"}>
+          <StyledDiv visible={["SCIENTIFIC_DESMOS", "SCIENTIFIC_EDULASTIC"].includes(calculateMode)}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
             <StyledTitle>Scientific Calculator</StyledTitle>
             <DesmosScientificCalculator
@@ -217,10 +220,7 @@ const CloseIcon = styled(IconClose)`
 
 const CalculatorContainerWithResources = ({ ...props }) => (
   <WithResources
-    resources={[
-      "https://www.desmos.com/api/v1.2/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&ext.js",
-      "https://cdn.geogebra.org/apps/deployggb.js"
-    ]}
+    resources={[`${AppConfig.desmosPath}/calculator.js`, `${AppConfig.geoGebraPath}/deployggb.js`]}
     fallBack={<Spin />}
   >
     <CalculatorContainer {...props} />

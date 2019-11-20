@@ -1,4 +1,4 @@
-import { Icon, Row, Affix } from "antd";
+import { Icon, Row, Affix, Input } from "antd";
 import {
   boxShadowDefault,
   desktopWidth,
@@ -9,7 +9,6 @@ import {
   lightGreySecondary,
   mobileWidthLarge,
   themeColor,
-  smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
@@ -98,6 +97,19 @@ export const SearchWrapper = styled.div`
 
 export const HeaderRow = styled(Row)`
   width: 100%;
+`;
+
+export const SearchInput = styled(Input.Search)`
+  .ant-input {
+    font-size: ${props => props.theme.smallFontSize};
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallLinkFontSize};
+    }
+  }
+  svg {
+    fill: ${themeColor};
+  }
 `;
 
 export const SearchField = styled.div`

@@ -129,7 +129,11 @@ class AddStudentModal extends React.Component {
                   }
                 ]
               })(
-                <Select mode="multiple" placeholder="Select school">
+                <Select
+                  mode="multiple"
+                  placeholder="Select school"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {schoolsOptions}
                 </Select>
               )}
@@ -146,7 +150,11 @@ class AddStudentModal extends React.Component {
                     message: "Please select class"
                   }
                 ]
-              })(<Select placeholder="Select class">{classOptions}</Select>)}
+              })(
+                <Select placeholder="Select class" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {classOptions}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

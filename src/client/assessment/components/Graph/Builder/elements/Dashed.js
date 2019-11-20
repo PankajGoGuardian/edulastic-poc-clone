@@ -1,6 +1,7 @@
 import JXG from "jsxgraph";
 import { Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent } from ".";
 import { CONSTANT } from "../config";
+import { getAllObjectsUnderMouse } from "../utils";
 
 const availableTypes = [
   JXG.OBJECT_TYPE_CIRCLE,
@@ -19,7 +20,7 @@ const availableTypes = [
 
 function onHandler() {
   return (board, event) => {
-    const elementsUnderMouse = board.$board.getAllObjectsUnderMouse(event);
+    const elementsUnderMouse = getAllObjectsUnderMouse(board, event);
     const elementsToUpdate = board.elements.filter(
       el => availableTypes.includes(el.type) && elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1
     );

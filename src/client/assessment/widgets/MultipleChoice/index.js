@@ -265,7 +265,7 @@ class MultipleChoice extends Component {
                   checkAnswer={previewTab === CHECK}
                   view={view}
                   smallSize={smallSize}
-                  options={item.options}
+                  options={previewDisplayOptions}
                   question={previewStimulus}
                   userSelections={userAnswer}
                   uiStyle={uiStyle}

@@ -49,12 +49,13 @@ import {
 } from "../../../src/actions/classBoard";
 import {
   showScoreSelector,
-  getClassResponseSelector,
   getMarkAsDoneEnableSelector,
   notStartedStudentsSelector,
   inProgressStudentsSelector,
   isItemVisibiltySelector,
-  classListSelector
+  classListSelector,
+  getCanCloseAssignmentSelector,
+  getCanOpenAssignmentSelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
@@ -79,7 +80,6 @@ class ClassHeader extends Component {
       isCloseModalVisible: false,
       modalInputVal: "",
       condition: true, // Whether meet the condition, if not show popconfirm.
-      showDropdown: false,
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {}
@@ -124,10 +124,6 @@ class ClassHeader extends Component {
     } else {
       this.setState({ visible }); // show the popconfirm
     }
-  };
-
-  toggleDropdown = () => {
-    this.setState(state => ({ showDropdown: !state.showDropdown }));
   };
 
   handleReleaseScore = releaseScore => {
@@ -195,14 +191,6 @@ class ClassHeader extends Component {
     });
   };
 
-  toggleCurrentMode = () => {
-    const { togglePresentationMode, isPresentationMode } = this.props;
-    if (!isPresentationMode) {
-      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
-    }
-    togglePresentationMode(!isPresentationMode);
-  };
-
   handlePauseAssignment(value) {
     const {
       togglePauseAssignment,
@@ -230,17 +218,13 @@ class ClassHeader extends Component {
     const {
       t,
       active,
-      testActivityId,
       additionalData = {},
-      selectedStudentsKeys,
-      classResponse = {},
       assignmentStatus,
       enableMarkAsDone,
-      togglePresentationMode,
-      isPresentationMode,
+      canClose,
+      canOpen,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
-      userRole,
       notStartedStudents,
       inProgressStudents,
       toggleSideBar,
@@ -249,20 +233,12 @@ class ClassHeader extends Component {
       match
     } = this.props;
 
-    const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const { endDate, startDate, releaseScore, isPaused = false, open, closed } = additionalData;
+    const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
+    const { endDate, startDate, releaseScore, isPaused = false, open, closed, canCloseClass } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
-    const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const { assignmentId, classId } = match.params;
-    const canOpen =
-      canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
-    const canClose =
-      (startDate || open) &&
-      !closed &&
-      assignmentStatus !== "DONE" &&
-      canCloseClass.includes(classId) &&
-      !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
-    const canPause = (startDate || open) && !closed;
+    const canPause =
+      (startDate || open) && !closed && (endDate > Date.now() || !endDate) && canCloseClass.includes(classId);
     const assignmentStatusForDisplay =
       assignmentStatus === "NOT OPEN" && startDate && startDate < moment()
         ? "IN PROGRESS"
@@ -474,14 +450,12 @@ ClassHeader.propTypes = {
   active: PropTypes.string.isRequired,
   assignmentId: PropTypes.string.isRequired,
   classId: PropTypes.string.isRequired,
-  testActivityId: PropTypes.string,
   additionalData: PropTypes.object.isRequired,
   setReleaseScore: PropTypes.func.isRequired,
   releaseScore: PropTypes.string
 };
 
 ClassHeader.defaultProps = {
-  testActivityId: "",
   releaseScore: "DONT_RELEASE"
 };
 
@@ -491,11 +465,10 @@ const enhance = compose(
   connect(
     state => ({
       releaseScore: showScoreSelector(state),
-      classResponse: getClassResponseSelector(state),
-      userRole: getUserRole(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
+      canClose: getCanCloseAssignmentSelector(state),
+      canOpen: getCanOpenAssignmentSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),

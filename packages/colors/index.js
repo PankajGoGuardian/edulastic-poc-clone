@@ -35,6 +35,7 @@ export const lightGrey4 = "#dbdce0";
 export const someGreyColor1 = "#c0c0c0";
 export const labelGrey = "#9B9B9B";
 export const borderGrey = "#E1E1E1";
+export const placeholderGray = "#b1b1b1";
 
 export const whiteSmoke = "#f5f5f5";
 

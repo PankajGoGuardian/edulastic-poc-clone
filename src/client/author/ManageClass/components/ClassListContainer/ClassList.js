@@ -9,7 +9,7 @@ import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import ClassCreatePage from "./ClassCreatePage";
-import { TableWrapper, ClassListTable, Tags } from "./styled";
+import { TableWrapper, ClassListTable, Tags, SubHeader } from "./styled";
 import { fetchStudentsByIdAction, fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
@@ -168,20 +168,19 @@ const ClassList = ({
     }
   ];
 
-  const classHeader = (
-    <ClassSelector
-      groups={groups}
-      archiveGroups={archiveGroups}
-      setClassGroups={setClassGroups}
-      filterClass={filterClass}
-      setFilterClass={setFilterClass}
-    />
-  );
-
   return (
     <>
-      <Header classHeader={classHeader} groups={groups} setShowDetails={setShowDetails} archiveGroups={archiveGroups} />
-      <BreadCrumb data={breadCrumbData} style={{ position: "unset", padding: "15px 0px 0px 30px" }} />
+      <Header groups={groups} setShowDetails={setShowDetails} archiveGroups={archiveGroups} />
+      <SubHeader>
+        <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
+        <ClassSelector
+          groups={groups}
+          archiveGroups={archiveGroups}
+          setClassGroups={setClassGroups}
+          filterClass={filterClass}
+          setFilterClass={setFilterClass}
+        />
+      </SubHeader>
       <TableWrapper>
         <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
         {classGroups.length > 0 ? (

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab, MathSpan, highlightSelectedText } from "@edulastic/common";
+import { Tabs, Tab, MathSpan, highlightSelectedText, RefContext } from "@edulastic/common";
 
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
@@ -197,16 +197,17 @@ const Template = ({
               </ModeButton>
             </Container>
             {mode === CUSTOM_MODE && (
-              <MathSpan
-                onMouseUp={handleCustomTokenize}
-                onClick={handleCustomTokenClick}
-                selectableText
-                dangerouslySetInnerHTML={{
-                  __html: customTokenTemplate
-                }}
-                className="token"
-                ref={containerRef}
-              />
+              <RefContext.Provider value={{ forwardedRef: containerRef }}>
+                <MathSpan
+                  onMouseUp={handleCustomTokenize}
+                  onClick={handleCustomTokenClick}
+                  selectableText
+                  dangerouslySetInnerHTML={{
+                    __html: customTokenTemplate
+                  }}
+                  className="token"
+                />
+              </RefContext.Provider>
             )}
             {mode !== CUSTOM_MODE &&
               template.map((el, i) => (

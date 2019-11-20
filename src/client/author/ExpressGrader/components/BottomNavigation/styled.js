@@ -10,6 +10,14 @@ export const NavigationWrapper = styled.div`
   svg {
     fill: ${props => props.theme.iconColor};
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    flex-wrap: wrap;
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
 `;
 
 export const LinksWrapper = styled.div`
@@ -17,6 +25,15 @@ export const LinksWrapper = styled.div`
   justify-content: row;
   align-items: center;
   cursor: pointer;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    justify-content: space-between;
+    width: 100%;
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 export const Link = styled.div`
@@ -27,7 +44,9 @@ export const Link = styled.div`
   cursor: pointer;
 
   @media (max-width: ${smallDesktopWidth}) {
-    margin: 0 5px;
+    &:first-child {
+      margin-left: 0px;
+    }
   }
 `;
 
@@ -62,7 +81,8 @@ export const StyledText = styled.span`
   user-select: none;
 
   @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${props => props.theme.extraSmallFontSize};
+    font-size: ${props => props.theme.linkFontSize};
+    margin: 0 10px;
   }
 `;
 
@@ -76,6 +96,11 @@ export const StyledTextInfo = styled.span`
   justify-content: row;
   align-items: center;
   font-weight: 500;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 `;
 
 export const EditResponse = styled.div`

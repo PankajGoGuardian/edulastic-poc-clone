@@ -112,16 +112,7 @@ const BarChart = ({
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <g
-        width={width}
-        height={height}
-        style={{
-          marginLeft: `${margin.left}px`,
-          marginRight: `${margin.right}px`,
-          marginTop: `${margin.top}px`,
-          marginBottom: `${margin.bottom}px`
-        }}
-      >
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
         <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
         <HorizontalLines

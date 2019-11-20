@@ -40,6 +40,7 @@ export const ConfirmationModal = styled(Modal)`
         font-size: 14px;
         color: ${titleColor};
         font-weight: 600;
+        width: 100%;
       }
       margin-top: ${props => (!props.title ? "30px" : 0)};
     }

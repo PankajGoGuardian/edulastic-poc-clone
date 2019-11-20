@@ -215,6 +215,7 @@ class CreateSchoolAdminModal extends React.Component {
                   onSearch={this.fetchSchool}
                   onChange={this.handleChange}
                   onFocus={this.fetchSchool}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolList.map(school => (
                     <Option key={school._id} value={school._id}>

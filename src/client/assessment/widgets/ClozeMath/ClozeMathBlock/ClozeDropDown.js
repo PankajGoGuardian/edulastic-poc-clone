@@ -76,6 +76,8 @@ export default ClozeDropDown;
 
 const DropdownWrapper = styled.span`
   position: relative;
+  display: inline-block;
+  min-height: 35px;
   .ant-select {
     min-width: 120px;
     margin: 0px 2px;

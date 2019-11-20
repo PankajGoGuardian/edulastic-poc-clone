@@ -402,7 +402,7 @@ class QuestionWrapper extends Component {
               </QuestionMenuWrapper>
             )}
             <PaperWrapper
-              // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
+              className="question-wrapper"
               disabled={disabled}
               isV1Multipart={isV1Multipart}
               style={{

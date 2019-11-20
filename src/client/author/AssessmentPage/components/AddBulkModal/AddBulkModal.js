@@ -70,7 +70,11 @@ export default class AddBulkModal extends React.Component {
               </FormGroup>
               <TypeOfQuestion>
                 <FormLabel>Type of Question</FormLabel>
-                <TypeOfQuestionSelect value={type} onChange={this.handleChange("type")}>
+                <TypeOfQuestionSelect
+                  value={type}
+                  onChange={this.handleChange("type")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   <Select.Option value={MULTIPLE_CHOICE}>Multiple Choice</Select.Option>
                   <Select.Option value={SHORT_TEXT}>Text</Select.Option>
                   <Select.Option value={CLOZE_DROP_DOWN}>Drop down</Select.Option>

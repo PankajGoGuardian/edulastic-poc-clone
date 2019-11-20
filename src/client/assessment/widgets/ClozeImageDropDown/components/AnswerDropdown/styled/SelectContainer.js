@@ -47,6 +47,7 @@ export const SelectContainer = styled.div`
     letter-spacing: 0.2px;
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
     max-width: calc(100% - 20px);
+    text-overflow: clip;
   }
   .anticon-down {
     svg {

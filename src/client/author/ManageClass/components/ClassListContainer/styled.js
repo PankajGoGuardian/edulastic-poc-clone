@@ -156,12 +156,12 @@ export const ClassStatusButton = styled(ResponsiveButton)`
   width: 180px;
   height: 36px;
   font-size: ${props => props.theme.smallFontSize};
-  margin-right: 15px;
   padding: 0px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-weight: 600;
+  border: none;
   svg {
     fill: ${themeColor};
   }
@@ -178,11 +178,11 @@ export const SyncButtons = styled(ResponsiveButton)`
   align-items:center;
   justify:space-between;
   border:none;
-  &:hover {
+  &:hover, &:focus {
     color: ${themeColor};
   }
-  & > p{
-    margin-left:8px;
+  & > p {
+    margin-left: 8px;
   }
 `;
 
@@ -194,7 +194,7 @@ export const ButtonsWrapper = styled.div`
 
 export const TableWrapper = styled.div`
   background: ${white};
-  margin: 15px 30px 30px;
+  margin: 12px 30px 30px;
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: ${boxShadowDefault};
@@ -310,6 +310,13 @@ export const Tags = styled.p`
   text-overflow: ellipsis;
 `;
 
+export const SubHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px 0px;
+`;
+
 export const GoogleClassroomModal = styled(ConfirmationModal)`
   min-width: 90%;
   .ant-modal-content {
@@ -333,6 +340,7 @@ export const GoogleClassroomModal = styled(ConfirmationModal)`
     }
     .ant-modal-body {
       border-radius: 10px;
+      padding: 15px 10px;
     }
     .ant-modal-footer {
       .ant-btn {
@@ -391,27 +399,28 @@ export const GoogleClassroomTable = styled(Table)`
         table {
           border: none;
           .ant-table-thead {
-            th {
-              border: none;
-              .ant-table-column-title {
-                white-space: nowrap;
-                font-size: ${props => props.theme.smallFontSize};
-              }
-            }
             tr {
               background: ${white};
+              th {
+                border: none;
+                padding: 16px 6px;
+                .ant-table-column-title {
+                  white-space: nowrap;
+                  font-size: ${props => props.theme.smallFontSize};
+                }
+              }
             }
           }
           .ant-table-tbody {
             tr {
               border-bottom: 11px solid ${white};
-            }
-            td {
-              border: none;
-              padding: 6px;
-              background: ${lightGreySecondary};
-              &.ant-table-selection-column {
-                background: ${white};
+              td {
+                border: none;
+                padding: 6px;
+                background: ${lightGreySecondary};
+                &.ant-table-selection-column {
+                  background: ${white};
+                }
               }
             }
           }
@@ -420,6 +429,18 @@ export const GoogleClassroomTable = styled(Table)`
         .ant-select-selection {
           border-radius: 2px;
           border: 1px solid ${borderGrey};
+          min-width: 120px;
+          max-width: 120px;
+          margin: auto;
+
+          @media (min-width: ${mediumDesktopExactWidth}) {
+            min-width: 150px;
+            max-width: 180px;
+          }
+          @media (min-width: ${extraDesktopWidthMax}) {
+            min-width: 180px;
+            max-width: 280px;
+          }
           .ant-select-selection__choice {
             background: ${themeColor}33;
             border-radius: 5px;

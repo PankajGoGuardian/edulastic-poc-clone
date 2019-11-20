@@ -29,7 +29,6 @@ import Section from "../Section/Section";
 import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
-import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 import { getRecentStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../../../src/actions/dictionaries";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -372,18 +371,7 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const {
-      previewMode,
-      viewMode,
-      noCheck,
-      answersById,
-      highlighted,
-      list,
-      onDragStart,
-      review,
-      previousQuestionActivities,
-      feedback
-    } = this.props;
+    const { previewMode, viewMode, noCheck, answersById, highlighted, list, onDragStart, review } = this.props;
     const report = viewMode === "report";
 
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
@@ -416,10 +404,6 @@ class Questions extends React.Component {
                   previewMode={previewMode}
                   viewMode={viewMode}
                   answer={answersById[question.id]}
-                  feedback={feedback}
-                  previousFeedback={
-                    Object.values(previousQuestionActivities) && Object.values(previousQuestionActivities)[0]
-                  }
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                 />
@@ -465,9 +449,7 @@ class Questions extends React.Component {
 const enhance = compose(
   connect(
     state => ({
-      feedback: FeedbackByQIdSelector(state),
       recentStandardsList: getRecentStandardsListSelector(state),
-      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       previewMode: getPreviewSelector(state)
     }),
     {

@@ -6,11 +6,12 @@ import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router
 import { connect } from "react-redux";
 import { DragDropContext } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
-// import HTML5Backend from "react-dnd-html5-backend";
+import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
+import { isMobileDevice } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
@@ -240,13 +241,15 @@ class App extends Component {
   }
 }
 
-const enhance = compose(
-  DragDropContext(
-    TouchBackend({
+const dndBackend = isMobileDevice()
+  ? TouchBackend({
       enableTouchEvents: true,
       enableMouseEvents: true
     })
-  ),
+  : HTML5Backend;
+
+const enhance = compose(
+  DragDropContext(dndBackend),
   withRouter,
   connect(
     ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),

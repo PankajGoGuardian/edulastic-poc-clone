@@ -64,7 +64,7 @@ export const createSummaryData = (items = [], scoring) => {
     const itemPoints = (itemLevelScoring === true && itemLevelScore) || maxScore;
     const questions = get(item, "data.questions", []);
     const itemTotalQuestions = questions.length;
-    const questionWisePoints = helpers.getQuestionLevelScore(questions, helpers.getPoints(item), scoring[_id]);
+    const questionWisePoints = helpers.getQuestionLevelScore(item, questions, helpers.getPoints(item), scoring[_id]);
     for (const question of questions) {
       const standardSummary = getStandardWiseSummary(question, questionWisePoints[question.id]);
       if (standardSummary) {
@@ -401,6 +401,7 @@ class Review extends PureComponent {
                   mobile={!isSmallSize}
                   passagesKeyed={passagesKeyed}
                   useDragHandle
+                  isCollapse={isCollapse}
                 />
               )}
             </Paper>

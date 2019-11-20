@@ -9,6 +9,7 @@ import { replaceVariables } from "../../utils/variables";
 
 import EditEssayRichText from "./EditEssayRichText";
 import EssayRichTextPreview from "./EssayRichTextPreview";
+import AppConfig from "../../../../../app-config";
 
 const EssayRichText = props => {
   const { item, view } = props;
@@ -16,10 +17,7 @@ const EssayRichText = props => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
-    <WithResources
-      resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
-      fallBack={<span />}
-    >
+    <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
       <Fragment>
         {view === EDIT && <EditEssayRichText {...props} />}
         {view === PREVIEW && <EssayRichTextPreview key={itemForPreview.id} {...props} item={itemForPreview} />}

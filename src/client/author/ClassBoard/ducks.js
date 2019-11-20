@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
-import { test, testActivity } from "@edulastic/constants";
+import { test, testActivity, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -50,7 +50,7 @@ import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
 import { getAllQids } from "../SummaryBoard/Transformer";
-import { getUserId } from "../../student/Login/ducks";
+import { getUserId, getUserRole } from "../../student/Login/ducks";
 
 const {
   authorAssignmentConstants: {
@@ -78,12 +78,11 @@ function* receiveGradeBookSaga({ payload }) {
   }
 }
 
-function* receiveTestActivitySaga({ payload }) {
+export function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
     const classResponse = yield call(classResponseApi.classResponse, { ...payload, testId: additionalData.testId });
-
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: classResponse
@@ -506,6 +505,44 @@ export const getMarkAsDoneEnableSelector = createSelector(
   (classes, currentClass) => classes.includes(currentClass)
 );
 
+export const getAssignmentStatusSelector = createSelector(
+  stateTestActivitySelector,
+  state => get(state, ["data", "status"], "")
+);
+
+export const getCanCloseAssignmentSelector = createSelector(
+  getAdditionalDataSelector,
+  getCurrentClassIdSelector,
+  getUserRole,
+  getAssignmentStatusSelector,
+  (additionalData, currentClass, userRole, status) => {
+    return (
+      additionalData?.canCloseClass.includes(currentClass) &&
+      status !== "DONE" &&
+      status !== "NOT OPEN" &&
+      !(
+        additionalData?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
+        userRole === roleuser.TEACHER
+      )
+    );
+  }
+);
+
+export const getCanOpenAssignmentSelector = createSelector(
+  getAdditionalDataSelector,
+  getCurrentClassIdSelector,
+  getUserRole,
+  (additionalData, currentClass, userRole) => {
+    return (
+      additionalData?.canOpenClass.includes(currentClass) &&
+      !(
+        additionalData?.openPolicy === assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
+        userRole === roleuser.TEACHER
+      )
+    );
+  }
+);
+
 export const getAssignedBySelector = createSelector(
   getAdditionalDataSelector,
   state => get(state, "assignedBy", {})
@@ -623,10 +660,8 @@ export const getClassQuestionSelector = createSelector(
   state => state.data
 );
 
-export const stateTestQuestionActivitiesSelector = state => state.author_classboard_testActivity;
-
 export const getTestQuestionActivitiesSelector = createSelector(
-  stateTestQuestionActivitiesSelector,
+  stateTestActivitySelector,
   state => {
     if (state.data) {
       return state.data.testQuestionActivities;

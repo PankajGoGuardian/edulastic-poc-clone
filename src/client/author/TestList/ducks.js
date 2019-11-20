@@ -1,11 +1,13 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery } from "redux-saga/effects";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { message } from "antd";
 import produce from "immer";
 import { testsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
+import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
 
 // types
 export const RECEIVE_TESTS_REQUEST = "[tests] receive list request";
@@ -45,8 +47,32 @@ function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   }
 }
 
+function* clearAllTestFiltersSaga() {
+  try {
+    yield put(updateDefaultGradesAction([]));
+    yield put(updateDefaultSubjectAction(""));
+
+    const testFilters = yield select(getTestsFilterSelector);
+    const defaultGrades = yield select(getDefaultGradesSelector);
+    const defaultSubject = yield select(getDefaultSubjectSelector);
+    const limit = yield select(getTestsLimitSelector);
+
+    const searchFilters = {
+      ...testFilters,
+      grades: defaultGrades,
+      subject: defaultSubject
+    };
+    yield put(receiveTestsAction({ page: 1, limit, search: searchFilters }));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga)]);
+  yield all([
+    yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
+    yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga)
+  ]);
 }
 
 const emptyFilters = {

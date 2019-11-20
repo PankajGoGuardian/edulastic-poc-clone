@@ -204,7 +204,7 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label="Subject">
               {getFieldDecorator("subject")(
-                <Select placeholder="Select Subject">
+                <Select placeholder="Select Subject" getPopupContainer={triggerNode => triggerNode.parentNode}>
                   <Option value="Mathematics">Mathematics</Option>
                   <Option value="ELA">ELA</Option>
                   <Option value="Science">Science</Option>
@@ -219,7 +219,11 @@ class AddClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label="Grades">
               {getFieldDecorator("grades")(
-                <Select mode="multiple" placeholder="Select Grades">
+                <Select
+                  mode="multiple"
+                  placeholder="Select Grades"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {allGrades.map(({ value, text }) => (
                     <Option key={value} value={value}>
                       {text}
@@ -240,6 +244,7 @@ class AddClassModal extends Component {
                   onFocus={this.fetchCoursesForDistrict}
                   notFoundContent={null}
                   placeholder="Please enter 1 or more characters"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {coursesForDistrictList.map(course => (
                     <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
@@ -265,6 +270,7 @@ class AddClassModal extends Component {
                   filterOption={(input, option) =>
                     option.props.title.toLowerCase().includes(input.trim().toLowerCase())
                   }
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {!!searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
@@ -303,6 +309,7 @@ class AddClassModal extends Component {
                   onFocus={this.fetchTeacher}
                   onChange={this.handleTeacherChange}
                   ref={this.selectTeacherRef}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {teacherList.map(teacher => (
                     <Option key={teacher._id} value={teacher._id}>
@@ -334,6 +341,7 @@ class AddClassModal extends Component {
                   onSearch={this.fetchSchool}
                   onChange={this.handleSchoolChange}
                   onFocus={this.fetchSchool}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolList.map(school => (
                     <Option key={school._id} value={school._id}>

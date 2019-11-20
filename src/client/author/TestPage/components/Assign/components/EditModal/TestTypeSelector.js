@@ -36,7 +36,11 @@ const TestTypeSelector = ({
       </StyledRowLabel>
       <Row gutter={32}>
         <Col span={12}>
-          <StyledSelect defaultValue={testType} onChange={value => onAssignmentTypeChange(value)}>
+          <StyledSelect
+            defaultValue={testType}
+            onChange={value => onAssignmentTypeChange(value)}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
             {Object.keys(testTypes).map(key => (
               <Select.Option key={key} value={key}>
                 {key === "assessment" && userRole !== "teacher" ? "Common Assessment" : testTypes[key]}
@@ -53,7 +57,11 @@ const TestTypeSelector = ({
             </StyledRowLabel>
             <StyledRow>
               <Col span={24}>
-                <TestTypeDropDown defaultValue={generateReport} onChange={onGenerateReportFieldChange}>
+                <TestTypeDropDown
+                  defaultValue={generateReport}
+                  onChange={onGenerateReportFieldChange}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {Object.keys(generateReportTypes).map(key => (
                     <Select.Option key={key} value={generateReportTypes[key].type}>
                       {generateReportTypes[key].val}

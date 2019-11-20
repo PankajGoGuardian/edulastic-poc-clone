@@ -494,5 +494,5 @@ const RightActionButtons = styled(Col)`
 
 const EditorContainer = styled.div`
   min-height: 100vh;
-  overflow: auto;
+  overflow: inherit;
 `;

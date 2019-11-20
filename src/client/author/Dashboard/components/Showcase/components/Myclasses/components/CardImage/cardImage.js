@@ -41,7 +41,7 @@ const CardImage = ({ data, history }) => {
               </IconWrapper>
             </StyledRow>
             <RowWrapperGrade>
-              <TextWrapper color="#FFFFFF" size="12px" fw="600">
+              <TextWrapper color="#FFFFFF" size="12px" fw="600" minTwo>
                 {grades.length ? (
                   <>
                     <span data-cy="grades">Grades</span> {grades.join(", ").replace(/O/i, " Other ")}

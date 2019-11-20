@@ -15,6 +15,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
+
 var _maxBy2 = _interopRequireDefault(require("lodash/maxBy"));
 
 var _get2 = _interopRequireDefault(require("lodash/get"));
@@ -44,15 +46,17 @@ var mathEval =
     var _ref2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee(_ref) {
-        var userResponse, validation, validResponses, evaluation, _loop, _i, _Object$keys;
+        var userResponse, validation, _validation, _userResponse, validResponses, evaluation, _loop, _i, _Object$keys;
 
         return _regenerator["default"].wrap(function _callee$(_context2) {
           while (1) {
             switch ((_context2.prev = _context2.next)) {
               case 0:
                 (userResponse = _ref.userResponse), (validation = _ref.validation);
+                _validation = (0, _cloneDeep2["default"])(validation);
+                _userResponse = (0, _cloneDeep2["default"])(userResponse);
                 validResponses = (0, _groupBy2["default"])(
-                  (0, _flatten2["default"])(validation.validResponse.value),
+                  (0, _flatten2["default"])(_validation.validResponse.value),
                   "id"
                 );
                 evaluation = {}; // parallelize network request!!
@@ -80,16 +84,16 @@ var mathEval =
                               return item.value;
                             });
                             requests = answers.map(function(ans) {
-                              var value = userResponse[id].value;
-                              var unit = userResponse[id].unit;
+                              var value = _userResponse[id].value;
+                              var unit = _userResponse[id].unit;
 
                               if (unit) {
                                 value = combineUnitAndExpression(value, unit);
                               }
 
                               var data = {
-                                input: value.replace(/\s+/g, " "),
-                                expected: ans ? ans.replace(/\s+/g, " ") : "",
+                                input: value.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
+                                expected: ans ? ans.replace(/\s+/g, " ").replace(/[$]/g, "\\$") : "",
                                 checks: checks
                               };
                               return (0, _math.evaluate)(data);
@@ -111,25 +115,25 @@ var mathEval =
                       }
                     }, _loop);
                   });
-                (_i = 0), (_Object$keys = Object.keys(userResponse));
+                (_i = 0), (_Object$keys = Object.keys(_userResponse));
 
-              case 5:
+              case 7:
                 if (!(_i < _Object$keys.length)) {
-                  _context2.next = 10;
+                  _context2.next = 12;
                   break;
                 }
 
-                return _context2.delegateYield(_loop(), "t0", 7);
+                return _context2.delegateYield(_loop(), "t0", 9);
 
-              case 7:
+              case 9:
                 _i++;
-                _context2.next = 5;
+                _context2.next = 7;
                 break;
 
-              case 10:
+              case 12:
                 return _context2.abrupt("return", evaluation);
 
-              case 11:
+              case 13:
               case "end":
                 return _context2.stop();
             }
@@ -394,6 +398,8 @@ var mixAndMatchMathEvaluator =
       _regenerator["default"].mark(function _callee3(_ref5) {
         var userResponse,
           validation,
+          _validation,
+          _userResponse,
           answersArray,
           _iteratorNormalCompletion,
           _didIteratorError,
@@ -413,14 +419,16 @@ var mixAndMatchMathEvaluator =
               switch ((_context5.prev = _context5.next)) {
                 case 0:
                   (userResponse = _ref5.userResponse), (validation = _ref5.validation);
-                  answersArray = (0, _toConsumableArray2["default"])(validation.validResponse.value || []);
+                  _validation = (0, _cloneDeep2["default"])(validation);
+                  _userResponse = (0, _cloneDeep2["default"])(userResponse);
+                  answersArray = _validation.validResponse.value || [];
                   _iteratorNormalCompletion = true;
                   _didIteratorError = false;
                   _iteratorError = undefined;
-                  _context5.prev = 5;
+                  _context5.prev = 7;
 
                   for (
-                    _iterator = validation.altResponses[Symbol.iterator]();
+                    _iterator = _validation.altResponses[Symbol.iterator]();
                     !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
                     _iteratorNormalCompletion = true
                   ) {
@@ -429,40 +437,40 @@ var mixAndMatchMathEvaluator =
                       answersArray.push.apply(answersArray, (0, _toConsumableArray2["default"])(altResp.value));
                   }
 
-                  _context5.next = 13;
+                  _context5.next = 15;
                   break;
 
-                case 9:
-                  _context5.prev = 9;
-                  _context5.t0 = _context5["catch"](5);
+                case 11:
+                  _context5.prev = 11;
+                  _context5.t0 = _context5["catch"](7);
                   _didIteratorError = true;
                   _iteratorError = _context5.t0;
 
-                case 13:
-                  _context5.prev = 13;
-                  _context5.prev = 14;
+                case 15:
+                  _context5.prev = 15;
+                  _context5.prev = 16;
 
                   if (!_iteratorNormalCompletion && _iterator["return"] != null) {
                     _iterator["return"]();
                   }
 
-                case 16:
-                  _context5.prev = 16;
+                case 18:
+                  _context5.prev = 18;
 
                   if (!_didIteratorError) {
-                    _context5.next = 19;
+                    _context5.next = 21;
                     break;
                   }
 
                   throw _iteratorError;
 
-                case 19:
-                  return _context5.finish(16);
-
-                case 20:
-                  return _context5.finish(13);
-
                 case 21:
+                  return _context5.finish(18);
+
+                case 22:
+                  return _context5.finish(15);
+
+                case 23:
                   answersById = (0, _groupBy2["default"])((0, _flatten2["default"])(answersArray), "id");
                   evaluations = {}; // parallelize this at some point
 
@@ -481,7 +489,7 @@ var mixAndMatchMathEvaluator =
                                   value: [validAnswer]
                                 });
                                 var expected = validAnswer.value || "";
-                                var input = userResponse[id].value;
+                                var input = _userResponse[id].value;
                                 var _validAnswer$options = validAnswer.options,
                                   options = _validAnswer$options === void 0 ? {} : _validAnswer$options;
 
@@ -489,14 +497,14 @@ var mixAndMatchMathEvaluator =
                                   expected = combineUnitAndExpression(validAnswer.value, options.unit);
                                 }
 
-                                if (userResponse[id].unit) {
-                                  input = combineUnitAndExpression(userResponse[id].value, userResponse[id].unit);
+                                if (_userResponse[id].unit) {
+                                  input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
                                 }
 
                                 return (0, _math.evaluate)({
                                   checks: checks,
-                                  input: input.replace(/\s+/g, " "),
-                                  expected: expected.replace(/\s+/g, " ")
+                                  input: input.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
+                                  expected: expected.replace(/\s+/g, " ").replace(/[$]/g, "\\$")
                                 });
                               });
                               _context4.next = 5;
@@ -516,25 +524,25 @@ var mixAndMatchMathEvaluator =
                         }
                       }, _loop2);
                     });
-                  (_i2 = 0), (_Object$keys2 = Object.keys(userResponse));
+                  (_i2 = 0), (_Object$keys2 = Object.keys(_userResponse));
 
-                case 25:
+                case 27:
                   if (!(_i2 < _Object$keys2.length)) {
-                    _context5.next = 30;
+                    _context5.next = 32;
                     break;
                   }
 
-                  return _context5.delegateYield(_loop2(), "t1", 27);
+                  return _context5.delegateYield(_loop2(), "t1", 29);
 
-                case 27:
+                case 29:
                   _i2++;
-                  _context5.next = 25;
+                  _context5.next = 27;
                   break;
 
-                case 30:
+                case 32:
                   return _context5.abrupt("return", evaluations);
 
-                case 31:
+                case 33:
                 case "end":
                   return _context5.stop();
               }
@@ -542,7 +550,7 @@ var mixAndMatchMathEvaluator =
           },
           _callee3,
           null,
-          [[5, 9, 13, 21], [14, , 16, 20]]
+          [[7, 11, 15, 23], [16, , 18, 22]]
         );
       })
     );

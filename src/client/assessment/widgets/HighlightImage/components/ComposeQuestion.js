@@ -43,6 +43,16 @@ class ComposeQuestion extends Component {
     );
   };
 
+  handleDragStop = (event, { x, y }) => {
+    const { item, setQuestionData } = this.props;
+    return setQuestionData(
+      produce(item, draft => {
+        draft.image.x = Math.max(parseInt(x, 10), 0);
+        draft.image.y = Math.max(parseInt(y, 10), 0);
+      })
+    );
+  };
+
   render() {
     const { item, setQuestionData, loading, setLoading, t, fillSections, cleanSections } = this.props;
     const { image } = item;
@@ -164,6 +174,7 @@ class ComposeQuestion extends Component {
         y={image.y}
         src={image[SOURCE]}
         altText={altText}
+        handleDragStop={this.handleDragStop}
       />
     );
     // <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;

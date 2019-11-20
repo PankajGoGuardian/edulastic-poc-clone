@@ -2,7 +2,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
+import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject } from "lodash";
+import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
   SHORT_TEXT,
@@ -204,10 +206,25 @@ class QuestionItem extends React.Component {
     return <AnswerIndicator correct={correct}>{correct ? <IconCheck /> : <IconClose />}</AnswerIndicator>;
   };
 
+  renderComments = qId => {
+    const { feedback = {} } = this.props;
+    const { feedback: teacherComments } =
+      this.props?.previousFeedback?.find(pf => pf.qid === qId) || feedback[qId] || {};
+
+    return (
+      !!teacherComments?.text && (
+        <DetailsContainer>
+          <DetailTitle>{teacherComments.teacherName}:</DetailTitle>
+          <DetailContents>{teacherComments.text}</DetailContents>
+        </DetailsContainer>
+      )
+    );
+  };
+
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], viewMode } = this.props;
 
-    const { score = 0, maxScore = 0, feedback: teacherComments } =
+    const { score = 0, maxScore = 0, feedback: teacherComments, ...rest } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
     return (
       <>
@@ -215,9 +232,9 @@ class QuestionItem extends React.Component {
           <DetailTitle>Score:</DetailTitle>
           <DetailContents>{`${score}/${maxScore}`}</DetailContents>
         </DetailsContainer>
-        {!!teacherComments?.text && viewMode === "report" && (
+        {!!teacherComments?.text && (
           <DetailsContainer>
-            <DetailTitle>Feedback:</DetailTitle>
+            <DetailTitle>{teacherComments.teacherName}:</DetailTitle>
             <DetailContents>{teacherComments.text}</DetailContents>
           </DetailsContainer>
         )}
@@ -255,10 +272,15 @@ class QuestionItem extends React.Component {
           {review && (previewMode !== "clear" || check) && this.renderAnswerIndicator(type)}
         </AnswerForm>
         {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
-        {check && this.renderScore(id)}
+        {check ? this.renderScore(id) : this.renderComments(id)}
       </QuestionItemWrapper>
     );
   }
 }
 
-export default withAnswerSave(QuestionItem);
+export default withAnswerSave(
+  connect(state => ({
+    previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
+    feedback: FeedbackByQIdSelector(state)
+  }))(QuestionItem)
+);

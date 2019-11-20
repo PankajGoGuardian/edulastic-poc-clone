@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { WithResources } from "./withResources";
+import { RefContext } from "@edulastic/common";
 
+import { WithResources } from "./withResources";
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
 import { MigratedQuestion } from "../components/MigratedQuestion";
+import AppConfig from "../../../../app-config";
 
 export const withMathFormula = WrappedComponent => {
   const MathFormulaWrapped = props => {
     /**
      * this whole component needs rethinking.
      */
+    const contextConfig = useContext(RefContext);
     const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {} } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
@@ -28,9 +31,9 @@ export const withMathFormula = WrappedComponent => {
     return (
       <WithResources
         resources={[
-          "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-          "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css",
-          "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          `${AppConfig.jqueryPath}/jquery.min.js`,
+          `${AppConfig.katexPath}/katex.min.css`,
+          `${AppConfig.katexPath}/katex.min.js`
         ]}
         fallBack={<span />}
         onLoaded={() => {
@@ -41,6 +44,7 @@ export const withMathFormula = WrappedComponent => {
           <MigratedQuestion>
             <WrappedComponent
               {...props}
+              ref={contextConfig?.forwardedRef}
               data-cy="styled-wrapped-component"
               dangerouslySetInnerHTML={{ __html: newInnerHtml }}
               style={{ ...style, fontSize: fontSize || theme.fontSize }}
@@ -49,6 +53,7 @@ export const withMathFormula = WrappedComponent => {
         ) : (
           <WrappedComponent
             {...props}
+            ref={contextConfig?.forwardedRef}
             data-cy="styled-wrapped-component"
             dangerouslySetInnerHTML={{ __html: newInnerHtml }}
             style={{ ...style, fontSize: fontSize || theme.fontSize }}

@@ -129,7 +129,6 @@ class LeftFilter extends React.Component {
       addMoveToFolderRequest,
       folderData: { _id: folderId },
       folders,
-      loadFolders,
       clearSelectedRow,
       isAdvancedView
     } = this.props;
@@ -171,12 +170,9 @@ class LeftFilter extends React.Component {
       return pickBy(param, identity);
     });
 
-    if (addMoveToFolderRequest) {
-      addMoveToFolderRequest({ folderId: moveFolderId, params });
-      loadFolders();
-      clearSelectedRow();
-      this.setState({ moveFolderId: "" });
-    }
+    addMoveToFolderRequest({ folderId: moveFolderId, params });
+    clearSelectedRow();
+    this.setState({ moveFolderId: "" });
     this.hideModal("moveFolder");
   };
 
@@ -334,8 +330,9 @@ class LeftFilter extends React.Component {
     const classListActive = classListByTerm.filter(item => item.active === 1);
     const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
-      <FilterContainer id={"filter-container"}>
+      <FilterContainer>
         <FolderActionModal
+          centered
           title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
           onCancel={() => this.hideModal("newFolder")}
@@ -376,12 +373,12 @@ class LeftFilter extends React.Component {
           ]}
         >
           <p>
-            {" "}
-            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.{" "}
+            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.
           </p>
         </ConfirmationModal>
 
         <MoveFolderActionModal
+          centered
           title={<ModalTitle>{`Move ${selectedRows.length} item(s) to…`}</ModalTitle>}
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
@@ -415,7 +412,7 @@ class LeftFilter extends React.Component {
               placeholder="All grades"
               value={grades}
               onChange={this.handleChange("grades")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -432,7 +429,7 @@ class LeftFilter extends React.Component {
               placeholder="All subjects"
               value={subject}
               onChange={this.handleChange("subject")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -446,7 +443,7 @@ class LeftFilter extends React.Component {
               placeholder="All years"
               value={termId}
               onChange={this.handleChange("termId")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               <Select.Option key="all" value="">
                 {"All years"}
@@ -463,7 +460,7 @@ class LeftFilter extends React.Component {
               placeholder="All"
               value={testType}
               onChange={this.handleChange("testType")}
-              getPopupContainer={() => document.getElementById("filter-container")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {roleBasedTestType.map(({ value, text }, index) => (
                 <Select.Option key={index} value={value}>
@@ -481,7 +478,7 @@ class LeftFilter extends React.Component {
                   placeholder="All"
                   value={classId}
                   onChange={this.handleChange("classId")}
-                  getPopupContainer={() => document.getElementById("filter-container")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   <Select.Option key={"all"} value={""}>
                     {"All classes"}
@@ -527,7 +524,6 @@ LeftFilter.propTypes = {
   deleteFolder: PropTypes.func.isRequired,
   setFolder: PropTypes.func.isRequired,
   clearFolder: PropTypes.func.isRequired,
-  loadFolders: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onSetFilter: PropTypes.func.isRequired,
   folderData: PropTypes.object.isRequired,
@@ -564,7 +560,6 @@ export default connect(
     deleteFolder: receiveDeleteFolderAction,
     renameFolder: receiveRenameFolderAction,
     setFolder: setFolderAction,
-    loadFolders: receiveFolderAction,
     clearFolder: clearFolderAction
   }
 )(LeftFilter);

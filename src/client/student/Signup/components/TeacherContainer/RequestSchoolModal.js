@@ -272,7 +272,11 @@ class RequestSchool extends React.Component {
                 initialValue: states[0]
               })(
                 country === "US" ? (
-                  <Select showSearch placeholder="Select state">
+                  <Select
+                    showSearch
+                    placeholder="Select state"
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
                     {stateOptions}
                   </Select>
                 ) : (
@@ -294,6 +298,7 @@ class RequestSchool extends React.Component {
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={value => this.changeCountryHandler(value)}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 {countryOptions}
               </Select>

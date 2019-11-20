@@ -203,7 +203,7 @@ export const addNewTagAction = createAction(ADD_NEW_TAG);
 export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 
-export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
+export const defaultImage = "";
 // reducer
 export const createBlankTest = () => ({
   title: undefined,
@@ -564,7 +564,7 @@ function* createTestSaga({ payload }) {
     dataToSend.testItems = payload.data.testItems.map(o => ({
       itemId: o._id,
       maxScore: helpers.getPoints(o),
-      questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+      questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
     }));
 
     let entity = yield call(testsApi.create, dataToSend);
@@ -632,6 +632,7 @@ function* updateTestSaga({ payload }) {
         maxScore: scoring[o._id] || helpers.getPoints(o),
         questions: o.data
           ? helpers.getQuestionLevelScore(
+              o,
               o.data.questions,
               helpers.getPoints(o),
               scoring[o._id] || helpers.getPoints(o)
@@ -893,7 +894,7 @@ function* setTestDataAndUpdateSaga(payload) {
           draft.testItems.map(o => ({
             itemId: o._id,
             maxScore: helpers.getPoints(o),
-            questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+            questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
           }));
         if (!testContentVisibility && (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)) {
           draft.testContentVisibility = test.testContentVisibility.ALWAYS;

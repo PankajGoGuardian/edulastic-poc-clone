@@ -208,6 +208,15 @@ class ViewModal extends React.Component {
                         </ListRow>
                       )
                   )}
+                {summary?.noStandards?.totalQuestions > 0 && (
+                  <ListRow>
+                    <ListCell>
+                      <SammaryMark>No Standard</SammaryMark>
+                    </ListCell>
+                    <ListCell>{summary.noStandards.totalQuestions}</ListCell>
+                    <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                  </ListRow>
+                )}
               </SummaryList>
             </PerfectScrollbar>
           </ModalColumn>

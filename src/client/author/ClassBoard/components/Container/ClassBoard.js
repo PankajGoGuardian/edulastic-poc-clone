@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import moment from "moment";
 import { get, keyBy, isEmpty, round } from "lodash";
-import { message, Dropdown, Select, Spin } from "antd";
-import { withWindowSizes } from "@edulastic/common";
+import { message, Dropdown, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { black } from "@edulastic/colors";
 
@@ -299,6 +298,7 @@ class ClassBoard extends Component {
   };
 
   onTabChange = (e, name, selectedStudentId, testActivityId) => {
+    const { setCurrentTestActivityId } = this.props;
     const { assignmentId, classId } = this.props.match.params;
     this.setState({
       selectedTab: name,
@@ -309,6 +309,7 @@ class ClassBoard extends Component {
       this.props.history.push(`/author/classboard/${assignmentId}/${classId}`);
     } else if (name === "Student") {
       this.props.history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
+      setCurrentTestActivityId(testActivityId);
     }
   };
 
@@ -370,8 +371,6 @@ class ClassBoard extends Component {
     this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
     this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${data.qid}`);
   };
-
-  isMobile = () => window.innerWidth < 480;
 
   handleReleaseScore = () => {
     const { match, setReleaseScore, showScore, additionalData } = this.props;
@@ -570,6 +569,27 @@ class ClassBoard extends Component {
     downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
   };
 
+  onClickPrint = event => {
+    event.preventDefault();
+
+    const { testActivity, selectedStudents, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentsKeys = Object.keys(selectedStudents);
+
+    const studentsMap = keyBy(testActivity, "studentId");
+
+    const isPrintable = !selectedStudentsKeys.some(
+      item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
+    );
+
+    if (isPrintable && selectedStudentsKeys.length) {
+      const selectedStudentsStr = selectedStudentsKeys.join(",");
+      window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`);
+    } else {
+      message.error("You can print only after the assignment has been submitted by the student(s).");
+    }
+  };
+
   render() {
     const {
       gradebook,
@@ -626,8 +646,6 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
-    const classname = additionalData ? additionalData.classes : [];
-    const isMobile = this.isMobile();
     let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
     studentTestActivity.timeSpent = Math.floor(
       ((studentResponse &&
@@ -785,7 +803,8 @@ class ClassBoard extends Component {
                       disabled={!isItemsVisible}
                       first={true}
                       data-cy="printButton"
-                      onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
+                      target="_blank"
+                      onClick={this.onClickPrint}
                     >
                       <ButtonIconWrap>
                         <IconPrint />
@@ -899,11 +918,11 @@ class ClassBoard extends Component {
                   closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected, testActivityId) => {
+                    setCurrentTestActivityId(testActivityId);
                     if (!isItemsVisible) {
                       return;
                     }
                     getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
-                    loadStudentResponses({ testActivityId, groupId: classId, studentId: selected });
                     this.onTabChange(e, "Student", selected, testActivityId);
                   }}
                   isPresentationMode={isPresentationMode}
@@ -951,6 +970,7 @@ class ClassBoard extends Component {
                     selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
                     handleChange={(value, testActivityId) => {
+                      setCurrentTestActivityId(testActivityId);
                       getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
                       this.setState({ selectedStudentId: value });
                       this.props.history.push(
@@ -1121,7 +1141,6 @@ class ClassBoard extends Component {
 }
 
 const enhance = compose(
-  withWindowSizes,
   withNamespaces("classBoard"),
   connect(
     state => ({

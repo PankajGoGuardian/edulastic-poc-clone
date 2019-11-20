@@ -102,11 +102,6 @@ class Layout extends Component {
       );
     };
 
-    const removeIndividual = resId => {
-      const newResponses = responses.filter(resp => resp.id !== resId);
-      onChange("responses", newResponses);
-    };
-
     return (
       <Question
         section="advanced"
@@ -221,9 +216,6 @@ class Layout extends Component {
                 <Row gutter={20}>
                   <Col md={12}>
                     <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-                  </Col>
-                  <Col md={12}>
-                    <Delete onClick={() => removeIndividual(resId)}>X</Delete>
                   </Col>
                 </Row>
                 <Row gutter={20}>

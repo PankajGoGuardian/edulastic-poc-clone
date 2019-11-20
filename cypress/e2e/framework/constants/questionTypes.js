@@ -63,7 +63,6 @@ export const questionGroup = {
   MATH: "Math",
   GRAPH: "Graphing",
   CHART: "Charts",
-  CHEM: "Chemistry",
   MULTI: "Multipart",
   VID: "Video & Text",
   RULER: "Rulers & Calculators",

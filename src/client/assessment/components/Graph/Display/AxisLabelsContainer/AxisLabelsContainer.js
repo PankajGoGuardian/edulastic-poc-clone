@@ -23,6 +23,7 @@ import Tools from "../../common/Tools";
 import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 import { getAdjustedHeightAndWidth } from "../../common/utils";
+import AppConfig from "../../../../../../../app-config";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -267,30 +268,16 @@ class AxisLabelsContainer extends PureComponent {
 
     const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
-    let _elements = elements.map(item => {
-      let point = item.point;
-      if (item.point.indexOf("<p>") === 0) {
-        point = `<p title="${item.point.substring(3, item.point.length - 4)}">${item.point.substring(
-          3,
-          item.point.length - 4
-        )}</p>`;
-      }
-      return {
-        ...item,
-        point
-      };
-    });
-
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(getCorrectAnswer(_elements));
+      this._graph.loadMarksAnswers(getCorrectAnswer(elements));
       return;
     }
 
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(_elements, compareResult);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       this._graph.loadMarksAnswers(coloredElements);
@@ -299,7 +286,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(_elements, compareResult);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       this._graph.renderMarks(coloredElements);
@@ -307,12 +294,12 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     if (
-      !isEqual(_elements, this._graph.getMarks()) ||
+      !isEqual(elements, this._graph.getMarks()) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(_elements);
+      this._graph.renderMarks(elements);
     }
   };
 
@@ -382,8 +369,11 @@ class AxisLabelsContainer extends PureComponent {
       graphData,
       setQuestionData,
       list,
-      zoomLevel
+      zoomLevel,
+      previewTab,
+      theme
     } = this.props;
+    const { shouldZoom } = theme;
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
       this.parentWidth,
       this.parentHeight,
@@ -394,14 +384,10 @@ class AxisLabelsContainer extends PureComponent {
       responseBoxTitleWidth,
       disableResponse
     );
-
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
-          resources={[
-            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
-          ]}
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
@@ -422,6 +408,7 @@ class AxisLabelsContainer extends PureComponent {
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
                 <ResponseBox
+                  shouldZoom={shouldZoom}
                   scale={zoomLevel}
                   bounds={`.jsxbox-with-response-box-response-options.${this._graphId}`}
                   values={this.getMarkValues()}
@@ -487,10 +474,10 @@ AxisLabelsContainer.defaultProps = {
 };
 
 export default connect(
-  state => ({
+  (state, props) => ({
     stash: state.graphTools.stash,
     stashIndex: state.graphTools.stashIndex,
-    zoomLevel: state.ui.zoomLevel
+    zoomLevel: props.view === "edit" ? 1 : state.ui.zoomLevel
   }),
   {
     setElementsStash: setElementsStashAction,

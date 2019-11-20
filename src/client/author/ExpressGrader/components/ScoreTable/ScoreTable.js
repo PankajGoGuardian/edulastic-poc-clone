@@ -73,14 +73,14 @@ class ScoreTable extends Component {
     return { columnData };
   }
 
-  getColumnsForTable = (length, submittedLength) => {
+  getColumnsForTable = (length, submittedLength, showColumnsCount) => {
     const { showQuestionModal, isPresentationMode } = this.props;
 
     const columns = [
       {
         title: <TableTitle>Score Grid</TableTitle>,
         // Make score grid column fixed when more than 10 questions data exist
-        fixed: length > 7 ? "left" : false,
+        fixed: length > showColumnsCount ? "left" : false,
         width: 300,
         children: [
           {
@@ -155,7 +155,6 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: "sub-thead-th th-border-bottom",
-            width: 100,
             render: record => {
               const { columnData: tableData } = this.state;
               const isTest = record && record.testActivityId;
@@ -184,11 +183,12 @@ class ScoreTable extends Component {
   render() {
     let columnInfo = [];
     const { columnData } = this.state;
-    const { testActivity } = this.props;
+    const { testActivity, windowWidth } = this.props;
     const columnsLength = testActivity && testActivity.length !== 0 ? testActivity[0].questionActivities.length : 0;
     const submittedLength = testActivity.filter(x => x.status === "submitted").length;
+    const showColumnsCount = windowWidth < 1366 ? 5 : windowWidth < 1600 ? 7 : 10;
     if (columnsLength) {
-      columnInfo = this.getColumnsForTable(columnsLength, submittedLength);
+      columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
     }
     const scrollX = columnsLength * 100 + 300;
     const scrollY = window.innerHeight - 350;
@@ -201,7 +201,7 @@ class ScoreTable extends Component {
           //Columns length will be the number of questions
           //Column data length will be number of students
           scroll={{
-            x: columnsLength > 7 ? scrollX : false,
+            x: columnsLength > showColumnsCount ? scrollX : false,
             y: columnData.length > 6 ? scrollY : false
           }}
           rowKey={(record, i) => i}

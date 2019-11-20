@@ -25,11 +25,14 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop, isLine }) =
     <g>
       {yAxis.map((dot, index) => {
         const y = convertUnitToPx(dot, gridParams) + paddingTop;
+
         return (
           <Fragment>
-            <Text textAnchor="start" x={0} y={y} transform="translate(0, 5)">
-              {displayLabel(index) && <AxisLabel fractionFormat={fractionFormat} value={dot} />}
-            </Text>
+            <g transform={`translate(0, ${y})`}>
+              {displayLabel(index) && (
+                <AxisLabel fractionFormat={fractionFormat} value={dot} textAnchor="start" verticalAnchor="middle" />
+              )}
+            </g>
             {displayGridlines && yAxis.length - 1 !== index && (
               <Line x1={padding} y1={y} x2={width} y2={y} strokeWidth={1} />
             )}

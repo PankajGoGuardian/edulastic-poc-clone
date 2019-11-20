@@ -231,7 +231,7 @@ class UserForm extends React.Component {
                   <legend>Free Reduced Lunch</legend>
                   <Form.Item>
                     {getFieldDecorator("frlStatus", { initialValue: get(_source, "frlStatus", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
                       </Select>
@@ -242,7 +242,7 @@ class UserForm extends React.Component {
                   <legend>Individual Education Plan</legend>
                   <Form.Item>
                     {getFieldDecorator("iepStatus", { initialValue: get(_source, "iepStatus", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
                       </Select>
@@ -253,7 +253,7 @@ class UserForm extends React.Component {
                   <legend>English Language Learner</legend>
                   <Form.Item>
                     {getFieldDecorator("ellStatus", { initialValue: get(_source, "ellStatus", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
                       </Select>
@@ -264,7 +264,7 @@ class UserForm extends React.Component {
                   <legend>Special ED</legend>
                   <Form.Item>
                     {getFieldDecorator("sedStatus", { initialValue: get(_source, "sedStatus", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
                       </Select>
@@ -292,7 +292,7 @@ class UserForm extends React.Component {
                   <legend>Gender</legend>
                   <Form.Item>
                     {getFieldDecorator("gender", { initialValue: get(_source, "gender", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="male">Male</Option>
                         <Option value="female">Female</Option>
                         <Option value="other">Other</Option>
@@ -312,7 +312,7 @@ class UserForm extends React.Component {
                   <legend>Enable Text To Speech</legend>
                   <Form.Item>
                     {getFieldDecorator("tts", { initialValue: get(_source, "tts", "") })(
-                      <Select>
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="Yes">Yes</Option>
                         <Option value="No">No</Option>
                       </Select>

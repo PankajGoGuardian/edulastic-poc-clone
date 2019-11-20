@@ -127,6 +127,7 @@ function BulkEditModal({
               placeholder="Please enter 1 or more characters"
               onChange={val => setValue(val)}
               filterOption={false}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {coursesForDistrictList.map(course => (
                 <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
@@ -149,6 +150,7 @@ function BulkEditModal({
                 onSelect={selectTags}
                 onDeselect={deselectTags}
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 {!!searchValue.trim() ? (
                   <Select.Option key={0} value={searchValue} title={searchValue}>

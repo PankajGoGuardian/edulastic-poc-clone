@@ -113,6 +113,7 @@ export default class QuestionEditModal extends React.Component {
                       placeholder={"Select DOK"}
                       onSelect={val => onUpdate({ depthOfKnowledge: val })}
                       value={depthOfKnowledge}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
                     >
                       <Select.Option key={"Select DOK"} value={""}>
                         {"Select DOK"}
@@ -134,6 +135,7 @@ export default class QuestionEditModal extends React.Component {
                       placeholder={"Select Difficulty Level"}
                       onSelect={val => onUpdate({ authorDifficulty: val })}
                       value={authorDifficulty}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
                     >
                       <Select.Option key={"Select Difficulty Level"} value={""}>
                         {"Select Difficulty Level"}

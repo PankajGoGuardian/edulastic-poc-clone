@@ -75,6 +75,7 @@ export default createReducer(initialState, {
   [SET_PASSAGES_DATA]: setPassagesData,
   [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
     if (Array.isArray(report)) {
+      state.byId = state.byId || {};
       for (let el of report) {
         state.byId[el._id] = el;
       }

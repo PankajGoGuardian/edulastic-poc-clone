@@ -104,7 +104,7 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} }
     } = this.props;
 
-    const { testActivityId, groupId, testItemId } = activity;
+    const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -243,7 +243,12 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
               value={
-                activity && activity.graded === false && activity.score === 0 && !score && !this.state.changed
+                activity &&
+                activity.graded === false &&
+                activity.score === 0 &&
+                !score &&
+                !this.state.changed &&
+                !activity.skipped
                   ? ""
                   : adaptiveRound(score || 0)
               }

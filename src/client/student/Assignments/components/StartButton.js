@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { borders } from "@edulastic/colors";
+import { borders, mobileWidthMax } from "@edulastic/colors";
 // assets
 import lockIcon from "../../assets/lock-icon.svg";
 // components
@@ -37,13 +37,18 @@ const NotAvailableButton = styled(StartButton)`
   display: flex;
   justify-content: space-evenly;
   height: 40px;
-  margin-left: auto;
   margin-top: 5px;
   &.ant-btn[disabled] {
     background: transparent;
     position: relative;
     padding-left: 40px;
     border-color: ${borders.primary};
+    width: auto;
+
+    @media screen and (max-width: ${mobileWidthMax}) {
+      margin-top: 10px;
+      margin-left: 0px;
+    }
 
     span {
       color: ${borders.primary};

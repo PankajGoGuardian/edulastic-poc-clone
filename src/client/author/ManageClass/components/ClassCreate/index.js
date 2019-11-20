@@ -78,7 +78,7 @@ class ClassCreate extends React.Component {
         const { createClass, curriculums } = this.props;
         const { standardSets, endDate, startDate, courseId, grades, subject, tags } = values;
 
-        const updatedStandardsSets = standardSets.map(el => {
+        const updatedStandardsSets = standardSets?.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
           return {
             _id: selectedCurriculum._id,
@@ -96,9 +96,9 @@ class ClassCreate extends React.Component {
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
         values.courseId = isEmpty(courseId) ? "" : courseId;
-        values.grades = isEmpty(grades) ? ["Other"] : grades;
+        values.grades = isEmpty(grades) ? ["O"] : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
-        values.tags = tags.map(t => allTagsData.find(o => o._id === t));
+        values.tags = tags?.map(t => allTagsData.find(o => o._id === t));
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
@@ -192,6 +192,10 @@ class ClassCreate extends React.Component {
                     setSubject={setSubject}
                     userOrgData={userOrgData}
                     clearStandards={this.clearStandards}
+                    tags={tags}
+                    setFieldsValue={setFieldsValue}
+                    allTagsData={allTagsData}
+                    addNewTag={addNewTag}
                   />
                 </RightContainer>
               </Row>

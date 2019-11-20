@@ -301,6 +301,7 @@ class ShareModal extends React.Component {
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 notFoundContent={fetching ? <Spin size="small" /> : null}
                 value={userSelectedLabel}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 {filteredUserList.map(item => (
                   <Select.Option
@@ -317,6 +318,7 @@ class ShareModal extends React.Component {
                 onChange={this.permissionHandler}
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 {_permissionKeys.map(item => {
                   return (

@@ -132,9 +132,13 @@ const ActionContainer = ({
               "username",
               "contactEmails"
             ]);
-            const contactEmails = get(stdData, "contactEmails", "");
-            if (contactEmails?.trim().length) {
+            // contactEmails field in backend is of array type with one value
+            const contactEmails = get(stdData, "contactEmails", []);
+            //no need to have length check, as it is already handled in form validator
+            if (contactEmails?.[0]) {
               stdData.contactEmails = [contactEmails];
+            } else {
+              stdData.contactEmails = [];
             }
             updateStudentRequest({
               userId,

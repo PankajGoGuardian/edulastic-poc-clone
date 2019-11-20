@@ -177,7 +177,7 @@ class MathFormulaEdit {
       .first()
       .get(".keyboard")
       .find('button[data-cy="virtual-keyboard-Backspace"]')
-      .click();
+      .click({ force: true });
 
   getMathKeyBoardDropdown = () => cy.get('[data-cy="math-keyboard-dropdown"]');
 
@@ -191,14 +191,15 @@ class MathFormulaEdit {
     this.getMathFormulaAnswers()
       .last()
       .find('[data-cy="delete-answer-method"]')
-      .click();
+      .click({ force: true });
 
   getMathFormulaAnswers = () => cy.get('[data-cy="math-formula-answer"]');
 
   addAlternateAnswer = () => {
-    cy.get('[data-cy="alternate"]')
+    cy.get("body")
+      .contains("+ Alternative Answer")
       .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   };
 
@@ -207,7 +208,7 @@ class MathFormulaEdit {
   returnToCorrectTab = () => {
     cy.get('[data-cy="correct"]')
       .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   };
 
@@ -225,7 +226,8 @@ class MathFormulaEdit {
 
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
-    preview.getClear().click();
+    cy.wait(3000);
+    preview.getClear().click({ force: true });
     this.getAnswerMathTextArea().should("be.empty");
 
     if (Array.isArray(expectedValue)) {
@@ -237,14 +239,15 @@ class MathFormulaEdit {
     this.checkNoticeMessageScore(preview, isCorrect, this.checkAttr(isCorrect), scoreValuse);
 
     preview.header.edit();
+    cy.wait(3000);
     if (inputLength > 0) this.clearAnswerValueInput(inputLength);
   };
 
   checkAttr = isCorrect => () => {
     if (isCorrect) {
-      this.getAnswerMathInputStyle().should("have.attr", "style", "background: rgb(225, 251, 242);");
+      this.getAnswerMathInputStyle().should("have.css", "background-color", "rgb(132, 205, 54)");
     } else {
-      this.getAnswerMathInputStyle().should("have.attr", "style", "background: rgb(252, 224, 232);");
+      this.getAnswerMathInputStyle().should("have.css", "background-color", "rgb(252, 224, 232)");
     }
   };
 
@@ -269,18 +272,19 @@ class MathFormulaEdit {
 
   getAnswerAriaLabel = () => cy.get('[data-cy="answer-aria-label"]');
 
-  getAnswerSignificantDecimalPlaces = () => cy.get('[data-cy="answer-significant-decimal-places"]');
+  getAnswerSignificantDecimalPlaces = () => cy.get('[data-cy="answer-allow-significant-decimal-places"]');
 
   getAnswerIgnoreTextCheckox = () => cy.get('[data-cy="answer-ignore-text-checkbox"]');
 
   getAnswerCompareSides = () => cy.get('[data-cy="answer-compare-sides"]');
 
-  getAnswerTreatEasEulersNumber = () => cy.get('[data-cy="answer-treat-eas-eulers-number"]');
+  getAnswerTreatEasEulersNumber = () => cy.get('[data-cy="answer-allow-eulers-number"]');
 
-  getAnswerAllowThousandsSeparator = () => cy.get('[data-cy="answer-allow-thousands-separator"]');
+  getAnswerAllowThousandsSeparator = () => cy.get('[data-cy="answer-allow-thousand-separator"]');
 
-  getAnswerSetDecimalSeparatorDropdown = () => cy.get('[data-cy="answer-set-decimal-separator-dropdown"]');
+  getAnswerSetDecimalSeparatorDropdown = () => cy.get('[data-cy="answer-allow-decimal-separator"]');
 
+  getAnswerSetDecimalSeparatorDropdownList_ = () => cy.get('[data-cy="answer-set-decimal-separator-dropdown"]');
   getAnswerSetDecimalSeparatorDropdownList = index =>
     cy.get(`[data-cy="answer-set-decimal-separator-dropdown-list-${index}"]`);
 
@@ -292,20 +296,23 @@ class MathFormulaEdit {
 
   setThousandSeperator = seperator =>
     this.getThousandsSeparatorDropdown()
-      .click()
+      .click({ force: true })
       .then(() => {
         this.getThousandsSeparatorDropdownList(seperator)
           .should("be.visible")
-          .click();
+          .click({ force: true });
       });
 
   setDecimalSeperator = separator => {
     this.getAnswerSetDecimalSeparatorDropdown()
-      .click()
+      .check()
+      .should("be.checked");
+    this.getAnswerSetDecimalSeparatorDropdownList_()
+      .click({ force: true })
       .then(() => {
         this.getAnswerSetDecimalSeparatorDropdownList(separator)
           .should("be.visible")
-          .click();
+          .click({ force: true });
       });
   };
 
@@ -337,7 +344,7 @@ class MathFormulaEdit {
 
   getAnswerIgnoreLeadingAndTrailingSpaces = () => cy.get('[data-cy="answer-ignore-leading-and-trailing-spaces"]');
 
-  getAnswerTreatMultipleSpacesAsOne = () => cy.get('[data-cy="answer-treat-multipleSpacesAsOne"]');
+  getAnswerTreatMultipleSpacesAsOne = () => cy.get('[data-cy="answer-treat-multiple-spaces-as-one"]');
 
   getAnswerRuleDropdown = () => cy.get('[data-cy="answer-rule-dropdown"]');
 
@@ -349,7 +356,7 @@ class MathFormulaEdit {
     return JSON.parse(storeValue).entity.data;
   };
 
-  getComposeQuestionTextBox = () => this.getComposeQuestionQuillComponent().find(".ql-editor");
+  getComposeQuestionTextBox = () => this.getComposeQuestionQuillComponent().find("p");
 
   getComposeQuestionTextBoxLink = () => this.getComposeQuestionQuillComponent().find(".ql-editor p");
 
@@ -369,7 +376,7 @@ class MathFormulaEdit {
 
   getCorrectAnswerBox = () => cy.get('[data-cy="correct-answer-box"]');
 
-  getComposeQuestionQuillComponent = () => cy.get('[data-cy="compose-question-quill-component"]');
+  getComposeQuestionQuillComponent = () => cy.get(".fr-element");
 
   getUploadImageIcon = () => this.getComposeQuestionQuillComponent().find(".ql-image");
 
@@ -396,6 +403,8 @@ class MathFormulaEdit {
     this.getMathFormulaAnswers()
       [inputOrder]()
       .find(`[data-cy="answer-input-math-textarea"]`)
+      .type("a", { force: true })
+      .type("{backspace}", { force: true })
       .then(element => {
         cy.get("[mathquill-block-id]").then(elements => {
           const newOrder = elements.length === 4 && order === 1 ? 2 : order;
@@ -403,15 +412,15 @@ class MathFormulaEdit {
           cy.wrap(element)
             [inputOrder]()
             .type("{del}".repeat(length === 0 ? 1 : length), { force: true })
-            .type(input, { force: true });
+            .typeWithDelay(input, { force: true });
         });
       });
   };
 
   setRule = rule => {
     this.getAnswerRuleDropdown()
-      .click()
-      .then(() => this.getAnswerRuleDropdownByValue(rule).click());
+      .click({ force: true })
+      .then(() => this.getAnswerRuleDropdownByValue(rule).click({ force: true }));
   };
 
   unCheckAllCheckBoxInAnswers = checkBoxOrder =>
@@ -429,16 +438,17 @@ class MathFormulaEdit {
       this[checkBoxName]()
         [checkBoxOrder]()
         .check({ force: true })
+        .wait(2000)
         .should("be.checked");
   };
 
   setThousandsSeparatorDropdown = separator =>
     this.getThousandsSeparatorDropdown()
-      .click()
+      .click({ force: true })
       .then(() => {
         this.getThousandsSeparatorDropdownList(separator)
-          .should("be.visible")
-          .click();
+          //.should("be.visible")
+          .click({ force: true });
       });
 
   allowDecimalMarks = (separator, thousand, inputLength, expected, preview, isCorrect = false) => {
@@ -454,10 +464,10 @@ class MathFormulaEdit {
 
     this.getAnswerFieldDropdown()
       [inputOrder]()
-      .click()
+      .click({ force: true })
       .then(() =>
         this.getAnswerFieldDropdownListValue(field)
-          .click()
+          .click({ force: true })
           .should("be.visible")
       );
   };
@@ -469,12 +479,15 @@ class MathFormulaEdit {
     const inputOrder = this.getOrder(order);
     this.getAnswerSetDecimalSeparatorDropdown()
       [inputOrder]()
-      .click()
+      .check({ force: true })
+      .should("be.checked");
+    this.getAnswerSetDecimalSeparatorDropdownList_()
+      .click({ force: true })
       .then(() => {
         this.getAnswerSetDecimalSeparatorDropdownList(separator)
           [inputOrder]()
-          .should("be.visible")
-          .click();
+          // .should("be.visible")
+          .click({ force: true });
       });
   };
 
@@ -491,12 +504,22 @@ class MathFormulaEdit {
       .clear({ force: true })
       .type("{uparrow}".repeat(input), { force: true });
   };
+  setArgumentInput_ = (selector, input, order = 0) => {
+    const inputOrder = this.getOrder(order);
+
+    this[selector]()[inputOrder]();
+    cy.get('[data-cy="answer-significant-decimal-places"]')
+      .clear({ force: true })
+      .type("{uparrow}".repeat(input), { force: true });
+  };
 
   checkIfTextExist = data =>
     this.getComposeQuestionTextBox()
       .first()
-      .clear()
+      .should("be.visible")
+      .type("{selectall}")
       .type(data)
+
       .then($input => {
         expect($input[0].innerText).to.contain(data);
       });
@@ -515,13 +538,13 @@ class MathFormulaEdit {
 
   setAnswerArgumentDropdownValue = value =>
     this.getAnswerRuleArgumentSelect()
-      .click()
-      .then(() => this.getAnswerArgumentDropdownByValue(value).click());
+      .click({ force: true })
+      .then(() => this.getAnswerArgumentDropdownByValue(value).click({ force: true }));
 
   checkNoticeMessageScore = (preview, isCorrect, checkAnswerHighlightColor, scoreValuse = "1/1") => {
     preview
       .getCheckAnswer()
-      .click()
+      .click({ force: true })
       .then(() =>
         cy
           .get("body")
@@ -532,7 +555,7 @@ class MathFormulaEdit {
 
     preview
       .getClear()
-      .click()
+      .click({ force: true })
       .then(() => {
         cy.get("body")
           .children()

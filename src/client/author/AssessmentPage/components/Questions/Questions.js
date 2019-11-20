@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
 import { sortBy, maxBy, get, uniqBy } from "lodash";
+import { SortableElement, sortableHandle, SortableContainer } from "react-sortable-hoc";
+import styled from "styled-components";
 
 import {
   SHORT_TEXT,
@@ -26,12 +28,58 @@ import AddQuestion from "../AddQuestion/AddQuestion";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import QuestionEditModal from "../QuestionEditModal/QuestionEditModal";
 import Section from "../Section/Section";
-import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
+import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction, StyledHandleSpan } from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
 import { getRecentStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../../../src/actions/dictionaries";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { FaBars } from "react-icons/fa";
+
+const DragHandle = sortableHandle(({ review }) => (
+  <StyledHandleSpan review={review}>
+    <FaBars />
+  </StyledHandleSpan>
+));
+
+const SortableQuestionItem = SortableElement(
+  ({
+    key,
+    index,
+    data,
+    review,
+    onCreateOptions,
+    onOpenEdit,
+    onDelete,
+    previewMode,
+    viewMode,
+    answer,
+    feedback,
+    previousFeedback,
+    onDragStart,
+    highlighted
+  }) => (
+    <div style={{ display: "flex" }}>
+      <DragHandle review={review} />
+      <QuestionItem
+        key={key}
+        index={index}
+        data={data}
+        review={review}
+        onCreateOptions={onCreateOptions}
+        onOpenEdit={onOpenEdit}
+        onDelete={onDelete}
+        previewMode={previewMode}
+        viewMode={viewMode}
+        answer={answer}
+        feedback={feedback}
+        previousFeedback={previousFeedback}
+        onDragStart={onDragStart}
+        highlighted={highlighted}
+      />
+    </div>
+  )
+);
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
@@ -393,7 +441,7 @@ class Questions extends React.Component {
                   onDelete={this.handleDeleteQuestion(question.id)}
                 />
               ) : (
-                <QuestionItem
+                <SortableQuestionItem
                   key={question.id}
                   index={i}
                   data={question}
@@ -462,7 +510,8 @@ const enhance = compose(
       changePreview: changePreviewAction,
       removeUserAnswer: clearAnswersAction
     }
-  )
+  ),
+  SortableContainer
 );
 
 export default enhance(Questions);

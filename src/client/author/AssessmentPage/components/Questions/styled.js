@@ -5,7 +5,7 @@ import { themeColor, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  width: 330px;
+  width: 360px;
   height: calc(100% - 140px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
   padding: 30px 0;
@@ -47,4 +47,16 @@ export const AnswerAction = styled(Button)`
   &:last-child {
     margin-right: 0;
   }
+`;
+
+export const StyledHandleSpan = styled.span`
+  color: #00ad50;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px 0 0 10px;
+  background: #fff;
+  height: ${({ review }) => (review ? "79px" : "96px")};
+  width: 30px;
+  padding-top: ${({ review }) => (review ? "30px" : "36px")};
+  padding-left: 6px;
+  cursor: grab;
 `;

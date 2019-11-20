@@ -17,6 +17,7 @@ import Questions from "../Questions/Questions";
 import { WorksheetWrapper, MinimizeButton } from "./styled";
 import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
+import { updateQuestionNumberAction } from "../../../sharedDucks/questions";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
 import { getTestEntitySelector } from "../../../AssignTest/duck";
@@ -489,6 +490,12 @@ class Worksheet extends React.Component {
   toggleToolBarVisiblity = () => {
     this.setState(prev => ({ isToolBarVisible: !prev.isToolBarVisible }));
   };
+
+  onSortEnd = data => {
+    const { updateQuestionNumber } = this.props;
+    updateQuestionNumber(data);
+  };
+
   // setup for scratchpad ends
   render() {
     const {
@@ -647,6 +654,11 @@ class Worksheet extends React.Component {
           answersById={answersById}
           highlighted={highlightedQuestion}
           onDragStart={this.onDragStart}
+          lockToContainerEdges
+          lockOffset={["10%", "0%"]}
+          lockAxis={"y"}
+          useDragHandle
+          onSortEnd={this.onSortEnd}
         />
       </WorksheetWrapper>
     );
@@ -677,7 +689,8 @@ const enhance = compose(
       setPercentUploaded: setPercentUploadedAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
-      setTestData: setTestDataAction
+      setTestData: setTestDataAction,
+      updateQuestionNumber: updateQuestionNumberAction
     }
   )
 );

@@ -373,8 +373,7 @@ class LeftFilter extends React.Component {
           ]}
         >
           <p>
-            {" "}
-            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.{" "}
+            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.
           </p>
         </ConfirmationModal>
 

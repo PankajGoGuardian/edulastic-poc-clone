@@ -7,8 +7,8 @@ export const ResponseContainer = styled.div`
   border-radius: 10px;
   overflow: hidden;
   img {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 100px !important;
+    max-height: 100px !important;
   }
   p {
     margin-bottom: 0px;

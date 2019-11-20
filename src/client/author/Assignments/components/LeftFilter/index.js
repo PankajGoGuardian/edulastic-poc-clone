@@ -129,7 +129,6 @@ class LeftFilter extends React.Component {
       addMoveToFolderRequest,
       folderData: { _id: folderId },
       folders,
-      loadFolders,
       clearSelectedRow,
       isAdvancedView
     } = this.props;
@@ -171,12 +170,9 @@ class LeftFilter extends React.Component {
       return pickBy(param, identity);
     });
 
-    if (addMoveToFolderRequest) {
-      addMoveToFolderRequest({ folderId: moveFolderId, params });
-      loadFolders();
-      clearSelectedRow();
-      this.setState({ moveFolderId: "" });
-    }
+    addMoveToFolderRequest({ folderId: moveFolderId, params });
+    clearSelectedRow();
+    this.setState({ moveFolderId: "" });
     this.hideModal("moveFolder");
   };
 
@@ -336,6 +332,7 @@ class LeftFilter extends React.Component {
     return (
       <FilterContainer>
         <FolderActionModal
+          centered
           title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
           onCancel={() => this.hideModal("newFolder")}
@@ -382,6 +379,7 @@ class LeftFilter extends React.Component {
         </ConfirmationModal>
 
         <MoveFolderActionModal
+          centered
           title={<ModalTitle>{`Move ${selectedRows.length} item(s) to…`}</ModalTitle>}
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
@@ -527,7 +525,6 @@ LeftFilter.propTypes = {
   deleteFolder: PropTypes.func.isRequired,
   setFolder: PropTypes.func.isRequired,
   clearFolder: PropTypes.func.isRequired,
-  loadFolders: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onSetFilter: PropTypes.func.isRequired,
   folderData: PropTypes.object.isRequired,
@@ -564,7 +561,6 @@ export default connect(
     deleteFolder: receiveDeleteFolderAction,
     renameFolder: receiveRenameFolderAction,
     setFolder: setFolderAction,
-    loadFolders: receiveFolderAction,
     clearFolder: clearFolderAction
   }
 )(LeftFilter);

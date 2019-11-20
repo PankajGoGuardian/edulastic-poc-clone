@@ -65,14 +65,13 @@ function* receiveAddMoveFolderRequest({ payload }) {
       assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
     const moveFolderName = params[0].folderName;
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
-
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
-    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
-    yield call(message.success, successMsg);
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
-      payload: result.data
+      payload: { ...result.data, params }
     });
+    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
+    yield call(message.success, successMsg);
   } catch (error) {
     const errorMessage = "Add or Move content to folder failing";
     yield call(message.error, errorMessage);

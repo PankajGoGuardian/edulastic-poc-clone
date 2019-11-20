@@ -11,7 +11,7 @@ class TokenhighLightPage {
 
   // question content
   getQuestionEditor() {
-    return cy.get('[data-placeholder="Enter question"');
+    return cy.get("[contenteditable=true]").eq(0);
   }
 
   // template
@@ -21,9 +21,10 @@ class TokenhighLightPage {
 
   getTemplateEditor() {
     return cy
-      .get("#template")
+      .get("[data-cy=tabs]")
+      .eq(0)
       .next()
-      .find(".ql-editor");
+      .find('[contenteditable="true"]'); //eq(0).xpath('child::div').eq(1)
   }
 
   // token
@@ -31,17 +32,26 @@ class TokenhighLightPage {
     return cy.get("body").contains("Edit token");
   }
 
-  paragraph() {
-    return cy.get("body").contains("button", "Paragraph");
-  }
+  paragraph = () =>
+    cy
+      .get('[data-cy="tabs"]')
+      .eq(0)
+      .next()
+      .contains("Paragraph");
 
-  sentence() {
-    return cy.get("body").contains("button", "Sentence");
-  }
+  sentence = () =>
+    cy
+      .get('[data-cy="tabs"]')
+      .eq(0)
+      .next()
+      .contains("Sentence");
 
-  word() {
-    return cy.get("body").contains("button", "Word");
-  }
+  word = () =>
+    cy
+      .get('[data-cy="tabs"]')
+      .eq(0)
+      .next()
+      .contains("Word");
 
   getAllTokens() {
     return this.editToken()
@@ -58,13 +68,13 @@ class TokenhighLightPage {
 
   getAllTokenAnswer() {
     return cy
-      .contains("Set Correct Answer(s)")
-      .siblings()
+      .get("[data-cy=previewWrapper]")
+
       .find(".answer");
   }
 
   goToEditToken() {
-    this.editToken().click();
+    this.editToken().click({ force: true });
   }
 
   goToEditTemplate() {
@@ -105,7 +115,7 @@ class TokenhighLightPage {
   }
 
   getMaxSelection() {
-    return Helpers.getElement("maxSelectionOption").should("be.visible");
+    return cy.contains("Max selection").next();
   }
 
   getPreviewWrapper() {

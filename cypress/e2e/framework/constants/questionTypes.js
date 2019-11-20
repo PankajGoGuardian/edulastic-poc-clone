@@ -49,8 +49,8 @@ export const queColor = {
   YELLOW: "rgb(253, 204, 59)",
   GREEN: "rgb(23, 116, 240)",
   CLEAR_DAY: "rgb(225, 251, 242)",
-  LIGHT_GREEN: "rgba(0, 173, 80, 0.19)",
-  LIGHT_RED: "rgba(238, 22, 88, 0.15)",
+  LIGHT_GREEN: "rgb(211, 254, 166)",
+  LIGHT_RED: "rgb(252, 224, 232)",
   GREEN_1: "rgb(0, 173, 80)"
 };
 

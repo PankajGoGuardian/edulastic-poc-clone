@@ -5,6 +5,10 @@ class AssignmentsPage {
     return cy.get('[data-cy="assignmentButton"]');
   }
 
+  getAssignmentByTestId(testId) {
+    return cy.get(`[data-cy="test-${testId}"]`);
+  }
+
   getReviewButton() {
     return cy.get('[data-cy="reviewButton"]');
   }
@@ -54,8 +58,19 @@ class AssignmentsPage {
     // cy.wait("@startTest");
     // cy.wait("@gettest");
     // return cy.wait("@saved").then(() => new StudentTestPage());
-    return cy.wait("@gettest").then(() => new StudentTestPage());
+    return cy.wait("@gettest").then(() => {
+      return new StudentTestPage();
+    });
   }
+
+  clickOnAssigmentByTestId = testId => {
+    cy.server();
+    cy.route("GET", "**/test/**").as("gettest");
+    this.getAssignmentByTestId(testId)
+      .should("be.visible")
+      .click({ force: true });
+    return cy.wait("@gettest").then(() => new StudentTestPage());
+  };
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType) {
     cy.contains("div", name).should("be.visible");

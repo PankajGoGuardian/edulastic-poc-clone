@@ -118,7 +118,7 @@ export default class QuestionResponsePage {
     cy.route("GET", "**/test-activity/**").as("test-activity");
     this.getDropDown()
       .eq(0)
-      .click();
+      .click({ force: true });
 
     CypressHelper.getDropDownList(list => {
       index = list.indexOf(studentName);
@@ -146,7 +146,7 @@ export default class QuestionResponsePage {
     // const questionSelect = `Question ${queNum.slice(1)}`;
     cy.server();
     cy.route("GET", "**/item/**").as("item");
-    this.getDropDown().click();
+    this.getDropDown().click({ force: true });
     this.getDropDownMenu()
       .contains(`Question ${queNum.slice(1)}`)
       .click({ force: true });

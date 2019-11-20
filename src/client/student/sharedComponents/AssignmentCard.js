@@ -257,8 +257,9 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   );
 
   return (
-    <CardWrapper>
+    <CardWrapper data-cy={`test-${data.testId}`}>
       <AssessmentDetails
+        data-cy={`test-${data.testId}`}
         title={title}
         thumbnail={thumbnail}
         theme={theme}

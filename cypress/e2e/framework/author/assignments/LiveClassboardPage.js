@@ -185,7 +185,7 @@ class LiveClassboardPage {
     cy.route("POST", "**/redirect").as("redirect");
     cy.route("GET", "**/test-activity").as("testactivity");
     this.getRedirecPopUp()
-      .contains("span", "SUBMIT")
+      .get('[data-cy="confirmRedirect"]')
       .click({ force: true });
     cy.wait("@redirect").then(xhr => {
       expect(xhr.status).to.equal(200);
@@ -194,8 +194,8 @@ class LiveClassboardPage {
 
     // FIXME: page doesn't update unless refresh on Cypress only,
     // need to revisit h. for now reloading the page to verify redirected stats
-    cy.reload();
-    cy.wait("@testactivity");
+    // cy.reload();
+    // cy.wait("@testactivity");
   };
 
   verifyStudentsOnRedirectPopUp = student =>
@@ -405,7 +405,7 @@ class LiveClassboardPage {
     const noAttempts = {};
     for (let key in attempts) {
       if (attempts.hasOwnProperty(key)) {
-        noAttempts[key] = attemptTypes.SKIP;
+        noAttempts[key] = attemptTypes.NO_ATTEMPT;
       }
     }
     return noAttempts;

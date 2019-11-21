@@ -195,6 +195,11 @@ export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current ass
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
 export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments] show release grade settings";
 
+export const TOGGLE_DELETE_ASSIGNMENT_MODAL = "[assignments] toggle delete assignment modal";
+export const DELETE_ASSIGNMENT_REQUEST = "[assignments] toggle delete assignment request";
+export const DELETE_ASSIGNMENT_REQUEST_SUCCESS = "[assignments] delete assignment request success";
+export const DELETE_ASSIGNMENT_REQUEST_FAILED = "[assignments] delete assignment request failed";
+
 export const ADVANCED_ASSIGNMENT_VIEW = "[assignments] change view";
 
 export const RECEIVE_CLASS_QUESTION_REQUEST = "[answers] receive list request";

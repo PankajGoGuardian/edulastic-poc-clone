@@ -11,9 +11,14 @@ import {
   SET_ASSIGNMENT_FILTER,
   UPDATE_CURRENT_EDITING_ASSIGNMENT,
   TOGGLE_RELEASE_GRADE_SETTINGS,
-  ADVANCED_ASSIGNMENT_VIEW
+  ADVANCED_ASSIGNMENT_VIEW,
+  TOGGLE_DELETE_ASSIGNMENT_MODAL,
+  DELETE_ASSIGNMENT_REQUEST,
+  DELETE_ASSIGNMENT_REQUEST_SUCCESS,
+  DELETE_ASSIGNMENT_REQUEST_FAILED
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { find, keyBy } from "lodash";
 
 const initialState = {
   summaryEntities: [],
@@ -86,6 +91,37 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         isAdvancedView: !state.isAdvancedView
       };
+    case TOGGLE_DELETE_ASSIGNMENT_MODAL:
+      return {
+        ...state,
+        toggleDeleteAssignmentModalState: payload
+      };
+    case DELETE_ASSIGNMENT_REQUEST_SUCCESS:
+      const keyMap = keyBy(payload);
+      const assignment = find(state.entities.assignments, item => keyMap[item._id]);
+
+      if (assignment) {
+        const testId = assignment.testId;
+        const _assignments = state.entities.assignments.filter(item => !keyMap[item._id]);
+        const _assignment = find(_assignments, item => item.testId === testId);
+        if (!_assignment) {
+          return {
+            ...state,
+            entities: {
+              tests: state.entities.tests.filter(item => item._id !== testId),
+              assignments: _assignments
+            }
+          };
+        } else {
+          return {
+            ...state,
+            entities: {
+              ...state.entities,
+              assignments: _assignments
+            }
+          };
+        }
+      }
     default:
       return state;
   }

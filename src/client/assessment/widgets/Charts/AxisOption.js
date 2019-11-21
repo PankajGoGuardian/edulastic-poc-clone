@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { compose } from "redux";
@@ -11,22 +11,34 @@ import { Subtitle } from "../../styled/Subtitle";
 import { Row, ColumnLabel, ColoredRow, RowLabel, StyledTextField, Col } from "../../styled/Grid";
 
 const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) => {
-  const { uiStyle } = item;
+  const [uiStyle, setUiStyle] = useState(item.uiStyle);
+
+  useEffect(() => {
+    setUiStyle(item.uiStyle);
+  }, [item.uiStyle]);
+
+  const handleUiInputBlur = event => {
+    const { name } = event.target;
+    setQuestionData(
+      produce(item, draft => {
+        switch (name) {
+          case "snapTo":
+          case "stepSize":
+            draft.uiStyle[name] = uiStyle[name] <= 0 ? 0.1 : uiStyle[name];
+            break;
+          default:
+            draft.uiStyle[name] = uiStyle[name];
+        }
+      })
+    );
+  };
 
   const handleUiInputChange = event => {
     const { value, name, type } = event.target;
     const val = type !== "text" ? +value : value;
-    setQuestionData(
-      produce(item, draft => {
-        switch (name) {
-          case "stepSize":
-            draft.uiStyle[name] = val <= 0 ? 0.1 : val;
-            break;
-          default:
-            draft.uiStyle[name] = val;
-        }
-      })
-    );
+    const newUiStyle = { ...uiStyle };
+    newUiStyle[name] = val;
+    setUiStyle(newUiStyle);
   };
 
   const handleUiCheckboxChange = name => () => {
@@ -60,10 +72,10 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
               <ColumnLabel>{t("component.chart.maximum")}</ColumnLabel>
             </Col>
             <Col md={4}>
-              <ColumnLabel>{t("component.chart.majorTicks")}</ColumnLabel>
+              <ColumnLabel>{t("component.chart.stepSize")}</ColumnLabel>
             </Col>
             <Col md={4}>
-              <ColumnLabel>{t("component.chart.minorTicks")}</ColumnLabel>
+              <ColumnLabel>{t("component.chart.snapTo")}</ColumnLabel>
             </Col>
             <Col md={4}>
               <ColumnLabel>{t("component.chart.showTicks")}</ColumnLabel>
@@ -99,6 +111,7 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
                 name="yAxisLabel"
                 value={uiStyle.yAxisLabel}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>
@@ -108,6 +121,7 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
                 name="yAxisMin"
                 value={uiStyle.yAxisMin}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>
@@ -117,24 +131,27 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
                 name="yAxisMax"
                 value={uiStyle.yAxisMax}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>
             <Col md={4}>
               <StyledTextField
                 type="number"
-                name="yMajorTicks"
-                value={uiStyle.yMajorTicks || ""}
+                name="stepSize"
+                value={uiStyle.stepSize}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>
             <Col md={4}>
               <StyledTextField
                 type="number"
-                name="yMinorTicks"
-                value={uiStyle.yMinorTicks || ""}
+                name="snapTo"
+                value={uiStyle.snapTo}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>

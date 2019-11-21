@@ -16,7 +16,7 @@ import {
   getClassListSelector
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, roleuser } from "@edulastic/constants";
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
@@ -35,7 +35,7 @@ import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../Playlis
 import { receiveClassListAction } from "../../../Classes/ducks";
 import produce from "immer";
 
-const { ASSESSMENT, COMMON } = testConst;
+const { ASSESSMENT, COMMON } = testConst.type;
 
 const setTime = userRole => {
   const addDate = userRole !== "teacher" ? 28 : 7;
@@ -47,6 +47,7 @@ const setTime = userRole => {
 class AssignTest extends React.Component {
   constructor(props) {
     super(props);
+    const isAdmin = props.userRole === roleuser.SCHOOL_ADMIN || props.userRole === roleuser.DISTRICT_ADMIN;
     this.state = {
       isAdvancedView: props.userRole !== "teacher" ? true : false,
       assignment: {
@@ -54,7 +55,7 @@ class AssignTest extends React.Component {
         openPolicy: "Automatically on Start Date",
         closePolicy: "Automatically on Due Date",
         class: [],
-        testType: ASSESSMENT,
+        testType: isAdmin ? COMMON : ASSESSMENT,
         endDate: setTime(props.userRole)
       },
       specificStudents: false

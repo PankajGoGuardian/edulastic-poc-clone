@@ -270,9 +270,9 @@ const initialState = {
 };
 
 export const testTypeAsProfileNameType = {
-  [test.type.ASSESSMENT]: "common",
+  [test.type.ASSESSMENT]: "class",
   [test.type.PRACTICE]: "practice",
-  [test.type.COMMON]: "class"
+  [test.type.COMMON]: "common"
 };
 
 const getDefaultScales = (state, payload) => {

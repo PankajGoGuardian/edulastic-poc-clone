@@ -834,12 +834,12 @@ class ClassBoard extends Component {
                             </MenuItems>
                           </FeaturesSwitch>
                           <FeaturesSwitch
-                            inputFeatures="LCBmarkAsAb sent"
+                            inputFeatures="LCBmarkAsAbsent"
                             key="LCBmarkAsAbsent"
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <MenuItems disabled={false} onClick={this.handleShowMarkAsAbsentModal}>
+                            <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>

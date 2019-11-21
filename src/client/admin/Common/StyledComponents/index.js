@@ -83,12 +83,12 @@ export const StyledControlDiv = styled.div`
 export const StyledFilterDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  background: ${white};
+  background: ${props => props.theme.manageDistrict.searchDivBgColor};
   padding: 1.5rem;
   align-items: center;
   margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: ${boxShadowDefault};
+  border-radius: ${props => props.theme.manageDistrict.searchDivBorderRadius};
+  box-shadow: ${props => props.theme.manageDistrict.searchDivBoxShadow};
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
@@ -196,14 +196,14 @@ export const StyledTable = styled(AntdTable)`
 `;
 export const StyledAddFilterButton = styled(AntdButton)`
   margin-left: 20px;
-  font-size: 11px;
+  font-size: ${props => props.theme.manageDistrict.filterButtonFontSize};
+  font-weight: ${props => props.theme.manageDistrict.filterButtonFontWeight};
+  background: ${props => props.theme.manageDistrict.filterButtonBgColor};
+  color: ${props => props.theme.manageDistrict.filterButtonTextColor};
   text-transform: uppercase;
 `;
 
-export const StyledTableButton = styled.a`
-  margin-right: 20px;
-  font-size: 20px;
-`;
+export const StyledTableButton = styled.a``;
 
 export const StyledFilterInput = styled(Search)`
   margin-left: 20px;

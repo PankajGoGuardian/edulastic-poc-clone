@@ -62,15 +62,14 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-//  manage district common table
-
+//  manage district common components' styles
 export const MainContainer = styled.div``;
 
 export const TableContainer = styled.div`
-  background: white;
+  background: ${props => props.theme.manageDistrict.tableContainerBgColor};
   padding: 1rem;
-  border-radius: 5px;
-  box-shadow: ${boxShadowDefault};
+  border-radius: ${props => props.theme.manageDistrict.tableContainerBorderRadius};
+  box-shadow: ${props => props.theme.manageDistrict.tableContainerBoxShadow};
 `;
 
 export const SubHeaderWrapper = styled.div`
@@ -84,33 +83,31 @@ export const StyledSchoolSearch = styled(Input.Search)`
   max-width: ${props => (props.width ? `${props.width}px` : "auto")};
   margin-right: 20px;
   .ant-input {
-    border-radius: 2px;
-    background: ${lightGrey};
-    border: 1px solid #e1e1e1;
+    border-radius: ${props => props.theme.manageDistrict.inputFieldBorderRadius};
+    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
+    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
   }
   .ant-input-search-icon {
-    color: ${themeColor};
-    font-weight: bold;
+    color: ${props => props.theme.manageDistrict.iconColor};
+    font-weight: ${props => props.theme.manageDistrict.iconFontWeight};
   }
 `;
 
 export const StyledButton = styled(Button)`
   &.ant-btn {
-    margin-left: 10px;
-    font-size: 11px;
-    text-shadow: none;
-    font-weight: 600;
-    border-radius: 3px;
-    border-color: transparent;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-    color: ${themeColor};
-    width: 180px;
+    font-size: ${props => props.theme.manageDistrict.refineResultsButtonTextFontSize};
+    font-weight: ${props => props.theme.manageDistrict.refineResultsButtonTextFontWeight};
+    border-radius: ${props => props.theme.manageDistrict.refineResultsButtonBorderRadius};
+    box-shadow: ${props => props.theme.manageDistrict.refineResultsButtonBoxShadow};
+    color: ${props => props.theme.manageDistrict.refineResultsButtonTextColor};
+    border: none;
+    width: 170px;
+    height: 30px;
     &:hover,
     &:active,
     &:focus {
-      color: ${themeColor};
-      border-color: transparent;
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+      color: ${props => props.theme.manageDistrict.refineResultsButtonTextColor};
+      box-shadow: ${props => props.theme.manageDistrict.refineResultsButtonBoxShadow};
     }
     &::after {
       display: none !important;
@@ -118,9 +115,8 @@ export const StyledButton = styled(Button)`
   }
 `;
 export const FilterWrapper = styled.div`
-  background: ${white};
-  border-radius: 5px;
-  box-shadow: ${boxShadowDefault};
+  background: ${props => props.theme.manageDistrict.filterDivBgcolor};
+  border-radius: ${props => props.theme.manageDistrict.filterDivBorderRadius};
   padding: 1rem;
   margin-bottom: 15px;
 `;
@@ -130,13 +126,12 @@ export const StyledTable = styled(Table)`
     overflow: auto;
     &-thead {
       & > tr > th {
-        padding: 20px 10px;
-        background: green;
-        border-bottom: none;
+        color: ${props => props.theme.manageDistrict.tableHeaderTxtColor};
+        font-size: ${props => props.theme.manageDistrict.tableHeaderTxtSize};
         font-weight: bold;
-        font-size: 12px;
+        padding: 20px 10px;
         text-transform: uppercase;
-        color: ${cardTitleColor};
+        border-bottom: none;
         background: white;
         &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
         & .ant-table-header-column .ant-table-column-sorters::before {
@@ -166,11 +161,12 @@ export const StyledTable = styled(Table)`
     }
     &-tbody {
       & > tr {
-        background: ${lightGreySecondary};
-        font-family: Open Sans, SemiBold;
+        background: ${props => props.theme.manageDistrict.tableRowColor};
+        font-family: Open Sans;
         letter-spacing: 0.26px;
-        color: ${secondaryTextColor};
-        font-size: 14px;
+        color: ${props => props.theme.manageDistrict.tableRowTxtColor};
+        font-size: ${props => props.theme.manageDistrict.tableRowTxtSize};
+        font-weight: 600;
         cursor: pointer;
         border-bottom: 15px solid white;
         & > td {
@@ -195,7 +191,6 @@ export const StyledTable = styled(Table)`
 export const StyledTableButton = styled.a`
   opacity: 0;
   margin-right: 20px;
-  font-size: 20px;
   &:last-child {
     margin-right: 0;
   }
@@ -214,26 +209,26 @@ export const ButtonsContainer = styled.div`
 const CommonStyledButton = styled(Button)`
   border-radius: 4px;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: ${props => props.theme.manageDistrict.modalFooterBtnTextFontSize};
   min-width: 150px;
   height: 40px;
   white-space: nowrap;
 `;
 export const CancelButton = styled(CommonStyledButton)`
-  background: transparent;
-  color: ${themeColor};
-  border: 1px solid ${themeColor};
+  background: ${props => props.theme.manageDistrict.modalFooterBtnColor2};
+  color: ${props => props.theme.manageDistrict.modalFooterBtnTxtColor2};
+  border: 1px solid ${props => props.theme.manageDistrict.modalFooterBtnTxtColor2};
 `;
 
 export const OkButton = styled(CommonStyledButton)`
-  background: ${themeColor};
-  color: ${white};
+  background: ${props => props.theme.manageDistrict.modalFooterBtnColor1};
+  color: ${props => props.theme.manageDistrict.modalFooterBtnTxtColor1};
   border: none;
 `;
 export const StyledModal = styled(Modal)`
   .ant-modal {
     &-content {
-      background: ${lightGrey};
+      background: ${props => props.theme.manageDistrict.modalBgcolor};
       .ant-modal-close-x {
         font-size: 22px;
         font-weight: 600;
@@ -241,19 +236,19 @@ export const StyledModal = styled(Modal)`
     }
     &-header {
       .ant-modal-title {
-        font-size: 20px;
-        font-family: Bold, Open Sans;
-        color: ${secondaryTextColor};
-        font-weight: 550;
+        font-size: ${props => props.theme.manageDistrict.modalTitleFontSize};
+        font-family: Open Sans;
+        color: ${props => props.theme.manageDistrict.modalTitleColor};
+        font-weight: ${props => props.theme.manageDistrict.modalTitleFontWeight};
       }
       background: transparent;
       border-bottom: none;
     }
     &-body {
-      background: ${white};
+      background: ${props => props.theme.manageDistrict.modalBodyBgcolor};
       margin: 10px 25px;
-      border-radius: 4px;
-      box-shadow: ${boxShadowDefault};
+      border-radius: ${props => props.theme.manageDistrict.modalBodyBorderRadius};
+      box-shadow: ${props => props.theme.manageDistrict.modalBodyBoxShadow};
       padding: 20px 30px;
     }
     &-footer {
@@ -275,14 +270,13 @@ export const ModalFormItem = styled(Form.Item)`
     padding: 5px;
   }
   .ant-form-item-label {
-    font-family: Open Sans, SemiBold;
+    font-family: Open Sans;
     letter-spacing: 0.22px;
     text-transform: uppercase;
-    color: ${title};
-    font-weight: 510;
+    color: ${props => props.theme.manageDistrict.formLabelColor};
+    font-weight: 600;
     line-height: 1;
-    font-size: 12px;
-    padding-bottom: 10px;
+    font-size: ${props => props.theme.manageDistrict.formLabelFontSize};
   }
   .ant-form-item-control-wrapper {
     width: 100%;
@@ -297,13 +291,14 @@ export const ModalFormItem = styled(Form.Item)`
   .ant-input {
     width: 100%;
     max-width: 100%;
-    background: ${lightGreySecondary};
+    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
     border-radius: 2px;
-    border: 1px solid #e1e1e1;
+    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
   }
   .ant-select-selection {
-    background: ${lightGrey};
+    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
     border-radius: 2px;
+    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
   }
 `;
 

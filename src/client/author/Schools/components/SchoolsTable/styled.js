@@ -11,7 +11,10 @@ export const StyledSchoolTable = styled(StyledTable)`
 export const StyledCreateSchoolButton = styled(Button)`
   margin-right: 10px;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: ${props => props.theme.manageDistrict.createButtonFontSize};
+  background: ${props => props.theme.manageDistrict.createButtonBgColor};
+  color: ${props => props.theme.manageDistrict.createButtonTextColor};
+  font-weight: ${props => props.theme.manageDistrict.createButtonFontWeight};
 `;
 
 export const StyledHeaderColumn = styled.div`

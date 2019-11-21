@@ -47,42 +47,6 @@ import { getQuestionLabels } from "../ClassBoard/Transformer";
 const _getquestionLabels = memoizeOne(getQuestionLabels);
 
 setAutoFreeze(false);
-/**
- *
- * @param {Object[]} testItems
- * @param {Object} variablesSetIds
- */
-const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
-  produce(classResponse, draft => {
-    if (!draft.testItems) {
-      return;
-    }
-    const qidSetIds = keyBy(variablesSetIds, "qid");
-    for (const [idxItem, item] of draft.testItems.entries()) {
-      if (!item.algoVariablesEnabled) {
-        continue;
-      }
-      const questions = get(item, "data.questions", []);
-      for (const [idxQuestion, question] of questions.entries()) {
-        const qid = question.id;
-        const setIds = qidSetIds[qid];
-        if (!setIds) {
-          continue;
-        }
-        const setKeyId = setIds.setId;
-        const examples = get(question, "variable.examples", []);
-        const variables = get(question, "variable.variables", {});
-        const example = examples.find(x => x.key === setKeyId);
-        if (!example) {
-          continue;
-        }
-        for (const variable of Object.keys(variables)) {
-          draft.testItems[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
-            example[variable];
-        }
-      }
-    }
-  });
 
 class StudentViewContainer extends Component {
   state = { showFeedbackPopup: false, showTestletPlayer: false, hasStickyHeader: false };
@@ -157,7 +121,6 @@ class StudentViewContainer extends Component {
       studentItems,
       studentResponse,
       selectedStudent,
-      variableSetIds,
       isPresentationMode,
       testItemsOrder,
       filter,
@@ -165,7 +128,6 @@ class StudentViewContainer extends Component {
     } = this.props;
 
     const { loading, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
-    const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
       if (selectedStudent) {
@@ -280,7 +242,7 @@ class StudentViewContainer extends Component {
                   currentStudent={currentStudent || {}}
                   questionActivities={studentResponse.questionActivities || []}
                   testActivity={studentResponse.testActivity || {}}
-                  classResponse={classResponseProcessed}
+                  classResponse={classResponse}
                   testItemsOrder={testItemsOrder}
                   studentViewFilter={filter}
                   labels={_getquestionLabels(classResponse.testItems)}
@@ -305,7 +267,6 @@ const enhance = compose(
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
-      variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", []),
       entities: get(state, "author_classboard_testActivity.entities", []),

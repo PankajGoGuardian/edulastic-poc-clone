@@ -413,6 +413,10 @@ class Container extends Component {
       draft.isPassageWithQuestions = true;
       draft.multipartItem = true;
       draft.passageId = passage._id;
+      draft.data = {
+        questions: [],
+        resources: []
+      };
     });
     this.props.createItem(item, isTestFlow, testId, true);
   };

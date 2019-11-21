@@ -50,7 +50,9 @@ import {
   getCurrentTestActivityIdSelector,
   getAllTestActivitiesForStudentSelector,
   getStudentResponseSelector,
-  isItemVisibiltySelector
+  isItemVisibiltySelector,
+  getDisableMarkAsSubmittedSelector,
+  getAssignmentStatusSelector
 } from "../../ducks";
 
 import {
@@ -621,7 +623,8 @@ class ClassBoard extends Component {
       getAllTestActivitiesForStudent,
       enrollmentStatus,
       isItemsVisible,
-      studentViewFilter
+      studentViewFilter,
+      disableMarkSubmitted
     } = this.props;
 
     const {
@@ -670,7 +673,6 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
-    const disableMarkSubmitted = ["graded", "done", "in grading"].includes(assignmentStatus.toLowerCase());
     const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
     return (
@@ -822,21 +824,22 @@ class ClassBoard extends Component {
                         <DropMenu>
                           <FeaturesSwitch
                             inputFeatures="LCBmarkAsSubmitted"
+                            key="LCBmarkAsSubmitted"
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <CaretUp className="fa fa-caret-up" />
                             <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
                               <IconMarkAsSubmitted width={12} />
                               <span>Mark as Submitted</span>
                             </MenuItems>
                           </FeaturesSwitch>
                           <FeaturesSwitch
-                            inputFeatures="LCBmarkAsAbsent"
+                            inputFeatures="LCBmarkAsAb sent"
+                            key="LCBmarkAsAbsent"
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
+                            <MenuItems disabled={false} onClick={this.handleShowMarkAsAbsentModal}>
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>
@@ -860,6 +863,7 @@ class ClassBoard extends Component {
                           </MenuItems>
                           <FeaturesSwitch
                             inputFeatures="LCBstudentReportCard"
+                            key="LCBstudentReportCard"
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
@@ -1159,8 +1163,9 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
       allTestActivitiesForStudent: getAllTestActivitiesForStudentSelector(state),
+      disableMarkSubmitted: getDisableMarkAsSubmittedSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
-      assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      assignmentStatus: getAssignmentStatusSelector(state),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),

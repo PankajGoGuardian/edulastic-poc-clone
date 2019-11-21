@@ -2127,3 +2127,9 @@ iframe {
 .noOverFlowModal {
   overflow: hidden;
 }
+
+/* In case of heavy content in the antd-message modal it should not overlap on the sidemenu  */
+.ant-message {
+  width: 80%;
+  left: 10%;
+}

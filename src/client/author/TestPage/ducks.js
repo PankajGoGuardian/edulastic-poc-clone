@@ -914,10 +914,6 @@ function* setTestDataAndUpdateSaga(payload) {
       } else {
         yield put(replace(`/author/tests/${entity._id}`));
       }
-      message.config({
-        top: 5,
-        getContainer: () => document.getElementById("messageContainer")
-      });
       yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
     }
   } catch (e) {

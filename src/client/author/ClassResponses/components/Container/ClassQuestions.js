@@ -12,6 +12,8 @@ import AssessmentPlayerModal from "../../../Assignments/components/Container/Tes
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
+import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/ducks";
+import produce from "immer";
 
 function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
   const rows = getRows(item);
@@ -118,7 +120,8 @@ class ClassQuestions extends Component {
     }
 
     let {
-      classResponse: { testItems }
+      classResponse: { testItems },
+      variableSetIds
     } = this.props;
 
     const { expressGrader } = this.context;
@@ -235,7 +238,7 @@ class ClassQuestions extends Component {
         return { ...others, rows, data: { questions } };
       })
       .filter(x => x);
-    return [...testItems];
+    return this.transformTestItemsForAlgoVariables([...testItems], variableSetIds);
   }
 
   showStudentWork = testItem => {
@@ -259,6 +262,38 @@ class ClassQuestions extends Component {
       }
     );
   };
+
+  transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
+    produce(testItems, draft => {
+      if (!draft) {
+        return;
+      }
+
+      const qidSetIds = _keyBy(variablesSetIds, "qid");
+      for (const [idxItem, item] of draft.entries()) {
+        if (!item.algoVariablesEnabled) {
+          continue;
+        }
+        const questions = get(item, "data.questions", []);
+        for (const [idxQuestion, question] of questions.entries()) {
+          const qid = question.id;
+          const setIds = qidSetIds[qid];
+          if (!setIds) {
+            continue;
+          }
+          const setKeyId = setIds.setId;
+          const examples = get(question, "variable.examples", []);
+          const variables = get(question, "variable.variables", {});
+          const example = examples.find(x => x.key === setKeyId);
+          if (!example) {
+            continue;
+          }
+          for (const variable of Object.keys(variables)) {
+            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue = example[variable];
+          }
+        }
+      }
+    });
 
   render() {
     const { showPlayerModal, selectedTestItem } = this.state;
@@ -319,9 +354,10 @@ class ClassQuestions extends Component {
 }
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
-    passages: get(state, ["author_classboard_testActivity", "data", "passageData"], [])
+    passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId)
   }),
   {
     loadScratchPad: loadScratchPadAction

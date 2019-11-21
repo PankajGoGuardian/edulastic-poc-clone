@@ -400,7 +400,7 @@ export const MenuItem = styled(Menu.Item)`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 export const StyledButton = styled(Button)`

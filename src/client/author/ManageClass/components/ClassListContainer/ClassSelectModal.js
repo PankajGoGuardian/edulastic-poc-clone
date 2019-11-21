@@ -98,7 +98,7 @@ const ClassListModal = ({
           disabled={selectedGroups.includes(row.enrollmentCode)}
           value={row.grades || []}
           mode="multiple"
-          placeholder="Please select any grade"
+          placeholder="Select Grades"
           onChange={val => handleChange(ind, "grades", val)}
           getPopupContainer={triggerNode => triggerNode.parentNode}
         >
@@ -123,7 +123,7 @@ const ClassListModal = ({
           style={{ minWidth: "80px" }}
           disabled={selectedGroups.includes(row.enrollmentCode)}
           value={row.subject || ""}
-          placeholder="Please select any subject"
+          placeholder="Select Subject"
           onChange={val => {
             handleChange(ind, "standards", []);
             handleChange(ind, "standardSets", []);
@@ -160,7 +160,7 @@ const ClassListModal = ({
             disabled={selectedGroups.includes(row.enrollmentCode)}
             mode="multiple"
             value={row.standards || []}
-            placeholder="Please select any Standard"
+            placeholder="Select Standards"
             onChange={(val, options) => {
               handleStandardsChange(ind, "standards", val, options);
             }}
@@ -191,7 +191,7 @@ const ClassListModal = ({
           }
           disabled={selectedGroups.includes(row.enrollmentCode)}
           value={row.courseId || []}
-          placeholder="Please select any Course"
+          placeholder="Select Course"
           onChange={(val, option) => {
             handleCourseChange(ind, option);
             handleChange(ind, "courseId", val);

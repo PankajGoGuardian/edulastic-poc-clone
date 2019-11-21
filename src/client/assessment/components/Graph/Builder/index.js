@@ -130,8 +130,8 @@ class Board {
   }
 
   addDragDropValue(value, x, y) {
-    const coords = canAddElementToBoard(this.$board, x, y);
-
+    const coords = canAddElementToBoard(this, x, y);
+    DragDrop.removePointForDrag(this);
     if (!coords) {
       return;
     }
@@ -174,14 +174,14 @@ class Board {
   }
 
   drawDragDropValue(value, x, y) {
-    const coords = canAddElementToBoard(this.$board, x, y);
+    const coords = canAddElementToBoard(this, x, y);
     if (coords.usrCoords) {
       const element = {
         ...value,
         x: coords.usrCoords[1],
         y: coords.usrCoords[2]
       };
-      return DragDrop.moveElement(this, element, {});
+      return DragDrop.movePointForDrag(this, element);
     }
   }
 

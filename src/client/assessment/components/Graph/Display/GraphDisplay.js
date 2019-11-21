@@ -14,6 +14,7 @@ import { PlacementContainer } from "./PlacementContainer";
 import { NumberLinePlot } from "./NumberLinePlot";
 import { smallestZoomLevel } from "../../../../common/utils/static/zoom";
 import { ifZoomed } from "../../../../common/utils/helpers";
+import { MIN_SNAP_SIZE } from "../Builder/config/constants";
 
 const graphDimensionsMultiplierHashMap = {
   sm: 1.5,
@@ -51,7 +52,7 @@ const getSnapSize = (snapTo, axisDistance) => {
     if (axisDistance) return axisDistance;
     return 1; // default
   }
-  return 0.000001;
+  return MIN_SNAP_SIZE;
 };
 
 class GraphDisplay extends Component {

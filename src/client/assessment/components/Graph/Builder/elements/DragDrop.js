@@ -1,11 +1,11 @@
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
-
-import { IconCloseTextFormat } from "@edulastic/icons";
-import { IconCorrectTextFormat } from "@edulastic/icons";
+import { IconCloseTextFormat, IconCorrectTextFormat } from "@edulastic/icons";
 
 import { CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
 import { Point } from ".";
+import { disableSnapToGrid, enableSnapToGrid } from "../utils";
+import { MIN_SNAP_SIZE } from "../config/constants";
 
 const deleteIconPattern =
   '<svg id="{iconId}" class="delete-drag-drop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
@@ -24,20 +24,20 @@ const jxgType = 101;
  * this point will show while dragging value over the board
  * and then will get removed after release the value from the board
  */
-let pointElemForDrag = null;
+let pointForDrag = null;
 
 function drawPoint(board, object, settings) {
-  if (pointElemForDrag) {
-    board.$board.removeObject(pointElemForDrag);
-    pointElemForDrag = null;
-  }
-  const { fixed = false } = settings;
+  const pointParams = board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters();
+
+  const { fixed = false, snapSizeX = pointParams.snapSizeX, snapSizeY = pointParams.snapSizeY } = settings;
   const { x, y, priorityColor } = object;
 
   const point = board.$board.create("point", [x, y], {
-    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    ...pointParams,
     ...Point.getColorParams(priorityColor || board.priorityColor),
-    fixed
+    fixed,
+    snapSizeX,
+    snapSizeY
   });
 
   return point;
@@ -89,6 +89,8 @@ function create(board, object, settings) {
     if (e.movementX === 0 && e.movementY === 0) {
       return;
     }
+    disableSnapToGrid(point);
+    disableSnapToGrid(mark);
     newElement.dragged = true;
     board.dragged = true;
   };
@@ -96,6 +98,8 @@ function create(board, object, settings) {
   const upHandler = () => {
     if (newElement.dragged) {
       newElement.dragged = false;
+      enableSnapToGrid(board, point);
+      enableSnapToGrid(board, mark);
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   };
@@ -113,12 +117,22 @@ function create(board, object, settings) {
   return newElement;
 }
 
-function moveElement(board, object, settings) {
-  if (!pointElemForDrag) {
-    pointElemForDrag = drawPoint(board, object, settings);
+function movePointForDrag(board, object) {
+  if (!pointForDrag) {
+    pointForDrag = drawPoint(board, object, {
+      snapSizeX: MIN_SNAP_SIZE,
+      snapSizeY: MIN_SNAP_SIZE
+    });
   } else {
     const { x, y } = object;
-    pointElemForDrag.moveTo([x, y]);
+    pointForDrag.moveTo([x, y]);
+  }
+}
+
+function removePointForDrag(board) {
+  if (pointForDrag) {
+    board.$board.removeObject(pointForDrag);
+    pointForDrag = null;
   }
 }
 
@@ -137,6 +151,7 @@ function getConfig(dragDrop) {
 export default {
   jxgType,
   create,
-  moveElement,
+  movePointForDrag,
+  removePointForDrag,
   getConfig
 };

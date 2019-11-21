@@ -2121,7 +2121,7 @@ span.mfrac {
 }
 
 iframe {
-  width: 100%;
+  max-width: 100%;
   overflow: auto;
 }
 .noOverFlowModal {

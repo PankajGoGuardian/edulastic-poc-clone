@@ -10,7 +10,8 @@ import {
   greyDarken,
   borders,
   publishStatusColor,
-  themeLightGrayColor
+  themeLightGrayColor,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { Status } from "../../../AssessmentPage/components/Header/styled";
 
@@ -254,6 +255,9 @@ export const IconWrapper = styled.span`
   margin-right: 15px;
   position: relative;
   line-height: 11px;
+  @media (max-width: ${smallDesktopWidth}) {
+    display: none;
+  }
 `;
 
 export const TestStatus = styled.span`

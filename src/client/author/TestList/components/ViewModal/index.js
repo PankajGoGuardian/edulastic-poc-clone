@@ -63,6 +63,7 @@ class ViewModal extends React.Component {
       assign,
       isPlaylist,
       onDuplicate,
+      onDelete,
       onEdit,
       status,
       interestedCurriculums,
@@ -127,6 +128,12 @@ class ViewModal extends React.Component {
                   <IconCopy color={themeColor} />
                 </IconWrapper>
                 <span>DUPLICATE</span>
+              </ButtonComponent>
+              <ButtonComponent onClick={() => onDelete()}>
+                <IconWrapper>
+                  <IconCopy color={themeColor} />
+                </IconWrapper>
+                <span>DELETE</span>
               </ButtonComponent>
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (

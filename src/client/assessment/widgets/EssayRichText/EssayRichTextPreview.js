@@ -52,7 +52,8 @@ const EssayRichTextPreview = ({
   testItem,
   location,
   disableResponse,
-  previewTab
+  previewTab,
+  isPrintPreview
 }) => {
   userAnswer = typeof userAnswer === "object" ? "" : userAnswer;
   const toolbarButtons = getToolBarButtons(item);
@@ -61,8 +62,14 @@ const EssayRichTextPreview = ({
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
-  const minHeight = get(item, "uiStyle.minHeight", 200);
+  let minHeight = get(item, "uiStyle.minHeight", 200);
   const maxHeight = get(item, "uiStyle.maxHeight", 300);
+  minHeight = minHeight - 1;
+  //minHeight -1 cuz when maxHeight and minHeight is same,
+  // div with maxHeight has border 1px which is parent of div with minHeight,
+  // hence parent div  height is shrinked by 1px, hence scroll bar appears
+  // border 1px is coming from froala editor default css which is necessary
+
   const characterMap = get(item, "characterMap", []);
   const [wordCount, setWordCount] = useState(0);
 
@@ -138,7 +145,7 @@ const EssayRichTextPreview = ({
             />
           )}
         </div>
-        {!Array.isArray(userAnswer) && !isReadOnly && (
+        {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
           <FroalaEditorContainer>
             <FroalaEditor
               backgroundColor={
@@ -161,7 +168,7 @@ const EssayRichTextPreview = ({
             />
           </FroalaEditorContainer>
         )}
-        {!Array.isArray(userAnswer) && isReadOnly && (
+        {((!Array.isArray(userAnswer) && isReadOnly) || (!Array.isArray(userAnswer) && isPrintPreview)) && (
           <FlexContainer
             alignItems="flex-start"
             justifyContent="flex-start"
@@ -179,13 +186,14 @@ const EssayRichTextPreview = ({
             />
           </FlexContainer>
         )}
-
-        {item.showWordCount && (userAnswer || !isReadOnly) && (
-          <Toolbar borderRadiusOnlyBottom>
-            <FlexContainer />
-            <Item style={wordCountStyle}>{displayWordCount}</Item>
-          </Toolbar>
-        )}
+        {item.showWordCount &&
+          (userAnswer || !isReadOnly) &&
+          (isPrintPreview && userAnswer ? true : !isPrintPreview ? true : false) && (
+            <Toolbar borderRadiusOnlyBottom>
+              <FlexContainer />
+              <Item style={wordCountStyle}>{displayWordCount}</Item>
+            </Toolbar>
+          )}
       </div>
     </StyledPaperWrapper>
   ) : null;

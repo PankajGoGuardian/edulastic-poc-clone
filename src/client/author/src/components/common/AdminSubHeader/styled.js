@@ -3,10 +3,8 @@ import { Tabs } from "antd";
 
 export const SubHeaderWrapper = styled.div`
   width: 100%;
-  background: #fff;
   .ant-tabs {
     padding: 0;
-    margin-bottom: 30px;
     .ant-tabs-nav .ant-tabs-tab {
       padding: 0px 16px 12px;
     }

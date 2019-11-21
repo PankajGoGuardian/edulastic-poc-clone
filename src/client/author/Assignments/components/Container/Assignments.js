@@ -56,6 +56,11 @@ import {
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
 import EditTestModal from "../../../src/components/common/EditTestModal";
+import {
+  toggleDeleteAssignmentModalAction,
+  getToggleDeleteAssignmentModalState
+} from "../../../sharedDucks/assignments";
+import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 
 const { releaseGradeLabels, type } = test;
 
@@ -124,6 +129,12 @@ class Assignments extends Component {
     this.setState({ openEditPopup: value, currentTestId });
   };
 
+  toggleDeleteModal = currentTestId => {
+    const { toggleDeleteAssignmentModalAction } = this.props;
+    toggleDeleteAssignmentModalAction(true);
+    this.setState({ currentTestId });
+  };
+
   handleCreate = () => {
     const { history } = this.props;
     history.push("/author/tests/select");
@@ -187,10 +198,12 @@ class Assignments extends Component {
       assignmentsSummary,
       districtId,
       error,
-      isAdvancedView
+      isAdvancedView,
+      toggleDeleteAssignmentModalState
     } = this.props;
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const tabletWidth = 768;
+
     return (
       <div>
         <EditTestModal
@@ -199,7 +212,7 @@ class Assignments extends Component {
           onCancel={() => this.toggleEditModal(false, "")}
           onOk={this.onEnableEdit}
         />
-
+        {toggleDeleteAssignmentModalState ? <DeleteAssignmentModal testId={currentTestId} /> : null}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
@@ -255,6 +268,7 @@ class Assignments extends Component {
                           assignmentsByTestId={assignmentsByTestId}
                           tests={tests}
                           toggleEditModal={this.toggleEditModal}
+                          toggleDeleteModal={this.toggleDeleteModal}
                           onSelectRow={this.onSelectRow}
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
@@ -326,7 +340,8 @@ const enhance = compose(
       userRole: getUserRole(state),
       error: get(state, "test.error", false),
       defaultFilters: getAssignmentFilterSelector(state),
-      orgData: get(state, "user.user.orgData", {})
+      orgData: get(state, "user.user.orgData", {}),
+      toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
     }),
     {
       loadAssignments: receiveAssignmentsAction,
@@ -337,7 +352,8 @@ const enhance = compose(
       setReleaseScore: releaseScoreAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       setAssignmentFilters: setAssignmentFiltersAction,
-      toggleAssignmentView: toggleAssignmentViewAction
+      toggleAssignmentView: toggleAssignmentViewAction,
+      toggleDeleteAssignmentModalAction
     }
   )
 );

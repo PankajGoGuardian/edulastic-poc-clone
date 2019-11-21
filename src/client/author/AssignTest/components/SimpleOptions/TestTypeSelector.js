@@ -8,10 +8,10 @@ const { type } = test;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanceView }) => {
+  const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
   const testTypes = {
     [ASSESSMENT]: "Class Assessment",
-    [PRACTICE]:
-      userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN ? "Practice" : "Practice Assessment"
+    [PRACTICE]: isAdmin ? "Practice" : "Practice Assessment"
   };
   return (
     <React.Fragment>
@@ -24,7 +24,7 @@ const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanc
       <Row gutter={32}>
         <Col span={!isAdvanceView ? 12 : 24}>
           <StyledSelect data-cy="testType" defaultValue={testType} onChange={onAssignmentTypeChange}>
-            {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
+            {isAdmin && (
               <Option key={COMMON} value={COMMON}>
                 {"Common Assessment"}
               </Option>

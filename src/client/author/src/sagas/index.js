@@ -3,6 +3,7 @@ import testItemSaga from "./testItem";
 import dictionariesSaga from "./dictionaries";
 import { classBoardSaga } from "../../ClassBoard";
 import { classResponsesSaga } from "../../ClassResponses";
+import { sharedAssignmentsSaga } from "../../sharedDucks/assignments";
 import { testsListSaga } from "../../TestList";
 import { testPageSaga } from "../../TestPage";
 import { itemDetailSaga } from "../../ItemDetail";
@@ -50,6 +51,7 @@ const authorSagas = [
   reportSaga(),
   printPreviewSaga(),
   classResponsesSaga(),
+  sharedAssignmentsSaga(),
   testsListSaga(),
   testPageSaga(),
   testsAddItemsSaga(),

@@ -1,20 +1,9 @@
 import styled from "styled-components";
-import { Form, Spin } from "antd";
+import { Spin } from "antd";
 
 export const StyledDescription = styled.p`
   text-align: center;
   margin-bottom: 20px;
-`;
-
-export const ModalFormItem = styled(Form.Item)`
-  .ant-form-item-control-wrapper {
-    width: 100%;
-  }
-
-  .ant-input {
-    width: 100%;
-    max-width: 100%;
-  }
 `;
 
 export const StyledSpinContainer = styled.div`

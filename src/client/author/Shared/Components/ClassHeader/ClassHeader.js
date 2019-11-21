@@ -37,6 +37,7 @@ import {
 } from "./styled";
 
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
+import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import {
@@ -62,6 +63,10 @@ import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assig
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
+import {
+  getToggleDeleteAssignmentModalState,
+  toggleDeleteAssignmentModalAction
+} from "../../../sharedDucks/assignments";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -225,6 +230,8 @@ class ClassHeader extends Component {
       canOpen,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
+      toggleDeleteAssignmentModalAction,
+      toggleDeleteAssignmentModalState,
       notStartedStudents,
       inProgressStudents,
       toggleSideBar,
@@ -280,7 +287,9 @@ class ClassHeader extends Component {
           Release Score
         </MenuItems>
         {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
-
+        <MenuItems key="key4" onClick={() => toggleDeleteAssignmentModalAction(true)}>
+          Delete
+        </MenuItems>
         {/* TODO temp hiding for UAT */}
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
@@ -399,6 +408,7 @@ class ClassHeader extends Component {
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
+          {toggleDeleteAssignmentModalState ? <DeleteAssignmentModal /> : null}
           <ConfirmationModal
             title="Pause"
             show={isPauseModalVisible}
@@ -473,7 +483,8 @@ const enhance = compose(
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),
       isItemsVisible: isItemVisibiltySelector(state),
-      classesList: classListSelector(state)
+      classesList: classListSelector(state),
+      toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -484,7 +495,8 @@ const enhance = compose(
       closeAssignment: closeAssignmentAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       toggleSideBar: toggleSideBarAction,
-      studentUnselectAll: gradebookUnSelectAllAction
+      studentUnselectAll: gradebookUnSelectAllAction,
+      toggleDeleteAssignmentModalAction
     }
   )
 );

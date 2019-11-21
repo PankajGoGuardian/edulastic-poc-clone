@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { themeColorLight } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { Spin, Modal, Input, message } from "antd";
 import {
   fetchStudentsByIdAction,
@@ -46,7 +46,7 @@ const ClassDetails = ({
   archiveClass
 }) => {
   const { _id, name } = selectedClass;
-  const [disabled, setDisabled] = useState(selectedClass && !!selectedClass.googleCode);
+  const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
   let googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
   useEffect(() => {
@@ -78,6 +78,12 @@ const ClassDetails = ({
     }
   };
 
+  const closeGoogleSyncModal = () => {
+    setOpenGCModal(false);
+    setDisabled(true);
+    googleCode.current.state.value = "";
+  };
+
   const breadCrumbData = [
     {
       title: "MANAGE CLASS",
@@ -100,14 +106,22 @@ const ClassDetails = ({
         <>
           <GoogleClassSyncModal
             visible={openGCModal}
-            onCancel={() => setOpenGCModal(false)}
+            onCancel={closeGoogleSyncModal}
             title="Enter Google Classroom Code"
             footer={
               <ButtonWrapper>
-                <StyledButton onClick={() => setOpenGCModal(false)}>Cancel</StyledButton>
-                <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
-                  Sync
+                <StyledButton
+                  style={{ color: themeColor, width: "auto", border: "none" }}
+                  onClick={() => setDisabled(false)}
+                >
+                  Change Classroom
                 </StyledButton>
+                <div>
+                  <StyledButton onClick={closeGoogleSyncModal}>Cancel</StyledButton>
+                  <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
+                    Sync
+                  </StyledButton>
+                </div>
               </ButtonWrapper>
             }
           >

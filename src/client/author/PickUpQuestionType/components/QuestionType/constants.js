@@ -77,6 +77,7 @@ import LineChart from "../../../src/assets/charts/line-chart.svg";
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
+import TextResource from "../../../src/assets/video-and-passages/text.svg";
 
 // Rulers & Calculators
 import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
@@ -2057,7 +2058,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "video-passages",
-      cardImage: VPVideoPlayer,
+      cardImage: TextResource,
       stimulus: "",
       data: {
         title: "Text",

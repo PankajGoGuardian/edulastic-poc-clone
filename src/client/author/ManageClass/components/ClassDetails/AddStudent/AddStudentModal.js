@@ -116,6 +116,7 @@ class AddStudentModal extends React.Component {
         footer={footer}
         textAlign="left"
         padding="0px"
+        centered
       >
         <Spin spinning={submitted}>
           <AddForm>

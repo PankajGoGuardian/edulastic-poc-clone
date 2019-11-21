@@ -1,0 +1,166 @@
+{
+  "common": {
+    "title": "MANAGE DISTRICT",
+    "subtitle": "Schools",
+    "cancel": "No, cancel",
+    "refineresults": "REFINE RESULTS",
+    "selectcolumn": "Select a column",
+    "selectvalue": "Select a value",
+    "equals": "Equals",
+    "contains": "Contains",
+    "addfilter": "+ Add Filter",
+    "removefilter": "- Remove Filter",
+    "entertext": "Enter text",
+    "searchbyname": "Search by name",
+    "actions": "Actions",
+    "showcurrent": "Show current users only"
+  },
+  "school": {
+    "createschool": "Create School",
+    "editschool": "Edit School",
+    "name": "Name",
+    "address": "Address",
+    "city": "City",
+    "zip": "Zip",
+    "state": "State",
+    "country": "Country",
+    "status": "Status",
+    "approved": "Approved",
+    "notapproved": "Not Approved",
+    "teacher": "Teacher",
+    "student": "Student",
+    "section": "Section",
+    "deactivateschool": "Deactivate School",
+    "createnewschool": "Create New School >",
+    "updateschool": "Update School >",
+    "components": {
+      "createschool": {
+        "name": "Enter School Name",
+        "address": "Enter School Address",
+        "city": "Enter City Name",
+        "zip": "Enter Zip Code",
+        "state": "Enter State",
+        "selectstate": "Select State",
+        "country": "Select Country"
+      }
+    },
+    "validations": {
+      "name": "Please input school name",
+      "zip": "Please input zip code"
+    }
+  },
+  "districtadmin": {
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "status": "Status",
+    "sso": "Sso",
+    "createdistrictadmin": "+ Create District Admin"
+  },
+  "schooladmin": {
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "status": "Status",
+    "sso": "Sso",
+    "school": "School",
+    "createschooladmin": "+ Add School Admin",
+    "updateuser": "Update Selected User",
+    "deactivateuser": "Deactivate Selected User(s)"
+  },
+  "teacher": {
+    "name": "Name",
+    "username": "Username",
+    "sso": "Sso",
+    "school": "School",
+    "classes": "Classes",
+    "addteacher": "Add Teacher",
+    "updateuser": "Update Selected User",
+    "deactivateuser": "Deactivate Selected User(s)",
+    "inviteteachers": "+ Invite Multiple Teachers"
+  },
+  "student": {
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "username": "Username",
+    "sso": "Sso",
+    "school": "School",
+    "classes": "Classes",
+    "addstudent": "Add Student",
+    "updateuser": "Update Selected User",
+    "deactivateuser": "Deactivate Selected User(s)",
+    "addstudentootherclass": "Add student(s) to another class",
+    "addmultiplestudents": "+ Add Multiple Students",
+    "addstudents": "Add Student(s)"
+  },
+  "class": {
+    "title": "Classes",
+    "name": "Class name",
+    "code": "Class code",
+    "course": "Course",
+    "teacher": "Teacher",
+    "users": "Users",
+    "editclass": "EDIT",
+    "archiveclass": "Archive selected Class(es)",
+    "bulkedit": "Bulk Edit",
+    "grade": "Grade",
+    "subject": "Subject",
+    "schoolname": "School Name",
+    "status": "Status",
+    "createnewclass": "CREATE NEW CLASS",
+    "showactiveclass": "Show Active Classes",
+    "components": {
+      "addclass": {
+        "title": "Add class",
+        "classname": "Class name",
+        "saveclass": "SAVE",
+        "subject": "Subject",
+        "grade": "Grades",
+        "course": "Course",
+        "tags": "Tags",
+        "teachername": "Teacher Name",
+        "schoolname": "School Name",
+        "mathematics": "Mathematics",
+        "science": "Science",
+        "ela": "ELA",
+        "socialstudies": "Social Studies",
+        "othersubjects": "Other Subjects",
+        "selectsubject": "Select subject",
+        "selectgrade": "Select Grades",
+        "selecttag": "Select Tags",
+        "selectschool": "Select School",
+        "placeholder": {
+          "teacher": "Search by Username - Please enter 3 or more characters",
+          "course": "Please enter 1 or more characters",
+          "school": "Please Select schools",
+          "tags": "Please enter 2 or more characters"
+        },
+        "validation": {
+          "class": "Please input class name",
+          "teacher": "Please select teacher",
+          "school": "Please select school"
+        }
+      },
+      "editclass": {
+        "title": "Edit class",
+        "enddate": "END DATE",
+        "searchbyusername": "Search by username"
+      },
+      "bulkedit": {
+        "title": "Bulk Update Class(es)",
+        "updateclasses": "Update Classes",
+        "chosecourse": "Choose course to update all selected classes",
+        "addtags": "Add tag(s) to all selected classes",
+        "choseenddate": "Choose an end date to update all selected classes",
+        "changecourseassociation": "Change course association for selected classes",
+        "updatetags": "Update tags for selected classes",
+        "updateenddate": "Update end date of selected classes",
+        "proceed": "Proceed",
+        "back": "Back",
+        "cancel": "Cancel",
+        "default": "Default"
+      }
+    }
+  }
+}

@@ -16,6 +16,9 @@ export const RECEIVE_TESTS_ERROR = "[tests] receive list error";
 export const UPDATE_TEST_FILTER = "[tests] update test search filter";
 export const UPDATE_ALL_TEST_FILTERS = "[tests] update all test filters";
 export const CLEAR_TEST_FILTERS = "[tests] clear test filters";
+export const DELETE_TEST_REQUEST = "[tests] delete test request";
+export const DELETE_TEST_REQUEST_SUCCESS = "[tests] delete test request success";
+
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST);
 export const receiveTestSuccessAction = createAction(RECEIVE_TESTS_SUCCESS);
@@ -23,6 +26,8 @@ export const receiveTestErrorAction = createAction(RECEIVE_TESTS_ERROR);
 export const updateTestSearchFilterAction = createAction(UPDATE_TEST_FILTER);
 export const updateAllTestSearchFilterAction = createAction(UPDATE_ALL_TEST_FILTERS);
 export const clearTestFiltersAction = createAction(CLEAR_TEST_FILTERS);
+export const deleteTestRequestAction = createAction(DELETE_TEST_REQUEST);
+export const deleteTestRequestSuccessAction = createAction(DELETE_TEST_REQUEST_SUCCESS);
 
 function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
@@ -68,10 +73,22 @@ function* clearAllTestFiltersSaga() {
   }
 }
 
+function* deleteTestSaga({ payload }) {
+  try {
+    yield call(testsApi.deleteTest, payload);
+    yield put(deleteTestRequestSuccessAction(payload));
+  } catch (error) {
+    console.error(error);
+    // 403 means dont have permission
+    message.error(error?.data?.message || "You don't have access to delete this test.");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
-    yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga)
+    yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
+    yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga)
   ]);
 }
 
@@ -140,6 +157,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         filters: {
           ...emptyFilters
         }
+      };
+    case DELETE_TEST_REQUEST_SUCCESS:
+      return {
+        ...state,
+        entities: state.entities.filter(item => item._id !== payload)
       };
     default:
       return state;

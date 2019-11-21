@@ -4,7 +4,13 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { ClassEnrollmentDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import {
+  MainWrapper,
+  StyledContent,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin
+} from "../../../../admin/Common/StyledComponents";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 
@@ -37,7 +43,7 @@ class ClassEnrollment extends Component {
     const showSpin = loading || updating || deleting || creating;
     const { state: dataPassedWithRoute } = location;
     return (
-      <ClassEnrollmentDiv>
+      <MainWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -55,7 +61,7 @@ class ClassEnrollment extends Component {
             />
           </StyledLayout>
         </StyledContent>
-      </ClassEnrollmentDiv>
+      </MainWrapper>
     );
   }
 }

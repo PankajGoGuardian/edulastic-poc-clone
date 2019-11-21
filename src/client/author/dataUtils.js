@@ -23,7 +23,10 @@ export const getAuthorCollectionMap = (isBottom, width, height) => {
 
 export const getTestAuthorName = item => {
   const { createdBy = {}, collectionName = "", authors = [] } = item;
-  if (collectionName) return collectionName;
+  if (collectionName) {
+    const collectionMap = getAuthorCollectionMap(true, 15, 15);
+    return collectionMap[collectionName] ? collectionMap[collectionName].displayName : collectionName;
+  }
   if (createdBy._id) {
     const author = authors.find(item => item._id === createdBy._id) || {};
     return author.name || authors[0].name;
@@ -43,7 +46,6 @@ export const getTestItemAuthorName = item => {
   }
   return (authors.length && authors?.[0]?.name) || "Anonymous";
 };
-``;
 
 export const getTestItemAuthorIcon = item => {
   const { collectionName = "" } = item;

@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
-import { ModalFormItem, StyledModal } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
-import { ThemeButton } from "../../../../src/components/common/ThemeButton";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 const { Option } = Select;
 const { allGrades } = selectsData;
@@ -169,47 +168,52 @@ class AddClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, coursesForDistrictList, allTagsData } = this.props;
+    const { modalVisible, coursesForDistrictList, allTagsData, t } = this.props;
     const { fetchingSchool, schoolList, fetchingTeacher, teacherList, searchValue } = this.state;
 
     const { getFieldDecorator } = this.props.form;
     return (
       <StyledModal
         visible={modalVisible}
-        title="Add Class"
+        title={t("class.components.addclass.title")}
         onOk={this.onAddClass}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <ThemeButton type="primary" key="submit" onClick={this.onAddClass}>
-            Add Class &gt;
-          </ThemeButton>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
+            <OkButton onClick={this.onAddClass}>{t("class.components.addclass.title")}</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Class Name">
+            <ModalFormItem label={t("class.components.addclass.classname")}>
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input class name"
+                    message: t("class.components.addclass.validation.class")
                   }
                 ]
-              })(<Input placeholder="Class name" />)}
+              })(<Input placeholder={t("class.components.addclass.classname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Subject">
+            <ModalFormItem label={t("class.components.addclass.subject")}>
               {getFieldDecorator("subject")(
-                <Select placeholder="Select Subject" getPopupContainer={triggerNode => triggerNode.parentNode}>
-                  <Option value="Mathematics">Mathematics</Option>
-                  <Option value="ELA">ELA</Option>
-                  <Option value="Science">Science</Option>
-                  <Option value="Social Studies">Social Studies</Option>
-                  <Option value="Other Subjects">Other Subjects</Option>
+                <Select
+                  placeholder={t("class.components.addclass.selectsubject")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  <Option value="Mathematics">{t("class.components.addclass.mathematics")}</Option>
+                  <Option value="ELA">{t("class.components.addclass.ela")}</Option>
+                  <Option value="Science">{t("class.components.addclass.science")}</Option>
+                  <Option value="Social Studies">{t("class.components.addclass.socialstudies")}</Option>
+                  <Option value="Other Subjects">{t("class.components.addclass.othersubjects")}</Option>
                 </Select>
               )}
             </ModalFormItem>
@@ -217,11 +221,11 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Grades">
+            <ModalFormItem label={t("class.components.addclass.grade")}>
               {getFieldDecorator("grades")(
                 <Select
                   mode="multiple"
-                  placeholder="Select Grades"
+                  placeholder={t("class.components.addclass.selectgrade")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {allGrades.map(({ value, text }) => (
@@ -236,14 +240,14 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Course">
+            <ModalFormItem label={t("class.components.addclass.course")}>
               {getFieldDecorator("courseId")(
                 <Select
                   showSearch
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
                   notFoundContent={null}
-                  placeholder="Please enter 1 or more characters"
+                  placeholder={t("class.components.addclass.placeholder.course")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {coursesForDistrictList.map(course => (
@@ -256,14 +260,14 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Tags">
+            <ModalFormItem label={t("class.components.addclass.tags")}>
               {getFieldDecorator("tags")(
                 <Select
                   data-cy="tagsSelect"
                   mode="multiple"
                   style={{ marginBottom: 0 }}
                   optionLabelProp="title"
-                  placeholder="Select Tags"
+                  placeholder={t("class.components.addclass.selecttag")}
                   onSearch={this.searchTags}
                   onSelect={this.selectTags}
                   onDeselect={this.deselectTags}
@@ -291,18 +295,18 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Teacher Name">
+            <ModalFormItem label={t("class.components.addclass.teachername")}>
               {getFieldDecorator("teacher", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select teacher"
+                    message: t("class.components.addclass.validation.teacher")
                   }
                 ]
               })(
                 <Select
                   labelInValue
-                  placeholder="Search by Username - Please enter 3 or more characters"
+                  placeholder={t("class.components.addclass.placeholder.teacher")}
                   notFoundContent={fetchingTeacher ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchTeacher}
@@ -323,19 +327,19 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Select School">
+            <ModalFormItem label={t("class.components.addclass.selectschool")}>
               {getFieldDecorator("institutionId", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
+                    message: t("class.components.addclass.validation.school")
                   }
                 ]
               })(
                 <Select
                   showSearch
                   labelInValue
-                  placeholder="Please Select schools"
+                  placeholder={t("class.components.addclass.placeholder.school")}
                   notFoundContent={fetchingSchool ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchSchool}

@@ -251,10 +251,12 @@ class QuestionItem extends React.Component {
       viewMode,
       previewTab,
       previewMode,
-      highlighted
+      highlighted,
+      previousFeedback
     } = this.props;
 
-    const check = viewMode === "report" || previewTab === "check";
+    const check =
+      viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
     return (
       <QuestionItemWrapper id={id} highlighted={highlighted} ref={this.itemRef}>
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>

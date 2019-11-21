@@ -49,7 +49,7 @@ class StudentTestPage {
     this.getNext()
       .should("be.visible")
       .click();
-    // cy.wait("@saved");
+    cy.wait("@saved");
   };
 
   getPrevious = () => cy.get("[data-cy=prev]");

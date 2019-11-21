@@ -14,16 +14,13 @@ import UploadCourseModal from "./UploadCourseModal";
 import {
   StyledControlDiv,
   StyledFilterDiv,
-  RightFilterDiv,
   StyledFilterSelect,
   StyledFilterInput,
-  StyledSchoolSearch as StyledNameSearch,
-  StyledActionDropDown
+  StyledActionDropDown,
+  StyledClassName
 } from "../../../../admin/Common/StyledComponents";
 import {
-  StyledTableContainer,
-  StyledTable,
-  StyledTableButton,
+  StyledCoursesTable,
   StyledFilterButton,
   StyledActiveCheckbox,
   StyledPagination,
@@ -31,7 +28,8 @@ import {
   StyledSortIconDiv,
   StyledSortIcon,
   UserNameContainer,
-  UserName
+  UserName,
+  CreateCourseBtn
 } from "./styled";
 
 import {
@@ -45,9 +43,24 @@ import {
   resetUploadModalStatusAction
 } from "../../ducks";
 
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledSchoolSearch,
+  StyledTableButton,
+  RightFilterDiv,
+  LeftFilterDiv
+} from "../../../../common/styled";
+
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { roleuser } from "@edulastic/constants";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { TypeToConfirmModal } from "@edulastic/common";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -74,9 +87,8 @@ class CoursesTable extends React.Component {
       currentPage: 1,
       showActive: true,
       searchData: {},
-      isVisible: false,
-      confirmText: "",
-      defaultText: "DEACTIVATE"
+      deactivateCourseModalVisible: false,
+      refineButtonActive: false
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
@@ -145,7 +157,7 @@ class CoursesTable extends React.Component {
     });
     deactivateCourse(selectedCourses);
     this.setState({
-      isVisible: false
+      deactivateCourseModalVisible: false
     });
   };
 
@@ -175,7 +187,7 @@ class CoursesTable extends React.Component {
     } else if (e.key === "deactivate course") {
       if (selectedRowKeys.length > 0) {
         this.setState({
-          isVisible: true
+          deactivateCourseModalVisible: true
         });
       } else {
         message.error("Please select course to delete.");
@@ -265,28 +277,32 @@ class CoursesTable extends React.Component {
   renderCourseNames() {
     const { dataSource, selectedRowKeys } = this.state;
     const selectedCourses = dataSource.filter(item => selectedRowKeys.includes(item._id));
-    return (
-      <UserNameContainer>
-        {selectedCourses.map(item => {
-          const { _id, name } = item;
-          return <UserName key={_id}>{name}</UserName>;
-        })}
-      </UserNameContainer>
-    );
+    return selectedCourses.map(_course => {
+      const { id, name, number } = _course;
+      return (
+        <StyledClassName key={id}>
+          {name} {number}
+        </StyledClassName>
+      );
+    });
   }
   onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   deactivateSingleCourse = ({ _id }) => {
     this.props.setSelectedRowKeys([_id]);
     this.setState({
-      isVisible: true
+      deactivateCourseModalVisible: true
     });
   };
 
   onCancelConfirmModal = () => {
     this.setState({
-      isVisible: false
+      deactivateCourseModalVisible: false
     });
+  };
+
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -452,9 +468,8 @@ class CoursesTable extends React.Component {
       currentPage,
       showActive,
       searchData,
-      isVisible,
-      confirmText,
-      defaultText
+      deactivateCourseModalVisible,
+      refineButtonActive
     } = this.state;
 
     const { totalCourseCount, userOrgId, role } = this.props;
@@ -546,22 +561,32 @@ class CoursesTable extends React.Component {
         dataIndex: "operation",
         width: 100,
         render: (text, record) => {
-          console.log(record);
           return (
-            <React.Fragment>
+            <div style={{ whiteSpace: "nowrap" }}>
               {role === roleuser.DISTRICT_ADMIN && !!record.active && (
                 <>
                   <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
-                    <Icon type="edit" theme="twoTone" />
+                    <IconPencilEdit color={themeColor} />
                   </StyledTableButton>
                   <StyledTableButton onClick={() => this.deactivateSingleCourse(record)} title="Deactivate">
-                    <Icon type="delete" theme="twoTone" />
+                    <IconTrash color={themeColor} />
                   </StyledTableButton>
                 </>
               )}
-            </React.Fragment>
+            </div>
           );
         }
+      }
+    ];
+
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/Courses"
+      },
+      {
+        title: "COURSES",
+        to: ""
       }
     ];
 
@@ -648,19 +673,28 @@ class CoursesTable extends React.Component {
     }
 
     return (
-      <StyledTableContainer>
-        <StyledFilterDiv>
-          <div>
-            <Button type="primary" onClick={this.showAddCourseModal}>
-              + Create Course
-            </Button>
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            REFINE RESULTS
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
 
-            <StyledNameSearch
+        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+
+        <StyledFilterDiv>
+          <LeftFilterDiv width={60}>
+            <StyledSchoolSearch
               placeholder="Search by name"
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
-          </div>
+            <CreateCourseBtn type="primary" onClick={this.showAddCourseModal}>
+              + Create Course
+            </CreateCourseBtn>
+          </LeftFilterDiv>
           <RightFilterDiv>
             <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
               Show active courses only
@@ -672,23 +706,22 @@ class CoursesTable extends React.Component {
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
-
-        {SearchRows}
-        <StyledTable
-          rowSelection={rowSelection}
-          dataSource={dataSource}
-          columns={columns}
-          pagination={false}
-          scroll={{ y: 500 }}
-        />
-        <StyledPagination
-          current={currentPage}
-          defaultCurrent={1}
-          pageSize={25}
-          total={totalCourseCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
+        <TableContainer>
+          <StyledCoursesTable
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+          />
+          <StyledPagination
+            current={currentPage}
+            defaultCurrent={1}
+            pageSize={25}
+            total={totalCourseCount}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
+          />
+        </TableContainer>
         {editCourseModalVisible && editCourseKey != "" && (
           <EditCourseModal
             courseData={selectedCourse[0]}
@@ -713,24 +746,21 @@ class CoursesTable extends React.Component {
             searchData={searchData}
           />
         )}
-        <ConfirmationModal
+
+        <TypeToConfirmModal
+          modalVisible={deactivateCourseModalVisible}
           title="Deactivate course(s)"
-          show={isVisible}
-          onOk={this.confirmDeactivate}
-          onCancel={this.onCancelConfirmModal}
-          inputVal={confirmText}
-          onInputChange={this.onInputChangeHandler}
-          expectedVal={defaultText}
-          canUndone
-          bodyText={
-            <>
-              {this.renderCourseNames()}
-              <div> Are you sure you want to deactivate the course(s)? </div>
-            </>
+          handleOnOkClick={this.confirmDeactivate}
+          wordToBeTyped="DEACTIVATE"
+          primaryLabel="Are you sure you want to deactivate the following course(s)?"
+          secondaryLabel={this.renderCourseNames()}
+          closeModal={() =>
+            this.setState({
+              deactivateCourseModalVisible: false
+            })
           }
-          okText="Yes, Deactivate"
         />
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }

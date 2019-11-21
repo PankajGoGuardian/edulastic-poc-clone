@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Button, Modal } from "antd";
 
-import { ModalFormItem, StyledSpinContainer, StyledSpin } from "./styled";
+import { StyledSpinContainer, StyledSpin } from "./styled";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { courseApi } from "@edulastic/api";
 
@@ -175,16 +176,18 @@ class EditCourseModal extends React.Component {
     const { modalVisible, courseData } = this.props;
     const { nameValidate, numberValidate, showSpin } = this.state;
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Edit Course"
         onOk={this.onSaveCourse}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button type="primary" key="submit" onClick={this.onSaveCourse}>
-            Update Course >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onSaveCourse}>Update Course ></OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
@@ -218,7 +221,7 @@ class EditCourseModal extends React.Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </Modal>
+      </StyledModal>
     );
   }
 }

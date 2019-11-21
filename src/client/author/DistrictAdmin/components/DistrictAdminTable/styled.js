@@ -1,26 +1,11 @@
 import styled from "styled-components";
-import { Pagination } from "antd";
-import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+import { StyledTable } from "../../../../common/styled";
 
-export const StyledTable = styled(Table)`
-  .ant-table-row {
-    &: hover {
-      a {
-        visibility: visible;
-      }
-    }
+export const StyledDistrictAdminTable = styled(StyledTable)`
+  .ant-table-tbody > tr > td {
+    text-align: start;
   }
-`;
-
-export const StyledTableButton = styled.a`
-  visibility: hidden;
-  margin-right: 20px;
-  font-size: 20px;
-  &:last-child {
-    margin-right: 0;
+  .ant-table-thead > tr > th.ant-table-selection-column {
+    text-align: start;
   }
-`;
-export const StyledPagination = styled(Pagination)`
-  margin-top: 15px;
-  align-self: flex-end;
 `;

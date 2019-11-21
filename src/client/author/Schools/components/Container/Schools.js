@@ -6,8 +6,13 @@ import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import SchoolsTable from "../SchoolsTable/SchoolsTable";
-
-import { SchoolsDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import {
+  MainWrapper,
+  StyledContent,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin
+} from "../../../../admin/Common/StyledComponents";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Schools", subMenu: "" };
@@ -18,7 +23,7 @@ class Schools extends Component {
     const showSpin = loading || updating || creating || deleting;
 
     return (
-      <SchoolsDiv>
+      <MainWrapper>
         <AdminHeader title={title} active={menuActive} history={history} count={totalSchoolsCount} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -31,7 +36,7 @@ class Schools extends Component {
             <SchoolsTable />
           </StyledLayout>
         </StyledContent>
-      </SchoolsDiv>
+      </MainWrapper>
     );
   }
 }

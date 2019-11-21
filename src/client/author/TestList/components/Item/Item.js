@@ -30,6 +30,7 @@ import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus, EdulasticVerified } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
+import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 
 class Item extends Component {
   static propTypes = {
@@ -50,7 +51,8 @@ class Item extends Component {
   };
 
   state = {
-    isOpenModal: false
+    isOpenModal: false,
+    isDeleteModalOpen: false
   };
 
   moveToItem = e => {
@@ -68,6 +70,11 @@ class Item extends Component {
     const { history, item } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment(item);
     history.push(`/author/tests/${duplicateTest._id}`);
+  };
+
+  onDelete = async e => {
+    e && e.stopPropagation();
+    this.setState({ isDeleteModalOpen: true });
   };
 
   assignTest = e => {
@@ -100,6 +107,10 @@ class Item extends Component {
     return `${createdBy.firstName} ${createdBy.lastName}`;
   }
 
+  onDeleteModelCancel = () => {
+    this.setState({ isDeleteModalOpen: false });
+  };
+
   render() {
     const {
       item: {
@@ -125,7 +136,7 @@ class Item extends Component {
     const standardsIdentifiers = standards.map(item => item.identifier);
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
-    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
+    const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
 
     return (
       <>
@@ -134,6 +145,7 @@ class Item extends Component {
           close={this.closeModal}
           onDuplicate={this.duplicate}
           onEdit={this.moveToItem}
+          onDelete={this.onDelete}
           item={item}
           status={status}
           owner={owner}
@@ -146,6 +158,9 @@ class Item extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
+        {isDeleteModalOpen ? (
+          <DeleteItemModal isVisible={isDeleteModalOpen} onCancel={this.onDeleteModelCancel} testId={item._id} />
+        ) : null}
         <Container
           isPlaylist={isPlaylist}
           src={isPlaylist ? _source.thumbnail : thumbnail}

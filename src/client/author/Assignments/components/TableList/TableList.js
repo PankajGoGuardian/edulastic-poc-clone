@@ -199,6 +199,7 @@ class TableList extends Component {
       selectedRows,
       loading,
       toggleEditModal,
+      toggleDeleteModal,
       folderData,
       showPreviewModal,
       showFilter,
@@ -295,7 +296,8 @@ class TableList extends Component {
                 row.currentAssignment,
                 history,
                 showPreviewModal,
-                toggleEditModal
+                toggleEditModal,
+                toggleDeleteModal
               )}
               placement="bottomRight"
               trigger={["click"]}

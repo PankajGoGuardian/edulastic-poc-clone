@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Modal, Spin, Icon } from "antd";
+import { Form, Input, Row, Col, Button, Select, Spin, Icon } from "antd";
 const Option = Select.Option;
-import { ModalFormItem } from "./styled";
-
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 import { authApi, schoolApi } from "@edulastic/api";
+import { IconLock, IconUser, IconMail } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
 
 class AddTeacherModal extends React.Component {
   constructor(props) {
@@ -139,6 +140,7 @@ class AddTeacherModal extends React.Component {
   }
 
   fetchSchool = async value => {
+    console.log("fetching...");
     const schoolsData = { ...this.state.schoolsState };
 
     this.setState({
@@ -216,19 +218,18 @@ class AddTeacherModal extends React.Component {
     const { emailValidate, confirmPwdValidate, schoolsState } = this.state;
 
     return (
-      <Modal
+      <StyledModal
         visible={modalVisible}
         title="Create Teacher"
         onOk={this.onAddTeacher}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button key="back" onClick={this.onCloseModal}>
-            No, Cancel
-          </Button>,
-          <Button type="primary" key="submit" onClick={this.onAddTeacher}>
-            Yes, Create >
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onAddTeacher}>Yes, Create</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
@@ -241,7 +242,7 @@ class AddTeacherModal extends React.Component {
                     message: "Please input Name"
                   }
                 ]
-              })(<Input placeholder="Enter Name" prefix={<Icon type="user" />} />)}
+              })(<Input placeholder="Enter Name" prefix={<IconUser color={themeColor} />} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -258,7 +259,7 @@ class AddTeacherModal extends React.Component {
                 placeholder="Enter E-mail"
                 autocomplete="new-password"
                 onChange={this.changeEmail}
-                prefix={<Icon type="mail" />}
+                prefix={<IconMail color={themeColor} />}
               />
             </ModalFormItem>
           </Col>
@@ -279,7 +280,7 @@ class AddTeacherModal extends React.Component {
                   type="password"
                   autocomplete="new-password"
                   onChange={this.changePwd}
-                  prefix={<Icon type="key" />}
+                  prefix={<IconLock color={themeColor} />}
                 />
               )}
             </ModalFormItem>
@@ -305,7 +306,7 @@ class AddTeacherModal extends React.Component {
                   type="password"
                   autocomplete="new-password"
                   onChange={this.changeConfirmPwd}
-                  prefix={<Icon type="key" />}
+                  prefix={<IconLock color={themeColor} />}
                 />
               )}
             </ModalFormItem>
@@ -342,7 +343,7 @@ class AddTeacherModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </StyledModal>
     );
   }
 }

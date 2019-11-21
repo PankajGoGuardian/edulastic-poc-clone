@@ -9,6 +9,7 @@ import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
 import Polygon from "./elements/Polygon";
+import { MIN_SNAP_SIZE } from "./config/constants";
 
 export function isTouchDevice() {
   return JXG.isTouchDevice();
@@ -188,6 +189,23 @@ function getPointsFromFlatConfig(type, pointIds, config) {
       ];
   }
 }
+
+export const disableSnapToGrid = el => {
+  if (el.visProp?.snapsizex === MIN_SNAP_SIZE && el.visProp?.snapsizey === MIN_SNAP_SIZE) {
+    return;
+  }
+  el.setAttribute({
+    snapSizeX: MIN_SNAP_SIZE,
+    snapSizeY: MIN_SNAP_SIZE
+  });
+};
+
+export const enableSnapToGrid = (board, el) => {
+  const snapSizeX = board.parameters.pointParameters?.snapSizeX || 1;
+  const snapSizeY = board.parameters.pointParameters?.snapSizeY || 1;
+  el.setAttribute({ snapSizeX, snapSizeY });
+  el.snapToGrid();
+};
 
 export const handleSnap = (line, points, board) => {
   line.on("up", () => {
@@ -767,8 +785,8 @@ export const toFractionHTML = (value, fractionsFormat) => {
  * @returns {object} coords
  */
 export const canAddElementToBoard = (board, x, y) => {
-  const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board);
-  const [xMin, yMax, xMax, yMin] = board.getBoundingBox();
+  const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], board.$board);
+  const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
   if (
     coords.usrCoords[1] < xMin ||
     coords.usrCoords[1] > xMax ||

@@ -3,7 +3,7 @@ import { Menu } from "antd";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 
-import { IconPrint } from "@edulastic/icons";
+import { IconPrint, IconTrashAlt } from "@edulastic/icons";
 
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
@@ -15,7 +15,14 @@ import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, A
 
 const { duplicateAssignment } = assignmentApi;
 
-const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, showPreviewModal, toggleEditPopup) => {
+const ActionMenu = (
+  onOpenReleaseScoreSettings,
+  currentAssignment,
+  history,
+  showPreviewModal,
+  toggleEditPopup,
+  toggleDeleteModal
+) => {
   const currentTestId = currentAssignment.testId;
   const currentAssignmentId = currentAssignment._id;
   const createDuplicateAssignment = () => {
@@ -83,6 +90,17 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
             <img alt="icon" src={classIcon} />
             <SpaceElement />
             Edit Assessment
+          </StyledLink>
+        </Menu.Item>
+        <Menu.Item
+          data-cy="delete-Assignment"
+          key="delete-Assignment"
+          onClick={() => toggleDeleteModal(currentAssignment.testId)}
+        >
+          <StyledLink target="_blank" rel="noopener noreferrer">
+            <IconTrashAlt />
+            <SpaceElement />
+            Delete Assessment
           </StyledLink>
         </Menu.Item>
       </StyledMenu>

@@ -4,6 +4,7 @@ import moment from "moment";
 import calcMethod from "./static/json/calcMethod";
 
 export const testTypeHashMap = {
+  practice: "practice",
   common: "common",
   class: "class",
   "common assessment": "common",

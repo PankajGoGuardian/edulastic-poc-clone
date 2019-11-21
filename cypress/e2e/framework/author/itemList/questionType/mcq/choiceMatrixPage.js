@@ -457,7 +457,7 @@ class ChoiceMatrixStandardPage {
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
               .clear({ force: true })
-              .type(choice);
+              .type(choice, { force: true });
           });
         });
       }
@@ -477,8 +477,8 @@ class ChoiceMatrixStandardPage {
           }
           steams.forEach((steam, index) => {
             this.getSteamByIndex(index)
-              .clear()
-              .type(steam);
+              .clear({ force: true })
+              .type(steam, { force: true });
           });
         });
       }

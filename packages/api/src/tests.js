@@ -99,6 +99,22 @@ const getDefaultTestSettings = ({ orgId, params = {} }) =>
     })
     .then(result => result.data.result);
 
+const deleteAssignments = testId =>
+  api
+    .callApi({
+      url: `${prefix}/${testId}/delete-assignments`,
+      method: "delete"
+    })
+    .then(result => result.data.result);
+
+const deleteTest = testId =>
+  api
+    .callApi({
+      url: `/test/${testId}`,
+      method: "delete"
+    })
+    .then(result => result.data);
+
 export default {
   getAll,
   getById,
@@ -109,5 +125,7 @@ export default {
   publishTest,
   getPublicTest,
   getByV1Id,
-  getDefaultTestSettings
+  getDefaultTestSettings,
+  deleteAssignments,
+  deleteTest
 };

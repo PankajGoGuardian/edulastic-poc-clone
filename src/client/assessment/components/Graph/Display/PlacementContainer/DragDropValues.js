@@ -4,15 +4,22 @@ import { Rnd } from "react-rnd";
 import { DragDropValuesContainer, DragDropTitle, DragDropContainer } from "./styled";
 
 class DragDropValues extends Component {
+  constructor(props) {
+    super(props);
+    this.container = React.createRef();
+  }
+
   handleDragDropValuePosition = (d, value) => {
     const { onAddDragDropValue, width, margin, valueHeight } = this.props;
-    onAddDragDropValue(value, d.x - width - margin + width / 2, d.y - margin + valueHeight / 2);
+    const containerWidth = this.container?.current?.offsetWidth || width;
+    onAddDragDropValue(value, d.x - containerWidth - margin + width / 2, d.y - margin + valueHeight / 2);
     return false;
   };
 
   handleDragDropValue = (d, value) => {
     const { onDrawDragDropValue, width, margin, valueHeight } = this.props;
-    onDrawDragDropValue(value, d.x - width - margin + width / 2, d.y - margin + valueHeight / 2);
+    const containerWidth = this.container?.current?.offsetWidth || width;
+    onDrawDragDropValue(value, d.x - containerWidth - margin + width / 2, d.y - margin + valueHeight / 2);
   };
 
   render() {
@@ -20,13 +27,18 @@ class DragDropValues extends Component {
 
     const containerStyle = {
       position: "relative",
-      width: width,
+      width,
       minHeight: height,
       height: values.length * (valueHeight + 5)
     };
 
     return (
-      <DragDropValuesContainer width={width} minHeight={height} height={values.length * (valueHeight + 5)}>
+      <DragDropValuesContainer
+        ref={this.container}
+        width={width}
+        minHeight={height}
+        height={values.length * (valueHeight + 5)}
+      >
         <DragDropTitle>DRAG DROP VALUES</DragDropTitle>
         <div style={containerStyle}>
           {values.map((value, i) => {

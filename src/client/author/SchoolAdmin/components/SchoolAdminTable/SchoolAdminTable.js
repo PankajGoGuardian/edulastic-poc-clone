@@ -9,18 +9,28 @@ import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 
 import {
-  StyledPagination,
   StyledControlDiv,
   StyledFilterDiv,
-  RightFilterDiv,
   StyledFilterSelect,
   StyledAddFilterButton,
   StyledFilterInput,
-  StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTable, StyledTableContainer } from "./styled";
+
+import {
+  MainContainer,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
+  StyledPagination,
+  StyledSchoolSearch,
+  LeftFilterDiv,
+  RightFilterDiv,
+  StyledTableButton
+} from "../../../../common/styled";
+import { StyledSchoolAdminTable } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
@@ -51,6 +61,13 @@ import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
+
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
 
 const { Option } = Select;
 const { OnHoverTable, OnHoverButton } = StyledComponents;
@@ -87,7 +104,8 @@ class SchoolAdminTable extends Component {
           filterAdded: false
         }
       ],
-      currentPage: 1
+      currentPage: 1,
+      refineButtonActive: false
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
@@ -196,6 +214,10 @@ class SchoolAdminTable extends Component {
     this.setState({
       deactivateAdminModalVisible: false
     });
+  };
+
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
@@ -387,9 +409,9 @@ class SchoolAdminTable extends Component {
       editSchoolAdminKey,
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
-
       filtersData,
-      currentPage
+      currentPage,
+      refineButtonActive
     } = this.state;
 
     const rowSelection = {
@@ -414,12 +436,14 @@ class SchoolAdminTable extends Component {
       changeFilterValue,
       loadAdminData,
       addFilter,
-      removeFilter
+      removeFilter,
+      history,
+      t
     } = this.props;
 
     const columns = [
       {
-        title: "Name",
+        title: t("schooladmin.name"),
         dataIndex: "_source.firstName",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -434,7 +458,7 @@ class SchoolAdminTable extends Component {
         width: 200
       },
       {
-        title: "Username",
+        title: t("schooladmin.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -445,13 +469,13 @@ class SchoolAdminTable extends Component {
         width: 200
       },
       {
-        title: "SSO",
+        title: t("schooladmin.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 100
       },
       {
-        title: "School",
+        title: t("schooladmin.school"),
         dataIndex: "_source.institutionDetails",
         render: (schools = []) => schools.map(school => school.name).join(", "),
         width: 200
@@ -459,18 +483,20 @@ class SchoolAdminTable extends Component {
       {
         dataIndex: "_id",
         render: id => (
-          <React.Fragment>
+          <div style={{ whiteSpace: "nowrap" }}>
             {role === roleuser.DISTRICT_ADMIN && (
               <>
-                <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
-                  <Icon type="edit" theme="twoTone" />
-                </OnHoverButton>
-                <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
-                  <Icon type="delete" theme="twoTone" />
-                </OnHoverButton>
+                <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
+                  <IconPencilEdit color={themeColor} />
+                </StyledTableButton>
+                {role === roleuser.DISTRICT_ADMIN && (
+                  <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                    <IconTrash color={themeColor} />
+                  </StyledTableButton>
+                )}
               </>
             )}
-          </React.Fragment>
+          </div>
         ),
         width: 100
       }
@@ -478,41 +504,161 @@ class SchoolAdminTable extends Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit user">Update Selected User</Menu.Item>
-        <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
+        <Menu.Item key="edit user">{t("schooladmin.updateuser")}</Menu.Item>
+        <Menu.Item key="deactivate user">{t("schooladmin.deactivateuser")}</Menu.Item>
       </Menu>
     );
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/districtprofile"
+      },
+      {
+        title: "USERS",
+        to: ""
+      }
+    ];
     return (
-      <StyledTableContainer>
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            {t("common.refineresults")}
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
+        <AdminSubHeader active={menuActive} history={history} />
+
+        {refineButtonActive && (
+          <FilterWrapper>
+            {filtersData.map((item, i) => {
+              const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
+              const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+              const isAddFilterDisable =
+                filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+
+              return (
+                <StyledControlDiv key={i}>
+                  <StyledFilterSelect
+                    placeholder={t("common.selectcolumn")}
+                    onChange={e => this.changeFilterColumn(e, i)}
+                    value={filtersColumn ? filtersColumn : undefined}
+                    style={{}}
+                  >
+                    <Option value="other" disabled={true}>
+                      {t("common.selectcolumn")}
+                    </Option>
+                    <Option value="username">{t("schooladmin.username")}</Option>
+                    <Option value="email">{t("schooladmin.email")}</Option>
+                    <Option value="status">{t("schooladmin.status")}</Option>
+                    {/* TO DO: Uncomment after backend is done */}
+                    {/* <Option value="institutionNames">School</Option> */}
+                  </StyledFilterSelect>
+                  <StyledFilterSelect
+                    placeholder="Select a value"
+                    onChange={e => this.changeFilterValue(e, i)}
+                    value={filtersValue ? filtersValue : undefined}
+                  >
+                    <Option value="" disabled={true}>
+                      {t("common.selectvalue")}
+                    </Option>
+                    <Option value="eq">Equals</Option>
+                    {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
+                  </StyledFilterSelect>
+                  {!filterStrDD[filtersColumn] ? (
+                    <StyledFilterInput
+                      placeholder="Enter text"
+                      onChange={e => this.changeFilterText(e, i)}
+                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                      onBlur={e => this.onBlurFilterText(e, i)}
+                      value={filterStr ? filterStr : undefined}
+                      disabled={isFilterTextDisable}
+                      innerRef={this.filterTextInputRef[i]}
+                    />
+                  ) : (
+                    <StyledFilterSelect
+                      placeholder={filterStrDD[filtersColumn].placeholder}
+                      onChange={v => this.changeStatusValue(v, i)}
+                      value={filterStr !== "" ? filterStr : undefined}
+                    >
+                      {filterStrDD[filtersColumn].list.map(item => (
+                        <Option key={item.title} value={item.value} disabled={item.disabled}>
+                          {item.title}
+                        </Option>
+                      ))}
+                    </StyledFilterSelect>
+                  )}
+                  {i < 2 && (
+                    <StyledAddFilterButton
+                      type="primary"
+                      onClick={e => this.addFilter(e, i)}
+                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                    >
+                      {t("common.addfilter")}
+                    </StyledAddFilterButton>
+                  )}
+                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+                      {t("common.removefilter")}
+                    </StyledAddFilterButton>
+                  )}
+                </StyledControlDiv>
+              );
+            })}
+          </FilterWrapper>
+        )}
         <StyledFilterDiv>
-          <div>
-            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
-              + Add School Admin
-            </Button>
+          <LeftFilterDiv width={50}>
             <StyledSchoolSearch
               placeholder="Search by name"
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
-          </div>
+            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
+              {t("schooladmin.createschooladmin")}
+            </Button>
+          </LeftFilterDiv>
 
-          <RightFilterDiv>
+          <RightFilterDiv width={40}>
             <Checkbox
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
-              Show current users only
+              {t("common.showcurrent")}
             </Checkbox>
             {role === roleuser.DISTRICT_ADMIN ? (
               <StyledActionDropDown overlay={actionMenu}>
                 <Button>
-                  Actions <Icon type="down" />
+                  {t("common.actions")} <Icon type="down" />
                 </Button>
               </StyledActionDropDown>
             ) : null}
           </RightFilterDiv>
         </StyledFilterDiv>
+        <TableContainer>
+          <StyledSchoolAdminTable
+            rowKey={record => record._id}
+            rowSelection={rowSelection}
+            dataSource={Object.values(result)}
+            columns={columns}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalUsers}
+            onChange={page => this.setPageNo(page)}
+            hideOnSinglePage={true}
+            pagination={{
+              current: pageNo,
+              total: totalUsers,
+              pageSize: 25,
+              onChange: page => setPageNo(page)
+            }}
+          />
+        </TableContainer>
         {createSchoolAdminModalVisible && (
           <CreateSchoolAdminModal
             modalVisible={createSchoolAdminModalVisible}
@@ -521,102 +667,6 @@ class SchoolAdminTable extends Component {
             userOrgId={userOrgId}
           />
         )}
-        {filtersData.map((item, i) => {
-          const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
-          const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
-          const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
-
-          return (
-            <StyledControlDiv key={i}>
-              <StyledFilterSelect
-                placeholder="Select a column"
-                onChange={e => this.changeFilterColumn(e, i)}
-                value={filtersColumn ? filtersColumn : undefined}
-                style={{}}
-              >
-                <Option value="other" disabled={true}>
-                  Select a column
-                </Option>
-                <Option value="username">Username</Option>
-                <Option value="email">Email</Option>
-                <Option value="status">Status</Option>
-                {/* TO DO: Uncomment after backend is done */}
-                {/* <Option value="institutionNames">School</Option> */}
-              </StyledFilterSelect>
-              <StyledFilterSelect
-                placeholder="Select a value"
-                onChange={e => this.changeFilterValue(e, i)}
-                value={filtersValue ? filtersValue : undefined}
-              >
-                <Option value="" disabled={true}>
-                  Select a value
-                </Option>
-                <Option value="eq">Equals</Option>
-                {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
-              </StyledFilterSelect>
-              {!filterStrDD[filtersColumn] ? (
-                <StyledFilterInput
-                  placeholder="Enter text"
-                  onChange={e => this.changeFilterText(e, i)}
-                  onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                  onBlur={e => this.onBlurFilterText(e, i)}
-                  value={filterStr ? filterStr : undefined}
-                  disabled={isFilterTextDisable}
-                  ref={this.filterTextInputRef[i]}
-                />
-              ) : (
-                <StyledFilterSelect
-                  placeholder={filterStrDD[filtersColumn].placeholder}
-                  onChange={v => this.changeStatusValue(v, i)}
-                  value={filterStr !== "" ? filterStr : undefined}
-                >
-                  {filterStrDD[filtersColumn].list.map(item => (
-                    <Option key={item.title} value={item.value} disabled={item.disabled}>
-                      {item.title}
-                    </Option>
-                  ))}
-                </StyledFilterSelect>
-              )}
-              {i < 2 && (
-                <StyledAddFilterButton
-                  type="primary"
-                  onClick={e => this.addFilter(e, i)}
-                  disabled={isAddFilterDisable || i < filtersData.length - 1}
-                >
-                  + Add Filter
-                </StyledAddFilterButton>
-              )}
-              {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                  - Remove Filter
-                </StyledAddFilterButton>
-              )}
-            </StyledControlDiv>
-          );
-        })}
-
-        <StyledTable
-          rowKey={record => record._id}
-          rowSelection={rowSelection}
-          dataSource={Object.values(result)}
-          columns={columns}
-          pagination={false}
-          scroll={{ y: 500 }}
-        />
-        <StyledPagination
-          defaultCurrent={1}
-          current={currentPage}
-          pageSize={25}
-          total={totalUsers}
-          onChange={page => this.setPageNo(page)}
-          hideOnSinglePage={true}
-          pagination={{
-            current: pageNo,
-            total: totalUsers,
-            pageSize: 25,
-            onChange: page => setPageNo(page)
-          }}
-        />
         {editSchoolAdminModaVisible && (
           <EditSchoolAdminModal
             schoolAdminData={result[editSchoolAdminKey]}
@@ -649,12 +699,13 @@ class SchoolAdminTable extends Component {
             }
           />
         )}
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

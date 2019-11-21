@@ -8,11 +8,11 @@ import { get, without } from "lodash";
 import moment from "moment";
 
 import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
-import { aws } from "@edulastic/constants";
+import { aws, roleuser, test as testConstant } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";
-import { createBlankTest, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
-import { getUserSelector } from "../src/selectors/user";
+import { createBlankTest, getTestEntitySelector, setTestDataAction, updateTestEntityAction } from "../TestPage/ducks";
+import { getUserSelector, getUserRole } from "../src/selectors/user";
 
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
 export const CREATE_ASSESSMENT_SUCCESS = "[assessmentPage] create assessment success";
@@ -194,6 +194,8 @@ function* createAssessmentSaga({ payload }) {
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     } else {
+      const userRole = yield select(getUserRole);
+      const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
       const item = {
@@ -213,7 +215,8 @@ function* createAssessmentSaga({ payload }) {
         docUrl: fileURI,
         releaseScore: "DONT_RELEASE",
         assignments: undefined,
-        pageStructure: pageStructure.length ? pageStructure : defaultPageStructure
+        pageStructure: pageStructure.length ? pageStructure : defaultPageStructure,
+        ...(isAdmin ? { testType: testConstant.type.COMMON } : {})
       };
       if (newAssessment.requirePassword === false) {
         delete newAssessment.assignmentPassword;

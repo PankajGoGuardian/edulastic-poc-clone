@@ -119,7 +119,7 @@ const RedirectPopUp = ({
         <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
-        <Button loading={loading} key="submit" onClick={submitAction}>
+        <Button data-cy="confirmRedirect" loading={loading} key="submit" onClick={submitAction}>
           REDIRECT
         </Button>
       ]}

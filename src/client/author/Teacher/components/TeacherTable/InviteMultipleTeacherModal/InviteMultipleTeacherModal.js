@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Form, Row, Col, Button, Modal } from "antd";
-import { StyledTextArea, PlaceHolderText } from "./styled";
+import { Form, Row, Col } from "antd";
+import { StyledTextArea, PlaceHolderText, AddMulitpleTeachersModal, TextWrapper } from "./styled";
 
-const FormItem = Form.Item;
+import { ButtonsContainer, OkButton, CancelButton, ModalFormItem } from "../../../../../common/styled";
 
 class InviteMultipleTeacherModal extends Component {
   constructor(props) {
@@ -37,29 +37,31 @@ class InviteMultipleTeacherModal extends Component {
     const { modalVisible } = this.props;
     const { placeHolderVisible } = this.state;
     return (
-      <Modal
+      <AddMulitpleTeachersModal
         visible={modalVisible}
         title="Bulk Add Teacher"
         onOk={this.onInviteTeachers}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <Button type="primary" key="submit" onClick={this.onInviteTeachers}>
-            Add Teachers
-          </Button>
+          <ButtonsContainer>
+            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
+            <OkButton onClick={this.onInviteTeachers}>Yes, Add Teachers</OkButton>
+          </ButtonsContainer>
         ]}
       >
         <Row>
-          <Col span={24}>
+          <TextWrapper span={24}>
             To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them
             to select a school and create a password.
             <br />
             Use seperate lines or semi-colons to add teachers.
-          </Col>
+          </TextWrapper>
         </Row>
         <Row>
           <Col span={24}>
-            <FormItem>
+            <ModalFormItem>
               <PlaceHolderText visible={placeHolderVisible}>
                 Enter email like...
                 <br />
@@ -77,10 +79,10 @@ class InviteMultipleTeacherModal extends Component {
                   }
                 ]
               })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
-            </FormItem>
+            </ModalFormItem>
           </Col>
         </Row>
-      </Modal>
+      </AddMulitpleTeachersModal>
     );
   }
 }

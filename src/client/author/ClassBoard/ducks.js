@@ -543,6 +543,11 @@ export const getCanOpenAssignmentSelector = createSelector(
   }
 );
 
+export const getDisableMarkAsSubmittedSelector = createSelector(
+  getAssignmentStatusSelector,
+  status => ["graded", "done", "in grading"].includes(status.toLowerCase())
+);
+
 export const getAssignedBySelector = createSelector(
   getAdditionalDataSelector,
   state => get(state, "assignedBy", {})

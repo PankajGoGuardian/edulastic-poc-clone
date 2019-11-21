@@ -15,8 +15,9 @@ export const QuestionItemWrapper = styled.div`
   margin-bottom: 10px;
   padding: 19px 0 18px 13px;
   background: ${white};
-  border-radius: 10px;
+  border-radius: 0 10px 10px 0;
   border: 1px solid ${sectionBorder};
+  border-left-color: transparent;
   box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
 `;
 

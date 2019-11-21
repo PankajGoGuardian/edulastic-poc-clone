@@ -13,8 +13,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
     queType: "Token highlight",
     queText: "Highlight the correct part?",
     template: [
-      "This is first paragraph.And of two sentences.",
-      "This is second paragraph.And of three sentences. Third sentense is here."
+      "This is first paragraph. And of two sentences.",
+      "This is second paragraph. And of three sentences. Third sentense is here."
     ],
     correct: {
       para: [0],
@@ -31,12 +31,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
   const itemList = new ItemListPage();
   const preview = new PreviewItemPage();
 
-  const RED_BG = "rgb(251, 223, 231)";
-  const RED_BD = "rgb(238, 22, 88)";
-  const GREEN_BG = "rgb(225, 251, 242)";
-  const GREEN_BD = "rgb(31, 227, 161)";
+  const RED_BG = "rgba(238, 22, 88, 0.15)";
+  const RED_BD = "rgb(221, 46, 68)";
+  const GREEN_BG = "rgb(132, 205, 54)";
+  const GREEN_BD = "rgb(94, 181, 0)";
 
-  const ACTIVE = "rgb(31, 227, 161)";
+  const ACTIVE = "rgb(0, 173, 80)";
   const ACTIVEWORD = "active-word";
 
   before(() => {
@@ -63,9 +63,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
       // template
       question
         .getTemplateEditor()
-        .click()
+        .clear({ force: true })
         .type(queData.template[0])
-        .type("{enter}{enter}")
+        .type("{enter}")
         .type(queData.template[1]);
 
       question.getQuestionEditor().click();
@@ -75,15 +75,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
       tokens.forEach(token => {
         const { sel, count } = token;
-        cy.get("body")
+        cy.get('[data-cy="tabs"]')
+          .eq(0)
+          .next()
           .contains(sel)
-          .click()
+          .click({ force: true })
           .should("have.css", "background-color", ACTIVE);
+
         question
           .getAllTokens()
           .should("have.length", count)
-          .each($tok => {
-            cy.wrap($tok)
+          .each(tok => {
+            cy.wrap(tok)
               .click({ force: true })
               .should("not.have.class", ACTIVEWORD)
               .click({ force: true })
@@ -92,18 +95,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
       });
 
       // fix token to para
-      question.paragraph().click();
+      question.paragraph().click({ force: true });
     });
 
     it(" > [Tc_212] : set correct answer", () => {
       // point
-      question.getPoint().verifyNumInput(1);
+      question.getPoint().verifyNumInput(0.5);
 
       // set correct ans
       question
         .getAllTokenAnswer()
         .first()
-        .click({ force: true })
+        .then($fr => {
+          cy.wrap($fr).click({ force: true });
+        })
+        .wait(500)
         .should("have.class", ACTIVEWORD);
     });
 
@@ -121,7 +127,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .getShowAnswer()
           .click()
           .then(() => {
-            cy.get(`.${ACTIVEWORD}`).should("contain", queData.template[0]);
+            cy.get("body")
+              .contains("Correct Answers")
+              .siblings()
+              .eq(0)
+              .should("contain", queData.template[0]);
           });
 
         // clear
@@ -145,6 +155,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         preview
           .getCheckAnswer()
           .click()
+          .wait(1000)
           .then(() => {
             preview.getAntMsg().should("contain", "score: 1/1");
             cy.get("@answered")
@@ -177,8 +188,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
       it(" > [Tc_2] : Sentence Token, validate checkAns", () => {
         preview.header.edit();
-        editItem.getEditButton().click();
-
         // set token and ans
         question.goToEditToken();
         question.sentence().click();
@@ -325,6 +334,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
     });
 
     describe(" > Layout", () => {
+      before(() => {
+        editItem.showAdvancedOptions();
+      });
+
       it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("small");

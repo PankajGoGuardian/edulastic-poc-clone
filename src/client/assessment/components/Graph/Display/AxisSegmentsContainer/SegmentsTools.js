@@ -92,7 +92,7 @@ const SegmentsTools = ({
   };
 
   const toolBtnStyle = getStyle(theme, fontSize);
-
+  const zoomLevel = theme?.zoomLevel || localStorage.getItem("zoomLevel");
   return (
     <GraphToolbar data-cy="segmentsToolbar" fontSize={fontSize} vertical={vertical}>
       {uiTools.map(
@@ -100,6 +100,7 @@ const SegmentsTools = ({
           !uiTool.group && (
             <SegmentsToolBtn
               style={toolBtnStyle}
+              zoomLevel={zoomLevel}
               className={getToolClassName(uiTool)}
               onClick={getToolClickHandler(uiTool)}
               key={`segments-tool-btn-${i}`}
@@ -118,7 +119,8 @@ const SegmentsTools = ({
       )}
       {serviceTools.map((serviceTool, i) => (
         <SegmentsToolBtn
-          style={{ ...toolBtnStyle, marginLeft: i === 0 ? "auto" : "" }}
+          style={toolBtnStyle}
+          zoomLevel={zoomLevel}
           className={getToolClassName({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
           onClick={getToolClickHandler({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
           key={`segments-service-tool-btn-${i}`}

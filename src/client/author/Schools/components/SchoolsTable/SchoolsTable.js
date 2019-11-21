@@ -9,6 +9,7 @@ import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
 import { roleuser } from "@edulastic/constants";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
 import {
   StyledControlDiv,
@@ -19,16 +20,25 @@ import {
   StyledActionDropDown
 } from "../../../../admin/Common/StyledComponents";
 import {
-  StyledTableContainer,
-  StyledTableButton,
-  StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
   StyledSortIcon,
+  StyledCreateSchoolButton,
+  StyledSchoolTable
+} from "./styled";
+import {
+  MainContainer,
+  StyledTable,
+  TableContainer,
+  SubHeaderWrapper,
+  FilterWrapper,
+  StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  StyledCreateSchoolButton
-} from "./styled";
+  StyledTableButton,
+  LeftFilterDiv,
+  RightFilterDiv
+} from "../../../../common/styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
@@ -39,6 +49,9 @@ import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteS
 import { getSchoolsSelector } from "../../ducks";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 
 class SchoolsTable extends React.Component {
   constructor(props) {
@@ -67,7 +80,8 @@ class SchoolsTable extends React.Component {
         columnKey: "name",
         order: "asc"
       },
-      currentPage: 1
+      currentPage: 1,
+      refineButtonActive: false
     };
 
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
@@ -249,6 +263,10 @@ class SchoolsTable extends React.Component {
     this.setState({ deactivateSchoolModalVisible: false });
   };
 
+  _onRefineResultsCB = () => {
+    this.setState({ refineButtonActive: !this.state.refineButtonActive });
+  };
+
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
   onChangeSearch = event => {
@@ -423,14 +441,25 @@ class SchoolsTable extends React.Component {
       editSchoolKey,
       filtersData,
       sortedInfo,
-      currentPage
+      currentPage,
+      refineButtonActive
     } = this.state;
-    const { userOrgId, totalSchoolsCount, role } = this.props;
+    const breadcrumbData = [
+      {
+        title: "MANAGE DISTRICT",
+        to: "/author/districtprofile"
+      },
+      {
+        title: "SCHOOLS",
+        to: ""
+      }
+    ];
+    const { userOrgId, totalSchoolsCount, role, t } = this.props;
     const columnsInfo = [
       {
         title: (
           <StyledHeaderColumn>
-            <p>Name</p>
+            <p>{t("school.name")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -445,8 +474,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "name",
         editable: true,
-        width: 200,
-        render: name => name || "-",
+        render: name => <span>{name || "-"}</span>,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -458,7 +486,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>City</p>
+            <p>{t("school.city")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -473,8 +501,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "city",
         editable: true,
-        width: 150,
-        render: city => city || "-",
+        render: city => <span>{city || "-"}</span>,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -501,8 +528,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "state",
         editable: true,
-        width: 150,
-        render: state => state || "-",
+        render: state => <span>{state || "-"}</span>,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -514,7 +540,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Zip</p>
+            <p>{t("school.zip")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -529,8 +555,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "zip",
         editable: true,
-        width: 100,
-        render: zip => zip || "-",
+        render: zip => <span>{zip || "-"}</span>,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -542,7 +567,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Status</p>
+            <p>{t("school.status")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -557,7 +582,6 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "isApproved",
         editable: true,
-        width: 110,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -569,9 +593,9 @@ class SchoolsTable extends React.Component {
           return (
             <React.Fragment>
               {typeof record.isApproved === "boolean" && record.isApproved === false ? (
-                <span>Not Approved</span>
+                <span>{t("school.notapproved")}</span>
               ) : (
-                <span>Approved</span>
+                <span>{t("school.approved")}</span>
               )}
             </React.Fragment>
           );
@@ -580,7 +604,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Teacher</p>
+            <p>{t("school.teacher")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -595,7 +619,6 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "teachersCount",
         editable: true,
-        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -625,7 +648,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Student</p>
+            <p>{t("school.student")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -640,7 +663,6 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "studentsCount",
         editable: true,
-        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -670,7 +692,7 @@ class SchoolsTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Section</p>
+            <p>{t("school.section")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -685,7 +707,6 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "sectionsCount",
         editable: true,
-        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -713,19 +734,18 @@ class SchoolsTable extends React.Component {
       },
       {
         dataIndex: "operation",
-        width: 100,
         render: (text, record) => {
           return (
-            <React.Fragment>
+            <div style={{ whiteSpace: "nowrap" }}>
               <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
-                <Icon type="edit" theme="twoTone" />
+                <IconPencilEdit color={themeColor} />
               </StyledTableButton>
               {role === roleuser.DISTRICT_ADMIN && (
                 <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-                  <Icon type="delete" theme="twoTone" />
+                  <IconTrash color={themeColor} />
                 </StyledTableButton>
               )}
-            </React.Fragment>
+            </div>
           );
         }
       }
@@ -745,8 +765,10 @@ class SchoolsTable extends React.Component {
     const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit school">Edit School</Menu.Item>
-        {role === roleuser.DISTRICT_ADMIN ? <Menu.Item key="deactivate school">Deactivate School</Menu.Item> : null}
+        <Menu.Item key="edit school">{t("school.editschool")}</Menu.Item>
+        {role === roleuser.DISTRICT_ADMIN ? (
+          <Menu.Item key="deactivate school">{t("school.deactivateschool")}</Menu.Item>
+        ) : null}
       </Menu>
     );
 
@@ -761,31 +783,31 @@ class SchoolsTable extends React.Component {
 
       const optValues = [];
       if (filtersData[i].filtersColumn === "isApproved") {
-        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
       } else {
-        optValues.push(<Option value="">Select a value</Option>);
-        optValues.push(<Option value="eq">Equals</Option>);
-        optValues.push(<Option value="cont">Contains</Option>);
+        optValues.push(<Option value="">{t("common.selectvalue")}</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
+        optValues.push(<Option value="cont">{t("common.contains")}</Option>);
       }
 
       SearchRows.push(
         <StyledControlDiv>
           <StyledFilterSelect
-            placeholder="Select a column"
+            placeholder={t("common.selectcolumn")}
             onChange={e => this.changeFilterColumn(e, i)}
             defaultValue={filtersData[i].filtersColumn}
             value={filtersData[i].filtersColumn}
           >
-            <Option value="">Select a column</Option>
-            <Option value="address">Address</Option>
-            <Option value="city">City</Option>
-            <Option value="state">State</Option>
-            <Option value="zip">Zip</Option>
-            <Option value="isApproved">Status</Option>
+            <Option value="">{t("common.selectcolumn")}</Option>
+            <Option value="address">{t("school.address")}</Option>
+            <Option value="city">{t("school.city")}</Option>
+            <Option value="state">{t("school.state")}</Option>
+            <Option value="zip">{t("school.zip")}</Option>
+            <Option value="isApproved">{t("school.status")}</Option>
           </StyledFilterSelect>
 
           <StyledFilterSelect
-            placeholder="Select a value"
+            placeholder={t("common.selectvalue")}
             onChange={e => this.changeFilterValue(e, i)}
             value={filtersData[i].filtersValue}
           >
@@ -793,7 +815,7 @@ class SchoolsTable extends React.Component {
           </StyledFilterSelect>
           {filtersData[i].filtersColumn !== "isApproved" ? (
             <StyledFilterInput
-              placeholder="Enter text"
+              placeholder={t("common.entertext")}
               onChange={e => this.changeFilterText(e, i)}
               onSearch={(v, e) => this.onSearchFilter(v, e, i)}
               onBlur={e => this.onBlurFilterText(e, i)}
@@ -803,14 +825,14 @@ class SchoolsTable extends React.Component {
             />
           ) : (
             <StyledFilterSelect
-              placeholder="Select a value"
+              placeholder={t("common.selectvalue")}
               onChange={e => this.changeStatusValue(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
             >
-              <Option value="">Select a value</Option>
-              <Option value="true">Approved</Option>
-              <Option value="false">Not Approved</Option>
+              <Option value="">{t("common.selectvalue")}</Option>
+              <Option value="true">{t("school.approved")}</Option>
+              <Option value="false">{t("school.notapproved")}</Option>
             </StyledFilterSelect>
           )}
 
@@ -820,13 +842,13 @@ class SchoolsTable extends React.Component {
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
-              + Add Filter
+              {t("common.addfilter")}
             </StyledAddFilterButton>
           )}
 
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              - Remove Filter
+              {t("common.removefilter")}
             </StyledAddFilterButton>
           )}
         </StyledControlDiv>
@@ -834,25 +856,51 @@ class SchoolsTable extends React.Component {
     }
 
     return (
-      <StyledTableContainer>
-        <StyledFilterDiv>
-          {role === roleuser.DISTRICT_ADMIN ? (
-            <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
-              + Create School
-            </StyledCreateSchoolButton>
-          ) : null}
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
+      <MainContainer>
+        <SubHeaderWrapper>
+          <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+            {t("common.refineresults")}
+            <Icon type={refineButtonActive ? "up" : "down"} />
+          </StyledButton>
+        </SubHeaderWrapper>
 
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
-            </Button>
-          </StyledActionDropDown>
+        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+
+        <StyledFilterDiv>
+          <LeftFilterDiv width={80}>
+            <StyledSchoolSearch
+              placeholder={t("common.searchbyname")}
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+            {role === roleuser.DISTRICT_ADMIN ? (
+              <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
+                {t("school.createschool")}
+              </StyledCreateSchoolButton>
+            ) : null}
+          </LeftFilterDiv>
+          <RightFilterDiv width={15}>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                {t("common.actions")} <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
         </StyledFilterDiv>
+
+        <TableContainer>
+          <StyledSchoolTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+          <StyledPagination
+            current={currentPage}
+            defaultCurrent={1}
+            pageSize={10}
+            total={totalSchoolsCount}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
+          />
+        </TableContainer>
+
         {createSchoolModalVisible && (
           <CreateSchoolModal
             modalVisible={createSchoolModalVisible}
@@ -860,24 +908,9 @@ class SchoolsTable extends React.Component {
             closeModal={this.closeCreateSchoolModal}
             dataSource={dataSource}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
-        {SearchRows}
-        <StyledTable
-          rowSelection={rowSelection}
-          dataSource={dataSource}
-          columns={columns}
-          pagination={false}
-          scroll={{ x: true, y: 500 }}
-        />
-        <StyledPagination
-          current={currentPage}
-          defaultCurrent={1}
-          pageSize={25}
-          total={totalSchoolsCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
 
         {editSchoolModaVisible && editSchoolKey !== "" && (
           <EditSchoolModal
@@ -887,6 +920,7 @@ class SchoolsTable extends React.Component {
             closeModal={this.closeEditSchoolModal}
             userOrgId={userOrgId}
             hideOnSinglePage={true}
+            t={t}
           />
         )}
 
@@ -898,13 +932,14 @@ class SchoolsTable extends React.Component {
             schoolData={selectedDeactivateSchools}
           />
         )}
-      </StyledTableContainer>
+      </MainContainer>
     );
   }
 }
 
 const EditableSchoolsTable = Form.create()(SchoolsTable);
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       schoolList: getSchoolsSelector(state),

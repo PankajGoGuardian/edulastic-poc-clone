@@ -15,7 +15,7 @@ import {
   smallDesktopWidth,
   borderGrey
 } from "@edulastic/colors";
-import { Button, Table, Select, Icon } from "antd";
+import { Button, Table, Select, Icon, Dropdown } from "antd";
 import { IconManage, IconPlusCircle } from "@edulastic/icons";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
@@ -500,4 +500,8 @@ export const GoogleClassroomTable = styled(Table)`
       }
     }
   }
+`;
+
+export const ClassStatusDropdown = styled(Dropdown)`
+  height: 30px;
 `;

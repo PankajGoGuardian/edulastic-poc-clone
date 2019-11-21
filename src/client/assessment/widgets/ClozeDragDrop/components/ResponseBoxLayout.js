@@ -37,6 +37,16 @@ const ResponseBoxLayout = ({
 
   const horizontallyAligned = containerPosition === "left" || containerPosition === "right";
 
+  const itemStyle = {
+    ...dragItemStyle,
+    fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
+    fontWeight: smallSize
+      ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
+      : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
+    display: "flex",
+    justifyContent: "center"
+  };
+
   return (
     <Droppable
       style={{ display: "block", border: `1px solid ${theme.widgets.clozeDragDrop.correctAnswerBoxBorderColor}` }}
@@ -68,6 +78,7 @@ const ResponseBoxLayout = ({
           <FlexContainer
             flexDirection={horizontallyAligned ? "column" : "row"}
             flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
+            justifyContent={horizontallyAligned ? "center" : "flex-start"}
           >
             {hasGroupResponses && (
               <GroupWrapper horizontallyAligned={horizontallyAligned}>
@@ -80,25 +91,14 @@ const ResponseBoxLayout = ({
                           groupResponse.options.map((option, itemIndex) => {
                             const { value, label = "" } = option;
                             return (
-                              <div
-                                key={itemIndex}
-                                className="draggable_box"
-                                style={{
-                                  ...dragItemStyle,
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  fontSize: smallSize
-                                    ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
-                                    : fontSize
-                                }}
-                              >
+                              <div key={itemIndex} className="draggable_box">
                                 {!dragHandler && (
-                                  <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
                                     <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                                   </Draggable>
                                 )}
                                 {dragHandler && (
-                                  <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
                                     <i
                                       className="fa fa-arrows-alt"
                                       style={{
@@ -123,27 +123,14 @@ const ResponseBoxLayout = ({
               responses.map((option, index) => {
                 const { label, value } = option;
                 return (
-                  <StyledResponseOption
-                    id={`response-item-${index}`}
-                    key={value}
-                    className="draggable_box"
-                    style={{
-                      ...dragItemStyle,
-                      fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
-                      fontWeight: smallSize
-                        ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
-                        : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
-                      display: "flex",
-                      justifyContent: "center"
-                    }}
-                  >
+                  <StyledResponseOption id={`response-item-${index}`} key={value} className="draggable_box">
                     {!dragHandler && (
-                      <Draggable onDrop={onDrop} data={value}>
+                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
                         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                       </Draggable>
                     )}
                     {dragHandler && (
-                      <Draggable onDrop={onDrop} data={value}>
+                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
                         <i
                           className="fa fa-arrows-alt"
                           style={{

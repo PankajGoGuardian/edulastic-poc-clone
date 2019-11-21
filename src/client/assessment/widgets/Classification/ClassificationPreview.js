@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import "core-js/features/array/flat";
 import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel } from "@edulastic/common";
-import { HorizontalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -318,8 +317,6 @@ const ClassificationPreview = ({
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
 
-  const previewWrapperRef = useRef();
-
   return (
     <StyledPaperWrapper
       data-cy="classificationPreview"
@@ -339,7 +336,6 @@ const ClassificationPreview = ({
           direction={direction}
           imageOptions={imageOptions}
           imageUrl={imageUrl}
-          ref={previewWrapperRef}
           choiceWidth={dragItemMaxWidth}
         >
           {tableContent}
@@ -436,7 +432,6 @@ const ClassificationPreview = ({
           ))}
         </ChoiceContainer>
       ) : null}
-      <HorizontalScrollContainer scrollWrraper={previewWrapperRef.current} />
     </StyledPaperWrapper>
   );
 };

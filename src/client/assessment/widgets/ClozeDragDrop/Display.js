@@ -5,7 +5,6 @@ import { cloneDeep, get } from "lodash";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
-import { HorizontalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { PreWrapper, helpers, QuestionNumberLabel } from "@edulastic/common";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -330,17 +329,15 @@ class ClozeDragDropDisplay extends Component {
             fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
-          <StyledJsxParserContainer>
-            <JsxParser
-              bindings={{ resProps }}
-              showWarnings
-              components={{
-                response: templateBoxLayout,
-                mathspan: MathSpanWrapper
-              }}
-              jsx={parsedTemplate}
-            />
-          </StyledJsxParserContainer>
+          <JsxParser
+            bindings={{ resProps }}
+            showWarnings
+            components={{
+              response: templateBoxLayout,
+              mathspan: MathSpanWrapper
+            }}
+            jsx={parsedTemplate}
+          />
         </div>
       </PreWrapper>
     );
@@ -444,7 +441,6 @@ class ClozeDragDropDisplay extends Component {
         </QuestionTitleWrapper>
         {question && questionContent}
         {answerBox}
-        <HorizontalScrollContainer scrollWrraper={this.previewWrapperRef.current} />
       </TextWrappedDiv>
     );
   }
@@ -524,11 +520,4 @@ const TextWrappedDiv = styled.div`
   max-width: 100%;
   overflow: auto;
   position: relative;
-`;
-
-const StyledJsxParserContainer = styled.div`
-  [id*="response-container"] {
-    width: auto !important;
-    height: auto !important;
-  }
 `;

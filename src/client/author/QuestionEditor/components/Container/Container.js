@@ -9,7 +9,6 @@ import { Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
-import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -402,7 +401,6 @@ class Container extends Component {
         </BreadCrumbBar>
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
-        <VerticalScrollContainer scrollWrraper={this.innerDiv.current} />
       </EditorContainer>
     );
   }

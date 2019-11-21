@@ -3,8 +3,6 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
-import DragScroll, { UPWARDS, DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
-import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 
 class HeaderWrapper extends Component {
   render = () => {
@@ -16,34 +14,6 @@ class HeaderWrapper extends Component {
           <Container justify={justify} type={type}>
             {children}
           </Container>
-          <ScrollContext.Consumer>
-            {context => (
-              <Fragment>
-                <DragScroll
-                  context={context}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                  }}
-                  direction={UPWARDS}
-                />
-                <DragScroll
-                  context={context}
-                  style={{
-                    position: "fixed",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: 50
-                  }}
-                  direction={DOWNWARDS}
-                />
-              </Fragment>
-            )}
-          </ScrollContext.Consumer>
         </Affix>
       </HeaderContainer>
     );

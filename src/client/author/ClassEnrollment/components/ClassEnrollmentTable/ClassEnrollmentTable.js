@@ -4,9 +4,8 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
-import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { AddNewUserModal } from "../Common/AddNewUser";
-import { StyledTable, UserNameContainer, UserName } from "./styled";
+import { StyledTable } from "./styled";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
 import { getUserOrgId, getUser } from "../../../src/selectors/user";
@@ -40,11 +39,13 @@ import {
   StyledFilterInput,
   StyledFilterSelect,
   StyledActionDropDown,
-  StyledAddFilterButton
+  StyledAddFilterButton,
+  StyledClassName
 } from "../../../../admin/Common/StyledComponents";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
+import { TypeToConfirmModal } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -85,14 +86,11 @@ class ClassEnrollmentTable extends React.Component {
 
   renderUserNames() {
     const { selectedUsersInfo } = this.state;
-    return (
-      <UserNameContainer>
-        {selectedUsersInfo.map(item => {
-          const username = get(item, "user.username");
-          return <UserName key={username}>{username}</UserName>;
-        })}
-      </UserNameContainer>
-    );
+    return selectedUsersInfo.map(item => {
+      const username = get(item, "user.username");
+      const id = get(item, "user._id");
+      return <StyledClassName key={id}>{username}</StyledClassName>;
+    });
   }
   onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
@@ -668,22 +666,19 @@ class ClassEnrollmentTable extends React.Component {
             onChange={page => this.setPageNo(page)}
           />
         </TableContainer>
-        <ConfirmationModal
+
+        <TypeToConfirmModal
+          modalVisible={removeStudentsModalVisible}
           title="Remove Student(s)"
-          show={removeStudentsModalVisible}
-          onOk={this.confirmDeactivate}
-          onCancel={this.onCancelRemoveStudentsModal}
-          inputVal={confirmText}
-          onInputChange={this.onInputChangeHandler}
-          expectedVal={defaultText}
-          canUndone
-          bodyText={
-            <>
-              {this.renderUserNames()}
-              <div> Are you sure you want to remove the selected student(s) from the class? </div>
-            </>
+          handleOnOkClick={this.confirmDeactivate}
+          wordToBeTyped="DEACTIVATE"
+          primaryLabel="Are you sure you want to remove the following student(s)?"
+          secondaryLabel={this.renderUserNames()}
+          closeModal={() =>
+            this.setState({
+              removeStudentsModalVisible: false
+            })
           }
-          okText="Yes, Remove"
         />
 
         <AddNewUserModal

@@ -114,7 +114,11 @@ class EditSchoolAdminModal extends Component {
                 ],
                 initialValue: _source.institutionIds
               })(
-                <Select mode="multiple" placeholder="Select school">
+                <Select
+                  mode="multiple"
+                  placeholder="Select school"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {schoolsOptions}
                 </Select>
               )}

@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import striptags from "striptags";
 
+import { WithResources } from "@edulastic/common";
+import AppConfig from "../../../../../../../../app-config";
+
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
@@ -11,7 +14,8 @@ export const defaultTitleWidth = 150;
 
 class ResponseBox extends Component {
   state = {
-    draggingMark: null
+    draggingMark: null,
+    resourcesLoaded: false
   };
 
   titleRef = React.createRef();
@@ -43,6 +47,14 @@ class ResponseBox extends Component {
     this.setState({ draggingMark: i });
   };
 
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+  };
+
   render() {
     const {
       values,
@@ -60,7 +72,7 @@ class ResponseBox extends Component {
       shouldZoom
     } = this.props;
 
-    const { draggingMark } = this.state;
+    const { draggingMark, resourcesLoaded } = this.state;
     const width = position === "top" || position === "bottom" ? minWidth : titleWidth;
 
     const markCountInLine = Math.floor((width - separationDistanceX) / (markWidth + separationDistanceX));
@@ -69,46 +81,54 @@ class ResponseBox extends Component {
     height = Math.max(height, minHeight);
 
     return (
-      <Container width={width} position={position}>
-        <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
-        <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
-          {values.map((value, i) => {
-            let content = replaceLatexesWithMathHtml(value.text);
+      <WithResources
+        resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+        fallBack={<span />}
+        onLoaded={this.resourcesOnLoaded}
+      >
+        {!resourcesLoaded ? null : (
+          <Container width={width} position={position}>
+            <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
+            <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
+              {values.map((value, i) => {
+                let content = replaceLatexesWithMathHtml(value.text);
 
-            const regExp = new RegExp('<span class="input__math"', "g");
-            let title = "";
-            if (!regExp.test(content)) {
-              title = striptags(content);
-            }
+                const regExp = new RegExp('<span class="input__math"', "g");
+                let title = "";
+                if (!regExp.test(content)) {
+                  title = striptags(content);
+                }
 
-            return (
-              <Rnd
-                key={value.id}
-                position={{
-                  x: separationDistanceX + (i % markCountInLine) * (markWidth + separationDistanceX),
-                  y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
-                }}
-                size={{ width: markWidth, height: markHeight }}
-                onDragStart={this.handleDragStart(i)}
-                onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
-                style={{ zIndex: 10 }}
-                disableDragging={false}
-                enableResizing={false}
-                bounds={bounds}
-                className={`mark${draggingMark === i ? " dragging" : ""}`}
-                scale={shouldZoom ? scale : 1}
-              >
-                <MarkContainer
-                  fontSize={12}
-                  dangerouslySetInnerHTML={{
-                    __html: `<div class='mark-content' title='${title}'>${content}</div>`
-                  }}
-                />
-              </Rnd>
-            );
-          })}
-        </DraggableOptionsContainer>
-      </Container>
+                return (
+                  <Rnd
+                    key={value.id}
+                    position={{
+                      x: separationDistanceX + (i % markCountInLine) * (markWidth + separationDistanceX),
+                      y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
+                    }}
+                    size={{ width: markWidth, height: markHeight }}
+                    onDragStart={this.handleDragStart(i)}
+                    onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
+                    style={{ zIndex: 10 }}
+                    disableDragging={false}
+                    enableResizing={false}
+                    bounds={bounds}
+                    className={`mark${draggingMark === i ? " dragging" : ""}`}
+                    scale={shouldZoom ? scale : 1}
+                  >
+                    <MarkContainer
+                      fontSize={12}
+                      dangerouslySetInnerHTML={{
+                        __html: `<div class='mark-content' title='${title}'>${content}</div>`
+                      }}
+                    />
+                  </Rnd>
+                );
+              })}
+            </DraggableOptionsContainer>
+          </Container>
+        )}
+      </WithResources>
     );
   }
 }

@@ -432,6 +432,7 @@ class QuestionWrapper extends Component {
                   flowLayout={flowLayout}
                   disableResponse={disableResponse}
                   studentReport={studentReportFeedbackVisible}
+                  isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
                 {showFeedback && timeSpent ? (
@@ -475,10 +476,10 @@ class QuestionWrapper extends Component {
               <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
             )}
 
-            {isPrintPreview && (
+            {showFeedback && isPrintPreview && (
               <PrintPreviewScore maxScore={data?.activity?.maxScore || 0} score={data?.activity?.score || 0} />
             )}
-            {isPrintPreview && (
+            {showFeedback && isPrintPreview && (
               <div className="print-preview-feedback">
                 {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
               </div>

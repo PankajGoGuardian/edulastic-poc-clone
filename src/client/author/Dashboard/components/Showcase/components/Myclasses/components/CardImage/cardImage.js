@@ -20,10 +20,10 @@ import { IconArrowRight } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 
 const CardImage = ({ data, history }) => {
-  const { name, grades = [], studentCount, subject, thumbnail } = data;
+  const { name, grades = [], studentCount, subject, thumbnail, _id } = data;
 
-  const gotoManageClass = () => {
-    history.push("/author/manageClass");
+  const gotoManageClass = (classId = "") => () => {
+    history.push(`/author/manageClass/${classId}`);
   };
 
   return (
@@ -36,7 +36,7 @@ const CardImage = ({ data, history }) => {
               <Tooltip title={name} placement="bottomLeft">
                 <TextDiv data-cy="name">{name}</TextDiv>
               </Tooltip>
-              <IconWrapper onClick={gotoManageClass}>
+              <IconWrapper onClick={gotoManageClass(_id)}>
                 <IconArrowRight color={themeColor} width={15} height={15} />
               </IconWrapper>
             </StyledRow>

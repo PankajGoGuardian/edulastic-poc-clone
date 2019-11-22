@@ -116,7 +116,12 @@ const StyledButton = styled(Button)`
       fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
     }
 
-    &:focus,
+    &:focus{
+      background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+      svg{
+        fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+      }
+    }
     &:hover,
     &:active {
       background: ${theme.default.headerButtonBgHoverColor};

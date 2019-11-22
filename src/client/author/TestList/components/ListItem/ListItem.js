@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { darkGrey } from "@edulastic/colors";
+import { darkGrey, cardTitleColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 import { Col } from "antd";
@@ -27,8 +27,7 @@ import {
   CardId,
   Footer,
   AddButton,
-  TestStatus,
-  EdulasticVerified
+  TestStatus
 } from "./styled";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -206,7 +205,12 @@ class ListItem extends Component {
                 <ContentWrapper>
                   {authorName && (
                     <Author>
-                      <IconUser /> &nbsp;
+                      {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
+                        getAuthorCollectionMap(true, 30, 30)[collectionName].icon
+                      ) : (
+                        <IconUser color={cardTitleColor} />
+                      )}{" "}
+                      &nbsp;
                       <AuthorName title={authorName}>{authorName}</AuthorName>
                     </Author>
                   )}

@@ -220,7 +220,12 @@ class Item extends Component {
             {authorName && (
               <Author>
                 <AuthorWrapper>
-                  <IconUser color={cardTitleColor} /> &nbsp;
+                  {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
+                    getAuthorCollectionMap(true, 30, 30)[collectionName].icon
+                  ) : (
+                    <IconUser color={cardTitleColor} />
+                  )}
+                  &nbsp;
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>

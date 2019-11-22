@@ -18,7 +18,8 @@ export const SET_FILTER = "[studentAssignment] set filter";
 
 export const CHECK_ANSWER = "check answer";
 export const ADD_EVALUATION = "add evaluation";
-export const RERENDER_ASSIGNMENTS = "rerender assignments";
+export const RERENDER_ASSIGNMENTS = "[studentAssignments] rerender assignments";
+export const REMOVE_ASSIGNMENT = "[studentAssignments] remove assignment";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -27,6 +28,7 @@ export const setActiveAssignmentAction = createAction(SET_ACTIVE_ASSIGNMENT);
 export const setFilterAction = createAction(SET_FILTER);
 export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME);
 export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS);
+export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT);
 
 // initial State
 const initialState = {
@@ -47,8 +49,12 @@ const setLoading = state => {
 
 // load assignments to store
 const setAssignments = (state, { payload }) => {
-  state.byId = payload.assignmentObj;
-  state.allIds = payload.allAssignments;
+  if (payload.assignmentObj) {
+    state.byId = payload.assignmentObj;
+  }
+  if (payload.allIds) {
+    state.allIds = payload.allAssignments;
+  }
   state.isLoading = false;
 };
 
@@ -62,13 +68,15 @@ export default createReducer(initialState, {
   [SET_ASSIGNMENTS]: setAssignments,
   [ADD_ASSIGNMENT_REALTIME]: (state, { payload: assignment }) => {
     const { _id: assignmentId } = assignment;
-    state.byId = state.byId || {};
     state.byId[assignmentId] = assignment;
     if (!state.allIds.includes(assignmentId)) {
       state.allIds.push(assignmentId);
     }
   },
-
+  [REMOVE_ASSIGNMENT]: (state, { payload }) => {
+    delete state.byId[payload];
+    state.allIds = state.allIds.filter(x => x !== payload);
+  },
   [SET_ACTIVE_ASSIGNMENT]: (state, { payload }) => {
     state.current = payload;
   },

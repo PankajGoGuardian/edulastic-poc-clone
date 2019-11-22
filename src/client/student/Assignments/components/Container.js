@@ -20,7 +20,11 @@ import {
   transformAssignmentForRedirect
 } from "../ducks";
 
-import { addRealtimeAssignmentAction, rerenderAssignmentsAction } from "../../sharedDucks/AssignmentModule/ducks";
+import {
+  addRealtimeAssignmentAction,
+  rerenderAssignmentsAction,
+  removeAssignmentAction
+} from "../../sharedDucks/AssignmentModule/ducks";
 import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
@@ -69,7 +73,8 @@ const Content = ({
   addRealtimeReport,
   isLoading,
   rerenderAssignments,
-  allAssignments
+  allAssignments,
+  removeAssignment
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
@@ -91,7 +96,8 @@ const Content = ({
     addReport: addRealtimeReport,
     "absentee-mark": addRealtimeReport,
     "open-assignment": transformAssignment,
-    "close-assignment": transformAssignment
+    "close-assignment": transformAssignment,
+    removeAssignment
   });
 
   useInterval(() => {
@@ -145,7 +151,8 @@ export default connect(
     fetchAssignments: fetchAssignmentsAction,
     addRealtimeAssignment: addRealtimeAssignmentAction,
     addRealtimeReport: addRealtimeReportAction,
-    rerenderAssignments: rerenderAssignmentsAction
+    rerenderAssignments: rerenderAssignmentsAction,
+    removeAssignment: removeAssignmentAction
   }
 )(Content);
 

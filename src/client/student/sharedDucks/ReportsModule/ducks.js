@@ -38,8 +38,12 @@ const initialState = {
 
 // load reports to store.
 const setReports = (state, { payload }) => {
-  state.byId = payload.reportsObj;
-  state.allIds = payload.allReports;
+  if (payload.reportsObj) {
+    state.byId = payload.reportsObj;
+  }
+  if (payload.allReports) {
+    state.allIds = payload.allReports;
+  }
 };
 
 const updateReports = (state, { payload }) => {
@@ -75,7 +79,6 @@ export default createReducer(initialState, {
   [SET_PASSAGES_DATA]: setPassagesData,
   [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
     if (Array.isArray(report)) {
-      state.byId = state.byId || {};
       for (let el of report) {
         state.byId[el._id] = el;
       }

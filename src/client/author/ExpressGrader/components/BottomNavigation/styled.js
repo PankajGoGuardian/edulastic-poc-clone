@@ -72,6 +72,19 @@ export const CloseModal = styled(Button)`
       fill: ${themeColor};
     }
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 121px;
+    height: 40px;
+    justify-content: center;
+    svg {
+      display: none;
+    }
+    & > .anticon + span,
+    span {
+      margin-left: 0px;
+    }
+  }
 `;
 
 export const StyledText = styled.span`
@@ -107,4 +120,15 @@ export const EditResponse = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    .ant-switch {
+      min-width: 32px;
+      height: 17px;
+      &:after {
+        width: 13px;
+        height: 13px;
+      }
+    }
+  }
 `;

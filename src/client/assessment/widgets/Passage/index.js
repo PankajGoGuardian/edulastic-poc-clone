@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import get from "lodash/get";
 
 import { Paper } from "@edulastic/common";
 import { white, boxShadowDefault } from "@edulastic/colors";
@@ -15,6 +16,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import PassageView from "./PassageView";
 import Details from "./Details";
 
+import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
 const EmptyWrapper = styled.div``;
 
 const PassageWrapper = styled(Paper)`
@@ -40,7 +42,6 @@ const Passage = ({
 }) => {
   const Wrapper = smallSize ? EmptyWrapper : PassageWrapper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-
   if (view === "edit") {
     return (
       <ContentArea>
@@ -89,11 +90,14 @@ Passage.defaultProps = {
 
 const enhance = compose(
   withNamespaces("assessment"),
-  memo,
   connect(
-    null,
+    (state, ownProps) => ({
+      userWork: get(state, `userWork.present[${ownProps.item.id}].resourceId`, [])
+    }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      saveUserWork: saveUserWorkAction,
+      clearUserWork: clearUserWorkAction
     }
   )
 );

@@ -6,7 +6,7 @@ import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import produce from "immer";
-import { Stimulus, highlightSelectedText, WithResources, decodeHTML, rgbToHexc } from "@edulastic/common";
+import { Stimulus, highlightSelectedText, WithResources, decodeHTML, rgbToHexc, RefContext } from "@edulastic/common";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -17,7 +17,16 @@ import AppConfig from "../../../../../app-config";
 const ContentsTitle = Heading;
 let startedSelectingText = false;
 
-const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = [] }) => {
+const PassageView = ({
+  item,
+  preview,
+  flowLayout,
+  setHighlights,
+  highlights = [],
+  userWork,
+  saveUserWork,
+  clearUserWork
+}) => {
   const mainContentsRef = useRef();
   const [page, setPage] = useState(1);
   const [selected, toggleColorPicker] = useState(null);
@@ -81,19 +90,24 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
         match = regex.exec(content);
       }
 
+      const highlightContent = produce(matchs, draft => {
+        if (color === "remove") {
+          draft = draft.splice(selected.index, 1);
+        } else {
+          draft[selected.index].color = color;
+          if (!color) {
+            delete draft[selected.index].color;
+          }
+        }
+      });
+
       if (setHighlights) {
-        setHighlights(
-          produce(matchs, draft => {
-            if (color === "remove") {
-              draft = draft.splice(selected.index, 1);
-            } else {
-              draft[selected.index].color = color;
-              if (!color) {
-                delete draft[selected.index].color;
-              }
-            }
-          })
-        );
+        // this is available only at student side
+        setHighlights(highlightContent);
+      } else {
+        // saving the highlights at author side
+        // setHighlights is not available at author side
+        saveUserWork({ [item.id]: { resourceId: highlightContent } });
       }
 
       if (color === "remove") {
@@ -109,10 +123,12 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
   const getContent = () => {
     let { content } = item;
     content = decodeHTML(content);
-    if (highlights) {
-      for (let i = 0; i < highlights.length; i++) {
-        if (highlights[i]) {
-          const { color, style, text, index } = highlights[i];
+    // use the userWork in author mode
+    const _highlights = setHighlights ? highlights : userWork;
+    if (_highlights) {
+      for (let i = 0; i < _highlights.length; i++) {
+        if (_highlights[i]) {
+          const { color, style, text, index } = _highlights[i];
           const highlightStyle = color ? `style="background-color:${color}"` : style;
           const className = color
             ? 'class="selected-text-heighlight active"'
@@ -152,6 +168,12 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
         editors[0].contentEditable = false;
       }
     }
+    return () => {
+      // clearing the userWork at author side.
+      if (!setHighlights) {
+        clearUserWork();
+      }
+    };
   }, []);
 
   return (
@@ -167,14 +189,15 @@ const PassageView = ({ item, preview, flowLayout, setHighlights, highlights = []
 
       {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
       {!item.paginated_content && item.content && (
-        <Stimulus
-          id="mainContents"
-          ref={mainContentsRef}
-          onMouseUp={handleHighlight}
-          onMouseDown={handleMouseDown}
-          dangerouslySetInnerHTML={{ __html: getContent() }}
-          userSelect
-        />
+        <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
+          <Stimulus
+            id="mainContents"
+            onMouseUp={handleHighlight}
+            onMouseDown={handleMouseDown}
+            dangerouslySetInnerHTML={{ __html: getContent() }}
+            userSelect
+          />
+        </RefContext.Provider>
       )}
       {item.paginated_content && item.pages && !!item.pages.length && !flowLayout && (
         <div>

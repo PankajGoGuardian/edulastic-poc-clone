@@ -6,6 +6,7 @@ export const Content = styled.div`
   left: 0;
   right: 0;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  overflow: ${({ hideOverflow }) => (hideOverflow ? "hidden" : null)};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};

@@ -343,7 +343,7 @@ class Review extends PureComponent {
     const passagesKeyed = keyBy(passages, "_id");
 
     return (
-      <Content hideOverflow={isModalVisible}>
+      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible}>
         <ReviewPageContainer>
           <Row>
             <Col span={owner && isEditable ? 24 : 18}>

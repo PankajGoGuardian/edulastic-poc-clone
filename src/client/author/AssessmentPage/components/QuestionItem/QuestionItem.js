@@ -267,7 +267,7 @@ class QuestionItem extends React.Component {
           >
             <QuestionNumber dragging={dragging}>{qIndex || index + 1}</QuestionNumber>
           </Draggable>
-          <QuestionForm>{this.renderContent()}</QuestionForm>
+          <QuestionForm review={review}>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
           {review && (previewMode !== "clear" || check) && this.renderAnswerIndicator(type)}
         </AnswerForm>

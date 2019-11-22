@@ -136,6 +136,7 @@ class AssessmentPlayerDocBased extends React.Component {
               viewMode="review"
               review
               noCheck
+              testMode
             />
           )}
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />

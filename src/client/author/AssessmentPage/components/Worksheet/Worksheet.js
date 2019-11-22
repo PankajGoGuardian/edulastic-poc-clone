@@ -528,9 +528,9 @@ class Worksheet extends React.Component {
       pageStructure,
       scratchPad = {},
       freeFormNotes = {},
-      windowWidth
+      windowWidth,
+      testMode = false
     } = this.props;
-
     const selectedPage = pageStructure[currentPage] || defaultPage;
     const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
 
@@ -584,11 +584,6 @@ class Worksheet extends React.Component {
           />
         </Modal>
 
-        {review && (
-          <MinimizeButton onClick={this.toggleMinimized} minimized={minimized}>
-            <IconGraphRightArrow />
-          </MinimizeButton>
-        )}
         {!minimized && (
           <Thumbnails
             annotations={annotations}
@@ -610,7 +605,15 @@ class Worksheet extends React.Component {
             isToolBarVisible={isToolBarVisible}
             toggleToolBarVisiblity={this.toggleToolBarVisiblity}
             noCheck={noCheck}
+            minimized={minimized}
+            toggleMinimized={this.toggleMinimized}
           />
+        )}
+
+        {minimized && (
+          <MinimizeButton onClick={this.toggleMinimized} minimized={minimized}>
+            <IconGraphRightArrow />
+          </MinimizeButton>
         )}
 
         <Fragment>
@@ -628,6 +631,7 @@ class Worksheet extends React.Component {
               viewMode={viewMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}
+              minimized={minimized}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools
@@ -641,6 +645,7 @@ class Worksheet extends React.Component {
                 undo={this.handleUndo}
                 redo={this.handleRedo}
                 onColorChange={this.handleColorChange}
+                testMode={testMode}
               />
             )}
           </div>
@@ -659,6 +664,7 @@ class Worksheet extends React.Component {
           lockAxis={"y"}
           useDragHandle
           onSortEnd={this.onSortEnd}
+          testMode={testMode}
         />
       </WorksheetWrapper>
     );

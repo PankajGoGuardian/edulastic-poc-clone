@@ -7,6 +7,8 @@ import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
 import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, ToolBarToggleBtn } from "./styled";
 import { IconPencilEdit } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
+import { IconGraphRightArrow } from "@edulastic/icons";
+import { MinimizeButton } from "../Worksheet/styled";
 
 const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
@@ -38,11 +40,16 @@ const Thumbnails = ({
   currentPage,
   isToolBarVisible,
   toggleToolBarVisiblity,
-  noCheck
+  noCheck,
+  toggleMinimized,
+  minimized
 }) => {
   const onChangePage = page => () => onPageChange(page);
   return (
     <ThumbnailsWrapper review={review}>
+      <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
+        <IconGraphRightArrow />
+      </MinimizeButton>
       <PerfectScrollbar>
         <ThumbnailsList>
           {list.map((item, key) => (

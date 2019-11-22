@@ -3,7 +3,7 @@ import { Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
+import { desktopWidth, largeDesktopWidth, mediumDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 import { white, secondaryTextColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
@@ -85,7 +85,8 @@ const Tools = ({
   deleteMode,
   onColorChange,
   undo,
-  redo
+  redo,
+  testMode
 }) => {
   const getAlpha = color => {
     const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
@@ -100,7 +101,7 @@ const Tools = ({
   const activeTool = buttonsList.find(button => button.mode === activeMode);
 
   return (
-    <ToolBox activeMode={activeMode} isWorksheet={isWorksheet} justifyContent="center">
+    <ToolBox activeMode={activeMode} isWorksheet={isWorksheet} justifyContent="center" testMode={testMode}>
       {activeMode === "" && (
         <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
           {buttonsList.map((button, i) => (
@@ -199,13 +200,27 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  top: ${props => (props.isWorksheet ? "130px" : "60px")};
+  top: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "110px" : "125px") : "")};
+  left: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "185px" : "290px") : "")};
   background: ${props => props.theme.default.sideToolbarBgColor};
   z-index: 500;
   border-radius: 4px;
   padding: 10px 0;
   @media (max-width: ${LARGE_DESKTOP_WIDTH - 1}px) {
-    top: ${props => props.isWorksheet && "105px"};
+    top: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "110px" : "105px") : "")};
+    left: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "185px" : "280px") : "")};
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    top: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "110px" : "90px") : "")};
+    left: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "185px" : "280px") : "")};
+  }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    top: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "110px" : "105px") : "")};
+    left: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "185px" : "280px") : "")};
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    top: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "110px" : "90px") : "")};
+    left: ${({ testMode, isWorksheet }) => (isWorksheet ? (testMode ? "185px" : "280px") : "")};
   }
   @media (max-width: ${desktopWidth}) {
     top: ${props => props.isWorksheet && "160px"};

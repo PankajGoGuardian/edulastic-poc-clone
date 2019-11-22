@@ -12,8 +12,9 @@ import {
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
-  margin-bottom: 10px;
-  padding: 19px 0 18px 13px;
+  width: 100%;
+  max-width: ${({ review }) => (review ? "315px" : "340px")};
+  padding: 19px 6px 18px 13px;
   background: ${white};
   border-radius: 0 10px 10px 0;
   border: 1px solid ${sectionBorder};
@@ -46,6 +47,18 @@ export const QuestionForm = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: 13px;
+
+  .ant-select-selection {
+    width: ${({ review }) => (review ? "220px" : "133px")};
+  }
+
+  .input__math {
+    width: 220px;
+  }
+
+  .ant-input {
+    width: ${({ review }) => (review ? "220px" : "133px")};
+  }
 `;
 
 export const EditButton = styled.span`

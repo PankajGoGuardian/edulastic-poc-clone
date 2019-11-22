@@ -20,7 +20,8 @@ const Bars = ({
   previewTab,
   correct,
   deleteMode,
-  saveAnswer
+  saveAnswer,
+  showAnswer
 }) => {
   const { margin, yAxisMin } = gridParams;
   const { chart_data = {} } = item;
@@ -62,7 +63,7 @@ const Bars = ({
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
-          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
+          {showAnswer && isRenderIcons && renderValidationIcons(index)}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}

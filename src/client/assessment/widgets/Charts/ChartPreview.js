@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 
 import { setElementsStashAction, setStashIndexAction } from "../../actions/graphTools";
-import { CLEAR, PREVIEW, SHOW, EDIT } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, SHOW, EDIT, CHECK } from "../../constants/constantsForQuestions";
 
 import { getFontSize } from "../../utils/helpers";
 import LineChart from "./LineChart";
@@ -213,6 +213,7 @@ const ChartPreview = ({
             correct={correct}
             item={item}
             setQuestionData={setQuestionData}
+            showAnswer={previewTab === CHECK}
           />
           {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
         </ChartContainer>
@@ -231,6 +232,7 @@ const ChartPreview = ({
                 correct={answerCorrect}
                 item={item}
                 setQuestionData={setQuestionData}
+                showAnswer={true}
               />
             </ChartContainer>
           </CorrectAnswersContainer>
@@ -254,6 +256,7 @@ const ChartPreview = ({
                   correct={altAnswerCorrect[index]}
                   item={item}
                   setQuestionData={setQuestionData}
+                  showAnswer={true}
                 />
               </ChartContainer>
             </CorrectAnswersContainer>

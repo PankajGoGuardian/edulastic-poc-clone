@@ -27,6 +27,7 @@ const BarChart = ({
   disableResponse,
   deleteMode,
   toggleBarDragging,
+  showAnswer,
   margin = { top: 0, right: 0, left: 0, bottom: 50 }
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams;
@@ -133,6 +134,7 @@ const BarChart = ({
           onMouseDown={!disableResponse ? onMouseDown : () => {}}
           gridParams={gridParams}
           correct={correct}
+          showAnswer={showAnswer}
         />
 
         <ArrowPair getActivePoint={getActivePoint} />

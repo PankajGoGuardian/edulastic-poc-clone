@@ -31,6 +31,8 @@ import {
   hasStandards
 } from "../ItemDetail/ducks";
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
+import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../student/Login/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -1196,6 +1198,24 @@ export const getTestItemsRowsSelector = createSelector(
 export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   state => get(state, "createdItems", [])
+);
+
+export const getReleaseScorePremiumSelector = createSelector(
+  getTestSelector,
+  getUserFeatures,
+  (entity, features) => {
+    const { subjects, grades } = entity;
+    return (
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
+    );
+  }
 );
 
 export const getAllTagsSelector = (state, tagType) => {

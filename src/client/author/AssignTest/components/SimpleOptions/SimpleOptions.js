@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Col, Icon, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
+import { test as testConst, roleuser } from "@edulastic/constants";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
@@ -17,9 +18,11 @@ import TestTypeSelector from "./TestTypeSelector";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
+const { releaseGradeLabels } = testConst;
 class SimpleOptions extends React.Component {
   static propTypes = {
     group: PropTypes.array.isRequired,
@@ -69,7 +72,14 @@ class SimpleOptions extends React.Component {
   };
 
   onChange = (field, value) => {
-    const { onClassFieldChange, group, assignment, updateOptions, toggleSpecificStudents } = this.props;
+    const {
+      onClassFieldChange,
+      group,
+      assignment,
+      updateOptions,
+      toggleSpecificStudents,
+      isReleaseScorePremium
+    } = this.props;
     if (field === "specificStudents") {
       toggleSpecificStudents(value);
       return;
@@ -91,17 +101,28 @@ class SimpleOptions extends React.Component {
         value = moment(startDate).add("days", 7);
       }
     }
-
     const nextAssignment = produce(assignment, state => {
-      if (field === "startDate") {
-        const { endDate } = assignment;
-        if (value === null) {
-          value = moment();
-        }
-        const diff = value.diff(endDate);
-        if (diff > 0) {
-          state.endDate = moment(value).add("days", 7);
-        }
+      switch (field) {
+        case "startDate":
+          const { endDate } = assignment;
+          if (value === null) {
+            value = moment();
+          }
+          const diff = value.diff(endDate);
+          if (diff > 0) {
+            state.endDate = moment(value).add("days", 7);
+          }
+          break;
+        case "testType":
+          if (value === testConst.type.ASSESSMENT || value === testConst.type.COMMON) {
+            state.releaseScore =
+              value === testConst.type.ASSESSMENT && isReleaseScorePremium
+                ? releaseGradeLabels.WITH_RESPONSE
+                : releaseGradeLabels.DONT_RELEASE;
+          } else {
+            state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
+          }
+          break;
       }
       state[field] = value;
     });
@@ -151,7 +172,7 @@ class SimpleOptions extends React.Component {
     const changeField = curry(this.onChange);
     let openPolicy = selectsData.openPolicy;
     let closePolicy = selectsData.closePolicy;
-    if (userRole === "district-admin" || userRole === "school-admin") {
+    if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
       openPolicy = selectsData.openPolicyForAdmin;
       closePolicy = selectsData.closePolicyForAdmin;
     }
@@ -252,5 +273,6 @@ class SimpleOptions extends React.Component {
 
 export default connect(state => ({
   userRole: getUserRole(state),
-  features: getUserFeatures(state)
+  features: getUserFeatures(state),
+  isReleaseScorePremium: getReleaseScorePremiumSelector(state)
 }))(SimpleOptions);

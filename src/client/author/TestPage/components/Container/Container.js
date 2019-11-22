@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test, roleuser } from "@edulastic/constants";
+import { test as testContants, roleuser } from "@edulastic/constants";
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 
@@ -31,7 +31,8 @@ import {
   getTestCreatedItemsSelector,
   getDefaultTestSettingsAction,
   updateDocBasedTestAction,
-  duplicateTestRequestAction
+  duplicateTestRequestAction,
+  getReleaseScorePremiumSelector
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -61,7 +62,7 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { getDefaultImage } = testsApi;
-const { statusConstants } = test;
+const { statusConstants, releaseGradeLabels } = testContants;
 
 class Container extends PureComponent {
   propTypes = {
@@ -124,7 +125,8 @@ class Container extends PureComponent {
       setRegradeOldId,
       getDefaultTestSettings,
       setData,
-      userRole
+      userRole,
+      isReleaseScorePremium
     } = this.props;
     const self = this;
     if (location.hash === "#review") {
@@ -153,7 +155,10 @@ class Container extends PureComponent {
       clearSelectedItems();
       setDefaultData();
       if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
-        setData({ testType: test.type.COMMON });
+        setData({ testType: testContants.type.COMMON });
+      }
+      if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
+        setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE });
       }
     }
 
@@ -633,7 +638,8 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
       performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      isReleaseScorePremium: getReleaseScorePremiumSelector(state)
     }),
     {
       createTest: createTestAction,

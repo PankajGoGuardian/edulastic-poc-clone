@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
-import { test, roleuser } from "@edulastic/constants";
+import { test as testContants, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -12,7 +12,8 @@ import {
   setTestDataAction,
   getTestEntitySelector,
   defaultTestTypeProfilesSelector,
-  testTypeAsProfileNameType
+  testTypeAsProfileNameType,
+  getReleaseScorePremiumSelector
 } from "../../../../ducks";
 import UiTime from "../UiTime/UiTime";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
@@ -61,7 +62,7 @@ const {
   nonPremiumReleaseGradeKeys,
   testContentVisibility: testContentVisibilityOptions,
   testContentVisibilityTypes
-} = test;
+} = testContants;
 
 const { Option } = Select;
 
@@ -134,7 +135,14 @@ class MainSetting extends Component {
   };
 
   updateTestData = key => value => {
-    const { setTestData, setMaxAttempts, performanceBandsData, standardsData, defaultTestTypeProfiles } = this.props;
+    const {
+      setTestData,
+      setMaxAttempts,
+      performanceBandsData,
+      standardsData,
+      defaultTestTypeProfiles,
+      isReleaseScorePremium
+    } = this.props;
     switch (key) {
       case "testType":
         const testProfileType = testTypeAsProfileNameType[value];
@@ -143,9 +151,13 @@ class MainSetting extends Component {
         const performanceBand = performanceBandsData.find(item => item._id === defaultBandId) || {};
         const standardGradingScale = standardsData.find(item => item._id === defaultStandardId) || {};
         if (value === ASSESSMENT || value === COMMON) {
+          const releaseScore =
+            value === ASSESSMENT && isReleaseScorePremium
+              ? releaseGradeLabels.WITH_RESPONSE
+              : releaseGradeLabels.DONT_RELEASE;
           setMaxAttempts(1);
           setTestData({
-            releaseScore: releaseGradeLabels.DONT_RELEASE,
+            releaseScore,
             maxAnswerChecks: 0,
             performanceBand: {
               name: performanceBand.name,
@@ -839,7 +851,8 @@ export default connect(
     userRole: getUserRole(state),
     defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
     standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
-    performanceBandsData: get(state, ["performanceBandReducer", "profiles"], [])
+    performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
+    isReleaseScorePremium: getReleaseScorePremiumSelector(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

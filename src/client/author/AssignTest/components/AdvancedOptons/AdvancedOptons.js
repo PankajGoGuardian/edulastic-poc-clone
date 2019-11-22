@@ -5,6 +5,7 @@ import produce from "immer";
 import { curry } from "lodash";
 import * as moment from "moment";
 import { Col, Icon } from "antd";
+import { test as testConst } from "@edulastic/constants";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
@@ -12,7 +13,9 @@ import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelect
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { releaseGradeKeys, nonPremiumReleaseGradeKeys } from "../SimpleOptions/SimpleOptions";
+import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
 
+const { releaseGradeLabels } = testConst;
 class AdvancedOptons extends React.Component {
   static propTypes = {
     assignment: PropTypes.object.isRequired,
@@ -58,7 +61,7 @@ class AdvancedOptons extends React.Component {
   };
 
   onChange = (field, value, groups) => {
-    const { onClassFieldChange, assignment, updateOptions } = this.props;
+    const { onClassFieldChange, assignment, updateOptions, isReleaseScorePremium } = this.props;
     if (field === "class") {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, groups);
@@ -88,6 +91,17 @@ class AdvancedOptons extends React.Component {
           state.endDate = moment(value).add("days", 7);
         }
       }
+      if (field === "testType") {
+        if (value === testConst.type.ASSESSMENT || value === testConst.type.COMMON) {
+          state.releaseScore =
+            value === testConst.type.ASSESSMENT && isReleaseScorePremium
+              ? releaseGradeLabels.WITH_RESPONSE
+              : releaseGradeLabels.DONT_RELEASE;
+        } else {
+          state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
+        }
+      }
+
       state[field] = value;
     });
     updateOptions(nextAssignment);
@@ -146,5 +160,6 @@ class AdvancedOptons extends React.Component {
 }
 
 export default connect(state => ({
-  features: getUserFeatures(state)
+  features: getUserFeatures(state),
+  isReleaseScorePremium: getReleaseScorePremiumSelector(state)
 }))(AdvancedOptons);

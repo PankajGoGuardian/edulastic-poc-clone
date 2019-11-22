@@ -836,16 +836,16 @@ class ClassBoard extends Component {
                             <IconDownload />
                             <span>Download Response</span>
                           </MenuItems>
-                          <FeaturesSwitch
-                            inputFeatures="LCBstudentReportCard"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems onClick={this.onStudentReportCardsClick}>
-                              <IconStudentReportCard />
-                              <span>Student Report Cards</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
+                          {/*<FeaturesSwitch*/}
+                          {/*  inputFeatures="LCBstudentReportCard"*/}
+                          {/*  actionOnInaccessible="hidden"*/}
+                          {/*  groupId={classId}*/}
+                          {/*>*/}
+                          {/*  <MenuItems onClick={this.onStudentReportCardsClick}>*/}
+                          {/*    <IconStudentReportCard />*/}
+                          {/*    <span>Student Report Cards</span>*/}
+                          {/*  </MenuItems>*/}
+                          {/*</FeaturesSwitch>*/}
                         </DropMenu>
                       }
                       placement="bottomRight"

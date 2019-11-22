@@ -218,9 +218,6 @@ class ComposeQuestion extends Component {
             updateVariables(draft);
           })
         );
-        if (isNew) {
-          imageRndRef.current.updateSize({ width: wid, height: heig });
-        }
       })(width, height);
     });
     img.src = url;
@@ -648,7 +645,7 @@ class ComposeQuestion extends Component {
                 <React.Fragment>
                   <Rnd
                     ref={this.imageRndRef}
-                    style={{ overflow: "hidden" }}
+                    style={{ overflow: "hidden", height: `auto`, width: `auto` }}
                     default={{
                       x: imageOptions.x || 0,
                       y: imageOptions.y || 0

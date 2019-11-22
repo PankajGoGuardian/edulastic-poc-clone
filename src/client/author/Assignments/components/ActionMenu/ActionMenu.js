@@ -64,7 +64,7 @@ const ActionMenu = (
           </Link>
         </Menu.Item>
         <Menu.Item data-cy="print-assignment" key="print-assignment">
-          <Link to={`/author/printAssessment/${currentTestId}`} rel="noopener noreferrer">
+          <Link to={`/author/printAssessment/${currentTestId}`} target="_blank" rel="noopener noreferrer">
             <IconPrint />
             <SpaceElement />
             PRINT

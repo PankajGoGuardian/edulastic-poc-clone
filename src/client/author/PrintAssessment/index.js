@@ -22,6 +22,7 @@ function useTestFetch(testId) {
         questions,
         answers
       });
+      document.title = test.title;
     });
   }, []);
 
@@ -69,6 +70,9 @@ const PrintAssessment = ({ match }) => {
             <hr />
           </>
         ))}
+        <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
+          Answer Key of {test.title}
+        </span>
         {test.answers.map(answer => (
           <AnswerContainer>
             <div className="answer-wrapper">

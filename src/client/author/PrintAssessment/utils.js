@@ -5,19 +5,22 @@ import { markQuestionLabel } from "../ClassBoard/Transformer";
 export const getOrderedQuestionsAndAnswers = (testItems, passages) => {
   passages = keyBy(passages, "_id");
   markQuestionLabel(testItems);
-  let questions = testItems?.reduce((acc, item) => {
+  let questions = testItems?.reduce((acc, item, index) => {
     // if it's a passage type question, insert passage before the questions
-    if (item.passageId) {
+    // also, if the current testItem has same passageId as previous one, dont insert the passage again!
+    if (item.passageId && item.passageId !== testItems?.[index - 1]?.passageId) {
       acc.push(...(passages?.[item.passageId]?.data || []));
     }
     acc = [...acc, ...(item?.data?.questions || [])];
     return acc;
   }, []);
 
-  const answers = questions.map(q => ({
-    qLabel: q.qLabel,
-    answer: createAnswer(q)
-  }));
+  const answers = questions
+    .filter(q => ![questionType.PASSAGE, questionType.VIDEO, questionType.PROTRACTOR].includes(q.type))
+    .map(q => ({
+      qLabel: q.qLabel,
+      answer: createAnswer(q)
+    }));
 
   return {
     questions,

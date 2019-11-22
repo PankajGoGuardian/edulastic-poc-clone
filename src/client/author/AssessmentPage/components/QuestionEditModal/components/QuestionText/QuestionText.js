@@ -210,7 +210,12 @@ export default class QuestionText extends React.Component {
         ))}
         <FormGroup>
           <FormLabel>Allow</FormLabel>
-          <Select value={allow} onChange={this.handleAllowChange} style={{ width: "40%" }}>
+          <Select
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+            value={allow}
+            onChange={this.handleAllowChange}
+            style={{ width: "40%" }}
+          >
             <Select.Option key={1} value={EXACT_MATCH}>
               Exact Match
             </Select.Option>

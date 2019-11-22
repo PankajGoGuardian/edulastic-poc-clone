@@ -252,7 +252,8 @@ class QuestionItem extends React.Component {
       previewTab,
       previewMode,
       highlighted,
-      previousFeedback
+      previousFeedback,
+      answer
     } = this.props;
 
     const check =
@@ -271,7 +272,10 @@ class QuestionItem extends React.Component {
           </Draggable>
           <QuestionForm>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}
-          {review && (previewMode !== "clear" || check) && this.renderAnswerIndicator(type)}
+          {review &&
+            (previewMode !== "clear" || check) &&
+            typeof answer !== "undefined" &&
+            this.renderAnswerIndicator(type)}
         </AnswerForm>
         {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
         {check ? this.renderScore(id) : this.renderComments(id)}

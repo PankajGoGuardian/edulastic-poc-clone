@@ -392,7 +392,7 @@ class Questions extends React.Component {
     const { checkAnswer, changePreview } = this.props;
 
     changePreview("show");
-    checkAnswer("edit");
+    checkAnswer("show");
   };
 
   handleClear = () => {

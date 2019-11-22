@@ -32,6 +32,7 @@ const TestPreviewModal = ({
       footer={null}
       header={null}
       wrapClassName="test-preview-modal"
+      closable={false}
       centered
     >
       <AssessmentPlayer
@@ -69,7 +70,7 @@ const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0px;
     position: relative;
-    & > div {
+    & > div:not(.ant-spin) {
       height: 100vh;
       padding-top: 56px;
       & > svg {
@@ -79,8 +80,5 @@ const StyledModal = styled(Modal)`
     main {
       padding: 25px 20px;
     }
-  }
-  .ant-modal-close-x {
-    color: #fff;
   }
 `;

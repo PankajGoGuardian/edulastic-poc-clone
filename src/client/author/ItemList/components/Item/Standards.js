@@ -2,10 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { uniqBy } from "lodash";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
-import { StandardContent, LabelStandard, LabelStandardText, CountGreen } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 const Standards = ({ item, interestedCurriculums, search }) => {
-  const outStandardsCount = 1;
   const { curriculumId } = search;
   const domains = [];
   let standards = [];
@@ -13,7 +11,12 @@ const Standards = ({ item, interestedCurriculums, search }) => {
     item.data.questions.map(question => {
       if (!question.alignment || !question.alignment.length) return;
       //removing all multiStandard mappings
-      const authorAlignments = question.alignment.filter(item => !item.isEquivalentStandard && item.curriculumId);
+      const authorAlignments = question.alignment.filter(
+        item =>
+          (!item.isEquivalentStandard ||
+            interestedCurriculums.some(interested => interested._id === item.curriculumId)) &&
+          item.curriculumId
+      );
 
       //pick alignments matching with interested curriculums
       let interestedAlignments = authorAlignments.filter(alignment =>

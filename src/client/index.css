@@ -2116,10 +2116,6 @@ span.mfrac {
   overflow-y: auto;
 }
 
-.ant-modal-centered .ant-modal {
-  margin: 20px auto;
-}
-
 iframe {
   max-width: 100%;
   overflow: auto;

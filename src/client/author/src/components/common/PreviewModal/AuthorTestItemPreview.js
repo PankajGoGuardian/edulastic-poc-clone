@@ -4,7 +4,6 @@ import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, white } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
-import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 import { get } from "lodash";
 import { themes } from "../../../../../theme";
@@ -43,8 +42,6 @@ class AuthorTestItemPreview extends Component {
       value: 0,
       collapseDirection: ""
     };
-
-    this.scrollContainerRef = React.createRef();
   }
 
   handleTabChange = value => {
@@ -291,7 +288,7 @@ class AuthorTestItemPreview extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <Container ref={this.scrollContainerRef}>
+        <Container>
           {cols.map((col, i) => {
             const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
             if (hideColumn) return "";
@@ -310,7 +307,6 @@ class AuthorTestItemPreview extends Component {
               </>
             );
           })}
-          <VerticalScrollContainer scrollWrraper={this.scrollContainerRef.current} />
         </Container>
       </ThemeProvider>
     );

@@ -6,7 +6,7 @@ import { Input, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
 
-import { response as Dimensions } from "@edulastic/constants";
+import { response as Dimensions, ChoiceDimensions } from "@edulastic/constants";
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -17,6 +17,7 @@ import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
 
+const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class Layout extends Component {
   state = {
     focused: null,
@@ -221,6 +222,27 @@ class Layout extends Component {
                 value={uiStyle.fontsize}
               />
             </FieldWrapper>
+          </Col>
+        </Row>
+        <Row gutter={20}>
+          <Col md={12}>
+            <Label>{t("component.options.choiceMinWidth")}</Label>
+            <Input
+              type="number"
+              min="1"
+              defaultValue={uiStyle.choiceMinWidth || choiceMinW}
+              onBlur={event => changeUiStyle("choiceMinWidth", +event.target.value)}
+              label={t("component.options.choiceMinWidth")}
+            />
+          </Col>
+          <Col md={12}>
+            <Label>{t("component.options.choiceMaxWidth")}</Label>
+            <Input
+              type="number"
+              min="1"
+              onBlur={event => changeUiStyle("choiceMaxWidth", +event.target.value)}
+              defaultValue={uiStyle.choiceMaxWidth || choiceMaxW}
+            />
           </Col>
         </Row>
         <Row>

@@ -87,9 +87,11 @@ class Container extends PureComponent {
   static defaultProps = {
     test: null,
     user: {}
-    //currentTab: "review"
+    // currentTab: "review"
   };
+
   sebPasswordRef = React.createRef();
+
   state = {
     showModal: false,
     editEnable: false,
@@ -137,8 +139,7 @@ class Container extends PureComponent {
       });
       message.success(
         <span>
-          {" "}
-          New item has been created and added to the current test. Click{" "}
+          New item has been created and added to the current test. Click
           <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
             here
           </span>{" "}
@@ -202,6 +203,7 @@ class Container extends PureComponent {
     }
     return;
   };
+
   componentWillUnmount() {
     const {
       test,
@@ -330,33 +332,39 @@ class Container extends PureComponent {
     switch (current) {
       case "addItems":
         return (
-          <AddItems
-            onAddItems={this.handleAddItems}
-            current={current}
-            isEditable={isEditable}
-            onSaveTestId={this.handleSaveTestId}
-            test={test}
-            gotoSummary={this.handleNavChange("description")}
-            toggleFilter={this.toggleFilter}
-            isShowFilter={isShowFilter}
-          />
+          <Content>
+            <AddItems
+              onAddItems={this.handleAddItems}
+              current={current}
+              isEditable={isEditable}
+              onSaveTestId={this.handleSaveTestId}
+              test={test}
+              gotoSummary={this.handleNavChange("description")}
+              toggleFilter={this.toggleFilter}
+              isShowFilter={isShowFilter}
+            />
+          </Content>
         );
       case "description":
         return (
-          <Summary
-            onShowSource={this.handleNavChange("source")}
-            setData={setData}
-            test={test}
-            owner={owner}
-            current={current}
-            isEditable={isEditable}
-            onChangeGrade={this.handleChangeGrade}
-            onChangeSubjects={this.handleChangeSubject}
-          />
+          <Content>
+            <Summary
+              onShowSource={this.handleNavChange("source")}
+              setData={setData}
+              test={test}
+              owner={owner}
+              current={current}
+              isEditable={isEditable}
+              onChangeGrade={this.handleChangeGrade}
+              onChangeSubjects={this.handleChangeSubject}
+            />
+          </Content>
         );
       case "review":
         return isDocBased ? (
-          <Worksheet key="review" review {...props} viewMode="review" />
+          <Content>
+            <Worksheet key="review" review {...props} viewMode="review" />
+          </Content>
         ) : (
           <Review
             test={test}
@@ -371,18 +379,28 @@ class Container extends PureComponent {
         );
       case "settings":
         return (
-          <Setting
-            current={current}
-            isEditable={isEditable}
-            onShowSource={this.handleNavChange("source")}
-            sebPasswordRef={this.sebPasswordRef}
-            owner={owner}
-          />
+          <Content>
+            <Setting
+              current={current}
+              isEditable={isEditable}
+              onShowSource={this.handleNavChange("source")}
+              sebPasswordRef={this.sebPasswordRef}
+              owner={owner}
+            />
+          </Content>
         );
       case "worksheet":
-        return <Worksheet key="worksheet" {...props} viewMode="edit" />;
+        return (
+          <Content>
+            <Worksheet key="worksheet" {...props} viewMode="edit" />
+          </Content>
+        );
       case "assign":
-        return <Assign test={test} setData={setData} current={current} />;
+        return (
+          <Content>
+            <Assign test={test} setData={setData} current={current} />
+          </Content>
+        );
       default:
         return null;
     }
@@ -611,7 +629,7 @@ class Container extends PureComponent {
           isShowFilter={isShowFilter}
           isTestLoading={isTestLoading}
         />
-        <Content>{this.renderContent()}</Content>
+        {this.renderContent()}
       </>
     );
   }

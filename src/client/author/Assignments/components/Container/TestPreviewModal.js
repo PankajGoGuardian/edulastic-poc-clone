@@ -79,6 +79,9 @@ const StyledModal = styled(Modal)`
     }
     main {
       padding: 25px 20px;
+      overflow: auto;
+      height: calc(100vh - 64px);
+      margin-top: 5px;
     }
   }
 `;

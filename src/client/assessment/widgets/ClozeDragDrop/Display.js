@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import React, { Component } from "react";
@@ -6,8 +5,8 @@ import { cloneDeep, get } from "lodash";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
-
 import { PreWrapper, helpers, QuestionNumberLabel } from "@edulastic/common";
+import { ChoiceDimensions } from "@edulastic/constants";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
@@ -19,6 +18,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
+const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +35,8 @@ class ClozeDragDropDisplay extends Component {
       userAnswers,
       possibleResponses
     };
+
+    this.previewWrapperRef = React.createRef();
   }
 
   componentDidMount() {
@@ -58,7 +60,8 @@ class ClozeDragDropDisplay extends Component {
     if (!window.$) {
       return 0;
     }
-    return $($("<div />").html(stimulus)).find("response").length;
+    const jQuery = window.$;
+    return jQuery(jQuery("<div />").html(stimulus)).find("response").length;
   };
 
   onDrop = (data, index) => {
@@ -284,7 +287,16 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize);
-    const { responsecontainerposition, responsecontainerindividuals, stemNumeration, responseContainerWidth } = uiStyle;
+    const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
+
+    const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
+    const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
+
+    const dragItemStyle = {
+      minWidth: dragItemMinWidth,
+      maxWidth: dragItemMaxWidth,
+      overflow: "hidden"
+    };
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
@@ -317,17 +329,15 @@ class ClozeDragDropDisplay extends Component {
             fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
-          <StyledJsxParserContainer>
-            <JsxParser
-              bindings={{ resProps }}
-              showWarnings
-              components={{
-                response: templateBoxLayout,
-                mathspan: MathSpanWrapper
-              }}
-              jsx={parsedTemplate}
-            />
-          </StyledJsxParserContainer>
+          <JsxParser
+            bindings={{ resProps }}
+            showWarnings
+            components={{
+              response: templateBoxLayout,
+              mathspan: MathSpanWrapper
+            }}
+            jsx={parsedTemplate}
+          />
         </div>
       </PreWrapper>
     );
@@ -341,6 +351,7 @@ class ClozeDragDropDisplay extends Component {
         dragHandler={dragHandler}
         onDrop={!disableResponse ? this.onDrop : () => {}}
         containerPosition={responsecontainerposition}
+        dragItemStyle={dragItemStyle}
         getHeading={t}
       />
     );
@@ -374,41 +385,37 @@ class ClozeDragDropDisplay extends Component {
 
     const responseBoxStyle = {
       height: "100%",
-      width: responseContainerWidth ? `${responseContainerWidth}px` : null,
+      width: dragItemMaxWidth + 62, // 62 is padding and margin of respose box
+      flexShrink: 0,
       borderRadius: 10,
       marginRight: responsecontainerposition === "left" ? 15 : null,
       marginLeft: responsecontainerposition === "right" ? 15 : null,
       background: theme.widgets.clozeDragDrop.responseBoxBgColor
     };
+
+    const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
+
+    const answerContainerStyle = {
+      minWidth: dragItemMaxWidth + 62,
+      maxWidth: horizontallyAligned ? 1050 : 750
+    };
+
     const questionContent = (
-      <div style={{ width: ["right", "left"].includes(responsecontainerposition) ? "auto" : "100%" }}>
+      <div style={{ margin: "auto" }}>
         {responsecontainerposition === "top" && (
-          <React.Fragment>
+          <div style={answerContainerStyle}>
             <div style={{ marginBottom: 15, borderRadius: 10 }}>{responseBoxLayout}</div>
             <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
-          </React.Fragment>
+          </div>
         )}
         {responsecontainerposition === "bottom" && (
-          <React.Fragment>
-            <div
-              style={{
-                borderRadius: smallSize ? 0 : 10
-              }}
-            >
-              {templateBoxLayoutContainer}
-            </div>
-            <div
-              style={{
-                marginTop: 15,
-                borderRadius: smallSize ? 0 : 10
-              }}
-            >
-              {responseBoxLayout}
-            </div>
-          </React.Fragment>
+          <div style={answerContainerStyle}>
+            <div style={{ borderRadius: smallSize ? 0 : 10 }}>{templateBoxLayoutContainer}</div>
+            <div style={{ marginTop: 15, borderRadius: smallSize ? 0 : 10 }}>{responseBoxLayout}</div>
+          </div>
         )}
         {responsecontainerposition === "left" && (
-          <AnswerContainer position={responsecontainerposition}>
+          <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
             <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
             </div>
@@ -416,7 +423,7 @@ class ClozeDragDropDisplay extends Component {
           </AnswerContainer>
         )}
         {responsecontainerposition === "right" && (
-          <AnswerContainer position={responsecontainerposition}>
+          <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
             <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
             <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
@@ -427,7 +434,7 @@ class ClozeDragDropDisplay extends Component {
     );
 
     return (
-      <TextWrappedDiv style={{ fontSize }}>
+      <TextWrappedDiv style={{ fontSize }} ref={this.previewWrapperRef}>
         <QuestionTitleWrapper>
           {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
           {!question && questionContent}
@@ -464,7 +471,8 @@ ClozeDragDropDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   view: PropTypes.string,
   responseIDs: PropTypes.array.isRequired,
-  changePreview: PropTypes.func.isRequired
+  changePreview: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
   // qIndex: PropTypes.number
 };
 
@@ -511,11 +519,5 @@ const TextWrappedDiv = styled.div`
   word-break: break-word;
   max-width: 100%;
   overflow: auto;
-`;
-
-const StyledJsxParserContainer = styled.div`
-  [id*="response-container"] {
-    width: auto !important;
-    height: auto !important;
-  }
+  position: relative;
 `;

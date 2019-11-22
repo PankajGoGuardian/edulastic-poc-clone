@@ -16,7 +16,7 @@ const MainWrapper = styled.section`
   transform-origin: top left;
 
   @media (max-width: 1100px) {
-    width: 100%;
+    width: ${({ zoomLevel }) => zoomLevel <= "1" && `100%`};
   }
 
   & * {

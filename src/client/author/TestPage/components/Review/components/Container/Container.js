@@ -28,6 +28,7 @@ import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./style
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
+import { Content } from "../../../Container/styled";
 
 const getTotalScore = ({ testItems = [], scoring = {} }) =>
   testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
@@ -342,111 +343,113 @@ class Review extends PureComponent {
     const passagesKeyed = keyBy(passages, "_id");
 
     return (
-      <ReviewPageContainer>
-        <Row>
-          <Col span={owner && isEditable ? 24 : 18}>
-            <div ref={this.secondHeaderRef}>
-              <SecondHeader>
-                <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
-                <HeaderBar
-                  onSelectAll={this.handleSelectAll}
-                  itemTotal={test.testItems.length}
-                  selectedItems={selected}
-                  onRemoveSelected={this.handleRemoveSelected}
-                  onCollapse={this.handleCollapse}
-                  onMoveTo={this.handleMoveTo}
-                  owner={owner}
-                  isEditable={isEditable}
-                  windowWidth={windowWidth}
-                  setCollapse={isCollapse}
-                  onShowTestPreview={this.showTestPreviewModal}
-                  hasStickyHeader={hasStickyHeader}
-                />
-              </SecondHeader>
-            </div>
-          </Col>
-          <Col xs={24} lg={18}>
-            <Paper padding="15px">
-              {isCollapse ? (
-                <ItemsTable
-                  items={test.testItems}
-                  setSelected={this.setSelected}
-                  selected={selected}
-                  isEditable={isEditable}
-                  owner={owner}
-                  scoring={test.scoring}
-                  questions={questions}
-                  rows={rows}
-                  mobile={!isSmallSize}
-                  onChangePoints={this.handleChangePoints}
-                  handlePreview={this.handlePreviewTestItem}
-                  isCollapse={isCollapse}
-                  passagesKeyed={passagesKeyed}
-                />
-              ) : (
-                <List
-                  onChangePoints={this.handleChangePoints}
-                  onPreview={this.handlePreviewTestItem}
-                  testItems={test.testItems}
-                  rows={rows}
-                  standards={standards}
-                  selected={selected}
-                  setSelected={this.setSelected}
-                  onSortEnd={this.moveTestItems}
-                  shouldCancelStart={() => {}}
-                  owner={owner}
-                  isEditable={isEditable}
-                  scoring={test.scoring}
-                  questions={questions}
-                  mobile={!isSmallSize}
-                  passagesKeyed={passagesKeyed}
-                  useDragHandle
-                  isCollapse={isCollapse}
-                />
-              )}
-            </Paper>
-          </Col>
-          <ReviewSummaryWrapper xs={24} lg={6}>
-            <ReviewSummary
-              tableData={this.tableData}
-              questionsCount={questionsCount}
-              grades={grades}
-              subjects={subjects}
-              owner={owner}
+      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible}>
+        <ReviewPageContainer>
+          <Row>
+            <Col span={owner && isEditable ? 24 : 18}>
+              <div ref={this.secondHeaderRef}>
+                <SecondHeader>
+                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                  <HeaderBar
+                    onSelectAll={this.handleSelectAll}
+                    itemTotal={test.testItems.length}
+                    selectedItems={selected}
+                    onRemoveSelected={this.handleRemoveSelected}
+                    onCollapse={this.handleCollapse}
+                    onMoveTo={this.handleMoveTo}
+                    owner={owner}
+                    isEditable={isEditable}
+                    windowWidth={windowWidth}
+                    setCollapse={isCollapse}
+                    onShowTestPreview={this.showTestPreviewModal}
+                    hasStickyHeader={hasStickyHeader}
+                  />
+                </SecondHeader>
+              </div>
+            </Col>
+            <Col xs={24} lg={18}>
+              <Paper padding="15px">
+                {isCollapse ? (
+                  <ItemsTable
+                    items={test.testItems}
+                    setSelected={this.setSelected}
+                    selected={selected}
+                    isEditable={isEditable}
+                    owner={owner}
+                    scoring={test.scoring}
+                    questions={questions}
+                    rows={rows}
+                    mobile={!isSmallSize}
+                    onChangePoints={this.handleChangePoints}
+                    handlePreview={this.handlePreviewTestItem}
+                    isCollapse={isCollapse}
+                    passagesKeyed={passagesKeyed}
+                  />
+                ) : (
+                  <List
+                    onChangePoints={this.handleChangePoints}
+                    onPreview={this.handlePreviewTestItem}
+                    testItems={test.testItems}
+                    rows={rows}
+                    standards={standards}
+                    selected={selected}
+                    setSelected={this.setSelected}
+                    onSortEnd={this.moveTestItems}
+                    shouldCancelStart={() => {}}
+                    owner={owner}
+                    isEditable={isEditable}
+                    scoring={test.scoring}
+                    questions={questions}
+                    mobile={!isSmallSize}
+                    passagesKeyed={passagesKeyed}
+                    useDragHandle
+                    isCollapse={isCollapse}
+                  />
+                )}
+              </Paper>
+            </Col>
+            <ReviewSummaryWrapper xs={24} lg={6}>
+              <ReviewSummary
+                tableData={this.tableData}
+                questionsCount={questionsCount}
+                grades={grades}
+                subjects={subjects}
+                owner={owner}
+                isEditable={isEditable}
+                summary={test.summary || {}}
+                onChangeField={this.handleChangeField}
+                thumbnail={defaultThumbnail || test.thumbnail}
+                totalPoints={getTotalScore(test)}
+                onChangeGrade={onChangeGrade}
+                onChangeSubjects={onChangeSubjects}
+              />
+            </ReviewSummaryWrapper>
+          </Row>
+          {isModalVisible && (
+            <PreviewModal
+              testId={get(this.props, "match.params.id", false)}
+              isVisible={isModalVisible}
+              onClose={this.closeModal}
+              showModal
               isEditable={isEditable}
-              summary={test.summary || {}}
-              onChangeField={this.handleChangeField}
-              thumbnail={defaultThumbnail || test.thumbnail}
-              totalPoints={getTotalScore(test)}
-              onChangeGrade={onChangeGrade}
-              onChangeSubjects={onChangeSubjects}
+              owner={owner}
+              addDuplicate={this.handleDuplicateItem}
+              page="review"
+              data={item}
+              questions={questions}
+              checkAnswer={() => checkAnswer(item)}
+              showAnswer={() => showAnswer(item)}
+              showEvaluationButtons
             />
-          </ReviewSummaryWrapper>
-        </Row>
-        {isModalVisible && (
-          <PreviewModal
-            testId={get(this.props, "match.params.id", false)}
-            isVisible={isModalVisible}
-            onClose={this.closeModal}
-            showModal
-            isEditable={isEditable}
-            owner={owner}
-            addDuplicate={this.handleDuplicateItem}
-            page="review"
-            data={item}
-            questions={questions}
-            checkAnswer={() => checkAnswer(item)}
-            showAnswer={() => showAnswer(item)}
-            showEvaluationButtons
+          )}
+          <TestPreviewModal
+            isModalVisible={isTestPreviewModalVisible}
+            testId={currentTestId}
+            test={test}
+            closeTestPreviewModal={this.hidePreviewModal}
           />
-        )}
-        <TestPreviewModal
-          isModalVisible={isTestPreviewModalVisible}
-          testId={currentTestId}
-          test={test}
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
-      </ReviewPageContainer>
+        </ReviewPageContainer>
+      </Content>
     );
   }
 }

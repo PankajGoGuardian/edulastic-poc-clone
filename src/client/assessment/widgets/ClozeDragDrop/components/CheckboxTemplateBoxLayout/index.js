@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
-import { Tooltip, Popover } from "antd";
+import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
@@ -41,16 +41,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
   const widthpx = response && response.widthpx;
-  btnStyle.width = !globalSettings
-    ? widthpx
-      ? `${widthpx}px`
-      : `${btnStyle.widthpx}px` || "auto"
-    : `${btnStyle.widthpx}px` || "auto";
-  btnStyle.height = !globalSettings
-    ? heightpx
-      ? `${heightpx}px`
-      : `${btnStyle.heightpx}px` || "auto"
-    : `${btnStyle.heightpx}px` || "auto";
+  btnStyle.width = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
+  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
 
   if (globalSettings) {
     btnStyle.maxWidth = "400px";
@@ -89,13 +81,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     return formulaLabel;
   };
 
-  const getLabel = () => {
-    return (
-      <CheckboxContainer width={btnStyle.width}>
-        <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
-      </CheckboxContainer>
-    );
-  };
+  const getLabel = () => (
+    <CheckboxContainer width={btnStyle.width}>
+      <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
+    </CheckboxContainer>
+  );
 
   const handleHover = () => {
     if (showAnswer && lessMinWidth) {
@@ -155,13 +145,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
             userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
         >
-          {lessMinWidth ? (
-            <Popover overlayClassName="customTooltip" content={popoverContent}>
-              {content}
-            </Popover>
-          ) : (
-            content
-          )}
+          <Popover overlayClassName="customTooltip" content={popoverContent}>
+            {content}
+          </Popover>
         </Draggable>
       </Droppable>
     </CheckBoxTemplateBox>

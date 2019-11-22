@@ -12,7 +12,6 @@ import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
-import { VerticalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 
 import { themes } from "../../../theme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
@@ -365,6 +364,8 @@ class AssessmentPlayerDefault extends React.Component {
       } else {
         responsiveWidth = availableWidth / zoomLevel;
       }
+    } else if (availableWidth / zoomLevel > defaultContentWidth && zoomLevel > "1") {
+      responsiveWidth = availableWidth / zoomLevel;
     }
 
     const hasCollapseButtons =
@@ -619,8 +620,6 @@ class AssessmentPlayerDefault extends React.Component {
           </Main>
 
           <ReportIssuePopover item={item} />
-
-          <VerticalScrollContainer scrollWrraper={this.scrollElementRef.current} />
 
           {currentToolMode.indexOf(2) !== -1 && (
             <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />

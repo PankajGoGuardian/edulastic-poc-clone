@@ -1,16 +1,18 @@
+/* eslint-disable */
 import React, { Component, Suspense, lazy } from "react";
 import { get, isUndefined } from "lodash";
 import queryString from "query-string";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { DragDropContext } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
-// import HTML5Backend from "react-dnd-html5-backend";
+import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
+import { isMobileDevice } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
@@ -66,6 +68,8 @@ const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
 };
+
+const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
 
 class App extends Component {
   static propTypes = {
@@ -159,81 +163,90 @@ class App extends Component {
       <div>
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
-          <Switch>
-            {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-            redirectRoute !== "" ? (
-              <Redirect exact to={redirectRoute} />
-            ) : null}
-            <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
-            <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
-            <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
-            <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />
-            <LoggedOutRoute
-              path="/district/:districtShortName"
-              component={DistrictRoutes}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/Signup"
-              component={TeacherSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute exact path="/partnerLogin/:partner" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/GetStarted"
-              component={GetStarted}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/AdminSignup"
-              component={AdminSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/StudentSignup"
-              component={StudentSignup}
-              redirectPath={defaultRoute}
-            />
+          <DndProvider
+            backend={dndBackend}
+            options={{
+              enableTouchEvents: true,
+              enableMouseEvents: true
+            }}
+          >
+            <Switch>
+              {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
+              redirectRoute !== "" ? (
+                <Redirect exact to={redirectRoute} />
+              ) : null}
+              <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
+              <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
+              <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
+              <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />
+              <LoggedOutRoute
+                path="/district/:districtShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/Signup"
+                component={TeacherSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
+              <LoggedOutRoute exact path="/partnerLogin/:partner" component={Auth} redirectPath={defaultRoute} />
+              <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/GetStarted"
+                component={GetStarted}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/AdminSignup"
+                component={AdminSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/StudentSignup"
+                component={StudentSignup}
+                redirectPath={defaultRoute}
+              />
 
-            <PrivateRoute
-              path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-              component={TestAttemptReview}
-            />
-            <Route
-              path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route
-              path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
-            <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
-            <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
-            <Route
-              path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
-            <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
-            <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
-            <Route exact path="/fwd" render={() => <V1Redirect />} />
-            <Route path="/inviteTeacher" render={() => <Invite />} />
-            <Route path="/auth" render={() => <Auth />} />
-            {testRedirectRoutes.map(route => (
-              <Route path={route} component={RedirectToTest} key={route} />
-            ))}
-            <Redirect exact to={defaultRoute} />
-          </Switch>
+              <PrivateRoute
+                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
+              <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
+              <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
+              <Route
+                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
+              <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
+              <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+              <Route exact path="/fwd" render={() => <V1Redirect />} />
+              <Route path="/inviteTeacher" render={() => <Invite />} />
+              <Route path="/auth" render={() => <Auth />} />
+              {testRedirectRoutes.map(route => (
+                <Route path={route} component={RedirectToTest} key={route} />
+              ))}
+
+              <Redirect exact to={defaultRoute} />
+            </Switch>
+          </DndProvider>
         </Suspense>
       </div>
     );
@@ -241,12 +254,6 @@ class App extends Component {
 }
 
 const enhance = compose(
-  DragDropContext(
-    TouchBackend({
-      enableTouchEvents: true,
-      enableMouseEvents: true
-    })
-  ),
   withRouter,
   connect(
     ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),

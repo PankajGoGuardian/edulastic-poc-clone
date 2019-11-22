@@ -9,14 +9,11 @@ import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import { message } from "antd";
 import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
-import ModalDragScrollContainer from "../../../../assessment/components/ModalDragScrollContainer";
 import { getTeacherEditedScoreSelector } from "../../ducks";
 
 const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} ref={ref} />);
 
 class QuestionModal extends React.Component {
-  questionWrapperRef = createRef();
-
   constructor() {
     super();
     this.state = {
@@ -188,8 +185,6 @@ class QuestionModal extends React.Component {
     const { isVisibleModal, tableData, record, isPresentationMode, windowWidth } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
-    const scrollContainer = this.questionWrapperRef && this.questionWrapperRef.current;
-
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
@@ -211,13 +206,9 @@ class QuestionModal extends React.Component {
         visible={isVisibleModal}
         bodyStyle={{ background: "#f0f2f5", height: "100%", overflowY: "auto" }}
       >
-        <ModalDragScrollContainer scrollWrraper={scrollContainer} height={50} />
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <QuestionWrapper
-              ref={this.questionWrapperRef}
-              style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}
-            >
+            <QuestionWrapper style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}>
               <Question
                 record={question}
                 key={question.id}

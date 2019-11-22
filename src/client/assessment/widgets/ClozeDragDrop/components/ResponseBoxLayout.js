@@ -17,6 +17,7 @@ const ResponseBoxLayout = ({
   onDrop,
   theme,
   containerPosition,
+  dragItemStyle,
   getHeading
 }) => {
   const handleMove = e => {
@@ -36,9 +37,19 @@ const ResponseBoxLayout = ({
 
   const horizontallyAligned = containerPosition === "left" || containerPosition === "right";
 
+  const itemStyle = {
+    ...dragItemStyle,
+    fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
+    fontWeight: smallSize
+      ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
+      : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
+    display: "flex",
+    justifyContent: "center"
+  };
+
   return (
     <Droppable
-      style={{ display: "block", border: `1px solid ${theme?.widgets?.clozeDragDrop?.correctAnswerBoxBorderColor}` }}
+      style={{ display: "block", border: `1px solid ${theme.widgets.clozeDragDrop.correctAnswerBoxBorderColor}` }}
       drop={e => e}
     >
       <StyledResponseDiv
@@ -48,7 +59,7 @@ const ResponseBoxLayout = ({
           borderRadius: smallSize ? 0 : 10,
           display: "flex",
           flexDirection: horizontallyAligned ? "column" : "row",
-          alignItems: horizontallyAligned || hasGroupResponses ? "flex-start" : "center",
+          alignItems: horizontallyAligned || hasGroupResponses ? "center" : "flex-start",
           justifyContent: smallSize ? "space-around" : "flex-start"
         }}
       >
@@ -56,15 +67,19 @@ const ResponseBoxLayout = ({
           <div
             style={{
               margin: "0 auto 1rem 8px",
-              color: theme?.textColor,
-              fontWeight: theme?.bold,
-              fontSize: theme?.smallFontSize,
-              lineHeight: theme?.headerLineHeight
+              color: theme.textColor,
+              fontWeight: theme.bold,
+              fontSize: theme.smallFontSize,
+              lineHeight: theme.headerLineHeight
             }}
           >
             {getHeading("component.cloze.dragDrop.optionContainerHeading")}
           </div>
-          <FlexContainer flexDirection={horizontallyAligned ? "column" : "row"}>
+          <FlexContainer
+            flexDirection={horizontallyAligned ? "column" : "row"}
+            flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
+            justifyContent={horizontallyAligned ? "center" : "flex-start"}
+          >
             {hasGroupResponses && (
               <GroupWrapper horizontallyAligned={horizontallyAligned}>
                 {responses.map((groupResponse, index) => {
@@ -76,35 +91,22 @@ const ResponseBoxLayout = ({
                           groupResponse.options.map((option, itemIndex) => {
                             const { value, label = "" } = option;
                             return (
-                              <div
-                                key={itemIndex}
-                                className="draggable_box"
-                                style={{
-                                  display: "flex",
-                                  width: horizontallyAligned ? "100%" : null,
-                                  justifyContent: "center",
-                                  fontSize: smallSize
-                                    ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
-                                    : fontSize
-                                }}
-                              >
+                              <div key={itemIndex} className="draggable_box">
                                 {!dragHandler && (
-                                  <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
                                     <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                                   </Draggable>
                                 )}
                                 {dragHandler && (
-                                  <React.Fragment>
-                                    <Draggable onDrop={onDrop} data={`${value}_${index}`}>
-                                      <i
-                                        className="fa fa-arrows-alt"
-                                        style={{
-                                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                        }}
-                                      />
-                                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                    </Draggable>
-                                  </React.Fragment>
+                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
+                                    <i
+                                      className="fa fa-arrows-alt"
+                                      style={{
+                                        fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                                      }}
+                                    />
+                                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                  </Draggable>
                                 )}
                               </div>
                             );
@@ -121,37 +123,22 @@ const ResponseBoxLayout = ({
               responses.map((option, index) => {
                 const { label, value } = option;
                 return (
-                  <StyledResponseOption
-                    id={`response-item-${index}`}
-                    key={value}
-                    className="draggable_box"
-                    style={{
-                      fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
-                      fontWeight: smallSize
-                        ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
-                        : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
-                      display: "flex",
-                      width: horizontallyAligned ? "100%" : null,
-                      justifyContent: "center"
-                    }}
-                  >
+                  <StyledResponseOption id={`response-item-${index}`} key={value} className="draggable_box">
                     {!dragHandler && (
-                      <Draggable onDrop={onDrop} data={value}>
+                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
                         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                       </Draggable>
                     )}
                     {dragHandler && (
-                      <React.Fragment>
-                        <Draggable onDrop={onDrop} data={value}>
-                          <i
-                            className="fa fa-arrows-alt"
-                            style={{
-                              fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                            }}
-                          />
-                          <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                        </Draggable>
-                      </React.Fragment>
+                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
+                        <i
+                          className="fa fa-arrows-alt"
+                          style={{
+                            fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                          }}
+                        />
+                        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                      </Draggable>
                     )}
                   </StyledResponseOption>
                 );
@@ -169,7 +156,9 @@ ResponseBoxLayout.propTypes = {
   hasGroupResponses: PropTypes.bool,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
+  getHeading: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
+  dragItemStyle: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   containerPosition: PropTypes.string
 };

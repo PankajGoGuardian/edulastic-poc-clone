@@ -24,7 +24,7 @@ const PlayerHeader = ({ title, onOpenExitPopup, zoomLevel, windowWidth, onSubmit
     zoomStyle.padding = 0;
   }
 
-  const rightButtons = <SaveAndExit previewPlayer showZoomBtn finishTest={onOpenExitPopup} onSubmit={onSubmit} />;
+  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} onSubmit={onSubmit} />;
 
   return (
     <Fragment>

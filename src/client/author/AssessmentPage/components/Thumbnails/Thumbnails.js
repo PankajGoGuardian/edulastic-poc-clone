@@ -74,16 +74,6 @@ const Thumbnails = ({
             </Dropdown>
           </ReuploadButtonWrapper>
         )}
-        {review && (
-          <ReuploadButtonWrapper noCheck={noCheck}>
-            <ToolBarToggleBtn
-              style={{ background: !isToolBarVisible ? white : themeColor }}
-              onClick={toggleToolBarVisiblity}
-            >
-              <IconPencilEdit title="tool bar" color={isToolBarVisible ? white : themeColor} />
-            </ToolBarToggleBtn>
-          </ReuploadButtonWrapper>
-        )}
       </PerfectScrollbar>
     </ThumbnailsWrapper>
   );

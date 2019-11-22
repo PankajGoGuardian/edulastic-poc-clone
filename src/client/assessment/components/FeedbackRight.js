@@ -326,6 +326,7 @@ const StyledCardTwo = styled(Card)`
   flex: 3;
   margin: 0px 0px 0px 15px;
   min-height: 100%;
+  max-width: 250px;
   .ant-card-head {
     height: 60px;
   }
@@ -342,11 +343,8 @@ const StyledCardTwo = styled(Card)`
   }
 
   @media screen and (min-width: ${desktopWidth}) {
-    width: ${({ twoColLayout, showCollapseBtn }) => (showCollapseBtn ? "auto" : twoColLayout?.second || "25%")};
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    max-width: 250px;
+    width: ${({ twoColLayout, showCollapseBtn }) => (showCollapseBtn ? "auto" : twoColLayout?.second || "250px")};
+    min-width: 250px;
   }
   @media (max-width: ${mobileWidthMax}) {
     margin-left: 0px;

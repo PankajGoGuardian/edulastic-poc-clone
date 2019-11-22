@@ -236,7 +236,7 @@ class StudentViewContainer extends Component {
           {!loading && (
             <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
               <ThemeProvider
-                theme={{ twoColLayout: { first: "calc(75% - 15px) !important", second: "25% !important" } }}
+                theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
               >
                 <ClassQuestions
                   currentStudent={currentStudent || {}}

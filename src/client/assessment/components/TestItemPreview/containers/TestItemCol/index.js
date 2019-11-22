@@ -100,15 +100,18 @@ class TestItemCol extends Component {
   };
 
   render() {
-    const { col, style, windowWidth, ...restProps } = this.props;
+    const { col, style, windowWidth, colCount, colIndex, ...restProps } = this.props;
     const { value } = this.state;
-
+    const width =
+      restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
+        ? `calc(${col.dimension} + 280px)`
+        : col.dimension || "auto";
     return (
       <Container
         className={"test-item-col"}
         value={value}
         style={style}
-        width={col.dimension || "auto"}
+        width={width}
         hasCollapseButtons={
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }

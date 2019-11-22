@@ -122,6 +122,8 @@ class TestItemPreview extends Component {
                   showCollapseBtn={showCollapseButtons}
                   evaluation={evaluation}
                   key={i}
+                  colCount={cols.length}
+                  colIndex={i}
                   col={!!collapseDirection ? { ...col, dimension: "90%" } : col}
                   view="preview"
                   metaData={metaData}

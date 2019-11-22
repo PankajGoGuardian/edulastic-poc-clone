@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -41,6 +41,7 @@ const convertTableData = (data, assignments, index) => ({
   name: data.title,
   thumbnail: data.thumbnail,
   key: index.toString(),
+  rowIndex: index.toString(),
   testId: data._id,
   class: assignments.length,
   assigned: "",
@@ -71,17 +72,30 @@ const convertExpandTableData = (data, testItem, index) => ({
   testType: data.testType
 });
 
-class TableList extends Component {
-  static propTypes = {
-    t: PropTypes.func.isRequired
-  };
-
-  state = {
-    expandedRows: ["0", "1", "2"],
-    details: true
-  };
-
-  expandedRowRender = parentData => {
+const TableList = ({
+  assignmentsByTestId = {},
+  tests = [],
+  onOpenReleaseScoreSettings,
+  history,
+  renderFilter,
+  t,
+  onSelectRow,
+  selectedRows,
+  loading,
+  toggleEditModal,
+  folderData,
+  showPreviewModal,
+  showFilter,
+  windowWidth,
+  toggleDeleteModal
+}) => {
+  const [expandedRows, setExpandedRows] = useState([]);
+  const [details, setdetails] = useState(true);
+  //Show first three rows opened in every re-render
+  useEffect(() => {
+    setExpandedRows(["0", "1", "2"]);
+  }, []);
+  const expandedRowRender = parentData => {
     const columns = [
       {
         title: <Checkbox />,
@@ -165,8 +179,6 @@ class TableList extends Component {
         )
       }
     ];
-
-    const { assignmentsByTestId } = this.props;
     const expandTableList = [];
     let getInfo;
     assignmentsByTestId[parentData.testId].forEach((assignment, index) => {
@@ -179,196 +191,182 @@ class TableList extends Component {
     return <ExpandedTable columns={columns} dataSource={expandTableList} pagination={false} class="expandTable" />;
   };
 
-  enableExtend = () => this.setState({ details: false });
+  const enableExtend = () => setdetails(false);
 
-  disableExtend = () => this.setState({ details: true });
+  const disableExtend = () => setdetails(true);
 
-  handleExpandedRowsChange = expandedRows => {
-    this.setState({ expandedRows });
+  const handleExpandedRowsChange = rowIndex => {
+    setExpandedRows(state => {
+      if (state.includes(rowIndex)) {
+        return state.filter(item => item !== rowIndex);
+      }
+      return [...state, rowIndex];
+    });
   };
 
-  render() {
-    const {
-      assignmentsByTestId = {},
-      tests = [],
-      onOpenReleaseScoreSettings,
-      history,
-      renderFilter,
-      t,
-      onSelectRow,
-      selectedRows,
-      loading,
-      toggleEditModal,
-      toggleDeleteModal,
-      folderData,
-      showPreviewModal,
-      showFilter,
-      windowWidth
-    } = this.props;
+  const columns = [
+    {
+      title: "Assignment Name",
+      dataIndex: "name",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
+      width: "20%",
+      className: "assignment-name",
+      render: (text, row) => (
+        <Tooltip placement="bottom" title={<div>{text}</div>}>
+          <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">
+            <div>
+              <TestThumbnail src={row.thumbnail} />
+            </div>
+            <AssignmentTD showFilter={showFilter}>{text}</AssignmentTD>
+          </FlexContainer>
+        </Tooltip>
+      )
+    },
+    {
+      title: "Class",
+      dataIndex: "class",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.class - b.class,
+      width: "10%",
+      render: (text, row) => (
+        <ExpandDivdier data-cy="ButtonToShowAllClasses">
+          <IconArrowDown
+            onclick={() => false}
+            src={arrowUpIcon}
+            style={{ transform: expandedRows.includes(`${row.key}`) ? "rotate(180deg)" : "" }}
+          />
+          {text}
+        </ExpandDivdier>
+      )
+    },
+    {
+      title: "Type",
+      dataIndex: "testType",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => {
+        // Handling the undefined testtype however All the test should have test type.
+        if (!a.testType || !b.testType) return false;
+        return a.testType.localeCompare(b.testType);
+      },
+      width: "10%",
+      render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
+    },
+    {
+      title: "Assigned by",
+      dataIndex: "assigned",
+      sortDirections: ["descend", "ascend"],
+      width: "11%",
+      render: text => <GreyFont> {text} </GreyFont>
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      sortDirections: ["descend", "ascend"],
+      width: "14%",
+      render: () => <GreyFont>{t("common.assigned")} </GreyFont>
+    },
+    {
+      title: "Submitted",
+      dataIndex: "submitted",
+      sortDirections: ["descend", "ascend"],
+      width: "10%",
+      render: text => <GreyFont> {text} </GreyFont>
+    },
+    {
+      title: "Graded",
+      dataIndex: "graded",
+      sortDirections: ["descend", "ascend"],
+      sorter: (a, b) => a.graded - b.graded,
+      width: "10%",
+      render: text => <GreyFont> {text} </GreyFont>
+    },
+    {
+      title: renderFilter(),
+      dataIndex: "action",
+      width: "10%",
+      render: (_, row) => (
+        <ActionDiv>
+          <Dropdown
+            overlay={ActionMenu(
+              onOpenReleaseScoreSettings,
+              row.currentAssignment,
+              history,
+              showPreviewModal,
+              toggleEditModal,
+              toggleDeleteModal
+            )}
+            placement="bottomRight"
+            trigger={["click"]}
+            onClick={e => e.stopPropagation()}
+          >
+            <BtnAction>ACTIONS</BtnAction>
+          </Dropdown>
+        </ActionDiv>
+      ),
+      onCell: () => ({
+        onMouseEnter: () => enableExtend(),
+        onMouseLeave: () => disableExtend()
+      })
+    }
+  ];
+  const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
 
-    const { details, expandedRows } = this.state;
-    const columns = [
-      {
-        title: "Assignment Name",
-        dataIndex: "name",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
-        width: "20%",
-        className: "assignment-name",
-        render: (text, row) => (
-          <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">
-              <div>
-                <TestThumbnail src={row.thumbnail} />
-              </div>
-              <AssignmentTD showFilter={showFilter}>{text}</AssignmentTD>
-            </FlexContainer>
-          </Tooltip>
-        )
-      },
-      {
-        title: "Class",
-        dataIndex: "class",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.class - b.class,
-        width: "10%",
-        render: (text, row) => (
-          <ExpandDivdier data-cy="ButtonToShowAllClasses">
-            <IconArrowDown
-              onclick={() => false}
-              src={arrowUpIcon}
-              style={{ transform: expandedRows.includes(`${row.key}`) ? "rotate(180deg)" : "" }}
-            />
-            {text}
-          </ExpandDivdier>
-        )
-      },
-      {
-        title: "Type",
-        dataIndex: "testType",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => {
-          // Handling the undefined testtype however All the test should have test type.
-          if (!a.testType || !b.testType) return false;
-          return a.testType.localeCompare(b.testType);
-        },
-        width: "10%",
-        render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
-      },
-      {
-        title: "Assigned by",
-        dataIndex: "assigned",
-        sortDirections: ["descend", "ascend"],
-        width: "11%",
-        render: text => <GreyFont> {text} </GreyFont>
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        sortDirections: ["descend", "ascend"],
-        width: "14%",
-        render: () => <GreyFont>{t("common.assigned")} </GreyFont>
-      },
-      {
-        title: "Submitted",
-        dataIndex: "submitted",
-        sortDirections: ["descend", "ascend"],
-        width: "10%",
-        render: text => <GreyFont> {text} </GreyFont>
-      },
-      {
-        title: "Graded",
-        dataIndex: "graded",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.graded - b.graded,
-        width: "10%",
-        render: text => <GreyFont> {text} </GreyFont>
-      },
-      {
-        title: renderFilter(),
-        dataIndex: "action",
-        width: "10%",
-        render: (_, row) => (
-          <ActionDiv>
-            <Dropdown
-              overlay={ActionMenu(
-                onOpenReleaseScoreSettings,
-                row.currentAssignment,
-                history,
-                showPreviewModal,
-                toggleEditModal,
-                toggleDeleteModal
-              )}
-              placement="bottomRight"
-              trigger={["click"]}
-              onClick={e => e.stopPropagation()}
-            >
-              <BtnAction>ACTIONS</BtnAction>
-            </Dropdown>
-          </ActionDiv>
-        ),
-        onCell: () => ({
-          onMouseEnter: () => this.enableExtend(),
-          onMouseLeave: () => this.disableExtend()
-        })
+  const rowSelection = {
+    selectedRowKeys: selectedRows.map(({ key }) => key),
+    onChange: (_, rows) => {
+      if (onSelectRow) {
+        onSelectRow(rows);
       }
-    ];
+    }
+  };
 
-    const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
+  let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
 
-    const rowSelection = {
-      selectedRowKeys: selectedRows.map(({ key }) => key),
-      onChange: (_, rows) => {
-        if (onSelectRow) {
-          onSelectRow(rows);
-        }
+  if (!isEmpty(folderData)) {
+    const { content } = folderData;
+
+    const tempData = [];
+    content.forEach(({ _id }) => {
+      const temp = find(tests, ({ _id: testId }) => testId === _id);
+      if (temp) {
+        tempData.push(temp);
       }
-    };
+    });
+    data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
+  }
 
-    let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
-
-    if (!isEmpty(folderData)) {
-      const { content } = folderData;
-
-      const tempData = [];
-      content.forEach(({ _id }) => {
-        const temp = find(tests, ({ _id: testId }) => testId === _id);
-        if (temp) {
-          tempData.push(temp);
-        }
-      });
-      data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
-    }
-    if (loading) {
-      return <Spin size="large" />;
-    }
-    if (data.length < 1) {
-      return (
-        <NoDataNotification
-          heading={"Assignments not available"}
-          description={"There are no assignments found for this filter."}
-        />
-      );
-    }
-
+  if (loading) {
+    return <Spin size="large" />;
+  }
+  if (data.length < 1) {
     return (
-      <Container>
-        <TableData
-          columns={columns}
-          rowSelection={rowSelection}
-          expandIconAsCell={false}
-          expandIconColumnIndex={-1}
-          expandedRowRender={this.expandedRowRender}
-          dataSource={data}
-          expandRowByClick={details}
-          onExpandedRowsChange={this.handleExpandedRowsChange}
-          defaultExpandedRowKeys={expandedRows}
-          scroll={{ x: windowWidth <= 1023 ? 1023 : false }}
-        />
-      </Container>
+      <NoDataNotification
+        heading={"Assignments not available"}
+        description={"There are no assignments found for this filter."}
+      />
     );
   }
-}
+
+  return (
+    <Container>
+      <TableData
+        columns={columns}
+        rowSelection={rowSelection}
+        expandIconAsCell={false}
+        expandIconColumnIndex={-1}
+        expandedRowRender={expandedRowRender}
+        dataSource={data}
+        expandRowByClick={details}
+        onRow={record => ({
+          onClick: () => handleExpandedRowsChange(record.rowIndex)
+        })}
+        expandedRowKeys={expandedRows}
+        scroll={{ x: windowWidth <= 1023 ? 1023 : false }}
+      />
+    </Container>
+  );
+};
 
 TableList.propTypes = {
   assignmentsByTestId: PropTypes.object.isRequired,
@@ -380,7 +378,8 @@ TableList.propTypes = {
   renderFilter: PropTypes.func,
   history: PropTypes.object,
   tests: PropTypes.array,
-  showFilter: PropTypes.bool
+  showFilter: PropTypes.bool,
+  t: PropTypes.func.isRequired
 };
 
 TableList.defaultProps = {

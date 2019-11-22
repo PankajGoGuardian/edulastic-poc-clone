@@ -8,10 +8,10 @@ import produce from "immer";
 import { get } from "lodash";
 import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { RndWrapper } from "./styled/RndWrapper";
 
 const ResponseRnd = props => {
   const { children, question, setQuestionData, isResizable, index, hasRowTitle = true } = props;
-
   const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
@@ -63,39 +63,35 @@ const ResponseRnd = props => {
   const rndWidth = get(question, `responseOptions[${index}].width`, 220);
 
   return (
-    <Rnd
-      style={{
-        padding: "2px",
-        border: `1px solid ${lightGrey}`
-      }}
-      size={{ width: rndWidth, height: "auto" }}
-      position={{ x: rndX, y: rndY }}
-      default={{
-        x: rndX,
-        y: rndY,
-        width: rndWidth,
-        height: "auto"
-      }}
-      disableDragging={!isResizable}
-      enableResizing={{
-        bottom: isResizable,
-        top: isResizable,
-        bottomLeft: isResizable,
-        bottomRight: isResizable,
-        left: isResizable,
-        right: isResizable,
-        topLeft: isResizable,
-        topRight: isResizable
-      }}
-      onDragStop={handleResponseDragStop}
-      onResizeStop={handleResponseResizeStop}
-      onResize={handleResponseResize}
-      cancel=".drag-item"
-      minHeight={minHeight}
-      className="answer-draggable-wrapper"
-    >
-      {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
-    </Rnd>
+    <RndWrapper isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
+      <Rnd
+        style={{
+          padding: "2px",
+          border: `1px solid ${lightGrey}`
+        }}
+        size={{ width: rndWidth, height: "auto" }}
+        position={{ x: rndX, y: rndY }}
+        disableDragging={!isResizable}
+        enableResizing={{
+          bottom: isResizable,
+          top: isResizable,
+          bottomLeft: isResizable,
+          bottomRight: isResizable,
+          left: isResizable,
+          right: isResizable,
+          topLeft: isResizable,
+          topRight: isResizable
+        }}
+        onDragStop={handleResponseDragStop}
+        onResizeStop={handleResponseResizeStop}
+        onResize={handleResponseResize}
+        cancel=".drag-item"
+        minHeight={minHeight}
+        className="answer-draggable-wrapper"
+      >
+        {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
+      </Rnd>
+    </RndWrapper>
   );
 };
 

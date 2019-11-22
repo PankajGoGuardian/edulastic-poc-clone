@@ -2,8 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
+import { find } from "lodash";
 import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
-import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription } from "@edulastic/icons";
+import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip } from "antd";
 import {
@@ -42,7 +43,7 @@ import {
   TestStatus,
   IconWrapper
 } from "./styled";
-import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { getInterestedCurriculumsSelector, getUserIdSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 
 class ViewModal extends React.Component {
@@ -67,7 +68,8 @@ class ViewModal extends React.Component {
       onEdit,
       status,
       interestedCurriculums,
-      windowWidth
+      windowWidth,
+      userId
     } = this.props;
     const {
       title = "",
@@ -82,7 +84,8 @@ class ViewModal extends React.Component {
       summary = {},
       sharing = [],
       permission,
-      _source
+      _source,
+      authors
     } = item;
 
     const titleModified = title?.length > 25 ? `${title.slice(0, 24)?.trim()}...` : title;
@@ -94,6 +97,7 @@ class ViewModal extends React.Component {
         borderRadius: "5px"
       }
     };
+    const isDeleteAllowed = !!find(authors, o => o._id === userId);
 
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
@@ -129,12 +133,14 @@ class ViewModal extends React.Component {
                 </IconWrapper>
                 <span>DUPLICATE</span>
               </ButtonComponent>
-              <ButtonComponent onClick={() => onDelete()}>
-                <IconWrapper>
-                  <IconCopy color={themeColor} />
-                </IconWrapper>
-                <span>DELETE</span>
-              </ButtonComponent>
+              {isDeleteAllowed ? (
+                <ButtonComponent onClick={() => onDelete()}>
+                  <IconWrapper>
+                    <IconTrashAlt color={themeColor} />
+                  </IconWrapper>
+                  <span>DELETE</span>
+                </ButtonComponent>
+              ) : null}
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
@@ -235,7 +241,8 @@ class ViewModal extends React.Component {
 
 export default connect(
   state => ({
-    interestedCurriculums: getInterestedCurriculumsSelector(state)
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
+    userId: getUserIdSelector(state)
   }),
   {}
 )(ViewModal);

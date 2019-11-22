@@ -77,6 +77,7 @@ function* deleteTestSaga({ payload }) {
   try {
     yield call(testsApi.deleteTest, payload);
     yield put(deleteTestRequestSuccessAction(payload));
+    message.success("Test Deleted Successfully.");
   } catch (error) {
     console.error(error);
     // 403 means dont have permission

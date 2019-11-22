@@ -364,6 +364,8 @@ class AssessmentPlayerDefault extends React.Component {
       } else {
         responsiveWidth = availableWidth / zoomLevel;
       }
+    } else if (availableWidth / zoomLevel > defaultContentWidth && zoomLevel > "1") {
+      responsiveWidth = availableWidth / zoomLevel;
     }
 
     const hasCollapseButtons =

@@ -122,7 +122,11 @@ const setFiltersReducer = (state, { payload }) => {
       payload.orgDataArr.filter((item, index) => {
         if (
           item.groupId &&
-          (item.grade === payload.filters.grade || payload.filters.grade === "All") &&
+          ((item.grades || "")
+            .split(",")
+            .filter(g => g.length)
+            .includes(payload.filters.grade) ||
+            payload.filters.grade === "All") &&
           (item.subject === payload.filters.subject || payload.filters.subject === "All") &&
           (item.courseId === payload.filters.courseId || payload.filters.courseId === "All")
         ) {

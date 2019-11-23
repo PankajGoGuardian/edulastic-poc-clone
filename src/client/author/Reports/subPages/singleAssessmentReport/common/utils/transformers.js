@@ -17,7 +17,11 @@ const processFilteredGroupIds = (orgDataArr, currentFilter) => {
     orgDataArr.filter((item, index) => {
       if (
         item.groupId &&
-        (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
+        ((item.grades || "")
+          .split(",")
+          .filter(g => g.length)
+          .includes(currentFilter.grade) ||
+          currentFilter.grade === "All") &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All")
       ) {
@@ -144,7 +148,11 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       if (
         item.termId === currentFilter.termId &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        (item.grades === currentFilter.grade || currentFilter.grade === "All") &&
+        ((item.grades || "")
+          .split(",")
+          .filter(g => g.length)
+          .includes(currentFilter.grade) ||
+          currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
@@ -157,7 +165,11 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       if (
         item.termId === currentFilter.termId &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        (item.grades === currentFilter.grade || currentFilter.grade === "All") &&
+        ((item.grades || "")
+          .split(",")
+          .filter(g => g.length)
+          .includes(currentFilter.grade) ||
+          currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")

@@ -557,6 +557,7 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
+    "parabola2",
     "area",
     "dashed"
   ];

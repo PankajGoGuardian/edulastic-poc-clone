@@ -102,6 +102,9 @@ var CompareShapes =
             case _constants.ShapeTypes.PARABOLA:
               return this.compareParabolas(testShape, trueShape);
 
+            case _constants.ShapeTypes.PARABOLA2:
+              return this.compareParabolas2(testShape, trueShape);
+
             case _constants.ShapeTypes.SINE:
             case _constants.ShapeTypes.TANGENT:
             case _constants.ShapeTypes.SECANT:
@@ -518,6 +521,78 @@ var CompareShapes =
             testShapePoints.startY === trueShapePoints.startY &&
             testFunc.getKoefA() === trueFunc.getKoefA() &&
             testFunc.getDirection() === trueFunc.getDirection()
+          ) {
+            return positiveResult;
+          }
+
+          return negativeResult;
+        }
+      },
+      {
+        key: "compareParabolas2",
+        value: function compareParabolas2(testShape, trueShape) {
+          var positiveResult = {
+            id: testShape.id,
+            relatedId: trueShape.id,
+            result: true
+          };
+          var negativeResult = {
+            id: testShape.id,
+            result: false
+          };
+          var testShapeDirPoint1 = this.testAnswer.find(function(item) {
+            return item.id === testShape.subElementsIds[0];
+          });
+          var testShapeDirPoint2 = this.testAnswer.find(function(item) {
+            return item.id === testShape.subElementsIds[1];
+          });
+          var testShapeFocusPoint = this.testAnswer.find(function(item) {
+            return item.id === testShape.subElementsIds[2];
+          });
+          var trueShapeDirPoint1 = this.trueAnswerValue.find(function(item) {
+            return item.id === trueShape.subElementsIds[0];
+          });
+          var trueShapeDirPoint2 = this.trueAnswerValue.find(function(item) {
+            return item.id === trueShape.subElementsIds[1];
+          });
+          var trueShapeFocusPoint = this.trueAnswerValue.find(function(item) {
+            return item.id === trueShape.subElementsIds[2];
+          });
+
+          if (!this.ignoreLabels) {
+            if (
+              labelsAreEqual(testShape.label, trueShape.label) &&
+              this.comparePoints(testShapeDirPoint1, trueShapeDirPoint1).result &&
+              this.comparePoints(testShapeDirPoint2, trueShapeDirPoint2).result &&
+              this.comparePoints(testShapeFocusPoint, trueShapeFocusPoint).result
+            ) {
+              return positiveResult;
+            }
+
+            return negativeResult;
+          }
+
+          var testDirPoints = {
+            x1: +testShapeDirPoint1.x,
+            y1: +testShapeDirPoint1.y,
+            x2: +testShapeDirPoint2.x,
+            y2: +testShapeDirPoint2.y
+          };
+          var trueDirPoints = {
+            x1: +trueShapeDirPoint1.x,
+            y1: +trueShapeDirPoint1.y,
+            x2: +trueShapeDirPoint2.x,
+            y2: +trueShapeDirPoint2.y
+          };
+          var testFunc = new _lineFunction["default"](testDirPoints);
+          var trueFunc = new _lineFunction["default"](trueDirPoints);
+
+          if (
+            testShapeFocusPoint.x === trueShapeFocusPoint.x &&
+            testShapeFocusPoint.y === trueShapeFocusPoint.y &&
+            testFunc.getKoefA() === trueFunc.getKoefA() &&
+            testFunc.getKoefB() === trueFunc.getKoefB() &&
+            testFunc.getVerticalLineOffset() === trueFunc.getVerticalLineOffset()
           ) {
             return positiveResult;
           }

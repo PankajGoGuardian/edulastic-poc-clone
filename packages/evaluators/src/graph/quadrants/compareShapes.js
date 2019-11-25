@@ -60,6 +60,8 @@ class CompareShapes {
         return this.compareCircles(testShape, trueShape);
       case ShapeTypes.PARABOLA:
         return this.compareParabolas(testShape, trueShape);
+      case ShapeTypes.PARABOLA2:
+        return this.compareParabolas2(testShape, trueShape);
       case ShapeTypes.SINE:
       case ShapeTypes.TANGENT:
       case ShapeTypes.SECANT:
@@ -415,6 +417,67 @@ class CompareShapes {
       testShapePoints.startY === trueShapePoints.startY &&
       testFunc.getKoefA() === trueFunc.getKoefA() &&
       testFunc.getDirection() === trueFunc.getDirection()
+    ) {
+      return positiveResult;
+    }
+    return negativeResult;
+  }
+
+  compareParabolas2(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
+    };
+
+    const negativeResult = {
+      id: testShape.id,
+      result: false
+    };
+
+    const testShapeDirPoint1 = this.testAnswer.find(item => item.id === testShape.subElementsIds[0]);
+    const testShapeDirPoint2 = this.testAnswer.find(item => item.id === testShape.subElementsIds[1]);
+    const testShapeFocusPoint = this.testAnswer.find(item => item.id === testShape.subElementsIds[2]);
+
+    const trueShapeDirPoint1 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[0]);
+    const trueShapeDirPoint2 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[1]);
+    const trueShapeFocusPoint = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[2]);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapeDirPoint1, trueShapeDirPoint1).result &&
+        this.comparePoints(testShapeDirPoint2, trueShapeDirPoint2).result &&
+        this.comparePoints(testShapeFocusPoint, trueShapeFocusPoint).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testDirPoints = {
+      x1: +testShapeDirPoint1.x,
+      y1: +testShapeDirPoint1.y,
+      x2: +testShapeDirPoint2.x,
+      y2: +testShapeDirPoint2.y
+    };
+
+    const trueDirPoints = {
+      x1: +trueShapeDirPoint1.x,
+      y1: +trueShapeDirPoint1.y,
+      x2: +trueShapeDirPoint2.x,
+      y2: +trueShapeDirPoint2.y
+    };
+
+    const testFunc = new LineFunction(testDirPoints);
+    const trueFunc = new LineFunction(trueDirPoints);
+
+    if (
+      testShapeFocusPoint.x === trueShapeFocusPoint.x &&
+      testShapeFocusPoint.y === trueShapeFocusPoint.y &&
+      testFunc.getKoefA() === trueFunc.getKoefA() &&
+      testFunc.getKoefB() === trueFunc.getKoefB() &&
+      testFunc.getVerticalLineOffset() === trueFunc.getVerticalLineOffset()
     ) {
       return positiveResult;
     }

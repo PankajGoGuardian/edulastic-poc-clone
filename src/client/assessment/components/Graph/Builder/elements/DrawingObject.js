@@ -8,6 +8,7 @@ import {
   Line,
   Logarithm,
   Parabola,
+  Parabola2,
   Polygon,
   Polynom,
   Secant,
@@ -92,6 +93,9 @@ function onHandler(board, event) {
         break;
       case CONSTANT.TOOLS.PARABOLA:
         newElement = Parabola.create(board, { id, label, baseColor, dashed }, points);
+        break;
+      case CONSTANT.TOOLS.PARABOLA2:
+        newElement = Parabola2.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.ELLIPSE:
         newElement = Ellipse.create(board, { id, label, baseColor, dashed }, points);

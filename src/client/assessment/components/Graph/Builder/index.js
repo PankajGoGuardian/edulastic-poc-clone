@@ -19,6 +19,7 @@ import {
   NumberlineSegment,
   NumberlineVector,
   Parabola,
+  Parabola2,
   Point,
   Polygon,
   Polynom,
@@ -230,6 +231,9 @@ class Board {
       case CONSTANT.TOOLS.PARABOLA:
         this.creatingHandler = Parabola.onHandler();
         return;
+      case CONSTANT.TOOLS.PARABOLA2:
+        this.creatingHandler = Parabola2.onHandler();
+        return;
       case CONSTANT.TOOLS.HYPERBOLA:
         this.creatingHandler = Hyperbola.onHandler();
         return;
@@ -300,6 +304,8 @@ class Board {
         return Sin.clean(this);
       case CONSTANT.TOOLS.PARABOLA:
         return Parabola.clean(this);
+      case CONSTANT.TOOLS.PARABOLA2:
+        return Parabola2.clean(this);
       case CONSTANT.TOOLS.ELLIPSE:
         return Ellipse.clean(this);
       case CONSTANT.TOOLS.HYPERBOLA:
@@ -326,6 +332,7 @@ class Board {
       ...Polygon.getTempPoints(),
       ...Sin.getTempPoints(),
       ...Parabola.getTempPoints(),
+      ...Parabola2.getTempPoints(),
       ...Ellipse.getTempPoints(),
       ...Hyperbola.getTempPoints(),
       ...Exponent.getTempPoints(),
@@ -686,27 +693,29 @@ class Board {
             return Ellipse.getConfig(e);
           case JXG.OBJECT_TYPE_POLYGON:
             return Polygon.getConfig(e);
-          case 90:
+          case Hyperbola.jxgType:
             return Hyperbola.getConfig(e);
-          case 91:
+          case Tangent.jxgType:
             return Tangent.getConfig(e);
-          case 92:
+          case Secant.jxgType:
             return Secant.getConfig(e);
-          case 93:
+          case Exponent.jxgType:
             return Exponent.getConfig(e);
-          case 94:
+          case Logarithm.jxgType:
             return Logarithm.getConfig(e);
-          case 95:
+          case Polynom.jxgType:
             return Polynom.getConfig(e);
-          case 96:
+          case Sin.jxgType:
             return Sin.getConfig(e);
-          case 97:
+          case Parabola.jxgType:
             return Parabola.getConfig(e);
-          case 98:
+          case Parabola2.jxgType:
+            return Parabola2.getConfig(e);
+          case Equation.jxgType:
             return Equation.getConfig(e);
-          case 100:
+          case Area.jxgType:
             return Area.getConfig(e);
-          case 101:
+          case DragDrop.jxgType:
             return DragDrop.getConfig(e);
           default:
             throw new Error("Unknown element type:", e.name, e.type);
@@ -1117,6 +1126,23 @@ class Board {
 
       case Parabola.jxgType:
         return Parabola.create(
+          this,
+          object,
+          object.points.map(point =>
+            Point.create(this, point, {
+              pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed
+            })
+          ),
+          {
+            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
+            fixed
+          }
+        );
+
+      case Parabola2.jxgType:
+        return Parabola2.create(
           this,
           object,
           object.points.map(point =>

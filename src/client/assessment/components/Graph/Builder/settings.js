@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import { tickLabel } from "./utils";
-import { Tangent, Logarithm, Sin, Parabola } from "./elements";
+import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from "./elements";
 
 /**
  * Graph parameters
@@ -126,6 +126,7 @@ export const getLabelPositionParameters = elementType => {
         anchorY: "middle"
       };
     case Parabola.jxgType:
+    case Parabola2.jxgType:
       return {
         position: "top",
         offset: [0, -10],

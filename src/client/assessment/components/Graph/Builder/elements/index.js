@@ -13,6 +13,7 @@ export { default as Point } from "./Point";
 export { default as Polygon } from "./Polygon";
 export { default as Polynom } from "./Polynom";
 export { default as Parabola } from "./Parabola";
+export { default as Parabola2 } from "./Parabola2";
 export { default as Ray } from "./Ray";
 export { default as Secant } from "./Secant";
 export { default as Segment } from "./Segment";

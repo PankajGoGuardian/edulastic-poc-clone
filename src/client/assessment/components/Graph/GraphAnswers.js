@@ -94,7 +94,8 @@ class GraphAnswers extends Component {
       "polynom",
       "hyperbola",
       "polygon",
-      "parabola"
+      "parabola",
+      "parabola2"
     ];
 
     const shapes = value.filter(elem => allowedTypes.includes(elem.type) && !elem.subElement);

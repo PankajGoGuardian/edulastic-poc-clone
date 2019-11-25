@@ -15,6 +15,7 @@ export const TOOLS = {
   POLYNOM: "polynom",
   POLYGON: "polygon",
   PARABOLA: "parabola",
+  PARABOLA2: "parabola2",
   HYPERBOLA: "hyperbola",
   ELLIPSE: "ellipse",
   SEGMENTS_POINT: "segments_point",

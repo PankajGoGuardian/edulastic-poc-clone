@@ -116,7 +116,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
         relatedShape.type !== _constants.ShapeTypes.VECTOR &&
         relatedShape.type !== _constants.ShapeTypes.POLYGON &&
         relatedShape.type !== _constants.ShapeTypes.POLYNOM &&
-        relatedShape.type !== _constants.ShapeTypes.EQUATION
+        relatedShape.type !== _constants.ShapeTypes.EQUATION &&
+        relatedShape.type !== _constants.ShapeTypes.PARABOLA2
       ) {
         var firstShape = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;
@@ -276,6 +277,7 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
   var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var allowedShapes = [
     _constants.ShapeTypes.PARABOLA,
+    _constants.ShapeTypes.PARABOLA2,
     _constants.ShapeTypes.EQUATION,
     _constants.ShapeTypes.POLYNOM,
     _constants.ShapeTypes.SECANT,
@@ -294,7 +296,8 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
     _constants.ShapeTypes.POLYNOM,
     _constants.ShapeTypes.HYPERBOLA,
     _constants.ShapeTypes.ELLIPSE,
-    _constants.ShapeTypes.POLYGON
+    _constants.ShapeTypes.POLYGON,
+    _constants.ShapeTypes.PARABOLA2
   ];
   var shapes = [];
   var lineTypes = [];

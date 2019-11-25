@@ -4,6 +4,7 @@ import {
   IconGraphCircle as IconCircle,
   IconGraphLine as IconLine,
   IconGraphParabola as IconParabola,
+  IconGraphParabola2 as IconParabola2,
   IconGraphPoint as IconPoint,
   IconGraphPolygon as IconPolygon,
   IconGraphRay as IconRay,
@@ -70,6 +71,7 @@ export default function Tools(props) {
     "hyperbola",
     "polygon",
     "parabola",
+    "parabola2",
     "area",
     "dashed"
   ];
@@ -180,10 +182,20 @@ export default function Tools(props) {
       parabola: () => {
         const newOptions = {
           ...options,
-          width: width + 6
+          width: width + 14,
+          height: height + 4
         };
 
         return <IconParabola {...newOptions} />;
+      },
+      parabola2: () => {
+        const newOptions = {
+          ...options,
+          width: width + 14,
+          height: height + 4
+        };
+
+        return <IconParabola2 {...newOptions} />;
       },
       sine: () => {
         const newOptions = {
@@ -314,7 +326,9 @@ export default function Tools(props) {
                 >
                   {getIconByToolName(item)}
                 </ToolbarItemIcon>
-                <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(item)}</ToolbarItemLabel>
+                <ToolbarItemLabel style={{ fontSize }}>
+                  {utils.capitalizeFirstLetter(item === "parabola2" ? "parabola" : item)}
+                </ToolbarItemLabel>
               </ToolbarItem>
             </ToolBtn>
           ))}
@@ -354,7 +368,7 @@ export default function Tools(props) {
                                 {getIconByToolName(item)}
                               </ToolbarItemIcon>
                               <ToolbarItemLabel style={{ fontSize }}>
-                                {utils.capitalizeFirstLetter(item)}
+                                {utils.capitalizeFirstLetter(item === "parabola2" ? "parabola" : item)}
                               </ToolbarItemLabel>
                             </ToolbarItem>
                           </ToolBtn>

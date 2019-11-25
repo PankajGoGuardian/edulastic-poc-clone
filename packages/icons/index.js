@@ -77,6 +77,7 @@ export { default as IconGraphLabel } from "./src/IconGraphLabel";
 export { default as IconGraphLine } from "./src/IconGraphLine";
 export { default as IconGraphMove } from "./src/IconGraphMove";
 export { default as IconGraphParabola } from "./src/IconGraphParabola";
+export { default as IconGraphParabola2 } from "./src/IconGraphParabola2";
 export { default as IconGraphPoint } from "./src/IconGraphPoint";
 export { default as IconGraphPolygon } from "./src/IconGraphPolygon";
 export { default as IconGraphRay } from "./src/IconGraphRay";

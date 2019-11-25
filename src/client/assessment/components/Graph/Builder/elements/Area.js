@@ -2,8 +2,21 @@ import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { CONSTANT } from "../config";
-import { isInPolygon, getLineFunc, getCircleFunc, getEllipseFunc, getHyperbolaFunc } from "../utils";
-import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent, Circle, Ellipse } from ".";
+import { isInPolygon, getLineFunc, getCircleFunc, getEllipseFunc, getHyperbolaFunc, getParabolaFunc } from "../utils";
+import {
+  Equation,
+  Exponent,
+  Hyperbola,
+  Logarithm,
+  Parabola,
+  Parabola2,
+  Polynom,
+  Secant,
+  Sin,
+  Tangent,
+  Circle,
+  Ellipse
+} from ".";
 
 const jxgType = 100;
 
@@ -414,6 +427,7 @@ function updateShading(board, areaPoint, shapes) {
     Hyperbola.jxgType,
     Logarithm.jxgType,
     Parabola.jxgType,
+    Parabola2.jxgType,
     Polynom.jxgType,
     Secant.jxgType,
     Sin.jxgType,
@@ -475,6 +489,15 @@ function updateShading(board, areaPoint, shapes) {
         case Parabola.jxgType: {
           const points = Object.values(item.ancestors);
           return (x, y) => Parabola.makeCallbackY(...points)(x) > Parabola.makeCallbackX(...points)(y);
+        }
+        case Parabola2.jxgType: {
+          const points = Object.values(item.ancestors);
+          const func = getParabolaFunc(
+            { x: points[0].X(), y: points[0].Y() },
+            { x: points[1].X(), y: points[1].Y() },
+            { x: points[2].X(), y: points[2].Y() }
+          );
+          return (x, y) => func(x, y) > 0;
         }
         case Polynom.jxgType: {
           const points = Object.values(item.ancestors);

@@ -179,6 +179,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.ELLIPSE:
     case CONSTANT.TOOLS.HYPERBOLA:
     case CONSTANT.TOOLS.POLYNOM:
+    case CONSTANT.TOOLS.PARABOLA2:
       return Object.keys(pointIds)
         .sort()
         .map(k => config.find(element => element.id === pointIds[k]));
@@ -399,7 +400,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.POLYGON &&
       type !== CONSTANT.TOOLS.ELLIPSE &&
       type !== CONSTANT.TOOLS.HYPERBOLA &&
-      type !== CONSTANT.TOOLS.POLYNOM
+      type !== CONSTANT.TOOLS.POLYNOM &&
+      type !== CONSTANT.TOOLS.PARABOLA2
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,
@@ -658,6 +660,35 @@ export function getHyperbolaFunc(point1, point2, point3) {
   const sin = (y1 - y2) / rff;
 
   return (x, y) => ((x - cX) * cos - (y - cY) * sin) ** 2 / aPow2 - ((x - cX) * sin + (y - cY) * cos) ** 2 / bPow2 - 1;
+}
+
+/**
+ * Get parabola2 function by directrix and focus point
+ * @param point1 directrix point
+ * @param point2 directrix point
+ * @param point3 focus point
+ * @returns {*}
+ */
+export function getParabolaFunc(point1, point2, point3) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+  const x3 = point3.x;
+  const y3 = point3.y;
+
+  const a = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  if (a === 0) {
+    return () => 1;
+  }
+
+  const p = ((y2 - y1) * x3 - (x2 - x1) * y3 + x2 * y1 - y2 * x1) / a;
+  const sin = p > 0 ? (x2 - x1) / a : (x1 - x2) / a;
+  const cos = p > 0 ? (y2 - y1) / a : (y1 - y2) / a;
+  const cX = p > 0 ? x3 - (p / 2) * cos : x3 + (p / 2) * cos;
+  const cY = p > 0 ? y3 + (p / 2) * sin : y3 - (p / 2) * sin;
+
+  return (x, y) => ((x - cX) * sin + (y - cY) * cos) ** 2 - ((x - cX) * cos - (y - cY) * sin) * 2 * Math.abs(p);
 }
 
 export function isInPolygon(testPoint, vertices) {

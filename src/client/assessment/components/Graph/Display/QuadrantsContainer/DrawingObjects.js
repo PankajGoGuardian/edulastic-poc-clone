@@ -11,6 +11,7 @@ import {
   IconGraphPoint as IconPoint,
   IconGraphSine as IconSine,
   IconGraphParabola as IconParabola,
+  IconGraphParabola2 as IconParabola2,
   IconGraphCircle as IconCircle,
   IconGraphVector as IconVector,
   IconGraphSegment as IconSegment,
@@ -29,7 +30,7 @@ class DrawingObjects extends Component {
   };
 
   getLabel = drawingObject => {
-    const type = utils.capitalizeFirstLetter(drawingObject.type);
+    const type = utils.capitalizeFirstLetter(drawingObject.type === "parabola2" ? "parabola" : drawingObject.type);
     const objLabel = striptags(drawingObject.label);
     if (objLabel) {
       return `${type} ${objLabel}`;
@@ -51,12 +52,7 @@ class DrawingObjects extends Component {
     }
 
     const options = {
-      width:
-        toolName === "point"
-          ? 10
-          : toolName === "circle" || toolName === "parabola" || toolName === "polygon"
-          ? 15
-          : 20,
+      width: toolName === "point" ? 10 : toolName === "circle" || toolName === "polygon" ? 15 : 20,
       height: 20,
       color: greenDark,
       stroke: greenDark
@@ -77,6 +73,7 @@ class DrawingObjects extends Component {
       logarithm: () => <IconLine {...options} />,
       polynom: () => <IconLine {...options} />,
       parabola: () => <IconParabola {...options} />,
+      parabola2: () => <IconParabola2 {...options} />,
       sine: () => <IconSine {...options} />,
       polygon: () => <IconPolygon {...options} />
     };

@@ -79,7 +79,8 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
         relatedShape.type !== ShapeTypes.VECTOR &&
         relatedShape.type !== ShapeTypes.POLYGON &&
         relatedShape.type !== ShapeTypes.POLYNOM &&
-        relatedShape.type !== ShapeTypes.EQUATION
+        relatedShape.type !== ShapeTypes.EQUATION &&
+        relatedShape.type !== ShapeTypes.PARABOLA2
       ) {
         const firstShape = userResponse.find(item => item.id === sameShapes[0].id);
         for (let j = 1; j < sameShapes.length; j++) {
@@ -198,6 +199,7 @@ const serialize = (shapes, lineTypes, points) => {
 const buildGraphApiResponse = (elements = []) => {
   const allowedShapes = [
     ShapeTypes.PARABOLA,
+    ShapeTypes.PARABOLA2,
     ShapeTypes.EQUATION,
     ShapeTypes.POLYNOM,
     ShapeTypes.SECANT,
@@ -213,7 +215,13 @@ const buildGraphApiResponse = (elements = []) => {
     ShapeTypes.AREA
   ];
 
-  const more2PointShapes = [ShapeTypes.POLYNOM, ShapeTypes.HYPERBOLA, ShapeTypes.ELLIPSE, ShapeTypes.POLYGON];
+  const more2PointShapes = [
+    ShapeTypes.POLYNOM,
+    ShapeTypes.HYPERBOLA,
+    ShapeTypes.ELLIPSE,
+    ShapeTypes.POLYGON,
+    ShapeTypes.PARABOLA2
+  ];
 
   const shapes = [];
   const lineTypes = [];

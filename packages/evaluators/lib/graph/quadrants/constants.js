@@ -14,6 +14,7 @@ var ShapeTypes = {
   VECTOR: "vector",
   CIRCLE: "circle",
   PARABOLA: "parabola",
+  PARABOLA2: "parabola2",
   SINE: "sine",
   TANGENT: "tangent",
   SECANT: "secant",

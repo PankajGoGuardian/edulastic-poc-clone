@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import { Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent } from ".";
+import { Exponent, Hyperbola, Logarithm, Parabola, Parabola2, Polynom, Secant, Sin, Tangent } from ".";
 import { CONSTANT } from "../config";
 import { getAllObjectsUnderMouse } from "../utils";
 
@@ -12,6 +12,7 @@ const availableTypes = [
   Hyperbola.jxgType,
   Logarithm.jxgType,
   Parabola.jxgType,
+  Parabola2.jxgType,
   Polynom.jxgType,
   Secant.jxgType,
   Sin.jxgType,

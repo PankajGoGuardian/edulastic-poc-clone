@@ -337,6 +337,7 @@ const ClassificationPreview = ({
           imageOptions={imageOptions}
           imageUrl={imageUrl}
           choiceWidth={dragItemMaxWidth}
+          disableResponse={disableResponse}
         >
           {tableContent}
         </ResponseContainer>

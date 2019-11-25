@@ -7,7 +7,7 @@ export const ResponseContainer = styled.div`
   display: block;
   overflow: auto;
 
-  ${({ theme, imageUrl, direction, choiceWidth, imageOptions = { width: 0, height: 0 } }) => {
+  ${({ theme, imageUrl, direction, choiceWidth, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
     let css = ``;
     if (imageUrl) {
       css += `
@@ -22,11 +22,14 @@ export const ResponseContainer = styled.div`
 				background: inherit;
 			`;
     }
-    if (direction === "row" || direction === "row-reverse") {
+    if ((direction === "row" || direction === "row-reverse") && !disableResponse) {
+      // showing the choices container and container is horizontally aligned
       css += `
-				width: calc(100% - ${choiceWidth + 16}px);
-			`;
+          width: calc(100% - ${choiceWidth + 16}px);
+        `;
     } else {
+      // not showing the choices container or container is at top/bottom
+      // it should take up 100% of parent's width
       css += `
 				width: 100%;
 			`;

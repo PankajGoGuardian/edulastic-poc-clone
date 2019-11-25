@@ -138,7 +138,7 @@ const mathData = {
     "Backspace",
     "="
   ],
-  symbols: ["units_si", "units_us", "qwerty"],
+  symbols: ["basic", "units_si", "units_us"],
   template: ""
 };
 

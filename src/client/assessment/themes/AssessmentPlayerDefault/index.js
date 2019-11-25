@@ -171,7 +171,8 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   finishTest = () => {
-    const { history } = this.props;
+    const { history, saveCurrentAnswer } = this.props;
+    saveCurrentAnswer();
     history.push("/home/assignments");
   };
 

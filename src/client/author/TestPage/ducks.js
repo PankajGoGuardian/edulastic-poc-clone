@@ -695,14 +695,14 @@ function* updateTestDocBasedSaga({ payload }) {
       itemLevelScoring: false
     };
 
-    const newAssessment = {
-      ...payload.data,
-      testItems: [{ _id: testItemId, ...updatedTestItem }]
-    };
-
-    yield call(updateItemDocBasedSaga, {
+    const { testId, ...updatedItem } = yield call(updateItemDocBasedSaga, {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });
+
+    const newAssessment = {
+      ...payload.data,
+      testItems: [{ _id: testItemId, ...updatedItem }]
+    };
     return yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment }
     });
@@ -788,7 +788,9 @@ function* publishTestSaga({ payload }) {
 function* publishForRegrade({ payload }) {
   try {
     const test = yield select(getTestSelector);
-    yield call(updateTestSaga, { payload: { id: payload, data: test, assignFlow: true } });
+    yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
+      payload: { id: payload, data: test, assignFlow: true }
+    });
     const newTestId = yield select(getTestIdSelector);
     yield call(testsApi.publishTest, newTestId);
     yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${test.previousTestId}`));

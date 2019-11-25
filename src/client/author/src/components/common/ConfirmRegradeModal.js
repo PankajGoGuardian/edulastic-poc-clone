@@ -1,18 +1,19 @@
 import React from "react";
 import { Button } from "antd";
 import { ConfirmationModal } from "./ConfirmationModal";
+import { connect } from "react-redux";
 
-const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk }) => (
+const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk, loading, creating }) => (
   <ConfirmationModal
     centered
     visible={visible}
     onCancel={onCancel}
     title="Regrade"
     footer={[
-      <Button ghost onClick={onCancelRegrade}>
+      <Button ghost loading={loading || creating} disabled={loading || creating} onClick={onCancelRegrade}>
         Skip Regrade
       </Button>,
-      <Button color="primary" onClick={onOk}>
+      <Button color="primary" loading={loading || creating} disabled={loading || creating} onClick={onOk}>
         Regrade
       </Button>
     ]}
@@ -21,4 +22,7 @@ const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk }) => (
   </ConfirmationModal>
 );
 
-export default ConfirmRegradeModal;
+export default connect(state => ({
+  loading: state?.tests?.loading,
+  creating: state?.tests?.creating
+}))(ConfirmRegradeModal);

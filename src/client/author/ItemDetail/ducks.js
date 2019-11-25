@@ -904,6 +904,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
     yield call(message.success, "Item is saved as draft", 2);
+    return { testId, ...item };
   } catch (err) {
     const errorMessage = "Item save is failing";
     yield call(message.error, errorMessage);

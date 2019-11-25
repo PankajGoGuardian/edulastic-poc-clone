@@ -1,30 +1,41 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import AxisLabel from "./AxisLabel";
+import { convertNumberToFraction } from "../../../utils/helpers";
 import { ValueBg } from "../styled";
 
-const ValueLabel = ({ getActivePoint, getActivePointValue, active }) => {
+const ValueLabel = ({ getActivePoint, getActivePointValue, active, gridParams }) => {
+  const { fractionFormat } = gridParams;
   const textPaddingLeft = 5;
   const margin = 15;
   const symbolWidth = 8;
 
   const visibleValue = () => +getActivePointValue()?.toFixed(2);
 
-  const getWidth = () => {
+  const getWidth = value => {
     if (getActivePoint(0)) {
-      return visibleValue().toString().length * symbolWidth + textPaddingLeft * 2;
+      if (fractionFormat !== "Decimal") {
+        const result = convertNumberToFraction(value, fractionFormat);
+        const plainText = Object.values(result).join("");
+        return plainText.length * symbolWidth + textPaddingLeft * 2;
+      } else {
+        return value.toString().length * symbolWidth + textPaddingLeft * 2;
+      }
     }
     return 0;
   };
 
-  const getX = () => (active === 0 ? getActivePoint(0) + margin : getActivePoint(0) - getWidth() - margin);
+  const value = visibleValue() || "";
+
+  const getX = () => (active === 0 ? getActivePoint(0) + margin : getActivePoint(0) - getWidth(value) - margin);
 
   return (
     <g opacity={getActivePoint(0) ? 1 : 0} style={{ zIndex: 10 }}>
-      <ValueBg x={getX()} y={getActivePoint(1) - 34} width={getWidth()} />
-      <text x={getX() + textPaddingLeft} y={getActivePoint(1) - 17}>
-        {visibleValue()}
-      </text>
+      <ValueBg x={getX()} y={getActivePoint(1) - 34} width={getWidth(value)} />
+      <g transform={`translate(${getX() + textPaddingLeft}, ${getActivePoint(1) - 17})`}>
+        <AxisLabel fractionFormat={fractionFormat} value={value} textAnchor="start" verticalAnchor="end" />
+      </g>
     </g>
   );
 };

@@ -7,11 +7,16 @@ import pdfjs from "pdfjs-dist";
 import { get, without } from "lodash";
 import moment from "moment";
 
-import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
+import { testsApi, testItemsApi } from "@edulastic/api";
 import { aws, roleuser, test as testConstant } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";
-import { createBlankTest, getTestEntitySelector, setTestDataAction, updateTestEntityAction } from "../TestPage/ducks";
+import {
+  createBlankTest,
+  getTestEntitySelector,
+  setTestDataAction,
+  getReleaseScorePremiumSelector
+} from "../TestPage/ducks";
 import { getUserSelector, getUserRole } from "../src/selectors/user";
 
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
@@ -195,7 +200,12 @@ function* createAssessmentSaga({ payload }) {
       yield put(push(`/author/assessments/${assessment._id}`));
     } else {
       const userRole = yield select(getUserRole);
+      const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector);
       const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+      const releaseScore =
+        userRole === roleuser.TEACHER && isReleaseScorePremium
+          ? testConstant.releaseGradeLabels.WITH_RESPONSE
+          : testConstant.releaseGradeLabels.DONT_RELEASE;
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
       const item = {
@@ -213,7 +223,7 @@ function* createAssessmentSaga({ payload }) {
         isDocBased: true,
         testItems: [item],
         docUrl: fileURI,
-        releaseScore: "DONT_RELEASE",
+        releaseScore,
         assignments: undefined,
         pageStructure: pageStructure.length ? pageStructure : defaultPageStructure,
         ...(isAdmin ? { testType: testConstant.type.COMMON } : {})

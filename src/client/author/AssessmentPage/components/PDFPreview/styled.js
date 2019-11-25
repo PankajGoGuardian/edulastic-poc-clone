@@ -1,17 +1,11 @@
 import styled from "styled-components";
 
-import {
-  white,
-  mediumDesktopWidth,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  largeDesktopWidth
-} from "@edulastic/colors";
+import { white, mediumDesktopExactWidth, extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
-  padding: ${({ isToolBarVisible }) => (isToolBarVisible ? "30px 23px 30px 100px" : "30px 23px 30px 30px")};
+  padding: ${({ minimized }) => (minimized ? "30px 23px 30px 60px" : "30px 23px 30px 10px")};
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
@@ -21,8 +15,9 @@ export const PDFPreviewWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: ${({ isToolBarVisible }) => (isToolBarVisible ? "30px 0px 30px 54px" : "30px 0px 30px 0")};
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    padding: ${({ isToolBarVisible, minimized }) =>
+      isToolBarVisible && minimized ? "30px 0px 30px 54px" : "30px 0px 30px 0"};
   }
 `;
 

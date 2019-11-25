@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, green, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, green, mediumDesktopExactWidth, extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
 
 export const WorksheetWrapper = styled.div`
   position: relative;
@@ -18,7 +18,8 @@ export const WorksheetWrapper = styled.div`
 export const MinimizeButton = styled.div`
   position: absolute;
   z-index: 1;
-  left: ${({ minimized }) => (minimized ? "40px" : "190px")};
+  left: ${({ minimized }) => (minimized ? "15px" : "265px")};
+  top: 30px;
   width: 32px;
   height: 32px;
   padding: 9px;
@@ -26,6 +27,10 @@ export const MinimizeButton = styled.div`
   border-radius: 5px;
   cursor: pointer;
   transition: left 300ms ease-in-out;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    left: ${({ minimized }) => (minimized ? "15px" : "256px")};
+  }
 
   svg {
     fill: ${green};

@@ -57,10 +57,11 @@ const SortableQuestionItem = SortableElement(
     feedback,
     previousFeedback,
     onDragStart,
-    highlighted
+    highlighted,
+    testMode
   }) => (
-    <div style={{ display: "flex" }}>
-      <DragHandle review={review} />
+    <div style={{ display: "flex", marginBottom: "6px" }}>
+      {!testMode && <DragHandle review={review} />}
       <QuestionItem
         key={key}
         index={index}
@@ -419,7 +420,17 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, highlighted, list, onDragStart, review } = this.props;
+    const {
+      previewMode,
+      viewMode,
+      noCheck,
+      answersById,
+      highlighted,
+      list,
+      onDragStart,
+      review,
+      testMode
+    } = this.props;
     const report = viewMode === "report";
 
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
@@ -454,6 +465,7 @@ class Questions extends React.Component {
                   answer={answersById[question.id]}
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
+                  testMode={testMode}
                 />
               )
             )}

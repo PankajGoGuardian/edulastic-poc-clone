@@ -44,7 +44,8 @@ const PDFPreview = ({
   renderExtra = "",
   previewMode,
   isToolBarVisible,
-  pdfWidth
+  pdfWidth,
+  minimized
 }) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -55,7 +56,7 @@ const PDFPreview = ({
   };
 
   return (
-    <PDFPreviewWrapper isToolBarVisible={isToolBarVisible}>
+    <PDFPreviewWrapper isToolBarVisible={isToolBarVisible} minimized={minimized}>
       <PerfectScrollbar>
         <Droppable
           types={["question"]}

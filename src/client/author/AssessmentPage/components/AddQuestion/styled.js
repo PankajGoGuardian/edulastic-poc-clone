@@ -16,7 +16,7 @@ export const ContentWrapper = styled.div`
   background: ${white};
   border-radius: 10px;
   box-sizing: border-box;
-  width: 330px;
+  width: 365px;
   border: 1px solid ${sectionBorder};
 `;
 

@@ -4,13 +4,15 @@ import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgr
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
-  width: 220px;
+  width: 260px;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow-y: auto;
   padding: 30px 28px;
   padding-right: ${({ review }) => (review ? "28px" : "13px")};
   padding-bottom: 0;
   background: ${backgrounds.primary};
+  width: 335px;
+  left: -20px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
@@ -21,8 +23,8 @@ export const ThumbnailsWrapper = styled.div`
 `;
 
 export const ThumbnailsList = styled.div`
+  width: 175px;
   margin-bottom: 70px;
-  padding-top: 5px;
   padding-right: 15px;
 `;
 

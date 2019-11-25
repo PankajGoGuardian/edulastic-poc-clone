@@ -107,6 +107,15 @@ const ReviewSummary = ({
               </TableBodyRow>
             )
         )}
+      {summary?.noStandards?.totalQuestions > 0 && (
+        <TableBodyRow key={"noStandard"}>
+          <TableBodyCol span={8}>
+            <Standard>NO STANDARD</Standard>
+          </TableBodyCol>
+          <TableBodyCol span={8}>{summary.noStandards.totalQuestions}</TableBodyCol>
+          <TableBodyCol span={8}>{summary.noStandards.totalPoints}</TableBodyCol>
+        </TableBodyRow>
+      )}
     </Container>
   );
 };

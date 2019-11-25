@@ -8,5 +8,9 @@ export const Wrapper = styled.div.attrs({
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 12px;
+  .answer-con.match.label-to-control {
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 `;

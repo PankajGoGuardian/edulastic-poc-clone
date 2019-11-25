@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { isEqual, find, clamp, differenceBy } from "lodash";
+import { clamp, differenceBy } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -47,17 +48,6 @@ class Layout extends Component {
     advancedAreOpen: false,
     fillSections: () => {},
     cleanSections: () => {}
-  };
-
-  state = {
-    focused: null,
-    input: 0
-  };
-
-  handleInputChange = e => {
-    this.setState({
-      input: +e.target.value
-    });
   };
 
   handleBlur = () => {
@@ -178,7 +168,6 @@ class Layout extends Component {
       const { responseIds } = this.props;
       const diff = differenceBy(responseIds, responsecontainerindividuals, "id");
       const _response = diff[0];
-      const ind = responsecontainerindividuals.length;
       if (_response) {
         responsecontainerindividuals.push({
           id: _response.id,
@@ -201,40 +190,6 @@ class Layout extends Component {
         ...uiStyle,
         responsecontainerindividuals
       });
-    };
-
-    const calculateRightWidth = value => {
-      const { minWidth, maxWidth } = responseDimensions;
-      return clamp(value, minWidth, maxWidth);
-    };
-
-    const onWidthInputBlur = index => () => {
-      const { input } = this.state;
-      if (index !== undefined) {
-        changeIndividualUiStyle("widthpx", calculateRightWidth(input), index);
-      } else {
-        changeUiStyle("widthpx", calculateRightWidth(input));
-      }
-
-      this.setState({ input: 0, focused: null });
-    };
-
-    const getIndividualWidthInputValue = (responsecontainerindividual, index) =>
-      // eslint-disable-next-line react/destructuring-assignment
-      isEqual(this[`individualWidth${index}`], this.state.focused)
-        ? // eslint-disable-next-line react/destructuring-assignment
-          this.state.input || 0
-        : responsecontainerindividual.widthpx;
-
-    const onFocusHandler = (responsecontainerindividual, index) => () => {
-      if (responsecontainerindividual !== undefined && index !== undefined) {
-        this.setState({
-          focused: this[`individualWidth${index}`],
-          input: responsecontainerindividual.widthpx
-        });
-      } else {
-        this.setState({ focused: this.widthInput, input: uiStyle.widthpx });
-      }
     };
 
     return (
@@ -409,6 +364,7 @@ class Layout extends Component {
                     <Label>{t("component.options.inputtype")}</Label>
                     <SelectWrapper>
                       <Select
+                        // eslint-disable-next-line react/jsx-no-bind
                         onChange={handleIndividualTypeChange.bind(this, index)}
                         options={[
                           { value: "text", label: t("component.options.text") },

@@ -145,6 +145,67 @@ const methodOptions = {
   [methods.CHECK_IF_TRUE]: ["notExpected"]
 };
 
+const characterMapButtons = [
+  "¡",
+  "¿",
+  "Ç",
+  "Ñ",
+  "ç",
+  "ñ",
+  "ý",
+  "ÿ",
+  "á",
+  "â",
+  "ã",
+  "ä",
+  "å",
+  "æ",
+  "À",
+  "Á",
+  "Â",
+  "Ã",
+  "Ä",
+  "Å",
+  "Æ",
+  "à",
+  "È",
+  "É",
+  "Ê",
+  "Ë",
+  "è",
+  "é",
+  "ê",
+  "ë",
+  "Ì",
+  "Í",
+  "Î",
+  "Ï",
+  "ì",
+  "í",
+  "î",
+  "ï",
+  "Ò",
+  "Ó",
+  "Ô",
+  "Õ",
+  "Ö",
+  "Ø",
+  "ð",
+  "ò",
+  "ó",
+  "ô",
+  "õ",
+  "ö",
+  "Ù",
+  "Ú",
+  "Û",
+  "Ü",
+  "ù",
+  "ú",
+  "û",
+  "ü"
+];
+
 const KeyboardSize = { width: 47, height: 47 };
 
 module.exports = {
@@ -161,5 +222,6 @@ module.exports = {
   mathRenderOptions,
   templateFontScaleOption,
   EMBED_RESPONSE,
-  KeyboardSize
+  KeyboardSize,
+  characterMapButtons
 };

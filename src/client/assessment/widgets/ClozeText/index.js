@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, isEqual, get, findIndex, clamp } from "lodash";
+import { cloneDeep, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
@@ -28,53 +28,6 @@ const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
   static contextType = AnswerContext;
-
-  componentDidUpdate(prevProps) {
-    const { item, setQuestionData, previewTab, view } = this.props;
-    const newItem = cloneDeep(item);
-    let {
-      // eslint-disable-next-line prefer-const
-      uiStyle: { responsecontainerindividuals: responses = [], globalSettings }
-    } = newItem;
-    if (!isEqual(prevProps.item.validation, newItem.validation)) {
-      let maxLength = 0;
-      const previousWidth = prevProps?.item?.uiStyle?.widthpx;
-      let calculated = false;
-      // if all the responses are deleted, do not recalculate width
-      if (newItem?.responseIds?.length) {
-        newItem.validation.validResponse.value.forEach(resp => {
-          if (resp.value.length) {
-            maxLength = Math.max(maxLength, resp.value.length);
-            calculated = true;
-          }
-        });
-
-        newItem.validation.altResponses.forEach(arr => {
-          arr.value.forEach(resp => {
-            if (resp.value.length) {
-              maxLength = Math.max(maxLength, resp.value.length);
-              calculated = true;
-            }
-          });
-        });
-      }
-      const finalWidth = calculated ? 30 + maxLength * 7 : previousWidth;
-      newItem.uiStyle.widthpx = clamp(finalWidth, 140, 400);
-      setQuestionData(newItem);
-    }
-    if (globalSettings && responses.length) {
-      const previewTabChange = prevProps.previewTab !== previewTab && previewTab === "clear";
-      const tabChange = prevProps.view !== view;
-      if (tabChange || previewTabChange) {
-        responses = responses.map(response => ({
-          ...response,
-          previewWidth: null
-        }));
-        newItem.uiStyle.responsecontainerindividuals = responses;
-        setQuestionData(newItem);
-      }
-    }
-  }
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;

@@ -6,13 +6,14 @@ import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 
 import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
-import { response } from "@edulastic/constants";
 
 import { EDIT } from "../../constants/constantsForQuestions";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 import ClozeTextInput from "./ClozeTextInput";
+
+import { getFontSize, getStemNumeration } from "../../utils/helpers";
 
 class ClozeTextDisplay extends Component {
   state = {
@@ -45,62 +46,44 @@ class ClozeTextDisplay extends Component {
     }
   };
 
-  getBtnStyle = () => {
+  getUiStyles = (responseBoxId, responseIndex) => {
     const { uiStyle } = this.props;
-    const { widthpx, heightpx, placeholder, inputtype } = uiStyle; // , responsecontainerindividuals
-    const responseBtnStyle = {
-      widthpx: widthpx !== 0 ? widthpx : 140,
-      heightpx: heightpx !== 0 ? heightpx : 35
-    };
+    const { widthpx, heightpx, placeholder, inputtype, stemNumeration, responsecontainerindividuals } = uiStyle;
+    const fontSize = this.getFontSize(uiStyle.fontsize);
 
     const btnStyle = {
-      height: 0,
-      minWidth: `${response.minWidth}px`,
-      minHeight: `${response.minHeight}px`,
-      widthpx: widthpx || 140,
-      heightpx: 0,
-      placeholder,
-      inputtype
+      position: "relative",
+      maxWidth: 600,
+      width: widthpx || 140,
+      height: heightpx || 35,
+      minHeight: heightpx || 35,
+      type: inputtype,
+      fontSize,
+      placeholder
     };
-    // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-    //   const {
-    //     widthpx: widthpx1,
-    //     heightpx: heightpx1,
-    //     placeholder: placeholder1,
-    //     inputtype: inputtype1
-    //   } = responsecontainerindividuals[dropTargetIndex];
-    //   btnStyle.width = widthpx1;
-    //   btnStyle.height = heightpx1;
-    //   btnStyle.widthpx = widthpx1;
-    //   btnStyle.heightpx = heightpx1;
-    //   btnStyle.placeholder = placeholder1;
-    //   btnStyle.inputtype = inputtype1;
-    // }
-    if (btnStyle && btnStyle.width === 0) {
-      btnStyle.width = responseBtnStyle.widthpx;
-    } else {
-      btnStyle.width = btnStyle.widthpx;
-    }
-    if (btnStyle && btnStyle.height === 0) {
-      btnStyle.height = responseBtnStyle.heightpx;
-    } else {
-      btnStyle.height = btnStyle.heightpx;
-    }
-    if (btnStyle && btnStyle.placeholder === undefined) {
-      btnStyle.placeholder = responseBtnStyle.placeholder;
-    } else {
-      btnStyle.placeholder = btnStyle.placeholder;
-    }
-    if (btnStyle && btnStyle.inputtype === undefined) {
-      btnStyle.inputtype = responseBtnStyle.inputtype;
-    } else {
-      btnStyle.inputtype = btnStyle.inputtype;
+
+    const responseBoxStyle = find(responsecontainerindividuals, resp => resp.id === responseBoxId) || {};
+
+    if (responseBoxStyle.widthpx) {
+      btnStyle.width = responseBoxStyle.widthpx;
     }
 
-    return { btnStyle, responseBtnStyle };
+    if (responseBoxStyle.heightpx) {
+      btnStyle.height = responseBoxStyle.heightpx;
+    }
+
+    if (responseBoxStyle.inputtype) {
+      btnStyle.type = responseBoxStyle.inputtype;
+    }
+
+    if (responseBoxStyle.placeholder) {
+      btnStyle.placeholder = responseBoxStyle.placeholder;
+    }
+
+    return { btnStyle, stemNumeration: getStemNumeration(stemNumeration, responseIndex) };
   };
 
-  onChangeUserAnswer = (value, id) => {
+  onChangeUserAnswer = (value, id, widthpx) => {
     const { onChange: changeAnswers, userSelections, responseIds } = this.props;
     changeAnswers(
       produce(userSelections, draft => {
@@ -112,11 +95,12 @@ class ClozeTextDisplay extends Component {
           draft[resbtn.index] = { value, index: resbtn.index, id };
         }
       }),
-      id
+      id,
+      widthpx
     );
   };
 
-  _changeInput = ({ value, id, type }) => {
+  _changeInput = ({ value, id, type }, widthpx) => {
     if (type === "number") {
       value = +value;
       if (typeof value === "number" && !Number.isNaN(value)) {
@@ -124,14 +108,13 @@ class ClozeTextDisplay extends Component {
       }
       return;
     }
-    this.onChangeUserAnswer(value, id);
+    this.onChangeUserAnswer(value, id, widthpx);
   };
 
   render() {
     const {
       smallSize,
       question,
-      options,
       uiStyle,
       showAnswer,
       checkAnswer,
@@ -141,7 +124,6 @@ class ClozeTextDisplay extends Component {
       item,
       showQuestionNumber,
       disableResponse,
-      qIndex,
       userSelections,
       previewTab,
       changePreviewTab,
@@ -153,44 +135,29 @@ class ClozeTextDisplay extends Component {
     } = this.props;
 
     const { parsedTemplate } = this.state;
-    // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
-    const { responsecontainerindividuals, stemNumeration } = uiStyle;
-    const { btnStyle, responseBtnStyle } = this.getBtnStyle();
+    const fontSize = getFontSize(uiStyle.fontsize);
 
-    let maxLineHeight = smallSize ? 50 : 40;
-    maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
     const resProps = {
-      view,
       item,
-      qIndex,
-      uiStyle,
-      fontSize,
-      showAnswer,
-      checkAnswer,
+      onChange: this._changeInput,
+      getUiStyles: this.getUiStyles,
+      userAnswers: userSelections,
+      disableResponse,
+      isReviewTab,
       evaluation,
+      checkAnswer,
+      userSelections,
+      responseIds,
       previewTab,
       changePreviewTab,
-      responseIds,
-      isReviewTab,
-      stemNumeration,
-      userSelections,
-      disableResponse,
-      style: btnStyle,
-      responseBtnStyle,
-      type: btnStyle.inputtype,
-      userAnswers: userSelections,
-      onChange: this._changeInput,
-      responsecontainerindividuals,
-      placeholder: btnStyle.placeholder,
-      cAnswers: get(item, "validation.validResponse.value", []),
-      isExpressGrader
+      cAnswers: get(item, "validation.validResponse.value", [])
+      // isExpressGrader
     };
 
     const QuestionContent = (
       <StyledParser view={view}>
         <JsxParser
-          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          bindings={{ resProps }}
           showWarnings
           components={{
             textinput: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
@@ -206,20 +173,19 @@ class ClozeTextDisplay extends Component {
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
-            groupResponses={options}
             userAnswers={validation.validResponse && validation.validResponse.value}
-            responseIds={responseIds}
-            stemNumeration={stemNumeration}
+            stemNumeration={uiStyle.stemNumeration}
           />
-          {!isEmpty(item.validation.altResponses) && (
-            <CorrectAnswerBoxLayout
-              fontSize={fontSize}
-              groupResponses={options}
-              altAnswers={item.validation.altResponses}
-              responseIds={item.responseIds}
-              stemNumeration={stemNumeration}
-            />
-          )}
+          {!isEmpty(item.validation.altResponses) &&
+            item.validation.altResponses.map((altAnswers, index) => (
+              <CorrectAnswerBoxLayout
+                key={altAnswers.id}
+                fontSize={fontSize}
+                altIndex={index + 1}
+                stemNumeration={uiStyle.stemNumeration}
+                userAnswers={altAnswers.value}
+              />
+            ))}
         </>
       ) : (
         <div />
@@ -243,7 +209,6 @@ class ClozeTextDisplay extends Component {
 }
 
 ClozeTextDisplay.propTypes = {
-  options: PropTypes.object,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
@@ -254,15 +219,13 @@ ClozeTextDisplay.propTypes = {
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string,
-  /* eslint-disable react/no-unused-prop-types */
-  template: PropTypes.string,
   responseIds: PropTypes.object,
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
-  qIndex: PropTypes.number,
+  isPrint: PropTypes.bool,
   view: PropTypes.string.isRequired,
   stimulus: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
@@ -271,9 +234,9 @@ ClozeTextDisplay.propTypes = {
 
 ClozeTextDisplay.defaultProps = {
   responseIds: {},
-  options: {},
   onChange: () => {},
   showAnswer: false,
+  isPrint: false,
   instructorStimulus: "",
   evaluation: {},
   checkAnswer: false,
@@ -290,12 +253,10 @@ ClozeTextDisplay.defaultProps = {
     inputtype: "text",
     responsecontainerindividuals: []
   },
-  template: "",
   showQuestionNumber: false,
   disableResponse: false,
   isExpressGrader: false,
-  isReviewTab: false,
-  qIndex: null
+  isReviewTab: false
 };
 
 export default ClozeTextDisplay;

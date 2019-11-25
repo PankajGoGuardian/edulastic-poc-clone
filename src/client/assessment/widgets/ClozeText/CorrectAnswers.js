@@ -87,7 +87,7 @@ class CorrectAnswers extends Component {
   };
 
   updateCorrectValidationAnswers = (answers, id, widthpx) => {
-    const { question, setQuestionData, uiStyle } = this.props;
+    const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
       ...question.data,
@@ -97,7 +97,7 @@ class CorrectAnswers extends Component {
       }
     };
     newData.validation.validResponse = updatedValidation.validResponse;
-    if (uiStyle.globalSettings) {
+    if (widthpx) {
       newData.uiStyle.responsecontainerindividuals = newData.uiStyle.responsecontainerindividuals || [];
       const index = findIndex(newData.uiStyle.responsecontainerindividuals, container => container.id === id);
       if (index === -1) {

@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { selectColor } from "@edulastic/colors";
 import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import Display from "./Display";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import { selectColor } from "@edulastic/colors";
+
 class CorrectAnswer extends Component {
   static propTypes = {
     response: PropTypes.object.isRequired,
@@ -22,8 +23,7 @@ class CorrectAnswer extends Component {
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
-    max: PropTypes.number.isRequired,
-    min: PropTypes.number.isRequired
+    max: PropTypes.number.isRequired
   };
 
   static contextType = ItemLevelContext;

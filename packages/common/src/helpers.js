@@ -427,6 +427,50 @@ export const isMobileDevice = () => {
   return mq(query);
 };
 
+/**
+ * this function is not considering border width
+ * @param {string} text string for measuring width and height
+ * @param {object} style styles for text, it can be styles of parent element or null
+ * @return {object} calculated width and height of text
+ */
+export const measureText = (text, style = {}) => {
+  const fakeEm = document.createElement("span");
+  document.body.appendChild(fakeEm);
+  if (style.fontSize) {
+    fakeEm.style.fontSize = style.fontSize;
+  }
+
+  if (style.padding) {
+    fakeEm.style.padding = style.padding;
+  }
+
+  if (style.height) {
+    fakeEm.style.height = style.height;
+  }
+
+  if (style.letterSpacing) {
+    fakeEm.style.letterSpacing = style.letterSpacing;
+  }
+
+  if (style.lineHeight) {
+    fakeEm.style.lightingColor = style.lineHeight;
+  }
+
+  fakeEm.style.position = "absolute";
+  fakeEm.style.left = -1000;
+  fakeEm.style.top = -1000;
+  fakeEm.style.visibility = "hidden";
+  fakeEm.innerHTML = text;
+
+  const result = {
+    width: fakeEm.offsetWidth,
+    height: fakeEm.offsetHeight
+  };
+
+  // document.body.removeChild(fakeEm);s
+  return result;
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -443,5 +487,6 @@ export default {
   removeIndexFromTemplate,
   calculateWordsCount,
   formatBytes,
-  isMobileDevice
+  isMobileDevice,
+  measureText
 };

@@ -8,6 +8,7 @@ export { default as Pagination } from "./src/components/Pagination";
 export { default as FlexContainer } from "./src/components/FlexContainer";
 export { default as PaddingDiv } from "./src/components/PaddingDiv";
 export { default as TextField } from "./src/components/TextField";
+export { default as AutoExpandInput } from "./src/components/AutoExpandInput";
 export { default as Button } from "./src/components/Button";
 export { default as EduButton } from "./src/components/EduButton";
 export { default as Checkbox } from "./src/components/Checkbox";
@@ -56,7 +57,8 @@ export {
   decodeHTML,
   hexToRGB,
   rgbToHexc,
-  formatBytes
+  formatBytes,
+  measureText
 } from "./src/helpers";
 
 // contexts

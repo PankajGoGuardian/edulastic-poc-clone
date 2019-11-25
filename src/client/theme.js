@@ -53,6 +53,8 @@ const wrongIconColor = "#dd2e44";
 const wrongBgColor = "#FCE0E8";
 const rightBorderColor = "#5EB500";
 const wrongBorderColor = "#DD2E44";
+const noAnswerBgColor = "#d3d3d3";
+const noAnswerColor = "#a9a9a9";
 const checkColor = "#5EB500";
 const closeColor = "#DD2E44";
 const questionTextColor = "#6A737F";
@@ -901,7 +903,20 @@ export const defaultTheme = {
       rightIconColor,
       wrongIconColor,
       textZoom: 1,
-      questionContainerBorderColor: "#dfdfdf"
+      questionContainerBorderColor: "#dfdfdf",
+      boxBgColor: containerWhite,
+      boxNoAnswerBgColor: noAnswerBgColor,
+      boxWrongBgColor: wrongBgColor,
+      boxBgCorrectColor: rightBgColor,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: themeColorLight,
+      indexBoxNoAnswerBgColor: noAnswerColor,
+      indexBoxIncorrectBgColor: closeColor,
+      indexBoxCorrectBgColor: checkColor,
+      indexBoxFontWeight: semiBold,
+      indexBoxFontSize: subtitleFontSize,
+      incorrectIndexColor: labelStyle,
+      iconWrapperFontSize: headerTitle
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,

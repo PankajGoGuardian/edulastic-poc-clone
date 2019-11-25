@@ -1,115 +1,45 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Input } from "antd";
 import { find } from "lodash";
-
+import { AutoExpandInput } from "@edulastic/common";
+import { math } from "@edulastic/constants";
 import NumberPad from "../../components/NumberPad";
 import { getInputSelection } from "../../utils/helpers";
 
-const { TextArea } = Input;
-
-const characterMapButtons = [
-  "¡",
-  "¿",
-  "Ç",
-  "Ñ",
-  "ç",
-  "ñ",
-  "ý",
-  "ÿ",
-  "á",
-  "â",
-  "ã",
-  "ä",
-  "å",
-  "æ",
-  "À",
-  "Á",
-  "Â",
-  "Ã",
-  "Ä",
-  "Å",
-  "Æ",
-  "à",
-  "È",
-  "É",
-  "Ê",
-  "Ë",
-  "è",
-  "é",
-  "ê",
-  "ë",
-  "Ì",
-  "Í",
-  "Î",
-  "Ï",
-  "ì",
-  "í",
-  "î",
-  "ï",
-  "Ò",
-  "Ó",
-  "Ô",
-  "Õ",
-  "Ö",
-  "Ø",
-  "ð",
-  "ò",
-  "ó",
-  "ô",
-  "õ",
-  "ö",
-  "Ù",
-  "Ú",
-  "Û",
-  "Ü",
-  "ù",
-  "ú",
-  "û",
-  "ü"
-];
+const { characterMapButtons } = math;
 
 const ClozeTextInput = ({ resprops, id }) => {
   if (!id) {
     return null;
   }
-  const {
-    item,
-    onChange,
-    style,
-    placeholder,
-    type = "text",
-    userAnswers,
-    disableResponse,
-    responseIds,
-    isReviewTab,
-    cAnswers,
-    responsecontainerindividuals = [],
-    uiStyle
-  } = resprops;
+  const { item, onChange, getUiStyles, userAnswers, disableResponse, isReviewTab, cAnswers } = resprops;
   const ref = useRef();
-  const MInput = item.multiple_line ? TextArea : Input;
-  const { index } = find(responseIds, response => response.id === id);
+
   let { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
 
   if (isReviewTab) {
     const { value: correctValue } = find(cAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
     value = correctValue;
   }
+  const { btnStyle } = getUiStyles(id);
+
   const [input, setInput] = useState({ id, value });
 
   useEffect(() => {
     setInput({ id, value });
   }, [value]);
+
   const _getValue = specialChar => {
     // TODO get input ref ? set cursor postion ?
-    const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
-    if (inputElement) {
-      const selection = getInputSelection(inputElement);
-      const newStr = value.split("");
-      newStr.splice(selection.start, selection.end - selection.start, specialChar);
-      return newStr.join("");
+    if (ref.current) {
+      const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+      if (inputElement) {
+        const selection = getInputSelection(inputElement);
+        const newStr = value.split("");
+        newStr.splice(selection.start, selection.end - selection.start, specialChar);
+        return newStr.join("");
+      }
     }
   };
 
@@ -124,18 +54,15 @@ const ClozeTextInput = ({ resprops, id }) => {
     return make(characterMapButtons);
   };
 
-  const handleInputChange = data => {
-    const resp = responsecontainerindividuals.find(_resp => _resp.id === data.id);
-    // type === "number" (when globally set all reponses to number)
-    // resp.inputtype === "number" (when individually set the type of response to number)
-    if ((type === "number" || (resp && resp.inputtype === "number")) && data.value) {
+  const handleInputChange = val => {
+    if (btnStyle.type === "number" && val) {
       const regex = new RegExp("[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]*)?", "g");
-      const isInputValid = data.value
+      const isInputValid = val
         .trim()
         .split("\r\n")
-        .filter(val => val) // filter out multiple line feeds in between two strings
-        .every(val => {
-          const res = regex.test(val);
+        .filter(v => v) // filter out multiple line feeds in between two strings
+        .every(v => {
+          const res = regex.test(v);
           return res;
         });
       if (!isInputValid) {
@@ -143,58 +70,30 @@ const ClozeTextInput = ({ resprops, id }) => {
       }
     }
 
-    setInput(data);
+    setInput({ value: val, id });
   };
-  let width = style.width || "auto";
-  let height = style.height || "auto";
-  const responseStyle = find(responsecontainerindividuals, container => container.id === id);
-  if (uiStyle.globalSettings) {
-    // width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-    const splitWidth = Math.max(value.split("").length * 9, 140);
-    width = Math.min(splitWidth, 400);
-    height = style.height || "auto";
-  } else {
-    width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
-    height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
-  }
+
   return (
-    <CustomInput
-      key={`input_${index}`}
-      style={{ ...style, width: "max-content", height: "auto", marginBottom: "4px" }}
-      title={value.length ? value : null}
-    >
-      <MInput
-        ref={ref}
-        type={responsecontainerindividuals[index]?.inputtype || type}
-        onChange={e => handleInputChange({ value: e.target.value, id })}
+    <CustomInput key={id} style={{ marginBottom: "4px" }}>
+      <AutoExpandInput
+        key={id}
+        inputRef={ref}
+        type={btnStyle.type}
+        onChange={handleInputChange}
         onBlur={() => onChange(input)}
         disabled={disableResponse}
-        wrap={item.multiple_line ? "" : "off"}
-        value={input.value || ""}
-        key={`input_${index}`}
-        style={{
-          ...style,
-          resize: "none",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          fontSize: style.fontSize,
-          background: item.background,
-          padding: width <= 50 ? "3px" : null,
-          width: `${width}px` || "auto",
-          height: `${height}px` || "auto",
-          fontWeight: "normal"
-        }}
-        placeholder={responsecontainerindividuals[index]?.placeholder || placeholder}
+        multipleLine={item.multiple_line}
+        value={input.value}
+        style={{ ...btnStyle, padding: "4px 10px" }}
+        placeholder={btnStyle.placeholder}
+        characterMap={item.characterMap}
       />
+
       {item.characterMap && (
         <NumberPad
           buttonStyle={{ height: "100%", width: 30 }}
           onChange={(_, val) => {
-            handleInputChange({
-              value: _getValue(val),
-              id
-            });
+            handleInputChange(_getValue(val));
             ref.current.focus();
           }}
           items={[{ value: "á", label: "á" }]}

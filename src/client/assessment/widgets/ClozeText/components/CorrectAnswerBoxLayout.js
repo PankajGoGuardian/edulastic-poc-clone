@@ -1,55 +1,40 @@
 import React from "react";
 import styled from "styled-components";
-import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
+import { Popover } from "antd";
 
 import { getStemNumeration } from "../../../utils/helpers";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds, stemNumeration, t }) => {
-  const getLabel = id => {
-    if (isEmpty(altAnswers)) {
-      const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);
-      return correctAnswer ? correctAnswer.value : "";
-    }
-    const altLabels = [];
-    altAnswers.forEach(altAnswer => {
-      const answer = altAnswer.value.find(alt => (alt ? alt.id : "") === id);
-      if (answer && answer.value) {
-        altLabels.push(answer.value);
-      }
-    });
-    return altLabels.toString();
-  };
-  responseIds.sort((a, b) => a.index - b.index);
+import { AnswerBox } from "../styled/AnswerBox";
+import { IndexBox } from "../styled/IndexBox";
+import { AnswerContent } from "../styled/AnswerContent";
 
-  return (
-    <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
-      <CorrectAnswerTitle>
-        {!isEmpty(altAnswers) ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
-      </CorrectAnswerTitle>
-      <div>
-        {responseIds.map(response => {
-          const label = getLabel(response.id);
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeration, t }) => (
+  <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
+    <CorrectAnswerTitle>
+      {altIndex ? `${t("component.cloze.altAnswers")} ${altIndex}` : t("component.cloze.correctAnswer")}
+    </CorrectAnswerTitle>
+    <Answers>
+      {userAnswers
+        .sort((a, b) => a.index - b.index)
+        .map(answer => {
+          const content = <AnswerContent>{answer.value}</AnswerContent>;
           return (
-            label && (
-              <div key={response.index} className="response-btn check-answer showanswer">
-                <span className="index">{getStemNumeration(stemNumeration, response.index)}</span>
-                <span className="text">{label}</span>
-              </div>
-            )
+            <AnswerBox key={answer.id}>
+              <IndexBox>{getStemNumeration(stemNumeration, answer.index)}</IndexBox>
+              <Popover content={content}>{content}</Popover>
+            </AnswerBox>
           );
         })}
-      </div>
-    </div>
-  );
-};
+    </Answers>
+  </div>
+);
 
 CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
-  altAnswers: PropTypes.array,
-  responseIds: PropTypes.array.isRequired,
+  altIndex: PropTypes.array,
   stemNumeration: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired
 };
@@ -57,11 +42,16 @@ CorrectAnswerBoxLayout.propTypes = {
 CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   userAnswers: [],
-  altAnswers: []
+  altIndex: 0
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));
 
 const CorrectAnswerTitle = styled.h2`
-  font-size: ${props => props.theme.correctAnswerBoxLayout.titleFontSize};
+  font-size: ${({ theme }) => theme.correctAnswerBoxLayout.titleFontSize};
+`;
+
+const Answers = styled.div`
+  display: flex;
+  flex-wrap: wrap;
 `;

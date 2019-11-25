@@ -3,7 +3,13 @@ import styled from "styled-components";
 import { someGreyColor1, lightBlue } from "@edulastic/colors";
 
 const PrintPreviewScore = props => {
-  const { className, maxScore, score } = props;
+  const { className, data } = props;
+  const maxScore = data?.activity?.maxScore || data.validation?.validResponse?.score || 0;
+  let score = data?.activity?.score || 0;
+
+  if (data.activity && !data.activity.graded && !data.activity.skipped) {
+    score = "";
+  }
 
   return (
     <div className={className}>
@@ -17,7 +23,7 @@ const PrintPreviewScore = props => {
 
 const StyledPrintPreviewScore = styled(PrintPreviewScore)`
   width: 25%;
-  display: flex;
+  display: ${props => (props.disabled ? "none" : "flex")};
   justify-content: center;
   padding: 10px;
   break-before: avoid;

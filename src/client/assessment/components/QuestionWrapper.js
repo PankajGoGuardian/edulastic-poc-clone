@@ -475,10 +475,7 @@ class QuestionWrapper extends Component {
             {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
               <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
             )}
-
-            {showFeedback && isPrintPreview && (
-              <PrintPreviewScore maxScore={data?.activity?.maxScore || 0} score={data?.activity?.score || 0} />
-            )}
+            {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
             {showFeedback && isPrintPreview && (
               <div className="print-preview-feedback">
                 {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}

@@ -105,62 +105,72 @@ class CreateDistrictAdminModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { emailValidateStatus, emailValidateMsg, fetching } = this.state;
 
     return (
       <StyledModal
         visible={modalVisible}
-        title="Create District Admin"
+        title={t("users.districtadmin.createda.title")}
         onOk={this.onCreateDistrictAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onCreateDistrictAdmin}>Yes, Create</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.districtadmin.createda.nocancel")}</CancelButton>
+            <OkButton onClick={this.onCreateDistrictAdmin}>{t("users.districtadmin.createda.yescreate")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name">
+            <ModalFormItem label={t("users.districtadmin.name")}>
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Name"
+                    message: t("users.districtadmin.createda.validations.name")
                   }
                 ]
-              })(<Input placeholder="Enter Name" />)}
+              })(<Input placeholder={t("users.districtadmin.createda.entername")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Username"
+              label={t("users.districtadmin.username")}
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
               required={true}
               type="email"
             >
-              <Input placeholder="Enter E-mail" autocomplete="new-password" onChange={this.changeEmail} />
+              <Input
+                placeholder={t("users.districtadmin.createda.enterusername")}
+                autocomplete="new-password"
+                onChange={this.changeEmail}
+              />
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Password">
+            <ModalFormItem label={t("users.districtadmin.password")}>
               {getFieldDecorator("password", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input password"
+                    message: t("users.districtadmin.createda.validations.password")
                   }
                 ]
-              })(<Input placeholder="Password" type="password" autocomplete="new-password" />)}
+              })(
+                <Input
+                  placeholder={t("users.districtadmin.createda.enterpassword")}
+                  type="password"
+                  autocomplete="new-password"
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>

@@ -27,67 +27,68 @@ class EditTeacherModal extends Component {
     const {
       modalVisible,
       data: { _source },
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
+      t
     } = this.props;
     return (
       <StyledModal
         visible={modalVisible}
-        title="Edit School Admin"
+        title={t("users.teacher.editteacher.title")}
         onOk={this.onSaveTeacher}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onSaveTeacher}>Yes, Update</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.teacher.editteacher.nocancel")}</CancelButton>
+            <OkButton onClick={this.onSaveTeacher}>{t("users.teacher.editteacher.yesupdate")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="First Name">
+            <ModalFormItem label={t("users.teacher.editteacher.firstname")}>
               {getFieldDecorator("firstName", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
+                    message: t("users.teacher.editteacher.validations.firstname")
                   }
                 ],
                 initialValue: _source?.firstName
-              })(<Input placeholder="Enter First Name" />)}
+              })(<Input placeholder={t("users.teacher.editteacher.enterfirstname")} />)}
             </ModalFormItem>
           </Col>
           <Col span={24}>
-            <ModalFormItem label="Last Name">
+            <ModalFormItem label={t("users.teacher.editteacher.lastname")}>
               {getFieldDecorator("lastName", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Last Name"
+                    message: t("users.teacher.editteacher.validations.lastname")
                   }
                 ],
                 initialValue: _source?.lastName
-              })(<Input placeholder="Enter Last Name" />)}
+              })(<Input placeholder={t("users.teacher.editteacher.enterlastname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Email">
+            <ModalFormItem label={t("users.teacher.editteacher.email")}>
               {getFieldDecorator("email", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input E-mail"
+                    message: t("users.teacher.editteacher.validations.email")
                   },
                   {
                     type: "email",
-                    message: "The input is not valid E-mail"
+                    message: t("users.teacher.editteacher.validations.invalidemail")
                   }
                 ],
                 initialValue: _source?.email
-              })(<Input placeholder="Enter E-mail" />)}
+              })(<Input placeholder={t("users.teacher.editteacher.enteremail")} />)}
             </ModalFormItem>
           </Col>
         </Row>

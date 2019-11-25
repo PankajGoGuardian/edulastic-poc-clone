@@ -219,20 +219,21 @@ class ClassesTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { t } = this.props;
     if (e.key === "edit class") {
       if (selectedRowKeys.length == 0) {
-        message.error("Please select class to edit.");
+        message.error(t("class.validations.editclass"));
       } else if (selectedRowKeys.length == 1) {
         this.onEditClass(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single class to edit.");
+        message.error(t("class.validations.singleeditclass"));
       }
     } else if (e.key === "archive selected class") {
       if (selectedRowKeys.length > 0) this.onArchiveClass();
-      else message.error("Please select class to archive.");
+      else message.error(t("class.validations.archiveclass"));
     } else if (e.key === "bulk edit") {
       if (!selectedRowKeys.length) {
-        message.warning("Please select atleast 1 class");
+        message.warning(t("class.validations.selectclass"));
       } else {
         const { setBulkEditVisibility } = this.props;
         setBulkEditVisibility(true);

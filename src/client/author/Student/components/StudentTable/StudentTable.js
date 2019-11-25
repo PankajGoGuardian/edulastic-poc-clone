@@ -126,7 +126,7 @@ class StudentTable extends Component {
     const { t } = this.props;
     this.columns = [
       {
-        title: t("student.name"),
+        title: t("users.student.name"),
         render: (_, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
@@ -144,7 +144,7 @@ class StudentTable extends Component {
         }
       },
       {
-        title: t("student.username"),
+        title: t("users.student.username"),
         dataIndex: "_source.username",
         render: (text, record, index) => record._source.username || record._source.email,
         sortDirections: ["descend", "ascend"],
@@ -155,18 +155,18 @@ class StudentTable extends Component {
         }
       },
       {
-        title: t("student.sso"),
+        title: t("users.student.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso
       },
       {
-        title: t("student.school"),
+        title: t("users.student.school"),
         dataIndex: "_source.institutionDetails",
         render: (schools = []) => schools.map(school => school.name),
         width: 250
       },
       {
-        title: t("student.classes"),
+        title: t("users.student.classes"),
         dataIndex: "classCount",
         render: (classCount, record) => {
           const username = get(record, "_source.username", "");
@@ -251,17 +251,17 @@ class StudentTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { setAddStudentsToOtherClassVisiblity } = this.props;
+    const { setAddStudentsToOtherClassVisiblity, t } = this.props;
     if (e.key === "add student") {
       this.setState({ addStudentModalVisible: true });
     }
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        message.error("Please select user to edit.");
+        message.error(t("users.validations.edituser"));
       } else if (selectedRowKeys.length === 1) {
         this.onEditStudent(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single user to edit.");
+        message.error(t("users.validations.editsingleuser"));
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -270,7 +270,7 @@ class StudentTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        message.error("Please select users to delete.");
+        message.error(t("users.validations.deleteuser"));
       }
     } else if (e.key === "addStudentsToAnotherClass") {
       if (selectedRowKeys.length) {
@@ -621,10 +621,10 @@ class StudentTable extends Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="add student">{t("student.addstudent")}</Menu.Item>
-        <Menu.Item key="edit user">{t("student.updateuser")}</Menu.Item>
-        <Menu.Item key="deactivate user">{t("student.deactivateuser")}</Menu.Item>
-        <Menu.Item key="addStudentsToAnotherClass">{t("student.addstudentootherclass")}</Menu.Item>
+        <Menu.Item key="add student">{t("users.student.addstudent")}</Menu.Item>
+        <Menu.Item key="edit user">{t("users.student.updateuser")}</Menu.Item>
+        <Menu.Item key="deactivate user">{t("users.student.deactivateuser")}</Menu.Item>
+        <Menu.Item key="addStudentsToAnotherClass">{t("users.student.addstudentootherclass")}</Menu.Item>
       </Menu>
     );
 
@@ -667,9 +667,9 @@ class StudentTable extends Component {
                     <Option value="other" disabled={true}>
                       {t("common.selectcolumn")}
                     </Option>
-                    <Option value="username">{t("student.username")}</Option>
-                    <Option value="email">{t("student.email")}</Option>
-                    <Option value="status">{t("student.status")}</Option>
+                    <Option value="username">{t("users.student.username")}</Option>
+                    <Option value="email">{t("users.student.email")}</Option>
+                    <Option value="status">{t("users.student.status")}</Option>
                     {/* TODO: Uncomment after backend is done */}
                     {/* <Option value="institutionNames">School</Option> */}
                   </StyledFilterSelect>
@@ -784,6 +784,7 @@ class StudentTable extends Component {
             closeModal={this.closeInviteStudentModal}
             features={features}
             setProvider={setProvider}
+            t={t}
           />
         )}
 
@@ -820,16 +821,16 @@ class StudentTable extends Component {
             modalVisible={studentDetailsModalVisible}
             closeModal={this.closeStudentsDetailModal}
             role="student"
-            title="Student Details"
+            title={t("users.student.studentdetail.title")}
           />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            title={t("users.student.deactivatestudent.title")}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following student(s)?"
+            primaryLabel={t("users.student.deactivatestudent.confirmText")}
             secondaryLabel={selectedAdminsForDeactivate.map(id => {
               const { _source: { firstName, lastName } = {} } = result[id];
               return (
@@ -846,12 +847,13 @@ class StudentTable extends Component {
           />
         )}
         <AddStudentsToOtherClassModal
-          titleText={t("student.addstudentootherclass")}
-          buttonText={t("student.addstudents")}
+          titleText={t("users.student.addstudentootherclass")}
+          buttonText={t("users.student.addstudents")}
           {...addStudentsToOtherClassData}
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          t={t}
         />
       </MainContainer>
     );

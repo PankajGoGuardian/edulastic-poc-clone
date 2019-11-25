@@ -214,49 +214,54 @@ class AddTeacherModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { emailValidate, confirmPwdValidate, schoolsState } = this.state;
 
     return (
       <StyledModal
         visible={modalVisible}
-        title="Create Teacher"
+        title={t("users.teacher.addteachers.title")}
         onOk={this.onAddTeacher}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onAddTeacher}>Yes, Create</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.teacher.addteachers.nocancel")}</CancelButton>
+            <OkButton onClick={this.onAddTeacher}>{t("users.teacher.addteachers.yescreate")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name">
+            <ModalFormItem label={t("users.teacher.name")}>
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Name"
+                    message: t("users.teacher.addteachers.validations.name")
                   }
                 ]
-              })(<Input placeholder="Enter Name" prefix={<IconUser color={themeColor} />} />)}
+              })(
+                <Input
+                  placeholder={t("users.teacher.addteachers.entername")}
+                  prefix={<IconUser color={themeColor} />}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Email"
+              label={t("users.teacher.email")}
               validateStatus={emailValidate.validateStatus}
               help={emailValidate.validateMsg}
               required={true}
               type="email"
             >
               <Input
-                placeholder="Enter E-mail"
+                placeholder={t("users.teacher.addteachers.enteremail")}
                 autocomplete="new-password"
                 onChange={this.changeEmail}
                 prefix={<IconMail color={themeColor} />}
@@ -266,17 +271,17 @@ class AddTeacherModal extends React.Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Password">
+            <ModalFormItem label={t("users.teacher.password")}>
               {getFieldDecorator("password", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input password"
+                    message: t("users.teacher.addteachers.validations.password")
                   }
                 ]
               })(
                 <Input
-                  placeholder="Password"
+                  placeholder={t("users.teacher.addteachers.enterpassword")}
                   type="password"
                   autocomplete="new-password"
                   onChange={this.changePwd}
@@ -289,7 +294,7 @@ class AddTeacherModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Confirm Password"
+              label={t("users.teacher.confirmpassword")}
               validateStatus={confirmPwdValidate.validateStatus}
               help={confirmPwdValidate.validateMsg}
             >
@@ -297,12 +302,12 @@ class AddTeacherModal extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: "Please input confirm password"
+                    message: t("users.teacher.addteachers.validations.confirmpassword")
                   }
                 ]
               })(
                 <Input
-                  placeholder="Password"
+                  placeholder={t("users.teacher.addteachers.enterpassword")}
                   type="password"
                   autocomplete="new-password"
                   onChange={this.changeConfirmPwd}
@@ -314,19 +319,19 @@ class AddTeacherModal extends React.Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Select School">
+            <ModalFormItem label={t("users.teacher.school")}>
               {getFieldDecorator("institutionIds", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
+                    message: t("users.teacher.addteachers.validations.school")
                   }
                 ]
               })(
                 <Select
                   mode="multiple"
                   labelInValue
-                  placeholder="Please Select schools"
+                  placeholder={t("users.teacher.addteachers.selectschool")}
                   notFoundContent={schoolsState.fetching ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchSchool}

@@ -34,29 +34,28 @@ class InviteMultipleTeacherModal extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { placeHolderVisible } = this.state;
     return (
       <AddMulitpleTeachersModal
         visible={modalVisible}
-        title="Bulk Add Teacher"
+        title={t("users.teacher.inviteteacher.title")}
         onOk={this.onInviteTeachers}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onInviteTeachers}>Yes, Add Teachers</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.teacher.inviteteacher.nocancel")}</CancelButton>
+            <OkButton onClick={this.onInviteTeachers}>{t("users.teacher.inviteteacher.yesadd")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <TextWrapper span={24}>
-            To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them
-            to select a school and create a password.
+            {t("users.teacher.inviteteacher.text1")}
             <br />
-            Use seperate lines or semi-colons to add teachers.
+            {t("users.teacher.inviteteacher.text2")}
           </TextWrapper>
         </Row>
         <Row>

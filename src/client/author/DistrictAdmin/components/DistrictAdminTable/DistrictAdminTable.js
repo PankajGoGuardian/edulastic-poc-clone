@@ -101,7 +101,7 @@ class DistrictAdminTable extends Component {
     const { t } = this.props;
     this.columns = [
       {
-        title: t("districtadmin.name"),
+        title: t("users.districtadmin.name"),
         render: (_, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
@@ -120,7 +120,7 @@ class DistrictAdminTable extends Component {
         width: 200
       },
       {
-        title: t("districtadmin.username"),
+        title: t("users.districtadmin.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -131,7 +131,7 @@ class DistrictAdminTable extends Component {
         width: 200
       },
       {
-        title: t("districtadmin.sso"),
+        title: t("users.districtadmin.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 200
@@ -182,11 +182,11 @@ class DistrictAdminTable extends Component {
     const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        message.error("Please select user to edit.");
+        message.error(t("users.validations.edituser"));
       } else if (selectedRowKeys.length === 1) {
         this.onEditDistrictAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single user to edit.");
+        message.error(t("users.validations.editsingleuser"));
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -196,7 +196,7 @@ class DistrictAdminTable extends Component {
         });
         // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
-        message.error("Please select users to delete.");
+        message.error(t("users.validations.deleteuser"));
       }
     }
   };
@@ -512,9 +512,9 @@ class DistrictAdminTable extends Component {
                     <Option value="other" disabled={true}>
                       {t("common.selectcolumn")}
                     </Option>
-                    <Option value="username">{t("districtadmin.username")}</Option>
-                    <Option value="email">{t("districtadmin.email")}</Option>
-                    <Option value="status">{t("districtadmin.status")}</Option>
+                    <Option value="username">{t("users.districtadmin.username")}</Option>
+                    <Option value="email">{t("users.districtadmin.email")}</Option>
+                    <Option value="status">{t("users.districtadmin.status")}</Option>
                   </StyledFilterSelect>
                   <StyledFilterSelect
                     placeholder={t("common.selectvalue")}
@@ -578,7 +578,7 @@ class DistrictAdminTable extends Component {
               onChange={this.onChangeSearch}
             />
             <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
-              + Create District Admin
+              {t("users.districtadmin.createdistrictadmin")}
             </Button>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
@@ -614,6 +614,7 @@ class DistrictAdminTable extends Component {
             createDistrictAdmin={this.createUser}
             closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
 
@@ -624,6 +625,7 @@ class DistrictAdminTable extends Component {
             updateDistrictAdmin={updateAdminUser}
             closeModal={this.closeEditDistrictAdminModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {deactivateAdminModalVisible && (

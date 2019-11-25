@@ -24,30 +24,34 @@ class ArchiveClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, classNames } = this.props;
+    const { modalVisible, classNames, t } = this.props;
     const { textArchive } = this.state;
 
     return (
       <ConfirmationModal
         visible={modalVisible}
-        title="Archive Class(es)"
+        title={t("class.components.archiveclass.title")}
         onOk={this.onArchiveClass}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
           <Button onClick={this.onCloseModal} ghost type="primary">
-            No, Cancel
+            {t("class.components.archiveclass.nocancel")}
           </Button>,
           <YesButton onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
-            Yes, Archive >
+            {t("class.components.archiveclass.yesarchive")}
           </YesButton>
         ]}
       >
         <ModalBody>
-          <span>Are you sure you want to archive the following class(es)?</span>
+          <span>
+            {t("common.modalConfirmationText1")} {t("class.components.archiveclass.classes")}
+          </span>
           {classNames}
           <span>
-            If Yes, type <LightGreenspan>ARCHIVE</LightGreenspan> in the space given below and proceed.
+            {t("common.modalConfirmationText2")}{" "}
+            <LightGreenspan>{t("class.components.archiveclass.archivetext")}</LightGreenspan>{" "}
+            {t("common.modalConfirmationText2")}
           </span>
           <FormItem>
             <TextInput

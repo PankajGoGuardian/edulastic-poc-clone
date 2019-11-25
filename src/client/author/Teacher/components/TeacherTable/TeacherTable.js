@@ -109,7 +109,7 @@ class TeacherTable extends Component {
     const { t } = this.props;
     this.columns = [
       {
-        title: t("teacher.name"),
+        title: t("users.teacher.name"),
         render: (_, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
@@ -127,7 +127,7 @@ class TeacherTable extends Component {
         }
       },
       {
-        title: t("teacher.username"),
+        title: t("users.teacher.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -138,18 +138,18 @@ class TeacherTable extends Component {
         width: 200
       },
       {
-        title: t("teacher.sso"),
+        title: t("users.teacher.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso
       },
       {
-        title: t("teacher.school"),
+        title: t("users.teacher.school"),
         dataIndex: "_source.institutionDetails",
         render: (schools = []) => schools.map(school => school.name),
         width: 200
       },
       {
-        title: t("teacher.classes"),
+        title: t("users.teacher.classes"),
         dataIndex: "classCount",
         render: (classCount, record) => {
           const username = get(record, "_source.username", "");
@@ -550,9 +550,9 @@ class TeacherTable extends Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="add teacher">{t("teacher.addteacher")}</Menu.Item>
-        <Menu.Item key="edit user">{t("teacher.updateuser")}</Menu.Item>
-        <Menu.Item key="deactivate user">{t("teacher.deactivateuser")}</Menu.Item>
+        <Menu.Item key="add teacher">{t("users.teacher.addteacher")}</Menu.Item>
+        <Menu.Item key="edit user">{t("users.teacher.updateuser")}</Menu.Item>
+        <Menu.Item key="deactivate user">{t("users.teacher.deactivateuser")}</Menu.Item>
       </Menu>
     );
     const breadcrumbData = [
@@ -593,7 +593,7 @@ class TeacherTable extends Component {
                     value={filtersColumn ? filtersColumn : undefined}
                   >
                     <Option value="other" disabled={true}>
-                      Select a column
+                      {t("common.selectcolumn")}
                     </Option>
                     <Option value="username">Username</Option>
                     <Option value="email">Email</Option>
@@ -663,7 +663,7 @@ class TeacherTable extends Component {
               onChange={this.onChangeSearch}
             />
             <Button type="primary" onClick={this.showInviteTeacherModal}>
-              {t("teacher.inviteteachers")}
+              {t("users.teacher.inviteteachers")}
             </Button>
           </LeftFilterDiv>
 
@@ -711,6 +711,7 @@ class TeacherTable extends Component {
             closeModal={this.closeInviteTeacherModal}
             addTeachers={this.sendInvite}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {editTeacherModaVisible && (
@@ -720,6 +721,7 @@ class TeacherTable extends Component {
             data={result[editTeacherKey]}
             editTeacher={updateAdminUser}
             closeModal={this.closeEditTeacherModal}
+            t={t}
           />
         )}
         {addTeacherModalVisible && (
@@ -728,15 +730,16 @@ class TeacherTable extends Component {
             addTeacher={this.createUser}
             closeModal={this.closeAddUserModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            title={t("users.teacher.deactivateTeacher.title")}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following teacher(s)?"
+            primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
             secondaryLabel={selectedAdminsForDeactivate.map(id => {
               const { _source: { firstName, lastName } = {} } = result[id];
               return (

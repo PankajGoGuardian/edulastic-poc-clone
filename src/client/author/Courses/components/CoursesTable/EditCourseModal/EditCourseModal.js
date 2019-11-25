@@ -173,46 +173,54 @@ class EditCourseModal extends React.Component {
   };
 
   render() {
-    const { modalVisible, courseData } = this.props;
+    const { modalVisible, courseData, t } = this.props;
     const { nameValidate, numberValidate, showSpin } = this.state;
     return (
       <StyledModal
         visible={modalVisible}
-        title="Edit Course"
+        title={t("course.editcourse")}
         onOk={this.onSaveCourse}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onSaveCourse}>Update Course ></OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
+            <OkButton onClick={this.onSaveCourse}>{t("course.updatecourse")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Course Name"
+              label={t("course.coursename")}
               name="name"
               validateStatus={nameValidate.validateStatus}
               help={nameValidate.validateMsg}
               required={true}
             >
-              <Input placeholder="Course name" defaultValue={courseData.name} onChange={this.handleCourseName} />
+              <Input
+                placeholder={t("course.coursename")}
+                defaultValue={courseData.name}
+                onChange={this.handleCourseName}
+              />
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Course Number"
+              label={t("course.coursenumber")}
               name="number"
               validateStatus={numberValidate.validateStatus}
               help={numberValidate.validateMsg}
               required={true}
             >
-              <Input defaultValue={courseData.number} placeholder="Course number" onChange={this.handleCourseNumber} />
+              <Input
+                defaultValue={courseData.number}
+                placeholder={t("course.coursenumber")}
+                onChange={this.handleCourseNumber}
+              />
             </ModalFormItem>
           </Col>
         </Row>

@@ -28,7 +28,8 @@ class EditSchoolAdminModal extends Component {
     const {
       modalVisible,
       schoolAdminData: { _source },
-      schoolsList
+      schoolsList,
+      t
     } = this.props;
     const schoolsOptions = [];
     schoolsList.map((row, index) => {
@@ -43,7 +44,7 @@ class EditSchoolAdminModal extends Component {
     return (
       <StyledModal
         visible={modalVisible}
-        title="Edit School Admin"
+        title={t("users.schooladmin.editsa.title")}
         onOk={this.onCreateSchoolAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
@@ -57,66 +58,66 @@ class EditSchoolAdminModal extends Component {
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="First Name">
+            <ModalFormItem label={t("users.schooladmin.firstname")}>
               {getFieldDecorator("firstName", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
+                    message: t("users.schooladmin.editsa.validations.firstname")
                   }
                 ],
                 initialValue: _source.firstName
-              })(<Input placeholder="Enter First Name" />)}
+              })(<Input placeholder={t("users.schooladmin.editsa.enterfirstname")} />)}
             </ModalFormItem>
           </Col>
           <Col span={24}>
-            <ModalFormItem label="Last Name">
+            <ModalFormItem label={t("users.schooladmin.lastname")}>
               {getFieldDecorator("lastName", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Last Name"
+                    message: t("users.schooladmin.editsa.validations.lastname")
                   }
                 ],
                 initialValue: _source.lastName
-              })(<Input placeholder="Enter Last Name" />)}
+              })(<Input placeholder={t("users.schooladmin.editsa.enterlastname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Email">
+            <ModalFormItem label={t("users.schooladmin.email")}>
               {getFieldDecorator("email", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input E-mail"
+                    message: t("users.schooladmin.editsa.validations.email")
                   },
                   {
                     type: "email",
-                    message: "The input is not valid E-mail"
+                    message: t("users.schooladmin.editsa.validations.invalidemail")
                   }
                 ],
                 initialValue: _source.email
-              })(<Input placeholder="Enter E-mail" />)}
+              })(<Input placeholder={t("users.schooladmin.editsa.enteremail")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Select School">
+            <ModalFormItem label={t("users.schooladmin.school")}>
               {getFieldDecorator("institutionIds", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
+                    message: t("users.schooladmin.editsa.validations.school")
                   }
                 ],
                 initialValue: _source.institutionIds
               })(
                 <Select
                   mode="multiple"
-                  placeholder="Select school"
+                  placeholder={t("users.schooladmin.editsa.selectschool")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolsOptions}

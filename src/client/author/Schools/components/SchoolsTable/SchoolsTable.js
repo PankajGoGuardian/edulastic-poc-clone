@@ -156,21 +156,21 @@ class SchoolsTable extends React.Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { userOrgId: districtId, deleteSchool } = this.props;
+    const { userOrgId: districtId, deleteSchool, t } = this.props;
 
     if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
-        message.error("Please select school to edit.");
+        message.error(t("school.validations.editSchool"));
       } else if (selectedRowKeys.length == 1) {
         this.onEditSchool(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single school to edit.");
+        message.error(t("school.validations.editsingleschool."));
       }
     } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
         this.onDeactivateSchool();
       } else {
-        message.error("Please select schools to delete.");
+        message.error(t("school.validations.deleteschool."));
       }
     }
   };
@@ -930,6 +930,7 @@ class SchoolsTable extends React.Component {
             deactivateSchool={this.deactivateSchool}
             closeModal={this.closeDeactivateSchoolModal}
             schoolData={selectedDeactivateSchools}
+            t={t}
           />
         )}
       </MainContainer>

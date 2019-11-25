@@ -3,6 +3,7 @@
     "title": "MANAGE DISTRICT",
     "subtitle": "Schools",
     "cancel": "No, cancel",
+    "add": "Yes, Add",
     "refineresults": "REFINE RESULTS",
     "selectcolumn": "Select a column",
     "selectvalue": "Select a value",
@@ -13,7 +14,10 @@
     "entertext": "Enter text",
     "searchbyname": "Search by name",
     "actions": "Actions",
-    "showcurrent": "Show current users only"
+    "showcurrent": "Show current users only",
+    "modalConfirmationText1": "Are you sure you want to deactivate the following",
+    "modalConfirmationText2": "If Yes type ",
+    "modalConfirmationText3": "in the space given below and proceed."
   },
   "school": {
     "createschool": "Create School",
@@ -42,58 +46,216 @@
         "state": "Enter State",
         "selectstate": "Select State",
         "country": "Select Country"
+      },
+      "deactivateschool": {
+        "deactivateschools": "Deactivate School(s)",
+        "yesdeactivate": "Yes, Deactivate >",
+        "schools": "school(s)?",
+        "deactivate": "DEACTIVATE",
+        "nocancel": "No, Cancel"
       }
     },
     "validations": {
       "name": "Please input school name",
-      "zip": "Please input zip code"
+      "zip": "Please input zip code",
+      "editSchool": "Please select school to edit.",
+      "editsingleschool": "Please select single school to edit.",
+      "deleteschool": "Please select schools to delete."
     }
   },
-  "districtadmin": {
-    "name": "Name",
-    "username": "Username",
-    "email": "Email",
-    "status": "Status",
-    "sso": "Sso",
-    "createdistrictadmin": "+ Create District Admin"
+  "users": {
+    "districtadmin": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "status": "Status",
+      "sso": "Sso",
+      "password": "Password",
+      "createdistrictadmin": "+ Create District Admin",
+      "createda": {
+        "title": "Create district admin",
+        "entername": "Enter name",
+        "enterusername": "Enter username",
+        "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "nocancel": "No, Cancel",
+        "yescreate": "Yes, Create",
+        "validations": {
+          "name": "Please input name",
+          "email": "Please input email",
+          "password": "Please input password"
+        }
+      }
+    },
+    "schooladmin": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "status": "Status",
+      "sso": "Sso",
+      "school": "School",
+      "password": "Password",
+      "firstname": "First Name",
+      "lastname": "Last Name",
+      "createschooladmin": "+ Add School Admin",
+      "updateuser": "Update Selected User",
+      "deactivateuser": "Deactivate Selected User(s)",
+      "createsa": {
+        "title": "Create school admin",
+        "entername": "Enter name",
+        "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "selectschool": "Select Schools",
+        "nocancel": "No, Cancel",
+        "yescreate": "Yes, Create",
+        "validations": {
+          "firstname": "Please input first name",
+          "lastname": "Please input last name",
+          "email": "Please input email",
+          "invalidemail": "The input is not valid e-mail",
+          "password": "Please input password",
+          "school": "Please select schools"
+        }
+      },
+      "editsa": {
+        "title": "Edit school admin",
+        "enterfirstname": "Enter first name",
+        "enterlastname": "Enter last name",
+        "enteremail": "Enter email",
+        "selectschool": "Select Schools",
+        "nocancel": "No, Cancel",
+        "yesupdate": "Yes, Update",
+        "validations": {
+          "firstname": "Please input first name",
+          "lastname": "Please input last name",
+          "email": "Please input email",
+          "school": "Please select schools"
+        }
+      },
+      "deactivatesa": {
+        "title": "Deactivate School Admin(s)",
+        "schooladmins": " School admins ?"
+      }
+    },
+    "teacher": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmpassword": "Confirm Password",
+      "sso": "Sso",
+      "school": "School",
+      "classes": "Classes",
+      "addteacher": "Add Teacher",
+      "updateuser": "Update Selected User",
+      "deactivateuser": "Deactivate Selected User(s)",
+      "inviteteachers": "+ Invite Multiple Teachers",
+      "deactivateTeacher": {
+        "title": "Deactivate Teacher(s)",
+        "teachers": " teacher(s)?"
+      },
+      "inviteteacher": {
+        "title": "Bulk Add Teacher",
+        "text1": "To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them to select a school and create a password.",
+        "text2": "Use seperate lines or semi-colons to add teachers.",
+        "nocancel": "No, Cancel",
+        "yesadd": "Yes, Add Teacher(s)"
+      },
+      "addteachers": {
+        "title": "Create Teacher",
+        "nocancel": "No, Cancel",
+        "yescreate": "Yes, Create",
+        "entername": "Enter name",
+        "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "selectschool": "Select Schools",
+        "validations": {
+          "name": "Please input name",
+          "email": "Please input email",
+          "password": "Please input password",
+          "confirmpassword": "Please input confirm password",
+          "school": "Please select school"
+        }
+      },
+      "editteacher": {
+        "title": "Edit Teacher",
+        "firstname": "First Name",
+        "lastname": "Last Name",
+        "email": "Email",
+        "nocancel": "No, Cancel",
+        "yesupdate": "Yes, Update",
+        "enterfirstname": "Enter first name",
+        "enterlastname": "Enter last name",
+        "enteremail": "Enter email",
+        "validations": {
+          "firstname": "Please input first name",
+          "lastname": "Please input last name",
+          "email": "Please input email",
+          "invalidemail": "Please input valid email"
+        }
+      }
+    },
+    "student": {
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "username": "Username",
+      "sso": "Sso",
+      "school": "School",
+      "classes": "Classes",
+      "addstudent": "Add Student",
+      "updateuser": "Update Selected User",
+      "deactivateuser": "Deactivate Selected User(s)",
+      "addstudentootherclass": "Add student(s) to another class",
+      "addmultiplestudents": "+ Add Multiple Students",
+      "addstudents": "Add Student(s)",
+      "invitestudents": {
+        "tab1": "Search exisitng student and add",
+        "tab2": "Add multiple students",
+        "tab1title": " Search and select existing students from your district and add",
+        "tab2title": "Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add multiple students.",
+        "byname": "Add students by their name",
+        "googleuser": "Google Usernames",
+        "officeuser": "Office 365 Usernames",
+        "fl": "First Name and Last Name",
+        "lf": "Last Name and First Name",
+        "addtoclass": "Yes, Add to class",
+        "nocancel": "No, Cancel"
+      },
+      "addtoanotherclass": {
+        "title": "Move User(s)",
+        "name": "Name",
+        "username": "Username",
+        "status": "Status",
+        "classcode": "Destination Class Code",
+        "classname": "Class Name",
+        "schoolname": "School Name",
+        "teachername": "Teacher Name",
+        "confirmtext": "Are you sure you want to move the selected user(s) ? Once moved, existing assessment data will no longer be available for the selected users.",
+        "oktext": "Yes, Move",
+        "studentdetails": "Student Details"
+      },
+      "deactivatestudent": {
+        "title": "Deactivate Student(s)",
+        "confirmText": "Are you sure you want to deactivate the following student(s)?"
+      },
+      "studentdetail": {
+        "title": "Student Details",
+        "name": "Name",
+        "username": "Username",
+        "status": "Status",
+        "usercreated": "New User Created",
+        "userexists": "User Already Exist",
+        "emailnotallowed": "This email Id is not allowed in your district."
+      }
+    },
+    "validations": {
+      "edituser": "Please select user to edit.",
+      "editsingleuser": "Please select single user to edit.",
+      "deleteuser": "Please select users to delete."
+    }
   },
-  "schooladmin": {
-    "name": "Name",
-    "username": "Username",
-    "email": "Email",
-    "status": "Status",
-    "sso": "Sso",
-    "school": "School",
-    "createschooladmin": "+ Add School Admin",
-    "updateuser": "Update Selected User",
-    "deactivateuser": "Deactivate Selected User(s)"
-  },
-  "teacher": {
-    "name": "Name",
-    "username": "Username",
-    "sso": "Sso",
-    "school": "School",
-    "classes": "Classes",
-    "addteacher": "Add Teacher",
-    "updateuser": "Update Selected User",
-    "deactivateuser": "Deactivate Selected User(s)",
-    "inviteteachers": "+ Invite Multiple Teachers"
-  },
-  "student": {
-    "name": "Name",
-    "email": "Email",
-    "status": "Status",
-    "username": "Username",
-    "sso": "Sso",
-    "school": "School",
-    "classes": "Classes",
-    "addstudent": "Add Student",
-    "updateuser": "Update Selected User",
-    "deactivateuser": "Deactivate Selected User(s)",
-    "addstudentootherclass": "Add student(s) to another class",
-    "addmultiplestudents": "+ Add Multiple Students",
-    "addstudents": "Add Student(s)"
-  },
+
   "class": {
     "title": "Classes",
     "name": "Class name",
@@ -110,6 +272,12 @@
     "status": "Status",
     "createnewclass": "CREATE NEW CLASS",
     "showactiveclass": "Show Active Classes",
+    "validations": {
+      "editclass": "Please select class to edit.",
+      "singleeditclass": "Please select single class to edit.",
+      "archiveclass": "Please select class to archive.",
+      "selectclass": "Please select atleast 1 class."
+    },
     "components": {
       "addclass": {
         "title": "Add class",
@@ -159,8 +327,62 @@
         "proceed": "Proceed",
         "back": "Back",
         "cancel": "Cancel",
-        "default": "Default"
+        "default": "Default",
+        "selecttags": "Select Tags"
+      },
+      "archiveclass": {
+        "title": "Archive Class(es)",
+        "yesarchive": "Yes, Archive >",
+        "nocancel": "No, Cancel",
+        "classes": "Class(es) ?",
+        "archivetext": "ARCHIVE"
       }
     }
+  },
+  "course": {
+    "name": "Name",
+    "number": "Number",
+    "classes": "Classes",
+    "uploadcourse": "Upload Course",
+    "editcourse": "Edit Course",
+    "deactivatecourse": "Deactivate Course",
+    "bulkeditcourse": "Bulk Edit Courses",
+    "coursename": "Course Name",
+    "coursenumber": "Course Number",
+    "courseid": "Course Id",
+    "createcourse": "+ Create Course",
+    "addcourse": "Add Course",
+    "updatecourse": "Update Course >",
+    "deactivatecoursemodal": {
+      "title": "Deactivate course(s)",
+      "confirmtext": "Are you sure you want to deactivate the following course(s)?"
+    },
+    "uploadcoursemodal": {
+      "coursecreated": "Course created successfully.",
+      "templatetxt": "If you do not have a template",
+      "downloadtemplate": "Download Template",
+      "correctformat": "Yes, the format looks correct",
+      "uploadnew": "go back and upload a new file",
+      "uploadagain": "Try your upload again",
+      "confirmformat": "Confirm the format",
+      "ensurecorrectinfo": "Please ensure that your information appears correctly, please remove the rows with error status to continue.",
+      "ensureinfo1": "Please ensure that your information appears correctly.",
+      "uploadsuccess": "course(s) uploaded successfully and 0 course(s) failed to upload"
+    }
+  },
+  "classenrollment": {
+    "classname": "Class name",
+    "classcode": "Class Code",
+    "fullname": "Full name",
+    "username": "Username",
+    "role": "Role",
+    "addnewuser": "+ Add New User",
+    "removestudents": "Remove Student(s)",
+    "confirmtext": "Are you sure you want to remove the following student(s)?",
+    "addusertoclass": "Add User to Class",
+    "addstdstoanotherclass": "Add Student(s) to another class",
+    "addstds": "Add Student(s)",
+    "movetoanotherclass": "Move User(s) to another class",
+    "moveusers": "Move User(s)"
   }
 }

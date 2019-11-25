@@ -18,7 +18,8 @@ function AddStudentsToOtherClass({
   destinationClassData,
   loading,
   selectedUsersInfo = [],
-  askUserConfirmation
+  askUserConfirmation,
+  t
 }) {
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
   const [cofirmationText, setConfimationText] = useState("");
@@ -75,7 +76,7 @@ function AddStudentsToOtherClass({
   return successData ? (
     <Modal
       visible={showModal}
-      title="Student Details"
+      title={t("users.student.addtoanotherclass.studentdetails")}
       width="800px"
       footer={[
         <ThemeButton type="primary" onClick={onCloseModal}>
@@ -89,7 +90,7 @@ function AddStudentsToOtherClass({
         pagination={false}
         columns={[
           {
-            title: "Name",
+            title: t("users.student.addtoanotherclass.name"),
             dataIndex: "firstName",
             key: "firstName",
             render: (_, record) => {
@@ -99,12 +100,12 @@ function AddStudentsToOtherClass({
             }
           },
           {
-            title: "Username",
+            title: t("users.student.addtoanotherclass.username"),
             dataIndex: "username",
             key: "username"
           },
           {
-            title: "Status",
+            title: t("users.student.addtoanotherclass.status"),
             dataIndex: "status",
             key: "status"
           }
@@ -115,7 +116,7 @@ function AddStudentsToOtherClass({
   ) : (
     <>
       <ConfirmationModal
-        title="Move User(s)"
+        title={t("users.student.addtoanotherclass.title")}
         show={isConfirmationModalVisible}
         onOk={() => {
           formSubmitConfirmed();
@@ -128,10 +129,8 @@ function AddStudentsToOtherClass({
         inputVal={cofirmationText}
         onInputChange={e => setConfimationText(e.target.value)}
         expectedVal="MOVE"
-        bodyText={
-          "Are you sure you want to move the selected user(s) ? Once moved, existing assessment data will no longer be available for the selected users."
-        }
-        okText="Yes, Move"
+        bodyText={t("users.student.addtoanotherclass.confirmtext")}
+        okText={t("users.student.addtoanotherclass.oktext")}
         canUndone
       />
 
@@ -147,7 +146,7 @@ function AddStudentsToOtherClass({
         <Spin spinning={loading}>
           <Form>
             <Field name="destClassCode">
-              <legend>Destination Class Code</legend>
+              <legend>{t("users.student.addtoanotherclass.classcode")}</legend>
               <Form.Item>
                 {getFieldDecorator("destClassCode", {
                   rules: [{ required: true, message: "Please input the destination class" }]
@@ -155,15 +154,15 @@ function AddStudentsToOtherClass({
               </Form.Item>
             </Field>
             <Field name="name">
-              <legend>Class Name</legend>
+              <legend>{t("users.student.addtoanotherclass.classname")}</legend>
               <Form.Item>{getFieldDecorator("name")(<Input disabled />)}</Form.Item>
             </Field>
             <Field name="institutionName">
-              <legend>School Name</legend>
+              <legend>{t("users.student.addtoanotherclass.schoolname")}</legend>
               <Form.Item>{getFieldDecorator("institutionName")(<Input disabled />)}</Form.Item>
             </Field>
             <Field name="teacherName">
-              <legend>Teacher Name</legend>
+              <legend>{t("users.student.addtoanotherclass.teachername")}</legend>
               <Form.Item>{getFieldDecorator("teacherName")(<Input disabled />)}</Form.Item>
             </Field>
           </Form>

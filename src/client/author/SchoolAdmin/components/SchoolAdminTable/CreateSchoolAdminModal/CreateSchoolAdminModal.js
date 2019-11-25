@@ -136,80 +136,90 @@ class CreateSchoolAdminModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { emailValidateStatus, emailValidateMsg, fetching, schoolList } = this.state;
 
     return (
       <StyledModal
         visible={modalVisible}
-        title="Create School Admin"
+        title={t("users.schooladmin.createsa.title")}
         onOk={this.onCreateSchoolAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onCreateSchoolAdmin}>Yes, Create</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.schooladmin.createsa.nocancel")}</CancelButton>
+            <OkButton onClick={this.onCreateSchoolAdmin}>{t("users.schooladmin.createsa.yescreate")}</OkButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name">
+            <ModalFormItem label={t("users.schooladmin.name")}>
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input Name"
+                    message: t("users.schooladmin.createsa.validations.name")
                   }
                 ]
-              })(<Input placeholder="Enter Name" />)}
+              })(<Input placeholder={t("users.schooladmin.createsa.entername")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Username"
+              label={t("users.schooladmin.username")}
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
               required={true}
               type="email"
             >
-              <Input placeholder="Enter E-mail" autocomplete="new-password" onChange={this.changeEmail} />
+              <Input
+                placeholder={t("users.schooladmin.createsa.enteremail")}
+                autocomplete="new-password"
+                onChange={this.changeEmail}
+              />
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Password">
+            <ModalFormItem label={t("users.schooladmin.password")}>
               {getFieldDecorator("password", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input password"
+                    message: t("users.schooladmin.createsa.validations.password")
                   }
                 ]
-              })(<Input placeholder="Password" type="password" autocomplete="new-password" />)}
+              })(
+                <Input
+                  placeholder={t("users.schooladmin.createsa.enterpassword")}
+                  type="password"
+                  autocomplete="new-password"
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Select School">
+            <ModalFormItem label={t("users.schooladmin.school")}>
               {getFieldDecorator("institutionIds", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select school"
+                    message: t("users.schooladmin.createsa.validations.school")
                   }
                 ]
               })(
                 <Select
                   mode="multiple"
                   labelInValue
-                  placeholder="Please Select schools"
+                  placeholder={t("users.schooladmin.createsa.selectschool")}
                   notFoundContent={fetching ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchSchool}

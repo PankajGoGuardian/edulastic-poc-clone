@@ -22,32 +22,36 @@ class DeactivateSchoolModal extends React.Component {
   };
 
   render() {
-    const { modalVisible, schoolData } = this.props;
+    const { modalVisible, schoolData, t } = this.props;
     const { textDeactivate } = this.state;
     const schoolName = schoolData.map(row => <StyledClassName>{row.name}</StyledClassName>);
 
     return (
       <ConfirmationModal
         visible={modalVisible}
-        title="Deactivate School(s)"
+        title={t("school.components.deactivateschool.deactivateschools")}
         onOk={this.onDeactivateSchool}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <Button onClick={this.onCloseModal} ghost type="primary">
-            No, Cancel
+            {t("school.components.deactivateschool.nocancel")}
           </Button>,
           <YesButton onClick={this.onDeactivateSchool} disabled={textDeactivate.toLowerCase() !== "deactivate"}>
-            Yes, Deactivate >
+            {t("school.components.deactivateschool.yesdeactivate")}
           </YesButton>
         ]}
       >
         <ModalBody>
-          <span>Are you sure you want to deactivate the following school(s)?</span>
+          <span>
+            {t("common.modalConfirmationText1")} {t("school.components.deactivateschool.schools")}
+          </span>
           {schoolName}
           <span>
-            If Yes type <LightGreenSpan>DEACTIVATE</LightGreenSpan> in the space given below and proceed.
+            {t("common.modalConfirmationText2")}
+            <LightGreenSpan>{t("school.components.deactivateschool.deactivate")}</LightGreenSpan>{" "}
+            {t("common.modalConfirmationText3")}
           </span>
           <FormItem>
             <TextInput value={textDeactivate} onChange={this.onChangeInput} />

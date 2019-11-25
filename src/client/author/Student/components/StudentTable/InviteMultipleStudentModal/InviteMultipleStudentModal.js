@@ -247,7 +247,8 @@ class InviteMultipleStudentModal extends Component {
       selectedClass,
       loadStudents,
       features,
-      role
+      role,
+      t
     } = this.props;
 
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
@@ -341,7 +342,7 @@ class InviteMultipleStudentModal extends Component {
               searchViewVisible={searchViewVisible}
               onClick={() => this.setState({ ...this.setState, searchViewVisible: true })}
             >
-              Search exisitng student and add
+              {t("users.student.invitestudents.tab1")}
             </SearchTabButton>
           </Col>
           <Col span={9}>
@@ -350,7 +351,7 @@ class InviteMultipleStudentModal extends Component {
               searchViewVisible={searchViewVisible}
               onClick={() => this.setState({ ...this.setState, searchViewVisible: false })}
             >
-              Add multiple students
+              {t("users.student.invitestudents.tab2")}
             </AddMultipleStudentsTabButton>
           </Col>
           <ModalCloseIconWrapper span={2}>
@@ -360,7 +361,7 @@ class InviteMultipleStudentModal extends Component {
         {searchViewVisible ? (
           <SearchViewContainer>
             <Row>
-              <Col> Search and select existing students from your district and add</Col>
+              <Col> {t("users.student.invitestudents.tab1title")}</Col>
             </Row>
             <Row>
               <StyledSearch
@@ -388,12 +389,11 @@ class InviteMultipleStudentModal extends Component {
           <AddBulkStudentsViewContainer>
             <Row>
               <AddBulkUserPrimaryTextContainer span={15}>
-                Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add
-                multiple students.
+                {t("users.student.invitestudents.tab2title")}
               </AddBulkUserPrimaryTextContainer>
             </Row>
             <SelUserKindDiv>
-              <Col span={11}>Add students by their name</Col>
+              <Col span={11}>{t("users.student.invitestudents.byname")}</Col>
               <Col span={13}>
                 <Select
                   getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -401,10 +401,10 @@ class InviteMultipleStudentModal extends Component {
                   onChange={this.handleChange}
                   defaultValue="google"
                 >
-                  <Option value="google">Google Usernames</Option>
-                  <Option value="mso">Office 365 Usernames</Option>
-                  <Option value="fl">Frist Name and Last Name</Option>
-                  <Option value="lf">Last Name and First Name</Option>
+                  <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>
+                  <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>
+                  <Option value="fl">{t("users.student.invitestudents.fl")}</Option>
+                  <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
                 </Select>
               </Col>
             </SelUserKindDiv>
@@ -463,7 +463,7 @@ class InviteMultipleStudentModal extends Component {
 
         <ButtonsContainer gutter={5}>
           <Col span={7}>
-            <CancelButton onClick={this.onCloseModal}>No, cancel</CancelButton>
+            <CancelButton onClick={this.onCloseModal}>{t("users.student.invitestudents.nocancel")}</CancelButton>
           </Col>
           <Col span={7}>
             <OkButton
@@ -472,7 +472,7 @@ class InviteMultipleStudentModal extends Component {
                 this.addStudents();
               }}
             >
-              Yes, Add to class
+              {t("users.student.invitestudents.addtoclass")}
             </OkButton>
           </Col>
         </ButtonsContainer>

@@ -61,6 +61,7 @@ import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { TypeToConfirmModal } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -472,13 +473,13 @@ class CoursesTable extends React.Component {
       refineButtonActive
     } = this.state;
 
-    const { totalCourseCount, userOrgId, role } = this.props;
+    const { totalCourseCount, userOrgId, role, t } = this.props;
 
     const columnsInfo = [
       {
         title: (
           <StyledHeaderColumn>
-            <p>Name</p>
+            <p>{t("course.name")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -505,7 +506,7 @@ class CoursesTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Number</p>
+            <p>{t("course.number")}</p>
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
@@ -532,7 +533,7 @@ class CoursesTable extends React.Component {
       {
         title: (
           <StyledHeaderColumn>
-            <p>Classes</p>
+            <p>{t("course.classes")}</p>
           </StyledHeaderColumn>
         ),
         dataIndex: "classCount",
@@ -605,10 +606,10 @@ class CoursesTable extends React.Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="upload csv">Upload Course</Menu.Item>
-        <Menu.Item key="edit course">Edit Course</Menu.Item>
-        <Menu.Item key="deactivate course">Deactivate Course</Menu.Item>
-        <Menu.Item key="bulk edit courses">Bulk Edit Courses</Menu.Item>
+        <Menu.Item key="upload csv">{t("course.uploadcourse")}</Menu.Item>
+        <Menu.Item key="edit course">{t("course.editcourse")}</Menu.Item>
+        <Menu.Item key="deactivate course">{t("course.deactivatecourse")}</Menu.Item>
+        <Menu.Item key="bulk edit courses">{t("course.bulkeditcourse")}</Menu.Item>
       </Menu>
     );
 
@@ -624,28 +625,28 @@ class CoursesTable extends React.Component {
       SearchRows.push(
         <StyledControlDiv key={`${filtersData[i].filtersColumn}${i}`}>
           <StyledFilterSelect
-            placeholder="Select a column"
+            placeholder={t("common.selectcolumn")}
             onChange={e => this.changeFilterColumn(e, i)}
             defaultValue={filtersData[i].filtersColumn}
             value={filtersData[i].filtersColumn}
           >
-            <Option value="">Select a column</Option>
-            <Option value="name">Course Name</Option>
-            <Option value="number">Course Number</Option>
+            <Option value="">{t("common.selectcolumn")}</Option>
+            <Option value="name">{t("course.coursename")}</Option>
+            <Option value="number">{t("course.coursenumber")}</Option>
           </StyledFilterSelect>
 
           <StyledFilterSelect
-            placeholder="Select a value"
+            placeholder={t("common.selectvalue")}
             onChange={e => this.changeFilterValue(e, i)}
             value={filtersData[i].filtersValue}
           >
-            <Option value="">Select a value</Option>
-            <Option value="eq">Equals</Option>
-            <Option value="cont">Contains</Option>
+            <Option value="">{t("common.selectvalue")}</Option>
+            <Option value="eq">{t("common.equals")}</Option>
+            <Option value="cont">{t("common.contains")}</Option>
           </StyledFilterSelect>
 
           <StyledFilterInput
-            placeholder="Enter text"
+            placeholder={t("common.entertext")}
             onChange={e => this.changeFilterText(e, i)}
             onSearch={(v, e) => this.onSearchFilter(v, e, i)}
             onBlur={e => this.onBlurFilterText(e, i)}
@@ -659,13 +660,13 @@ class CoursesTable extends React.Component {
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
-              + Add Filter
+              {t("common.addfilter")}
             </StyledFilterButton>
           )}
 
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              - Remove Filter
+              {t("common.removefilter")}
             </StyledFilterButton>
           )}
         </StyledControlDiv>
@@ -677,7 +678,7 @@ class CoursesTable extends React.Component {
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
           <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            REFINE RESULTS
+            {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
         </SubHeaderWrapper>
@@ -687,21 +688,21 @@ class CoursesTable extends React.Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={60}>
             <StyledSchoolSearch
-              placeholder="Search by name"
+              placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
             <CreateCourseBtn type="primary" onClick={this.showAddCourseModal}>
-              + Create Course
+              {t("course.createcourse")}
             </CreateCourseBtn>
           </LeftFilterDiv>
           <RightFilterDiv>
             <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
-              Show active courses only
+              {t("common.showcurrent")}
             </StyledActiveCheckbox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <Button>
-                Actions <Icon type="down" />
+                {t("common.actions")} <Icon type="down" />
               </Button>
             </StyledActionDropDown>
           </RightFilterDiv>
@@ -729,6 +730,7 @@ class CoursesTable extends React.Component {
             saveCourse={this.updateCourse}
             closeModal={this.closeEditCourseModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {addCourseModalVisible && (
@@ -737,6 +739,7 @@ class CoursesTable extends React.Component {
             addCourse={this.addCourse}
             closeModal={this.closeAddCourseModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {uploadCourseModalVisible && (
@@ -744,15 +747,16 @@ class CoursesTable extends React.Component {
             modalVisible={uploadCourseModalVisible}
             closeModal={this.closeUploadCourseModal}
             searchData={searchData}
+            t={t}
           />
         )}
 
         <TypeToConfirmModal
           modalVisible={deactivateCourseModalVisible}
-          title="Deactivate course(s)"
+          title={t("course.deactivatecoursemodal.title")}
           handleOnOkClick={this.confirmDeactivate}
           wordToBeTyped="DEACTIVATE"
-          primaryLabel="Are you sure you want to deactivate the following course(s)?"
+          primaryLabel={t("course.deactivatecoursemodal.confirmtext")}
           secondaryLabel={this.renderCourseNames()}
           closeModal={() =>
             this.setState({
@@ -766,6 +770,7 @@ class CoursesTable extends React.Component {
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

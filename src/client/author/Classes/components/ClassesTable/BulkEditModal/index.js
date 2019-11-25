@@ -148,7 +148,7 @@ function BulkEditModal({
                 mode="multiple"
                 style={{ marginBottom: 0, width: "100%" }}
                 optionLabelProp="title"
-                placeholder="Select Tags"
+                placeholder={t("class.components.bulkedit.selecttags")}
                 onSearch={searchTags}
                 onSelect={selectTags}
                 onDeselect={deselectTags}

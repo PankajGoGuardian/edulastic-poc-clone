@@ -46,6 +46,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { TypeToConfirmModal } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
 const { Option } = Select;
 
@@ -444,7 +445,8 @@ class ClassEnrollmentTable extends React.Component {
       userOrgId,
       moveUsersToOtherClass,
       resetClassDetails,
-      totalUsers
+      totalUsers,
+      t
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -481,31 +483,31 @@ class ClassEnrollmentTable extends React.Component {
     );
     const columnsData = [
       {
-        title: "Class Name",
+        title: t("classenrollment.classname"),
         dataIndex: "name",
         sorter: (a, b) => a.name.localeCompare(b.name),
         width: 200
       },
       {
-        title: "Class Code",
+        title: t("classenrollment.classcode"),
         dataIndex: "code",
         sorter: (a, b) => a.code.localeCompare(b.code),
         width: 200
       },
       {
-        title: "Full Name",
+        title: t("classenrollment.fullname"),
         dataIndex: "fullName",
         sorter: (a, b) => a.fullName.localeCompare(b.fullName),
         width: 200
       },
       {
-        title: "Username",
+        title: t("classenrollment.username"),
         dataIndex: "username",
         sorter: (a, b) => a.username.localeCompare(b.username),
         width: 200
       },
       {
-        title: "Role",
+        title: t("classenrollment.role"),
         dataIndex: "role",
         sorter: (a, b) => a.role.localeCompare(b.role),
         width: 200
@@ -544,34 +546,34 @@ class ClassEnrollmentTable extends React.Component {
 
       const optValues = [];
       if (filtersColumn === "role") {
-        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
       } else {
         optValues.push(
           <Option value="" disabled={true}>
-            Select a value
+            {t("common.selectvalue")}
           </Option>
         );
-        optValues.push(<Option value="eq">Equals</Option>);
-        optValues.push(<Option value="cont">Contains</Option>);
+        optValues.push(<Option value="eq">{t("common.equals")}</Option>);
+        optValues.push(<Option value="cont">{t("common.contains")}</Option>);
       }
 
       SearchRows.push(
         <StyledControlDiv>
           <StyledFilterSelect
-            placeholder="Select a column"
+            placeholder={t("common.selectcolumn")}
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
             <Option value="" disabled={true}>
-              Select a column
+              {t("common.selectcolumn")}
             </Option>
-            <Option value="code">Class Code</Option>
-            <Option value="fullName">Full Name</Option>
-            <Option value="username">Username</Option>
-            <Option value="role">Role</Option>
+            <Option value="code">{t("classenrollment.classcode")}</Option>
+            <Option value="fullName">{t("classenrollment.fullname")}</Option>
+            <Option value="username">{t("classenrollment.username")}</Option>
+            <Option value="role">{t("classenrollment.role")}</Option>
           </StyledFilterSelect>
           <StyledFilterSelect
-            placeholder="Select a value"
+            placeholder={t("common.selectvalue")}
             onChange={e => this.changeFilterValue(e, i)}
             value={filtersValue}
           >
@@ -579,7 +581,7 @@ class ClassEnrollmentTable extends React.Component {
           </StyledFilterSelect>
           {filtersColumn === "role" ? (
             <StyledFilterSelect
-              placeholder="Select a value"
+              placeholder={t("common.selectvalue")}
               onChange={v => this.changeRoleValue(v, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
@@ -592,7 +594,7 @@ class ClassEnrollmentTable extends React.Component {
             </StyledFilterSelect>
           ) : (
             <StyledFilterInput
-              placeholder="Enter text"
+              placeholder={t("common.entertext")}
               onChange={e => this.changeFilterText(e, i)}
               onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
@@ -605,12 +607,12 @@ class ClassEnrollmentTable extends React.Component {
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
-              + Add Filter
+              {t("common.addfilter")}
             </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-              - Remove Filter
+              {t("common.removefilter")}
             </StyledAddFilterButton>
           )}
         </StyledControlDiv>
@@ -622,7 +624,7 @@ class ClassEnrollmentTable extends React.Component {
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
           <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
-            REFINE RESULTS
+            {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
         </SubHeaderWrapper>
@@ -632,19 +634,19 @@ class ClassEnrollmentTable extends React.Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={60}>
             <StyledSchoolSearch
-              placeholder="Search by class name"
+              placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
             <Button type="primary" onClick={this.onOpenaddNewUserModal}>
-              + Add New User
+              {t("classenrollment.addnewuser")}
             </Button>
           </LeftFilterDiv>
 
           <RightFilterDiv width={35}>
             <StyledActionDropDown overlay={actionMenu}>
               <Button>
-                Actions <Icon type="down" />
+                {t("common.actions")} <Icon type="down" />
               </Button>
             </StyledActionDropDown>
           </RightFilterDiv>
@@ -669,10 +671,10 @@ class ClassEnrollmentTable extends React.Component {
 
         <TypeToConfirmModal
           modalVisible={removeStudentsModalVisible}
-          title="Remove Student(s)"
+          title={t("classenrollment.removestudents")}
           handleOnOkClick={this.confirmDeactivate}
           wordToBeTyped="DEACTIVATE"
-          primaryLabel="Are you sure you want to remove the following student(s)?"
+          primaryLabel={t("classenrollment.confirmtext")}
           secondaryLabel={this.renderUserNames()}
           closeModal={() =>
             this.setState({
@@ -683,7 +685,7 @@ class ClassEnrollmentTable extends React.Component {
 
         <AddNewUserModal
           showModal={addUserFormModalVisible}
-          formTitle="Add User to Class"
+          formTitle={t("classenrollment.addnewuser")}
           closeModal={this.onCloseAddNewUserModal}
           addNewUser={this.addNewUser}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
@@ -696,17 +698,18 @@ class ClassEnrollmentTable extends React.Component {
         <AddStudentsToOtherClassModal
           {...addStudentsToOtherClassData}
           showModal={addStudentsModalVisible}
-          titleText="Add Student(s) to another class"
-          buttonText="Add Student(s)"
+          titleText={t("classenrollment.addstdstoanotherclass")}
+          buttonText={t("classenrollment.addstds")}
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
           onCloseModal={this.onCloseAddStudentsToOtherClassModal}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          t={t}
         />
         <MoveUsersToOtherClassModal
           {...addStudentsToOtherClassData}
           showModal={moveUsersModalVisible}
-          titleText="Move User(s) to another class"
-          buttonText="Move User(s)"
+          titleText={t("classenrollment.movetoanotherclass")}
+          buttonText={t("classenrollment.moveusers")}
           handleSubmit={destinationClassCode =>
             moveUsersToOtherClass({
               districtId: userOrgId,
@@ -719,6 +722,7 @@ class ClassEnrollmentTable extends React.Component {
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           selectedUsersInfo={selectedUsersInfo}
           askUserConfirmation
+          t={t}
         />
       </MainContainer>
     );
@@ -726,6 +730,7 @@ class ClassEnrollmentTable extends React.Component {
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(
     state => ({
       userOrgId: getUserOrgId(state),

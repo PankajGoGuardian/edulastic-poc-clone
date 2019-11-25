@@ -13,7 +13,7 @@ class StudentsDetailsModal extends React.Component {
     super(props);
     this.columns = [
       {
-        title: "Name",
+        title: t("users.student.studentdetail.name"),
         dataIndex: "fullName",
         render: (fullName, { provider, role }) => {
           if (role === "student") {
@@ -27,12 +27,12 @@ class StudentsDetailsModal extends React.Component {
         }
       },
       {
-        title: "Username",
+        title: t("users.student.studentdetail.username"),
         dataIndex: "username",
         render: username => <div>{username}</div>
       },
       {
-        title: "Status",
+        title: t("users.student.studentdetail.status"),
         dataIndex: "status",
         render: status => {
           let statusText = "";
@@ -40,21 +40,21 @@ class StudentsDetailsModal extends React.Component {
             statusText = (
               <StatusDiv>
                 <StyledStatusIcon type="check" iconColor={themeColor} />
-                New User Created
+                {t("users.student.studentdetail.usercreated")}
               </StatusDiv>
             );
           } else if (status === "FAILED_USER_EXISTS") {
             statusText = (
               <StatusDiv>
                 <StyledStatusIcon type="exclamation-circle" iconColor="#faad14" />
-                User Already Exist
+                {t("users.student.studentdetail.userexists")}
               </StatusDiv>
             );
           } else {
             statusText = (
               <StatusDiv>
                 <StyledStatusIcon type="close-circle" iconColor="#f5222d" />
-                This email Id is not allowed in your district.
+                {t("users.student.studentdetail.emailnotallowed")}
               </StatusDiv>
             );
           }

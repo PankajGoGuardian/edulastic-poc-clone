@@ -443,7 +443,7 @@ class SchoolAdminTable extends Component {
 
     const columns = [
       {
-        title: t("schooladmin.name"),
+        title: t("users.schooladmin.name"),
         dataIndex: "_source.firstName",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -458,7 +458,7 @@ class SchoolAdminTable extends Component {
         width: 200
       },
       {
-        title: t("schooladmin.username"),
+        title: t("users.schooladmin.username"),
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
@@ -469,13 +469,13 @@ class SchoolAdminTable extends Component {
         width: 200
       },
       {
-        title: t("schooladmin.sso"),
+        title: t("users.schooladmin.sso"),
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 100
       },
       {
-        title: t("schooladmin.school"),
+        title: t("users.schooladmin.school"),
         dataIndex: "_source.institutionDetails",
         render: (schools = []) => schools.map(school => school.name).join(", "),
         width: 200
@@ -504,8 +504,8 @@ class SchoolAdminTable extends Component {
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit user">{t("schooladmin.updateuser")}</Menu.Item>
-        <Menu.Item key="deactivate user">{t("schooladmin.deactivateuser")}</Menu.Item>
+        <Menu.Item key="edit user">{t("users.schooladmin.updateuser")}</Menu.Item>
+        <Menu.Item key="deactivate user">{t("users.schooladmin.deactivateuser")}</Menu.Item>
       </Menu>
     );
     const breadcrumbData = [
@@ -548,14 +548,14 @@ class SchoolAdminTable extends Component {
                     <Option value="other" disabled={true}>
                       {t("common.selectcolumn")}
                     </Option>
-                    <Option value="username">{t("schooladmin.username")}</Option>
-                    <Option value="email">{t("schooladmin.email")}</Option>
-                    <Option value="status">{t("schooladmin.status")}</Option>
+                    <Option value="username">{t("users.schooladmin.username")}</Option>
+                    <Option value="email">{t("users.schooladmin.email")}</Option>
+                    <Option value="status">{t("users.schooladmin.status")}</Option>
                     {/* TO DO: Uncomment after backend is done */}
                     {/* <Option value="institutionNames">School</Option> */}
                   </StyledFilterSelect>
                   <StyledFilterSelect
-                    placeholder="Select a value"
+                    placeholder={t("common.selectvalue")}
                     onChange={e => this.changeFilterValue(e, i)}
                     value={filtersValue ? filtersValue : undefined}
                   >
@@ -567,7 +567,7 @@ class SchoolAdminTable extends Component {
                   </StyledFilterSelect>
                   {!filterStrDD[filtersColumn] ? (
                     <StyledFilterInput
-                      placeholder="Enter text"
+                      placeholder={t("common.entertext")}
                       onChange={e => this.changeFilterText(e, i)}
                       onSearch={(v, e) => this.onSearchFilter(v, e, i)}
                       onBlur={e => this.onBlurFilterText(e, i)}
@@ -610,12 +610,12 @@ class SchoolAdminTable extends Component {
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <StyledSchoolSearch
-              placeholder="Search by name"
+              placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
             />
             <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
-              {t("schooladmin.createschooladmin")}
+              {t("users.schooladmin.createschooladmin")}
             </Button>
           </LeftFilterDiv>
 
@@ -665,6 +665,7 @@ class SchoolAdminTable extends Component {
             createSchoolAdmin={this.createUser}
             closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
+            t={t}
           />
         )}
         {editSchoolAdminModaVisible && (
@@ -675,15 +676,16 @@ class SchoolAdminTable extends Component {
             closeModal={this.closeEditSchoolAdminModal}
             userOrgId={userOrgId}
             schoolsList={schoolsData}
+            t={t}
           />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            title={t("users.schooladmin.deactivatesa.title")}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following school admin(s)?"
+            primaryLabel={t("common.modalConfirmationText1") + t("users.schooladmin.deactivatesa.schooladmins")}
             secondaryLabel={selectedAdminsForDeactivate.map(id => {
               const { _source: { firstName, lastName } = {} } = result[id];
               return (

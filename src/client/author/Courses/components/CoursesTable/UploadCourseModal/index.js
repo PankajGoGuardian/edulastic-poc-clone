@@ -111,13 +111,13 @@ class UploadCourseModal extends React.Component {
   };
 
   render() {
-    const { modalVisible, pageStatus, savingBulkCourse } = this.props;
+    const { modalVisible, pageStatus, savingBulkCourse, t } = this.props;
     const { dataSource, alertMsgStr } = this.state;
 
     if (pageStatus === "uploaded") {
       this.columns = [
         {
-          title: "Course ID",
+          title: t("course.courseid"),
           dataIndex: "courseNo",
           render: (text, record) => {
             return (
@@ -131,11 +131,11 @@ class UploadCourseModal extends React.Component {
           }
         },
         {
-          title: "Course Name",
+          title: t("course.coursename"),
           dataIndex: "courseName"
         },
         {
-          title: "Status",
+          title: t("course.status"),
           dataIndex: "status",
           render: (text, record) => {
             return (
@@ -159,14 +159,14 @@ class UploadCourseModal extends React.Component {
     } else if (pageStatus === "bulk-success") {
       this.columns = [
         {
-          title: "Course Name",
+          title: t("course.coursename"),
           dataIndex: "courseName"
         },
         {
-          title: "Status",
+          title: t("course.status"),
           dataIndex: "status",
           render: (text, record) => {
-            return <p>Course created successfully.</p>;
+            return <p>{t("course.uploadcoursemodal.coursecreated")}</p>;
           }
         }
       ];
@@ -184,33 +184,39 @@ class UploadCourseModal extends React.Component {
     }
 
     let modalFooter = [
-      <p>If you do not have a template</p>,
+      <p>{t("course.uploadcoursemodal.templatetxt")}</p>,
       <CSVLink filename={"courseUploadTemplate.csv"} data={[{ course_id: "", course_name: "" }]}>
-        <Icon type="download" /> Download Template
+        <Icon type="download" /> {t("course.uploadcoursemodal.downloadtemplate")}
       </CSVLink>
     ];
     if (pageStatus === "uploaded") {
       modalFooter = [
         <StyledConfirmButton type="primary" onClick={this.uploadCourse} disabled={isError || dataSource.length == 0}>
-          Yes, the format looks correct
+          {t("course.uploadcoursemodal.correctformat")}
         </StyledConfirmButton>,
-        <StyledConfirmButton onClick={this.goBackUpload}>go back and upload a new file</StyledConfirmButton>
+        <StyledConfirmButton onClick={this.goBackUpload}>{t("course.uploadcoursemodal.uploadnew")}</StyledConfirmButton>
       ];
     } else if (pageStatus === "bulk-success") {
       modalFooter = [
-        <StyledConfirmButton onClick={this.goBackUpload}>Try your upload again</StyledConfirmButton>,
+        <StyledConfirmButton onClick={this.goBackUpload}>
+          {t("course.uploadcoursemodal.uploadagain")}
+        </StyledConfirmButton>,
         <StyledConfirmButton type="primary" onClick={this.onCloseModal}>
           Done
         </StyledConfirmButton>
       ];
     } else if (pageStatus === "upload-novalidate-csv") {
-      modalFooter = [<StyledConfirmButton onClick={this.goBackUpload}>Try your upload again</StyledConfirmButton>];
+      modalFooter = [
+        <StyledConfirmButton onClick={this.goBackUpload}>
+          {t("course.uploadcoursemodal.uploadagain")}
+        </StyledConfirmButton>
+      ];
     }
 
     return (
       <StyledModal
         visible={modalVisible}
-        title="Upload Course"
+        title={t("course.uploadcourse")}
         onCancel={this.onCloseModal}
         maskClosable={false}
         width={"840px"}
@@ -220,7 +226,7 @@ class UploadCourseModal extends React.Component {
           <React.Fragment>
             <StyledUploadBtn type="primary" ghost onClick={this.onUploadCSV} disabled={pageStatus !== "normal"}>
               <Icon type="upload" />
-              <p>Upload Course</p>
+              <p>{t("course.uploadcourse")}</p>
             </StyledUploadBtn>
             <StyledUploadCSVDiv>
               <input
@@ -244,20 +250,17 @@ class UploadCourseModal extends React.Component {
           <UploadedContent isBulkSuccess={pageStatus === "bulk-success"}>
             {pageStatus === "uploaded" && (
               <React.Fragment>
-                <ConfirmP>Confirm the format</ConfirmP>
+                <ConfirmP>{t("course.uploadcoursemodal.confirmformat")}</ConfirmP>
                 {isError ? (
-                  <AlertP>
-                    Please ensure that your information appears correctly, please remove the rows with error status to
-                    continue.
-                  </AlertP>
+                  <AlertP>{t("course.uploadcoursemodal.ensurecorrectinfo")}</AlertP>
                 ) : (
-                  <AlertP>Please ensure that your information appears correctly.</AlertP>
+                  <AlertP>{t("course.uploadcoursemodal.ensureinfo1")}</AlertP>
                 )}
               </React.Fragment>
             )}
             {pageStatus === "bulk-success" && (
               <AlertSuccess>
-                {dataSource.length} course(s) uploaded successfully and 0 course(s) failed to upload
+                {dataSource.length} {t("course.uploadcoursemodal.uploadsuccess")}
               </AlertSuccess>
             )}
             <StyledTable dataSource={dataSource} columns={columns} pagination={false} />

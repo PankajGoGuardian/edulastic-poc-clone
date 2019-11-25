@@ -129,21 +129,21 @@ class AddCourseModal extends React.Component {
   };
 
   render() {
-    const { modalVisible } = this.props;
+    const { modalVisible, t } = this.props;
     const { nameValidate, numberValidate, showSpin } = this.state;
 
     return (
       <StyledModal
         visible={modalVisible}
-        title="Add Course"
+        title={t("course.addcourse")}
         onOk={this.onAddCourse}
         onCancel={this.onCloseModal}
         maskClosable={false}
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onAddCourse}>Yes, Add</OkButton>
+            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
+            <OkButton onClick={this.onAddCourse}>{t("common.add")}</OkButton>
           </ButtonsContainer>
         ]}
       >
@@ -151,25 +151,25 @@ class AddCourseModal extends React.Component {
           <Col span={24}>
             <ModalFormItem
               name="name"
-              label="Course Name"
+              label={t("course.coursename")}
               validateStatus={nameValidate.validateStatus}
               help={nameValidate.validateMsg}
               required={true}
             >
-              <Input placeholder="Course name" onChange={this.handleCourseName} />
+              <Input placeholder={t("course.coursename")} onChange={this.handleCourseName} />
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Course Number"
+              label={t("course.coursenumber")}
               name="number"
               validateStatus={numberValidate.validateStatus}
               help={numberValidate.validateMsg}
               required={true}
             >
-              <Input placeholder="Course number" onChange={this.handleCourseNumber} />
+              <Input placeholder={t("course.coursenumber")} onChange={this.handleCourseNumber} />
             </ModalFormItem>
           </Col>
         </Row>

@@ -74,6 +74,8 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
+  const { studentSettings, addCoTeacher, textToSpeech } = features;
+
   const { _id: classId, active } = selectedClass;
   let formRef = null;
 
@@ -304,42 +306,52 @@ const ActionContainer = ({
             PRINT
           </RedirectButton>
 
-          <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" groupId={classId}>
-            <Dropdown
-              overlay={
-                <DropMenu onClick={handleActionMenuClick}>
-                  <CaretUp className="fa fa-caret-up" />
+          <Dropdown
+            overlay={
+              <DropMenu onClick={handleActionMenuClick}>
+                <CaretUp className="fa fa-caret-up" />
+                {textToSpeech ? (
                   <MenuItems key="enableSpeech">
                     <IconVolumeUp width={12} />
                     <span>Enable Text to Speech</span>
                   </MenuItems>
+                ) : null}
+                {textToSpeech ? (
                   <MenuItems key="disableSpeech">
                     <IconNoVolume />
                     <span>Disable Text to Speech</span>
                   </MenuItems>
+                ) : null}
+                {studentSettings ? (
                   <MenuItems key="deleteStudent">
                     <IconRemove />
                     <span>Remove Students</span>
                   </MenuItems>
+                ) : null}
+                {studentSettings ? (
                   <MenuItems key="resetPwd">
                     <IconCircle />
                     <span>Reset Password</span>
                   </MenuItems>
+                ) : null}
+                {studentSettings ? (
                   <MenuItems key="editStudent">
                     <IconPencilEdit />
                     <span>Edit Stduent</span>
                   </MenuItems>
+                ) : null}
+                {addCoTeacher ? (
                   <MenuItems key="addCoTeacher">
                     <IconPlus />
                     <span>Add a Co-Teacher</span>
                   </MenuItems>
-                </DropMenu>
-              }
-              placement="bottomRight"
-            >
-              <RedirectButton last={true}>ACTIONS</RedirectButton>
-            </Dropdown>
-          </FeaturesSwitch>
+                ) : null}
+              </DropMenu>
+            }
+            placement="bottomRight"
+          >
+            <RedirectButton last={true}>ACTIONS</RedirectButton>
+          </Dropdown>
 
           {active ? (
             <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>

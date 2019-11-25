@@ -1,17 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-import { Tooltip } from "antd";
 
-import { clozeImage, response } from "@edulastic/constants";
-import { Pointer } from "../../../../styled/Pointer";
-import { Point } from "../../../../styled/Point";
-import { Triangle } from "../../../../styled/Triangle";
+import { clozeImage } from "@edulastic/constants";
 
-import { IconWrapper } from "./styled/IconWrapper";
 import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
-import { RightIcon } from "./styled/RightIcon";
-import { WrongIcon } from "./styled/WrongIcon";
 // import { calculateRatio } from "../../../../utils/helpers";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 import Response from "./components/Response";
@@ -25,19 +19,13 @@ const CheckboxTemplateBoxLayout = ({
   imageWidth,
   imageHeight,
   imageAlterText,
-  responsecontainerindividuals,
-  responseBtnStyle,
   fontSize,
   userSelections = [],
   stemNumeration,
-  // uiStyle,
-  // imagescale,
+
   evaluation,
   maxHeight,
-  maxWidth,
-  minWidth,
   minWidthShowAnswer,
-  minHeight,
   imageOptions,
   canvasHeight,
   canvasWidth,
@@ -111,15 +99,11 @@ const CheckboxTemplateBoxLayout = ({
 );
 
 CheckboxTemplateBoxLayout.propTypes = {
-  responsecontainerindividuals: PropTypes.array.isRequired,
   fontSize: PropTypes.string.isRequired,
   responseContainers: PropTypes.array.isRequired,
-  responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
   stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
-  // uiStyle: PropTypes.any,
-  // imagescale: PropTypes.bool,
   showAnswer: PropTypes.bool.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
@@ -127,8 +111,6 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageHeight: PropTypes.number.isRequired,
   imageWidth: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
-  minWidth: PropTypes.number.isRequired,
-  minHeight: PropTypes.number.isRequired,
   imageOptions: PropTypes.object,
   canvasWidth: PropTypes.number.isRequired,
   canvasHeight: PropTypes.number.isRequired,
@@ -137,10 +119,6 @@ CheckboxTemplateBoxLayout.propTypes = {
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
-  // uiStyle: {
-  //   fontsize: "normal"
-  // },
-  // imagescale: false
   imageOptions: {},
   isExpressGrader: false
 };

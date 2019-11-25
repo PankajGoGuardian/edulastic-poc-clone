@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
+import { shuffle, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
-import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
 import AnswerDropdown from "./components/AnswerDropdown";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
@@ -15,7 +15,7 @@ import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
+import { getFontSize, topAndLeftRatio } from "../../utils/helpers";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
@@ -154,7 +154,7 @@ class Display extends Component {
 
     const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const placeholder = uiStyle?.placeholder || "";
+    const placeholder = uiStyle.placeholder || "";
     const imageHeight = this.getHeight();
     const imageWidth = this.getWidth();
     let canvasHeight = imageHeight + (imageOptions.y || 0);
@@ -295,15 +295,13 @@ class Display extends Component {
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
-          cleanValue
-          groupResponses={newOptions}
+          stemNumeration={stemNumeration}
           userAnswers={validation.validResponse && validation.validResponse.value}
         />
         {altAnswers.map((answer, index) => (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
-            cleanValue
-            groupResponses={newOptions}
+            stemNumeration={stemNumeration}
             userAnswers={answer.value}
             altAnsIndex={index + 1}
           />

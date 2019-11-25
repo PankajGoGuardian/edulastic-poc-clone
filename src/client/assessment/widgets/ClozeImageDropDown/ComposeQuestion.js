@@ -490,7 +490,7 @@ class ComposeQuestion extends Component {
 
     const newResponseContainer = {};
     const elemRect = this.canvasRef.current.getBoundingClientRect();
-    const _width = get(item, "uiStyle.width", 150);
+    const _width = get(item, "uiStyle.width", 140);
     const _height = get(item, "uiStyle.height", 40);
 
     newResponseContainer.top = e.clientY - elemRect.top;

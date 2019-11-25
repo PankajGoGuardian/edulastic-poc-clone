@@ -847,7 +847,12 @@ export const defaultTheme = {
       antSelectSelectionColor: labelStyle,
       antIconDownColor: actionIconColor,
       hrBorderColor: borderColor,
-      imageZoom: 1
+      imageZoom: 1,
+      boxBgColor: containerWhite,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: themeColorLight,
+      indexBoxFontWeight: semiBold,
+      indexBoxFontSize: subtitleFontSize
     },
     clozeImageText: {
       pointsFontFamily: "Open Sans",

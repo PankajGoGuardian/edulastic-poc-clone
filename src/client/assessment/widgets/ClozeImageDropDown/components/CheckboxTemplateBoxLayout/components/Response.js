@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Proptypes from "prop-types";
 import { Popover } from "antd";
-
+import { measureText } from "@edulastic/common";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -23,28 +23,20 @@ const Response = ({
   dropTargetIndex,
   isExpressGrader
 }) => {
-  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
-  const hoverProps = {};
-  if ((showAnswer || isExpressGrader) && lessMinWidth) {
-    hoverProps.onMouseEnter = () => toggleIndexVisibility(!showIndex);
-    hoverProps.onMouseLeave = () => toggleIndexVisibility(!showIndex);
-  }
   const textContainerStyle = {
     minwidth: "100%",
     padding: lessMinWidth ? "0 1px" : null,
     justifyContent: "flex-start",
     alignItems: "center"
   };
-  const classNames = `
-            testing
-            imagelabeldragdrop-droppable 
-            active
-            ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 
-            ${status} 
-            show-answer`;
+
+  const answered = userSelections[dropTargetIndex];
+  const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
+
+  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
+  const isOverContent = btnStyle.width < contentWidth;
 
   const popoverContent = (
-    // eslint-disable-next-line max-len
     <PopoverContent
       index={dropTargetIndex}
       userSelections={userSelections}
@@ -54,7 +46,7 @@ const Response = ({
     />
   );
   const content = (
-    <div style={btnStyle} className={classNames} onClick={onClickHandler} {...hoverProps}>
+    <div style={btnStyle} className={`${classNames} show-answer`} onClick={onClickHandler}>
       <span
         className="index index-box"
         style={{ display: !checkAnswer && (showAnswer && !lessMinWidth) ? "flex" : "none" }}
@@ -68,9 +60,9 @@ const Response = ({
             display: checkAnswer || (showAnswer && !lessMinWidth) ? "flex" : "none"
           }}
         >
-          <IconWrapper rightPosition={lessMinWidth ? "1" : "10"}>
-            {userSelections.length > 0 && status === "right" && <RightIcon />}
-            {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
+          <IconWrapper rightPosition={lessMinWidth ? "5" : "10"}>
+            {answered && status === "right" && <RightIcon />}
+            {answered && status === "wrong" && <WrongIcon />}
           </IconWrapper>
           <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
             <Point />
@@ -80,7 +72,7 @@ const Response = ({
       </div>
     </div>
   );
-  return lessMinWidth ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return isOverContent || lessMinWidth ? <Popover content={popoverContent}>{content}</Popover> : content;
 };
 
 Response.propTypes = {

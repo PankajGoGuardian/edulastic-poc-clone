@@ -71,11 +71,11 @@ const DragItem = ({
         <DragPreview isDragging={isDragging} {...restProps}>
           {itemView}
         </DragPreview>
-        <Index style={{ opacity: preview ? "1" : "0" }} correct={correct}>
+        <Index preview={preview} correct={correct}>
           {displayIndex}
         </Index>
         {itemView}
-        <div style={{ marginRight: 15, opacity: preview ? "1" : "0" }}>
+        <div style={{ marginRight: 15, display: preview ? "flex" : "none" }}>
           {correct && <IconCheck />}
           {!correct && <IconClose />}
         </div>

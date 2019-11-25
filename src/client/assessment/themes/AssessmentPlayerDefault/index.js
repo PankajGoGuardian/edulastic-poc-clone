@@ -458,9 +458,6 @@ class AssessmentPlayerDefault extends React.Component {
           )}
           {!previewPlayer && (
             <SubmitConfirmation
-              style={{
-                border: "1px solid red"
-              }}
               isVisible={isSubmitConfirmationVisible}
               onClose={() => this.closeSubmitConfirmation()}
               finishTest={this.finishTest}

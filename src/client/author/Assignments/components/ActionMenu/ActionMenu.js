@@ -57,7 +57,7 @@ const ActionMenu = (
           </StyledLink>
         </Menu.Item>
         <Menu.Item data-cy="view-details" key="view-details">
-          <Link to={`/author/tests/${currentTestId}#review`} rel="noopener noreferrer">
+          <Link to={`/author/tests/tab/review/id/${currentTestId}`} rel="noopener noreferrer">
             <img alt="icon" src={infomationIcon} />
             <SpaceElement />
             View Details

@@ -131,6 +131,7 @@ export class ResponseFrequencyTable extends Component {
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + part_cnt;
       if (sum == 0) sum = 1;
+      let hasChoiceData = false; // V1 migrated UQA doesn't have user answer data
       if (!data || Object.keys(data).length === 0) {
         arr.push({
           value: Number(((corr_cnt / sum) * 100).toFixed(0)),
@@ -160,6 +161,7 @@ export class ResponseFrequencyTable extends Component {
           record: record
         });
       } else {
+        hasChoiceData = true;
         arr = Object.keys(data).map((comboKey, i) => {
           let validMap = {};
           let slittedKeyArr = comboKey.split(",");
@@ -193,7 +195,7 @@ export class ResponseFrequencyTable extends Component {
         });
       }
 
-      if (record.qType === "Multiple choice - standard") {
+      if (record.qType === "Multiple choice - standard" && hasChoiceData) {
         let selectedMap = {};
         for (let i = 0; i < arr.length; i++) {
           selectedMap[arr[i].key] = true;

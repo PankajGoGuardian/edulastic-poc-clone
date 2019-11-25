@@ -171,7 +171,8 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   finishTest = () => {
-    const { history } = this.props;
+    const { history, saveCurrentAnswer } = this.props;
+    saveCurrentAnswer();
     history.push("/home/assignments");
   };
 
@@ -457,6 +458,9 @@ class AssessmentPlayerDefault extends React.Component {
           )}
           {!previewPlayer && (
             <SubmitConfirmation
+              style={{
+                border: "1px solid red"
+              }}
               isVisible={isSubmitConfirmationVisible}
               onClose={() => this.closeSubmitConfirmation()}
               finishTest={this.finishTest}

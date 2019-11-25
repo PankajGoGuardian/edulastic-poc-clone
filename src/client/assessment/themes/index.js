@@ -106,9 +106,13 @@ const AssessmentContainer = ({
 
     if (preview) return;
 
-    const timeSpent = Date.now() - lastTime.current;
     history.push(`${url}/qid/${index}`);
     changePreview("clear");
+    saveCurrentAnswer();
+  };
+
+  const saveCurrentAnswer = () => {
+    const timeSpent = Date.now() - lastTime.current;
     saveUserAnswer(currentItem, timeSpent);
   };
 
@@ -156,6 +160,7 @@ const AssessmentContainer = ({
   }, 1000 * 30);
 
   const props = {
+    saveCurrentAnswer,
     items,
     isFirst,
     isLast,

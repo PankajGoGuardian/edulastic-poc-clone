@@ -44,7 +44,7 @@ const defaultData = {
   calcAttribute: 5,
   calcType: "MOVING_AVERAGE",
   decay: 30,
-  noOfAssessment: 5,
+  noOfAssessments: 5,
   scale: [
     {
       score: 4,
@@ -253,7 +253,7 @@ function StandardsProficiency(props) {
       lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
     }
     create({
-      noOfAssessment: 5,
+      noOfAssessments: 5,
       ...profile,
       name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`,
       orgId: props.orgId,

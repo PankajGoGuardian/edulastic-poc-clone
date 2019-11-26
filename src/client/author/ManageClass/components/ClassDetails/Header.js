@@ -10,12 +10,15 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { fetchClassListAction, getSelectedClass } from "../../ducks";
 
 const Header = ({ onEdit, activeClass, selectedClass }) => {
-  const { name, institutionName = "" } = selectedClass;
+  const { name, institutionName = "", districtName = "" } = selectedClass;
   return (
     <HeaderWrapper>
       <Title>
         <HeaderTitle title={name}>{name}</HeaderTitle>
-        <span>{institutionName}</span>
+        <span>
+          {districtName ? `${districtName}, ` : ""}
+          {institutionName}
+        </span>
       </Title>
 
       {activeClass ? (

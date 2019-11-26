@@ -446,7 +446,7 @@ class ClassHeader extends Component {
                 <p>Once closed, no student would be able to answer the assessment</p>
               </div>
             }
-            okText="Yes,Close"
+            okText="Yes, Close"
             canUndone
           />
         </StyledDiv>

@@ -21,7 +21,7 @@ const ConfirmationModal = ({
   onInputChange,
   expectedVal,
   bodyText,
-  okText,
+  okText = "",
   canUndone,
   bodyStyle = {}
 }) => {
@@ -37,10 +37,10 @@ const ConfirmationModal = ({
       footer={[
         <ModalFooter>
           <StyledButton cancel={true} type="primary" key={"1"} onClick={onCancel}>
-            No, Cancel
+            NO, CANCEL
           </StyledButton>
           <StyledButton type="primary" key={"2"} onClick={onOk} disabled={expectedVal !== inputVal.toUpperCase()}>
-            {okText}
+            {okText.toUpperCase()}
           </StyledButton>
         </ModalFooter>
       ]}
@@ -53,7 +53,7 @@ const ConfirmationModal = ({
             {canUndone ? (
               <StyledDiv>
                 If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
-                in the space given below and proceed.
+                in the space given below to proceed.
               </StyledDiv>
             ) : (
               <StyledDiv>

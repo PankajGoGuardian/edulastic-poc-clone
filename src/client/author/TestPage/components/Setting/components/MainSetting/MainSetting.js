@@ -232,6 +232,7 @@ class MainSetting extends Component {
     } = this.props;
 
     const {
+      isDocBased,
       releaseScore,
       safeBrowser,
       sebPassword,
@@ -273,6 +274,8 @@ class MainSetting extends Component {
     };
 
     const availableFeatures = settingCategories.slice(0, -5).map(category => {
+      if (isDocBased && (category.id === "show-answer-choice" || category.id === "suffle-question")) return;
+
       if (
         features[settingCategoriesFeatureMap[category.id]] ||
         isFeatureAccessible({

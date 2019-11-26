@@ -3,7 +3,6 @@ import { smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const Header = styled.div`
   width: 100%;
-  height: ${props => props?.theme?.header?.headerHeight};
   padding: 0 40px;
   box-sizing: border-box;
   display: flex;

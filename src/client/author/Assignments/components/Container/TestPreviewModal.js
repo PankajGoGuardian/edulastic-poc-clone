@@ -71,17 +71,9 @@ const StyledModal = styled(Modal)`
     padding: 0px;
     position: relative;
     & > div:not(.ant-spin) {
-      height: 100vh;
-      padding-top: 56px;
       & > svg {
         height: 100%;
       }
-    }
-    main {
-      padding: 25px 20px;
-      overflow: auto;
-      height: calc(100vh - 64px);
-      margin-top: 5px;
     }
   }
 `;

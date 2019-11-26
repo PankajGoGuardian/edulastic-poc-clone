@@ -76,7 +76,8 @@ class AssessmentPlayerDefault extends React.Component {
       enableCrossAction: false,
       zoomFactor: 1,
       minWidth: 480,
-      defaultContentWidth: 900
+      defaultContentWidth: 900,
+      defaultHeaderHeight: 62
     };
   }
 
@@ -331,7 +332,8 @@ class AssessmentPlayerDefault extends React.Component {
       showHints,
       enableCrossAction,
       minWidth,
-      defaultContentWidth
+      defaultContentWidth,
+      defaultHeaderHeight
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -384,11 +386,14 @@ class AssessmentPlayerDefault extends React.Component {
       headerZoom = zoomLevel >= "1.75" ? "1.35" : "1.25";
     }
 
+    // calculate height of questiin area
+    const headerHeight = defaultHeaderHeight * headerZoom;
+
     const headerStyleWidthZoom = {
       transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
       transformOrigin: "0px 0px",
       width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 32px" : "10px 5px 25px 5px") : "11px 0px"}`,
+      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "11px" : "11px 5px") : "11px 0px"}`,
       justifyContent: "space-between"
     };
 
@@ -465,7 +470,7 @@ class AssessmentPlayerDefault extends React.Component {
           )}
           <Affix>
             <Header LCBPreviewModal={LCBPreviewModal}>
-              <HeaderMainMenu skin>
+              <HeaderMainMenu skin style={{ height: headerHeight }}>
                 <FlexContainer style={headerStyleWidthZoom}>
                   <HeaderWrapper justifyContent="space-between">
                     <MainActionWrapper>
@@ -562,7 +567,7 @@ class AssessmentPlayerDefault extends React.Component {
               </HeaderMainMenu>
             </Header>
           </Affix>
-          <Main skin zoomed={isZoomApplied} zoomLevel={zoomLevel}>
+          <Main skin zoomed={isZoomApplied} zoomLevel={zoomLevel} headerHeight={headerHeight}>
             <SettingsModal />
             <SvgDraw
               activeMode={activeMode}

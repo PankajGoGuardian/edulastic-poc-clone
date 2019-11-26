@@ -210,9 +210,14 @@ class TestList extends Component {
       let subject = defaultSubject;
 
       // if user doesnt have default grades or subject, update it from user's profile.
-      if (!grades) {
+      if (!grades || (Array.isArray(grades) && grades.length === 0)) {
         grades = interestedGrades;
         updateDefaultGrades(grades);
+      }
+
+      if (!subject) {
+        subject = interestedSubjects;
+        updateDefaultSubject(subject);
       }
 
       // update default grades and subject.

@@ -141,3 +141,8 @@ export const ViewSwitch = styled(Switch)`
   margin: 0px 15px;
   background-color: ${lightGreen1};
 `;
+
+export const Paragraph = styled.p`
+  margin-bottom: 15px;
+  text-align: ${props => props.alignItems && props.alignItems};
+`;

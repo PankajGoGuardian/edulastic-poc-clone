@@ -64,6 +64,14 @@ export const ConfirmationModal = styled(Modal)`
           background-color: grey;
           border-color: grey;
         }
+        &.ant-btn-loading {
+          padding: 19px 50px;
+          .anticon-loading {
+            position: absolute;
+            top: 14px;
+            left: 40px;
+          }
+        }
         &.ant-btn-background-ghost {
           color: ${themeColor};
           background: transparent;

@@ -10,7 +10,6 @@ import { receiveTestByIdAction, getTestSelector, getDefaultTestSettingsAction } 
 
 import {
   fetchAssignmentsAction,
-  saveAssignmentAction,
   getAssignmentsSelector,
   getTestEntitySelector,
   getClassListSelector
@@ -34,6 +33,8 @@ import {
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import produce from "immer";
+import { saveAssignmentAction } from "../../../TestPage/components/Assign/ducks";
+import ProceedConfirmation from "./ConfirmationModal";
 
 const { ASSESSMENT, COMMON } = testConst.type;
 
@@ -208,6 +209,7 @@ class AssignTest extends React.Component {
     const { title, _id } = isPlaylist ? playlist : testItem;
     return (
       <div>
+        <ProceedConfirmation assignment={assignment} />
         <ListHeader
           title={`Assign ${isPlaylist ? "PLAYLIST" : "TEST"}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"

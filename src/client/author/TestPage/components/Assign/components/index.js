@@ -13,7 +13,6 @@ import AssignmentColumns from "./AssignmentColumns";
 import AddAssignmentButton from "./AddAssignmentButton";
 import { Container } from "../../../../src/components/common";
 import Breadcrumb from "../../../../src/components/Breadcrumb";
-import EditModal from "./EditModal/EditModal";
 import { StyledTable } from "./styled";
 import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction } from "../../../../sharedDucks/groups";
 
@@ -92,14 +91,14 @@ class Assign extends Component {
 
     return (
       <Container>
-        {showModal && (
+        {/* {showModal && (
           <EditModal
             visible={showModal}
             title={true ? "New Assignment" : "Edit Assignment"}
             onCancel={this.hideModal}
             group={group}
           />
-        )}
+        )} */}
         <FlexContainer justifyContent="space-between" style={{ marginBottom: 20 }}>
           <div>
             <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />

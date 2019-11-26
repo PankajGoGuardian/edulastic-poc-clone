@@ -22,6 +22,8 @@ export const DELETE_ASSIGNMENT = "[assignments] delete assignment";
 export const REMOVE_ASSIGNMENT = "[assignments] remove assignment";
 export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignment";
 export const SET_ASSIGNMENT_SAVING = "[assignments] set assignment saving state";
+export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS = "[assignments] toggle confirmation common assignments";
+export const UPDATE_ASSIGN_FAIL_DATA = "[assignments] update error data";
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT);
@@ -32,11 +34,15 @@ export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS);
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING);
+export const toggleHasCommonAssignmentsPopupAction = createAction(TOGGLE_CONFIRM_COMMON_ASSIGNMENTS);
+export const updateAssignFailDataAction = createAction(UPDATE_ASSIGN_FAIL_DATA);
 
 const initialState = {
   isLoading: false,
   isAssigning: false,
+  hasCommonStudents: false,
   assignments: [],
+  conflictData: {},
   current: "" // id of the current one being edited
 };
 
@@ -73,6 +79,15 @@ const setAssignmentIsSaving = (state, { payload }) => {
   state.isAssigning = payload;
 };
 
+const setAssignmentFailStatus = (state, { payload }) => {
+  state.hasCommonStudents = true;
+  state.conflictData = payload;
+};
+
+const toggleCommonAssignmentsPopup = (state, { payload }) => {
+  state.hasCommonStudents = payload;
+};
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: state => {
     state.isLoading = true;
@@ -81,14 +96,25 @@ export const reducer = createReducer(initialState, {
   [SET_ASSIGNMENT]: addAssignment,
   [SET_CURRENT_ASSIGNMENT]: setCurrent,
   [REMOVE_ASSIGNMENT]: removeAssignment,
-  [SET_ASSIGNMENT_SAVING]: setAssignmentIsSaving
+  [SET_ASSIGNMENT_SAVING]: setAssignmentIsSaving,
+  [UPDATE_ASSIGN_FAIL_DATA]: setAssignmentFailStatus,
+  [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup
 });
 
 // selectors
 const module = "authorTestAssignments";
-const currentSelector = state => state[module].current;
 
-export const getAssignmentsSelector = state => state[module].assignments;
+export const stateSelector = state => state[module];
+
+const currentSelector = createSelector(
+  stateSelector,
+  state => state.current
+);
+
+export const getAssignmentsSelector = createSelector(
+  stateSelector,
+  state => state.assignments
+);
 export const getCurrentAssignmentSelector = createSelector(
   currentSelector,
   getAssignmentsSelector,
@@ -105,6 +131,16 @@ export const getCurrentAssignmentSelector = createSelector(
       class: []
     };
   }
+);
+
+export const getHasCommonStudensSelector = createSelector(
+  stateSelector,
+  state => state.hasCommonStudents
+);
+
+export const getCommonStudentsSelector = createSelector(
+  stateSelector,
+  state => state.conflictData?.commonStudents || []
 );
 // saga
 
@@ -156,42 +192,21 @@ function* saveAssignment({ payload }) {
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 
-    const isUpdate = !!payload._id;
-    let updateTestActivities = false;
-
-    // if updating, and releaseScore changes,remove the class level settings :D
-    if (isUpdate) {
-      const currentData = yield select(getCurrentAssignmentSelector);
-
-      if (currentData.releaseScore === payload.releaseScore) {
-        const { scoreReleasedClasses: releasedClasses, googleAssignmentIds } = currentData;
-        payload.class = payload.class.map(item => {
-          if (releasedClasses.includes(item._id)) {
-            item.releaseScore = "SCORE_ONLY";
-          }
-          if (googleAssignmentIds[item._id]) {
-            item.googleId = googleAssignmentIds[item._id];
-          }
-          return item;
-        });
-      } else {
-        updateTestActivities = true;
-      }
-    }
     let userRole = yield select(getUserRole);
     const testType = get(payload, "testType", test.testType);
-    let data = [];
-    const visibility = payload.testContentVisibility ? { testContentVisibility: payload.testContentVisibility } : {};
-    data = testIds.map(testId =>
+    //teacher can not update test content visibility.
+    const visibility = payload.testContentVisibility &&
+      userRole !== roleuser.TEACHER && { testContentVisibility: payload.testContentVisibility };
+    //on teacher assigning common assessments convert it to class assessment.
+    const testTypeUpdated =
+      userRole === roleuser.TEACHER && testType === testContants.type.COMMON ? testContants.type.ASSESSMENT : testType;
+    const data = testIds.map(testId =>
       omit(
         {
           ...payload,
           startDate,
           endDate,
-          testType:
-            userRole === roleuser.TEACHER && testType === testContants.type.COMMON
-              ? testContants.type.ASSESSMENT
-              : testType,
+          testType: testTypeUpdated,
           ...visibility,
           testId
         },
@@ -203,18 +218,22 @@ function* saveAssignment({ payload }) {
           "students",
           "scoreReleasedClasses",
           "googleAssignmentIds",
-          userRole === "teacher" ? "testContentVisibility" : ""
+          "allowCommonStudents"
         ]
       )
     );
-    const result = isUpdate
-      ? yield call(assignmentApi.update, payload._id, { ...data, updateTestActivities })
-      : yield call(assignmentApi.create, { assignments: data, assignedBy });
-    const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
+    const result = yield call(assignmentApi.create, {
+      assignments: data,
+      assignedBy,
+      allowCommonStudents: !!payload.allowCommonStudents
+    });
+    //TODO remove all below codes expect route and success message as the stores are not being used. and saving assignment will just navigate user to the next route
+    const assignment = formatAssignment(result[0]);
     const successMessage = `${payload.playlistModuleId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
+    yield put(toggleHasCommonAssignmentsPopupAction(false));
     const assignmentId = result[0]._id;
     yield put(
       push(
@@ -224,10 +243,17 @@ function* saveAssignment({ payload }) {
       )
     );
   } catch (err) {
+    //enable button if call fails
+    yield put(setAssignmentSavingAction(false));
+    console.error(err);
     if (err.status === 409) {
+      if (err.data.commonStudents && err.data.commonStudents.length) {
+        return yield put(updateAssignFailDataAction(err.data));
+      }
       return yield call(message.error, err.data.message);
     }
-    console.error(err);
+    yield put(toggleHasCommonAssignmentsPopupAction(false));
+    yield call(message.error, err.statusText);
   }
 }
 

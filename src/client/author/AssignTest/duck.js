@@ -3,15 +3,9 @@ import { get } from "lodash";
 import { createSelector } from "reselect";
 
 export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
-export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 
 export const fetchAssignmentsAction = payload => ({
   type: FETCH_ASSIGNMENTS,
-  payload
-});
-
-export const saveAssignmentAction = payload => ({
-  type: SAVE_ASSIGNMENT,
   payload
 });
 

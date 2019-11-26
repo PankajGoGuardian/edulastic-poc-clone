@@ -21,26 +21,16 @@ import {
 
 class StudentQuestionContainer extends Component {
   render() {
-    let totalScore = 0;
-    let totalMaxScore = 0;
-    const data = [];
     const { testActivity: studentItems } = this.props;
     const { classResponse, additionalData, studentResponse } = this.props;
     const testActivity = studentResponse ? studentResponse.testActivity : null;
     const questionActivities = studentResponse ? studentResponse.questionActivities : null;
 
-    if (questionActivities) {
-      questionActivities.forEach((item, i) => {
-        totalScore += item.score || 0;
-        totalMaxScore += item.maxScore || 1;
-        data.push({
-          id: item._id,
-          name: `Q${i + 1}`,
-          red: (item.maxScore || 1) - (item.score || 0),
-          green: item.score || 0,
-          all: item.maxScore || 1
-        });
-      });
+    let score = 0,
+      maxScore = 0;
+    if (testActivity) {
+      score = testActivity.score;
+      maxScore = testActivity.maxScore;
     }
 
     let assignmentId = testActivity ? testActivity.assignmentId : "";
@@ -52,6 +42,7 @@ class StudentQuestionContainer extends Component {
     const { assignmentIdClassId } = this.props;
     assignmentId = assignmentId || assignmentIdClassId.assignmentId;
     groupId = groupId || assignmentIdClassId.classId;
+
     return (
       <StyledStudentQuestion>
         <StudentQuestionHeader>
@@ -82,9 +73,9 @@ class StudentQuestionContainer extends Component {
 
           <ScoreContainer>
             <ScoreLabel>TOTAL SCORE</ScoreLabel>
-            <TotalScore>{totalScore}</TotalScore>
+            <TotalScore>{score}</TotalScore>
             <FractionLine />
-            <TotalScore>{totalMaxScore}</TotalScore>
+            <TotalScore>{maxScore}</TotalScore>
           </ScoreContainer>
         </StudentQuestionHeader>
 

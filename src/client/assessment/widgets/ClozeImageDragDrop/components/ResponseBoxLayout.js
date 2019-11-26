@@ -32,23 +32,25 @@ const ResponseBoxLayout = ({
   fontSize,
   dragHandler,
   onDrop,
+  disableResponse,
   transparentResponses,
   connectDropTarget,
   isOver,
   responseContainerPosition,
   getHeading,
+  choiceStyle,
   theme
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   return connectDropTarget(
-    <div style={{ width: "fit-content" }}>
+    <div>
       <StyledResponseDiv
         className="responses_box"
         data-cy="responses-box"
         style={{
           padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
           height: horizontallyAligned && "100%",
-          border: `1px solid ${theme?.widgets?.clozeDragDrop?.correctAnswerBoxBorderColor}`,
+          border: `1px solid ${theme.widgets.clozeDragDrop.correctAnswerBoxBorderColor}`,
           ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
         }}
       >
@@ -56,22 +58,27 @@ const ResponseBoxLayout = ({
           <div
             style={{
               margin: "0 auto 1rem 8px",
-              color: theme?.textColor,
-              fontWeight: theme?.bold,
-              fontSize: theme?.smallFontSize,
-              lineHeight: theme?.headerLineHeight
+              color: theme.textColor,
+              fontWeight: theme.bold,
+              fontSize: theme.smallFontSize,
+              lineHeight: theme.headerLineHeight
             }}
           >
             {getHeading("component.cloze.dragDrop.optionContainerHeading")}
           </div>
-          <div>
+          <div
+            style={{
+              display: horizontallyAligned && "flex",
+              flexDirection: horizontallyAligned && "column"
+            }}
+          >
             {responses.map((option = "", index) => (
               <StyledResponseOption
                 key={index}
                 className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
                 style={{
-                  fontSize: smallSize ? 10 : fontSize,
-                  width: horizontallyAligned && "100%"
+                  ...choiceStyle,
+                  fontSize: smallSize ? 10 : fontSize
                 }}
               >
                 {!dragHandler && (
@@ -80,13 +87,20 @@ const ResponseBoxLayout = ({
                     index={index}
                     onDrop={onDrop}
                     item={option}
+                    disableResponse={disableResponse}
                     data={`${option}_null_${index}`}
                   >
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
                   </DragItem>
                 )}
                 {dragHandler && (
-                  <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
+                  <DragItem
+                    disableResponse={disableResponse}
+                    index={index}
+                    onDrop={onDrop}
+                    item={option}
+                    data={`${option}_null_${index}`}
+                  >
                     <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
                   </DragItem>
@@ -103,6 +117,7 @@ const ResponseBoxLayout = ({
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
   fontSize: PropTypes.string,
+  choiceStyle: PropTypes.object.isRequired,
   onDrop: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,

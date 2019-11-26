@@ -3,6 +3,7 @@ import { DragSource } from "react-dnd";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import striptags from "striptags";
+import { isMobileDevice } from "@edulastic/common";
 
 import DragPreview from "../../../components/SourceDragPreview";
 
@@ -63,7 +64,7 @@ class DragItem extends React.Component {
           }}
           draggable={!disableResponse}
         >
-          {!disableResponse && <DragPreview {...restProps}>{children}</DragPreview>}
+          {!disableResponse && isMobileDevice() && <DragPreview {...restProps}>{children}</DragPreview>}
           {children}
         </div>
       )

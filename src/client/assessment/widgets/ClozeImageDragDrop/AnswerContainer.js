@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Tooltip } from "antd";
-import { MathSpan } from "@edulastic/common";
+import { Popover } from "antd";
+import { MathSpan, measureText } from "@edulastic/common";
 
 const convertNumToPixel = val => {
   if (val.toString().search("px") === -1) {
@@ -33,6 +34,8 @@ const Container = styled.div`
 
 const AnswerContainer = ({ answer, height, width, isWrapText }) => {
   const [imageOriginalSize, setSize] = useState({ width: 1, height: 1 });
+  const [showPopover, togglePopover] = useState(false);
+
   const getImageWidth = (index, em) => {
     const img = new Image();
 
@@ -63,27 +66,32 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
   } else {
     imageHeight = Math.round((imageOriginalSize.height * imageWidth) / imageOriginalSize.width);
   }
+  const { width: contentWidth } = measureText(answer);
+  const isOverText = width < contentWidth;
+
+  const content = (
+    <div style={{ maxWidth: 400, overflow: "hidden" }}>
+      <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
+    </div>
+  );
 
   return (
-    <Container height={imageHeight} containerH={height} width={imageWidth} isWrapText={isWrapText}>
-      <Tooltip
-        overlayClassName="customTooltip"
-        placement="bottomLeft"
-        title={() => (
-          <MathSpan
-            dangerouslySetInnerHTML={{
-              __html: answer || ""
-            }}
-          />
-        )}
-      >
+    <Container
+      height={imageHeight}
+      containerH={height}
+      width={imageWidth}
+      isWrapText={isWrapText}
+      onMouseLeave={() => togglePopover(false)}
+      onMouseEnter={() => togglePopover(true)}
+    >
+      <Popover placement="bottomLeft" content={content} visible={isOverText && showPopover}>
         <MathSpan
           style={{ height: "100%", width: "100%", display: "flex", alignItems: "center" }}
           dangerouslySetInnerHTML={{
             __html: answer.replace("<p>", "<p class='clipText'>") || ""
           }}
         />
-      </Tooltip>
+      </Popover>
     </Container>
   );
 };

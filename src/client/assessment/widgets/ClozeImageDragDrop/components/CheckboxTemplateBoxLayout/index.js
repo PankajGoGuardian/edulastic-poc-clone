@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
-
 import { response } from "@edulastic/constants";
 import DropContainer from "../DropContainer";
 import TextContainer from "./TextContainer";
@@ -166,6 +165,7 @@ const CheckboxTemplateBox = ({
           className={containerClassName}
           status={status}
           isChecked={isChecked}
+          contWidth={responseContainer.width}
           style={
             checkAnswer
               ? {

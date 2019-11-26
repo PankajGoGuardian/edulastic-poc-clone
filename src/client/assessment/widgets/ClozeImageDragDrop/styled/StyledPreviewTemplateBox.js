@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledPreviewTemplateBox = styled.div.attrs({
-  className: props => `imagedropdown_template_box ${props.smallSize ? "small" : ""}`
+  className: "imagedropdown_template_box"
 })`
   font-size: ${props =>
     props.smallSize ? props.theme.widgets.clozeImageText.previewTemplateBoxSmallFontSize : props.fontSize};
@@ -11,8 +11,6 @@ export const StyledPreviewTemplateBox = styled.div.attrs({
     return theme.zoomLevel !== "xs" ? "auto" : calculatedMaxHeight;
   }};
   max-width: ${({ maxWidth }) => (!maxWidth ? null : maxWidth)};
-  overflow-x: auto;
-  overflow-y: hidden;
   height: ${({ height }) => (!height ? null : `${height}px`)};
   width: ${({ width }) => (!width ? null : `${width}px`)};
   margin: auto;

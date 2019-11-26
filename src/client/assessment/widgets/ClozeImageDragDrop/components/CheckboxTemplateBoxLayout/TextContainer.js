@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, measureText } from "@edulastic/common";
 import { Popover } from "antd";
 
 import DragItem from "../DragItem";
@@ -17,6 +17,7 @@ const TextContainer = ({
   onDropHandler,
   disableResponse,
   style,
+  contWidth,
   lessMinWidth,
   className,
   status,
@@ -41,6 +42,9 @@ const TextContainer = ({
             isExpressGrader={isExpressGrader}
           />
         );
+        const { width: contentWidth } = measureText(answer);
+        const isOverText = contWidth < contentWidth;
+
         return (
           <div style={{ ...style, width: "100%" }}>
             <DragItem
@@ -55,7 +59,7 @@ const TextContainer = ({
             >
               <Container width="100%">
                 <Container width="100%" height="100%">
-                  {lessMinWidth ? (
+                  {lessMinWidth || isOverText ? (
                     <Popover overlayClassName="customTooltip" content={popoverContent} isChecked={isChecked}>
                       <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
                     </Popover>

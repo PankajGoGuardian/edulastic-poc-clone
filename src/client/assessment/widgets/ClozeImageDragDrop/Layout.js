@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { differenceBy, findIndex } from "lodash";
 
 import { Select } from "@edulastic/common";
-import { response } from "@edulastic/constants";
+import { response, ChoiceDimensions } from "@edulastic/constants";
 import { Input, message } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -14,8 +13,8 @@ import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
+const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class Layout extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
@@ -133,7 +132,7 @@ class Layout extends Component {
               <Input
                 type="number"
                 min="1"
-                defaultValue={uiStyle?.responseContainerWidth || null}
+                defaultValue={uiStyle.responseContainerWidth || null}
                 onBlur={event => changeUiStyle("responseContainerWidth", +event.target.value)}
               />
             </Col>
@@ -176,6 +175,29 @@ class Layout extends Component {
               </SelectWrapper>
             </Col>
           </Row>
+
+          <Row gutter={20}>
+            <Col md={12}>
+              <Label>{t("component.options.choiceMinWidth")}</Label>
+              <Input
+                type="number"
+                min="1"
+                defaultValue={uiStyle.choiceMinWidth || choiceMinW}
+                onBlur={event => changeUiStyle("choiceMinWidth", +event.target.value)}
+                label={t("component.options.choiceMinWidth")}
+              />
+            </Col>
+            <Col md={12}>
+              <Label>{t("component.options.choiceMaxWidth")}</Label>
+              <Input
+                type="number"
+                min="1"
+                onBlur={event => changeUiStyle("choiceMaxWidth", +event.target.value)}
+                defaultValue={uiStyle.choiceMaxWidth || choiceMaxW}
+              />
+            </Col>
+          </Row>
+
           <Row gutter={20}>
             <Col md={12}>
               <Label>{t("component.options.widthpx")}</Label>
@@ -206,11 +228,11 @@ class Layout extends Component {
           </Row>
         </Block>
         <Block>
-          {responses.map((response, resIndex) => {
-            if (!response.id) {
+          {responses.map((_response, resIndex) => {
+            if (!_response.id) {
               return null;
             }
-            const resId = response.id;
+            const resId = _response.id;
             return (
               <IndividualContainer key={resId}>
                 <Row gutter={20}>
@@ -227,7 +249,7 @@ class Layout extends Component {
                       disabled={false}
                       containerStyle={{ width: 350 }}
                       onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
-                      value={parseInt(response.width, 10)}
+                      value={parseInt(_response.width, 10)}
                     />
                   </Col>
                   <Col md={12}>
@@ -238,7 +260,7 @@ class Layout extends Component {
                       disabled={false}
                       containerStyle={{ width: 350 }}
                       onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
-                      value={parseInt(response.height, 10)}
+                      value={parseInt(_response.height, 10)}
                     />
                   </Col>
                 </Row>

@@ -794,7 +794,12 @@ export const defaultTheme = {
       correctAnswerBoxBorderColor,
       rightIconColor,
       wrongIconColor,
-      imageZoom: 1
+      imageZoom: 1,
+      boxBgColor: containerWhite,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: themeColorLight,
+      indexBoxFontWeight: semiBold,
+      indexBoxFontSize: subtitleFontSize
     },
     clozeImageDropDown: {
       pointsFontFamily: "Open Sans",

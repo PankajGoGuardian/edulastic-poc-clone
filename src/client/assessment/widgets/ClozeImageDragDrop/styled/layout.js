@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 // position of response === right;
 export const RightResponseContainer = styled.div.attrs({
-  className: ({ smallSize }) => `right responseboxContainer ${smallSize ? "small" : ""}`
+  className: "right responseboxContainer"
 })`
+  flex-shrink: 0;
   height: auto;
-  display: flex;
+  display: ${({ isReviewTab }) => (isReviewTab ? "none" : "flex")};
   justify-content: center;
   ${({ smallSize, theme, width }) => `
       width: ${smallSize ? "120px" : width ? `${width}px` : "20%"};
@@ -17,10 +18,10 @@ export const RightResponseContainer = styled.div.attrs({
 
 export const RightTemplateContainer = styled.div`
   flex: 1;
+  flex-shrink: 0;
   border-radius: 10px;
-  ${({ studentReport, smallSize, responseBoxContainerWidth }) => `
-    margin: ${smallSize ? 0 : "15px 15px 15px 0"}
-    width: ${studentReport ? null : `calc(100% - ${responseBoxContainerWidth + 30}px)`}
+  ${({ smallSize }) => `
+    margin: ${smallSize ? 0 : "15px 15px 15px 0"};
   `}
 `;
 
@@ -35,7 +36,6 @@ export const RightContainer = styled.div`
 // position of response === left
 export const LeftContainer = styled.div`
   display: flex;
-  overflow: auto;
 `;
 
 export const LeftTemplateContainer = styled.div`
@@ -51,9 +51,8 @@ export const LeftResponseContainer = styled.div.attrs({
 })`
   margin: 15px;
   height: auto;
-  border-radius: 10;
   background: ${({ theme }) => theme.widgets.clozeImageDragDrop.responseBoxBgColor};
-  display: flex;
+  display: ${({ isReviewTab }) => (isReviewTab ? "none" : "flex")};
   justify-content: center;
   width: ${({ width }) => (width ? `${width}px` : "20%")};
 `;

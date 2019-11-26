@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
+import { Form, Row, Col, Select, Tabs, Input } from "antd";
 import { get } from "lodash";
 import { userApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
@@ -11,9 +11,7 @@ import {
   SelUserKindDiv,
   ItemDiv,
   Text,
-  IconWrapper,
   ColWrapper,
-  ActionButton,
   StyledModal,
   StyledSearch,
   ModalCloseIconWrapper,
@@ -27,22 +25,12 @@ import {
   AddBulkUserPrimaryTextContainer,
   IconSwap
 } from "./styled";
-import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 import { ModalFormItem } from "../AddStudentModal/styled";
-import {
-  themeColor,
-  white,
-  darkGrey1,
-  fadedBlack,
-  lightGreySecondary,
-  greyScoreCardTitleColor,
-  lightGrey4
-} from "@edulastic/colors";
 import { IconClose, IconCorrect } from "@edulastic/icons";
+import { withNamespaces } from "react-i18next";
+import { compose } from "redux";
 
-const { TabPane } = Tabs;
-const Search = Input.Search;
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
     moveItem(item);
@@ -481,13 +469,16 @@ class InviteMultipleStudentModal extends Component {
   }
 }
 
-const ConnectedInviteMultipleStudentModal = connect(
-  state => ({
-    orgData: get(state, "user.user.orgData", {}),
-    role: get(state, "user.user.role", null)
-  }),
-  {}
-)(InviteMultipleStudentModal);
+const enhance = compose(
+  withNamespaces("manageDistrict"),
+  Form.create(),
+  connect(
+    state => ({
+      orgData: get(state, "user.user.orgData", {}),
+      role: get(state, "user.user.role", null)
+    }),
+    {}
+  )
+);
 
-const InviteMultipleStudentModalForm = Form.create()(ConnectedInviteMultipleStudentModal);
-export default InviteMultipleStudentModalForm;
+export default enhance(InviteMultipleStudentModal);

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
 import { connect } from "react-redux";
-import { isArray, isUndefined, isNull, isEmpty, isObject } from "lodash";
+import { isArray, isUndefined, isNull, isEmpty, isObject, get } from "lodash";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
@@ -222,9 +222,8 @@ class QuestionItem extends React.Component {
   };
 
   renderScore = qId => {
-    const { feedback = {}, previousFeedback = [], viewMode } = this.props;
-
-    const { score = 0, maxScore = 0, feedback: teacherComments, ...rest } =
+    const { feedback = {}, previousFeedback = [], viewMode, data } = this.props;
+    const { score = 0, maxScore = get(data, "validation.validResponse.score", 0), feedback: teacherComments, ...rest } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
     return (
       <>

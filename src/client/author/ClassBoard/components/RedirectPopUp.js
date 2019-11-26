@@ -8,7 +8,7 @@ import { BodyContainer } from "./styled";
 
 const QuestionDelivery = {
   ALL: "All",
-  SKIPPED_WRONG: "Skipped and Wrong"
+  "SKIPPED AND WRONG": "Skipped and Wrong"
 };
 
 const ShowPreviousAttempt = {
@@ -93,7 +93,7 @@ const RedirectPopUp = ({
         specificStudents: type === "entire" ? false : true,
         students: type === "entire" ? [] : selected,
         showPreviousAttempt: showPrevAttempt,
-        // QuestionDelivery: qDeliveryState,
+        questionsDelivery: qDeliveryState,
         endDate: +dueDate
       });
       closePopup();

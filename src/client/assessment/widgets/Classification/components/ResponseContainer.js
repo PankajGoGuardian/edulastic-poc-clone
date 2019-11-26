@@ -5,7 +5,6 @@ export const ResponseContainer = styled.div`
   padding: 10px;
   position: relative;
   display: block;
-  overflow: auto;
 
   ${({ theme, imageUrl, direction, choiceWidth, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
     let css = ``;

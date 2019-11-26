@@ -150,7 +150,6 @@ export const TimeSpentWrapper = styled.p`
 
 export const FlexContainer = styled.div`
   flex: auto;
-  overflow: auto;
   display: flex;
   flex-direction: column;
   max-width: 100%;

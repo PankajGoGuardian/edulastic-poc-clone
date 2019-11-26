@@ -2,14 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
-import { InstructorStimulus, MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
 
 import Matrix from "./Matrix";
 import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
 import { CLEAR } from "../../../constants/constantsForQuestions";
 
 const Preview = ({
-  type,
   saveAnswer,
   userAnswer,
   item,
@@ -19,10 +17,8 @@ const Preview = ({
   previewTab,
   changePreviewTab,
   disableResponse,
-  showQuestionNumber,
-  qIndex,
-  isReviewTab,
-  changeView
+  changeView,
+  evaluation
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
@@ -53,25 +49,18 @@ const Preview = ({
 
   return (
     <QuestionWrapper>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        <QuestionContentWrapper>
-          <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          <Matrix
-            stems={item.stems}
-            options={item.options}
-            uiStyle={item.uiStyle}
-            response={userAnswer}
-            isMultiple={item.multipleResponses}
-            onCheck={!disableResponse ? handleCheck : () => {}}
-            validation={item.validation}
-            type={type}
-            smallSize={smallSize}
-            previewTab={previewTab}
-            isReviewTab={isReviewTab}
-          />
-        </QuestionContentWrapper>
-      </QuestionTitleWrapper>
+      <QuestionContentWrapper>
+        <Matrix
+          stems={item.stems}
+          options={item.options}
+          uiStyle={item.uiStyle}
+          response={userAnswer}
+          isMultiple={item.multipleResponses}
+          onCheck={!disableResponse ? handleCheck : () => {}}
+          evaluation={evaluation}
+          smallSize={smallSize}
+        />
+      </QuestionContentWrapper>
 
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </QuestionWrapper>
@@ -79,31 +68,28 @@ const Preview = ({
 };
 
 Preview.propTypes = {
-  type: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.object.isRequired,
   onCheckAnswer: PropTypes.func.isRequired,
   feedbackAttempts: PropTypes.number.isRequired,
   smallSize: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
-  isReviewTab: PropTypes.bool,
-  changeView: PropTypes.func.isRequired
+  changeView: PropTypes.func.isRequired,
+  changePreviewTab: PropTypes.func,
+  evaluation: PropTypes.object,
+  previewTab: PropTypes.string,
+  disableResponse: PropTypes.bool
 };
 
 Preview.defaultProps = {
   smallSize: false,
-  showQuestionNumber: false,
-  qIndex: null,
-  isReviewTab: false
+  evaluation: null,
+  previewTab: CLEAR,
+  changePreviewTab: () => {},
+  disableResponse: false
 };
 
 export default Preview;
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
 
 const QuestionContentWrapper = styled.div`
   display: flex;

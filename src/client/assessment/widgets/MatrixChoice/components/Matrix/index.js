@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, flatten } from "lodash";
-import styled, { withTheme } from "styled-components";
+import styled from "styled-components";
 
 import { helpers, WithMathFormula } from "@edulastic/common";
 import { mainTextColor } from "@edulastic/colors";
@@ -12,141 +11,28 @@ import StyledHeader from "./styled/StyledHeader";
 import { IconWrapper } from "./styled/IconWrapper";
 import { IconCheck } from "./styled/IconCheck";
 import { IconClose } from "./styled/IconClose";
-import { CHECK_ANSWER } from "../../../../constants/actions";
-import { SHOW_ANSWER } from "../../../../../author/src/constants/actions";
-import { CHECK, SHOW } from "../../../../constants/constantsForQuestions";
-
-const getResponses = validation => {
-  const altResponses =
-    validation.altResponses && validation.altResponses.length ? validation.altResponses.map(res => res.value) : [];
-  return [validation.validResponse.value, ...altResponses];
-};
-
-const validatedAnswers = (answers, responses, matrix, type) => {
-  let result = [];
-
-  if (type === "show") {
-    const newMatrix = cloneDeep(matrix);
-
-    result = [
-      newMatrix.map((mat, matIndex) =>
-        mat.map((row, rowIndex) => {
-          const isCorrect = responses.some(arr => {
-            return arr[matIndex] && arr[matIndex].includes(rowIndex);
-          });
-
-          return isCorrect;
-        })
-      )
-    ];
-
-    const userResponsesResult = responses.map(res => {
-      let newMatrix = cloneDeep(matrix);
-
-      newMatrix = newMatrix.map((mat, matIndex) =>
-        mat.map((row, rowIndex) => {
-          if (!res[matIndex]) {
-            res[matIndex] = [];
-          }
-
-          if (!answers[matIndex]) {
-            answers[matIndex] = [];
-          }
-
-          if (!res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex)) {
-            return "incorrect";
-          }
-
-          return res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex);
-        })
-      );
-
-      return newMatrix;
-    });
-
-    result = [...result, ...userResponsesResult];
-  } else {
-    result = responses.map(res => {
-      let newMatrix = cloneDeep(matrix);
-
-      newMatrix = newMatrix.map((mat, matIndex) =>
-        mat.map((row, rowIndex) => {
-          if (!res[matIndex]) {
-            res[matIndex] = [];
-          }
-
-          if (!answers[matIndex]) {
-            answers[matIndex] = [];
-          }
-
-          if (!res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex)) {
-            return "incorrect";
-          }
-
-          return res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex);
-        })
-      );
-
-      return newMatrix;
-    });
-  }
-
-  return result;
-};
 
 const MathSpan = WithMathFormula(styled.div`
   height: 100%;
 `);
 
 const Matrix = props => {
-  const {
-    stems,
-    options,
-    response,
-    isMultiple,
-    onCheck,
-    uiStyle,
-    validation,
-    type,
-    smallSize,
-    theme,
-    previewTab,
-    isReviewTab
-  } = props;
-  let correctAnswersMatrix;
+  const { stems, options, response, isMultiple, onCheck, uiStyle, evaluation, smallSize } = props;
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
     return null;
   }
 
-  if (response && validation && type !== "clear") {
-    const responses = getResponses(validation);
-    const matrix = stems.map(() => options.map(() => false));
-    correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
-  }
-
-  if (isReviewTab) {
-    const responses = getResponses(validation);
-    const matrix = stems.map(() => options.map(() => false));
-    correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, "show");
-  }
-
   const getCell = (columnIndex, data) => {
     let checked = false;
     let correct = false;
 
-    if (correctAnswersMatrix) {
-      const answers = correctAnswersMatrix.map(mat => mat[data.index][columnIndex]);
-
-      const isTrue = el => el === true;
-      const isIncorrect = el => el === "incorrect";
-
-      if (answers.some(isTrue)) {
-        correct = true;
-      } else if (answers.some(isIncorrect)) {
-        correct = "incorrect";
-      }
+    if (evaluation && evaluation.length > 0) {
+      correct = evaluation[data.index] ? true : "incorrect";
+    }
+    if (!Array.isArray(response.value[data.index])) {
+      correct = false;
     }
 
     if (data && data.value && data.value.length) {
@@ -172,73 +58,73 @@ const Matrix = props => {
         label={options[columnIndex]}
         isMultiple={isMultiple}
         smallSize={smallSize}
-      >
-        {previewTab === CHECK || previewTab === SHOW ? (
-          <IconWrapper>
+      />
+    );
+  };
+
+  const isTable = uiStyle.type === "table";
+
+  const optionsData = options.map((option, i) => ({
+    title: (
+      <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: isTable ? option : "" }} />
+    ),
+    dataIndex: `${i}`,
+    width: uiStyle.optionWidth || "auto",
+    key: i,
+    render: data => getCell(i, data)
+  }));
+
+  const hasOptionRow = !helpers.isEmpty(uiStyle.optionRowTitle);
+  const hasStemTitle = !helpers.isEmpty(uiStyle.stemTitle);
+
+  const stemTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle || "" }} />;
+  const optionRowTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || "" }} />;
+
+  if (evaluation && evaluation.length > 0) {
+    optionsData.push({
+      title: "",
+      dataIndex: options.length,
+      key: options.length,
+      render: ({ value, index }) => {
+        let correct = value === true ? true : value === false ? "incorrect" : false;
+        if (!Array.isArray(response.value[index])) {
+          correct = false;
+        }
+        return (
+          <IconWrapper correct={correct}>
             {correct === true && <IconCheck />}
             {correct === "incorrect" && <IconClose />}
           </IconWrapper>
-        ) : null}
-      </MatrixCell>
-    );
-  };
+        );
+      }
+    });
+  }
 
-  let hideEmptycell = false;
+  let columns = [
+    {
+      title: stemTitle,
+      dataIndex: "stem",
+      key: "stem",
+      width: uiStyle.stemWidth || "auto",
+      render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
+    },
+    {
+      title: optionRowTitle,
+      children: [...optionsData]
+    }
+  ];
 
-  const getColumns = () => {
-    const isTable = uiStyle.type === "table";
-
-    const optionsData = options.map((option, i) => ({
-      title: isTable ? (
-        <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: option }} />
-      ) : (
-        (() => (hideEmptycell = true))()
-      ),
-      dataIndex: `${i}`,
-      width: uiStyle.optionWidth || "auto",
-      key: i,
-      render: data => getCell(i, data)
-    }));
-
-    const stemTitle = !helpers.isEmpty(uiStyle.stemTitle) ? (
-      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle }} />
-    ) : (
-      ""
-    );
-    const optionRowTitle = !helpers.isEmpty(uiStyle.optionRowTitle) ? (
-      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle }} />
-    ) : (
-      ""
-    );
-
-    let columns = [
+  if (isTable && uiStyle.stemNumeration) {
+    columns = [
       {
-        title: stemTitle,
-        dataIndex: "stem",
-        key: "stem",
-        width: uiStyle.stemWidth || "auto",
+        title: "",
+        dataIndex: "numeration",
+        key: "numeration",
         render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
       },
-      {
-        title: optionRowTitle,
-        children: [...optionsData]
-      }
+      ...columns
     ];
-
-    if (uiStyle.type === "table" && uiStyle.stemNumeration) {
-      columns = [
-        {
-          title: "",
-          dataIndex: "numeration",
-          key: "numeration",
-          render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
-        },
-        ...columns
-      ];
-    }
-
-    return columns;
-  };
+  }
 
   const getData = i => {
     const result = {};
@@ -249,6 +135,13 @@ const Matrix = props => {
         index: i
       };
     });
+
+    if (evaluation && evaluation.length > 0) {
+      result[options.length] = {
+        value: evaluation[i],
+        index: i
+      };
+    }
 
     return result;
   };
@@ -262,17 +155,21 @@ const Matrix = props => {
 
   const fontSize = getFontSize(uiStyle.fontsize);
 
+  const showHead = isTable || hasStemTitle || hasOptionRow;
+
   return (
     <StyledTable
+      evaluated={evaluation && evaluation.length > 0}
       data-cy="matrixTable"
       fontSize={fontSize}
       horizontalLines={uiStyle.horizontalLines}
-      columns={getColumns()}
+      columns={columns}
       dataSource={data}
       pagination={false}
       maxWidth={uiStyle.maxWidth}
-      hasOptionRow={!helpers.isEmpty(uiStyle.optionRowTitle)}
-      hideEmptycell={hideEmptycell}
+      hasOptionRow={hasOptionRow}
+      isTable={isTable}
+      showHead={showHead}
     />
   );
 };
@@ -285,19 +182,14 @@ Matrix.propTypes = {
   uiStyle: PropTypes.object,
   smallSize: PropTypes.bool,
   isMultiple: PropTypes.bool,
-  validation: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.object.isRequired,
-  isReviewTab: PropTypes.bool
+  evaluation: PropTypes.object
 };
 
 Matrix.defaultProps = {
   isMultiple: false,
-  validation: null,
-  type: "clear",
+  evaluation: null,
   smallSize: false,
-  isReviewTab: false,
   uiStyle: {}
 };
 
-export default withTheme(Matrix);
+export default Matrix;

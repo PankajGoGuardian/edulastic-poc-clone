@@ -7,6 +7,7 @@ import produce from "immer";
 import { withRouter } from "react-router-dom";
 
 import { withNamespaces } from "@edulastic/localization";
+import { CorrectAnswersContainer, MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { replaceVariables, updateVariables } from "../../utils/variables";
@@ -20,7 +21,7 @@ import MultipleChoiceOptions from "./MultipleChoiceOptions";
 import Steams from "./Steams";
 import Answers from "./Answers";
 import { ContentArea } from "../../styled/ContentArea";
-import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { PREVIEW, EDIT, SHOW, CLEAR } from "../../constants/constantsForQuestions";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
@@ -44,6 +45,10 @@ const MatrixChoice = ({
   disableResponse,
   changeView,
   advancedLink,
+  t,
+  evaluation,
+  isReviewTab,
+  showQuestionNumber,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
@@ -80,6 +85,9 @@ const MatrixChoice = ({
   };
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+
+  const validResponse = item.validation?.validResponse;
+  const altResponses = item.validation?.altResponses;
 
   return (
     <Fragment>
@@ -125,40 +133,11 @@ const MatrixChoice = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          {previewTab === CHECK && (
-            <Preview
-              type="check"
-              saveAnswer={saveAnswer}
-              userAnswer={answer}
-              item={itemForPreview}
-              feedbackAttempts={feedbackAttempts}
-              onCheckAnswer={_checkAnswer}
-              previewTab={previewTab}
-              disableResponse={disableResponse}
-              changeView={changeView}
-              {...restProps}
-            />
-          )}
-
-          {previewTab === SHOW && (
-            <Preview
-              type="show"
-              saveAnswer={saveAnswer}
-              userAnswer={answer}
-              item={itemForPreview}
-              feedbackAttempts={feedbackAttempts}
-              onCheckAnswer={_checkAnswer}
-              previewTab={previewTab}
-              disableResponse={disableResponse}
-              changeView={changeView}
-              {...restProps}
-            />
-          )}
-
-          {previewTab === CLEAR && (
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          {previewTab === CLEAR ? (
             <Preview
               smallSize={smallSize}
-              type="clear"
               saveAnswer={!disableResponse ? saveAnswer : () => {}}
               userAnswer={answer}
               item={itemForPreview}
@@ -169,6 +148,56 @@ const MatrixChoice = ({
               changeView={changeView}
               {...restProps}
             />
+          ) : (
+            <Preview
+              saveAnswer={!disableResponse ? saveAnswer : () => {}}
+              userAnswer={answer}
+              item={itemForPreview}
+              feedbackAttempts={feedbackAttempts}
+              onCheckAnswer={_checkAnswer}
+              previewTab={previewTab}
+              disableResponse={disableResponse}
+              changeView={changeView}
+              evaluation={evaluation}
+              {...restProps}
+            />
+          )}
+
+          {(previewTab === SHOW || isReviewTab) && (
+            <Fragment>
+              <CorrectAnswersContainer title={t("component.matrix.correctAnswer")}>
+                <Preview
+                  saveAnswer={() => {}}
+                  userAnswer={validResponse}
+                  item={itemForPreview}
+                  feedbackAttempts={feedbackAttempts}
+                  onCheckAnswer={() => {}}
+                  previewTab={previewTab}
+                  disableResponse
+                  changeView={() => {}}
+                  evaluation={item.stems.map(() => true)}
+                  {...restProps}
+                />
+              </CorrectAnswersContainer>
+
+              {altResponses &&
+                altResponses.map((altAnswer, i) => (
+                  <CorrectAnswersContainer title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}>
+                    <Preview
+                      saveAnswer={() => {}}
+                      userAnswer={altAnswer}
+                      item={itemForPreview}
+                      feedbackAttempts={feedbackAttempts}
+                      onCheckAnswer={() => {}}
+                      previewTab={previewTab}
+                      disableResponse
+                      changeView={() => {}}
+                      evaluation={item.stems.map(() => true)}
+                      {...restProps}
+                    />
+                  </CorrectAnswersContainer>
+                ))}
+            </Fragment>
           )}
         </Wrapper>
       )}
@@ -177,6 +206,7 @@ const MatrixChoice = ({
 };
 
 MatrixChoice.propTypes = {
+  t: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.object,
   saveAnswer: PropTypes.func.isRequired,
@@ -191,7 +221,10 @@ MatrixChoice.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  changeView: PropTypes.func.isRequired
+  changeView: PropTypes.func.isRequired,
+  evaluation: PropTypes.object,
+  isReviewTab: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool
 };
 
 MatrixChoice.defaultProps = {
@@ -204,7 +237,10 @@ MatrixChoice.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  disableResponse: false
+  disableResponse: false,
+  evaluation: null,
+  isReviewTab: false,
+  showQuestionNumber: false
 };
 
 const enhance = compose(

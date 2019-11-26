@@ -375,7 +375,7 @@ class StandardsProficiencyTable extends React.Component {
                         <StyledLabel>Decay %</StyledLabel>
                         <StyledAverageInput
                           disabled={this.props.readOnly}
-                          defaultValue={calcDecayingAttr}
+                          placeholder={this.props.decay}
                           value={calcDecayingAttr}
                           maxLength={2}
                           onChange={e => this.onChangeCalcAttr(e, "DECAYING_AVERAGE")}
@@ -391,10 +391,10 @@ class StandardsProficiencyTable extends React.Component {
                   <InputOption margin={calcType === "MOVING_AVERAGE" ? "5px" : "0px"}>
                     {calcType === "MOVING_AVERAGE" && (
                       <React.Fragment>
-                        <StyledLabel>Not of Assesments</StyledLabel>
+                        <StyledLabel>No of Assesments</StyledLabel>
                         <StyledAverageInput
                           disabled={this.props.readOnly}
-                          defaultValue={calcMovingAvrAttr}
+                          placeholder={this.props.noOfAssessments}
                           value={calcMovingAvrAttr}
                           onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}
                         />
@@ -416,7 +416,16 @@ const enhance = compose(
   connect(
     (state, ownProps) => {
       const calcType = get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcType"], "");
-      const calcAttr = get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcAttribute"], 0);
+      const calcDecayingAttr = get(
+        state,
+        ["standardsProficiencyReducer", "data", ownProps.index, "calcDecayingAttr"],
+        ""
+      );
+      const calcMovingAvrAttr = get(
+        state,
+        ["standardsProficiencyReducer", "data", ownProps.index, "calcMovingAvrAttr"],
+        ""
+      );
       return {
         standardsProficiency: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "scale"], []),
         userOrgId: getUserOrgId(state),
@@ -424,8 +433,8 @@ const enhance = compose(
         /**
          * NOTE: pay attention here
          */
-        calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttr : 0,
-        calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttr : 0,
+        calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcDecayingAttr : "",
+        calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcMovingAvrAttr : "",
         standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "_id"], "")
       };
     },

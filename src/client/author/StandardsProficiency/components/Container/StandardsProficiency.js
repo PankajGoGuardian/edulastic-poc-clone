@@ -82,7 +82,7 @@ function ProfileRow(props) {
   const [deleteText, setDeleteText] = useState("");
   const proficiencyTableInstance = useRef();
 
-  const { _id, index, deleteRow, setEditing, active, readOnly, setName, onDuplicate } = props;
+  const { _id, index, deleteRow, setEditing, active, readOnly, setName, onDuplicate, decay, noOfAssessments } = props;
   const profileName = get(props, "profile.name", "");
   return (
     <ListItemStyled>
@@ -181,6 +181,8 @@ function ProfileRow(props) {
               name={get(props, "profile.name", "Untitled")}
               index={index}
               _id={_id}
+              decay={decay}
+              noOfAssessments={noOfAssessments}
             />
           </Col>
         </RowStyled>
@@ -212,7 +214,7 @@ function StandardsProficiency(props) {
   const [profileName, setProfileName] = useState("");
 
   const handleProfileLimit = () => {
-    const canCreateProfile = props.profiles.filter(x => x.createdBy._id === props.userId).length <= 10;
+    const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
     if (!canCreateProfile) {
       message.error("Maximum 10 profiles per user is allowed");
       return false;
@@ -245,9 +247,8 @@ function StandardsProficiency(props) {
     if (!handleProfileLimit()) {
       return;
     }
-    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
+    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, v1OrgId, ...profile } =
       props.profiles.find(x => x._id === _id) || {};
-    console.log("profile", profile);
     let lastVersion = 0;
     if (/#[0-9]*$/.test(name)) {
       lastVersion = parseInt(name.split("#").slice(-1)[0] || 0);
@@ -321,6 +322,8 @@ function StandardsProficiency(props) {
                 active={index === editingIndex}
                 deleteRow={remove}
                 loading={showSpin}
+                decay={get(profile, "decay", "")}
+                noOfAssessments={get(profile, "noOfAssessments", "")}
               />
             )}
           />

@@ -7,7 +7,7 @@ import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import {
   mobileWidthMax,
@@ -46,7 +46,15 @@ class FeedbackRight extends Component {
     }
 
     this.state = { score, maxScore };
+
     this.scoreInput = React.createRef();
+  }
+  static contextType = AnswerContext;
+
+  componentDidMount() {
+    if (this.context?.expressGrader === true) {
+      this.scoreInput?.current?.focus();
+    }
   }
 
   static getDerivedStateFromProps(

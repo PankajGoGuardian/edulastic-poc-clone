@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
-import striptags from "striptags";
+import { Tooltip } from "antd";
 
 import { WithResources } from "@edulastic/common";
 import AppConfig from "../../../../../../../../app-config";
@@ -93,12 +93,6 @@ class ResponseBox extends Component {
               {values.map((value, i) => {
                 let content = replaceLatexesWithMathHtml(value.text);
 
-                const regExp = new RegExp('<span class="input__math"', "g");
-                let title = "";
-                if (!regExp.test(content)) {
-                  title = striptags(content);
-                }
-
                 return (
                   <Rnd
                     key={value.id}
@@ -116,12 +110,18 @@ class ResponseBox extends Component {
                     className={`mark${draggingMark === i ? " dragging" : ""}`}
                     scale={shouldZoom ? scale : 1}
                   >
-                    <MarkContainer
-                      fontSize={12}
-                      dangerouslySetInnerHTML={{
-                        __html: `<div class='mark-content' title='${title}'>${content}</div>`
-                      }}
-                    />
+                    <Tooltip
+                      placement="bottomRight"
+                      title={<span dangerouslySetInnerHTML={{ __html: content }} />}
+                      arrowPointAtCenter
+                    >
+                      <MarkContainer
+                        fontSize={12}
+                        dangerouslySetInnerHTML={{
+                          __html: `<div class='mark-content'>${content}</div>`
+                        }}
+                      />
+                    </Tooltip>
                   </Rnd>
                 );
               })}
@@ -151,7 +151,7 @@ ResponseBox.propTypes = {
 
 ResponseBox.defaultProps = {
   values: [],
-  onAddMark: () => {},
+  onAddMark: () => { },
   minWidth: 600,
   minHeight: 150,
   titleWidth: defaultTitleWidth,

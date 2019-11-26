@@ -26,9 +26,14 @@ var _scoring = require("./const/scoring");
 var url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
 var evaluate = function evaluate(data) {
-  return _axios["default"].post(url, (0, _objectSpread2["default"])({}, data)).then(function(result) {
-    return result.data;
-  });
+  return _axios["default"]
+    .post(url, (0, _objectSpread2["default"])({}, data))
+    .then(function(result) {
+      return result.data;
+    })
+    ["catch"](function(err) {
+      throw err.response.data;
+    });
 };
 
 exports.evaluate = evaluate;

@@ -156,6 +156,12 @@ export const FlexContainer = styled.div`
   max-width: 100%;
 `;
 
+export const EvaluationMessage = styled.div`
+  color: rgb(250, 135, 52);
+  width: 100%;
+  text-align: center;
+`;
+
 const DummyQuestion = () => <></>;
 
 const getQuestion = type => {
@@ -312,6 +318,7 @@ class QuestionWrapper extends Component {
       selectedTheme = "default",
       displayFeedback = true,
       isPrintPreview = false,
+      evaluation,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
@@ -417,6 +424,7 @@ class QuestionWrapper extends Component {
               twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
             >
               <StyledFlexContainer>
+                {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}

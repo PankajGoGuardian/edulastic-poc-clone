@@ -301,8 +301,12 @@ class ClassQuestions extends Component {
     const testItems = this.getTestItems();
     const userWork = {};
 
-    const evaluation = questionActivities.reduce((acc, curr) => {
-      acc[curr.qid] = curr.evaluation;
+    const evaluationStatus = questionActivities.reduce((acc, curr) => {
+      if (curr.pendingEvaluation) {
+        acc[curr.qid] = "pending";
+      } else {
+        acc[curr.qid] = curr.evaluation;
+      }
       // accumulating userwork also here to avoid an extra loops. ummm... another frugal
       // ride over the looops?
       if (curr.scratchPad && !userWork[curr.testItemId]) {
@@ -322,7 +326,7 @@ class ClassQuestions extends Component {
           item={item}
           passages={passages}
           qIndex={qIndex || index}
-          evaluation={evaluation}
+          evaluation={evaluationStatus}
           showStudentWork={showStudentWork}
         />
       );

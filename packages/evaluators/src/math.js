@@ -9,7 +9,10 @@ export const evaluate = data =>
     .post(url, {
       ...data
     })
-    .then(result => result.data);
+    .then(result => result.data)
+    .catch(err => {
+      throw err.response.data;
+    });
 
 export const getChecks = answer => {
   const values = answer.value || [];

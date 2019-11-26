@@ -112,7 +112,7 @@ export const Header = styled.div`
   height: 65px;
   width: 100%;
   position: relative;
-  background: url(${props => (props.src ? props.src : "")});
+  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

@@ -205,7 +205,7 @@ export const addNewTagAction = createAction(ADD_NEW_TAG);
 export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
 
-export const defaultImage = "";
+export const defaultImage = "https://cdn2.edulastic.com/default/default-test-1.jpg";
 // reducer
 export const createBlankTest = () => ({
   title: undefined,

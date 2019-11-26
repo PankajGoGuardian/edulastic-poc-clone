@@ -42,7 +42,8 @@ export const Image = styled.div`
   width: 100%;
   height: 150px;
   position: relative;
-  background: ${props => (props.src ? `url(${props.src})` : `url("")`)};
+  background: ${props =>
+    props.src ? `url(${props.src})` : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

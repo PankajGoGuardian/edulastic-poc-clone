@@ -136,7 +136,7 @@ const initialPlaylistState = {
     _id: "",
     name: ""
   },
-  thumbnail: "",
+  thumbnail: "https://cdn2.edulastic.com/default/default-test-1.jpg",
   derivedFrom: {
     name: ""
   },

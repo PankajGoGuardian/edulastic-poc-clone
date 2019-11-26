@@ -34,7 +34,8 @@ export const Container = styled(Card)`
         right: 24px;
         border-radius: 4px;
         opacity: 0.3;
-        background: url(${props => (props.isPlaylist ? (props.src ? props.src : "") : "")});
+        background: url(${props =>
+          props.isPlaylist ? (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg") : ""});
       }
     }
   }
@@ -220,7 +221,7 @@ export const Header = styled.div`
   min-height: 120px;
   padding: 10px 15px;
   position: relative;
-  background: url(${props => (props.src ? props.src : "")});
+  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
   background-size: cover;
   &:hover {

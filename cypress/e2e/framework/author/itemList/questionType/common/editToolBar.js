@@ -67,6 +67,19 @@ class EditToolBar {
   textDropDown = () => this.frToolbar().find('[data-cmd="textdropdown"]');
 
   textInput = () => this.frToolbar().find('[data-cmd="textinput"]');
+
+  linkButton = () => this.frToolbar().find('[data-cmd="insertLink"]');
+
+  linkURL = () =>
+    this.frToolbar()
+      .first()
+      .find(".fr-link-attr")
+      .eq(0);
+  linkText = () =>
+    this.frToolbar()
+      .find(".fr-link-attr")
+      .eq(1);
+  insertLinkButton = () => this.frToolbar().find('[data-cmd="linkInsert"]');
 }
 
 export default EditToolBar;

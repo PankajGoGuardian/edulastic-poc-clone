@@ -273,20 +273,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         question.checkIfTextExist(queData.testtext);
       });
 
-      // it(" > give external link", () => {
-      //   question.checkIfTextExist(queData.testtext).type("{selectall}");
-      //   editToolBar.link().click( {force: true});
-      //   question.getSaveLink().click( {force: true});
-      //   question
-      //     .getComposeQuestionTextBoxLink()
-      //     .find("a")
-      //     .should("have.attr", "href")
-      //     .and("equal", queData.testtext)
-      //     .then(href => {
-      //       expect(href).to.equal(queData.testtext);
-      //     });
-      // });
 
+      it(" > give external link", () => {
+        question.checkIfTextExist(queData.testtext).type("{selectall}");
+        editToolBar.clickOnMore();
+        editToolBar.linkButton().click({ force: true });
+        editToolBar.linkURL().type(queData.testtext, { force: true });
+        //editToolBar.linkText().type(queData.testtext ,{force: true});
+        editToolBar.insertLinkButton().click();
+        question
+          .getComposeQuestionTextBox()
+          .find("a")
+          .should("have.attr", "href")
+          .and("equal", `http://${queData.testtext}`)
+          .then(href => {
+            expect(href).to.equal(`http://${queData.testtext}`);
+          });
+      });
+
+      
       it(" > insert formula", () => {
         question.checkIfTextExist(queData.testtext).clear();
       });
@@ -454,7 +459,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .should("be.checked");
         queData.decimalSeparators.forEach(item => {
           question.setAnswerSetDecimalSeparatorDropdown(item);
-          question.getAnswerSetDecimalSeparatorDropdownList_().contains("div", item);
+
+          question.getAnswerSetDecimalSeparatorDropdownListTab().contains("div", item);
+
+         
         });
         // question
         //   .getAddNewThousandsSeparator()
@@ -1132,7 +1140,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.setValue(input);
       cy.get("input[type='checkbox']").uncheck({ force: true });
-      question.setArgumentInput_("getAnswerSignificantDecimalPlaces", decimalPlaces);
+
+      question.setArgumentInputSignDec("getAnswerSignificantDecimalPlaces", decimalPlaces);
+
+      
       question.checkCorrectAnswer(expected, preview, input.length, true);
       question.getAnswerSignificantDecimalPlaces().uncheck({ force: true });
     });
@@ -1141,7 +1152,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       cy.get("input[type='checkbox']").uncheck({ force: true });
 
       question.setValue(input);
-      question.setArgumentInput_("getAnswerSignificantDecimalPlaces", decimalPlaces);
+
+      question.setArgumentInputSignDec("getAnswerSignificantDecimalPlaces", decimalPlaces);
+
       question.setSeparator("getAnswerCompareSides")();
 
       question.checkCorrectAnswer(expected, preview, 0, true);
@@ -1169,6 +1182,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.setValue(input);
       cy.get("input[type='checkbox']").uncheck({ force: true });
+
+      question.getAnswerTolerancecheckbox().check({ force: true });
+
       question
         .getAnswerTolerance()
         .clear({ force: true })

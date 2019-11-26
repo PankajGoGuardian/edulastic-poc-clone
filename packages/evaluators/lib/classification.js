@@ -9,10 +9,6 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-
-var _objectSpread5 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
@@ -21,11 +17,26 @@ var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
+var rowEvaluation = function rowEvaluation() {
+  var answer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var mainRow = answer.slice();
+  var evaluation = userResponse.map(function(i) {
+    if (mainRow.includes(i)) {
+      mainRow.splice(mainRow.indexOf(i), 1);
+      return true;
+    }
+
+    return false;
+  });
+  return evaluation;
+};
 /**
  * exact match evaluator
  * @param {Array} answers - possible set of correct answer
  * @param {Array} userReponse - answers set by user
  */
+
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var answers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -56,7 +67,8 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       // check equality in set handles order issue - here order in each row of response doesnt matter.
 
       _answer.forEach(function(row, i) {
-        if (!userResponse[i] || !(0, _isEqual2["default"])(new Set(row), new Set(userResponse[i]))) correct = false;
+        if (!userResponse[i] || !(0, _isEqual2["default"])(row.slice().sort(), userResponse[i].slice().sort()))
+          correct = false;
       }); // if muliple set of correct answer matches, give user max among them!
 
       if (correct) {
@@ -82,9 +94,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     // if score exist, that means its a perfect match. hence set every element
     // in every row as true.
     evaluation = userResponse.map(function(row, i) {
-      return row.reduce(function(finalEval, item) {
-        return (0, _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, true));
-      }, {});
+      return new Array(row.length).fill(true);
     });
   } else {
     // if its not a perfect match, construct evaluation based on
@@ -92,10 +102,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     var answer = answers[0].value;
     evaluation = userResponse.map(function(row, i) {
       var answerRow = answer[i] || [];
-      return row.reduce(function(finalEval, item) {
-        return (0,
-        _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
-      }, {});
+      return rowEvaluation(answerRow, row);
     });
   }
 
@@ -124,17 +131,12 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       maxScore = Math.max(maxScore, possibleMaxScore || 0);
       var currentEvalution = userResponse.map(function(row, i) {
         var answerRow = currentAnswer[i] || [];
-        return row.reduce(function(finalEval, item) {
-          return (0,
-          _objectSpread5[
-            "default"
-          ])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
-        }, {});
+        return rowEvaluation(answerRow, row);
       });
       var answersCount = (0, _flatten2["default"])(currentAnswer).length;
       var correctCount = currentEvalution.reduce(function(correct, item) {
-        var correctCount = Object.values(item).filter(_identity2["default"]).length;
-        return (correct += correctCount);
+        var rowCorrectCount = item.filter(_identity2["default"]).length;
+        return (correct += rowCorrectCount);
       }, 0);
       var currentScore = (possibleMaxScore * correctCount) / answersCount;
 

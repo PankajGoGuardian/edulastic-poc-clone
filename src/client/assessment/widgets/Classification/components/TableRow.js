@@ -76,7 +76,7 @@ const TableRow = ({
       }
     }
     const h = getChangedContainerHeight(maxH) + 40 || maxH + 40; // +40 to remove scrollbar on drag
-    wrapperRef.current.style.height = `${h}px`;
+    if (wrapperRef.curent) wrapperRef.current.style.height = `${h}px`;
   };
 
   const styles = {
@@ -201,7 +201,7 @@ const TableRow = ({
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
               const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
-              const valid = get(validArray, [index, resp.id], undefined);
+              const valid = get(validArray, [index, answerIndex], undefined);
               return (
                 <DragItem
                   isTransparent={isTransparent}

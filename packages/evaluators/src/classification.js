@@ -1,6 +1,20 @@
 import { isEqual, flatten, identity } from "lodash";
 import { ScoringType } from "./const/scoring";
 
+const rowEvaluation = (answer = [], userResponse = []) => {
+  let mainRow = answer.slice();
+  let evaluation = userResponse.map(i => {
+    if (mainRow.includes(i)) {
+      mainRow.splice(mainRow.indexOf(i), 1);
+      return true;
+    }
+
+    return false;
+  });
+
+  return evaluation;
+};
+
 /**
  * exact match evaluator
  * @param {Array} answers - possible set of correct answer
@@ -25,7 +39,7 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
     // check if all rows matches.
     // check equality in set handles order issue - here order in each row of response doesnt matter.
     answer.forEach((row, i) => {
-      if (!userResponse[i] || !isEqual(new Set(row), new Set(userResponse[i]))) correct = false;
+      if (!userResponse[i] || !isEqual(row.slice().sort(), userResponse[i].slice().sort())) correct = false;
     });
 
     // if muliple set of correct answer matches, give user max among them!
@@ -38,7 +52,7 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
     // if score exist, that means its a perfect match. hence set every element
     // in every row as true.
     evaluation = userResponse.map((row, i) => {
-      return row.reduce((finalEval, item) => ({ ...finalEval, [item]: true }), {});
+      return new Array(row.length).fill(true);
     });
   } else {
     // if its not a perfect match, construct evaluation based on
@@ -46,7 +60,7 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
     const answer = answers[0].value;
     evaluation = userResponse.map((row, i) => {
       const answerRow = answer[i] || [];
-      return row.reduce((finalEval, item) => ({ ...finalEval, [item]: answerRow.includes(item) }), {});
+      return rowEvaluation(answerRow, row);
     });
   }
 
@@ -66,12 +80,13 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
     maxScore = Math.max(maxScore, possibleMaxScore || 0);
     const currentEvalution = userResponse.map((row, i) => {
       const answerRow = currentAnswer[i] || [];
-      return row.reduce((finalEval, item) => ({ ...finalEval, [item]: answerRow.includes(item) }), {});
+      return rowEvaluation(answerRow, row);
     });
+
     const answersCount = flatten(currentAnswer).length;
     const correctCount = currentEvalution.reduce((correct, item) => {
-      let correctCount = Object.values(item).filter(identity).length;
-      return (correct += correctCount);
+      let rowCorrectCount = item.filter(identity).length;
+      return (correct += rowCorrectCount);
     }, 0);
     const currentScore = (possibleMaxScore * correctCount) / answersCount;
     if (currentScore > score) {

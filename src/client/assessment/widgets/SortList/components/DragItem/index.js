@@ -3,6 +3,7 @@ import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
+import { isMobileDevice } from "@edulastic/common";
 import { CHECK, SHOW, CLEAR } from "../../../../constants/constantsForQuestions";
 import { TextEmpty } from "./styled/TextEmpty";
 import DragPreview from "../../../../components/DragPreview";
@@ -49,26 +50,42 @@ const DragItem = ({
   previewTab,
   index,
   theme,
+  disableResponse,
   isResetOffset,
-  items
+  items,
+  style
 }) => {
   const showPreview = previewTab === CHECK || previewTab === SHOW;
+
+  const clickHandler = () => {
+    if (disableResponse) {
+      return;
+    }
+    if (active) {
+      onClick("");
+    } else {
+      onClick(obj);
+    }
+  };
+
   return (
     <div>
-      <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
-        <DragItemContent
-          active={active}
-          correct={correct}
-          obj={obj}
-          showPreview={showPreview}
-          smallSize={smallSize}
-          index={index}
-        />
-      </DragPreview>
+      {obj && isMobileDevice() && (
+        <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
+          <DragItemContent
+            active={active}
+            correct={correct}
+            obj={obj}
+            showPreview={showPreview}
+            smallSize={smallSize}
+            index={index}
+          />
+        </DragPreview>
+      )}
       {obj ? (
         connectDragSource(
           <div
-            onClick={() => (active ? onClick("") : onClick(obj))}
+            onClick={clickHandler}
             style={{
               opacity: isDragging ? 0 : 1,
               background: active
@@ -81,16 +98,16 @@ const DragItem = ({
               active={active}
               correct={correct}
               obj={obj}
+              style={style}
               index={index}
               showPreview={showPreview}
               smallSize={smallSize}
-              index={index}
             />
           </div>
         )
       ) : (
         <div>
-          <TextEmpty smallSize={smallSize}>
+          <TextEmpty smallSize={smallSize} style={style}>
             <HiddenContent dangerouslySetInnerHTML={{ __html: items[index] }} />
           </TextEmpty>
         </div>
@@ -117,18 +134,23 @@ DragItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   active: PropTypes.bool.isRequired,
   smallSize: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   correct: PropTypes.bool,
   previewTab: PropTypes.string,
   index: PropTypes.number.isRequired,
   theme: PropTypes.object.isRequired,
-  isResetOffset: PropTypes.bool
+  isResetOffset: PropTypes.bool,
+  style: PropTypes.object,
+  items: PropTypes.array
 };
 
 DragItem.defaultProps = {
   obj: null,
   correct: false,
   previewTab: CLEAR,
-  isResetOffset: false
+  isResetOffset: false,
+  items: [],
+  style: {}
 };
 
 const enhance = compose(

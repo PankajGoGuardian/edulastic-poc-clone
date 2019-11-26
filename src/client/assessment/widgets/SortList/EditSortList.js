@@ -20,10 +20,13 @@ const OptionsList = withPoints(QuillSortableList);
 const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
-  const handleUiStyleChange = (prop, uiStyle) => {
+  const handleUiStyleChange = (prop, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.uiStyle[prop] = uiStyle;
+        if (!draft.uiStyle) {
+          draft.uiStyle = {};
+        }
+        draft.uiStyle[prop] = value;
         updateVariables(draft);
       })
     );

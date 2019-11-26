@@ -61,7 +61,7 @@ import { PrintPreviewScore } from "./printPreviewScore";
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
-  justify-content: "space-between";
+  justify-content: space-between;
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;

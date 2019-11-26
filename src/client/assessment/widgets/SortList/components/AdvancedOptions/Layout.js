@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { ChoiceDimensions } from "@edulastic/constants";
 import { get } from "lodash";
 
 import FontSizeSelect from "../../../../containers/WidgetOptions/components/FontSize";
 import OrientationSelect from "../../../../components/OrientationSelect";
 
-import { Layout } from "../../../../containers/WidgetOptions/components";
+import { Layout, StemNumerationOption, NumberInput } from "../../../../containers/WidgetOptions/components";
 import Question from "../../../../components/Question";
-import { StemNumerationOption } from "../../../../containers/WidgetOptions/components";
 
+const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class LayoutWrapper extends Component {
   render() {
     const { onUiChange, advancedAreOpen, item, fillSections, cleanSections, t } = this.props;
@@ -42,6 +43,23 @@ class LayoutWrapper extends Component {
                 onChange={val => {
                   onUiChange("orientation", val);
                 }}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={60}>
+            <Col md={12}>
+              <NumberInput
+                label={t("component.options.choiceMinWidth")}
+                onChange={val => onUiChange("choiceMinWidth", +val)}
+                value={get(item, "uiStyle.choiceMinWidth", choiceMinW)}
+              />
+            </Col>
+            <Col md={12}>
+              <NumberInput
+                label={t("component.options.choiceMaxWidth")}
+                onChange={val => onUiChange("choiceMaxWidth", +val)}
+                value={get(item, "uiStyle.choiceMaxWidth", choiceMaxW)}
               />
             </Col>
           </Row>

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import styled from "styled-components";
-
+import { isMobileDevice } from "@edulastic/common";
 import DragPreview from "./DragPreview";
 
 import Item from "./Item";
@@ -64,9 +64,11 @@ const DragItemContainer = ({
       {disableDrag && <Item {...itemProps} showIndex />}
       {!disableDrag && (
         <>
-          <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
-            <Item {...itemProps} isDragging={false} />
-          </DragPreview>
+          {isMobileDevice() && (
+            <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
+              <Item {...itemProps} isDragging={false} />
+            </DragPreview>
+          )}
           {item &&
             connectDragSource(
               <div className="drag-item" data-cy={`drag-drop-item-${renderIndex}`}>

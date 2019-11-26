@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
 export const FullWidthContainer = styled.div`
-  width: 100%;
+  width: ${({ isVertical }) => (isVertical ? null : "100%")};
   margin-right: 0;
 `;

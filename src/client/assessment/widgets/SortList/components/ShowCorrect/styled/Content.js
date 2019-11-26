@@ -4,12 +4,11 @@ import { FlexRow } from "./FlexRow";
 
 export const Content = WithMathFormula(styled(FlexRow)`
   align-items: center;
-  padding-right: 36px;
-  padding-left: 16px;
+  padding: 8px 36px 8px 16px;
   white-space: normal;
   display: flex !important;
   && img {
-    width: 300px !important;
+    max-width: 400px !important;
     height: auto;
   }
 `);

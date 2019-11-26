@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-
+import { Popover } from "antd";
 import { CorrectAnswersContainer, Subtitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { getStemNumeration } from "../../../../utils/helpers";
@@ -9,27 +9,37 @@ import { Item } from "./styled/Item";
 import { Index } from "./styled/Index";
 import { Content } from "./styled/Content";
 
-const ShowCorrect = ({ list, altList, correctList, altResponses, source, t, item }) => (
+const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle }) => (
   <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
     <FlexRow>
-      {list.map((ele, i) => (
-        <Item key={i}>
-          <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, i)}</Index>
-          <Content dangerouslySetInnerHTML={{ __html: ele }} />
-        </Item>
-      ))}
+      {list.map((ele, i) => {
+        const content = <Content dangerouslySetInnerHTML={{ __html: ele }} />;
+        return (
+          <Popover content={content}>
+            <Item key={i} style={itemStyle}>
+              <Index>{getStemNumeration(stemNumeration, i)}</Index>
+              {content}
+            </Item>
+          </Popover>
+        );
+      })}
     </FlexRow>
 
     {altResponses.map((ans, i) => (
       <Fragment key={i}>
         <Subtitle style={{ marginTop: 40 }}>{`${t("component.sortList.alternateAnswer")} ${i + 1}`}</Subtitle>
         <FlexRow>
-          {ans.value.map((answer, index) => (
-            <Item key={index}>
-              <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, index)}</Index>
-              <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />
-            </Item>
-          ))}
+          {ans.value.map((answer, index) => {
+            const content = <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />;
+            return (
+              <Popover content={content}>
+                <Item key={index} style={itemStyle}>
+                  <Index>{getStemNumeration(stemNumeration, index)}</Index>
+                  {content}
+                </Item>
+              </Popover>
+            );
+          })}
         </FlexRow>
       </Fragment>
     ))}
@@ -40,10 +50,9 @@ ShowCorrect.propTypes = {
   list: PropTypes.array.isRequired,
   altList: PropTypes.array.isRequired,
   altResponses: PropTypes.array.isRequired,
-  correctList: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
-  source: PropTypes.array.isRequired,
-  item: PropTypes.func.isRequired
+  itemStyle: PropTypes.object.isRequired,
+  stemNumeration: PropTypes.string.isRequired
 };
 
 export default withNamespaces("assessment")(ShowCorrect);

@@ -5,10 +5,10 @@ export const Container = styled.div`
   display: flex;
   align-items: stretch;
   cursor: pointer;
-  border-radius: 4px;
-  background-color: ${props => props.theme.widgets.sortList.dragItemContainerBorderColor};
-  border: ${props =>
-    props.style && props.style.border
-      ? props.style.border
-      : `1px solid ${props.theme.widgets.sortList.dragItemContainerBorderColor}`};
+  background: ${({ checkStyle, correct, theme }) =>
+    checkStyle
+      ? correct
+        ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
+        : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
+      : theme.widgets.sortList.dragItemContainerBorderColor};
 `;

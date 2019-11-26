@@ -14,26 +14,14 @@ import {
 
 import { deleteTestRequestAction } from "../../ducks";
 
-import { IconTrashAlt } from "@edulastic/icons";
-
-const ModalTitle = () => {
-  return (
-    <div>
-      <span className="title-icon">
-        <IconTrashAlt />
-      </span>
-      <span>Delete Test</span>
-    </div>
-  );
-};
-
 const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId }) => {
   const [confirmText, setConfirmText] = useState("");
 
   return (
     <StyledModal
       visible={isVisible}
-      title={<ModalTitle />}
+      width="750px"
+      title="Delete Test"
       onCancel={() => onCancel()}
       footer={[
         <ModalFooter>
@@ -43,7 +31,7 @@ const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId 
           <StyledButton
             key="delete"
             type="primary"
-            disabled={confirmText !== "delete"}
+            disabled={confirmText.toLocaleLowerCase() !== "delete"}
             onClick={() => {
               if (confirmText.toLocaleLowerCase() === "delete") {
                 deleteTestRequestAction(testId);

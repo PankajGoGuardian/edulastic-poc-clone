@@ -204,6 +204,8 @@ class Assignments extends Component {
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const tabletWidth = 768;
 
+    const currentTest = find(tests, o => o._id === currentTestId);
+
     return (
       <div>
         <EditTestModal
@@ -212,7 +214,9 @@ class Assignments extends Component {
           onCancel={() => this.toggleEditModal(false, "")}
           onOk={this.onEnableEdit}
         />
-        {toggleDeleteAssignmentModalState ? <DeleteAssignmentModal testId={currentTestId} /> : null}
+        {toggleDeleteAssignmentModalState ? (
+          <DeleteAssignmentModal testId={currentTestId} testName={currentTest?.title} />
+        ) : null}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}

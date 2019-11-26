@@ -42,6 +42,7 @@ function* deleteAssignmentSaga({ payload }) {
     const result = yield call(testsApi.deleteAssignments, payload);
     const { deletedIds } = result;
     yield put(deleteAssignmentRequestSuccessAction(deletedIds));
+    message.success("Assignment(s) deleted successfully.");
   } catch (error) {
     console.log(error);
     message.error("failed to delete");

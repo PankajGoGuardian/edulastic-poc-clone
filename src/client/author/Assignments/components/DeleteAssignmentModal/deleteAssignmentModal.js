@@ -3,7 +3,14 @@ import { connect } from "react-redux";
 import { Button, Radio, Row } from "antd";
 import styled from "styled-components";
 
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import {
+  ModalWrapper,
+  InitOptions,
+  StyledButton,
+  StyledInput,
+  ModalFooter,
+  LightGreenSpan
+} from "../../../../common/components/ConfirmationModal/styled";
 
 import {
   getToggleDeleteAssignmentModalState,
@@ -15,67 +22,59 @@ const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
   toggleDeleteAssignmentModalAction,
   deleteAssignmentRequestAction,
-  testId
+  testId,
+  testName
 }) => {
   const [confirmText, setConfirmText] = useState("");
 
   return (
-    <StyledModal
+    <ModalWrapper
       visible={toggleDeleteAssignmentModalState}
-      title="Delete"
+      width="750px"
+      title="Unassign"
       onCancel={() => toggleDeleteAssignmentModalAction(false)}
       footer={[
-        <Button key="cancel" onClick={() => toggleDeleteAssignmentModalAction(false)}>
-          No, Cancel
-        </Button>,
-        <Button
-          key="delete"
-          type="primary"
-          onClick={() => {
-            if (confirmText.toLocaleLowerCase() === "delete") {
-              deleteAssignmentRequestAction(testId);
-            }
-          }}
-        >
-          Yes, Delete
-        </Button>
+        <ModalFooter>
+          <StyledButton cancel={true} key="cancel" onClick={() => toggleDeleteAssignmentModalAction(false)}>
+            No, Cancel
+          </StyledButton>
+          ,
+          <StyledButton
+            key="delete"
+            type="primary"
+            disabled={confirmText.toLocaleLowerCase() !== "delete"}
+            onClick={() => {
+              if (confirmText.toLocaleLowerCase() === "delete") {
+                deleteAssignmentRequestAction(testId);
+              }
+            }}
+          >
+            Yes, Delete
+          </StyledButton>
+        </ModalFooter>
       ]}
     >
-      <div className="delete-message">
-        <p>
-          Are you sure you want to delete the assignment <b>Assignment name</b> from the selected class(es)? This action
-          will result in permanent deletion of student responses in the selected class(es).
-        </p>
-        <p>
-          If you are sure, please type <b>Delete</b> in the space given below and proceed.
-        </p>
-      </div>
-      <div className="delete-confirm-contaner">
-        <input
-          className="delete-confirm-input"
-          type="text"
-          onChange={event => setConfirmText(event.currentTarget.value)}
-        />
-      </div>
-    </StyledModal>
+      <InitOptions>
+        <div className="delete-message">
+          <p>
+            Are you sure you want to delete the assignment <b>{testName}</b>? This action will result in permanent
+            deletion of student responses from the assigned class(es).
+          </p>
+          <p>
+            If you are sure, please type <LightGreenSpan>DELETE</LightGreenSpan> in the space given below and proceed.
+          </p>
+        </div>
+        <div className="delete-confirm-contaner">
+          <StyledInput
+            className="delete-confirm-input"
+            type="text"
+            onChange={event => setConfirmText(event.currentTarget.value)}
+          />
+        </div>
+      </InitOptions>
+    </ModalWrapper>
   );
 };
-
-const StyledModal = styled(ConfirmationModal)`
-  .ant-modal-content {
-    .ant-modal-body {
-      flex-direction: column;
-
-      .delete-confirm-contaner {
-        margin-top: 10px;
-        .delete-confirm-input {
-          border: solid 1px;
-          padding: 10px;
-        }
-      }
-    }
-  }
-`;
 
 const ConnectedDeleteAssignmentModal = connect(
   state => ({

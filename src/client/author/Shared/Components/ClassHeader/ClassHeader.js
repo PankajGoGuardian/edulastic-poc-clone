@@ -288,7 +288,7 @@ class ClassHeader extends Component {
         </MenuItems>
         {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
         <MenuItems key="key4" onClick={() => toggleDeleteAssignmentModalAction(true)}>
-          Delete
+          Unassign
         </MenuItems>
         {/* TODO temp hiding for UAT */}
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>

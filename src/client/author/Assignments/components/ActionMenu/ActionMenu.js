@@ -100,7 +100,7 @@ const ActionMenu = (
           <StyledLink target="_blank" rel="noopener noreferrer">
             <IconTrashAlt />
             <SpaceElement />
-            Delete Assessment
+            Unassign
           </StyledLink>
         </Menu.Item>
       </StyledMenu>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
-
+import { measureText } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
@@ -30,6 +30,10 @@ const Response = ({
       toggleIndexVisibility(!showIndex);
     }
   };
+
+  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
+
+  const isOverConent = btnStyle.width < contentWidth;
 
   const className = `imagelabeldragdrop-droppable active ${
     userSelections.length > 0 ? "check-answer" : "noAnswer"
@@ -66,7 +70,7 @@ const Response = ({
         <div className="clipText">{userSelections[dropTargetIndex]}</div>
         {(checkAnswer || (showAnswer && !lessMinWidth)) && (
           <div>
-            <IconWrapper rightPosition={10}>
+            <IconWrapper rightPosition={5}>
               {userSelections.length > 0 && status === "right" && <RightIcon />}
               {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
             </IconWrapper>
@@ -80,7 +84,7 @@ const Response = ({
     </div>
   );
 
-  return lessMinWidth ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return lessMinWidth || isOverConent ? <Popover content={popoverContent}>{content}</Popover> : content;
 };
 
 Response.propTypes = {

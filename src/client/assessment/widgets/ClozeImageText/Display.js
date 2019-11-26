@@ -8,7 +8,7 @@ import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
 // import { FaSellcast } from "react-icons/fa";
-import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
@@ -139,7 +139,6 @@ class Display extends Component {
   render() {
     const {
       question,
-      options,
       uiStyle,
       showAnswer,
       checkAnswer,
@@ -291,14 +290,12 @@ class Display extends Component {
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
-          groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
           stemNumeration={stemNumeration}
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
-            groupResponses={options}
             userAnswers={altResponse.value}
             altAnsIndex={index + 1}
             stemNumeration={stemNumeration}
@@ -323,7 +320,6 @@ class Display extends Component {
 }
 
 Display.propTypes = {
-  options: PropTypes.array,
   changePreview: PropTypes.func,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
@@ -349,7 +345,6 @@ Display.propTypes = {
 };
 
 Display.defaultProps = {
-  options: [],
   changePreviewTab: () => {},
   changePreview: () => {},
   onChange: () => {},

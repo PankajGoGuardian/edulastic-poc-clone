@@ -898,7 +898,12 @@ export const defaultTheme = {
       colorBoxBgColor: containerWhite,
       rightIconColor,
       wrongIconColor,
-      imageZoom: 1
+      imageZoom: 1,
+      boxBgColor: containerWhite,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: themeColorLight,
+      indexBoxFontWeight: semiBold,
+      indexBoxFontSize: subtitleFontSize
     },
     clozeText: {
       editViewBgColor: containerWhite,

@@ -1,17 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-import { Tooltip } from "antd";
 
 import { helpers } from "@edulastic/common";
 
 import { response } from "@edulastic/constants";
-import { Pointer } from "../../../../styled/Pointer";
-import { Point } from "../../../../styled/Point";
-import { Triangle } from "../../../../styled/Triangle";
 
-import { IconWrapper } from "./styled/IconWrapper";
-import { RightIcon } from "./styled/RightIcon";
-import { WrongIcon } from "./styled/WrongIcon";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "../../styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "../../styled/StyledPreviewContainer";
@@ -23,7 +17,6 @@ const CheckboxTemplateBoxLayout = ({
   checkAnswer,
   responseContainers,
   imageAlterText,
-  responseBtnStyle,
   userSelections,
   stemNumeration,
   evaluation,
@@ -35,8 +28,6 @@ const CheckboxTemplateBoxLayout = ({
   canvasHeight,
   canvasWidth,
   backgroundColor,
-  uiStyle,
-  responsecontainerindividuals,
   onClickHandler,
   isExpressGrader
 }) => (
@@ -89,11 +80,9 @@ const CheckboxTemplateBoxLayout = ({
   </StyledPreviewTemplateBox>
 );
 CheckboxTemplateBoxLayout.propTypes = {
-  responsecontainerindividuals: PropTypes.array.isRequired,
   fontSize: PropTypes.string.isRequired,
   responseContainers: PropTypes.array.isRequired,
   imageOptions: PropTypes.object.isRequired,
-  responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
   stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
@@ -106,7 +95,6 @@ CheckboxTemplateBoxLayout.propTypes = {
   canvasWidth: PropTypes.number.isRequired,
   backgroundColor: PropTypes.string.isRequired,
   onClickHandler: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired,
   isExpressGrader: PropTypes.bool.isRequired
 };
 

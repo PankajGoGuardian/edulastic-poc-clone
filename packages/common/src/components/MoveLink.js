@@ -31,7 +31,7 @@ MoveLink.propTypes = {
 export default MoveLink;
 
 const Link = styled.a`
-  font-size: 15px;
+  font-size: ${props => props.theme.questionTextnormalFontSize};
   padding-right: 20px;
   font-weight: 700;
   line-height: 20px;
@@ -53,6 +53,7 @@ const Link = styled.a`
 
   span {
     font-weight: 500;
+    font-size: ${props => props.theme.questionTextnormalFontSize} !important;
   }
   img {
     display: block;

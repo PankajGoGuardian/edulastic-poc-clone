@@ -41,7 +41,8 @@ import {
   ListCell,
   SammaryMark,
   TestStatus,
-  IconWrapper
+  IconWrapper,
+  TestTitleWrapper
 } from "./styled";
 import { getInterestedCurriculumsSelector, getUserIdSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
@@ -88,7 +89,6 @@ class ViewModal extends React.Component {
       authors
     } = item;
 
-    const titleModified = title?.length > 25 ? `${title.slice(0, 24)?.trim()}...` : title;
     const modalStyles = {
       modal: {
         background: backgrounds.primary,
@@ -98,11 +98,12 @@ class ViewModal extends React.Component {
       }
     };
     const isDeleteAllowed = !!find(authors, o => o._id === userId);
-
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
         <ModalTitle>
-          <Tooltip title={title}>{titleModified}</Tooltip>
+          <Tooltip title={title}>
+            <TestTitleWrapper>{title}</TestTitleWrapper>
+          </Tooltip>
           <TestStatus view="tile" status={status}>
             {status}
           </TestStatus>

@@ -272,3 +272,12 @@ export const TestStatus = styled.span`
   border: 1px solid ${borders.tag};
   text-transform: uppercase;
 `;
+
+export const TestTitleWrapper = styled.span`
+  width: 80%;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  float: left;
+`;

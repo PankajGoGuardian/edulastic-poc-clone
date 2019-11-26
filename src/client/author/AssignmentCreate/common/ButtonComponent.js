@@ -14,7 +14,8 @@ const ButtonComponent = styled.button`
       cursor: "pointer",
       boxShadow: "0px 2px 4px rgba(201, 208, 219, 0.5)",
       marginBottom: "10px",
-      whiteSpace: "nowrap"
+      whiteSpace: "nowrap",
+      zIndex: 10
     };
     if (props.type === "secondary") {
       style = {

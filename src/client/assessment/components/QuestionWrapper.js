@@ -150,6 +150,7 @@ export const TimeSpentWrapper = styled.p`
 
 export const FlexContainer = styled.div`
   flex: auto;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   max-width: 100%;
@@ -409,7 +410,6 @@ class QuestionWrapper extends Component {
                 width: `${view === "edit" && showQuestionMenu ? "calc(100% - 250px)" : "100%"}`,
                 maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
                 display: "flex",
-                flex: 9,
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null
               }}

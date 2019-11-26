@@ -12,9 +12,5 @@ export const CorTitle = styled.div`
   margin-right: 44px;
   word-break: break-word;
   padding: 8px 12px;
-
-  & .katex .base {
-    white-space: normal;
-    width: fit-content;
-  }
+  overflow: hidden;
 `;

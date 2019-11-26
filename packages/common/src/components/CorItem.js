@@ -5,22 +5,23 @@ import { dashBorderColor, white, themeColor } from "@edulastic/colors";
 const CorItem = styled.div`
   display: flex;
   position: relative;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   min-height: 40px;
   border-bottom-right-radius: 4px;
   border-top-right-radius: 4px;
   border: 1px solid ${dashBorderColor};
   background: ${white};
-  padding: 0 25px;
   font-weight: 600;
-  margin-left: 84px;
   width: calc(50% - 50px);
   text-align: center;
   background-color: #fff;
+  overflow: hidden;
 
-  &:before {
-    content: ${({ index }) => `'${index}'`};
+  ${({ index }) =>
+    index &&
+    `&:before {
+    content: '${index}';
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,6 +38,7 @@ const CorItem = styled.div`
     background: ${themeColor};
     color: white;
   }
+ `}
 `;
 
 export default CorItem;

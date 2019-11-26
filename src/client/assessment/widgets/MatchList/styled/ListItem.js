@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const ListItem = styled.div`
   display: flex;
-  width: 100%;
   justify-content: flex-start;
   align-items: center;
   word-break: break-word;
@@ -12,9 +11,5 @@ export const ListItem = styled.div`
   color: ${props => props.theme.widgets.matchList.listItemColor};
   border: 1px solid ${props => props.theme.widgets.matchList.listItemBorderColor};
   padding: 8px 12px;
-
-  & .katex .base {
-    white-space: normal;
-    width: fit-content;
-  }
+  overflow: hidden;
 `;

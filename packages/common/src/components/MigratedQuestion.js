@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
 export const MigratedQuestion = styled.div`
-  display: inline;
+  display: flex;
   width: 100%;
   height: 100%;
+  align-items: center;
+
   pre {
     display: block;
     padding: 9.5px;

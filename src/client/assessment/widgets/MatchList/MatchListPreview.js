@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect, useContext } from "react";
+import React, { useState, Fragment, useEffect, useContext, useRef } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import styled, { withTheme } from "styled-components";
@@ -17,6 +17,8 @@ import {
   AnswerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { ChoiceDimensions } from "@edulastic/constants";
+import { HorizontalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 
 import DropContainer from "../../components/DropContainer";
 import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
@@ -25,11 +27,14 @@ import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
+import { Index } from "./styled/Index";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { GroupsSeparator } from "./styled/GroupsSeparator";
 import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { StyledPaperWrapper } from "../../styled/Widget";
+
+const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 
 const styles = {
   dropContainerStyle: smallSize => ({
@@ -37,18 +42,12 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "stretch",
     minHeight: smallSize ? 26 : 44,
     maxWidth: "50%",
     padding: 0
   }),
-  listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 },
-  dragItemsContainerStyle: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    minHeight: 140,
-    borderRadius: 4
-  }
+  listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 }
 };
 
 const MatchListPreview = ({
@@ -82,10 +81,11 @@ const MatchListPreview = ({
   const answerContextConfig = useContext(AnswerContext);
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
-  const itemValidation = item.validation || {};
-  let validArray = itemValidation.validResponse && itemValidation.validResponse.value;
-  validArray = validArray || [];
-  const altArray = itemValidation.altResponses || [];
+  const validArray = get(item, "validation.validResponse.value", []);
+  const altArray = get(item, "validation.altResponses", []);
+  const stemNumeration = get(item, "uiStyle.validationStemNumeration", "");
+  const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
+  const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
 
   const getPossibleResponses = () => {
     if (!groupPossibleResponses) {
@@ -183,28 +183,6 @@ const MatchListPreview = ({
     );
   };
 
-  const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
-    display: "flex",
-    width: width || "auto",
-    maxWidth: width || "calc(100% - 8px)",
-    alignItems: "center",
-    justifyContent: _preview ? "space-between" : "center",
-    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
-    margin: flag === "dragItems" ? "4px" : "0px",
-    background: _preview
-      ? correct
-        ? theme.widgets.matchList.dragItemCorrectBgColor
-        : theme.widgets.matchList.dragItemIncorrectBgColor
-      : theme.widgets.matchList.dragItemBgColor,
-    border: showBorder ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
-    cursor: "pointer",
-    alignSelf: "stretch",
-    borderRadius: 4,
-    fontWeight: theme.widgets.matchList.dragItemFontWeight,
-    color: theme.widgets.matchList.dragItemColor,
-    opacity: isDragging ? 0.5 : 1
-  });
-
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
   let altAnswers = [...validAnswers];
@@ -219,25 +197,16 @@ const MatchListPreview = ({
     }
   });
 
-  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
-  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
-  const horizontallyAligned = listPosition === "left" || listPosition === "right";
-  const wrapperStyle = {
-    display: "flex",
-    flexDirection: getDirection(listPosition),
-    alignItems: listPosition === "right" || listPosition === "left" ? "flex-start" : "initial"
-  };
-
   const allItemsById = keyBy(getPossibleResponses(), "value");
 
   const alternateAnswers = {};
-  if (validation && validation.altResponses && validation.altResponses.length > 0) {
-    const { altResponses: altAnswers } = validation;
-    altAnswers.forEach(altAnswer => {
+  if (altArray.length > 0) {
+    const { altResponses } = validation;
+    altResponses.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         const altResp = allItemsById[alt];
-        if (altResp?.label && altResp?.label !== "") {
+        if (altResp.label && altResp.label !== "") {
           alternateAnswers[index + 1].push(altResp.label);
         }
       });
@@ -246,11 +215,90 @@ const MatchListPreview = ({
 
   const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
+  /**
+   * calculate styles here based on question JSON
+   */
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
+  const horizontallyAligned = listPosition === "left" || listPosition === "right";
+
+  const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
+    display: "flex",
+    width: width || "auto",
+    maxWidth: width || "calc(100% - 8px)",
+    alignItems: "center",
+    justifyContent: _preview ? "space-between" : "flex-start",
+    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
+    margin: flag === "dragItems" ? "4px" : "0px",
+    background: _preview
+      ? correct
+        ? theme.widgets.matchList.dragItemCorrectBgColor
+        : theme.widgets.matchList.dragItemIncorrectBgColor
+      : theme.widgets.matchList.dragItemBgColor,
+    border: showBorder && correct !== undefined ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
+    cursor: "pointer",
+    alignSelf: "stretch",
+    borderRadius: 4,
+    fontWeight: theme.widgets.matchList.dragItemFontWeight,
+    color: theme.widgets.matchList.dragItemColor,
+    opacity: isDragging ? 0.5 : 1,
+    minWidth: dragItemMinWidth,
+    overflow: "hidden"
+  });
+
+  const wrapperStyle = {
+    display: "flex",
+    flexDirection: getDirection(listPosition),
+    alignItems: horizontallyAligned ? "flex-start" : "center",
+    width: horizontallyAligned ? 1050 : 750,
+    margin: "auto"
+  };
+
+  const responseBoxStyle = {
+    marginRight: listPosition === "right" ? 20 : 0,
+    marginLeft: listPosition === "left" ? 20 : 0,
+    marginTop: horizontallyAligned ? 14 : 0,
+    width: horizontallyAligned ? 1030 - dragItemMaxWidth : 750
+  };
+
+  const choicesBoxStyle = {
+    width: horizontallyAligned ? dragItemMaxWidth : 750
+  };
+
+  const choicesBoxDropContainerStyle = {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    minHeight: 140,
+    borderRadius: 4,
+    justifyContent: horizontallyAligned ? "flex-start" : "center"
+  };
+
+  const choiceColStyle = {
+    ...styles.dropContainerStyle(smallSize),
+    width: `calc(50% - ${smallSize ? 28 : 40}px)`
+  };
+
+  const stemColStyle = {
+    alignSelf: "stretch",
+    width: `calc(50% - ${smallSize ? 28 : 40}px)`
+  };
+
+  const correctAnswerBoxStyle = {
+    width: horizontallyAligned ? 1050 : 750
+  };
+
+  /**
+   * scroll element
+   */
+  const previewWrapperRef = useRef();
+
   return (
     <StyledPaperWrapper
       data-cy="matchListPreview"
-      style={{ fontSize }}
+      style={{ fontSize, overflow: "auto", margin: "auto" }}
       padding={smallSize}
+      ref={previewWrapperRef}
       boxShadow={smallSize ? "none" : ""}
     >
       <QuestionTitleWrapper>
@@ -259,16 +307,7 @@ const MatchListPreview = ({
       </QuestionTitleWrapper>
 
       <div data-cy="previewWrapper" style={wrapperStyle}>
-        <FlexContainer
-          style={{
-            flex: listPosition === "right" || listPosition === "left" ? "1 1 70%" : "1 1 auto",
-            marginRight: listPosition === "right" ? 20 : 0,
-            marginLeft: listPosition === "left" ? 20 : 0,
-            marginTop: listPosition === "right" || listPosition === "left" ? 14 : 0
-          }}
-          flexDirection="column"
-          alignItems="flex-start"
-        >
+        <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
           {list.map((ite, i) => (
             <AnswerItem
               key={i}
@@ -276,23 +315,17 @@ const MatchListPreview = ({
               alignItems="center"
               childMarginRight={smallSize ? 13 : 45}
             >
-              <ListItem smallSize={smallSize}>
+              <ListItem smallSize={smallSize} style={stemColStyle}>
                 <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
-              <DropContainer
-                noBorder={!!ans[i]}
-                index={i}
-                drop={drop}
-                flag="ans"
-                style={styles.dropContainerStyle(smallSize)}
-              >
+              <DropContainer noBorder={!!ans[i]} index={i} drop={drop} flag="ans" style={choiceColStyle}>
                 <DragItem
                   preview={(preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader)}
                   correct={evaluation[i]}
                   flag="ans"
                   renderIndex={i}
-                  displayIndex={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}
+                  displayIndex={getStemNumeration(stemNumeration, i)}
                   onDrop={onDrop}
                   item={(ans[i] && allItemsById[ans[i]]) || null}
                   width="100%"
@@ -307,19 +340,8 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <StyledCorrectAnswersContainer
-            style={{ flex: listPosition === "right" || listPosition === "left" ? "1 1 30%" : "1 1 auto" }}
-            title={t("component.matchList.dragItemsTitle")}
-          >
-            <DropContainer
-              drop={drop}
-              flag="dragItems"
-              style={{
-                ...styles.dragItemsContainerStyle,
-                justifyContent: horizontallyAligned ? "flex-start" : "center"
-              }}
-              noBorder
-            >
+          <StyledCorrectAnswersContainer style={choicesBoxStyle} title={t("component.matchList.dragItemsTitle")}>
+            <DropContainer drop={drop} flag="dragItems" style={choicesBoxDropContainerStyle} noBorder>
               <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" maxWidth="100%">
                 {groupPossibleResponses ? (
                   possibleResponseGroups.map((i, index) => (
@@ -461,13 +483,14 @@ const MatchListPreview = ({
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+          <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")} style={correctAnswerBoxStyle}>
             {list.map((ite, i) => (
-              <FlexContainer key={i} marginBottom="10px" alignItems="center">
+              <FlexContainer key={i} marginBottom="10px" alignItems="stretch">
                 <CorTitle>
                   <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
-                <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
+                <CorItem>
+                  <Index correctAnswer>{getStemNumeration(stemNumeration, i)}</Index>
                   <MathFormulaDisplay
                     choice
                     dangerouslySetInnerHTML={{ __html: allItemsById?.[validArray?.[i]]?.label || "" }}
@@ -478,13 +501,16 @@ const MatchListPreview = ({
           </StyledCorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <StyledCorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+            <StyledCorrectAnswersContainer
+              title={t("component.matchList.alternateAnswers")}
+              style={correctAnswerBoxStyle}
+            >
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
-                  <CorItem index={getStemNumeration(item.uiStyle?.validationStemNumeration, i)}>
+                  <CorItem index={getStemNumeration(stemNumeration, i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>
                 </FlexContainer>
@@ -493,6 +519,7 @@ const MatchListPreview = ({
           )}
         </Fragment>
       ) : null}
+      <HorizontalScrollContainer scrollWrraper={previewWrapperRef.current} />
     </StyledPaperWrapper>
   );
 };

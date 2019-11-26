@@ -1,11 +1,12 @@
 import styled from "styled-components";
 
 export const Separator = styled.div`
-  max-width: ${({ smallSize }) => (smallSize ? 22 : 47)}px;
+  max-width: ${({ smallSize }) => (smallSize ? 22 : 46)}px;
   width: 100%;
   height: 0;
   position: relative;
   display: block;
+  margin: 0px 10px;
   border: 1px solid ${props => props.theme.widgets.matchList.separatorBorderColor};
 
   &:after {

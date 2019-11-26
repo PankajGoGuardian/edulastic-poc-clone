@@ -1,7 +1,6 @@
 import React from "react";
 import { DragSource } from "react-dnd";
-
-import { MathFormulaDisplay } from "@edulastic/common";
+import { MathFormulaDisplay, isMobileDevice } from "@edulastic/common";
 import { Index } from "../styled/Index";
 import { IconClose } from "../styled/IconClose";
 import { IconCheck } from "../styled/IconCheck";
@@ -68,17 +67,20 @@ const DragItem = ({
         data-cy={`drag-drop-item-${renderIndex}`}
         style={getStyles({ isDragging, flag, _preview: preview, correct, width })}
       >
-        <DragPreview isDragging={isDragging} {...restProps}>
-          {itemView}
-        </DragPreview>
-        <Index preview={preview} correct={correct}>
-          {displayIndex}
-        </Index>
+        {isMobileDevice() && (
+          <DragPreview isDragging={isDragging} {...restProps}>
+            {itemView}
+          </DragPreview>
+        )}
+
+        {correct !== undefined && preview && <Index correct={correct}>{displayIndex}</Index>}
         {itemView}
-        <div style={{ marginRight: 15, display: preview ? "flex" : "none" }}>
-          {correct && <IconCheck />}
-          {!correct && <IconClose />}
-        </div>
+        {correct !== undefined && (
+          <div style={{ marginRight: 15, opacity: preview ? "1" : "0" }}>
+            {correct && <IconCheck />}
+            {!correct && <IconClose />}
+          </div>
+        )}
       </div>
     )
   );

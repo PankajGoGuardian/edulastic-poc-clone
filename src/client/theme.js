@@ -1055,7 +1055,7 @@ export const defaultTheme = {
     tokenHighlight: {
       previewSmallFontSize: commentFontSize,
       previewFontSize: questionTextnormalFontSize,
-      correctResultBgColor: rightIconColor,
+      correctResultBgColor: rightBgColor,
       incorrectResultBgColor: wrongBgColor,
       correctResultBorderColor: rightBorderColor,
       incorrectResultBorderColor: wrongBorderColor,
@@ -1072,7 +1072,7 @@ export const defaultTheme = {
       subtitleColor: labelStyle,
       previewSubtitleColor: labelStyle,
       dragItemBgColor: clearIconColor,
-      dragItemCorrectBgColor: rightIconColor,
+      dragItemCorrectBgColor: rightBgColor,
       dragItemIncorrectBgColor: wrongBgColor,
       dragItemBorderColor: borderColor,
       dragItemColor: labelStyle,

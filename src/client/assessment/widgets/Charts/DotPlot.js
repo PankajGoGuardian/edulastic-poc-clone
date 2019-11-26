@@ -128,7 +128,12 @@ const DotPlot = ({
 
       <ArrowPair getActivePoint={getActivePoint} />
 
-      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+      <ValueLabel
+        getActivePoint={getActivePoint}
+        getActivePointValue={getActivePointValue}
+        active={active}
+        gridParams={gridParams}
+      />
     </svg>
   );
 };

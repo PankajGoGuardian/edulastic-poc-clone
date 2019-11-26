@@ -68,6 +68,10 @@ const DynamicText = styled.div`
   }
 `;
 
+const VariableLabel = styled(Label)`
+  text-transform: none;
+`;
+
 class Variables extends Component {
   render() {
     const {
@@ -200,7 +204,7 @@ class Variables extends Component {
               return (
                 <Row key={`variable${index}`} gutter={36}>
                   <Col md={3} style={{ paddingTop: 10 }}>
-                    <Label>{variableName}</Label>
+                    <VariableLabel>{variableName}</VariableLabel>
                   </Col>
                   <Col md={5}>
                     <Select

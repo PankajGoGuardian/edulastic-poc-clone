@@ -274,11 +274,7 @@ class AddItems extends PureComponent {
   handlePaginationChange = page => {
     const { search } = this.state;
     const { receiveTestItems, limit } = this.props;
-    const _this = this;
-    setTimeout(() => {
-      receiveTestItems(search, page, limit);
-      _this.itemsScrollBar._container.scrollTop = 0;
-    }, 350);
+    receiveTestItems(search, page, limit);
   };
 
   renderItems = () => {
@@ -394,11 +390,7 @@ class AddItems extends PureComponent {
                 </ItemsMenu>
 
                 {!loading && (
-                  <ScrollbarContainer
-                    ref={e => {
-                      this.itemsScrollBar = e;
-                    }}
-                  >
+                  <ScrollbarContainer>
                     {this.renderItems()}
                     {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                   </ScrollbarContainer>

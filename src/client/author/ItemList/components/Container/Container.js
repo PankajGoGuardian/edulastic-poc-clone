@@ -281,12 +281,7 @@ class Contaier extends Component {
   handlePaginationChange = page => {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
-    const _this = this;
-
-    setTimeout(() => {
-      receiveItems(search, page, limit);
-      _this.itemsScrollBar._container.scrollTop = 0;
-    }, 350);
+    receiveItems(search, page, limit);
   };
 
   renderPagination = () => {
@@ -365,11 +360,7 @@ class Contaier extends Component {
                       <QuestionsFound>{count} questions found</QuestionsFound>
                     </ItemsMenu>
 
-                    <ScrollbarContainer
-                      ref={e => {
-                        this.itemsScrollBar = e;
-                      }}
-                    >
+                    <ScrollbarContainer>
                       <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
                       {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                     </ScrollbarContainer>

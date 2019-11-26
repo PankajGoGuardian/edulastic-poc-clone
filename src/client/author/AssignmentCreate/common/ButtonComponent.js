@@ -50,6 +50,15 @@ const ButtonComponent = styled.button`
       };
     }
 
+    if (props.disabled) {
+      style = {
+        ...style,
+        ...{
+          pointerEvents: "none"
+        }
+      };
+    }
+
     return style;
   }};
 `;

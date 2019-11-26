@@ -245,6 +245,7 @@ const RemoteAutocompleteDropDown = ({
   return (
     <StyledDiv className={`${containerClassName} remote-autocomplete-dropdown`}>
       <AutoComplete
+        getPopupContainer={triggerNode => triggerNode.parentNode}
         dataSource={dataSource}
         dropdownClassName={className}
         className={className}

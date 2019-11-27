@@ -80,7 +80,10 @@ export const MathInputStyles = styled.div`
     align-items: center;
     justify-content: space-between;
     font-size: ${props => props.theme.common.mathResponseEmbedFontSize};
-    width: 100px;
+    font-family: ${({ theme }) => theme.defaultFontFamily};
+    font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
+    width: 135px;
+    margin-right: 5px;
     height: 25px;
     line-height: 25px;
 
@@ -103,6 +106,7 @@ export const MathInputStyles = styled.div`
 
     .response-embed__text {
       width: 70%;
+      color: ${({ theme }) => theme.common.mathResponseFontColor};
       background: ${props => props.theme.common.mathResponseEmbedTextBgColor};
       text-transform: uppercase;
       font-weight: ${props => props.theme.common.mathResponseEmbedTextFontWeight};

@@ -1,4 +1,4 @@
-import { themeColor, themeColorLight, white, dashBorderColor } from "@edulastic/colors";
+import { themeColor, themeColorLight, white, dashBorderColor, mainTextColor } from "@edulastic/colors";
 
 // all theme variables
 
@@ -459,6 +459,7 @@ export const defaultTheme = {
     mathResponseEmbedCharBorderColor: borderColor,
     mathResponseEmbedCharFontWeight: semiBold,
     mathResponseEmbedTextBgColor: clearIconColor,
+    mathResponseFontColor: mainTextColor,
     mathResponseEmbedTextBorderColor: borderColor,
     mathResponseEmbedTextFontWeight: bold,
     pointBgColor: labelStyle,

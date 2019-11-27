@@ -206,7 +206,6 @@ class MathInput extends React.PureComponent {
             onKeyDown={onKeyDown}
             className="input__math"
             style={{
-              minWidth: style.width,
               minHeight: style.height,
               fontSize: style.fontSize ? style.fontSize : "inherit",
               background: style.background

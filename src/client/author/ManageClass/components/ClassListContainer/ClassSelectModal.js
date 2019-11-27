@@ -122,7 +122,7 @@ const ClassListModal = ({
         <StyledSelect
           style={{ minWidth: "80px" }}
           disabled={selectedGroups.includes(row.enrollmentCode)}
-          value={row.subject || ""}
+          value={row.subject || []}
           placeholder="Select Subject"
           onChange={val => {
             handleChange(ind, "standards", []);

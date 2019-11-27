@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
+import next from "immer";
 
 import { WithResources } from "@edulastic/common";
 
@@ -22,7 +23,7 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 import Tools from "../../common/Tools";
 import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
-import { getAdjustedHeightAndWidth } from "../../common/utils";
+import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
 
 const getColoredElems = (elements, compareResult) => {
@@ -374,6 +375,8 @@ class AxisLabelsContainer extends PureComponent {
       theme
     } = this.props;
     const { shouldZoom } = theme;
+    const { isV1Migrated } = graphData;
+
     const adjustedHeightWidth = getAdjustedHeightAndWidth(
       this.parentWidth,
       this.parentHeight,
@@ -384,6 +387,18 @@ class AxisLabelsContainer extends PureComponent {
       responseBoxTitleWidth,
       disableResponse
     );
+
+    let _graphData = graphData;
+    if (isV1Migrated) {
+      _graphData = next(graphData, _graphData => {
+        for (let o of _graphData.annotations) {
+          const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o);
+          o.position.x = co.x;
+          o.position.y = co.y;
+        }
+      });
+    }
+
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
@@ -423,7 +438,14 @@ class AxisLabelsContainer extends PureComponent {
               )}
               <div style={{ position: "relative", overflow: "auto" }}>
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-                <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+                <AnnotationRnd
+                  question={_graphData}
+                  setQuestionData={setQuestionData}
+                  disableDragging={view !== EDIT}
+                  adjustedHeightWidth={adjustedHeightWidth}
+                  layout={layout}
+                  bounds={`#${this._graphId}`}
+                />
               </div>
             </div>
           </ContainerWithResponses>

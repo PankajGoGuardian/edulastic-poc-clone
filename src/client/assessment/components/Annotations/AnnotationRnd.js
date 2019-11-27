@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 
+import { getAdjustedV1AnnotationCoordinatesForDB } from "../Graph/common/utils";
+
 import { FroalaInput } from "./styled/styled_components";
 import { ValueWrapper } from "./styled/ValueWrapper";
 
@@ -30,18 +32,33 @@ const resizeEnable = {
 
 class AnnotationsRnd extends Component {
   handleAnnotationPosition = (d, annotationIndex) => {
-    const { setQuestionData, question } = this.props;
+    const { setQuestionData, question, adjustedHeightWidth, layout } = this.props;
+    const { isV1Migrated } = question;
+
     setQuestionData(
       produce(question, draft => {
         const oldAnnotations = draft.annotations || [];
         draft.annotations = oldAnnotations.map(annotation => {
           if (annotationIndex === annotation.id) {
+            if (isV1Migrated) {
+              const co = getAdjustedV1AnnotationCoordinatesForDB(adjustedHeightWidth, layout, d);
+              d.x = co.x;
+              d.y = co.y;
+            }
+
             const modifiedAnnotation = { ...annotation };
             modifiedAnnotation.position = { x: d.x, y: d.y };
 
             return modifiedAnnotation;
+          } else {
+            if (isV1Migrated) {
+              const co = getAdjustedV1AnnotationCoordinatesForDB(adjustedHeightWidth, layout, annotation.position);
+              annotation.position.x = co.x;
+              annotation.position.y = co.y;
+            }
+
+            return annotation;
           }
-          return annotation;
         });
       })
     );

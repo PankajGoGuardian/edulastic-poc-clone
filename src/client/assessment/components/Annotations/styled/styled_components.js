@@ -25,6 +25,10 @@ export const FroalaInput = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .drag-ans.wrap-text {
+    max-width: 100%;
+  }
 `;
 
 export const Header = styled.div`

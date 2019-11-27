@@ -313,6 +313,7 @@ class ClozeDragDropDisplay extends Component {
       stemNumeration,
       responseBtnStyle,
       hasGroupResponses,
+      disableResponse,
       userSelections: userAnswers,
       responsecontainerindividuals,
       globalSettings: uiStyle.globalSettings,

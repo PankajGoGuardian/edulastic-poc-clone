@@ -24,6 +24,9 @@ const specSource = {
     const { dropTargetIndex } = monitor.getDropResult();
 
     props.onDrop(props.data, dropTargetIndex);
+  },
+  canDrag(props) {
+    return !props.disableResponse;
   }
 };
 

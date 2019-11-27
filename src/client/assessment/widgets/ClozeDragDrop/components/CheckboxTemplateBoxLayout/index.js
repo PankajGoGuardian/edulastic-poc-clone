@@ -27,6 +27,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     onDropHandler = () => {},
     responseIDs,
     globalSettings,
+    disableResponse,
     isExpressGrader
   } = resprops;
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
@@ -41,8 +42,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
   const widthpx = response && response.widthpx;
-  btnStyle.width = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
-  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
+  btnStyle.width = !globalSettings ? (widthpx ? `${widthpx}px` : btnStyle.widthpx) : "auto";
+  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : btnStyle.heightpx) : "auto";
 
   if (globalSettings) {
     btnStyle.maxWidth = "400px";
@@ -142,12 +143,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       <Droppable style={{ border: "none" }} drop={() => ({ dropTargetIndex })}>
         <Draggable
           onDrop={onDropHandler}
+          disableResponse={disableResponse}
           data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
             userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
         >
-          <Popover overlayClassName="customTooltip" content={popoverContent}>
-            {content}
-          </Popover>
+          {choiceAttempted && (
+            <Popover overlayClassName="customTooltip" content={popoverContent}>
+              {content}
+            </Popover>
+          )}
+          {!choiceAttempted && content}
         </Draggable>
       </Droppable>
     </CheckBoxTemplateBox>

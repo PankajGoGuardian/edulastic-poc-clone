@@ -273,9 +273,10 @@ class MainSetting extends Component {
       }
     };
 
-    const availableFeatures = settingCategories.slice(0, -5).map(category => {
-      if (isDocBased && (category.id === "show-answer-choice" || category.id === "suffle-question")) return;
+    const categories = ["show-answer-choice", "suffle-question", "check-answer-tries-per-question"];
 
+    const availableFeatures = settingCategories.slice(0, -5).map(category => {
+      if (isDocBased && categories.includes(category.id)) return;
       if (
         features[settingCategoriesFeatureMap[category.id]] ||
         isFeatureAccessible({

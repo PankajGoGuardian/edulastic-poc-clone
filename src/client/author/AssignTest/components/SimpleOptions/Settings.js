@@ -45,7 +45,8 @@ const Settings = ({
   changeField,
   gradeSubject,
   _releaseGradeKeys,
-  userRole
+  userRole,
+  isDocBased
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -224,45 +225,51 @@ const Settings = ({
         </FeaturesSwitch>
         {/* Require Safe Exam Browser */}
 
-        {/* Shuffle Question */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersShuffleQuestions"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersShuffleQuestions"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={8}>Shuffle Questions</Col>
-            <Col span={16}>
-              <AlignSwitchRight
-                size="small"
-                defaultChecked={shuffleQuestions}
-                onChange={value => overRideSettings("shuffleQuestions", value)}
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
-        {/* Shuffle Question */}
+        {/* Shuffle Question */
+        !isDocBased && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersShuffleQuestions"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersShuffleQuestions"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={8}>Shuffle Questions</Col>
+              <Col span={16}>
+                <AlignSwitchRight
+                  size="small"
+                  defaultChecked={shuffleQuestions}
+                  onChange={value => overRideSettings("shuffleQuestions", value)}
+                />
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )
+        /* Shuffle Question */
+        }
 
-        {/* Shuffle Answer Choice */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersShuffleAnswerChoice"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={8}>Shuffle Answer Choice</Col>
-            <Col span={16}>
-              <AlignSwitchRight
-                size="small"
-                defaultChecked={shuffleAnswers}
-                onChange={value => overRideSettings("shuffleAnswers", value)}
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
-        {/* Shuffle Answer Choice */}
+        {/* Shuffle Answer Choice */
+        !isDocBased && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersShuffleAnswerChoice"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={8}>Shuffle Answer Choice</Col>
+              <Col span={16}>
+                <AlignSwitchRight
+                  size="small"
+                  defaultChecked={shuffleAnswers}
+                  onChange={value => overRideSettings("shuffleAnswers", value)}
+                />
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )
+        /* Shuffle Answer Choice */
+        }
 
         {/* Show Calculator */}
         <FeaturesSwitch
@@ -339,28 +346,31 @@ const Settings = ({
         </FeaturesSwitch>
         {/* Require Password */}
 
-        {/* Check Answer Tries Per Question */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersCheckAnswerTries"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersCheckAnswerTries"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={16}>Check Answer Tries Per Question</Col>
-            <Col span={8}>
-              <Input
-                onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
-                size="large"
-                value={maxAnswerChecks}
-                type={"number"}
-                min={0}
-                placeholder="Number of tries"
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
-        {/* Check Answer Tries Per Question */}
+        {/* Check Answer Tries Per Question */
+        !isDocBased && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersCheckAnswerTries"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersCheckAnswerTries"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={16}>Check Answer Tries Per Question</Col>
+              <Col span={8}>
+                <Input
+                  onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
+                  size="large"
+                  value={maxAnswerChecks}
+                  type={"number"}
+                  min={0}
+                  placeholder="Number of tries"
+                />
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )
+        /* Check Answer Tries Per Question */
+        }
 
         {/* Evaluation Method */}
         <FeaturesSwitch

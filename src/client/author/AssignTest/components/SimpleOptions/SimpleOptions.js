@@ -263,6 +263,7 @@ class SimpleOptions extends React.Component {
               testSettings={testSettings}
               gradeSubject={gradeSubject}
               _releaseGradeKeys={_releaseGradeKeys}
+              isDocBased={testSettings.isDocBased}
             />
           )}
         </InitOptions>

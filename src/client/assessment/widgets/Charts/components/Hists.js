@@ -6,7 +6,7 @@ import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
-import { Bar, ActiveBar, Text } from "../styled";
+import { Bar, ActiveBar, Text, VxText } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Hists = ({
@@ -123,9 +123,15 @@ const Hists = ({
               height={isHovered(index) ? 5 : 1}
             />
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + (step - 2) / 2} y={height + 20}>
+          <VxText
+            textAnchor="middle"
+            verticalAnchor="start"
+            x={getCenterX(index) + (step - 2) / 2}
+            y={height}
+            width={70}
+          >
             {dot.x}
-          </Text>
+          </VxText>
         </Fragment>
       ))}
     </Fragment>

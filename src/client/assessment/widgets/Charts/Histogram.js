@@ -27,9 +27,10 @@ const Histogram = ({
   correct,
   disableResponse,
   toggleBarDragging,
-  deleteMode
+  deleteMode,
+  margin = { top: 0, right: 0, left: 0, bottom: 50 }
 }) => {
-  const { width, height, margin, showGridlines } = gridParams;
+  const { width, height, margin: gridMargin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
 
@@ -51,7 +52,7 @@ const Histogram = ({
     localData
       .map(
         (dot, index) =>
-          `${step * index + margin / 2 + padding + (step - 2) / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
+          `${step * index + gridMargin / 2 + padding + (step - 2) / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
       )
       .join(" ");
 
@@ -106,47 +107,49 @@ const Histogram = ({
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
-      width={width}
-      height={height + 40}
+      width={width + margin.left + margin.right}
+      height={height + margin.top + margin.bottom}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <BarsAxises
-        lines={data}
-        gridParams={gridParams}
-        displayAxisLabel={false}
-        displayGridlines={displayVerticalLines(showGridlines)}
-      />
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
+        <BarsAxises
+          lines={data}
+          gridParams={gridParams}
+          displayAxisLabel={false}
+          displayGridlines={displayVerticalLines(showGridlines)}
+        />
 
-      <HorizontalLines
-        paddingTop={20}
-        gridParams={gridParams}
-        displayGridlines={displayHorizontalLines(showGridlines)}
-      />
+        <HorizontalLines
+          paddingTop={20}
+          gridParams={gridParams}
+          displayGridlines={displayHorizontalLines(showGridlines)}
+        />
 
-      <Hists
-        item={item}
-        saveAnswer={i => saveAnswer(localData, i)}
-        deleteMode={deleteMode}
-        activeIndex={activeIndex}
-        onPointOver={setActive}
-        previewTab={previewTab}
-        bars={localData}
-        view={view}
-        onMouseDown={!disableResponse ? onMouseDown : () => {}}
-        gridParams={gridParams}
-        correct={correct}
-      />
+        <Hists
+          item={item}
+          saveAnswer={i => saveAnswer(localData, i)}
+          deleteMode={deleteMode}
+          activeIndex={activeIndex}
+          onPointOver={setActive}
+          previewTab={previewTab}
+          bars={localData}
+          view={view}
+          onMouseDown={!disableResponse ? onMouseDown : () => {}}
+          gridParams={gridParams}
+          correct={correct}
+        />
 
-      <ArrowPair getActivePoint={getActivePoint} />
+        <ArrowPair getActivePoint={getActivePoint} />
 
-      <ValueLabel
-        getActivePoint={getActivePoint}
-        getActivePointValue={getActivePointValue}
-        active={active}
-        gridParams={gridParams}
-      />
+        <ValueLabel
+          getActivePoint={getActivePoint}
+          getActivePointValue={getActivePointValue}
+          active={active}
+          gridParams={gridParams}
+        />
+      </g>
     </svg>
   );
 };

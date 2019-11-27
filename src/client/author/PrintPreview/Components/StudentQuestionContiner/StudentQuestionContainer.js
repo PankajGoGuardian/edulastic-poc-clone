@@ -48,11 +48,11 @@ class StudentQuestionContainer extends Component {
         <StudentQuestionHeader>
           <StudentInformation>
             <InfoItem>
-              <Color>StudentName: </Color>
+              <Color>Student Name: </Color>
               {studentName}
             </InfoItem>
             <InfoItem>
-              <Color>Classname: </Color>
+              <Color>Class Name: </Color>
               {classname}
             </InfoItem>
           </StudentInformation>

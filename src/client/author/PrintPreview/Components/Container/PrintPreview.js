@@ -86,7 +86,7 @@ class PrintPreview extends Component {
           <PagePrinterHeader>
             <TestInfo>
               <InfoItem>
-                <Color>TestName : </Color>
+                <Color>Test Name : </Color>
                 {testName}
               </InfoItem>
               <InfoItem>

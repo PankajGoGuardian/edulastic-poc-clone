@@ -28,7 +28,7 @@ const DeleteAssignmentModal = ({
   const [confirmText, setConfirmText] = useState("");
 
   return (
-    <ModalWrapper
+    <StyledModal
       visible={toggleDeleteAssignmentModalState}
       width="750px"
       title="Unassign"
@@ -42,26 +42,26 @@ const DeleteAssignmentModal = ({
           <StyledButton
             key="delete"
             type="primary"
-            disabled={confirmText.toLocaleLowerCase() !== "delete"}
+            disabled={confirmText.toLocaleLowerCase() !== "unassign"}
             onClick={() => {
-              if (confirmText.toLocaleLowerCase() === "delete") {
+              if (confirmText.toLocaleLowerCase() === "unassign") {
                 deleteAssignmentRequestAction(testId);
               }
             }}
           >
-            Yes, Delete
+            Yes, Unassign
           </StyledButton>
         </ModalFooter>
       ]}
     >
-      <InitOptions>
+      <InitOptions className="delete-message-container">
         <div className="delete-message">
           <p>
-            Are you sure you want to delete the assignment <b>{testName}</b>? This action will result in permanent
-            deletion of student responses from the assigned class(es).
+            Are you sure you want to unassign the assignment <b className="delete-message-test-name">{testName}</b>?
+            This action will result in permanent deletion of student responses from the assigned class(es).
           </p>
           <p>
-            If you are sure, please type <LightGreenSpan>DELETE</LightGreenSpan> in the space given below and proceed.
+            If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and proceed.
           </p>
         </div>
         <div className="delete-confirm-contaner">
@@ -72,9 +72,21 @@ const DeleteAssignmentModal = ({
           />
         </div>
       </InitOptions>
-    </ModalWrapper>
+    </StyledModal>
   );
 };
+
+const StyledModal = styled(ModalWrapper)`
+  .ant-modal-body {
+    .delete-message-container {
+      font-weight: 600;
+
+      .delete-message-test-name {
+        font-weight: bold;
+      }
+    }
+  }
+`;
 
 const ConnectedDeleteAssignmentModal = connect(
   state => ({

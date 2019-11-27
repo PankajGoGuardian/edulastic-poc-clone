@@ -43,7 +43,7 @@ const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId 
         </ModalFooter>
       ]}
     >
-      <InitOptions>
+      <InitOptions className="delete-message-container">
         <div className="delete-message">
           <p>Are you sure you want to delete this test?</p>
           <p>
@@ -76,6 +76,9 @@ const StyledModal = styled(ModalWrapper)`
 
     .ant-modal-body {
       flex-direction: column;
+      .delete-message-container {
+        font-weight: 600;
+      }
     }
   }
 `;

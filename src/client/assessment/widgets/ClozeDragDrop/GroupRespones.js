@@ -93,11 +93,25 @@ class GroupResponses extends React.Component {
 
   groupResponsesHandler = e => {
     const { item, setQuestionData } = this.props;
+    const { groupResponses = [], options = [] } = item;
     const hasGroupResponses = e.target.checked;
+    const newGroupResponses = [];
+    const newOptions = [];
+
+    if (hasGroupResponses) {
+      newGroupResponses.push({ title: "", options: [...options] });
+    } else {
+      groupResponses.forEach(group => {
+        const opts = group.options.filter(o => !newOptions.some(no => no.value === o.value));
+        newOptions.push(...opts);
+      });
+    }
 
     setQuestionData(
       produce(item, draft => {
         draft.hasGroupResponses = hasGroupResponses;
+        draft.groupResponses = newGroupResponses;
+        draft.options = newOptions;
         updateVariables(draft);
       })
     );

@@ -121,3 +121,8 @@ export const DetailContents = styled.span`
   font-weight: bold;
   color: ${secondaryTextColor};
 `;
+
+export const DetailContentsAlternate = styled(DetailContents)`
+  display: block;
+  padding-left: 40px;
+`;

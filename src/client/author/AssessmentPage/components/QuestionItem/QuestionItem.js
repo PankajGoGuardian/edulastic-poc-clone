@@ -32,6 +32,7 @@ import {
   DetailsContainer,
   DetailTitle,
   DetailContents,
+  DetailContentsAlternate,
   ButtonWrapper
 } from "./styled";
 
@@ -108,7 +109,8 @@ class QuestionItem extends React.Component {
         },
         options
       },
-      evaluation
+      evaluation,
+      previewMode
     } = this.props;
 
     let allCorrect = isObject(evaluation)
@@ -118,7 +120,18 @@ class QuestionItem extends React.Component {
     if (type === CLOZE_DROP_DOWN) {
       allCorrect = evaluation && evaluation["0"];
     }
-    if (allCorrect || type === ESSAY_PLAIN_TEXT) return null;
+
+    if (type === ESSAY_PLAIN_TEXT) {
+      return null;
+    }
+
+    /**
+     * if the preview is not in show answer mode and answer is correct ,
+     * no need to show correct answer
+     */
+    if (previewMode !== "show" && allCorrect) {
+      return null;
+    }
 
     let answerRenderer;
 
@@ -140,10 +153,23 @@ class QuestionItem extends React.Component {
         answerRenderer = () => {};
     }
 
+    const alternateResponses = this.props?.data?.validation?.altResponses || [];
+    let alternateResponsesDisplay = null;
+    if (alternateResponses.length > 0) {
+      alternateResponsesDisplay = (
+        <div>
+          <DetailTitle>Alternate Answers:</DetailTitle>
+          {alternateResponses.map(res => (
+            <DetailContentsAlternate>{answerRenderer(res.value, options)}</DetailContentsAlternate>
+          ))}
+        </div>
+      );
+    }
     return (
       <DetailsContainer>
         <DetailTitle>Correct Answer:</DetailTitle>
         <DetailContents>{answerRenderer(value, options)}</DetailContents>
+        {alternateResponsesDisplay}
       </DetailsContainer>
     );
   };
@@ -257,6 +283,7 @@ class QuestionItem extends React.Component {
 
     const check =
       viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
+
     return (
       <QuestionItemWrapper id={id} highlighted={highlighted} ref={this.itemRef}>
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>

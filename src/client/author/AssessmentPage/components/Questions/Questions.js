@@ -432,7 +432,6 @@ class Questions extends React.Component {
       testMode
     } = this.props;
     const report = viewMode === "report";
-
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
     if (list.length > 0 && list[currentEditQuestionIndex]) {

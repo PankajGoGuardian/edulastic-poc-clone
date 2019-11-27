@@ -24,6 +24,7 @@ export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignm
 export const SET_ASSIGNMENT_SAVING = "[assignments] set assignment saving state";
 export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS = "[assignments] toggle confirmation common assignments";
 export const UPDATE_ASSIGN_FAIL_DATA = "[assignments] update error data";
+export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP = "[assignments] toggle duplicate assignmnts popup";
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT);
@@ -36,11 +37,13 @@ export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING);
 export const toggleHasCommonAssignmentsPopupAction = createAction(TOGGLE_CONFIRM_COMMON_ASSIGNMENTS);
 export const updateAssignFailDataAction = createAction(UPDATE_ASSIGN_FAIL_DATA);
+export const toggleHasDuplicateAssignmentPopupAction = createAction(TOGGLE_DUPLICATE_ASSIGNMENT_POPUP);
 
 const initialState = {
   isLoading: false,
   isAssigning: false,
   hasCommonStudents: false,
+  hasDuplicateAssignments: false,
   assignments: [],
   conflictData: {},
   current: "" // id of the current one being edited
@@ -88,6 +91,10 @@ const toggleCommonAssignmentsPopup = (state, { payload }) => {
   state.hasCommonStudents = payload;
 };
 
+const toggleHasDuplicateAssignmentsPopup = (state, { payload }) => {
+  state.hasDuplicateAssignments = payload;
+};
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: state => {
     state.isLoading = true;
@@ -98,7 +105,8 @@ export const reducer = createReducer(initialState, {
   [REMOVE_ASSIGNMENT]: removeAssignment,
   [SET_ASSIGNMENT_SAVING]: setAssignmentIsSaving,
   [UPDATE_ASSIGN_FAIL_DATA]: setAssignmentFailStatus,
-  [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup
+  [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
+  [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup
 });
 
 // selectors
@@ -141,6 +149,11 @@ export const getHasCommonStudensSelector = createSelector(
 export const getCommonStudentsSelector = createSelector(
   stateSelector,
   state => state.conflictData?.commonStudents || []
+);
+
+export const getHasDuplicateAssignmentsSelector = createSelector(
+  stateSelector,
+  state => state.hasDuplicateAssignments
 );
 // saga
 
@@ -218,14 +231,18 @@ function* saveAssignment({ payload }) {
           "students",
           "scoreReleasedClasses",
           "googleAssignmentIds",
-          "allowCommonStudents"
+          "allowCommonStudents",
+          "removeDuplicates",
+          "allowDuplicates"
         ]
       )
     );
     const result = yield call(assignmentApi.create, {
       assignments: data,
       assignedBy,
-      allowCommonStudents: !!payload.allowCommonStudents
+      allowCommonStudents: !!payload.allowCommonStudents,
+      removeDuplicates: !!payload.removeDuplicates,
+      allowDuplicates: !!payload.allowDuplicates
     });
     //TODO remove all below codes expect route and success message as the stores are not being used. and saving assignment will just navigate user to the next route
     const assignment = formatAssignment(result[0]);
@@ -234,6 +251,7 @@ function* saveAssignment({ payload }) {
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));
+    yield put(toggleHasDuplicateAssignmentPopupAction(false));
     const assignmentId = result[0]._id;
     yield put(
       push(
@@ -250,9 +268,10 @@ function* saveAssignment({ payload }) {
       if (err.data.commonStudents && err.data.commonStudents.length) {
         return yield put(updateAssignFailDataAction(err.data));
       }
-      return yield call(message.error, err.data.message);
+      return yield put(toggleHasDuplicateAssignmentPopupAction(true));
     }
     yield put(toggleHasCommonAssignmentsPopupAction(false));
+    yield put(toggleHasDuplicateAssignmentPopupAction(false));
     yield call(message.error, err.statusText);
   }
 }

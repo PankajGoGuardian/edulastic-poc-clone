@@ -74,11 +74,13 @@ class RowColumn extends Component {
                     array.splice(-1, draft.uiStyle.rowCount);
                   });
                 });
+                draft.uiStyle.columnCount = draft?.uiStyle?.columnTitles?.length || 1;
               } else if (prop === "rowTitles" && draft.uiStyle.rowCount !== 1) {
                 draft.validation.validResponse.value.splice(-1, draft.uiStyle.columnTitles);
                 draft.validation.altResponses.forEach(valid => {
                   valid.value.splice(-1, draft.uiStyle.columnTitles);
                 });
+                draft.uiStyle.rowCount = draft?.uiStyle?.rowTitles?.length || 1;
               }
               break;
 

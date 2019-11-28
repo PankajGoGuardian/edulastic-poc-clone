@@ -324,7 +324,6 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
 
   for (const entity of entities) {
     const { questionActivities = [] } = entity;
-
     for (let {
       _id,
       notStarted,
@@ -339,7 +338,8 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
       graded,
       qLabel,
       barLabel,
-      qid
+      qid,
+      pendingEvaluation
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
@@ -382,7 +382,7 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
         skipped = false;
       }
 
-      if (graded === false && !notStarted && !skipped && !score) {
+      if ((graded === false && !notStarted && !skipped && !score) || pendingEvaluation) {
         questionMap[_id].manualGradedNum += 1;
       } else if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;

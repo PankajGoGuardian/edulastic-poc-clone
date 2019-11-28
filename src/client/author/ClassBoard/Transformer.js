@@ -290,6 +290,7 @@ export const transformGradeBookResponse = (
             questionActivities: emptyQuestionActivities
           };
         }
+
         //TODO: for now always present
         const present = true;
         //TODO: no graded status now. using submitted as a substitute for graded
@@ -332,6 +333,7 @@ export const transformGradeBookResponse = (
               timeSpent,
               score,
               graded,
+              pendingEvaluation,
               ...remainingProps
             } = questionActivitiesIndexed[el];
             if (score > 0 && skipped) {
@@ -360,7 +362,8 @@ export const transformGradeBookResponse = (
               testActivityId,
               graded,
               qLabel,
-              barLabel
+              barLabel,
+              pendingEvaluation
             };
           }
         );

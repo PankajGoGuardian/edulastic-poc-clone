@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
-import { Pagination } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { Pagination, message, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
-import { themeColor, white } from "@edulastic/colors";
+import { themeColor, white, red } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
-import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
+import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconRemove } from "@edulastic/icons";
 import { get } from "lodash";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
@@ -26,6 +28,8 @@ import {
   MobileLeftSide,
   MobileRightSide
 } from "./styled";
+import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
+import { getUserId } from "../../../selectors/user";
 
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
@@ -51,6 +55,23 @@ class AuthorTestItemPreview extends Component {
     this.setState({
       value
     });
+  };
+
+  handleDeleteItem = () => {
+    const {
+      item,
+      item: { _id },
+      deleteItem,
+      isEditable,
+      page
+    } = this.props;
+    if (item.status !== "draft") {
+      return message.error("Status of the Item is not in the DRAFT state to proceed");
+    }
+    if (!isEditable) {
+      return message.error("Don't have write permission to delete the item");
+    }
+    return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
   };
 
   getStyle = first => {
@@ -125,7 +146,8 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderLeftButtons = () => {
-    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols } = this.props;
+    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols, item, userId, page } = this.props;
+    const isOwner = item?.createdBy?._id === userId;
     return (
       <>
         <ButtonsContainer>
@@ -148,6 +170,17 @@ class AuthorTestItemPreview extends Component {
                 onClick={editTestItem}
               >
                 <IconPencilEdit color={themeColor} />
+              </EduButton>
+            )}
+            {isOwner && (page === "addItems" || page === "itemList") && (
+              <EduButton
+                title="Delete item"
+                style={{ width: 42, padding: 0, borderColor: red, paddingTop: "5px", fontSize: "16px", color: red }}
+                size="large"
+                onClick={this.handleDeleteItem}
+                disabled={this.props.deleting}
+              >
+                <Icon type="delete" color={red} />
               </EduButton>
             )}
           </ButtonsWrapper>
@@ -318,5 +351,17 @@ class AuthorTestItemPreview extends Component {
     );
   }
 }
+const enhance = compose(
+  withWindowSizes,
+  connect(
+    state => ({
+      deleting: getItemDeletingSelector(state),
+      userId: getUserId(state)
+    }),
+    {
+      deleteItem: deleteItemAction
+    }
+  )
+);
 
-export default withWindowSizes(AuthorTestItemPreview);
+export default enhance(AuthorTestItemPreview);

@@ -66,6 +66,20 @@ export const reportContentErrorAction = data => ({
   payload: data
 });
 
+export const initalSearchState = {
+  subject: "",
+  curriculumId: "",
+  standardIds: [],
+  questionType: "",
+  depthOfKnowledge: "",
+  authorDifficulty: "",
+  collectionName: "",
+  status: "",
+  grades: [],
+  tags: [],
+  filter: "ENTIRE_LIBRARY"
+};
+
 // reducer
 
 const initialState = {
@@ -79,7 +93,8 @@ const initialState = {
   itemsSubjectAndGrade: {
     subjects: [],
     grades: []
-  }
+  },
+  search: { ...initalSearchState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -211,4 +226,9 @@ export const getItemsSubjectAndGradeSelector = createSelector(
 export const getPassageConfirmModalStateSelector = createSelector(
   stateTestItemsSelector,
   state => state.showPassageConfirmModal
+);
+
+export const getSearchFilterStateSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.search
 );

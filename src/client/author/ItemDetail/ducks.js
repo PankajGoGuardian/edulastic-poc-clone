@@ -22,7 +22,14 @@ import {
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 import { isIncompleteQuestion } from "../questionUtils";
-import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
+import {
+  setTestItemsAction,
+  getSelectedItemSelector,
+  receiveTestItemsAction,
+  getTestsItemsPageSelector,
+  getTestsItemsLimitSelector,
+  getSearchFilterStateSelector
+} from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
   setTestDataAndUpdateAction,
@@ -336,6 +343,11 @@ export const getItemDetailUpdatingSelector = createSelector(
 export const getItemDetailDraggingSelector = createSelector(
   stateSelector,
   state => state.dragging
+);
+
+export const getItemDeletingSelector = createSelector(
+  stateSelector,
+  state => state.deleting
 );
 
 export const getItemDetailDimensionTypeSelector = createSelector(
@@ -725,10 +737,19 @@ function* receiveItemSaga({ payload }) {
 export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true));
-    const { id, redirectId, isTestFlow, testId } = payload;
+    const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload;
     const res = yield call(testItemsApi.deleteById, id);
+    if (isItemPrevew) {
+      const page = yield select(getTestsItemsPageSelector);
+      const limit = yield select(getTestsItemsLimitSelector);
+      const searchState = yield select(getSearchFilterStateSelector);
+      yield put(receiveTestItemsAction(searchState, page, limit));
+    }
+
     yield call(message.success, "item deleted successfully");
     yield put(setItemDeletingAction(false));
+    if (isItemPrevew) return;
+
     if (isTestFlow) {
       yield put(push(`/author/items/${redirectId}/item-detail/test/${testId}`));
       return;
@@ -739,7 +760,11 @@ export function* deleteItemSaga({ payload }) {
       yield put(push(`/author/items`));
     }
   } catch (e) {
+    yield put(setItemDeletingAction(false));
     console.error(e);
+    if (e.status === 403) {
+      return message.error(e.data.message);
+    }
     yield call(message.error, "deleting item failed");
   }
 }

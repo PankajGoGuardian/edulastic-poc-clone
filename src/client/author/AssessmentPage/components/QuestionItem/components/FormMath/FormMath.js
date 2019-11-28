@@ -6,6 +6,7 @@ import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
 import { MathWrapper } from "../MathWrapper/MathWrapper";
+import MathSpan from "../../../../../../../../packages/common/src/components/MathSpan";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -40,7 +41,9 @@ export default class FormMath extends React.Component {
 
     return (
       <QuestionText>
-        <MathWrapper latex={answer.value} />
+        <MathSpan
+          dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer.value}"></span>` }}
+        />
       </QuestionText>
     );
   };
@@ -64,7 +67,13 @@ export default class FormMath extends React.Component {
   renderReport = () => {
     const { answer } = this.props;
 
-    return <QuestionText>{answer}</QuestionText>;
+    return (
+      <QuestionText>
+        <MathSpan
+          dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer.value}"></span>` }}
+        />
+      </QuestionText>
+    );
   };
 
   render() {

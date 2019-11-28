@@ -66,7 +66,7 @@ export default class Section extends React.Component {
       section: { title },
       viewMode
     } = this.props;
-    const review = viewMode === "review";
+    const review = viewMode === "review" || viewMode === "report";
 
     return (
       <SectionWrapper>

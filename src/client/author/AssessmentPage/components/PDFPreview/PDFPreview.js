@@ -56,7 +56,7 @@ const PDFPreview = ({
   };
 
   return (
-    <PDFPreviewWrapper isToolBarVisible={isToolBarVisible} minimized={minimized}>
+    <PDFPreviewWrapper viewMode={viewMode === "report"} isToolBarVisible={isToolBarVisible} minimized={minimized}>
       <PerfectScrollbar>
         <Droppable
           types={["question"]}

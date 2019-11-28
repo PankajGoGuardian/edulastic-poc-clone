@@ -32,9 +32,17 @@ export default class FormEssay extends React.Component {
       answer,
       question: {
         uiStyle: { minHeight }
-      }
+      },
+      mode
     } = this.props;
-    return <Input.TextArea style={{ minHeight: `${minHeight}px` }} value={answer} onChange={this.handleChange} />;
+    return (
+      <Input.TextArea
+        style={{ minHeight: `${minHeight}px` }}
+        value={answer}
+        onChange={this.handleChange}
+        disabled={mode === "report"}
+      />
+    );
   };
 
   render() {

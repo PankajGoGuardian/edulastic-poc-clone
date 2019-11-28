@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const MigratedQuestion = styled.div`
-  display: flex;
-  width: 100%;
+  display: inline-flex;
+  /* width: 100%; */
   height: 100%;
   align-items: center;
 

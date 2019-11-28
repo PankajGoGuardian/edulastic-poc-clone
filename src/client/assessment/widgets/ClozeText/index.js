@@ -317,7 +317,7 @@ class ClozeText extends Component {
           </ContentArea>
         )}
         {view === "preview" && (
-          <Wrapper>
+          <Wrapper overflowProps={{ maxWidth: "100%", overflowX: "auto" }} paddingProps={{ paddingBottom: "1rem" }}>
             <Display
               checkAnswer={isCheckAnswer}
               showAnswer={isShowAnswer}

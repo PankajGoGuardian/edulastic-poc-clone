@@ -33,7 +33,7 @@ class SummaryTest extends Component {
     if (assessmentType === ASSESSMENT || assessmentType === PRACTICE || assessmentType === TESTLET) {
       const { allQids } = questionList;
       if (allQids.length === 0) {
-        loadTest({ testId, testActivityId });
+        loadTest({ testId, testActivityId, groupId: match.params.groupId });
       }
     } else {
       history.push("/home/assignments");

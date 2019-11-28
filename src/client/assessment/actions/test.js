@@ -14,8 +14,9 @@ export const loadTestAction = payload => ({
   payload
 });
 
-export const finishTestAcitivityAction = () => ({
-  type: FINISH_TEST
+export const finishTestAcitivityAction = payload => ({
+  type: FINISH_TEST,
+  payload
 });
 
 export const loadPreviousReponseAction = () => ({

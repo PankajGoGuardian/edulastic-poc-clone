@@ -113,7 +113,7 @@ const AssessmentContainer = ({
 
   const saveCurrentAnswer = () => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent);
+    saveUserAnswer(currentItem, timeSpent, false, groupId);
   };
 
   const moveToNext = async () => {
@@ -122,20 +122,20 @@ const AssessmentContainer = ({
     }
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent);
+      await saveUserAnswer(currentItem, timeSpent, false, groupId);
       history.push(`${url}/${"test-summary"}`);
     }
   };
 
   const saveProgress = () => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent);
+    saveUserAnswer(currentItem, timeSpent, false, groupId);
   };
 
   const gotoSummary = async () => {
     if (!testletType) {
       const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent);
+      await saveUserAnswer(currentItem, timeSpent, false, groupId);
     }
     history.push(`${url}/test-summary`);
   };
@@ -155,7 +155,7 @@ const AssessmentContainer = ({
 
   useInterval(() => {
     if (autoSave) {
-      saveUserAnswer(currentItem, Date.now() - lastTime.current, true);
+      saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId);
     }
   }, 1000 * 30);
 
@@ -174,7 +174,7 @@ const AssessmentContainer = ({
     view,
     pageStructure,
     freeFormNotes,
-    finishTest,
+    finishTest: () => finishTest(groupId),
     history,
     previewPlayer: preview,
     LCBPreviewModal,

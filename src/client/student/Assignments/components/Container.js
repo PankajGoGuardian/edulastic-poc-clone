@@ -115,8 +115,8 @@ const Content = ({
 
   const renderAssignments = () => (
     <AssignmentWrapper>
-      {assignments.map((item, index) => (
-        <AssignmentCard key={item._id} data={item} currentGroup={currentGroup} type="assignment" />
+      {assignments.map(item => (
+        <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="assignment" />
       ))}
     </AssignmentWrapper>
   );

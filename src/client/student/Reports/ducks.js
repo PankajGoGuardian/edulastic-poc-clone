@@ -119,14 +119,18 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   (assignmentsObj, reportsObj, currentGroup, classIds) => {
     // group reports by assignmentsID
-    const groupedReports = groupBy(values(reportsObj), "assignmentId");
+    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
-      .map(assignment => ({
-        ...assignment,
-        reports:
-          (groupedReports[assignment._id] && groupedReports[assignment._id].filter(item => item.status !== 0)) || []
-      }))
+
+      .flatMap(assignment => {
+        const allClassess = assignment.class.filter(item => item.redirect !== true);
+        return allClassess.map(clazz => ({
+          ...assignment,
+          classId: clazz._id,
+          reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || []
+        }));
+      })
       .filter(assignment => isReport(assignment, currentGroup, classIds));
 
     return assignments;

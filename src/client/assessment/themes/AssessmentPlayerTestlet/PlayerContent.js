@@ -34,7 +34,8 @@ const PlayerContent = ({
   testletState,
   testletConfig = {},
   LCBPreviewModal,
-  location = { state: {} }
+  location = { state: {} },
+  groupId
 }) => {
   const frameRef = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
@@ -73,7 +74,7 @@ const PlayerContent = ({
       if (currentItem) {
         const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
         const timeSpent = Date.now() - lastTime.current;
-        saveUserAnswer(cItemIndex, timeSpent);
+        saveUserAnswer(cItemIndex, timeSpent, false, groupId);
       }
     }
   };

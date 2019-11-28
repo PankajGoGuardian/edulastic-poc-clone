@@ -134,7 +134,7 @@ function* loadTest({ payload }) {
       calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       requirePassword: testActivity?.assignmentSettings?.requirePassword || false,
-      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
+      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE"
     };
     const answerCheckByItemId = {};
     (testActivity.questionActivities || []).map(item => {
@@ -325,10 +325,10 @@ function* loadPreviousResponses(payload) {
   }
 }
 
-function* submitTest() {
+function* submitTest({ payload: classId }) {
   try {
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
-    const groupId = yield select(getCurrentGroupWithAllClasses);
+    const groupId = classId || (yield select(getCurrentGroupWithAllClasses));
     if (testActivityId === "test") {
       return;
     }

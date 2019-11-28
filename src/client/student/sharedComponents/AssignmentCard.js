@@ -27,7 +27,6 @@ import Attempt from "./Attempt";
 
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
-import { getClassIds } from "../Reports/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -40,7 +39,8 @@ const SafeBrowserButton = ({
   t,
   startTest,
   attempted,
-  resume
+  resume,
+  classId
 }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
 
@@ -71,7 +71,7 @@ const SafeBrowserButton = ({
   );
 };
 
-const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
+const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, classId }) => {
   const [showAttempts, setShowAttempts] = useState(false);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
@@ -94,7 +94,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     thumbnail
   } = data;
 
-  const currentClassList = clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true));
+  const currentClassList = clazz.filter(cl => cl._id === classId);
   if (!startDate || !endDate) {
     const maxCurrentClass =
       currentClassList && currentClassList.length > 0
@@ -144,23 +144,16 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         testId,
         testType,
         assignmentId,
-        testActivityId: lastAttempt._id
+        testActivityId: lastAttempt._id,
+        classId
       });
     } else if (attemptCount < maxAttempts) {
-      startAssignment({ testId, assignmentId, testType });
+      startAssignment({ testId, assignmentId, testType, classId });
     }
   };
 
   const { activityReview = true } = data;
-  let releaseScore = null;
-  if (!currentGroup) {
-    // Find current group from assignment classes object
-    const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
-    currentGroup = getClass._id;
-    releaseScore = getClass.releaseScore;
-  } else {
-    releaseScore = (data.class.find(item => item._id === currentGroup) || {}).releaseScore;
-  }
+  let releaseScore = (data.class.find(item => item._id === classId) || {}).releaseScore;
 
   if (!releaseScore) {
     releaseScore = data.releaseScore;
@@ -183,6 +176,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
           startTest={startTest}
           attempted={attempted}
           resume={resume}
+          classId={classId}
         />
       ) : (
         <StartButton
@@ -195,6 +189,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
           startTest={startTest}
           attempted={attempted}
           resume={resume}
+          classId={classId}
         />
       )
     ) : (
@@ -209,7 +204,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
           activityReview={activityReview}
           t={t}
           attempted={attempted}
-          classId={currentGroup}
+          classId={classId}
         />
       )
     );
@@ -325,9 +320,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assignmentCard"),
   connect(
-    state => ({
-      userGroups: getClassIds(state)
-    }),
+    null,
     {
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction

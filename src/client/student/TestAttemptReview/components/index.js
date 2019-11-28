@@ -13,7 +13,7 @@ import { finishTestAcitivityAction } from "../../../assessment/actions/test";
 import SubmitConfirmation from "../../../assessment/themes/common/SubmitConfirmation";
 
 const SummaryContainer = props => {
-  const { finishTest, history } = props;
+  const { finishTest, history, match } = props;
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true);
@@ -27,12 +27,13 @@ const SummaryContainer = props => {
     history.push("/home/assignments");
   };
 
+  const groupId = match.params.groupId;
   return (
     <ThemeProvider theme={themes.default}>
       <MainContainer>
         <SubmitConfirmation isVisible={showConfirmationModal} onClose={closeConfirmationModal} finishTest={closeTest} />
         <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
-        <SummaryTest finishTest={finishTest} />
+        <SummaryTest finishTest={() => finishTest(groupId)} />
       </MainContainer>
     </ThemeProvider>
   );

@@ -139,7 +139,7 @@ function* fetchAssignments({ payload }) {
  */
 function* startAssignment({ payload }) {
   try {
-    const { assignmentId, testId, testType } = payload;
+    const { assignmentId, testId, testType, classId } = payload;
     if (!assignmentId || !testId) {
       throw new Error("insufficient data");
     }
@@ -155,7 +155,7 @@ function* startAssignment({ payload }) {
     const groupType = "class";
     const { _id: testActivityId } = yield testActivityApi.create({
       assignmentId,
-      groupId: actualGroupId,
+      groupId: classId,
       institutionId,
       groupType,
       testId
@@ -166,11 +166,11 @@ function* startAssignment({ payload }) {
         push(
           `/student/${
             testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
         )
       );
     } else {
-      yield put(push(`/student/${testType}/${testId}/class/${actualGroupId}/uta/${testActivityId}`));
+      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
     }
 
     // TODO:load previous responses if resume!!
@@ -184,7 +184,7 @@ function* startAssignment({ payload }) {
  */
 function* resumeAssignment({ payload }) {
   try {
-    const { assignmentId, testActivityId, testId, testType } = payload;
+    const { assignmentId, testActivityId, testId, testType, classId } = payload;
     if (!assignmentId || !testId || !testActivityId) {
       throw new Error("insufficient data");
     }
@@ -203,11 +203,11 @@ function* resumeAssignment({ payload }) {
         push(
           `/student/${
             testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${actualGroupId}/uta/${testActivityId}/qid/0`
+          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
         )
       );
     } else {
-      yield put(push(`/student/${testType}/${testId}/class/${actualGroupId}/uta/${testActivityId}`));
+      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
     }
   } catch (e) {
     console.log(e);
@@ -379,12 +379,16 @@ export const getAllAssignmentsSelector = createSelector(
   getClassIds,
   (assignmentsObj, reportsObj, currentGroup, classIds) => {
     // group reports by assignmentsID
-    const groupedReports = groupBy(values(reportsObj), "assignmentId");
+    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
-      .map(assignment => ({
-        ...assignment,
-        reports: groupedReports[assignment._id] || []
-      }))
+      .flatMap(assignment => {
+        const allClassess = assignment.class.filter(item => item.redirect !== true);
+        return allClassess.map(clazz => ({
+          ...assignment,
+          classId: clazz._id,
+          reports: groupedReports[`${assignment._id}_${clazz._id}`] || []
+        }));
+      })
       .filter(assignment => isLiveAssignment(assignment, currentGroup, classIds));
 
     return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);

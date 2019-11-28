@@ -49,17 +49,17 @@ const getIndex = (page, items) => {
 
 const menuItems = [
   {
-    label: "Dashboard",
+    label: "Assignments",
     icon: IconClockDashboard,
     path: "home/dashboard"
   },
   {
-    label: "Reports",
+    label: "Grades",
     icon: IconReport,
     path: "home/reports"
   },
   {
-    label: "Skill Reports",
+    label: "Skill Mastery",
     icon: IconBarChart,
     path: "home/skill-report"
   },

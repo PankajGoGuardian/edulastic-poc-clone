@@ -202,10 +202,15 @@ class Display extends Component {
           />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
+              const { height: individualHeight = 0, width: individualWidth = 0 } = responseContainer;
+              const { heightpx: globalHeight = 0, widthpx: globalWidth = 0 } = uiStyle;
+              const { minWidth, minHeight } = response;
+              const height = parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
+              const width = parseInt(individualWidth, 10) || parseInt(globalWidth, 10) || minWidth;
               const dropTargetIndex = index;
               const btnStyle = {
-                height: responseContainer.height,
-                width: responseContainer.width,
+                height,
+                width,
                 top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
                 border: showDropItemBorder
@@ -222,8 +227,6 @@ class Display extends Component {
                   key={index}
                   style={{
                     ...btnStyle,
-                    minWidth: response.minWidth,
-                    minHeight: response.minHeight,
                     borderStyle: smallSize ? "dashed" : "solid"
                   }}
                   className="imagelabeldragdrop-droppable active"

@@ -86,18 +86,18 @@ export const StyledTable = styled(Table)`
       font-size: ${fonts.previewFontSizeMobile};
     }
   }
+  .ant-table {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
   @media (min-width: ${smallDesktopWidth}) {
     .ant-table {
       width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
       margin: 0px 6px 0px 0px;
     }
   }
   @media (max-width: ${mobileWidth}) {
     .ant-table-body {
-      overflow-x: scroll;
-
       td {
         min-width: 100px;
       }

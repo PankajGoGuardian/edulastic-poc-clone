@@ -26,6 +26,7 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div`
+  max-width: 100%;
   width: auto;
 `;
 

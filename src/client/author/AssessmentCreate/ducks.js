@@ -69,7 +69,10 @@ export const reducer = createReducer(initialState, {
   [CREATE_ASSESSMENT_REQUEST]: createAssessmentRequest,
   [CREATE_ASSESSMENT_SUCCESS]: createAssessmentSuccess,
   [CREATE_ASSESSMENT_ERROR]: createAssessmentError,
-  [SET_PERCENT_LOADED]: setPercentageLoaded
+  [SET_PERCENT_LOADED]: setPercentageLoaded,
+  [UPLOAD_TO_DRIVE_REQUEST]: state => {
+    state.creating = true;
+  }
 });
 
 const defaultTestItem = {
@@ -112,6 +115,8 @@ function* createAssessmentSaga({ payload }) {
         payload.progressCallback,
         payload.cancelUpload
       );
+    } else if (payload.fileURI) {
+      fileURI = payload.fileURI;
     }
   } catch (error) {
     const errorMessage = error.message || "Upload PDF is failing";
@@ -250,6 +255,10 @@ function* createAssessmentSaga({ payload }) {
 function* uploadToDriveSaga({ payload }) {
   try {
     //TODO call the new api and create test
+    const { token, id, name, size, mimeType } = payload;
+    const res = yield call(fileApi.uploadFromDrive, { token, id, name, folderName: "doc_based", size, mimeType });
+    const fileURI = res.Location;
+    yield put(createAssessmentRequestAction({ fileURI }));
   } catch (err) {
     yield call(message.error, "Upload failed!");
   }

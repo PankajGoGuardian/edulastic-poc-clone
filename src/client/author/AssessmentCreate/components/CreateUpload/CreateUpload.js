@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { IconUpload, IconGdrive, IconCloudUpload } from "@edulastic/icons";
 import { formatBytes } from "@edulastic/common";
-import { Progress, Icon, Button, message } from "antd";
+import { Progress, Icon, Button, message, Spin } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { Container, ButtonsContainer, RoundedButton } from "../CreateBlank/styled";
 import { UploadDragger } from "../DropArea/styled";
@@ -26,7 +26,13 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
   const handleDriveUpload = ({ action, docs }) => {
     if (action === "picked" && docs) {
       const [doc] = docs;
-      uploadToDrive({ id: doc.id, accessToken: window.gapi.auth.getToken().access_token });
+      console.log("doc", doc);
+      const { id, name, sizeBytes: size, mimeType } = doc;
+      if (size > 1024 * 1024 * 5) {
+        message.error("The selected document is too big to be uploaded");
+        return;
+      }
+      uploadToDrive({ id, token: window.gapi.auth.getToken().access_token, name, size, mimeType });
     }
   };
 
@@ -76,7 +82,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
               <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
             </FileInfoCont>
           )}
-          {percent > 0 && percent < 100 && (
+          {percent > 0 && percent < 100 ? (
             <ProgressCont>
               <ProgressBarWrapper>
                 <Progress
@@ -88,6 +94,12 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
                 />
               </ProgressBarWrapper>
               <UploadCancelBtn onClick={onCancel}>Cancel</UploadCancelBtn>
+            </ProgressCont>
+          ) : (
+            <ProgressCont>
+              <ProgressBarWrapper>
+                <Spin />
+              </ProgressBarWrapper>
             </ProgressCont>
           )}
         </>

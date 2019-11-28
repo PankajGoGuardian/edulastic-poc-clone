@@ -34,6 +34,15 @@ const getSignedUrl = (filename, folder, subFolder) =>
     })
     .then(result => result.data.result);
 
+const uploadFromDrive = ({ token, id, name, folderName, ...otherData }) =>
+  api
+    .callApi({
+      url: `${prefix}/uploadFromDrive`,
+      method: "post",
+      data: { token, id, name, folderName, ...otherData }
+    })
+    .then(result => result.data);
+
 const uploadBySignedUrl = (url, data, progressCallback, cancelUpload) =>
   axios({
     method: "post",
@@ -53,5 +62,6 @@ const uploadBySignedUrl = (url, data, progressCallback, cancelUpload) =>
 export default {
   upload,
   getSignedUrl,
-  uploadBySignedUrl
+  uploadBySignedUrl,
+  uploadFromDrive
 };

@@ -123,10 +123,10 @@ Cypress.Commands.add("deleteItem", item => {
     },
     failOnStatusCode: false
   }).then(({ status }) => {
-    if (status !== 403) {
-      expect(status).to.eq(200);
-      console.log("Item deleted with _id :", item._id);
-    } else console.log("API forbidden , for testItem ", JSON.stringify(item));
+    // if (status !== 403) {
+    expect(status).to.eq(200);
+    console.log("Item deleted with _id :", item._id);
+    // } else console.log("API forbidden , for testItem ", JSON.stringify(item));
   });
 });
 
@@ -139,10 +139,10 @@ Cypress.Commands.add("deleteTest", test => {
     },
     failOnStatusCode: false
   }).then(({ status }) => {
-    if (status !== 403) {
-      expect(status).to.eq(200);
-      console.log("test deleted with _id :", test._id);
-    } else console.log("API forbidden for test ", JSON.stringify(test));
+    // if (status !== 403) {
+    expect(status).to.eq(200);
+    console.log("test deleted with _id :", test._id);
+    // } else console.log("API forbidden for test ", JSON.stringify(test));
   });
 });
 
@@ -181,20 +181,20 @@ Cypress.Commands.add("deleteTestData", () => {
       testData = JSON.parse(fileContent);
       console.log("testDataJson in deleteTestData", testData);
 
-      // delete testItems
-      if (testData.testItems && testData.testItems.length > 0) {
-        testData.testItems.forEach(item => {
-          cy.deleteItem(item);
-        });
-        delete testData.testItems;
-      }
-
       // delete tests
       if (testData.tests && testData.tests.length > 0) {
         testData.tests.forEach(test => {
           cy.deleteTest(test);
         });
         delete testData.tests;
+      }
+
+      // delete testItems
+      if (testData.testItems && testData.testItems.length > 0) {
+        testData.testItems.forEach(item => {
+          cy.deleteItem(item);
+        });
+        delete testData.testItems;
       }
 
       cy.setToken(daCredential.username, daCredential.password).then(() => {
@@ -247,10 +247,10 @@ Cypress.Commands.add("deleteUsers", users => {
     },
     body: users.deleteBody
   }).then(({ status }) => {
-    if (status !== 403) {
-      expect(status).to.eq(200);
-      console.log("users deleted with _id :", users.deleteBody.userIds);
-    } else console.log("API forbidden , for users ", JSON.stringify(users));
+    // if (status !== 403) {
+    expect(status).to.eq(200);
+    console.log("users deleted with _id :", users.deleteBody.userIds);
+    // } else console.log("API forbidden , for users ", JSON.stringify(users));
   });
 });
 
@@ -264,10 +264,10 @@ Cypress.Commands.add("deleteClazz", group => {
     },
     body: group.deleteBody
   }).then(({ status }) => {
-    if (status !== 403) {
-      expect(status).to.eq(200);
-      console.log("groups deleted with _id :", group.deleteBody);
-    } else console.log("API forbidden , for groups ", JSON.stringify(group));
+    // if (status !== 403) {
+    expect(status).to.eq(200);
+    console.log("groups deleted with _id :", group.deleteBody);
+    // } else console.log("API forbidden , for groups ", JSON.stringify(group));
   });
 });
 

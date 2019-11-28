@@ -116,6 +116,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
             testLibrary.header.clickOnReview();
             cy.wait(2000);
+            itemKeys.forEach(itemKey => {
+              testLibrary.review.verifyItemByContent(itemKey);
+            });
+
             testLibrary.header.clickOnSaveButton(true);
             testLibrary.header.clickOnPublishButton();
             testLibrary.clickOnAssign();

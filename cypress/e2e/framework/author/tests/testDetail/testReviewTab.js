@@ -57,4 +57,10 @@ export default class TestReviewTab {
       .contains("Duplicate")
       .click();
   };
+
+  verifyItemByContent = question =>
+    cy
+      .get('[data-cy="styled-wrapped-component"]')
+      .contains(question)
+      .should("be.exist");
 }

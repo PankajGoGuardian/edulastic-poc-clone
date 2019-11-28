@@ -7,6 +7,7 @@ import TestAddItem from "./testDetail/testAddItemTab";
 import SearchFilters from "../searchFiltersPage";
 import TestHeader from "./testDetail/header";
 import TestAssignPage from "./testDetail/testAssignPage";
+import TestReviewTab from "./testDetail/testReviewTab";
 
 export default class TestLibrary {
   constructor() {
@@ -17,6 +18,7 @@ export default class TestLibrary {
     this.assignPage = new TestAssignPage();
     this.testSummary = new TestSummary();
     this.testAddItem = new TestAddItem();
+    this.review = new TestReviewTab();
   }
 
   clickOnTileView = () => {

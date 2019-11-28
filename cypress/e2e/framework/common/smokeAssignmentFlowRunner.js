@@ -71,6 +71,12 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
   context("> scoring policy - 'Do not release scores or responses'", () => {
     const { email, status, attempt, stuName } = attemptsData[0];
 
+    it(`> teacher update release grade policy - ${releaseGradeTypes.DONT_RELEASE}`, () => {
+      cy.login("teacher", teacher, password);
+      teacherSideBar.clickOnAssignment();
+      authorAssignmentPage.setReleaseGradeOption(releaseGradeTypes.DONT_RELEASE);
+    });
+
     it(`> attempt by ${stuName}`, () => {
       test.attemptAssignment(email, status, attempt, questionTypeMap, password, aType);
     });

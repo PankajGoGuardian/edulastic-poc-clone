@@ -126,7 +126,7 @@ export default class QuestionResponsePage {
 
     this.getDropDownMenu()
       .contains(studentName)
-      .click();
+      .click({ force: true });
 
     if (index > 0) cy.wait("@test-activity");
     // if (!studentName.includes("Student01")) cy.wait("@test-activity");

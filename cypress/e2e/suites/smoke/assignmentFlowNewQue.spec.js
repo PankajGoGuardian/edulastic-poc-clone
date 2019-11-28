@@ -111,17 +111,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
               if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
               testLibrary.searchFilters.waitForSearchResponse();
             });
-
+            /* 
             testLibrary.searchFilters.clearAll();
             testLibrary.testAddItem.authoredByMe().then(() => {
               testLibrary.searchFilters.setGrades(grade);
               itemKeys.forEach(itemKey => {
                 testLibrary.testAddItem.verifyAddedItemByQuestionContent(itemKey);
               });
-            });
+            }); */
 
             testLibrary.header.clickOnReview();
             cy.wait(2000);
+            itemKeys.forEach(itemKey => {
+              testLibrary.review.verifyItemByContent(itemKey);
+            });
             testLibrary.header.clickOnSaveButton(true);
             testLibrary.header.clickOnPublishButton();
             testLibrary.clickOnAssign();

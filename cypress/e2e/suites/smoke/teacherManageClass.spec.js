@@ -16,7 +16,7 @@ const random = Helpers.getRamdomString();
 const userType = {
   GOOGLE: "Google Usernames",
   MSO: "Office 365 Usernames",
-  FL_NAME: "Frist Name and Last Name",
+  FL_NAME: "First Name and Last Name",
   LF_NAME: "Last Name and First Name"
 };
 const user = { email: "teacher1.smoke.automation@snapwiz.com", password: "automation" };

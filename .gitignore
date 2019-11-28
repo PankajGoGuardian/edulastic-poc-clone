@@ -17,6 +17,7 @@ cypress/snapshots/
 cypress/reports/
 cypress/results/    
 cypress/fixtures/toDelete/
+cypress/.snapshot-report
 dist/
 
 # vi swap files

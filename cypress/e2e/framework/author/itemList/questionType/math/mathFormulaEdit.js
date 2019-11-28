@@ -571,5 +571,12 @@ class MathFormulaEdit {
           .should("not.contain", "Correct Answers");
       });
   };
+  allowNumeric = () => cy.get('[data-cy="answer-allow-numeric-only"]');
+
+  getAddOptions = () =>
+    cy
+      .get("body")
+      .contains("Additional Options")
+      .click({ force: true });
 }
 export default MathFormulaEdit;

@@ -34,12 +34,14 @@ export default WrappedComponent => {
     if (_userAnswer === undefined && userPrevAnswer !== undefined && userAnswer !== undefined) {
       previewTab = "check";
     }
+
+    // if review-tab dont pass evaluation forward.
     return (
       <WrappedComponent
         saveAnswer={saveAnswer}
         questionId={questionId}
         userAnswer={userAnswer}
-        evaluation={evaluation}
+        evaluation={!props.isReviewTab ? evaluation : undefined}
         {...props}
         previewTab={previewTab}
       />

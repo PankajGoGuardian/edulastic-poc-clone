@@ -20,6 +20,7 @@ import {
   updateDefaultThumbnailAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
+import { clearEvaluationAction } from "../../../../../../assessment/actions/evaluation";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
@@ -245,6 +246,7 @@ class Review extends PureComponent {
 
   closeModal = () => {
     this.setModalVisibility(false);
+    this.props.clearEvaluation();
   };
 
   get tableData() {
@@ -257,6 +259,7 @@ class Review extends PureComponent {
     }));
   }
 
+  // changing this
   handleChangeField = (field, value) => {
     const { setData, updateDefaultThumbnail } = this.props;
     if (field === "thumbnail") {
@@ -266,8 +269,11 @@ class Review extends PureComponent {
   };
 
   hidePreviewModal = () => {
-    const { clearAnswer } = this.props;
-    this.setState({ isTestPreviewModalVisible: false }, () => clearAnswer());
+    const { clearAnswer, clearEvaluation } = this.props;
+    this.setState({ isTestPreviewModalVisible: false }, () => {
+      clearAnswer();
+      clearEvaluation();
+    });
   };
 
   showTestPreviewModal = () => {
@@ -501,6 +507,7 @@ const enhance = compose(
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       clearAnswer: clearAnswersAction,
+      clearEvaluation: clearEvaluationAction,
       setTestItems: setTestItemsAction
     }
   )

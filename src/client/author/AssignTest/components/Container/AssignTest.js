@@ -50,6 +50,8 @@ class AssignTest extends React.Component {
   constructor(props) {
     super(props);
     const isAdmin = props.userRole === roleuser.SCHOOL_ADMIN || props.userRole === roleuser.DISTRICT_ADMIN;
+
+    const testTypeDefault = props?.testSettings?.testType || (isAdmin ? COMMON : ASSESSMENT);
     this.state = {
       isAdvancedView: props.userRole !== "teacher" ? true : false,
       assignment: {
@@ -57,7 +59,7 @@ class AssignTest extends React.Component {
         openPolicy: "Automatically on Start Date",
         closePolicy: "Automatically on Due Date",
         class: [],
-        testType: isAdmin ? COMMON : ASSESSMENT,
+        testType: testTypeDefault,
         endDate: setTime(props.userRole)
       },
       specificStudents: false

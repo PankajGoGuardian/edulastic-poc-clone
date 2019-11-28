@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
-import MathSpan from "../../../../../../../../packages/common/src/components/MathSpan";
+import {MathSpan} from "@edulastic/common";
 
 export default class FormMath extends React.Component {
   static propTypes = {

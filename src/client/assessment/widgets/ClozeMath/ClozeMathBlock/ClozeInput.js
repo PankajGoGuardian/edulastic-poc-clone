@@ -18,10 +18,10 @@ const ClozeInput = ({ id, resprops = {} }) => {
     showIndex
   } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
-  const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
   const {
     responseIds: { inputs }
   } = item;
+  const val = _inputsAnwers[id]?.value || "";
   const { index } = find(inputs, res => res.id === id) || {};
   const response = find(responseContainers, cont => cont.id === id);
 
@@ -32,6 +32,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
+
 
   return checked ? (
     <CheckedBlock

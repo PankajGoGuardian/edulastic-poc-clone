@@ -157,6 +157,7 @@ const ClozeMathPreview = ({
   return (
     <QuestionWrapper uiStyles={uiStyles}>
       <JsxParser
+        disableKeyGeneration // not generating new keys on re-render , fix for EV-9876
         bindings={{
           resProps: {
             options,

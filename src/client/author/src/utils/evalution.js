@@ -19,7 +19,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { evaluation, score, maxScore } = await evaluator(
+        const { evaluation, score = 0, maxScore } = await evaluator(
           {
             userResponse: answer,
             hasGroupResponses: validation.hasGroupResponses,
@@ -47,7 +47,6 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       results[id] = [];
     }
   }
-
   if (itemLevelScoring) {
     return {
       evaluation: results,

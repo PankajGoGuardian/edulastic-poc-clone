@@ -185,11 +185,8 @@ export const reIndexResponses = htmlStr => {
         .find("span")
         .remove("span");
 
-      const id = $(this).attr("id");
-      if (!id) {
-        $(this).attr("id", uuid());
-      }
-
+      const id = $(this).attr("id") || uuid();
+      $(this).attr({ id, key: id });
       $(this).attr("responseIndex", index + 1);
       $(this).attr("contenteditable", false);
 

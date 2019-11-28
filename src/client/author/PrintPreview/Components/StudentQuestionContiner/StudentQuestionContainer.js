@@ -18,6 +18,7 @@ import {
   TotalScore,
   FractionLine
 } from "./styled";
+import { UTAConstantsToLabels, gradingLabels, UTAStatusToConstants } from "../../utils/constants";
 
 class StudentQuestionContainer extends Component {
   render() {
@@ -57,29 +58,49 @@ class StudentQuestionContainer extends Component {
             </InfoItem>
           </StudentInformation>
           <TimeContainer>
+            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+              <TimeItem>
+                <Color>Time:</Color> 1:54
+              </TimeItem>
+            ) : null}
             <TimeItem>
-              <Color>Time:</Color> 1:54
+              <Color>Status:</Color>{" "}
+              {testActivity.status === UTAStatusToConstants.ABSENT
+                ? UTAConstantsToLabels[testActivity.status]
+                : gradingLabels[testActivity.graded]}
             </TimeItem>
-            <TimeItem>
-              <Color>Status:</Color> Graded
-            </TimeItem>
-            <TimeItem>
-              <Color>Submitted on:</Color> 19 October,2018
-            </TimeItem>
-            <TimeItem>
-              <Color>Hour:</Color> 03:13
-            </TimeItem>
+            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+              <TimeItem>
+                <Color>Submitted on:</Color>{" "}
+                {new Date(testActivity.endDate).toLocaleString("en-US", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric"
+                })}
+              </TimeItem>
+            ) : null}
+            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+              <TimeItem>
+                <Color>Hour:</Color>{" "}
+                {new Date(testActivity.endDate).toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true
+                })}
+              </TimeItem>
+            ) : null}
           </TimeContainer>
-
-          <ScoreContainer>
-            <ScoreLabel>TOTAL SCORE</ScoreLabel>
-            <TotalScore>{score}</TotalScore>
-            <FractionLine />
-            <TotalScore>{maxScore}</TotalScore>
-          </ScoreContainer>
+          {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+            <ScoreContainer>
+              <ScoreLabel>TOTAL SCORE</ScoreLabel>
+              <TotalScore>{score}</TotalScore>
+              <FractionLine />
+              <TotalScore>{maxScore}</TotalScore>
+            </ScoreContainer>
+          ) : null}
         </StudentQuestionHeader>
 
-        {!!studentResponse && (
+        {!!studentResponse && testActivity.status !== UTAStatusToConstants.ABSENT && (
           <StudentQuestions
             currentStudent={currentStudent || []}
             questionActivities={studentResponse.questionActivities}

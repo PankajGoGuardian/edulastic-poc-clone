@@ -122,8 +122,7 @@ function* releaseScoreSaga({ payload }) {
     yield call(classBoardApi.releaseScore, payload);
     yield call(message.success, "Successfully updated the release score settings");
   } catch (err) {
-    const errorMessage = "Update release score is failed";
-    yield call(message.error, errorMessage);
+    yield call(message.error, err.data.message || "Update release score is failed");
   }
 }
 
@@ -136,7 +135,7 @@ function* markAsDoneSaga({ payload }) {
     if (err && err.status == 422 && err.data && err.data.message) {
       yield call(message.warn, err.data.message);
     } else {
-      yield call(message.error, "Mark as done is failed");
+      yield call(message.error, err.data.message || "Mark as done is failed");
     }
   }
 }
@@ -147,7 +146,7 @@ function* openAssignmentSaga({ payload }) {
     yield put(updateOpenAssignmentsAction(payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
-    yield call(message.error, "Failed to open");
+    yield call(message.error, err.data.message || "Failed to open");
   }
 }
 
@@ -158,7 +157,7 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
-    yield call(message.error, "Failed to close");
+    yield call(message.error, err.data.message || "Failed to close");
   }
 }
 
@@ -167,7 +166,7 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload);
     yield call(message.success, "feedback saved");
   } catch (err) {
-    yield call(message.error, "Saving failed");
+    yield call(message.error, err.data.message || "Saving failed");
   }
 }
 
@@ -177,7 +176,7 @@ function* markAbsentSaga({ payload }) {
     yield put(updateStudentActivityAction(payload.students));
     yield call(message.success, "Successfully marked as absent");
   } catch (err) {
-    yield call(message.error, "Mark absent students failed");
+    yield call(message.error, err.data.message || "Mark absent students failed");
   }
 }
 
@@ -187,7 +186,7 @@ function* markAsSubmittedSaga({ payload }) {
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(message.success, "Successfully marked as submitted");
   } catch (err) {
-    yield call(message.error, "Mark as submit failed");
+    yield call(message.error, err.data.message || "Mark as submit failed");
   }
 }
 
@@ -200,7 +199,7 @@ function* togglePauseAssignment({ payload }) {
       `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
     );
   } catch (e) {
-    yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
+    yield call(message.error, err.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`);
   }
 }
 
@@ -219,7 +218,7 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students));
     yield call(message.success, "Successfully removed");
   } catch (err) {
-    yield call(message.error, "Remove students failed");
+    yield call(message.error, err.data.message || "Remove students failed");
   }
 }
 
@@ -229,7 +228,7 @@ function* addStudentsSaga({ payload }) {
     yield put(setStudentsGradeBookAction(students));
     yield call(message.success, "Successfully added");
   } catch (err) {
-    yield call(message.error, "Add students failed");
+    yield call(message.error, err.data.message || "Add students failed");
   }
 }
 
@@ -240,7 +239,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
     yield put(setCurrentTestActivityIdAction(""));
   } catch (err) {
-    yield call(message.error, "fetching all test activities failed");
+    yield call(message.error, err.data.message || "fetching all test activities failed");
   }
 }
 

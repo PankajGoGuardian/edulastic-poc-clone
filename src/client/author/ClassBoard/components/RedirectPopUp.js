@@ -88,14 +88,21 @@ const RedirectPopUp = ({
           : "At least one student should be selected to redirect assessment."
       );
     } else {
-      await assignmentApi.redirect(assignmentId, {
-        _id: groupId,
-        specificStudents: type === "entire" ? false : true,
-        students: type === "entire" ? [] : selected,
-        showPreviousAttempt: showPrevAttempt,
-        questionsDelivery: qDeliveryState,
-        endDate: +dueDate
-      });
+      await assignmentApi
+        .redirect(assignmentId, {
+          _id: groupId,
+          specificStudents: type === "entire" ? false : true,
+          students: type === "entire" ? [] : selected,
+          showPreviousAttempt: showPrevAttempt,
+          questionsDelivery: qDeliveryState,
+          endDate: +dueDate
+        })
+        .then(() => {
+          message.success("Redirect Successful");
+        })
+        .catch(err => {
+          message.error(err.data.message);
+        });
       closePopup();
     }
     setLoading(false);

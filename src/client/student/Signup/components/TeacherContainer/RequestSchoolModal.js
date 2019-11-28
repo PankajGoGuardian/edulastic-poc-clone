@@ -250,42 +250,42 @@ class RequestSchool extends React.Component {
               rules: [{ required: false, message: "Please provide a valid city." }]
             })(<Input data-cy="city" placeholder="Enter your school city" />)}
           </Form.Item>
-          <FlexItems type="flex" align="middle">
-            <Col xs={24} sm={4}>
+          <FlexItems type="flex">
+            <CustomColumn xs={24} sm={4} noMargin>
               <Label>Zip</Label>
-            </Col>
-            <Col xs={24} sm={8}>
-              {getFieldDecorator("zip", {
-                validateTrigger: ["onChange", "onBlur"],
-                rules: [
-                  { transform: this.transformInput },
-                  { required: true, message: "Please provide a valid zip code." }
-                ]
-              })(<Input data-cy="zip" placeholder="Enter Zip Code" />)}
-            </Col>
-            <Col xs={24} sm={4}>
-              <Label>State</Label>
-            </Col>
-            <Col xs={24} sm={8}>
-              {getFieldDecorator("state", {
-                rules: [{ required: false, message: "Please provide a valid state." }],
-                initialValue: states[0]
-              })(
-                country === "US" ? (
-                  <Select
-                    showSearch
-                    placeholder="Select state"
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                  >
-                    {stateOptions}
-                  </Select>
-                ) : (
-                  <Input data-cy="state" placeholder="Enter state" />
-                )
-              )}
-            </Col>
+            </CustomColumn>
+            <CustomColumn xs={24} sm={10}>
+              <Form.Item style={{ width: "100%" }}>
+                {getFieldDecorator("zip", {
+                  validateTrigger: ["onChange", "onBlur"],
+                  rules: [
+                    { transform: this.transformInput },
+                    { required: true, message: "Please provide a valid zip code." }
+                  ]
+                })(<Input data-cy="zip" placeholder="Enter Zip Code" />)}
+              </Form.Item>
+            </CustomColumn>
+            <CustomColumn xs={24} sm={10}>
+              <Form.Item label="State" style={{ width: "100%" }}>
+                {getFieldDecorator("state", {
+                  rules: [{ required: false, message: "Please provide a valid state." }],
+                  initialValue: states[0]
+                })(
+                  country === "US" ? (
+                    <Select
+                      showSearch
+                      placeholder="Select state"
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                    >
+                      {stateOptions}
+                    </Select>
+                  ) : (
+                    <Input data-cy="state" placeholder="Enter state" />
+                  )
+                )}
+              </Form.Item>
+            </CustomColumn>
           </FlexItems>
-
           <Form.Item label="Country">
             {getFieldDecorator("country", {
               rules: [{ required: true, message: "Please provide a valid country." }],
@@ -453,6 +453,7 @@ const Label = styled.div`
   color: rgba(0, 0, 0, 0.85);
   font-size: 16px;
   margin-right: 8px;
+  padding-top: 5px;
 
   @media (max-width: ${mobileWidthLarge}) {
     text-align: left;
@@ -531,12 +532,12 @@ const Title = styled.div`
 `;
 
 const FlexItems = styled(Row)`
-  margin-bottom: 24px;
+  margin-bottom: 0;
+`;
 
+const CustomColumn = styled(Col)`
+  margin-bottom: 24px;
   @media (max-width: ${mobileWidthLarge}) {
-    margin-bottom: 15px;
-    .ant-col:nth-child(2) {
-      margin-bottom: 15px;
-    }
+    margin-bottom: ${({ noMargin }) => (noMargin ? "0px" : "15px")};
   }
 `;

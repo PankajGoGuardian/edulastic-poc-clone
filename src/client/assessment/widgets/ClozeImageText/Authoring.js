@@ -572,95 +572,89 @@ class Authoring extends Component {
             />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">
-              <div className="left-buttons">
-                <div className="size-controls">
-                  <FieldWrapper>
-                    <ImageWidthInput
-                      ref={this.imageWidthEditor}
-                      data-cy="image-width-input"
-                      value={imageWidth}
-                      onChange={value => this.changeImageDimensions("width", value)}
-                    />
-                    <Label top={6} left={20}>
-                      {t("component.cloze.imageText.widthpx")}
-                    </Label>
-                  </FieldWrapper>
+              <FieldWrapper>
+                <ImageWidthInput
+                  ref={this.imageWidthEditor}
+                  data-cy="image-width-input"
+                  value={imageWidth}
+                  onChange={value => this.changeImageDimensions("width", value)}
+                />
+                <Label top={6} left={20}>
+                  {t("component.cloze.imageText.widthpx")}
+                </Label>
+              </FieldWrapper>
 
-                  <FieldWrapper>
-                    <ImageWidthInput
-                      data-cy="image-height-input"
-                      value={imageHeight}
-                      onChange={value => this.changeImageDimensions("height", value)}
-                    />
-                    <Label top={6} left={20}>
-                      {t("component.cloze.imageText.heightpx")}
-                    </Label>
-                  </FieldWrapper>
-                </div>
-                <div className="position-controls">
-                  <FieldWrapper>
-                    <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
-                    <Label top={6} left={20}>
-                      {t("component.cloze.imageText.positionX")}
-                    </Label>
-                  </FieldWrapper>
+              <FieldWrapper>
+                <ImageWidthInput
+                  data-cy="image-height-input"
+                  value={imageHeight}
+                  onChange={value => this.changeImageDimensions("height", value)}
+                />
+                <Label top={6} left={20}>
+                  {t("component.cloze.imageText.heightpx")}
+                </Label>
+              </FieldWrapper>
+              <FieldWrapper>
+                <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
+                <Label top={6} left={20}>
+                  {t("component.cloze.imageText.positionX")}
+                </Label>
+              </FieldWrapper>
 
-                  <FieldWrapper>
-                    <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
-                    <Label top={6} left={20}>
-                      {t("component.cloze.imageText.positionY")}
-                    </Label>
-                  </FieldWrapper>
-                </div>
-              </div>
-              <div className="right-buttons">
-                <CheckContainer position="unset" alignSelf="center">
-                  <Checkbox
-                    data-cy="drag-drop-image-aria-check"
-                    checked={keepAspectRatio}
-                    onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
-                  >
-                    {t("component.cloze.imageText.keepAspectRatio")}
-                  </Checkbox>
-                </CheckContainer>
+              <FieldWrapper>
+                <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
+                <Label top={6} left={20}>
+                  {t("component.cloze.imageText.positionY")}
+                </Label>
+              </FieldWrapper>
 
-                <PointerContainer className="controls-bar">
-                  <FieldWrapper>
-                    <ControlButton disabled={!hasActive}>
-                      <IconPin />
-                    </ControlButton>
-                    <Label top={6}>{t("component.cloze.imageText.pointers")}</Label>
-                  </FieldWrapper>
-                  <PointerSelect
-                    disabled={!hasActive}
-                    defaultValue="none"
-                    onChange={this.handlePointersChange}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                  >
-                    <Option value="none">{t("component.cloze.imageText.none")}</Option>
-                    <Option value="top">{t("component.cloze.imageText.top")}</Option>
-                    <Option value="bottom">{t("component.cloze.imageText.bottom")}</Option>
-                    <Option value="left">{t("component.cloze.imageText.left")}</Option>
-                    <Option value="right">{t("component.cloze.imageText.right")}</Option>
-                  </PointerSelect>
-                </PointerContainer>
-                <Dropdown
-                  overlay={() => (
-                    <ChromePicker
-                      color={background}
-                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                    />
-                  )}
-                  trigger={["click"]}
+              <CheckContainer position="unset" alignSelf="center">
+                <Checkbox
+                  data-cy="drag-drop-image-aria-check"
+                  checked={keepAspectRatio}
+                  onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
                 >
-                  <FieldWrapper>
-                    <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
-                    <Label top={6} left={20}>
-                      {t("component.cloze.imageDragDrop.fillcolor")}
-                    </Label>
-                  </FieldWrapper>
-                </Dropdown>
-              </div>
+                  {t("component.cloze.imageText.keepAspectRatio")}
+                </Checkbox>
+              </CheckContainer>
+
+              <PointerContainer className="controls-bar">
+                <FieldWrapper>
+                  <ControlButton disabled={!hasActive}>
+                    <IconPin />
+                  </ControlButton>
+                  <Label top={6}>{t("component.cloze.imageText.pointers")}</Label>
+                </FieldWrapper>
+                <PointerSelect
+                  disabled={!hasActive}
+                  defaultValue="none"
+                  onChange={this.handlePointersChange}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  <Option value="none">{t("component.cloze.imageText.none")}</Option>
+                  <Option value="top">{t("component.cloze.imageText.top")}</Option>
+                  <Option value="bottom">{t("component.cloze.imageText.bottom")}</Option>
+                  <Option value="left">{t("component.cloze.imageText.left")}</Option>
+                  <Option value="right">{t("component.cloze.imageText.right")}</Option>
+                </PointerSelect>
+              </PointerContainer>
+
+              <Dropdown
+                overlay={() => (
+                  <ChromePicker
+                    color={background}
+                    onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                  />
+                )}
+                trigger={["click"]}
+              >
+                <FieldWrapper>
+                  <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
+                  <Label top={6} left={20}>
+                    {t("component.cloze.imageDragDrop.fillcolor")}
+                  </Label>
+                </FieldWrapper>
+              </Dropdown>
             </FormContainer>
 
             <FlexContainer

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { extraDesktopWidth, largeDesktopWidth, middleMobileWidth } from "@edulastic/colors";
+import { middleMobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "./FlexContainer";
 
 export const FormContainer = styled(FlexContainer)`
@@ -9,23 +9,13 @@ export const FormContainer = styled(FlexContainer)`
   color: ${props => props.theme.widgets.clozeImageDropDown.formContainerColor};
   border-bottom: 1px solid ${props => props.theme.widgets.clozeImageDropDown.formContainerBorderColor};
   border-radius: 10px 10px 0px 0px;
-  overflow-x: auto;
+  flex-wrap: wrap;
   justify-content: flex-start;
 
   .size-controls,
   .position-controls {
     display: flex;
     padding: 4px 0px;
-  }
-
-  @media screen and (max-width: ${extraDesktopWidth}) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  @media screen and (max-width: ${largeDesktopWidth}) {
-    .left-buttons {
-      flex-direction: column;
-    }
   }
 `;
 

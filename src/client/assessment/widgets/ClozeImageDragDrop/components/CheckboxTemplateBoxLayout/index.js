@@ -44,8 +44,11 @@ const CheckboxTemplateBox = ({
   };
 
   const status = evaluation[index] ? "right" : "wrong";
+
   const isChecked =
-    get(userSelections, `[${index}].responseBoxID`, false) && !!get(userSelections, `[${index}].value`, []).length;
+    get(userSelections, `[${index}].responseBoxID`, false) &&
+    !!get(userSelections, `[${index}].value`, []).length &&
+    evaluation[index] !== undefined;
 
   const btnStyle = {
     widthpx: responseContainer.width,

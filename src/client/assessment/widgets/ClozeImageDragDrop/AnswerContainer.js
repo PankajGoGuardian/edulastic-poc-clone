@@ -24,6 +24,7 @@ const Container = styled.div`
     height: 100%;
     width: 100%;
     margin: 0px !important;
+    max-width: 100%;
   }
   .clipText {
     white-space: ${({ isWrapText }) => (isWrapText ? "normal" : "nowrap")};
@@ -32,7 +33,7 @@ const Container = styled.div`
   }
 `;
 
-const AnswerContainer = ({ answer, height, width, isWrapText }) => {
+const AnswerContainer = ({ answer, height, width, isWrapText, fontSize }) => {
   const [imageOriginalSize, setSize] = useState({ width: 1, height: 1 });
   const [showPopover, togglePopover] = useState(false);
 
@@ -66,11 +67,11 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
   } else {
     imageHeight = Math.round((imageOriginalSize.height * imageWidth) / imageOriginalSize.width);
   }
-  const { width: contentWidth } = measureText(answer);
+  const { width: contentWidth } = measureText(answer, { fontSize });
   const isOverText = width < contentWidth;
 
   const content = (
-    <div style={{ maxWidth: 400, overflow: "hidden" }}>
+    <div style={{ overflow: "hidden" }}>
       <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
     </div>
   );

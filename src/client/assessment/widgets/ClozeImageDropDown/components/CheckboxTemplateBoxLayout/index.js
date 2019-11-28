@@ -74,7 +74,7 @@ const CheckboxTemplateBoxLayout = ({
             indexStr = dropTargetIndex + 1;
         }
         let status = "";
-        if (userSelections[dropTargetIndex]) {
+        if (userSelections[dropTargetIndex] && evaluation[dropTargetIndex] !== undefined) {
           status = evaluation[dropTargetIndex] ? "right" : "wrong";
         }
         const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;

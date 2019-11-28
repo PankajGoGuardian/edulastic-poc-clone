@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus, MathSpan, QuestionNumberLabel } from "@edulastic/common";
-import { HorizontalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 import { response, clozeImage, ChoiceDimensions } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -125,9 +124,6 @@ const getPossibleResps = (snapItems, possibleResps) => {
 
 class Display extends Component {
   previewContainerRef = React.createRef();
-
-  scrollContainerRef = React.createRef();
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState !== undefined) {
       const {
@@ -599,6 +595,7 @@ class Display extends Component {
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
                               isWrapText={isWrapText}
+                              fontSize={fontSize}
                               answer={answer}
                             />
                           )}
@@ -685,7 +682,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <div style={{ fontSize, margin: "auto", overflow: "auto" }} ref={this.scrollContainerRef}>
+      <div style={{ fontSize, margin: "auto", overflow: "auto" }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
@@ -732,7 +729,6 @@ class Display extends Component {
           </RightContainer>
         )}
         {answerBox}
-        <HorizontalScrollContainer scrollWrraper={this.scrollContainerRef.current} />
       </div>
     );
   }

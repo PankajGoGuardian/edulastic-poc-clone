@@ -298,7 +298,7 @@ class ClozeDragDropDisplay extends Component {
       overflow: "hidden"
     };
 
-    const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
+    const templateBoxLayout = checkAnswer || showAnswer || isReviewTab ? CheckboxTemplateBoxLayout : TemplateBox;
 
     const resProps = {
       options,
@@ -317,11 +317,13 @@ class ClozeDragDropDisplay extends Component {
       userSelections: userAnswers,
       responsecontainerindividuals,
       globalSettings: uiStyle.globalSettings,
+      maxWidth: dragItemMaxWidth,
       onDrop: !disableResponse ? this.onDrop : () => {},
       onDropHandler: !disableResponse ? this.onDrop : () => {},
       cAnswers: get(item, "validation.validResponse.value", []),
       isExpressGrader
     };
+
     const templateBoxLayoutContainer = (
       <PreWrapper view={view} padding="0px">
         <div
@@ -381,18 +383,8 @@ class ClozeDragDropDisplay extends Component {
         ))}
       </>
     );
-    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
-
-    const responseBoxStyle = {
-      height: "100%",
-      width: dragItemMaxWidth + 62, // 62 is padding and margin of respose box
-      flexShrink: 0,
-      borderRadius: 10,
-      marginRight: responsecontainerposition === "left" ? 15 : null,
-      marginLeft: responsecontainerposition === "right" ? 15 : null,
-      background: theme.widgets.clozeDragDrop.responseBoxBgColor
-    };
 
     const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
 
@@ -401,34 +393,47 @@ class ClozeDragDropDisplay extends Component {
       maxWidth: horizontallyAligned ? 1050 : 750
     };
 
+    const responseBoxStyle = {
+      height: "100%",
+      width: horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+      flexShrink: 0,
+      borderRadius: smallSize ? 0 : 10,
+      marginRight: responsecontainerposition === "left" ? 15 : null,
+      marginLeft: responsecontainerposition === "right" ? 15 : null,
+      marginBottom: responsecontainerposition === "top" ? 15 : null,
+      marginTop: responsecontainerposition === "bottom" ? 15 : null,
+      background: theme.widgets.clozeDragDrop.responseBoxBgColor
+    };
+
+    const templateBoxStyle = {
+      borderRadius: smallSize ? 0 : 10,
+      width: horizontallyAligned ? answerContainerStyle.maxWidth - dragItemMaxWidth + 62 : null
+    };
+
     const questionContent = (
       <div style={{ margin: "auto" }}>
         {responsecontainerposition === "top" && (
           <div style={answerContainerStyle}>
-            <div style={{ marginBottom: 15, borderRadius: 10 }}>{responseBoxLayout}</div>
-            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
+            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
           </div>
         )}
         {responsecontainerposition === "bottom" && (
           <div style={answerContainerStyle}>
-            <div style={{ borderRadius: smallSize ? 0 : 10 }}>{templateBoxLayoutContainer}</div>
-            <div style={{ marginTop: 15, borderRadius: smallSize ? 0 : 10 }}>{responseBoxLayout}</div>
+            <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
+            <div style={responseBoxStyle}>{responseBoxLayout}</div>
           </div>
         )}
         {responsecontainerposition === "left" && (
           <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
-            <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
-              {responseBoxLayout}
-            </div>
-            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
+            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
           </AnswerContainer>
         )}
         {responsecontainerposition === "right" && (
           <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
-            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
-            <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
-              {responseBoxLayout}
-            </div>
+            <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
+            <div style={responseBoxStyle}>{responseBoxLayout}</div>
           </AnswerContainer>
         )}
       </div>
@@ -519,6 +524,7 @@ export default withTheme(ClozeDragDropDisplay);
 const TextWrappedDiv = styled.div`
   word-break: break-word;
   max-width: 100%;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   position: relative;
 `;

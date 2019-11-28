@@ -26,6 +26,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     evaluation = [],
     onDropHandler = () => {},
     responseIDs,
+    maxWidth,
     globalSettings,
     disableResponse,
     isExpressGrader
@@ -40,16 +41,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   const btnStyle = { ...responseBtnStyle };
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
-  const heightpx = response && response.heightpx;
-  const widthpx = response && response.widthpx;
-  btnStyle.width = !globalSettings ? (widthpx ? `${widthpx}px` : btnStyle.widthpx) : "auto";
-  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : btnStyle.heightpx) : "auto";
+  const heightpx = (response && response.heightpx) || btnStyle.heightpx;
+  const widthpx = (response && response.widthpx) || btnStyle.widthpx;
+  btnStyle.minWidth = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
+  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
 
-  if (globalSettings) {
-    btnStyle.maxWidth = "400px";
+  if (maxWidth) {
+    btnStyle.maxWidth = maxWidth;
   }
 
-  const lessMinWidth = parseInt(btnStyle.width, 10) < dimensions.minWidthShowAnswer;
+  const lessMinWidth = parseInt(btnStyle.maxWidth, 10) < dimensions.minWidthShowAnswer;
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
 
   const indexStyle = {};
@@ -83,7 +84,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   };
 
   const getLabel = () => (
-    <CheckboxContainer width={btnStyle.width}>
+    <CheckboxContainer width={btnStyle.maxWidth}>
       <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
     </CheckboxContainer>
   );
@@ -111,7 +112,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       <span
         style={{
           justifyContent: "center",
-          padding: lessMinWidth ? "8px 0px" : null
+          padding: lessMinWidth ? "8px 0px" : null,
+          paddingRight: showAnswer && !lessMinWidth ? 75 : 30
         }}
         className="text"
       >
@@ -119,7 +121,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       </span>
 
       {(!showAnswer || (showAnswer && !lessMinWidth)) && (
-        <IconWrapper rightPosition={lessMinWidth ? "0" : "8"}>
+        <IconWrapper rightPosition={lessMinWidth ? "0" : "4"}>
           {choiceAttempted && status === "right" && <RightIcon />}
           {choiceAttempted && status === "wrong" && <WrongIcon />}
         </IconWrapper>
@@ -127,11 +129,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     </div>
   );
 
+  const entireAnswer = <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />;
+
   const popoverContent = (
     <PopoverContent
       checkAnswer={checkAnswer}
       index={dropTargetIndex}
-      answer={answer}
+      answer={entireAnswer}
       status={status}
       className={className}
       isExpressGrader={isExpressGrader}

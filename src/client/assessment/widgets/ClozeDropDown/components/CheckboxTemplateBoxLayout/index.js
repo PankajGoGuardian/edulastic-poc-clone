@@ -33,7 +33,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
   const indexStr = getStemNumeration(stemNumeration, index);
   const status = userSelections && evaluation ? (evaluation[answerId] ? "right" : "wrong") : "wrong";
-  const choiceAttempted = userSelections.length > 0 ? !!userSelections[index] : null;
+  const userAttempted =
+    userSelections.length > 0 && evaluation[answerId] !== undefined ? !!userSelections[index] : null;
+
   let btnStyle =
     (responsecontainerindividuals && responsecontainerindividuals.find(resp => resp.id === answerId)) ||
     responseBtnStyle;
@@ -65,7 +67,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         <span
           className={`
             response-btn 
-            ${choiceAttempted ? "check-answer" : ""} 
+            ${userAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
           style={_btnStyle}
@@ -87,8 +89,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </Tooltip>
 
           <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
+            {userAttempted && status === "right" && <RightIcon />}
+            {userAttempted && status === "wrong" && <WrongIcon />}
           </IconWrapper>
         </span>
       )}
@@ -96,7 +98,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         <span
           className={`
             response-btn 
-            ${choiceAttempted ? "check-answer" : ""} 
+            ${userAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
           style={_btnStyle}
@@ -118,8 +120,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </Tooltip>
 
           <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
+            {userAttempted && status === "right" && <RightIcon />}
+            {userAttempted && status === "wrong" && <WrongIcon />}
           </IconWrapper>
         </span>
       )}

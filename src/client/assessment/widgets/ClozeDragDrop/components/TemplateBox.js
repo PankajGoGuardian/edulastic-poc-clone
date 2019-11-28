@@ -23,7 +23,7 @@ const TemplateBox = ({ resprops, id }) => {
     responseIDs,
     isReviewTab,
     cAnswers,
-    globalSettings
+    maxWidth
   } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
@@ -32,8 +32,8 @@ const TemplateBox = ({ resprops, id }) => {
   const style = {
     ...responseBtnStyle,
     height: response ? height : "auto",
-    width: response ? width : "auto",
-    maxWidth: globalSettings ? "400px" : "auto"
+    minWidth: response ? width : "auto",
+    maxWidth: maxWidth || "auto"
   };
   const getData = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
@@ -69,7 +69,7 @@ const TemplateBox = ({ resprops, id }) => {
             onDrop={onDrop}
             data={`${getData("value")}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
-            style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
+            style={{ display: "flex", justifyContent: "flext-start", alignItems: "center", height: "100%" }}
           >
             <Tooltip
               overlayClassName="customTooltip"

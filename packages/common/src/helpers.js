@@ -3,6 +3,7 @@ import uuid from "uuid/v4";
 import { isString, get, round } from "lodash";
 import { fileApi } from "@edulastic/api";
 import { aws, question, questionType } from "@edulastic/constants";
+import { replaceLatexesWithMathHtml } from "./utils/mathUtils";
 import { message } from "antd";
 import { empty } from "rxjs";
 
@@ -460,7 +461,7 @@ export const measureText = (text, style = {}) => {
   fakeEm.style.left = -1000;
   fakeEm.style.top = -1000;
   fakeEm.style.visibility = "hidden";
-  fakeEm.innerHTML = text;
+  fakeEm.innerHTML = replaceLatexesWithMathHtml(text);
 
   const result = {
     width: fakeEm.offsetWidth,

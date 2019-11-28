@@ -424,11 +424,6 @@ template {
   user-select: none;
 } */
 
-.response-btn img {
-  max-width: 100px;
-  max-height: 100px;
-}
-
 .response-btn .index {
   padding: 8px;
   background: darkgray;
@@ -439,7 +434,6 @@ template {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
 .response-btn .text {
@@ -814,7 +808,6 @@ input[type="checkbox"] {
   background: #5eb500;
   color: white;
   padding: 8px;
-  height: 100%;
 }
 
 .check-answer.right .text {
@@ -876,6 +869,7 @@ input[type="checkbox"] {
 
 .response-btn.show-answer {
   padding: 0 !important;
+  align-items: stretch;
 }
 
 .ql-toolbar.ql-snow .ql-formats {

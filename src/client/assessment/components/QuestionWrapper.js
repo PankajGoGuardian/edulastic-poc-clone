@@ -429,6 +429,7 @@ class QuestionWrapper extends Component {
                   setQuestionData={setQuestionData}
                   item={data}
                   view={view}
+                  evaluation={evaluation}
                   changePreviewTab={changePreviewTab}
                   qIndex={qIndex}
                   advancedLink={advancedLink}

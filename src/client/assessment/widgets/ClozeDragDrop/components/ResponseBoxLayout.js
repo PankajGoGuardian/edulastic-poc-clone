@@ -44,7 +44,8 @@ const ResponseBoxLayout = ({
       ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
       : theme.widgets.clozeDragDrop.draggableBoxFontWeight,
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    width: horizontallyAligned ? "100%" : null
   };
 
   return (
@@ -79,6 +80,7 @@ const ResponseBoxLayout = ({
             flexDirection={horizontallyAligned ? "column" : "row"}
             flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
             justifyContent={horizontallyAligned ? "center" : "flex-start"}
+            alignItems="stretch"
           >
             {hasGroupResponses && (
               <GroupWrapper horizontallyAligned={horizontallyAligned}>

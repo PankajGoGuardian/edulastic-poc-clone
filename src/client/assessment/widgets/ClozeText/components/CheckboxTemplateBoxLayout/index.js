@@ -38,6 +38,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }, [userAnswer]);
 
   const popoverContent = <PopoverContent>{userAnswer}</PopoverContent>;
+  const attempt = !!userAnswer && evaluation[choiceId] !== undefined;
 
   return (
     <Popover content={popoverContent} visible={showPopover && btnStyle.width < boxWidth}>
@@ -46,7 +47,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         onMouseEnter={() => togglePopover(true)}
         onMouseLeave={() => togglePopover(false)}
         style={{ ...btnStyle, width: boxWidth }}
-        checked={!!userAnswer}
+        checked={attempt}
         correct={evaluation[choiceId]}
         onClick={handleClick}
       >
@@ -56,7 +57,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </IndexBox>
         )}
         <AnswerContent showIndex={!checkAnswer}>{userAnswer}</AnswerContent>
-        {userAnswer && <CheckMark correct={evaluation[choiceId]} />}
+        {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>
   );

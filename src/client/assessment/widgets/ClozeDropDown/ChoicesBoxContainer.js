@@ -12,7 +12,7 @@ const minWidthMap = {
 
 export const StyledChoicesBox = styled(ChoicesBox)`
   .ant-select {
-    font-size: ${({ theme }) => theme?.fontSize}px;
+    font-size: ${({ theme }) => theme?.fontSize};
     min-width: ${({ theme }) => minWidthMap[(theme?.zoomLevel)] || 100}px;
 
     .ant-select-selection {
@@ -21,8 +21,9 @@ export const StyledChoicesBox = styled(ChoicesBox)`
     }
 
     .ant-select-selection__rendered {
-      line-height: ${({ theme }) => theme?.fontSize}px;
-      max-width: 100%;
+      line-height: ${({ theme }) => theme?.fontSize};
+      /* max-width: 100%; */
+      max-width: calc(100% - 32px);
     }
   }
 

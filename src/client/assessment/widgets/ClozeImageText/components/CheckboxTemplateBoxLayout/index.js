@@ -58,7 +58,8 @@ const CheckboxTemplateBoxLayout = ({
         };
 
         const indexStr = helpers.getNumeration(dropTargetIndex, stemNumeration);
-        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        const status =
+          evaluation[dropTargetIndex] !== undefined ? (evaluation[dropTargetIndex] ? "right" : "wrong") : "";
         const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
         return (
           <Response

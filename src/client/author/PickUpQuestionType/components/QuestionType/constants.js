@@ -2283,7 +2283,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "100\\ \\text{feet}"
+                value: "100m"
               }
             ]
           }

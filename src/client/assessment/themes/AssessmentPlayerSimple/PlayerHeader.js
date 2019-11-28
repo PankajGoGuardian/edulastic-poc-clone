@@ -48,7 +48,8 @@ const PlayerHeader = ({
   isBookmarked,
   onshowHideHints,
   toggleToolsOpenStatus,
-  toolsOpenStatus
+  toolsOpenStatus,
+  headerRef
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -86,7 +87,7 @@ const PlayerHeader = ({
         changeTool={toggleToolsOpenStatus}
       />
       <SettingsModal />
-      <Header>
+      <Header ref={headerRef}>
         <HeaderMainMenu skinb="true">
           <HeaderPracticePlayer>
             <HeaderWrapper justifyContent="space-between">

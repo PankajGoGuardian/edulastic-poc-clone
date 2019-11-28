@@ -69,6 +69,8 @@ class AssessmentPlayerSimple extends React.Component {
     calcBrand: "EDULASTIC"
   };
 
+  headerRef = React.createRef();
+
   toggleToolsOpenStatus = tool => {
     let { toolsOpenStatus, enableCrossAction } = this.state;
     if (tool === 3 || tool === 5) {
@@ -239,6 +241,9 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
+
+    const headerHeight = this.headerRef.current?.clientHeight || 0;
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode}>
@@ -264,8 +269,12 @@ class AssessmentPlayerSimple extends React.Component {
             fillColor={fillColor}
             saveHistory={this.saveHistory("scratchpad")}
             history={scratchPad}
+            height={`calc(100% - ${headerHeight}px)`}
+            top={`${headerHeight}px`}
+            position="fixed"
           />
           <PlayerHeader
+            headerRef={this.headerRef}
             {...this.props}
             theme={themeToPass}
             dropdownOptions={dropdownOptions}

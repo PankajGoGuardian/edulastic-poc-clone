@@ -584,6 +584,9 @@ class AssessmentPlayerDefault extends React.Component {
                 fillColor={fillColor}
                 saveHistory={this.saveHistory("scratchpad")}
                 history={scratchPad}
+                height={`calc(100% - ${headerHeight}px)`}
+                top={`${headerHeight}px`}
+                position="fixed"
               />
               <MainWrapper
                 responsiveWidth={responsiveWidth}

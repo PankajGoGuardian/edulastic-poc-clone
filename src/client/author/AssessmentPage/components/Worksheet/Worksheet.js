@@ -546,6 +546,7 @@ class Worksheet extends React.Component {
         history={userHistory}
         height="100%"
         top={0}
+        position="absolute"
       />
     );
 

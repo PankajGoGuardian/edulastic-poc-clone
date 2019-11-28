@@ -17,7 +17,8 @@ const SvgDraw = ({
   fillColor,
   deleteMode,
   height,
-  top
+  top,
+  position
 }) => {
   const svg = useRef(null);
   const [points, setPoints] = useState([]);
@@ -668,10 +669,10 @@ const SvgDraw = ({
         {...getSvgHandlers()}
         width="calc(100% - 50px)"
         style={{
-          height: !height ? "calc(100% - 50px)" : height,
+          height,
           background: "transparent",
-          position: "absolute",
-          top: `${top === 0 ? 0 : 62}`,
+          position,
+          top,
           left: 50,
           display: scratchPadMode ? "block" : "none",
           pointerEvents: activeMode === "" ? "none" : "all",
@@ -737,7 +738,10 @@ SvgDraw.propTypes = {
   deleteMode: PropTypes.bool.isRequired,
   history: PropTypes.any.isRequired,
   fillColor: PropTypes.string.isRequired,
-  saveHistory: PropTypes.any.isRequired
+  saveHistory: PropTypes.any.isRequired,
+  width: PropTypes.string.isRequired,
+  top: PropTypes.string.isRequired,
+  position: PropTypes.string.isRequired
 };
 
 export default SvgDraw;

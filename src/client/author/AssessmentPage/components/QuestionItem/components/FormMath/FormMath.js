@@ -5,7 +5,6 @@ import { ThemeProvider } from "styled-components";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
-import { MathWrapper } from "../MathWrapper/MathWrapper";
 import MathSpan from "../../../../../../../../packages/common/src/components/MathSpan";
 
 export default class FormMath extends React.Component {

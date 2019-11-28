@@ -151,7 +151,7 @@ class Layout extends Component {
             <Input
               type="number"
               size="large"
-              defaultValue={uiStyle.widthpx}
+              defaultValue={widthpx || uiStyle.widthpx || uiStyle.minWidth}
               onBlur={this.handleDefaultWidthBlur}
               max={maxWidth}
               min={minWidth}

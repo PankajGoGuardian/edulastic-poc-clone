@@ -97,7 +97,7 @@ class MultipleChoiceOptions extends Component {
   };
 
   render() {
-    const { t, item, fillSections, cleanSections } = this.props;
+    const { t, item, fillSections, cleanSections, fontSize } = this.props;
 
     return (
       <Question
@@ -114,6 +114,7 @@ class MultipleChoiceOptions extends Component {
           firstFocus={item.firstMount}
           onRemove={this.remove}
           onChange={this.editOptions}
+          fontSize={fontSize}
         />
         <div>
           <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>

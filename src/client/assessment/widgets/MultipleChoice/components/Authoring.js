@@ -140,6 +140,7 @@ class Authoring extends Component {
             fillSections={fillSections}
             setQuestionData={setQuestionData}
             cleanSections={cleanSections}
+            fontSize={fontSize}
           />
         </PaddingDiv>
       </div>

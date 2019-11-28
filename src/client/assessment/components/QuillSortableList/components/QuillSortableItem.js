@@ -37,6 +37,7 @@ const QuillSortableItem = SortableElement(
 
           <QuestionTextArea
             value={value}
+            fontSize={fontSize}
             placeholder={placeholder}
             toolbarId={`${toolbarId}${indx}`}
             onChange={onChange}

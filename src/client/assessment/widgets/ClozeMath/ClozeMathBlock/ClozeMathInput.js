@@ -205,12 +205,9 @@ class ClozeMathInput extends React.Component {
   }
 
   render() {
-    const { resprops = {}, id } = this.props;
-    const { responseContainers, item, uiStyles = {}, isV1Migrated } = resprops;
+    const { resprops = {} } = this.props;
+    const { height, width, item, uiStyles = {}, isV1Migrated } = resprops;
     const { showKeyboard } = this.state;
-    const response = find(responseContainers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-    const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
 
@@ -222,7 +219,8 @@ class ClozeMathInput extends React.Component {
           margin: isV1Migrated ? "0px 2px 4px 2px" : "0 2px",
           display: "inline-block",
           position: "relative",
-          verticalAlign: "middle"
+          verticalAlign: "middle",
+          alignSelf: "flex-start"
         }}
       >
         <Wrapper>
@@ -259,9 +257,13 @@ const MathInput = ({ resprops = {}, id, responseindex }) => {
   const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex, save } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+  const individualWidth = response?.widthpx || 0;
+  const individualHeight = response?.heightpx || 0;
 
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+
+  const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
+  const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
   const {
     responseIds: { maths = [] }
   } = item;
@@ -291,7 +293,7 @@ const MathInput = ({ resprops = {}, id, responseindex }) => {
       id={id}
     />
   ) : (
-    <ClozeMathInput resprops={resprops} id={id} />
+    <ClozeMathInput resprops={{ ...resprops, height, width }} id={id} />
   );
 
   // debugger;

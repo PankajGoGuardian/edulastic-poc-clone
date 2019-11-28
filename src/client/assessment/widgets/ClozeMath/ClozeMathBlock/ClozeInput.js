@@ -24,8 +24,15 @@ const ClozeInput = ({ id, resprops = {} }) => {
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
   const response = find(responseContainers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+
+  const individualWidth = response?.widthpx || 0;
+  const individualHeight = response?.heightpx || 0;
+
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+
+  const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
+  const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
+
   return checked ? (
     <CheckedBlock
       width={width}

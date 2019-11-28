@@ -109,6 +109,10 @@ const ClozeMathPreview = ({
       uiStyles.minWidth = `${uiStyle.minWidth}px`;
     }
 
+    if (uiStyle.minHeight) {
+      uiStyles.minHeight = `${uiStyle.minHeight}px`;
+    }
+
     if (parseInt(uiStyle.minWidth, 10) < 25) {
       uiStyles.padding = "4px 2px";
     }
@@ -178,7 +182,6 @@ const ClozeMathPreview = ({
         }}
         jsx={newHtml}
       />
-
       {(isExpressGrader || type === SHOW) && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
@@ -225,5 +228,9 @@ const QuestionWrapper = styled.div`
   position: relative;
   li {
     margin: 4px 0;
+  }
+  .jsx-parser p {
+    display: inline-flex;
+    align-items: center;
   }
 `;

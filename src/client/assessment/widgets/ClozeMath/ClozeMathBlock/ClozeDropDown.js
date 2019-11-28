@@ -27,8 +27,14 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
   const response = find(responseContainers || [], cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+
+  const individualWidth = response?.widthpx || 0;
+  const individualHeight = response?.heightpx || 0;
+
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+
+  const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
+  const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
 
   const dropDownWrapper = useRef(null);
   const menuStyle = { top: `${dropDownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
@@ -46,7 +52,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <DropdownWrapper ref={dropDownWrapper} width={width} height={height} menuStyle={menuStyle}>
+    <DropdownWrapper ref={dropDownWrapper} width={`${width}px`} height={`${height}px`} menuStyle={menuStyle}>
       <Select
         onChange={text => save({ value: text, index }, "dropDowns", id)}
         getPopupContainer={triggerNode => triggerNode.parentNode}

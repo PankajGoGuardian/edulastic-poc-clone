@@ -2321,7 +2321,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         uiStyle: {
           type: "floating-keyboard",
-          minWidth: 140
+          minWidth: 140,
+          minHeight: 35
         },
         options: {},
         validation: {

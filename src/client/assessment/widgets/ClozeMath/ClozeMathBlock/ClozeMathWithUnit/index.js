@@ -223,15 +223,10 @@ class ClozeMathWithUnit extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { responseContainers, item, uiStyles = {} } = resprops;
+    const { item, uiStyles = {}, height, width } = resprops;
     const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
     const { showKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
-
-    // styling response box based on settings.
-    const response = find(responseContainers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-    const height = response && response.heightpx ? `${response.heightpx}px` : `${DefaultDimensions.minHeight}px`;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
     return (
@@ -306,8 +301,13 @@ const MathWithUnit = ({ resprops = {}, id }) => {
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
-  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+  const individualWidth = response?.widthpx || 0;
+  const individualHeight = response?.heightpx || 0;
+
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+
+  const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
+  const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
 
   return checked ? (
     <CheckedBlock
@@ -323,7 +323,7 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <ClozeMathWithUnit resprops={resprops} id={id} />
+    <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />
   );
 };
 

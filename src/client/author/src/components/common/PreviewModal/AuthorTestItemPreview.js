@@ -65,9 +65,6 @@ class AuthorTestItemPreview extends Component {
       isEditable,
       page
     } = this.props;
-    if (item.status !== "draft") {
-      return message.error("Status of the Item is not in the DRAFT state to proceed");
-    }
     if (!isEditable) {
       return message.error("Don't have write permission to delete the item");
     }

@@ -36,8 +36,8 @@ import { updateRecentStandardsAction } from "../../../src/actions/dictionaries";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { FaBars } from "react-icons/fa";
 
-const DragHandle = sortableHandle(({ review }) => (
-  <StyledHandleSpan review={review}>
+const DragHandle = sortableHandle(() => (
+  <StyledHandleSpan>
     <FaBars />
   </StyledHandleSpan>
 ));
@@ -61,7 +61,7 @@ const SortableQuestionItem = SortableElement(
     testMode
   }) => (
     <div style={{ display: "flex", marginBottom: "6px" }}>
-      {!testMode && <DragHandle review={review} />}
+      {!testMode && !review && <DragHandle review={review} />}
       <QuestionItem
         key={key}
         index={index}

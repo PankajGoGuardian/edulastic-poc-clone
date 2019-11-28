@@ -2,8 +2,15 @@ import { takeEvery, takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { uniq } from "lodash";
 import produce from "immer";
+import { test as testConstant, roleuser } from "@edulastic/constants";
 import { setTestItemsAction } from "../TestPage/components/AddItems/ducks";
-import { setTestDataAction, createTestAction, getTestEntitySelector } from "../TestPage/ducks";
+import {
+  setTestDataAction,
+  createTestAction,
+  getTestEntitySelector,
+  getReleaseScorePremiumSelector
+} from "../TestPage/ducks";
+import { getUserRole } from "../src/selectors/user";
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
@@ -37,9 +44,16 @@ export function* addItemToCartSaga({ payload }) {
       draft = draft.push(item);
     });
   }
+  const userRole = yield select(getUserRole);
+  const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector);
+  const releaseScore =
+    userRole === roleuser.TEACHER && isReleaseScorePremium
+      ? testConstant.releaseGradeLabels.WITH_RESPONSE
+      : testConstant.releaseGradeLabels.DONT_RELEASE;
 
   const updatedTest = {
     ...test,
+    releaseScore,
     testItems: updatedTestItems
   };
 

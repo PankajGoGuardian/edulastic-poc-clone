@@ -64,6 +64,7 @@ class CorrectAnswer extends Component {
       uiStyle,
       responseIds,
       view,
+      isV1Migrated,
       previewTab,
       max
     } = this.props;
@@ -88,6 +89,7 @@ class CorrectAnswer extends Component {
         )}
         <Display
           preview={false}
+          isV1Migrated={isV1Migrated}
           setAnswers
           dragHandler
           options={options}

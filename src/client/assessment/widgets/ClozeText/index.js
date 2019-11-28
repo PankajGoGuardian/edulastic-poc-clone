@@ -267,6 +267,7 @@ class ClozeText extends Component {
                   cleanSections={cleanSections}
                   fillSections={fillSections}
                   view={view}
+                  isV1Migrated={item.isV1Migrated}
                   previewTab={previewTab}
                 />
                 <div style={{ marginTop: 40 }}>
@@ -332,6 +333,7 @@ class ClozeText extends Component {
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
               item={itemForPreview}
+              isV1Migrated={item.isV1Migrated}
               responseIds={item.responseIds}
               view={view}
               previewTab={previewTab}

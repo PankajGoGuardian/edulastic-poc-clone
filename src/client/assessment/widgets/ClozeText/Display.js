@@ -132,7 +132,8 @@ class ClozeTextDisplay extends Component {
       isReviewTab,
       isExpressGrader,
       view,
-      isPrint
+      isPrint,
+      isV1Migrated
     } = this.props;
 
     const { parsedTemplate } = this.state;
@@ -151,8 +152,8 @@ class ClozeTextDisplay extends Component {
       responseIds,
       previewTab,
       changePreviewTab,
-      cAnswers: get(item, "validation.validResponse.value", []),
-      isV1Migrated: get(item, "isV1Migrated", false)
+      isV1Migrated,
+      cAnswers: get(item, "validation.validResponse.value", [])
       // isExpressGrader
     };
 

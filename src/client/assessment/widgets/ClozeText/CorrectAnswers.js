@@ -211,7 +211,8 @@ class CorrectAnswers extends Component {
       uiStyle,
       responseIds,
       view,
-      previewTab
+      previewTab,
+      isV1Migrated
     } = this.props;
     const { value } = this.state;
     return (
@@ -241,6 +242,7 @@ class CorrectAnswers extends Component {
                 responseIds={responseIds}
                 view={view}
                 previewTab={previewTab}
+                isV1Migrated={isV1Migrated}
               />
             </TabContainer>
           )}
@@ -273,6 +275,7 @@ class CorrectAnswers extends Component {
                         onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                         view={view}
                         previewTab={previewTab}
+                        isV1Migrated={isV1Migrated}
                         max={validation?.validResponse?.score}
                       />
                     )}

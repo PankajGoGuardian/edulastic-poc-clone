@@ -5,6 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
+import { MathWrapper } from "../MathWrapper/MathWrapper";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -37,7 +38,11 @@ export default class FormMath extends React.Component {
 
     if (!answer || !answer.value) return null;
 
-    return <QuestionText>{answer.value}</QuestionText>;
+    return (
+      <QuestionText>
+        <MathWrapper latex={answer.value} />
+      </QuestionText>
+    );
   };
 
   renderForm = mode => {

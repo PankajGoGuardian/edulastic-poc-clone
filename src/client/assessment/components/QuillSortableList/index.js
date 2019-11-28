@@ -23,9 +23,10 @@ const QuillSortableList = SortableContainer(
     centerContent,
     imageDefaultWidth,
     placeholder,
-    defaultLabel
+    defaultLabel,
+    className
   }) => (
-    <div data-cy="sortable-list-container" style={{ fontSize }}>
+    <div data-cy="sortable-list-container" className={className} style={{ fontSize }}>
       {items.map((value, index) => (
         <QuillSortableItem
           fontSize={fontSize}

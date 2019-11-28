@@ -20,7 +20,7 @@ const List = withAddButton(QuillSortableList);
 
 class ListComponent extends Component {
   render() {
-    const { item, t, setQuestionData, fillSections, cleanSections } = this.props;
+    const { item, t, setQuestionData, fillSections, cleanSections, getContainer } = this.props;
 
     const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
@@ -78,7 +78,7 @@ class ListComponent extends Component {
       );
     };
 
-    if (!item) return null;
+    if (!item || !getContainer()) return null;
 
     return (
       <Question
@@ -96,10 +96,13 @@ class ListComponent extends Component {
           useDragHandle
           styleType="button"
           centerContent
+          lockToContainerEdges
+          lockOffset={["10%", "10%"]}
           onRemove={handleDeleteQuestion}
           onChange={handleQuestionsChange}
           fillSections={fillSections}
           cleanSections={cleanSections}
+          getContainer={getContainer}
         />
       </Question>
     );
@@ -110,6 +113,7 @@ ListComponent.propTypes = {
   t: PropTypes.func.isRequired,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
+  getContainer: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

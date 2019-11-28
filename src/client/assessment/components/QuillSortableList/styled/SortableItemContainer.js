@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { themeColor, inputBorder, dashBorderColor, white } from "@edulastic/colors";
 
-export const SortableItemContainer = styled.div`
+export const SortableItemContainer = styled.div.attrs({
+  className: "sortable-item-container"
+})`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
   font-size: ${props => props.fontSize || "14px"};
   min-height: 40px;

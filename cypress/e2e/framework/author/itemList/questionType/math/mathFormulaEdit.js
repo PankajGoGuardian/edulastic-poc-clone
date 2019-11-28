@@ -283,10 +283,8 @@ class MathFormulaEdit {
 
   getAnswerSetDecimalSeparatorDropdown = () => cy.get('[data-cy="answer-allow-decimal-separator"]');
 
-
   getAnswerSetDecimalSeparatorDropdownListTab = () => cy.get('[data-cy="answer-set-decimal-separator-dropdown"]');
 
-  
   getAnswerSetDecimalSeparatorDropdownList = index =>
     cy.get(`[data-cy="answer-set-decimal-separator-dropdown-list-${index}"]`);
 
@@ -303,7 +301,6 @@ class MathFormulaEdit {
         this.getThousandsSeparatorDropdownList(seperator)
 
           //.should("be.visible")
-
 
           .click({ force: true });
       });
@@ -491,7 +488,6 @@ class MathFormulaEdit {
 
     this.getAnswerSetDecimalSeparatorDropdownListTab()
 
-    
       .click({ force: true })
       .then(() => {
         this.getAnswerSetDecimalSeparatorDropdownList(separator)
@@ -524,8 +520,6 @@ class MathFormulaEdit {
     cy.get('[data-cy="answer-significant-decimal-places"]')
       .clear({ force: true })
       .type(input, { force: true });
-
-  
   };
 
   checkIfTextExist = data =>

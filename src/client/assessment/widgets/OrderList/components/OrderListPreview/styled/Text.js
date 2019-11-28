@@ -2,17 +2,33 @@ import styled from "styled-components";
 
 export const Text = styled.div`
   resize: none;
-  width: ${({ showDragHandle, smallSize }) =>
-    showDragHandle ? (smallSize ? "calc(100% - 30px)" : "calc(100% - 50px)") : "100%"};
   border: none;
-  height: 100%;
-  border: ${props =>
-    props.styleType === "button" ? `1px solid ${props.theme.widgets.orderList.textBorderColor}` : "none"};
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  min-height: 30px;
-  padding: ${({ smallSize }) => (smallSize ? "5px" : "15px")};
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  overflow: hidden;
+  justify-content: space-between;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  ${({ showDragHandle, smallSize, styleType, correct, theme, showAnswer }) => `
+    width: ${
+      showDragHandle
+        ? smallSize
+          ? "calc(100% - 30px)"
+          : "calc(100% - 40px)"
+        : showAnswer
+        ? smallSize
+          ? "calc(100% - 30px)"
+          : "calc(100% - 40px)"
+        : "100%"
+    };
+    border: ${styleType === "button" ? `1px solid` : "none"};
+    padding: ${smallSize ? "2px 5px" : "2px 15px"};
+    border-color: ${
+      correct !== undefined
+        ? correct
+          ? theme.widgets.orderList.correctContainerBgColor
+          : theme.widgets.orderList.incorrectContainerBgColor
+        : theme.widgets.orderList.textBorderColor
+    };
+  `}
 `;

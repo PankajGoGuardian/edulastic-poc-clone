@@ -1,16 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { SortableContainer } from "react-sortable-hoc";
-
 import OrderListReportItem from "./components/OrderListReportItem";
 
 class OrderListReport extends Component {
-  get rendererQuestions() {
-    const { previewIndexesList, questionsList } = this.props;
-
-    return previewIndexesList.map(index => questionsList[index]);
-  }
-
   getStemNumeration = (i, uiStyle) => {
     if (uiStyle) {
       switch (uiStyle.validationStemNumeration) {
@@ -28,20 +21,18 @@ class OrderListReport extends Component {
 
   render() {
     const {
-      validation,
-      showAnswers,
       evaluation,
-      list,
       listStyle,
       columns,
       disableResponse,
       styleType,
-      item
+      uiStyle,
+      questions,
+      getStemNumeration
     } = this.props;
-
     return (
       <div style={listStyle}>
-        {this.rendererQuestions.map((q, i) => (
+        {questions.map((q, i) => (
           <OrderListReportItem
             key={i}
             columns={columns}
@@ -49,10 +40,8 @@ class OrderListReport extends Component {
             listStyle={listStyle}
             styleType={styleType}
             correct={evaluation && evaluation[i]}
-            correctText={showAnswers && list[validation.validResponse.value[i]]}
-            showAnswers={showAnswers}
             index={i}
-            ind={this.getStemNumeration(i, item.uiStyle)}
+            ind={getStemNumeration(uiStyle.validationStemNumeration, i)}
             sortableHelper="sortableHelper"
           >
             {q}
@@ -64,23 +53,18 @@ class OrderListReport extends Component {
 }
 
 OrderListReport.propTypes = {
-  questionsList: PropTypes.array.isRequired,
-  list: PropTypes.array.isRequired,
-  previewIndexesList: PropTypes.array.isRequired,
+  questions: PropTypes.array.isRequired,
   listStyle: PropTypes.object.isRequired,
-  validation: PropTypes.object,
-  showAnswers: PropTypes.bool,
+  getStemNumeration: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool,
   evaluation: PropTypes.array,
   columns: PropTypes.number,
   styleType: PropTypes.string,
-  item: PropTypes.object.isRequired
+  uiStyle: PropTypes.object.isRequired
 };
 OrderListReport.defaultProps = {
-  showAnswers: false,
   disableResponse: false,
   evaluation: [],
-  validation: {},
   columns: 1,
   styleType: "button"
 };

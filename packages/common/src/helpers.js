@@ -467,7 +467,7 @@ export const measureText = (text, style = {}) => {
     height: fakeEm.offsetHeight
   };
 
-  // document.body.removeChild(fakeEm);s
+  document.body.removeChild(fakeEm);
   return result;
 };
 

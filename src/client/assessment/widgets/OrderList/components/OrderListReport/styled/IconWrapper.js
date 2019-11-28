@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { IconCheck } from "../styled/IconCheck";
-import { IconClose } from "../styled/IconClose";
+import { IconCheck } from "./IconCheck";
+import { IconClose } from "./IconClose";
 
 export const IconWrapper = styled.div`
   width: 60px;

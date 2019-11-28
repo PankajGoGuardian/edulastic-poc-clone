@@ -2088,6 +2088,10 @@ span.mfrac {
   z-index: 10000;
 }
 
+.sortableHelper img {
+  max-width: 100%;
+}
+
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
 }

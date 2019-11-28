@@ -151,7 +151,7 @@ ResponseBox.propTypes = {
 
 ResponseBox.defaultProps = {
   values: [],
-  onAddMark: () => { },
+  onAddMark: () => {},
   minWidth: 600,
   minHeight: 150,
   titleWidth: defaultTitleWidth,

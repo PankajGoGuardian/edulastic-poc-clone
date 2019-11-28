@@ -273,7 +273,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         question.checkIfTextExist(queData.testtext);
       });
 
-
       it(" > give external link", () => {
         question.checkIfTextExist(queData.testtext).type("{selectall}");
         editToolBar.clickOnMore();
@@ -291,7 +290,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           });
       });
 
-      
       it(" > insert formula", () => {
         question.checkIfTextExist(queData.testtext).clear();
       });
@@ -461,8 +459,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           question.setAnswerSetDecimalSeparatorDropdown(item);
 
           question.getAnswerSetDecimalSeparatorDropdownListTab().contains("div", item);
-
-         
         });
         // question
         //   .getAddNewThousandsSeparator()
@@ -1143,7 +1139,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.setArgumentInputSignDec("getAnswerSignificantDecimalPlaces", decimalPlaces);
 
-      
       question.checkCorrectAnswer(expected, preview, input.length, true);
       question.getAnswerSignificantDecimalPlaces().uncheck({ force: true });
     });

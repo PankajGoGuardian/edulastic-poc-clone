@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment, useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -6,29 +7,17 @@ import { arrayMove } from "react-sortable-hoc";
 import { get, isEmpty } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-
 import { withNamespaces } from "@edulastic/localization";
-import {
-  CorrectAnswersContainer,
-  FlexContainer,
-  MathFormulaDisplay,
-  QuestionNumberLabel,
-  AnswerContext
-} from "@edulastic/common";
-
-import { Text } from "./styled/Text";
-import { Index } from "./styled/Index";
-import { ItemsWrapper } from "./styled/ItemsWrapper";
+import { CorrectAnswersContainer, QuestionNumberLabel, AnswerContext, ScrollContext } from "@edulastic/common";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
+import { EDIT, PREVIEW, SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 import withPoints from "../../components/HOC/withPoints";
 import OrderListPreview from "./components/OrderListPreview";
-import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
 import { getFontSize, getStemNumeration } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
@@ -36,14 +25,33 @@ import { ContentArea } from "../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
-import { CorrectAnswerItem } from "./components/OrderListReport/styled/CorrectAnswerItem";
-import { QuestionText } from "./styled/QuestionText";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+`;
+
+const OptionsContainer = styled.div`
+  overflow-x: auto;
+  .orderlist-set-correct-answer {
+    ${({ styleType }) =>
+      styleType === "inline" &&
+      `
+      display: flex;
+      overflow-x: auto;
+    `}
+    .sortable-item-container {
+      ${({ styleType }) =>
+        styleType === "inline" &&
+        `
+        flex: 1;
+        min-width: 200px;
+        max-width: 400px;
+      `}
+    }
+  }
 `;
 
 const OptionsList = withPoints(QuillSortableList);
@@ -63,7 +71,6 @@ const OrderList = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
-  theme,
   disableResponse,
   t,
   changePreviewTab,
@@ -72,13 +79,18 @@ const OrderList = ({
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
+  const scrollContext = useContext(ScrollContext);
+  const scrollContainer = scrollContext.getScrollElement();
 
   const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : get(item, "list", []).map((_, i) => i);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const uiStyle = get(item, "uiStyle", {});
   const styleType = get(item, "uiStyle.type", "button");
-  const axis = styleType === "inline" ? "xy" : "y";
+  const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
+  const validResponse = get(item, "validation.validResponse", { value: [] });
+  const altResponses = get(item, `validation.altResponses[${correctTab - 1}]`, { value: [] });
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
@@ -140,29 +152,34 @@ const OrderList = ({
     );
   };
 
-  const renderOptions = () => (
-    <OptionsList
-      fontSize={fontSize}
-      axis={axis}
-      centerContent
-      data-cy="match-option-list"
-      prefix="options2"
-      readOnly
-      items={
-        correctTab === 0
-          ? item.validation.validResponse.value.map(ind => item.list[ind])
-          : item.validation.altResponses[correctTab - 1].value.map(ind => item.list[ind])
-      }
-      onSortEnd={handleCorrectSortEnd}
-      useDragHandle
-      columns={columns}
-      styleType={styleType}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handleUpdatePoints}
-      canDelete={false}
-    />
+  const renderOptions = scrollContainer && (
+    <OptionsContainer styleType={styleType}>
+      <OptionsList
+        fontSize={fontSize}
+        axis={axis}
+        centerContent
+        data-cy="match-option-list"
+        prefix="options2"
+        readOnly
+        items={
+          correctTab === 0
+            ? validResponse.value.map(ind => item.list[ind])
+            : altResponses.value.map(ind => item.list[ind])
+        }
+        onSortEnd={handleCorrectSortEnd}
+        useDragHandle
+        columns={columns}
+        styleType={styleType}
+        points={correctTab === 0 ? validResponse.score : altResponses.score}
+        lockToContainerEdges
+        lockOffset={["10%", "10%"]}
+        lockAxis={uiStyle.type === "inline" ? "x" : "y"}
+        getContainer={styleType !== "inline" ? () => scrollContainer : null}
+        onChangePoints={handleUpdatePoints}
+        canDelete={false}
+        className="orderlist-set-correct-answer"
+      />
+    </OptionsContainer>
   );
 
   const onTabChange = (index = 0) => {
@@ -173,14 +190,8 @@ const OrderList = ({
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
   const correctAnswers = get(itemForPreview, "validation.validResponse.value", []);
-
+  const hasAltAnswers = get(itemForPreview, "validation.altResponses", []).length > 0;
   const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
-
-  const hasAltAnswers =
-    itemForPreview &&
-    itemForPreview.validation &&
-    itemForPreview.validation.altResponses &&
-    itemForPreview.validation.altResponses.length > 0;
 
   const alternateAnswers = {};
 
@@ -196,60 +207,49 @@ const OrderList = ({
     });
   }
 
-  let initialAnswers;
+  let initialAnswers = [];
   if (answerContext.expressGrader) {
     initialAnswers = disableResponse ? correctAnswers : userAnswer;
   } else {
-    initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview?.list?.map((q, i) => i);
+    initialAnswers = userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
   }
 
   const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
 
-  const checkAnswerOptionComponent = isEmpty(evaluationForCheckAnswer) ? (
-    <OrderListPreview
-      onSortEnd={onSortPreviewEnd}
-      questions={initialAnswers?.map(index => itemForPreview.list && itemForPreview.list[index])}
-      smallSize={smallSize}
-      listStyle={{ fontSize }}
-      styleType={styleType}
-      axis={axis}
-      columns={columns}
-      disableResponse={disableResponse}
-      helperClass="sortableHelper"
-      lockToContainerEdges
-      lockOffset={["10%", "0%"]}
-      lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
-    />
-  ) : (
-    <OrderListReport
-      onSortEnd={onSortPreviewEnd}
-      questionsList={itemForPreview.list}
-      previewIndexesList={userAnswer}
-      evaluation={evaluationForCheckAnswer}
-      validation={itemForPreview.validation}
-      list={itemForPreview.list}
-      styleType={styleType}
-      listStyle={{ fontSize }}
-      disableResponse={disableResponse}
-      axis={axis}
-      columns={columns}
-      helperClass="sortableHelper"
-      item={item}
-    />
-  );
+  const previewProps = {
+    smallSize,
+    listStyle: { fontSize },
+    columns,
+    uiStyle,
+    styleType,
+    disableResponse,
+    getStemNumeration,
+    onSortEnd: onSortPreviewEnd,
+    axis,
+    helperClass: "sortableHelper",
+    lockToContainerEdges: true,
+    lockOffset: ["10%", "10%"],
+    lockAxis: uiStyle.type === "inline" ? "x" : "y",
+    getContainer: uiStyle.type === "inline" ? null : () => scrollContainer
+  };
 
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea>
+        <ContentArea columns={columns}>
           <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-          <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
+          <ListComponent
+            getContainer={() => scrollContainer}
+            item={item}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
           <CorrectAnswers
             onTabChange={onTabChange}
             correctTab={correctTab}
             onAdd={handleAddAltResponse}
             validation={item.validation}
-            options={renderOptions()}
+            options={renderOptions}
             onCloseTab={handleDeleteAltAnswers}
             fillSections={fillSections}
             cleanSections={cleanSections}
@@ -260,7 +260,7 @@ const OrderList = ({
           <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
         </ContentArea>
       )}
-      {view === PREVIEW && (
+      {view === PREVIEW && scrollContainer && (
         <Wrapper>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -272,69 +272,42 @@ const OrderList = ({
             />
           </QuestionTitleWrapper>
 
-          {previewTab === CHECK && checkAnswerOptionComponent}
+          {previewTab === CLEAR && (
+            <OrderListPreview
+              {...previewProps}
+              questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
+            />
+          )}
+
+          {(previewTab === CHECK || previewTab === SHOW) && (
+            <OrderListPreview
+              {...previewProps}
+              evaluation={evaluationForCheckAnswer}
+              questions={userAnswer.map(index => itemForPreview.list[index])}
+            />
+          )}
 
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
-              {checkAnswerOptionComponent}
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                <ItemsWrapper styleType={styleType} columns={columns}>
-                  {correctAnswers.map((correctAnswer, i) => (
-                    <CorrectAnswerItem theme={theme}>
-                      <Text>
-                        <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, i)}</Index>
-                        <FlexContainer justifyContent="center" style={{ width: "100%" }}>
-                          <QuestionText>
-                            <MathFormulaDisplay
-                              dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
-                            />
-                          </QuestionText>
-                        </FlexContainer>
-                      </Text>
-                    </CorrectAnswerItem>
-                  ))}
-                </ItemsWrapper>
+                <OrderListPreview
+                  {...previewProps}
+                  showAnswer
+                  questions={correctAnswers.map(index => itemForPreview.list[index])}
+                />
               </CorrectAnswersContainer>
 
               {hasAltAnswers && (
                 <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
-                  <ItemsWrapper styleType={styleType} columns={columns}>
-                    {Object.keys(alternateAnswers).map((key, i) => (
-                      <CorrectAnswerItem theme={theme}>
-                        <Text>
-                          <Index>{getStemNumeration(item.uiStyle?.validationStemNumeration, i)}</Index>
-                          <FlexContainer justifyContent="center" style={{ width: "100%" }}>
-                            <QuestionText>
-                              <MathFormulaDisplay
-                                dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
-                              />
-                            </QuestionText>
-                          </FlexContainer>
-                        </Text>
-                      </CorrectAnswerItem>
-                    ))}
-                  </ItemsWrapper>
+                  <OrderListPreview
+                    {...previewProps}
+                    showAnswer
+                    questions={Object.keys(alternateAnswers).map(key => alternateAnswers[key].join(", "))}
+                  />
                 </CorrectAnswersContainer>
               )}
             </Fragment>
           ) : null}
-
-          {previewTab === CLEAR && (
-            <OrderListPreview
-              onSortEnd={onSortPreviewEnd}
-              questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
-              smallSize={smallSize}
-              listStyle={{ fontSize }}
-              styleType={styleType}
-              axis={axis}
-              columns={columns}
-              disableResponse={disableResponse}
-              helperClass="sortableHelper"
-              lockToContainerEdges
-              lockOffset={["10%", "0%"]}
-              lockAxis={item?.uiStyle?.type === "inline" ? undefined : "y"}
-            />
-          )}
         </Wrapper>
       )}
     </Fragment>
@@ -381,7 +354,6 @@ OrderList.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
-  withNamespaces("assessment"),
   connect(
     null,
     { setQuestionData: setQuestionDataAction }

@@ -6,9 +6,9 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
-
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
+import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -63,6 +63,7 @@ class Container extends Component {
     };
 
     this.innerDiv = React.createRef();
+    this.scrollContainer = React.createRef();
   }
 
   componentDidUpdate = () => {
@@ -378,29 +379,31 @@ class Container extends Component {
 
     return (
       <EditorContainer ref={this.innerDiv}>
-        {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(question, null, 4)}
-          </SourceModal>
-        )}
-        <ItemHeader title={question.title} reference={itemId}>
-          {this.header()}
-        </ItemHeader>
+        <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
+          {showModal && (
+            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+              {JSON.stringify(question, null, 4)}
+            </SourceModal>
+          )}
+          <ItemHeader title={question.title} reference={itemId}>
+            {this.header()}
+          </ItemHeader>
 
-        <BreadCrumbBar>
-          <Col md={12}>
-            {windowWidth > desktopWidth.replace("px", "") ? (
-              <SecondHeadBar breadcrumb={this.breadcrumb} />
-            ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-            )}
-          </Col>
-          <RightActionButtons md={12}>
-            <div>{view === "preview" && this.renderButtons()}</div>
-          </RightActionButtons>
-        </BreadCrumbBar>
-        <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
-        <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
+          <BreadCrumbBar>
+            <Col md={12}>
+              {windowWidth > desktopWidth.replace("px", "") ? (
+                <SecondHeadBar breadcrumb={this.breadcrumb} />
+              ) : (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )}
+            </Col>
+            <RightActionButtons md={12}>
+              <div>{view === "preview" && this.renderButtons()}</div>
+            </RightActionButtons>
+          </BreadCrumbBar>
+          <ContentWrapper ref={this.scrollContainer}>{this.renderQuestion()}</ContentWrapper>
+          <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
+        </ScrollContext.Provider>
       </EditorContainer>
     );
   }

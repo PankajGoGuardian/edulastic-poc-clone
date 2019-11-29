@@ -74,12 +74,12 @@ const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 export const filterSelector = state => state.studentReport.filter;
 
-const isReport = (assignment, currentGroup, classIds) => {
+const isReport = (assignment, classIds) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
-  let { endDate, class: groups = [] } = assignment;
+  let { endDate, class: groups = [], classId: currentGroup } = assignment;
   if (!endDate) {
     endDate = (maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
       .endDate;
@@ -122,14 +122,18 @@ export const getAllAssignmentsSelector = createSelector(
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
-        const allClassess = assignment.class.filter(item => item.redirect !== true);
+        //no redirected classes and no class filter or class ID match the filter and student belongs to the class
+        const allClassess = assignment.class.filter(
+          clazz =>
+            clazz.redirect !== true && (!currentGroup || currentGroup === clazz._id) && classIds.includes(clazz._id)
+        );
         return allClassess.map(clazz => ({
           ...assignment,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || []
         }));
       })
-      .filter(assignment => isReport(assignment, currentGroup, classIds));
+      .filter(assignment => isReport(assignment, classIds));
 
     return assignments.sort((a, b) => {
       const a_report = a.reports.find(report => !report.archived);

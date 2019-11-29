@@ -304,13 +304,13 @@ export const filterSelector = state => state.studentAssignment.filter;
  *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
  *
  */
-export const isLiveAssignment = (assignment, currentGroup, classIds) => {
+export const isLiveAssignment = (assignment, classIds) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
   const lastAttempt = last(assignment.reports) || {};
-  let { endDate, class: groups = [] } = assignment;
+  let { endDate, class: groups = [], classId: currentGroup } = assignment;
   // when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
   if (!endDate) {
@@ -382,14 +382,18 @@ export const getAllAssignmentsSelector = createSelector(
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
-        const allClassess = assignment.class.filter(item => item.redirect !== true);
+        //no redirected classes and no class filter or class ID match the filter and student belongs to the class
+        const allClassess = assignment.class.filter(
+          clazz =>
+            clazz.redirect !== true && (!currentGroup || currentGroup === clazz._id) && classIds.includes(clazz._id)
+        );
         return allClassess.map(clazz => ({
           ...assignment,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || []
         }));
       })
-      .filter(assignment => isLiveAssignment(assignment, currentGroup, classIds));
+      .filter(assignment => isLiveAssignment(assignment, classIds));
 
     return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);
   }

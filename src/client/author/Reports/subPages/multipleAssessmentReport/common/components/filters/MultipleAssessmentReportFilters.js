@@ -314,17 +314,6 @@ const SingleAssessmentReportFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
-          {performanceBandRequired ? (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <ControlDropDown
-                by={{ key: filters.profileId }}
-                selectCB={onChangePerformanceBand}
-                data={profiles.map(p => ({ key: p._id, title: p.name }))}
-                prefix="Performance Band"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          ) : null}
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <AutocompleteDropDown
               prefix="Grade"
@@ -378,6 +367,17 @@ const SingleAssessmentReportFilters = ({
               data={staticDropDownData.assessmentType}
             />
           </Col>
+          {performanceBandRequired ? (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <ControlDropDown
+                by={{ key: filters.profileId }}
+                selectCB={onChangePerformanceBand}
+                data={profiles.map(p => ({ key: p._id, title: p.name }))}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          ) : null}
           <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
             <MultipleSelect
               containerClassName="single-assessment-report-test-autocomplete"

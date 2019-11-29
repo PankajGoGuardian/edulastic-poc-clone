@@ -196,8 +196,7 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
-        (item.teacherId === currentFilter.teacherId || currentFilter.teacherId === "All") &&
-        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
+        (item.teacherId === currentFilter.teacherId || currentFilter.teacherId === "All")
       ) {
         return true;
       }
@@ -207,8 +206,7 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
         (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-        (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
-        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
+        (item.groupId === currentFilter.groupId || currentFilter.groupId === "All")
       ) {
         return true;
       }
@@ -222,7 +220,12 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
     }
   }
 
-  let arr = _dropDownData.testDataArr.filter((item, index) => (groupIdMap[item.groupId] ? true : false));
+  let arr = _dropDownData.testDataArr.filter((item, index) =>
+    groupIdMap[item.groupId] &&
+    (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
+      ? true
+      : false
+  );
   let finalTestIds = [];
   let makeUniqueMap = {};
   for (let item of arr) {

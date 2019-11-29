@@ -36,8 +36,8 @@
   ],
   "assessmentType": [
     { "key": "All", "title": "All Assessment Types" },
-    { "key": "Common", "title": "Common" },
-    { "key": "Class", "title": "Class" },
-    { "key": "Practice", "title": "Practice" }
+    { "key": "common assessment", "title": "Common" },
+    { "key": "assessment", "title": "Class" },
+    { "key": "practice", "title": "Practice" }
   ]
 }

@@ -331,30 +331,6 @@ const SingleAssessmentReportFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
-          {performanceBandRequired ? (
-            <Col xs={12} sm={12} md={10} lg={6} xl={6}>
-              <PrintablePrefix>Performance Band </PrintablePrefix>
-              <ControlDropDown
-                by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
-                selectCB={({ key }) => setPerformanceBand(key)}
-                data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
-                prefix="Performance Band"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          ) : null}
-          {isStandardProficiencyRequired && (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
-              <ControlDropDown
-                by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
-                selectCB={({ key }) => setStandardsProficiency(key)}
-                data={standardProficiencyList}
-                prefix="Standard Proficiency"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          )}
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <PrintablePrefix>Grade</PrintablePrefix>
             <AutocompleteDropDown
@@ -414,6 +390,30 @@ const SingleAssessmentReportFilters = ({
               data={staticDropDownData.assessmentType}
             />
           </Col>
+          {performanceBandRequired ? (
+            <Col xs={12} sm={12} md={10} lg={6} xl={6}>
+              <PrintablePrefix>Performance Band </PrintablePrefix>
+              <ControlDropDown
+                by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
+                selectCB={({ key }) => setPerformanceBand(key)}
+                data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          ) : null}
+          {isStandardProficiencyRequired && (
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
+              <ControlDropDown
+                by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
+                selectCB={({ key }) => setStandardsProficiency(key)}
+                data={standardProficiencyList}
+                prefix="Standard Proficiency"
+                showPrefixOnSelected={false}
+              />
+            </Col>
+          )}
           <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
             <div>
               <PrintablePrefix>Assessment Name</PrintablePrefix>

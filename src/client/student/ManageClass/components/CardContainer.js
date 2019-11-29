@@ -18,7 +18,7 @@ const ClassCard = ({ t, classItem, history, changeClass }) => {
   const allStandardSets = standardSets && standardSets.map(std => std.name).join(",");
   const handleVisitClass = () => {
     sessionStorage.setItem("temporaryClass", classItem._id);
-    history.push("/home/reports");
+    history.push("/home/grades");
     changeClass(sessionStorage.temporaryClass);
   };
 

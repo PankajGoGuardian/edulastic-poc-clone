@@ -336,7 +336,7 @@ function* submitTest({ payload: classId }) {
     if (navigator.userAgent.includes("SEB")) {
       yield put(push("/student/seb-quit-confirm"));
     } else {
-      yield put(push("/home/reports"));
+      yield put(push("/home/grades"));
     }
     yield put({
       type: SET_TEST_ACTIVITY_ID,

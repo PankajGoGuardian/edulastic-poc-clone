@@ -48,8 +48,8 @@ const StudentApp = ({ match, selectedTheme, zoomLevel }) => {
                 component={DeepLink}
               />
 
-              <Route path={`${match.url}/reports`} component={Report} />
-              <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
+              <Route path={`${match.url}/grades`} component={Report} />
+              <Route path={`${match.url}/skill-mastery`} component={SkillReportContainer} />
               <Route path={`${match.url}/manage`} component={ManageClass} />
               <Route path={`${match.url}/profile`} component={Profile} />
               <Route path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`} component={ReportList} />

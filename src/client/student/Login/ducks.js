@@ -619,7 +619,7 @@ function* logout() {
 function* changeClass({ payload }) {
   try {
     const url = yield select(routeSelector);
-    if (!url.includes("/home/skill-report")) {
+    if (!url.includes("/home/skill-mastery")) {
       yield put(fetchAssignmentsAction(payload));
     }
   } catch (e) {

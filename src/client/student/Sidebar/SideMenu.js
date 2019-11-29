@@ -51,17 +51,17 @@ const menuItems = [
   {
     label: "Assignments",
     icon: IconClockDashboard,
-    path: "home/dashboard"
+    path: "home/assignments"
   },
   {
     label: "Grades",
     icon: IconReport,
-    path: "home/reports"
+    path: "home/grades"
   },
   {
     label: "Skill Mastery",
     icon: IconBarChart,
-    path: "home/skill-report"
+    path: "home/skill-mastery"
   },
   {
     label: "Manage Class",

@@ -263,7 +263,7 @@ function* launchAssignment({ payload }) {
         if (maxAttempt > testActivities.length) {
           yield put(startAssignmentAction({ testId, assignmentId, testType }));
         } else {
-          yield put(push(`/home/reports`));
+          yield put(push(`/home/grades`));
         }
       }
     } else {

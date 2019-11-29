@@ -707,15 +707,18 @@ const SvgDraw = ({
           )}
 
         {pathes.length > 0 &&
-          pathes.map((path, i) => (
-            <Path
-              key={i}
-              onClick={deleteMode ? handleDeletePath(i) : undefined}
-              stroke={path[0].color}
-              strokeWidth={path[0].lineWidth}
-              d={getPointsForDrawingPath(path)}
-            />
-          ))}
+          pathes.map(
+            (path, i) =>
+              path.length && (
+                <Path
+                  key={i}
+                  onClick={deleteMode ? handleDeletePath(i) : undefined}
+                  stroke={path[0].color}
+                  strokeWidth={path[0].lineWidth}
+                  d={getPointsForDrawingPath(path)}
+                />
+              )
+          )}
 
         {points.length > 0 && (
           <Path

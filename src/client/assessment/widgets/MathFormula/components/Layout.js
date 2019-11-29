@@ -133,7 +133,7 @@ class Layout extends Component {
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
-              value={uiStyle.responseFontScale}
+              value={uiStyle.responseFontScale || math.templateFontScaleOption[0].value}
               style={{ width: "100%" }}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("responseFontScale", val)}

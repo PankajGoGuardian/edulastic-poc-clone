@@ -121,8 +121,6 @@ export const getAllAssignmentsSelector = createSelector(
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
-      .sort((a, b) => a.createdAt > b.createdAt)
-
       .flatMap(assignment => {
         const allClassess = assignment.class.filter(item => item.redirect !== true);
         return allClassess.map(clazz => ({
@@ -133,7 +131,11 @@ export const getAllAssignmentsSelector = createSelector(
       })
       .filter(assignment => isReport(assignment, currentGroup, classIds));
 
-    return assignments;
+    return assignments.sort((a, b) => {
+      const a_report = a.reports.find(report => !report.archived);
+      const b_report = b.reports.find(report => !report.archived);
+      return b_report.endDate - a_report.endDate;
+    });
   }
 );
 

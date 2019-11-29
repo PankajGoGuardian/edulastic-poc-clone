@@ -410,7 +410,7 @@ class AxisLabelsContainer extends PureComponent {
         </WithResources>
         <GraphWrapper>
           {!disableResponse && (
-            <StyledToolsContainer>
+            <StyledToolsContainer width={Math.min(adjustedHeightWidth.width, this.parentWidth)}>
               <Tools
                 controls={this.controls}
                 onSelectControl={this.onSelectControl}

@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
+  width: ${props => props.width && `${props.width}px`};
 `;
 
 export const GraphWrapper = styled.div`

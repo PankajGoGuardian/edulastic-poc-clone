@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Table, Button } from "antd";
+import { Table, Button, Tag } from "antd";
 import { testActivity } from "@edulastic/constants";
 import { IconDownEmptyArrow } from "@edulastic/icons";
 import {
@@ -296,29 +296,6 @@ export const ExpandDivdier = styled.div`
   font-size: ${props => props.theme.standardFont};
 `;
 
-export const BtnStatus = styled(Button)`
-  color: ${white};
-  border: 0px;
-  font-size: 0.7em;
-  font-weight: bold;
-  min-width: 90px;
-  height: 26px;
-  text-align: center;
-  border-radius: 5px;
-  background-color: ${props => defineStatusBg(props.status)};
-  &:hover,
-  &:focus {
-    background-color: ${props => defineStatusBg(props.status)};
-    color: ${white};
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 20px;
-    line-height: 20px;
-    font-size: 9px;
-  }
-`;
-
 export const TitleCase = styled.div`
   text-transform: Capitalize;
 `;
@@ -360,6 +337,19 @@ export const GreyFont = styled.div`
 
   @media (max-width: ${mediumDesktopWidth}) {
     font-size: ${props => props.theme.linkFontSize};
+  }
+`;
+
+export const StatusLabel = styled(Tag)`
+  border-width: 1px;
+  background-color: ${({ status }) => defineStatusBg(status)};
+  border-color: ${({ status }) => defineStatusBg(status)};
+  color: ${white};
+  font-size: 0.7em;
+  min-width: 90px;
+  border-radius: 5px;
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 9px;
   }
 `;
 

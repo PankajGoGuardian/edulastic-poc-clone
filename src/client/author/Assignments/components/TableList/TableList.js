@@ -28,7 +28,7 @@ import {
   BtnAction,
   TypeIcon,
   ExpandDivdier,
-  BtnStatus,
+  StatusLabel,
   ActionDiv,
   GreyFont,
   ExpandedTable,
@@ -139,7 +139,7 @@ const TableList = ({
       {
         dataIndex: "status",
         width: "14%",
-        render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
+        render: text => (text ? <StatusLabel status={text}>{text}</StatusLabel> : "")
       },
       {
         dataIndex: "submitted",

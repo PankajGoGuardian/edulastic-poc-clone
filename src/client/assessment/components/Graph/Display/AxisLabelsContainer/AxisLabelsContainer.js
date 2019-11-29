@@ -390,11 +390,13 @@ class AxisLabelsContainer extends PureComponent {
 
     let _graphData = graphData;
     if (isV1Migrated) {
-      _graphData = next(graphData, _graphData => {
-        for (let o of _graphData.annotations) {
-          const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o);
-          o.position.x = co.x;
-          o.position.y = co.y;
+      _graphData = next(graphData, __graphData => {
+        if (__graphData.annotations) {
+          for (let o of __graphData.annotations) {
+            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o);
+            o.position.x = co.x;
+            o.position.y = co.y;
+          }
         }
       });
     }

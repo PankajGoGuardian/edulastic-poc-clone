@@ -78,7 +78,8 @@ class SummaryTest extends Component {
 
   render() {
     const { questionList: questionsAndOrder, t, test } = this.props;
-    const { isDocBased } = test;
+    const { isDocBased, items } = test;
+    const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased;
     const { blocks: questionList, itemWiseQids } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
     const { finishTest } = this.props;
@@ -129,9 +130,11 @@ class SummaryTest extends Component {
                       <StyledButton onClick={() => this.handlerButton(null)} enabled={buttonIdx === null}>
                         {t("default:all")}
                       </StyledButton>
-                      <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
-                        {t("default:bookmarked")}
-                      </StyledButton>
+                      {!isDocBasedFlag && (
+                        <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
+                          {t("default:bookmarked")}
+                        </StyledButton>
+                      )}
                       <StyledButton onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
                         {t("default:skipped")}
                       </StyledButton>

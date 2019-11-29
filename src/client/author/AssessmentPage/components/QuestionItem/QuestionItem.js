@@ -294,7 +294,9 @@ class QuestionItem extends React.Component {
             onDragEnd={this.handleDragEnd}
             enabled={!review}
           >
-            <QuestionNumber dragging={dragging}>{qIndex || index + 1}</QuestionNumber>
+            <QuestionNumber viewMode={viewMode === "edit"} dragging={dragging}>
+              {qIndex || index + 1}
+            </QuestionNumber>
           </Draggable>
           <QuestionForm review={review}>{this.renderContent()}</QuestionForm>
           {!review && this.renderEditButton()}

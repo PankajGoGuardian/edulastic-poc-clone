@@ -40,7 +40,7 @@ export const QuestionNumber = styled.span`
   text-align: center;
   padding-top: 6px;
   transition: all 300ms;
-  cursor: ${({ dragging }) => (dragging ? "grabbing" : "grab")};
+  cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
 `;
 
 export const QuestionForm = styled.div`

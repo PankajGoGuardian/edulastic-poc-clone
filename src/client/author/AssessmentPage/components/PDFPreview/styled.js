@@ -9,6 +9,7 @@ export const PDFPreviewWrapper = styled.div`
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
+  pointer-events: ${({ viewMode }) => viewMode && "none"};
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }

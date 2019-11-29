@@ -216,7 +216,7 @@ class TestList extends Component {
       }
 
       if (!subject) {
-        subject = interestedSubjects;
+        subject = interestedSubjects[0] || "";
         updateDefaultSubject(subject);
       }
 

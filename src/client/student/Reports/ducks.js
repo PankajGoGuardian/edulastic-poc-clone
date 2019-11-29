@@ -134,7 +134,7 @@ export const getAllAssignmentsSelector = createSelector(
     return assignments.sort((a, b) => {
       const a_report = a.reports.find(report => !report.archived);
       const b_report = b.reports.find(report => !report.archived);
-      return b_report.endDate - a_report.endDate;
+      return b_report?.endDate - a_report?.endDate;
     });
   }
 );

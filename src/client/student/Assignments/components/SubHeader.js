@@ -18,7 +18,7 @@ import Breadcrumb from "../../sharedComponents/Breadcrumb";
 import { BreadcrumbWrapper } from "../../styled";
 import { setStatusBgColor } from "../../utils";
 
-const breadcrumbData = [{ title: "DASHBOARD", to: "" }];
+const breadcrumbData = [{ title: "ASSIGNMENTS", to: "" }];
 
 const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsCountByFilerName }) => {
   const filterItems = Object.keys(FILTERS);

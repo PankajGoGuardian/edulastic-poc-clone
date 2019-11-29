@@ -57,7 +57,7 @@ const SkillReportContainer = ({
         </LoaderConainer>
       ) : isEmpty(skillReport.reports) ? (
         <LoaderConainer>
-          <NoDataNotification heading={"No Skill Reports "} description={"You don't have any skill reports."} />
+          <NoDataNotification heading={"No Skill Mastery"} description={"You don't have any Skill Mastery."} />
         </LoaderConainer>
       ) : (
         <SkillReportMainContent skillReport={skillReport} />

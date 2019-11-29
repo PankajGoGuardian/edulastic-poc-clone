@@ -7,7 +7,7 @@ import Breadcrumb from "../../sharedComponents/Breadcrumb";
 import QuestionSelect from "./QuestionSelect.js";
 
 const TestActivitySubHeader = ({ title, isDocBased }) => {
-  const breadcrumbData = [{ title: "REPORTS", to: "/home/grades" }, { title: title }];
+  const breadcrumbData = [{ title: "GRADES", to: "/home/grades" }, { title: title }];
   return (
     <Container>
       <BreadcrumbContainer>

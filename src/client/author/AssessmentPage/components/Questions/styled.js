@@ -6,9 +6,9 @@ import { themeColor, white } from "@edulastic/colors";
 export const QuestionsWrapper = styled.div`
   position: relative;
   width: 425px;
-  height: calc(100% - 140px);
-  margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
-  padding: 30px 0;
+  height: ${({ viewMode }) => viewMode && "calc(100% - 140px)"};
+  margin: ${({ viewMode }) => (viewMode ? "unset" : "30px 0 0 0")};
+  padding: ${({ viewMode, testMode }) => (viewMode ? "30px 0" : !testMode && "0 0 50px 0")};
   display: flex;
   flex-direction: column;
   justify-content: space-between;

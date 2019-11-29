@@ -439,7 +439,7 @@ class Questions extends React.Component {
     }
     return (
       <Fragment>
-        <QuestionsWrapper ref={this.containerRef}>
+        <QuestionsWrapper viewMode={viewMode === "edit"} testMode={testMode} ref={this.containerRef}>
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (

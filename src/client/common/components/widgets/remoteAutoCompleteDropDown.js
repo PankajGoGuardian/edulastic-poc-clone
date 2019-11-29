@@ -29,6 +29,7 @@ const RemoteAutocompleteDropDown = ({
   data = [],
   comData,
   iconType = "caret-down",
+  rotateIcon = true,
   onChange,
   createNew = false,
   createNewLabel = "Create New",
@@ -264,7 +265,7 @@ const RemoteAutocompleteDropDown = ({
           suffix={
             <Icon
               type={isLoading ? "loading" : iconType}
-              className={`${isDropDownVisible ? "ant-input-suffix-icon-rotate-up" : ""}`}
+              className={`${isDropDownVisible && rotateIcon ? "ant-input-suffix-icon-rotate-up" : ""}`}
               style={{ color: "#00ad50" }}
             />
           }

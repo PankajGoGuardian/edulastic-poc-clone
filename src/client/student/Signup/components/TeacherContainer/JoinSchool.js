@@ -276,6 +276,7 @@ const JoinSchool = ({
                     data={dropdownSchoolData}
                     onSearchTextChange={handleSearch}
                     iconType={"search"}
+                    rotateIcon={false}
                     placeholder={t("component.signup.teacher.searchschool")}
                     ItemTemplate={SchoolDropDownItemTemplate}
                     minHeight="70px"

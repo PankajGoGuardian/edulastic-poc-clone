@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep, get, has } from "lodash";
+import { cloneDeep, get, has, isEmpty } from "lodash";
 import { Button, Input, Checkbox, Select, Table } from "antd";
 import styled from "styled-components";
 
@@ -123,7 +123,7 @@ class Variables extends Component {
         return;
       }
       newData.variable.variables[variableName][param] = value;
-      if (newData.variable.variables[variableName].type !== "formula") {
+      if (newData.variable.variables[variableName].type !== "FORMULA") {
         newData.variable.variables[variableName].exampleValue = generateExample(
           newData.variable.variables[variableName]
         );
@@ -136,6 +136,14 @@ class Variables extends Component {
     const variableCombinationCount = get(questionData, "variable.combinationsCount", 5);
     const examples = get(questionData, "variable.examples", []);
 
+    const handleCalculateFormula = () => {
+      const hasFormula = Object.keys(variables).some(
+        variableName => variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
+      );
+      if (hasFormula) {
+        calculateFormula();
+      }
+    };
     const generate = () => {
       const values = [];
       for (let i = 0; i < variableCombinationCount; i++) {
@@ -232,7 +240,7 @@ class Variables extends Component {
                         value={variable.formula}
                         showResponse={false}
                         onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
-                        onBlur={calculateFormula}
+                        onBlur={handleCalculateFormula}
                       />
                     </Col>
                   )}
@@ -242,7 +250,7 @@ class Variables extends Component {
                         data-cy="variableSet"
                         value={variable.set}
                         onChange={e => handleChangeVariableList(variableName, "set", e.target.value)}
-                        onBlur={calculateFormula}
+                        onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
                       />
@@ -255,7 +263,7 @@ class Variables extends Component {
                         data-cy="variableMin"
                         value={variable.min}
                         onChange={e => handleChangeVariableList(variableName, "min", parseInt(e.target.value, 10))}
-                        onBlur={calculateFormula}
+                        onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
                       />
@@ -268,7 +276,7 @@ class Variables extends Component {
                         data-cy="variableMax"
                         value={variable.max}
                         onChange={e => handleChangeVariableList(variableName, "max", parseInt(e.target.value, 10))}
-                        onBlur={calculateFormula}
+                        onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
                       />
@@ -281,7 +289,7 @@ class Variables extends Component {
                         data-cy="variableDecimal"
                         value={variable.decimal}
                         onChange={e => handleChangeVariableList(variableName, "decimal", parseInt(e.target.value, 10))}
-                        onBlur={calculateFormula}
+                        onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
                       />

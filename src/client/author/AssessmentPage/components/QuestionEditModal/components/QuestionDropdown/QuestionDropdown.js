@@ -8,6 +8,7 @@ import { themes } from "../../../../../../theme";
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import SortableList from "../../../../../../assessment/components/SortableList";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
+import produce from "immer";
 
 export default class QuestionDropdown extends React.Component {
   static propTypes = {
@@ -56,18 +57,29 @@ export default class QuestionDropdown extends React.Component {
 
   handleRemove = itemIndex => {
     const nextOptions = this.currentOptions;
+    const removingValue = nextOptions[itemIndex];
+    const validValue = this.props.question?.validation?.validResponse?.value?.[0]?.value;
     nextOptions.splice(itemIndex, 1);
 
-    this.updateOptions(nextOptions);
+    this.updateOptions(nextOptions, validValue === removingValue);
   };
 
-  updateOptions = nextOptions => {
+  updateOptions = (nextOptions, resetValid = false) => {
     const { onUpdate } = this.props;
 
     const data = {
       options: {
         0: nextOptions
-      }
+      },
+      ...(resetValid
+        ? {
+            validation: {
+              validResponse: {
+                value: []
+              }
+            }
+          }
+        : {})
     };
 
     onUpdate(data);

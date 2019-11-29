@@ -35,7 +35,7 @@ export default class AddBulkModal extends React.Component {
   state = {
     number: 2,
     type: MULTIPLE_CHOICE,
-    startingIndex: 1
+    startingIndex: this.props.minAvailableQuestionIndex || 1
   };
 
   handleChange = field => value =>
@@ -84,14 +84,6 @@ export default class AddBulkModal extends React.Component {
                 </TypeOfQuestionSelect>
               </TypeOfQuestion>
             </FormInline>
-            <FormGroup>
-              <FormLabel>Starting Index</FormLabel>
-              <StartingIndexInput
-                value={startingIndex}
-                min={minAvailableQuestionIndex}
-                onChange={this.handleChange("startingIndex")}
-              />
-            </FormGroup>
           </QuestionFormWrapper>
           <ModalFooter marginTop="35px">
             <Button onClick={onCancel}>Cancel</Button>

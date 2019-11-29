@@ -16,6 +16,7 @@ export const SortableItemContainer = styled.div.attrs({
     styleType === "list" || styleType === "inline" ? "none" : `1px solid ${dashBorderColor}`};
   border-radius: 4px;
   padding-right: 12px;
+  z-index: 99999;
 
   .ql-container {
     font-size: ${props => props.fontSize || "14px"};

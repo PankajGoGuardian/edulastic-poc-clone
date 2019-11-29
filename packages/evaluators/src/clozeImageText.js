@@ -82,17 +82,16 @@ const normalEvaluator = ({ userResponse, validation }) => {
   const answers = [{ ...validation.validResponse }, ...(validation.altResponses || [])];
   const maxScore = answers.reduce((_maxScore, answer) => Math.max(_maxScore, answer.score), 0);
   const evaluations = [];
-
   answers.forEach(answer => {
     // calculating the evaluation against every answer
     const currentEvaluation = answer.value.map((val, _index) =>
-      compareChoice(val, response[_index], allowSingleLetterMistake, ignoreCase)
+      compareChoice(val, response[_index] || "", allowSingleLetterMistake, ignoreCase)
     );
     let currentScore = 0;
     const correctAnswerCount = currentEvaluation.filter(elem => elem).length;
 
     if (validation.scoringType === "partialMatch") {
-      currentScore = parseFloat(answer.answerScore * (correctAnswerCount / optionCount)).toFixed(2);
+      currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
     } else if (correctAnswerCount === response.length) {
       // exact match
       currentScore = answer.score;

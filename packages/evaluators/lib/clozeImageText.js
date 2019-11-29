@@ -7,13 +7,44 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _maxBy2 = _interopRequireDefault(require("lodash/maxBy"));
 
 var _fastLevenshtein = require("fast-levenshtein");
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly)
+      symbols = symbols.filter(function(sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    if (i % 2) {
+      ownKeys(source, true).forEach(function(key) {
+        (0, _defineProperty2["default"])(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(source).forEach(function(key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+  return target;
+}
 
 /**
  *
@@ -67,7 +98,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
   var allowSingleLetterMistake = validation.allowSingleLetterMistake,
     ignoreCase = validation.ignoreCase; // combining validAnswer and alternate answers
 
-  var answers = [(0, _objectSpread2["default"])({}, validation.validResponse)].concat(
+  var answers = [_objectSpread({}, validation.validResponse)].concat(
     (0, _toConsumableArray2["default"])(validation.altResponses || [])
   );
   var optionCount =
@@ -146,7 +177,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
     ignoreCase = validation.ignoreCase;
   var response = (0, _toConsumableArray2["default"])(userResponse); // combining the correct answer and alternate answers
 
-  var answers = [(0, _objectSpread2["default"])({}, validation.validResponse)].concat(
+  var answers = [_objectSpread({}, validation.validResponse)].concat(
     (0, _toConsumableArray2["default"])(validation.altResponses || [])
   );
   var maxScore = answers.reduce(function(_maxScore, answer) {
@@ -156,7 +187,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
   answers.forEach(function(answer) {
     // calculating the evaluation against every answer
     var currentEvaluation = answer.value.map(function(val, _index) {
-      return compareChoice(val, response[_index], allowSingleLetterMistake, ignoreCase);
+      return compareChoice(val, response[_index] || "", allowSingleLetterMistake, ignoreCase);
     });
     var currentScore = 0;
     var correctAnswerCount = currentEvaluation.filter(function(elem) {
@@ -164,7 +195,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
     }).length;
 
     if (validation.scoringType === "partialMatch") {
-      currentScore = parseFloat(answer.answerScore * (correctAnswerCount / optionCount)).toFixed(2);
+      currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
     } else if (correctAnswerCount === response.length) {
       // exact match
       currentScore = answer.score;

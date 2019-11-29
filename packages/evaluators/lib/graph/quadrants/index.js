@@ -13,8 +13,6 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-
 var _axios = _interopRequireDefault(require("axios"));
 
 var _constants = require("./constants");
@@ -205,9 +203,9 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
   result.commonResult = true;
 
-  var _loop3 = function _loop3(i) {
+  var _loop3 = function _loop3(_i) {
     var sameShapes = result.details.filter(function(item) {
-      return item.relatedId === relatedIds[i];
+      return item.relatedId === relatedIds[_i];
     });
 
     if (sameShapes.length > 1) {
@@ -218,8 +216,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
     }
   };
 
-  for (var i = 0; i < relatedIds.length; i++) {
-    _loop3(i);
+  for (var _i = 0; _i < relatedIds.length; _i++) {
+    _loop3(_i);
   }
 
   return result;
@@ -359,220 +357,200 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
   return serialize(shapes, lineTypes, points);
 };
 
-var checkEquations =
-  /*#__PURE__*/
-  (function() {
-    var _ref = (0, _asyncToGenerator2["default"])(
-      /*#__PURE__*/
-      _regenerator["default"].mark(function _callee(answer, userResponse) {
-        var apiResult;
-        return _regenerator["default"].wrap(function _callee$(_context) {
-          while (1) {
-            switch ((_context.prev = _context.next)) {
-              case 0:
-                _context.next = 2;
-                return evaluateApi({
-                  input: buildGraphApiResponse(userResponse),
-                  expected: buildGraphApiResponse(answer),
-                  checks: "evaluateGraphEquations"
-                });
+var checkEquations = function checkEquations(answer, userResponse) {
+  var apiResult;
+  return _regenerator["default"].async(function checkEquations$(_context) {
+    while (1) {
+      switch ((_context.prev = _context.next)) {
+        case 0:
+          _context.next = 2;
+          return _regenerator["default"].awrap(
+            evaluateApi({
+              input: buildGraphApiResponse(userResponse),
+              expected: buildGraphApiResponse(answer),
+              checks: "evaluateGraphEquations"
+            })
+          );
 
-              case 2:
-                apiResult = _context.sent;
+        case 2:
+          apiResult = _context.sent;
 
-                if (!(apiResult === "true")) {
-                  _context.next = 5;
-                  break;
-                }
-
-                return _context.abrupt("return", {
-                  commonResult: true,
-                  details: userResponse.map(function(x) {
-                    return {
-                      id: x.id,
-                      result: true
-                    };
-                  })
-                });
-
-              case 5:
-                return _context.abrupt("return", {
-                  commonResult: false,
-                  details: userResponse.map(function(x) {
-                    return {
-                      id: x.id,
-                      result: false
-                    };
-                  })
-                });
-
-              case 6:
-              case "end":
-                return _context.stop();
-            }
+          if (!(apiResult === "true")) {
+            _context.next = 5;
+            break;
           }
-        }, _callee);
-      })
-    );
 
-    return function checkEquations(_x, _x2) {
-      return _ref.apply(this, arguments);
-    };
-  })();
+          return _context.abrupt("return", {
+            commonResult: true,
+            details: userResponse.map(function(x) {
+              return {
+                id: x.id,
+                result: true
+              };
+            })
+          });
 
-var evaluator =
-  /*#__PURE__*/
-  (function() {
-    var _ref3 = (0, _asyncToGenerator2["default"])(
-      /*#__PURE__*/
-      _regenerator["default"].mark(function _callee2(_ref2) {
-        var userResponse,
-          validation,
-          validResponse,
-          altResponses,
-          ignore_repeated_shapes,
-          ignoreLabels,
-          score,
-          maxScore,
-          evaluation,
-          answers,
-          result,
-          _iteratorNormalCompletion,
-          _didIteratorError,
-          _iteratorError,
-          _iterator,
-          _step,
-          _step$value,
-          index,
-          answer;
+        case 5:
+          return _context.abrupt("return", {
+            commonResult: false,
+            details: userResponse.map(function(x) {
+              return {
+                id: x.id,
+                result: false
+              };
+            })
+          });
 
-        return _regenerator["default"].wrap(
-          function _callee2$(_context2) {
-            while (1) {
-              switch ((_context2.prev = _context2.next)) {
-                case 0:
-                  (userResponse = _ref2.userResponse), (validation = _ref2.validation);
-                  (validResponse = validation.validResponse),
-                    (altResponses = validation.altResponses),
-                    (ignore_repeated_shapes = validation.ignore_repeated_shapes),
-                    (ignoreLabels = validation.ignoreLabels);
-                  score = 0;
-                  maxScore = 1;
-                  evaluation = {};
-                  answers = [validResponse];
+        case 6:
+        case "end":
+          return _context.stop();
+      }
+    }
+  });
+};
 
-                  if (altResponses) {
-                    answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
-                  }
+var evaluator = function evaluator(_ref) {
+  var userResponse,
+    validation,
+    validResponse,
+    altResponses,
+    ignore_repeated_shapes,
+    ignoreLabels,
+    score,
+    maxScore,
+    evaluation,
+    answers,
+    result,
+    _iteratorNormalCompletion,
+    _didIteratorError,
+    _iteratorError,
+    _iterator,
+    _step,
+    _step$value,
+    index,
+    answer;
 
-                  result = {};
-                  _iteratorNormalCompletion = true;
-                  _didIteratorError = false;
-                  _iteratorError = undefined;
-                  _context2.prev = 11;
-                  _iterator = answers.entries()[Symbol.iterator]();
+  return _regenerator["default"].async(
+    function evaluator$(_context2) {
+      while (1) {
+        switch ((_context2.prev = _context2.next)) {
+          case 0:
+            (userResponse = _ref.userResponse), (validation = _ref.validation);
+            (validResponse = validation.validResponse),
+              (altResponses = validation.altResponses),
+              (ignore_repeated_shapes = validation.ignore_repeated_shapes),
+              (ignoreLabels = validation.ignoreLabels);
+            score = 0;
+            maxScore = 1;
+            evaluation = {};
+            answers = [validResponse];
 
-                case 13:
-                  if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context2.next = 28;
-                    break;
-                  }
-
-                  (_step$value = (0, _slicedToArray2["default"])(_step.value, 2)),
-                    (index = _step$value[0]),
-                    (answer = _step$value[1]);
-
-                  if (
-                    !userResponse.some(function(x) {
-                      return x.type === _constants.ShapeTypes.AREA;
-                    })
-                  ) {
-                    _context2.next = 21;
-                    break;
-                  }
-
-                  _context2.next = 18;
-                  return checkEquations(answer.value, userResponse);
-
-                case 18:
-                  result = _context2.sent;
-                  _context2.next = 22;
-                  break;
-
-                case 21:
-                  result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
-
-                case 22:
-                  if (result.commonResult) {
-                    score = Math.max(answer.score, score);
-                  }
-
-                  maxScore = Math.max(answer.score, maxScore);
-                  evaluation[index] = result;
-
-                case 25:
-                  _iteratorNormalCompletion = true;
-                  _context2.next = 13;
-                  break;
-
-                case 28:
-                  _context2.next = 34;
-                  break;
-
-                case 30:
-                  _context2.prev = 30;
-                  _context2.t0 = _context2["catch"](11);
-                  _didIteratorError = true;
-                  _iteratorError = _context2.t0;
-
-                case 34:
-                  _context2.prev = 34;
-                  _context2.prev = 35;
-
-                  if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-                    _iterator["return"]();
-                  }
-
-                case 37:
-                  _context2.prev = 37;
-
-                  if (!_didIteratorError) {
-                    _context2.next = 40;
-                    break;
-                  }
-
-                  throw _iteratorError;
-
-                case 40:
-                  return _context2.finish(37);
-
-                case 41:
-                  return _context2.finish(34);
-
-                case 42:
-                  return _context2.abrupt("return", {
-                    score: score,
-                    maxScore: maxScore,
-                    evaluation: evaluation
-                  });
-
-                case 43:
-                case "end":
-                  return _context2.stop();
-              }
+            if (altResponses) {
+              answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
             }
-          },
-          _callee2,
-          null,
-          [[11, 30, 34, 42], [35, , 37, 41]]
-        );
-      })
-    );
 
-    return function evaluator(_x3) {
-      return _ref3.apply(this, arguments);
-    };
-  })();
+            result = {};
+            _iteratorNormalCompletion = true;
+            _didIteratorError = false;
+            _iteratorError = undefined;
+            _context2.prev = 11;
+            _iterator = answers.entries()[Symbol.iterator]();
+
+          case 13:
+            if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
+              _context2.next = 28;
+              break;
+            }
+
+            (_step$value = (0, _slicedToArray2["default"])(_step.value, 2)),
+              (index = _step$value[0]),
+              (answer = _step$value[1]);
+
+            if (
+              !userResponse.some(function(x) {
+                return x.type === _constants.ShapeTypes.AREA;
+              })
+            ) {
+              _context2.next = 21;
+              break;
+            }
+
+            _context2.next = 18;
+            return _regenerator["default"].awrap(checkEquations(answer.value, userResponse));
+
+          case 18:
+            result = _context2.sent;
+            _context2.next = 22;
+            break;
+
+          case 21:
+            result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
+
+          case 22:
+            if (result.commonResult) {
+              score = Math.max(answer.score, score);
+            }
+
+            maxScore = Math.max(answer.score, maxScore);
+            evaluation[index] = result;
+
+          case 25:
+            _iteratorNormalCompletion = true;
+            _context2.next = 13;
+            break;
+
+          case 28:
+            _context2.next = 34;
+            break;
+
+          case 30:
+            _context2.prev = 30;
+            _context2.t0 = _context2["catch"](11);
+            _didIteratorError = true;
+            _iteratorError = _context2.t0;
+
+          case 34:
+            _context2.prev = 34;
+            _context2.prev = 35;
+
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+
+          case 37:
+            _context2.prev = 37;
+
+            if (!_didIteratorError) {
+              _context2.next = 40;
+              break;
+            }
+
+            throw _iteratorError;
+
+          case 40:
+            return _context2.finish(37);
+
+          case 41:
+            return _context2.finish(34);
+
+          case 42:
+            return _context2.abrupt("return", {
+              score: score,
+              maxScore: maxScore,
+              evaluation: evaluation
+            });
+
+          case 43:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    },
+    null,
+    null,
+    [[11, 30, 34, 42], [35, , 37, 41]]
+  );
+};
 
 var _default = evaluator;
 exports["default"] = _default;

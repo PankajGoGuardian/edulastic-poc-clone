@@ -14,7 +14,7 @@ export const MainDiv = styled.div`
   width: 100%;
   position: relative;
   padding-left: 25px;
-  padding-right: 25px;
+  padding-right: 35px;
 
   .navigator {
     z-index: 1000;
@@ -47,6 +47,8 @@ export const MainDiv = styled.div`
   .recharts-rectangle {
     cursor: pointer;
   }
+
+  font-size: 12px;
 `;
 
 export const StyledCustomTooltip = styled(CustomTooltip)`

@@ -323,7 +323,7 @@ export default class BarGraph extends Component {
                 label={{
                   value: "AVG TIME (SECONDS)",
                   angle: -90,
-                  dx: 10,
+                  dx: 20,
                   fill: dropZoneTitleColor,
                   fontSize: "10px"
                 }}

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
 import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject, get } from "lodash";
+import { MathSpan } from "@edulastic/common";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
@@ -15,7 +16,6 @@ import {
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
-
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
 import FormChoice from "./components/FormChoice/FormChoice";
 import FormText from "./components/FormText/FormText";
@@ -98,7 +98,11 @@ class QuestionItem extends React.Component {
 
   renderDropDownAnswer = value => value[0].value;
 
-  renderMathAnswer = value => value.map(answer => answer.value).join(", ");
+  renderMathAnswer = value => (
+    <MathSpan
+      dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${value[0].value}"></span>` }}
+    />
+  );
 
   renderCorrectAnswer = () => {
     const {
@@ -248,14 +252,21 @@ class QuestionItem extends React.Component {
   };
 
   renderScore = qId => {
-    const { feedback = {}, previousFeedback = [], viewMode, data } = this.props;
-    const { score = 0, maxScore = get(data, "validation.validResponse.score", 0), feedback: teacherComments, ...rest } =
-      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
+    const { feedback = {}, previousFeedback = [], data } = this.props;
+    const {
+      score,
+      maxScore = get(data, "validation.validResponse.score", 0),
+      feedback: teacherComments,
+      graded,
+      skipped,
+      ...rest
+    } = previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
+
     return (
       <>
         <DetailsContainer>
           <DetailTitle>Score:</DetailTitle>
-          <DetailContents>{`${score}/${maxScore}`}</DetailContents>
+          <DetailContents>{`${graded ? score : skipped ? 0 : " "}/${maxScore}`}</DetailContents>
         </DetailsContainer>
         {!!teacherComments?.text && (
           <DetailsContainer>

@@ -140,6 +140,16 @@ const addQuestion = (state, { payload }) => {
   state.byId[payload.id] = payload;
   state.current = payload.id;
   state.updated = true;
+
+  // sort the question indices in docBsed
+  if (payload.isDocBased) {
+    const qids = Object.values(state.byId)
+      .sort((a, b) => a.qIndex - b.qIndex)
+      .map(obj => obj.id);
+    qids.forEach((id, i) => {
+      state.byId[id].qIndex = i + 1;
+    });
+  }
 };
 
 // change current question

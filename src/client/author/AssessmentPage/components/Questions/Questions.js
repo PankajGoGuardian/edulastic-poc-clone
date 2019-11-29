@@ -165,11 +165,12 @@ const trueOrFalseData = {
   uiStyle: { type: "horizontal" },
   title: "True or false"
 };
-const createQuestion = (type, index) => ({
+const createQuestion = (type, index, isDocBased = false) => ({
   id: uuid(),
   qIndex: index,
   title: `${type} - standard`,
   type,
+  isDocBased: isDocBased,
   options: defaultQuestionOptions[type],
   validation: {
     scoringType: "exactMatch",
@@ -284,7 +285,7 @@ class Questions extends React.Component {
   };
 
   handleAddQuestion = (type, index, modalQuestionId) => () => {
-    const { addQuestion, list } = this.props;
+    const { addQuestion, list, isDocBased = false } = this.props;
     const questions = list.filter(q => q.type !== "sectionLabel");
 
     const lastQuestion = questions[questions.length - 1];
@@ -292,7 +293,7 @@ class Questions extends React.Component {
     const questionIndex =
       index || (lastQuestion && lastQuestion.qIndex ? lastQuestion.qIndex + 1 : questions.length + 1);
 
-    const question = createQuestion(type, questionIndex);
+    const question = createQuestion(type, questionIndex, isDocBased);
     addQuestion(question);
 
     const questionIdToOpen = modalQuestionId - 1 || list.length;
@@ -429,7 +430,8 @@ class Questions extends React.Component {
       list,
       onDragStart,
       review,
-      testMode
+      testMode,
+      isDocBased
     } = this.props;
     const report = viewMode === "report";
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;

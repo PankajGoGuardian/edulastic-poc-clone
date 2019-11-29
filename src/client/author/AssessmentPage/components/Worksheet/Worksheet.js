@@ -529,6 +529,7 @@ class Worksheet extends React.Component {
       scratchPad = {},
       freeFormNotes = {},
       windowWidth,
+      test: { isDocBased },
       testMode = false
     } = this.props;
     const selectedPage = pageStructure[currentPage] || defaultPage;
@@ -666,6 +667,7 @@ class Worksheet extends React.Component {
           useDragHandle
           onSortEnd={this.onSortEnd}
           testMode={testMode}
+          isDocBased={isDocBased}
         />
       </WorksheetWrapper>
     );

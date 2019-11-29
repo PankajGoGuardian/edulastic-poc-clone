@@ -33,7 +33,8 @@ import {
   DetailTitle,
   DetailContents,
   DetailContentsAlternate,
-  ButtonWrapper
+  ButtonWrapper,
+  DetailAlternateContainer
 } from "./styled";
 
 class QuestionItem extends React.Component {
@@ -161,12 +162,14 @@ class QuestionItem extends React.Component {
     let alternateResponsesDisplay = null;
     if (alternateResponses.length > 0) {
       alternateResponsesDisplay = (
-        <div>
+        <DetailAlternateContainer>
           <DetailTitle>Alternate Answers:</DetailTitle>
-          {alternateResponses.map(res => (
-            <DetailContentsAlternate>{answerRenderer(res.value, options)}</DetailContentsAlternate>
+          {alternateResponses.map((res, i) => (
+            <DetailContentsAlternate>
+              {answerRenderer(res.value + (i === alternateResponses.length - 1 ? "" : ","), options)}
+            </DetailContentsAlternate>
           ))}
-        </div>
+        </DetailAlternateContainer>
       );
     }
     return (

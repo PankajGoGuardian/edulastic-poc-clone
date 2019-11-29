@@ -123,6 +123,12 @@ export const DetailContents = styled.span`
 `;
 
 export const DetailContentsAlternate = styled(DetailContents)`
-  display: block;
-  padding-left: 40px;
+  display: inline-block;
+  padding-left: 8px;
+`;
+
+export const DetailAlternateContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 `;

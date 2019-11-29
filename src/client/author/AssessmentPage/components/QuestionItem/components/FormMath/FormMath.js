@@ -5,6 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
+import {MathSpan} from "@edulastic/common";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -37,7 +38,13 @@ export default class FormMath extends React.Component {
 
     if (!answer || !answer.value) return null;
 
-    return <QuestionText>{answer.value}</QuestionText>;
+    return (
+      <QuestionText>
+        <MathSpan
+          dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer.value}"></span>` }}
+        />
+      </QuestionText>
+    );
   };
 
   renderForm = mode => {
@@ -59,7 +66,13 @@ export default class FormMath extends React.Component {
   renderReport = () => {
     const { answer } = this.props;
 
-    return <QuestionText>{answer}</QuestionText>;
+    return (
+      <QuestionText>
+        <MathSpan
+          dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer.value}"></span>` }}
+        />
+      </QuestionText>
+    );
   };
 
   render() {

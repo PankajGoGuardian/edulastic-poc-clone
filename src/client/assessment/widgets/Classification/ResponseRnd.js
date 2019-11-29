@@ -3,15 +3,14 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Rnd } from "react-rnd";
 import produce from "immer";
 import { get } from "lodash";
 import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { RndWrapper } from "./styled/RndWrapper";
+import { RndWrapper, Rnd } from "./styled/RndWrapper";
 
 const ResponseRnd = props => {
-  const { children, question, setQuestionData, isResizable, index, hasRowTitle = true } = props;
+  const { children, question, setQuestionData, isResizable, index, hasRowTitle = true, maxWidth } = props;
   const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
@@ -57,10 +56,14 @@ const ResponseRnd = props => {
     setMinHeight(0);
   };
 
-  const offsetX = 215;
-  const rndX = get(question, `responseOptions[${index}].x`, (hasRowTitle ? index + 1 : index) * offsetX);
+  const offsetX = maxWidth;
+  /**
+   * +100 will be width of rowTitle
+   * TODO: need to get width of rowTitle, if it is not set
+   */
+  const rndX = get(question, `responseOptions[${index}].x`, hasRowTitle ? index * offsetX + 100 : index * offsetX);
   const rndY = get(question, `responseOptions[${index}].y`, 0);
-  const rndWidth = get(question, `responseOptions[${index}].width`, 220);
+  const rndWidth = get(question, `responseOptions[${index}].width`, maxWidth);
 
   return (
     <RndWrapper isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
@@ -69,25 +72,15 @@ const ResponseRnd = props => {
           padding: "2px",
           border: `1px solid ${lightGrey}`
         }}
+        isResizable={isResizable}
         size={{ width: rndWidth, height: "auto" }}
         position={{ x: rndX, y: rndY }}
         disableDragging={!isResizable}
-        enableResizing={{
-          bottom: isResizable,
-          top: isResizable,
-          bottomLeft: isResizable,
-          bottomRight: isResizable,
-          left: isResizable,
-          right: isResizable,
-          topLeft: isResizable,
-          topRight: isResizable
-        }}
         onDragStop={handleResponseDragStop}
         onResizeStop={handleResponseResizeStop}
         onResize={handleResponseResize}
         cancel=".drag-item"
         minHeight={minHeight}
-        className="answer-draggable-wrapper"
       >
         {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
       </Rnd>
@@ -97,6 +90,7 @@ const ResponseRnd = props => {
 
 ResponseRnd.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+  maxWidth: PropTypes.number,
   isResizable: PropTypes.bool,
   index: PropTypes.number,
   question: PropTypes.object.isRequired,
@@ -105,6 +99,7 @@ ResponseRnd.propTypes = {
 
 ResponseRnd.defaultProps = {
   isResizable: true,
+  maxWidth: 220,
   index: 0
 };
 

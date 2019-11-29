@@ -17,4 +17,5 @@ export const WithIndex = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  align-self: stretch;
 `;

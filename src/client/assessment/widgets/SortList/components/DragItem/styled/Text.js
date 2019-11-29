@@ -12,7 +12,7 @@ export const Text = styled.div`
       : "none"};
   display: flex;
   position: relative;
-  align-items: stretch;
+  align-items: center;
   .math-formula-display {
     padding: 4px;
     padding-right: ${({ checkStyle }) => (checkStyle ? 40 : 4)}px;

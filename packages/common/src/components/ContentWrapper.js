@@ -18,7 +18,7 @@ const ContentWrapper = styled.div`
   }
   @media (max-width: ${desktopWidth}) {
     /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
-    height: calc(100vh - 160px);
+    height: calc(100vh - 185px);
   }
 
   height: calc(100vh - 115px);

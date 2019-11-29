@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import "core-js/features/array/flat";
@@ -47,7 +47,7 @@ const ClassificationPreview = ({
   const listPosition = get(item, "uiStyle.possibilityListPosition", "left");
   const rowHeader = get(item, "uiStyle.rowHeader", null);
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
-  const isLeft = listPosition === "left" || listPosition === "right";
+  const isVertical = listPosition === "left" || listPosition === "right";
   const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
   const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
   const stemNumeration = get(item, "uiStyle.validationStemNumeration", choiceDefaultMaxW);
@@ -57,13 +57,14 @@ const ClassificationPreview = ({
   const styles = {
     wrapperStyle: {
       display: "flex",
-      flexDirection: direction
+      flexDirection: direction,
+      overflow: "auto"
     },
     dragItemsContainerStyle: {
       display: "flex",
       alignItems: "flex-start",
       flexWrap: "wrap",
-      minHeight: isLeft ? 140 : 50,
+      minHeight: isVertical ? 140 : 50,
       borderRadius: 4
     }
   };
@@ -320,7 +321,7 @@ const ClassificationPreview = ({
   return (
     <StyledPaperWrapper
       data-cy="classificationPreview"
-      style={{ fontSize, overflow: "auto" }}
+      style={{ fontSize }}
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
@@ -336,7 +337,6 @@ const ClassificationPreview = ({
           direction={direction}
           imageOptions={imageOptions}
           imageUrl={imageUrl}
-          choiceWidth={dragItemMaxWidth}
           disableResponse={disableResponse}
         >
           {tableContent}

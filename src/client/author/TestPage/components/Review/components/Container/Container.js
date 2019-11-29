@@ -374,7 +374,7 @@ class Review extends PureComponent {
               </div>
             </Col>
             <Col xs={24} lg={18}>
-              <Paper padding="15px">
+              <Paper padding="15px" style={{ overflow: "hidden" }}>
                 {isCollapse ? (
                   <ItemsTable
                     items={test.testItems}

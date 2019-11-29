@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { dashBorderColor } from "@edulastic/colors";
+import { dashBorderColor, mobileWidthLarge } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
 const ChoiceContainer = ({ title, children, direction, choiceWidth }) => (
@@ -32,6 +32,7 @@ const Container = styled.div`
   break-inside: avoid;
   min-height: 140px;
   background-color: ${dashBorderColor};
+  flex-shrink: 0;
 
   ${({ direction, choiceWidth }) => {
     if (direction === "row") {
@@ -67,4 +68,12 @@ const Container = styled.div`
       }
     `;
   }};
+
+  & .choice-items-wrapper {
+    @media (max-width: ${mobileWidthLarge}) {
+      flex-direction: column;
+      align-items: stretch;
+      max-width: 400px;
+    }
+  }
 `;

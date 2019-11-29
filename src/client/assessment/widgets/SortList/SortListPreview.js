@@ -246,8 +246,9 @@ const SortListPreview = ({
         <FlexContainer
           data-cy="sortListComponent"
           flexDirection={flexDirection}
-          alignItems={isVertical ? "center" : "flex-start"}
+          alignItems="stretch"
           style={wrapperStyles}
+          flexWrap="nowrap"
         >
           <FullWidthContainer isVertical={isVertical}>
             {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}

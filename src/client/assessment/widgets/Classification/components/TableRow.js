@@ -1,9 +1,7 @@
 import React, { useLayoutEffect, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { Rnd } from "react-rnd";
-
-import { get } from "lodash";
+import { get, maxBy } from "lodash";
 import { CenteredText } from "@edulastic/common";
 
 import produce from "immer";
@@ -11,11 +9,12 @@ import DropContainer from "../../../components/DropContainer";
 import { getStemNumeration } from "../../../utils/helpers";
 import DragItem from "./DragItem";
 import { ColumnLabel } from "../styled/Column";
+import { Rnd } from "../styled/RndWrapper";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
 
-const dropContainerHeightList = [];
+const dropContainerDimensionsList = [];
 
 const TableRow = ({
   startIndex,
@@ -42,6 +41,9 @@ const TableRow = ({
   dragItemSize
 }) => {
   const wrapperRef = useRef();
+  const observeRef = useRef(null);
+  const imageOptions = get(item, "imageOptions", {});
+  const uiStyle = get(item, "uiStyle", {});
 
   const handleRowTitleDragStop = (event, data) => {
     if (setQuestionData) {
@@ -63,20 +65,22 @@ const TableRow = ({
     }
   };
 
-  const getChangedContainerHeight = h => Math.max(h, item?.imageOptions?.height + item?.imageOptions?.y);
+  const getChangedContainerHeight = h => Math.max(h, imageOptions.height + imageOptions.y);
+  const getChangedContainerWidth = w => Math.max(w, imageOptions.width + imageOptions.x);
 
-  const changeWrapperH = () => {
-    const { responseOptions = [] } = item;
-    let maxH = 0;
-    for (let i = 0; i < dropContainerHeightList.length; i += 1) {
-      const { y = 0, height: _h = 0 } = responseOptions[i] || {};
-      const _containerH = y + (_h > dropContainerHeightList[i] ? _h : dropContainerHeightList[i]);
-      if (maxH < _containerH) {
-        maxH = _containerH;
-      }
+  const changeWrapperStyle = () => {
+    const { height: maxHeight } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.height) || {};
+    const { width: maxWidth } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.width) || {};
+
+    /**
+     * +40 is padding of element
+     */
+    const h = (getChangedContainerHeight(maxHeight) || maxHeight) + 40;
+    const w = (getChangedContainerWidth(maxWidth) || maxWidth) + 40;
+    if (wrapperRef.current) {
+      wrapperRef.current.style.height = `${h}px`;
+      wrapperRef.current.style.width = `${w}px`;
     }
-    const h = getChangedContainerHeight(maxH) + 40 || maxH + 40; // +40 to remove scrollbar on drag
-    if (wrapperRef.curent) wrapperRef.current.style.height = `${h}px`;
   };
 
   const styles = {
@@ -86,6 +90,7 @@ const TableRow = ({
       minHeight: height,
       width: "100%",
       height: "100%",
+      overflow: "auto",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor,
       flex: 1
@@ -106,16 +111,6 @@ const TableRow = ({
   if (rowHeader) {
     cols.push(
       <Rnd
-        enableResizing={{
-          bottom: false,
-          bottomLeft: false,
-          bottomRight: false,
-          left: false,
-          right: false,
-          top: false,
-          topLeft: false,
-          topRight: false
-        }}
         default={{ x: rowHeaderX, y: rowHeaderY }}
         disableDragging={view !== EDIT}
         onDragStop={handleRowHeaderDragStop}
@@ -139,23 +134,9 @@ const TableRow = ({
 
   for (let index = startIndex; index < startIndex + colCount; index++) {
     const hasRowTitle = rowTitles.length > 0;
-    if (hasRowTitle) {
+    if (hasRowTitle && rowTitles[index / colCount]) {
       cols.push(
-        <Rnd
-          enableResizing={{
-            bottom: false,
-            bottomLeft: false,
-            bottomRight: false,
-            left: false,
-            right: false,
-            top: false,
-            topLeft: false,
-            topRight: false
-          }}
-          default={{ x: rndX, y: rndY }}
-          disableDragging={view !== EDIT}
-          onDragStop={handleRowTitleDragStop}
-        >
+        <Rnd default={{ x: rndX, y: rndY }} disableDragging={view !== EDIT} onDragStop={handleRowTitleDragStop}>
           <RowTitleCol
             key={index + startIndex + colCount}
             colCount={colCount}
@@ -182,7 +163,7 @@ const TableRow = ({
       );
     }
     cols.push(
-      <ResponseRnd hasRowTitle={hasRowTitle} question={item} index={index} isResizable={isResizable}>
+      <ResponseRnd hasRowTitle={hasRowTitle} question={item} index={index} isResizable={isResizable} {...dragItemSize}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}
@@ -210,7 +191,7 @@ const TableRow = ({
                   preview={preview}
                   key={answerIndex}
                   renderIndex={getStemNumeration(
-                    item?.uiStyle?.validationStemNumeration,
+                    uiStyle.validationStemNumeration,
                     responses.findIndex(_resp => _resp.id === answerValue)
                   )}
                   onDrop={onDrop}
@@ -229,27 +210,50 @@ const TableRow = ({
   }
 
   useLayoutEffect(() => {
-    if (window.$ && wrapperRef.current) {
-      $(".answer-draggable-wrapper").each(function(index) {
+    if (window.$ && !observeRef.current) {
+      const jQuery = window.$;
+      // eslint-disable-next-line
+      jQuery(".answer-draggable-wrapper").each(function(index) {
         const wraperElem = this;
-        const observer = new MutationObserver(function() {
+        /**
+         * need to put clientHeight for empty columns
+         * this will be called only once on mounting this component
+         */
+
+        const position = jQuery(wraperElem).position();
+        dropContainerDimensionsList[index] = {
+          width: wraperElem.clientWidth + position.left + 2,
+          height: wraperElem.clientHeight + position.top + 2
+        };
+
+        // eslint-disable-next-line
+        observeRef.current = new MutationObserver(function() {
           setTimeout(() => {
-            dropContainerHeightList[index] = wraperElem.clientHeight;
-            changeWrapperH();
+            /**
+             * +2 is border width
+             */
+            const _position = jQuery(wraperElem).position();
+            dropContainerDimensionsList[index] = {
+              width: wraperElem.clientWidth + _position.left + 2,
+              height: wraperElem.clientHeight + _position.top + 2
+            };
+            if (wrapperRef.current) {
+              changeWrapperStyle();
+            }
           });
         });
-        const config = { childList: true, subtree: true };
-        observer.observe(this, config);
+        const config = { attributes: true, childList: true, subtree: true };
+        observeRef.current.observe(this, config);
       });
     }
   });
 
   useEffect(() => {
-    changeWrapperH();
+    changeWrapperStyle();
   }, [item.responseOptions, item.imageOptions]);
 
   return (
-    <div ref={wrapperRef} style={{ position: "relative", padding: "20px" }}>
+    <div ref={wrapperRef} style={{ position: "relative", padding: 20, minHeight: 140 }}>
       {cols}
     </div>
   );

@@ -5,8 +5,9 @@ export const ResponseContainer = styled.div`
   padding: 10px;
   position: relative;
   display: block;
+  flex-shrink: 0;
 
-  ${({ theme, imageUrl, direction, choiceWidth, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
+  ${({ theme, imageUrl, direction, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
     let css = ``;
     if (imageUrl) {
       css += `
@@ -24,7 +25,7 @@ export const ResponseContainer = styled.div`
     if ((direction === "row" || direction === "row-reverse") && !disableResponse) {
       // showing the choices container and container is horizontally aligned
       css += `
-          width: calc(100% - ${choiceWidth + 16}px);
+          width: auto;
         `;
     } else {
       // not showing the choices container or container is at top/bottom

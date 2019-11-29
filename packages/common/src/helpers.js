@@ -432,7 +432,8 @@ export const isMobileDevice = () => {
  * @return {object} calculated width and height of text
  */
 export const measureText = (text, style = {}) => {
-  const fakeEm = document.createElement("span");
+  const fakeEm = document.createElement("div");
+  const innerEm = document.createElement("span");
   document.body.appendChild(fakeEm);
   if (style.fontSize) {
     fakeEm.style.fontSize = style.fontSize;
@@ -454,15 +455,23 @@ export const measureText = (text, style = {}) => {
     fakeEm.style.lightingColor = style.lineHeight;
   }
 
+  if (style.maxWidth) {
+    fakeEm.style.maxWidth = `${style.maxWidth}px`;
+  }
+
   fakeEm.style.position = "absolute";
-  fakeEm.style.left = -1000;
-  fakeEm.style.top = -1000;
+  fakeEm.style.left = "-1000px";
+  fakeEm.style.top = "-1000px";
   fakeEm.style.visibility = "hidden";
-  fakeEm.innerHTML = replaceLatexesWithMathHtml(text);
+
+  innerEm.innerHTML = replaceLatexesWithMathHtml(text);
+  fakeEm.appendChild(innerEm);
 
   const result = {
     width: fakeEm.offsetWidth,
-    height: fakeEm.offsetHeight
+    height: fakeEm.offsetHeight,
+    scrollWidth: fakeEm.scrollWidth,
+    scrollHeight: fakeEm.scrollHeight
   };
 
   document.body.removeChild(fakeEm);

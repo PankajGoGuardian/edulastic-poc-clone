@@ -225,7 +225,7 @@ const MatchListPreview = ({
   const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
     display: "flex",
     width: width || "auto",
-    maxWidth: width || "calc(100% - 8px)",
+    maxWidth: dragItemMaxWidth,
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "flex-start",
     padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
@@ -276,7 +276,8 @@ const MatchListPreview = ({
 
   const choiceColStyle = {
     ...styles.dropContainerStyle(smallSize),
-    width: `calc(50% - ${smallSize ? 28 : 40}px)`
+    width: `calc(50% - ${smallSize ? 28 : 40}px)`,
+    padding: "8px 12px"
   };
 
   const stemColStyle = {

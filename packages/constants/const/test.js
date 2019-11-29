@@ -138,5 +138,11 @@ module.exports = {
     ALWAYS: "ALWAYS",
     GRADING: "GRADING",
     HIDDEN: "HIDDEN"
+  },
+  redirectPolicy: {
+    QuestionDelivery: {
+      ALL: "ALL",
+      SKIPPED_AND_WRONG: "SKIPPED AND WRONG"
+    }
   }
 };

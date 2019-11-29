@@ -126,7 +126,14 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
-
+    if (
+      testActivity?.assignmentSettings?.questionsDelivery ===
+        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+      testActivity.itemsToBeExcluded?.length
+    ) {
+      //mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
+    }
     let { testItems, passages, testType } = test;
 
     const settings = {

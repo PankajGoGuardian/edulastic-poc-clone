@@ -71,6 +71,8 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
     return null;
   }
   if (!isResponseVisible) {
+    //return here if all contents are blank
+    if (!prevFeedback?.text && correct === undefined && !(prevScore || prevScore === 0)) return "";
     return (
       <Wrapper visible={true}>
         <TeacherResponseContainer {...props} />
@@ -78,7 +80,7 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
     );
   }
   return (
-    <Wrapper onClick={toggleFeedbackView} visible={isResponseVisible}>
+    <Wrapper onClick={toggleFeedbackView} visible={true}>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: "100px" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>{answerIcon}</div>

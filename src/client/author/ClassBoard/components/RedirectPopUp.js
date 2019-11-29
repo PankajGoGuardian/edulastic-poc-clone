@@ -1,14 +1,17 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Button, Row, Radio, Select, DatePicker, message, Col } from "antd";
 import moment from "moment";
+import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
 import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 
+const { redirectPolicy } = testContants;
+
 const QuestionDelivery = {
-  ALL: "All",
-  "SKIPPED AND WRONG": "Skipped and Wrong"
+  [redirectPolicy.QuestionDelivery.All]: "All",
+  [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: "Skipped and Wrong"
 };
 
 const ShowPreviousAttempt = {

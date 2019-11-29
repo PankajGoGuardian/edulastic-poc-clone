@@ -21,7 +21,7 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
-import { isIncompleteQuestion } from "../questionUtils";
+import { isIncompleteQuestion, isRichTextFieldEmpty } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -1117,7 +1117,6 @@ function* savePassage({ payload }) {
       reference: entity.id,
       tabIndex
     };
-
     let allWidgets = yield select(state => get(state, "authorQuestions.byId", {}));
 
     let widgetIds = get(passage, "structure.widgets", []).map(widget => widget.reference);
@@ -1127,8 +1126,23 @@ function* savePassage({ payload }) {
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
     let currentItemId = currentItem._id;
 
-    if (passageData.some(i => !i.content)) {
-      return message.error("Passage cannot be empty");
+    if (
+      passageData.some(i => {
+        if (isRichTextFieldEmpty(i.heading)) {
+          message.error("Heading cannot be empty.");
+          return true;
+        }
+        if (isRichTextFieldEmpty(i.contentsTitle)) {
+          message.error("Title cannot be empty.");
+          return true;
+        }
+        if (isRichTextFieldEmpty(i.content)) {
+          message.error("Passage cannot be empty.");
+          return true;
+        }
+      })
+    ) {
+      return;
     }
 
     if (currentItem._id === "new") {
@@ -1145,7 +1159,6 @@ function* savePassage({ payload }) {
       draft.data = passageData;
       draft.testItems = uniq([...draft.testItems, currentItemId]);
     });
-
     yield put(updatePassageStructureAction(modifiedPassage));
 
     // only update the item if its not new, since new item already has the passageId added while creating.

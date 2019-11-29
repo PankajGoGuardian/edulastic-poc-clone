@@ -1,5 +1,6 @@
 import { questionType, question } from "@edulastic/constants";
 import { get, isString } from "lodash";
+import striptags from "striptags";
 
 const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE } = questionType;
 
@@ -72,6 +73,23 @@ const hasEmptyOptions = item => {
   }
 };
 
+export const isRichTextFieldEmpty = text => {
+  if (!text) {
+    return true;
+  }
+
+  if (text.includes(`<span class="input__math"`)) {
+    return false;
+  }
+
+  let _text = striptags(text);
+  _text = _text.replace(/&nbsp;/g, " ");
+  if (!_text || (_text && !_text.trim())) {
+    return true;
+  }
+  return false;
+};
+
 /**
  * does question have enough data !?
  *  This is only the begnning. This func is going to grow to handle
@@ -87,7 +105,7 @@ export const isIncompleteQuestion = item => {
   }
 
   // item doesnt have a stimulus?
-  if (!item.stimulus) {
+  if (isRichTextFieldEmpty(item.stimulus)) {
     return [true, "Question text should not be empty"];
   }
 

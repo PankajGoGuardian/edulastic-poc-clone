@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { Input, Select, Col } from "antd";
+import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
@@ -73,7 +74,7 @@ class WordLimitAndCount extends Component {
             </Select>
           </Col>
           <Col span={12}>
-            <FlexContainer style={{ marginTop: 31, paddingTop: "10px" }}>
+            <StyledFlexContainer style={{ marginTop: 31, paddingTop: "10px" }}>
               <Input
                 size="large"
                 style={{ width: 120 }}
@@ -86,7 +87,7 @@ class WordLimitAndCount extends Component {
                 }}
               />
               <Label>{t("component.essayText.wordsLimitTitle")}</Label>
-            </FlexContainer>
+            </StyledFlexContainer>
           </Col>
         </AdaptiveRow>
       </Fragment>
@@ -115,3 +116,10 @@ WordLimitAndCount.defaultProps = {
 };
 
 export default withNamespaces("assessment")(WordLimitAndCount);
+
+const StyledFlexContainer = styled(FlexContainer)`
+  justify-content: center;
+  label {
+    margin-left: 10px;
+  }
+`;

@@ -22,14 +22,7 @@ import {
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 import { isIncompleteQuestion } from "../questionUtils";
-import {
-  setTestItemsAction,
-  getSelectedItemSelector,
-  receiveTestItemsAction,
-  getTestsItemsPageSelector,
-  getTestsItemsLimitSelector,
-  getSearchFilterStateSelector
-} from "../TestPage/components/AddItems/ducks";
+import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
   setTestDataAndUpdateAction,
@@ -98,6 +91,7 @@ export const SAVE_PASSAGE = "[itemDetail] save passage to item";
 export const UPDATE_PASSAGE_STRUCTURE = "[itemDetail] update passage structure";
 export const ADD_WIDGET_TO_PASSAGE = "[itemDetail] add widget to passage";
 export const DELETE_ITEM = "[itemDetail] delete item";
+export const DELETE_ITEM_SUCCESS = "[itemDetail] delete item success";
 export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
 export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
@@ -114,6 +108,7 @@ export const savePassageAction = createAction(SAVE_PASSAGE);
 export const updatePassageStructureAction = createAction(UPDATE_PASSAGE_STRUCTURE);
 export const addWidgetToPassageAction = createAction(ADD_WIDGET_TO_PASSAGE);
 export const deleteItemAction = createAction(DELETE_ITEM);
+export const deleteItemSuccesAction = createAction(DELETE_ITEM_SUCCESS);
 export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -738,16 +733,10 @@ export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true));
     const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload;
-    const res = yield call(testItemsApi.deleteById, id);
-    if (isItemPrevew) {
-      const page = yield select(getTestsItemsPageSelector);
-      const limit = yield select(getTestsItemsLimitSelector);
-      const searchState = yield select(getSearchFilterStateSelector);
-      yield put(receiveTestItemsAction(searchState, page, limit));
-    }
-
+    yield call(testItemsApi.deleteById, id);
     yield call(message.success, "item deleted successfully");
     yield put(setItemDeletingAction(false));
+    yield put(deleteItemSuccesAction(id));
     if (isItemPrevew) return;
 
     if (isTestFlow) {

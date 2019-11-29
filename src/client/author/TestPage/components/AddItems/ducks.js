@@ -4,6 +4,7 @@ import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effect
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
+import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
 
 // constants
 
@@ -94,7 +95,8 @@ const initialState = {
     subjects: [],
     grades: []
   },
-  search: { ...initalSearchState }
+  search: { ...initalSearchState },
+  archivedItems: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -136,6 +138,12 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         itemsSubjectAndGrade: payload
       };
+    case DELETE_ITEM_SUCCESS: {
+      return {
+        ...state,
+        archivedItems: [...state.archivedItems, payload]
+      };
+    }
     default:
       return state;
   }
@@ -183,9 +191,14 @@ export function* watcherSaga() {
 
 export const stateTestItemsSelector = state => state.testsAddItems;
 
+export const getArchivedItemsSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.archivedItems
+);
+
 export const getTestItemsSelector = createSelector(
   stateTestItemsSelector,
-  state => state.items
+  state => state.items.filter(item => !state.archivedItems.includes(item._id))
 );
 
 export const getPopStateSelector = createSelector(
@@ -200,7 +213,7 @@ export const getTestItemsLoadingSelector = createSelector(
 
 export const getTestsItemsCountSelector = createSelector(
   stateTestItemsSelector,
-  state => state.count
+  state => state.count - state.archivedItems.length
 );
 
 export const getTestsItemsLimitSelector = createSelector(

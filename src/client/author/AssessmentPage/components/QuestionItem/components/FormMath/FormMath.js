@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
-import {MathSpan} from "@edulastic/common";
+import { MathSpan } from "@edulastic/common";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -68,9 +68,7 @@ export default class FormMath extends React.Component {
 
     return (
       <QuestionText>
-        <MathSpan
-          dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer.value}"></span>` }}
-        />
+        <MathSpan dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${answer}"></span>` }} />
       </QuestionText>
     );
   };

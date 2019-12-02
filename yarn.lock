@@ -3083,7 +3083,7 @@ babel-jest@^23.4.2, babel-jest@^23.6.0:
     babel-plugin-istanbul "^4.1.6"
     babel-preset-jest "^23.2.0"
 
-babel-loader@^8.0.0, babel-loader@^8.0.4:
+babel-loader@^8.0.4, babel-loader@^8.0.6:
   version "8.0.6"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.6.tgz#e33bdb6f362b03f4bb141a0c21ab87c501b70dfb"
   integrity sha512-4BmWKtBOBm13uoUwd08UwjZlaw3O9GWf456R9j+5YykFZ6LUIjIKLc0zEZf+hauxPOJs96C8k6FvYD09vWzhYw==
@@ -14292,6 +14292,15 @@ react-redux@^5.1.1:
     prop-types "^15.6.1"
     react-is "^16.6.0"
     react-lifecycles-compat "^3.0.0"
+
+"react-refresh-webpack-plugin@https://github.com/pmmmwh/react-refresh-webpack-plugin":
+  version "0.1.0"
+  resolved "https://github.com/pmmmwh/react-refresh-webpack-plugin#c6e66e9473a9c180c175c7d95b82bbdf7cc8b274"
+
+react-refresh@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.7.0.tgz#56d3a85aaef8bf0c009daac08422ed020b3f83c6"
+  integrity sha512-hFuels7qQPe8blzqocqAmiGFW1Z1sNEvE67D58egf2Mlzemgrv5zC4cnl9bO8ohWC8Q5pr1Q0iZemcFwzAuhbQ==
 
 react-resize-detector@^2.3.0:
   version "2.3.0"

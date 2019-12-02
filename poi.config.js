@@ -1,6 +1,7 @@
 require("dotenv").config();
 const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+const ReactRefreshPlugin = require("react-refresh-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
@@ -53,6 +54,7 @@ let config = {
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
     chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
+    chain.plugin("ReactRefreshPlugin").use(ReactRefreshPlugin);
   }
 };
 if (process.env.PUBLIC_URL) {

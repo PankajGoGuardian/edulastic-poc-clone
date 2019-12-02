@@ -82,7 +82,7 @@ const SettingsModal = ({
             onChange={setZoomLevel}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
           >
-            <Select.Option value="1">No defalut zoom</Select.Option>
+            <Select.Option value="1">None</Select.Option>
             <Select.Option value="1.5">1.5X standard</Select.Option>
             <Select.Option value="1.75">1.75X standard</Select.Option>
             <Select.Option value="2.5">2.5X standard</Select.Option>

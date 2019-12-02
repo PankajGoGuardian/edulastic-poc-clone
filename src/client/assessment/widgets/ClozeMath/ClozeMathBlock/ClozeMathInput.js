@@ -37,8 +37,7 @@ class ClozeMathInput extends React.Component {
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        textarea.addEventListener("keypress", this.handleKeypress);
-        textarea.addEventListener("blur", this.saveAnswer);
+        textarea.addEventListener("keyup", this.handleKeypress);
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
@@ -66,6 +65,9 @@ class ClozeMathInput extends React.Component {
     document.removeEventListener("mousedown", this.clickOutside);
   }
 
+  // TODO
+  // debounce if keypress is exhaustive
+
   handleKeypress = e => {
     const { restrictKeys } = this;
     const { resprops = {}, id } = this.props;
@@ -73,24 +75,27 @@ class ClozeMathInput extends React.Component {
     const {
       responseIds: { maths = [] }
     } = item;
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
     const { allowNumericOnly } = find(maths, res => res.id === id) || {};
-    if (allowNumericOnly) {
+    if (allowNumericOnly && !isArrowOrShift) {
       if (!e.key.match(/[0-9+-./%^]/g)) {
         e.preventDefault();
         e.stopPropagation();
+        return false;
       }
     }
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
       if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
         const isValidKey = restrictKeys.includes(e.key);
         if (!isValidKey) {
           e.preventDefault();
           e.stopPropagation();
+          return false;
         }
       }
     }
+    this.saveAnswer();
   };
 
   clickOutside = e => {
@@ -168,11 +173,12 @@ class ClozeMathInput extends React.Component {
       innerField[command](key);
     }
     currentMathQuill.focus();
+    this.saveAnswer();
   };
 
   saveAnswer = () => {
     const { resprops = {}, id } = this.props;
-    const { currentMathQuill, showKeyboard } = this.state;
+    const { currentMathQuill } = this.state;
     const { save, item, answers = {} } = resprops;
     const { maths: _userAnwers = [] } = answers;
     const latex = currentMathQuill.latex();
@@ -181,7 +187,7 @@ class ClozeMathInput extends React.Component {
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
 
-    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") && !showKeyboard) {
+    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
       save({ value: latex, index }, "maths", id);
     }
   };
@@ -213,6 +219,7 @@ class ClozeMathInput extends React.Component {
 
     return (
       <div
+        key="mathWrapper"
         ref={this.wrappedRef}
         style={{
           ...btnStyle,
@@ -226,6 +233,7 @@ class ClozeMathInput extends React.Component {
         <Wrapper>
           <span
             ref={this.mathRef}
+            className="mathRef"
             onClick={this.showKeyboardModal}
             style={{
               ...btnStyle,

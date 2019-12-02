@@ -36,8 +36,7 @@ class ClozeMathWithUnit extends React.Component {
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        textarea.addEventListener("keypress", this.handleKeypress);
-        textarea.addEventListener("blur", this.saveAnswer);
+        textarea.addEventListener("keyup", this.handleKeypress);
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
@@ -65,6 +64,8 @@ class ClozeMathWithUnit extends React.Component {
     document.removeEventListener("mousedown", this.clickOutside);
   }
 
+  // TODO
+  // debounce if keypress is exhaustive
   handleKeypress = e => {
     const { restrictKeys } = this;
     if (!isEmpty(restrictKeys)) {
@@ -75,9 +76,11 @@ class ClozeMathWithUnit extends React.Component {
         if (!isValidKey) {
           e.preventDefault();
           e.stopPropagation();
+          return false;
         }
       }
     }
+    this.saveAnswer();
   };
 
   clickOutside = e => {
@@ -161,6 +164,7 @@ class ClozeMathWithUnit extends React.Component {
       innerField[command](key);
     }
     currentMathQuill.focus();
+    this.saveAnswer();
   };
 
   saveAnswer = fromUnit => {
@@ -174,7 +178,7 @@ class ClozeMathWithUnit extends React.Component {
     } = item;
     const { index } = find(mathUnits, res => res.id === id) || {};
 
-    if ((latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") || fromUnit) && !showKeyboard) {
+    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") || fromUnit) {
       save({ ..._userAnwers[id], value: latex, index }, "mathUnits", id);
     }
   };

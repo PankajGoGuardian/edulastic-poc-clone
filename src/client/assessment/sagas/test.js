@@ -55,18 +55,21 @@ function* loadTest({ payload }) {
     demo = false,
     test: testData = {},
     groupId: groupIdFromUrl,
-    generateQuestionLabel = true
+    isShowStudentWork = false
   } = payload;
 
   try {
-    yield put({
-      type: CLEAR_ITEM_EVALUATION
-    });
+    // if the assessment player is loaded for showing student work
+    // we shouldn't be removing evaluation and answers from store.
+    if (!isShowStudentWork) {
+      yield put({
+        type: CLEAR_ITEM_EVALUATION
+      });
 
-    yield put({
-      type: REMOVE_PREVIOUS_ANSWERS
-    });
-
+      yield put({
+        type: REMOVE_PREVIOUS_ANSWERS
+      });
+    }
     yield put({
       type: SET_TEST_LOADING_STATUS,
       payload: true
@@ -274,7 +277,7 @@ function* loadTest({ payload }) {
         });
       }
     }
-    if (generateQuestionLabel) markQuestionLabel(testItems);
+    if (!isShowStudentWork) markQuestionLabel(testItems);
     let questions = getQuestions(testItems);
     if (test.passages) {
       const passageItems = test.passages.map(passage => passage.data || []);

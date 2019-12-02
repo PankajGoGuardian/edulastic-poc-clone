@@ -31,7 +31,7 @@ const AssessmentPlayer = ({
     const { utaId: testActivityId, groupId } = match.params;
 
     // if showing student work dont genrate question labels again
-    loadTest({ testId, testActivityId, preview, demo, test, groupId, generateQuestionLabel: !isShowStudentWork });
+    loadTest({ testId, testActivityId, preview, demo, test, groupId, isShowStudentWork });
   }, [testId]);
 
   const confirmBeforeQuitting = e => {

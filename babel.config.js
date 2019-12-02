@@ -18,8 +18,7 @@ const commonConfig = {
     "lodash",
     "@babel/plugin-proposal-optional-chaining",
     "@babel/plugin-proposal-nullish-coalescing-operator",
-    "babel-plugin-styled-components",
-    "react-refresh/babel"
+    "babel-plugin-styled-components"
   ]
 };
 

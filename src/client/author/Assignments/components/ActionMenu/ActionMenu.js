@@ -60,14 +60,14 @@ const ActionMenu = (
           <Link to={`/author/tests/tab/review/id/${currentTestId}`} rel="noopener noreferrer">
             <img alt="icon" src={infomationIcon} />
             <SpaceElement />
-            View Details
+            View Test Details
           </Link>
         </Menu.Item>
         <Menu.Item data-cy="print-assignment" key="print-assignment">
           <Link to={`/author/printAssessment/${currentTestId}`} target="_blank" rel="noopener noreferrer">
             <IconPrint />
             <SpaceElement />
-            PRINT
+            Print Test
           </Link>
         </Menu.Item>
         <Menu.Item
@@ -89,7 +89,7 @@ const ActionMenu = (
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={classIcon} />
             <SpaceElement />
-            Edit Assessment
+            Edit Test
           </StyledLink>
         </Menu.Item>
         <Menu.Item

@@ -2,16 +2,18 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button, Typography } from "antd";
 import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
-import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import { extraDesktopWidthMax, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
+
+const { Text } = Typography;
 
 const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, showZoomBtn, onSubmit }) => (
   <FlexContainer marginLeft="30px">
     {showZoomBtn && (
-      <StyledButton onClick={() => setSettingsModalVisibility(true)}>
+      <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
         <IconContrast />
       </StyledButton>
     )}
@@ -20,9 +22,14 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
         <IconSend />
       </StyledButton>
     )}
-    <StyledButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
-      <IconCircleLogout />
-    </StyledButton>
+    <SaveAndExitButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
+      <StyledFlex>
+        <SyledSpan>
+          <IconCircleLogout />
+        </SyledSpan>
+        <StyledText>Save & Exit</StyledText>
+      </StyledFlex>
+    </SaveAndExitButton>
   </FlexContainer>
 );
 
@@ -87,4 +94,51 @@ const StyledButton = styled(Button)`
     height: 45px;
     width: 45px;
   }
+`;
+
+const SaveAndExitButton = styled(Button)`
+  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
+  height: ${({ theme }) => theme.default.headerToolbarButtonWidth};
+  margin-left: 2px;
+  svg {
+    height: ${({ theme }) => theme.default.headerRightButtonFontIconHeight};
+    width: ${({ theme }) => theme.default.headerRightButtonFontIconWidth};
+    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+  }
+
+  &:hover,
+  &:focus {
+    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+
+    svg {
+      fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    }
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    margin-left: 5px;
+    height: 45px;
+  }
+`;
+
+const StyledFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const StyledText = styled(Text)`
+  color: ${themeColor};
+  font-size: 15px;
+  padding-right: 15px;
+`;
+
+const SyledSpan = styled.span`
+  line-height: 0;
+  margin-top: 1px;
+  padding-right: 15px;
 `;

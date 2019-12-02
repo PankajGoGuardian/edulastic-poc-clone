@@ -34,9 +34,9 @@ const Response = ({
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
 
   const isOverConent = btnStyle.width < contentWidth;
-
+  const hansAnswered = userSelections?.[dropTargetIndex];
   const className = `imagelabeldragdrop-droppable active ${
-    userSelections.length > 0 ? "check-answer" : "noAnswer"
+    hansAnswered ? "check-answer" : "noAnswer"
   } ${status} show-answer`;
 
   const popoverContent = (
@@ -70,10 +70,12 @@ const Response = ({
         <div className="clipText">{userSelections[dropTargetIndex]}</div>
         {(checkAnswer || (showAnswer && !lessMinWidth)) && (
           <div>
-            <IconWrapper rightPosition={5}>
-              {userSelections.length > 0 && status === "right" && <RightIcon />}
-              {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
+            {hansAnswered && (
+              <IconWrapper rightPosition={5}>
+                {status === "right" && <RightIcon />}
+                {status === "wrong" && <WrongIcon />}
+              </IconWrapper>
+            )}
             <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
               <Point />
               <Triangle />

@@ -76,27 +76,25 @@ const normalEvaluator = ({ userResponse, validation }) => {
   const optionCount = validation.validResponse?.value.length || 0;
   const { allowSingleLetterMistake, ignoreCase } = validation;
 
-  const response = [...userResponse];
-
   // combining the correct answer and alternate answers
   const answers = [{ ...validation.validResponse }, ...(validation.altResponses || [])];
   const maxScore = answers.reduce((_maxScore, answer) => Math.max(_maxScore, answer.score), 0);
   const evaluations = [];
+  const response = [...userResponse];
   answers.forEach(answer => {
-    // calculating the evaluation against every answer
-    const currentEvaluation = answer.value.map((val, _index) =>
-      compareChoice(val, response[_index] || "", allowSingleLetterMistake, ignoreCase)
-    );
     let currentScore = 0;
+    // calculating the evaluation for every answer
+    // comparing user respose with the answer
+    const currentEvaluation = answer.value.map((ans, _index) =>
+      compareChoice(ans, response?.[_index] || "", allowSingleLetterMistake, ignoreCase)
+    );
     const correctAnswerCount = currentEvaluation.filter(elem => elem).length;
-
     if (validation.scoringType === "partialMatch") {
       currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
-    } else if (correctAnswerCount === response.length) {
-      // exact match
+    } else if (correctAnswerCount === optionCount) {
+      // exact match (all correct)
       currentScore = answer.score;
     }
-
     evaluations.push({
       score: currentScore,
       evaluation: currentEvaluation
@@ -107,7 +105,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
   const correct = maxBy(evaluations, "score");
   // returning the first evaluation if no answers are correct
   const evaluation = correct.score === 0 ? evaluations[0].evaluation : correct.evaluation;
-  return { evaluation, score: correct.score, maxScore };
+  return { evaluation, score: parseFloat(correct.score), maxScore };
 };
 
 /**

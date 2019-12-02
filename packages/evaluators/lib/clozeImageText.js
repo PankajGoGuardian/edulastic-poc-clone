@@ -174,8 +174,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
       ? void 0
       : _validation$validResp3.value.length) || 0;
   var allowSingleLetterMistake = validation.allowSingleLetterMistake,
-    ignoreCase = validation.ignoreCase;
-  var response = (0, _toConsumableArray2["default"])(userResponse); // combining the correct answer and alternate answers
+    ignoreCase = validation.ignoreCase; // combining the correct answer and alternate answers
 
   var answers = [_objectSpread({}, validation.validResponse)].concat(
     (0, _toConsumableArray2["default"])(validation.altResponses || [])
@@ -184,20 +183,27 @@ var normalEvaluator = function normalEvaluator(_ref2) {
     return Math.max(_maxScore, answer.score);
   }, 0);
   var evaluations = [];
+  var response = (0, _toConsumableArray2["default"])(userResponse);
   answers.forEach(function(answer) {
-    // calculating the evaluation against every answer
-    var currentEvaluation = answer.value.map(function(val, _index) {
-      return compareChoice(val, response[_index] || "", allowSingleLetterMistake, ignoreCase);
+    var currentScore = 0; // calculating the evaluation for every answer
+    // comparing user respose with the answer
+
+    var currentEvaluation = answer.value.map(function(ans, _index) {
+      return compareChoice(
+        ans,
+        (response === null || response === void 0 ? void 0 : response[_index]) || "",
+        allowSingleLetterMistake,
+        ignoreCase
+      );
     });
-    var currentScore = 0;
     var correctAnswerCount = currentEvaluation.filter(function(elem) {
       return elem;
     }).length;
 
     if (validation.scoringType === "partialMatch") {
       currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
-    } else if (correctAnswerCount === response.length) {
-      // exact match
+    } else if (correctAnswerCount === optionCount) {
+      // exact match (all correct)
       currentScore = answer.score;
     }
 
@@ -212,7 +218,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
   var evaluation = correct.score === 0 ? evaluations[0].evaluation : correct.evaluation;
   return {
     evaluation: evaluation,
-    score: correct.score,
+    score: parseFloat(correct.score),
     maxScore: maxScore
   };
 };

@@ -109,7 +109,7 @@ class StudentViewContainer extends Component {
     const { saveOverallFeedback, assignmentIdClassId, studentResponse, updateOverallFeedback } = this.props;
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const testActivityId = studentTestActivity && studentTestActivity._id;
-    const feedback = this.feedbackRef.current.textAreaRef.value;
+    const feedback = this.feedbackRef.current.state.value;
     saveOverallFeedback(testActivityId, assignmentIdClassId.classId, { text: feedback });
     updateOverallFeedback({ text: feedback });
     this.setState({ showFeedbackPopup: false });

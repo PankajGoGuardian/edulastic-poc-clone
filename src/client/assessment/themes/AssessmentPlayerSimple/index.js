@@ -213,7 +213,8 @@ class AssessmentPlayerSimple extends React.Component {
       selectedTheme,
       unansweredQuestionCount,
       previewPlayer,
-      scratchPad
+      scratchPad,
+      crossAction
     } = this.props;
     const {
       showExitPopup,
@@ -300,6 +301,9 @@ class AssessmentPlayerSimple extends React.Component {
             t={t}
             enableCrossAction={enableCrossAction}
             unansweredQuestionCount={unansweredQuestionCount}
+            setHighlights={this.saveHistory("resourceId")}
+            setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
+            crossAction={crossAction}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>

@@ -27,7 +27,10 @@ const PlayerContentArea = ({
   items,
   theme,
   showHints,
-  testItemState
+  testItemState,
+  setHighlights,
+  setCrossAction,
+  crossAction
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
   const item = items[currentItem];
@@ -51,7 +54,15 @@ const PlayerContentArea = ({
       <MainWrapper isSidebarVisible={isSidebarVisible}>
         <MainContent>
           {testItemState === "" && (
-            <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
+            <TestItemPreview
+              crossAction={crossAction}
+              setCrossAction={setCrossAction}
+              setHighlights={setHighlights}
+              cols={itemRows}
+              previewTab={previewTab}
+              questions={questions}
+              showCollapseBtn
+            />
           )}
           {testItemState === "check" && (
             <TestItemPreview cols={itemRows} previewTab="check" preview="show" questions={questions} showCollapseBtn />

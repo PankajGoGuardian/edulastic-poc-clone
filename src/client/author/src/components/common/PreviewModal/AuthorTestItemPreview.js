@@ -91,7 +91,37 @@ class AuthorTestItemPreview extends Component {
     }));
   };
 
-  renderTabContent = (widget, flowLayout, index) => {
+  getSubIndex = (colIndex, widget, sectionQue, subCount) => {
+    /*
+    sectionQue data format -> [section1,section2] || [[section1.tab1,section1.tab2],[section2.tab1, section2.tab2]]
+    for the current section/tab that is being rendered, add the lengths of previous sections/tab's question length to 
+    the subCount so that the sub-question count numbering flow remains ie. a-z
+    */
+    if (colIndex === 0) {
+      if (widget?.tabIndex === 0) return subCount;
+      return Array.isArray(sectionQue[0]) ? sectionQue[0][0] + subCount : sectionQue[0] + subCount;
+    }
+
+    if (widget?.tabIndex === 0)
+      return (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + subCount;
+    else {
+      if (Array.isArray(sectionQue[1])) {
+        return (
+          (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+          sectionQue[1][0] +
+          subCount
+        );
+      } else {
+        return (
+          (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+          sectionQue[1] +
+          subCount
+        );
+      }
+    }
+  };
+
+  renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount) => {
     const {
       preview,
       LCBPreviewModal,
@@ -106,11 +136,16 @@ class AuthorTestItemPreview extends Component {
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
-    // question label for preview mode
+    const alphabets = "abcdefghijklmnopqrstuvwxyz";
+    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
+
     const question =
       questions[widget.reference] && questions[widget.reference].qLabel
         ? questions[widget.reference]
-        : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
+        : {
+            ...questions[widget.reference],
+            qLabel: `Q${widget.tabIndex === 0 ? widget.tabIndex + 1 : widget.tabIndex}.${alphabets[subIndex]}`
+          };
     if (!question) {
       return <div />;
     }
@@ -244,9 +279,10 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderColumns(col) {
+  renderColumns(col, colIndex, sectionQue) {
     const { style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
+    let subCount = 0;
     return (
       <>
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
@@ -281,8 +317,10 @@ class AuthorTestItemPreview extends Component {
               {col.tabs &&
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
-                this.renderTabContent(widget, col.flowLayout)}
-              {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++)}
+              {col.tabs &&
+                !col.tabs.length &&
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++)}
             </React.Fragment>
           ))}
         </WidgetContainer>
@@ -306,6 +344,28 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
+  getSectionQue = cols => {
+    if (cols.length !== 2) return [cols[0].widgets.length];
+
+    const sections = [];
+
+    if (cols[0]?.tabs?.length === 2) {
+      sections.push([
+        cols[0]?.widgets?.filter(x => x.tabIndex === 0).length,
+        cols[0]?.widgets?.filter(x => x.tabIndex === 1).length
+      ]);
+    } else sections.push(cols[0]?.widgets?.length);
+
+    if (cols[1]?.tabs?.length === 2) {
+      sections.push([
+        cols[1]?.widgets?.filter(x => x.tabIndex === 0).length,
+        cols[1]?.widgets?.filter(x => x.tabIndex === 1).length
+      ]);
+    } else sections.push(cols[1]?.widgets?.length);
+
+    return sections;
+  };
+
   render() {
     const { cols, page } = this.props;
     const { collapseDirection } = this.state;
@@ -318,6 +378,10 @@ class AuthorTestItemPreview extends Component {
     if (questionCount === 0) {
       return null;
     }
+
+    // send in an array of lengths to preserve the sub-question count
+    // filter out the questions with different tab indices in each section
+    const sectionQue = this.getSectionQue(cols);
 
     return (
       <ThemeProvider theme={themes.default}>
@@ -336,7 +400,7 @@ class AuthorTestItemPreview extends Component {
                     hide={hideColumn}
                   >
                     {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                    {this.renderColumns(col)}
+                    {this.renderColumns(col, i, sectionQue)}
                   </ColumnContentArea>
                   {collapseDirection === "right" && this.renderCollapseButtons(i)}
                 </>

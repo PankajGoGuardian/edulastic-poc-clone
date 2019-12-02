@@ -198,7 +198,7 @@ export function PerformanceBandAlt(props) {
   const [profileName, setProfileName] = useState("");
 
   const handleProfileLimit = () => {
-    const canCreateProfile = profiles.filter(x => x.createdBy._id === currentUserId).length <= 10;
+    const canCreateProfile = profiles.filter(x => x.createdBy?._id === currentUserId).length <= 10;
     if (!canCreateProfile) {
       message.error("Maximum 10 profiles per user is allowed");
       return false;
@@ -259,7 +259,7 @@ export function PerformanceBandAlt(props) {
     if (!handleProfileLimit()) {
       return;
     }
-    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, ...profile } =
+    const { _id: profileId, createdBy, institutionIds, createdAt, updatedAt, __v, v1OrgId, ...profile } =
       profiles.find(x => x._id === _id) || {};
 
     let lastVersion = 0;
@@ -268,7 +268,7 @@ export function PerformanceBandAlt(props) {
     }
     create({
       ...profile,
-      performanceBand: profile.performanceBand.map(({ key, ...x }) => ({ ...x })),
+      performanceBand: profile.performanceBand.map(({ key, v1Id, ...x }) => ({ ...x })),
       name: `${name.replace(/#[0-9]*$/, "")}#${lastVersion + 1}`
     });
   };

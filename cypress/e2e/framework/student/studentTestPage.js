@@ -99,7 +99,7 @@ class StudentTestPage {
       .click();
 
     cy.wait("@testactivity");
-    cy.url().should("include", "/home/reports");
+    cy.url().should("include", "/home/grades");
     return new ReportsPage();
   };
 
@@ -602,7 +602,7 @@ class StudentTestPage {
 
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
         this.submitTest();
-        cy.contains("Reports").should("be.visible");
+        cy.contains("Grades").should("be.visible");
       }
     }
   };

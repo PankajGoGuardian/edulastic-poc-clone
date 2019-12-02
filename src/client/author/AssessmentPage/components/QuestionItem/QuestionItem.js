@@ -299,7 +299,12 @@ class QuestionItem extends React.Component {
       viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
 
     return (
-      <QuestionItemWrapper id={id} highlighted={highlighted} ref={this.itemRef}>
+      <QuestionItemWrapper
+        className={`doc-based-question-item-for-scroll-${id}`}
+        id={id}
+        highlighted={highlighted}
+        ref={this.itemRef}
+      >
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable
             type="question"

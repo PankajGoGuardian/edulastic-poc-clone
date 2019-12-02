@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
 import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { withRouter } from "react-router";
 
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
@@ -45,8 +46,33 @@ const PDFPreview = ({
   previewMode,
   isToolBarVisible,
   pdfWidth,
-  minimized
+  minimized,
+  history,
+  pageChange
 }) => {
+  useLayoutEffect(() => {
+    const { question: qid } = history?.location?.state || {};
+    /**
+     * need to scroll to a particular question in assessment player
+     * and to the particular page if the question dropped
+     */
+    if (qid) {
+      const questionAnnotation = annotations.find(x => x.questionId === qid);
+      if (questionAnnotation?.page) {
+        pageChange(questionAnnotation.page - 1);
+      }
+      /**
+       * it takes some time to render the annotations and to be available in dom
+       */
+      setTimeout(() => {
+        const elements = document.querySelectorAll(`.doc-based-question-item-for-scroll-${qid}`);
+        for (const el of elements) {
+          el.scrollIntoView();
+        }
+      }, 2000);
+    }
+  }, [annotations]);
+
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
   };
@@ -84,6 +110,7 @@ const PDFPreview = ({
                 answer={answersById[questionId]}
                 previewMode={viewMode === "edit" ? "clear" : previewMode}
                 viewMode="review"
+                annotations
               />
             </div>
           ))}
@@ -105,4 +132,4 @@ PDFPreview.defaultProps = {
   annotations: []
 };
 
-export default connect(state => ({ previewMode: getPreviewSelector(state) }))(PDFPreview);
+export default connect(state => ({ previewMode: getPreviewSelector(state) }))(withRouter(PDFPreview));

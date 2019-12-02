@@ -65,7 +65,8 @@ class SummaryTest extends Component {
       history.push(
         `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,
         {
-          fromSummary: true
+          fromSummary: true,
+          question: q
         }
       );
     } else {

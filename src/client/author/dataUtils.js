@@ -74,7 +74,7 @@ export const getPlaylistAuthorName = item => {
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
-  const hasPassage = resources.some(item => item.type === PASSAGE);
+  const hasPassage = resources.some(item => item.type === PASSAGE) || item.passageId;
   if (hasPassage) {
     //All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1

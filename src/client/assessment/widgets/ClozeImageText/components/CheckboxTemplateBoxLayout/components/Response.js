@@ -86,7 +86,11 @@ const Response = ({
     </div>
   );
 
-  return lessMinWidth || isOverConent ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return (lessMinWidth || isOverConent) && hansAnswered ? (
+    <Popover content={popoverContent}>{content}</Popover>
+  ) : (
+    content
+  );
 };
 
 Response.propTypes = {

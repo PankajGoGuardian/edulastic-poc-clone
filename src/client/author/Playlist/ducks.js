@@ -5,6 +5,18 @@ import { message } from "antd";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
+
+const filterMenuItems = [
+  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
+  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
+  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
+
+  // These two filters are to be enabled later so, commented out
+  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+];
 
 // types
 export const RECEIVE_PLAYLIST_REQUEST = "[playlists] receive list request";
@@ -16,6 +28,9 @@ export const UPDATE_RECENT_PLAYLISTS = "[playlists] update recent playlists";
 export const UPDATE_LAST_PLAYLIST = "[playlists] update last playlist";
 export const RECEIVE_RECENT_PLAYLISTS = "[playlists] receive recent playlists";
 export const RECEIVE_LAST_PLAYLIST = "[playlists] receive last playlist";
+export const UPDATE_PLAYLIST_FILTER = "[playlists] update playlist search filter";
+export const UPDATE_ALL_PLAYLIST_FILTERS = "[playlists] update all playlist filters";
+export const CLEAR_PLAYLIST_FILTERS = "[playlists] clear playlist filters";
 
 // actions
 export const receivePlaylistsAction = createAction(RECEIVE_PLAYLIST_REQUEST);
@@ -29,6 +44,9 @@ export const updateRecentPlayListsAction = createAction(UPDATE_RECENT_PLAYLISTS)
 export const updateLastPlayListAction = createAction(UPDATE_LAST_PLAYLIST);
 export const receiveRecentPlayListsAction = createAction(RECEIVE_RECENT_PLAYLISTS);
 export const receiveLastPlayListAction = createAction(RECEIVE_LAST_PLAYLIST);
+export const updatePlaylistSearchFilterAction = createAction(UPDATE_PLAYLIST_FILTER);
+export const updateAllPlaylistSearchFilterAction = createAction(UPDATE_ALL_PLAYLIST_FILTERS);
+export const clearPlaylistFiltersAction = createAction(CLEAR_PLAYLIST_FILTERS);
 
 function* receivePublishersSaga() {
   try {
@@ -92,6 +110,17 @@ export function* watcherSaga() {
   ]);
 }
 
+export const emptyFilters = {
+  grades: [],
+  subject: "",
+  filter: filterMenuItems[0].filter,
+  searchString: "",
+  type: "",
+  status: "",
+  tags: [],
+  collectionName: ""
+};
+
 // reducer
 const initialState = {
   entities: [],
@@ -102,7 +131,10 @@ const initialState = {
   publishers: [],
   loading: false,
   recentPlayLists: [],
-  lastPlayList: {}
+  lastPlayList: {},
+  filters: {
+    ...emptyFilters
+  }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -141,6 +173,33 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         lastPlayList: payload
       };
+    case UPDATE_PLAYLIST_FILTER: {
+      const playListState = produce(state, draft => {
+        draft.filters[payload.key] = payload.value;
+      });
+      return playListState;
+    }
+    case UPDATE_ALL_PLAYLIST_FILTERS:
+      return {
+        ...state,
+        filters: payload
+      };
+    case CLEAR_PLAYLIST_FILTERS:
+      return {
+        ...state,
+        filters: {
+          ...emptyFilters
+        }
+      };
+    case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
+      return {
+        ...state,
+        filters: {
+          ...emptyFilters,
+          grades: payload.grades || [],
+          subject: payload.subject[0] || ""
+        }
+      };
     default:
       return state;
   }
@@ -178,4 +237,9 @@ export const getLastPlayListSelector = createSelector(
 export const getRecentPlaylistSelector = createSelector(
   stateSelector,
   state => state.recentPlayLists
+);
+
+export const getPlalistFilterSelector = createSelector(
+  stateSelector,
+  state => state.filters
 );

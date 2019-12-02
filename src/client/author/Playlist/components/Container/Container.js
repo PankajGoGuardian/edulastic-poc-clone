@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has, uniq } from "lodash";
+import { debounce, get, has, pickBy, pick, identity } from "lodash";
 import styled from "styled-components";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -37,7 +37,11 @@ import {
   getPlaylistsLimitSelector,
   getPlaylistsPageSelector,
   receivePublishersAction,
-  receiveRecentPlayListsAction
+  receiveRecentPlayListsAction,
+  getPlalistFilterSelector,
+  updateAllPlaylistSearchFilterAction,
+  clearPlaylistFiltersAction,
+  emptyFilters
 } from "../../ducks";
 
 import { getTestsCreatingSelector, clearTestDataAction, getAllTagsAction } from "../../../TestPage/ducks";
@@ -53,28 +57,7 @@ import {
 } from "../../../src/selectors/user";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
-
-const filterMenuItems = [
-  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
-  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
-
-  // These two filters are to be enabled later so, commented out
-  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
-];
-
-export const getClearSearchState = () => ({
-  grades: [],
-  subject: "",
-  filter: filterMenuItems[0].filter,
-  searchString: "",
-  type: "",
-  status: "",
-  tags: [],
-  collectionName: ""
-});
+import { filterMenuItems } from "../../../TestPage/components/AddItems/ducks";
 
 class TestList extends Component {
   static propTypes = {
@@ -110,7 +93,6 @@ class TestList extends Component {
   };
 
   state = {
-    search: getClearSearchState(),
     standardQuery: "",
     blockStyle: "tile",
     isShowFilter: false
@@ -128,101 +110,76 @@ class TestList extends Component {
       interestedSubjects,
       defaultGrades = [],
       defaultSubject = [],
-      match: { params = {} }
+      match: { params = {} },
+      playListFilters,
+      page,
+      history
     } = this.props;
+    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[playList]")) || {};
+    const searchFilters = {
+      ...playListFilters,
+      ...sessionFilters,
+      grades: sessionFilters?.grades?.length ? sessionFilters.grades : playListFilters.grades || [],
+      subject: sessionFilters?.subject || playListFilters.subject || ""
+    };
+    let searchParams = qs.parse(location.search);
+    searchParams = this.typeCheck(searchParams, searchFilters);
 
-    const { search } = this.state;
-    const parsedQueryData = qs.parse(location.search);
-    const { filterType } = params;
-    receivePublishers();
-    getAllTags({ type: "playlist" });
-    if (filterType) {
-      const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      let updatedSearch = { ...search };
-      if (filter === filterMenuItems[0].filter) {
-        updatedSearch = {
-          ...updatedSearch,
-          status: ""
-        };
-      }
-      this.setState({
-        search: {
-          ...updatedSearch,
-          filter
-        }
-      });
-      receivePlaylists({
-        page: 1,
-        limit,
-        search: {
-          ...updatedSearch,
-          filter
-        }
-      });
-    } else if (Object.entries(parsedQueryData).length > 0) {
-      this.setFilterParams(parsedQueryData, params);
-    } else if (params.page && params.limit) {
-      receivePlaylists({
-        page: Number(params.page),
-        limit: Number(params.limit),
-        search
-      });
-    } else {
-      let grades = defaultGrades;
-      let subject = defaultSubject;
-      if (!grades) {
-        grades = interestedGrades;
-      }
-      if (subject === null) {
-        subject = interestedSubjects[0] || "";
-      }
-      this.setState({
-        search: {
-          ...search,
-          grades,
-          subject
-        }
-      });
-      receivePlaylists({ page: 1, limit, search: { ...search, grades, subject } });
+    if (Object.keys(searchParams).length) {
+      Object.assign(searchFilters, pick(searchParams, Object.keys(playListFilters)));
     }
+    this.updateFilterState(searchFilters);
+    const pageNumber = params.page || page;
+    const limitCount = params.limit || limit;
+    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
+    history.push(`/author/playlists?${queryParams}`);
+
+    receivePublishers();
+    receivePlaylists({ page: 1, limit, search: searchFilters });
+    getAllTags({ type: "playlist" });
     receiveRecentPlayLists();
   }
 
-  searchTest = debounce(() => {
-    const { receivePlaylists, limit } = this.props;
-    const { search } = this.state;
+  updateFilterState = searchState => {
+    const { updateAllPlaylistSearchFilter } = this.props;
+    sessionStorage.setItem("filters[playList]", JSON.stringify(searchState));
+    updateAllPlaylistSearchFilter(searchState);
+  };
+
+  searchTest = debounce(searchState => {
+    const { receivePlaylists, limit, playListFilters } = this.props;
     receivePlaylists({
       page: 1,
       limit,
-      search
+      search: searchState || playListFilters
     });
   }, 500);
 
   handleSearchInputChange = e => {
-    const { search } = this.state;
+    const { playListFilters } = this.props;
     const searchString = e.target.value;
     const newSearch = {
-      ...search,
+      ...playListFilters,
       searchString
     };
-    this.setState(
-      {
-        search: newSearch
-      },
-      () => {
-        this.searchTest();
-      }
-    );
+    this.updateFilterState(newSearch);
+    this.searchTest(newSearch);
   };
 
   handleFiltersChange = (name, value) => {
-    const { search } = this.state;
-    const { receivePlaylists, history, limit, page, updateDefaultGrades, updateDefaultSubject } = this.props;
+    const {
+      receivePlaylists,
+      history,
+      limit,
+      page,
+      updateDefaultGrades,
+      updateDefaultSubject,
+      playListFilters
+    } = this.props;
     let updatedKeys = {};
 
     updatedKeys = {
-      ...search,
+      ...playListFilters,
       [name]: value
     };
     if (name === "subject") {
@@ -232,16 +189,9 @@ class TestList extends Component {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      () => {
-        const { search: updatedSearch } = this.state;
-        receivePlaylists({ search: updatedSearch, page: 1, limit });
-        history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
-      }
-    );
+    this.updateFilterState(updatedKeys);
+    receivePlaylists({ search: updatedKeys, page: 1, limit });
+    history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
   };
 
   handleCreate = () => {
@@ -252,10 +202,9 @@ class TestList extends Component {
   };
 
   handlePaginationChange = page => {
-    const { receivePlaylists, limit, history } = this.props;
-    const { search } = this.state;
+    const { receivePlaylists, limit, history, TestListFilters } = this.props;
 
-    receivePlaylists({ page, limit, search });
+    receivePlaylists({ page, limit, search: TestListFilters });
     history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
   };
 
@@ -275,23 +224,18 @@ class TestList extends Component {
 
   resetFilter = () => {
     const { receivePlaylists, limit, history } = this.props;
-    const { search } = this.state;
-    receivePlaylists({ page: 1, limit, search });
+    this.updateFilterState(emptyFilters);
+    receivePlaylists({ page: 1, limit, search: emptyFilters });
     history.push(`/author/playlists`);
   };
 
   handleClearFilter = () => {
-    this.setState(
-      {
-        search: getClearSearchState()
-      },
-      this.resetFilter
-    );
+    this.resetFilter();
   };
 
   get filterUrl() {
-    const { search, standardQuery } = this.state;
-    return qs.stringify({ ...search, standardQuery });
+    const { playListFilters, standardQuery } = this.state;
+    return qs.stringify({ ...playListFilters, standardQuery });
   }
 
   typeCheck = (parsedQueryData, search) => {
@@ -309,11 +253,12 @@ class TestList extends Component {
   setFilterParams(parsedQueryData) {
     const {
       receivePlaylists,
-      match: { params = {} }
+      match: { params = {} },
+      playListFilters
     } = this.props;
-    const { search } = this.state;
+    // const { search } = this.state;
 
-    parsedQueryData = this.typeCheck(parsedQueryData, search);
+    parsedQueryData = this.typeCheck(parsedQueryData, playListFilters);
     const searchClone = {};
 
     for (const key of Object.keys(parsedQueryData)) {
@@ -322,23 +267,13 @@ class TestList extends Component {
       }
     }
 
-    this.setState(
-      {
-        search: searchClone
-      },
-      () => {
-        const {
-          search: { grade },
-          search: updatedSearch
-        } = this.state;
+    this.updateFilterState(searchClone);
 
-        receivePlaylists({
-          page: Number(params.page),
-          limit: Number(params.limit),
-          search: updatedSearch
-        });
-      }
-    );
+    receivePlaylists({
+      page: Number(searchClone.page),
+      limit: Number(searchClone.limit),
+      search: searchClone
+    });
   }
 
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -379,9 +314,8 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receivePlaylists, limit } = this.props;
-    const { search } = this.state;
-    let updatedSearch = { ...search };
+    const { history, receivePlaylists, limit, playListFilters, updateAllPlaylistSearchFilter } = this.props;
+    let updatedSearch = { ...playListFilters };
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
         ...updatedSearch,
@@ -389,11 +323,9 @@ class TestList extends Component {
       };
     }
     history.push(`/author/playlists/filter/${filterType}`);
-    this.setState({
-      search: {
-        ...updatedSearch,
-        filter
-      }
+    this.updateFilterState({
+      ...updatedSearch,
+      filter
     });
     receivePlaylists({
       page: 1,
@@ -406,10 +338,10 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating } = this.props;
+    const { page, limit, count, creating, playListFilters } = this.props;
 
-    const { blockStyle, isShowFilter, search } = this.state;
-    const { searchString } = search;
+    const { blockStyle, isShowFilter } = this.state;
+    const { searchString } = playListFilters;
 
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
     return (
@@ -457,7 +389,7 @@ class TestList extends Component {
             <SearchModalContainer>
               <TestListFilters
                 isPlaylist={true}
-                search={search}
+                search={playListFilters}
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
                 clearFilter={this.handleClearFilter}
@@ -481,7 +413,7 @@ class TestList extends Component {
                       />
                       <TestListFilters
                         isPlaylist={true}
-                        search={search}
+                        search={playListFilters}
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
                         clearFilter={this.handleClearFilter}
@@ -535,7 +467,7 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      t: PropTypes.func.isRequired
+      playListFilters: getPlalistFilterSelector(state)
     }),
     {
       receivePlaylists: receivePlaylistsAction,
@@ -544,7 +476,9 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       updateDefaultGrades: updateDefaultGradesAction,
       updateDefaultSubject: updateDefaultSubjectAction,
-      receiveRecentPlayLists: receiveRecentPlayListsAction
+      receiveRecentPlayLists: receiveRecentPlayListsAction,
+      updateAllPlaylistSearchFilter: updateAllPlaylistSearchFilterAction,
+      clearPlaylistFilters: clearPlaylistFiltersAction
     }
   )
 );

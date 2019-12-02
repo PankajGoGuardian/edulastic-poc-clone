@@ -4,7 +4,18 @@ import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effect
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
+import { SET_USER } from "../../../../student/Login/ducks";
 import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
+
+export const filterMenuItems = [
+  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
+  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" }
+
+  // These two filters are to be enabled later so, commented out
+  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+];
 
 // constants
 
@@ -16,6 +27,9 @@ export const SET_TEST_ITEM_REQUEST = "[addItems] set passage item request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
 export const REPORT_CONTENT_ERROR_REQUEST = "[addItems] report content error request";
+export const SET_SEARCH_FILTER_STATE = "[addItems] update search filter state";
+export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
+export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -48,6 +62,7 @@ export const setTestItemsAction = data => ({
   type: SET_TEST_ITEMS_REQUEST,
   payload: data
 });
+
 export const setItemFromPassageAction = data => ({
   type: SET_TEST_ITEM_REQUEST,
   payload: data
@@ -67,6 +82,23 @@ export const reportContentErrorAction = data => ({
   payload: data
 });
 
+export const updateSearchFilterStateAction = payload => ({
+  type: SET_SEARCH_FILTER_STATE,
+  payload
+});
+
+export const clearFilterStateAction = payload => ({
+  type: CLEAR_SEARCH_FILTER_STATE,
+  payload
+});
+
+export const updateInitSearchStateAction = payload => ({
+  type: UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
+  payload
+});
+
+// reducer
+
 export const initalSearchState = {
   subject: "",
   curriculumId: "",
@@ -78,10 +110,8 @@ export const initalSearchState = {
   status: "",
   grades: [],
   tags: [],
-  filter: "ENTIRE_LIBRARY"
+  filter: filterMenuItems[0].filter
 };
-
-// reducer
 
 const initialState = {
   items: [],
@@ -137,6 +167,25 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         itemsSubjectAndGrade: payload
+      };
+    case SET_SEARCH_FILTER_STATE:
+      return {
+        ...state,
+        search: { ...payload }
+      };
+    case CLEAR_SEARCH_FILTER_STATE:
+      return {
+        ...state,
+        search: { ...initalSearchState }
+      };
+    case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          grades: payload.grades || [],
+          subject: payload.subject[0] || ""
+        }
       };
     case DELETE_ITEM_SUCCESS: {
       return {

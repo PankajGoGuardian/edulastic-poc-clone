@@ -18,6 +18,7 @@ import { userPickFields } from "../../common/utils/static/user";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUser } from "../../author/src/selectors/user";
+import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 
 // types
 export const LOGIN = "[auth] login";
@@ -361,6 +362,9 @@ function* login({ payload }) {
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
+    yield put(
+      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+    );
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
@@ -560,6 +564,9 @@ export function* fetchUser() {
       type: SET_USER,
       payload: user
     });
+    yield put(
+      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+    );
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
@@ -594,6 +601,9 @@ export function* fetchV1Redirect({ payload: id }) {
       type: SET_USER,
       payload: user
     });
+    yield put(
+      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+    );
     let redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
     yield put(push(redirectUrl));
   } catch (e) {

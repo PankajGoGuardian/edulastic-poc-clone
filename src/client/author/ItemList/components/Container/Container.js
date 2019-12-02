@@ -34,8 +34,13 @@ import {
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
   getTestItemsLoadingSelector,
+  getSearchFilterStateSelector,
   receiveTestItemsAction,
-  clearSelectedItemsAction
+  clearSelectedItemsAction,
+  clearFilterStateAction,
+  updateSearchFilterStateAction,
+  filterMenuItems,
+  initalSearchState
 } from "../../../TestPage/components/AddItems/ducks";
 import {
   setDefaultTestDataAction,
@@ -58,59 +63,36 @@ import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
 import { createTestFromCartAction } from "../../ducks";
-
-export const filterMenuItems = [
-  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
-  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" }
-
-  // These two filters are to be enabled later so, commented out
-  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
-];
-
-export const getClearSearchState = () => ({
-  subject: "",
-  curriculumId: "",
-  standardIds: [],
-  questionType: "",
-  depthOfKnowledge: "",
-  authorDifficulty: "",
-  collectionName: "",
-  status: "",
-  grades: [],
-  tags: [],
-  filter: filterMenuItems[0].filter
-});
-
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState(),
     isShowFilter: true
   };
 
   componentDidMount() {
-    const { search } = this.state;
     const {
       receiveItems,
       curriculums,
       getCurriculums,
+      getCurriculumStandards,
       match = {},
       limit,
       setDefaultTestData,
-      defaultGrades,
-      defaultSubject,
       clearSelectedItems,
-      interestedGrades,
-      getAllTags,
-      interestedSubjects,
-      clearDictStandards
+      search: initSearch,
+      getAllTags
     } = this.props;
+
     const { params = {} } = match;
+    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
+    const search = {
+      ...initSearch,
+      ...sessionFilters,
+      subject: sessionFilters?.subject || initSearch.subject,
+      grades: sessionFilters?.grades?.length ? sessionFilters.grades : initSearch.grades
+    };
     setDefaultTestData();
     clearSelectedItems();
-    clearDictStandards();
     getAllTags({ type: "testitem" });
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
@@ -119,45 +101,37 @@ class Contaier extends Component {
       if (filter === filterMenuItems[0].filter) {
         updatedSearch = { ...updatedSearch, status: "" };
       }
-      this.setState({
-        search: {
-          ...updatedSearch,
-          filter
-        }
+      this.updateFilterState({
+        ...updatedSearch,
+        filter
       });
       receiveItems({ ...updatedSearch, filter }, 1, limit);
     } else {
-      let grades = defaultGrades;
-      let subject = defaultSubject;
-      if (!grades) {
-        grades = interestedGrades;
-      }
-      if (subject === null) {
-        subject = interestedSubjects[0] || "";
-      }
-      this.setState({
-        search: {
-          ...search,
-          grades,
-          subject
-        }
-      });
-      receiveItems({ ...search, grades, subject }, 1, limit);
+      this.updateFilterState(search);
+      receiveItems(search, 1, limit);
     }
     if (curriculums.length === 0) {
       getCurriculums();
     }
+    if (search.curriculumId) {
+      getCurriculumStandards(search.curriculumId, search.grades, "");
+    }
   }
 
-  handleSearch = () => {
-    const { search } = this.state;
+  updateFilterState = newSearch => {
+    const { updateSearchFilterState } = this.props;
+    updateSearchFilterState(newSearch);
+    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+  };
+
+  handleSearch = searchState => {
     const { limit, receiveItems } = this.props;
+    const search = searchState || this.props.search;
     receiveItems(search, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { search } = this.state;
-    const { limit, receiveItems, history } = this.props;
+    const { limit, receiveItems, history, search } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -168,45 +142,44 @@ class Contaier extends Component {
         status: ""
       };
     }
-    this.setState({
-      search: {
-        ...updatedSearch,
-        filter
-      }
+    this.updateFilterState({
+      ...updatedSearch,
+      filter
     });
     receiveItems({ ...updatedSearch, filter }, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };
 
   handleClearSearch = () => {
-    this.setState(
-      {
-        search: getClearSearchState()
-      },
-      this.handleSearch
-    );
+    const { clearFilterState, limit, receiveItems } = this.props;
+
+    clearFilterState();
+
+    this.updateFilterState(initalSearchState);
+    receiveItems(initalSearchState, 1, limit);
   };
 
   handleSearchFieldChangeCurriculumId = value => {
-    const { search } = this.state;
-    const { clearDictStandards, getCurriculumStandards } = this.props;
+    const { clearDictStandards, getCurriculumStandards, search } = this.props;
     clearDictStandards();
-    this.setState(
-      {
-        search: {
-          ...search,
-          curriculumId: value,
-          standardIds: []
-        }
-      },
-      this.handleSearch
-    );
+    const updatedSearchValue = {
+      ...search,
+      curriculumId: value,
+      standardIds: []
+    };
+    this.updateFilterState(updatedSearchValue);
+    this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };
 
   handleSearchFieldChange = fieldName => value => {
-    const { search } = this.state;
-    const { updateDefaultGrades, udpateDefaultSubject, clearDictStandards, getCurriculumStandards } = this.props;
+    const {
+      updateDefaultGrades,
+      udpateDefaultSubject,
+      clearDictStandards,
+      getCurriculumStandards,
+      search
+    } = this.props;
     let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
@@ -237,30 +210,22 @@ class Contaier extends Component {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      this.handleSearch
-    );
+    this.updateFilterState(updatedKeys);
+    this.handleSearch(updatedKeys);
   };
 
   searchDebounce = debounce(this.handleSearch, 500);
 
   handleSearchInputChange = e => {
-    const { search } = this.state;
+    const { search } = this.props;
     const searchString = e.target.value;
     const updatedKeys = {
       ...search,
       searchString
     };
 
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      this.searchDebounce
-    );
+    this.updateFilterState(updatedKeys);
+    this.searchDebounce();
   };
 
   handleCreate = async () => {
@@ -318,9 +283,18 @@ class Contaier extends Component {
   renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
   render() {
-    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
+    const {
+      windowWidth,
+      creating,
+      t,
+      getCurriculumStandards,
+      curriculumStandards,
+      loading,
+      count,
+      search
+    } = this.props;
 
-    const { search, isShowFilter } = this.state;
+    const { isShowFilter } = this.state;
 
     return (
       <div>
@@ -421,7 +395,8 @@ const enhance = compose(
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state)
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      search: getSearchFilterStateSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -436,7 +411,9 @@ const enhance = compose(
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       getAllTags: getAllTagsAction,
-      createTestFromCart: createTestFromCartAction
+      createTestFromCart: createTestFromCartAction,
+      updateSearchFilterState: updateSearchFilterStateAction,
+      clearFilterState: clearFilterStateAction
     }
   )
 );

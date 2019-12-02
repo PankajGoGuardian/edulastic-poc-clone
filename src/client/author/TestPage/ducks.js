@@ -6,7 +6,6 @@ import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
-import moment from "moment";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
 import {
@@ -14,8 +13,7 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
   ADD_ITEM_EVALUATION,
-  CHANGE_PREVIEW,
-  CHANGE_VIEW
+  CHANGE_PREVIEW
 } from "../src/constants/actions";
 import { loadQuestionsAction, getQuestionsArraySelector } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
@@ -32,7 +30,6 @@ import {
 } from "../ItemDetail/ducks";
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
 import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
-import { getUserFeatures } from "../../student/Login/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -1200,6 +1197,15 @@ export const getTestItemsRowsSelector = createSelector(
 export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   state => get(state, "createdItems", [])
+);
+
+//created user state here bcz of circular dependency.
+//login ducks update test state for filters.
+const userStateSelector = state => state.user;
+
+export const getUserFeatures = createSelector(
+  userStateSelector,
+  state => state.user.features
 );
 
 export const getReleaseScorePremiumSelector = createSelector(

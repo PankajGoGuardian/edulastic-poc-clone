@@ -8,6 +8,18 @@ import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actio
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
+import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
+
+export const filterMenuItems = [
+  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
+  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
+  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
+
+  // These two filters are to be enabled later so, commented out
+  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+];
 
 // types
 export const RECEIVE_TESTS_REQUEST = "[tests] receive list request";
@@ -93,7 +105,7 @@ export function* watcherSaga() {
   ]);
 }
 
-const emptyFilters = {
+export const emptyFilters = {
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
@@ -102,6 +114,7 @@ const emptyFilters = {
   status: "",
   standardIds: [],
   grades: [],
+  subject: "",
   tags: [],
   searchString: "",
   filter: "ENTIRE_LIBRARY"
@@ -141,11 +154,12 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entities: [payload.entity, ...state.entities]
       };
-    case UPDATE_TEST_FILTER:
-      return produce(state, draft => {
+    case UPDATE_TEST_FILTER: {
+      const testListState = produce(state, draft => {
         draft.filters[payload.key] = payload.value;
       });
-
+      return testListState;
+    }
     case UPDATE_ALL_TEST_FILTERS:
       return {
         ...state,
@@ -157,6 +171,15 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         filters: {
           ...emptyFilters
+        }
+      };
+    case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
+      return {
+        ...state,
+        filters: {
+          ...emptyFilters,
+          grades: payload.grades || [],
+          subject: payload.subject[0] || ""
         }
       };
     case DELETE_TEST_REQUEST_SUCCESS:

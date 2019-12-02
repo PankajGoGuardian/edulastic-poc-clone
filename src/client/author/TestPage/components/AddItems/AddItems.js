@@ -29,7 +29,12 @@ import {
   getTestsItemsPageSelector,
   receiveTestItemsAction,
   setTestItemsAction,
-  getSelectedItemSelector
+  getSelectedItemSelector,
+  getSearchFilterStateSelector,
+  updateSearchFilterStateAction,
+  clearFilterStateAction,
+  filterMenuItems,
+  initalSearchState
 } from "./ducks";
 import {
   setAndSavePassageItemsAction,
@@ -39,7 +44,6 @@ import {
   getAllTagsAction
 } from "../../ducks";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
-import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 import {
   Container,
   ListItems,
@@ -90,55 +94,72 @@ class AddItems extends PureComponent {
   };
 
   state = {
-    search: getClearSearchState(),
     questionCreateType: "Duplicate"
   };
 
   componentDidMount() {
-    const { search } = this.state;
-    const { getCurriculums, receiveTestItems, limit, test, curriculums, getAllTags } = this.props;
+    const {
+      getCurriculums,
+      receiveTestItems,
+      getCurriculumStandards,
+      limit,
+      test,
+      curriculums,
+      getAllTags,
+      search: initSearch
+    } = this.props;
+
+    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
     const selectedSubjects = test.subjects.filter(item => !!item);
-    const newSearch = {
-      ...search,
-      grades: test.grades,
-      subject: selectedSubjects.length ? selectedSubjects[0] : ""
+    const selectedGrades = test.grades.filter(item => !!item);
+    const search = {
+      ...initSearch,
+      ...sessionFilters,
+      subject: selectedSubjects.length ? selectedSubjects[0] : sessionFilters?.subject || initSearch.subject,
+      grades: selectedGrades.length
+        ? selectedGrades
+        : sessionFilters?.grades?.length
+        ? sessionFilters.grades
+        : initSearch.grades
     };
-    this.setState({
-      search: newSearch
-    });
+
+    this.updateFilterState(search);
     if (!curriculums.length) getCurriculums();
-    receiveTestItems(newSearch, 1, limit);
+    receiveTestItems(search, 1, limit);
     getAllTags({ type: "testitem" });
+    if (search.curriculumId) {
+      getCurriculumStandards(search.curriculumId, search.grades, "");
+    }
   }
 
-  handleSearch = () => {
-    const { receiveTestItems, limit } = this.props;
-    const { search } = this.state;
-    receiveTestItems(search, 1, limit);
+  updateFilterState = newSearch => {
+    const { updateSearchFilterState } = this.props;
+    updateSearchFilterState(newSearch);
+    sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+  };
+
+  handleSearch = searchState => {
+    const { receiveTestItems, limit, search } = this.props;
+    receiveTestItems(searchState || search, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { search } = this.state;
-    const { limit, receiveTestItems } = this.props;
+    const { limit, receiveTestItems, search } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    this.setState(prevState => ({
-      search: {
-        ...prevState.search,
-        filter
-      }
-    }));
-    receiveTestItems({ ...search, filter }, 1, limit);
+    const searchState = {
+      ...search,
+      filter
+    };
+    this.updateFilterState(searchState);
+    receiveTestItems(searchState, 1, limit);
   };
 
   handleClearSearch = () => {
-    this.setState(
-      {
-        search: getClearSearchState()
-      },
-      this.handleSearch
-    );
+    const { clearFilterState, receiveTestItems, limit } = this.props;
+    clearFilterState();
+    receiveTestItems(initalSearchState, 1, limit);
   };
 
   handleCreateNewItem = () => {
@@ -183,32 +204,23 @@ class AddItems extends PureComponent {
   };
 
   handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards, getCurriculumStandards } = this.props;
-    const { search } = this.state;
+    const { clearDictStandards, getCurriculumStandards, search } = this.props;
     clearDictStandards();
-    this.setState(
-      {
-        search: {
-          ...search,
-          curriculumId: value,
-          standardIds: []
-        }
-      },
-      () => {
-        this.handleSearch();
-      }
-    );
+    this.updateFilterState({
+      ...search,
+      curriculumId: value,
+      standardIds: []
+    });
     getCurriculumStandards(value, search.grades, "");
   };
 
   handleSearchFieldChange = fieldName => value => {
-    const { search } = this.state;
+    const { search, clearDictStandards } = this.props;
     let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
     } else if (fieldName === "subject") {
-      const { clearDictStandards } = this.props;
       clearDictStandards();
       updatedKeys = {
         ...search,
@@ -222,29 +234,21 @@ class AddItems extends PureComponent {
         [fieldName]: value
       };
     }
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      this.handleSearch
-    );
+    this.updateFilterState(updatedKeys);
+    this.handleSearch(updatedKeys);
   };
 
   searchDebounce = debounce(this.handleSearch, 500);
 
   handleSearchInputChange = e => {
-    const { search } = this.state;
+    const { search } = this.props;
     const searchString = e.target.value;
     const updatedKeys = {
       ...search,
       searchString
     };
-    this.setState(
-      {
-        search: updatedKeys
-      },
-      this.searchDebounce
-    );
+    this.updateFilterState(updatedKeys);
+    this.searchDebounce(updatedKeys);
   };
 
   renderPagination = () => {
@@ -260,15 +264,6 @@ class AddItems extends PureComponent {
         />
       </ItemsPagination>
     );
-  };
-
-  setAuthoredByMeFilter = () => {
-    this.setState(prev => ({
-      search: {
-        ...prev.search,
-        filter: "AUTHORED_BY_ME"
-      }
-    }));
   };
 
   handlePaginationChange = page => {
@@ -292,9 +287,9 @@ class AddItems extends PureComponent {
       setDataAndSave,
       setTestItems,
       selectedRows,
-      gotoSummary
+      gotoSummary,
+      search
     } = this.props;
-    const { search } = this.state;
     if (items.length < 1) {
       return (
         <NoDataNotification
@@ -341,10 +336,10 @@ class AddItems extends PureComponent {
       count,
       test,
       toggleFilter,
-      isShowFilter
+      isShowFilter,
+      search
     } = this.props;
 
-    const { search } = this.state;
     return (
       <>
         <Container>
@@ -421,7 +416,8 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: getUserId(state),
       testItemsList: getTestItemsSelector(state),
-      selectedRows: getSelectedItemSelector(state)
+      selectedRows: getSelectedItemSelector(state),
+      search: getSearchFilterStateSelector(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,
@@ -435,7 +431,9 @@ const enhance = compose(
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       setDataAndSave: setTestDataAndUpdateAction,
-      setTestItems: setTestItemsAction
+      setTestItems: setTestItemsAction,
+      updateSearchFilterState: updateSearchFilterStateAction,
+      clearFilterState: clearFilterStateAction
     }
   )
 );

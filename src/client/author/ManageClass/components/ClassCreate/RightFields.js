@@ -172,13 +172,13 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
       {!isDropdown && (
-        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
+        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool} style={{ height: "0px" }}>
           <input type="hidden" />
         </FieldLabel>
       )}
 
-      {isDropdown && (
-        <StyledFlexContainer gutter={24}>
+      <StyledFlexContainer gutter={24}>
+        {isDropdown && (
           <Col xs={12}>
             <FieldLabel label="School" {...restProps} fiedlName="institutionId">
               <Select placeholder="Select School">
@@ -190,11 +190,11 @@ const RightFields = ({
               </Select>
             </FieldLabel>
           </Col>
-          <Col xs={12}>
-            <Tags {...restProps} />
-          </Col>
-        </StyledFlexContainer>
-      )}
+        )}
+        <Col xs={12}>
+          <Tags {...restProps} />
+        </Col>
+      </StyledFlexContainer>
     </>
   );
 };

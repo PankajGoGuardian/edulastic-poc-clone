@@ -11,7 +11,8 @@ export const FieldLabel = ({
   getFieldDecorator,
   fiedlName,
   initialValue,
-  getFieldValue
+  getFieldValue,
+  style = {}
 }) => {
   const checkStartDate = (rule, value, callback) => {
     const diff = moment().diff(value, "days");
@@ -44,7 +45,7 @@ export const FieldLabel = ({
   };
 
   return (
-    <Field>
+    <Field style={style}>
       <legend>
         {label}
         {optional && <Optional>(Optional)</Optional>}

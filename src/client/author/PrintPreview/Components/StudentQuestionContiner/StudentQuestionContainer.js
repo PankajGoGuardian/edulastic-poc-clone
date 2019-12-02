@@ -19,6 +19,7 @@ import {
   FractionLine
 } from "./styled";
 import { UTAConstantsToLabels, gradingLabels, UTAStatusToConstants } from "../../utils/constants";
+import * as moment from "moment";
 
 class StudentQuestionContainer extends Component {
   render() {
@@ -58,9 +59,9 @@ class StudentQuestionContainer extends Component {
             </InfoItem>
           </StudentInformation>
           <TimeContainer>
-            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+            {testActivity.status !== UTAStatusToConstants.ABSENT && additionalData.endDate ? (
               <TimeItem>
-                <Color>Time:</Color> 1:54
+                <Color>Due:</Color> {moment(additionalData.endDate).format("MMMM DD, YYYY | hh:mm A")}
               </TimeItem>
             ) : null}
             <TimeItem>
@@ -69,24 +70,9 @@ class StudentQuestionContainer extends Component {
                 ? UTAConstantsToLabels[testActivity.status]
                 : gradingLabels[testActivity.graded]}
             </TimeItem>
-            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
+            {testActivity.status !== UTAStatusToConstants.ABSENT && testActivity.endDate ? (
               <TimeItem>
-                <Color>Submitted on:</Color>{" "}
-                {new Date(testActivity.endDate).toLocaleString("en-US", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric"
-                })}
-              </TimeItem>
-            ) : null}
-            {testActivity.status !== UTAStatusToConstants.ABSENT ? (
-              <TimeItem>
-                <Color>Hour:</Color>{" "}
-                {new Date(testActivity.endDate).toLocaleString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true
-                })}
+                <Color>Submitted on:</Color> {moment(testActivity.endDate).format("MMMM DD, YYYY | hh:mm A")}
               </TimeItem>
             ) : null}
           </TimeContainer>

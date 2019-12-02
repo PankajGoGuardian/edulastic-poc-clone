@@ -208,9 +208,11 @@ const RemoteAutocompleteDropDown = ({
   const onSelect = (key, item) => {
     let obj = { key: key, title: item.props.title };
     setSelected(obj);
+    setText(obj.title);
     selectCB(obj, comData);
 
     triggerChange(obj);
+    autoRef.current.blur(obj.title);
 
     textChangeStatusRef.current = false;
   };

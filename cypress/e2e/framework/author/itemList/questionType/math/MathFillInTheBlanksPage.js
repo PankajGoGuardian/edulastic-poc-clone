@@ -34,10 +34,10 @@ class MathFillInTheBlanksPage extends MathFractionPage {
         cy.wrap(inputElements).typeWithDelay(expectedValues);
       }
     });
-
     this.checkNoticeMessageScore(preview, isCorrect, this.checkAttr(isCorrect));
     preview.header.edit();
-    if (inputLength > 0) this.clearAnswerValueInput(inputLength);
+    //this.clearTemplateInput();
+    if (inputLength > 0) this.clearAnswerValueInput(inputLength + 5);
   };
 
   setThousandsSeparatorDropdown = (separator, order = 0) => {
@@ -48,8 +48,8 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .then(() => {
         this.getThousandsSeparatorDropdownList(separator)
           [inputOrder]()
-          .should("be.visible")
-          .click();
+          //.should("be.visible")
+          .click({ force: true });
       });
   };
 
@@ -67,22 +67,77 @@ class MathFillInTheBlanksPage extends MathFractionPage {
   clearTemplateInput = () =>
     this.getMathquillBlockId().then(inputElements => {
       const { length } = inputElements[0].children;
-      this.getTemplateInput()
-        .movesCursorToEnd(length)
-        .type("{backspace}".repeat(length || 1), { force: true });
+      if (length > 0) {
+        this.getTemplateInput()
+          .movesCursorToEnd(length)
+          .type("{backspace}".repeat(length || 1), { force: true });
+      }
     });
 
-  setResponseInput = () =>
+  setResponseInput = temp => {
     this.getTemplateInput()
       .click({ force: true })
-      .then(() => this.getMathKeyboardResponse().click({ force: true }));
-
+      .then(ele => {
+        temp.forEach(val => {
+          if (val == "r") {
+            this.getMathKeyboardResponse().click({ force: true });
+          } else {
+            this.getVirtualKeyBoardItem(val).click();
+          }
+        });
+      });
+  };
   setTemplateValue = (keyName, valueAfterEqualSign) => {
     this.clearTemplateInput();
     this.setResponseInput();
     this.getTemplateInput().type(valueAfterEqualSign, { force: true });
     this.setResponseInput();
     this.getVirtualKeyBoardItem(keyName).click();
+  };
+  setValueFill = (input, order = 1) => {
+    const inputOrder = this.getOrder(order);
+    this.clearAnswerValueInput(5);
+    /* this.getMathFormulaAnswers()
+      [inputOrder]().get('[data-cy="math-formula-answer"]') */
+    this.getAnswerValueMathInput().then(ele => {
+      input.forEach((val, key) => {
+        cy.wait(1000);
+        cy.wrap(ele)
+          .eq(key)
+          .type(val, { force: true });
+      });
+    });
+    // .find('textarea')
+    // // .type("{rightarrow}".repeat(10), { force: true })
+    // // .type("{backspace}".repeat(10), { force: true })
+    // .then(element => {
+    //   cy.get("[mathquill-block-id]").then(elements => {
+    //     const newOrder = elements.length === 4 && order === 1 ? 2 : order;
+    //     const { length } = elements[newOrder].innerText;
+    //     cy.wrap(element)
+    //       [inputOrder]()
+    //       .type("{del}".repeat(length === 0 ? 1 : length), { force: true })
+    //       .typeWithDelay(input, { force: true });
+    //   });
+    // });
+  };
+  checkUncheckChecboxFill = (preview, input, expected, checkboxValues, isCorrectAnswer, temp) => {
+    checkboxValues.forEach((checkboxValue, index) => {
+      this.clearTemplateInput();
+      this.setResponseInput(temp);
+      this.setValueFill(input);
+      this.setSeparator(checkboxValue)();
+      this.checkCorrectAnswerWithResponse(expected, preview, input.length, isCorrectAnswer[index]);
+    });
+  };
+  clearAnswerValueInput = length => {
+    this.getAnswerValueMathInput().then(elements => {
+      var len = elements.length;
+      for (let i = 0; i < len; i++)
+        cy.wrap(elements)
+          .eq(i) /* .type('',{force:true}) */
+          .type("{leftarrow}{backspace}{del}".repeat(length || 1), { force: true });
+    });
   };
 }
 

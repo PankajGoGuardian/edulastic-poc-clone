@@ -1,6 +1,8 @@
 import EditToolBar from "../common/editToolBar";
 import TemplateMarkupBar from "../common/templateMarkUpBar";
 import Header from "../../itemDetail/header";
+import EditItemPage from "../../itemDetail/editPage";
+import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class ClozeDropDownPage {
   constructor() {
@@ -11,7 +13,8 @@ class ClozeDropDownPage {
   }
 
   // question content
-  getQuestionEditor = () => cy.xpath("//div[@class='fr-wrapper']//div[@class='fr-element fr-view']");
+  /*   getQuestionEditor = () =>  cy.xpath("//div[@class='fr-wrapper']//div[@class='fr-element fr-view']"); */
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
   // template content
   getTemplateEditor = () => cy.get('[data-placeholder="[This is the template markup]"');
@@ -106,6 +109,45 @@ class ClozeDropDownPage {
   getResponseOnPreview = () => cy.get(".response-btn").should("be.visible");
 
   getShowAnsBoxOnPreview = () => cy.get(".correctanswer-box").should("be.visible");
+
+  createQuestion = (queKey = "default", queIndex = 0, onlyItem = true) => {
+    const item = new EditItemPage();
+    item.createNewItem(onlyItem);
+    item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.CLOZE_DROP_DOWN);
+    cy.fixture("questionAuthoring").then(authoringData => {
+      const { quetext, setAns } = authoringData.DROP_CLOZE[queKey];
+      const ans = setAns.correct;
+      if (quetext) {
+        this.getQuestionEditor().clear({ force: true });
+        quetext.forEach(element => {
+          if (element === "INPUT") cy.get('[data-cmd="textdropdown"]').click({ force: true });
+          else this.getQuestionEditor().type(element, { force: true });
+        });
+      }
+
+      if (setAns.choices) {
+        Object.keys(setAns.choices).forEach((rep, repIndex) => {
+          setAns.choices[rep].forEach((choice, chIndex) => {
+            this.addNewChoiceByResponseIndex(repIndex);
+            this.getChoiceByIndexAndResponseIndex(repIndex, chIndex)
+              .type("{selectall}", { force: true })
+              .type(choice, { force: true });
+          });
+        });
+      }
+
+      if (ans) {
+        Object.keys(ans).forEach((answer, ansIndex) => {
+          this.setChoiceForResponseIndex(ansIndex, ans[answer]);
+        });
+      }
+      if (setAns.point) {
+        this.getPoints()
+          .type("{selectall}")
+          .type(setAns.point);
+      }
+    });
+  };
 }
 
 export default ClozeDropDownPage;

@@ -414,8 +414,11 @@ class AssessmentPlayerDefault extends React.Component {
     );
 
     return (
-      // zoom only in student side, otherwise not
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true }}>
+      /**
+       * zoom only in student side, otherwise not
+       * we need to pass zoomLevel as a theme variable because we should use it in questions
+       */
+      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
         {currentItem > 0 && (
           <Nav.BackArrow onClick={moveToPrev}>
             <i class="fa fa-angle-left" />

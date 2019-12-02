@@ -56,7 +56,6 @@ let config = {
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
     // not really required, since the plugin by itself is doing the same.
     if (process.env.NODE_ENV !== "production") chain.plugin("ReactRefreshPlugin").use(ReactRefreshPlugin);
-
   }
 };
 if (process.env.PUBLIC_URL) {

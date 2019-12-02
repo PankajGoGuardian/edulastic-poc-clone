@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 
@@ -155,7 +156,7 @@ class AnnotationsRnd extends Component {
             const { value } = annotation;
 
             return (
-              <Rnd
+              <StyledRnd
                 key={annotation.id}
                 position={{
                   x,
@@ -180,7 +181,7 @@ class AnnotationsRnd extends Component {
                 <FroalaInput {...this.props} isRnd>
                   <ValueWrapper dangerouslySetInnerHTML={{ __html: value }} />
                 </FroalaInput>
-              </Rnd>
+              </StyledRnd>
             );
           })}
       </Fragment>
@@ -201,3 +202,22 @@ AnnotationsRnd.defaultProps = {
 };
 
 export default AnnotationsRnd;
+
+const StyledRnd = styled(Rnd)`
+  ${({ theme, position }) => {
+    const { zoomLevel, shouldZoom } = theme;
+    if (shouldZoom && zoomLevel > 1) {
+      const { x, y } = position;
+      /**
+       * This case will be applied in student side, otherwise not.
+       * react-rnd is using transform property for positioning,
+       * and that's causing EV-9459 issue which is container alignment changes with Zoom.
+       */
+      return `
+        transform: translate(${x}px, ${y}px) !important;
+        transform-origin: left top;
+      `;
+    }
+    return null;
+  }}
+`;

@@ -34,7 +34,7 @@ const Response = ({
   const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
 
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
-  const isOverContent = btnStyle.width < contentWidth;
+  const isOverContent = btnStyle.width < contentWidth + 35; // 35 is will be ellipsis width
 
   const popoverContent = (
     <PopoverContent

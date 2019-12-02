@@ -256,7 +256,13 @@ const PerformanceAnalysisTable = ({
   const getAnalysisColumns = () => [
     compareByColumns[compareBy],
     makeOverallColumn(),
-    ...makeStandardColumns(tableData)
+    ...makeStandardColumns(tableData),
+    {
+      title: "SIS ID",
+      dataIndex: "sisId",
+      key: "sisId",
+      visibleOn: ["csv"]
+    }
   ];
 
   /**

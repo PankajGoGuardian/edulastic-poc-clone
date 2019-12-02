@@ -397,7 +397,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       masteryLevel,
       masteryName,
       color: fm ? getHSLFromRange1(((Math.round(fm) - 1) / masteryScale.length) * 100) : white,
-
+      sisId: groupedData[item][0].sisId,
       standardsInfo
     };
 

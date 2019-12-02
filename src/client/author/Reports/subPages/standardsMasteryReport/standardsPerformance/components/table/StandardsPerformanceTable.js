@@ -130,7 +130,14 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
       sorter: getOverallColSorter(analyseByKey, scaleInfo),
       render: (_, record) => getOverallValue(record, analyseByKey, scaleInfo)
     },
-    ...domainCols
+    ...domainCols,
+    {
+      title: "SIS ID",
+      dataIndex: "sisId",
+      key: "sisId",
+      visibleOn: ["csv"],
+      render: (_, record) => record.rowInfo.sisId || ""
+    }
   ];
 
   return cols;

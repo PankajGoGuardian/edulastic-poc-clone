@@ -217,6 +217,12 @@ export const StandardsGradebookTable = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
         }
+      },
+      {
+        title: "SIS ID",
+        dataIndex: "sisId",
+        key: "sisId",
+        visibleOn: ["csv"]
       }
     ];
 

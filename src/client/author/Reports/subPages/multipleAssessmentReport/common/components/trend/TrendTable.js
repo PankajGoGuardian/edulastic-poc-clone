@@ -161,6 +161,12 @@ const getColumns = (
       align: "center",
       visibleOn: ["csv"],
       render: (trend, record) => capitalize(trend)
+    },
+    {
+      title: "SIS ID",
+      dataIndex: "sisId",
+      key: "sisId",
+      visibleOn: ["csv"]
     }
   ];
 

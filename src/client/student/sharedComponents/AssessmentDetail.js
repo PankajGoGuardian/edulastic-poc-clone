@@ -33,12 +33,15 @@ const AssessmentDetails = ({
   safeBrowser,
   graded = assignmentStatus.GRADED,
   absent,
-  isPaused
+  isPaused,
+  lastAttempt
 }) => {
   const status =
     started || resume
       ? `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`
       : `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
+
+  const { endDate } = lastAttempt;
 
   return (
     <Wrapper>
@@ -60,16 +63,17 @@ const AssessmentDetails = ({
               : t("common.common")}
           </TestType>
         </CardTitle>
-        {!!dueDate && (
+        {!!(endDate || dueDate) && (
           <CardDate>
             <Icon type={theme.assignment.cardTimeIconType} />
             <DueDetails data-cy="date">
               {type === "assignment"
                 ? new Date(startDate) > new Date()
-                  ? `${t("common.opensIn")} ${formatDateAndTime(startDate)} and ${t("common.dueOn")}`
-                  : t("common.dueOn")
-                : t("common.finishedIn")}{" "}
-              {formatDateAndTime(dueDate)}
+                  ? `${t("common.opensIn")} ${formatDateAndTime(startDate)} and ${t(
+                      "common.dueOn"
+                    )} ${formatDateAndTime(dueDate)}`
+                  : `${t("common.dueOn")} ${formatDateAndTime(dueDate)}`
+                : `${t("common.completedOn")} ${formatDateAndTime(endDate)}`}
             </DueDetails>
           </CardDate>
         )}

@@ -120,7 +120,11 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
       : {}
     ).closedDate;
   }
-  const lastAttempt = last(reports) || {};
+
+  const lastAttempt =
+    maxBy(reports, o => {
+      return parseInt(o.createdAt);
+    }) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
   const absent = lastAttempt.status == 2;
@@ -269,6 +273,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         graded={graded}
         absent={absent}
         isPaused={isPaused}
+        lastAttempt={lastAttempt}
       />
       <ButtonAndDetail>
         <DetailContainer>

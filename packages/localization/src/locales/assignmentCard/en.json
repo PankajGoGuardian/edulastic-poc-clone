@@ -25,6 +25,7 @@
     "NOT_GRADED": "NOT GRADED",
     "IN GRADING": "IN GRADING",
     "absent": "ABSENT",
-    "submitted": "SUBMITTED"
+    "submitted": "SUBMITTED",
+    "completedOn": "Completed On"
   }
 }

@@ -322,24 +322,18 @@ const ActionContainer = ({
                     <span>Disable Text to Speech</span>
                   </MenuItems>
                 ) : null}
-                {studentSettings ? (
-                  <MenuItems key="deleteStudent">
-                    <IconRemove />
-                    <span>Remove Students</span>
-                  </MenuItems>
-                ) : null}
-                {studentSettings ? (
-                  <MenuItems key="resetPwd">
-                    <IconCircle />
-                    <span>Reset Password</span>
-                  </MenuItems>
-                ) : null}
-                {studentSettings ? (
-                  <MenuItems key="editStudent">
-                    <IconPencilEdit />
-                    <span>Edit Stduent</span>
-                  </MenuItems>
-                ) : null}
+                <MenuItems key="deleteStudent">
+                  <IconRemove />
+                  <span>Remove Students</span>
+                </MenuItems>
+                <MenuItems key="resetPwd">
+                  <IconCircle />
+                  <span>Reset Password</span>
+                </MenuItems>
+                <MenuItems key="editStudent">
+                  <IconPencilEdit />
+                  <span>Edit Stduent</span>
+                </MenuItems>
                 {addCoTeacher ? (
                   <MenuItems key="addCoTeacher">
                     <IconPlus />

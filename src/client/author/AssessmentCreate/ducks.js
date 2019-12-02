@@ -220,7 +220,7 @@ function* createAssessmentSaga({ payload }) {
       };
       const newAssessment = {
         ...initialTestState,
-        title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
+        title: undefined,
         createdBy: {
           id: user._id,
           name

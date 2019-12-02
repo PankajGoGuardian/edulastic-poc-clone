@@ -88,12 +88,13 @@ class Container extends React.Component {
   };
 
   componentDidMount() {
-    const { match, receiveTestById, getDefaultTestSettings } = this.props;
+    const { match, receiveTestById, getDefaultTestSettings, changeView } = this.props;
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
     window.onbeforeunload = () => {
       return this.beforeUnload();
     };
+    changeView(tabs.DESCRIPTION);
   }
 
   componentWillUnmount() {
@@ -131,8 +132,19 @@ class Container extends React.Component {
   }
 
   handleChangeCurrentTab = tab => () => {
-    const { changeView } = this.props;
-    changeView(tab);
+    const {
+      changeView,
+      currentTab,
+      assessment: { title }
+    } = this.props;
+
+    if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
+      changeView(tab);
+    } else if (currentTab !== tabs.DESCRIPTION) {
+      changeView(tab);
+    } else {
+      message.error("Please enter test name.");
+    }
   };
 
   handleSave = async () => {

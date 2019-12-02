@@ -48,7 +48,7 @@ const Summary = ({
   onChangeColor,
   addNewTag,
   onChangeSubjects,
-  isEditable = true
+  isEditable = false
 }) => {
   const handleChangeField = (field, value) => {
     if (field === "thumbnail") {

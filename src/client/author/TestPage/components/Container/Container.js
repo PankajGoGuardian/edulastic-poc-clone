@@ -165,7 +165,6 @@ class Container extends PureComponent {
 
     if (editAssigned) {
       setRegradeOldId(match.params.id);
-      this.setState({ editEnable: true });
     } else {
       setRegradeOldId("");
     }
@@ -681,5 +680,7 @@ const enhance = compose(
     }
   )
 );
+
+Container.displayName = "TestPage";
 
 export default enhance(Container);

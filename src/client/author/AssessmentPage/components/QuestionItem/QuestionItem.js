@@ -256,14 +256,9 @@ class QuestionItem extends React.Component {
 
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], data } = this.props;
-    const {
-      score,
-      maxScore = get(data, "validation.validResponse.score", 0),
-      feedback: teacherComments,
-      graded,
-      skipped,
-      ...rest
-    } = previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
+    const maxScore = get(data, "validation.validResponse.score", 0);
+    const { score, feedback: teacherComments, graded, skipped, ...rest } =
+      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
 
     return (
       <>
@@ -283,8 +278,11 @@ class QuestionItem extends React.Component {
 
   render() {
     const { dragging } = this.state;
+    if (!this.props?.data?.id) {
+      return null;
+    }
     const {
-      data: { id, qIndex, type },
+      data: { id, qIndex, type } = {},
       index,
       review,
       viewMode,

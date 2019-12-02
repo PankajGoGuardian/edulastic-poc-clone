@@ -15,10 +15,8 @@ const getActivityFromPropsSelector = (state, props) => props.activity;
 
 const isReviewTabSelector = (state, props) => !!props.isReviewTab;
 const getQuestionIdFromPropsSelector = (state, props) => {
-  const {
-    data: { id },
-    questionId
-  } = props;
+  const id = props?.data?.id;
+  const questionId = props?.questionId;
   return questionId || id;
 };
 const getQuestionSelector = (state, props) => {

@@ -20,7 +20,7 @@ export default WrappedComponent => {
     ...props
   }) => {
     const { data: question } = props;
-    const questionId = getQuestionId(question.id);
+    const questionId = getQuestionId(question?.id);
     const answerContext = useContext(AnswerContext);
 
     const saveAnswer = data => {
@@ -55,11 +55,13 @@ export default WrappedComponent => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, props) => ({
-        userAnswer: getUserAnswerSelector(state, props),
-        userPrevAnswer: getUserPrevAnswerSelector(state, props),
-        evaluation: getEvaluationByIdSelector(state, props)
-      }),
+      (state, props) => {
+        return {
+          userAnswer: getUserAnswerSelector(state, props),
+          userPrevAnswer: getUserPrevAnswerSelector(state, props),
+          evaluation: getEvaluationByIdSelector(state, props)
+        };
+      },
       {
         setUserAnswer: setUserAnswerAction
       }

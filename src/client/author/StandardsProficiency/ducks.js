@@ -208,6 +208,7 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
     const districtId = yield select(getUserOrgId);
     yield call(settingsApi.deleteStandardsProficiency, _id, districtId);
     yield put(receiveStandardsProficiencyAction());
+    yield call(message.success, "Standard Proficiency profile deleted successfully.");
   } catch (err) {
     console.warn("error deleting standardsProf", err);
     yield call(message.error, "Deleting standards proficiency failed");

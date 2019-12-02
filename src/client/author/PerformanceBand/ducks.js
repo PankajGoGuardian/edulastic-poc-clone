@@ -206,6 +206,7 @@ function* deletePerformanceBandSaga({ payload }) {
     const createPerformanceBand = yield call(settingsApi.deletePerformanceBand, payload, districtId);
     yield put(setLoadingAction(false));
     yield put(receivePerformanceBandAction());
+    yield call(message.success, "Performance Band profile deleted successfully.");
   } catch (err) {
     const errorMessage = "deleting PerformanceBand is failing";
     yield call(message.error, errorMessage);

@@ -40,7 +40,8 @@ import {
   CalculatorContainer,
   ToolTipContainer,
   MainActionWrapper,
-  LogoCompact
+  LogoCompact,
+  Nav
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
@@ -357,7 +358,7 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad;
 
     // calculate width of question area
-    const availableWidth = windowWidth - 70;
+    const availableWidth = windowWidth - 170;
     let responsiveWidth = availableWidth;
     let zoomLevel = _zoomLevel;
 
@@ -415,6 +416,16 @@ class AssessmentPlayerDefault extends React.Component {
     return (
       // zoom only in student side, otherwise not
       <ThemeProvider theme={{ ...themeToPass, shouldZoom: true }}>
+        {currentItem > 0 && (
+          <Nav.BackArrow onClick={moveToPrev}>
+            <i class="fa fa-angle-left" />
+          </Nav.BackArrow>
+        )}
+        {currentItem < items.length - 1 && (
+          <Nav.NextArrow onClick={moveToNext}>
+            <i class="fa fa-angle-right" />
+          </Nav.NextArrow>
+        )}
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
           {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools

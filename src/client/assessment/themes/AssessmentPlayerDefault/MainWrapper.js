@@ -5,7 +5,7 @@ const MainWrapper = styled.section`
   background-color: ${props =>
     props.hasCollapseButtons ? "transparent" : props.theme.widgets.assessmentPlayers.mainContentBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
-  min-height: 100vh;
+  min-height: calc(100vh - 105px);
   box-sizing: border-box;
   padding: 0px;
   text-align: left;
@@ -14,7 +14,7 @@ const MainWrapper = styled.section`
   max-width: 100%;
   transform: ${({ zoomLevel }) => zoomLevel && `scale(${zoomLevel})`};
   transform-origin: top left;
-
+  margin: auto;
   @media (max-width: 1100px) {
     width: ${({ zoomLevel }) => zoomLevel <= "1" && `100%`};
   }

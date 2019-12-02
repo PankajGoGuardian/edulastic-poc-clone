@@ -5,6 +5,7 @@ export { default as MobileMainMenu } from "./MobileMainMenu";
 export { default as Blank } from "./Blank";
 export { default as Container } from "./Container";
 export { default as ControlBtn } from "./ControlBtn";
+export { default as Nav } from "./Nav";
 export { default as DesktopMainMenu } from "./DesktopMainMenu";
 export { default as FlexContainer } from "./FlexContainer";
 export { default as Header } from "./Header";

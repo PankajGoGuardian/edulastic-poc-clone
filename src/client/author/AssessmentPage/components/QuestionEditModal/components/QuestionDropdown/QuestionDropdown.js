@@ -35,7 +35,7 @@ export default class QuestionDropdown extends React.Component {
     }
   };
 
-  currentOptions() {
+  get currentOptions() {
     const {
       question: { options }
     } = this.props;
@@ -43,20 +43,20 @@ export default class QuestionDropdown extends React.Component {
   }
 
   handleSortEnd = ({ oldIndex, newIndex }) => {
-    const nextOptions = arrayMove(this.currentOptions(), oldIndex, newIndex);
+    const nextOptions = arrayMove(this.currentOptions, oldIndex, newIndex);
 
     this.updateOptions(nextOptions);
   };
 
   handleAdd = () => {
-    const nextOptions = this.currentOptions();
+    const nextOptions = this.currentOptions;
     nextOptions.push(`New Choice ${nextOptions.length + 1}`);
 
     this.updateOptions(nextOptions);
   };
 
   handleRemove = itemIndex => {
-    const nextOptions = this.currentOptions();
+    const nextOptions = this.currentOptions;
     const removingValue = nextOptions[itemIndex];
     const validValue = this.props.question?.validation?.validResponse?.value?.[0]?.value;
     nextOptions.splice(itemIndex, 1);
@@ -86,7 +86,7 @@ export default class QuestionDropdown extends React.Component {
   };
 
   handleOptionChange = (itemIndex, event) => {
-    const nextOptions = this.currentOptions();
+    const nextOptions = this.currentOptions;
 
     nextOptions[itemIndex] = event.target.value;
 
@@ -138,7 +138,7 @@ export default class QuestionDropdown extends React.Component {
           <FormGroup>
             <FormLabel>Choices</FormLabel>
             <SortableList
-              items={this.currentOptions()}
+              items={this.currentOptions}
               onSortEnd={this.handleSortEnd}
               dirty
               useDragHandle
@@ -155,8 +155,8 @@ export default class QuestionDropdown extends React.Component {
               style={{ marginRight: "20px", minWidth: "200px" }}
               getPopupContainer={trigger => trigger.parentNode}
             >
-              {this.currentOptions().map((option, index) => (
-                <Select.Option key={index} value={option}>
+              {this.currentOptions.map((option, key) => (
+                <Select.Option key={key} value={option}>
                   {option}
                 </Select.Option>
               ))}

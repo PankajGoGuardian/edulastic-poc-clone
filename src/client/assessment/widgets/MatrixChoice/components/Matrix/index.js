@@ -58,7 +58,14 @@ const Matrix = props => {
         label={options[columnIndex]}
         isMultiple={isMultiple}
         smallSize={smallSize}
-      />
+      >
+        {evaluation && checked && (
+          <IconWrapper correct={correct}>
+            {correct === true && <IconCheck />}
+            {correct === "incorrect" && <IconClose />}
+          </IconWrapper>
+        )}
+      </MatrixCell>
     );
   };
 
@@ -79,26 +86,6 @@ const Matrix = props => {
 
   const stemTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle || "" }} />;
   const optionRowTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || "" }} />;
-
-  if (evaluation && evaluation.length > 0) {
-    optionsData.push({
-      title: "",
-      dataIndex: options.length,
-      key: options.length,
-      render: ({ value, index }) => {
-        let correct = value === true ? true : value === false ? "incorrect" : false;
-        if (!Array.isArray(response.value[index])) {
-          correct = false;
-        }
-        return (
-          <IconWrapper correct={correct}>
-            {correct === true && <IconCheck />}
-            {correct === "incorrect" && <IconClose />}
-          </IconWrapper>
-        );
-      }
-    });
-  }
 
   let columns = [
     {

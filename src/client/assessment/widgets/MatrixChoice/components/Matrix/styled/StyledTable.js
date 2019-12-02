@@ -63,11 +63,6 @@ export const StyledTable = styled(Table)`
       td:nth-of-type(1) div {
         min-width: 50px;
       }
-
-      td:last-child,
-      th:last-child {
-        min-width: ${props => props.evaluated && 0};
-      }
     }
 
     tr:last-child {

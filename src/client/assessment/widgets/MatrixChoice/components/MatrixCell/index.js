@@ -16,7 +16,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   }
 
   return (
-    <Wrapper smallSize={smallSize} correct={correct}>
+    <Wrapper smallSize={smallSize} correct={checked && correct}>
       {input}
       {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} className={"inline-label"} />}
       {children}

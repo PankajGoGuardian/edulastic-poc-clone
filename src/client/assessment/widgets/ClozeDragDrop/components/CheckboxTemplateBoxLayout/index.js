@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, measureText } from "@edulastic/common";
 import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
 import Draggable from "../Draggable";
@@ -50,16 +50,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.maxWidth = maxWidth;
   }
 
-  const lessMinWidth = parseInt(btnStyle.maxWidth, 10) < dimensions.minWidthShowAnswer;
-  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
-
-  const indexStyle = {};
-  if (lessMinWidth) {
-    btnStyle.minWidth = "unset";
-    indexStyle.width = "10px";
-    indexStyle.minWidth = "unset";
-  }
-
   const getFormulaLabel = () => {
     let formulaLabel = "";
     if (!hasGroupResponses && userSelections[dropTargetIndex]) {
@@ -83,8 +73,22 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     return formulaLabel;
   };
 
+  const lessMinWidth = parseInt(btnStyle.maxWidth, 10) < dimensions.minWidthShowAnswer;
+  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
+
+  const { scrollWidth } = measureText(getFormulaLabel(), { ...btnStyle, maxWidth: btnStyle.maxWidth + 20 });
+
+  const showPopover = scrollWidth > btnStyle.maxWidth;
+
+  const indexStyle = {};
+  if (lessMinWidth) {
+    btnStyle.minWidth = "unset";
+    indexStyle.width = "10px";
+    indexStyle.minWidth = "unset";
+  }
+
   const getLabel = () => (
-    <CheckboxContainer width={btnStyle.maxWidth}>
+    <CheckboxContainer width={btnStyle.maxWidth} showAnswer={showAnswer}>
       <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
     </CheckboxContainer>
   );
@@ -111,9 +115,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
       <span
         style={{
-          justifyContent: "center",
+          justifyContent: showPopover ? null : "center",
           padding: lessMinWidth ? "8px 0px" : null,
-          paddingRight: showAnswer && !lessMinWidth ? 75 : 30
+          paddingRight: showAnswer && !lessMinWidth && 30
         }}
         className="text"
       >
@@ -121,7 +125,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       </span>
 
       {(!showAnswer || (showAnswer && !lessMinWidth)) && (
-        <IconWrapper rightPosition={lessMinWidth ? "0" : "4"}>
+        <IconWrapper rightPosition={0} correct={status === "right"}>
           {choiceAttempted && status === "right" && <RightIcon />}
           {choiceAttempted && status === "wrong" && <WrongIcon />}
         </IconWrapper>
@@ -151,10 +155,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
             userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
         >
-          {choiceAttempted && (
+          {choiceAttempted && showPopover ? (
             <Popover overlayClassName="customTooltip" content={popoverContent}>
               {content}
             </Popover>
+          ) : (
+            content
           )}
           {!choiceAttempted && content}
         </Draggable>

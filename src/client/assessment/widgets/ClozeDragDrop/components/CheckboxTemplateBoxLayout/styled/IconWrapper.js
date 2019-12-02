@@ -8,4 +8,5 @@ export const IconWrapper = styled.div`
   width: 15px;
   align-items: center;
   justify-content: center;
+  background: ${({ correct }) => (correct ? "#d3fea6" : "#fce0e8")};
 `;

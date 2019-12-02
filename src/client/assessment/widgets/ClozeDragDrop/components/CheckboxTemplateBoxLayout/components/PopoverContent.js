@@ -28,7 +28,11 @@ const PopoverContent = ({
       </div>
       <div className="text container">
         <div>{answer}</div>
-        <IconWrapper rightPosition={10} style={{ top: "50%", transform: "translateY(-50%)" }}>
+        <IconWrapper
+          rightPosition={0}
+          correct={status === "right"}
+          style={{ top: "50%", transform: "translateY(-50%)" }}
+        >
           {answer && status === "right" && <RightIcon />}
           {answer && status === "wrong" && <WrongIcon />}
         </IconWrapper>

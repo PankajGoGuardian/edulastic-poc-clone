@@ -244,15 +244,19 @@ function* saveAssignment({ payload }) {
       removeDuplicates: !!payload.removeDuplicates,
       allowDuplicates: !!payload.allowDuplicates
     });
-    //TODO remove all below codes expect route and success message as the stores are not being used. and saving assignment will just navigate user to the next route
-    const assignment = formatAssignment(result[0]);
-    const successMessage = `${payload.playlistModuleId ? "Module" : "Test"} successfully assigned`;
-    yield call(message.success, successMessage);
+    const assignment = result?.[0] ? formatAssignment(result[0]) : {};
+
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
-    const assignmentId = result[0]._id;
+    const assignmentId = assignment._id;
+    if (!assignmentId && !payload.playlistModuleId) {
+      yield put(push("/author/assignments"));
+    }
+    const successMessage = `${payload.playlistModuleId ? "Module" : "Test"} successfully assigned`;
+    yield call(message.success, successMessage);
+    if (!assignmentId && !payload.playlistModuleId) return;
     yield put(
       push(
         `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${

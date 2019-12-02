@@ -58,7 +58,8 @@ const ClassificationPreview = ({
     wrapperStyle: {
       display: "flex",
       flexDirection: direction,
-      overflow: "auto"
+      overflow: "auto",
+      justifyContent: "center"
     },
     dragItemsContainerStyle: {
       display: "flex",

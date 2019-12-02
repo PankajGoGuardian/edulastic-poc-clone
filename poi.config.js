@@ -54,7 +54,9 @@ let config = {
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
     chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
-    chain.plugin("ReactRefreshPlugin").use(ReactRefreshPlugin);
+    // not really required, since the plugin by itself is doing the same.
+    if (process.env.NODE_ENV !== "production") chain.plugin("ReactRefreshPlugin").use(ReactRefreshPlugin);
+
   }
 };
 if (process.env.PUBLIC_URL) {

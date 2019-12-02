@@ -1,4 +1,4 @@
-module.exports = {
+const commonConfig = {
   presets: [
     [
       "poi/babel",
@@ -21,4 +21,16 @@ module.exports = {
     "babel-plugin-styled-components",
     "react-refresh/babel"
   ]
+};
+
+module.exports = {
+  env: {
+    production: commonConfig,
+
+    // development environment
+    development: {
+      ...commonConfig,
+      plugins: [...commonConfig.plugins, "react-refresh/babel"]
+    }
+  }
 };

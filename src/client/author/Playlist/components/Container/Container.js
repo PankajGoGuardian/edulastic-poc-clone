@@ -288,7 +288,7 @@ class TestList extends Component {
       return (
         <NoDataNotification
           heading={"Playlists not available"}
-          description={`There are no playlists found for this filter.You can create new playlist by clicking the "NEW PLAYLIST" button.`}
+          description={`There are no playlists found for this filter. You can create new playlist by clicking the "NEW PLAYLIST" button.`}
         />
       );
     }

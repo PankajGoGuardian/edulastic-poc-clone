@@ -25,6 +25,8 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
     const _w = width + (type === "number" ? 14 : 2);
     if (width < maxWidth && width > (parseInt(style.width, 10) || 140)) {
       em.style.width = `${_w}px`;
+    } else if (width > maxWidth) {
+      em.style.width = `600px`;
     }
     if (width > maxWidth) {
       em.style.overflow = "hidden";

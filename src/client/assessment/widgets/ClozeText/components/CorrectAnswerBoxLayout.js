@@ -19,7 +19,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeratio
       {userAnswers
         .sort((a, b) => a.index - b.index)
         .map(answer => {
-          const content = <AnswerContent>{answer.value}</AnswerContent>;
+          const content = <AnswerContent style={{ whiteSpace: "normal" }}>{answer.value}</AnswerContent>;
           return (
             <AnswerBox key={answer.id}>
               <IndexBox>{getStemNumeration(stemNumeration, answer.index)}</IndexBox>

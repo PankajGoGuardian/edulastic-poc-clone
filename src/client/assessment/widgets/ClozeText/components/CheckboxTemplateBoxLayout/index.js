@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import { find, get } from "lodash";
-import styled from "styled-components";
 import { Popover } from "antd";
 import PropTypes from "prop-types";
 import { measureText } from "@edulastic/common";
@@ -38,8 +37,25 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   }, [userAnswer]);
 
-  const popoverContent = <PopoverContent>{userAnswer}</PopoverContent>;
   const attempt = !!userAnswer && evaluation[choiceId] !== undefined;
+  const popoverContent = (
+    <AnswerBox
+      checked={attempt}
+      style={{ ...btnStyle, width: boxWidth, height: "auto" }}
+      correct={evaluation[choiceId]}
+      onClick={handleClick}
+    >
+      {!checkAnswer && (
+        <IndexBox checked={!!userAnswer} correct={evaluation[choiceId]}>
+          {stemNumeration}
+        </IndexBox>
+      )}
+      <AnswerContent style={{ whiteSpace: "normal" }} showIndex={!checkAnswer}>
+        {userAnswer}
+      </AnswerContent>
+      {attempt && <CheckMark correct={evaluation[choiceId]} />}
+    </AnswerBox>
+  );
 
   return (
     <Popover content={popoverContent} visible={showPopover && btnStyle.width < boxWidth}>
@@ -74,10 +90,3 @@ CheckboxTemplateBoxLayout.defaultProps = {
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);
-
-const PopoverContent = styled.div`
-  max-width: 600px;
-  overflow-wrap: break-word;
-  word-break: break-all;
-  white-space: normal;
-`;

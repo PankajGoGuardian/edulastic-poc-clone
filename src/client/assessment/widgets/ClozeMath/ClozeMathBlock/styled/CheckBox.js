@@ -15,6 +15,7 @@ export const CheckBox = styled.div`
   border-radius: 5px;
   padding-right: 24px;
   background: ${lightGrey4};
+  vertical-align: middle;
 
   .index {
     background: ${darkGrey};

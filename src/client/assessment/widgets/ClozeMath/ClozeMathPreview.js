@@ -230,8 +230,4 @@ const QuestionWrapper = styled.div`
   li {
     margin: 4px 0;
   }
-  .jsx-parser p {
-    display: inline-flex;
-    align-items: center;
-  }
 `;

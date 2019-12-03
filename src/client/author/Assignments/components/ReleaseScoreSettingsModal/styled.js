@@ -11,3 +11,8 @@ export const ReleaseGradesModal = styled(ConfirmationModal)`
     }
   }
 `;
+
+export const Info = styled.div`
+  font-weight: 500;
+  margin-top: 20px;
+`;

@@ -34,7 +34,8 @@ const {
   evalTypeLabels,
   completionTypes,
   testContentVisibilityTypes,
-  testContentVisibility: testContentVisibilityOptions
+  testContentVisibility: testContentVisibilityOptions,
+  releaseGradeLabels
 } = test;
 
 const Settings = ({
@@ -147,7 +148,7 @@ const Settings = ({
 
         {/* Release score */}
         <StyledRowSelect gutter={16}>
-          <Col span={10}>Release Scores</Col>
+          <Col span={10}>Release Scores {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Col>
           <Col span={14}>
             <StyledSelect
               data-cy="selectRelaseScore"

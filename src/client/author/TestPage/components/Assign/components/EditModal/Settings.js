@@ -5,7 +5,7 @@ import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAt
 //selectors
 import { test } from "@edulastic/constants";
 import styled from "styled-components";
-const { releaseGradeTypes, calculatorKeys, calculators } = test;
+const { releaseGradeTypes, calculatorKeys, calculators, releaseGradeLabels } = test;
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 
@@ -68,7 +68,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       {/* Release score */}
       <StyledRowSettings gutter={16}>
         <Col span={8}>
-          <RowTitle>Release Scores Automatically</RowTitle>
+          <RowTitle>Release Scores {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</RowTitle>
         </Col>
         <Col span={16}>
           <AlignRight value={releaseScore} onChange={e => overRideSettings("releaseScore", e.target.value)}>

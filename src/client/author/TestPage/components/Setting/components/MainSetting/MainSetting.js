@@ -406,7 +406,7 @@ class MainSetting extends Component {
               ""
             )}
             <Block id="release-scores" smallSize={isSmallSize}>
-              <Title>Release Scores</Title>
+              <Title>Release Scores {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Title>
               <Body smallSize={isSmallSize}>
                 <StyledRadioGroup
                   disabled={!owner || !isEditable}
@@ -419,15 +419,6 @@ class MainSetting extends Component {
                     </Radio>
                   ))}
                 </StyledRadioGroup>
-                <Description>
-                  {"Select "}
-                  <BlueText>ON</BlueText>
-                  {" for students to see their scores instantly after submission."}
-                  <br />
-                  {"Select "}
-                  <BlueText>OFF</BlueText>
-                  {" to manually control when students get to see their scores."}
-                </Description>
               </Body>
             </Block>
             {availableFeatures.includes("assessmentSuperPowersRequireSafeExamBrowser") ? (

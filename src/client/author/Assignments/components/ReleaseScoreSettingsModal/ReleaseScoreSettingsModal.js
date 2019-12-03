@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Modal, Button, Radio, Row } from "antd";
+import { Button, Radio, Row } from "antd";
 import { test } from "@edulastic/constants";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import { ReleaseGradesModal } from "./styled";
+import { ReleaseGradesModal, Info } from "./styled";
 
-const { releaseGradeTypes } = test;
+const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 const ReleaseScoreSettingsModal = ({
   showReleaseGradeSettings,
@@ -14,33 +14,41 @@ const ReleaseScoreSettingsModal = ({
   releaseScore = "",
   features
 }) => {
-  const releaseScoreRef = useRef();
+  const [releaseGradeValue, setReleaseGradeValue] = useState(releaseScore);
+  useEffect(() => {
+    //release score will only change on test activity receive succes
+    if (releaseGradeValue !== releaseScore) setReleaseGradeValue(releaseScore);
+  }, [releaseScore]);
   let _releaseGradeKeys = releaseGradeKeys;
   if (!features.assessmentSuperPowersReleaseScorePremium) {
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
   }
   return (
     <ReleaseGradesModal
+      centered
       visible={showReleaseGradeSettings}
-      title="Release Grades"
+      title={`Release Scores ${
+        releaseGradeValue !== "" ? (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]") : ""
+      }`}
       onOk={onCloseReleaseScoreSettings}
       onCancel={onCloseReleaseScoreSettings}
       textAlign="left"
+      destroyOnClose={true}
       footer={[
-        <Button key="back" onClick={onCloseReleaseScoreSettings}>
+        <Button ghost key="back" onClick={onCloseReleaseScoreSettings}>
           Cancel
         </Button>,
         <Button
           data-cy="apply"
           key="submit"
           type="primary"
-          onClick={() => updateReleaseScoreSettings(releaseScoreRef.current.state.value)}
+          onClick={() => updateReleaseScoreSettings(releaseGradeValue)}
         >
           Apply
         </Button>
       ]}
     >
-      <Radio.Group defaultValue={releaseScore} ref={releaseScoreRef}>
+      <Radio.Group value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>
         {_releaseGradeKeys.map((item, index) => (
           <Row key={index}>
             <Radio data-cy={item} value={item} key={item}>
@@ -49,6 +57,18 @@ const ReleaseScoreSettingsModal = ({
           </Row>
         ))}
       </Radio.Group>
+      {!!releaseGradeValue &&
+        (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
+          <Info>
+            <i class="fa fa-info-circle" aria-hidden="true" /> This setting will be retained and the scores will not be
+            released to the students
+          </Info>
+        ) : (
+          <Info>
+            <i class="fa fa-info-circle" aria-hidden="true" /> This setting will be retained and scores will be released
+            automatically when students complete the assignment
+          </Info>
+        ))}
     </ReleaseGradesModal>
   );
 };

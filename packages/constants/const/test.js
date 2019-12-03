@@ -9,7 +9,7 @@ module.exports = {
     { id: "test-type", title: "Test Type" },
     { id: "maximum-attempts-allowed", title: "Maximum Attempts Allowed" },
     { id: "mark-as-done", title: "Mark as Done" },
-    { id: "release-scores", title: "Release Scores Automatically" },
+    { id: "release-scores", title: "Release Scores" },
     { id: "require-safe-exame-browser", title: "Require Safe Exam Browser" },
     { id: "show-questions", title: "Release Answers with Grades" },
     { id: "suffle-question", title: "Shuffle Questions" },

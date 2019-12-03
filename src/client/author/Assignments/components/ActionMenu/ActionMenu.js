@@ -78,7 +78,7 @@ const ActionMenu = (
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={responsiveIcon} />
             <SpaceElement />
-            Release Grades
+            Release Scores
           </StyledLink>
         </Menu.Item>
         <Menu.Item

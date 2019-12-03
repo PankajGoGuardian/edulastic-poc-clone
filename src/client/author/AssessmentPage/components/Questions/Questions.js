@@ -117,28 +117,7 @@ const mathData = {
   uiStyle: {
     type: "floating-keyboard"
   },
-  numberPad: [
-    "7",
-    "8",
-    "9",
-    "\\div",
-    "4",
-    "5",
-    "6",
-    "\\times",
-    "1",
-    "2",
-    "3",
-    "-",
-    "0",
-    ".",
-    ",",
-    "+",
-    "left_move",
-    "right_move",
-    "Backspace",
-    "="
-  ],
+  numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
   symbols: ["basic", "units_si", "units_us"],
   template: ""
 };

@@ -236,7 +236,7 @@ class TestList extends Component {
       searchString
     };
 
-    this.updateFilterState({ key: "searchString", value: searchString });
+    this.updateFilterState(newSearch, true);
     this.searchTest(newSearch);
   };
 
@@ -334,9 +334,10 @@ class TestList extends Component {
   };
 
   handleClearFilter = () => {
-    const { history, mode, limit } = this.props;
+    const { history, mode, limit, receiveTests } = this.props;
     this.updateFilterState(emptyFilters, true);
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
+    receiveTests({ page: 1, limit, search: emptyFilters });
   };
 
   handleStyleChange = blockStyle => {
@@ -544,7 +545,7 @@ class TestList extends Component {
     }
 
     updatedKeys["filter"] = filter;
-    this.updateFilterState({ key: "filter", value: filter });
+    this.updateFilterState(updatedKeys, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
     history.push(`/author/tests?${queryParams}`);

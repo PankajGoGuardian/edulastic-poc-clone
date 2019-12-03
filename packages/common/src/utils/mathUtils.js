@@ -10,6 +10,9 @@ export const getMathHtml = latex => {
 };
 
 export const replaceLatexesWithMathHtml = val => {
+  if (!window.$) {
+    return val;
+  }
   // Detecting latexes
   const jqueryEl = $(`<p/>`).append(val);
   const latexHtmls = jqueryEl.find("span.input__math");

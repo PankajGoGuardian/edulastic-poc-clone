@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus, MathSpan, QuestionNumberLabel } from "@edulastic/common";
+import { Stimulus, MathSpan, QuestionNumberLabel, measureText } from "@edulastic/common";
 import { response, clozeImage, ChoiceDimensions } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -124,6 +124,7 @@ const getPossibleResps = (snapItems, possibleResps) => {
 
 class Display extends Component {
   previewContainerRef = React.createRef();
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState !== undefined) {
       const {
@@ -317,6 +318,14 @@ class Display extends Component {
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
+  getMaxWidthOfChoices() {
+    const { userAnswers, possibleResponses } = this.state;
+    const allResponses = userAnswers.map(ans => ans?.value?.join("")).concat(possibleResponses);
+    const widthArr = allResponses.map(option => measureText(option || ""));
+    const maxWidth = maxBy(widthArr, obj => obj?.width);
+    return maxWidth?.width;
+  }
+
   render() {
     const {
       smallSize,
@@ -501,10 +510,12 @@ class Display extends Component {
 
     const choiceMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
     const choiceMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
+    const choiceWidth = this.getMaxWidthOfChoices();
 
     const choiceStyle = {
       minWidth: choiceMinWidth,
       maxWidth: choiceMaxWidth,
+      width: choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth,
       overflow: "hidden"
     };
 

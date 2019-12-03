@@ -60,7 +60,8 @@ class DragItem extends React.Component {
       connectDragSource(
         <div
           style={{
-            ...style
+            ...style,
+            justifyContent: "center"
           }}
           draggable={!disableResponse}
         >

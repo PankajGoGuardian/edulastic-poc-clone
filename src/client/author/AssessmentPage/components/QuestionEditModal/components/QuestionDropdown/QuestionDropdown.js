@@ -156,9 +156,8 @@ export default class QuestionDropdown extends React.Component {
               getPopupContainer={trigger => trigger.parentNode}
             >
               {this.currentOptions.map((option, key) => (
-                <Select.Option key={key} value={option}>
-                  {option}
-                </Select.Option>
+                //when there is a possibility of duplicate `option` its better to exclude `value` prop
+                <Select.Option key={key}>{option}</Select.Option>
               ))}
             </Select>
             <InputNumber min={0} value={score} onChange={this.handleScoreChange} />

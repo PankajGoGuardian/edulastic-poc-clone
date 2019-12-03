@@ -487,8 +487,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_QUESTION:
       return produce(state, _state => {
         if (_state.entity.isDocBased) {
-          const newSubjects = payload.alignment.map(x => x.subject);
-          const newGrades = payload.alignment.flatMap(x => x.grades);
+          const newSubjects = payload?.alignment?.map(x => x.subject) || [];
+          const newGrades = payload?.alignment?.flatMap(x => x.grades) || [];
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades]);
           _state.entity.subjects = _uniq([..._state.entity.subjects, ...newSubjects]);
         }

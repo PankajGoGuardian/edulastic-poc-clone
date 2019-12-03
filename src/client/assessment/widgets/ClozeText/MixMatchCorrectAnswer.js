@@ -36,9 +36,10 @@ const MixMatchCorrectAnswer = ({
 
   const { widthpx, inputtype } = uiStyle;
   const btnStyle = {
-    minWidth: `${responseDimensions.minWidth}px`,
+    minWidth: `${widthpx || responseDimensions.minWidth}px`,
     minHeight: `${responseDimensions.minHeight}px`,
-    width: widthpx !== 0 ? widthpx : 140
+    maxWidth: responseDimensions.clozeTextMaxWidth
+    // width: widthpx !== 0 ? widthpx : 140
   };
 
   const handleClose = ({ id, tabId, value }) => {
@@ -57,7 +58,7 @@ const MixMatchCorrectAnswer = ({
 
   const correctAnswersBlock = (
     // render all correct answers
-    <FlexContainer flexDirection="column" alignItems="flex-start">
+    <FlexContainer flexDirection="column" alignItems="flex-start" style={{ flexShrink: 0 }}>
       {correctValues.map(({ id, index, value }) => (
         <CorrectAnswer style={btnStyle}>
           <div className="index">{index + 1}</div>
@@ -69,7 +70,7 @@ const MixMatchCorrectAnswer = ({
 
   const altAnswerBlock = (
     // render as many inputs as correct answers
-    <FlexContainer flexDirection="column" alignItems="flex-start" flexWrap="wrap" style={{ width: "70%" }}>
+    <FlexContainer flexDirection="column" alignItems="flex-start" flexWrap="wrap" style={{ flexShrink: 0 }}>
       {correctValues.map((_, answerIndex) => (
         <AlterAnswer id={answerIndex}>
           {altResponses[answerIndex] &&
@@ -105,7 +106,7 @@ const MixMatchCorrectAnswer = ({
   );
 
   return (
-    <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+    <FlexContainer justifyContent="flex-start" flexWrap="nowrap" style={{ overflow: "auto" }}>
       {correctAnswersBlock}
       {altAnswerBlock}
     </FlexContainer>
@@ -123,6 +124,7 @@ export default MixMatchCorrectAnswer;
 
 const CorrectAnswer = styled.div`
   display: flex;
+  align-items: stretch;
   height: 44px;
   margin-right: 16px;
   margin-bottom: 8px;
@@ -131,12 +133,10 @@ const CorrectAnswer = styled.div`
     color: ${white};
     display: inline-flex;
     align-items: center;
-    height: 100%;
     background: #878282;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     align-self: stretch;
-    height: 100%;
   }
   .text {
     display: inline-flex;

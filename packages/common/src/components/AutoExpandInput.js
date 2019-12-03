@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Input, Popover } from "antd";
+import { response as responseDimensions } from "@edulastic/constants";
 import { measureText } from "@edulastic/common";
 
 const { TextArea } = Input;
 
 const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, inputRef = useRef(), type, ...rest }) => {
+  const maxWidth = responseDimensions.clozeTextMaxWidth;
   const [largWidth, toggleLargWidth] = useState(false);
   const [show, toggleShow] = useState(false);
   const [focused, toggleFocuse] = useState(false);
@@ -16,10 +18,10 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
   const changeInputWidth = (em, val) => {
     const { width } = measureText(val, getComputedStyle(em));
     const _w = width + (type === "number" ? 14 : 2);
-    if (width < 600 && width > (parseInt(style.width, 10) || 140)) {
+    if (width < maxWidth && width > (parseInt(style.width, 10) || 140)) {
       em.style.width = `${_w}px`;
     }
-    if (width > 600) {
+    if (width > maxWidth) {
       em.style.overflow = "hidden";
       em.style.textOverflow = "ellipsis";
       em.style.whiteSpace = "nowrap";

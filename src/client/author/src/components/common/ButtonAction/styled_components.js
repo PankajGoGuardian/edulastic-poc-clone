@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { smallMobileWidth, mobileWidthLarge, mediumDesktopWidth, themeColor } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -10,10 +10,6 @@ export const Container = styled.div`
   z-index: ${props => props.zIndex};
   right: ${props => (props.showPublishButton ? "208px" : "101px")};
   top: 13px;
-
-  @media (max-width: ${mobileWidth}) {
-    margin-top: 32px;
-  }
 `;
 
 export const HeaderActionButton = styled(Button)`
@@ -30,10 +26,11 @@ export const PreviewBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  width: 100%;
 
   .ant-btn {
     background: transparent;
-    height: 45px;
+    height: 25px;
     padding: 0 10px;
     margin-left: 5px;
     border: 0;
@@ -50,16 +47,55 @@ export const PreviewBar = styled.div`
       font-size: 0;
       margin: 0;
     }
+  }
+`;
 
-    @media (max-width: ${mediumDesktopWidth}) {
-      width: auto;
-      height: 36px;
+export const RightActionButton = styled(Button).attrs(() => ({
+  htmlType: "button"
+}))`
+  ${({ hints }) =>
+    hints &&
+    `@media (max-width: ${mobileWidthLarge}) {
+      display: none;
+    }
+  `}
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 45px;
+    height: 28px;
+    position: relative;
+
+    label {
+      display: none;
+    }
+  }
+  @media (max-width: ${smallMobileWidth}) {
+    width: 38px;
+  }
+
+  & svg {
+    fill: ${themeColor};
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+      fill: ${themeColor};
+    }
+
+    @media (min-width: ${mobileWidthLarge}) {
+      display: none;
     }
   }
 `;
 
-export const DisplayBlock = styled.div`
-  @media (max-width: ${mobileWidth}) {
-    display: none;
-  }
+export const LabelText = styled.label`
+  font-size: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: ${themeColor};
 `;

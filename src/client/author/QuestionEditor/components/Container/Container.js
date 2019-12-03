@@ -390,14 +390,14 @@ class Container extends Component {
           </ItemHeader>
 
           <BreadCrumbBar>
-            <Col md={12}>
+            <Col span={12}>
               {windowWidth > desktopWidth.replace("px", "") ? (
                 <SecondHeadBar breadcrumb={this.breadcrumb} />
               ) : (
                 <BackLink onClick={history.goBack}>Back to Item List</BackLink>
               )}
             </Col>
-            <RightActionButtons md={12}>
+            <RightActionButtons span={12}>
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>

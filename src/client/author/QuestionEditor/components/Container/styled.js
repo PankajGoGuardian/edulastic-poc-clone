@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, smallMobileWidth } from "@edulastic/colors";
 
 export const BackLink = styled.span`
   background: #fff;
@@ -14,4 +14,8 @@ export const BackLink = styled.span`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   cursor: pointer;
   display: inline-block;
+
+  @media (max-width: ${smallMobileWidth}) {
+    padding: 0 10px;
+  }
 `;

@@ -205,3 +205,4 @@ export { default as IconCloudUpload } from "./src/IconCloudUpload";
 export { default as IconCircleLogout } from "./src/IconCircleLogout";
 export { default as IconContrast } from "./src/IconContrast";
 export { default as IconSelectCaretDown } from "./src/IconSelectCaretDown";
+export { default as IconClear } from "./src/IconClear";

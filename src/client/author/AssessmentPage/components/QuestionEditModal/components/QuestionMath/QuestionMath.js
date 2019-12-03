@@ -73,6 +73,13 @@ const QuestionMath = ({ onUpdate, question }) => {
     });
   };
 
+  const onChangeKeypad = keypad => {
+    let data = {
+      symbols: [keypad]
+    };
+    onUpdate(data);
+  };
+
   const { validResponse: validResponse } = question.validation;
   const { score } = validResponse;
   const value = validResponse.value[0];
@@ -86,6 +93,7 @@ const QuestionMath = ({ onUpdate, question }) => {
             allowedVariables={question.allowedVariables || ""}
             onChange={handleAnswerChange}
             onChangeAllowedOptions={onChangeAllowedOptions}
+            onChangeKeypad={onChangeKeypad}
             item={question}
             index={0}
             toggleAdditional={toggleAdditional}

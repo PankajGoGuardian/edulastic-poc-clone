@@ -76,9 +76,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const lessMinWidth = parseInt(btnStyle.maxWidth, 10) < dimensions.minWidthShowAnswer;
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
 
-  const { scrollWidth } = measureText(getFormulaLabel(), { ...btnStyle, maxWidth: btnStyle.maxWidth + 20 });
-
-  const showPopover = scrollWidth > btnStyle.maxWidth;
+  const { scrollWidth } = measureText(getFormulaLabel(), { ...btnStyle, maxWidth: btnStyle.maxWidth });
+  /**
+   * +60 is ellipsis width on clicking showAnswer
+   * +30 is ellipsis width on clicking checkAnswer
+   */
+  const showPopover = scrollWidth + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
 
   const indexStyle = {};
   if (lessMinWidth) {

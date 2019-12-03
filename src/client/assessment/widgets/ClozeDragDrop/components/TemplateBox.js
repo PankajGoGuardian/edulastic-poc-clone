@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, measureText } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
-import Tooltip from "antd/lib/tooltip";
+import { Popover } from "antd";
 import Droppable from "./Droppable";
 import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
@@ -60,6 +60,12 @@ const TemplateBox = ({ resprops, id }) => {
     }
   };
 
+  const label = getData("label" || "");
+
+  const { scrollWidth: contentWidth } = measureText(label, style);
+  const content = <MathSpan dangerouslySetInnerHTML={{ __html: label }} />;
+  const showPopover = contentWidth > style.maxWidth && label;
+
   return (
     <Droppable drop={() => ({ dropTargetIndex })}>
       {!hasGroupResponses && (
@@ -71,12 +77,8 @@ const TemplateBox = ({ resprops, id }) => {
             smallSize={smallSize}
             style={{ display: "flex", justifyContent: "flext-start", alignItems: "center", height: "100%" }}
           >
-            <Tooltip
-              overlayClassName="customTooltip"
-              title={<MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />}
-            >
-              <MathSpan dangerouslySetInnerHTML={{ __html: getData("label") || "" }} />
-            </Tooltip>
+            {showPopover && <Popover content={content}>{content}</Popover>}
+            {!showPopover && content}
           </Draggable>
           &nbsp;
         </ResponseContainer>
@@ -90,12 +92,8 @@ const TemplateBox = ({ resprops, id }) => {
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
           >
-            <Tooltip
-              overlayClassName="customTooltip"
-              title={<MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />}
-            >
-              <MathSpan dangerouslySetInnerHTML={{ __html: getDataForGroup("label") || "" }} />
-            </Tooltip>
+            {showPopover && <Popover content={content}>{content}</Popover>}
+            {!showPopover && content}
           </Draggable>
           &nbsp;
         </ResponseContainer>

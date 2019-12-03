@@ -467,10 +467,13 @@ export const measureText = (text, style = {}) => {
   innerEm.innerHTML = replaceLatexesWithMathHtml(text);
   fakeEm.appendChild(innerEm);
 
+  /**
+   * +10 will be ellipsis width
+   */
   const result = {
-    width: fakeEm.offsetWidth,
+    width: fakeEm.offsetWidth + 10,
     height: fakeEm.offsetHeight,
-    scrollWidth: fakeEm.scrollWidth,
+    scrollWidth: fakeEm.scrollWidth + 10,
     scrollHeight: fakeEm.scrollHeight
   };
 

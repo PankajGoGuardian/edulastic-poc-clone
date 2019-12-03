@@ -23,7 +23,7 @@ import {
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
 import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
-import { changeViewAction } from "../../../src/actions/view";
+import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
 import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
@@ -135,13 +135,16 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title }
+      assessment: { title },
+      changePreviewAction
     } = this.props;
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
       changeView(tab);
+      changePreviewAction("clear");
     } else if (currentTab !== tabs.DESCRIPTION) {
       changeView(tab);
+      changePreviewAction("clear");
     } else {
       message.error("Please enter test name.");
     }
@@ -367,6 +370,7 @@ const enhance = compose(
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,
+      changePreviewAction,
       publishTest: publishTestAction
     }
   )

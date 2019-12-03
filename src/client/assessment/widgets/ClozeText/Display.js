@@ -67,6 +67,7 @@ class ClozeTextDisplay extends Component {
 
     if (responseBoxStyle.widthpx) {
       btnStyle.width = responseBoxStyle.widthpx;
+      btnStyle.disableAutoExpend = true;
     }
 
     if (responseBoxStyle.heightpx) {

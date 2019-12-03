@@ -14,8 +14,13 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
   const [focused, toggleFocuse] = useState(false);
   const [lastWidth, updateWidth] = useState(style.width);
 
+  const { disableAutoExpend, ...btnStyle } = style;
+
   const MInput = multipleLine ? TextArea : Input;
   const changeInputWidth = (em, val) => {
+    if (disableAutoExpend) {
+      return;
+    }
     const { width } = measureText(val, getComputedStyle(em));
     const _w = width + (type === "number" ? 14 : 2);
     if (width < maxWidth && width > (parseInt(style.width, 10) || 140)) {
@@ -78,7 +83,7 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
         onBlur={handleBuler}
         wrap={multipleLine ? "" : "off"}
         value={value || ""}
-        style={style}
+        style={btnStyle}
         type={type}
         {...rest}
       />

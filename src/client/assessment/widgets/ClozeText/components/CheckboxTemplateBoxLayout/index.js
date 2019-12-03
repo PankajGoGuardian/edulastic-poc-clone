@@ -20,7 +20,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const { evaluation, checkAnswer, userSelections, responseIds, previewTab, getUiStyles, changePreviewTab } = resprops;
 
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
-  const { btnStyle, stemNumeration } = getUiStyles(id, index);
+  const { btnStyle: style, stemNumeration } = getUiStyles(id, index);
+  const { disableAutoExpend, ...btnStyle } = style;
   const [boxWidth, updateBoxWidth] = useState(btnStyle.width);
   const [showPopover, togglePopover] = useState(false);
 
@@ -31,7 +32,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   useEffect(() => {
     if (answerBoxRef.current) {
       const { width } = measureText(userAnswer, getComputedStyle(answerBoxRef.current));
-      if (boxWidth < width) {
+      if (boxWidth < width && !disableAutoExpend) {
         updateBoxWidth(width);
       }
     }

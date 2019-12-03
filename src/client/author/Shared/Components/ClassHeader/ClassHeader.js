@@ -408,7 +408,14 @@ class ClassHeader extends Component {
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
-          {toggleDeleteAssignmentModalState ? <DeleteAssignmentModal /> : null}
+          {toggleDeleteAssignmentModalState ? (
+            <DeleteAssignmentModal
+              testName={additionalData?.testName}
+              assignmentId={assignmentId}
+              classId={classId}
+              lcb
+            />
+          ) : null}
           <ConfirmationModal
             title="Pause"
             show={isPauseModalVisible}

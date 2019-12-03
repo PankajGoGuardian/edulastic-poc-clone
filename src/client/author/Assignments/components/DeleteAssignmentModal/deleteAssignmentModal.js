@@ -15,17 +15,30 @@ import {
 import {
   getToggleDeleteAssignmentModalState,
   toggleDeleteAssignmentModalAction,
-  deleteAssignmentRequestAction
+  deleteAssignmentRequestAction as deleteAssignmetByTestId
 } from "../../../sharedDucks/assignments";
+import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
 
 const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
   toggleDeleteAssignmentModalAction,
-  deleteAssignmentRequestAction,
+  deleteAssignmetByTestId,
+  deleteAssigmnetByClass,
   testId,
-  testName
+  testName,
+  assignmentId,
+  classId,
+  lcb
 }) => {
   const [confirmText, setConfirmText] = useState("");
+  const handleUnassign = () => {
+    if (confirmText.toLocaleLowerCase() === "unassign") {
+      if (lcb) {
+        return deleteAssigmnetByClass({ assignmentId, classId });
+      }
+      deleteAssignmetByTestId(testId);
+    }
+  };
 
   return (
     <StyledModal
@@ -43,11 +56,7 @@ const DeleteAssignmentModal = ({
             key="delete"
             type="primary"
             disabled={confirmText.toLocaleLowerCase() !== "unassign"}
-            onClick={() => {
-              if (confirmText.toLocaleLowerCase() === "unassign") {
-                deleteAssignmentRequestAction(testId);
-              }
-            }}
+            onClick={handleUnassign}
           >
             Yes, Unassign
           </StyledButton>
@@ -58,7 +67,8 @@ const DeleteAssignmentModal = ({
         <div className="delete-message">
           <p>
             Are you sure you want to unassign the assignment <b className="delete-message-test-name">{testName}</b>?
-            This action will result in permanent deletion of student responses from the assigned class(es).
+            This action will result in permanent deletion of student responses from the assigned class
+            {!lcb ? " (es)." : "."}
           </p>
           <p>
             If you are sure, please type <LightGreenSpan>UNASSIGN</LightGreenSpan> in the space given below and proceed.
@@ -94,7 +104,8 @@ const ConnectedDeleteAssignmentModal = connect(
   }),
   {
     toggleDeleteAssignmentModalAction,
-    deleteAssignmentRequestAction
+    deleteAssignmetByTestId,
+    deleteAssigmnetByClass
   }
 )(DeleteAssignmentModal);
 

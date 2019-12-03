@@ -12,6 +12,7 @@ import { formatAssignment } from "./utils";
 import { getUserNameSelector } from "../../../src/selectors/user";
 import { getPlaylistEntitySelector } from "../../../PlaylistPage/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
+import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -306,10 +307,13 @@ function* loadAssignments({ payload }) {
 function* deleteAssignment({ payload }) {
   try {
     yield assignmentApi.remove(payload);
-    yield put(removeAssignmentsAction(payload));
-  } catch (e) {
-    console.log(e);
+    yield put(push("/author/assignments"));
+    message.success("Assignment(s) deleted successfully.");
+  } catch (error) {
+    console.log(error);
+    message.error("failed to delete");
   }
+  yield put(toggleDeleteAssignmentModalAction(false));
 }
 
 export function* watcherSaga() {

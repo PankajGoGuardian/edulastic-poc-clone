@@ -22,10 +22,10 @@ const update = (id, data) =>
     })
     .then(result => result.data.result);
 
-const remove = id =>
+const remove = ({ assignmentId, classId }) =>
   api
     .callApi({
-      url: `${prefix}/${id}`,
+      url: `${prefix}/${assignmentId}/group/${classId}`,
       method: "delete"
     })
     .then(result => result.data.result);

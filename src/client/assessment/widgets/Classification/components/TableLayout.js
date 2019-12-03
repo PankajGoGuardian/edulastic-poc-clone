@@ -77,7 +77,7 @@ const TableLayout = ({
               Array.isArray(answers[validIndex]) &&
               answers[validIndex].map((ansId, answerIndex) => {
                 const resp = responses.find(resp => resp.id === ansId);
-                const valid = get(validArray, [validIndex, resp.id], undefined);
+                const valid = get(validArray, [validIndex, answerIndex], undefined);
                 return (
                   <DragItem
                     isTransparent={isTransparent}
@@ -85,7 +85,7 @@ const TableLayout = ({
                     valid={isReviewTab ? true : valid}
                     preview={preview}
                     key={answerIndex}
-                    renderIndex={responses.findIndex(resp => resp.id === ansId)}
+                    renderIndex={responses.findIndex(resp => resp.id === ansId) + 1} // index starts with 0 so +1
                     onDrop={onDrop}
                     item={(resp && resp.value) || ""}
                     disableResponse={disableResponse}

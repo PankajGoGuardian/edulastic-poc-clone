@@ -92,6 +92,7 @@ DragItemContainer.propTypes = {
   valid: PropTypes.bool,
   disableDrag: PropTypes.bool,
   isResetOffset: PropTypes.bool,
+  width: PropTypes.number,
   maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,

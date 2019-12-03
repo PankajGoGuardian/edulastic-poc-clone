@@ -16,6 +16,7 @@ const Item = ({
   renderIndex,
   showIndex,
   item,
+  width,
   maxWidth,
   minWidth,
   minHeight,
@@ -26,6 +27,7 @@ const Item = ({
     valid={valid}
     preview={preview}
     transparent={isTransparent}
+    width={width}
     maxWidth={maxWidth}
     minWidth={minWidth}
     minHeight={minHeight}
@@ -57,11 +59,13 @@ Item.propTypes = {
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
-  showIndex: PropTypes.bool
+  showIndex: PropTypes.bool,
+  width: PropTypes.number
 };
 
 Item.defaultProps = {
-  showIndex: false
+  showIndex: false,
+  width: null
 };
 
 export default Item;

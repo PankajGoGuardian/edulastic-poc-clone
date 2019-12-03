@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
+import { cloneDeep, isEqual, get, shuffle, uniq, maxBy } from "lodash";
 import "core-js/features/array/flat";
-import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel } from "@edulastic/common";
+import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel, measureText } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -319,6 +319,8 @@ const ClassificationPreview = ({
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
 
+  const widthArr = posResp.map(op => measureText(op?.value || ""));
+
   return (
     <StyledPaperWrapper
       data-cy="classificationPreview"
@@ -371,6 +373,7 @@ const ClassificationPreview = ({
                           {i.map((ite, ind) => (
                             <DragItem
                               {...dragItemProps}
+                              width={maxBy(widthArr, obj => obj?.width)?.width}
                               renderIndex={getStemNumeration(stemNumeration, ind)}
                               item={ite.value}
                               key={ite.id}
@@ -394,6 +397,7 @@ const ClassificationPreview = ({
                         {verifiedDragItems.map(ite => (
                           <DragItem
                             {...dragItemProps}
+                            width={maxBy(widthArr, obj => obj?.width)?.width}
                             key={ite.id}
                             item={ite.value}
                             renderIndex={possibleResponses.indexOf(ite)}

@@ -27,7 +27,7 @@ const userWork = (state = initialState, { type, payload }) => {
 // filterFunction of  undoable still creates history!
 export default filterActions(
   undoable(userWork, {
-    limit: 10
+    limit: 11
   }),
   [CLEAR_USER_WORK, LOAD_SCRATCH_PAD, SAVE_USER_WORK, ...Object.values(ActionTypes)]
 );

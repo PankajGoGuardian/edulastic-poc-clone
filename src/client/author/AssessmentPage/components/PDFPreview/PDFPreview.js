@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
 import { connect } from "react-redux";
@@ -10,6 +10,7 @@ import { withRouter } from "react-router";
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
+import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -48,7 +49,8 @@ const PDFPreview = ({
   pdfWidth,
   minimized,
   history,
-  pageChange
+  pageChange,
+  removeAnswers
 }) => {
   useLayoutEffect(() => {
     const { question: qid } = history?.location?.state || {};
@@ -72,6 +74,10 @@ const PDFPreview = ({
       }, 2000);
     }
   }, [annotations]);
+
+  useEffect(() => {
+    removeAnswers();
+  }, [viewMode]);
 
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -132,4 +138,7 @@ PDFPreview.defaultProps = {
   annotations: []
 };
 
-export default connect(state => ({ previewMode: getPreviewSelector(state) }))(withRouter(PDFPreview));
+export default connect(
+  state => ({ previewMode: getPreviewSelector(state) }),
+  { removeAnswers: removeUserAnswerAction }
+)(withRouter(PDFPreview));

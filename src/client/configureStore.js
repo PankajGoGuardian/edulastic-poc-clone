@@ -26,6 +26,10 @@ let store;
 export default () => {
   store = createStore(
     connectRouter(history)(rootReducer),
+    /**
+     * to enable trace
+     * composeWithDevTools({ trace: true, traceLimit: 15 })(applyMiddleware(...middleware), reduxReset())
+     */
     composeWithDevTools(applyMiddleware(...middleware), reduxReset())
   );
 

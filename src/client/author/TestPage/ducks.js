@@ -15,7 +15,7 @@ import {
   ADD_ITEM_EVALUATION,
   CHANGE_PREVIEW
 } from "../src/constants/actions";
-import { loadQuestionsAction, getQuestionsArraySelector } from "../sharedDucks/questions";
+import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
@@ -484,6 +484,15 @@ export const reducer = (state = initialState, { type, payload }) => {
       };
     case SET_LOADING_TEST_PAGE:
       return { ...state, loading: payload };
+    case UPDATE_QUESTION:
+      return produce(state, _state => {
+        if (_state.entity.isDocBased) {
+          const newSubjects = payload.alignment.map(x => x.subject);
+          const newGrades = payload.alignment.flatMap(x => x.grades);
+          _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades]);
+          _state.entity.subjects = _uniq([..._state.entity.subjects, ...newSubjects]);
+        }
+      });
     default:
       return state;
   }

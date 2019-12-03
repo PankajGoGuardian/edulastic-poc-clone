@@ -35,12 +35,16 @@ export default WrappedComponent => {
       previewTab = "check";
     }
 
-    // if review-tab dont pass evaluation forward.
+    // `isReviewTab` is being only passed from test page's review tab, in which case
+    // userAnswer nor evaluation should be propagated forward. Doing the same will cause
+    // issues since we are using showAnswer view, but userAnswer not evaluation should be shown
+    // residues form other components (esp. popup) can pollute the store - all components
+    // share evaluation/answer store.
     return (
       <WrappedComponent
         saveAnswer={saveAnswer}
         questionId={questionId}
-        userAnswer={userAnswer}
+        userAnswer={!props.isReviewTab ? userAnswer : undefined}
         evaluation={!props.isReviewTab ? evaluation : undefined}
         {...props}
         previewTab={previewTab}

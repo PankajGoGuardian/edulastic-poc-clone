@@ -66,10 +66,22 @@ class AssessmentPlayerSimple extends React.Component {
     testItemState: "",
     toolsOpenStatus: [0],
     history: 0,
-    calcBrand: "EDULASTIC"
+    calcBrand: "EDULASTIC",
+    currentItem: 0,
+    enableCrossAction: false
   };
 
   headerRef = React.createRef();
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.currentItem !== prevState.currentItem) {
+      return {
+        enableCrossAction: false,
+        currentItem: nextProps.currentItem
+      };
+    }
+    return null;
+  }
 
   toggleToolsOpenStatus = tool => {
     let { toolsOpenStatus, enableCrossAction } = this.state;
@@ -80,7 +92,6 @@ class AssessmentPlayerSimple extends React.Component {
       } else {
         toolsOpenStatus.push(tool);
       }
-      toolsOpenStatus = toolsOpenStatus.filter(m => m === 3 || m === 5);
     } else {
       toolsOpenStatus = [tool];
     }
@@ -159,7 +170,6 @@ class AssessmentPlayerSimple extends React.Component {
   handleUndo = () => {
     const { undoScratchPad } = this.props;
     const { history } = this.state;
-    console.log(history);
     if (history > 0) {
       this.setState(
         state => ({ history: state.history - 1 }),
@@ -244,7 +254,6 @@ class AssessmentPlayerSimple extends React.Component {
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
 
     const headerHeight = this.headerRef.current?.clientHeight || 0;
-
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode}>
@@ -303,7 +312,7 @@ class AssessmentPlayerSimple extends React.Component {
             unansweredQuestionCount={unansweredQuestionCount}
             setHighlights={this.saveHistory("resourceId")}
             setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
-            crossAction={crossAction}
+            crossAction={crossAction || {}}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>

@@ -97,7 +97,7 @@ class QuestionItem extends React.Component {
 
   renderShortTextAnswer = value => value;
 
-  renderDropDownAnswer = value => value[0].value;
+  renderDropDownAnswer = value => value?.[0]?.value && value[0].value;
 
   renderMathAnswer = value => (
     <MathSpan

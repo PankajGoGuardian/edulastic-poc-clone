@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Tabs } from "@edulastic/common";
+import { Tabs, AnswerContext } from "@edulastic/common";
 
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../../constants/others";
 
@@ -59,9 +59,10 @@ class TestItemCol extends Component {
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     // question label for preview mode
-    const question = questions[widget.reference]?.qLabel
-      ? questions[widget.reference]
-      : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
+    const question =
+      questions[widget.reference]?.qLabel && (!isDocBased || this.context.expressGrader)
+        ? questions[widget.reference]
+        : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;
@@ -158,5 +159,7 @@ class TestItemCol extends Component {
     );
   }
 }
+
+TestItemCol.contextType = AnswerContext;
 
 export default TestItemCol;

@@ -1,5 +1,13 @@
 import styled from "styled-components";
-import { mediumDesktopWidth, white, themeColor, fadedGrey, desktopWidth, secondaryTextColor } from "@edulastic/colors";
+import {
+  smallMobileWidth,
+  mediumDesktopWidth,
+  white,
+  themeColor,
+  fadedGrey,
+  desktopWidth,
+  secondaryTextColor
+} from "@edulastic/colors";
 import { Button, Menu, Dropdown } from "antd";
 
 export const Container = styled.div`
@@ -78,6 +86,7 @@ export const MobileBottom = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  overflow-x: auto;
 `;
 
 export const MobileSecondContainer = styled.div`
@@ -111,7 +120,7 @@ export const HeadIcon = styled.div`
 
 export const RightSide = styled.div`
   display: flex;
-  align-item: center;
+  align-items: center;
 
   .ant-btn {
     width: 137px;
@@ -231,6 +240,9 @@ export const MenuList = styled(Menu)`
     margin: 0px;
     width: 100%;
   }
+  @media (max-width: ${smallMobileWidth}) {
+    width: unset;
+  }
 `;
 
 export const MenuItem = styled.li`
@@ -253,6 +265,7 @@ export const MenuItem = styled.li`
   letter-spacing: 0.2px;
   text-align: center;
   color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
 
   &:last-of-type {
     margin-right: 0;

@@ -204,13 +204,18 @@ class ButtonBar extends Component {
                   </HeadIcon>
                   {withLabels ? "Preview mode" : ""}
                 </MenuItem>
-              </MenuList>
 
-              <RightDropdown overlay={MobileDropMenu} trigger={["click"]}>
-                <a className="ant-dropdown-link" href="#">
-                  <IconMoreVertical />
-                </a>
-              </RightDropdown>
+                <MenuItem
+                  data-cy="metadataButton"
+                  className={view === "metadata" && "active"}
+                  onClick={() => this.handleMenuClick("metadata")}
+                >
+                  <HeadIcon>
+                    <IconMetadata color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Meta data
+                </MenuItem>
+              </MenuList>
             </MobileBottom>
             {view === "preview" && (
               <MobileSecondContainer>

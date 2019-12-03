@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { questionType } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
-import { Container } from "../common";
+import { Container, CalculatorContainer } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import PlayerHeader from "./PlayerHeader";
 import { themes } from "../../../theme";
@@ -18,6 +18,8 @@ import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
+
+const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -42,8 +44,19 @@ class AssessmentPlayerDocBased extends React.Component {
   };
 
   state = {
-    showExitPopup: false
+    showExitPopup: false,
+    currentToolMode: {
+      calculator: false
+    }
   };
+
+  static getDerivedStateFromProps(props, state) {
+    const { settings } = props;
+    return {
+      ...state,
+      calculateMode: `${props?.settings?.calcType}_${props?.settings?.calcProvider}`
+    };
+  }
 
   componentDidMount() {
     const { changeView } = this.props;
@@ -82,8 +95,20 @@ class AssessmentPlayerDocBased extends React.Component {
     return sortBy(questionsWithSections, item => item.qIndex);
   }
 
+  onChangeTool = toolType => {
+    // set all tools to false if only one tool can be active at a time
+    this.setState(prevState => {
+      let { currentToolMode } = prevState;
+      let _currentToolMode = { ...currentToolMode };
+      _currentToolMode[toolType] = !_currentToolMode[toolType];
+      return {
+        currentToolMode: _currentToolMode
+      };
+    });
+  };
+
   render() {
-    const { showExitPopup } = this.state;
+    const { showExitPopup, calculateMode, currentToolMode } = this.state;
     const {
       theme,
       items,
@@ -97,7 +122,8 @@ class AssessmentPlayerDocBased extends React.Component {
       pageStructure = [],
       freeFormNotes,
       gotoSummary,
-      selectedTheme
+      selectedTheme,
+      settings
     } = this.props;
 
     const dropdownOptions = items[0].data.questions
@@ -124,6 +150,9 @@ class AssessmentPlayerDocBased extends React.Component {
             onSubmit={gotoSummary}
             showSubmit
             t={t}
+            settings={settings}
+            currentToolMode={currentToolMode}
+            onChangeTool={this.onChangeTool}
           />
           {!loading && (
             <Worksheet
@@ -141,6 +170,13 @@ class AssessmentPlayerDocBased extends React.Component {
             />
           )}
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+          {currentToolMode.calculator ? (
+            <CalculatorContainer
+              changeTool={() => this.onChangeTool("calculator")}
+              calculateMode={calculateMode}
+              calcBrands={calcBrands}
+            />
+          ) : null}
         </Container>
       </ThemeProvider>
     );
@@ -153,7 +189,8 @@ const enhance = compose(
   connect(
     state => ({
       loading: testLoadingSelector(state),
-      selectedTheme: state.ui.selectedTheme
+      selectedTheme: state.ui.selectedTheme,
+      settings: state.test.settings
     }),
     {
       changeView: changeViewAction

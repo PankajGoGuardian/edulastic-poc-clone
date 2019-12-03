@@ -88,7 +88,7 @@ ToolBar.propTypes = {
 
 export default ToolBar;
 
-const Container = styled.div`
+export const Container = styled.div`
   margin-left: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -98,7 +98,7 @@ const Container = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
+export const StyledButton = styled(Button)`
   border: none;
   margin-right: 3px;
   border-radius: 5px;
@@ -160,7 +160,7 @@ const InRulerIcon = styled(IconInRuler)`
   `}
 `;
 
-const CaculatorIcon = styled(IconCalculator)`
+export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `
     width: ${theme.default.headerCaculatorIconWidth};
     height: ${theme.default.headerCaculatorIconHeight};

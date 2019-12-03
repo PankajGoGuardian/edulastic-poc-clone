@@ -1,11 +1,34 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
-import { Header, FlexContainer, LogoCompact, HeaderMainMenu, HeaderWrapper, SaveAndExit } from "../common";
+import { test } from "@edulastic/constants";
+import {
+  Header,
+  FlexContainer,
+  LogoCompact,
+  HeaderMainMenu,
+  HeaderWrapper,
+  SaveAndExit,
+  MainActionWrapper
+} from "../common";
+import { Tooltip } from "antd";
+import { Container, StyledButton, CaculatorIcon } from "../common/ToolBar";
 import { MAX_MOBILE_WIDTH } from "../../constants/others";
 
-const PlayerHeader = ({ title, onOpenExitPopup, zoomLevel, windowWidth, onSubmit }) => {
+const { calculatorTypes } = test;
+
+const PlayerHeader = ({
+  title,
+  onOpenExitPopup,
+  zoomLevel,
+  windowWidth,
+  onSubmit,
+  settings,
+  currentToolMode,
+  onChangeTool
+}) => {
   const isZoomApplied = zoomLevel > "1";
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
+  const { calcType } = settings;
 
   let headerZoom = 1;
   if (isZoomApplied) {
@@ -33,6 +56,17 @@ const PlayerHeader = ({ title, onOpenExitPopup, zoomLevel, windowWidth, onSubmit
           <FlexContainer>
             <HeaderWrapper style={zoomStyle}>
               <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
+              <MainActionWrapper>
+                <Container>
+                  {calcType !== calculatorTypes.NONE && (
+                    <Tooltip placement="top" title="Calculator">
+                      <StyledButton active={currentToolMode.calculator} onClick={() => onChangeTool("calculator")}>
+                        <CaculatorIcon />
+                      </StyledButton>
+                    </Tooltip>
+                  )}
+                </Container>
+              </MainActionWrapper>
               {!isMobile && rightButtons}
             </HeaderWrapper>
           </FlexContainer>

@@ -244,7 +244,7 @@ class Contaier extends Component {
   };
 
   handlePaginationChange = page => {
-    const { search } = this.state;
+    const { search } = this.props;
     const { receiveItems, limit } = this.props;
     receiveItems(search, page, limit);
   };

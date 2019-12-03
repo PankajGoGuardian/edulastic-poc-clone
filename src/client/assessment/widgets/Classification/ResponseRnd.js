@@ -22,8 +22,8 @@ const ResponseRnd = props => {
 
         draft.responseOptions[index] = {
           ...draft.responseOptions[index],
-          x: d.x,
-          y: d.y
+          x: d.x < 0 ? 0 : d.x,
+          y: d.y < 0 ? 0 : d.y
         };
       })
     );

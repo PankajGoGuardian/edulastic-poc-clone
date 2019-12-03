@@ -49,7 +49,7 @@ const TableRow = ({
     if (setQuestionData) {
       setQuestionData(
         produce(item, draft => {
-          draft.rowTitle = { x: data.x, y: data.y };
+          draft.rowTitle = { x: data.x < 0 ? 0 : data.x, y: data.y < 0 ? 0 : data.y };
         })
       );
     }
@@ -59,7 +59,7 @@ const TableRow = ({
     if (setQuestionData) {
       setQuestionData(
         produce(item, draft => {
-          draft.rowHeaderPos = { x: d.x, y: d.y };
+          draft.rowHeaderPos = { x: d.x < 0 ? 0 : d.x, y: d.y < 0 ? 0 : d.y };
         })
       );
     }
@@ -111,7 +111,7 @@ const TableRow = ({
   if (rowHeader) {
     cols.push(
       <Rnd
-        default={{ x: rowHeaderX, y: rowHeaderY }}
+        position={{ x: rowHeaderX, y: rowHeaderY }}
         disableDragging={view !== EDIT}
         onDragStop={handleRowHeaderDragStop}
       >
@@ -136,7 +136,7 @@ const TableRow = ({
     const hasRowTitle = rowTitles.length > 0;
     if (hasRowTitle && rowTitles[index / colCount]) {
       cols.push(
-        <Rnd default={{ x: rndX, y: rndY }} disableDragging={view !== EDIT} onDragStop={handleRowTitleDragStop}>
+        <Rnd position={{ x: rndX, y: rndY }} disableDragging={view !== EDIT} onDragStop={handleRowTitleDragStop}>
           <RowTitleCol
             key={index + startIndex + colCount}
             colCount={colCount}

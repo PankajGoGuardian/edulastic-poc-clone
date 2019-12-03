@@ -229,8 +229,8 @@ const SvgDraw = ({
       });
       setInputIsVisible(true);
       setCurrentPosition({
-        x: point.x,
-        y: point.y + 40,
+        x: point.x + 40,
+        y: point.y,
         index: newTexts.length - 1
       });
       setTexts(newTexts);
@@ -698,8 +698,8 @@ const SvgDraw = ({
                   key={i}
                   color={text.color}
                   fontSize={text.lineWidth * 3}
-                  x={text.x}
-                  y={text.y}
+                  x={text.x - 40}
+                  y={text.y + 40}
                 >
                   {text.value}
                 </Text>
@@ -783,5 +783,5 @@ const ControlInput = styled(Input)`
   left: ${({ x }) => x}px;
   width: auto;
   height: 40px;
-  z-index: 10000;
+  z-index: 1002;
 `;

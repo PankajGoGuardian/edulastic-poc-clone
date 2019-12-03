@@ -62,7 +62,7 @@ const SquareTriangleIcon = customizeIcon(IconSquareTriangle);
 
 const SelectedIcon = customizeIcon(IconSelected);
 
-const buttonsList = [
+let buttonsList = [
   { mode: drawTools.FREE_DRAW, icon: <Pencil />, label: "Pencil" },
   { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon color={white} />, label: "Draw Line" },
   { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon color={white} />, label: "Draw Breaking Line" },
@@ -86,7 +86,8 @@ const Tools = ({
   onColorChange,
   undo,
   redo,
-  testMode
+  testMode,
+  isDocBased = false
 }) => {
   const getAlpha = color => {
     const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
@@ -97,6 +98,8 @@ const Tools = ({
   };
 
   const showFillColorArray = [drawTools.DRAW_SQUARE, drawTools.DRAW_CIRCLE, drawTools.DRAW_TRIANGLE];
+
+  if (isDocBased) buttonsList = buttonsList.filter(obj => obj.mode !== "none");
 
   const activeTool = buttonsList.find(button => button.mode === activeMode);
 

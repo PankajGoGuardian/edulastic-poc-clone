@@ -56,6 +56,7 @@ export const MathKeyboardStyles = styled.div`
   .keyboard__main {
     display: flex;
     flex-wrap: nowrap;
+    flex-direction: row !important;
   }
 
   .keyboard__main .ant-btn:active,

@@ -58,9 +58,10 @@ const SortableQuestionItem = SortableElement(
     previousFeedback,
     onDragStart,
     highlighted,
-    testMode
+    testMode,
+    onHighlightQuestion
   }) => (
-    <div style={{ display: "flex", marginBottom: "6px" }}>
+    <div onClick={() => onHighlightQuestion(data.id)} style={{ display: "flex", marginBottom: "6px" }}>
       {!testMode && !review && <DragHandle review={review} />}
       <QuestionItem
         key={key}
@@ -410,7 +411,8 @@ class Questions extends React.Component {
       onDragStart,
       review,
       testMode,
-      isDocBased
+      isDocBased,
+      onHighlightQuestion
     } = this.props;
     const report = viewMode === "report";
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
@@ -446,6 +448,7 @@ class Questions extends React.Component {
                   onDragStart={onDragStart}
                   highlighted={highlighted === question.id}
                   testMode={testMode}
+                  onHighlightQuestion={onHighlightQuestion}
                 />
               )
             )}

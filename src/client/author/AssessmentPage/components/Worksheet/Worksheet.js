@@ -649,6 +649,7 @@ class Worksheet extends React.Component {
                 redo={this.handleRedo}
                 onColorChange={this.handleColorChange}
                 testMode={testMode}
+                isDocBased={isDocBased}
               />
             )}
           </div>
@@ -662,6 +663,7 @@ class Worksheet extends React.Component {
           answersById={answersById}
           highlighted={highlightedQuestion}
           onDragStart={this.onDragStart}
+          onHighlightQuestion={this.handleHighlightQuestion}
           lockToContainerEdges
           lockOffset={["10%", "0%"]}
           lockAxis={"y"}

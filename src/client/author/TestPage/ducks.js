@@ -902,7 +902,13 @@ function* setTestDataAndUpdateSaga(payload) {
         }
       });
 
-      const entity = yield call(testsApi.create, newTest);
+      let entity = yield call(testsApi.create, newTest);
+      if (item.passageId) {
+        // if the item has passage, we have to load the passage as well, which is return in get
+        // post wont return passages.
+        // TODO:  modifying post would have other issues since its used in multiple places?
+        entity = yield call(testsApi.getById, entity._id);
+      }
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {

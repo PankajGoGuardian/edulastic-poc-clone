@@ -9,8 +9,10 @@ const CartButton = ({ selectedItems, onClick }) => {
   const numberOfSelectedItems = selectedItems && selectedItems.length;
   return (
     <Container onClick={onClick} disabled={!numberOfSelectedItems}>
-      <CartButtonWrapper>Author Test</CartButtonWrapper>
-      <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
+      <CartButtonWrapper>
+        <span>Author Test</span>
+        <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
+      </CartButtonWrapper>
     </Container>
   );
 };

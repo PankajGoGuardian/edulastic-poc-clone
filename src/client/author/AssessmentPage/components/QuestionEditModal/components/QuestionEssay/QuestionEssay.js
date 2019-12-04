@@ -88,7 +88,7 @@ export default class QuestionEssay extends React.Component {
       <QuestionFormWrapper>
         <FormGroup>
           <InputNumber min={1} value={minHeight} onChange={this.handleMinHeightChange} />
-          <Points>Minimum height</Points>
+          <Points>Minimum Line height</Points>
         </FormGroup>
         <FormGroup>
           <InputNumber min={0} value={score} onChange={this.handleScoreChange} />

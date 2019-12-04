@@ -62,7 +62,7 @@ class TestItemCol extends Component {
     const question =
       questions[widget.reference]?.qLabel && (!isDocBased || this.context.expressGrader)
         ? questions[widget.reference]
-        : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
+        : { ...questions[widget.reference], qLabel: `Q${questions[widget.reference]?.qIndex || index + 1}` };
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;

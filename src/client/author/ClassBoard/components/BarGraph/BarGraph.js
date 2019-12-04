@@ -9,7 +9,7 @@ import {
   dropZoneTitleColor,
   secondaryTextColor,
   incorrect,
-  yellow,
+  yellow1,
   themeColor
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
@@ -354,7 +354,7 @@ export default class BarGraph extends Component {
                 yAxisId="left"
                 stackId="a"
                 dataKey="partialAttempts"
-                fill={yellow}
+                fill={yellow1}
                 shape={<RectangleBar dataKey="partialAttempts" />}
                 onClick={this.handleClick}
               />

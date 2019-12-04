@@ -15,6 +15,7 @@ const SelectUnit = ({
   keypadMode,
   preview,
   height,
+  width,
   dropdownStyle
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
@@ -37,7 +38,7 @@ const SelectUnit = ({
   };
 
   return (
-    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle} preview={preview}>
+    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle} preview={preview} height={height} width={width}>
       <Select
         onChange={onChangeUnit}
         value={unit}
@@ -97,7 +98,8 @@ const DropDownWrapper = styled.div`
     .ant-select-selection {
       display: flex;
       align-items: center;
-      height: 100%;
+      height: ${({ height }) => height || "100%"};
+      width: ${({ width }) => width || "auto"};
       padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
       ${({ preview }) =>
         preview &&

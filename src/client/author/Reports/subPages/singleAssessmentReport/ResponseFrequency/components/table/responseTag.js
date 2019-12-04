@@ -112,6 +112,7 @@ export class ResponseTag extends Component {
 }
 
 const StyledTag = styled.div`
+  min-height: 40px;
   border: solid 2px ${darkGrey};
   border-radius: 40px;
   margin: 2px 5px;

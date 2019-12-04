@@ -133,18 +133,20 @@ class AuthorTestItemPreview extends Component {
       previewTab,
       handleCheckAnswer,
       handleShowAnswer,
+      item,
       ...restProps
     } = this.props;
+    const questionCount = get(item, ["data", "questions"]).length;
+    const isMultiPart = questionCount > 1;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const alphabets = "abcdefghijklmnopqrstuvwxyz";
     const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
-
     const question =
       questions[widget.reference] && questions[widget.reference].qLabel
         ? questions[widget.reference]
         : {
             ...questions[widget.reference],
-            qLabel: `Q${widget.tabIndex === 0 ? widget.tabIndex + 1 : widget.tabIndex}.${alphabets[subIndex]}`
+            qLabel: isMultiPart ? alphabets[subIndex] : "" // show subIndex if multipart, otherwise nothing
           };
     if (!question) {
       return <div />;

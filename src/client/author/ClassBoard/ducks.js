@@ -2,6 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
+import { push } from "connected-react-router";
 
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
@@ -18,7 +19,8 @@ import {
   setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
-  receiveTestActivitydAction
+  receiveTestActivitydAction,
+  redirectToAssignmentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -44,7 +46,8 @@ import {
   GET_ALL_TESTACTIVITIES_FOR_STUDENT,
   MARK_AS_SUBMITTED,
   DOWNLOAD_GRADES_RESPONSES,
-  RECEIVE_CLASS_RESPONSE_SUCCESS
+  RECEIVE_CLASS_RESPONSE_SUCCESS,
+  REDIRECT_TO_ASSIGNMENTS
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
@@ -122,6 +125,9 @@ function* releaseScoreSaga({ payload }) {
     yield call(classBoardApi.releaseScore, payload);
     yield call(message.success, "Successfully updated the release score settings");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Update release score is failed");
   }
 }
@@ -135,6 +141,9 @@ function* markAsDoneSaga({ payload }) {
     if (err && err.status == 422 && err.data && err.data.message) {
       yield call(message.warn, err.data.message);
     } else {
+      if (err?.data?.message === "Assignment does not exist anymore") {
+        yield put(redirectToAssignmentsAction(""));
+      }
       yield call(message.error, err.data.message || "Mark as done is failed");
     }
   }
@@ -146,6 +155,9 @@ function* openAssignmentSaga({ payload }) {
     yield put(updateOpenAssignmentsAction(payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Failed to open");
   }
 }
@@ -157,6 +169,9 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Failed to close");
   }
 }
@@ -166,6 +181,9 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload);
     yield call(message.success, "feedback saved");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Saving failed");
   }
 }
@@ -176,6 +194,9 @@ function* markAbsentSaga({ payload }) {
     yield put(updateStudentActivityAction(payload.students));
     yield call(message.success, "Successfully marked as absent");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Mark absent students failed");
   }
 }
@@ -186,6 +207,9 @@ function* markAsSubmittedSaga({ payload }) {
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(message.success, "Successfully marked as submitted");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Mark as submit failed");
   }
 }
@@ -199,6 +223,9 @@ function* togglePauseAssignment({ payload }) {
       `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
     );
   } catch (e) {
+    if (e?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`);
   }
 }
@@ -218,6 +245,9 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students));
     yield call(message.success, "Successfully removed");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Remove students failed");
   }
 }
@@ -228,6 +258,9 @@ function* addStudentsSaga({ payload }) {
     yield put(setStudentsGradeBookAction(students));
     yield call(message.success, "Successfully added");
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "Add students failed");
   }
 }
@@ -239,6 +272,9 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
     yield put(setCurrentTestActivityIdAction(""));
   } catch (err) {
+    if (err?.data?.message === "Assignment does not exist anymore") {
+      yield put(redirectToAssignmentsAction(""));
+    }
     yield call(message.error, err.data.message || "fetching all test activities failed");
   }
 }
@@ -253,6 +289,10 @@ function* downloadGradesAndResponseSaga({ payload }) {
   } catch (e) {
     yield call(message.error, e?.data?.message || "Download failed");
   }
+}
+
+function* redirectToAssignmentsSaga() {
+  yield put(push(`/author/assignments`));
 }
 
 export function* watcherSaga() {
@@ -271,7 +311,8 @@ export function* watcherSaga() {
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
     yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),
     yield takeEvery(ADD_STUDENTS, addStudentsSaga),
-    yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga)
+    yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
+    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga)
   ]);
 }
 

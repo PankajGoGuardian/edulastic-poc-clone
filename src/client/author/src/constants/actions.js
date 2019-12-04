@@ -169,6 +169,7 @@ export const SET_STUDENTS_GRADEBOOK = "[gradebook] set students to gradebook";
 export const SET_CURRENT_TESTACTIVITY = "[gradebook]set current testActivity Id";
 export const GET_ALL_TESTACTIVITIES_FOR_STUDENT = "[gradebook] get all testactivities for student";
 export const SET_ALL_TESTACTIVITIES_FOR_STUDENT = "[gradebook] set all testactivities for student";
+export const REDIRECT_TO_ASSIGNMENTS = "[gradebook] redirect to assignments";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";

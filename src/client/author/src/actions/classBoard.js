@@ -34,7 +34,8 @@ import {
   FETCH_STUDENTS,
   ADD_STUDENTS,
   SET_STUDENTS_GRADEBOOK,
-  UPDATE_SUBMITTED_STUDENTS
+  UPDATE_SUBMITTED_STUDENTS,
+  REDIRECT_TO_ASSIGNMENTS
 } from "../constants/actions";
 import { createAction } from "redux-starter-kit";
 
@@ -195,3 +196,4 @@ export const setIsPausedAction = payload => ({
 export const setCurrentTestActivityIdAction = createAction(SET_CURRENT_TESTACTIVITY);
 export const getAllTestActivitiesForStudentAction = createAction(GET_ALL_TESTACTIVITIES_FOR_STUDENT);
 export const setAllTestActivitiesForStudentAction = createAction(SET_ALL_TESTACTIVITIES_FOR_STUDENT);
+export const redirectToAssignmentsAction = createAction(REDIRECT_TO_ASSIGNMENTS);

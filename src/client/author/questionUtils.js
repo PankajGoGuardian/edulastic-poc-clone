@@ -21,9 +21,47 @@ const expressionMultipartOptionsCheck = item => {
     if (!opt.length) {
       return true;
     }
-    const hasEmptyOptions = opt.some(opt => !opt);
+    const hasEmptyOptions = opt.some(opt => !opt || (opt && !opt.trim()));
     if (hasEmptyOptions) return true;
   }
+
+  const validResponse = item?.validation?.validResponse;
+  if (validResponse) {
+    // dropdown = dropDowns, mathUnits = mathUnits, textinput = inputs, value = maths
+    const { dropdown, mathUnits, textinput, value } = validResponse;
+
+    if (dropdown && dropdown.value) {
+      for (let opt of dropdown.value) {
+        if (!opt.value || (opt.value && !opt.value.trim())) {
+          return true;
+        }
+      }
+    }
+    if (mathUnits && mathUnits.value) {
+      for (let opt of mathUnits.value) {
+        if (isMathTextFieldEmpty(opt.value) || !opt.options.unit) {
+          return true;
+        }
+      }
+    }
+    if (textinput && textinput.value) {
+      for (let opt of textinput.value) {
+        if (!opt.value || (opt.value && !opt.value.trim())) {
+          return true;
+        }
+      }
+    }
+    if (value && value.length) {
+      for (let opt of value) {
+        for (let _opt of opt) {
+          if (isMathTextFieldEmpty(_opt.value)) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
   return false;
 };
 
@@ -55,7 +93,9 @@ const multipleChoiceOptionsCheck = ({ options = [] }) => {
 
   // item should have a label, and label should not be empty
   return options.some(opt => {
-    return (opt.hasOwnProperty("label") && !opt.label.trim()) || (isString(opt) && opt.trim() === "");
+    return (
+      (opt.hasOwnProperty("label") && isRichTextFieldEmpty(opt.label)) || (isString(opt) && isRichTextFieldEmpty(opt))
+    );
   });
 };
 
@@ -84,6 +124,18 @@ export const isRichTextFieldEmpty = text => {
 
   let _text = striptags(text);
   _text = _text.replace(/&nbsp;/g, " ");
+  if (!_text || (_text && !_text.trim())) {
+    return true;
+  }
+  return false;
+};
+
+export const isMathTextFieldEmpty = text => {
+  if (!text) {
+    return true;
+  }
+
+  let _text = text.replace(/\\/g, "");
   if (!_text || (_text && !_text.trim())) {
     return true;
   }

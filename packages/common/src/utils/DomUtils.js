@@ -13,11 +13,11 @@ const isSmoothScrollSupported = "scrollBehavior" in document.documentElement.sty
 /**
  * @param {Element} el
  */
-export function scrollTo(el) {
+export function scrollTo(el, subtractScroll = 0) {
   const { top } = offset(el);
   if (isSmoothScrollSupported) {
-    window.scrollTo({ top, left: 0, behavior: "smooth" });
+    window.scrollTo({ top: top - subtractScroll, left: 0, behavior: "smooth" });
   } else {
-    window.scrollTo(0, top);
+    window.scrollTo(0, top - subtractScroll);
   }
 }

@@ -26,6 +26,11 @@ import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } fr
 import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
 
+const v1Dimenstions = {
+  v1Height: 390,
+  v1Width: 720
+};
+
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     const { details } = compareResult;
@@ -393,9 +398,11 @@ class AxisLabelsContainer extends PureComponent {
       _graphData = next(graphData, __graphData => {
         if (__graphData.annotations) {
           for (let o of __graphData.annotations) {
-            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o);
+            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
             o.position.x = co.x;
             o.position.y = co.y;
+            o.size.width = co.width;
+            o.size.height = co.height;
           }
         }
       });
@@ -447,6 +454,7 @@ class AxisLabelsContainer extends PureComponent {
                   adjustedHeightWidth={adjustedHeightWidth}
                   layout={layout}
                   bounds={`#${this._graphId}`}
+                  v1Dimenstions={v1Dimenstions}
                 />
               </div>
             </div>

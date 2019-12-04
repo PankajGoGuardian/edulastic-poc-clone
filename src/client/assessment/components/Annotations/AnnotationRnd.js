@@ -33,7 +33,7 @@ const resizeEnable = {
 
 class AnnotationsRnd extends Component {
   handleAnnotationPosition = (d, annotationIndex) => {
-    const { setQuestionData, question, adjustedHeightWidth, layout } = this.props;
+    const { setQuestionData, question, adjustedHeightWidth, layout, v1Dimenstions } = this.props;
     const { isV1Migrated } = question;
 
     setQuestionData(
@@ -41,21 +41,40 @@ class AnnotationsRnd extends Component {
         const oldAnnotations = draft.annotations || [];
         draft.annotations = oldAnnotations.map(annotation => {
           if (annotationIndex === annotation.id) {
-            if (isV1Migrated) {
-              const co = getAdjustedV1AnnotationCoordinatesForDB(adjustedHeightWidth, layout, d);
+            let _size = annotation.size;
+            if (isV1Migrated && v1Dimenstions) {
+              const co = getAdjustedV1AnnotationCoordinatesForDB(
+                adjustedHeightWidth,
+                layout,
+                {
+                  ...annotation,
+                  position: { ...d }
+                },
+                v1Dimenstions
+              );
               d.x = co.x;
               d.y = co.y;
+              _size.width = co.width;
+              _size.height = co.height;
             }
 
             const modifiedAnnotation = { ...annotation };
             modifiedAnnotation.position = { x: d.x, y: d.y };
+            modifiedAnnotation.size = _size;
 
             return modifiedAnnotation;
           } else {
-            if (isV1Migrated) {
-              const co = getAdjustedV1AnnotationCoordinatesForDB(adjustedHeightWidth, layout, annotation.position);
+            if (isV1Migrated && v1Dimenstions) {
+              const co = getAdjustedV1AnnotationCoordinatesForDB(
+                adjustedHeightWidth,
+                layout,
+                annotation,
+                v1Dimenstions
+              );
               annotation.position.x = co.x;
               annotation.position.y = co.y;
+              annotation.size.width = co.width;
+              annotation.size.height = co.height;
             }
 
             return annotation;

@@ -29,41 +29,52 @@ export const getAdjustedHeightAndWidth = (
   return obj;
 };
 
-export const getAdjustedV1AnnotationCoordinatesForRender = (adjustedHeightWidth, layout, annotation) => {
-  const v1Height = 390;
-  const v1Width = 720;
+export const getAdjustedV1AnnotationCoordinatesForRender = (adjustedHeightWidth, layout, annotation, v1Dimenstions) => {
+  const { v1Height = 0, v1Width = 0 } = v1Dimenstions;
 
   const { position: coordinates, size } = annotation;
 
   const xPosPercentage = (coordinates.x / v1Width) * 100;
   const yPosPercentage = (coordinates.y / v1Height) * 100;
 
+  const widthPercentage = (size.width / v1Width) * 100;
+  const heightPercentage = (size.height / v1Height) * 100;
+
   let calcX = (xPosPercentage / 100) * adjustedHeightWidth.width;
   const calcY = (yPosPercentage / 100) * adjustedHeightWidth.height;
 
-  if (size && size.width && adjustedHeightWidth.width - calcX < size.width / 2) {
-    calcX = adjustedHeightWidth.width - size.width / 2 - 20;
-  }
+  const calcSizeWidth = (widthPercentage / 100) * adjustedHeightWidth.width;
+  const calcSizeHeight = (heightPercentage / 100) * adjustedHeightWidth.height;
 
   return {
-    x: calcX,
-    y: calcY
+    x: Math.round(calcX),
+    y: Math.round(calcY),
+    width: calcSizeWidth,
+    height: calcSizeHeight
   };
 };
 
-export const getAdjustedV1AnnotationCoordinatesForDB = (adjustedHeightWidth, layout, coordinates) => {
-  debugger;
-  const v1Height = 390;
-  const v1Width = 720;
+export const getAdjustedV1AnnotationCoordinatesForDB = (adjustedHeightWidth, layout, annotation, v1Dimenstions) => {
+  const { v1Height, v1Width } = v1Dimenstions;
+
+  const { position: coordinates, size } = annotation;
 
   const xPosPercentage = (coordinates.x / adjustedHeightWidth.width) * 100;
   const yPosPercentage = (coordinates.y / adjustedHeightWidth.height) * 100;
 
+  const widthPercentage = (size.width / adjustedHeightWidth.width) * 100;
+  const heightPercentage = (size.height / adjustedHeightWidth.height) * 100;
+
   const calcX = (xPosPercentage / 100) * v1Width;
   const calcY = (yPosPercentage / 100) * v1Height;
 
+  const calcSizeWidth = (widthPercentage / 100) * v1Width;
+  const calcSizeHeight = (heightPercentage / 100) * v1Height;
+
   return {
-    x: calcX,
-    y: calcY
+    x: Math.round(calcX),
+    y: Math.round(calcY),
+    width: calcSizeWidth,
+    height: calcSizeHeight
   };
 };

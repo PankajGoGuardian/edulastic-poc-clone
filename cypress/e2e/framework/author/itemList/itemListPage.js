@@ -1,4 +1,5 @@
 import MCQStandardPage from "./questionType/mcq/mcqStandardPage";
+import ClozeWithTextPage from "./questionType/fillInBlank/clozeWithTextPage";
 import EditItemPage from "./itemDetail/editPage";
 import { questionTypeKey as queTypes } from "../../constants/questionTypes";
 import MCQMultiplePage from "./questionType/mcq/mcqMultiplePage";
@@ -6,6 +7,7 @@ import MCQTrueFalsePage from "./questionType/mcq/mcqTrueFalsePage";
 import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
 import MetadataPage from "./itemDetail/metadataPage";
+import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage";
 
 class ItemListPage {
   clickOnCreate = () => {
@@ -59,7 +61,12 @@ class ItemListPage {
           case queTypes.MULTIPLE_CHOICE_BLOCK:
             question = new MCQBlockLayoutPage();
             break;
-
+          case queTypes.FILL_TEXT_CLOZE:
+            question = new ClozeWithTextPage();
+            break;
+          case queTypes.DROP_TEXT_CLOZE:
+            question = new ClozeDropDownPage();
+            break;
           case queTypes.CHOICE_MATRIX_STANDARD:
           case queTypes.CHOICE_MATRIX_LABEL:
           case queTypes.CHOICE_MATRIX_INLINE:

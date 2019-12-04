@@ -46,6 +46,7 @@ export default class TestHeader {
     cy.wait(1000);
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");
+    cy.route("PUT", "**/test/*").as("saveTest");
     cy.get('[data-cy="publish"]').click();
     cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
     return cy.wait("@published").then(xhr => {
@@ -56,7 +57,7 @@ export default class TestHeader {
     });
   };
 
-  clickOnShare = () => cy.get('[data-cy="share"]').click();
+  clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });
 
   clickOnAssign = () => {
     cy.get('[data-cy="assign"]').click();
@@ -75,4 +76,13 @@ export default class TestHeader {
       .last()
       .find("svg")
       .click({ force: true });
+  isDraft = () =>
+    cy
+      .get('[data-cy="description"]')
+      .parent()
+      .parent()
+      .children()
+      .eq(0)
+      .find("span")
+      .contains("draft");
 }

@@ -344,6 +344,20 @@ class StudentTestPage {
       });
     return this;
   };
+  checkAnsDropdown = attemptdata => {
+    attemptdata.forEach((val, index) => {
+      this.clickDropDownClozeByIndex(val, index);
+    });
+  };
+
+  clickDropDownClozeByIndex = (answer, index) => {
+    cy.get("[data-cy='drop_down_select']")
+      .eq(index)
+      .click({ force: true });
+    cy.get("body")
+      .contains(answer)
+      .click();
+  };
 
   clickImageDropDownByIndex = (answer, index) => {
     cy.get("div.imagelabeldragdrop-droppable")
@@ -638,7 +652,13 @@ class StudentTestPage {
         }
         break;
       }
-
+      case questionType.DROP_TEXT_CLOZE:
+        {
+          if (attemptType !== attemptTypes.SKIP) {
+            this.checkAnsDropdown(attemptData);
+          }
+        }
+        break;
       default:
         break;
     }

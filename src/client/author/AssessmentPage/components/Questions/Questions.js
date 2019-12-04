@@ -134,7 +134,7 @@ const clozeDropDownData = {
 };
 const essayData = {
   uiStyle: {
-    minHeight: 15
+    minHeight: 5
   },
   showWordCount: true,
   title: "Essay with plain text"

@@ -1529,10 +1529,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         stimulus: "Enter your question",
         firstMount: true,
         canvas: {
-          xMax: 10.4,
-          xMin: -10.4,
-          yMax: 10.4,
-          yMin: -10.4,
+          xMax: 10,
+          xMin: -10,
+          yMax: 10,
+          yMin: -10,
           xRatio: 1,
           yRatio: 1
         },

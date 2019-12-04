@@ -30,7 +30,20 @@ class QuadrantsMoreOptions extends Component {
     };
   }
 
-  handleGridChange = event => this.setState({ [event.target.name]: event.target.value });
+  handleGridChange = event => {
+    let value = event.target.value;
+    const reg = new RegExp("^[-.0-9]+$");
+
+    if (
+      event.target.name !== "xAxisLabel" &&
+      event.target.name !== "yAxisLabel" &&
+      (event.target.value === "" || reg.test(value))
+    ) {
+      this.setState({ [event.target.name]: value });
+    } else if (event.target.name === "xAxisLabel" || event.target.name === "yAxisLabel") {
+      this.setState({ [event.target.name]: event.target.value });
+    }
+  };
 
   isQuadrantsPlacement = () => {
     const { graphData } = this.props;
@@ -50,7 +63,23 @@ class QuadrantsMoreOptions extends Component {
     } = event;
     const { graphData, setOptions } = this.props;
     const { uiStyle } = graphData;
-    setOptions({ ...uiStyle, [name]: value });
+
+    if (
+      event.target.name === "xDistance" ||
+      event.target.name === "xTickDistance" ||
+      event.target.name === "yDistance" ||
+      event.target.name === "yTickDistance"
+    ) {
+      let _value = parseFloat(value);
+      if (!isNaN(_value)) {
+        setOptions({ ...uiStyle, [name]: Math.abs(_value) });
+        this.setState({ [name]: Math.abs(_value) });
+      } else {
+        this.setState({ [name]: uiStyle[name] });
+      }
+    } else {
+      setOptions({ ...uiStyle, [name]: value });
+    }
   };
 
   handleCanvasChange = event => {
@@ -60,10 +89,16 @@ class QuadrantsMoreOptions extends Component {
       setCanvas
     } = this.props;
 
-    canvas[name] = +value;
-    canvas.xRatio = 1;
-    canvas.yRatio = 1;
-    setCanvas(canvas);
+    let _value = parseFloat(value);
+    if (!isNaN(_value)) {
+      canvas[name] = +_value;
+      canvas.xRatio = 1;
+      canvas.yRatio = 1;
+      setCanvas(canvas);
+      this.setState({ [name]: _value });
+    } else {
+      this.setState({ [name]: canvas[name] });
+    }
   };
 
   handleRatioChange = event => {
@@ -75,17 +110,21 @@ class QuadrantsMoreOptions extends Component {
     } = this.props;
 
     value = parseFloat(value);
-    value = value > 0 ? value : 1;
-    if (name === "xRatio") {
-      canvas.xMin = +(parseFloat(canvas.xMin) * (value / canvas.xRatio)).toFixed(4);
-      canvas.xMax = +(parseFloat(canvas.xMax) * (value / canvas.xRatio)).toFixed(4);
-    } else if (name === "yRatio") {
-      canvas.yMin = +(parseFloat(canvas.yMin) * (value / canvas.yRatio)).toFixed(4);
-      canvas.yMax = +(parseFloat(canvas.yMax) * (value / canvas.yRatio)).toFixed(4);
+    if (!isNaN(value)) {
+      value = value > 0 ? value : 1;
+      if (name === "xRatio") {
+        canvas.xMin = +(parseFloat(canvas.xMin) * (value / canvas.xRatio)).toFixed(4);
+        canvas.xMax = +(parseFloat(canvas.xMax) * (value / canvas.xRatio)).toFixed(4);
+      } else if (name === "yRatio") {
+        canvas.yMin = +(parseFloat(canvas.yMin) * (value / canvas.yRatio)).toFixed(4);
+        canvas.yMax = +(parseFloat(canvas.yMax) * (value / canvas.yRatio)).toFixed(4);
+      }
+      canvas[name] = value;
+      setCanvas(canvas);
+      this.setState({ [name]: value });
+    } else {
+      this.setState({ [name]: canvas[name] });
     }
-
-    canvas[name] = value;
-    setCanvas(canvas);
   };
 
   handleSelect = (name, value) => {
@@ -184,6 +223,7 @@ class QuadrantsMoreOptions extends Component {
       xTickDistance,
       yTickDistance
     } = this.state;
+
     return (
       <Fragment>
         {!this.isQuadrantsPlacement() && (
@@ -398,7 +438,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="xMin"
                   value={xMin}
                   onChange={this.handleGridChange}
@@ -408,7 +448,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="xMax"
                   value={xMax}
                   onChange={this.handleGridChange}
@@ -418,7 +458,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   defaultValue="1"
                   min={0}
                   name="xDistance"
@@ -430,7 +470,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   defaultValue="1"
                   min={0}
                   name="xTickDistance"
@@ -442,7 +482,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="xRatio"
                   min={0}
                   value={xRatio}
@@ -524,7 +564,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="yMin"
                   value={yMin}
                   onChange={this.handleGridChange}
@@ -534,7 +574,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="yMax"
                   value={yMax}
                   onChange={this.handleGridChange}
@@ -544,7 +584,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   defaultValue="1"
                   min={0}
                   name="yDistance"
@@ -556,7 +596,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   defaultValue="1"
                   min={0}
                   name="yTickDistance"
@@ -568,7 +608,7 @@ class QuadrantsMoreOptions extends Component {
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
                 <StyledTextField
-                  type="number"
+                  type="text"
                   name="yRatio"
                   min={0}
                   value={yRatio}

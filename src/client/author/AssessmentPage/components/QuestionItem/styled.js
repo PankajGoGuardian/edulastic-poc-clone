@@ -16,7 +16,7 @@ export const QuestionItemWrapper = styled.div`
   max-width: ${({ review }) => (review ? "315px" : "340px")};
   padding: 19px 6px 18px 13px;
   background: ${white};
-  border-radius: 0 10px 10px 0;
+  border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
   border: 1px solid ${sectionBorder};
   box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
 `;

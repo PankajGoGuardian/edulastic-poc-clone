@@ -120,6 +120,7 @@ const PDFPreview = ({
                 pdfPreview
                 viewMode="review"
                 annotations
+                testMode={testMode}
               />
             </div>
           ))}

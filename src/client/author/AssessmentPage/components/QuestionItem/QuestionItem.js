@@ -291,6 +291,7 @@ class QuestionItem extends React.Component {
       highlighted,
       previousFeedback,
       answer,
+      testMode,
       pdfPreview
     } = this.props;
 
@@ -303,6 +304,7 @@ class QuestionItem extends React.Component {
         id={id}
         highlighted={highlighted}
         ref={this.itemRef}
+        review={testMode || review}
       >
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable

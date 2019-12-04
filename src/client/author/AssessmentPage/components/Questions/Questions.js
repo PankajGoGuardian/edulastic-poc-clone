@@ -61,7 +61,10 @@ const SortableQuestionItem = SortableElement(
     testMode,
     onHighlightQuestion
   }) => (
-    <div onClick={() => onHighlightQuestion(data.id)} style={{ display: "flex", marginBottom: "6px" }}>
+    <div
+      onClick={() => onHighlightQuestion(data.id)}
+      style={{ display: "flex", marginBottom: "6px", paddingLeft: (testMode || review) && "15px" }}
+    >
       {!testMode && !review && <DragHandle review={review} />}
       <QuestionItem
         key={key}
@@ -78,6 +81,7 @@ const SortableQuestionItem = SortableElement(
         previousFeedback={previousFeedback}
         onDragStart={onDragStart}
         highlighted={highlighted}
+        testMode={testMode}
       />
     </div>
   )

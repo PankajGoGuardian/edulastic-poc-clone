@@ -16,13 +16,18 @@ const ClozeTextInput = ({ resprops, id }) => {
   const { item, onChange, getUiStyles, userAnswers, disableResponse, isReviewTab, cAnswers } = resprops;
   const ref = useRef();
 
-  let { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+  let { value, index: responseIndex } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
 
   if (isReviewTab) {
-    const { value: correctValue } = find(cAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+    const { value: correctValue, index: correctAnswerIndex } = find(
+      cAnswers,
+      answer => (answer ? answer.id : "") === id
+    ) || { value: "", index: "" };
     value = correctValue;
+    responseIndex = correctAnswerIndex;
   }
-  const { btnStyle } = getUiStyles(id);
+
+  const { btnStyle } = getUiStyles(id, responseIndex);
 
   const [input, setInput] = useState({ id, value });
 

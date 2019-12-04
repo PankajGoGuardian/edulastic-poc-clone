@@ -291,7 +291,7 @@ export const getStemNumeration = (stemNumeration, index) => {
       break;
     }
     case "uppercase": {
-      indexStr = ALPHABET[index].toUpperCase();
+      indexStr = ALPHABET[index]?.toUpperCase();
       break;
     }
     case "numerical": {

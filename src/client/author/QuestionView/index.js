@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, white, themeColor } from "@edulastic/colors";
+import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import {
@@ -194,7 +194,7 @@ class QuestionViewContainer extends Component {
                   <LegendLabel>INCORRECT</LegendLabel>
                 </LegendItem>
                 <LegendItem>
-                  <LegendIcon color={pCorrect} />
+                  <LegendIcon color={yellow1} />
                   <LegendLabel>PARTIALLY CORRECT</LegendLabel>
                 </LegendItem>
                 <LegendItem>
@@ -271,7 +271,7 @@ class QuestionViewContainer extends Component {
                   style={{ cursor: "pointer" }}
                   stackId="a"
                   dataKey="pCorrect"
-                  fill={pCorrect}
+                  fill={yellow1}
                   onClick={this.onClickChart}
                 />
                 <Bar

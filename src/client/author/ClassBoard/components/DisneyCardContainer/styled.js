@@ -10,7 +10,8 @@ import {
   themeColor,
   lightGreen4,
   extraDesktopWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  yellow1
 } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
@@ -209,7 +210,7 @@ export const SquareColorDivPink = styled(SquareColorDiv)`
 `;
 
 export const SquareColorDivYellow = styled(SquareColorDiv)`
-  background-color: #fdcc3b;
+  background-color: ${yellow1};
 `;
 
 export const StyledParaF = styled.p`

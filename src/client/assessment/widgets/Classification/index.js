@@ -17,7 +17,11 @@ const Classification = props => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
-    <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => {}}>
+    <WithResources
+      resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+      fallBack={<span />}
+      onLoaded={() => {}}
+    >
       {view === EDIT && (
         <ContentArea>
           <EditClassification {...props} />

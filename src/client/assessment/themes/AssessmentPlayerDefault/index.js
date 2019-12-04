@@ -419,16 +419,6 @@ class AssessmentPlayerDefault extends React.Component {
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
       <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
-        {currentItem > 0 && (
-          <Nav.BackArrow onClick={moveToPrev}>
-            <i class="fa fa-angle-left" />
-          </Nav.BackArrow>
-        )}
-        {currentItem < items.length - 1 && (
-          <Nav.NextArrow onClick={moveToNext}>
-            <i class="fa fa-angle-right" />
-          </Nav.NextArrow>
-        )}
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
           {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
@@ -499,7 +489,7 @@ class AssessmentPlayerDefault extends React.Component {
                             zoomLevel={headerZoom}
                           />
                           <Tooltip placement="top" title="Previous" overlayStyle={navZoomStyle}>
-                            <ControlBtn
+                            <ControlBtn.Back
                               prev
                               skin
                               data-cy="prev"
@@ -513,7 +503,7 @@ class AssessmentPlayerDefault extends React.Component {
                             />
                           </Tooltip>
                           <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
-                            <ControlBtn
+                            <ControlBtn.Next
                               next
                               skin
                               type="primary"
@@ -523,7 +513,9 @@ class AssessmentPlayerDefault extends React.Component {
                                 moveToNext();
                                 e.target.blur();
                               }}
-                            />
+                            >
+                              Next
+                            </ControlBtn.Next>
                           </Tooltip>
                         </>
                       )}
@@ -585,6 +577,14 @@ class AssessmentPlayerDefault extends React.Component {
             headerHeight={headerHeight}
             ref={this.scrollContainer}
           >
+            {currentItem > 0 && (
+              <Nav.BackArrow onClick={moveToPrev}>
+                <i class="fa fa-angle-left" />
+              </Nav.BackArrow>
+            )}
+            <Nav.NextArrow onClick={moveToNext}>
+              <i class="fa fa-angle-right" />
+            </Nav.NextArrow>
             {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
                 Also, will use ScrollContext for auto-scroll on mobile */}
             <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>

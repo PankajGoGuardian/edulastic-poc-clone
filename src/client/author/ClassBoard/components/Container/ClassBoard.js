@@ -37,7 +37,7 @@ import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
 // ducks
 import {
-  getTestActivitySelector,
+  getSortedTestActivitySelector,
   getGradeBookSelector,
   getAdditionalDataSelector,
   getClassResponseSelector,
@@ -1149,7 +1149,7 @@ const enhance = compose(
   connect(
     state => ({
       gradebook: getGradeBookSelector(state),
-      testActivity: getTestActivitySelector(state),
+      testActivity: getSortedTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
       userRole: getUserRole(state),

@@ -11,7 +11,7 @@ import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../.
 import { clearAnswersAction } from "../../../src/actions/answers";
 // ducks
 import {
-  getTestActivitySelector,
+  getSortedTestActivitySelector,
   getAdditionalDataSelector,
   getClassResponseSelector
 } from "../../../ClassBoard/ducks";
@@ -173,7 +173,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      testActivity: getTestActivitySelector(state),
+      testActivity: getSortedTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
       classResponse: getClassResponseSelector(state),

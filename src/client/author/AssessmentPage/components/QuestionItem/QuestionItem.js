@@ -290,7 +290,8 @@ class QuestionItem extends React.Component {
       previewMode,
       highlighted,
       previousFeedback,
-      answer
+      answer,
+      pdfPreview
     } = this.props;
 
     const check =
@@ -322,8 +323,8 @@ class QuestionItem extends React.Component {
             typeof answer !== "undefined" &&
             this.renderAnswerIndicator(type)}
         </AnswerForm>
-        {review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
-        {check ? this.renderScore(id) : this.renderComments(id)}
+        {!pdfPreview && review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
+        {!pdfPreview && check ? this.renderScore(id) : this.renderComments(id)}
       </QuestionItemWrapper>
     );
   }

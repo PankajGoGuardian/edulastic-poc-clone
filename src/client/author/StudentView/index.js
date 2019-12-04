@@ -192,7 +192,11 @@ class StudentViewContainer extends Component {
           </Modal>
         )}
 
-        <StyledFlexContainer justifyContent="space-between" hasStickyHeader={hasStickyHeader}>
+        <StyledFlexContainer
+          justifyContent="space-between"
+          hasStickyHeader={hasStickyHeader}
+          className="lcb-student-sticky-bar"
+        >
           <StudentButtonWrapper>
             <StudentButtonDiv>
               <AllButton active={filter === null} onClick={() => setFilter(null)}>

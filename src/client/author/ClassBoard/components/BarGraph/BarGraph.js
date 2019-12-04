@@ -24,7 +24,15 @@ import { MAX_XGA_WIDTH, NORMAL_MONITOR_WIDTH, LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH
 /**
  * @param {string} qid
  */
-const _scrollTo = qid => scrollTo(document.querySelector(`.question-container-id-${qid}`));
+const _scrollTo = qid => {
+  // when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
+  // * 2 because the position of sticky bar changes when it is made sticky, before it has a proper position with respect to its parent...
+  // the position of all the elements changes when sticky bar is made sticky
+  scrollTo(
+    document.querySelector(`.question-container-id-${qid}`),
+    (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0
+  );
+};
 const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
 
 const RectangleBar = ({ fill, x, y, width, height, dataKey, incorrectAttemps }) => {

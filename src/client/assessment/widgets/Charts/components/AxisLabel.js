@@ -8,12 +8,11 @@ import { Sub, Sup } from "../styled";
 
 const AxisLabel = ({ value, fractionFormat, textAnchor = "middle", verticalAnchor = "start" }) => {
   const result = convertNumberToFraction(value, fractionFormat);
-
   return (
     <Fragment>
       {fractionFormat === "Decimal" && (
         <VxText textAnchor={textAnchor} verticalAnchor={verticalAnchor} width={70}>
-          {result.main}
+          {result.main + ""}
         </VxText>
       )}
       {fractionFormat !== "Decimal" && (

@@ -267,7 +267,7 @@ class AddItems extends PureComponent {
   };
 
   handlePaginationChange = page => {
-    const { search } = this.state;
+    const { search } = this.props;
     const { receiveTestItems, limit } = this.props;
     receiveTestItems(search, page, limit);
   };

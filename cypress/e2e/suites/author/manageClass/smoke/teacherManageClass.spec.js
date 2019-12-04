@@ -1,10 +1,10 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
-import FileHelper from "../../framework/util/fileHelper";
-import Helpers from "../../framework/util/Helpers";
-import TeacherSideBar from "../../framework/author/SideBarPage";
-import TeacherManageClassPage from "../../framework/author/manageClassPage";
-import { grades, subject as allSubjects } from "../../framework/constants/assignmentStatus";
-import CypressHelper from "../../framework/util/cypressHelpers";
+import FileHelper from "../../../../framework/util/fileHelper";
+import Helpers from "../../../../framework/util/Helpers";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
+import { grades, subject as allSubjects } from "../../../../framework/constants/assignmentStatus";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const { _ } = Cypress;
 const posibleGrades = _.values(grades);

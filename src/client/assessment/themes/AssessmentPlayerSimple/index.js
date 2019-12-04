@@ -224,7 +224,8 @@ class AssessmentPlayerSimple extends React.Component {
       unansweredQuestionCount,
       previewPlayer,
       scratchPad,
-      crossAction
+      crossAction,
+      previousQuestionActivities
     } = this.props;
     const {
       showExitPopup,
@@ -313,6 +314,7 @@ class AssessmentPlayerSimple extends React.Component {
             setHighlights={this.saveHistory("resourceId")}
             setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
             crossAction={crossAction || {}}
+            previousQuestionActivities={previousQuestionActivities}
           />
           <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>
@@ -336,7 +338,8 @@ export default connect(
     scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
     highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
     crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
-    userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {})
+    userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
+    previousQuestionActivities: get(state, "previousQuestionActivity", {})
   }),
   {
     checkAnswer: checkAnswerEvaluation,

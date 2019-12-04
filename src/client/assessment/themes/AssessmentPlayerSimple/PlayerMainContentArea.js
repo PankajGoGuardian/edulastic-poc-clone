@@ -30,7 +30,8 @@ const PlayerContentArea = ({
   testItemState,
   setHighlights,
   setCrossAction,
-  crossAction
+  crossAction,
+  previousQuestionActivities
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
   const item = items[currentItem];
@@ -38,7 +39,7 @@ const PlayerContentArea = ({
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
-
+  const previousQuestionActivity = previousQuestionActivities[item._id];
   return (
     <Main skinB="true">
       <Sidebar isVisible={isSidebarVisible}>
@@ -61,11 +62,19 @@ const PlayerContentArea = ({
               cols={itemRows}
               previewTab={previewTab}
               questions={questions}
+              previousQuestionActivity={previousQuestionActivity}
               showCollapseBtn
             />
           )}
           {testItemState === "check" && (
-            <TestItemPreview cols={itemRows} previewTab="check" preview="show" questions={questions} showCollapseBtn />
+            <TestItemPreview
+              cols={itemRows}
+              previewTab="check"
+              preview="show"
+              questions={questions}
+              previousQuestionActivity={previousQuestionActivity}
+              showCollapseBtn
+            />
           )}
           {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
         </MainContent>
@@ -74,6 +83,7 @@ const PlayerContentArea = ({
           isFirst={isFirst}
           moveToNext={moveToNext}
           moveToPrev={moveToPrev}
+          isSidebarVisible={isSidebarVisible}
           t={t}
           unansweredQuestionCount={unansweredQuestionCount}
         />
@@ -116,10 +126,8 @@ const MainContent = styled.div`
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
   border-radius: 10px;
   font-size: 18px;
-  overflow: auto;
-  height: calc(100vh - 200px);
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin: 90px 40px 45px 40px;
+  margin: 90px 40px 90px 40px;
   border-radius: 10px;
   & * {
     -webkit-touch-callout: none;

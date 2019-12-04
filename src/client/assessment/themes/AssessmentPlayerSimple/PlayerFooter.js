@@ -7,8 +7,8 @@ import { FlexContainer } from "../common";
 
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 
-const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount }) => (
-  <MainFooter>
+const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount, isSidebarVisible }) => (
+  <MainFooter isSidebarVisible={isSidebarVisible}>
     <FlexContainer>
       <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
         <i className="fa fa-angle-left" />
@@ -32,9 +32,10 @@ export default PlayerFooter;
 const MainFooter = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  position: absolute;
   bottom: 0px;
+  position: fixed;
+  left: ${props => (props.isSidebarVisible ? "220px" : "65px")};
+  right: 0;
   padding: 22px 35px;
   z-index: 1;
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};

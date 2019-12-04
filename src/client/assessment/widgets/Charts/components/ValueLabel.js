@@ -26,7 +26,8 @@ const ValueLabel = ({ getActivePoint, getActivePointValue, active, gridParams })
     return 0;
   };
 
-  const value = visibleValue() || "";
+  const _visibleValue = visibleValue();
+  const value = _visibleValue || _visibleValue === 0 ? _visibleValue : "";
 
   const getX = () => (active === 0 ? getActivePoint(0) + margin : getActivePoint(0) - getWidth(value) - margin);
 

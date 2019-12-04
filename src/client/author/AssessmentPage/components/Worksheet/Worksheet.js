@@ -7,8 +7,9 @@ import { withRouter } from "react-router";
 import { isEmpty, get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB, withWindowSizes } from "@edulastic/common";
-
-import { Modal, message } from "antd";
+import { white, themeColor } from "@edulastic/colors";
+import styled from "styled-components";
+import { Modal, message, Button } from "antd";
 import { IconGraphRightArrow } from "@edulastic/icons";
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
@@ -47,6 +48,22 @@ const createPage = (pageNumber, url) => ({
   URL: url || "blank",
   pageNo: pageNumber
 });
+
+const StyledSubmitBtn = styled(Button)`
+  background: ${themeColor};
+  color: ${white};
+  &:hover,
+  &:active,
+  &:focus {
+    background: ${themeColor};
+    color: ${white};
+  }
+`;
+
+const StyledCancelBtn = styled(Button)`
+  color: ${themeColor};
+  border-color: ${themeColor};
+`;
 
 class Worksheet extends React.Component {
   static propTypes = {
@@ -558,14 +575,20 @@ class Worksheet extends React.Component {
       <WorksheetWrapper>
         <Modal
           visible={deleteConfirmation}
-          onOk={() => {
-            this.handleDeletePage(selected);
-            this.setDeleteConfirmation(false);
-          }}
-          onCancel={() => this.setDeleteConfirmation(false)}
           title="Confirm Page Deletion"
-          okText="Yes"
-          cancelText="No"
+          onCancel={() => this.setDeleteConfirmation(false)}
+          footer={[
+            <StyledCancelBtn onClick={() => this.setDeleteConfirmation(false)}>No</StyledCancelBtn>,
+            <StyledSubmitBtn
+              key="back"
+              onClick={() => {
+                this.handleDeletePage(selected);
+                this.setDeleteConfirmation(false);
+              }}
+            >
+              Yes
+            </StyledSubmitBtn>
+          ]}
         >
           {"Are you sure that you want to delete this page?"}
         </Modal>

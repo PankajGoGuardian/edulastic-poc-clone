@@ -167,10 +167,10 @@ export const KEYBOARD_BUTTONS_ALL = [
     command: "cmd"
   },
   {
-    handler: "$",
+    handler: "\\$",
     label: "$",
     types: ["all", "basic"],
-    command: "cmd"
+    command: "write"
   },
   {
     handler: "%",

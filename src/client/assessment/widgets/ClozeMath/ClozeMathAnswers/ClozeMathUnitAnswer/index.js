@@ -37,6 +37,8 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
   const dropdownUnit = (
     <div style={{ position: "relative" }}>
       <SelectUnit
+        height={height}
+        width={width}
         customUnits={answer.customUnits}
         onChange={_changeValue(answer.id)}
         unit={get(answer, "options.unit", "")}

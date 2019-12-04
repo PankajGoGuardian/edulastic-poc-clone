@@ -215,7 +215,10 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
       }
     }).then(({ body }) => {
       body.result.forEach(asgnDO => {
-        asgnIds.push(asgnDO._id);
+        const assignment = {};
+        assignment._id = asgnDO._id;
+        assignment.groupId = asgnDO.class[0]._id;
+        asgnIds.push(assignment);
       });
       console.log("All Assignments = ", asgnIds);
     });
@@ -226,16 +229,16 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
       body: teacher ? { username: teacher, password } : DEFAULT_USERS.teacher
     }).then(({ body }) => {
       const auth = body.result.token;
-      asgnIds.forEach(asgnId => {
+      asgnIds.forEach(({ _id, groupId }) => {
         cy.request({
-          url: `${BASE_URL}/assignments/${asgnId}`,
+          url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
           method: "DELETE",
           headers: {
             authorization: auth,
             "Content-Type": "application/json"
           }
         }).then(({ body }) => {
-          console.log(`${asgnId} :: `, body.result);
+          console.log(`${_id} :: `, body.result);
         });
       });
     });

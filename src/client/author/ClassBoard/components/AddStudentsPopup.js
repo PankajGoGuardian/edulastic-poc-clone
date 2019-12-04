@@ -58,7 +58,7 @@ const AddStudentsPopup = ({
         <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
-        <Button key="submit" onClick={submitAction}>
+        <Button data-cy="addButton" key="submit" onClick={submitAction}>
           ADD
         </Button>
       ]}
@@ -67,6 +67,7 @@ const AddStudentsPopup = ({
         <h4> Students </h4>
         <Row>
           <Select
+            data-cy="selectStudents"
             showSearch
             optionFilterProp="children"
             filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}

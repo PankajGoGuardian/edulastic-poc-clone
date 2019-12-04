@@ -19,6 +19,12 @@
       "CHOICE_LABEL.1"
     ]
   },
+  "LCB_2": {
+    "name": "LCB Test Assessment 02",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1"]
+  },
   "EDIT_1": {
     "name": "Test Edit Flow",
     "grade": ["Grade 10"],

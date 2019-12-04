@@ -39,7 +39,13 @@ const ConfirmationModal = ({
           <StyledButton cancel={true} type="primary" key={"1"} onClick={onCancel}>
             NO, CANCEL
           </StyledButton>
-          <StyledButton type="primary" key={"2"} onClick={onOk} disabled={expectedVal !== inputVal.toUpperCase()}>
+          <StyledButton
+            data-cy="submitConfirm"
+            type="primary"
+            key={"2"}
+            onClick={onOk}
+            disabled={expectedVal !== inputVal.toUpperCase()}
+          >
             {okText.toUpperCase()}
           </StyledButton>
         </ModalFooter>
@@ -66,6 +72,7 @@ const ConfirmationModal = ({
         <Row>
           <StyledCol span={24}>
             <StyledInput
+              data-cy="confirmationInput"
               value={inputVal}
               onChange={onInputChange}
               // here paste is not allowed, and user has to manually type in inputVal

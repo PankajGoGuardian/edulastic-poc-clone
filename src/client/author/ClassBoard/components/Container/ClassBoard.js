@@ -828,7 +828,11 @@ class ClassBoard extends Component {
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <MenuItems disabled={disableMarkSubmitted} onClick={this.handleShowMarkAsSubmittedModal}>
+                            <MenuItems
+                              data-cy="markSubmitted"
+                              disabled={disableMarkSubmitted}
+                              onClick={this.handleShowMarkAsSubmittedModal}
+                            >
                               <IconMarkAsSubmitted width={12} />
                               <span>Mark as Submitted</span>
                             </MenuItems>
@@ -839,25 +843,37 @@ class ClassBoard extends Component {
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
+                            <MenuItems
+                              data-cy="markAbsent"
+                              disabled={disableMarkAbsent}
+                              onClick={this.handleShowMarkAsAbsentModal}
+                            >
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>
                           </FeaturesSwitch>
 
-                          <MenuItems onClick={this.handleShowAddStudentsPopup}>
+                          <MenuItems data-cy="addStudents" onClick={this.handleShowAddStudentsPopup}>
                             <IconAddStudents />
                             <span>Add Students</span>
                           </MenuItems>
-                          <MenuItems onClick={this.handleShowRemoveStudentsModal}>
+                          <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
                             <IconRemove />
                             <span>Remove Students</span>
                           </MenuItems>
-                          <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(false)}>
+                          <MenuItems
+                            data-cy="downloadGrades"
+                            disabled={!enableDownload}
+                            onClick={() => this.handleDownloadGrades(false)}
+                          >
                             <IconDownload />
                             <span>Download Grades</span>
                           </MenuItems>
-                          <MenuItems disabled={!enableDownload} onClick={() => this.handleDownloadGrades(true)}>
+                          <MenuItems
+                            data-cy="downloadResponse"
+                            disabled={!enableDownload}
+                            onClick={() => this.handleDownloadGrades(true)}
+                          >
                             <IconDownload />
                             <span>Download Response</span>
                           </MenuItems>
@@ -867,7 +883,7 @@ class ClassBoard extends Component {
                             actionOnInaccessible="hidden"
                             groupId={classId}
                           >
-                            <MenuItems onClick={this.onStudentReportCardsClick}>
+                            <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />
                               <span>Student Report Cards</span>
                             </MenuItems>
@@ -876,7 +892,7 @@ class ClassBoard extends Component {
                       }
                       placement="bottomRight"
                     >
-                      <RedirectButton last={true}>
+                      <RedirectButton data-cy="moreAction" last={true}>
                         <ButtonIconWrap>
                           <IconMoreHorizontal />
                         </ButtonIconWrap>

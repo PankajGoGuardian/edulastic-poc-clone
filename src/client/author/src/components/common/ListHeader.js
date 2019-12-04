@@ -55,6 +55,7 @@ const ListHeader = ({
           renderButton()
         ) : (
           <CreateButton
+            data-cy="createNew"
             onClick={onCreate}
             color="secondary"
             variant="create"

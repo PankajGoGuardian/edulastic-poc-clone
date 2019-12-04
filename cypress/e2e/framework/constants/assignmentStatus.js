@@ -14,7 +14,8 @@ export const studentSide = {
   SUBMITTED: "Submitted",
   NOT_GRADED: "Not Graded",
   GRADES_HELD: "Grades Held",
-  GRADED: "Graded"
+  GRADED: "Graded",
+  ABSENT: "Absent"
 };
 
 export const testTypes = {

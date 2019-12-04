@@ -216,8 +216,10 @@ const TestPageHeader = ({
       {windowWidth > 992 ? (
         <HeaderWrapper>
           <TitleWrapper>
-            <Title title={title}>{title || "Untitled Test"} </Title>
-            <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
+            <Title data-cy="title" title={title}>
+              {title || "Untitled Test"}{" "}
+            </Title>
+            <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
               {isPlaylist || editEnable ? "DRAFT" : testStatus}
             </TestStatus>
           </TitleWrapper>

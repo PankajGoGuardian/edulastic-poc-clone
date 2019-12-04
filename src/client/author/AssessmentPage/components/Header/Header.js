@@ -15,8 +15,8 @@ const style = { justifyContent: "center", background: "white" };
 
 const Header = ({ onTabChange, currentTab, tabs, title, status, onSave, onPublish, onAssign }) => (
   <HeaderWrapper>
-    <Title>
-      {title} <Status>{status}</Status>
+    <Title data-cy="title">
+      {title} <Status data-cy="status">{status}</Status>
     </Title>
     <TestPageNav onChange={onTabChange} current={currentTab} buttons={tabs} />
     <SaveWrapper>

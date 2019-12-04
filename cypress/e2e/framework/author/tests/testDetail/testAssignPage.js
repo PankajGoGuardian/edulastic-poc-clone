@@ -1,37 +1,39 @@
 import CypressHelper from "../../../util/cypressHelpers";
 
 export default class TestAssignPage {
+  clickOnDropDownOptionByText = option => {
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function() {
+            return Cypress.$(this).text() === option;
+          })
+      ).click({ force: true });
+    });
+  };
+
   selectClass = className => {
     cy.get('[data-cy="selectClass"]').click();
-
-    cy.get(".ant-select-dropdown-menu-item").then($ele => {
-      $ele
-        // eslint-disable-next-line func-names
-        .filter(function() {
-          return Cypress.$(this).text() === className;
-        })
-        .click();
-    });
+    this.clickOnDropDownOptionByText(className);
     cy.focused().blur();
   };
 
   selectTestType = type => {
     cy.get('[data-cy="testType"]').click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item").then($ele => {
-      $ele
-        // eslint-disable-next-line func-names
-        .filter(function() {
-          return Cypress.$(this).text() === type;
-        })
-        .click();
-    });
+    this.clickOnDropDownOptionByText(type);
   };
 
-  selectStudent = student => {
+  selectStudent = students => {
     cy.get('[data-cy="selectStudent"]').click();
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(student)
-      .click();
+    cy.wait(1000);
+    if (Cypress._.isArray(students)) {
+      students.forEach(student => {
+        this.clickOnDropDownOptionByText(student);
+      });
+    } else {
+      this.clickOnDropDownOptionByText(students);
+    }
     cy.focused().blur();
   };
 

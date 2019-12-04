@@ -384,7 +384,7 @@ class Graph extends Component {
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper className={compact ? "toolbar-compact" : ""}>
+          <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact" : ""}>
             <QuestionTitleWrapper>
               {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
               <StyledStimulus
@@ -407,7 +407,7 @@ class Graph extends Component {
             )}
             {previewTab === "show" && item.canvas && item.uiStyle && (
               <Fragment>
-                <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
+                <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>
                   <GraphDisplay
                     disableResponse
                     graphData={item}
@@ -422,7 +422,10 @@ class Graph extends Component {
 
                 {validation.altResponses &&
                   validation.altResponses.map((altAnswer, i) => (
-                    <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
+                    <CorrectAnswersContainer
+                      minWidth="max-content"
+                      title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                    >
                       <GraphDisplay
                         disableResponse
                         graphData={item}

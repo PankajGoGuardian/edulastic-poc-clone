@@ -463,6 +463,11 @@ export const getTestActivitySelector = createSelector(
   (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
+export const getSortedTestActivitySelector = createSelector(
+  getTestActivitySelector,
+  state => state?.sort((a, b) => (a?.studentName?.toUpperCase() > b?.studentName?.toUpperCase() ? 1 : -1)) || []
+);
+
 export const notStartedStudentsSelector = createSelector(
   getTestActivitySelector,
   state => state.filter(x => x.status === "notStarted")

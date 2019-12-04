@@ -79,7 +79,7 @@ const PDFPreview = ({
   useEffect(() => {
     // don't remove answers if student attempts -> saves and/or revisits the answers
     if (!testMode) removeAnswers();
-  }, [viewMode,testMode]);
+  }, [viewMode, testMode]);
 
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
@@ -117,6 +117,7 @@ const PDFPreview = ({
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
                 previewMode={viewMode === "edit" ? "clear" : previewMode}
+                pdfPreview
                 viewMode="review"
                 annotations
               />

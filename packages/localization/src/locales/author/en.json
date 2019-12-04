@@ -80,7 +80,7 @@
     },
     "itemlist": {
       "header": {
-        "create": "Create Item",
+        "create": "New Item",
         "itemlist": "Item Bank"
       },
       "filter": {

@@ -183,7 +183,7 @@ export const TestButton = styled(Button)`
 const CreateButton = styled(Button)`
   position: relative;
   min-width: auto;
-  padding: 5px 30px;
+  padding: 0px 34px 0px 10px;
   height: 45px;
   color: ${themeColor};
   border-radius: 3px;
@@ -199,7 +199,7 @@ const CreateButton = styled(Button)`
   }
   svg {
     display: block;
-    margin-right: 10px;
+    margin-right: 17px;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

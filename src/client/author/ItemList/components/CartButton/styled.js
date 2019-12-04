@@ -22,24 +22,18 @@ export const Container = styled.div`
 `;
 
 export const CartButtonWrapper = styled(Button)`
-  height: 44px;
-  width: 140px;
-  padding-left: 40px;
+  height: 45px;
+  padding: 0px 10px 0px 34px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  background: ${white} url(${iconCart}) -20px center no-repeat;
-  background-size: 60% 50%;
   color: ${themeColor};
   border-color: ${themeColor};
-
   &:hover,
   &:focus,
   &:active {
-    background: ${white} url(${iconCart}) -20px no-repeat;
     color: ${themeColor};
     border-color: ${themeColor};
-    background-size: 60% 50%;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
@@ -47,27 +41,35 @@ export const CartButtonWrapper = styled(Button)`
   }
 
   @media (max-width: ${mobileWidthLarge}) {
+    background: ${white} url(${iconCart}) center no-repeat;
+    background-size: 60% 50%;
+    background-position: center;
     height: 40px;
     width: 45px;
     border-radius: 3px;
     font-size: 0;
-    background-position: center;
     padding: 0;
+    padding: 0px;
   }
 `;
 
 export const ItemsAmount = styled.span`
-  display: block;
-  position: absolute;
-  top: -10px;
-  right: -10px;
   width: 22px;
-  height: 21px;
+  height: 22px;
+  margin-left: 17px;
   text-align: center;
-  border-radius: 10px;
-  background: #42d184;
+  border-radius: 50%;
+  background: ${themeColor};
   color: ${white};
   font-size: 14px;
   line-height: 22px;
   font-weight: bold;
+  @media (max-width: ${mobileWidthLarge}) {
+    display: block;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    margin: 0px;
+    background: #42d184;
+  }
 `;

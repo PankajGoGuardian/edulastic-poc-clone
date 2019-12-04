@@ -58,7 +58,7 @@ export default connect(
 const StyledButton = styled(Button)`
   border: none;
   margin-left: 2px;
-  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
+  background: ${({ theme }) => theme.default.headerButtonBgColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
 
@@ -69,17 +69,23 @@ const StyledButton = styled(Button)`
     transform: translate(-50%, -50%);
     height: ${props => props.theme.default.headerRightButtonFontIconHeight};
     width: ${props => props.theme.default.headerRightButtonFontIconWidth};
-    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
   }
 
   &:first-child {
     margin-left: 0px;
   }
 
-  &:hover,
   &:focus {
-    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+    background: ${({ theme }) => theme.default.headerButtonBgColor};
+    svg {
+      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    }
+  }
 
+  &:hover,
+  &:active {
+    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
     }

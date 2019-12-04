@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-const ControlBtn = styled(Button)`
+const Back = styled(Button)`
   width: ${props => (props.next ? (props.skin ? "58px" : "187px") : "58px")};
   height: 40px;
   width: 40px;
@@ -132,4 +132,24 @@ const ControlBtn = styled(Button)`
   }
 `;
 
-export default ControlBtn;
+const Next = styled(Button)`
+  background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
+  color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+  border: none;
+  height: 38px;
+  width: 100px;
+  margin-left: 3px;
+  &:hover {
+    background: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
+    border: 1px solid;
+  }
+  &:focus {
+    background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
+    color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+  }
+`;
+export default {
+  Back,
+  Next
+};

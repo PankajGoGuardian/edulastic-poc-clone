@@ -50,7 +50,8 @@ const PDFPreview = ({
   minimized,
   history,
   pageChange,
-  removeAnswers
+  removeAnswers,
+  testMode
 }) => {
   useLayoutEffect(() => {
     const { question: qid } = history?.location?.state || {};
@@ -76,8 +77,9 @@ const PDFPreview = ({
   }, [annotations]);
 
   useEffect(() => {
-    removeAnswers();
-  }, [viewMode]);
+    // don't remove answers if student attempts -> saves and/or revisits the answers
+    if (!testMode) removeAnswers();
+  }, [viewMode,testMode]);
 
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);

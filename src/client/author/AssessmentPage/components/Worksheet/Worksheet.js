@@ -635,6 +635,7 @@ class Worksheet extends React.Component {
               pdfWidth={pdfWidth - 100}
               minimized={minimized}
               pageChange={this.handleChangePage}
+              testMode={testMode}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools

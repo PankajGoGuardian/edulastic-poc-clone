@@ -15,7 +15,8 @@ import {
   IconDiskette,
   IconDescription,
   IconSend,
-  IconPencilEdit
+  IconPencilEdit,
+  IconCopy
 } from "@edulastic/icons";
 import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import {
@@ -142,7 +143,9 @@ const TestPageHeader = ({
   fetchAssignments,
   testAssignments,
   isTestLoading,
-  match
+  match,
+  showDuplicateButton,
+  handleDuplicateTest
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -285,6 +288,18 @@ const TestPageHeader = ({
                 onClick={() => setOpenEditPopup(true)}
               >
                 <IconPencilEdit color={themeColor} />
+              </EduButton>
+            )}
+            {showDuplicateButton && (
+              <EduButton
+                title="Duplicate Test"
+                disabled={editEnable || isTestLoading}
+                data-cy="edit"
+                style={{ fontSize: "17px" }}
+                size="large"
+                onClick={() => handleDuplicateTest()}
+              >
+                <IconCopy color={themeColor} />
               </EduButton>
             )}
             {showShareButton && (owner || testStatus === "published") && !isPlaylist && (

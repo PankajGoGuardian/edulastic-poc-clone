@@ -10,6 +10,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import { assignmentApi } from "@edulastic/api";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -548,6 +549,14 @@ class Container extends PureComponent {
     this.setState({ editEnable: true });
   };
 
+  handleDuplicateTest = async e => {
+    e && e.stopPropagation();
+    const { history, test } = this.props;
+    const duplicateTest = await assignmentApi.duplicateAssignment(test);
+    history.push(`/author/tests/${duplicateTest._id}`);
+    this.setState({ editEnable: true });
+  };
+
   renderModal = () => {
     const { test } = this.props;
     const { showModal } = this.state;
@@ -587,7 +596,8 @@ class Container extends PureComponent {
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
-    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable;
+    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner;
+    const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !owner && !editEnable;
 
     const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
     const gradeSubject = { grades, subjects };
@@ -627,6 +637,8 @@ class Container extends PureComponent {
           toggleFilter={this.toggleFilter}
           isShowFilter={isShowFilter}
           isTestLoading={isTestLoading}
+          showDuplicateButton={showDuplicateButton}
+          handleDuplicateTest={this.handleDuplicateTest}
         />
         {this.renderContent()}
       </>

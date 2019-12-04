@@ -1,9 +1,10 @@
-import TestLibrary from "../../framework/author/tests/testLibraryPage";
-import LiveClassboardPage from "../../framework/author/assignments/LiveClassboardPage";
-import TeacherSideBar from "../../framework/author/SideBarPage";
-import FileHelper from "../../framework/util/fileHelper";
-import { testTypes } from "../../framework/constants/assignmentStatus";
-import { testRunner } from "../../framework/common/smokeAssignmentFlowRunner";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import { testTypes } from "../../../../framework/constants/assignmentStatus";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { testRunner } from "../../../../framework/common/smokeAssignmentFlowRunner";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
   const testLibrary = new TestLibrary();
@@ -12,30 +13,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
     teacher: "teacher1.smoke.automation@snapwiz.com",
     student: "student1.smoke.automation@snapwiz.com",
     password: "automation",
-    assignmentName: "Smoke Test 2",
+    assignmentName: "Smoke Test 3",
     attemptsData: [
       {
         email: "student1.smoke.automation@snapwiz.com",
         stuName: "student1 smoke",
-        attempt: { Q1: "right", Q2: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student2.smoke.automation@snapwiz.com",
         stuName: "student2 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student3.smoke.automation@snapwiz.com",
         stuName: "student3 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "right" },
         status: "Submitted"
       },
       {
         email: "student4.smoke.automation@snapwiz.com",
         stuName: "student4 smoke",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "right", Q2: "partialCorrect", Q3: "wrong" },
         status: "Submitted"
       }
     ]
@@ -49,14 +50,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   const assessmentType = ["CLASS_ASSESSMENT", "PRACTICE_ASSESSMENT"];
   const lcb = new LiveClassboardPage();
   const teacherSideBar = new TeacherSideBar();
+  const itemListPage = new ItemListPage();
 
   before("> create questionTypeMap", () => {
     cy.fixture("questionAuthoring").then(queData => {
       questionData = queData;
     });
 
-    cy.fixture("testAuthoring").then(({ SMOKE_2 }) => {
-      testData = SMOKE_2;
+    cy.fixture("testAuthoring").then(({ SMOKE_3 }) => {
+      testData = SMOKE_3;
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
@@ -84,42 +86,45 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         cy.login("teacher", teacher, password);
         if (aIndex === 0) {
           cy.fixture("testAuthoring").then(testData => {
-            const test = testData["SMOKE_2"];
-            const { itemKeys } = test;
+            const test = testData.SMOKE_3;
+            const { itemKeys, grade } = test;
             // create new test
             testLibrary.sidebar.clickOnTestLibrary();
             testLibrary.clickOnAuthorTest();
 
             // test description
-            if (test.name) testLibrary.testSummary.setName(test.name);
-            if (test.grade) {
-              test.grade.forEach(grade => {
-                testLibrary.testSummary.selectGrade(grade);
-              });
-            }
-            if (test.subject) {
-              test.subject.forEach(subject => {
-                testLibrary.testSummary.selectSubject(subject);
-              });
-            }
-            // add items
-            testLibrary.header.clickOnAddItems();
-            testLibrary.searchFilters.clearAll();
-            cy.route("POST", "**api/test").as("createTest");
-            testLibrary.testAddItem.authoredByMe().then(() => {
-              itemKeys.forEach((itemKey, index) => {
-                testLibrary.testAddItem.addItemByQuestionContent(itemKey);
-                if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
-                cy.wait(500);
-              });
+            testLibrary.testSummary.setName(test.name);
+            test.grade.forEach(grd => {
+              testLibrary.testSummary.selectGrade(grd);
             });
+            test.subject.forEach(subject => {
+              testLibrary.testSummary.selectSubject(subject);
+            });
+
+            // create new items
+            testLibrary.header.clickOnAddItems();
+            testLibrary.searchFilters.routeSearch();
+
+            cy.route("POST", "**api/test").as("createTest");
+            test.itemKeys.forEach(async (itemKey, index) => {
+              itemListPage.createItem(itemKey, index, false);
+              if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+              testLibrary.searchFilters.waitForSearchResponse();
+            });
+            /* 
+            testLibrary.searchFilters.clearAll();
+            testLibrary.testAddItem.authoredByMe().then(() => {
+              testLibrary.searchFilters.setGrades(grade);
+              itemKeys.forEach(itemKey => {
+                testLibrary.testAddItem.verifyAddedItemByQuestionContent(itemKey);
+              });
+            }); */
 
             testLibrary.header.clickOnReview();
             cy.wait(2000);
             itemKeys.forEach(itemKey => {
               testLibrary.review.verifyItemByContent(itemKey);
             });
-
             testLibrary.header.clickOnSaveButton(true);
             testLibrary.header.clickOnPublishButton();
             testLibrary.clickOnAssign();

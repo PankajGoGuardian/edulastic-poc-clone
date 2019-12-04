@@ -1,8 +1,8 @@
-import FileHelper from "../../framework/util/fileHelper";
-import TeacherSideBar from "../../framework/author/SideBarPage";
-import TeacherManageClassPage from "../../framework/author/manageClassPage";
-import TeacherDashBoardPage from "../../framework/author/teacherDashboardPage";
-import Helpers from "../../framework/util/Helpers";
+import FileHelper from "../../../../framework/util/fileHelper";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
+import TeacherDashBoardPage from "../../../../framework/author/teacherDashboardPage";
+import Helpers from "../../../../framework/util/Helpers";
 
 const sideBar = new TeacherSideBar();
 const manageClass = new TeacherManageClassPage();

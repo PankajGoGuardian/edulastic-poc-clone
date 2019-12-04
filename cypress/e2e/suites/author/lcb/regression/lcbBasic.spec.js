@@ -1,15 +1,15 @@
-import FileHelper from "../../../framework/util/fileHelper";
-import AssignmentsPage from "../../../framework/student/assignmentsPage";
-import StudentTestPage from "../../../framework/student/studentTestPage";
-import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
-import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
-import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
-import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
-import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
-import TestLibrary from "../../../framework/author/tests/testLibraryPage";
-import BarGraph from "../../../framework/author/assignments/barGraphs";
-import Helpers from "../../../framework/util/Helpers";
-import TeacherSideBar from "../../../framework/author/SideBarPage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import StudentTestPage from "../../../../framework/student/studentTestPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import { studentSide, teacherSide } from "../../../../framework/constants/assignmentStatus";
+import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
+import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import BarGraph from "../../../../framework/author/assignments/barGraphs";
+import Helpers from "../../../../framework/util/Helpers";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {

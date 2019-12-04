@@ -1,6 +1,6 @@
-import FileHelper from "../../framework/util/fileHelper";
-import SignupPage from "../../framework/common/signupPage";
-import Helpers from "../../framework/util/Helpers";
+import FileHelper from "../../../../framework/util/fileHelper";
+import SignupPage from "../../../../framework/common/signupPage";
+import Helpers from "../../../../framework/util/Helpers";
 
 const signupPage = new SignupPage();
 const signupData = {

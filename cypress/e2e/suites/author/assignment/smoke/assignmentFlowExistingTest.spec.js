@@ -1,9 +1,9 @@
-import TestLibrary from "../../framework/author/tests/testLibraryPage";
-import LiveClassboardPage from "../../framework/author/assignments/LiveClassboardPage";
-import TeacherSideBar from "../../framework/author/SideBarPage";
-import FileHelper from "../../framework/util/fileHelper";
-import { testTypes } from "../../framework/constants/assignmentStatus";
-import { testRunner } from "../../framework/common/smokeAssignmentFlowRunner";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import { testTypes } from "../../../../framework/constants/assignmentStatus";
+import { testRunner } from "../../../../framework/common/smokeAssignmentFlowRunner";
 
 const lcb = new LiveClassboardPage();
 const teacherSideBar = new TeacherSideBar();

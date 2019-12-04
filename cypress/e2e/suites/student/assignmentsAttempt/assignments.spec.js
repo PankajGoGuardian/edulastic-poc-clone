@@ -1,7 +1,7 @@
-import AssignmentsPage from "../../framework/student/assignmentsPage";
-import SidebarPage from "../../framework/student/sidebarPage";
-import FileHelper from "../../framework/util/fileHelper";
-import StudentTestPage from "../../framework/student/studentTestPage";
+import AssignmentsPage from "../../../framework/student/assignmentsPage";
+import SidebarPage from "../../../framework/student/sidebarPage";
+import FileHelper from "../../../framework/util/fileHelper";
+import StudentTestPage from "../../../framework/student/studentTestPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`, () => {
   const sideBarPage = new SidebarPage();

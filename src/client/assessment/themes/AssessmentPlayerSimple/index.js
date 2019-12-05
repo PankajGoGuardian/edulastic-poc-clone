@@ -121,7 +121,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
-    saveCurrentAnswer();
+    saveCurrentAnswer({ shouldClearUserWork: true });
     history.push("/home/assignments");
   };
 

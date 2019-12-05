@@ -13,7 +13,8 @@ import {
   RECEIVE_ITEMS_ERROR,
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE,
-  LOAD_ANSWERS
+  LOAD_ANSWERS,
+  CLEAR_USER_WORK
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
@@ -66,7 +67,7 @@ export const getQuestionIds = item => {
 function* saveUserResponse({ payload }) {
   try {
     const ts = payload.timeSpent || 0;
-    const { autoSave } = payload;
+    const { autoSave, shouldClearUserWork = false } = payload;
     const itemIndex = payload.itemId;
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
@@ -137,8 +138,17 @@ function* saveUserResponse({ payload }) {
       });
       activity.userWork = { ..._userWork, resourceId: filteredResourceId };
     }
-
     yield call(testItemActivityApi.create, activity, autoSave);
+    if (shouldClearUserWork) {
+      /**
+       * if we have two assignments one for practice and one for class assignment with same questions
+       * need to clear user work in store after we click save and exit button
+       * otherwise the store data remains and it is shown in the other assignment
+       */
+      yield put({
+        type: CLEAR_USER_WORK
+      });
+    }
   } catch (err) {
     console.log(err);
     if (err.status === 403) {

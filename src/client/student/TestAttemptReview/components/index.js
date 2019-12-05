@@ -11,9 +11,10 @@ import SummaryTest from "./Content";
 
 import { finishTestAcitivityAction } from "../../../assessment/actions/test";
 import SubmitConfirmation from "../../../assessment/themes/common/SubmitConfirmation";
+import { clearUserWorkAction } from "../../../assessment/actions/userWork";
 
 const SummaryContainer = props => {
-  const { finishTest, history, match } = props;
+  const { finishTest, history, match, clearUserWork } = props;
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true);
@@ -24,6 +25,7 @@ const SummaryContainer = props => {
   };
 
   const closeTest = () => {
+    clearUserWork();
     history.push("/home/assignments");
   };
 
@@ -44,7 +46,8 @@ const enhance = compose(
   connect(
     null,
     {
-      finishTest: finishTestAcitivityAction
+      finishTest: finishTestAcitivityAction,
+      clearUserWork: clearUserWorkAction
     }
   )
 );

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-drag-and-drop";
 import { connect } from "react-redux";
-import { isArray, isUndefined, isNull, isEmpty, isObject, get } from "lodash";
+import { isArray, isUndefined, isNull, isEmpty, isObject, get, round } from "lodash";
 import { MathSpan } from "@edulastic/common";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
@@ -264,7 +264,7 @@ class QuestionItem extends React.Component {
       <>
         <DetailsContainer>
           <DetailTitle>Score:</DetailTitle>
-          <DetailContents>{`${graded ? score : skipped ? 0 : " "}/${maxScore}`}</DetailContents>
+          <DetailContents>{`${graded ? round(score, 2) : skipped ? 0 : " "}/${round(maxScore, 2)}`}</DetailContents>
         </DetailsContainer>
         {!!teacherComments?.text && (
           <DetailsContainer>
@@ -326,7 +326,7 @@ class QuestionItem extends React.Component {
             this.renderAnswerIndicator(type)}
         </AnswerForm>
         {!pdfPreview && review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
-        {!pdfPreview && check ? this.renderScore(id) : this.renderComments(id)}
+        {!pdfPreview && (check ? this.renderScore(id) : this.renderComments(id))}
       </QuestionItemWrapper>
     );
   }

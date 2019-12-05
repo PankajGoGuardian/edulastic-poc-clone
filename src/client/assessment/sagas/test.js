@@ -138,9 +138,13 @@ function* loadTest({ payload }) {
       test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
     }
     let { testItems, passages, testType } = test;
-
     const settings = {
-      calcProvider: testActivity?.calculatorProvider,
+      // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
+      calcProvider:
+        testActivity?.testActivity?.calcType === testContants.calculatorTypes.GRAPHING ||
+        test.calcType === testContants.calculatorTypes.GRAPHING
+          ? "DESMOS"
+          : testActivity?.calculatorProvider,
       calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       requirePassword: testActivity?.assignmentSettings?.requirePassword || false,

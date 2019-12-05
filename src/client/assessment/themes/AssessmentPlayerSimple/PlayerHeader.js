@@ -49,7 +49,8 @@ const PlayerHeader = ({
   onshowHideHints,
   toggleToolsOpenStatus,
   toolsOpenStatus,
-  headerRef
+  headerRef,
+  previewPlayer
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -66,7 +67,7 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
-  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} />;
+  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} finishTest={onOpenExitPopup} />;
 
   return (
     <Fragment>

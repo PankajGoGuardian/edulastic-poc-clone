@@ -123,6 +123,7 @@ class AssessmentPlayerDocBased extends React.Component {
       freeFormNotes,
       gotoSummary,
       selectedTheme,
+      previewPlayer,
       settings
     } = this.props;
 
@@ -150,6 +151,7 @@ class AssessmentPlayerDocBased extends React.Component {
             onSubmit={gotoSummary}
             showSubmit
             t={t}
+            previewPlayer={previewPlayer}
             settings={settings}
             currentToolMode={currentToolMode}
             onChangeTool={this.onChangeTool}

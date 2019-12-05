@@ -294,6 +294,7 @@ class AssessmentPlayerSimple extends React.Component {
             toggleToolsOpenStatus={this.toggleToolsOpenStatus}
             toolsOpenStatus={toolsOpenStatus}
             t={t}
+            previewPlayer={previewPlayer}
           />
           {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
             <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />

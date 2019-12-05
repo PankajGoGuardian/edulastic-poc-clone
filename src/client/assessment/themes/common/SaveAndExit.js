@@ -22,14 +22,17 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
         <IconSend />
       </StyledButton>
     )}
-    <SaveAndExitButton title={previewPlayer ? "Exit" : "Save & Exit"} data-cy="finishTest" onClick={finishTest}>
-      <StyledFlex>
-        <SyledSpan>
-          <IconCircleLogout />
-        </SyledSpan>
-        <StyledText>Save & Exit</StyledText>
-      </StyledFlex>
-    </SaveAndExitButton>
+    {previewPlayer ? (
+      <SaveAndExitButton title={"Exit"} data-cy="finishTest" onClick={finishTest}>
+        <IconCircleLogout />
+        EXIT
+      </SaveAndExitButton>
+    ) : (
+      <SaveAndExitButton title={"Save & Exit"} data-cy="finishTest" onClick={finishTest}>
+        <IconCircleLogout />
+        SAVE & EXIT
+      </SaveAndExitButton>
+    )}
   </FlexContainer>
 );
 
@@ -102,49 +105,34 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const SaveAndExitButton = styled(Button)`
-  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
-  height: ${({ theme }) => theme.default.headerToolbarButtonWidth};
-  margin-left: 2px;
+export const SaveAndExitButton = styled(StyledButton)`
+  height: auto;
+  width: auto;
+  color: ${({ theme }) => theme.default.headerRightButtonIconColor};
+  font-size: 12px;
+  font-weight: 600;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
   svg {
-    height: ${({ theme }) => theme.default.headerRightButtonFontIconHeight};
-    width: ${({ theme }) => theme.default.headerRightButtonFontIconWidth};
-    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    position: relative;
+    transform: none;
+    top: unset;
+    left: unset;
   }
 
-  &:hover,
-  &:focus {
-    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
-
-    svg {
-      fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
-    }
+  span {
+    margin-left: 8px;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: 40px;
+    width: auto;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-left: 5px;
-    height: 45px;
+    width: auto;
   }
-`;
-
-const StyledFlex = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-`;
-
-const StyledText = styled(Text)`
-  color: ${themeColor};
-  font-size: 15px;
-  padding-right: 15px;
-`;
-
-const SyledSpan = styled.span`
-  line-height: 0;
-  margin-top: 1px;
-  padding-right: 15px;
 `;

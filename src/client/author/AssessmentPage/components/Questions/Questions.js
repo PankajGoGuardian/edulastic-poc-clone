@@ -133,26 +133,43 @@ const multipleChoiceData = {
 
 const clozeDropDownData = {
   responseIds: [{ index: 0, id: "0" }],
-  stimulus: `<p><textdropdown id="0" contenteditable="false" /> </p>`,
-  title: "Cloze with Drop Down"
+  stimulus: `<p><textdropdown id="0" contenteditable="false" /> </p>`
 };
+
 const essayData = {
   uiStyle: {
     minHeight: 5
   },
-  showWordCount: true,
-  title: "Essay with plain text"
+  showWordCount: true
 };
 
 const trueOrFalseData = {
   type: "multipleChoice",
-  uiStyle: { type: "horizontal" },
-  title: "True or false"
+  uiStyle: { type: "horizontal" }
 };
+
+/**
+ * SHORT_TEXT,
+  MULTIPLE_CHOICE,
+  CLOZE_DROP_DOWN,
+  MATH,
+  TRUE_OR_FALSE,
+  ESSAY_PLAIN_TEXT
+ */
+
+const typeTitleHash = {
+  [SHORT_TEXT]: "Short text",
+  [MULTIPLE_CHOICE]: "Multiple choice - standard",
+  [CLOZE_DROP_DOWN]: "Cloze with Drop Down",
+  [MATH]: "Equations & Inequalities",
+  [TRUE_OR_FALSE]: "True or false",
+  [ESSAY_PLAIN_TEXT]: "Essay with plain text"
+};
+
 const createQuestion = (type, index, isDocBased = false) => ({
   id: uuid(),
   qIndex: index,
-  title: `${type} - standard`,
+  title: typeTitleHash[type],
   type,
   isDocBased: isDocBased,
   options: defaultQuestionOptions[type],

@@ -22,6 +22,7 @@ const PlayerHeader = ({
   zoomLevel,
   windowWidth,
   onSubmit,
+  previewPlayer,
   settings,
   currentToolMode,
   onChangeTool
@@ -47,7 +48,7 @@ const PlayerHeader = ({
     zoomStyle.padding = 0;
   }
 
-  const rightButtons = <SaveAndExit previewPlayer finishTest={onOpenExitPopup} onSubmit={onSubmit} />;
+  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} finishTest={onOpenExitPopup} onSubmit={onSubmit} />;
 
   return (
     <Fragment>

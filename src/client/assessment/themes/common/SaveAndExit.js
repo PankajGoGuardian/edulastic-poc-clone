@@ -108,6 +108,7 @@ const StyledButton = styled(Button)`
 export const SaveAndExitButton = styled(StyledButton)`
   height: auto;
   width: auto;
+  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   font-size: 12px;
   font-weight: 600;
@@ -122,6 +123,13 @@ export const SaveAndExitButton = styled(StyledButton)`
     transform: none;
     top: unset;
     left: unset;
+    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+  }
+
+  &:hover,
+  &:focus {
+    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+    color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   }
 
   span {

@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  QuestionNumberLabel,
+  AnswerContext
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
@@ -32,8 +39,10 @@ const EssayPlainTextPreview = ({
   location,
   testItem,
   qIndex,
-  disableResponse
+  disableResponse,
+  isReviewTab
 }) => {
+  const answerContext = useContext(AnswerContext);
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
 
   const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
@@ -41,6 +50,8 @@ const EssayPlainTextPreview = ({
   const [selection, setSelection] = useState(null);
 
   const [buffer, setBuffer] = useState("");
+
+  const reviewTab = isReviewTab && testItem;
 
   let node;
 
@@ -64,18 +75,18 @@ const EssayPlainTextPreview = ({
   };
 
   const handleSelect = () => {
-    if (node.textAreaRef.selectionStart !== node.textAreaRef.selectionEnd) {
+    if (node?.resizableTextArea?.textArea?.selectionStart !== node?.resizableTextArea?.textArea?.selectionEnd) {
       setSelection({
-        start: node.textAreaRef.selectionStart,
-        end: node.textAreaRef.selectionEnd
+        start: node.resizableTextArea.textArea.selectionStart,
+        end: node.resizableTextArea.textArea.selectionEnd
       });
     } else {
       setSelection(null);
     }
 
     setSelection({
-      start: node.textAreaRef.selectionStart,
-      end: node.textAreaRef.selectionEnd
+      start: node?.resizableTextArea?.textArea?.selectionStart,
+      end: node?.resizableTextArea?.textArea?.selectionEnd
     });
   };
 
@@ -136,7 +147,7 @@ const EssayPlainTextPreview = ({
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
-      <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>
+      <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
           {item.showCopy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
           {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
@@ -163,7 +174,7 @@ const EssayPlainTextPreview = ({
         style={{
           borderRadius: 0,
           minHeight,
-          maxHeight,
+          maxHeight: answerContext.isAnswerModifiable ? maxHeight : minHeight,
           fontSize,
           color: theme.widgets.essayPlainText.textInputColor,
           borderColor: theme.widgets.essayPlainText.textInputBorderColor,
@@ -182,10 +193,11 @@ const EssayPlainTextPreview = ({
         onCopy={preventEvent}
         onCut={preventEvent}
         placeholder={item.placeholder || ""}
+        disabled={reviewTab}
         {...getSpellCheckAttributes(item.spellcheck)}
       />
 
-      {item.showWordCount && (
+      {!reviewTab && item.showWordCount && (
         <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
           <FlexContainer alignItems="stretch" justifyContent="space-between" />
 

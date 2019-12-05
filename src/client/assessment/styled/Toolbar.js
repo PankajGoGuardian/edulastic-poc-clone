@@ -11,4 +11,5 @@ export const Toolbar = styled.div`
   border: 1px solid ${props => props.theme.common.toolbarBorderColor};
   border-radius: ${({ borderRadiusOnlyBottom, borderRadiusOnlyTop }) =>
     borderRadiusOnlyBottom ? "0 0 4px 4px" : borderRadiusOnlyTop ? "4px 4px 0 0" : "4px"};
+  pointer-events: ${({ reviewTab }) => reviewTab && "none"};
 `;

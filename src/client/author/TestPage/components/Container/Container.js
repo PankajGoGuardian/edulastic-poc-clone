@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
-import { withRouter } from "react-router-dom";
+import { withRouter, Prompt } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
@@ -603,6 +603,12 @@ class Container extends PureComponent {
     const gradeSubject = { grades, subjects };
     return (
       <>
+        <Prompt
+          when={!!updated}
+          message={loc =>
+            loc.pathname.startsWith("/author/tests") || "There are unsaved changes. Are you sure you want to leave?"
+          }
+        />
         {this.renderModal()}
         <ShareModal
           isVisible={showShareModal}

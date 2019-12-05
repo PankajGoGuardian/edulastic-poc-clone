@@ -140,9 +140,8 @@ const Next = styled(Button)`
   width: 100px;
   margin-left: 3px;
   &:hover {
-    background: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
-    color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
-    border: 1px solid;
+    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+    color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   }
   &:focus {
     background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};

@@ -736,8 +736,13 @@ function* shareTestSaga({ payload }) {
     yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.data.contentType }));
     yield call(message.success, "Successfully shared");
   } catch (e) {
+    console.warn(e);
     const errorMessage = "Sharing failed";
-    yield call(message.error, errorMessage);
+    const hasInvalidMails = e?.data?.invalidEmails?.length > 0;
+    if (hasInvalidMails) {
+      return message.error(`Invalid mails found (${e?.data?.invalidEmails.join(", ")})`);
+    }
+    yield call(message.error, e?.data?.message || errorMessage);
   }
 }
 

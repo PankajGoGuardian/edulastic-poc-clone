@@ -62,7 +62,23 @@ import {
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
-import { createTestFromCartAction } from "../../ducks";
+import { createTestFromCartAction, addPassageItemsToTestAction, closeAddPassageItemsModalAction } from "../../ducks";
+import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
+
+export const getClearSearchState = () => ({
+  subject: "",
+  curriculumId: "",
+  standardIds: [],
+  questionType: "",
+  depthOfKnowledge: "",
+  authorDifficulty: "",
+  collectionName: "",
+  status: "",
+  grades: [],
+  tags: [],
+  filter: filterMenuItems[0].filter
+});
+
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
@@ -291,7 +307,11 @@ class Contaier extends Component {
       curriculumStandards,
       loading,
       count,
-      search
+      search,
+      passageItems,
+      isAddPassageItemsModalVisible,
+      addPassageItems,
+      closePassageItemModal
     } = this.props;
 
     const { isShowFilter } = this.state;
@@ -344,6 +364,12 @@ class Contaier extends Component {
             </Element>
           </ListItems>
         </Container>
+        <PassageConfirmationModal
+          visible={isAddPassageItemsModalVisible}
+          handleResponse={addPassageItems}
+          itemsCount={passageItems.length}
+          closeModal={closePassageItemModal}
+        />
       </div>
     );
   }
@@ -396,7 +422,9 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
-      search: getSearchFilterStateSelector(state)
+      search: getSearchFilterStateSelector(state),
+      passageItems: state.tests.passageItems || [],
+      isAddPassageItemsModalVisible: state.testsAddItems.showAddPassageItemsModal
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -413,7 +441,9 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       createTestFromCart: createTestFromCartAction,
       updateSearchFilterState: updateSearchFilterStateAction,
-      clearFilterState: clearFilterStateAction
+      clearFilterState: clearFilterStateAction,
+      addPassageItems: addPassageItemsToTestAction,
+      closePassageItemModal: closeAddPassageItemsModalAction
     }
   )
 );

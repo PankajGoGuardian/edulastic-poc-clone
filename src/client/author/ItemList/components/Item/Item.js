@@ -263,9 +263,7 @@ class Item extends Component {
         {passageConfirmModalVisible && (
           <PassageConfirmationModal
             visible={passageConfirmModalVisible}
-            togglePassageConfirmationModal={() =>
-              this.setState(prev => ({ passageConfirmModalVisible: !prev.passageConfirmModalVisible }))
-            }
+            closeModal={() => this.setState(prev => ({ passageConfirmModalVisible: false }))}
             itemsCount={passageItemsCount}
             handleResponse={this.handleResponse}
           />

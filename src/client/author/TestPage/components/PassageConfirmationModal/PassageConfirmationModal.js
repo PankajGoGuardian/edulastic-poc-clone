@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "antd";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
 
-const PassageConfirmationModal = ({ visible, togglePassageConfirmationModal, itemsCount, handleResponse }) => {
+const PassageConfirmationModal = ({ visible, closeModal, itemsCount, handleResponse }) => {
   const Footer = [
     <Button ghost onClick={() => handleResponse(false)}>
       No, I’ll select
@@ -17,7 +17,7 @@ const PassageConfirmationModal = ({ visible, togglePassageConfirmationModal, ite
       visible={visible}
       footer={Footer}
       textAlign={"center"}
-      onCancel={() => togglePassageConfirmationModal(false)}
+      onCancel={closeModal}
     >
       <p>
         <b>{`There are ${itemsCount} items in this passage. Would you like to add them to your test`}</b>

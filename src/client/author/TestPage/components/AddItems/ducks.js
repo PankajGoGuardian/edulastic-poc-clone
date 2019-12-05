@@ -30,6 +30,7 @@ export const REPORT_CONTENT_ERROR_REQUEST = "[addItems] report content error req
 export const SET_SEARCH_FILTER_STATE = "[addItems] update search filter state";
 export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
 export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
+export const SHOW_ADD_PASSAGE_ITEM_MODAL = "[addItems] toggle show add passage item modal";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -97,6 +98,10 @@ export const updateInitSearchStateAction = payload => ({
   payload
 });
 
+export const showAddPassageItemsModalAction = data => ({
+  type: SHOW_ADD_PASSAGE_ITEM_MODAL,
+  payload: data
+});
 // reducer
 
 export const initalSearchState = {
@@ -126,7 +131,8 @@ const initialState = {
     grades: []
   },
   search: { ...initalSearchState },
-  archivedItems: []
+  archivedItems: [],
+  showAddPassageItemsModal: false
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -193,6 +199,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         archivedItems: [...state.archivedItems, payload]
       };
     }
+    case SHOW_ADD_PASSAGE_ITEM_MODAL:
+      return {
+        ...state,
+        showAddPassageItemsModal: payload
+      };
     default:
       return state;
   }

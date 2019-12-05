@@ -168,14 +168,20 @@ class AssignTest extends React.Component {
   onClassFieldChange = (value, group) => {
     const { assignment, specificStudents } = this.state;
     const groupById = keyBy(group, "_id");
-    const classData = value.map(_id => ({
-      _id,
-      name: get(groupById, `${_id}.name`, ""),
-      assignedCount: get(groupById, `${_id}.studentCount`, 0),
-      grade: get(groupById, `${_id}.grades`, ""),
-      subject: get(groupById, `${_id}.subject`, ""),
-      specificStudents: specificStudents
-    }));
+    const previousGroupData = keyBy(assignment.class, "_id");
+    const classData = value.map(_id => {
+      if (previousGroupData[_id]) {
+        return previousGroupData[_id];
+      }
+      return {
+        _id,
+        name: get(groupById, `${_id}.name`, ""),
+        assignedCount: get(groupById, `${_id}.studentCount`, 0),
+        grade: get(groupById, `${_id}.grades`, ""),
+        subject: get(groupById, `${_id}.subject`, ""),
+        specificStudents: specificStudents
+      };
+    });
 
     let termId = "";
     if (assignment.termId) {

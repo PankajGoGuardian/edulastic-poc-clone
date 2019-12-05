@@ -14,9 +14,58 @@ import {
   red,
   lightGreySecondary
 } from "@edulastic/colors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
+
+const Style = css`
+  background: transparent !important;
+  font-family: ${props => props.theme.defaultFontFamily} !important;
+  font-size: ${props => props.theme.questionTextnormalFontSize} !important;
+  color: ${props => props.theme.titleColor} !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  text-decoration: none;
+`;
+
+export const StimulusWrapper = styled.span`
+  span,
+  p {
+    ${Style}
+  }
+`;
+
+export const Link = styled.a`
+  font-size: ${props => props.theme.questionTextnormalFontSize};
+  padding-right: 20px;
+  font-weight: 700;
+  line-height: 20px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  text-decoration: none;
+  color: #333333;
+  cursor: pointer;
+
+  :hover {
+    color: #333333;
+  }
+
+  p {
+    font-size: 15px;
+  }
+
+  span {
+    font-weight: 500;
+    font-size: ${props => props.theme.questionTextnormalFontSize} !important;
+  }
+  img {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+  }
+`;
 
 export const Container = styled.div`
   padding: 25px 0px;

@@ -7,12 +7,13 @@ import { get } from "lodash";
 import { message, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question } from "@edulastic/constants";
-import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
+import { MathFormulaDisplay, PremiumTag, helpers, WithResources } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
 import { getTestItemAuthorName, getQuestionType, getTestItemAuthorIcon } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
+import Stimulus from "./Stimulus";
 import {
   Container,
   Categories,
@@ -45,6 +46,7 @@ import {
 } from "../../../TestPage/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import Tags from "../../../src/components/common/Tags";
+import appConfig from "../../../../../../app-config";
 
 // render single item
 class Item extends Component {
@@ -244,108 +246,112 @@ class Item extends Component {
     const isEditable = owner;
     const itemTypes = getQuestionType(item);
     return (
-      <Container className="fr-view">
-        {isShowPreviewModal && (
-          <PreviewModal
-            isVisible={isShowPreviewModal}
-            page={page}
-            showEvaluationButtons
-            onClose={this.closeModal}
-            data={{ ...item, id: item._id }}
-            isEditable={isEditable}
-            owner={owner}
-            testId={test?._id}
-            checkAnswer={() => checkAnswer({ ...item, isItem: true })}
-            showAnswer={() => showAnswer(item)}
-            gotoSummary={gotoSummary}
-          />
-        )}
-        {passageConfirmModalVisible && (
-          <PassageConfirmationModal
-            visible={passageConfirmModalVisible}
-            closeModal={() => this.setState(prev => ({ passageConfirmModalVisible: false }))}
-            itemsCount={passageItemsCount}
-            handleResponse={this.handleResponse}
-          />
-        )}
-        <Question>
-          <QuestionContent>
-            <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
-          </QuestionContent>
-          {windowWidth > MAX_TAB_WIDTH &&
-            (page === "itemList" ? (
-              <ViewButton>
-                <ViewButtonStyled onClick={this.previewItem}>
-                  <IconEye /> {t("component.item.view")}
-                </ViewButtonStyled>
-                <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
-                  {selectedToCart ? "Remove" : <IconPlus />}
-                </AddButtonStyled>
-              </ViewButton>
-            ) : (
-              <AddRemoveBtn
-                data-cy={item._id}
-                loading={selectedId === item._id}
-                onClick={() => this.handleSelection(item)}
-                isAddOrRemove={this.isAddOrRemove}
-              >
-                {this.isAddOrRemove ? "ADD" : "REMOVE"}
-              </AddRemoveBtn>
-            ))}
-        </Question>
-        <Row type="flex" align="center">
-          <Detail>
-            <TypeCategory>
-              {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
-              {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
-              <CategoryContent>
-                {itemTypes.map(itemType => (
-                  <Label>
-                    <LabelText>{itemType}</LabelText>
-                  </Label>
-                ))}
-              </CategoryContent>
-            </TypeCategory>
-            {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
-          </Detail>
-          {windowWidth <= MAX_TAB_WIDTH &&
-            (page === "itemList" ? (
-              <ViewButton>
-                <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
-                  <IconDown />
-                </MoreInfo>
-                <ViewButtonStyled onClick={this.moveToItem}>
-                  {t("component.item.view")}
-                  <IconEye />
-                </ViewButtonStyled>
-                <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
-                  {selectedToCart ? "Remove" : <IconPlus />}
-                </AddButtonStyled>
-              </ViewButton>
-            ) : (
-              <ViewButton>
-                <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
-                  <IconDown />
-                </MoreInfo>
+      <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
+        <Container className="fr-view">
+          {isShowPreviewModal && (
+            <PreviewModal
+              isVisible={isShowPreviewModal}
+              page={page}
+              showEvaluationButtons
+              onClose={this.closeModal}
+              data={{ ...item, id: item._id }}
+              isEditable={isEditable}
+              owner={owner}
+              testId={test?._id}
+              checkAnswer={() => checkAnswer({ ...item, isItem: true })}
+              showAnswer={() => showAnswer(item)}
+              gotoSummary={gotoSummary}
+            />
+          )}
+          {passageConfirmModalVisible && (
+            <PassageConfirmationModal
+              visible={passageConfirmModalVisible}
+              closeModal={() => this.setState(prev => ({ passageConfirmModalVisible: false }))}
+              itemsCount={passageItemsCount}
+              handleResponse={this.handleResponse}
+            />
+          )}
+          <Question>
+            <QuestionContent>
+              <Stimulus
+                onClickHandler={this.previewItem}
+                stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
+              />
+            </QuestionContent>
+            {windowWidth > MAX_TAB_WIDTH &&
+              (page === "itemList" ? (
+                <ViewButton>
+                  <ViewButtonStyled onClick={this.previewItem}>
+                    <IconEye /> {t("component.item.view")}
+                  </ViewButtonStyled>
+                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                    {selectedToCart ? "Remove" : <IconPlus />}
+                  </AddButtonStyled>
+                </ViewButton>
+              ) : (
                 <AddRemoveBtn
+                  data-cy={item._id}
                   loading={selectedId === item._id}
                   onClick={() => this.handleSelection(item)}
                   isAddOrRemove={this.isAddOrRemove}
                 >
                   {this.isAddOrRemove ? "ADD" : "REMOVE"}
                 </AddRemoveBtn>
-              </ViewButton>
-            ))}
-        </Row>
-        {windowWidth <= MAX_TAB_WIDTH && (
-          <Details isOpenedDetails={isOpenedDetails}>
-            <Standards item={item} search={search} />
-            <Tags tags={item.tags} key="tags" />
-            <Categories>{this.renderDetails()}</Categories>
-          </Details>
-        )}
-      </Container>
+              ))}
+          </Question>
+          <Row type="flex" align="center">
+            <Detail>
+              <TypeCategory>
+                {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
+                {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
+                <CategoryContent>
+                  {itemTypes.map(itemType => (
+                    <Label>
+                      <LabelText>{itemType}</LabelText>
+                    </Label>
+                  ))}
+                </CategoryContent>
+              </TypeCategory>
+              {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
+            </Detail>
+            {windowWidth <= MAX_TAB_WIDTH &&
+              (page === "itemList" ? (
+                <ViewButton>
+                  <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+                    <IconDown />
+                  </MoreInfo>
+                  <ViewButtonStyled onClick={this.moveToItem}>
+                    {t("component.item.view")}
+                    <IconEye />
+                  </ViewButtonStyled>
+                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                    {selectedToCart ? "Remove" : <IconPlus />}
+                  </AddButtonStyled>
+                </ViewButton>
+              ) : (
+                <ViewButton>
+                  <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+                    <IconDown />
+                  </MoreInfo>
+                  <AddRemoveBtn
+                    loading={selectedId === item._id}
+                    onClick={() => this.handleSelection(item)}
+                    isAddOrRemove={this.isAddOrRemove}
+                  >
+                    {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                  </AddRemoveBtn>
+                </ViewButton>
+              ))}
+          </Row>
+          {windowWidth <= MAX_TAB_WIDTH && (
+            <Details isOpenedDetails={isOpenedDetails}>
+              <Standards item={item} search={search} />
+              <Tags tags={item.tags} key="tags" />
+              <Categories>{this.renderDetails()}</Categories>
+            </Details>
+          )}
+        </Container>
+      </WithResources>
     );
   }
 }

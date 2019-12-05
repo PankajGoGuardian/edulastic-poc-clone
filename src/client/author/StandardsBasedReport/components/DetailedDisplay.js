@@ -47,7 +47,7 @@ const columns = [
     sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
     render: mastery => (
       <MasteryCell>
-        <span style={{ color: mastery.color }}>{mastery.masteryLabel}</span>
+        <span style={{ color: mastery.color }}>{mastery.shortName}</span>
       </MasteryCell>
     )
   },
@@ -84,7 +84,7 @@ class DetailedDisplay extends Component {
 
   displayData = () => {
     const { additionalData, isPresentationMode } = this.props;
-    const assignmentMasteryArray = additionalData.assignmentMastery;
+    const assignmentMasteryArray = additionalData.assignmentMastery || [];
     assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold);
     const scoreStudentWise = getStandardWisePerformanceDetailMemoized(
       this.props.testActivity,

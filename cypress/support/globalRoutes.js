@@ -7,7 +7,7 @@ export default function initGlobalRoutes() {
   cy.route("GET", "**assignments**").as("assignments");
   cy.route("GET", "**/user-folder").as("user-folder");
   cy.route("GET", "**test**").as("testdetail");
-  cy.route("GET", "**/question/**").as("question");
+  cy.route("GET", "**/item/**").as("item");
   cy.route("POST", "**users").as("users");
   cy.route("POST", "**//search//items").as("searchItem");
   cy.route("POST", "**//school//search").as("schoolSearch");
@@ -16,6 +16,7 @@ export default function initGlobalRoutes() {
   cy.route("**/skill-report/**").as("skillReport");
   cy.route("**/enrollment/student").as("enrollment");
   cy.route("GET", "**//playlists//**").as("playlists");
+  cy.route("POST", "**/test-activity/**").as("saved");
 
   cy.route("**single-assessment**").as("singleAssessment");
   cy.route("**assessment-summary**").as("assessmentSummary");

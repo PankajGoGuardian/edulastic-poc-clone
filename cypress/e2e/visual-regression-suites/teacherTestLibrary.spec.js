@@ -8,7 +8,10 @@ const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
-    cy.setToken("auto.test.vvk.teacher01@snapwiz.com", "edulastic"); // setting auth token for teacher user
+    cy.fixture("users").then(users => {
+      const user = users["visual-regression"].teacher;
+      cy.setToken(user.username, user.password); // setting auth token for teacher user
+    }); // setting auth token for teacher user
   });
 
   context(`teacher test library page`, () => {
@@ -31,7 +34,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
       it(`Tile view, when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         testLibraryPage.clickOnTileView();
-        cy.contains("View").should("be.visible");
+        cy.contains("published").should("be.visible");
         search.scrollFiltersToTop();
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });

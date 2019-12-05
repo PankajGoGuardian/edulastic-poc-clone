@@ -9,7 +9,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     before("set token", () => {
       cy.fixture("users").then(users => {
         const user = users["visual-regression"].student;
-        cy.setToken(user.username, user.password); // setting auth token for student user
+        cy.setToken("stu01@ssbmarcl01.com", "snapwiz"); // setting auth token for student user
       });
     });
 

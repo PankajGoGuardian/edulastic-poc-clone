@@ -7,7 +7,7 @@ const search = new SearchFilters();
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const library = new TestLibrary();
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+describe.skip(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.fixture("users").then(users => {
       const user = users["visual-regression"].teacher;

@@ -20,7 +20,8 @@ export const questionType = {
   ESSAY_PLAIN: "Essay with plain text",
   ESSAY_SHORT: "Short text",
   PASSAGE_MULTIPART: "Passage with Multiple parts",
-  PASSAGE_QUE: "Passage with Questions"
+  PASSAGE_QUE: "Passage with Questions",
+  COMBINATION_MULTIPART: "Combination Multipart"
 };
 
 export const questionTypeKey = {
@@ -117,7 +118,7 @@ export const questionTypeMap = {
   ],
   Charts: ["Line plot", "Dot plot", "Histogram", "Bar chart", "Line chart"],
   Chemistry: [],
-  Multipart: ["Math, Text & Dropdown"],
+  Multipart: ["Math, Text & Dropdown", "Combination Multipart"],
   "Video & Text": ["Video"],
   "Rulers & Calculators": ["Protractor"],
   Other: []

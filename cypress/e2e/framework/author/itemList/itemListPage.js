@@ -15,7 +15,7 @@ class ItemListPage {
     // cy.route("POST", "**/testitem").as("saveItem");
     //  cy.route("GET", "**/testitem/**").as("reload");
 
-    cy.get('[data-cy="createNew"]')
+    cy.contains("New Item")
       .should("be.visible")
       .click();
 

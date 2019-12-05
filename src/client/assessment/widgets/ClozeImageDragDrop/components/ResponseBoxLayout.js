@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { DropTarget } from "react-dnd";
 import { compose } from "redux";
 
-import { MathSpan, FlexContainer } from "@edulastic/common";
+import { MathSpan, FlexContainer, AnswerContext } from "@edulastic/common";
 
 import DragItem from "./DragItem";
 import { StyledResponseDiv, StyledResponseOption } from "../../ClozeDragDrop/styled/ResponseBox";
@@ -41,6 +41,8 @@ const ResponseBoxLayout = ({
   choiceStyle,
   theme
 }) => {
+  const { isAnswerModifiable } = useContext(AnswerContext);
+
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   return connectDropTarget(
     <div>
@@ -89,17 +91,18 @@ const ResponseBoxLayout = ({
                     item={option}
                     disableResponse={disableResponse}
                     data={`${option}_null_${index}`}
+                    disableResponse={!isAnswerModifiable}
                   >
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
                   </DragItem>
                 )}
                 {dragHandler && (
                   <DragItem
-                    disableResponse={disableResponse}
                     index={index}
                     onDrop={onDrop}
                     item={option}
                     data={`${option}_null_${index}`}
+                    disableResponse={!isAnswerModifiable}
                   >
                     <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />

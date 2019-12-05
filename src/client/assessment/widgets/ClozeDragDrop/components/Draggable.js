@@ -26,7 +26,7 @@ const specSource = {
     props.onDrop(props.data, dropTargetIndex);
   },
   canDrag(props) {
-    return !props.disableResponse;
+    return props.isAnswerModifiable;
   }
 };
 

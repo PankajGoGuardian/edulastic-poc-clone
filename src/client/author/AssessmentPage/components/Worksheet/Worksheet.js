@@ -241,7 +241,17 @@ class Worksheet extends React.Component {
       }
       newFreeFormNotes[parsedItem] = freeFormNotes[item];
     });
-    const updatedAnnotations = annotations.filter(annotation => annotation.page !== pageNumber + 1);
+    const updatedAnnotations = annotations
+      .map(x => {
+        if (x.page === pageNumber) {
+          return null;
+        } else if (x.page < pageNumber) {
+          return x;
+        } else if (x.page > pageNumber) {
+          return { ...x, page: x.page - 1 };
+        }
+      })
+      .filter(x => x);
 
     const updatedAssessment = {
       pageStructure: updatedPageStructure.map((item, index) => {

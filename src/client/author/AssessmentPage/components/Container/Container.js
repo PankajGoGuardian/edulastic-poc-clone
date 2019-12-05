@@ -376,4 +376,6 @@ const enhance = compose(
   )
 );
 
+Container.displayName = "AssessementPageContainer";
+
 export default enhance(Container);

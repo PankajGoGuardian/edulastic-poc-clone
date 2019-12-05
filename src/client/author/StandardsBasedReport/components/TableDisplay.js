@@ -151,7 +151,7 @@ class TableDisplay extends Component {
         sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
         render: text => (
           <MasterySummary
-            strokeColor={getMastery(assignmentMastery, text || 0).color}
+            strokeColor={getMastery(assignmentMastery || [], text || 0).color}
             showInfo={false}
             percent={round(parseFloat(text), 2) || 0}
           />
@@ -249,7 +249,7 @@ class TableDisplay extends Component {
                     if (stdId === rowData.stdId) {
                       return this.onCaretClick(rowData.stdId);
                     }
-                    return this.onCaretClick(rowData.stdId, rowData.perfomancePercentage);
+                    return this.onCaretClick(rowData.stdId, rowData.performanceSummary);
                   }
                 };
               }}
@@ -262,7 +262,7 @@ class TableDisplay extends Component {
             onClose={() => this.onCaretClick(stdId)}
             data={standards.find(std => std._id === stdId)}
             performancePercentage={perfomancePercentage}
-            color={getMastery(assignmentMastery, perfomancePercentage || 0).color}
+            color={getMastery(assignmentMastery || [], perfomancePercentage || 0).color}
           />
         )}
       </React.Fragment>

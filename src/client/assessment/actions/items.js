@@ -35,9 +35,10 @@ export const gotoItem = item => ({
   }
 });
 
-export const saveUserResponse = (item, timeSpent, autoSave = false, groupId) => ({
+export const saveUserResponse = (item, timeSpent, autoSave = false, groupId, payload) => ({
   type: SAVE_USER_RESPONSE,
   payload: {
+    ...payload,
     timeSpent,
     itemId: item,
     autoSave,

@@ -111,9 +111,9 @@ const AssessmentContainer = ({
     saveCurrentAnswer();
   };
 
-  const saveCurrentAnswer = () => {
+  const saveCurrentAnswer = payload => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent, false, groupId);
+    saveUserAnswer(currentItem, timeSpent, false, groupId, payload);
   };
 
   const moveToNext = async () => {

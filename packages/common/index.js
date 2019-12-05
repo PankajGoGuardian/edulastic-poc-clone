@@ -13,7 +13,6 @@ export { default as Button } from "./src/components/Button";
 export { default as EduButton } from "./src/components/EduButton";
 export { default as Checkbox } from "./src/components/Checkbox";
 export { default as Card } from "./src/components/Card";
-export { default as MoveLink } from "./src/components/MoveLink";
 export { default as ContentWrapper } from "./src/components/ContentWrapper";
 export { default as CustomQuillComponent } from "./src/components/CustomQuillComponent";
 export { default as CorrectAnswersContainer } from "./src/components/CorrectAnswersContainer";

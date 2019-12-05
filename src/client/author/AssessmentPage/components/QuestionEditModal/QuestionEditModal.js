@@ -158,8 +158,8 @@ export default class QuestionEditModal extends React.Component {
             <Button onClick={onCurrentChange(index - 1)} disabled={index === 0}>
               Previous
             </Button>
-            <Button onClick={onCurrentChange(index + 1)} disabled={totalQuestions - 1 === index}>
-              Next
+            <Button onClick={index === totalQuestions - 1 ? onClose : onCurrentChange(index + 1)}>
+              {index === totalQuestions - 1 ? "DONE" : "NEXT"}
             </Button>
           </ModalFooter>
         </ModalWrapper>

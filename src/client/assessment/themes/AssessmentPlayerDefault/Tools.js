@@ -99,7 +99,7 @@ const Tools = ({
 
   const showFillColorArray = [drawTools.DRAW_SQUARE, drawTools.DRAW_CIRCLE, drawTools.DRAW_TRIANGLE];
 
-  if (isDocBased) buttonsList = buttonsList.filter(obj => obj.mode !== "none");
+  if (isDocBased || testMode) buttonsList = buttonsList.filter(obj => obj.mode !== "none");
 
   const activeTool = buttonsList.find(button => button.mode === activeMode);
 

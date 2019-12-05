@@ -279,6 +279,7 @@ class Item extends Component {
                 onClickHandler={this.previewItem}
                 stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
               />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
             </QuestionContent>
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (

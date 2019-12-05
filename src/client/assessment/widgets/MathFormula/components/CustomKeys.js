@@ -5,13 +5,12 @@ import { Input, Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
-import { Subtitle } from "../../../styled/Subtitle";
-
+import { Label } from "../../../styled/WidgetOptions/Label";
 import { IconTrash } from "../styled/IconTrash";
 
 const CustomKeys = ({ blocks, onChange, onAdd, onDelete, t }) => (
   <>
-    <Subtitle>{t("component.options.customkeys")}</Subtitle>
+    <Label>{t("component.options.customkeys")}</Label>
 
     <Row gutter={32}>
       {blocks.map((block, index) => (

@@ -3,10 +3,8 @@ import styled from "styled-components";
 
 import Delete from "../keyboardButtons/delete.svg";
 import Sqrt from "../keyboardButtons/sqrt.svg";
-import Group940 from "../keyboardButtons/fraction.svg";
 import Group941 from "../keyboardButtons/941.svg";
 import Group942 from "../keyboardButtons/942.svg";
-import Group943 from "../keyboardButtons/943.svg";
 import Group944 from "../keyboardButtons/944.svg";
 import Group993 from "../keyboardButtons/993.svg";
 import Group940v2 from "../keyboardButtons/940-2.svg";
@@ -26,7 +24,6 @@ import Group2207 from "../keyboardButtons/2207.svg";
 import Group1004 from "../keyboardButtons/1004.svg";
 import Group2208 from "../keyboardButtons/2208.svg";
 import Group1005 from "../keyboardButtons/1005.svg";
-import Group1001 from "../keyboardButtons/1001.svg";
 import Group1002 from "../keyboardButtons/1002.svg";
 import Group2256 from "../keyboardButtons/2256.svg";
 import Group2253 from "../keyboardButtons/2253.svg";
@@ -34,12 +31,9 @@ import Group2263 from "../keyboardButtons/2263.svg";
 import Group2261 from "../keyboardButtons/2261.svg";
 import Group2266 from "../keyboardButtons/2266.svg";
 import Group2262 from "../keyboardButtons/2262.svg";
-import Group1024 from "../keyboardButtons/1024.svg";
 import Group1023 from "../keyboardButtons/1023.svg";
 import Group1025 from "../keyboardButtons/1025.svg";
 import Group1045 from "../keyboardButtons/1045.svg";
-import Group1010 from "../keyboardButtons/1010.svg";
-import Group1011 from "../keyboardButtons/1011.svg";
 import Group1012 from "../keyboardButtons/1012.svg";
 import Group1013 from "../keyboardButtons/1013.svg";
 import Group1022 from "../keyboardButtons/1022.svg";
@@ -58,51 +52,17 @@ export const CustomImage = styled.img`
   object-fit: contain;
 `;
 
-export const KEYBOARD_BUTTONS_ALL = [
+const COMPARISON = [
   {
-    handler: "leftright2",
-    label: "x²",
-    types: ["all", "basic", "algebra", "general"],
+    handler: "≮",
+    label: "≮",
+    types: ["all", "comparison"],
     command: "cmd"
   },
   {
-    handler: "\\sqrt",
-    labelcy: "sqrt",
-    label: <CustomImage src={Sqrt} role="presentation" />,
-    types: ["all", "basic", "algebra", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sqrt[n]{}",
-    label: <CustomImage src={Group999} role="presentation" />,
-    types: ["all", "algebra", "general"],
-    command: "write"
-  },
-  {
-    handler: "/",
-    labelcy: "divide",
-    label: <CustomImage src={Group940} role="presentation" />,
-    types: ["all", "basic", "algebra"],
-    command: "cmd"
-  },
-  {
-    handler: "/",
-    label: <CustomImage src={Group940v2} role="presentation" />,
-    types: ["all", "basic_junior", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "\\frac{}{}",
-    labelcy: "fraction",
-    label: <CustomImage src={Group941} role="presentation" />,
-    types: ["all", "basic", "basic_junior", "algebra", "general"],
-    command: "write"
-  },
-  {
-    handler: "^",
-    labelcy: "super",
-    label: <CustomImage src={Group942} role="presentation" />,
-    types: ["all", "basic", "algebra", "general"],
+    handler: "≯",
+    label: "≯",
+    types: ["all", "comparison"],
     command: "cmd"
   },
   {
@@ -116,121 +76,61 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: "≈",
     types: ["all", "comparison"],
     command: "cmd"
-  },
+  }
+];
+
+const GENERAL = [
   {
-    handler: "<",
-    label: "<",
-    types: ["all", "basic", "basic_junior", "algebra", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "_",
-    labelcy: "sub",
-    label: <CustomImage src={Group943} role="presentation" />,
-    types: ["all", "basic", "general"],
-    command: "cmd"
-  },
-  {
-    handler: ">",
-    label: ">",
-    types: ["all", "basic", "basic_junior", "algebra", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "≤",
-    label: "≤",
-    types: ["all", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "≥",
-    label: "≥",
-    types: ["all", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "≯",
-    label: "≯",
-    types: ["all", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "≮",
-    label: "≮",
-    types: ["all", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "\\pm",
-    label: "±",
-    types: ["all", "basic", "algebra", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "\\$",
-    label: "$",
-    types: ["all", "basic"],
+    handler: "\\sqrt[3]{}",
+    label: <CustomImage src={Group1043} role="presentation" />,
+    types: ["all", "general"],
     command: "write"
   },
   {
-    handler: "%",
-    label: "%",
-    types: ["all", "basic", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "°",
-    label: "º",
-    labelcy: "°",
-    types: ["all", "basic"],
-    command: "cmd"
-  },
-  {
-    handler: ":",
-    label: ":",
-    types: ["all", "basic", "general", "sets"],
-    command: "cmd"
-  },
-  {
-    handler: "(",
-    labelcy: "(",
-    label: <CustomImage src={Group944} role="presentation" />,
-    types: ["all", "basic", "algebra"],
-    command: "cmd"
-  },
-  {
-    handler: "[",
-    label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "algebra"],
-    command: "cmd"
-  },
-  {
-    handler: "|",
-    labelcy: "|",
-    label: <CustomImage src={Group993} role="presentation" />,
-    types: ["all", "basic", "algebra", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "π",
-    label: "π",
-    types: ["all", "basic", "algebra"],
-    command: "cmd"
-  },
-  {
-    handler: "Backspace",
-    labelcy: "backspace",
-    label: <CustomImage src={Delete} role="presentation" />,
-    types: ["all", "basic"],
+    handler: "\\therefore",
+    label: "∴",
+    types: ["all", "general"],
     command: "cmd"
   },
   {
     handler: "\\infinity",
     label: "∞",
-    types: ["all", "basic", "algebra", "general"],
+    types: ["all", "general"],
     command: "cmd"
   },
-  // Geometry
+  {
+    handler: ":",
+    label: ":",
+    types: ["all", "general"],
+    command: "cmd"
+  },
+  {
+    handler: "%",
+    label: "%",
+    types: ["all", "general"],
+    command: "cmd"
+  },
+  {
+    handler: "/",
+    label: <CustomImage src={Group940v2} role="presentation" />,
+    types: ["all", "general", "calculus", "algebra"],
+    command: "cmd"
+  },
+  {
+    handler: "leftright2",
+    label: "x²",
+    types: ["all", "general"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sqrt[n]{}",
+    label: <CustomImage src={Group999} role="presentation" />,
+    types: ["all", "general"],
+    command: "write"
+  }
+];
+
+const GEOMETRY = [
   {
     handler: "⊥",
     label: "⊥",
@@ -254,158 +154,10 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: <CustomImage src={Group1052} role="presentation" />,
     types: ["all", "geometry"],
     command: "write"
-  },
-  // Matrices
-  {
-    handler: "\\ldots",
-    label: <CustomImage src={Group2206} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "ldots"
-  },
-  {
-    handler: "[",
-    label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "squareBrackets"
-  },
-  {
-    handler: "\\ddots",
-    label: <CustomImage src={Group2207} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "ldoddotsts"
-  },
-  {
-    handler: "\\bmatrix",
-    label: <CustomImage src={Group1004} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "bmatrix"
-  },
-  {
-    handler: "\\vdots",
-    label: <CustomImage src={Group2208} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "vdots"
-  },
-  {
-    handler: "\\begin{bmatrix}{}&{}&{}\\\\{}&{}&{}\\\\{}&{}&{}\\end{bmatrix}",
-    label: <CustomImage src={Group1005} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "write",
-    name: "tripleMatrix"
-  },
-  {
-    handler: "^",
-    label: <CustomImage src={Group1001} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "caret"
-  },
-  {
-    handler: "_",
-    label: <CustomImage src={Group1002} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "cmd",
-    name: "underscore"
-  },
-  {
-    handler: "Shift-Spacebar",
-    label: <CustomImage src={Group1006} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "keystroke",
-    name: "shiftSpacebar"
-  },
-  {
-    handler: "Shift-Enter",
-    label: <CustomImage src={Group1007} role="presentation" />,
-    types: ["all", "matrices"],
-    command: "keystroke",
-    name: "shiftEnter"
-  },
-  // Trigonometry
-  {
-    handler: "\\log", // handler: "\\iota"
-    label: "log",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sin",
-    label: "sin",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sec",
-    label: "sec",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sin^{-1}",
-    label: <CustomImage src={Group2251} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sec^{-1}",
-    label: <CustomImage src={Group2249} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cos",
-    label: "cos",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\csc",
-    label: "csc",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cos^{-1}",
-    label: <CustomImage src={Group2247} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "write"
-  },
-  {
-    handler: "\\csc^{-1}",
-    label: <CustomImage src={Group2245} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "write"
-  },
-  {
-    handler: "\\tan",
-    label: "tan",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cot",
-    label: "cot",
-    types: ["all", "trigonometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\tan^{-1}",
-    label: <CustomImage src={Group2243} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "write"
-  },
-  {
-    handler: "\\cot^{-1}",
-    label: <CustomImage src={Group2241} role="presentation" />,
-    types: ["all", "trigonometry"],
-    command: "write"
-  },
-  // Sets
+  }
+];
+
+const SETS = [
   {
     handler: "\\subset",
     label: <CustomImage src={Group2256} role="presentation" />,
@@ -493,18 +245,6 @@ export const KEYBOARD_BUTTONS_ALL = [
     command: "cmd"
   },
   {
-    handler: "(",
-    label: <CustomImage src={Group1024} role="presentation" />,
-    types: ["all", "sets"],
-    command: "cmd"
-  },
-  {
-    handler: "{",
-    label: <CustomImage src={Group1023} role="presentation" />,
-    types: ["all", "sets"],
-    command: "cmd"
-  },
-  {
     handler: "\\left[\\right)",
     label: <CustomImage src={Group1025} role="presentation" />,
     types: ["all", "sets"],
@@ -515,136 +255,10 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: <CustomImage src={Group1045} role="presentation" />,
     types: ["all", "sets"],
     command: "write"
-  },
-  // Units (SI)
-  {
-    handler: "g",
-    label: "g",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "kg",
-    label: "kg",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "mg",
-    label: "mg",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "µg",
-    label: "µg",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "m",
-    label: "m",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "km",
-    label: "km",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "cm",
-    label: "cm",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "mm",
-    label: "mm",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "L",
-    label: "L",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "mL",
-    label: "mL",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "s",
-    label: "s",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  {
-    handler: "ms",
-    label: "ms",
-    types: ["all", "units_si"],
-    command: "cmd"
-  },
-  // Units (US)
-  {
-    handler: "feet",
-    label: "feet",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "oz",
-    label: "oz",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "lb",
-    label: "lb",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "in",
-    label: "in",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "ft",
-    label: "ft",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "mi",
-    label: "mi",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "\\fl oz",
-    label: "fl oz",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "pt",
-    label: "pt",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  {
-    handler: "gal",
-    label: "gal",
-    types: ["all", "units_us"],
-    command: "cmd"
-  },
-  // Greek
+  }
+];
+
+const GREEK = [
   {
     handler: "\\alpha",
     label: "α",
@@ -660,13 +274,7 @@ export const KEYBOARD_BUTTONS_ALL = [
   {
     handler: "\\delta",
     label: "δ",
-    types: ["all", "greek"],
-    command: "cmd"
-  },
-  {
-    handler: "\\pi",
-    label: "π",
-    types: ["all", "greek"],
+    types: ["all", "greek", "calculus", "greek"],
     command: "cmd"
   },
   {
@@ -680,17 +288,6 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: "σ",
     types: ["all", "greek"],
     command: "cmd"
-  },
-  {
-    handler: "\\Delta",
-    label: "Δ",
-    types: ["all", "greek"],
-    command: "cmd"
-  },
-  {
-    handler: "\\Pi",
-    label: "Π",
-    types: ["all", "greek"]
   },
   {
     handler: "\\Theta",
@@ -733,20 +330,10 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: "β",
     types: ["all", "greek"],
     command: "cmd"
-  },
-  // Chemistry
-  {
-    handler: "^",
-    label: <CustomImage src={Group1010} role="presentation" />,
-    types: ["all", "chemistry"],
-    command: "cmd"
-  },
-  {
-    handler: "_",
-    label: <CustomImage src={Group1011} role="presentation" />,
-    types: ["all", "chemistry"],
-    command: "cmd"
-  },
+  }
+];
+
+const CHEMISTRY = [
   {
     handler: "\\frac{\\mathrm{}}{\\mathrm{}}H",
     label: <CustomImage src={Group1012} role="presentation" />,
@@ -812,27 +399,52 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: <CustomImage src={Group1054} role="presentation" />,
     types: ["all", "chemistry"],
     command: "write"
-  },
-  // Grouping
-  {
-    handler: "(",
-    label: <CustomImage src={Group944} role="presentation" />,
-    types: ["all", "grouping"],
-    command: "cmd"
-  },
-  {
-    handler: "[",
-    label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "grouping"],
-    command: "cmd"
-  },
+  }
+];
+
+const GROUPING = [
   {
     handler: "{",
     label: <CustomImage src={Group1023} role="presentation" />,
-    types: ["all", "grouping"],
+    types: ["all", "grouping", "sets"],
+    command: "cmd"
+  }
+];
+
+const MISC = [
+  {
+    handler: "\\propto",
+    label: "∝",
+    types: ["all", "misc"],
     command: "cmd"
   },
-  // Calculus
+  {
+    handler: "abc",
+    label: "abc",
+    types: ["all", "misc"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cdot",
+    label: "·",
+    types: ["all", "misc"],
+    command: "cmd"
+  },
+  {
+    handler: "\\longdiv",
+    label: <CustomImage src={Group1030v2} role="presentation" />,
+    types: ["all", "misc"],
+    command: "cmd"
+  },
+  {
+    handler: "ℝ",
+    label: <CustomImage src={Group2357} role="presentation" />,
+    types: ["all", "misc"],
+    command: "write"
+  }
+];
+
+const CALCULUS = [
   {
     handler: "d",
     label: "d",
@@ -842,24 +454,6 @@ export const KEYBOARD_BUTTONS_ALL = [
   {
     handler: "f",
     label: "f",
-    types: ["all", "calculus"],
-    command: "cmd"
-  },
-  {
-    handler: "\\Delta",
-    label: "Δ",
-    types: ["all", "calculus"],
-    command: "cmd"
-  },
-  {
-    handler: "/",
-    label: <CustomImage src={Group940v2} role="presentation" />,
-    types: ["all", "calculus"],
-    command: "cmd"
-  },
-  {
-    handler: "(",
-    label: <CustomImage src={Group944} role="presentation" />,
     types: ["all", "calculus"],
     command: "cmd"
   },
@@ -886,45 +480,10 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: <CustomImage src={Group1058} role="presentation" />,
     types: ["all", "calculus"],
     command: "write"
-  },
-  // Misc
-  {
-    handler: "\\propto",
-    label: "∝",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "abc",
-    label: "abc",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "|",
-    label: "|",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cdot",
-    label: "·",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "\\longdiv",
-    label: <CustomImage src={Group1030v2} role="presentation" />,
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "ℝ",
-    label: <CustomImage src={Group2357} role="presentation" />,
-    types: ["all", "misc"],
-    command: "write"
-  },
-  // Discrete
+  }
+];
+
+const DISCRETE = [
   {
     handler: "\\lfloor",
     label: "⌊",
@@ -996,52 +555,39 @@ export const KEYBOARD_BUTTONS_ALL = [
     label: "⊕",
     types: ["all", "discrete"],
     command: "cmd"
-  },
-  // General
-  {
-    handler: "\\sqrt[3]{}",
-    label: <CustomImage src={Group1043} role="presentation" />,
-    types: ["all", "general"],
-    command: "write"
-  },
-  {
-    handler: "\\therefore",
-    label: "∴",
-    types: ["all", "general"],
-    command: "cmd"
   }
 ];
 
-export const KEYBOARD_BUTTONS = [
+const BASIC = [
   {
     handler: "=",
     label: "=",
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic"],
     command: "write"
   },
   {
     handler: "<",
     label: "<",
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate"],
     command: "cmd"
   },
   {
     handler: ">",
     label: ">",
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate"],
     command: "cmd"
   },
   {
     handler: "(",
     labelcy: "(",
     label: <CustomImage src={Group944} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate", "sets", "grouping", "calculus"],
     command: "cmd"
   },
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "algebra", "grouping"],
     command: "cmd",
     name: "squareBrackets"
   },
@@ -1049,139 +595,226 @@ export const KEYBOARD_BUTTONS = [
     handler: "\\frac{}{}",
     labelcy: "fraction",
     label: <CustomImage src={Group941} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate", "general"],
     command: "write"
   },
   {
     handler: "^",
     labelcy: "super",
     label: <CustomImage src={Group942} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "basic", "intermediate", "general", "chemistry", "advanced_matrices"],
     command: "cmd"
   },
+  {
+    handler: "Backspace",
+    labelcy: "backspace",
+    label: <CustomImage src={Delete} role="presentation" />,
+    types: ["all", "basic"],
+    command: "cmd"
+  },
+  {
+    handler: "\\$",
+    label: "$",
+    types: ["all", "basic"],
+    command: "write"
+  },
+  {
+    handler: "°",
+    label: "º",
+    labelcy: "°",
+    types: ["all", "basic", "intermediate"],
+    command: "cmd"
+  }
+];
+
+const INTERMEDIATE = [
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
     label: <CustomImage src={Sqrt} role="presentation" />,
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate", "general"],
     command: "cmd"
   },
   {
     handler: "\\sqrt[{}]{}",
     label: <CustomImage src={Group999} role="presentation" />,
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate"],
     command: "write"
   },
   {
     handler: "\\pm",
     label: "±",
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate", "general"],
     command: "cmd"
   },
   {
     handler: "≤",
     label: "≤",
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate", "comparison"],
     command: "cmd"
   },
   {
     handler: "≥",
     label: "≥",
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate", "comparison"],
     command: "cmd"
   },
   {
     handler: "|",
     labelcy: "|",
     label: <CustomImage src={Group993} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced"],
+    types: ["all", "intermediate", "general", "misc"],
     command: "cmd"
   },
   {
-    handler: "\\degree",
-    label: "º",
-    labelcy: "°",
-    types: ["all", "intermediate", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "π",
+    handler: "\\Pi",
     label: "π",
-    types: ["all", "intermediate", "advanced"],
+    types: ["all", "intermediate", "algebra", "greek", "greek"],
     command: "cmd"
-  },
-  {
-    handler: "\\infinity",
-    label: "∞",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "i", // handler: "\\iota"
-    label: "i",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "e", // handler: "\\iota"
-    label: "e",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "\\Theta",
-    label: "Θ",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
+  }
+];
+
+const ADVANCED_TRIGNOMETRY = [
   {
     handler: "\\log", // handler: "\\iota"
     label: "log",
-    types: ["all", "advanced"],
+    types: ["all", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "\\sin",
     label: "sin",
-    types: ["all", "advanced"],
+    types: ["all", "advanced_trignometry"],
     command: "cmd"
   },
   {
-    handler: "\\cos",
-    label: "cos",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "\\tan",
-    label: "tan",
-    types: ["all", "advanced"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cot",
-    label: "cot",
-    types: ["all", "advanced"],
+    handler: "\\sec",
+    label: "sec",
+    types: ["all", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "\\sin^{-1}",
     label: <CustomImage src={Group2251} role="presentation" />,
-    types: ["all", "advanced"],
-    command: "write"
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sec^{-1}",
+    label: <CustomImage src={Group2249} role="presentation" />,
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cos",
+    label: "cos",
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\csc",
+    label: "csc",
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
   },
   {
     handler: "\\cos^{-1}",
     label: <CustomImage src={Group2247} role="presentation" />,
-    types: ["all", "advanced"],
+    types: ["all", "advanced_trignometry"],
     command: "write"
+  },
+  {
+    handler: "\\csc^{-1}",
+    label: <CustomImage src={Group2245} role="presentation" />,
+    types: ["all", "advanced_trignometry"],
+    command: "write"
+  },
+  {
+    handler: "\\tan",
+    label: "tan",
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cot",
+    label: "cot",
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
   },
   {
     handler: "\\tan^{-1}",
     label: <CustomImage src={Group2243} role="presentation" />,
-    types: ["all", "advanced"],
+    types: ["all", "advanced_trignometry"],
     command: "write"
   },
+  {
+    handler: "\\cot^{-1}",
+    label: <CustomImage src={Group2241} role="presentation" />,
+    types: ["all", "advanced_trignometry"],
+    command: "write"
+  }
+];
+
+const ADVANCED_MATRICES = [
+  {
+    handler: "\\ldots",
+    label: <CustomImage src={Group2206} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "cmd",
+    name: "ldots"
+  },
+  {
+    handler: "\\ddots",
+    label: <CustomImage src={Group2207} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "cmd",
+    name: "ldoddotsts"
+  },
+  {
+    handler: "\\bmatrix",
+    label: <CustomImage src={Group1004} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "cmd",
+    name: "bmatrix"
+  },
+  {
+    handler: "\\vdots",
+    label: <CustomImage src={Group2208} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "cmd",
+    name: "vdots"
+  },
+  {
+    handler: "\\begin{bmatrix}{}&{}&{}\\\\{}&{}&{}\\\\{}&{}&{}\\end{bmatrix}",
+    label: <CustomImage src={Group1005} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "write",
+    name: "tripleMatrix"
+  },
+  {
+    handler: "_",
+    label: <CustomImage src={Group1002} role="presentation" />,
+    types: ["all", "advanced_matrices", "general", "chemistry"],
+    command: "cmd",
+    name: "underscore"
+  },
+  {
+    handler: "Shift-Spacebar",
+    label: <CustomImage src={Group1006} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "keystroke",
+    name: "shiftSpacebar"
+  },
+  {
+    handler: "Shift-Enter",
+    label: <CustomImage src={Group1007} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "keystroke",
+    name: "shiftEnter"
+  }
+];
+
+const UNITS_SI = [
   {
     handler: "g",
     label: "g",
@@ -1253,7 +886,10 @@ export const KEYBOARD_BUTTONS = [
     label: "ms",
     types: ["all", "units_si"],
     command: "cmd"
-  },
+  }
+];
+
+const UNITS_US = [
   {
     handler: "feet",
     label: "feet",
@@ -1308,4 +944,24 @@ export const KEYBOARD_BUTTONS = [
     types: ["all", "units_us"],
     command: "cmd"
   }
+];
+
+export const KEYBOARD_BUTTONS = [
+  ...BASIC,
+  ...INTERMEDIATE,
+  ...ADVANCED_TRIGNOMETRY,
+  ...ADVANCED_MATRICES,
+  ...UNITS_SI,
+  ...UNITS_US,
+  // belows are not in keypad mode list
+  ...DISCRETE,
+  ...MISC,
+  ...CALCULUS,
+  ...GROUPING,
+  ...CHEMISTRY,
+  ...GREEK,
+  ...SETS,
+  ...GEOMETRY,
+  ...GENERAL,
+  ...COMPARISON
 ];

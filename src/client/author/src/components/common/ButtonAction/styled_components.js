@@ -30,7 +30,6 @@ export const PreviewBar = styled.div`
 
   .ant-btn {
     background: transparent;
-    height: 25px;
     padding: 0 10px;
     margin-left: 5px;
     border: 0;
@@ -41,6 +40,10 @@ export const PreviewBar = styled.div`
       padding: 0;
       text-transform: initial;
       font-size: 12px;
+      height: 45px;
+      @media (max-width: ${mediumDesktopWidth}) {
+        height: 36px;
+      }
     }
 
     span {

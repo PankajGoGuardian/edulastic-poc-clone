@@ -60,6 +60,7 @@ export const ReviewSummaryWrapper = styled(Col)`
 export const SecondHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 
   & > div > .ant-btn {

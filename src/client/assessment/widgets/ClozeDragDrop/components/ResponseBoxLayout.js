@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 
-import { MathSpan, FlexContainer } from "@edulastic/common";
+import { MathSpan, FlexContainer, AnswerContext } from "@edulastic/common";
 
 import Draggable from "./Draggable";
 import Droppable from "./Droppable";
@@ -20,6 +20,8 @@ const ResponseBoxLayout = ({
   dragItemStyle,
   getHeading
 }) => {
+  const { isAnswerModifiable } = useContext(AnswerContext);
+
   const handleMove = e => {
     if (e.clientY < 100) {
       window.scrollTo(window.pageXOffset, window.pageYOffset - 10);
@@ -95,20 +97,30 @@ const ResponseBoxLayout = ({
                             return (
                               <div key={itemIndex} className="draggable_box">
                                 {!dragHandler && (
-                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
+                                  <Draggable
+                                    onDrop={onDrop}
+                                    data={`${value}_${index}`}
+                                    isAnswerModifiable={isAnswerModifiable}
+                                  >
                                     <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                                   </Draggable>
                                 )}
                                 {dragHandler && (
-                                  <Draggable onDrop={onDrop} data={`${value}_${index}`} style={itemStyle}>
-                                    <i
-                                      className="fa fa-arrows-alt"
-                                      style={{
-                                        fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                      }}
-                                    />
-                                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                  </Draggable>
+                                  <React.Fragment>
+                                    <Draggable
+                                      onDrop={onDrop}
+                                      data={`${value}_${index}`}
+                                      isAnswerModifiable={isAnswerModifiable}
+                                    >
+                                      <i
+                                        className="fa fa-arrows-alt"
+                                        style={{
+                                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                                        }}
+                                      />
+                                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                    </Draggable>
+                                  </React.Fragment>
                                 )}
                               </div>
                             );
@@ -127,20 +139,22 @@ const ResponseBoxLayout = ({
                 return (
                   <StyledResponseOption id={`response-item-${index}`} key={value} className="draggable_box">
                     {!dragHandler && (
-                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
+                      <Draggable onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
                         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                       </Draggable>
                     )}
                     {dragHandler && (
-                      <Draggable onDrop={onDrop} data={value} style={itemStyle}>
-                        <i
-                          className="fa fa-arrows-alt"
-                          style={{
-                            fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                          }}
-                        />
-                        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                      </Draggable>
+                      <React.Fragment>
+                        <Draggable onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
+                          <i
+                            className="fa fa-arrows-alt"
+                            style={{
+                              fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                            }}
+                          />
+                          <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                        </Draggable>
+                      </React.Fragment>
                     )}
                   </StyledResponseOption>
                 );

@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { desktopWidth, white, themeColor, linkColor } from "@edulastic/colors";
-import { Button, Icon } from "antd";
+import { desktopWidth, white, themeColor, linkColor, smallDesktopWidth, red } from "@edulastic/colors";
+import { Button, Icon, Typography } from "antd";
+
+const { Text } = Typography;
 
 export const Container = styled.div`
   width: 100%;
@@ -237,5 +239,30 @@ export const TextAreaSendButton = styled(Button)`
   &:hover,
   &:focus {
     color: ${themeColor};
+  }
+`;
+
+export const StyledFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const StyledText = styled(Text)`
+  display: block;
+  color: ${({ danger }) => (danger ? red : themeColor)};
+  font-size: 15px;
+  padding-right: 15px;
+  @media (max-width: ${smallDesktopWidth}) {
+    display: none;
+  }
+`;
+
+export const SyledSpan = styled.span`
+  line-height: 0;
+  padding-right: 15px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding-left: 15px;
   }
 `;

@@ -26,7 +26,10 @@ import {
   WidgetContainer,
   IconArrow,
   MobileLeftSide,
-  MobileRightSide
+  MobileRightSide,
+  SyledSpan,
+  StyledFlex,
+  StyledText
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import { getUserId } from "../../../selectors/user";
@@ -189,32 +192,47 @@ class AuthorTestItemPreview extends Component {
             {allowDuplicate && (
               <EduButton
                 title="Duplicate"
-                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
+                style={{ padding: 0, borderColor: themeColor }}
                 size="large"
                 onClick={handleDuplicateTestItem}
               >
-                <IconCopy color={themeColor} />
+                <StyledFlex>
+                  <SyledSpan>
+                    <IconCopy color={themeColor} />
+                  </SyledSpan>
+                  <StyledText>copy</StyledText>
+                </StyledFlex>
               </EduButton>
             )}
             {isEditable && (
               <EduButton
                 title="Edit item"
-                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
+                style={{ padding: 0, borderColor: themeColor }}
                 size="large"
                 onClick={editTestItem}
               >
-                <IconPencilEdit color={themeColor} />
+                <StyledFlex>
+                  <SyledSpan>
+                    <IconPencilEdit color={themeColor} />
+                  </SyledSpan>
+                  <StyledText>edit</StyledText>
+                </StyledFlex>
               </EduButton>
             )}
             {isOwner && (page === "addItems" || page === "itemList") && (
               <EduButton
                 title="Delete item"
-                style={{ width: 42, padding: 0, borderColor: red, paddingTop: "5px", fontSize: "16px", color: red }}
+                style={{ padding: 0, borderColor: red, fontSize: "16px", color: red }}
                 size="large"
                 onClick={this.handleDeleteItem}
                 disabled={this.props.deleting}
               >
-                <Icon type="delete" color={red} />
+                <StyledFlex>
+                  <SyledSpan>
+                    <Icon type="delete" color={red} />
+                  </SyledSpan>
+                  <StyledText danger>delete</StyledText>
+                </StyledFlex>
               </EduButton>
             )}
           </ButtonsWrapper>

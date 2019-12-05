@@ -50,7 +50,7 @@ class AddQuestion extends React.Component {
                 <IconNewList />
               </AddQuestionIcon>
             </Tooltip>
-            <Tooltip placement="top" title="Short Text">
+            <Tooltip placement="top" title="Text Entry">
               <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
                 <IconTextEntry />
               </AddQuestionIcon>

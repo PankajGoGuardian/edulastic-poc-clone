@@ -230,7 +230,7 @@ const SvgDraw = ({
       setInputIsVisible(true);
       setCurrentPosition({
         x: point.x + 40,
-        y: point.y,
+        y: point.y - 20,
         index: newTexts.length - 1
       });
       setTexts(newTexts);
@@ -698,8 +698,8 @@ const SvgDraw = ({
                   key={i}
                   color={text.color}
                   fontSize={text.lineWidth * 3}
-                  x={text.x - 40}
-                  y={text.y + 40}
+                  x={text.x - 45}
+                  y={text.y + 65}
                 >
                   {text.value}
                 </Text>

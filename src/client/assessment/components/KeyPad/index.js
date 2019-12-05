@@ -36,17 +36,16 @@ export default class KeyPad extends React.Component {
       command: "write"
     }));
 
-    const defaultKeys =
-      symbol === "all"
-        ? MathKeyboard.KEYBOARD_BUTTONS_ALL
-        : MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-            if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-              btn.types.push(symbol.label);
-            }
+    const isCustomMode = isObject(symbol);
 
-            return btn;
-          }).filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol));
-    return customKeysBtns.concat(defaultKeys);
+    const defaultKeys = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
+      if (isCustomMode && symbol.value.includes(btn.handler)) {
+        btn.types.push(symbol.label);
+      }
+      return btn;
+    });
+
+    return customKeysBtns.concat(defaultKeys.filter(btn => btn.types.includes(isCustomMode ? symbol.label : symbol)));
   };
 
   render() {

@@ -5,7 +5,7 @@ import { isObject, compact } from "lodash";
 
 import { math } from "@edulastic/constants";
 
-import { KEYBOARD_BUTTONS, KEYBOARD_BUTTONS_ALL } from "./constants/keyboardButtons";
+import { KEYBOARD_BUTTONS } from "./constants/keyboardButtons";
 import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import Keyboard from "../Keyboard";
@@ -16,8 +16,6 @@ const { EMBED_RESPONSE } = math;
 
 class MathKeyboard extends React.PureComponent {
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS;
-
-  static KEYBOARD_BUTTONS_ALL = KEYBOARD_BUTTONS_ALL;
 
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
 
@@ -82,10 +80,12 @@ class MathKeyboard extends React.PureComponent {
     const { restrictKeys, customKeys } = this.props;
     const { type } = this.state;
 
+    const isCustomMode = isObject(type);
+
     const restrictButtons = restrictKeys.map(key => ({
       handler: key,
       label: key,
-      types: [isObject(type) ? type.label : type],
+      types: [isCustomMode ? type.label : type],
       command: "write"
     }));
 
@@ -93,12 +93,12 @@ class MathKeyboard extends React.PureComponent {
       .map(key => ({
         handler: key,
         label: key,
-        types: [isObject(type) ? type.label : type],
+        types: [isCustomMode ? type.label : type],
         command: "write"
       }))
-      .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS);
+      .concat(KEYBOARD_BUTTONS);
 
-    const availables = isObject(type)
+    const availables = isCustomMode
       ? compact(type.value.map(handler => allBtns.find(btn => btn.handler === handler)))
       : allBtns.filter(btn => btn.types.includes(type));
 

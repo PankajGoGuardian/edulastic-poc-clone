@@ -143,6 +143,7 @@ class KeyPadOptions extends Component {
               size="large"
               value={isCustom ? "custom" : symbol}
               style={{ width: "100%" }}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={this.handleSymbolsChange}
               data-cy="text-formatting-options-select"
             >

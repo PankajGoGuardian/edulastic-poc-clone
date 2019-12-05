@@ -152,7 +152,7 @@ const OrderList = ({
     );
   };
 
-  const renderOptions = scrollContainer && (
+  const renderOptions = view === EDIT && scrollContainer && (
     <OptionsContainer styleType={styleType}>
       <OptionsList
         fontSize={fontSize}

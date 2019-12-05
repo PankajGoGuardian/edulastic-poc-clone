@@ -21,15 +21,12 @@ export const StyledChoicesBox = styled(ChoicesBox)`
     }
 
     .ant-select-selection__rendered {
-      line-height: ${({ theme }) => theme?.fontSize};
-      /* max-width: 100%; */
       max-width: calc(100% - 32px);
     }
   }
 
   .ant-select-dropdown-menu-item {
     font-size: ${({ theme }) => theme?.fontSize}px;
-    line-height: ${({ theme }) => theme?.fontSize}px;
     white-space: normal;
   }
 

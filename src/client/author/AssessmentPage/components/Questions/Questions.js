@@ -158,10 +158,10 @@ const trueOrFalseData = {
  */
 
 const typeTitleHash = {
-  [SHORT_TEXT]: "Short text",
+  [SHORT_TEXT]: "Text Entry",
   [MULTIPLE_CHOICE]: "Multiple choice - standard",
   [CLOZE_DROP_DOWN]: "Cloze with Drop Down",
-  [MATH]: "Equations & Inequalities",
+  [MATH]: "Math - standard",
   [TRUE_OR_FALSE]: "True or false",
   [ESSAY_PLAIN_TEXT]: "Essay with plain text"
 };

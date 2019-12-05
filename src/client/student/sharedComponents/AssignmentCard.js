@@ -14,7 +14,7 @@ import {
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { last, maxBy } from "lodash";
+import { first, maxBy } from "lodash";
 import { Row, Col, message } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
@@ -132,7 +132,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
-  const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = last(newReports) || {};
+  const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = first(newReports) || {};
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;
   const totalQuestions = correct + wrong + skipped || 0;

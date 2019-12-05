@@ -24,21 +24,14 @@ class DragDropValues extends Component {
 
   render() {
     const { values, width, height, valueHeight, dragDropBoundsClassName, scale } = this.props;
-
     const containerStyle = {
       position: "relative",
       width,
-      minHeight: height,
       height: values.length * (valueHeight + 5)
     };
 
     return (
-      <DragDropValuesContainer
-        ref={this.container}
-        width={width}
-        minHeight={height}
-        height={values.length * (valueHeight + 5)}
-      >
+      <DragDropValuesContainer ref={this.container} width={width} minHeight={height}>
         <DragDropTitle>DRAG DROP VALUES</DragDropTitle>
         <div style={containerStyle}>
           {values.map((value, i) => {

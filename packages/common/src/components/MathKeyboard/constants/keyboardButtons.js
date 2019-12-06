@@ -15,8 +15,6 @@ import Group2251 from "../keyboardButtons/2251.svg";
 import Group2249 from "../keyboardButtons/2249.svg";
 import Group2247 from "../keyboardButtons/2247.svg";
 import Group2245 from "../keyboardButtons/2245.svg";
-import Group2243 from "../keyboardButtons/2243.svg";
-import Group2241 from "../keyboardButtons/2241.svg";
 import Group2206 from "../keyboardButtons/2206.svg";
 import Group1006 from "../keyboardButtons/1006.svg";
 import Group1007 from "../keyboardButtons/1007.svg";
@@ -93,12 +91,6 @@ const GENERAL = [
     command: "cmd"
   },
   {
-    handler: "\\infinity",
-    label: "∞",
-    types: ["all", "general"],
-    command: "cmd"
-  },
-  {
     handler: ":",
     label: ":",
     types: ["all", "general"],
@@ -123,10 +115,45 @@ const GENERAL = [
     command: "cmd"
   },
   {
-    handler: "\\sqrt[n]{}",
-    label: <CustomImage src={Group999} role="presentation" />,
+    handler: "\\ldots",
+    label: <CustomImage src={Group2206} role="presentation" />,
     types: ["all", "general"],
-    command: "write"
+    command: "cmd",
+    name: "ldots"
+  },
+  {
+    handler: "\\ddots",
+    label: <CustomImage src={Group2207} role="presentation" />,
+    types: ["all", "general"],
+    command: "cmd",
+    name: "ldoddotsts"
+  },
+
+  {
+    handler: "\\vdots",
+    label: <CustomImage src={Group2208} role="presentation" />,
+    types: ["all", "general"],
+    command: "cmd",
+    name: "vdots"
+  },
+  {
+    handler: "_",
+    label: <CustomImage src={Group1002} role="presentation" />,
+    types: ["all", "general", "general", "chemistry"],
+    command: "cmd",
+    name: "underscore"
+  },
+  {
+    handler: "\\sec",
+    label: "sec",
+    types: ["all"],
+    command: "cmd"
+  },
+  {
+    handler: "\\csc",
+    label: "csc",
+    types: ["all"],
+    command: "cmd"
   }
 ];
 
@@ -278,20 +305,8 @@ const GREEK = [
     command: "cmd"
   },
   {
-    handler: "\\theta",
-    label: "θ",
-    types: ["all", "greek"],
-    command: "cmd"
-  },
-  {
     handler: "\\sigma",
     label: "σ",
-    types: ["all", "greek"],
-    command: "cmd"
-  },
-  {
-    handler: "\\Theta",
-    label: "Θ",
     types: ["all", "greek"],
     command: "cmd"
   },
@@ -562,32 +577,32 @@ const BASIC = [
   {
     handler: "=",
     label: "=",
-    types: ["all", "basic"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "write"
   },
   {
     handler: "<",
     label: "<",
-    types: ["all", "basic", "intermediate"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: ">",
     label: ">",
-    types: ["all", "basic", "intermediate"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "(",
     labelcy: "(",
     label: <CustomImage src={Group944} role="presentation" />,
-    types: ["all", "basic", "intermediate", "sets", "grouping", "calculus"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced_matrices", "algebra", "grouping"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "grouping"],
     command: "cmd",
     name: "squareBrackets"
   },
@@ -595,14 +610,21 @@ const BASIC = [
     handler: "\\frac{}{}",
     labelcy: "fraction",
     label: <CustomImage src={Group941} role="presentation" />,
-    types: ["all", "basic", "intermediate", "general"],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry", "general"],
     command: "write"
+  },
+  {
+    handler: "\\sqrt",
+    labelcy: "sqrt",
+    label: <CustomImage src={Sqrt} role="presentation" />,
+    types: ["basic"],
+    command: "cmd"
   },
   {
     handler: "^",
     labelcy: "super",
     label: <CustomImage src={Group942} role="presentation" />,
-    types: ["all", "basic", "intermediate", "general", "chemistry", "advanced_matrices"],
+    types: ["all", "basic", "intermediate", "general", "advanced_matrices", "advanced_trignometry", "chemistry"],
     command: "cmd"
   },
   {
@@ -622,7 +644,13 @@ const BASIC = [
     handler: "°",
     label: "º",
     labelcy: "°",
-    types: ["all", "basic", "intermediate"],
+    types: ["basic"],
+    command: "cmd"
+  },
+  {
+    handler: "\\pm",
+    label: "±",
+    types: ["basic"],
     command: "cmd"
   }
 ];
@@ -632,76 +660,121 @@ const INTERMEDIATE = [
     handler: "\\sqrt",
     labelcy: "sqrt",
     label: <CustomImage src={Sqrt} role="presentation" />,
-    types: ["all", "intermediate", "general"],
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "general"],
     command: "cmd"
   },
   {
     handler: "\\sqrt[{}]{}",
     label: <CustomImage src={Group999} role="presentation" />,
-    types: ["all", "intermediate"],
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "write"
-  },
-  {
-    handler: "\\pm",
-    label: "±",
-    types: ["all", "intermediate", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "≤",
-    label: "≤",
-    types: ["all", "intermediate", "comparison"],
-    command: "cmd"
-  },
-  {
-    handler: "≥",
-    label: "≥",
-    types: ["all", "intermediate", "comparison"],
-    command: "cmd"
   },
   {
     handler: "|",
     labelcy: "|",
     label: <CustomImage src={Group993} role="presentation" />,
-    types: ["all", "intermediate", "general", "misc"],
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "general", "misc"],
+    command: "cmd"
+  },
+  {
+    handler: "\\pm",
+    label: "±",
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "general"],
+    command: "cmd"
+  },
+  {
+    handler: "≤",
+    label: "≤",
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "comparison"],
+    command: "cmd"
+  },
+  {
+    handler: "≥",
+    label: "≥",
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "comparison"],
+    command: "cmd"
+  },
+  {
+    handler: "°",
+    label: "º",
+    labelcy: "°",
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry"],
     command: "cmd"
   },
   {
     handler: "\\Pi",
     label: "π",
-    types: ["all", "intermediate", "algebra", "greek", "greek"],
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "greek", "greek"],
     command: "cmd"
+  },
+  {
+    handler: "\\infinity",
+    label: "∞",
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "general"],
+    command: "cmd"
+  }
+];
+
+const ADVANCED_MATRICES = [
+  {
+    handler: "i",
+    label: "i",
+    types: ["all", "advanced_matrices", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "e",
+    label: "e",
+    types: ["all", "advanced_matrices", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\Theta",
+    label: "Θ",
+    types: ["all", "advanced_matrices", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\log", // handler: "\\iota"
+    label: "log",
+    types: ["all", "advanced_matrices", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\bmatrix",
+    label: <CustomImage src={Group1004} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "cmd",
+    name: "bmatrix"
+  },
+  {
+    handler: "\\begin{bmatrix}{}&{}&{}\\\\{}&{}&{}\\\\{}&{}&{}\\end{bmatrix}",
+    label: <CustomImage src={Group1005} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "write",
+    name: "tripleMatrix"
+  },
+  {
+    handler: "Shift-Spacebar",
+    label: <CustomImage src={Group1006} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "keystroke",
+    name: "shiftSpacebar"
+  },
+
+  {
+    handler: "Shift-Enter",
+    label: <CustomImage src={Group1007} role="presentation" />,
+    types: ["all", "advanced_matrices"],
+    command: "keystroke",
+    name: "shiftEnter"
   }
 ];
 
 const ADVANCED_TRIGNOMETRY = [
   {
-    handler: "\\log", // handler: "\\iota"
-    label: "log",
-    types: ["all", "advanced_trignometry"],
-    command: "cmd"
-  },
-  {
     handler: "\\sin",
     label: "sin",
-    types: ["all", "advanced_trignometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sec",
-    label: "sec",
-    types: ["all", "advanced_trignometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sin^{-1}",
-    label: <CustomImage src={Group2251} role="presentation" />,
-    types: ["all", "advanced_trignometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\sec^{-1}",
-    label: <CustomImage src={Group2249} role="presentation" />,
     types: ["all", "advanced_trignometry"],
     command: "cmd"
   },
@@ -710,24 +783,6 @@ const ADVANCED_TRIGNOMETRY = [
     label: "cos",
     types: ["all", "advanced_trignometry"],
     command: "cmd"
-  },
-  {
-    handler: "\\csc",
-    label: "csc",
-    types: ["all", "advanced_trignometry"],
-    command: "cmd"
-  },
-  {
-    handler: "\\cos^{-1}",
-    label: <CustomImage src={Group2247} role="presentation" />,
-    types: ["all", "advanced_trignometry"],
-    command: "write"
-  },
-  {
-    handler: "\\csc^{-1}",
-    label: <CustomImage src={Group2245} role="presentation" />,
-    types: ["all", "advanced_trignometry"],
-    command: "write"
   },
   {
     handler: "\\tan",
@@ -742,75 +797,28 @@ const ADVANCED_TRIGNOMETRY = [
     command: "cmd"
   },
   {
-    handler: "\\tan^{-1}",
-    label: <CustomImage src={Group2243} role="presentation" />,
+    handler: "\\sin^{-1}",
+    label: <CustomImage src={Group2251} role="presentation" />,
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cos^{-1}",
+    label: <CustomImage src={Group2247} role="presentation" />,
     types: ["all", "advanced_trignometry"],
     command: "write"
   },
   {
-    handler: "\\cot^{-1}",
-    label: <CustomImage src={Group2241} role="presentation" />,
+    handler: "\\sec^{-1}",
+    label: <CustomImage src={Group2249} role="presentation" />,
+    types: ["all", "advanced_trignometry"],
+    command: "cmd"
+  },
+  {
+    handler: "\\csc^{-1}",
+    label: <CustomImage src={Group2245} role="presentation" />,
     types: ["all", "advanced_trignometry"],
     command: "write"
-  }
-];
-
-const ADVANCED_MATRICES = [
-  {
-    handler: "\\ldots",
-    label: <CustomImage src={Group2206} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "cmd",
-    name: "ldots"
-  },
-  {
-    handler: "\\ddots",
-    label: <CustomImage src={Group2207} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "cmd",
-    name: "ldoddotsts"
-  },
-  {
-    handler: "\\bmatrix",
-    label: <CustomImage src={Group1004} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "cmd",
-    name: "bmatrix"
-  },
-  {
-    handler: "\\vdots",
-    label: <CustomImage src={Group2208} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "cmd",
-    name: "vdots"
-  },
-  {
-    handler: "\\begin{bmatrix}{}&{}&{}\\\\{}&{}&{}\\\\{}&{}&{}\\end{bmatrix}",
-    label: <CustomImage src={Group1005} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "write",
-    name: "tripleMatrix"
-  },
-  {
-    handler: "_",
-    label: <CustomImage src={Group1002} role="presentation" />,
-    types: ["all", "advanced_matrices", "general", "chemistry"],
-    command: "cmd",
-    name: "underscore"
-  },
-  {
-    handler: "Shift-Spacebar",
-    label: <CustomImage src={Group1006} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "keystroke",
-    name: "shiftSpacebar"
-  },
-  {
-    handler: "Shift-Enter",
-    label: <CustomImage src={Group1007} role="presentation" />,
-    types: ["all", "advanced_matrices"],
-    command: "keystroke",
-    name: "shiftEnter"
   }
 ];
 
@@ -949,8 +957,8 @@ const UNITS_US = [
 export const KEYBOARD_BUTTONS = [
   ...BASIC,
   ...INTERMEDIATE,
-  ...ADVANCED_TRIGNOMETRY,
   ...ADVANCED_MATRICES,
+  ...ADVANCED_TRIGNOMETRY,
   ...UNITS_SI,
   ...UNITS_US,
   // belows are not in keypad mode list

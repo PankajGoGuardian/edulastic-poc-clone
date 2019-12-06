@@ -90,7 +90,15 @@
       "quetext": "This is MCQ_TF.default question",
       "choices": ["right", "wrong"],
       "setAns": { "correct": "right", "points": 1 },
-      "attemptData": { "right": "right", "wrong": "wrong" }
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is MCQ_TF.1 question",

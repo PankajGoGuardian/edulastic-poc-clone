@@ -214,10 +214,10 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
         "Content-Type": "application/json"
       }
     }).then(({ body }) => {
-      body.result.forEach(asgnDO => {
+      body.result.assignments.forEach(asgnDO => {
         const assignment = {};
         assignment._id = asgnDO._id;
-        assignment.groupId = asgnDO.class[0]._id;
+        assignment.groupId = asgnDO.classId;
         asgnIds.push(assignment);
       });
       console.log("All Assignments = ", asgnIds);

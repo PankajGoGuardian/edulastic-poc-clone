@@ -71,6 +71,13 @@ class SimpleOptions extends React.Component {
     this.setState({ showSettings: !showSettings });
   };
 
+  onDeselect = classId => {
+    const removedStudents = this.props.assignment.class.find(_class => _class._id === classId)?.students || [];
+    this.setState(prevState => ({
+      studentList: prevState.studentList.filter(item => !removedStudents.includes(item))
+    }));
+  };
+
   onChange = (field, value) => {
     const {
       onClassFieldChange,
@@ -183,6 +190,7 @@ class SimpleOptions extends React.Component {
         <InitOptions>
           <ClassSelector
             onChange={changeField("class")}
+            onDeselect={this.onDeselect}
             fetchStudents={fetchStudents}
             selectedGroups={classIds}
             group={group}

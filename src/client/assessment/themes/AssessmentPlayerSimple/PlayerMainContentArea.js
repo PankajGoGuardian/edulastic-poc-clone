@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Hints } from "@edulastic/common";
+import { Hints, ScrollContext } from "@edulastic/common";
 import TestItemPreview from "../../components/TestItemPreview";
 import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
@@ -33,6 +33,7 @@ const PlayerContentArea = ({
   crossAction
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const scrollContainerRef = useRef();
   const item = items[currentItem];
 
   const toggleSideBar = () => {
@@ -51,24 +52,34 @@ const PlayerContentArea = ({
           theme={theme}
         />
       </Sidebar>
-      <MainWrapper isSidebarVisible={isSidebarVisible}>
-        <MainContent>
-          {testItemState === "" && (
-            <TestItemPreview
-              crossAction={crossAction}
-              setCrossAction={setCrossAction}
-              setHighlights={setHighlights}
-              cols={itemRows}
-              previewTab={previewTab}
-              questions={questions}
-              showCollapseBtn
-            />
-          )}
-          {testItemState === "check" && (
-            <TestItemPreview cols={itemRows} previewTab="check" preview="show" questions={questions} showCollapseBtn />
-          )}
-          {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
-        </MainContent>
+      <MainWrapper isSidebarVisible={isSidebarVisible} ref={scrollContainerRef}>
+        {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
+            Also, will use ScrollContext for auto-scroll on mobile */}
+        <ScrollContext.Provider value={{ getScrollElement: () => scrollContainerRef.current }}>
+          <MainContent>
+            {testItemState === "" && (
+              <TestItemPreview
+                crossAction={crossAction}
+                setCrossAction={setCrossAction}
+                setHighlights={setHighlights}
+                cols={itemRows}
+                previewTab={previewTab}
+                questions={questions}
+                showCollapseBtn
+              />
+            )}
+            {testItemState === "check" && (
+              <TestItemPreview
+                cols={itemRows}
+                previewTab="check"
+                preview="show"
+                questions={questions}
+                showCollapseBtn
+              />
+            )}
+            {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+          </MainContent>
+        </ScrollContext.Provider>
         <PlayerFooter
           isLast={isLast}
           isFirst={isFirst}
@@ -108,7 +119,7 @@ const Main = styled.main`
   display: flex;
   height: 100vh;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 const MainContent = styled.div`
@@ -119,7 +130,7 @@ const MainContent = styled.div`
   overflow: auto;
   height: calc(100vh - 200px);
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin: 90px 40px 45px 40px;
+  margin: 40px;
   border-radius: 10px;
   & * {
     -webkit-touch-callout: none;
@@ -131,19 +142,23 @@ const MainContent = styled.div`
   }
 
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    margin: 90px 10px 45px 10px;
-  }
-
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    margin-top: 110px;
+    margin: 30px 10px;
   }
 `;
 
 const MainWrapper = styled.div`
   position: relative;
   width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 220px)" : "calc(100% - 65px)")};
+  overflow: auto;
+  margin-top: 60px;
+  height: calc(100vh - 150px);
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     width: 100%;
+    margin-top: 65px;
+  }
+
+  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
+    margin-top: 75px;
   }
 `;
 

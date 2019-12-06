@@ -41,6 +41,9 @@ const MainFooter = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;
   }
+  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
+    left: 0px;
+  }
 `;
 
 const ControlBtn = styled.button`

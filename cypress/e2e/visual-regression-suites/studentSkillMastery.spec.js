@@ -4,7 +4,7 @@ const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`skill report`, () => {
-    const pageURL = "home/skill-report";
+    const pageURL = "home/skill-mastery";
 
     before("set token", () => {
       cy.fixture("users").then(users => {
@@ -19,7 +19,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.visit(`/${pageURL}`);
         cy.wait("@skillReport");
         cy.contains("Skill Summary").should("have.length.greaterThan", 0);
+
+        cy.get(".ant-progress")
+          .next()
+          .click({ multiple: true });
+        cy.scrollTo(0, 0);
         cy.matchImageSnapshotWithSize(); // take screenshot and comapare
+        // scroll and take screenshot
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
+        });
       });
     });
   });

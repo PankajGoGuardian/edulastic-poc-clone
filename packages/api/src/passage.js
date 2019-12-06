@@ -26,10 +26,12 @@ const update = ({ _id, ...data }) =>
     .then(result => result.data.result);
 
 const getById = _id =>
-  api.callApi({
-    url: `${prefix}/${_id}`,
-    method: "get"
-  });
+  api
+    .callApi({
+      url: `${prefix}/${_id}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
 
 export default {
   create,

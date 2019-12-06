@@ -216,13 +216,20 @@ class Item extends Component {
     return true;
   }
 
+  /**
+   *  TODO: find a friggin better name for the handler!
+   *  handles the user response from the Passage confirmation modal.
+   *  {Bool} value: user wants to select all the items?
+   */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, setTestItems, selectedRows = [] } = this.props;
+    const { setAndSavePassageItems, passageItems, selectedRows = [] } = this.props;
     this.setState({ passageConfirmModalVisible: false });
+    // add all the passage items to test.
     if (value) {
-      setTestItems([...selectedRows, ...passageItems.map(item => item._id)]);
-      return setAndSavePassageItems();
+      return setAndSavePassageItems(passageItems);
     }
+
+    // open the modal for selecting  testItems manually.
     this.setState({ isShowPreviewModal: true });
   };
 

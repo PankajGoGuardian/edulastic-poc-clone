@@ -50,7 +50,7 @@ class PreviewModal extends React.Component {
       this.setState({ passageLoading: true });
       try {
         passageApi.getById(item.passageId).then(response => {
-          addPassage(response.data.result);
+          addPassage(response);
           this.setState({ passageLoading: false });
         });
       } catch (e) {

@@ -5,7 +5,7 @@ import { call, put, all, takeEvery, select, actionChannel, take } from "redux-sa
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
-import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
+import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi } from "@edulastic/api";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
 import {
@@ -30,6 +30,7 @@ import {
 } from "../ItemDetail/ducks";
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
 import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
+import { getCurrentItemSelector } from "../../student/sharedDucks/TestItem";
 // constants
 
 const testItemStatusConstants = {
@@ -460,17 +461,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         passageItems: [...payload]
       };
-    case SET_AND_SAVE_PASSAGE_ITEMS:
-      const oldTestItems = state.entity.testItems;
-      const updated = uniqBy([...oldTestItems, ...state.passageItems], "_id");
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          testItems: updated
-        },
-        passageItems: []
-      };
     case SET_DEFAULT_TEST_TYPE_PROFILES:
       const { performanceBand = {}, standardGradingScale = {} } = getDefaultScales(state, payload);
       return {
@@ -836,6 +826,7 @@ function* deleteSharedUserSaga({ payload }) {
   }
 }
 
+// TODO: analyse and refactor this logic.
 function* setTestDataAndUpdateSaga(payload) {
   try {
     let newTest = yield select(getTestSelector);
@@ -850,6 +841,7 @@ function* setTestDataAndUpdateSaga(payload) {
         testItems: newTest.testItems.filter(el => el._id !== item._id)
       };
     }
+
     // getting grades and subjects from each question array in test items
     const { testItems = [] } = newTest;
 
@@ -917,12 +909,6 @@ function* setTestDataAndUpdateSaga(payload) {
       });
 
       let entity = yield call(testsApi.create, newTest);
-      if (item.passageId) {
-        // if the item has passage, we have to load the passage as well, which is return in get
-        // post wont return passages.
-        // TODO:  modifying post would have other issues since its used in multiple places?
-        entity = yield call(testsApi.getById, entity._id);
-      }
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {
@@ -936,6 +922,18 @@ function* setTestDataAndUpdateSaga(payload) {
         yield put(replace(`/author/tests/${entity._id}`));
       }
       yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+    }
+
+    // if item has passage, add the passage to test as well. (review tab requires it)
+    if (item.passageId) {
+      const currentPassages = yield select(getCurentTestPassagesSelector);
+      const currentPassageIds = currentPassages.map(i => i._id);
+      const newPayload = {};
+      if (!currentPassageIds.includes(item.passageId)) {
+        const passage = yield call(passageApi.getById, item.passageId);
+        newPayload.passages = [...currentPassages, passage];
+        yield put(setTestDataAction(newPayload));
+      }
     }
   } catch (e) {
     console.error(e);
@@ -1081,6 +1079,38 @@ function* duplicateTestSaga({ payload }) {
   }
 }
 
+/*
+ * add passage items to test.
+ * dispatched when user want to add all items of passage to the test.
+ */
+function* setAndSavePassageItems({ payload }) {
+  try {
+    const { passageId } = payload?.[0] || {};
+    const currentPassages = yield select(getCurentTestPassagesSelector);
+    const currentPassageIds = currentPassages.map(i => i._id);
+    // new payload to update the tests' store's entity.
+    const newPayload = {};
+
+    // if passage is not already present, fetch it and add it to the payload.
+    if (!currentPassageIds.includes(passageId)) {
+      const passage = yield call(passageApi.getById, passageId);
+      newPayload.passages = [...currentPassages, passage];
+    }
+    const testItems = yield select(getSelectedTestItemsSelector);
+    newPayload.testItems = [...testItems, ...payload];
+    const itemIds = newPayload.testItems.map(i => i._id);
+    // for weird reason there is another store to show if a testItem should be shown
+    // as selected or not in item banks page. Adding test items to there.
+    yield put(setTestItemsAction(itemIds));
+
+    // update the test data wth testItems, and passage if needed.
+    yield put(setTestDataAction(newPayload));
+  } catch (e) {
+    yield call(message.error("error adding passage items"));
+    console.error("error", e, e.stack);
+  }
+}
+
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -1098,7 +1128,8 @@ export function* watcherSaga() {
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
     yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
     yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
-    yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga)
+    yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
+    yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);
@@ -1133,6 +1164,17 @@ export const getDefaultThumbnailSelector = createSelector(
 export const getTestEntitySelector = createSelector(
   stateSelector,
   state => state.entity
+);
+
+// currently present testItems in the test.
+export const getSelectedTestItemsSelector = createSelector(
+  getTestEntitySelector,
+  test => test.testItems || []
+);
+
+export const getCurentTestPassagesSelector = createSelector(
+  getTestEntitySelector,
+  test => test.passages || []
 );
 
 export const getTestStatusSelector = createSelector(

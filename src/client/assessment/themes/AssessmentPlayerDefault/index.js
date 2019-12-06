@@ -358,7 +358,7 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad;
 
     // calculate width of question area
-    const availableWidth = windowWidth - 170;
+    const availableWidth = windowWidth - 70;
     let responsiveWidth = availableWidth;
     let zoomLevel = _zoomLevel;
 
@@ -579,11 +579,11 @@ class AssessmentPlayerDefault extends React.Component {
           >
             {currentItem > 0 && (
               <Nav.BackArrow onClick={moveToPrev}>
-                <i class="fa fa-angle-left" />
+                <i className="fa fa-angle-left" />
               </Nav.BackArrow>
             )}
             <Nav.NextArrow onClick={moveToNext}>
-              <i class="fa fa-angle-right" />
+              <i className="fa fa-angle-right" />
             </Nav.NextArrow>
             {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
                 Also, will use ScrollContext for auto-scroll on mobile */}

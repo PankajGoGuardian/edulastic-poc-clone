@@ -3,8 +3,9 @@ import { themeColor } from "@edulastic/colors";
 
 const sharedBtnStyle = css`
   background-color: transparent;
-  position: absolute;
-  top: 48%;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
   font-size: 40px;
   cursor: pointer;

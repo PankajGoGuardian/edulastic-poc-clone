@@ -23,7 +23,7 @@ const Main = styled.main`
   flex-direction: ${props => (props.skin ? "initial" : "row")};
   box-sizing: border-box;
   position: relative;
-  overflow: auto;
+  overflow-x: hidden;
   margin-top: ${({ headerHeight }) => headerHeight}px;
   height: ${({ headerHeight }) => `calc(100vh - ${headerHeight}px)`};
   & p {

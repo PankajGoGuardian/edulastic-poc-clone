@@ -206,9 +206,9 @@ const MatchListPreview = ({
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         const altResp = allItemsById[alt];
-        if (altResp.label && altResp.label !== "") {
-          alternateAnswers[index + 1].push(altResp.label);
-        }
+          if (altResp && altResp.label) {
+            alternateAnswers[index + 1].push(altResp.label);
+          }
       });
     });
   }
@@ -276,8 +276,7 @@ const MatchListPreview = ({
 
   const choiceColStyle = {
     ...styles.dropContainerStyle(smallSize),
-    width: `calc(50% - ${smallSize ? 28 : 40}px)`,
-    padding: "8px 12px"
+    width: `calc(50% - ${smallSize ? 28 : 40}px)`
   };
 
   const stemColStyle = {
@@ -288,6 +287,8 @@ const MatchListPreview = ({
   const correctAnswerBoxStyle = {
     width: horizontallyAligned ? 1050 : 750
   };
+
+  const showEvaluate = (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
 
   /**
    * scroll element
@@ -320,9 +321,16 @@ const MatchListPreview = ({
                 <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
-              <DropContainer noBorder={!!ans[i]} index={i} drop={drop} flag="ans" style={choiceColStyle}>
+              <DropContainer
+                noBorder={!!ans[i]}
+                borderNone={showEvaluate && !!ans[i]}
+                index={i}
+                drop={drop}
+                flag="ans"
+                style={choiceColStyle}
+              >
                 <DragItem
-                  preview={(preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader)}
+                  preview={showEvaluate}
                   correct={evaluation[i]}
                   flag="ans"
                   renderIndex={i}
@@ -332,6 +340,7 @@ const MatchListPreview = ({
                   width="100%"
                   centerContent
                   getStyles={getStyles}
+                  showAnswer={previewTab === SHOW}
                   disableResponse={disableResponse}
                   changePreviewTab={changePreviewTab}
                 />
@@ -486,12 +495,15 @@ const MatchListPreview = ({
         <Fragment>
           <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")} style={correctAnswerBoxStyle}>
             {list.map((ite, i) => (
-              <FlexContainer key={i} marginBottom="10px" alignItems="stretch">
+              <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
                   <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
+                <Separator smallSize={smallSize} correctAnswer />
                 <CorItem>
-                  <Index correctAnswer>{getStemNumeration(stemNumeration, i)}</Index>
+                  <Index preview correctAnswer>
+                    {getStemNumeration(stemNumeration, i)}
+                  </Index>
                   <MathFormulaDisplay
                     choice
                     dangerouslySetInnerHTML={{ __html: allItemsById?.[validArray?.[i]]?.label || "" }}
@@ -511,7 +523,11 @@ const MatchListPreview = ({
                   <CorTitle>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
-                  <CorItem index={getStemNumeration(stemNumeration, i)}>
+                  <Separator smallSize={smallSize} correctAnswer />
+                  <CorItem>
+                    <Index preview correctAnswer>
+                      {getStemNumeration(stemNumeration, i)}
+                    </Index>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>
                 </FlexContainer>
@@ -571,6 +587,7 @@ const StyledMathFormulaDisplay = styled(MathFormulaDisplay)`
 `;
 
 const StyledCorrectAnswersContainer = styled(CorrectAnswersContainer)`
+  margin: 20px auto;
   background-color: ${props => props.theme.widgets.matchList.containerBgColor};
   & > h3 {
     color: ${props => props.theme.widgets.matchList.dragItemColor};

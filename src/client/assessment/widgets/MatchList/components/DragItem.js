@@ -46,6 +46,7 @@ const DragItem = ({
   flag,
   correct,
   preview,
+  showAnswer,
   renderIndex,
   displayIndex,
   getStyles,
@@ -73,7 +74,11 @@ const DragItem = ({
           </DragPreview>
         )}
 
-        {correct !== undefined && preview && <Index correct={correct}>{displayIndex}</Index>}
+        {correct !== undefined && preview && showAnswer && (
+          <Index preview={preview} correct={correct}>
+            {displayIndex}
+          </Index>
+        )}
         {itemView}
         {correct !== undefined && (
           <div style={{ marginRight: 15, opacity: preview ? "1" : "0" }}>

@@ -8,8 +8,8 @@ export const CorTitle = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  align-self: stretch;
   background-color: #fff;
-  margin-right: 44px;
   word-break: break-word;
   padding: 8px 12px;
   overflow: hidden;

@@ -243,7 +243,8 @@ const MatchListPreview = ({
     color: theme.widgets.matchList.dragItemColor,
     opacity: isDragging ? 0.5 : 1,
     minWidth: dragItemMinWidth,
-    overflow: "hidden"
+    overflow: "hidden",
+    transform: "translate3d(0px, 0px, 0px)"
   });
 
   const wrapperStyle = {

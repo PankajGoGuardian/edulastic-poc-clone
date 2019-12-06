@@ -390,7 +390,7 @@ class Display extends Component {
       margin: "0 0 0 3px", // EV-8287
       display: "flex",
       alignItems: "center",
-      width: "max-content",
+      width: "100%",
       whiteSpace: isWrapText ? "normal" : "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis"
@@ -584,6 +584,7 @@ class Display extends Component {
                   width: responseContainer.width || "auto",
                   minWidth: response.minWidth || "auto",
                   maxWidth: response.maxWidth,
+                  transform: "translate3d(0px, 0px, 0px)",
                   ...btnStyle
                 }}
                 disableResponse={disableResponse}

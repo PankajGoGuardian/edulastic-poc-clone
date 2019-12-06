@@ -48,8 +48,8 @@ const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", 
 const symbols = [
   { value: "basic", label: "Basic" },
   { value: "intermediate", label: "Intermediate" },
-  { value: "advanced_trignometry", label: "Advanced (Trignometry)" },
   { value: "advanced_matrices", label: "Advanced (Matrices)" },
+  { value: "advanced_trignometry", label: "Advanced (Trignometry)" },
   { value: "units_si", label: "Units (SI)" },
   { value: "units_us", label: "Units (US)" },
   { value: "all", label: "Full" }

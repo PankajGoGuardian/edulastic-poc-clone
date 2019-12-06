@@ -183,6 +183,11 @@ const StaticMath = ({
   }, [latex]);
 
   useEffect(() => {
+    // if userAnswer is cleared, innervalues becomes an empty Array,
+    // in which case restore the latex to default
+    if (innerValues.length === 0) setLatex(latex);
+    // TODO: there is a lot of redundant code in these math components, which should be removed.
+    // but since it impacts multiple question types, needs rigorous testing before doing the same.
     setInnerFieldValues(innerValues);
   }, [innerValues]);
 

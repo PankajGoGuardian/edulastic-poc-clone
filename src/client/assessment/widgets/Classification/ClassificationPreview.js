@@ -1,8 +1,8 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq, maxBy } from "lodash";
 import "core-js/features/array/flat";
-import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel, measureText } from "@edulastic/common";
+import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel, measureText, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -52,6 +52,7 @@ const ClassificationPreview = ({
   const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
   const stemNumeration = get(item, "uiStyle.validationStemNumeration", choiceDefaultMaxW);
 
+  const { isAnswerModifiable } = useContext(AnswerContext);
   const direction = getDirection(listPosition);
 
   const styles = {
@@ -377,6 +378,7 @@ const ClassificationPreview = ({
                               renderIndex={getStemNumeration(stemNumeration, ind)}
                               item={ite.value}
                               key={ite.id}
+                              disableResponse={disableResponse || !isAnswerModifiable}
                             />
                           ))}
                         </FlexContainer>
@@ -401,6 +403,7 @@ const ClassificationPreview = ({
                             key={ite.id}
                             item={ite.value}
                             renderIndex={possibleResponses.indexOf(ite)}
+                            disableResponse={disableResponse || !isAnswerModifiable}
                           />
                         ))}
                       </FlexContainer>

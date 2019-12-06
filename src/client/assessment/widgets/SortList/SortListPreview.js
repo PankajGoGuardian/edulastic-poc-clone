@@ -45,15 +45,16 @@ const SortListPreview = ({
   isReviewTab
 }) => {
   const answerContextConfig = useContext(AnswerContext);
+  const { expressGrader, isAnswerModifiable } = answerContextConfig;
   let previewTab = _previewTab;
-  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+  if (expressGrader && !isAnswerModifiable) {
     /**
      * ideally wanted to be in CHECK mode.
      * But this component seems to be
      * written to work with only SHOW & CLEAR
      */
     previewTab = SHOW;
-  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+  } else if (expressGrader && isAnswerModifiable) {
     previewTab = CLEAR;
   }
 
@@ -272,7 +273,7 @@ const SortListPreview = ({
                   onDrop={onDrop}
                   obj={draggableItem}
                   style={dragItemStyle}
-                  disableResponse={disableResponse}
+                  disableResponse={disableResponse || !isAnswerModifiable}
                 />
               </DropContainer>
             ))}
@@ -319,7 +320,7 @@ const SortListPreview = ({
                     userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null
                   }
                   isReviewTab={isReviewTab}
-                  disableResponse={disableResponse}
+                  disableResponse={disableResponse || !isAnswerModifiable}
                   changePreviewTab={changePreviewTab}
                 />
               </DropContainer>

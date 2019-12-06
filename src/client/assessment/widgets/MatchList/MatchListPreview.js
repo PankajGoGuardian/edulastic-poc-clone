@@ -332,7 +332,7 @@ const MatchListPreview = ({
                   width="100%"
                   centerContent
                   getStyles={getStyles}
-                  disableResponse={disableResponse}
+                  disableResponse={disableResponse || !isAnswerModifiable}
                   changePreviewTab={changePreviewTab}
                 />
               </DropContainer>
@@ -378,7 +378,7 @@ const MatchListPreview = ({
                                       key={ind}
                                       item={ite}
                                       getStyles={getStyles}
-                                      disableResponse={disableResponse}
+                                      disableResponse={disableResponse || !isAnswerModifiable}
                                     />
                                   )
                               )
@@ -392,7 +392,7 @@ const MatchListPreview = ({
                                         key={ind}
                                         item={ite}
                                         getStyles={getStyles}
-                                        disableResponse={disableResponse}
+                                        disableResponse={disableResponse || !isAnswerModifiable}
                                       />
                                     )
                                 )
@@ -432,7 +432,7 @@ const MatchListPreview = ({
                                     renderIndex={ind}
                                     item={ite}
                                     getStyles={getStyles}
-                                    disableResponse={disableResponse}
+                                    disableResponse={disableResponse || !isAnswerModifiable}
                                     changePreviewTab={changePreviewTab}
                                   />
                                 )
@@ -449,7 +449,7 @@ const MatchListPreview = ({
                                       renderIndex={ind}
                                       item={ite}
                                       getStyles={getStyles}
-                                      disableResponse={disableResponse}
+                                      disableResponse={disableResponse || !isAnswerModifiable}
                                       changePreviewTab={changePreviewTab}
                                     />
                                   )

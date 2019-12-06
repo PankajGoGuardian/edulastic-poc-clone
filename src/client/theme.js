@@ -1080,6 +1080,7 @@ export const defaultTheme = {
       dragItemFontWeight: semiBold,
       groupSeparatorBorderColor: borderColor,
       separatorBorderColor: borderColor,
+      correctAnswerBlockSeparatorBorderColor: keyboardBorderColor,
       separatorBgColor: iconColor,
       listItemFontWeight: semiBold,
       listItemColor: labelStyle,

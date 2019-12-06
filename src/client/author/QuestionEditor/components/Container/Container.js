@@ -373,7 +373,7 @@ class Container extends Component {
 
       return <div />;
     }
-    console.log("inside question editor");
+   
 
     const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;

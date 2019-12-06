@@ -291,7 +291,7 @@ class App extends Component {
                 redirectPath={defaultRoute}
                 orgType="school"
               />
-              <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
+              {/* <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} /> */}
               <LoggedOutRoute
                 exact
                 path="/partnerLogin/:partner/Signup"

@@ -28,7 +28,7 @@ class ClozeMathWithUnit extends React.Component {
 
   componentDidMount() {
     const { resprops = {}, id } = this.props;
-    const { answers = {} } = resprops;
+    const { answers = {}, disableResponse = false } = resprops;
     const { mathUnits: userAnswers = [] } = answers;
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
@@ -36,7 +36,10 @@ class ClozeMathWithUnit extends React.Component {
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        textarea.addEventListener("keyup", this.handleKeypress);
+        textarea.disabled = disableResponse;
+        if (!disableResponse) {
+          textarea.addEventListener("keyup", this.handleKeypress);
+        }
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
@@ -110,8 +113,14 @@ class ClozeMathWithUnit extends React.Component {
 
   showKeyboardModal = () => {
     const { currentMathQuill } = this.state;
+    const { resprops } = this.props;
+    const { disableResponse = false } = resprops;
     if (!currentMathQuill) {
       return;
+    }
+    if (disableResponse) {
+      currentMathQuill.blur();
+      return null;
     }
     this.setState({ showKeyboard: true }, this.calcKeyPosition);
     currentMathQuill.focus();
@@ -227,14 +236,14 @@ class ClozeMathWithUnit extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { item, uiStyles = {}, height, width } = resprops;
+    const { item, uiStyles = {}, height, width, disableResponse = false } = resprops;
     const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
     const { showKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
     return (
-      <OuterWrapper ref={this.wrappedRef}>
+      <OuterWrapper disableResponse={disableResponse} ref={this.wrappedRef}>
         <ClozeMathInputField
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -252,6 +261,7 @@ class ClozeMathWithUnit extends React.Component {
           }}
         />
         <SelectUnit
+          disabled={disableResponse}
           preview
           unit={unit}
           customUnits={customUnits}
@@ -285,6 +295,11 @@ const OuterWrapper = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  .mq-math-mode {
+    ${({ disableResponse }) =>
+      disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+  }
 `;
 
 const ClozeMathInputField = styled.span`

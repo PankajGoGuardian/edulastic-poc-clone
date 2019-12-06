@@ -15,7 +15,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
     item,
     onInnerClick,
     uiStyles = {},
-    showIndex
+    showIndex,
+    disableResponse
   } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const {
@@ -33,7 +34,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
 
-
   return checked ? (
     <CheckedBlock
       width={width}
@@ -49,6 +49,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
   ) : (
     <InputDiv>
       <Input
+        disabled={disableResponse}
         onChange={e => save({ value: e.target.value, index }, "inputs", id)}
         value={val}
         style={{

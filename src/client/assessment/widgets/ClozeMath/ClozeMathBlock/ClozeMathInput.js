@@ -28,7 +28,7 @@ class ClozeMathInput extends React.Component {
 
   componentDidMount() {
     const { resprops = {}, id } = this.props;
-    const { answers = {} } = resprops;
+    const { answers = {}, disableResponse } = resprops;
     const { maths: userAnswers = [] } = answers;
 
     if (window.MathQuill && this.mathRef.current) {
@@ -37,7 +37,10 @@ class ClozeMathInput extends React.Component {
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        textarea.addEventListener("keyup", this.handleKeypress);
+        textarea.disabled = disableResponse;
+        if (!disableResponse) {
+          textarea.addEventListener("keyup", this.handleKeypress);
+        }
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
@@ -122,6 +125,12 @@ class ClozeMathInput extends React.Component {
     const { currentMathQuill } = this.state;
     if (!currentMathQuill) {
       return;
+    }
+    const { resprops = {} } = this.props;
+    const { disableResponse = false } = resprops;
+    if (disableResponse) {
+      currentMathQuill.blur();
+      return null;
     }
     this.setState({ showKeyboard: true }, this.calcKeyPosition);
     currentMathQuill.focus();
@@ -212,7 +221,7 @@ class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {} } = this.props;
-    const { height, width, item, uiStyles = {}, isV1Migrated } = resprops;
+    const { height, width, item, uiStyles = {}, isV1Migrated, disableResponse } = resprops;
     const { showKeyboard } = this.state;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
@@ -230,7 +239,7 @@ class ClozeMathInput extends React.Component {
           alignSelf: "flex-start"
         }}
       >
-        <Wrapper>
+        <Wrapper disableResponse={disableResponse}>
           <span
             ref={this.mathRef}
             className="mathRef"
@@ -341,6 +350,13 @@ const KeyboardWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
+  .mq-math-mode {
+    ${({ disableResponse }) =>
+      disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+  }
+  .mq-cursor {
+    ${({ disableResponse }) => disableResponse && `display: none;`}
+  }
   span {
     font-weight: 600;
     font-style: unset;

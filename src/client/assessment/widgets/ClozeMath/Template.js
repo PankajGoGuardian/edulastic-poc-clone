@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
-import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last, isEmpty } from "lodash";
+import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last, isEmpty, get } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
@@ -290,22 +290,22 @@ class Template extends Component {
             value: []
           }
         };
-        newAltValues.value = cloneDeep(_validation.validResponse.value || []);
+        newAltValues.value = cloneDeep(get(_validation, "validResponse.value", []));
         newAltValues.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        newAltValues.textinput.value = cloneDeep(_validation.validResponse.textinput.value || []);
+        newAltValues.textinput.value = cloneDeep(get(_validation, "validResponse.textinput.value", []));
         newAltValues.textinput.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        newAltValues.dropdown.value = cloneDeep(_validation.validResponse.dropdown.value || []);
+        newAltValues.dropdown.value = cloneDeep(get(_validation, "validResponse.dropdown.value", []));
         newAltValues.dropdown.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        newAltValues.mathUnits.value = cloneDeep(_validation.validResponse.mathUnits.value || []);
+        newAltValues.mathUnits.value = cloneDeep(get(_validation, "validResponse.mathUnits.value", []));
         newAltValues.mathUnits.value.map(answer => {
           answer.value = "";
           return answer;

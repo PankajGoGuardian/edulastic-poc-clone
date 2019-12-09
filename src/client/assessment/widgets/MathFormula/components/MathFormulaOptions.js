@@ -34,10 +34,6 @@ const MathFormulaOptions = ({
       if (isObject(keypadMode)) {
         return;
       }
-      onChange(
-        "customKeys",
-        MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label)
-      );
     }
   }, [item.symbols]);
   const changeCustomKey = ({ index, value }) => {

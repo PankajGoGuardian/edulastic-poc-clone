@@ -213,7 +213,7 @@ class MathFormulaAnswers extends React.Component {
               delete value.options.unit;
             } else {
               value.method = methods.EQUIV_VALUE;
-              value.options.unit = "feet";
+              value.options.unit = "m";
             }
           });
         } else {
@@ -226,7 +226,7 @@ class MathFormulaAnswers extends React.Component {
               delete value.options.unit;
             } else {
               value.method = methods.EQUIV_VALUE;
-              value.options.unit = "feet";
+              value.options.unit = "m";
             }
           });
         }
@@ -236,14 +236,7 @@ class MathFormulaAnswers extends React.Component {
             draft.symbols = [];
           }
           draft.symbols[0] = "units_us";
-
-          draft.customKeys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(draft.symbols[0])).map(
-            btn => btn.label
-          );
-        } else {
-          draft.customKeys = [];
         }
-
         updateVariables(draft, latexKeys);
       })
     );

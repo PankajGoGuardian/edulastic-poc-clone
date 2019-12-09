@@ -127,7 +127,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         {answer}
       </span>
 
-      {(!showAnswer || (showAnswer && !lessMinWidth)) && (
+      {(!showAnswer || (showAnswer && !lessMinWidth)) && choiceAttempted && (
         <IconWrapper rightPosition={0} correct={status === "right"}>
           {choiceAttempted && status === "right" && <RightIcon />}
           {choiceAttempted && status === "wrong" && <WrongIcon />}
@@ -165,7 +165,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           ) : (
             content
           )}
-          {!choiceAttempted && content}
         </Draggable>
       </Droppable>
     </CheckBoxTemplateBox>

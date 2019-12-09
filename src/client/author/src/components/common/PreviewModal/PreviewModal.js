@@ -27,6 +27,7 @@ import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
+import { addItemToCartAction } from "../../../../ItemList/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 import ReportIssue from "./ReportIssue";
@@ -50,7 +51,7 @@ class PreviewModal extends React.Component {
       this.setState({ passageLoading: true });
       try {
         passageApi.getById(item.passageId).then(response => {
-          addPassage(response.data.result);
+          addPassage(response);
           this.setState({ passageLoading: false });
         });
       } catch (e) {
@@ -123,10 +124,15 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems, page } = this.props;
+    const { setDataAndSave, selectedRows, addItemToCart, test, gotoSummary, item, setTestItems, page } = this.props;
+    console.log("page is", page);
+    if (page === "itemList") {
+      return addItemToCart(item);
+    }
     if (!test.title.trim().length && page !== "itemList") {
       this.closeModal();
       gotoSummary();
+      console.log("Reaching here");
       return message.error("Name field cannot be empty");
     }
     let keys = [...(selectedRows || [])];
@@ -176,6 +182,7 @@ class PreviewModal extends React.Component {
       passage,
       questions = keyBy(get(item, "data.questions", []), "id"),
       page,
+      showAddPassageItemToTestButton = false, // show if add item to test button needs to shown.
       windowWidth
     } = this.props;
 
@@ -213,7 +220,7 @@ class PreviewModal extends React.Component {
       >
         <HeadingWrapper>
           <Title>Preview</Title>
-          {isPassage && page === "addItems" && (
+          {isPassage && showAddPassageItemToTestButton && (
             <ButtonsWrapper added={this.isAddOrRemove}>
               <Button onClick={this.handleSelection}>
                 {this.isAddOrRemove ? (
@@ -328,6 +335,7 @@ const enhance = compose(
       changeView: changePreviewAction,
       clearAnswers: clearAnswersAction,
       addPassage: addPassageAction,
+      addItemToCart: addItemToCartAction,
       setPrevewItem: setPrevewItemAction,
       setQuestionsForPassage: setQuestionsForPassageAction,
       clearPreview: clearPreviewAction,

@@ -16,7 +16,8 @@ const SelectUnit = ({
   preview,
   height,
   width,
-  dropdownStyle
+  dropdownStyle,
+  disabled
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
@@ -40,6 +41,7 @@ const SelectUnit = ({
   return (
     <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle} preview={preview} height={height} width={width}>
       <Select
+        disabled={disabled}
         onChange={onChangeUnit}
         value={unit}
         preview={preview}

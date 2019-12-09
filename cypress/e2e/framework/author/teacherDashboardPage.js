@@ -1,6 +1,8 @@
 export default class TeacherDashBoardPage {
   getClasCardByName = className => cy.get(`[data-cy="${className}"]`);
 
+  clickOnManageClass = () => cy.get('[data-cy="manageClass"]').click();
+
   verifyClassDetail = (className, grade, subject, students, assignmentCount = 0, assignmentTitle, asgnStatus) => {
     this.getClasCardByName(className).as("classCard");
     cy.get("@classCard")

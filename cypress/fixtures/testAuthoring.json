@@ -3,7 +3,7 @@
     "name": "Default Test Automation",
     "grade": ["Grade 10"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_STD.default"]
+    "itemKeys": ["MCQ_TF.default"]
   },
   "LCB_1": {
     "name": "LCB Test Assessment 01",

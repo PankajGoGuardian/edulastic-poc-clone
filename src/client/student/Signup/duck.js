@@ -9,6 +9,7 @@ import { getUser } from "../../author/src/selectors/user";
 import produce from "immer";
 
 import { userPickFields } from "../../common/utils/static/user";
+import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 
 // Types
 const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
@@ -373,6 +374,12 @@ function* saveSubjectGradeSaga({ payload }) {
     });
     // setting user in store to put orgData in store
     yield put(signupSuccessAction(newUser));
+    yield put(
+      updateInitSearchStateAction({
+        grades: result?.defaultGrades,
+        subject: result?.defaultSubjects
+      })
+    );
   } catch (err) {
     yield put({
       type: SAVE_SUBJECTGRADE_FAILED,

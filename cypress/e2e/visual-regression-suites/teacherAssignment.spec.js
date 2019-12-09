@@ -7,7 +7,7 @@ const liveClassboardPage = new LiveClassboardPage();
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
-    cy.setToken("teacher.1.loadtest.k6test_jul26_4@snapwiz.com"); // setting auth token for teacher user
+    cy.setToken("tea01@vvksssc01.com"); // setting auth token for teacher user
   });
 
   context(`teacher assignments page`, () => {
@@ -28,27 +28,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context("lcb page", () => {
-    const pageURL = "author/classboard/5d3af20233dbb436025ead4f/5d3af20033dbb436025ead49";
+    const pageURL = "author/classboard/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
 
     SCREEN_SIZES.forEach(size => {
       it(`'card view' when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@testdetail");
-
         cy.get('[data-cy="studentStatus"]')
           .contains("Graded")
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
+
+        // scroll and take screenshot
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
+        });
       });
 
       it(`'student view' when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
         cy.wait("@testdetail");
-
-        cy.contains("Test Assessment");
         cy.get('[data-cy="studentStatus"]')
           .contains("Graded")
           .should("be.visible")
@@ -58,12 +60,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
 
         cy.wait("@testactivity");
 
-        // cy.get('[data-cy="question-container"]')
-        //   .contains("This is math question")
-        //   .should("be.visible")
-        //   .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
-
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
+
+        // scroll and take screenshot
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
+        });
       });
 
       it(`'question view' when resolution is '${size}'`, () => {
@@ -77,18 +79,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
           .and("have.length.greaterThan", 0);
 
         liveClassboardPage.clickonQuestionsTab();
-        cy.wait("@question");
-        cy.get('[data-cy="question-container"]')
-          .contains("This is math question")
-          .should("be.visible")
-          .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
+        cy.wait("@item");
+        cy.wait(500); // wait for the dom elements to render
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
+
+        // scroll and take screenshot
+        cy.isPageScrollPresent().then(({ hasScroll }) => {
+          if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
+        });
       });
     });
   });
 
   context("express grader page", () => {
-    const pageURL = "author/expressgrader/5d3af20233dbb436025ead4f/5d3af20033dbb436025ead49";
+    const pageURL = "author/expressgrader/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
 
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {
@@ -105,7 +109,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context("standard performance page", () => {
-    const pageURL = "author/standardsBasedReport/5d3af20233dbb436025ead4f/5d3af20033dbb436025ead49";
+    const pageURL = "author/standardsBasedReport/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
 
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {

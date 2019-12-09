@@ -3,10 +3,12 @@ import FileHelper from "../framework/util/fileHelper";
 import TestLibrary from "../framework/author/tests/testLibraryPage";
 import { screenSizes } from "../framework/constants/visual";
 import TeacherSideBar from "../framework/author/SideBarPage";
-import { draftTests } from "../framework/testdata/visualRegression";
+import { draftTests, assignedTests } from "../framework/testdata/visualRegression";
 
-const SCREEN_SIZES = [[1600, 900], [1366, 768], [1024, 650]]; // Cypress.config("SCREEN_SIZES");
+const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const allTestsIds = Object.keys(draftTests);
+const publishedTestId = Object.keys(assignedTests)[0];
+
 const testLibraryPage = new TestLibrary();
 const sidebar = new TeacherSideBar();
 
@@ -138,12 +140,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context(`Assign Test`, () => {
-    const pageURL = "author/assignments/5d92ff4494fae46a63c41b85";
+    const pageURL = `author/assignments/${publishedTestId}`;
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${pageURL}`);
-        cy.contains("Visual Automation").should("be.visible");
+        cy.contains("Automation").should("be.visible");
         cy.matchImageSnapshotWithSize();
         // for mobile
         cy.isPageScrollPresent().then(({ hasScroll }) => {

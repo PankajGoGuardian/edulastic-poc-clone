@@ -68,18 +68,21 @@ class MathFormulaPreview extends Component {
     const {
       studentTemplate,
       type: previewType,
-      answerContextConfig: { expressGrader, isAnswerModifiable }
+      answerContextConfig: { expressGrader, isAnswerModifiable },
+      userAnswer
     } = this.props;
     const {
       studentTemplate: prevStudentTemplate,
       type: prevPreviewType,
-      answerContextConfig: { isAnswerModifiable: prevIsAnswerModifiable }
+      answerContextConfig: { isAnswerModifiable: prevIsAnswerModifiable },
+      userAnswer: prevUserAnswer
     } = prevProps;
 
     if (
       (previewType !== prevPreviewType && previewType === CLEAR) ||
       studentTemplate !== prevStudentTemplate ||
-      (expressGrader && isAnswerModifiable && isAnswerModifiable !== prevIsAnswerModifiable)
+      (expressGrader && isAnswerModifiable && isAnswerModifiable !== prevIsAnswerModifiable) ||
+      userAnswer !== prevUserAnswer
     ) {
       this.updateStaticMathFromUserAnswer();
     }

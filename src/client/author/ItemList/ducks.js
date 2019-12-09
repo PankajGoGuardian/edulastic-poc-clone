@@ -17,8 +17,6 @@ import { testItemsApi } from "@edulastic/api";
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
-export const ADD_PASSAGE_ITEMS_TO_TEST = "[item list] add passage items to test?";
-export const CLOSE_PASSAGE_ITEMS_MODAL = "[item list] close passage items modal";
 export const addItemToCartAction = item => ({
   type: ADD_ITEM_TO_CART,
   payload: {
@@ -33,8 +31,6 @@ export const createTestFromCartAction = testName => ({
   }
 });
 
-export const addPassageItemsToTestAction = createAction(ADD_PASSAGE_ITEMS_TO_TEST);
-export const closeAddPassageItemsModalAction = createAction(CLOSE_PASSAGE_ITEMS_MODAL);
 export function* addItemToCartSaga({ payload }) {
   const { item } = payload;
   const test = yield select(getTestEntitySelector);
@@ -46,27 +42,9 @@ export function* addItemToCartSaga({ payload }) {
       return draft;
     });
   } else {
-    if (item.passageId) {
-      const passageItems = yield call(testItemsApi.getPassageItems, item.passageId);
-      yield put(setPassageItemsAction(passageItems));
-      yield put(showAddPassageItemsModalAction(true));
-      const { addPassageItems, closeModal } = yield race({
-        addPassageItems: take(ADD_PASSAGE_ITEMS_TO_TEST),
-        closeModal: take(CLOSE_PASSAGE_ITEMS_MODAL)
-      });
-
-      if (closeModal) {
-        yield put(showAddPassageItemsModalAction(false));
-        return;
-      }
-
-      updatedTestItems = addPassageItems.payload ? [...updatedTestItems, ...passageItems] : [...updatedTestItems, item];
-      yield put(showAddPassageItemsModalAction(false));
-    } else {
-      updatedTestItems = produce(testItems, draft => {
-        draft = draft.push(item);
-      });
-    }
+    updatedTestItems = produce(testItems, draft => {
+      draft = draft.push(item);
+    });
   }
   const userRole = yield select(getUserRole);
   const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector);

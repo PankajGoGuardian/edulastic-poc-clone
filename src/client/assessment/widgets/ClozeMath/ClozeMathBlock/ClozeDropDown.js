@@ -18,7 +18,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     item,
     onInnerClick,
     showIndex,
-    uiStyles
+    uiStyles,
+    disableResponse
   } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
@@ -78,6 +79,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   ) : (
     <DropdownWrapper ref={dropDownWrapper} width={`${width}px`} height={`${height}px`} menuStyle={menuStyle}>
       <Select
+        disabled={disableResponse}
         onChange={text => save({ value: text, index }, "dropDowns", id)}
         getPopupContainer={triggerNode => triggerNode.parentNode}
         value={val}

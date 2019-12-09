@@ -29,6 +29,7 @@ import {
   fetchUsersListAction,
   updateUsersListAction
 } from "../../../../sharedDucks/userDetails";
+import { MAX_TAB_WIDTH } from "../../../constants/others";
 
 const { Paragraph } = Typography;
 
@@ -59,6 +60,7 @@ class ShareModal extends React.Component {
     super(props);
     this.state = {
       sharedType: sharedKeysObj.INDIVIDUAL,
+      searchString: "",
       currentUser: {},
       permission: props.features["editPermissionOnTestSharing"] ? "EDIT" : "VIEW",
       _permissionKeys: props.features["editPermissionOnTestSharing"] ? permissionKeys : [permissionKeys[1]]
@@ -141,6 +143,8 @@ class ShareModal extends React.Component {
 
   handleSearch(value) {
     const { updateShareList } = this.props;
+    if (value.length) this.setState({ searchString: value, currentUser: {} });
+
     if (value.length > 1) {
       this.searchUser(value);
     } else {
@@ -163,43 +167,41 @@ class ShareModal extends React.Component {
   };
 
   handleShare = () => {
-    const { currentUser, sharedType, permission } = this.state;
+    const { currentUser, sharedType, permission, searchString } = this.state;
     const { shareTest, testId, sharedUsersList, isPlaylist } = this.props;
     const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
-
-    let person = {};
+    if (!(searchString.length > 1) && !Object.keys(currentUser).length && sharedType === sharedKeysObj.INDIVIDUAL)
+      return;
+    let person = {},
+      emails = [];
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
-        message.error("Please select any user which are not in the shared list");
-        return;
+        if (!searchString.length) return message.error("Please select any user which are not in the shared list");
+        emails = searchString.split(",");
       } else if (isExisting) {
-        message.error("This user has permission");
-        return;
+        return message.error("This user has permission");
       } else {
         const { _userId, userName } = currentUser;
         person = { sharedWith: [{ _id: _userId, name: userName }] };
-        this.setState({
-          currentUser: {}
-        });
       }
     } else {
       const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
       if (isTypeExisting) {
-        message.error(`You have shared with ${shareTypes[sharedType]} try other option`);
-        return;
-      } else {
-        this.setState({
-          currentUser: {}
-        });
+        return message.error(`You have shared with ${shareTypes[sharedType]} try other option`);
       }
     }
     const data = {
       ...person,
+      emails,
       sharedType,
       permission,
       contentType: isPlaylist ? "PLAYLIST" : "TEST"
     };
     shareTest({ data, contentId: testId });
+    this.setState({
+      currentUser: {},
+      searchString: ""
+    });
   };
 
   getUserName(data) {
@@ -314,7 +316,7 @@ class ShareModal extends React.Component {
                 ))}
               </Address>
               <Select
-                style={{ width: 650 }}
+                style={{ margin: "0px 10px", height: "35px", width: "270px" }}
                 onChange={this.permissionHandler}
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
@@ -376,12 +378,16 @@ const enhance = compose(
 export default enhance(ShareModal);
 
 const ModalContainer = styled.div`
-  width: 100%;
+  width: 700px;
   padding: 20px 30px;
   .anticon-down {
     svg {
       fill: ${themeColor};
     }
+  }
+  @media (max-width: ${MAX_TAB_WIDTH - 1}px) {
+    width: 90vw;
+    padding: 5px;
   }
 `;
 
@@ -431,8 +437,10 @@ const PeopleBlock = styled.div`
 
 const Address = styled(Select)`
   min-height: 35px;
-  height: auto;
-  width: 100%;
+  width: 285px;
+  .ant-select-selection {
+    height: 35px;
+  }
   ::placeholder {
     font-size: 13px;
     font-style: italic;

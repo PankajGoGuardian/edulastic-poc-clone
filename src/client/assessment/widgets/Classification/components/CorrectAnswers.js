@@ -36,6 +36,7 @@ const CorrectAnswers = ({
           {answers.map((res, index) => (
             <DragItem
               {...dragItemProps}
+              dragHandle={false}
               disableDrag
               item={(res && res.value) || ""}
               key={`answer-${index}`}

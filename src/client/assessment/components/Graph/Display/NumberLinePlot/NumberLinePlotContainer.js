@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
+import next from "immer";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
@@ -19,6 +20,13 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import ControlTools from "./ControlTools";
 import { GraphWrapper, JSXBox } from "./styled";
+
+import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
+
+const v1Dimenstions = {
+  v1Height: 390,
+  v1Width: 720
+};
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -89,6 +97,9 @@ class NumberLinePlotContainer extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.MIN_WIDTH = 500;
+    this.MIN_HEIGHT = 215;
+
     this._graphId = `jxgbox${Math.random()
       .toString(36)
       .replace(".", "")}`;
@@ -99,6 +110,8 @@ class NumberLinePlotContainer extends PureComponent {
     };
 
     this.updateValues = this.updateValues.bind(this);
+
+    this.numberLinePlotRef = React.createRef();
   }
 
   componentDidMount() {
@@ -115,12 +128,25 @@ class NumberLinePlotContainer extends PureComponent {
       disableResponse
     } = this.props;
 
+    // -2 done to make room for the border when width is an integer but the actual width is slightly less
+    this.parentWidth = this.numberLinePlotRef?.current?.clientWidth - 2;
+    this.parentHeight = this.numberLinePlotRef?.current?.clientHeight - 2;
+
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.parentWidth,
+      this.parentHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
+
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas
@@ -149,7 +175,11 @@ class NumberLinePlotContainer extends PureComponent {
         snapSizeX: numberlineAxis.ticksDistance
       });
 
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
+      const _layout = {
+        ...layout,
+        ...adjustedHeightWidth
+      };
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, _layout);
 
       this.setElementsToGraph();
     }
@@ -171,6 +201,15 @@ class NumberLinePlotContainer extends PureComponent {
       gridParams,
       pointParameters
     } = this.props;
+
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.parentWidth,
+      this.parentHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
     const { disableResponse: prevDisableResponse } = prevProps;
     if (disableResponse && prevDisableResponse !== disableResponse) {
       this.onReset();
@@ -183,7 +222,11 @@ class NumberLinePlotContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
+        const _layout = {
+          ...layout,
+          ...adjustedHeightWidth
+        };
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, _layout);
         this._graph.segmentsReset();
         this._graph.loadSegments(elements);
       }
@@ -329,11 +372,40 @@ class NumberLinePlotContainer extends PureComponent {
     const { layout, disableResponse, view, graphData, setQuestionData } = this.props;
     const { selectedControl } = this.state;
     const {
-      controlbar: { controls = [] }
+      controlbar: { controls = [] },
+      isV1Migrated
     } = graphData;
 
+    const adjustedHeightWidth = getAdjustedHeightAndWidth(
+      this.parentWidth,
+      this.parentHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT
+    );
+
+    const _layout = {
+      ...layout,
+      ...adjustedHeightWidth
+    };
+
+    let _graphData = graphData;
+    if (isV1Migrated) {
+      _graphData = next(graphData, __graphData => {
+        if (__graphData.annotations) {
+          for (let o of __graphData.annotations) {
+            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
+            o.position.x = co.x;
+            o.position.y = co.y;
+            o.size.width = co.width;
+            o.size.height = co.height;
+          }
+        }
+      });
+    }
+
     return (
-      <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
+      <div data-cy="axis-labels-container" style={{ overflow: "auto" }} ref={this.numberLinePlotRef}>
         {!disableResponse && (
           <ControlTools control={selectedControl} controls={controls} setControls={this.onSelectControl} />
         )}
@@ -347,18 +419,26 @@ class NumberLinePlotContainer extends PureComponent {
                   hideEquationTool
                   graphData={graphData}
                   setQuestionData={setQuestionData}
-                  layout={layout}
+                  layout={_layout}
                 />
                 <GraphEditTools
                   side="right"
                   hideSettingTool
                   graphData={graphData}
                   setQuestionData={setQuestionData}
-                  layout={layout}
+                  layout={_layout}
                 />
               </Fragment>
             )}
-            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+            <AnnotationRnd
+              question={_graphData}
+              setQuestionData={setQuestionData}
+              disableDragging={view !== EDIT}
+              adjustedHeightWidth={adjustedHeightWidth}
+              layout={layout}
+              bounds={`#${this._graphId}`}
+              v1Dimenstions={v1Dimenstions}
+            />
           </div>
         </GraphWrapper>
       </div>

@@ -1,6 +1,16 @@
 import styled from "styled-components";
 import { Card, Table, Tag } from "antd";
-import { secondaryTextColor, mediumDesktopWidth, greenDark, lightGreen, green, title } from "@edulastic/colors";
+import {
+  secondaryTextColor,
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  mediumDesktopWidth,
+  greenDark,
+  lightGreen,
+  green,
+  title
+} from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin-bottom: 20px;
@@ -31,6 +41,17 @@ export const TableData = styled(Table)`
   .ant-table-tbody > tr > td {
     padding: 10px 16px;
     border-bottom: 0px;
+
+    width: 107px;
+    @media only screen and (max-width: ${extraDesktopWidthMax}) {
+      width: 108px;
+    }
+    @media only screen and (max-width: ${mediumDesktopExactWidth}) {
+      width: 105px;
+    }
+    @media only screen and (max-width: ${smallDesktopWidth}) {
+      width: 100px;
+    }
   }
   .ant-table-tbody > tr > td {
     background-color: #f8f8f8;

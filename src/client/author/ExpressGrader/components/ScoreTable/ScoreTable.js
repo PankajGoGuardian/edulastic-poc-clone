@@ -191,7 +191,8 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
     }
     const scrollX = columnsLength * 100 + 300;
-    const scrollY = window.innerHeight - 350;
+    const scrollY = window.innerHeight - 360;
+
     return (
       <StyledCard bordered={false}>
         <TableData

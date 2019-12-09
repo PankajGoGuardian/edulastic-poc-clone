@@ -103,7 +103,18 @@ const getInitialResponses = ({ options, userSelections, configureOptions }) => {
   if (!isDuplicated) {
     // remove all the options that are chosen from the available options
     const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.value || []), []);
-    possibleResps = possibleResps.filter(resp => !_userSelections.includes(resp));
+    possibleResps = possibleResps.filter(resp => {
+      const i = _userSelections.indexOf(resp);
+      if (i !== -1) {
+        /**
+         * i is first index of choice at _userselections
+         * we need to remove it from _userSelection
+         * becasue there are duplicated choices
+         */
+        _userSelections.splice(i, 1);
+      }
+      return i === -1;
+    });
   }
   return possibleResps;
 };

@@ -62,7 +62,7 @@ import {
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
-import { createTestFromCartAction, addPassageItemsToTestAction, closeAddPassageItemsModalAction } from "../../ducks";
+import { createTestFromCartAction } from "../../ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 
 export const getClearSearchState = () => ({
@@ -307,11 +307,7 @@ class Contaier extends Component {
       curriculumStandards,
       loading,
       count,
-      search,
-      passageItems,
-      isAddPassageItemsModalVisible,
-      addPassageItems,
-      closePassageItemModal
+      search
     } = this.props;
 
     const { isShowFilter } = this.state;
@@ -364,12 +360,6 @@ class Contaier extends Component {
             </Element>
           </ListItems>
         </Container>
-        <PassageConfirmationModal
-          visible={isAddPassageItemsModalVisible}
-          handleResponse={addPassageItems}
-          itemsCount={passageItems.length}
-          closeModal={closePassageItemModal}
-        />
       </div>
     );
   }
@@ -423,8 +413,7 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
-      passageItems: state.tests.passageItems || [],
-      isAddPassageItemsModalVisible: state.testsAddItems.showAddPassageItemsModal
+      passageItems: state.tests.passageItems || []
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -441,9 +430,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       createTestFromCart: createTestFromCartAction,
       updateSearchFilterState: updateSearchFilterStateAction,
-      clearFilterState: clearFilterStateAction,
-      addPassageItems: addPassageItemsToTestAction,
-      closePassageItemModal: closeAddPassageItemsModalAction
+      clearFilterState: clearFilterStateAction
     }
   )
 );

@@ -1136,9 +1136,17 @@ function* savePassage({ payload }) {
           message.error("Title cannot be empty.");
           return true;
         }
-        if (isRichTextFieldEmpty(i.content)) {
+        if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
           message.error("Passage cannot be empty.");
           return true;
+        }
+        if (i.paginated_content) {
+          for (let o of i.pages) {
+            if (isRichTextFieldEmpty(o)) {
+              message.error("Passage cannot be empty.");
+              return true;
+            }
+          }
         }
       })
     ) {

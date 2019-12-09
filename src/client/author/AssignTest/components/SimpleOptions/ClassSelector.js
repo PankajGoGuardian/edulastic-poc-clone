@@ -3,7 +3,7 @@ import React from "react";
 import { Select, Col } from "antd";
 import { StyledRow, StyledRowLabel, StyledSelect } from "./styled";
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
+const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDeselect }) => (
   <React.Fragment>
     <StyledRowLabel gutter={16}>
       <Col span={12}>Class/Group Section</Col>
@@ -21,6 +21,7 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
           onSelect={classId => {
             fetchStudents({ classId });
           }}
+          onDeselect={onDeselect}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           value={selectedGroups}
         >

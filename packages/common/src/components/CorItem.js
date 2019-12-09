@@ -6,6 +6,7 @@ const CorItem = styled.div`
   display: flex;
   position: relative;
   justify-content: flex-start;
+  align-self: stretch;
   align-items: center;
   min-height: 40px;
   border-bottom-right-radius: 4px;

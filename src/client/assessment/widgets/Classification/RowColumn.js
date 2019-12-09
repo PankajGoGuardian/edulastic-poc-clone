@@ -66,21 +66,27 @@ class RowColumn extends Component {
             case actions.REMOVE:
               draft.uiStyle[prop].splice(restProp, 1);
               if (prop === "columnTitles" && draft.uiStyle.columnCount !== 1) {
-                draft.validation.validResponse.value.forEach(array => {
-                  array.splice(-1, draft.uiStyle.rowCount);
-                });
-                draft.validation.altResponses.forEach(valid => {
-                  valid.value.forEach(array => {
-                    array.splice(-1, draft.uiStyle.rowCount);
-                  });
-                });
                 draft.uiStyle.columnCount = draft?.uiStyle?.columnTitles?.length || 1;
-              } else if (prop === "rowTitles" && draft.uiStyle.rowCount !== 1) {
-                draft.validation.validResponse.value.splice(-1, draft.uiStyle.columnTitles);
+                /**
+                 * validResponse has one entry for each column/container
+                 * lets say we have 5 containers/columns
+                 * we will have 5 values in validation.validResponse.value
+                 *
+                 * in case column/container is deleted
+                 * we need to splice that many values from the validResponse.value
+                 * we need to splice that many values from the alternateResponse.value
+                 */
+                draft.validation.validResponse.value.splice(-1, draft.uiStyle.columnCount);
+
                 draft.validation.altResponses.forEach(valid => {
-                  valid.value.splice(-1, draft.uiStyle.columnTitles);
+                  valid.value.splice(-1, draft.uiStyle.columnCount);
                 });
+              } else if (prop === "rowTitles" && draft.uiStyle.rowCount !== 1) {
                 draft.uiStyle.rowCount = draft?.uiStyle?.rowTitles?.length || 1;
+                draft.validation.validResponse.value.splice(-1, draft.uiStyle.rowCount * draft.uiStyle.columnCount);
+                draft.validation.altResponses.forEach(valid => {
+                  valid.value.splice(-1, draft.uiStyle.rowCount * draft.uiStyle.columnCount);
+                });
               }
               break;
 

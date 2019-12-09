@@ -13,6 +13,67 @@ export const getQuestions = tests => {
 };
 
 export const draftTests = {
+  "5de8cf6fe345a10008f4cf2c": [
+    { itemId: "5dc19bf836a282f883a61857", itemType: "Cloze with Text" },
+    { itemId: "5dc1ca0e36a282f883b4a28d", itemType: "Cloze with Drag & Drop" },
+    { itemId: "5dc1b42136a282f883ae0c63", itemType: "Multiple choice - multiple response" },
+    { itemId: "5dc19ee736a282f883a6a148", itemType: "Number line with drag & drop" },
+    { itemId: "5dc1c79c36a282f883b3e227", itemType: "Graphing" },
+    { itemId: "5dc1c8b636a282f883b4300a", itemType: "Graph Placement" },
+    { itemId: "5dc19bbb36a282f883a60e47", itemType: "Match list" },
+    { itemId: "5dc1c97f36a282f883b479b4", itemType: "Fraction Editor" },
+    { itemId: "5dc1bcfa36a282f883b127cf", itemType: "Number line with plot" },
+    { itemId: "5dc1c7e036a282f883b3f914", itemType: "Dot Plot - Number Line" },
+    { itemId: "5dc1b8a436a282f883b01d52", itemType: "Math, Text & Dropdown" },
+    { itemId: "5dc1b79736a282f883afd913", itemType: "Cloze with Text" },
+    { itemId: "5dc1c70336a282f883b37d01", itemType: "Classification" },
+    { itemId: "5dc1d2d136a282f883b66680", itemType: "Math, Text & Dropdown" },
+    { itemId: "5dc1bae436a282f883b0a340", itemType: "Cloze with Drop Down" },
+    { itemId: "5dc1be9a36a282f883b18ff7", itemType: "Combination Multipart" },
+    { itemId: "5dc1950736a282f883a4da8b", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc1d12136a282f883b60f76", itemType: "Combination Multipart" },
+    { itemId: "5dc1b66336a282f883af182c", itemType: "Essay with rich text" },
+    { itemId: "5dc1b10d36a282f883ad0668", itemType: "Match list" },
+    { itemId: "5dc1c4dd36a282f883b300a0", itemType: "Choice matrix - standard" },
+    { itemId: "5dc1ab6c36a282f883ab03d3", itemType: "Multiple choice - standard" },
+    { itemId: "5dc1b2c436a282f883ad9bd4", itemType: "True or false" },
+    { itemId: "5dc1b3e736a282f883adf9d6", itemType: "Multiple choice - multiple response" },
+    { itemId: "5dc19b2036a282f883a5f4a1", itemType: "Label Image with Text" }
+  ]
+};
+
+export const assignedTests = {
+  "5de8ce86c05b97000826d0ae": [
+    { itemId: "5dc19bf836a282f883a61857", itemType: "Cloze with Text" },
+    { itemId: "5dc1ca0e36a282f883b4a28d", itemType: "Cloze with Drag & Drop" },
+    { itemId: "5dc1b42136a282f883ae0c63", itemType: "Multiple choice - multiple response" },
+    { itemId: "5dc19ee736a282f883a6a148", itemType: "Number line with drag & drop" },
+    { itemId: "5dc1c79c36a282f883b3e227", itemType: "Graphing" },
+    { itemId: "5dc1c8b636a282f883b4300a", itemType: "Graph Placement" },
+    { itemId: "5dc19bbb36a282f883a60e47", itemType: "Match list" },
+    { itemId: "5dc1c97f36a282f883b479b4", itemType: "Fraction Editor" },
+    { itemId: "5dc1bcfa36a282f883b127cf", itemType: "Number line with plot" },
+    { itemId: "5dc1c7e036a282f883b3f914", itemType: "Dot Plot - Number Line" },
+    { itemId: "5dc1b8a436a282f883b01d52", itemType: "Math, Text & Dropdown" },
+    { itemId: "5dc1b79736a282f883afd913", itemType: "Cloze with Text" },
+    { itemId: "5dc1c70336a282f883b37d01", itemType: "Classification" },
+    { itemId: "5dc1d2d136a282f883b66680", itemType: "Math, Text & Dropdown" },
+    { itemId: "5dc1bae436a282f883b0a340", itemType: "Cloze with Drop Down" },
+    { itemId: "5dc1be9a36a282f883b18ff7", itemType: "Combination Multipart" },
+    { itemId: "5dc1950736a282f883a4da8b", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc1d12136a282f883b60f76", itemType: "Combination Multipart" },
+    { itemId: "5dc1b66336a282f883af182c", itemType: "Essay with rich text" },
+    { itemId: "5dc1b10d36a282f883ad0668", itemType: "Match list" },
+    { itemId: "5dc1c4dd36a282f883b300a0", itemType: "Choice matrix - standard" },
+    { itemId: "5dc1ab6c36a282f883ab03d3", itemType: "Multiple choice - standard" },
+    { itemId: "5dc1b2c436a282f883ad9bd4", itemType: "True or false" },
+    { itemId: "5dc1b3e736a282f883adf9d6", itemType: "Multiple choice - multiple response" },
+    { itemId: "5dc19b2036a282f883a5f4a1", itemType: "Label Image with Text" }
+  ]
+};
+
+/* 
+  export const draftTests = {
   "5dc3fc9b2ab139000860fa37": [
     {
       itemId: "5dc1b36b36a282f883add11b",
@@ -354,8 +415,8 @@ export const draftTests = {
     }
   ]
 };
-
-export const assignedTests = {
+ */
+/* export const assignedTests = {
   "5dc3e3018286cb00071c326b": [
     {
       itemId: "5dc19b2036a282f883a5f4a1",
@@ -696,4 +757,4 @@ export const assignedTests = {
       itemType: "Match list"
     }
   ]
-};
+}; */

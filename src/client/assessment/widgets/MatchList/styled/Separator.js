@@ -7,7 +7,11 @@ export const Separator = styled.div`
   position: relative;
   display: block;
   margin: 0px 10px;
-  border: 1px solid ${props => props.theme.widgets.matchList.separatorBorderColor};
+  border: 1px solid
+    ${({ correctAnswer, theme }) =>
+      correctAnswer
+        ? theme.widgets.matchList.correctAnswerBlockSeparatorBorderColor
+        : theme.widgets.matchList.separatorBorderColor};
 
   &:after {
     content: "";

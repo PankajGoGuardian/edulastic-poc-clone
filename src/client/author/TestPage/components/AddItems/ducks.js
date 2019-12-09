@@ -98,10 +98,6 @@ export const updateInitSearchStateAction = payload => ({
   payload
 });
 
-export const showAddPassageItemsModalAction = data => ({
-  type: SHOW_ADD_PASSAGE_ITEM_MODAL,
-  payload: data
-});
 // reducer
 
 export const initalSearchState = {
@@ -131,8 +127,7 @@ const initialState = {
     grades: []
   },
   search: { ...initalSearchState },
-  archivedItems: [],
-  showAddPassageItemsModal: false
+  archivedItems: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -199,11 +194,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         archivedItems: [...state.archivedItems, payload]
       };
     }
-    case SHOW_ADD_PASSAGE_ITEM_MODAL:
-      return {
-        ...state,
-        showAddPassageItemsModal: payload
-      };
+
     default:
       return state;
   }

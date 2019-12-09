@@ -2,14 +2,14 @@
 import FileHelper from "../framework/util/fileHelper";
 import SearchFilters from "../framework/author/searchFiltersPage";
 import { screenSizes } from "../framework/constants/visual";
-import { questionGroup, questionTypeMap } from "../framework/constants/questionTypes";
+import { questionGroup, questionTypeMap, questionType } from "../framework/constants/questionTypes";
 import Header from "../framework/author/itemList/itemDetail/header";
 import EditItemPage from "../framework/author/itemList/itemDetail/editPage";
 import ItemListPage from "../framework/author/itemList/itemListPage";
 import { draftTests, getQuestions } from "../framework/testdata/visualRegression";
 
 const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
-const SCREEN_SIZES = [[1600, 900], [1366, 768], [1024, 650]]; // Cypress.config("SCREEN_SIZES");
+const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const questionGroups = Cypress._.values(questionGroup);
 const pageURL = "author/items";
 const itemHeader = new Header();
@@ -122,7 +122,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   cy.setResolution(size);
                   cy.visit(`author/items/${queId}/item-detail`);
                   cy.wait("@testitem");
-                  cy.contains("Question");
+                  cy.wait(500); // allow UI to stablize
                 });
 
                 it(`-${size}-'edit'`, () => {
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
                   });
                 });
 
-                if (queType !== "Essay with rich text") {
+                if (queType !== questionType.ESSAY_RICH && queType !== questionType.COMBINATION_MULTIPART) {
                   it(`-${size}-'preview-showAns'`, () => {
                     itemHeader
                       .preview()

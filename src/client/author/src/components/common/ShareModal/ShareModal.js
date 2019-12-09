@@ -265,7 +265,7 @@ class ShareModal extends React.Component {
                       <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
                     </Col>
                     <Col span={1}>
-                      <a onClick={() => this.removeHandler(data)}>
+                      <a data-cy="share-button-close" onClick={() => this.removeHandler(data)}>
                         <CloseIcon />
                       </a>
                     </Col>
@@ -295,6 +295,7 @@ class ShareModal extends React.Component {
               <Address
                 showSearch
                 placeholder={"Enter names or email addresses"}
+                data-cy="name-button-pop"
                 defaultActiveFirstOption={false}
                 showArrow={false}
                 filterOption={false}
@@ -318,6 +319,7 @@ class ShareModal extends React.Component {
               <Select
                 style={{ margin: "0px 10px", height: "35px", width: "270px" }}
                 onChange={this.permissionHandler}
+                data-cy="permission-button-pop"
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -330,7 +332,7 @@ class ShareModal extends React.Component {
                   );
                 })}
               </Select>
-              <ShareButton type="primary" onClick={this.handleShare}>
+              <ShareButton type="primary" data-cy="share-button-pop" onClick={this.handleShare}>
                 <IconShare color={white} /> SHARE
               </ShareButton>
             </FlexContainer>

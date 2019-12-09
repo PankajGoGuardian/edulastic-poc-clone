@@ -38,7 +38,7 @@ export default class TestLibrary {
       });
   };
 
-  createTest = (key = "default") => {
+  createTest = (key = "default", publish = true) => {
     const testSummary = new TestSummary();
     const testAddItem = new TestAddItem();
     const itemListPage = new ItemListPage();
@@ -90,7 +90,7 @@ export default class TestLibrary {
       cy.wait(2000);
       testSummary.header.clickOnSaveButton(true);
       // publish
-      testSummary.header.clickOnPublishButton();
+      if (publish) testSummary.header.clickOnPublishButton();
 
       return cy.url().then(url => url.split("/").reverse()[0]);
     });
@@ -143,5 +143,213 @@ export default class TestLibrary {
     const testId = xhr.response.body.result._id;
     console.log("test created with _id : ", testId);
     cy.saveTestDetailToDelete(testId);
+  };
+
+  clickOnTestCardById = testId => {
+    this.getTestCardById(testId)
+      .contains("Total Item(s):")
+      //.click({ force: true })
+      .click({ force: true });
+  };
+
+  clickOnDetailsOfCard = () => {
+    cy.server();
+    cy.route("GET", "**/assignments").as("assignment");
+    cy.get('[data-cy="details-button"]')
+      .click({ force: true })
+      .then(() => {
+        cy.wait(500);
+        cy.wait("@assignment");
+        cy.wait(3000);
+      });
+  };
+
+  share = (name, option, validuser) => {
+    this.shareOption(option);
+    cy.server();
+    cy.route("POST", "**/user/search").as("users");
+    this.getNameList()
+      .type(name)
+      .then(ele => {
+        cy.wait("@users");
+        cy.wrap(ele).type("{downarrow}{enter}");
+      });
+    this.clickSharePop(name, validuser);
+  };
+
+  getNameList = () => cy.get('[data-cy="name-button-pop"]');
+
+  getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]');
+
+  getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]');
+
+  clickSharePop = (name, validuser) => {
+    cy.server();
+    cy.route("POST", "**/content-sharing/**").as("testload");
+    cy.route("GET", "**/content-sharing/**").as("testload1");
+    this.getShareButtonPop()
+      .click({ force: true })
+      .then(() => {
+        if (validuser) {
+          cy.wait("@testload").then(xhr => expect(xhr.status === 200, "verify share request"));
+          cy.wait("@testload1");
+        } else {
+          cy.wait("@testload").then(xhr => expect(xhr.status === 404, "Cancel share request"));
+          cy.contains(`Invalid mails found (${name})`);
+        }
+      });
+  };
+
+  shareOption = option => {
+    this.getPermissionButton().click({ force: true });
+    this.getShareButtonPop()
+      .parent()
+      .contains(option)
+      .click();
+  };
+  selectPeopletoshare = (email, edit = false, validuser = true) => {
+    // Valid User: Teacher from the same district
+    if (edit) {
+      this.share(email, "Can Edit, Add/Remove Items", validuser);
+    } else {
+      this.share(email, "Can View & Duplicate", validuser);
+    }
+    cy.wait(2000);
+  };
+
+  getEditButton = () => cy.get('[data-cy="edit"]');
+
+  assertTestPublishedNoEdit = testId => {
+    // Test_id should change after editing test
+    this.getAssignEdit().should("contain", "ASSIGN");
+    this.clickOnDetailsOfCard();
+    this.publishedToDraft(true);
+    cy.wait(3000);
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("not.eq", testId);
+  };
+
+  assertTestPublishedEdit = testId => {
+    // Test_id should not change after editing test
+    this.getAssignEdit()
+      .should("contain", "ASSIGN")
+      .should("exist");
+    this.clickOnDetailsOfCard();
+    this.publishedToDraft();
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("be.eq", testId);
+    this.header.clickOnPublishButton();
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("be.eq", testId);
+  };
+
+  publishedToDraft = (duplicate = false) => {
+    cy.server();
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    cy.route("PUT", "**/test/**").as("testdrafted");
+    this.getEditButton()
+      .should("exist")
+      .click()
+      .then(() => {
+        if (duplicate) {
+          cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+        } else {
+          //pop up that comes up when we try to edit a published test
+          cy.contains("You are about to edit a test that has already been published")
+            .parent()
+            .contains("span", "PROCEED")
+            .click({ force: true });
+          cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
+        }
+      });
+    cy.wait(5000);
+  };
+
+  assertTestDraftNoEdit = () => this.getAssignEdit().should("not.be.exist");
+
+  assertTestDraftEdit = testId => {
+    this.getAssignEdit()
+      .should("contain", "EDIT")
+      .click({ force: true });
+    cy.wait("@assignment");
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("be.eq", testId);
+  };
+
+  checkforRemovedShare = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
+
+  getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
+
+  removeShare = name => {
+    cy.server();
+    cy.route("DELETE", "**/content-sharing/**").as("removeshare");
+    cy.route("GET", "**/content-sharing/**").as("removeshare1");
+
+    cy.contains(name)
+      .parent()
+      .find("a")
+      .click({ force: true });
+    cy.wait("@removeshare");
+    cy.wait("@removeshare1");
+  };
+
+  editsharing = () => cy.contains("span", "Edit").click({ force: true });
+
+  sharingDisabled = () => {
+    this.getSchoolRadio().should("not.be.enabled");
+    this.getDistrictRadio().should("not.be.enabled");
+    this.getPublicRadio().should("not.be.enabled");
+  };
+
+  sharingEnabled = () => {
+    this.getSchoolRadio().should("be.enabled");
+    this.getDistrictRadio().should("be.enabled");
+    this.getPublicRadio().should("be.enabled");
+  };
+  sharingEnabledPublic = () => this.getPublicRadio().should("be.enabled");
+
+  closeSharing = () => {
+    cy.contains("Share with others")
+      .parent()
+      .next()
+      .find("path")
+      .click({ force: true });
+  };
+  getSchoolRadio = () => cy.get('[value="SCHOOL"]');
+  getDistrictRadio = () => cy.get('[value="DISTRICT"]');
+  getPublicRadio = () => cy.get('[value="PUBLIC"]');
+
+  verifySharedTest = (email, test_id) => {
+    cy.login("teacher", email, "snapwiz");
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.searchFilters.sharedWithMe();
+    this.clickOnTestCardById(test_id);
+    this.assertTestPublishedNoEdit(test_id);
+  };
+  verifyRemovedShareTest = (email, test_id) => {
+    cy.login("teacher", email, "snapwiz");
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.searchFilters.sharedWithMe();
+    this.checkforRemovedShare(test_id);
+  };
+  verifySharedTestPublic = (email, test_id) => {
+    cy.login("teacher", email, "snapwiz");
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.clickOnTestCardById(test_id);
+    this.assertTestPublishedNoEdit(test_id);
+  };
+
+  verifyRemovedsharedTestPublic = (email, test_id) => {
+    cy.login("teacher", email, "snapwiz");
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.checkforRemovedShare(test_id);
   };
 }

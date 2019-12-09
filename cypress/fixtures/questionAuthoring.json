@@ -4,7 +4,15 @@
       "quetext": "This is MCQ_STD.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
-      "attemptData": { "right": "right-1", "wrong": "wrong-1" }
+      "attemptData": { "right": "right-1", "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1", "K.CC.A.2"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is MCQ_STD.1 question",
@@ -363,7 +371,7 @@
   },
   "TEXT_CLOZE": {
     "default": {
-      "quetext": ["aknxlk ghk kh kjdbajkb", "bkjdbckjdbn", "INPUT", "chsicb"],
+      "quetext": ["This is Text Cloze defalt qusetin", "Next is input", "INPUT", "Thats It...!!!"],
       "setAns": {
         "correct": ["abc"],
         "point": 4

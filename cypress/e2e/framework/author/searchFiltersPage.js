@@ -39,4 +39,20 @@ export default class SearchFilters {
       .then($elem => {
         $elem.scrollTop(0);
       });
+  sharedWithMe = () => {
+    cy.get('[data-icon="share-alt"]').click({ force: true });
+    cy.wait("@search");
+  };
+  getAuthoredByMe = () => {
+    this.routeSearch();
+    cy.xpath("//li[text()='Authored by me']").click();
+    this.waitForSearchResponse();
+    cy.wait(1000);
+  };
+  getEntireLibrary = () => {
+    this.routeSearch();
+    cy.get('[data-icon="book"]').click({ force: true });
+    this.waitForSearchResponse();
+    cy.wait(1000);
+  };
 }

@@ -115,6 +115,7 @@ class ViewModal extends React.Component {
           <ModalColumn justify="center">
             <ButtonContainer>
               <ButtonComponent
+                data-cy="details-button"
                 onClick={() => {
                   onEdit();
                 }}
@@ -125,6 +126,7 @@ class ViewModal extends React.Component {
                 <span>DETAILS</span>
               </ButtonComponent>
               <ButtonComponent
+                data-cy="duplicate-button"
                 onClick={() => {
                   onDuplicate();
                 }}
@@ -135,7 +137,7 @@ class ViewModal extends React.Component {
                 <span>DUPLICATE</span>
               </ButtonComponent>
               {isDeleteAllowed ? (
-                <ButtonComponent onClick={() => onDelete()}>
+                <ButtonComponent data-cy="delete-button" onClick={() => onDelete()}>
                   <IconWrapper>
                     <IconTrashAlt color={themeColor} />
                   </IconWrapper>
@@ -145,7 +147,12 @@ class ViewModal extends React.Component {
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
-                <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
+                <ButtonComponent
+                  data-cy="edit/assign-button"
+                  size={"large"}
+                  bgColor={themeColor}
+                  onClick={status === "published" ? assign : onEdit}
+                >
                   {status === "published" ? "ASSIGN" : "EDIT"}
                 </ButtonComponent>
               </ButtonContainer>

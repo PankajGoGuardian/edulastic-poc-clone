@@ -170,10 +170,10 @@ class ShareModal extends React.Component {
     const { currentUser, sharedType, permission, searchString } = this.state;
     const { shareTest, testId, sharedUsersList, isPlaylist } = this.props;
     const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
-    if (!(searchString.length > 1) && !Object.keys(currentUser).length) return;
+    if (!(searchString.length > 1) && !Object.keys(currentUser).length && sharedType === sharedKeysObj.INDIVIDUAL)
+      return;
     let person = {},
       emails = [];
-    console.log({ currentUser, searchString });
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
         if (!searchString.length) return message.error("Please select any user which are not in the shared list");

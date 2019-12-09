@@ -146,7 +146,8 @@ const AssessmentContainer = ({
 
   const testItem = items[currentItem] || {};
   let itemRows = testItem.rows;
-  if (testItem.passageId) {
+
+  if (testItem.passageId && passages) {
     const passage = passages.find(p => p._id === testItem.passageId);
     itemRows = [passage.structure, ...itemRows];
   }

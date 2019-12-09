@@ -8,7 +8,7 @@ import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Checkbox } from "antd";
 
-import { WithResources, AnswerContext } from "@edulastic/common";
+import { WithResources, AnswerContext, WithMathFormula } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -298,6 +298,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   withTheme,
+  WithMathFormula,
   connect(
     null,
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }

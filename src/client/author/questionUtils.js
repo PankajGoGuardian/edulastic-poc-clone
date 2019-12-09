@@ -2,7 +2,7 @@ import { questionType, question } from "@edulastic/constants";
 import { get, isString } from "lodash";
 import striptags from "striptags";
 
-const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE } = questionType;
+const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT } = questionType;
 
 /**
  * check for options in "expressionMultipart" type.
@@ -99,6 +99,26 @@ const multipleChoiceOptionsCheck = ({ options = [] }) => {
   });
 };
 
+const videoCheck = item => {
+  if (!item.sourceURL || (item.sourceURL && !item.sourceURL.trim())) {
+    return "Source URL should not be empty";
+  }
+  if (!item.heading || (item.heading && !item.heading.trim())) {
+    return "Heading should not be empty";
+  }
+  if (!item.summary || (item.summary && !item.summary.trim())) {
+    return "Summary should not be empty";
+  }
+  return false;
+};
+
+const textCheck = item => {
+  if (isRichTextFieldEmpty(item.content)) {
+    return "Content should not be empty";
+  }
+  return false;
+};
+
 const hasEmptyOptions = item => {
   // options check for expression multipart type question.
   switch (item.type) {
@@ -108,6 +128,17 @@ const hasEmptyOptions = item => {
       return clozeDropDownOptionsCheck(item);
     case MULTIPLE_CHOICE:
       return multipleChoiceOptionsCheck(item);
+    default:
+      return false;
+  }
+};
+
+const hasEmptyFields = item => {
+  switch (item.type) {
+    case VIDEO:
+      return videoCheck(item);
+    case TEXT:
+      return textCheck(item);
     default:
       return false;
   }
@@ -153,6 +184,8 @@ export const isMathTextFieldEmpty = text => {
 export const isIncompleteQuestion = item => {
   // if its a resource type question just return.
   if (question.resourceTypeQuestions.includes(item.type)) {
+    const _hasEmptyFields = hasEmptyFields(item);
+    if (_hasEmptyFields) return [true, _hasEmptyFields];
     return [false];
   }
 

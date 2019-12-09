@@ -83,9 +83,9 @@ class ButtonBar extends Component {
       itemStatus,
       renderExtra,
       renderRightSide,
-      withLabels
+      withLabels,
+      showMetaData = false
     } = this.props;
-
     const MobileDropMenu = (
       <DropMenuList>
         <Menu.Item onClick={onShowSource} key="0">
@@ -130,16 +130,18 @@ class ButtonBar extends Component {
                 </HeadIcon>
                 Preview mode
               </MenuItem>
-              <MenuItem
-                data-cy="metadataButton"
-                className={view === "metadata" && "active"}
-                onClick={() => this.handleMenuClick("metadata")}
-              >
-                <HeadIcon>
-                  <IconMetadata color={white} width={18} height={16} />
-                </HeadIcon>
-                Meta data
-              </MenuItem>
+              {showMetaData && (
+                <MenuItem
+                  data-cy="metadataButton"
+                  className={view === "metadata" && "active"}
+                  onClick={() => this.handleMenuClick("metadata")}
+                >
+                  <HeadIcon>
+                    <IconMetadata color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Meta data
+                </MenuItem>
+              )}
             </MenuList>
 
             {hasAuthorPermission && (

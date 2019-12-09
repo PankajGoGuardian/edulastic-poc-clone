@@ -191,7 +191,7 @@ class AuthorTestItemPreview extends Component {
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && (
               <EduButton
-                title="Duplicate"
+                title="COPY"
                 style={{ padding: 0, borderColor: themeColor }}
                 size="large"
                 onClick={handleDuplicateTestItem}

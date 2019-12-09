@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Prompt } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
@@ -361,7 +361,7 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth, showWarningModal, proceedSave } = this.props;
+    const { view, question, history, windowWidth, showWarningModal, proceedSave, hasUnsavedChanges } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -373,12 +373,21 @@ class Container extends Component {
 
       return <div />;
     }
+   
 
     const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;
 
     return (
       <EditorContainer ref={this.innerDiv}>
+        <Prompt
+          when={!!hasUnsavedChanges}
+          message={loc =>
+            loc.pathname.startsWith("/author/items/") ||
+            loc.pathname.startsWith("/author/questions/") ||
+            "There are unsaved changes. Are you sure you want to leave?"
+          }
+        />
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
           {showModal && (
             <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
@@ -463,6 +472,7 @@ const enhance = compose(
       testId: state.tests.entity._id,
       savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
       authorQuestions: getCurrentQuestionSelector(state),
+      hasUnsavedChanges: state?.authorQuestions?.updated || false,
       showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
     }),
     {

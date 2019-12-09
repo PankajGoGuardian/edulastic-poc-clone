@@ -88,8 +88,10 @@ class SimpleOptions extends React.Component {
       isReleaseScorePremium
     } = this.props;
     if (field === "specificStudents") {
-      toggleSpecificStudents(value);
-      return;
+      if (value === false) {
+        this.setState({ studentList: [] });
+      }
+      return toggleSpecificStudents(value);
     }
     if (field === "class") {
       this.setState({ classIds: value }, () => {

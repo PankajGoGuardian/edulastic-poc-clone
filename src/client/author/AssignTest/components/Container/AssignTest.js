@@ -198,10 +198,16 @@ class AssignTest extends React.Component {
 
   toggleSpecificStudents = specificStudents => {
     const { assignment } = this.state;
+    const { classList } = this.props;
+    const groupById = keyBy(classList, "_id");
     const newAssignment = produce(assignment, assignmentCopy => {
       if (assignmentCopy.class.length > 0) {
-        assignmentCopy.class.forEach(eachClass => {
-          eachClass.specificStudents = specificStudents;
+        assignmentCopy.class.forEach(_class => {
+          _class.specificStudents = specificStudents;
+          if (!specificStudents) {
+            delete _class.students;
+            _class.assignedCount = get(groupById, `${_class._id}.studentCount`, 0);
+          }
         });
       }
     });

@@ -395,7 +395,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           maxAttempts: payload.data
-        }
+        },
+        updated: true
       };
     case SET_SAFE_BROWSE_PASSWORD:
       return {

@@ -6,7 +6,14 @@ import { StyledRowLabel, StyledRow, StyledSelect, StyledRadioGropRow } from "./s
 
 const RadioGroup = Radio.Group;
 
-const StudentsSelector = ({ specificStudents, students, updateStudents, onChange, studentNames }) => {
+const StudentsSelector = ({
+  specificStudents,
+  students,
+  updateStudents,
+  onChange,
+  studentNames,
+  handleRemoveStudents
+}) => {
   const changeRadioGrop = e => {
     const { value } = e.target;
     onChange("specificStudents", value);
@@ -37,12 +44,14 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
                 placeholder="Please select"
                 style={{ width: "100%" }}
                 mode="multiple"
-                onChange={updateStudents}
+                onSelect={updateStudents}
+                onDeselect={handleRemoveStudents}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 value={studentNames}
               >
-                {students.map(({ _id, firstName, lastName }) => (
-                  <Select.Option key={_id} value={_id}>
+                {students.map(({ _id, firstName, lastName, groupId }) => (
+                  //group Id is being used to track student belongs to which class.
+                  <Select.Option key={_id} value={_id} groupId={groupId}>
                     {`${firstName || "Anonymous"} ${lastName || ""}`}
                   </Select.Option>
                 ))}

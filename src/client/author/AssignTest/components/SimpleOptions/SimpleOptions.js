@@ -136,11 +136,11 @@ class SimpleOptions extends React.Component {
     updateOptions(nextAssignment);
   };
 
-  updateStudents = studentList => {
+  updateStudents = studentId => {
     const { group, students, assignment, updateOptions } = this.props;
     const groupById = keyBy(group, "_id");
     const studentById = keyBy(students, "_id");
-    const selectedStudentsById = studentList.map(_id => studentById[_id]);
+    const selectedStudentsById = [...this.state.studentList, studentId].map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
       const { _id, specificStudents } = item;
@@ -156,12 +156,34 @@ class SimpleOptions extends React.Component {
         specificStudents: specificStudents
       };
     });
-    this.setState({ studentList }, () => {
-      const nextAssignment = produce(assignment, state => {
-        state.class = classData;
+    this.setState(
+      prev => ({ studentList: [...prev.studentList, studentId] }),
+      () => {
+        const nextAssignment = produce(assignment, state => {
+          state.class = classData;
+        });
+        updateOptions(nextAssignment);
+      }
+    );
+  };
+
+  // Always expected student Id and class Id
+  handleRemoveStudents = (studentId, { props: { groupId } }) => {
+    const { assignment, updateOptions } = this.props;
+    const nextAssignment = produce(assignment, state => {
+      state.class = assignment.class.map(item => {
+        if (item._id === groupId) {
+          return {
+            ...item,
+            students: item.students.filter(student => student !== studentId),
+            assignedCount: item.assignedCount - 1
+          };
+        }
+        return item;
       });
-      updateOptions(nextAssignment);
     });
+    this.setState(prev => ({ studentList: prev.studentList.filter(item => item !== studentId) }));
+    updateOptions(nextAssignment);
   };
 
   render() {
@@ -199,6 +221,7 @@ class SimpleOptions extends React.Component {
             studentNames={studentList}
             students={studentOfSelectedClass}
             updateStudents={this.updateStudents}
+            handleRemoveStudents={this.handleRemoveStudents}
             onChange={this.onChange}
             specificStudents={specificStudents}
           />

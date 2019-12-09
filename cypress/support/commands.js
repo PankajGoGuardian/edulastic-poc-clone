@@ -158,7 +158,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.route("POST", "**/auth/**").as("auth");
   cy.route("GET", "**/dashboard/**").as("teacherDashboard");
   login.fillLoginForm(postData.username, postData.password);
-  login.onClickSignin();
+  login.clickOnSignin();
   cy.wait("@auth");
   if (role === "teacher") cy.wait("@teacherDashboard");
   else cy.wait("@assignment");
@@ -214,10 +214,11 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
         "Content-Type": "application/json"
       }
     }).then(({ body }) => {
-      body.result.assignments.forEach(asgnDO => {
+      const assignments = body.result.assignments || body.result;
+      assignments.forEach(asgnDO => {
         const assignment = {};
         assignment._id = asgnDO._id;
-        assignment.groupId = asgnDO.classId;
+        assignment.groupId = asgnDO.classId || asgnDO.class[0]._id;
         asgnIds.push(assignment);
       });
       console.log("All Assignments = ", asgnIds);

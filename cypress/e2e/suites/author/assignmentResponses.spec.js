@@ -13,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   before(() => {
     cy.visit("/login");
     login.fillLoginForm("ashishsnap@snawpiz.com", "snapwiz");
-    login.onClickSignin();
+    login.clickOnSignin();
     cy.wait(5000); // TODO: remove wait time
   });
 

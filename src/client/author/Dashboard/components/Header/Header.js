@@ -16,7 +16,7 @@ const HeaderSection = ({ toggleSideBar }) => (
       <TitleWrapper>Dashboard</TitleWrapper>
     </FlexContainer>
     <Link to="/author/manageClass">
-      <ManageClassButton>
+      <ManageClassButton data-cy="manageClass">
         <IconPlus color={green} />
         <ButtonText>Manage Class</ButtonText>
       </ManageClassButton>

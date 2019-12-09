@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Dashboard`, () => {
     });
   });
 
-  it(">verify recent assignment details on dashboard", () => {
+  it("> verify recent assignment details on dashboard", () => {
     // remove old assignment if any
     cy.deleteAllAssignments(student.email, teacher.email, teacher.password);
     // create and assigne new assignment
@@ -81,7 +81,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Dashboard`, () => {
     );
   });
 
-  it(">verify dashboard after removing assignment", () => {
+  it("> verify dashboard after removing assignment", () => {
     // remove old assignment if any
     cy.deleteAllAssignments(student.email, teacher.email, teacher.password);
     cy.login("teacher", teacher.email, teacher.password);

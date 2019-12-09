@@ -112,4 +112,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     signupPage.clickOnGetStarted();
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
   });
+
+  it("> login with existing user", () => {
+    loginPage.fillLoginForm("ashishsnap@snawpiz.com", "snapwiz");
+    loginPage.clickOnSignin();
+    loginPage.assertTeacherLogin();
+  });
 });

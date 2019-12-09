@@ -315,7 +315,8 @@ class Container extends Component {
       savedWindowScrollTop,
       setShowSettings,
       saveItem,
-      preview
+      preview,
+      authorQuestions
     } = this.props;
 
     const commonProps = {
@@ -325,6 +326,7 @@ class Container extends Component {
       view,
       preview,
       isTestFlow,
+      showMetaData: authorQuestions.type !== "passage",
       withLabels: true
     };
 

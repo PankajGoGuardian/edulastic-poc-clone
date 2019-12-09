@@ -32,7 +32,7 @@ class RemoveTestModal extends React.Component {
   onProceed = () => {
     const { handleRemove } = this.props;
     const { remove } = this.state;
-    if (remove === "Remove") {
+    if (remove.trim().toLowerCase() === "remove") {
       handleRemove();
     } else {
       this.setState({ remove: "" });

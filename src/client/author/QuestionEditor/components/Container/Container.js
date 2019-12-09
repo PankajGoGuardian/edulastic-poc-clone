@@ -183,12 +183,13 @@ class Container extends Component {
       testId,
       location,
       toggleModalAction,
-      isItem
+      isItem,
+      itemFromState
     } = this.props;
 
     if (location.pathname.includes("author/tests")) {
       const testPath = `/author/tests/${testId || "create"}`;
-      return [
+      let crumbs = [
         {
           title: "TEST LIBRARY",
           to: "/author/tests"
@@ -208,6 +209,12 @@ class Container extends Component {
           to: ""
         }
       ];
+      if (itemFromState?.isPassageWithQuestions || itemFromState?.multipartItem) {
+        const title = "MULTIPART ITEM";
+        crumbs = [...crumbs.slice(0, 3), { title, to: `${testPath}/createItem/${itemFromState._id}` }, crumbs[3]];
+      }
+
+      return crumbs;
     }
 
     const crumbs = [

@@ -587,6 +587,10 @@ class Container extends Component {
       }
     ];
 
+    if (item.isPassageWithQuestions || item.multipartItem) {
+      breadCrumb.push({ title: "MULTIPART ITEM" });
+    }
+
     const isPassageQuestion = !!item.passageId;
     const useTabsLeft = isPassageQuestion
       ? !!get(passage, ["structure", "tabs", "length"], 0)

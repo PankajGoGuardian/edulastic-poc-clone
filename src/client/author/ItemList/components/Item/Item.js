@@ -86,8 +86,18 @@ class Item extends Component {
     });
   };
 
-  handleToggleItemToCart = item => () => {
-    const { onToggleToCart } = this.props;
+  handleToggleItemToCart = item => async () => {
+    const { onToggleToCart, selectedToCart, setPassageItems } = this.props;
+    if (!selectedToCart && item.passageId) {
+      const passageItems = await testItemsApi.getPassageItems(item.passageId);
+      setPassageItems(passageItems);
+
+      if (passageItems.length > 1) {
+        return this.setState({
+          passageConfirmModalVisible: true
+        });
+      }
+    }
     onToggleToCart(item);
   };
 
@@ -259,6 +269,7 @@ class Item extends Component {
             <PreviewModal
               isVisible={isShowPreviewModal}
               page={page}
+              showAddPassageItemToTestButton={true}
               showEvaluationButtons
               onClose={this.closeModal}
               data={{ ...item, id: item._id }}

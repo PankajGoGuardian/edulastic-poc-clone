@@ -1098,7 +1098,7 @@ function* setAndSavePassageItems({ payload }) {
     }
     const testItems = yield select(getSelectedTestItemsSelector);
     newPayload.testItems = [...testItems, ...payload];
-    const itemIds = newPayload.testItems.map(i => i._id);
+    const itemIds = _uniq(newPayload.testItems.map(i => i._id));
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds));

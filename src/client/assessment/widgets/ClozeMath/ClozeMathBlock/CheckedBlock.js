@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { find, isUndefined } from "lodash";
-import { Tooltip } from "antd";
+import { Popover } from "antd";
+import { measureText } from "@edulastic/common";
 
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
@@ -44,52 +45,52 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
     checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
-  return (
-    <Tooltip
-      placement="bottomLeft"
-      title={
-        isMath ? (
+  const showValue = isMath
+    ? userAnswer && userAnswer.value.search("=") === -1
+      ? `${userAnswer.value}\\ ${unit}`
+      : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
+    : userAnswer && userAnswer.value;
+
+  const { width: textWidth } = measureText(showValue);
+  const avilableWidth = width - (showIndex ? 58 : 26);
+  const showPopover = textWidth > avilableWidth;
+
+  const popoverContent = isPopover => (
+    <CheckBox
+      className={checkBoxClass}
+      key={`input_${index}`}
+      onClick={onInnerClick}
+      style={{
+        height,
+        width: isPopover ? null : width,
+        minWidth: width
+      }}
+    >
+      {showIndex && (
+        <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+          {index + 1}
+        </span>
+      )}
+      <span
+        className="value"
+        style={{ alignItems: "center", fontWeight: "normal", textAlign: "left", paddingLeft: "11px" }}
+      >
+        {isMath ? (
           <CheckBoxedMathBox
-            value={
-              userAnswer && userAnswer.value.search("=") === -1
-                ? `${userAnswer.value}\\ ${unit}`
-                : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
-            }
+            value={showValue}
+            style={{ height, minWidth: "unset", display: "flex", alignItems: "center", textAlign: "left" }}
           />
         ) : (
-          userAnswer && userAnswer.value
-        )
-      }
-    >
-      <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height, width }}>
-        {showIndex && (
-          <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
-            {index + 1}
-          </span>
+          showValue
         )}
-        <span
-          className="value"
-          style={{ width, alignItems: "center", fontWeight: "normal", textAlign: "left", paddingLeft: "11px" }}
-        >
-          {isMath ? (
-            <CheckBoxedMathBox
-              value={
-                userAnswer && userAnswer.value.search("=") === -1
-                  ? `${userAnswer.value}\\ ${unit}`
-                  : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
-              }
-              style={{ height, width, minWidth: "unset", display: "flex", alignItems: "center", textAlign: "left" }}
-            />
-          ) : (
-            userAnswer && userAnswer.value
-          )}
-        </span>
-        {userAnswer && !isUndefined(evaluation[id]) && (
-          <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
-        )}
-      </CheckBox>
-    </Tooltip>
+      </span>
+      {userAnswer && !isUndefined(evaluation[id]) && (
+        <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+      )}
+    </CheckBox>
   );
+
+  return showPopover ? <Popover content={popoverContent(true)}>{popoverContent()}</Popover> : popoverContent();
 };
 
 CheckedBlock.propTypes = {

@@ -4,19 +4,19 @@ const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
   padding: ${({ zoomed, zoomLevel, skin }) => {
     if (!zoomed) {
-      return skin ? "20px" : "110px 0 0 140px";
+      return skin ? "20px 48px" : "110px 0 0 140px";
     }
     if (zoomed) {
       if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
-        return "30px 30px 20px";
+        return "30px 50px 20px";
       }
       if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
-        return "35px 35px 20px";
+        return "35px 50px 20px";
       }
       if (zoomLevel >= 2.5) {
-        return "35px 35px 20px";
+        return "35px 50px 20px";
       }
-      return "20px";
+      return "20px 48px";
     }
   }};
   display: ${props => (props.skin ? "block" : "flex")};

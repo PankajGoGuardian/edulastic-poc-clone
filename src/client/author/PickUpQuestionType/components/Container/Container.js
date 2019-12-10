@@ -300,7 +300,7 @@ class Container extends Component {
                   </Menu.Item>
                   <Menu.Item key="rulers-calculators">
                     <IconRulerPencil />
-                    {"Rulers & Calculators"}
+                    {"Tools"}
                   </Menu.Item>
                   <Menu.Item key="other">
                     <IconMore />
@@ -407,7 +407,7 @@ class Container extends Component {
               </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />
-                {"Rulers & Calculators"}
+                {"Tools"}
               </Menu.Item>
               <Menu.Item key="other" onClick={this.toggleCategories}>
                 <IconMore />

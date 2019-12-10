@@ -264,7 +264,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     />
                     <Route
                       exact
-                      path="/author/playlists/:id/assign"
+                      path="/author/playlists/:playlistId/assign/:assignmentId"
                       render={props => (
                         <Suspense fallback={<Progress />}>
                           <SuccessPage {...props} isPlaylist isAssignSuccess />

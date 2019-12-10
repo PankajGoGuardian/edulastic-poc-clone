@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor, greyishDarker2, cardTitleColor } from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor, red, cardTitleColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -189,6 +189,8 @@ export const CardId = styled.span`
   text-overflow: ellipsis;
 `;
 export const ViewButton = styled.div`
+  margin-top: 8px !important;
+  width: 120px;
   font-size: 12px;
   color: ${themeColor};
   background: white;
@@ -200,6 +202,7 @@ export const ViewButton = styled.div`
   border-radius: 4px;
   font-weight: 600;
   text-align: center;
+  color: ${({ isTestAdded, remove }) => (isTestAdded && remove ? red : themeColor)};
   cursor: pointer;
   &:hover {
     background: ${lightGrey};

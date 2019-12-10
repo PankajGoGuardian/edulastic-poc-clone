@@ -9,7 +9,16 @@ class ErrorHandler extends React.Component {
 
   static getDerivedStateFromError(error) {
     console.error("error:", error);
-    return { hasError: true };
+    return { hasError: true, path: window.location.pathname };
+  }
+
+  static getDerivedStateFromProps(prop, prevState) {
+    if (prevState.path !== window.location.pathname && prevState.hasError) {
+      return {
+        hasError: false,
+        path: window.location.pathname
+      };
+    }
   }
 
   render() {

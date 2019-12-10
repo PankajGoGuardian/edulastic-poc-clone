@@ -91,7 +91,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
             <Spin spinning={districtProfileLoading} />
             <SidebarCompnent isPrintPreview={isPrintPreview} />
             <Wrapper>
-              <ErrorHandler key={location.pathname}>
+              <ErrorHandler>
                 <Suspense fallback={<Progress />}>
                   <Switch>
                     <Route exact path={`${match.url}/assignments`} component={Assignments} />

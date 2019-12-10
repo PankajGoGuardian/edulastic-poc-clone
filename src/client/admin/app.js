@@ -69,7 +69,7 @@ function Admin({ match, history, logoutAction, location }) {
           }}
         </Sider>
         <MainDiv>
-          <ErrorHandler key={location.pathname}>
+          <ErrorHandler>
             <Switch>
               <Redirect exact path={match.path} to={`${match.path}/search`} />
               <Route path={`${match.path}/search`} component={CleverSearch} />

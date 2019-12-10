@@ -35,7 +35,7 @@ const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
         <MainContainer>
           <Sidebar />
           <Wrapper>
-            <ErrorHandler key={location.pathname}>
+            <ErrorHandler>
               <Switch>
                 <Route path={`${match.url}/assignments`} component={Assignment} />
                 <Route path={`${match.url}/dashboard`} component={Assignment} />

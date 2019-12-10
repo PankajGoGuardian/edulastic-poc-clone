@@ -10,6 +10,7 @@ import {
   Container,
   ListCard,
   Inner,
+  Outer,
   Description,
   Author,
   AuthorName,
@@ -17,7 +18,6 @@ import {
   Stars,
   StyledLink,
   ItemInformation,
-  TypeContainer,
   IconWrapper,
   IconText,
   ViewButtonWrapper,
@@ -26,12 +26,11 @@ import {
   CardIdWrapper,
   CardId,
   Footer,
-  AddButton,
   TestStatus
 } from "./styled";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { EllipsisWrapper } from "../Item/styled";
+import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 
 class ListItem extends Component {
@@ -143,42 +142,39 @@ class ListItem extends Component {
         <Container onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
             <Col span={24}>
-              <ListCard
-                title={
-                  <Header src={thumbnailData}>
-                    <Stars size="small" />
-                  </Header>
-                }
-              />
-              <Inner>
+              <Outer>
                 <div>
-                  <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
+                  <ListCard
+                    title={
+                      <Header src={thumbnailData}>
+                        <Stars size="small" />
+                      </Header>
+                    }
+                  />
+                  <Inner>
+                    <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
+                    <Description title={isPlaylist ? _source.description : description}>
+                      <EllipsisWrapper view="list">{isPlaylist ? _source.description : description}</EllipsisWrapper>
+                    </Description>
+                  </Inner>
                 </div>
-                <Description title={isPlaylist ? _source.description : description}>
-                  <EllipsisWrapper view="list">{isPlaylist ? _source.description : description}</EllipsisWrapper>
-                </Description>
-              </Inner>
+                {!isPlaylist && mode === "embedded" && (
+                  <ViewButtonWrapper span={6}>
+                    <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
+                      PREVIEW
+                    </ViewButton>
+                    {!isTestAdded && mode === "embedded" && (
+                      <ViewButton onClick={e => addTestToPlaylist(item)}>ADD</ViewButton>
+                    )}
+                    {isTestAdded && mode === "embedded" && (
+                      <ViewButton isTestAdded={isTestAdded} onClick={e => removeTestFromPlaylist(item._id)} remove>
+                        REMOVE
+                      </ViewButton>
+                    )}
+                  </ViewButtonWrapper>
+                )}
+              </Outer>
             </Col>
-
-            {!isPlaylist && mode === "embedded" && (
-              <ViewButtonWrapper span={6}>
-                <TypeContainer />
-                {!isTestAdded && mode === "embedded" && (
-                  <AddButton windowWidth={windowWidth} onClick={e => addTestToPlaylist(item)}>
-                    ADD
-                  </AddButton>
-                )}
-                {isTestAdded && mode === "embedded" && (
-                  <AddButton
-                    windowWidth={windowWidth}
-                    isTestAdded={isTestAdded}
-                    onClick={e => removeTestFromPlaylist(item._id)}
-                  >
-                    Remove
-                  </AddButton>
-                )}
-              </ViewButtonWrapper>
-            )}
 
             <Footer span={24}>
               <TagsWrapper span={12}>

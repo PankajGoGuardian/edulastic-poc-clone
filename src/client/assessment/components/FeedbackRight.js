@@ -191,8 +191,12 @@ class FeedbackRight extends Component {
   };
 
   arrowKeyHandler = ({ keyCode }) => {
-    if (keyCode >= 37 && keyCode <= 40) {
+    /**
+     * arrow keys or escape key
+     */
+    if ((keyCode >= 37 && keyCode <= 40) || keyCode === 27) {
       this.preCheckSubmit();
+      this.submitScore();
     }
   };
 

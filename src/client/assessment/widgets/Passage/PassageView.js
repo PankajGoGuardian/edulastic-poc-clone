@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";

@@ -45,11 +45,13 @@ export default class TestLibrary {
 
     return cy.fixture("testAuthoring").then(testData => {
       const test = testData[key];
+      this.items = [];
       test.itemKeys.forEach(async (itemKey, index) => {
         const _id = await promisify(itemListPage.createItem(itemKey, index));
         // .then(_id => {
         // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
         this.items.push(_id);
+
         // });
       });
 
@@ -280,7 +282,7 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  checkforRemovedShare = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
+  checkforNonExistanceOfTest = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
 
   getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
 
@@ -336,7 +338,7 @@ export default class TestLibrary {
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
     this.searchFilters.sharedWithMe();
-    this.checkforRemovedShare(test_id);
+    this.checkforNonExistanceOfTest(test_id);
   };
   verifySharedTestPublic = (email, test_id) => {
     cy.login("teacher", email, "snapwiz");
@@ -350,6 +352,6 @@ export default class TestLibrary {
     cy.login("teacher", email, "snapwiz");
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
-    this.checkforRemovedShare(test_id);
+    this.checkforNonExistanceOfTest(test_id);
   };
 }

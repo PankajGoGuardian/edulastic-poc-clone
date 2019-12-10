@@ -146,7 +146,8 @@ class ClassBoard extends Component {
       showAddStudentsPopup: false,
       showMarkSubmittedPopup: false,
       modalInputVal: "",
-      selectedNotStartedStudents: []
+      selectedNotStartedStudents: [],
+      showScoreImporvement: false
     };
   }
 
@@ -197,7 +198,7 @@ class ClassBoard extends Component {
 
   static getDerivedStateFromProps(props, state) {
     let newState = {};
-    const { additionalData: { testId } = {}, testActivity } = props;
+    const { additionalData: { testId } = {}, testActivity, allTestActivitiesForStudent } = props;
 
     if (testId !== state.testId) {
       newState = { ...newState, testId };
@@ -216,6 +217,17 @@ class ClassBoard extends Component {
       const question = questions[questionIndex];
       if (question) {
         newState = { ...newState, itemId: question.testItemId, selectedQuestion: questionIndex };
+      }
+    }
+
+    if (allTestActivitiesForStudent.length) {
+      const tempArr = props.location.pathname.split("/");
+      const currentTestActivityId = tempArr[tempArr.length - 1];
+      const isFirstAttempt = currentTestActivityId === allTestActivitiesForStudent[0]._id;
+      if (isFirstAttempt) {
+        newState = { ...newState, showScoreImporvement: false };
+      } else {
+        newState = { ...newState, showScoreImporvement: true };
       }
     }
 
@@ -675,6 +687,7 @@ class ClassBoard extends Component {
     const existingStudents = testActivity.map(item => item.studentId);
     const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
+    const { showScoreImporvement } = this.state;
     return (
       <div>
         {showMarkSubmittedPopup && (
@@ -1050,7 +1063,7 @@ class ClassBoard extends Component {
                           <div style={{ border: "solid 1px black", width: "50px" }} />
                           <ScoreWrapper>{round(maxScore, 2) || 0}</ScoreWrapper>
                         </div>
-                        {allTestActivitiesForStudent.length > 1 && (
+                        {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
                           <div
                             style={{
                               display: "flex",
@@ -1076,7 +1089,7 @@ class ClassBoard extends Component {
                               </span>
                             </ScoreHeader>
                           </div>
-                        )}
+                        ) : null}
                       </div>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}

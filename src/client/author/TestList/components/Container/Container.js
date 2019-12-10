@@ -222,9 +222,16 @@ class TestList extends Component {
   };
 
   searchTest = debounce(search => {
-    const { receiveTests, limit, history } = this.props;
+    const {
+      receiveTests,
+      limit,
+      history,
+      playlistPage,
+      playlist: { _id }
+    } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
-    history.push(`/author/tests?${queryParams}`);
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
+    history.push(locToPush);
     receiveTests({ search, limit, page: 1 });
   }, 500);
 
@@ -256,7 +263,9 @@ class TestList extends Component {
       updateDefaultSubject,
       defaultSubject,
       defaultGrades,
-      testFilters
+      testFilters,
+      playlistPage,
+      playlist: { _id }
     } = this.props;
 
     // all the fields to pass for search.
@@ -303,8 +312,9 @@ class TestList extends Component {
     };
     this.updateFilterState(searchFilters, true);
     // update the url to reflect the newly applied filter and get the new results.
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
-    history.push(`/author/tests?${queryParams}`);
+    history.push(locToPush);
     receiveTests({ search: searchFilters, page: 1, limit });
   };
 
@@ -319,13 +329,23 @@ class TestList extends Component {
   };
 
   updateTestList = page => {
-    const { receiveTests, limit, history, testFilters, defaultGrades, defaultSubject } = this.props;
+    const {
+      receiveTests,
+      limit,
+      history,
+      testFilters,
+      defaultGrades,
+      defaultSubject,
+      playlistPage,
+      playlist: { _id }
+    } = this.props;
     const searchFilters = {
       ...testFilters
     };
 
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    history.push(`/author/tests?${queryParams}`);
+    history.push(locToPush);
     receiveTests({ page, limit, search: searchFilters });
   };
 
@@ -533,7 +553,9 @@ class TestList extends Component {
       testFilters,
       updateTestFilters,
       defaultGrades,
-      defaultSubject
+      defaultSubject,
+      playlistPage,
+      playlist: { _id }
     } = this.props;
     let updatedKeys = { ...testFilters };
 
@@ -547,8 +569,9 @@ class TestList extends Component {
     updatedKeys["filter"] = filter;
     this.updateFilterState(updatedKeys, true);
 
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
-    history.push(`/author/tests?${queryParams}`);
+    history.push(locToPush);
     receiveTests({
       page: 1,
       limit,

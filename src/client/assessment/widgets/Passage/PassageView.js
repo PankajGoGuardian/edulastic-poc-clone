@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
@@ -13,6 +13,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import ColorPicker from "./ColorPicker";
 import { ColorPickerContainer, Overlay } from "./styled/ColorPicker";
 import AppConfig from "../../../../../app-config";
+import { CLEAR } from "../../constants/constantsForQuestions";
 
 const ContentsTitle = Heading;
 let startedSelectingText = false;
@@ -25,7 +26,9 @@ const PassageView = ({
   highlights = [],
   userWork,
   saveUserWork,
-  clearUserWork
+  clearUserWork,
+  previewTab,
+  passageTestItemID
 }) => {
   const mainContentsRef = useRef();
   const [page, setPage] = useState(1);
@@ -107,7 +110,7 @@ const PassageView = ({
       } else {
         // saving the highlights at author side
         // setHighlights is not available at author side
-        saveUserWork({ [item.id]: { resourceId: highlightContent } });
+        saveUserWork({ [passageTestItemID]: { resourceId: highlightContent } });
       }
 
       if (color === "remove") {
@@ -168,13 +171,14 @@ const PassageView = ({
         editors[0].contentEditable = false;
       }
     }
-    return () => {
+  });
+
+  useEffect(() => {
+    if (!setHighlights && previewTab === CLEAR) {
       // clearing the userWork at author side.
-      if (!setHighlights) {
-        clearUserWork();
-      }
-    };
-  }, []);
+      clearUserWork();
+    }
+  }, [previewTab]); // run everytime the previewTab is changed
 
   return (
     <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<div />} onLoaded={loadInit}>

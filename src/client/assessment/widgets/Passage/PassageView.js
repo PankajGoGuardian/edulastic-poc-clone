@@ -1,5 +1,4 @@
-/* eslint-disable prefer-arrow-callback */
-/* eslint-disable func-names */
+// /* eslint-disable */
 
 import React, { useState, useEffect, useRef } from "react";
 import { isArray } from "lodash";
@@ -16,6 +15,7 @@ import AppConfig from "../../../../../app-config";
 
 const ContentsTitle = Heading;
 let startedSelectingText = false;
+const highlightTag = "my-highlight";
 
 const PassageView = ({
   item,
@@ -23,7 +23,7 @@ const PassageView = ({
   flowLayout,
   setHighlights,
   highlights = [],
-  userWork,
+  userWork = [],
   saveUserWork,
   clearUserWork
 }) => {
@@ -31,41 +31,64 @@ const PassageView = ({
   const [page, setPage] = useState(1);
   const [selected, toggleColorPicker] = useState(null);
 
+  // use the userWork in author mode
+  const _highlights = setHighlights ? highlights : userWork;
+
+  const onMouseEnter = event => {
+    const em = event.target;
+    const jQuery = window.$;
+    if (!selected && !startedSelectingText) {
+      /**
+       * top and left will be used to set position of color picker
+       */
+      const top = em.offsetTop + em.offsetHeight + 1; // 1px is for the arrow point
+      const left = em.offsetLeft;
+
+      const id = jQuery(em).attr("id");
+      const bg = rgbToHexc(jQuery(em).css("backgroundColor"));
+      toggleColorPicker({ top, left, bg, id });
+    }
+  };
+
+  const everyHeighlight = (_, em) => {
+    const jQuery = window.$;
+    jQuery(em).on("mouseenter", onMouseEnter);
+  };
+
   const addEventToSelectedText = () => {
     if (window.$) {
       const jQuery = window.$;
-      jQuery(".selected-text-heighlight").each(function(index) {
-        this.setAttribute("heighlight-index", index);
-        jQuery(this).on("mouseenter", function() {
-          if (!selected && !startedSelectingText) {
-            const top = this.offsetTop + this.offsetHeight + 1; // 1px is for the arrow point
-            const left = this.offsetLeft;
-            const bg = rgbToHexc(jQuery(this).css("backgroundColor"));
-            toggleColorPicker({ top, left, bg, index });
-          }
-        });
-      });
+      jQuery(".selected-text-heighlight").each(everyHeighlight);
     }
   };
 
   const handleHighlight = () => {
     startedSelectingText = false;
-    highlightSelectedText("selected-text-heighlight unsaved");
+    highlightSelectedText("selected-text-heighlight unsaved", highlightTag);
     addEventToSelectedText();
   };
 
-  const getIndexForSameWord = (str, highlightIndex) => {
+  const removeAllHighlight = () => {
+    if (window.$) {
+      const jQuery = window.$;
+      jQuery(".selected-text-heighlight").each((_, em) => {
+        jQuery(em).replaceWith(em.innerHTML);
+      });
+    }
+  };
+
+  const getIndexForSameWord = (str, highlightId) => {
     const regex = new RegExp(str, "g");
-    const { innerHTML: content } = mainContentsRef.current;
+    let { innerHTML: content } = mainContentsRef.current;
+    content = content.replace(/style="(.*?)"/g, "");
     let i = 0;
     let match = regex.exec(content);
 
-    const hStr = `heighlight-index="${highlightIndex}"`;
-
+    const hStr = `id="${highlightId}"`;
     while (match) {
       const frontStr = content.slice(match.index - (hStr.length + 1), match.index - 1);
-      const backStr = content.slice(match.index + str.length, match.index + str.length + 7);
-      if (backStr === "</span>" && hStr === frontStr) {
+      const backStr = content.slice(match.index + str.length, match.index + str.length + `</${highlightTag}>`.length);
+      if (backStr === `</${highlightTag}>` && hStr === frontStr) {
         return i;
       }
       i += 1;
@@ -74,32 +97,45 @@ const PassageView = ({
   };
 
   const clickHighligter = color => {
-    if (mainContentsRef.current) {
+    if (mainContentsRef.current && selected) {
       const { innerHTML: content } = mainContentsRef.current;
-      const regex = new RegExp('<span(.*?)class="selected-text-heighlight(.*?)">(.*?)</span>', "g");
+      const regex = new RegExp(`<${highlightTag}(.*?)id="(.*?)"(.*?)>(.*?)</${highlightTag}>`, "g");
+
       const matchs = [];
       let match = regex.exec(content);
 
       while (match) {
-        matchs.push({
-          text: match.slice(3)[0],
-          style: match.slice(1)[0]
-        });
-        const index = getIndexForSameWord(matchs[matchs.length - 1].text, matchs.length - 1);
-        matchs[matchs.length - 1].index = index;
+        const text = match.slice(4)[0];
+        const id = match.slice(2)[0];
+        const index = getIndexForSameWord(text, id);
+        matchs.push({ id, text, index });
         match = regex.exec(content);
       }
 
       const highlightContent = produce(matchs, draft => {
-        if (color === "remove") {
-          draft = draft.splice(selected.index, 1);
-        } else {
-          draft[selected.index].color = color;
-          if (!color) {
-            delete draft[selected.index].color;
+        draft.forEach(element => {
+          const exist = _highlights.find(highlight => highlight.id === element.id);
+          if (exist) {
+            element.color = exist.color;
           }
-        }
+        });
+
+        draft.forEach((element, index) => {
+          if (color === "remove" && element.id === selected.id) {
+            draft.splice(index, 1);
+          } else if (element.id === selected.id) {
+            element.color = color;
+          }
+        });
       });
+
+      /**
+       * if the user selects a text first time and then remove highlight without setting color,
+       * we should be removed it using jQuery because React setState does not update in this case
+       */
+      if (!highlightContent.length) {
+        removeAllHighlight();
+      }
 
       if (setHighlights) {
         // this is available only at student side
@@ -123,17 +159,26 @@ const PassageView = ({
   const getContent = () => {
     let { content } = item;
     content = decodeHTML(content);
-    // use the userWork in author mode
-    const _highlights = setHighlights ? highlights : userWork;
+
+    /**
+     * we have styles such as font-family, font-size, color from text editor.
+     * need to avoid these styles when we replace highlight text
+     * stylesArray will be an array of styles from the text editor or v1 question
+     */
+    const stylesArray = content.match(/style="(.*?)">/g) || [];
+    content = content.replace(/style="(.*?)">/g, "<previous-style></previous-style>");
+
     if (_highlights) {
       for (let i = 0; i < _highlights.length; i++) {
         if (_highlights[i]) {
-          const { color, style, text, index } = _highlights[i];
-          const highlightStyle = color ? `style="background-color:${color}"` : style;
+          const { color, text, id, index } = _highlights[i];
+
+          const highlightStyle = color ? `style="background-color:${color}"` : "";
           const className = color
             ? 'class="selected-text-heighlight active"'
             : 'class="selected-text-heighlight unsaved"';
-          const replaceStr = `<span ${highlightStyle} ${className}>${text}</span>`;
+          const replaceStr = `<${highlightTag} ${highlightStyle} ${className} id="${id}">${text}</${highlightTag}>`;
+
           if (!index) {
             content = content.replace(new RegExp(text), replaceStr);
           } else {
@@ -151,6 +196,16 @@ const PassageView = ({
         }
       }
     }
+
+    /**
+     * we will add previous styles before return content
+     */
+    if (stylesArray && content.indexOf("<previous-style></previous-style>") !== -1) {
+      for (let i = 0; i < stylesArray.length; i++) {
+        content = content.replace("<previous-style></previous-style>", stylesArray[i]);
+      }
+    }
+
     return content;
   };
 
@@ -227,15 +282,20 @@ const PassageView = ({
 
 PassageView.propTypes = {
   setHighlights: PropTypes.func.isRequired,
-  highlights: PropTypes.array.isRequired,
   item: PropTypes.object.isRequired,
+  saveUserWork: PropTypes.func.isRequired,
+  clearUserWork: PropTypes.func.isRequired,
+  highlights: PropTypes.array,
+  userWork: PropTypes.array,
   preview: PropTypes.bool,
   flowLayout: PropTypes.bool
 };
 
 PassageView.defaultProps = {
   preview: false,
-  flowLayout: false
+  flowLayout: false,
+  highlights: [],
+  userWork: []
 };
 
 PassageView.modules = {

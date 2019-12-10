@@ -333,7 +333,7 @@ export const clearSelection = () => {
   }
 };
 
-export const highlightSelectedText = (className = "token active-word") => {
+export const highlightSelectedText = (className = "token active-word", tag = "span") => {
   const selection = getSelection();
   if (!selection.rangeCount) {
     console.log("Unable to find a native DOM range from the current selection.");
@@ -356,8 +356,9 @@ export const highlightSelectedText = (className = "token active-word") => {
   }
 
   try {
-    const newNode = document.createElement("span");
+    const newNode = document.createElement(tag);
     newNode.setAttribute("class", className);
+    newNode.setAttribute("id", uuid());
     range.surroundContents(newNode);
     clearSelection();
     return true;

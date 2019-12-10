@@ -3,12 +3,21 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get } from "lodash";
-import { Select } from "antd";
+import { Select, Icon } from "antd";
 import styled from "styled-components";
+import { themeColor, themeColorTagsBg } from "@edulastic/colors";
 
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType, nonAutoGradableTypes } from "@edulastic/constants";
-import { getQuestionDataSelector, setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
+import {
+  getQuestionDataSelector,
+  setQuestionDataAction,
+  setIsGradingRubricAction,
+  getIsGradingCheckboxState
+} from "../../../../author/QuestionEditor/ducks";
+
+import { rubricsApi } from "@edulastic/api";
+import { removeRubricIdAction } from "../../../../author/sharedDucks/questions";
 import Question from "../../../components/Question";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -18,11 +27,43 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 import { Subtitle } from "../../../styled/Subtitle";
 import { FormGroup } from "../styled/FormGroup";
+import { StyledButton } from "../styled/Buttons";
 import { StyledSelect, StyledInput, StyledCheckbox } from "../../../components/Common/InputField";
+import GradingRubricModal from "./GradingRubricModal";
+import { updateRubricDataAction } from "../../../../author/GradingRubric/ducks";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
 class Scoring extends Component {
+  state = {
+    showGradingRubricModal: false,
+    rubricActionType: ""
+  };
+
+  handleRubricAction = actionType => {
+    this.setState({
+      showGradingRubricModal: true,
+      rubricActionType: actionType
+    });
+  };
+
+  toggleRubricModal = () => {
+    this.setState({
+      showGradingRubricModal: false,
+      rubricActionType: ""
+    });
+    this.props.updateRubricData(null);
+  };
+
+  handleViewRubric = async id => {
+    const { updateRubricData } = this.props;
+    await rubricsApi.getRubricsById(id).then(res => {
+      updateRubricData(res[0]);
+      this.handleRubricAction("VIEW RUBRIC");
+    });
+  };
+
   render() {
     const {
       setQuestionData,
@@ -35,8 +76,13 @@ class Scoring extends Component {
       noPaddingLeft,
       fillSections,
       cleanSections,
-      children
+      children,
+      isGradingCheckboxState,
+      setIsGradingRubricAction,
+      userFeatures,
+      dissociateRubricFromQuestion
     } = this.props;
+    const { showGradingRubricModal, rubricActionType } = this.state;
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData);
 
@@ -195,7 +241,64 @@ class Scoring extends Component {
           </Row>
         )}
 
+        {userFeatures.gradingrubrics && (
+          <Row>
+            <Col md={12}>
+              <StyledCheckbox
+                data-cy="gradingRubricChk"
+                checked={isGradingCheckboxState || questionData.rubrics}
+                onChange={e => setIsGradingRubricAction(e.target.checked)}
+                size="large"
+              >
+                {t("component.options.gradingRubric")}
+              </StyledCheckbox>
+            </Col>
+          </Row>
+        )}
+        {(isGradingCheckboxState || questionData.rubrics) && (
+          <Row gutter={16}>
+            <Col md={24} lg={24} xs={24}>
+              <StyledButton
+                onClick={e => {
+                  this.handleRubricAction("CREATE NEW");
+                  e.target.blur();
+                }}
+              >
+                Create New Rubric
+              </StyledButton>
+              <StyledButton
+                onClick={e => {
+                  this.handleRubricAction("USE EXISTING");
+                  e.target.blur();
+                }}
+              >
+                Use Existing Rubric
+              </StyledButton>
+            </Col>
+          </Row>
+        )}
+
+        {questionData.rubrics && (
+          <StyledTag>
+            <span onClick={() => this.handleViewRubric(questionData.rubrics.id)}>{questionData.rubrics.name}</span>
+            <span onClick={() => dissociateRubricFromQuestion()}>
+              <Icon type="close" />
+            </span>
+          </StyledTag>
+        )}
+
         {children}
+
+        {showGradingRubricModal && (
+          <GradingRubricModal
+            visible={showGradingRubricModal}
+            actionType={rubricActionType}
+            toggleModal={() => {
+              this.toggleRubricModal();
+              setIsGradingRubricAction(false);
+            }}
+          />
+        )}
       </Question>
     );
   }
@@ -229,10 +332,15 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     state => ({
-      questionData: getQuestionDataSelector(state)
+      questionData: getQuestionDataSelector(state),
+      isGradingCheckboxState: getIsGradingCheckboxState(state),
+      userFeatures: getUserFeatures(state)
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      updateRubricData: updateRubricDataAction,
+      setIsGradingRubricAction: setIsGradingRubricAction,
+      dissociateRubricFromQuestion: removeRubricIdAction
     }
   )
 );
@@ -241,4 +349,20 @@ export default enhance(Scoring);
 
 const SelectWrapper = styled(StyledSelect)`
   width: 100%;
+`;
+
+const StyledTag = styled.div`
+  display: inline-block;
+  background: ${themeColorTagsBg};
+  padding: 3px 8px;
+  border-radius: 5px;
+  color: ${themeColor};
+  font-size: ${props => props.theme.smallFontSize};
+  > span:first-child {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  > span:last-child {
+    cursor: pointer;
+  }
 `;

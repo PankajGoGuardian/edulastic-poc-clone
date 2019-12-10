@@ -26,6 +26,8 @@ export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current questi
 export const ADD_ALIGNMENT = "[author questions] add alignment";
 export const REMOVE_ALIGNMENT = "[author questions] remove alignment";
 export const DELETE_QUESTION = "[author questions] delete question by id";
+export const SET_RUBRIC_ID = "[author questions] set rubric id";
+export const REMOVE_RUBRIC_ID = "[author questions] remove rubricId";
 
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
@@ -40,6 +42,8 @@ export const addAlignmentAction = createAction(ADD_ALIGNMENT);
 export const removeAlignmentAction = createAction(REMOVE_ALIGNMENT);
 export const deleteQuestionAction = createAction(DELETE_QUESTION);
 export const updateQuestionNumberAction = createAction(UPDATE_QUESTION_NUMBER);
+export const setRubricIdAction = createAction(SET_RUBRIC_ID);
+export const removeRubricIdAction = createAction(REMOVE_RUBRIC_ID);
 
 // initialState
 const initialState = {
@@ -241,6 +245,12 @@ export default createReducer(initialState, {
     qids.forEach((id, i) => {
       state.byId[id].qIndex = i + 1;
     });
+  },
+  [SET_RUBRIC_ID]: (state, { payload }) => {
+    state.byId[state.current].rubrics = payload;
+  },
+  [REMOVE_RUBRIC_ID]: state => {
+    delete state.byId[state.current].rubrics;
   }
 });
 

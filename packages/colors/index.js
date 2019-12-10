@@ -34,8 +34,12 @@ export const lightGrey3 = "#f4f3f3";
 export const lightGrey4 = "#dbdce0";
 export const someGreyColor1 = "#c0c0c0";
 export const labelGrey = "#9B9B9B";
+export const labelGrey2 = "#a2a2a2";
 export const borderGrey = "#E1E1E1";
 export const placeholderGray = "#b1b1b1";
+export const backgroundGrey = "#F2F2F2";
+export const borderGrey2 = "#cbcbcb";
+export const borderGrey3 = "#e9e9e9";
 
 export const whiteSmoke = "#f5f5f5";
 
@@ -52,6 +56,8 @@ export const red = "#FF0057";
 export const lightRed = "#fbdfe7";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
+export const deleteRed = "#FF0080";
+export const deleteRed2 = "#EF3863";
 
 export const mainBlueColor = "#00b0ff";
 export const blue = "#1774F0";
@@ -110,6 +116,10 @@ export const cardBorder = "#e6e6e6";
 
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
+
+export const boxShadowColor = "#C9D0DB80";
+export const boxShadowColor2 = "#0000001A";
+export const paginationBoxShadowColor = "#a3a0a033";
 
 // Graph colors
 export const greyGraphstroke = "#999";

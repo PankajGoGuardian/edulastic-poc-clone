@@ -64,6 +64,7 @@ export const SET_QUESTION_ALIGNMENT_REMOVE_ROW = "[question] set question alignm
 export const SET_QUESTION = "[question] set question";
 export const LOAD_QUESTION = "[quesiton] load question from testItem";
 export const ADD_AUTHORED_ITEMS_TO_TEST = "[question] add authored items to test";
+export const SET_IS_GRADING_RUBRIC = "[question] set is grading rubric checkbox state";
 // actions
 
 // Variable
@@ -126,6 +127,10 @@ export const addAuthoredItemsAction = payload => ({
   payload
 });
 
+export const setIsGradingRubricAction = payload => ({
+  type: SET_IS_GRADING_RUBRIC,
+  payload
+});
 // reducer
 
 const initialState = {
@@ -216,7 +221,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           data: payload.data
         }
       };
-
+    case SET_IS_GRADING_RUBRIC:
+      return {
+        ...state,
+        isGradingRubric: payload
+      };
     default:
       return state;
   }
@@ -253,6 +262,11 @@ export const getAlignmentFromQuestionSelector = createSelector(
     delete modifyAlignment.domains;
     return modifyAlignment;
   }
+);
+
+export const getIsGradingCheckboxState = createSelector(
+  stateSelector,
+  state => state.isGradingRubric
 );
 // saga
 

@@ -39,6 +39,7 @@ import { playlistPageSaga } from "../../PlaylistPage";
 import { dashboardTeacherSaga } from "../../Dashboard";
 import { watcherSaga as expressGraderWatcherSaga } from "../../ExpressGrader/ducks";
 import { classEnrollmentSaga } from "../../ClassEnrollment";
+import { rubricSaga } from "../../GradingRubric";
 
 const authorSagas = [
   itemsSaga(),
@@ -81,7 +82,8 @@ const authorSagas = [
   dashboardTeacherSaga(),
   authorRoutesWatcherSaga(),
   expressGraderWatcherSaga(),
-  classEnrollmentSaga()
+  classEnrollmentSaga(),
+  rubricSaga()
 ];
 
 export default authorSagas;

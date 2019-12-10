@@ -136,6 +136,7 @@
       "scoring": "Scoring",
       "automarkable": "Enable auto scoring",
       "unscored": "Unscored / Practice usage",
+      "gradingRubric": "Grading Rubric",
       "penalty": "Penalty Point(s)",
       "stimulusreviewonly": "Stimulus (review only)",
       "instructorstimulus": "Instructor stimulus",

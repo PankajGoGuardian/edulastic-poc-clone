@@ -112,7 +112,7 @@ const DropdownWrapper = styled.span`
   min-height: 35px;
   .ant-select {
     min-width: 120px;
-    margin: 0px 2px 4px;
+    margin: 2px 2px 4px;
     width: ${props => props.width};
     height: ${props => props.height};
     min-height: 35px;

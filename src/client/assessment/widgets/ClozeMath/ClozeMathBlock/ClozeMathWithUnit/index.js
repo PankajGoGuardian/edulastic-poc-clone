@@ -289,7 +289,7 @@ class ClozeMathWithUnit extends React.Component {
 }
 
 const OuterWrapper = styled.div`
-  margin: 0px 2px 4px;
+  margin: 2px 2px 4px;
   display: inline-flex;
   vertical-align: middle;
   justify-content: center;

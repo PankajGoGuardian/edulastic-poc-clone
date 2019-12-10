@@ -232,7 +232,7 @@ class ClozeMathInput extends React.Component {
         ref={this.wrappedRef}
         style={{
           ...btnStyle,
-          margin: "0px 2px 4px 2px",
+          margin: "2px 2px 4px 2px",
           display: "inline-block",
           position: "relative",
           verticalAlign: "middle",

@@ -41,6 +41,14 @@ const PassageView = ({
         let deltaTop = 0;
         let deltaLeft = 0;
 
+        if (
+          jQuery(em)
+            .parent()
+            .prop("tagName") === "TD"
+        ) {
+          jQuery(em).css("position", "relative");
+        }
+
         jQuery(em)
           .parents()
           .each((i, parent) => {

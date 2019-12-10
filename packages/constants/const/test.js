@@ -144,5 +144,15 @@ module.exports = {
       ALL: "ALL",
       SKIPPED_AND_WRONG: "SKIPPED AND WRONG"
     }
+  },
+  passwordPolicy: {
+    REQUIRED_PASSWORD_POLICY_OFF: 0,
+    REQUIRED_PASSWORD_POLICY_DYNAMIC: 1,
+    REQUIRED_PASSWORD_POLICY_STATIC: 2
+  },
+  passwordPolicyOptions: {
+    REQUIRED_PASSWORD_POLICY_OFF: "No Password",
+    REQUIRED_PASSWORD_POLICY_DYNAMIC: "Dynamic Password",
+    REQUIRED_PASSWORD_POLICY_STATIC: "Static Password"
   }
 };

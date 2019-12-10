@@ -127,9 +127,13 @@ class AssignTest extends React.Component {
     const { assignment } = this.state;
     const { saveAssignment, isAssigning } = this.props;
     if (isAssigning) return;
-    if (assignment.requirePassword === false) {
+    if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+      delete assignment.passwordExpireIn;
+    }
+    if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
       delete assignment.assignmentPassword;
     } else if (
+      assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       assignment.assignmentPassword &&
       (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25)
     ) {

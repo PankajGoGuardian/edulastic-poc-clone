@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
+import { Col, Radio, Select, Icon, Checkbox, Input, InputNumber } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -35,7 +35,9 @@ const {
   completionTypes,
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
-  releaseGradeLabels
+  releaseGradeLabels,
+  passwordPolicyOptions,
+  passwordPolicy: passwordPolicyValues
 } = test;
 
 const Settings = ({
@@ -113,14 +115,14 @@ const Settings = ({
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     scoringType = tempTestSettings.scoringType,
     penalty = tempTestSettings.penalty,
-    requirePassword = tempTestSettings.requirePassword,
+    passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
     maxAttempts = tempTestSettings.maxAttempts,
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
-    testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS
+    testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
+    passwordExpireIn = tempTestSettings.passwordExpireIn || 15
   } = assignmentSettings;
-
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -324,12 +326,19 @@ const Settings = ({
           <StyledRowSettings gutter={16}>
             <Col span={16}>Require Password</Col>
             <Col span={8}>
-              <AlignSwitchRight
-                defaultChecked={requirePassword}
-                size="small"
-                onChange={value => overRideSettings("requirePassword", value)}
-              />
-              {requirePassword && (
+              <StyledSelect
+                placeholder="Please select"
+                cache="false"
+                value={passwordPolicy}
+                onChange={changeField("passwordPolicy")}
+              >
+                {Object.keys(passwordPolicyValues).map((item, index) => (
+                  <Select.Option data-cy="class" key={index} value={passwordPolicyValues[item]}>
+                    {passwordPolicyOptions[item]}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+              {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
                 <>
                   <Password
                     onChange={e => overRideSettings("assignmentPassword", e.target.value)}
@@ -342,7 +351,32 @@ const Settings = ({
                   <MessageSpan>{passwordStatus.message}</MessageSpan>
                 </>
               )}
+              {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+                <>
+                  <InputNumber
+                    required
+                    onChange={value => overRideSettings("passwordExpireIn", value)}
+                    value={passwordExpireIn}
+                    min={1}
+                  />{" "}
+                  Minutes
+                </>
+              )}
             </Col>
+            {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
+              <Col span={24} style={{ marginTop: "10px" }}>
+                {
+                  "The password is entered by you and does not change. Students must enter this password before they can take the assessment."
+                }
+              </Col>
+            )}
+            {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+              <Col span={24} style={{ marginTop: "10px" }}>
+                {
+                  "Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment."
+                }
+              </Col>
+            )}
           </StyledRowSettings>
         </FeaturesSwitch>
         {/* Require Password */}

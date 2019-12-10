@@ -222,13 +222,7 @@ class TestList extends Component {
   };
 
   searchTest = debounce(search => {
-    const {
-      receiveTests,
-      limit,
-      history,
-      playlistPage,
-      playlist: { _id }
-    } = this.props;
+    const { receiveTests, limit, history, playlistPage, playlist: { _id } = {} } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
     const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
@@ -265,7 +259,7 @@ class TestList extends Component {
       defaultGrades,
       testFilters,
       playlistPage,
-      playlist: { _id }
+      playlist: { _id } = {}
     } = this.props;
 
     // all the fields to pass for search.
@@ -337,7 +331,7 @@ class TestList extends Component {
       defaultGrades,
       defaultSubject,
       playlistPage,
-      playlist: { _id }
+      playlist: { _id } = {}
     } = this.props;
     const searchFilters = {
       ...testFilters
@@ -555,7 +549,7 @@ class TestList extends Component {
       defaultGrades,
       defaultSubject,
       playlistPage,
-      playlist: { _id }
+      playlist: { _id } = {}
     } = this.props;
     let updatedKeys = { ...testFilters };
 

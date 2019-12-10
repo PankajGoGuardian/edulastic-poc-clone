@@ -109,7 +109,8 @@ class FeedbackRight extends Component {
     const {
       user,
       updateQuestionActivityScore,
-      widget: { id, activity = {} }
+      widget: { id, activity = {} },
+      studentId
     } = this.props;
 
     const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
@@ -124,7 +125,8 @@ class FeedbackRight extends Component {
       testActivityId,
       questionId: id,
       itemId: testItemId,
-      groupId
+      groupId,
+      studentId
     });
   }
 

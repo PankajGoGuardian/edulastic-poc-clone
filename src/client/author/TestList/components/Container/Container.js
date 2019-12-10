@@ -306,8 +306,8 @@ class TestList extends Component {
     };
     this.updateFilterState(searchFilters, true);
     // update the url to reflect the newly applied filter and get the new results.
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ search: searchFilters, page: 1, limit });
   };
@@ -337,8 +337,8 @@ class TestList extends Component {
       ...testFilters
     };
 
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ page, limit, search: searchFilters });
   };
@@ -563,8 +563,8 @@ class TestList extends Component {
     updatedKeys["filter"] = filter;
     this.updateFilterState(updatedKeys, true);
 
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({
       page: 1,

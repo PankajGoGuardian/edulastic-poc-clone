@@ -203,7 +203,15 @@ function* receiveClassQuestionSaga({ payload }) {
 
 function* updateStudentScore({ payload }) {
   try {
-    const { testActivityId, itemId, questionId, score: score, groupId, studentId } = payload;
+    const {
+      testActivityId,
+      itemId,
+      questionId,
+      score: score,
+      groupId,
+      studentId,
+      shouldReceiveStudentResponse = false
+    } = payload;
 
     const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {
       testActivityId,
@@ -217,7 +225,12 @@ function* updateStudentScore({ payload }) {
       yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore, graded, skipped }]));
     }
     yield put({ type: RESPONSE_ENTRY_SCORE_SUCCESS, payload: { questionActivities, testActivity } });
-    yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId, studentId } });
+
+    // should run only when score gets updated
+    if (shouldReceiveStudentResponse) {
+      yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId, studentId } });
+    }
+
     yield call(message.success("Score is successfully updated"));
   } catch (e) {
     console.log(e);

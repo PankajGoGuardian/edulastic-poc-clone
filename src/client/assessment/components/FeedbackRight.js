@@ -96,6 +96,8 @@ class FeedbackRight extends Component {
 
   onScoreSubmit() {
     const { score, maxScore } = this.state;
+    const { currentScreen } = this.context;
+
     if (!score || isNaN(score)) {
       message.warn("Score should be a valid numerical");
       return;
@@ -120,14 +122,20 @@ class FeedbackRight extends Component {
 
     this.props.setTeacherEditedScore({ [id]: _score });
 
-    updateQuestionActivityScore({
+    const payload = {
       score: _score,
       testActivityId,
       questionId: id,
       itemId: testItemId,
       groupId,
       studentId
-    });
+    };
+
+    if (currentScreen === "live_class_board") {
+      payload.shouldReceiveStudentResponse = true;
+    }
+
+    updateQuestionActivityScore(payload);
   }
 
   onFeedbackSubmit() {

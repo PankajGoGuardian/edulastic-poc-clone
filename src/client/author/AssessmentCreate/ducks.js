@@ -233,8 +233,11 @@ function* createAssessmentSaga({ payload }) {
         pageStructure: pageStructure.length ? pageStructure : defaultPageStructure,
         ...(isAdmin ? { testType: testConstant.type.COMMON } : {})
       };
-      if (newAssessment.requirePassword === false) {
+      if (newAssessment.passwordPolicy !== testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
         delete newAssessment.assignmentPassword;
+      }
+      if (newAssessment.passwordPolicy !== testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+        delete newAssessment.passwordExpireIn;
       }
       const assessment = yield call(testsApi.create, newAssessment);
       yield put(createAssessmentSuccessAction());

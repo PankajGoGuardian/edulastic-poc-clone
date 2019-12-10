@@ -63,7 +63,7 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const { getDefaultImage } = testsApi;
-const { statusConstants, releaseGradeLabels } = testContants;
+const { statusConstants, releaseGradeLabels, passwordPolicy: passwordPolicyValues } = testContants;
 
 class Container extends PureComponent {
   propTypes = {
@@ -467,7 +467,7 @@ class Container extends PureComponent {
       title,
       subjects,
       grades,
-      requirePassword = false,
+      passwordPolicy = passwordPolicyValues.REQUIRED_PASSWORD_POLICY_OFF,
       assignmentPassword = "",
       safeBrowser,
       sebPassword
@@ -484,7 +484,7 @@ class Container extends PureComponent {
       message.error("Subject field cannot be empty");
       return false;
     }
-    if (requirePassword) {
+    if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
         message.error("Please add a valid password.");
         return false;

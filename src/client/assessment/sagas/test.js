@@ -103,7 +103,9 @@ function* loadTest({ payload }) {
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
       const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
-      let passwordValidated = !testActivity.assignmentSettings.requirePassword || isFromSummary;
+      let passwordValidated =
+        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
+        isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
@@ -147,7 +149,8 @@ function* loadTest({ payload }) {
           : testActivity?.calculatorProvider,
       calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
-      requirePassword: testActivity?.assignmentSettings?.requirePassword || false,
+      passwordPolicy:
+        testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
       showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE"
     };
     const answerCheckByItemId = {};

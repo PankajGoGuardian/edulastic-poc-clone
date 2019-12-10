@@ -966,6 +966,7 @@ class ClassBoard extends Component {
                 setSelected={setSelected}
                 assignmentId={assignmentId}
                 groupId={classId}
+                testActivity={testActivity}
               />
               {showAddStudentsPopup && (
                 <AddStudentsPopup

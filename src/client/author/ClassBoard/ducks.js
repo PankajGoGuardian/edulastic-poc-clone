@@ -47,7 +47,8 @@ import {
   MARK_AS_SUBMITTED,
   DOWNLOAD_GRADES_RESPONSES,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
-  REDIRECT_TO_ASSIGNMENTS
+  REDIRECT_TO_ASSIGNMENTS,
+  REGENERATE_PASSWORD
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
@@ -295,6 +296,16 @@ function* redirectToAssignmentsSaga() {
   yield put(push(`/author/assignments`));
 }
 
+function* regeneratePasswordSaga({ payload }) {
+  try {
+    const data = yield call(classBoardApi.regeneratePassword, payload);
+    //TODO update store WITH RECEIVED VALUES
+  } catch (e) {
+    console.log(e);
+    yield call(message.error, "Regenerate password failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -312,7 +323,8 @@ export function* watcherSaga() {
     yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),
     yield takeEvery(ADD_STUDENTS, addStudentsSaga),
     yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
-    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga)
+    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
+    yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga)
   ]);
 }
 
@@ -327,6 +339,26 @@ export const getCurrentTestActivityIdSelector = createSelector(
 export const getAllTestActivitiesForStudentSelector = createSelector(
   stateTestActivitySelector,
   state => state.allTestActivitiesForStudent || []
+);
+
+export const getViewPasswordSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.viewPassword
+);
+
+export const getPasswordPolicySelector = createSelector(
+  stateTestActivitySelector,
+  //TODO update state to select from state?.additionalData?.passwordPolicy
+  state => test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+);
+
+export const getAssignmentPasswordDetailsSelector = createSelector(
+  stateTestActivitySelector,
+  state => ({
+    assignmentPassword: state?.additionalData?.assignmentPassword,
+    passwordCreatedDate: state?.additionalData?.passwordCreatedDate,
+    passwordExpireTime: state?.additionalData?.passwordExpireTime
+  })
 );
 
 export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQuestionActivities) => {

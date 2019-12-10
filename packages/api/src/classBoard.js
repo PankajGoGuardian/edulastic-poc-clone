@@ -114,6 +114,14 @@ const downloadGrades = ({ assignmentId, classId, students, isResponseRequired })
     })
     .then(response => response.data);
 
+const regeneratePassword = ({ assignmentId, classId }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${assignmentId}/group/${classId}/regenerate-password`
+    })
+    .then(response => response.data);
+
 export default {
   gradebook,
   testActivity,
@@ -127,5 +135,6 @@ export default {
   markSubmitted,
   removeStudents,
   addStudents,
-  downloadGrades
+  downloadGrades,
+  regeneratePassword
 };

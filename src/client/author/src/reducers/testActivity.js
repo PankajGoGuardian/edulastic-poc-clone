@@ -16,7 +16,8 @@ import {
   UPDATE_CLASS_STUDENTS_LIST,
   SET_STUDENTS_GRADEBOOK,
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
-  UPDATE_SUBMITTED_STUDENTS
+  UPDATE_SUBMITTED_STUDENTS,
+  TOGGLE_VIEW_PASSWORD_MODAL
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -64,6 +65,7 @@ const initialState = {
   error: null,
   loading: false,
   presentationMode: false,
+  viewPassword: false,
   studentViewFilter: null
 };
 
@@ -259,6 +261,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         presentationMode: !state.presentationMode
+      };
+    case TOGGLE_VIEW_PASSWORD_MODAL:
+      return {
+        ...state,
+        viewPassword: !state.viewPassword
       };
     case UPDATE_OPEN_ASSIGNMENTS:
       return {

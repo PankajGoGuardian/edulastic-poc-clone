@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { lightGreen3, lightGrey3, white, themeColor } from "@edulastic/colors";
+import { sum } from "lodash";
 
-const PreviewRubricTable = ({ data }) => {
+const PreviewRubricTable = ({ data, handleChange, rubricFeedback }) => {
   const [selectedRatings, setSelectedRatings] = useState({});
+
+  useEffect(() => {
+    if (rubricFeedback) {
+      setSelectedRatings(rubricFeedback);
+      calculateScore(rubricFeedback);
+      handleChange({ score: calculateScore(rubricFeedback), rubricFeedback });
+    }
+  }, [rubricFeedback]);
 
   const getCriteria = criteria => (
     <CriteriaSection>
@@ -12,17 +21,17 @@ const PreviewRubricTable = ({ data }) => {
     </CriteriaSection>
   );
 
-  const getRatings = (criteria, index) => (
+  const getRatings = criteria => (
     <RatingScrollContainer
       option={{
         suppressScrollY: true,
         useBothWheelAxes: true
       }}
     >
-      {criteria.ratings.map((rating, i) => (
+      {criteria.ratings.map(rating => (
         <RatingSection
-          onClick={() => handleRatingSelection(index, rating.id, rating.points)}
-          selected={selectedRatings[index]?.id == rating.id ? true : false}
+          onClick={() => handleRatingSelection(criteria.id, rating.id)}
+          selected={selectedRatings[criteria.id] == rating.id ? true : false}
         >
           <div>{rating.name}</div>
           <div className="points">{`${rating.points} pts`}</div>
@@ -32,24 +41,32 @@ const PreviewRubricTable = ({ data }) => {
     </RatingScrollContainer>
   );
 
-  const handleRatingSelection = (criteriaIndex, ratingId, points) => {
-    let selectedData = { ...selectedRatings };
-    selectedData[criteriaIndex] = {
-      id: ratingId,
-      points
-    };
-    setSelectedRatings(selectedData);
-  };
-
   const getContent = () => {
-    return data.criteria.map((c, index) => {
+    return data.criteria.map(c => {
       return (
         <CriteriaWrapper>
           {getCriteria(c)}
-          {getRatings(c, index)}
+          {getRatings(c)}
         </CriteriaWrapper>
       );
     });
+  };
+
+  const handleRatingSelection = (criteriaId, ratingId) => {
+    let selectedData = { ...selectedRatings };
+    selectedData[criteriaId] = ratingId;
+    setSelectedRatings(selectedData);
+
+    handleChange({ score: calculateScore(selectedData), rubricFeedback: selectedData });
+  };
+
+  const calculateScore = selectedData => {
+    const seletecdPointsArray = Object.keys(selectedData).map(cId => {
+      const rId = selectedData[cId];
+      return data.criteria.find(({ id }) => id === cId).ratings.find(({ id }) => id === rId).points;
+    });
+
+    return sum(seletecdPointsArray);
   };
 
   return (

@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import { ModalBody, Heading } from "./ConfirmModal";
 import styled from "styled-components";
 import PreviewRubricTable from "./PreviewRubricTable";
 import { white, title, themeColorLighter } from "@edulastic/colors";
+import { sumBy, maxBy } from "lodash";
 
-const PreviewRubricModal = ({ visible, toggleModal, currentRubricData }) => {
-  const [total, setTotal] = useState(0);
+const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore, rubricFeedback }) => {
   const [obtained, setObtained] = useState(0);
+  const [rubricResponse, setRubricResponse] = useState(null);
+
+  let localMaxScore = 0;
+
+  if (!maxScore)
+    localMaxScore = useMemo(() => sumBy(currentRubricData.criteria, c => maxBy(c.ratings, "points").points), [
+      currentRubricData.criteria
+    ]);
   const Title = [
     <HeaderWrapper>
       <span>{currentRubricData.name}</span>
       <span>
-        <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;<span>{total}</span>
+        <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;<span>{maxScore || localMaxScore}</span>
       </span>
     </HeaderWrapper>
   ];
+
+  const handleChange = response => {
+    setObtained(response.score);
+    setRubricResponse(response);
+  };
 
   return (
     <StyledModal
@@ -24,11 +37,11 @@ const PreviewRubricModal = ({ visible, toggleModal, currentRubricData }) => {
       textAlign="left"
       visible={visible}
       footer={null}
-      onCancel={toggleModal}
+      onCancel={() => toggleModal(rubricResponse)}
       width={"700px"}
     >
       <StyledModalBody>
-        <PreviewRubricTable data={currentRubricData} />
+        <PreviewRubricTable data={currentRubricData} handleChange={handleChange} rubricFeedback={rubricFeedback} />
       </StyledModalBody>
     </StyledModal>
   );

@@ -238,7 +238,7 @@ class StudentViewContainer extends Component {
 
         <div ref={this.questionsContainerRef}>
           {!loading && (
-            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <AnswerContext.Provider value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}>
               <ThemeProvider
                 theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
               >

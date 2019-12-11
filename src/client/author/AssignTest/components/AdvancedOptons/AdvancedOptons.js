@@ -5,7 +5,7 @@ import produce from "immer";
 import { curry } from "lodash";
 import * as moment from "moment";
 import { Col, Icon } from "antd";
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
@@ -61,7 +61,7 @@ class AdvancedOptons extends React.Component {
   };
 
   onChange = (field, value, groups) => {
-    const { onClassFieldChange, assignment, updateOptions, isReleaseScorePremium } = this.props;
+    const { onClassFieldChange, assignment, updateOptions, isReleaseScorePremium, userRole } = this.props;
     if (field === "class") {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, groups);
@@ -101,6 +101,15 @@ class AdvancedOptons extends React.Component {
           state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
         }
       }
+      if (field === "passwordPolicy") {
+        if (value === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+          state.openPolicy =
+            userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+              ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+              : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
+          state.passwordExpireIn = 15 * 60;
+        }
+      }
 
       state[field] = value;
     });
@@ -124,6 +133,7 @@ class AdvancedOptons extends React.Component {
             closePolicy={assignment.closePolicy}
             changeField={changeField}
             testType={assignment.testType || testSettings.testType}
+            passwordPolicy={assignment.passwordPolicy}
           />
           <StyledRowLabel gutter={16}>
             <Col>

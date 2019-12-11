@@ -117,7 +117,8 @@ function* loadTest({ payload }) {
         const { payload } = yield take(GET_ASSIGNMENT_PASSWORD);
         const response = yield call(assignmentApi.validateAssignmentPassword, {
           assignmentId: testActivity.testActivity.assignmentId,
-          password: payload
+          password: payload,
+          groupId
         });
         if (response === "successful") {
           passwordValidated = true;

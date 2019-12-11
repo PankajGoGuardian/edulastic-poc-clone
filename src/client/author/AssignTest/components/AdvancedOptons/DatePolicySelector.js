@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
 import { Col, Select } from "antd";
+import { test as testConst } from "@edulastic/constants";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./styled";
 import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
@@ -14,7 +15,8 @@ const DatePolicySelector = ({
   openPolicy: selectedOpenPolicy,
   closePolicy: selectedClosePolicy,
   userRole,
-  testType
+  testType,
+  passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
@@ -58,6 +60,7 @@ const DatePolicySelector = ({
             value={moment(startDate)}
             placeholder="Open Date"
             onChange={changeField("startDate")}
+            disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
           />
         </Col>
         <Col span={6}>
@@ -82,6 +85,7 @@ const DatePolicySelector = ({
             cache="false"
             value={selectedOpenPolicy}
             onChange={changeField("openPolicy")}
+            disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
           >
             {openPolicy.map(({ value, text }, index) => (
               <Select.Option key={index} value={value} data-cy="open">

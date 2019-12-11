@@ -117,12 +117,12 @@ const fetchAssignmentsClassList = ({ districtId, testId }) =>
     })
     .then(result => result.data.result);
 
-const validateAssignmentPassword = ({ assignmentId, password }) =>
+const validateAssignmentPassword = ({ assignmentId, password, groupId }) =>
   api
     .callApi({
       url: `${prefix}/${assignmentId}/validate-password`,
       method: "post",
-      data: { password }
+      data: { password, groupId }
     })
     .then(result => result.data);
 

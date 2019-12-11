@@ -144,10 +144,10 @@ class FeedbackRight extends Component {
       user,
       studentId,
       loadFeedbackResponses,
-      widget: { id, activity = {} }
+      widget: { id, activity = {} },
+      match
     } = this.props;
-
-    const { testActivityId, groupId, testItemId } = activity;
+    const { testActivityId, groupId = match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -204,6 +204,9 @@ class FeedbackRight extends Component {
     /**
      * arrow keys or escape key
      */
+    if (this.context?.expressGrader && this.context?.studentResponseLoading) {
+      return;
+    }
     if ((keyCode >= 37 && keyCode <= 40) || keyCode === 27) {
       this.preCheckSubmit();
       this.submitScore();

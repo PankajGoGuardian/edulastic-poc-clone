@@ -676,6 +676,11 @@ export const getStudentResponseSelector = createSelector(
   state => state.data
 );
 
+export const getStudentResponseLoadingSelector = createSelector(
+  stateStudentResponseSelector,
+  state => state.loading
+);
+
 export const getClassStudentResponseSelector = createSelector(
   stateClassStudentResponseSelector,
   state => state.data

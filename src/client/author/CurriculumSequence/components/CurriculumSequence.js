@@ -198,9 +198,8 @@ class CurriculumSequence extends Component {
         params: { id: _id }
       }
     } = this.props;
-    const { title, collectionName } = destinationCurriculumSequence;
-    const playlistTitle = collectionName || title;
-    useThisPlayList({ _id, title: playlistTitle });
+    const { title } = destinationCurriculumSequence;
+    useThisPlayList({ _id, title });
   };
 
   handleAddUnitOpen = () => {

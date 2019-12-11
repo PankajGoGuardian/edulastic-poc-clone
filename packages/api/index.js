@@ -37,3 +37,4 @@ export { default as segmentApi } from "./src/segment";
 export { default as passageApi } from "./src/passage";
 export { default as tagsApi } from "./src/tags";
 export { default as contentErrorApi } from "./src/contentError";
+export { default as rubricsApi } from "./src/rubrics";

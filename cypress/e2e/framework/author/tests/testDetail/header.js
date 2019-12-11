@@ -30,7 +30,7 @@ export default class TestHeader {
     if (edited) cy.route("PUT", "**/test/**").as("saveTest");
     else cy.route("POST", "**/test").as("saveTest");
 
-    cy.get('[data-cy="save"]').click();
+    cy.get('[data-cy="save"]').click({ force: true });
     return cy.wait("@saveTest").then(xhr => {
       expect(xhr.status).to.eq(200);
       const testId = xhr.response.body.result._id;

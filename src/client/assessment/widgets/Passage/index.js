@@ -20,7 +20,10 @@ import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork"
 
 const EmptyWrapper = styled.div``;
 
-const PassageWrapper = styled(Paper)`
+// Do not change id here
+const PassageWrapper = styled(Paper).attrs(() => ({
+  id: "passage-wrapper"
+}))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
   box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};

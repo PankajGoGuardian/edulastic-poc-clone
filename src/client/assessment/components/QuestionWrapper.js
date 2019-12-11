@@ -318,6 +318,7 @@ class QuestionWrapper extends Component {
       displayFeedback = true,
       isPrintPreview = false,
       evaluation,
+      scrollContainer,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
@@ -405,6 +406,7 @@ class QuestionWrapper extends Component {
                   advanced={advanced}
                   advancedAreOpen={advancedAreOpen}
                   handleAdvancedOpen={handleAdvancedOpen}
+                  scrollContainer={scrollContainer}
                 />
               </QuestionMenuWrapper>
             )}
@@ -413,7 +415,11 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               isV1Multipart={isV1Multipart}
               style={{
-                width: `${(view === "edit" && showQuestionMenu) || showFeedback ? "calc(100% - 265px)" : "100%"}`,
+                width: `${
+                  ((view === "edit" && showQuestionMenu) || showFeedback) && !disableResponse
+                    ? "calc(100% - 265px)"
+                    : "100%"
+                }`,
                 maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
                 display: "flex",
                 boxShadow: "none",

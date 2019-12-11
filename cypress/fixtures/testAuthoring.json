@@ -60,5 +60,26 @@
     "grade": ["Kindergarten", "Grade 10"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_STD.2", "MCQ_TF.1", "MCQ_MULTI.2"]
+  },
+  "search_1": {
+    "name": "Search Assessment 01",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1"],
+    "tags": ["abc", "xyz"]
+  },
+  "search_2": {
+    "name": "Search Assessment 02",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["DROP_CLOZE.default"],
+    "tags": ["xyz", "pqr"]
+  },
+  "search_3": {
+    "name": "Search Assessment 03",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.2"],
+    "tags": ["pqr", "abc", "tuv"]
   }
 }

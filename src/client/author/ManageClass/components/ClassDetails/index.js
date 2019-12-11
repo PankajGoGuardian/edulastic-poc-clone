@@ -45,7 +45,7 @@ const ClassDetails = ({
   syncClassUsingCode,
   archiveClass
 }) => {
-  const { _id, name } = selectedClass;
+  const { _id, name, cleverId } = selectedClass;
   const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
   let googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
@@ -96,6 +96,7 @@ const ClassDetails = ({
   ];
 
   const viewAssessmentHandler = () => {};
+
   return (
     <>
       {!classLoaded ? (
@@ -145,7 +146,7 @@ const ClassDetails = ({
               archiveClass={archiveClass}
             />
 
-            <ActionContainer loadStudents={loadStudents} history={history} />
+            <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
 
             <StudentsList selectStudent selectedClass={selectedClass} />
           </Container>

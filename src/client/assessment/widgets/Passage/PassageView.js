@@ -2,11 +2,10 @@
 /* eslint-disable func-names */
 
 import React, { useState, useEffect, useRef } from "react";
-import { isArray } from "lodash";
+import { isArray, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
-import produce from "immer";
-import { Stimulus, highlightSelectedText, WithResources, decodeHTML, rgbToHexc, RefContext } from "@edulastic/common";
+import { Stimulus, highlightSelectedText, WithResources, decodeHTML, RefContext } from "@edulastic/common";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -17,13 +16,15 @@ import { CLEAR } from "../../constants/constantsForQuestions";
 
 const ContentsTitle = Heading;
 let startedSelectingText = false;
+const highlightTag = "my-highlight";
 
 const PassageView = ({
   item,
   preview,
   flowLayout,
   setHighlights,
-  highlights = [],
+  highlights,
+  disableResponse,
   userWork,
   saveUserWork,
   clearUserWork,
@@ -33,76 +34,74 @@ const PassageView = ({
   const mainContentsRef = useRef();
   const [page, setPage] = useState(1);
   const [selected, toggleColorPicker] = useState(null);
+  // use the userWork in author mode
+  const _highlights = setHighlights ? highlights : userWork;
+
+  const everyHeighlight = (_, em) => {
+    const jQuery = window.$;
+    jQuery(em).on("mouseenter", function() {
+      if (!selected && !startedSelectingText) {
+        let deltaTop = 0;
+        let deltaLeft = 0;
+
+        if (
+          jQuery(em)
+            .parent()
+            .prop("tagName") === "TD"
+        ) {
+          jQuery(em).css("position", "relative");
+        }
+
+        jQuery(em)
+          .parents()
+          .each((i, parent) => {
+            if (jQuery(parent).attr("id") === "passage-wrapper") {
+              return false;
+            }
+            const p = jQuery(parent).css("position");
+            if (p === "relative") {
+              const offest = jQuery(parent).position();
+              deltaTop += offest.top;
+              deltaLeft += offest.left;
+            }
+          });
+
+        // top and left will be used to set position of color picker
+        const top = em.offsetTop + deltaTop + em.offsetHeight + 1; // 1px is for the arrow point
+        const left = em.offsetLeft + deltaLeft;
+        toggleColorPicker({ top, left, em });
+      }
+    });
+  };
 
   const addEventToSelectedText = () => {
     if (window.$) {
       const jQuery = window.$;
-      jQuery(".selected-text-heighlight").each(function(index) {
-        this.setAttribute("heighlight-index", index);
-        jQuery(this).on("mouseenter", function() {
-          if (!selected && !startedSelectingText) {
-            const top = this.offsetTop + this.offsetHeight + 1; // 1px is for the arrow point
-            const left = this.offsetLeft;
-            const bg = rgbToHexc(jQuery(this).css("backgroundColor"));
-            toggleColorPicker({ top, left, bg, index });
-          }
-        });
-      });
+      jQuery(highlightTag).each(everyHeighlight);
     }
   };
 
   const handleHighlight = () => {
     startedSelectingText = false;
-    highlightSelectedText("selected-text-heighlight unsaved");
+    highlightSelectedText("selected-text-heighlight", highlightTag);
     addEventToSelectedText();
   };
 
-  const getIndexForSameWord = (str, highlightIndex) => {
-    const regex = new RegExp(str, "g");
-    const { innerHTML: content } = mainContentsRef.current;
-    let i = 0;
-    let match = regex.exec(content);
-
-    const hStr = `heighlight-index="${highlightIndex}"`;
-
-    while (match) {
-      const frontStr = content.slice(match.index - (hStr.length + 1), match.index - 1);
-      const backStr = content.slice(match.index + str.length, match.index + str.length + 7);
-      if (backStr === "</span>" && hStr === frontStr) {
-        return i;
-      }
-      i += 1;
-      match = regex.exec(content);
-    }
-  };
-
   const clickHighligter = color => {
-    if (mainContentsRef.current) {
-      const { innerHTML: content } = mainContentsRef.current;
-      const regex = new RegExp('<span(.*?)class="selected-text-heighlight(.*?)">(.*?)</span>', "g");
-      const matchs = [];
-      let match = regex.exec(content);
-
-      while (match) {
-        matchs.push({
-          text: match.slice(3)[0],
-          style: match.slice(1)[0]
-        });
-        const index = getIndexForSameWord(matchs[matchs.length - 1].text, matchs.length - 1);
-        matchs[matchs.length - 1].index = index;
-        match = regex.exec(content);
+    if (mainContentsRef.current && selected) {
+      const jQuery = window.$;
+      const element = jQuery(selected.em);
+      if (color === "remove") {
+        element.replaceWith(element.html());
+      } else {
+        element.css("background-color", color);
       }
 
-      const highlightContent = produce(matchs, draft => {
-        if (color === "remove") {
-          draft = draft.splice(selected.index, 1);
-        } else {
-          draft[selected.index].color = color;
-          if (!color) {
-            delete draft[selected.index].color;
-          }
-        }
-      });
+      let { innerHTML: highlightContent } = mainContentsRef.current;
+
+      if (highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, "g")) === -1) {
+        highlightContent = null;
+      }
 
       if (setHighlights) {
         // this is available only at student side
@@ -113,9 +112,7 @@ const PassageView = ({
         saveUserWork({ [passageTestItemID]: { resourceId: highlightContent } });
       }
 
-      if (color === "remove") {
-        toggleColorPicker(null);
-      }
+      toggleColorPicker(null);
     }
   };
 
@@ -126,35 +123,13 @@ const PassageView = ({
   const getContent = () => {
     let { content } = item;
     content = decodeHTML(content);
-    // use the userWork in author mode
-    const _highlights = setHighlights ? highlights : userWork;
-    if (_highlights) {
-      for (let i = 0; i < _highlights.length; i++) {
-        if (_highlights[i]) {
-          const { color, style, text, index } = _highlights[i];
-          const highlightStyle = color ? `style="background-color:${color}"` : style;
-          const className = color
-            ? 'class="selected-text-heighlight active"'
-            : 'class="selected-text-heighlight unsaved"';
-          const replaceStr = `<span ${highlightStyle} ${className}>${text}</span>`;
-          if (!index) {
-            content = content.replace(new RegExp(text), replaceStr);
-          } else {
-            const regex = new RegExp(text, "g");
-            let wordIndex = 0;
-            let match = regex.exec(content);
-            while (match) {
-              if (wordIndex === index) {
-                content = content.substr(0, match.index) + replaceStr + content.substr(match.index + text.length);
-              }
-              wordIndex += 1;
-              match = regex.exec(content);
-            }
-          }
-        }
-      }
+    if (isEmpty(_highlights)) {
+      return content
+        .replace(/(<p>)/g, "")
+        .replace(/(<\/p>)/g, "<br/>")
+        .replace(/background-color: (.*?);/g, "");
     }
-    return content;
+    return _highlights;
   };
 
   const loadInit = () => {
@@ -196,10 +171,10 @@ const PassageView = ({
         <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
           <Stimulus
             id="mainContents"
-            onMouseUp={handleHighlight}
-            onMouseDown={handleMouseDown}
+            onMouseUp={disableResponse ? null : handleHighlight}
+            onMouseDown={disableResponse ? null : handleMouseDown}
             dangerouslySetInnerHTML={{ __html: getContent() }}
-            userSelect
+            userSelect={!disableResponse}
           />
         </RefContext.Provider>
       )}
@@ -231,8 +206,12 @@ const PassageView = ({
 
 PassageView.propTypes = {
   setHighlights: PropTypes.func.isRequired,
-  highlights: PropTypes.array.isRequired,
   item: PropTypes.object.isRequired,
+  saveUserWork: PropTypes.func.isRequired,
+  clearUserWork: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
+  highlights: PropTypes.array.isRequired,
+  userWork: PropTypes.array.isRequired,
   preview: PropTypes.bool,
   flowLayout: PropTypes.bool
 };

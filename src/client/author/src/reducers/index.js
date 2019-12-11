@@ -47,7 +47,7 @@ import pickUpQuestion from "./pickUpQuestion";
 import { dashboardTeacher } from "../../Dashboard";
 import { testItemPreview } from "../components/common/PreviewModal";
 import { classEnrollmentReducer } from "../../ClassEnrollment";
-
+import { rubricReducer } from "../../GradingRubric";
 const authorReducers = {
   authorUi,
   view,
@@ -97,7 +97,8 @@ const authorReducers = {
   pickUpQuestion,
   dashboardTeacher,
   testItemPreview,
-  classEnrollmentReducer
+  classEnrollmentReducer,
+  rubricReducer
 };
 
 export default authorReducers;

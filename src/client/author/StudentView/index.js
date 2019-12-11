@@ -173,16 +173,17 @@ class StudentViewContainer extends Component {
             title="Give Overall Feedback"
             onCancel={() => this.handleShowFeedbackPopup(false)}
             footer={[
-              <Button key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
+              <Button data-cy="cancel" key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={this.handleApply}>
+              <Button data-cy="submit" key="submit" type="primary" onClick={this.handleApply}>
                 Apply
               </Button>
             ]}
           >
             <p>Leave a feedback!</p>
             <Input.TextArea
+              data-cy="feedbackInput"
               rows={6}
               defaultValue={initFeedbackValue}
               ref={this.feedbackRef}
@@ -224,7 +225,12 @@ class StudentViewContainer extends Component {
               </StyledStudentTabButton>
             )}
           </StudentButtonWrapper>
-          <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active style={{ width: "25%" }}>
+          <GiveOverallFeedBackButton
+            data-cy="overallFeedback"
+            onClick={() => this.handleShowFeedbackPopup(true)}
+            active
+            style={{ width: "25%" }}
+          >
             <IconFeedback color={white} />
             {initFeedbackValue.length ? (
               <Tooltip title={feedbackButtonToolTip} placement={hasStickyHeader ? "bottom" : "top"}>
@@ -238,7 +244,7 @@ class StudentViewContainer extends Component {
 
         <div ref={this.questionsContainerRef}>
           {!loading && (
-            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <AnswerContext.Provider value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}>
               <ThemeProvider
                 theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
               >

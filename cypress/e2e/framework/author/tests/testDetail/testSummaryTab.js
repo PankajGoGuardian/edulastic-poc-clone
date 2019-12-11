@@ -52,4 +52,16 @@ export default class TestSummayTab {
       .find("li.ant-select-selection__choice")
       .should("contain", subject);
   };
+  addTags = tags => {
+    // tags should be an array
+    this.getTestTagsSelect()
+      .click({ force: true })
+      .find("input")
+      .as("TagTextBox");
+    tags.forEach(element => {
+      cy.get("@TagTextBox")
+        .type(element, { force: true })
+        .type("{enter}", { force: true });
+    });
+  };
 }

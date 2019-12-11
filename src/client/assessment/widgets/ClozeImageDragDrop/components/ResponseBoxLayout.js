@@ -80,7 +80,8 @@ const ResponseBoxLayout = ({
                 className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
                 style={{
                   ...choiceStyle,
-                  fontSize: smallSize ? 10 : fontSize
+                  fontSize: smallSize ? 10 : fontSize,
+                  transform: "translate3d(0px, 0px, 0px)"
                 }}
               >
                 {!dragHandler && (
@@ -89,9 +90,8 @@ const ResponseBoxLayout = ({
                     index={index}
                     onDrop={onDrop}
                     item={option}
-                    disableResponse={disableResponse}
+                    disableResponse={disableResponse || !isAnswerModifiable}
                     data={`${option}_null_${index}`}
-                    disableResponse={!isAnswerModifiable}
                   >
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
                   </DragItem>

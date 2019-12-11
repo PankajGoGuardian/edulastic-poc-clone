@@ -35,12 +35,16 @@ export default class TeacherSideBar {
     cy.wait(2000); // UI renders slow
   };
 
-  clickOnItemBank = () =>
+  clickOnItemBank = () => {
+    cy.server();
+    cy.route("POST", "**/search/**").as("itemSearch");
+
     this.menuItems()
       .get('[data-cy="Item Bank"]')
       .click({ force: true })
       .click({ force: true });
-
+    cy.wait("@itemSearch");
+  };
   clickOnTestLibrary = () => {
     cy.server();
     cy.route("POST", "**/search/tests").as("searchTest");

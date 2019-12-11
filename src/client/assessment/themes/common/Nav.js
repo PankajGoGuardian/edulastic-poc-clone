@@ -3,8 +3,9 @@ import { themeColor } from "@edulastic/colors";
 
 const sharedBtnStyle = css`
   background-color: transparent;
-  position: absolute;
-  top: 48%;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
   font-size: 40px;
   cursor: pointer;
@@ -14,8 +15,8 @@ const sharedBtnStyle = css`
   align-items: center;
   justify-content: center;
   @media (min-width: 1025px) {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     &:hover {
       background-color: ${themeColor};
       color: #fff;
@@ -24,12 +25,12 @@ const sharedBtnStyle = css`
 `;
 const BackArrow = styled.nav`
   ${sharedBtnStyle}
-  left: 10px;
+  left: 4px;
 `;
 
 const NextArrow = styled.nav`
   ${sharedBtnStyle}
-  right: 10px;
+  right: 4px;
 `;
 
 export default { NextArrow, BackArrow };

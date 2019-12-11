@@ -50,7 +50,8 @@ export default class FormMath extends React.Component {
   renderForm = mode => {
     const {
       question: { numberPad, symbols },
-      answer
+      answer,
+      view
     } = this.props;
 
     if (mode === "report") {
@@ -58,7 +59,14 @@ export default class FormMath extends React.Component {
     }
     return (
       <ThemeProvider theme={themes.default}>
-        <MathAnswer onInput={this.handleChange} numberPad={numberPad} symbols={symbols} value={answer} fullWidth />
+        <MathAnswer
+          onInput={this.handleChange}
+          numberPad={numberPad}
+          symbols={symbols}
+          check={["check", "show"].includes(view)}
+          value={answer}
+          fullWidth
+        />
       </ThemeProvider>
     );
   };

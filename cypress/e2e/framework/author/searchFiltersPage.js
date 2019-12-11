@@ -55,4 +55,19 @@ export default class SearchFilters {
     this.waitForSearchResponse();
     cy.wait(1000);
   };
+  getSearch = () => cy.get(".ant-input-search");
+
+  getSearchTextBox = () => this.getSearch().find("input");
+
+  typeInSearchBox = key => {
+    this.getSearch();
+    this.getSearchTextBox().type(key, { force: true });
+    this.waitForSearchResponse();
+  };
+  clickOnSearchIcon = () => {
+    this.getSearch()
+      .find("i")
+      .click({ force: true });
+    this.waitForSearchResponse();
+  };
 }

@@ -95,12 +95,17 @@ const ResponseBoxLayout = ({
                           groupResponse.options.map((option, itemIndex) => {
                             const { value, label = "" } = option;
                             return (
-                              <div key={itemIndex} className="draggable_box">
+                              <div
+                                key={itemIndex}
+                                className="draggable_box"
+                                style={{ transform: "translate3d(0px, 0px, 0px)" }}
+                              >
                                 {!dragHandler && (
                                   <Draggable
                                     onDrop={onDrop}
                                     data={`${value}_${index}`}
                                     isAnswerModifiable={isAnswerModifiable}
+                                    style={itemStyle}
                                   >
                                     <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                                   </Draggable>
@@ -110,6 +115,7 @@ const ResponseBoxLayout = ({
                                     <Draggable
                                       onDrop={onDrop}
                                       data={`${value}_${index}`}
+                                      style={itemStyle}
                                       isAnswerModifiable={isAnswerModifiable}
                                     >
                                       <i
@@ -137,15 +143,25 @@ const ResponseBoxLayout = ({
               responses.map((option, index) => {
                 const { label, value } = option;
                 return (
-                  <StyledResponseOption id={`response-item-${index}`} key={value} className="draggable_box">
+                  <StyledResponseOption
+                    id={`response-item-${index}`}
+                    key={value}
+                    className="draggable_box"
+                    style={{ transform: "translate3d(0px, 0px, 0px)" }}
+                  >
                     {!dragHandler && (
-                      <Draggable onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
+                      <Draggable style={itemStyle} onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
                         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                       </Draggable>
                     )}
                     {dragHandler && (
                       <React.Fragment>
-                        <Draggable onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
+                        <Draggable
+                          style={itemStyle}
+                          onDrop={onDrop}
+                          data={value}
+                          isAnswerModifiable={isAnswerModifiable}
+                        >
                           <i
                             className="fa fa-arrows-alt"
                             style={{

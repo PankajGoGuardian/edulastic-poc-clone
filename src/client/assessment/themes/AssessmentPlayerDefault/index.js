@@ -358,7 +358,7 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad;
 
     // calculate width of question area
-    const availableWidth = windowWidth - 170;
+    const availableWidth = windowWidth - 70;
     let responsiveWidth = availableWidth;
     let zoomLevel = _zoomLevel;
 
@@ -371,6 +371,16 @@ class AssessmentPlayerDefault extends React.Component {
       }
     } else if (availableWidth / zoomLevel > defaultContentWidth && zoomLevel > "1") {
       responsiveWidth = availableWidth / zoomLevel;
+    }
+    // 20, 18 and 12 are right margin for right nave on zooming
+    if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+      responsiveWidth -= 20;
+    }
+    if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+      responsiveWidth -= 18;
+    }
+    if (zoomLevel >= 2.5) {
+      responsiveWidth -= 12;
     }
 
     const hasCollapseButtons =
@@ -579,11 +589,11 @@ class AssessmentPlayerDefault extends React.Component {
           >
             {currentItem > 0 && (
               <Nav.BackArrow onClick={moveToPrev}>
-                <i class="fa fa-angle-left" />
+                <i className="fa fa-angle-left" />
               </Nav.BackArrow>
             )}
             <Nav.NextArrow onClick={moveToNext}>
-              <i class="fa fa-angle-right" />
+              <i className="fa fa-angle-right" />
             </Nav.NextArrow>
             {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
                 Also, will use ScrollContext for auto-scroll on mobile */}

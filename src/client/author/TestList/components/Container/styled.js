@@ -153,7 +153,7 @@ export const SearchModalContainer = styled.div`
 
 export const AffixWrapper = styled(Affix)`
   position: fixed;
-  width: 260px;
+  width: 250px;
   top: ${props => props.theme.HeaderHeight.xs}px;
   padding: 20px 0px;
 

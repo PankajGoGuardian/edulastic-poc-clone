@@ -107,6 +107,7 @@ DragItemContainer.defaultProps = {
 const MainWrapper = styled.div`
   max-width: 100%;
   margin: 5px;
+  transform: translate3d(0px, 0px, 0px);
 `;
 
 export default DragSource("item", specSource, collectSource)(DragItemContainer);

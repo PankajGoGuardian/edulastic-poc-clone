@@ -156,7 +156,7 @@ class LoginContainer extends React.Component {
                       span={20}
                       offset={2}
                       onClick={() => {
-                        cleverLogin();
+                        cleverLogin("teacher");
                       }}
                     >
                       <img src={cleverIcon} alt="" />

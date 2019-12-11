@@ -19,7 +19,8 @@ const SubHeader = ({
   allowGoogleLogin,
   fetchClassList,
   isUserGoogleLoggedIn,
-  archiveClass
+  archiveClass,
+  cleverId
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalInputVal, setModalInputVal] = useState("");
@@ -58,7 +59,7 @@ const SubHeader = ({
             >
               <IconGoogleClassroom width={22} height={22} />
             </i>
-          ) : (
+          ) : !cleverId ? (
             <GoogleLogin
               clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
               render={renderProps => (
@@ -76,10 +77,10 @@ const SubHeader = ({
               prompt="consent"
               responseType="code"
             />
-          ))}
+          ) : null)}
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
         {/* <StyledIcon type="user" fill={greenDark} />*/}
-        {active === 1 && (
+        {active === 1 && !cleverId && (
           <Tooltip placement="top" title={"Archive Class"}>
             <span onClick={() => setShowModal(true)}>
               <IconArchiveClass width={20} height={20} />

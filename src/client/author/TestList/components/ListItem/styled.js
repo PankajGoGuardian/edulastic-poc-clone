@@ -25,9 +25,14 @@ export const ListCard = styled(Card)`
 
 export const Inner = styled.div`
   padding: 0px 0px 0px 25px;
-  width: calc(100% - 125px);
+  width: auto;
   display: inline-block;
   vertical-align: middle;
+`;
+
+export const Outer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const Description = styled.div`
@@ -138,10 +143,9 @@ export const Stars = styled(Rate)`
 `;
 
 export const StyledLink = styled.a`
+  width: 100%;
   font-size: 16px;
   font-weight: bold;
-  display: inline-flex;
-  align-items: center;
   text-decoration: none;
   color: #00ad50;
   cursor: pointer;
@@ -208,6 +212,10 @@ export const CardId = styled.span`
 `;
 
 export const ViewButtonWrapper = styled(Col)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 125px;
   padding-left: 45px !important;
   padding-right: 0px !important;
 `;
@@ -228,6 +236,7 @@ export const ViewButton = styled.div`
   border-radius: 4px;
   font-weight: 600;
   text-align: center;
+  margin-top: 8px;
   cursor: pointer;
   &:hover {
     background: ${lightGrey};

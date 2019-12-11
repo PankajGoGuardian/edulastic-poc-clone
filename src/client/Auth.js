@@ -5,6 +5,7 @@ import { get } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
+import { CleverUnauthorizedPopup } from "./student/SsoLogin/CleverUnauthorizedPopup";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
 import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -18,7 +19,7 @@ const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login
 const SsoLogin = lazy(() => import(/* webpackChunkName:"SSo Login" */ "./student/SsoLogin"));
 
 const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
-  if (location.hash !== "#signup") {
+  if (location.hash !== "#signup" && location.hash !== "#login") {
     window.location.hash = "#login";
   }
 
@@ -31,6 +32,18 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
     return <Redirect exact to="/author/dashboard" />;
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
+  } else if (location?.state?.showCleverUnauthorized) {
+    return (
+      <>
+        <Login
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
+        <CleverUnauthorizedPopup visible={true} footer={null} />
+      </>
+    );
   } else if (location.pathname.toLocaleLowerCase().includes("auth")) {
     return (
       <>

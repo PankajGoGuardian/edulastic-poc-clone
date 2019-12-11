@@ -2,10 +2,12 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { get, isUndefined, toNumber, round } from "lodash";
+import { get, isUndefined, toNumber, round, maxBy, sumBy, isEqual } from "lodash";
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { rubricsApi } from "@edulastic/api";
+import PreviewRubricModal from "../../author/GradingRubric/Components/common/PreviewRubricModal";
 
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -15,7 +17,8 @@ import {
   mediumDesktopWidth,
   themeColor,
   themeColorTagsBg,
-  tabGrey
+  tabGrey,
+  white
 } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
@@ -45,7 +48,7 @@ class FeedbackRight extends Component {
       maxScore = props?.widget?.validation?.validResponse?.score || 0;
     }
 
-    this.state = { score, maxScore };
+    this.state = { score, maxScore, rubricDetails: null, showPreviewRubric: false };
 
     this.scoreInput = React.createRef();
   }
@@ -54,6 +57,12 @@ class FeedbackRight extends Component {
   componentDidMount() {
     if (this.context?.expressGrader === true) {
       this.scoreInput?.current?.focus();
+    }
+    const {
+      widget: { rubrics }
+    } = this.props;
+    if (rubrics) {
+      this.fetchRubricDetails(rubrics.id);
     }
   }
 
@@ -94,38 +103,62 @@ class FeedbackRight extends Component {
     return newState;
   }
 
-  onScoreSubmit() {
-    const { score, maxScore } = this.state;
-    if (!score || isNaN(score)) {
-      message.warn("Score should be a valid numerical");
-      return;
-    }
-    const _score = toNumber(score);
-    if (_score > maxScore) {
-      message.warn("Score given should be less than or equal to maximum score");
-      return;
-    }
+  fetchRubricDetails = async id => {
+    await rubricsApi
+      .getRubricsById(id)
+      .then(res => {
+        this.setState({ rubricDetails: res[0] });
+      })
+      .catch(err => {
+        message.error("Unable to fetch Rubric details");
+      });
+  };
 
+  onScoreSubmit(rubricResponse) {
+    const { score, maxScore } = this.state;
+    const { currentScreen } = this.context;
     const {
       user,
       updateQuestionActivityScore,
-      widget: { id, activity = {} }
+      widget: { rubrics, id, activity = {} },
+      studentId
     } = this.props;
+
+    let _score;
+
+    if (!rubrics) {
+      if (!score || isNaN(score)) {
+        message.warn("Score should be a valid numerical");
+        return;
+      }
+      _score = toNumber(score);
+      if (_score > maxScore) {
+        message.warn("Score given should be less than or equal to maximum score");
+        return;
+      }
+    } else if (!rubricResponse) _score = toNumber(score);
 
     const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
 
-    this.props.setTeacherEditedScore({ [id]: _score });
+    if (!rubricResponse) this.props.setTeacherEditedScore({ [id]: _score });
 
-    updateQuestionActivityScore({
-      score: _score,
+    const payload = {
+      score: rubricResponse ? rubricResponse : { score: _score },
       testActivityId,
       questionId: id,
       itemId: testItemId,
-      groupId
-    });
+      groupId,
+      studentId
+    };
+
+    if (currentScreen === "live_class_board") {
+      payload.shouldReceiveStudentResponse = true;
+    }
+
+    updateQuestionActivityScore(payload);
   }
 
   onFeedbackSubmit() {
@@ -134,10 +167,10 @@ class FeedbackRight extends Component {
       user,
       studentId,
       loadFeedbackResponses,
-      widget: { id, activity = {} }
+      widget: { id, activity = {} },
+      match
     } = this.props;
-
-    const { testActivityId, groupId, testItemId } = activity;
+    const { testActivityId, groupId = match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -191,8 +224,15 @@ class FeedbackRight extends Component {
   };
 
   arrowKeyHandler = ({ keyCode }) => {
-    if (keyCode >= 37 && keyCode <= 40) {
+    /**
+     * arrow keys or escape key
+     */
+    if (this.context?.expressGrader && this.context?.studentResponseLoading) {
+      return;
+    }
+    if ((keyCode >= 37 && keyCode <= 40) || keyCode === 27) {
       this.preCheckSubmit();
+      this.submitScore();
     }
   };
 
@@ -205,18 +245,51 @@ class FeedbackRight extends Component {
     }
   }
 
+  handleRubricAction = async () => {
+    const {
+      widget: { rubrics }
+    } = this.props;
+    const { rubricDetails } = this.state;
+    if (rubricDetails && rubricDetails._id === rubrics.id) {
+      this.setState({ showPreviewRubric: true });
+    } else {
+      await rubricsApi
+        .getRubricsById(rubrics.id)
+        .then(res => {
+          this.setState({ rubricDetails: res[0], showPreviewRubric: true });
+        })
+        .catch(err => {
+          message.error("Unable to fetch Rubric details");
+        });
+    }
+  };
+
+  handleRubricResponse = res => {
+    const {
+      widget: {
+        activity: { rubricFeedback, score }
+      }
+    } = this.props;
+    this.setState({ showPreviewRubric: false });
+    if ((res && !isEqual(res.rubricFeedback, rubricFeedback)) || score !== res.score)
+      this.setState({ score: res.score }, this.onScoreSubmit(res));
+  };
+
   render() {
     const {
       studentName,
-      widget: { activity },
+      widget: { activity, rubrics },
       isPresentationMode,
       color,
       icon,
       twoColLayout,
       showCollapseBtn
     } = this.props;
-    const { score, maxScore, feedback, submitted } = this.state;
-    const isError = maxScore < score;
+    const { score, maxScore, feedback, submitted, showPreviewRubric, rubricDetails } = this.state;
+    let rubricMaxScore = 0;
+    if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
+    const { rubricFeedback } = activity || {};
+    const isError = rubricDetails ? false : maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
 
@@ -265,9 +338,14 @@ class FeedbackRight extends Component {
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
             />
-            <TextPara>{maxScore}</TextPara>
+            <TextPara>{rubricMaxScore || maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
+        {rubrics && (
+          <RubricsWrapper>
+            <RubricsButton onClick={() => this.handleRubricAction()}>Grading Rubric</RubricsButton>
+          </RubricsWrapper>
+        )}
         <LeaveDiv>{isError ? "Score is too large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (
           <Fragment>
@@ -281,6 +359,16 @@ class FeedbackRight extends Component {
               onKeyDown={this.onKeyDownFeedback}
             />
           </Fragment>
+        )}
+
+        {showPreviewRubric && (
+          <PreviewRubricModal
+            visible={showPreviewRubric}
+            currentRubricData={rubricDetails}
+            toggleModal={this.handleRubricResponse}
+            maxScore={rubricMaxScore}
+            rubricFeedback={rubricFeedback}
+          />
         )}
       </StyledCardTwo>
     );
@@ -455,4 +543,21 @@ const UserAvatar = styled(Avatar)`
   margin-right: 10px;
   font-size: 14px;
   text-transform: uppercase;
+`;
+
+const RubricsWrapper = styled.div`
+  margin-top: 15px;
+`;
+
+const RubricsButton = styled.span`
+  display: block;
+  text-align: center;
+  padding: 10px;
+  color: ${white};
+  background: ${themeColor};
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: ${props => props.theme.smallFontSize};
+  font-weight: ${props => props.theme.semiBold};
 `;

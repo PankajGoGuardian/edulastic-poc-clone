@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 
-import { MathSpan, measureText } from "@edulastic/common";
+import { MathSpan, measureText, AnswerContext } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
 import { Popover } from "antd";
 import Droppable from "./Droppable";
@@ -35,6 +35,9 @@ const TemplateBox = ({ resprops, id }) => {
     minWidth: response ? width : "auto",
     maxWidth: maxWidth || "auto"
   };
+
+  const { isAnswerModifiable } = useContext(AnswerContext);
+
   const getData = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {
@@ -73,6 +76,7 @@ const TemplateBox = ({ resprops, id }) => {
           <Draggable
             className="content"
             onDrop={onDrop}
+            isAnswerModifiable={isAnswerModifiable}
             data={`${getData("value")}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}
             style={{ display: "flex", justifyContent: "flext-start", alignItems: "center", height: "100%" }}
@@ -88,6 +92,7 @@ const TemplateBox = ({ resprops, id }) => {
           <Draggable
             className="content"
             onDrop={onDrop}
+            isAnswerModifiable={isAnswerModifiable}
             data={`${getDataForGroup("value")}_${userAnswers[dropTargetIndex] &&
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
             smallSize={smallSize}

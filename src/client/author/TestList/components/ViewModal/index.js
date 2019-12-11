@@ -98,6 +98,7 @@ class ViewModal extends React.Component {
       }
     };
     const isDeleteAllowed = !!find(authors, o => o._id === userId);
+
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
         <ModalTitle>
@@ -181,7 +182,9 @@ class ViewModal extends React.Component {
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
-                <IconText>{sharing[0] ? sharing[0].type : "Public Library"}</IconText>
+                <IconText>
+                  {sharing[0] ? sharing[0].type : item.status === "draft" ? "Private Library" : "Public Library"}
+                </IconText>
               </FooterIcon>
               <FooterIcon rotate>
                 <IconShare color={darkGrey} width={14} height={14} />

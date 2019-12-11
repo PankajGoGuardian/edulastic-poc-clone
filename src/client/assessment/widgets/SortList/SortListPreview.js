@@ -24,6 +24,7 @@ import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { Container } from "./styled/Container";
 
 const {
   maxWidth: choiceDefaultMaxW,
@@ -227,12 +228,14 @@ const SortListPreview = ({
   const sourceItemStyle = {
     marginBottom: smallSize ? 6 : 12,
     borderRadius: 4,
+    transform: "translate3d(0px, 0px, 0px)",
     ...dragItemStyle
   };
 
   const targetItemStyle = {
     marginBottom: smallSize ? 6 : 12,
     borderRadius: 4,
+    transform: "translate3d(0px, 0px, 0px)",
     ...dragItemStyle
   };
 
@@ -243,7 +246,7 @@ const SortListPreview = ({
         {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
       </QuestionTitleWrapper>
 
-      <div style={contentStyle}>
+      <Container style={contentStyle}>
         <FlexContainer
           data-cy="sortListComponent"
           flexDirection={flexDirection}
@@ -279,7 +282,7 @@ const SortListPreview = ({
             ))}
           </FullWidthContainer>
 
-          <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection}>
+          <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection} flexWrap="nowrap">
             {isVertical ? (
               <>
                 <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
@@ -344,7 +347,7 @@ const SortListPreview = ({
             stemNumeration={stemNumeration}
           />
         )}
-      </div>
+      </Container>
     </StyledPaperWrapper>
   );
 };

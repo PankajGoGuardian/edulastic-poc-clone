@@ -333,15 +333,27 @@ export const clearSelection = () => {
   }
 };
 
-export const highlightSelectedText = (className = "token active-word") => {
+/**
+ *
+ * @param {string} className class name of new element, default is 'token active-word
+ * @param {string} tag new element tag name, default is span
+ * @returns {boolean}
+ */
+export const highlightSelectedText = (className = "token active-word", tag = "span") => {
   const selection = getSelection();
   if (!selection.rangeCount) {
     console.log("Unable to find a native DOM range from the current selection.");
     return;
   }
   const range = selection.getRangeAt(0);
-  const { endContainer, endOffset, startContainer, startOffset } = range;
+  const { endContainer, endOffset, startContainer, startOffset, commonAncestorContainer } = range;
   if (startOffset === endOffset) {
+    clearSelection();
+    return;
+  }
+
+  if (get(commonAncestorContainer, "offsetParent.tagName", null) === "TABLE") {
+    message.error("You can not select text with a table. Please select a text inside the table.");
     clearSelection();
     return;
   }
@@ -356,9 +368,13 @@ export const highlightSelectedText = (className = "token active-word") => {
   }
 
   try {
-    const newNode = document.createElement("span");
-    newNode.setAttribute("class", className);
-    range.surroundContents(newNode);
+    const node = document.createElement(tag);
+    const fragment = range.extractContents();
+
+    node.setAttribute("class", className);
+    node.appendChild(fragment);
+    range.insertNode(node);
+
     clearSelection();
     return true;
   } catch (err) {

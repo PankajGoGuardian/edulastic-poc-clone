@@ -102,15 +102,11 @@ function* evaluateAnswers({ payload }) {
     yield put({
       type: CLEAR_ITEM_EVALUATION
     });
-
-    // url path that the user is at
-    const currentPath = yield select(state => _get(state, "router.location.pathname", ""));
-    // User is at the question level
-    if (payload === "question" || payload?.mode === "show") {
+    // User is at the question
+    const question = yield select(getCurrentQuestionSelector);
+    if (payload === "question" || (payload?.mode === "show" && question)) {
       const answers = yield select(state => _get(state, "answers", []));
-      const question = yield select(getCurrentQuestionSelector);
       const { evaluation, score, maxScore } = yield evaluateItem(answers, { [question?.id]: question });
-
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {

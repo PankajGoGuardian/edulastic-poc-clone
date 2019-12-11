@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Layout, Menu, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
+import { ErrorHandler } from "@edulastic/common";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { themes } from "../theme";
 import Sider from "./Common/Sider";
@@ -68,12 +69,14 @@ function Admin({ match, history, logoutAction, location }) {
           }}
         </Sider>
         <MainDiv>
-          <Switch>
-            <Redirect exact path={match.path} to={`${match.path}/search`} />
-            <Route path={`${match.path}/search`} component={CleverSearch} />
-            <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
-            <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
-          </Switch>
+          <ErrorHandler>
+            <Switch>
+              <Redirect exact path={match.path} to={`${match.path}/search`} />
+              <Route path={`${match.path}/search`} component={CleverSearch} />
+              <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
+              <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
+            </Switch>
+          </ErrorHandler>
         </MainDiv>
       </Layout>
     </ThemeProvider>

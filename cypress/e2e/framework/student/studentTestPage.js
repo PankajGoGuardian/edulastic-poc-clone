@@ -45,7 +45,7 @@ class StudentTestPage {
   clickOnNext = () => {
     // cy.server();
     // cy.route("POST", "**/test-activity/**").as("saved");
-    cy.wait(500);
+    cy.wait(300);
     this.getNext()
       .should("be.visible")
       .click();
@@ -622,7 +622,7 @@ class StudentTestPage {
   };
 
   attemptQuestion = (attemptQueType, attemptType, attemptData) => {
-    cy.wait(1000); // double rendering issue causes choices to suffle and breaks test, hence waiting
+    cy.wait(300); // double rendering issue causes choices to suffle and breaks test, hence waiting
     const { right, wrong, partialCorrect } = attemptData;
     const attempts =
       attemptType === attemptTypes.RIGHT
@@ -653,10 +653,8 @@ class StudentTestPage {
         break;
       }
       case questionType.DROP_TEXT_CLOZE:
-        {
-          if (attemptType !== attemptTypes.SKIP) {
-            this.checkAnsDropdown(attemptData);
-          }
+        if (attemptType !== attemptTypes.SKIP) {
+          this.checkAnsDropdown(attemptData);
         }
         break;
       default:

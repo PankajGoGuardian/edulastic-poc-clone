@@ -16,6 +16,7 @@ const MathDisplayWrapper = styled.span`
     min-width: ${({ styles }) => (styles.width ? styles.width : "auto")};
     height: ${({ styles }) => styles.height || "auto"};
     vertical-align: middle;
+    align-items: ${({ styles }) => styles.alignItems};
   }
 `;
 

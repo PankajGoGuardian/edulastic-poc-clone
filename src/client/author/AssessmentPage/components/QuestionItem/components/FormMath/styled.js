@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MathInput } from "@edulastic/common";
 
 export const MathAnswer = styled(MathInput)`
+  width: ${({ check }) => check && "210px"};
   .input {
     height: 40px;
 

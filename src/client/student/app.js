@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
+import { ErrorHandler } from "@edulastic/common";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
@@ -23,7 +24,7 @@ import StartAssignment from "./StartAssignment";
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 
-const StudentApp = ({ match, selectedTheme, zoomLevel }) => {
+const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
   let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
@@ -34,27 +35,32 @@ const StudentApp = ({ match, selectedTheme, zoomLevel }) => {
         <MainContainer>
           <Sidebar />
           <Wrapper>
-            <Switch>
-              <Route path={`${match.url}/assignments`} component={Assignment} />
-              <Route path={`${match.url}/dashboard`} component={Assignment} />
-              <Route
-                path={`${
-                  match.url
-                }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
-                component={DeepLink}
-              />
-              <Route
-                path={`${match.url}/seb/test/:testId/type/:testType/assignment/:assignmentId`}
-                component={DeepLink}
-              />
+            <ErrorHandler>
+              <Switch>
+                <Route path={`${match.url}/assignments`} component={Assignment} />
+                <Route path={`${match.url}/dashboard`} component={Assignment} />
+                <Route
+                  path={`${
+                    match.url
+                  }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
+                  component={DeepLink}
+                />
+                <Route
+                  path={`${match.url}/seb/test/:testId/type/:testType/assignment/:assignmentId`}
+                  component={DeepLink}
+                />
 
-              <Route path={`${match.url}/grades`} component={Report} />
-              <Route path={`${match.url}/skill-mastery`} component={SkillReportContainer} />
-              <Route path={`${match.url}/manage`} component={ManageClass} />
-              <Route path={`${match.url}/profile`} component={Profile} />
-              <Route path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`} component={ReportList} />
-              <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
-            </Switch>
+                <Route path={`${match.url}/grades`} component={Report} />
+                <Route path={`${match.url}/skill-mastery`} component={SkillReportContainer} />
+                <Route path={`${match.url}/manage`} component={ManageClass} />
+                <Route path={`${match.url}/profile`} component={Profile} />
+                <Route
+                  path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`}
+                  component={ReportList}
+                />
+                <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
+              </Switch>
+            </ErrorHandler>
           </Wrapper>
         </MainContainer>
       </Layout>

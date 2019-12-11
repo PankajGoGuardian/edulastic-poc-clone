@@ -15,7 +15,13 @@ import { IconClose } from "./styled/IconClose";
 export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, index, style, isReviewTab }) => {
   const popoverContent = <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />;
   const { scrollWidth } = measureText(obj, style);
-  const showPopover = scrollWidth > style.maxWidth;
+  /**
+   * 10 will be ellipsis width at other parts,
+   * measureText method returns scrollWidth + 10
+   * but in this type, drag item is not using ellipsis.
+   * so need to reduce 10px
+   */
+  const showPopover = scrollWidth - 10 > style.maxWidth;
   const checkStyle = !active && showPreview && !isReviewTab;
 
   const content = (

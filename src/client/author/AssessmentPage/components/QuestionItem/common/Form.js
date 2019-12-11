@@ -49,4 +49,5 @@ export const QuestionText = styled.p`
   margin: 0;
   font-size: 14px;
   padding: 10px 0;
+  width: ${({ check }) => check && "210px"};
 `;

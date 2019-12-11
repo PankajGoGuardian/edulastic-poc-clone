@@ -167,6 +167,7 @@ class Container extends Component {
             data={question}
             questionId={question.id}
             saveClicked={saveClicked}
+            scrollContainer={this.scrollContainer}
           />
           {showHints && <Hints questions={[question]} />}
         </HideScoringBlackContext.Provider>
@@ -382,7 +383,6 @@ class Container extends Component {
 
       return <div />;
     }
-   
 
     const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;

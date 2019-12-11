@@ -3,7 +3,7 @@ import SearchFilters from "../../../../framework/author/searchFiltersPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import TestHeader from "../../../../framework/author/tests/testDetail/header";
-const userData = require("../../../../fixtures/users");
+const userData = require("../../../../../fixtures/users");
 const { dist1, dist2 } = userData["Sharing"];
 
 describe("Test Sharing", () => {
@@ -88,7 +88,7 @@ describe("Test Sharing", () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
-          testLibrary.checkforRemovedShare(test_id);
+          testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
       context("With published test", () => {
@@ -132,7 +132,7 @@ describe("Test Sharing", () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
-          testLibrary.checkforRemovedShare(test_id);
+          testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
     });
@@ -175,7 +175,7 @@ describe("Test Sharing", () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
-          testLibrary.checkforRemovedShare(test_id);
+          testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
       context("With draft test", () => {
@@ -217,7 +217,7 @@ describe("Test Sharing", () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
-          testLibrary.checkforRemovedShare(test_id);
+          testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
     });
@@ -307,7 +307,7 @@ describe("Test Sharing", () => {
         // Enable sharing at School Level
         testLibrary.clickSharePop();
       });
-      it(`for${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School}`, () => {
+      it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School`, () => {
         //Verify sharing for techer from same school
         testLibrary.verifySharedTest(DIST1_SCHOOL1[TEACHER2][EMAIL], test_id);
       });
@@ -327,7 +327,7 @@ describe("Test Sharing", () => {
         testLibrary.header.clickOnShare();
         testLibrary.removeShare("School");
       });
-      it(`for${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School`, () => {
+      it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School`, () => {
         testLibrary.verifyRemovedShareTest(DIST1_SCHOOL1[TEACHER2][EMAIL], test_id);
       });
     });

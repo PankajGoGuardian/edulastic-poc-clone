@@ -18,8 +18,9 @@ export const Container = styled.div`
     }
     .ant-select-selection {
       border: 0px;
+      padding: 0 11px;
       .ant-select-arrow {
-        right: 0px;
+        right: 11px;
         .ant-select-arrow-icon {
           svg {
             fill: #434b5d;

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Button, Row, Radio, Select, DatePicker, message, Col } from "antd";
 import moment from "moment";
+import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
 import { getUserName } from "../utils";
@@ -51,7 +52,8 @@ const RedirectPopUp = ({
   assignmentId,
   absentList = [],
   disabledList = [],
-  groupId
+  groupId,
+  testActivity
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [loading, setLoading] = useState(false);
@@ -91,22 +93,34 @@ const RedirectPopUp = ({
           : "At least one student should be selected to redirect assessment."
       );
     } else {
-      await assignmentApi
-        .redirect(assignmentId, {
-          _id: groupId,
-          specificStudents: type === "entire" ? false : true,
-          students: type === "entire" ? [] : selected,
-          showPreviousAttempt: showPrevAttempt,
-          questionsDelivery: qDeliveryState,
-          endDate: +dueDate
-        })
-        .then(() => {
-          message.success("Redirect Successful");
-        })
-        .catch(err => {
-          message.error(err.data.message);
-        });
-      closePopup();
+      let _selected = selected;
+      if (qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG) {
+        const selectedStudentsTestActivity = testActivity.filter(
+          item => studentsToRedirect[item.studentId] && some(item.questionActivities, o => o.skipped || !o.correct)
+        );
+        _selected = selectedStudentsTestActivity.map(item => item.studentId);
+      }
+
+      if (_selected.length) {
+        await assignmentApi
+          .redirect(assignmentId, {
+            _id: groupId,
+            specificStudents: type === "entire" ? false : true,
+            students: type === "entire" ? [] : _selected,
+            showPreviousAttempt: showPrevAttempt,
+            questionsDelivery: qDeliveryState,
+            endDate: +dueDate
+          })
+          .then(() => {
+            message.success("Redirect Successful");
+          })
+          .catch(err => {
+            message.error(err?.data?.message);
+          });
+        closePopup();
+      } else {
+        message.error("Please select students with incorrect or skipped questions.");
+      }
     }
     setLoading(false);
   }, [studentsToRedirect, assignmentId, dueDate, groupId, showPrevAttempt, qDeliveryState]);

@@ -31,7 +31,7 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
       {students && students.filter(valid).length !== 0 && (
         <FlexContainer justifyContent="flex-end">
           <Container>
-            <StyledSelect style={{ width: "160px" }} value={user} onChange={onSortChange}>
+            <StyledSelect value={user} onChange={onSortChange}>
               {students.map((student, index) => {
                 return (
                   <Select.Option key={index} value={student.testActivityId || null} disabled={!valid(student)}>

@@ -39,13 +39,20 @@ export default class FormText extends React.Component {
   };
 
   renderForm = () => {
-    const { answer } = this.props;
-    return <Input size="large" value={answer} onChange={this.handleChange} />;
+    const { answer, view } = this.props;
+    return (
+      <Input
+        size="large"
+        value={answer}
+        style={{ width: ["check", "show"].includes(view) && "210px" }}
+        onChange={this.handleChange}
+      />
+    );
   };
 
   renderReport = () => {
-    const { answer } = this.props;
-    return <QuestionText>{answer}</QuestionText>;
+    const { answer, view } = this.props;
+    return <QuestionText check={["check", "show"].includes(view)}>{answer}</QuestionText>;
   };
 
   renderAnswerCreateForm = () => {

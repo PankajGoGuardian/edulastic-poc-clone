@@ -22,7 +22,7 @@ class Curriculum extends Component {
 
   render() {
     const {
-      curriculum: { modules, _id: playlistId },
+      curriculum: { modules, _id: playlistId } = {},
       curriculum,
       hideEditOptions,
       expandedModules,
@@ -51,7 +51,7 @@ class Curriculum extends Component {
                 mode={mode}
                 status={status}
                 curriculum={curriculum}
-                collapsed={expandedModules.indexOf(index) === -1}
+                collapsed={expandedModules.indexOf(index) === -1 && status !== "published"}
                 onCollapseExpand={onCollapseExpand}
                 key={moduleItem._id}
                 playlistId={playlistId}

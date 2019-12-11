@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find, isEqual, isEmpty, get } from "lodash";
+import { find, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard, StaticMath } from "@edulastic/common";
-import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "./CheckedBlock";
 
@@ -45,23 +44,6 @@ class ClozeMathInput extends React.Component {
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { currentMathQuill } = this.state;
-    const { resprops = {}, id } = this.props;
-    const { answers = {} } = resprops;
-    const { maths: userAnswers = [] } = answers;
-
-    const { resprops: prevResProps = {} } = prevProps;
-    const { answers: prevAnswers = {} } = prevResProps;
-    const { maths: prevUserAnswers = [] } = prevAnswers;
-
-    if (currentMathQuill) {
-      if (!isEqual(userAnswers[id], prevUserAnswers[id])) {
-        currentMathQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -232,7 +214,7 @@ class ClozeMathInput extends React.Component {
         ref={this.wrappedRef}
         style={{
           ...btnStyle,
-          margin: "0px 2px 4px 2px",
+          margin: "2px 2px 4px 2px",
           display: "inline-block",
           position: "relative",
           verticalAlign: "middle",
@@ -252,7 +234,7 @@ class ClozeMathInput extends React.Component {
             }}
           />
           {showKeyboard && (
-            <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
+            <KeyboardWrapper ref={this.mathKeyboardRef}>
               <MathKeyboard
                 onInput={this.onInput}
                 onClose={() => {}}
@@ -344,7 +326,6 @@ export default MathInput;
 const KeyboardWrapper = styled.div`
   width: fit-content;
   left: 4px;
-  top: ${({ height }) => `${parseInt(height, 10) + 4}px`};
   position: absolute;
   z-index: 100;
 `;

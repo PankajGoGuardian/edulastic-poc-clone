@@ -30,11 +30,17 @@ export default class FormDropdown extends React.Component {
         validation: {
           validResponse: { value = [{}] }
         }
-      }
+      },
+      view
     } = this.props;
 
     return (
-      <Dropdown value={(value[0] && value[0].value) || ""} onChange={this.handleChange} disabled>
+      <Dropdown
+        value={(value[0] && value[0].value) || ""}
+        check={["check", "show"].includes(view)}
+        onChange={this.handleChange}
+        disabled
+      >
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}
@@ -47,11 +53,17 @@ export default class FormDropdown extends React.Component {
   renderForm = mode => {
     const {
       question: { options },
-      answer = []
+      answer = [],
+      view
     } = this.props;
 
     return (
-      <Dropdown disabled={mode === "report"} value={(answer[0] && answer[0].value) || ""} onChange={this.handleChange}>
+      <Dropdown
+        disabled={mode === "report"}
+        check={["check", "show"].includes(view)}
+        value={(answer[0] && answer[0].value) || ""}
+        onChange={this.handleChange}
+      >
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}

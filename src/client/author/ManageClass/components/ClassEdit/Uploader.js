@@ -11,9 +11,18 @@ import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 import { beforeUpload } from "@edulastic/common";
+import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 
 class Uploader extends React.Component {
   state = {};
+
+  static getDerivedStateFromProps(nextProps, currentState) {
+    let _currentState = { ...currentState };
+    if (nextProps.url) {
+      _currentState.imageUrl = nextProps.url;
+    }
+    return _currentState;
+  }
 
   handleChange = async info => {
     try {
@@ -35,11 +44,11 @@ class Uploader extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, url } = this.props;
+    const { height, windowWidth } = this.props;
 
     const uploadButton = (
       <Container height={height}>
-        <Image height={height} src={url} alt="Test" />
+        <Image height={height} src={defaultImage} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>

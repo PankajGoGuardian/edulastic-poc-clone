@@ -164,6 +164,7 @@ const receivedDistricts = (state, { payload }) => {
   state.districts = payload;
   state.autocompleteDistricts = payload.map(item => ({
     title: item.districtName,
+    cleverId: item.cleverId,
     key: item.districtId
   }));
 };

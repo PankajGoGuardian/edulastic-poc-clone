@@ -203,6 +203,13 @@ class RequestSchool extends React.Component {
                       return;
                     }
 
+                    if (!!value.cleverId) {
+                      callback(
+                        "The enrollment for this district is handled by district SIS, Please contact admin to create your Edulastic account."
+                      );
+                      return;
+                    }
+
                     const { userInfo } = this.props;
                     try {
                       let signOnMethod = "userNameAndPassword";

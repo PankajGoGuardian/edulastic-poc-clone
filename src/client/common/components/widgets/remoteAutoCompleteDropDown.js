@@ -136,7 +136,8 @@ const RemoteAutocompleteDropDown = ({
     if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
       let existingArr = searchedDatum.map((item, index) => {
         return (
-          <Option key={item.key} title={item.title}>
+          // cleverId is required to validate district
+          <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
           </Option>
         );
@@ -158,7 +159,8 @@ const RemoteAutocompleteDropDown = ({
     } else {
       arr = searchedDatum.map((item, index) => {
         return (
-          <Option key={item.key} title={item.title}>
+          // cleverId is required to validate district
+          <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
           </Option>
         );
@@ -206,7 +208,7 @@ const RemoteAutocompleteDropDown = ({
   };
 
   const onSelect = (key, item) => {
-    let obj = { key: key, title: item.props.title };
+    let obj = { key: key, title: item.props.title, cleverId: item.props.cleverId };
     setSelected(obj);
     setText(obj.title);
     selectCB(obj, comData);

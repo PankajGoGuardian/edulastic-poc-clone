@@ -227,12 +227,14 @@ const SortListPreview = ({
   const sourceItemStyle = {
     marginBottom: smallSize ? 6 : 12,
     borderRadius: 4,
+    transform: "translate3d(0px, 0px, 0px)",
     ...dragItemStyle
   };
 
   const targetItemStyle = {
     marginBottom: smallSize ? 6 : 12,
     borderRadius: 4,
+    transform: "translate3d(0px, 0px, 0px)",
     ...dragItemStyle
   };
 

@@ -22,8 +22,13 @@ export const ResponseContainer = styled.div`
 				background: inherit;
 			`;
     }
+
     if ((direction === "row" || direction === "row-reverse") && !disableResponse) {
       // showing the choices container and container is horizontally aligned
+      css += `
+          width: auto;
+        `;
+    } else if (disableResponse) {
       css += `
           width: auto;
         `;

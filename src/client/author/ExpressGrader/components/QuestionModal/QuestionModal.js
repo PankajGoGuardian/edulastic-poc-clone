@@ -182,7 +182,7 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData, record, isPresentationMode, windowWidth } = this.props;
+    const { isVisibleModal, tableData, record, isPresentationMode, windowWidth, studentResponseLoading } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
@@ -216,6 +216,7 @@ class QuestionModal extends React.Component {
                 student={student}
                 isPresentationMode={isPresentationMode}
                 editResponse={editResponse}
+                studentResponseLoading={studentResponseLoading}
               />
             </QuestionWrapper>
             <BottomNavigationWrapper>
@@ -254,7 +255,8 @@ export default connect(
   state => ({
     userResponse: stateExpressGraderAnswerSelector(state),
     allResponse: getStudentQuestionSelector(state),
-    teacherEditedScore: getTeacherEditedScoreSelector(state)
+    teacherEditedScore: getTeacherEditedScoreSelector(state),
+    studentResponseLoading: state.studentQuestionResponse?.loading
   }),
   { submitResponse: submitResponseAction }
 )(QuestionModal);

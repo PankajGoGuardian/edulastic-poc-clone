@@ -68,7 +68,13 @@ class Question extends Component {
     }
 
     return (
-      <AnswerContext.Provider value={{ isAnswerModifiable: this.props.editResponse, expressGrader: true }}>
+      <AnswerContext.Provider
+        value={{
+          isAnswerModifiable: this.props.editResponse,
+          expressGrader: true,
+          studentResponseLoading: this.props.studentResponseLoading
+        }}
+      >
         <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
           <ClassQuestions
             currentStudent={student}

@@ -66,13 +66,15 @@ export const Label = styled.label`
       ? "15px"
       : "25px"};
   border: ${props =>
-    props.styleType === "primary"
+    props.uiStyle.type === "block" &&
+    (props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
-      : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
+      : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
   border-left: ${props =>
-    props.styleType === "primary"
+    props.uiStyle.type === "block" &&
+    (props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
-      : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
+      : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
   background-color: ${({ styleType, color, selected, uiStyle, theme }) => {
     if (styleType === "primary" && uiStyle.type !== "block") {
       return theme.widgets.multipleChoice.labelIconCheckColor;

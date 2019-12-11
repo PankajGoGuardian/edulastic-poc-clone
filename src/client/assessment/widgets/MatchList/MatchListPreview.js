@@ -206,9 +206,9 @@ const MatchListPreview = ({
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         const altResp = allItemsById[alt];
-          if (altResp && altResp.label) {
-            alternateAnswers[index + 1].push(altResp.label);
-          }
+        if (altResp && altResp.label) {
+          alternateAnswers[index + 1].push(altResp.label);
+        }
       });
     });
   }

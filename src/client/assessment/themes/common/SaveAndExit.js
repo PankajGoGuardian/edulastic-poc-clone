@@ -2,13 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, Typography } from "antd";
+import { Button } from "antd";
 import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
-import { extraDesktopWidthMax, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
-
-const { Text } = Typography;
 
 const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, showZoomBtn, onSubmit }) => (
   <FlexContainer marginLeft="30px">
@@ -23,12 +21,12 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
       </StyledButton>
     )}
     {previewPlayer ? (
-      <SaveAndExitButton title={"Exit"} data-cy="finishTest" onClick={finishTest}>
+      <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
         <IconCircleLogout />
         EXIT
       </SaveAndExitButton>
     ) : (
-      <SaveAndExitButton title={"Save & Exit"} data-cy="finishTest" onClick={finishTest}>
+      <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
         <IconCircleLogout />
         SAVE & EXIT
       </SaveAndExitButton>
@@ -39,7 +37,7 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
   onSubmit: PropTypes.func,
-  openSettings: PropTypes.func,
+  setSettingsModalVisibility: PropTypes.func,
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool
 };
@@ -47,7 +45,7 @@ SaveAndExit.propTypes = {
 SaveAndExit.defaultProps = {
   showZoomBtn: false,
   previewPlayer: false,
-  openSettings: () => null,
+  setSettingsModalVisibility: () => null,
   onSubmit: null
 };
 
@@ -106,7 +104,6 @@ const StyledButton = styled(Button)`
 `;
 
 export const SaveAndExitButton = styled(StyledButton)`
-  height: auto;
   width: auto;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};

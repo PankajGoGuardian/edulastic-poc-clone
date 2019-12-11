@@ -136,7 +136,7 @@ const Next = styled(Button)`
   background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
   border: none;
-  height: 38px;
+  height: 40px;
   width: 100px;
   margin-left: 3px;
   &:hover {

@@ -63,7 +63,8 @@ const ActionContainer = ({
   loadStudents,
   features,
   history,
-  setSelectedStudents
+  setSelectedStudents,
+  cleverId
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -286,7 +287,7 @@ const ActionContainer = ({
 
       <AddStudentDivider>
         <ButtonsWrapper>
-          {active ? (
+          {active && !cleverId ? (
             <RedirectButton first={true} data-cy="addStudent" onClick={() => toggleModal("add")}>
               <ButtonIconWrap>
                 <IconPlusCircle />
@@ -347,7 +348,7 @@ const ActionContainer = ({
             <RedirectButton last={true}>ACTIONS</RedirectButton>
           </Dropdown>
 
-          {active ? (
+          {active && !cleverId ? (
             <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
             </CustomRedirectButton>

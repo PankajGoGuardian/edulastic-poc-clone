@@ -139,7 +139,7 @@ class AuthorTestItemPreview extends Component {
       item,
       ...restProps
     } = this.props;
-    const questionCount = get(item, ["data", "questions"]).length;
+    const questionCount = get(item, ["data", "questions"], []).length;
     const isMultiPart = questionCount > 1;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const alphabets = "abcdefghijklmnopqrstuvwxyz";

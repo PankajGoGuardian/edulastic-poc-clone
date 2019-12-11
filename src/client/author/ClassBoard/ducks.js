@@ -153,13 +153,15 @@ function* markAsDoneSaga({ payload }) {
 
 function* openAssignmentSaga({ payload }) {
   try {
-    const data = yield call(classBoardApi.openAssignment, payload);
-    yield put(updateOpenAssignmentsAction(payload.classId));
+    const { result: assignment } = yield call(classBoardApi.openAssignment, payload);
+    const { classId } = payload;
+    const classData = assignment.class.find(_clazz => _clazz._id === classId);
+    yield put(updateOpenAssignmentsAction(classId));
     yield put(
       updatePasswordDetailsAction({
-        assignmentPassword: data.assignmentPassword,
-        passwordExpireTime: data.passwordExpireTime,
-        passwordExpireIn: data.passwordExpireIn
+        assignmentPassword: classData.assignmentPassword,
+        passwordExpireTime: classData.passwordExpireTime,
+        passwordExpireIn: assignment.passwordExpireIn
       })
     );
     yield call(message.success, "Success");
@@ -167,7 +169,7 @@ function* openAssignmentSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Failed to open");
+    yield call(message.error, err.data?.message || "Failed to open");
   }
 }
 

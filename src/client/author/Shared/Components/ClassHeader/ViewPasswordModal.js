@@ -31,12 +31,8 @@ const ViewPasswordModal = ({
   passwordPolicy,
   match
 }) => {
-  const {
-    assignmentPassword = "632629",
-    passwordExpireTime = 1576055120119,
-    passwordExpireIn = 15 * 60
-  } = passwordDetails;
-  const [timer, setTimer] = useState(100000000);
+  const { assignmentPassword, passwordExpireTime, passwordExpireIn } = passwordDetails;
+  const [timer, setTimer] = useState(passwordExpireTime - Date.now());
   const [canGenerate, setCanGenerate] = useState(false);
 
   useState(() => {

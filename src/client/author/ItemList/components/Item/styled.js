@@ -30,7 +30,11 @@ const Style = css`
 
 export const StimulusWrapper = styled.span`
   span,
-  p {
+  p,
+  em,
+  u,
+  b,
+  strong {
     ${Style}
   }
 `;

@@ -14,17 +14,24 @@ class QuestionMenu extends Component {
   };
 
   handleScroll = (option, e) => {
-    e.target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const { scrollContainer, main, advanced } = this.props;
+    const target = scrollContainer?.current || option.el;
+    const options = [...main, ...advanced];
+    const activeTab = options.findIndex(opt => opt.label === option.label);
 
     if (option.el.clientHeight >= window.innerHeight / 2) {
-      window.scrollTo({
-        top: option.el.offsetTop - 111,
-        behavior: "smooth"
+      this.setState({ activeTab }, () => {
+        target.scrollTo({
+          top: option.el.offsetTop - 111,
+          behavior: "smooth"
+        });
       });
     } else {
-      window.scrollTo({
-        top: option.el.offsetTop - 111 + option.el.clientHeight - window.innerHeight / 2,
-        behavior: "smooth"
+      this.setState({ activeTab }, () => {
+        target.scrollTo({
+          top: option.el.offsetTop - 111 + option.el.clientHeight - window.innerHeight / 2,
+          behavior: "smooth"
+        });
       });
     }
   };
@@ -144,12 +151,14 @@ QuestionMenu.propTypes = {
   advanced: PropTypes.array,
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  scrollContainer: PropTypes.object
 };
 
 QuestionMenu.defaultProps = {
   main: [],
-  advanced: []
+  advanced: [],
+  scrollContainer: null
 };
 
 export default withWindowSizes(QuestionMenu);

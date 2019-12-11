@@ -167,6 +167,7 @@ class Container extends Component {
             data={question}
             questionId={question.id}
             saveClicked={saveClicked}
+            scrollContainer={this.scrollContainer}
           />
           {showHints && <Hints questions={[question]} />}
         </HideScoringBlackContext.Provider>

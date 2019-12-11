@@ -318,6 +318,7 @@ class QuestionWrapper extends Component {
       displayFeedback = true,
       isPrintPreview = false,
       evaluation,
+      scrollContainer,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
@@ -405,6 +406,7 @@ class QuestionWrapper extends Component {
                   advanced={advanced}
                   advancedAreOpen={advancedAreOpen}
                   handleAdvancedOpen={handleAdvancedOpen}
+                  scrollContainer={scrollContainer}
                 />
               </QuestionMenuWrapper>
             )}

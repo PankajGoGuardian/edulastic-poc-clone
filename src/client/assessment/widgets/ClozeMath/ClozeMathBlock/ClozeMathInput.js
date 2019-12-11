@@ -234,7 +234,7 @@ class ClozeMathInput extends React.Component {
             }}
           />
           {showKeyboard && (
-            <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
+            <KeyboardWrapper ref={this.mathKeyboardRef}>
               <MathKeyboard
                 onInput={this.onInput}
                 onClose={() => {}}
@@ -326,7 +326,6 @@ export default MathInput;
 const KeyboardWrapper = styled.div`
   width: fit-content;
   left: 4px;
-  top: ${({ height }) => `${parseInt(height, 10) + 4}px`};
   position: absolute;
   z-index: 100;
 `;

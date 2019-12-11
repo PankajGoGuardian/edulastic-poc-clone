@@ -253,7 +253,7 @@ class ClozeMathWithUnit extends React.Component {
           dropdownStyle={{ fontSize: btnStyle.fontSize }}
         />
         {showKeyboard && (
-          <KeyboardWrapper ref={this.mathKeyboardRef} height={height}>
+          <KeyboardWrapper ref={this.mathKeyboardRef}>
             <MathKeyboard
               onInput={this.onInput}
               onClose={() => {}}
@@ -339,6 +339,5 @@ const KeyboardWrapper = styled.div`
   width: fit-content;
   position: absolute;
   left: 4px;
-  top: ${({ height }) => `${parseInt(height, 10) + 4}px`};
   z-index: 100;
 `;

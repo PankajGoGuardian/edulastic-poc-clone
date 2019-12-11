@@ -121,7 +121,7 @@ const Settings = ({
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
     testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
-    passwordExpireIn = tempTestSettings.passwordExpireIn || 15
+    passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60
   } = assignmentSettings;
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -355,8 +355,8 @@ const Settings = ({
                 <>
                   <InputNumber
                     required
-                    onChange={value => overRideSettings("passwordExpireIn", value)}
-                    value={passwordExpireIn}
+                    onChange={value => overRideSettings("passwordExpireIn", value * 60)}
+                    value={passwordExpireIn / 60}
                     min={1}
                   />{" "}
                   Minutes

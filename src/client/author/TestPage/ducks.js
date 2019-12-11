@@ -220,7 +220,7 @@ export const createBlankTest = () => ({
   calcType: test.calculatorKeys[0],
   answerOnPaper: false,
   assignmentPassword: "",
-  passwordExpireIn: 15,
+  passwordExpireIn: 15 * 60,
   passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   maxAnswerChecks: 0,
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,

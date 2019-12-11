@@ -589,8 +589,9 @@ class MainSetting extends Component {
                           <InputNumber
                             required
                             disabled={!owner || !isEditable}
-                            onChange={value => this.updateTestData("passwordExpireIn")(value)}
-                            value={passwordExpireIn}
+                            onChange={value => this.updateTestData("passwordExpireIn")(value * 60)}
+                            value={passwordExpireIn / 60}
+                            max={999}
                             min={1}
                           />{" "}
                           Minutes

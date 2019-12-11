@@ -17,9 +17,13 @@ import PassageView from "./PassageView";
 import Details from "./Details";
 
 import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
+
 const EmptyWrapper = styled.div``;
 
-const PassageWrapper = styled(Paper)`
+// Do not change id here
+const PassageWrapper = styled(Paper).attrs(() => ({
+  id: "passage-wrapper"
+}))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
   box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
@@ -92,7 +96,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     (state, ownProps) => ({
-      userWork: get(state, `userWork.present[${ownProps.item.id}].resourceId`, [])
+      userWork: get(state, `userWork.present[${ownProps.item.id}].resourceId`, null)
     }),
     {
       setQuestionData: setQuestionDataAction,

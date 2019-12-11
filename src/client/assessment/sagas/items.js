@@ -131,13 +131,9 @@ function* saveUserResponse({ payload }) {
     };
 
     if (_userWork) {
-      const { resourceId = [] } = _userWork;
-      const filteredResourceId = resourceId.filter(resource => {
-        const { style, color } = resource;
-        return !!style.trim() || color;
-      });
-      activity.userWork = { ..._userWork, resourceId: filteredResourceId };
+      activity.userWork = { ..._userWork };
     }
+
     yield call(testItemActivityApi.create, activity, autoSave);
     if (shouldClearUserWork) {
       /**

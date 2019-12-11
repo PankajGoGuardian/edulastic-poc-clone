@@ -2092,12 +2092,8 @@ span.token.active-word {
 
 /* Passage type  */
 .selected-text-heighlight {
-  position: relative;
   cursor: pointer;
   z-index: 900;
-}
-
-.selected-text-heighlight.unsaved {
   background: #1890ff40;
 }
 

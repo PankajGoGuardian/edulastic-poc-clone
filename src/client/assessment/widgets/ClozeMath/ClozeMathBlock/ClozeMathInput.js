@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find, isEqual, isEmpty, get } from "lodash";
+import { find, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard, StaticMath } from "@edulastic/common";
 

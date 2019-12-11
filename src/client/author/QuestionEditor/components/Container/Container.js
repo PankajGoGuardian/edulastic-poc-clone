@@ -382,7 +382,6 @@ class Container extends Component {
 
       return <div />;
     }
-   
 
     const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;

@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find, isEqual, isEmpty, get } from "lodash";
+import { find, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
-import { response as DefaultDimensions } from "@edulastic/constants";
 
 import CheckedBlock from "../CheckedBlock";
 import SelectUnit from "../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
@@ -44,23 +43,6 @@ class ClozeMathWithUnit extends React.Component {
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { currentMathQuill } = this.state;
-    const { resprops = {}, id } = this.props;
-    const { answers = {} } = resprops;
-    const { mathUnits: userAnswers = [] } = answers;
-
-    const { resprops: prevResProps = {} } = prevProps;
-    const { answers: prevAnswers = {} } = prevResProps;
-    const { mathUnits: prevUserAnswers = [] } = prevAnswers;
-
-    if (currentMathQuill) {
-      if (!isEqual(userAnswers[id], prevUserAnswers[id])) {
-        currentMathQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -178,7 +160,7 @@ class ClozeMathWithUnit extends React.Component {
 
   saveAnswer = fromUnit => {
     const { resprops = {}, id } = this.props;
-    const { currentMathQuill, showKeyboard } = this.state;
+    const { currentMathQuill } = this.state;
     const { save, item, answers = {} } = resprops;
     const { mathUnits: _userAnwers = [] } = answers;
     const latex = currentMathQuill.latex();

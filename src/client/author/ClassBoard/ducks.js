@@ -20,7 +20,8 @@ import {
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
-  redirectToAssignmentsAction
+  redirectToAssignmentsAction,
+  updatePasswordDetailsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -152,8 +153,15 @@ function* markAsDoneSaga({ payload }) {
 
 function* openAssignmentSaga({ payload }) {
   try {
-    yield call(classBoardApi.openAssignment, payload);
+    const data = yield call(classBoardApi.openAssignment, payload);
     yield put(updateOpenAssignmentsAction(payload.classId));
+    yield put(
+      updatePasswordDetailsAction({
+        assignmentPassword: data.assignmentPassword,
+        passwordExpireTime: data.passwordExpireTime,
+        passwordExpireIn: data.passwordExpireIn
+      })
+    );
     yield call(message.success, "Success");
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
@@ -299,7 +307,13 @@ function* redirectToAssignmentsSaga() {
 function* regeneratePasswordSaga({ payload }) {
   try {
     const data = yield call(classBoardApi.regeneratePassword, payload);
-    //TODO update store WITH RECEIVED VALUES
+    yield put(
+      updatePasswordDetailsAction({
+        assignmentPassword: data.assignmentPassword,
+        passwordExpireTime: data.passwordExpireTime,
+        passwordExpireIn: data.passwordExpireIn
+      })
+    );
   } catch (e) {
     console.log(e);
     yield call(message.error, "Regenerate password failed");
@@ -346,18 +360,12 @@ export const getViewPasswordSelector = createSelector(
   state => state.viewPassword
 );
 
-export const getPasswordPolicySelector = createSelector(
-  stateTestActivitySelector,
-  //TODO update state to select from state?.additionalData?.passwordPolicy
-  state => test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-);
-
 export const getAssignmentPasswordDetailsSelector = createSelector(
   stateTestActivitySelector,
   state => ({
     assignmentPassword: state?.additionalData?.assignmentPassword,
-    passwordCreatedDate: state?.additionalData?.passwordCreatedDate,
-    passwordExpireTime: state?.additionalData?.passwordExpireTime
+    passwordExpireTime: state?.additionalData?.passwordExpireTime,
+    passwordExpireIn: state?.additionalData?.passwordExpireIn
   })
 );
 
@@ -658,6 +666,28 @@ export const isItemVisibiltySelector = createSelector(
 export const classListSelector = createSelector(
   getAdditionalDataSelector,
   state => state?.classes || []
+);
+
+export const getPasswordPolicySelector = createSelector(
+  getAdditionalDataSelector,
+  state => state?.passwordPolicy
+);
+
+export const showPasswordButonSelector = createSelector(
+  getAdditionalDataSelector,
+  state => {
+    const { passwordPolicy, assignmentStatus } = state || {};
+    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF) {
+      return false;
+    }
+    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+      return assignmentStatus !== "NOT OPEN";
+    }
+    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+      return true;
+    }
+    return false;
+  }
 );
 
 export const testActivtyLoadingSelector = createSelector(

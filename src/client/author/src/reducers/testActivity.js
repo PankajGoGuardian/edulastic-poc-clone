@@ -17,7 +17,8 @@ import {
   SET_STUDENTS_GRADEBOOK,
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
   UPDATE_SUBMITTED_STUDENTS,
-  TOGGLE_VIEW_PASSWORD_MODAL
+  TOGGLE_VIEW_PASSWORD_MODAL,
+  UPDATE_PASSWORD_DETAILS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -266,6 +267,21 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         viewPassword: !state.viewPassword
+      };
+    case UPDATE_PASSWORD_DETAILS:
+      const {
+        assignmentPassword = state?.additionalData?.assignmentPassword,
+        passwordExpireTime = state?.additionalData?.passwordExpireTime,
+        passwordExpireIn = state?.additionalData?.passwordExpireIn
+      } = payload;
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          assignmentPassword,
+          passwordExpireTime,
+          passwordExpireIn
+        }
       };
     case UPDATE_OPEN_ASSIGNMENTS:
       return {

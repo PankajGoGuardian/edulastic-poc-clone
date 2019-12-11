@@ -19,15 +19,8 @@ import { ModalWrapper, InitOptions } from "../../../../common/components/Confirm
 const { Paragraph } = Typography;
 const { passwordPolicy: passwordPolicyValues } = test;
 
-const formatTime = ms => {
-  console.log(new Date(ms).toISOString());
-  const date = new Date(ms);
-  const seconds = date.getSeconds();
-  const minutes = date.getMinutes();
-  const hours = date.getHours();
-  console.log({ seconds, minutes, hours });
-  // const diff =
-  return `${hours}:${minutes}:${seconds}`;
+const formatTime = diffMs => {
+  return moment.utc(moment.duration(diffMs, "ms").asMilliseconds()).format("HH:mm:ss");
 };
 
 const ViewPasswordModal = ({
@@ -40,15 +33,15 @@ const ViewPasswordModal = ({
 }) => {
   const {
     assignmentPassword = "632629",
-    passwordCreatedDate = 1575988309608,
-    passwordExpireTime = 1575989331701
+    passwordExpireTime = 1576055120119,
+    passwordExpireIn = 15 * 60
   } = passwordDetails;
   const [timer, setTimer] = useState(100000000);
   const [canGenerate, setCanGenerate] = useState(false);
 
   useState(() => {
     setTimer(passwordExpireTime - Date.now());
-  }, [passwordExpireTime, passwordCreatedDate]);
+  }, [passwordExpireTime]);
 
   useInterval(() => {
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
@@ -62,9 +55,8 @@ const ViewPasswordModal = ({
 
   const handleRegeneratePassword = () => {
     const { assignmentId, classId } = match.params;
-    regeneratePassword({ assignmentId, classId });
+    regeneratePassword({ assignmentId, classId, passwordExpireIn });
     setCanGenerate(false);
-    console.log("api call for regenerate");
   };
 
   if (!isViewPassword) return null;
@@ -73,6 +65,7 @@ const ViewPasswordModal = ({
   const showPassWord =
     passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ||
     (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && !canGenerate);
+
   return (
     <ModalWrapper
       centered

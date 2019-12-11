@@ -114,11 +114,12 @@ const downloadGrades = ({ assignmentId, classId, students, isResponseRequired })
     })
     .then(response => response.data);
 
-const regeneratePassword = ({ assignmentId, classId }) =>
+const regeneratePassword = ({ assignmentId, classId, passwordExpireIn }) =>
   api
     .callApi({
       method: "post",
-      url: `${prefix}/${assignmentId}/group/${classId}/regenerate-password`
+      url: `${prefix}/${assignmentId}/group/${classId}/regenerate-password`,
+      data: { passwordExpireIn }
     })
     .then(response => response.data);
 

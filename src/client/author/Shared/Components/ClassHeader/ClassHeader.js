@@ -59,7 +59,8 @@ import {
   getCanCloseAssignmentSelector,
   getCanOpenAssignmentSelector,
   getViewPasswordSelector,
-  getPasswordPolicySelector
+  getPasswordPolicySelector,
+  showPasswordButonSelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
@@ -249,7 +250,8 @@ class ClassHeader extends Component {
       isItemsVisible,
       classesList,
       match,
-      passwordPolicy
+      passwordPolicy,
+      showPasswordButton
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -306,7 +308,7 @@ class ClassHeader extends Component {
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
         </MenuItems> */}
-        {passwordPolicy !== testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF && (
+        {showPasswordButton && (
           <MenuItems key="key5" onClick={this.handleTogglePasswordModal}>
             View Password
           </MenuItems>
@@ -507,7 +509,8 @@ const enhance = compose(
       inProgressStudents: inProgressStudentsSelector(state),
       isItemsVisible: isItemVisibiltySelector(state),
       classesList: classListSelector(state),
-      passwordPolicy: getPasswordPolicySelector(state)
+      passwordPolicy: getPasswordPolicySelector(state),
+      showPasswordButton: showPasswordButonSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

@@ -172,6 +172,7 @@ export const SET_ALL_TESTACTIVITIES_FOR_STUDENT = "[gradebook] set all testactiv
 export const REDIRECT_TO_ASSIGNMENTS = "[gradebook] redirect to assignments";
 export const TOGGLE_VIEW_PASSWORD_MODAL = "[gradebook] toggle view password modal";
 export const REGENERATE_PASSWORD = "[gradebook] regenerate password action";
+export const UPDATE_PASSWORD_DETAILS = "[gradebook] update password details action";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";

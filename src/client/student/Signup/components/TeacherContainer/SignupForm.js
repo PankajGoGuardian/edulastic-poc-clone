@@ -278,7 +278,7 @@ class Signup extends React.Component {
                             cleverLoginAction("teacher");
                           }}
                         >
-                          <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
+                          <img src={cleverIcon} alt="" /> {t("component.signup.cleversignupbtn")}
                         </ThirdPartyLoginBtn>
                       ) : null}
 

@@ -62,7 +62,6 @@ import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
-import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
@@ -344,12 +343,6 @@ class Container extends Component {
       </>
     );
   };
-
-  renderMetadata = () => (
-    <Content>
-      <TestItemMetadata />
-    </Content>
-  );
 
   renderButtons = () => {
     const {
@@ -717,7 +710,6 @@ class Container extends Component {
             </BreadCrumbBar>
             {view === "edit" && this.renderEdit()}
             {view === "preview" && this.renderPreview()}
-            {view === "metadata" && this.renderMetadata()}
           </ContentWrapper>
         </Layout>
       </ItemDetailContext.Provider>

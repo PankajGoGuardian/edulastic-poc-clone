@@ -46,6 +46,17 @@ class ClozeMathWithUnit extends React.Component {
     document.removeEventListener("mousedown", this.clickOutside);
   }
 
+  componentDidUpdate() {
+    const { currentMathQuill } = this.state;
+    const { resprops = {}, id } = this.props;
+    const { answers = {} } = resprops;
+    const { mathUnits: userAnswers = [] } = answers;
+
+    if (currentMathQuill && !userAnswers[id]) {
+      currentMathQuill.latex("");
+    }
+  }
+
   // TODO
   // debounce if keypress is exhaustive
   handleKeypress = e => {

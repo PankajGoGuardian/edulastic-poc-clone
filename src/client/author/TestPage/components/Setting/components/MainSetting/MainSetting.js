@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox, InputNumber } from "antd";
+import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
@@ -217,6 +217,18 @@ class MainSetting extends Component {
 
   handleBlur = e => {
     this.setState({ inputBlur: true });
+  };
+
+  handleUpdatePasswordExpireIn = e => {
+    let { value = 1 } = e.target;
+    value = value * 60;
+    console.log(value);
+    if (value < 60 || isNaN(value)) {
+      value = 60;
+    } else if (value > 999 * 60) {
+      value = 999 * 60;
+    }
+    this.updateTestData("passwordExpireIn")(value);
   };
 
   render() {
@@ -586,13 +598,16 @@ class MainSetting extends Component {
                     {passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                       <>
                         <Description>
-                          <InputNumber
+                          <Input
                             required
+                            type="number"
                             disabled={!owner || !isEditable}
-                            onChange={value => this.updateTestData("passwordExpireIn")(value * 60)}
+                            onChange={this.handleUpdatePasswordExpireIn}
                             value={passwordExpireIn / 60}
+                            style={{ width: "100px", marginRight: "10px" }}
                             max={999}
                             min={1}
+                            step={1}
                           />{" "}
                           Minutes
                         </Description>

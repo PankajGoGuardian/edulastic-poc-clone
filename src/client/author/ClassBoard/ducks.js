@@ -675,26 +675,33 @@ export const getPasswordPolicySelector = createSelector(
   state => state?.passwordPolicy
 );
 
+export const testActivtyLoadingSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.loading
+);
+
 export const showPasswordButonSelector = createSelector(
   getAdditionalDataSelector,
-  state => {
-    const { passwordPolicy, assignmentStatus } = state || {};
-    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF) {
+  getAssignmentStatusSelector,
+  testActivtyLoadingSelector,
+  (additionalData, assignmentStatus, isLoading) => {
+    const { passwordPolicy } = additionalData || {};
+    if (
+      !assignmentStatus ||
+      assignmentStatus === "NOT OPEN" ||
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
+      isLoading
+    ) {
       return false;
     }
-    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
-      return assignmentStatus !== "NOT OPEN";
-    }
-    if (passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+    if (
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
       return true;
     }
     return false;
   }
-);
-
-export const testActivtyLoadingSelector = createSelector(
-  stateTestActivitySelector,
-  state => state.loading
 );
 
 export const getTestItemsDataSelector = createSelector(

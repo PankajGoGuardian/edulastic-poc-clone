@@ -250,8 +250,8 @@ class ClassHeader extends Component {
       isItemsVisible,
       classesList,
       match,
-      passwordPolicy,
-      showPasswordButton
+      showPasswordButton,
+      isViewPassword
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -433,7 +433,8 @@ class ClassHeader extends Component {
             classId={classId}
             lcb
           />
-          <ViewPasswordModal />
+          {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
+          {isViewPassword && <ViewPasswordModal />}
           <ConfirmationModal
             title="Pause"
             show={isPauseModalVisible}
@@ -510,7 +511,8 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       classesList: classListSelector(state),
       passwordPolicy: getPasswordPolicySelector(state),
-      showPasswordButton: showPasswordButonSelector(state)
+      showPasswordButton: showPasswordButonSelector(state),
+      isViewPassword: getViewPasswordSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

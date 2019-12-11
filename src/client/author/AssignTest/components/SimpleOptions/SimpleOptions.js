@@ -243,7 +243,7 @@ class SimpleOptions extends React.Component {
             startDate={assignment.startDate}
             endDate={assignment.endDate}
             changeField={changeField}
-            passwordPolicy={assignment.passwordPolicy}
+            passwordPolicy={assignment.passwordPolicy || testSettings.passwordPolicy}
           />
 
           <StyledRowLabel gutter={16}>

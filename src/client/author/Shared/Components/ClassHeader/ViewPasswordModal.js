@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -32,18 +32,23 @@ const ViewPasswordModal = ({
   match
 }) => {
   const { assignmentPassword, passwordExpireTime, passwordExpireIn } = passwordDetails;
-  const [timer, setTimer] = useState(passwordExpireTime - Date.now());
-  const [canGenerate, setCanGenerate] = useState(false);
+  const isStaticPassword = passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC;
+  const isDynamicPassword = passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC;
+  const [timer, setTimer] = useState(null);
+  const [canGenerate, setCanGenerate] = useState(true);
 
-  useState(() => {
-    setTimer(passwordExpireTime - Date.now());
+  useEffect(() => {
+    if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
+      setTimer(passwordExpireTime - Date.now());
+      setCanGenerate(false);
+    }
   }, [passwordExpireTime]);
 
   useInterval(() => {
-    if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
-      if (timer > 0) {
+    if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
+      if (timer > 1000 && !isNaN(timer)) {
         setTimer(timer - 1000);
-      } else if (!canGenerate) {
+      } else if (!canGenerate && !isNaN(passwordExpireTime)) {
         setCanGenerate(true);
       }
     }
@@ -52,15 +57,9 @@ const ViewPasswordModal = ({
   const handleRegeneratePassword = () => {
     const { assignmentId, classId } = match.params;
     regeneratePassword({ assignmentId, classId, passwordExpireIn });
-    setCanGenerate(false);
   };
 
   if (!isViewPassword) return null;
-
-  const showRegerate = passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && canGenerate;
-  const showPassWord =
-    passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ||
-    (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && !canGenerate);
 
   return (
     <ModalWrapper
@@ -74,7 +73,14 @@ const ViewPasswordModal = ({
     >
       <InitOptions bodyStyle={{ marginBottom: 0 }}>
         <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
-        {showPassWord && (
+        {isStaticPassword && (
+          <>
+            <Content>Student must enter the password shown below to start the assessment.</Content>
+            <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
+            <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
+          </>
+        )}
+        {isDynamicPassword && !canGenerate && (
           <>
             <Content>
               Student must enter the password shown below to start the assessment. This password will expire in{" "}
@@ -84,7 +90,7 @@ const ViewPasswordModal = ({
             <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
           </>
         )}
-        {showRegerate && (
+        {isDynamicPassword && canGenerate && (
           <Content>
             password expired{" "}
             <span onClick={handleRegeneratePassword} style={{ color: themeColorSecondaryLighter, cursor: "pointer" }}>

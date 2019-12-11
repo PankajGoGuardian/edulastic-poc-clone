@@ -103,6 +103,17 @@ const Settings = ({
     updateAssignmentSettings(newSettingsState);
   };
 
+  const handleUpdatePasswordExpireIn = e => {
+    let { value = 1 } = e.target;
+    value = value * 60;
+    if (value < 60 || isNaN(value)) {
+      value = 60;
+    } else if (value > 999 * 60) {
+      value = 999 * 60;
+    }
+    overRideSettings("passwordExpireIn", value);
+  };
+
   const {
     markAsDone = tempTestSettings.markAsDone,
     releaseScore = tempTestSettings.releaseScore,
@@ -353,11 +364,15 @@ const Settings = ({
               )}
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                 <>
-                  <InputNumber
+                  <Input
                     required
-                    onChange={value => overRideSettings("passwordExpireIn", value * 60)}
+                    type="number"
+                    onChange={handleUpdatePasswordExpireIn}
                     value={passwordExpireIn / 60}
+                    style={{ width: "100px" }}
+                    max={999}
                     min={1}
+                    step={1}
                   />{" "}
                   Minutes
                 </>

@@ -778,6 +778,13 @@ function* msoSSOLogin({ payload }) {
 }
 
 function* cleverLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+  }
+
   try {
     if (payload) {
       localStorage.setItem("thirdPartySignOnRole", payload);
@@ -790,19 +797,29 @@ function* cleverLogin({ payload }) {
 }
 
 function* cleverSSOLogin({ payload }) {
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
   try {
-    if (payload.role === "student") {
-      classCode = localStorage.getItem("thirdPartySignOnClassCode");
-      if (classCode) {
-        payload.classCode = classCode;
-      }
-    }
-    const res = yield call(authApi.cleverSSOLogin, payload);
+    const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "Clever Login failed");
-    yield put(push("/login"));
+    if (e?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+      yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
+    } else {
+      yield call(message.error, e?.data?.message || "Clever Login failed");
+      yield put(push(getSignOutUrl()));
+    }
+    removeSignOutUrl();
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* getUserData({ payload: res }) {

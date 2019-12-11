@@ -45,7 +45,7 @@ const BottomNavigation = ({
       </Link>
       <EditResponse>
         <StyledText>EDIT RESPONSE</StyledText>
-        <Switch checked={editResponse} onClick={toggleEditResponse} />
+        <Switch data-cy="editResponse" checked={editResponse} onClick={toggleEditResponse} />
       </EditResponse>
       <CloseModal data-cy="exitbutton" onClick={hideModal}>
         <Icon type="close" width={5} height={5} />

@@ -226,10 +226,11 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
       });
     });
 
-    context("> update score and verify student side", () => {
+    context("> update score,giving feedback and verify student side", () => {
       const { email, attempt, stuName } = attemptsData[3];
       const updatedAttempt = {};
       const feedback = "You are right..!";
+      const overallFeedback = "Keep the good learning";
       // making all the attempt correct
       _.keys(attempt).forEach(que => {
         updatedAttempt[que] = "right";
@@ -239,8 +240,19 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
         lcb.clickonQuestionsTab();
       });
 
-      it(`> updating the scores for :: ${stuName}`, () => {
+      it(`> updating the scores and giving feedback for :: ${stuName}`, () => {
         lcb.updateScore(stuName, lcb.getFeedBackScore(updatedAttempt, questionTypeMap), feedback);
+      });
+
+      it("> giving overall feedback", () => {
+        lcb.clickOnStudentsTab();
+        lcb.questionResponsePage.selectStudent(stuName);
+        lcb.questionResponsePage.enterOverAllFeedback(overallFeedback);
+        lcb.questionResponsePage
+          .getOverallFeedback()
+          .should("contain.text", overallFeedback, "verify the overall feedback is updated");
+
+        // TODO: add student side assertion once functionality is implemented in app
       });
 
       it("> verify stats on report page", () => {

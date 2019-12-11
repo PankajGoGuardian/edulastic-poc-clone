@@ -10,6 +10,19 @@ export default class QuestionResponsePage {
 
   getFeedbackArea = card => card.contains("Leave a feedback!").next();
 
+  getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');
+
+  enterOverAllFeedback = feedback => {
+    cy.server();
+    cy.route("PUT", "**overall-feedback**").as("overall-feedback");
+    this.getOverallFeedback().click();
+
+    cy.get('[data-cy="feedbackInput"]').type(feedback);
+    cy.get('[data-cy="submit"]').click();
+
+    cy.wait("@overall-feedback");
+  };
+
   getScoreByAttempt = (attemptData, points, questionType, attemptType) => {
     let score = 0;
     const { right, partialCorrect } = attemptData;

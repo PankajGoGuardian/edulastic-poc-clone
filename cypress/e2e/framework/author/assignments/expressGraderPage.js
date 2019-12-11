@@ -1,10 +1,13 @@
 import { attemptTypes } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
+import StudentTestPage from "../../student/studentTestPage";
 
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
     this.rowAlias = "studentRow";
+    this.attemptQuestion = (attemptQueType, attemptType, attemptData) =>
+      new StudentTestPage().attemptQuestion(attemptQueType, attemptType, attemptData);
   }
 
   getGridRowByStudent = student =>
@@ -64,7 +67,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.waitForStudentData();
   };
 
-  getEditResponseToggle = () => cy.get("button.ant-switch");
+  getEditResponseToggle = () => cy.get('[data-cy="editResponse"]');
 
   clickOnExit = (updated = false) => {
     cy.get("#react-app").then(() => {
@@ -285,5 +288,14 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         this.questionResponsePage.updateScoreForStudent(studentName, previousScore);
         this.clickOnExit(true);
       });
+  };
+
+  updateResponse = (questionType, attemptType, attemptData) => {
+    // TODO: implement logic to reset previous attempt, currently should use question with no attempt
+    cy.server();
+    cy.route("PUT", "**/response-entry-and-score").as("responseEntry");
+    this.attemptQuestion(questionType, attemptType, attemptData);
+    cy.contains("span", "NEXT QUESTION").click();
+    cy.wait("@responseEntry");
   };
 }

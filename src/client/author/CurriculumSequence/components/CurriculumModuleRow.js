@@ -76,6 +76,11 @@ class ModuleRow extends Component {
     });
   };
 
+  deleteTest = (moduleIndex, itemId) => {
+    const { removeItemFromUnit } = this.props;
+    removeItemFromUnit({ moduleIndex, itemId });
+  };
+
   closeModal = () => {
     this.setState({
       showModal: false
@@ -239,6 +244,7 @@ class ModuleRow extends Component {
                           contentIndex={index}
                           isAssigned={isAssigned}
                           viewTest={this.viewTest}
+                          deleteTest={this.deleteTest}
                           moduleIndex={moduleIndex}
                           handleDrop={dropContent}
                           onBeginDrag={onBeginDrag}

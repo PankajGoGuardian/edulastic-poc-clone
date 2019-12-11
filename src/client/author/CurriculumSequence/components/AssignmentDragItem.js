@@ -4,7 +4,7 @@ import { Dropdown, Icon, Button } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
 import { lightBlue, white, themeColor } from "@edulastic/colors";
-import { IconVisualization, IconMoreVertical, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
+import { IconVisualization, IconTrash, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
 import Tags from "../../src/components/common/Tags";
 import { matchAssigned } from "../util";
 import {
@@ -58,6 +58,7 @@ class AssignmentDragItem extends Component {
       status,
       moduleIndex,
       viewTest,
+      deleteTest,
       standardTags,
       isAssigned,
       assigned
@@ -117,13 +118,26 @@ class AssignmentDragItem extends Component {
                 </Button>
               </AssignmentButton>
             )}
-            {(!hideEditOptions || mode === "embedded") && (
+            {/* {(!hideEditOptions || mode === "embedded") && (
               <AssignmentIcon>
                 <Dropdown overlay={moreMenu} trigger={["click"]}>
                   <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
                     <IconMoreVertical color={themeColor} />
                   </CustomIcon>
                 </Dropdown>
+              </AssignmentIcon>
+            )} */}
+            {(!hideEditOptions || mode === "embedded") && (
+              <AssignmentIcon>
+                <CustomIcon
+                  data-cy="assignmentDeleteOptionsIcon"
+                  onClick={e => {
+                    e.stopPropagation();
+                    deleteTest(moduleIndex, moduleData.contentId);
+                  }}
+                >
+                  <IconTrash color={themeColor} />
+                </CustomIcon>
               </AssignmentIcon>
             )}
           </AssignmentIconsHolder>

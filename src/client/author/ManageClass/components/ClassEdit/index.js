@@ -161,8 +161,10 @@ class ClassEdit extends React.Component {
       subject,
       standardSets,
       course,
-      institutionId
+      institutionId,
+      cleverId
     } = selctedClass;
+
     if (!classLoaded) return <Spin />;
     return (
       <Form onSubmit={this.handleSubmit} style={{ position: "relative" }}>
@@ -203,6 +205,7 @@ class ClassEdit extends React.Component {
                     filteredCurriculums={filteredCurriculums}
                     setSubject={setSubject}
                     subject={selectedSubject}
+                    cleverId={cleverId}
                   />
                 </RightContainer>
               </Row>

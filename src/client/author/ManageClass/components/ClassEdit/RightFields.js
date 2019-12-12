@@ -32,6 +32,7 @@ const RightFields = ({
   setSubject,
   filteredCurriculums,
   clearStandards,
+  cleverId,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
@@ -89,7 +90,7 @@ const RightFields = ({
               placeholder="Open Date"
               disabledDate={disabledStartDateHandler}
               onChange={onStartDateChangeHandler}
-              disabled={moment(startDate) < moment() ? true : false}
+              disabled={moment(startDate) < moment() || !!cleverId ? true : false}
             />
           </FieldLabel>
         </Col>
@@ -106,6 +107,7 @@ const RightFields = ({
               format="DD MMM, YYYY"
               placeholder="End Date"
               disabledDate={moment(startDate) < moment() ? disabledEndDateHandler2 : disabledEndDateHandler1}
+              disabled={!!cleverId}
             />
           </FieldLabel>
         </Col>
@@ -113,8 +115,14 @@ const RightFields = ({
 
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
-          <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={defaultGrade}>
-            <Select placeholder="Select Grades" mode="multiple">
+          <FieldLabel
+            label="Grades"
+            {...restProps}
+            fiedlName="grades"
+            initialValue={defaultGrade}
+            disabled={!!cleverId}
+          >
+            <Select placeholder="Select Grades" mode="multiple" disabled={!!cleverId}>
               {allGrades.map(el => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
@@ -124,8 +132,8 @@ const RightFields = ({
           </FieldLabel>
         </Col>
         <Col xs={12}>
-          <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject}>
-            <Select placeholder="Select Subject" onSelect={updateSubject}>
+          <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject} disabled={!!cleverId}>
+            <Select placeholder="Select Subject" onSelect={updateSubject} disabled={!!cleverId}>
               {subjects.map(el => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
@@ -150,6 +158,7 @@ const RightFields = ({
               optionFilterProp="children"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               placeholder="Select Standards"
+              disabled={!!cleverId}
             >
               {!subject ? (
                 <Select.Option key="subject_first" value="subject_first" disabled>
@@ -184,6 +193,7 @@ const RightFields = ({
                 onFocus={handleFocus}
                 notFoundContent={null}
                 loading={isSearching}
+                disabled={!!cleverId}
               >
                 {courseOptions.map(el => (
                   <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>

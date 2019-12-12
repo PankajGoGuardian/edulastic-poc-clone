@@ -72,9 +72,9 @@ const ViewPasswordModal = ({
       destroyOnClose={true}
     >
       <InitOptions bodyStyle={{ marginBottom: 0 }}>
-        <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
         {isStaticPassword && (
           <>
+            <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
             <Content>Student must enter the password shown below to start the assessment.</Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
             <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
@@ -82,6 +82,7 @@ const ViewPasswordModal = ({
         )}
         {isDynamicPassword && !canGenerate && (
           <>
+            <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
             <Content>
               Student must enter the password shown below to start the assessment. This password will expire in{" "}
               <span style={{ color: themeColorSecondaryLighter }}>{formatTime(timer)}</span> seconds
@@ -91,13 +92,15 @@ const ViewPasswordModal = ({
           </>
         )}
         {isDynamicPassword && canGenerate && (
-          <Content>
-            password expired{" "}
-            <span onClick={handleRegeneratePassword} style={{ color: themeColorSecondaryLighter, cursor: "pointer" }}>
-              regenerate password
-            </span>{" "}
-            seconds
-          </Content>
+          <>
+            <Heading>PASSWORD EXPIRED</Heading>
+            <Content>
+              If you need to regenerate the password, please click{" "}
+              <span onClick={handleRegeneratePassword} style={{ color: themeColorSecondaryLighter, cursor: "pointer" }}>
+                Regenerate Password
+              </span>
+            </Content>
+          </>
         )}
       </InitOptions>
     </ModalWrapper>

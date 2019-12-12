@@ -256,7 +256,7 @@ export const transformGradeBookResponse = (
         fakeLastName,
         icon
       }) => {
-        const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
+        const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
         if (!studentTestActivities[studentId]) {
           return {

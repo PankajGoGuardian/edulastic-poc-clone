@@ -16,7 +16,8 @@ const isSmoothScrollSupported = "scrollBehavior" in document.documentElement.sty
 export function scrollTo(el, subtractScroll = 0) {
   const { top } = offset(el);
   if (isSmoothScrollSupported) {
-    window.scrollTo({ top: top - subtractScroll, left: 0, behavior: "smooth" });
+    //behavior:auto|smooth|initial|inherit
+    window.scrollTo({ top: top - subtractScroll, left: 0, behavior: "auto" });
   } else {
     window.scrollTo(0, top - subtractScroll);
   }

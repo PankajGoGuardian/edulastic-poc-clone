@@ -132,12 +132,8 @@ class Container extends PureComponent {
       isReleaseScorePremium
     } = this.props;
     const self = this;
-    if (location.hash === "#review") {
-      this.handleNavChange("review", true)();
-    } else if (createdItems.length > 0) {
-      this.setState({ editEnable: true }, () => {
-        this.gotoTab("addItems");
-      });
+
+    if (this.props.location?.state?.showItemAddedMessage) {
       message.success(
         <span>
           New item has been created and added to the current test. Click
@@ -149,6 +145,14 @@ class Container extends PureComponent {
         3
       );
     }
+    if (location.hash === "#review") {
+      this.handleNavChange("review", true)();
+    } else if (createdItems.length > 0) {
+      this.setState({ editEnable: true }, () => {
+        this.gotoTab("addItems");
+      });
+    }
+
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id, true, editAssigned);
     } else {

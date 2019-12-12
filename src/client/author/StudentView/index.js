@@ -7,7 +7,7 @@ import produce, { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
 import { Modal, Button, Input, Tooltip } from "antd";
 import { ThemeProvider } from "styled-components";
-import { AnswerContext } from "@edulastic/common";
+import { AnswerContext, scrollTo } from "@edulastic/common";
 import { IconFeedback } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
 import { white } from "@edulastic/colors";
@@ -20,7 +20,8 @@ import {
   PartiallyCorrectButton,
   GiveOverallFeedBackButton,
   StudentButtonWrapper,
-  StudentButtonDiv
+  StudentButtonDiv,
+  ScrollToTopButton
 } from "./styled";
 
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
@@ -115,6 +116,12 @@ class StudentViewContainer extends Component {
     this.setState({ showFeedbackPopup: false });
   };
 
+  onClickTab = filter => {
+    const { setFilter } = this.props;
+    setFilter(filter);
+    scrollTo(document.querySelector("body"));
+  };
+
   render() {
     const {
       classResponse,
@@ -202,22 +209,22 @@ class StudentViewContainer extends Component {
         >
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton active={filter === null} onClick={() => setFilter(null)}>
+              <AllButton active={filter === null} onClick={() => this.onClickTab(null)}>
                 ALL ({totalNumber})
               </AllButton>
-              <CorrectButton active={filter === "correct"} onClick={() => setFilter("correct")}>
+              <CorrectButton active={filter === "correct"} onClick={() => this.onClickTab("correct")}>
                 CORRECT ({correctNumber})
               </CorrectButton>
-              <WrongButton active={filter === "wrong"} onClick={() => setFilter("wrong")}>
+              <WrongButton active={filter === "wrong"} onClick={() => this.onClickTab("wrong")}>
                 WRONG ({wrongNumber})
               </WrongButton>
-              <WrongButton active={filter === "partial"} onClick={() => setFilter("partial")}>
+              <WrongButton active={filter === "partial"} onClick={() => this.onClickTab("partial")}>
                 PARTIALLY CORRECT ({partiallyCorrectNumber})
               </WrongButton>
-              <WrongButton active={filter === "skipped"} onClick={() => setFilter("skipped")}>
+              <WrongButton active={filter === "skipped"} onClick={() => this.onClickTab("skipped")}>
                 SKIPPED ({skippedNumber})
               </WrongButton>
-              <PartiallyCorrectButton active={filter === "notGraded"} onClick={() => setFilter("notGraded")}>
+              <PartiallyCorrectButton active={filter === "notGraded"} onClick={() => this.onClickTab("notGraded")}>
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
@@ -266,6 +273,13 @@ class StudentViewContainer extends Component {
             </AnswerContext.Provider>
           )}
         </div>
+        <ScrollToTopButton
+          type="primary"
+          icon="arrow-up"
+          shape="circle"
+          hasStickyHeader={hasStickyHeader}
+          onClick={() => scrollTo(document.querySelector("body"))}
+        />
       </React.Fragment>
     );
   }

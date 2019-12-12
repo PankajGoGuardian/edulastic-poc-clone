@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import { Button, Icon } from "antd";
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { mobileWidthMax, mediumDesktopWidth, white, themeColor, tabGrey, desktopWidth } from "@edulastic/colors";
@@ -148,4 +148,13 @@ export const EditIconStyled = styled(IconEdit)`
   &:hover {
     fill: ${white};
   }
+`;
+
+export const ScrollToTopButton = styled(Button)`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: ${props => (props.hasStickyHeader ? "block" : "none")};
 `;

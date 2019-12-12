@@ -25,6 +25,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
     rows[0] = passage.structure;
   }
+  const testItemID = passages?.[0]?.testItems?.[0] || ""; // pass testItemId in which passage was used
   const answerContextConfig = useContext(AnswerContext);
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
@@ -43,6 +44,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
         qIndex={qIndex}
         evaluation={evaluation}
         showStudentWork={showStudentWork}
+        passageTestItemID={testItemID}
       />
     </StyledFlexContainer>
   );

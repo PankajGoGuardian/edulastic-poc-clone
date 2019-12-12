@@ -95,9 +95,14 @@ Passage.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    (state, ownProps) => ({
-      userWork: get(state, `userWork.present[${ownProps.item.id}].resourceId`, null)
-    }),
+    (state, ownProps) => {
+      // passageTestItemID passed from LCB, otherwise use itemId while authoring
+      const { passageTestItemID = ownProps.item.id } = ownProps;
+      return {
+        userWork: get(state, `userWork.present[${passageTestItemID}].resourceId`, []),
+        passageTestItemID
+      };
+    },
     {
       setQuestionData: setQuestionDataAction,
       saveUserWork: saveUserWorkAction,

@@ -11,7 +11,7 @@ const SideBarSwitch = props =>
     <PlayListFormWrapper
       style={{ width: props.windowWidth > 993 ? (props.windowWidth < 1366 ? "90%" : "80%") : "100%" }}
     >
-      <SideBarPLayList {...props} />
+      <SideBarPLayList {...props} isEditable />
     </PlayListFormWrapper>
   ) : (
     <TestFormWrapper style={{ width: props.windowWidth > 993 ? "700px" : "100%" }}>

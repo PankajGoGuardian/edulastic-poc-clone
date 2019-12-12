@@ -592,13 +592,17 @@ class ClassBoard extends Component {
 
     const studentsMap = keyBy(testActivity, "studentId");
 
-    const isPrintable = !selectedStudentsKeys.some(
-      item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
-    );
+    const isPrintable =
+      selectedStudentsKeys.length &&
+      !selectedStudentsKeys.some(
+        item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
+      );
 
     if (isPrintable && selectedStudentsKeys.length) {
       const selectedStudentsStr = selectedStudentsKeys.join(",");
       window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`);
+    } else if (!selectedStudentsKeys.length) {
+      message.error("At least one student should be selected to print responses.");
     } else {
       message.error("You can print only after the assignment has been submitted by the student(s).");
     }

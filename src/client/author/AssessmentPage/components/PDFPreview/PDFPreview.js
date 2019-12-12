@@ -9,7 +9,7 @@ import { withRouter } from "react-router";
 
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
-import { PDFPreviewWrapper, Preview } from "./styled";
+import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from "./styled";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
@@ -53,6 +53,16 @@ const PDFPreview = ({
   removeAnswers,
   testMode
 }) => {
+  const [pdfScale, scalePDF] = useState(1);
+
+  const PDFScaleUp = (scale = 0.25) => {
+    scalePDF(prevState => (prevState < 3 ? prevState + scale : prevState));
+  };
+
+  const PDFScaleDown = (scale = 0.25) => {
+    scalePDF(prevState => (prevState > 0.5 ? prevState - scale : prevState));
+  };
+
   useLayoutEffect(() => {
     const { question: qid } = history?.location?.state || {};
     /**
@@ -100,7 +110,13 @@ const PDFPreview = ({
           <Preview onClick={handleRemoveHighlight}>
             {page.URL !== "blank" && (
               <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-                <Page pageNumber={page.pageNo} renderTextLayer={false} width={pdfWidth} />
+                <Page
+                  pageNumber={page.pageNo}
+                  scale={pdfScale}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  width={pdfWidth}
+                />
               </Document>
             )}
             {renderExtra}
@@ -124,6 +140,10 @@ const PDFPreview = ({
               />
             </div>
           ))}
+        <ZoomControlCotainer>
+          <PDFZoomControl onClick={() => PDFScaleUp(0.25)}> &#43; </PDFZoomControl>
+          <PDFZoomControl onClick={() => PDFScaleDown(0.25)}> &minus; </PDFZoomControl>
+        </ZoomControlCotainer>
       </PerfectScrollbar>
     </PDFPreviewWrapper>
   );

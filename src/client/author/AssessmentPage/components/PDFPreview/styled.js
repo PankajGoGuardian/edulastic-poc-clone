@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { white, mediumDesktopExactWidth, extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
+import { white, mediumDesktopExactWidth, extraDesktopWidthMax, largeDesktopWidth, themeColor } from "@edulastic/colors";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
@@ -29,8 +29,32 @@ export const Preview = styled.div`
   position: relative;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
   @media (max-width: ${largeDesktopWidth}) {
     overflow: auto;
   }
+`;
+
+export const ZoomControlCotainer = styled.div`
+  position: fixed;
+  bottom: 50px;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const PDFZoomControl = styled.div`
+  background: ${themeColor};
+  width: 40px;
+  height: 40px;
+  font-size: 35px;
+  font-weight: bolder;
+  border-radius: 50%;
+  color: ${white};
+  display: flex;
+  line-height: 0px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 5px;
 `;

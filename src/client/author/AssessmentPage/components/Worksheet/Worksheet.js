@@ -652,7 +652,7 @@ class Worksheet extends React.Component {
         )}
 
         <Fragment>
-          <div style={{ position: "relative", display: "flex", width: `${pdfWidth}px` }}>
+          <div style={{ position: "relative", display: "flex", width: `${pdfWidth}px`, overflowX: "auto" }}>
             <PDFPreview
               page={selectedPage}
               currentPage={currentPage + 1}

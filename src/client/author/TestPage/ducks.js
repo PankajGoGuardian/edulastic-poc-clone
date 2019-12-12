@@ -920,7 +920,12 @@ function* setTestDataAndUpdateSaga(payload) {
       if (payload.current) {
         yield put(replace(`/author/tests/tab/${payload.current}/id/${entity._id}`));
       } else {
-        yield put(replace(`/author/tests/${entity._id}`));
+        yield put(
+          replace({
+            pathname: `/author/tests/${entity._id}`,
+            state: { showItemAddedMessage: true }
+          })
+        );
       }
       yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
     }
@@ -1091,7 +1096,6 @@ function* setAndSavePassageItems({ payload }) {
     const currentPassageIds = currentPassages.map(i => i._id);
     // new payload to update the tests' store's entity.
     const newPayload = {};
-
     // if passage is not already present, fetch it and add it to the payload.
     if (!currentPassageIds.includes(passageId)) {
       const passage = yield call(passageApi.getById, passageId);

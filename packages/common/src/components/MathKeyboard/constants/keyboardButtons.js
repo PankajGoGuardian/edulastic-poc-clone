@@ -800,7 +800,7 @@ const ADVANCED_TRIGNOMETRY = [
     handler: "\\sin^{-1}",
     label: <CustomImage src={Group2251} role="presentation" />,
     types: ["all", "advanced_trignometry"],
-    command: "cmd"
+    command: "write"
   },
   {
     handler: "\\cos^{-1}",
@@ -812,7 +812,7 @@ const ADVANCED_TRIGNOMETRY = [
     handler: "\\sec^{-1}",
     label: <CustomImage src={Group2249} role="presentation" />,
     types: ["all", "advanced_trignometry"],
-    command: "cmd"
+    command: "write"
   },
   {
     handler: "\\csc^{-1}",

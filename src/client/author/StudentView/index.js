@@ -139,7 +139,8 @@ class StudentViewContainer extends Component {
     const showStudentWorkButton = test.type.TESTLET === classResponse.testType;
 
     // show the total count.
-    const activeQuestions = currentStudent.questionActivities.filter(x => !(x.disabled || x.scoringDisabled));
+    const questionActivities = studentResponse?.questionActivities || [];
+    const activeQuestions = questionActivities.filter(x => !(x.disabled || x.scoringDisabled));
     const totalNumber = activeQuestions.length;
 
     const correctNumber = activeQuestions.filter(x => x.score === x.maxScore && x.score > 0).length;
@@ -163,6 +164,7 @@ class StudentViewContainer extends Component {
         <p>{initFeedbackValue}</p>
       </div>
     );
+
     return (
       <React.Fragment>
         {showFeedbackPopup && (

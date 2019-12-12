@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from "reselect";
 import { takeEvery, put, call, all } from "redux-saga/effects";
 import { keyBy as _keyBy } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
@@ -30,7 +31,16 @@ function* loadTestActivityReport({ payload }) {
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
     const questions = getQuestions(test.testItems);
-    yield put(loadQuestionsAction(_keyBy(questions, "id")));
+    const questionsWithActivities = questions.map(question => {
+      if (!question.activity) {
+        const activity = reports.questionActivities.find(qActivity => qActivity.qid === question.id);
+        return {
+          ...question,
+          activity
+        };
+      } else return question;
+    });
+    yield put(loadQuestionsAction(_keyBy(questionsWithActivities, "id")));
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
@@ -102,3 +112,5 @@ const initialState = null;
 export default createReducer(initialState, {
   [SET_FEEDBACK]: (_, { payload }) => payload
 });
+
+export const getfeedbackSelector = state => state.testFeedback;

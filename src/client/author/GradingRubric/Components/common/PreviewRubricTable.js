@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { lightGreen3, lightGrey3, white, themeColor } from "@edulastic/colors";
+import { lightGreen3, themeColor, greyScoreCardTitleColor, boxShadowColor3 } from "@edulastic/colors";
 import { sum } from "lodash";
 
-const PreviewRubricTable = ({ data, handleChange, rubricFeedback }) => {
+const PreviewRubricTable = ({ data, handleChange, rubricFeedback, isDisabled = false }) => {
   const [selectedRatings, setSelectedRatings] = useState({});
 
   useEffect(() => {
     if (rubricFeedback) {
       setSelectedRatings(rubricFeedback);
-      calculateScore(rubricFeedback);
-      handleChange({ score: calculateScore(rubricFeedback), rubricFeedback });
+      if (!isDisabled) handleChange({ score: calculateScore(rubricFeedback), rubricFeedback });
     }
-  }, [rubricFeedback]);
+  }, [rubricFeedback, isDisabled]);
 
   const getCriteria = criteria => (
     <CriteriaSection>
@@ -30,8 +29,9 @@ const PreviewRubricTable = ({ data, handleChange, rubricFeedback }) => {
     >
       {criteria.ratings.map(rating => (
         <RatingSection
-          onClick={() => handleRatingSelection(criteria.id, rating.id)}
+          onClick={() => !isDisabled && handleRatingSelection(criteria.id, rating.id)}
           selected={selectedRatings[criteria.id] == rating.id ? true : false}
+          isDisabled={isDisabled}
         >
           <div>{rating.name}</div>
           <div className="points">{`${rating.points} pts`}</div>
@@ -81,39 +81,39 @@ export default PreviewRubricTable;
 const CriteriaSection = styled.div`
   white-space: normal;
   text-align: left;
-  color: #aaafb5;
+  color: ${greyScoreCardTitleColor};
   > div:first-child {
     margin-bottom: 15px;
     font-weight: ${props => props.theme.bold};
     text-transform: uppercase;
-    font-size: 15px;
+    font-size: ${props => props.theme.questionTextlargeFontSize};
     padding-left: 15px;
   }
 `;
 
 const RatingSection = styled.div`
   max-width: 190px;
-  width: 130px;
+  min-width: 130px;
   min-height: 100px;
   margin-right: 10px;
   display: inline-block;
   padding: 5px 10px;
   white-space: normal;
   vertical-align: top;
-  cursor: pointer;
-  box-shadow: 0px 2px 5px #00000029;
+  cursor: ${({ isDisabled }) => (isDisabled ? "default" : "pointer")};
+  box-shadow: 0px 2px 5px ${boxShadowColor3};
   border-radius: 2px;
   background: ${({ selected }) => (selected ? lightGreen3 : "inherit")};
   > div:first-child {
     font-weight: ${props => props.theme.semiBold};
     margin-bottom: 5px;
-    font-size: 13px;
+    font-size: ${props => props.theme.questionTextsmallFontSize};
     text-transform: uppercase;
   }
   .points {
     text-transform: uppercase;
     color: ${themeColor};
-    font-size: 16px;
+    font-size: ${props => props.theme.keyboardFontSize};
     font-weight: ${props => props.theme.bold};
     margin-bottom: 5px;
   }

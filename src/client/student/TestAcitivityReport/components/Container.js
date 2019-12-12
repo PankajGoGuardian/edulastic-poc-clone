@@ -10,12 +10,12 @@ import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
 import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/TestItem";
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
+import { getQuestionsSelector } from "../../../author/sharedDucks/questions";
 const { releaseGradeLabels } = testConstants;
 
-const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, passages = [] }) => {
+const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, passages = [], questions }) => {
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
-  const questions = keyBy(get(item, "data.questions", []), "id");
   const resources = keyBy(get(item, "data.resources", []), "id");
 
   let allWidgets = { ...questions, ...resources };
@@ -71,6 +71,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
 export default connect(
   state => ({
     item: getItemSelector(state),
+    questions: getQuestionsSelector(state),
     passages: state.studentReport.passages,
     hasUserWork: itemHasUserWorkSelector(state),
     testActivityById: get(state, `[studentReport][testActivity]`, {})

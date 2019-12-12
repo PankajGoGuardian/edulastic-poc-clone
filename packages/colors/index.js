@@ -119,6 +119,7 @@ export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
 
 export const boxShadowColor = "#C9D0DB80";
 export const boxShadowColor2 = "#0000001A";
+export const boxShadowColor3 = "#00000029";
 export const paginationBoxShadowColor = "#a3a0a033";
 
 // Graph colors

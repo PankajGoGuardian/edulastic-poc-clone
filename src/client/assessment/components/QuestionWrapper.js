@@ -3,13 +3,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round, isEmpty } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, smallDesktopWidth, themeColor } from "@edulastic/colors";
+import { mobileWidthMax, smallDesktopWidth, themeColor, borderGrey2 } from "@edulastic/colors";
 import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
@@ -57,6 +57,7 @@ import StudentReportFeedback from "../../student/TestAcitivityReport/components/
 import { getFontSize } from "../utils/helpers";
 import FeedBackContainer from "./FeedBackContainer";
 import { PrintPreviewScore } from "./printPreviewScore";
+import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -371,6 +372,8 @@ class QuestionWrapper extends Component {
         <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom />
       ) : null;
 
+    const { rubrics: rubricDetails } = data;
+    const rubricFeedback = data?.activity?.rubricFeedback;
     return (
       <ThemeProvider
         theme={{
@@ -449,6 +452,7 @@ class QuestionWrapper extends Component {
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
+
                 {showFeedback && timeSpent ? (
                   <>
                     <TimeSpentWrapper>
@@ -462,6 +466,12 @@ class QuestionWrapper extends Component {
                 ) : (
                   ""
                 )}
+                {rubricDetails && studentReportFeedbackVisible && (
+                  <RubricTableWrapper>
+                    <span>Graded Rubric</span>
+                    <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled={true} />
+                  </RubricTableWrapper>
+                )}
               </StyledFlexContainer>
             </PaperWrapper>
             {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && !isPrintPreview && (
@@ -473,6 +483,7 @@ class QuestionWrapper extends Component {
                 widget={data}
                 studentId={userId}
                 studentName={studentName}
+                rubricDetails={rubricDetails}
                 {...presentationModeProps}
               />
             )}
@@ -586,5 +597,19 @@ const QuestionMenuWrapper = styled.div`
 
   @media (max-width: ${smallDesktopWidth}) {
     display: none;
+  }
+`;
+
+const RubricTableWrapper = styled.div`
+  border: 1px solid ${borderGrey2};
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px 10px 0px;
+  > span {
+    font-size: ${props => props.theme.titleSectionFontSize};
+    font-weight: ${props => props.theme.semiBold};
+    display: inline-block;
+    margin: 0px 16px 10px;
+    text-transform: uppercase;
   }
 `;

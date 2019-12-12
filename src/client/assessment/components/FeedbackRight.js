@@ -6,7 +6,6 @@ import { get, isUndefined, toNumber, round, maxBy, sumBy, isEqual } from "lodash
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { rubricsApi } from "@edulastic/api";
 import PreviewRubricModal from "../../author/GradingRubric/Components/common/PreviewRubricModal";
 
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
@@ -48,7 +47,7 @@ class FeedbackRight extends Component {
       maxScore = props?.widget?.validation?.validResponse?.score || 0;
     }
 
-    this.state = { score, maxScore, rubricDetails: null, showPreviewRubric: false };
+    this.state = { score, maxScore, showPreviewRubric: false };
 
     this.scoreInput = React.createRef();
   }
@@ -57,12 +56,6 @@ class FeedbackRight extends Component {
   componentDidMount() {
     if (this.context?.expressGrader === true) {
       this.scoreInput?.current?.focus();
-    }
-    const {
-      widget: { rubrics }
-    } = this.props;
-    if (rubrics) {
-      this.fetchRubricDetails(rubrics.id);
     }
   }
 
@@ -100,19 +93,7 @@ class FeedbackRight extends Component {
         newState = { ...newState, feedback: _feedback };
       }
     }
-    return newState;
   }
-
-  fetchRubricDetails = async id => {
-    await rubricsApi
-      .getRubricsById(id)
-      .then(res => {
-        this.setState({ rubricDetails: res[0] });
-      })
-      .catch(err => {
-        message.error("Unable to fetch Rubric details");
-      });
-  };
 
   onScoreSubmit(rubricResponse) {
     const { score, maxScore } = this.state;
@@ -120,13 +101,14 @@ class FeedbackRight extends Component {
     const {
       user,
       updateQuestionActivityScore,
-      widget: { rubrics, id, activity = {} },
-      studentId
+      widget: { id, activity = {} },
+      studentId,
+      rubricDetails
     } = this.props;
 
     let _score;
 
-    if (!rubrics) {
+    if (!rubricDetails) {
       if (!score || isNaN(score)) {
         message.warn("Score should be a valid numerical");
         return;
@@ -246,22 +228,8 @@ class FeedbackRight extends Component {
   }
 
   handleRubricAction = async () => {
-    const {
-      widget: { rubrics }
-    } = this.props;
-    const { rubricDetails } = this.state;
-    if (rubricDetails && rubricDetails._id === rubrics.id) {
-      this.setState({ showPreviewRubric: true });
-    } else {
-      await rubricsApi
-        .getRubricsById(rubrics.id)
-        .then(res => {
-          this.setState({ rubricDetails: res[0], showPreviewRubric: true });
-        })
-        .catch(err => {
-          message.error("Unable to fetch Rubric details");
-        });
-    }
+    const { rubricDetails } = this.props;
+    if (rubricDetails) this.setState({ showPreviewRubric: true });
   };
 
   handleRubricResponse = res => {
@@ -278,20 +246,23 @@ class FeedbackRight extends Component {
   render() {
     const {
       studentName,
-      widget: { activity, rubrics },
+      widget: { activity },
       isPresentationMode,
       color,
       icon,
       twoColLayout,
-      showCollapseBtn
+      showCollapseBtn,
+      rubricDetails,
+      user
     } = this.props;
-    const { score, maxScore, feedback, submitted, showPreviewRubric, rubricDetails } = this.state;
+    const { score, maxScore, feedback, submitted, showPreviewRubric } = this.state;
     let rubricMaxScore = 0;
     if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
     const { rubricFeedback } = activity || {};
     const isError = rubricDetails ? false : maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
+    const showGradingRubricButton = user.user?.features?.gradingrubrics && !!rubricDetails;
 
     if (isStudentName) {
       title = (
@@ -341,7 +312,7 @@ class FeedbackRight extends Component {
             <TextPara>{rubricMaxScore || maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
-        {rubrics && (
+        {showGradingRubricButton && (
           <RubricsWrapper>
             <RubricsButton onClick={() => this.handleRubricAction()}>Grading Rubric</RubricsButton>
           </RubricsWrapper>

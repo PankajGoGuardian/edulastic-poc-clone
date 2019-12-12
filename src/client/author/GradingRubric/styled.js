@@ -208,11 +208,11 @@ export const RatingWrapper = styled.div`
 
 export const RatingSection = styled(PerfectScrollbar)`
   height: -webkit-fill-available;
-  margin-right: ${({ isEditable }) => (isEditable ? "235px" : "0px")};
+  margin-right: ${({ isEditable }) => (isEditable ? "235px" : "-5px")};
   white-space: nowrap;
   overflow-x: hidden;
   padding: 0px 5px;
-  margin: 0px -5px;
+  margin-left: -5px;
 `;
 
 export const RubricFooter = styled.div`

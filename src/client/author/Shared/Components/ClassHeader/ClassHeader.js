@@ -8,7 +8,7 @@ import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { IconDeskTopMonitor, IconBookMarkButton, IconNotes } from "@edulastic/icons";
-import { assignmentPolicyOptions } from "@edulastic/constants";
+import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
 import { MenuIcon } from "@edulastic/common";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
@@ -46,7 +46,8 @@ import {
   openAssignmentAction,
   closeAssignmentAction,
   togglePauseAssignmentAction,
-  receiveTestActivitydAction
+  receiveTestActivitydAction,
+  toggleViewPasswordAction
 } from "../../../src/actions/classBoard";
 import {
   showScoreSelector,
@@ -56,17 +57,18 @@ import {
   isItemVisibiltySelector,
   classListSelector,
   getCanCloseAssignmentSelector,
-  getCanOpenAssignmentSelector
+  getCanOpenAssignmentSelector,
+  getViewPasswordSelector,
+  getPasswordPolicySelector,
+  showPasswordButonSelector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
-import {
-  getToggleDeleteAssignmentModalState,
-  toggleDeleteAssignmentModalAction
-} from "../../../sharedDucks/assignments";
+import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
+import ViewPasswordModal from "./ViewPasswordModal";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -219,6 +221,17 @@ class ClassHeader extends Component {
     this.setState({ modalInputVal: e.target.value });
   };
 
+  handleTogglePasswordModal = () => {
+    const { passwordPolicy, toggleViewPassword, assignmentStatus } = this.props;
+    if (
+      assignmentStatus === "NOT OPEN" &&
+      passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      return message.error("assignment should be open to see password");
+    }
+    toggleViewPassword();
+  };
+
   render() {
     const {
       t,
@@ -231,13 +244,14 @@ class ClassHeader extends Component {
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
       toggleDeleteAssignmentModalAction,
-      toggleDeleteAssignmentModalState,
       notStartedStudents,
       inProgressStudents,
       toggleSideBar,
       isItemsVisible,
       classesList,
-      match
+      match,
+      showPasswordButton,
+      isViewPassword
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -294,6 +308,11 @@ class ClassHeader extends Component {
         {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
         </MenuItems> */}
+        {showPasswordButton && (
+          <MenuItems key="key5" onClick={this.handleTogglePasswordModal}>
+            View Password
+          </MenuItems>
+        )}
       </DropMenu>
     );
 
@@ -408,14 +427,14 @@ class ClassHeader extends Component {
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
-          {toggleDeleteAssignmentModalState ? (
-            <DeleteAssignmentModal
-              testName={additionalData?.testName}
-              assignmentId={assignmentId}
-              classId={classId}
-              lcb
-            />
-          ) : null}
+          <DeleteAssignmentModal
+            testName={additionalData?.testName}
+            assignmentId={assignmentId}
+            classId={classId}
+            lcb
+          />
+          {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
+          {isViewPassword && <ViewPasswordModal />}
           <ConfirmationModal
             title="Pause"
             show={isPauseModalVisible}
@@ -491,7 +510,9 @@ const enhance = compose(
       inProgressStudents: inProgressStudentsSelector(state),
       isItemsVisible: isItemVisibiltySelector(state),
       classesList: classListSelector(state),
-      toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
+      passwordPolicy: getPasswordPolicySelector(state),
+      showPasswordButton: showPasswordButonSelector(state),
+      isViewPassword: getViewPasswordSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -503,7 +524,8 @@ const enhance = compose(
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       toggleSideBar: toggleSideBarAction,
       studentUnselectAll: gradebookUnSelectAllAction,
-      toggleDeleteAssignmentModalAction
+      toggleDeleteAssignmentModalAction,
+      toggleViewPassword: toggleViewPasswordAction
     }
   )
 );

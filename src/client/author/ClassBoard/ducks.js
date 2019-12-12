@@ -20,7 +20,8 @@ import {
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
-  redirectToAssignmentsAction
+  redirectToAssignmentsAction,
+  updatePasswordDetailsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -47,7 +48,8 @@ import {
   MARK_AS_SUBMITTED,
   DOWNLOAD_GRADES_RESPONSES,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
-  REDIRECT_TO_ASSIGNMENTS
+  REDIRECT_TO_ASSIGNMENTS,
+  REGENERATE_PASSWORD
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 import { downloadCSV } from "../Reports/common/util";
@@ -151,14 +153,23 @@ function* markAsDoneSaga({ payload }) {
 
 function* openAssignmentSaga({ payload }) {
   try {
-    yield call(classBoardApi.openAssignment, payload);
-    yield put(updateOpenAssignmentsAction(payload.classId));
+    const { result: assignment } = yield call(classBoardApi.openAssignment, payload);
+    const { classId } = payload;
+    const classData = assignment.class.find(_clazz => _clazz._id === classId);
+    yield put(updateOpenAssignmentsAction(classId));
+    yield put(
+      updatePasswordDetailsAction({
+        assignmentPassword: classData.assignmentPassword,
+        passwordExpireTime: classData.passwordExpireTime,
+        passwordExpireIn: assignment.passwordExpireIn
+      })
+    );
     yield call(message.success, "Success");
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Failed to open");
+    yield call(message.error, err.data?.message || "Failed to open");
   }
 }
 
@@ -295,6 +306,22 @@ function* redirectToAssignmentsSaga() {
   yield put(push(`/author/assignments`));
 }
 
+function* regeneratePasswordSaga({ payload }) {
+  try {
+    const data = yield call(classBoardApi.regeneratePassword, payload);
+    yield put(
+      updatePasswordDetailsAction({
+        assignmentPassword: data.assignmentPassword,
+        passwordExpireTime: data.passwordExpireTime,
+        passwordExpireIn: data.passwordExpireIn
+      })
+    );
+  } catch (e) {
+    console.log(e);
+    yield call(message.error, "Regenerate password failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -312,7 +339,8 @@ export function* watcherSaga() {
     yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),
     yield takeEvery(ADD_STUDENTS, addStudentsSaga),
     yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
-    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga)
+    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
+    yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga)
   ]);
 }
 
@@ -327,6 +355,20 @@ export const getCurrentTestActivityIdSelector = createSelector(
 export const getAllTestActivitiesForStudentSelector = createSelector(
   stateTestActivitySelector,
   state => state.allTestActivitiesForStudent || []
+);
+
+export const getViewPasswordSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.viewPassword
+);
+
+export const getAssignmentPasswordDetailsSelector = createSelector(
+  stateTestActivitySelector,
+  state => ({
+    assignmentPassword: state?.additionalData?.assignmentPassword,
+    passwordExpireTime: state?.additionalData?.passwordExpireTime,
+    passwordExpireIn: state?.additionalData?.passwordExpireIn
+  })
 );
 
 export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQuestionActivities) => {
@@ -628,9 +670,38 @@ export const classListSelector = createSelector(
   state => state?.classes || []
 );
 
+export const getPasswordPolicySelector = createSelector(
+  getAdditionalDataSelector,
+  state => state?.passwordPolicy
+);
+
 export const testActivtyLoadingSelector = createSelector(
   stateTestActivitySelector,
   state => state.loading
+);
+
+export const showPasswordButonSelector = createSelector(
+  getAdditionalDataSelector,
+  getAssignmentStatusSelector,
+  testActivtyLoadingSelector,
+  (additionalData, assignmentStatus, isLoading) => {
+    const { passwordPolicy } = additionalData || {};
+    if (
+      !assignmentStatus ||
+      assignmentStatus === "NOT OPEN" ||
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
+      isLoading
+    ) {
+      return false;
+    }
+    if (
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+      passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
+      return true;
+    }
+    return false;
+  }
 );
 
 export const getTestItemsDataSelector = createSelector(

@@ -33,7 +33,7 @@ import {
   NormalText,
   StyledRadioGroup,
   RadioWrapper,
-  TestTypeSelect,
+  StyledSelect,
   ActivityInput,
   Container,
   MaxAnswerChecksInput,
@@ -61,7 +61,9 @@ const {
   releaseGradeKeys,
   nonPremiumReleaseGradeKeys,
   testContentVisibility: testContentVisibilityOptions,
-  testContentVisibilityTypes
+  testContentVisibilityTypes,
+  passwordPolicy: passwordPolicyValues,
+  passwordPolicyOptions
 } = testContants;
 
 const { Option } = Select;
@@ -217,6 +219,18 @@ class MainSetting extends Component {
     this.setState({ inputBlur: true });
   };
 
+  handleUpdatePasswordExpireIn = e => {
+    let { value = 1 } = e.target;
+    value = value * 60;
+    console.log(value);
+    if (value < 60 || isNaN(value)) {
+      value = 60;
+    } else if (value > 999 * 60) {
+      value = 999 * 60;
+    }
+    this.updateTestData("passwordExpireIn")(value);
+  };
+
   render() {
     const { enable, showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
     const {
@@ -239,13 +253,14 @@ class MainSetting extends Component {
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
-      requirePassword,
+      passwordPolicy,
       maxAnswerChecks,
       scoringType,
       penalty,
       testType,
       calcType,
       assignmentPassword,
+      passwordExpireIn,
       markAsDone,
       maxAttempts,
       grades,
@@ -336,7 +351,7 @@ class MainSetting extends Component {
                 <Row>
                   <Title>Test Type</Title>
                   <Body smallSize={isSmallSize}>
-                    <TestTypeSelect
+                    <StyledSelect
                       value={testType}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("testType")}
@@ -353,7 +368,7 @@ class MainSetting extends Component {
                           {testTypes[key]}
                         </Option>
                       ))}
-                    </TestTypeSelect>
+                    </StyledSelect>
                   </Body>
                 </Row>
               </Block>
@@ -541,39 +556,71 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
-            {availableFeatures.includes("assessmentSuperPowersRequirePassword") ? (
-              <Block id="require-password" smallSize={isSmallSize}>
-                <Title>Require Password</Title>
-                <Body smallSize={isSmallSize}>
-                  <Switch
-                    disabled={!owner || !isEditable}
-                    defaultChecked={requirePassword}
-                    onChange={this.updateTestData("requirePassword")}
-                  />
-                  {requirePassword && (
-                    <>
-                      <InputPassword
-                        required
-                        color={isPasswordValid()}
-                        onBlur={this.handleBlur}
-                        onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
-                        size="large"
-                        value={assignmentPassword}
-                        type="text"
-                        placeholder="Enter Password"
-                      />
-                      {validationMessage ? <MessageSpan>{validationMessage}</MessageSpan> : ""}
-                    </>
-                  )}
-                  <Description>
-                    {
-                      "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
-                    }
-                  </Description>
-                </Body>
+            {!!availableFeatures.includes("assessmentSuperPowersRequirePassword") && (
+              <Block id="test-type" smallSize={isSmallSize}>
+                <Row>
+                  <Title>Require Password</Title>
+                  <Body smallSize={isSmallSize}>
+                    <StyledSelect
+                      value={passwordPolicy}
+                      disabled={!owner || !isEditable}
+                      onChange={this.updateTestData("passwordPolicy")}
+                    >
+                      {Object.keys(passwordPolicyOptions).map(key => (
+                        <Option key={key} value={passwordPolicyValues[key]}>
+                          {passwordPolicyOptions[key]}
+                        </Option>
+                      ))}
+                    </StyledSelect>
+                    {passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC && (
+                      <>
+                        <Description>
+                          <InputPassword
+                            required
+                            color={isPasswordValid()}
+                            disabled={!owner || !isEditable}
+                            onBlur={this.handleBlur}
+                            onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
+                            size="large"
+                            value={assignmentPassword}
+                            type="text"
+                            placeholder="Enter Password"
+                          />
+                          {validationMessage ? <MessageSpan>{validationMessage}</MessageSpan> : ""}
+                        </Description>
+                        <Description>
+                          {
+                            "The password is entered by you and does not change. Students must enter this password before they can take the assessment."
+                          }
+                        </Description>
+                      </>
+                    )}
+                    {passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+                      <>
+                        <Description>
+                          <Input
+                            required
+                            type="number"
+                            disabled={!owner || !isEditable}
+                            onChange={this.handleUpdatePasswordExpireIn}
+                            value={passwordExpireIn / 60}
+                            style={{ width: "100px", marginRight: "10px" }}
+                            max={999}
+                            min={1}
+                            step={1}
+                          />{" "}
+                          Minutes
+                        </Description>
+                        <Description>
+                          {
+                            "Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment."
+                          }
+                        </Description>
+                      </>
+                    )}
+                  </Body>
+                </Row>
               </Block>
-            ) : (
-              ""
             )}
             {availableFeatures.includes("assessmentSuperPowersCheckAnswerTries") ? (
               <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>

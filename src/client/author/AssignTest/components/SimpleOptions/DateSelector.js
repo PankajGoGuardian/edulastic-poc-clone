@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 // import PropTypes from "prop-types";
-import * as moment from "moment";
+import { test as testConst } from "@edulastic/constants";
 import { Col } from "antd";
 import { StyledRow, StyledRowLabel, StyledDatePicker } from "./styled";
 
-const DateSelector = ({ startDate, endDate, changeField }) => {
+const DateSelector = ({ startDate, endDate, changeField, passwordPolicy }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
       return false;
@@ -39,6 +39,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             value={startDate}
             placeholder="Open Date"
             onChange={changeField("startDate")}
+            disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
           />
         </Col>
         <Col span={12}>

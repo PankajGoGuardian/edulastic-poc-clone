@@ -186,7 +186,7 @@ export const RadioGroup = styled(Radio.Group)`
   }
 `;
 
-export const TestTypeSelect = styled(Select)`
+export const StyledSelect = styled(Select)`
   height: 40px;
   width: 30%;
   margin-right: 30px;
@@ -230,7 +230,6 @@ export const ActivityInput = styled(Input)`
 
 export const InputPassword = styled(Input)`
   width: 40%;
-  margin-left: 30px;
   margin-right: 10px;
   border-color: ${props => (props.color ? props.color : blueBorder)};
   &:hover,

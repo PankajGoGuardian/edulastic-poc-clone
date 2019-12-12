@@ -15,7 +15,7 @@ import {
   getClassListSelector
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { test as testConst, roleuser } from "@edulastic/constants";
+import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
@@ -123,13 +123,38 @@ class AssignTest extends React.Component {
     }
   }
 
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { testSettings, userRole } = nextProps;
+    if (
+      testSettings.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+      isNaN(nextState.assignment.passwordPolicy)
+    ) {
+      return {
+        assignment: {
+          ...nextState.assignment,
+          openPolicy:
+            userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+              ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+              : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS,
+          passwordPolicy: testSettings.passwordPolicy,
+          passwordExpireIn: testSettings.passwordExpireIn
+        }
+      };
+    }
+    return null;
+  }
+
   handleAssign = () => {
     const { assignment } = this.state;
     const { saveAssignment, isAssigning } = this.props;
     if (isAssigning) return;
-    if (assignment.requirePassword === false) {
+    if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+      delete assignment.passwordExpireIn;
+    }
+    if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
       delete assignment.assignmentPassword;
     } else if (
+      assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       assignment.assignmentPassword &&
       (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25)
     ) {

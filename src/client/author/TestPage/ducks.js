@@ -220,7 +220,8 @@ export const createBlankTest = () => ({
   calcType: test.calculatorKeys[0],
   answerOnPaper: false,
   assignmentPassword: "",
-  requirePassword: false,
+  passwordExpireIn: 15 * 60,
+  passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   maxAnswerChecks: 0,
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
@@ -542,13 +543,22 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const { _id: oldId, versioned: regrade = false, title, requirePassword = false } = payload.data;
+  const {
+    _id: oldId,
+    versioned: regrade = false,
+    title,
+    passwordPolicy = test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+  } = payload.data;
   try {
     if (title !== undefined && !title.trim().length) {
       return yield call(message.error(" Name field cannot be empty "));
     }
-    if (!requirePassword) {
+    if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
       delete payload.data.assignmentPassword;
+    }
+
+    if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+      delete payload.data.passwordExpireIn;
     }
 
     const dataToSend = omit(payload.data, [
@@ -614,12 +624,16 @@ function* updateTestSaga({ payload }) {
     }));
 
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
-    if (!payload.data.requirePassword) {
+    if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+      delete payload.data.passwordExpireIn;
+    }
+    if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
       delete payload.data.assignmentPassword;
     } else if (
-      !payload.data.assignmentPassword ||
-      payload.data.assignmentPassword.length < 6 ||
-      payload.data.assignmentPassword.length > 25
+      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+      (!payload.data.assignmentPassword ||
+        payload.data.assignmentPassword.length < 6 ||
+        payload.data.assignmentPassword.length > 25)
     ) {
       yield call(message.error, "Please add a valid password.");
       return;
@@ -889,7 +903,10 @@ function* setTestDataAndUpdateSaga(payload) {
       if (!title) {
         return yield call(message.error("Name field cannot be empty"));
       }
-      if (!newTest.requirePassword) {
+      if (newTest.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+        delete newTest.passwordExpireIn;
+      }
+      if (newTest.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
         delete newTest.assignmentPassword;
       } else if (!newTest.assignmentPassword) {
         yield call(message.error, "Please add a valid password.");

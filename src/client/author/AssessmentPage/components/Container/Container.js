@@ -34,7 +34,7 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
-const { statusConstants } = test;
+const { statusConstants, passwordPolicy: passwordPolicyValues } = test;
 
 const tabs = {
   DESCRIPTION: "description",
@@ -163,7 +163,7 @@ class Container extends React.Component {
       title,
       subjects,
       grades,
-      requirePassword = false,
+      passwordPolicy = passwordPolicyValues.REQUIRED_PASSWORD_POLICY_OFF,
       assignmentPassword = "",
       safeBrowser,
       sebPassword
@@ -180,7 +180,7 @@ class Container extends React.Component {
       message.error("Subject field cannot be empty");
       return false;
     }
-    if (requirePassword) {
+    if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
         message.error("Please add a valid password.");
         return false;

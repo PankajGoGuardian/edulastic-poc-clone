@@ -35,7 +35,10 @@ import {
   ADD_STUDENTS,
   SET_STUDENTS_GRADEBOOK,
   UPDATE_SUBMITTED_STUDENTS,
-  REDIRECT_TO_ASSIGNMENTS
+  REDIRECT_TO_ASSIGNMENTS,
+  TOGGLE_VIEW_PASSWORD_MODAL,
+  REGENERATE_PASSWORD,
+  UPDATE_PASSWORD_DETAILS
 } from "../constants/actions";
 import { createAction } from "redux-starter-kit";
 
@@ -197,3 +200,6 @@ export const setCurrentTestActivityIdAction = createAction(SET_CURRENT_TESTACTIV
 export const getAllTestActivitiesForStudentAction = createAction(GET_ALL_TESTACTIVITIES_FOR_STUDENT);
 export const setAllTestActivitiesForStudentAction = createAction(SET_ALL_TESTACTIVITIES_FOR_STUDENT);
 export const redirectToAssignmentsAction = createAction(REDIRECT_TO_ASSIGNMENTS);
+export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL);
+export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD);
+export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS);

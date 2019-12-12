@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Col, Icon, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
-import { test as testConst, roleuser } from "@edulastic/constants";
+import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
@@ -85,7 +85,8 @@ class SimpleOptions extends React.Component {
       assignment,
       updateOptions,
       toggleSpecificStudents,
-      isReleaseScorePremium
+      isReleaseScorePremium,
+      userRole
     } = this.props;
     if (field === "specificStudents") {
       if (value === false) {
@@ -132,7 +133,22 @@ class SimpleOptions extends React.Component {
             state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
           }
           break;
+        case "passwordPolicy":
+          if (value === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+            state.openPolicy =
+              userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+                ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+                : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
+            state.passwordExpireIn = 15 * 60;
+          } else {
+            state.openPolicy =
+              userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+                ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+                : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE;
+          }
+          break;
       }
+
       state[field] = value;
     });
     updateOptions(nextAssignment);
@@ -228,7 +244,12 @@ class SimpleOptions extends React.Component {
             specificStudents={specificStudents}
           />
 
-          <DateSelector startDate={assignment.startDate} endDate={assignment.endDate} changeField={changeField} />
+          <DateSelector
+            startDate={assignment.startDate}
+            endDate={assignment.endDate}
+            changeField={changeField}
+            passwordPolicy={assignment.passwordPolicy}
+          />
 
           <StyledRowLabel gutter={16}>
             <Col span={12}>Open Policy</Col>
@@ -243,6 +264,7 @@ class SimpleOptions extends React.Component {
                 cache="false"
                 value={assignment.openPolicy}
                 onChange={changeField("openPolicy")}
+                disabled={assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
               >
                 {openPolicy.map(({ value, text }, index) => (
                   <Select.Option key={index} value={value} data-cy="open">

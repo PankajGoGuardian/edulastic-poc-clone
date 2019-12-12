@@ -140,6 +140,11 @@ class SimpleOptions extends React.Component {
                 ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
                 : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
             state.passwordExpireIn = 15 * 60;
+          } else {
+            state.openPolicy =
+              userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+                ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+                : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE;
           }
           break;
       }
@@ -243,7 +248,7 @@ class SimpleOptions extends React.Component {
             startDate={assignment.startDate}
             endDate={assignment.endDate}
             changeField={changeField}
-            passwordPolicy={assignment.passwordPolicy || testSettings.passwordPolicy}
+            passwordPolicy={assignment.passwordPolicy}
           />
 
           <StyledRowLabel gutter={16}>

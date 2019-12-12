@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Button, Menu, Dropdown, Icon, Modal } from "antd";
+import { Button, Menu, Dropdown, Icon, Modal, Tag } from "antd";
 import {
   mobileWidth,
   white,
@@ -190,17 +190,25 @@ class ModuleRow extends Component {
                     )}
                     {!completed && !hideEditOptions && (
                       <ModulesWrapper>
-                        <ModulesAssigned>
-                          Assigned
-                          <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
-                          of
-                          <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
-                        </ModulesAssigned>
-                        <AssignModuleButton>
-                          <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                            {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
-                          </Button>
-                        </AssignModuleButton>
+                        {totalAssigned ? (
+                          <>
+                            <ModulesAssigned>
+                              Assigned
+                              <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
+                              of
+                              <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
+                            </ModulesAssigned>
+                            <AssignModuleButton>
+                              <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
+                                {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
+                              </Button>
+                            </AssignModuleButton>
+                          </>
+                        ) : (
+                          <Tag color={themeColor} onClick={event => event.stopPropagation()}>
+                            NO ASSIGNMENTS
+                          </Tag>
+                        )}
                       </ModulesWrapper>
                     )}
                   </ModuleTitleAssignedWrapper>

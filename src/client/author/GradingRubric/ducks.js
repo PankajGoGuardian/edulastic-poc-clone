@@ -85,7 +85,6 @@ function* updateRubricSaga({ payload }) {
 function* searchRubricsSaga({ payload }) {
   try {
     const data = yield call(rubricsApi.getSerchedRubrics, payload);
-    console.log("data", data);
     yield put(searchRubricsSuccessAction(data));
   } catch (err) {
     yield put(searchRubricsFailedAction(""));

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { sumBy, maxBy } from "lodash";
 import { Col, Form, Icon, message, Pagination } from "antd";
 import { ExistingRubricContainer, SearchBar, ActionBarContainer, PaginationContainer } from "../styled";
 import produce from "immer";
@@ -60,6 +61,10 @@ const UseExisting = ({
     if (actionType === "VIEW RUBRIC") setCurrentMode("PREVIEW");
   }, []);
 
+  const maxScore = useMemo(() => sumBy(currentRubricData?.criteria, c => maxBy(c?.ratings, "points")?.points), [
+    currentRubricData?.criteria
+  ]);
+
   const getContent = () => {
     return (
       <>
@@ -83,7 +88,10 @@ const UseExisting = ({
                   {currentQuestion.rubrics?.id !== currentRubricData._id && (
                     <span
                       onClick={() =>
-                        associateRubricWithQuestion({ id: currentRubricData._id, name: currentRubricData.name })
+                        associateRubricWithQuestion({
+                          metadata: { id: currentRubricData._id, name: currentRubricData.name },
+                          maxScore
+                        })
                       }
                     >
                       <Icon type="check" /> <span>Use</span>
@@ -227,7 +235,6 @@ const UseExisting = ({
   };
 
   const handleDeleteModalResponse = response => {
-    console.log("response", response);
     if (response === "YES") {
       deleteRubric(currentRubricData._id);
       if (currentQuestion.rubrics) dissociateRubricFromQuestion();

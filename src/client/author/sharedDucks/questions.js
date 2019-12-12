@@ -247,10 +247,12 @@ export default createReducer(initialState, {
     });
   },
   [SET_RUBRIC_ID]: (state, { payload }) => {
-    state.byId[state.current].rubrics = payload;
+    state.byId[state.current].rubrics = payload.metadata;
+    state.byId[state.current].validation.validResponse.score = payload.maxScore;
   },
   [REMOVE_RUBRIC_ID]: state => {
     delete state.byId[state.current].rubrics;
+    state.byId[state.current].validation.validResponse.score = 1;
   }
 });
 

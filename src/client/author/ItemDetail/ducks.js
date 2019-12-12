@@ -980,8 +980,7 @@ function* publishTestItemSaga({ payload }) {
   try {
     const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
     const testItem = yield select(state => get(state, ["itemDetail", "item"]));
-    const isMultipartOrPassageType =
-      (testItem && testItem.multipartItem) || (questions.length && questions[0].type === "passage");
+    const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
     const standardPresent = questions.some(hasStandards);
 
     // if alignment data is not present, set the flag to open the modal, and wait for

@@ -173,8 +173,9 @@ export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
   const domainIds = Object.keys(grouped);
   return domainIds.map(id => {
     const allStandards = grouped[id];
-    const standards = allStandards.map(({ _id, identifier, grades, description, level }) => ({
+    const standards = allStandards.map(({ _id, curriculumId, identifier, grades, description, level }) => ({
       id: _id,
+      curriculumId,
       name: identifier,
       grades,
       description,
@@ -207,7 +208,8 @@ export const alignmentStandardsFromMongoToUI = alignmentDomains => {
         level: standard.level,
         tloDescription: alignmentDomain.name,
         tloId: alignmentDomain.id,
-        _id: standard.id
+        _id: standard.id,
+        curriculumId: standard.curriculumId
       });
     });
   });

@@ -34,6 +34,7 @@ import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
 import { getInterestedCurriculumsSelector } from "../../../author/src/selectors/user";
 import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
+import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
 
 const getNewAlignmentState = () => ({
   curriculum: "",
@@ -231,4 +232,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(QuestionMetadata);
+export default enhance(withMathFormula(QuestionMetadata));

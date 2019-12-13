@@ -136,7 +136,7 @@ export default class TestLibrary {
     // URL changes after ~4 sec after API response, could not watch this event, hence wait
     cy.wait(5000).then(() =>
       cy.url().then(newUrl => {
-        expect(newUrl).to.include(`tests/${newTestId}/versioned/old/${oldTestId}`);
+        expect(newUrl).to.include(`/${newTestId}/old/${oldTestId}`);
       })
     );
 
@@ -354,4 +354,32 @@ export default class TestLibrary {
     this.searchFilters.clearAll();
     this.checkforNonExistanceOfTest(test_id);
   };
+  assertUrl = testId => {
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("be.eq", testId);
+  };
+  publishedToDraftAssigned = () => {
+    cy.server();
+    cy.route("PUT", "**/test/**").as("newVersion");
+    cy.route("GET", "**/api/test/**").as("testdrafted");
+    this.getEditButton()
+      .should("exist")
+      .click()
+      .then(() => {
+        //pop up that comes up when we try to edit a published test
+        cy.contains("This test is already assigned to students.")
+          .parent()
+          .contains("span", "PROCEED")
+          .click({ force: true });
+        cy.wait("@newVersion").then(xhr => cy.saveTestDetailToDelete(xhr.response.body.result._id));
+        cy.wait("@testdrafted").then(xhr => {
+          assert(xhr.status === 200, "Test versioned");
+        });
+      });
+    cy.wait(5000);
+    //return cy.url().then(url => url.split("/").reverse()[2]);
+  };
+
+  getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
 }

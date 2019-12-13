@@ -44,7 +44,7 @@ const ReviewSummary = ({
 
       <MainTitle>Grade</MainTitle>
       <SummarySelect
-        data-cy="gradesSelect"
+        data-cy="gradeSelect"
         mode="multiple"
         size="large"
         style={{ width: "100%" }}

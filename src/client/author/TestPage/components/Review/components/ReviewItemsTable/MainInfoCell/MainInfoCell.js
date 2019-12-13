@@ -12,7 +12,7 @@ class MainInfoCell extends React.Component {
     const newHtml = data.stimulus?.replace(/&nbsp;/g, "");
 
     return (
-      <FlexContainer style={{ justifyContent: "space-between" }}>
+      <FlexContainer data-cy={data.id} style={{ justifyContent: "space-between" }}>
         <Stimulus
           isCollapse={isCollapse}
           onClick={() => setExpandedRows(index)}

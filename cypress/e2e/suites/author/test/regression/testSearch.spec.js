@@ -10,7 +10,7 @@ const testData = require("../../../../../fixtures/testAuthoring");
 const { dist1, dist2 } = userData["Sharing"];
 const { search_1, search_2, search_3 } = testData;
 
-describe("Serching Tests Using Tags,Tittle and Standards", () => {
+describe("Searching Tests Using Tags,Tittle and Standards", () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
@@ -76,7 +76,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -88,7 +87,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -100,7 +98,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
-          searchFilters.clickOnSearchIcon();
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -112,7 +109,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           standardToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
           });
@@ -124,7 +120,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           tagsToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
           });
@@ -135,7 +130,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
-          searchFilters.clickOnSearchIcon();
           testLibrary.checkforNonExistanceOfTest(id);
         });
         techersidebar.clickOnPlayList();
@@ -163,7 +157,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -174,7 +167,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -186,7 +178,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
-          searchFilters.clickOnSearchIcon();
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -199,7 +190,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -211,7 +201,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(ele);
-          searchFilters.clickOnSearchIcon();
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
           });
@@ -223,7 +212,6 @@ describe("Serching Tests Using Tags,Tittle and Standards", () => {
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
-          searchFilters.clickOnSearchIcon();
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });

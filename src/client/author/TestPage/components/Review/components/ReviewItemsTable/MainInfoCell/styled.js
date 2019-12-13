@@ -22,6 +22,17 @@ export const Stimulus = WithMathFormula(styled.div`
   padding-right: 15px;
   height: ${({ isCollapse }) => isCollapse && "25px"};
   ${Style}
+  span,
+  p,
+  em,
+  u,
+  b,
+  strong {
+    ${Style}
+  }
+  p {
+    margin-left: 0 !important;
+  }
 
   * {
     display: ${({ isCollapse }) => isCollapse && "inline"};

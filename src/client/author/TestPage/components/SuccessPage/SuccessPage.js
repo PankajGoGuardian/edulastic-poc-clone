@@ -90,17 +90,9 @@ class SuccessPage extends React.Component {
   renderHeaderButton = () => {
     const { isAssignSuccess, isPlaylist, isRegradeSuccess } = this.props;
     return (
-      !isPlaylist && (
-        <AssignButton
-          data-cy="assignButton"
-          onClick={this.handleAssign}
-          color="secondary"
-          variant="create"
-          shadow="none"
-        >
-          {isAssignSuccess || isRegradeSuccess ? "VIEW RESPONSE" : "ASSIGN"}
-        </AssignButton>
-      )
+      <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+        {isAssignSuccess || isRegradeSuccess ? "VIEW RESPONSE" : "ASSIGN"}
+      </AssignButton>
     );
   };
 

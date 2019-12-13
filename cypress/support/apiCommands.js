@@ -216,12 +216,38 @@ Cypress.Commands.add("deleteTestData", () => {
           });
           delete testData.classs;
         }
+        // remove enrollments
+
+        if (testData.enrollments) {
+          testData.enrollments.forEach(enrollment => {
+            cy.deleteEnrollments({ authToken: getAccessToken(), deleteBody: enrollment });
+          });
+          delete testData.enrollments;
+        }
       });
-      // TODO : add other collections API
     } else testData = {};
+
+    // TODO : add other collections API
     cy.writeFile(deleteTestDataFile, testData).then(json => {
       expect(Object.keys(json).length).to.equal(0);
     });
+  });
+});
+
+Cypress.Commands.add("deleteEnrollments", enrollment => {
+  cy.request({
+    url: `${BASE_URL}/enrollment/student`,
+    method: "DELETE",
+    headers: {
+      Authorization: enrollment.authToken,
+      "Content-Type": "application/json"
+    },
+    body: enrollment.deleteBody
+  }).then(({ status }) => {
+    // if (status !== 403) {
+    expect(status).to.eq(200);
+    console.log("enrollment deleted with _id :", enrollment.deleteBody.userIds);
+    // } else console.log("API forbidden , for enrollment ", JSON.stringify(enrollment));
   });
 });
 
@@ -269,6 +295,20 @@ Cypress.Commands.add("deleteClazz", group => {
     console.log("groups deleted with _id :", group.deleteBody);
     // } else console.log("API forbidden , for groups ", JSON.stringify(group));
   });
+});
+
+Cypress.Commands.add("saveEnrollmentDetails", response => {
+  if (response) {
+    const enroll = {};
+    enroll.classCode = response.result.code;
+    enroll.studentIds = [response.result.userId];
+    enroll.districtId = response.result.districtId;
+    cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.enrollments) json.enrollments = [];
+      json.enrollments.push(enroll);
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
 });
 
 Cypress.Commands.add("saveClassDetailToDelete", classJson => {

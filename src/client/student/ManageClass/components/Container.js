@@ -36,7 +36,7 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
     <CustomWrapper>
       <HeaderWrapper>
         <Title>{t("common.myClasses")}</Title>
-        <JoinClassBtn onClick={() => setJoinClassModal(true)}>
+        <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
           <IconPlus width={12} height={12} color="white" stroke="white" />
           <span>{t("common.joinClass")}</span>
         </JoinClassBtn>
@@ -47,20 +47,25 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
             title={t("common.enterClassCode")}
             footer={
               <ButtonWrapper>
-                <StyledButton onClick={closeModalHandler}>{t("common.cancel")}</StyledButton>
-                <StyledButton onClick={joinClassHandler} type={"primary"}>
+                <StyledButton data-cy="cancelbutton" onClick={closeModalHandler}>
+                  {t("common.cancel")}
+                </StyledButton>
+                <StyledButton data-cy="joinbutton" onClick={joinClassHandler} type={"primary"}>
                   {t("common.join")}
                 </StyledButton>
               </ButtonWrapper>
             }
           >
             <StyledInput
+              data-cy="classcodeinput"
               placeholder={t("common.enterClassCode").toLowerCase()}
               value={classCode}
               onChange={e => setClassCode(e.target.value)}
               classCode
             />
-            {classCode !== null && !classCode.length ? <ErrorMessage>enter class code</ErrorMessage> : null}
+            {classCode !== null && !classCode.length ? (
+              <ErrorMessage data-cy="errormessage">enter class code</ErrorMessage>
+            ) : null}
           </JoinClassModal>
         )}
       </HeaderWrapper>

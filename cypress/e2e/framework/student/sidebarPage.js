@@ -5,10 +5,6 @@ class SidebarPage {
   onClickMenuItems() {
     let menuItems = [
       {
-        label: "Dashboard",
-        path: "home/dashboard"
-      },
-      {
         label: "Assignments",
         path: "home/assignments"
       },
@@ -46,18 +42,18 @@ class SidebarPage {
     cy.contains("SIGN OUT").click();
   }
 
-  clickOnDashboard() {
-    cy.get('[data-cy="label0"]')
-      .should("be.visible")
-      .click();
-  }
+  // clickOnDashboard() {
+  //   cy.get('[data-cy="label0"]')
+  //     .should("be.visible")
+  //     .click();
+  // }
 
   clickOnAssignment() {
     cy.get('[data-cy="side-wrapper"]')
       .parent()
       .click()
       .then(() => {
-        cy.get('[data-cy="label1"]')
+        cy.get('[data-cy="label0"]')
           .should("be.visible")
           .click();
       });
@@ -69,7 +65,7 @@ class SidebarPage {
       .parent()
       .click()
       .then(() => {
-        cy.get('[data-cy="label2"]')
+        cy.get('[data-cy="label1"]')
           .should("be.visible")
           .click();
       });
@@ -78,16 +74,19 @@ class SidebarPage {
 
   clickOnskillReport() {
     return cy
-      .get('[data-cy="label3"]')
+      .get('[data-cy="label2"]')
       .should("be.visible")
       .click();
   }
 
   clickOnManageClass() {
-    return cy
-      .get('[data-cy="label4"]')
-      .should("be.visible")
-      .click();
+    return (
+      cy
+        .get('[data-cy="label3"]')
+        //.should("be.visible")
+        .click({ force: true })
+        .click({ force: true })
+    );
   }
 }
 export default SidebarPage;

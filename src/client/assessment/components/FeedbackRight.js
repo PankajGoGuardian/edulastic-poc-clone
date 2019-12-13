@@ -75,9 +75,7 @@ class FeedbackRight extends Component {
     if (activity && isUndefined(changed)) {
       let { score: _score, maxScore: _maxScore } = activity;
       const _feedback = get(activity, "feedback.text", "");
-      if (_score !== score) {
-        newState = { ...newState, score: _score };
-      }
+      newState = { ...newState, score: _score };
 
       if (!_maxScore) {
         _maxScore = validation?.validResponse?.score || 0;
@@ -90,6 +88,7 @@ class FeedbackRight extends Component {
       if (_feedback !== feedback) {
         newState = { ...newState, feedback: _feedback };
       }
+      return newState;
     }
     return newState;
   }

@@ -260,7 +260,7 @@ class FeedbackRight extends Component {
     let rubricMaxScore = 0;
     if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
     const { rubricFeedback } = activity || {};
-    const isError = rubricDetails ? false : maxScore < score;
+    const isError = rubricDetails ? rubricMaxScore < score : maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
     const showGradingRubricButton = user.user?.features?.gradingrubrics && !!rubricDetails;

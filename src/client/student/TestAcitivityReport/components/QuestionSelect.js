@@ -1,11 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { Select } from "antd";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
+import Nav from "../../../assessment/themes/common/Nav";
 
 const { Option } = Select;
 
@@ -24,22 +25,18 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
         </Option>
       ))}
     </Select>
-    <Navcontainer>
-      {current > 0 ? (
+    <div>
+      {current > 0 && (
         <PreviousBtn data-cy="previousItem" onClick={() => setCurrentItem(current - 1)}>
-          <i class="fa fa-angle-left" />
+          <i className="fa fa-angle-left" />
         </PreviousBtn>
-      ) : (
-        ""
       )}
-      {current < count - 1 ? (
+      {current < count - 1 && (
         <NextBtn data-cy="nextItem" onClick={() => setCurrentItem(current + 1)}>
-          <i class="fa fa-angle-right" />
+          <i className="fa fa-angle-right" />
         </NextBtn>
-      ) : (
-        ""
       )}
-    </Navcontainer>
+    </div>
   </QuestionListWrapper>
 );
 export default connect(
@@ -94,32 +91,15 @@ const QuestionListWrapper = styled.div`
   }
 `;
 
-const Navcontainer = styled.div``;
+const PreviousBtn = styled(Nav.BackArrow)`
+  left: 115px;
+`;
 
-const sharedBtnStyle = css`
-  background-color: rgba(101, 209, 135, 0.5);
-  position: fixed;
-  top: 48%;
-  z-index: 1;
-  font-size: 40px;
-  cursor: pointer;
-  color: #fff;
-  border-radius: 50%;
-  width: 160px;
-  height: 160px;
-  padding-top: 50px;
-  &:hover {
-    background-color: ${themeColor};
+const NextBtn = styled(Nav.NextArrow)`
+  @media screen and (min-width: ${smallDesktopWidth}) {
+    right: 10px;
   }
-`;
-const PreviousBtn = styled.nav`
-  ${sharedBtnStyle}
-  padding-left: 105px;
-  left: 10px;
-`;
-
-const NextBtn = styled.nav`
-  ${sharedBtnStyle}
-  right: -100px;
-  padding-left: 30px;
+  @media screen and (min-width: ${mediumDesktopExactWidth}) {
+    right: 0px;
+  }
 `;

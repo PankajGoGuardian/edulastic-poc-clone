@@ -15,6 +15,9 @@ export const SEARCH_RUBRICS_FAILED = "[rubric] search rubric failed";
 export const DELETE_RUBRIC_REQUEST = "[rubric] delete rubric request";
 export const GET_RUBRIC_BY_ID_REQUEST = "[rubric] get rubric by id request";
 export const GET_RUBRIC_BY_ID_SUCCESS = "[rubric] get rubric by id success";
+export const ADD_RUBRIC_TO_RECENTLY_USED = "[rubric] add rubric to recently used";
+export const UPDATE_RUBRIC_IN_RECENTLY_USED_LIST = "[rubric] update rubric in recently used list";
+export const SET_RECENTLY_USED_LIST = "[rubric] set recently used list";
 
 //actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA);
@@ -26,14 +29,16 @@ export const searchRubricsFailedAction = createAction(SEARCH_RUBRICS_FAILED);
 export const deleteRubricAction = createAction(DELETE_RUBRIC_REQUEST);
 export const getRubricByIdRequestAction = createAction(GET_RUBRIC_BY_ID_REQUEST);
 export const getRubricByIdSuccessAction = createAction(GET_RUBRIC_BY_ID_SUCCESS);
+export const addRubricToRecentlyUsedAction = createAction(ADD_RUBRIC_TO_RECENTLY_USED);
+export const updateRubricInRecentlyUsedAction = createAction(UPDATE_RUBRIC_IN_RECENTLY_USED_LIST);
+export const setRecentlyUsedList = createAction(SET_RECENTLY_USED_LIST);
 
 //reducer
 const initialState = {
   searchedList: [],
   currentRubric: null,
   searchingRubrics: false,
-  totalSearchedCount: 0,
-  saving: false
+  totalSearchedCount: 0
 };
 
 export const reducer = createReducer(initialState, {
@@ -53,6 +58,9 @@ export const reducer = createReducer(initialState, {
   },
   [GET_RUBRIC_BY_ID_SUCCESS]: (state, { payload }) => {
     state.currentRubric = payload[0];
+  },
+  [SET_RECENTLY_USED_LIST]: (state, { payload }) => {
+    state.recentlyUsedRubrics = payload;
   }
 });
 
@@ -75,6 +83,7 @@ function* updateRubricSaga({ payload }) {
       body: payload
     });
     yield put(updateRubricDataAction(data));
+    yield put(updateRubricInRecentlyUsedAction(data));
     if (payload.status === "draft") yield call(message.success, "Rubric is updated as draft");
     else if (payload.status === "published") yield call(message.success, "Rubric is updated and published");
   } catch (err) {
@@ -112,13 +121,40 @@ function* getRubricByIdSaga({ payload }) {
   }
 }
 
+function* addRubricToRecentlyUsedSaga({ payload }) {
+  let localStoredRubrics = localStorage.getItem("recentlyUsedRubrics");
+  if (localStoredRubrics) {
+    localStoredRubrics = JSON.parse(localStoredRubrics);
+    const isAlreadyPresent = localStoredRubrics.find(r => r._id === payload._id);
+    if (!isAlreadyPresent) localStoredRubrics = [...localStoredRubrics, payload];
+  } else {
+    localStoredRubrics = [payload];
+  }
+  localStorage.setItem("recentlyUsedRubrics", JSON.stringify(localStoredRubrics));
+}
+
+function* updateRubricInRecentlyUsedSaga({ payload }) {
+  let localStoredRubrics = localStorage.getItem("recentlyUsedRubrics");
+  if (localStoredRubrics) {
+    localStoredRubrics = JSON.parse(localStoredRubrics);
+    let updatedList = localStoredRubrics.filter(r => r._id !== payload._id);
+    if (updatedList.length < localStoredRubrics.length) {
+      updatedList = [...updatedList, payload];
+      localStorage.setItem("recentlyUsedRubrics", JSON.stringify(updatedList));
+      yield put(setRecentlyUsedList(updatedList));
+    }
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SAVE_RUBRIC, saveRubricSaga),
     yield takeEvery(UPDATE_RUBRIC, updateRubricSaga),
     yield takeEvery(SEARCH_RUBRICS, searchRubricsSaga),
     yield takeEvery(DELETE_RUBRIC_REQUEST, deleteRubricSaga),
-    yield takeEvery(GET_RUBRIC_BY_ID_REQUEST, getRubricByIdSaga)
+    yield takeEvery(GET_RUBRIC_BY_ID_REQUEST, getRubricByIdSaga),
+    yield takeEvery(ADD_RUBRIC_TO_RECENTLY_USED, addRubricToRecentlyUsedSaga),
+    yield takeEvery(UPDATE_RUBRIC_IN_RECENTLY_USED_LIST, updateRubricInRecentlyUsedSaga)
   ]);
 }
 
@@ -144,3 +180,9 @@ export const getTotalSearchedCountSelector = createSelector(
   getStateSelector,
   state => state.totalSearchedCount
 );
+
+export const getRecentlyUsedRubricsSelector = () => {
+  const localStoredRubrics = localStorage.getItem("recentlyUsedRubrics");
+  if (localStoredRubrics) return JSON.parse(localStoredRubrics);
+  else return [];
+};

@@ -4,7 +4,15 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { sumBy, maxBy } from "lodash";
 import { Col, Form, Icon, message, Pagination } from "antd";
-import { ExistingRubricContainer, SearchBar, ActionBarContainer, PaginationContainer } from "../styled";
+import {
+  ExistingRubricContainer,
+  SearchBar,
+  ActionBarContainer,
+  PaginationContainer,
+  RecentlyUsedContainer,
+  TagContainer,
+  RubricsTag
+} from "../styled";
 import produce from "immer";
 import { v4 } from "uuid";
 import {
@@ -16,7 +24,9 @@ import {
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
-  deleteRubricAction
+  deleteRubricAction,
+  getRecentlyUsedRubricsSelector,
+  addRubricToRecentlyUsedAction
 } from "../ducks";
 import RubricTable from "./RubricTable";
 import ShareModal from "./common/ShareModal";
@@ -42,7 +52,9 @@ const UseExisting = ({
   associateRubricWithQuestion,
   dissociateRubricFromQuestion,
   currentQuestion,
-  deleteRubric
+  deleteRubric,
+  recentlyUsedRubrics,
+  addRubricToRecentlyUsed
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
@@ -87,12 +99,13 @@ const UseExisting = ({
                 <>
                   {currentQuestion.rubrics?.id !== currentRubricData._id && (
                     <span
-                      onClick={() =>
+                      onClick={() => {
                         associateRubricWithQuestion({
                           metadata: { id: currentRubricData._id, name: currentRubricData.name },
                           maxScore
-                        })
-                      }
+                        });
+                        addRubricToRecentlyUsed(currentRubricData);
+                      }}
                     >
                       <Icon type="check" /> <span>Use</span>
                     </span>
@@ -141,13 +154,33 @@ const UseExisting = ({
 
         <ExistingRubricContainer>
           {["RUBRIC_TABLE", "PREVIEW", "SEARCH"].includes(currentMode) && actionType === "USE EXISTING" && (
-            <SearchBar
-              placeholder="Search by rubric name or author name"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onSearch={handleSearch}
-              loading={searchingState}
-            />
+            <>
+              <SearchBar
+                placeholder="Search by rubric name or author name"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onSearch={handleSearch}
+                loading={searchingState}
+              />
+              {recentlyUsedRubrics.length > 0 && (
+                <RecentlyUsedContainer>
+                  <span>Recently Used: </span>
+                  <TagContainer>
+                    {recentlyUsedRubrics.map(rubric => (
+                      <RubricsTag
+                        onClick={() => {
+                          updateRubricData(rubric);
+                          setCurrentMode("PREVIEW");
+                          setIsEditable(false);
+                        }}
+                      >
+                        {rubric.name}
+                      </RubricsTag>
+                    ))}
+                  </TagContainer>
+                </RecentlyUsedContainer>
+              )}
+            </>
           )}
 
           {currentMode === "RUBRIC_TABLE" && (
@@ -217,6 +250,7 @@ const UseExisting = ({
           ...currentRubricData,
           status: type
         });
+
       setCurrentMode("PREVIEW");
     } else message.error("Rubric name cannot be empty.");
   };
@@ -306,7 +340,8 @@ const enhance = compose(
       searchedRubricList: getSearchedRubricsListSelector(state),
       searchingState: getSearchingStateSelector(state),
       totalSearchedCount: getTotalSearchedCountSelector(state),
-      currentQuestion: getCurrentQuestionSelector(state)
+      currentQuestion: getCurrentQuestionSelector(state),
+      recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state)
     }),
     {
       updateRubricData: updateRubricDataAction,
@@ -315,7 +350,8 @@ const enhance = compose(
       searchRubricsRequest: searchRubricsRequestAction,
       associateRubricWithQuestion: setRubricIdAction,
       dissociateRubricFromQuestion: removeRubricIdAction,
-      deleteRubric: deleteRubricAction
+      deleteRubric: deleteRubricAction,
+      addRubricToRecentlyUsed: addRubricToRecentlyUsedAction
     }
   )
 );

@@ -355,7 +355,7 @@ const SelectWrapper = styled(StyledSelect)`
   width: 100%;
 `;
 
-const StyledTag = styled.div`
+export const StyledTag = styled.div`
   display: inline-block;
   background: ${themeColorTagsBg};
   padding: 3px 8px;

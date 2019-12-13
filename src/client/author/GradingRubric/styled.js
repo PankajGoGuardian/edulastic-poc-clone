@@ -584,3 +584,28 @@ export const PaginationContainer = styled.div`
     }
   }
 `;
+
+export const RecentlyUsedContainer = styled.div`
+  margin: 0px 0px 15px;
+  > span:first-child {
+    text-transform: uppercase;
+    color: ${placeholderGray};
+    margin-right: 5px;
+  }
+`;
+
+export const TagContainer = styled.span`
+  display: inline-block;
+`;
+
+export const RubricsTag = styled.span`
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  background: ${themeColor};
+  color: ${white};
+  font-size: 12px;
+  margin-right: 10px;
+  font-weight: 500;
+  cursor: pointer;
+`;

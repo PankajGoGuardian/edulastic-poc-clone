@@ -40,7 +40,8 @@ const ChartPreview = ({
   stashIndex,
   setElementsStash,
   setStashIndex,
-  setQuestionData
+  setQuestionData,
+  isReviewTab
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
@@ -213,7 +214,7 @@ const ChartPreview = ({
             correct={correct}
             item={item}
             setQuestionData={setQuestionData}
-            showAnswer={previewTab === CHECK}
+            showAnswer={previewTab === CHECK || (previewTab === SHOW && !isReviewTab)}
           />
           {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
         </ChartContainer>
@@ -283,7 +284,8 @@ ChartPreview.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  tab: PropTypes.number
+  tab: PropTypes.number,
+  isReviewTab: PropTypes.bool
 };
 
 ChartPreview.defaultProps = {
@@ -297,7 +299,8 @@ ChartPreview.defaultProps = {
   changePreviewTab: () => {},
   stash: {},
   stashIndex: {},
-  tab: 0
+  tab: 0,
+  isReviewTab: false
 };
 
 const enhance = compose(

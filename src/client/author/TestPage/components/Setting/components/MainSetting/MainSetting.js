@@ -200,6 +200,17 @@ class MainSetting extends Component {
       case "maxAnswerChecks":
         if (value < 0) value = 0;
         break;
+      case "passwordPolicy":
+        if (value === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+          setTestData({
+            passwordExpireIn: 15 * 60
+          });
+        } else if (value === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
+          setTestData({
+            assignmentPassword: ""
+          });
+        }
+        break;
     }
     setTestData({
       [key]: value
@@ -222,7 +233,6 @@ class MainSetting extends Component {
   handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
     value = value * 60;
-    console.log(value);
     if (value < 60 || isNaN(value)) {
       value = 60;
     } else if (value > 999 * 60) {

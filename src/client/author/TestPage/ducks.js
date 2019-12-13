@@ -543,12 +543,7 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const {
-    _id: oldId,
-    versioned: regrade = false,
-    title,
-    passwordPolicy = test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
-  } = payload.data;
+  const { _id: oldId, versioned: regrade = false, title, passwordPolicy } = payload.data;
   try {
     if (title !== undefined && !title.trim().length) {
       return yield call(message.error(" Name field cannot be empty "));
@@ -630,13 +625,13 @@ function* updateTestSaga({ payload }) {
     if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
       delete payload.data.assignmentPassword;
     } else if (
-      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+      payload.data.passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!payload.data.assignmentPassword ||
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
     ) {
       yield call(message.error, "Please add a valid password.");
-      return;
+      return yield put(setTestsLoadingAction(false));
     }
     payload.data.testItems =
       payload.data.testItems &&

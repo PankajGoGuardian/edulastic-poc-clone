@@ -77,7 +77,7 @@ const ViewPasswordModal = ({
             <Heading>THIS ASSIGNMENT REQUIRES A PASSWORD</Heading>
             <Content>Student must enter the password shown below to start the assignment.</Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
-            <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
+            <TitleCopy copyable={{ text: assignmentPassword }} />
           </>
         )}
         {isDynamicPassword && !canGenerate && (
@@ -88,7 +88,7 @@ const ViewPasswordModal = ({
               <span style={{ color: themeColorSecondaryLighter }}>{formatTime(timer)}</span> seconds
             </Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
-            <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
+            <TitleCopy copyable={{ text: assignmentPassword }} />
           </>
         )}
         {isDynamicPassword && canGenerate && (
@@ -155,6 +155,10 @@ export const TitleCopy = styled(Paragraph)`
     display: flex;
     align-items: center;
     margin-right: 10px;
+    &:after {
+      content: "COPY PASSWORD";
+      color: ${themeColor};
+      margin-left: 10px;
   }
   svg {
     width: 20px;

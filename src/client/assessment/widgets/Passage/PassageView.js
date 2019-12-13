@@ -101,6 +101,8 @@ const PassageView = ({
 
       if (highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, "g")) === -1) {
         highlightContent = null;
+      } else {
+        highlightContent = highlightContent.replace(/input__math/g, "");
       }
 
       if (setHighlights) {

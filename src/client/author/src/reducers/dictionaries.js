@@ -1,3 +1,4 @@
+import produce from "immer";
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
   RECEIVE_DICT_CURRICULUMS_SUCCESS,
@@ -5,14 +6,16 @@ import {
   RECEIVE_DICT_STANDARDS_REQUEST,
   RECEIVE_DICT_STANDARDS_SUCCESS,
   RECEIVE_DICT_STANDARDS_ERROR,
-  CLEAR_DICT_STANDARDS,
+  RESET_DICT_ALIGNMENTS,
   CLEAR_DICT_ALIGNMENTS,
+  CLEAR_DICT_STANDARDS,
   UPDATE_DEFAULT_CURRICULUM,
   ADD_DICT_ALIGNMENT,
   SET_ALIGNMENT_FROM_QUESTION,
   REMOVE_DICT_ALINMENT,
   UPDATE_RECENT_STANDARDS,
-  UPDATE_DICT_ALIGNMENT
+  UPDATE_DICT_ALIGNMENT,
+  CLEAR_ALIGNMENT_STANDARDS
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
@@ -119,6 +122,15 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         alignments: [getNewAlignmentState()]
       };
+    case RESET_DICT_ALIGNMENTS:
+      return produce(state, draft => {
+        const newAlignment = draft.alignments[0];
+        if (newAlignment) {
+          newAlignment.standards = [];
+        }
+        draft.alignments = [newAlignment];
+      });
+
     case SET_ALIGNMENT_FROM_QUESTION:
       const authorAlignments = payload.filter(item => !item.isEquivalentStandard);
       return {

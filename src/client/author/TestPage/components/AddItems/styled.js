@@ -109,6 +109,10 @@ export const StyledButton = styled(EduButton)`
   }
 `;
 
+export const BtnActionsContainer = styled.div`
+  display: flex;
+`;
+
 export const StyledSelect = styled(Select)`
   height: 32px;
 

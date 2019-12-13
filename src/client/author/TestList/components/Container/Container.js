@@ -8,8 +8,8 @@ import { compose } from "redux";
 import { Button, Row, Input, Spin, message } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
-import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
-import { grey, white, themeColor } from "@edulastic/colors";
+import { IconList, IconTile } from "@edulastic/icons";
+import { grey, white, greyish } from "@edulastic/colors";
 import {
   ScrollBox,
   Container,
@@ -60,9 +60,13 @@ import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
 import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
-import { StyledButton } from "../../../TestPage/components/AddItems/styled";
+import ManageModulesModalBody from "../../../CurriculumSequence/components/ManageModulesModalBody";
+import { StyledButton, BtnActionsContainer } from "../../../TestPage/components/AddItems/styled";
 import {
   createNewModuleAction,
+  updateModuleAction,
+  deleteModuleAction,
+  resequenceModulesAction,
   createTestInModuleAction,
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
@@ -122,6 +126,7 @@ class TestList extends Component {
     standardQuery: "",
     blockStyle: "tile",
     showCreateModuleModal: false,
+    showManageModuleModal: false,
     showConfirmRemoveModal: false,
     showAddTestInModules: false,
     selectedTests: [],
@@ -420,6 +425,14 @@ class TestList extends Component {
     this.setState({ showCreateModuleModal: true });
   };
 
+  handleManageModule = () => {
+    this.setState({ showManageModuleModal: true });
+  };
+
+  onCloseManageModule = () => {
+    this.setState({ showManageModuleModal: false });
+  };
+
   handleAddTests = item => {
     const {
       playlist: { modules }
@@ -586,13 +599,17 @@ class TestList extends Component {
       mode,
       playlist,
       addModuleToPlaylist,
-      testFilters
+      updateModuleInPlaylist,
+      deleteModuleFromPlaylist,
+      resequenceModules,
+      testFilters,
+      handleSave
     } = this.props;
 
     const {
       blockStyle,
       isShowFilter,
-
+      showManageModuleModal,
       showAddTestInModules,
       showCreateModuleModal,
       showConfirmRemoveModal
@@ -683,6 +700,27 @@ class TestList extends Component {
               />
             </Modal>
           )}
+          {showManageModuleModal && (
+            <Modal
+              open={showManageModuleModal}
+              title="Manage Modules"
+              onClose={this.onCloseManageModule}
+              footer={null}
+              styles={{ modal: { minWidth: "800px", padding: "20px", background: greyish } }}
+            >
+              <ManageModulesModalBody
+                destinationCurriculumSequence={playlist}
+                addModuleToPlaylist={addModuleToPlaylist}
+                updateModuleInPlaylist={updateModuleInPlaylist}
+                deleteModuleFromPlaylist={deleteModuleFromPlaylist}
+                resequenceModules={resequenceModules}
+                handleAddModule={this.onCloseCreateModule}
+                handleApply={handleSave}
+                onCloseManageModule={this.onCloseManageModule}
+              />
+            </Modal>
+          )}
+
           {showAddTestInModules && (
             <AddTestModal
               isVisible={showAddTestInModules}
@@ -722,15 +760,19 @@ class TestList extends Component {
                   {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
                 {mode === "embedded" && (
-                  <StyledButton
-                    data-cy="createNewItem"
-                    type="secondary"
-                    size="large"
-                    onClick={this.handleCreateNewModule}
-                  >
-                    <IconPlusCircle color={themeColor} width={15} height={15} />
-                    <span>Add Module</span>
-                  </StyledButton>
+                  <BtnActionsContainer>
+                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
+                      <span>Actions</span>
+                    </StyledButton>
+                    <StyledButton
+                      data-cy="ManageModules"
+                      type="secondary"
+                      size="large"
+                      onClick={this.handleManageModule}
+                    >
+                      <span>Manage Modules</span>
+                    </StyledButton>
+                  </BtnActionsContainer>
                 )}
               </FlexContainer>
               <CardContainer type={blockStyle}>
@@ -776,6 +818,9 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       receiveTests: receiveTestsAction,
       addModuleToPlaylist: createNewModuleAction,
+      updateModuleInPlaylist: updateModuleAction,
+      deleteModuleFromPlaylist: deleteModuleAction,
+      resequenceModules: resequenceModulesAction,
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,

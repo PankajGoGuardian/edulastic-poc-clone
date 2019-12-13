@@ -43,6 +43,9 @@ export const RECEIVE_SHARED_USERS_LIST = "[playlists] receive shared users list"
 export const UPDATE_SHARED_USERS_LIST = "[playlists] update shared with users list";
 export const DELETE_SHARED_USER = "[playlists] delete share user from list";
 export const ADD_MODULE = "[playlists] Add new module";
+export const UPDATE_MODULE = "[playlists] Update module data";
+export const DELETE_MODULE = "[playlists] Delete module";
+export const ORDER_MODULES = "[playlists] Resequence modules";
 export const ADD_TEST_IN_PLAYLIST = "[playlists] add test to module";
 export const SET_USER_CUSTOMIZE = "[playlists] set user customize";
 export const REMOVE_TEST_FROM_MODULE = "[playlists] remove test from module";
@@ -121,6 +124,9 @@ export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST)
 export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIST);
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const createNewModuleAction = createAction(ADD_MODULE);
+export const updateModuleAction = createAction(UPDATE_MODULE);
+export const deleteModuleAction = createAction(DELETE_MODULE);
+export const resequenceModulesAction = createAction(ORDER_MODULES);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
 export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE);
@@ -163,8 +169,9 @@ const initialState = {
   sharedUsersList: []
 };
 
-const createNewModuleState = title => ({
+const createNewModuleState = (title, description) => ({
   title,
+  description,
   data: []
 });
 
@@ -226,6 +233,18 @@ export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_MODULE: {
       const newEntity = addModuleToPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case UPDATE_MODULE: {
+      const newEntity = updateModuleInPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case DELETE_MODULE: {
+      const newEntity = deleteModuleFromPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case ORDER_MODULES: {
+      const newEntity = resequenceModulesInPlaylist(state.entity, payload);
       return { ...state, entity: newEntity };
     }
     case ADD_TEST_IN_PLAYLIST: {
@@ -504,7 +523,7 @@ function* deleteSharedUserSaga({ payload }) {
 
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
-    const newModule = createNewModuleState(payload.moduleName);
+    const newModule = createNewModuleState(payload.title || payload.moduleName, payload.description);
     if (payload.afterModuleIndex !== undefined) {
       draft.modules.splice(payload.afterModuleIndex, 0, newModule);
     } else {
@@ -513,6 +532,48 @@ function addModuleToPlaylist(playlist, payload) {
     return draft;
   });
   message.success("Module Added to playlist");
+  return newPlaylist;
+}
+
+function updateModuleInPlaylist(playlist, payload) {
+  const { id, title, description } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    if (payload !== undefined) {
+      if (title) {
+        draft.modules[id].title = title;
+        draft.modules[id].description = description;
+        message.success("Module updated successfully");
+      } else {
+        message.error("Module name cannot be empty");
+      }
+    } else {
+      message.error("Error updating module in playlist");
+    }
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function deleteModuleFromPlaylist(playlist, payload) {
+  const newPlaylist = produce(playlist, draft => {
+    if (payload !== undefined) {
+      draft.modules.splice(payload, 1);
+      message.success("Module Removed from playlist");
+    } else {
+      message.error("Error removing module from playlist");
+    }
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function resequenceModulesInPlaylist(playlist, payload) {
+  const { oldIndex, newIndex } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    const obj = draft.modules.splice(oldIndex, 1);
+    draft.modules.splice(newIndex, 0, obj[0]);
+    return draft;
+  });
   return newPlaylist;
 }
 

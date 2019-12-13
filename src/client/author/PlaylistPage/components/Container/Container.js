@@ -233,6 +233,7 @@ class Container extends PureComponent {
             current={current}
             onSaveTestId={this.handleSaveTestId}
             playlist={playlist}
+            handleSave={this.handleSave}
             playlistPage
           />
         );

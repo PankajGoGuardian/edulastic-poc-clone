@@ -216,9 +216,10 @@ const TokenHighlightPreview = ({
 
   const tokenList = mode === "custom" ? mergedTokens : item.templeWithTokens;
   let allCorrectAnswers = [];
+
   if (item.validation) {
-    allCorrectAnswers = [item.validation.validResponse.value];
-    item.validation.altResponses.forEach(altAnswers => {
+    allCorrectAnswers = [item.validation?.validResponse?.value];
+    item.validation?.altResponses?.forEach(altAnswers => {
       allCorrectAnswers.push(altAnswers.value);
     }, []);
   }

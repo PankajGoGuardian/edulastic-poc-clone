@@ -199,6 +199,9 @@ export const transformGradeBookResponse = (
   { test, testItemsData, students: studentNames, testActivities, testQuestionActivities, passageData },
   studentResponse
 ) => {
+  /**
+   * TODO: need to refactor
+   */
   testItemsData = testItemsData.map(testItem => {
     testItem.data.questions = testItem.data.questions.filter(q => q.type !== questionType.SECTION_LABEL);
     testItem.rows = testItem.rows.map(row => {
@@ -215,14 +218,17 @@ export const transformGradeBookResponse = (
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
   for (const itemId of Object.keys(questionActivitiesGrouped)) {
-    const notGradedPresent = questionActivitiesGrouped[itemId].find(x => x.graded === false);
+    const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(x => x.graded === false);
+
     const { itemLevelScoring } = testItemsDataKeyed[itemId];
-    if (itemLevelScoring && notGradedPresent) {
-      questionActivitiesGrouped[itemId] = questionActivitiesGrouped[itemId].map(x => ({
-        ...x,
-        graded: false,
-        score: 0
-      }));
+    if (itemLevelScoring) {
+      notGradedQuestionActivities.forEach(({ qid, testActivityId }) => {
+        questionActivitiesGrouped[itemId]
+          .filter(x => x.qid === qid && x.testActivityId === testActivityId)
+          .forEach(x => {
+            Object.assign(x, { graded: false, score: 0 });
+          });
+      });
     }
   }
 

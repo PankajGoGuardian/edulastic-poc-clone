@@ -23,7 +23,7 @@ const RequirePassword = ({
   }, []);
   const [assignmentPassword, setAssignmentPassword] = useState("");
   const validatePassword = () => {
-    if (!assignmentPassword) return message.error("This assessment requies password");
+    if (!assignmentPassword) return message.error("This assignment requies password");
     getAssignmentPassword(assignmentPassword);
   };
 
@@ -52,7 +52,7 @@ const RequirePassword = ({
       ]}
     >
       <BodyStyled>
-        <p>Enter password to start the assessment</p>
+        <p>Enter password to start the assignment</p>
         <br />
         <p>
           <PasswordInput

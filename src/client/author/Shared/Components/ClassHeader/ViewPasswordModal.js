@@ -14,7 +14,7 @@ import {
   getPasswordPolicySelector
 } from "../../../ClassBoard/ducks";
 import { toggleViewPasswordAction, regeneratePasswordAction } from "../../../src/actions/classBoard";
-import { ModalWrapper, InitOptions } from "../../../../common/components/ConfirmationModal/styled";
+import { ModalWrapper, InitOptions, StyledButton } from "../../../../common/components/ConfirmationModal/styled";
 
 const { Paragraph } = Typography;
 const { passwordPolicy: passwordPolicyValues } = test;
@@ -74,17 +74,17 @@ const ViewPasswordModal = ({
       <InitOptions bodyStyle={{ marginBottom: 0 }}>
         {isStaticPassword && (
           <>
-            <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
-            <Content>Student must enter the password shown below to start the assessment.</Content>
+            <Heading>THIS ASSIGNMENT REQUIRES A PASSWORD</Heading>
+            <Content>Student must enter the password shown below to start the assignment.</Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
             <TitleCopy copyable={{ text: assignmentPassword }}>COPY PASSWORD</TitleCopy>
           </>
         )}
         {isDynamicPassword && !canGenerate && (
           <>
-            <Heading>THIS ASSESSMENT REQUIRES A PASSWORD</Heading>
+            <Heading>THIS ASSIGNMENT REQUIRES A PASSWORD</Heading>
             <Content>
-              Student must enter the password shown below to start the assessment. This password will expire in{" "}
+              Student must enter the password shown below to start the assignment. This password will expire in{" "}
               <span style={{ color: themeColorSecondaryLighter }}>{formatTime(timer)}</span> seconds
             </Content>
             <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
@@ -95,11 +95,11 @@ const ViewPasswordModal = ({
           <>
             <Heading>PASSWORD EXPIRED</Heading>
             <Content>
-              If you need to regenerate the password, please click{" "}
-              <span onClick={handleRegeneratePassword} style={{ color: themeColorSecondaryLighter, cursor: "pointer" }}>
-                Regenerate Password
-              </span>
+              <p>If you need to regenerate the password, please click Regenerate Password</p>
             </Content>
+            <p>
+              <StyledButton onClick={handleRegeneratePassword}>Regenerate Password</StyledButton>
+            </p>
           </>
         )}
       </InitOptions>

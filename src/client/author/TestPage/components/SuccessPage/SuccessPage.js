@@ -44,7 +44,7 @@ import { Divider } from "antd";
 import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
 import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
 
-const { statusConstants } = test;
+const { statusConstants, passwordPolicy } = test;
 
 const sharedWithPriorityOrder = ["Public", "District", "School"];
 
@@ -186,13 +186,23 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
-                    <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{assignmentStatus}</b> &nbsp; status
+                    Assignment <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{assignmentStatus}</b> &nbsp; status
                   </FlexTextWrapper>
-                  <FlexText>
-                    Your students can begin work on this assessment right away.You can monitor student progress and
-                    responses by clicking on the &nbsp;
-                    <span style={{ color: themeColor }}>View Response</span>&nbsp; button.
-                  </FlexText>
+                  {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
+                    <FlexText>
+                      Your students cannot work on this assignment yet. This assignment requires students to enter a
+                      password before they can work on the assignment. The auto-generated password is time sensitive and
+                      will be revealed to the teacher or the proctor when the assignment is opened. when students are
+                      ready, click on the > Open button to view the password, announce to students and make the
+                      assignment available for the student to work on.
+                    </FlexText>
+                  ) : (
+                    <FlexText>
+                      Your students can begin work on this assessment right away.You can monitor student progress and
+                      responses by clicking on the &nbsp;
+                      <span style={{ color: themeColor }}>View Response</span>&nbsp; button.
+                    </FlexText>
+                  )}
                   <Divider />
                 </>
               )}

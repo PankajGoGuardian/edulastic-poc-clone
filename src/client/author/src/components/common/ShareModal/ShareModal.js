@@ -54,6 +54,12 @@ const sharedKeysObj = {
   INDIVIDUAL: "INDIVIDUAL"
 };
 
+const shareTypeMessageObj = {
+  PUBLIC: "The entire Edulastic Community",
+  DISTRICT: "Anyone in the District",
+  SCHOOL: "Anyone in the School"
+};
+
 const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
 class ShareModal extends React.Component {
   constructor(props) {
@@ -293,34 +299,45 @@ class ShareModal extends React.Component {
                   </Radio>
                 ))}
               </Radio.Group>
+              <ShareButton type="primary" data-cy="share-button-pop" onClick={this.handleShare}>
+                <IconShare color={white} /> SHARE
+              </ShareButton>
             </RadioBtnWrapper>
-            <FlexContainer style={{ marginTop: 5 }}>
-              <Address
-                showSearch
-                placeholder={"Enter names or email addresses"}
-                data-cy="name-button-pop"
-                defaultActiveFirstOption={false}
-                showArrow={false}
-                filterOption={false}
-                onSearch={this.handleSearch}
-                onChange={this.handleChange}
-                disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
-                notFoundContent={fetching ? <Spin size="small" /> : null}
-                value={userSelectedLabel}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-              >
-                {filteredUserList.map(item => (
-                  <Select.Option
-                    value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
-                    key={item._id}
-                  >
-                    {item._source.firstName} {item._source.lastName ? `${item._source.lastName} ` : ""}
-                    {`(${item._source.email})`}
-                  </Select.Option>
-                ))}
-              </Address>
+            <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
+              {sharedType === "INDIVIDUAL" ? (
+                <Address
+                  showSearch
+                  placeholder={"Enter names or email addresses"}
+                  data-cy="name-button-pop"
+                  defaultActiveFirstOption={false}
+                  showArrow={false}
+                  filterOption={false}
+                  onSearch={this.handleSearch}
+                  onChange={this.handleChange}
+                  disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
+                  notFoundContent={fetching ? <Spin size="small" /> : null}
+                  value={userSelectedLabel}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {filteredUserList.map(item => (
+                    <Select.Option
+                      value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
+                      key={item._id}
+                    >
+                      {item._source.firstName} {item._source.lastName ? `${item._source.lastName} ` : ""}
+                      {`(${item._source.email})`}
+                    </Select.Option>
+                  ))}
+                </Address>
+              ) : (
+                <div style={{ textTransform: "uppercase" }}>{shareTypeMessageObj[sharedType]}</div>
+              )}
               <Select
-                style={{ margin: "0px 10px", height: "35px", width: "270px" }}
+                style={
+                  sharedType === "INDIVIDUAL"
+                    ? { margin: "0px 10px", height: "35px", width: "270px" }
+                    : { display: "none" }
+                }
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
@@ -335,14 +352,13 @@ class ShareModal extends React.Component {
                   );
                 })}
               </Select>
-              <ShareButton type="primary" data-cy="share-button-pop" onClick={this.handleShare}>
-                <IconShare color={white} /> SHARE
-              </ShareButton>
             </FlexContainer>
           </PeopleBlock>
-          <DoneButton type="primary" data-cy="share-button-pop" onClick={onClose}>
-            Done
-          </DoneButton>
+          <DoneButtonContainer>
+            <DoneButton type="primary" data-cy="share-button-pop" onClick={onClose}>
+              Done
+            </DoneButton>
+          </DoneButtonContainer>
         </ModalContainer>
       </Modal>
     );
@@ -465,11 +481,13 @@ const Address = styled(Select)`
 
 const ShareButton = styled(Button)`
   height: 35px;
-  width: 160px;
+  width: 135px;
   background: ${themeColor};
   border: none;
-  display: flex;
+  display: inline-flex;
+  justify-content: center;
   align-items: center;
+  margin-left: 20px;
   &:hover,
   &:focus {
     background: ${themeColor};
@@ -478,13 +496,19 @@ const ShareButton = styled(Button)`
   span {
     font-size: 12px;
     font-weight: 600;
-    margin-left: 30px;
+    margin-left: 18px;
   }
+`;
+
+const DoneButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const DoneButton = styled(ShareButton)`
   margin: auto;
   margin-top: 20px;
+  margin-left: auto;
   > span {
     margin: auto;
   }

@@ -9,7 +9,7 @@ import { debounce, get as _get, isEmpty } from "lodash";
 import { withRouter } from "react-router-dom";
 
 import { FlexContainer } from "@edulastic/common";
-import { themeColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
+import { themeColor, whiteSmoke, greenDark, fadedGrey, white, backgroundGrey2 } from "@edulastic/colors";
 import { IconClose, IconShare } from "@edulastic/icons";
 import { getUserFeatures } from "../../../../../student/Login/ducks";
 import { RadioInputWrapper } from "../RadioInput";
@@ -242,40 +242,43 @@ class ShareModal extends React.Component {
         <ModalContainer>
           <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
           <ShareBlock>
-            <ShareLabel>Share</ShareLabel>
+            <ShareLabel>TEST URL</ShareLabel>
             <FlexContainer>
               <TitleCopy copyable={{ text: sharableURL }}>
                 <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
               </TitleCopy>
             </FlexContainer>
             {sharedUsersList.length !== 0 && (
-              <ShareList>
-                {sharedUsersList.map((data, index) => (
-                  <Row
-                    key={index}
-                    style={{
-                      paddingBottom: 5,
-                      display: "flex",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Col span={12}>{this.getUserName(data)}</Col>
-                    <Col span={11}>
-                      <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
-                      <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
-                    </Col>
-                    <Col span={1}>
-                      <a data-cy="share-button-close" onClick={() => this.removeHandler(data)}>
-                        <CloseIcon />
-                      </a>
-                    </Col>
-                  </Row>
-                ))}
-              </ShareList>
+              <>
+                <ShareListTitle>Who has access</ShareListTitle>
+                <ShareList>
+                  {sharedUsersList.map((data, index) => (
+                    <Row
+                      key={index}
+                      style={{
+                        paddingBottom: 5,
+                        display: "flex",
+                        alignItems: "center"
+                      }}
+                    >
+                      <Col span={12}>{this.getUserName(data)}</Col>
+                      <Col span={11}>
+                        <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
+                        <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
+                      </Col>
+                      <Col span={1}>
+                        <a data-cy="share-button-close" onClick={() => this.removeHandler(data)}>
+                          <CloseIcon />
+                        </a>
+                      </Col>
+                    </Row>
+                  ))}
+                </ShareList>
+              </>
             )}
           </ShareBlock>
           <PeopleBlock>
-            <PeopleLabel>People</PeopleLabel>
+            <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
               <Radio.Group value={sharedType} onChange={e => this.radioHandler(e)}>
                 {shareTypeKeys.map(item => (
@@ -311,8 +314,8 @@ class ShareModal extends React.Component {
                     value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
                     key={item._id}
                   >
-                    {item._source.firstName} {item._source.lastName ? `${item._source.lastName}, ` : ", "}
-                    {item._source.email}
+                    {item._source.firstName} {item._source.lastName ? `${item._source.lastName} ` : ""}
+                    {`(${item._source.email})`}
                   </Select.Option>
                 ))}
               </Address>
@@ -337,6 +340,9 @@ class ShareModal extends React.Component {
               </ShareButton>
             </FlexContainer>
           </PeopleBlock>
+          <DoneButton type="primary" data-cy="share-button-pop" onClick={onClose}>
+            Done
+          </DoneButton>
         </ModalContainer>
       </Modal>
     );
@@ -423,8 +429,16 @@ const ShareList = styled.div`
   text-transform: uppercase;
   max-height: 110px;
   overflow: auto;
-  width: 88%;
+  width: 90%;
   margin-top: 10px;
+  background: ${backgroundGrey2};
+`;
+
+const ShareListTitle = styled.div`
+  margin-top: 10px;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: ${props => props.theme.semiBold};
 `;
 
 const PeopleBlock = styled.div`
@@ -468,16 +482,14 @@ const ShareButton = styled(Button)`
   }
 `;
 
-const DoneButton = styled(Button)`
-  width: 200px;
-  background: ${themeColor};
-  border: none;
-  height: 35px;
-  span {
-    font-size: 11px;
-    font-weight: 600;
+const DoneButton = styled(ShareButton)`
+  margin: auto;
+  margin-top: 20px;
+  > span {
+    margin: auto;
   }
 `;
+
 const RadioBtnWrapper = styled(RadioInputWrapper)`
   font-weight: 600;
   margin: 10px 0px;

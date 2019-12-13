@@ -21,6 +21,7 @@ import {
 } from "../constants/actions";
 
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
+import { resetDictAlignmentsAction } from "../actions/dictionaries";
 import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
@@ -50,6 +51,8 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
       isPassageWithQuestions: false,
       canAddMultipleItems: false
     };
+
+    yield put(resetDictAlignmentsAction());
 
     // if its a being added from passage, create new.
     if (newPassageItem) {

@@ -7,7 +7,8 @@ import {
   UPDATE_RECENT_STANDARDS,
   CLEAR_DICT_ALIGNMENTS,
   UPDATE_DICT_ALIGNMENT,
-  UPDATE_DEFAULT_CURRICULUM
+  UPDATE_DEFAULT_CURRICULUM,
+  RESET_DICT_ALIGNMENTS
 } from "../constants/actions";
 
 export const getDictCurriculumsAction = () => ({
@@ -25,6 +26,10 @@ export const clearDictStandardsAction = () => ({
 
 export const clearDictAlignmentAction = () => ({
   type: CLEAR_DICT_ALIGNMENTS
+});
+
+export const resetDictAlignmentsAction = () => ({
+  type: RESET_DICT_ALIGNMENTS
 });
 
 export const addNewAlignmentAction = alignment => ({

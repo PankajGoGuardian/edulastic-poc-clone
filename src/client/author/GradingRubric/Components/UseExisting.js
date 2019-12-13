@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { sumBy, maxBy } from "lodash";
+import { sumBy, maxBy, uniqBy } from "lodash";
 import { Col, Form, Icon, message, Pagination } from "antd";
 import {
   ExistingRubricContainer,
@@ -238,8 +238,10 @@ const UseExisting = ({
   };
 
   const handleSaveRubric = type => {
+    const isValid = validateRubric();
     const { __v, updatedAt, modifiedBy, ...data } = currentRubricData;
-    if (currentRubricData.name) {
+
+    if (isValid) {
       if (currentRubricData._id)
         updateRubric({
           ...data,
@@ -252,7 +254,46 @@ const UseExisting = ({
         });
 
       setCurrentMode("PREVIEW");
-    } else message.error("Rubric name cannot be empty.");
+    }
+  };
+
+  const validateRubric = () => {
+    let isValid = true;
+    if (currentRubricData.name && isValid) {
+      currentRubricData.criteria.every(criteria => {
+        if (criteria.name && isValid) {
+          const uniqueRatings = [];
+          criteria.ratings.every(rating => {
+            if (rating.name) {
+              if (!uniqueRatings.includes(rating.points)) uniqueRatings.push(rating.points);
+            } else {
+              isValid = false;
+              message.error("Rating name cannot be empty.");
+            }
+            return isValid;
+          });
+          if (isValid && !uniqueRatings.includes("0")) {
+            isValid = false;
+            message.error("Rating point must be 0 for at least one rating within a criteria.");
+          }
+        } else {
+          isValid = false;
+          message.error("Criteria name cannot be empty.");
+        }
+        return isValid;
+      });
+      if (isValid) {
+        const uniqueCriteriaArray = uniqBy(currentRubricData.criteria, "name");
+        if (uniqueCriteriaArray.length < currentRubricData.criteria.length) {
+          isValid = false;
+          message.error("Criteria names should be unique.");
+        }
+      }
+    } else {
+      isValid = false;
+      message.error("Rubric name cannot be empty.");
+    }
+    return isValid;
   };
 
   const handleEditRubric = () => {

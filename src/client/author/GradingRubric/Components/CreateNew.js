@@ -28,13 +28,13 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
         name: "Rating 1",
         desc: "",
         id: v4(),
-        points: 0
+        points: "0"
       },
       {
         name: "Rating 2",
         desc: "",
         id: v4(),
-        points: 1
+        points: "1"
       }
     ]
   });

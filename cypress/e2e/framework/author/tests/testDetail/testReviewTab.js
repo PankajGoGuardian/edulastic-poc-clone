@@ -62,5 +62,5 @@ export default class TestReviewTab {
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .contains(question)
-      .should("be.exist");
+      .should("be.exist", `verify added items - ${question}should appear in review tab`);
 }

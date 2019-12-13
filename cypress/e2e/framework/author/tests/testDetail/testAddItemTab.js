@@ -32,8 +32,7 @@ export default class TestAddItemTab {
     cy
       .get('[data-cy="styled-wrapped-component"]')
       .contains(question)
-      .closest("div")
-      .next()
+      .closest(".fr-view")
       .contains("ADD")
       .click({ force: true });
 

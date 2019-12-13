@@ -50,9 +50,9 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["HSA.APR.A.1"],
+          "standard": ["K.CC.A.2"],
           "standardSet": "Math - Common Core",
-          "grade": "Grade 10"
+          "grade": "Kindergarten"
         }
       ]
     }
@@ -86,9 +86,9 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["HSA.APR.A.1"],
+          "standard": ["K.CC.A.1"],
           "standardSet": "Math - Common Core",
-          "grade": "Grade 10"
+          "grade": "Kindergarten"
         }
       ]
     }
@@ -130,9 +130,9 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["HSA.APR.A.1"],
+          "standard": ["K.CC.A.2"],
           "standardSet": "Math - Common Core",
-          "grade": "Grade 10"
+          "grade": "Kindergarten"
         }
       ]
     }

@@ -53,7 +53,7 @@
     "name": "Smoke Test 4",
     "grade": ["Kindergarten", "Grade 10"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1", "MCQ_STD.3", "MCQ_MULTI.2", "MCQ_TF.2"]
+    "itemKeys": ["MCQ_STD.2", "MCQ_TF.1", "MCQ_STD.1", "MCQ_MULTI.1", "MCQ_TF.default"]
   },
   "SMOKE_5": {
     "name": "Smoke Test 5",

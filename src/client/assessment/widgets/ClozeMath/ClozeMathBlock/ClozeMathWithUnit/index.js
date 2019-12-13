@@ -237,32 +237,34 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
     return (
       <OuterWrapper disableResponse={disableResponse} ref={this.wrappedRef}>
-        <ClozeMathInputField
-          ref={this.mathRef}
-          onClick={this.showKeyboardModal}
-          style={{
-            ...btnStyle,
-            minWidth: width || "auto",
-            minHeight: height || "auto",
-            padding: "5px 11px",
-            marginRight: 0,
-            borderRight: 0,
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-            display: "flex",
-            alignItems: "center"
-          }}
-        />
-        <SelectUnit
-          disabled={disableResponse}
-          preview
-          unit={unit}
-          customUnits={customUnits}
-          onChange={this.onChangeUnit}
-          onDropdownVisibleChange={this.onDropdownVisibleChange}
-          keypadMode={keypadMode}
-          dropdownStyle={{ fontSize: btnStyle.fontSize }}
-        />
+        <InnerWrapper>
+          <ClozeMathInputField
+            ref={this.mathRef}
+            onClick={this.showKeyboardModal}
+            style={{
+              ...btnStyle,
+              minWidth: width || "auto",
+              minHeight: height || "auto",
+              padding: "5px 11px",
+              marginRight: 0,
+              borderRight: 0,
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+              display: "flex",
+              alignItems: "center"
+            }}
+          />
+          <SelectUnit
+            disabled={disableResponse}
+            preview
+            unit={unit}
+            customUnits={customUnits}
+            onChange={this.onChangeUnit}
+            onDropdownVisibleChange={this.onDropdownVisibleChange}
+            keypadMode={keypadMode}
+            dropdownStyle={{ fontSize: btnStyle.fontSize }}
+          />
+        </InnerWrapper>
         {showKeyboard && (
           <KeyboardWrapper ref={this.mathKeyboardRef}>
             <MathKeyboard
@@ -281,18 +283,22 @@ class ClozeMathWithUnit extends React.Component {
   }
 }
 
-const OuterWrapper = styled.div`
+const InnerWrapper = styled.div`
   margin: 2px 2px 4px;
   display: inline-flex;
-  vertical-align: middle;
   justify-content: center;
   align-items: center;
-  position: relative;
 
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
   }
+`;
+
+const OuterWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
 `;
 
 const ClozeMathInputField = styled.span`

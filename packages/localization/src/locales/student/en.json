@@ -38,7 +38,7 @@
       "nextbtn": "next",
       "questionlist": {
         "heading": "Questions",
-        "question": "question"
+        "question": "Item"
       },
       "selectbox": {
         "question": "Question"

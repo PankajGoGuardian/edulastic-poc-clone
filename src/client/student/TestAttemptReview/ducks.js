@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { questionType } from "@edulastic/constants";
-import { get, isEmpty, sumBy } from "lodash";
+import { get, isEmpty, sumBy, groupBy } from "lodash";
 
 // selectors
 export const answersSelector = state => state.answers;
@@ -57,7 +57,15 @@ export const unansweredQuestionCountSelector = createSelector(
   itemsSelector,
   answersSelector,
   (items, answers) => {
-    const totalQuestions = sumBy(items, item => item.data.questions.length);
-    return totalQuestions - Object.keys(answers).filter(_o => answers[_o] && !isEmpty(answers[_o])).length;
+    const questionsByItemId = {};
+    const answerToArray = Object.keys(answers).filter(_o => answers[_o] && !isEmpty(answers[_o]));
+    let totalAnsweredItems = 0;
+    for (let item of items) {
+      questionsByItemId[item._id] = item.data.questions.filter(q => answerToArray.includes(q.id));
+      if (questionsByItemId[item._id]?.length) {
+        totalAnsweredItems++;
+      }
+    }
+    return items.length - totalAnsweredItems;
   }
 );

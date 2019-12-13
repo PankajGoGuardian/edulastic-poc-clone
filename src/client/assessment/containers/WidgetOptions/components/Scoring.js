@@ -168,7 +168,7 @@ class Scoring extends Component {
                       onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
                       size="large"
                       style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                      disabled={!!questionData.rubrics}
+                      disabled={!!questionData.rubrics && userFeatures.gradingrubrics}
                     />
                   </FormGroup>
                 </ColWrapper>
@@ -248,7 +248,10 @@ class Scoring extends Component {
               <StyledCheckbox
                 data-cy="gradingRubricChk"
                 checked={isGradingCheckboxState || questionData.rubrics}
-                onChange={e => setIsGradingRubricAction(e.target.checked)}
+                onChange={e => {
+                  setIsGradingRubricAction(e.target.checked);
+                  if (questionData.rubrics) dissociateRubricFromQuestion();
+                }}
                 size="large"
               >
                 {t("component.options.gradingRubric")}
@@ -256,7 +259,7 @@ class Scoring extends Component {
             </Col>
           </Row>
         )}
-        {(isGradingCheckboxState || questionData.rubrics) && (
+        {(isGradingCheckboxState || questionData.rubrics) && userFeatures.gradingrubrics && (
           <Row gutter={16}>
             <Col md={24} lg={24} xs={24}>
               <StyledButton
@@ -279,7 +282,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {questionData.rubrics && (
+        {questionData.rubrics && userFeatures.gradingrubrics && (
           <StyledTag>
             <span onClick={() => this.handleViewRubric(questionData.rubrics.id)}>{questionData.rubrics.name}</span>
             <span onClick={() => dissociateRubricFromQuestion()}>

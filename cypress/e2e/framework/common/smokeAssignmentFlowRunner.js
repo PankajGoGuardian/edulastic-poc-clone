@@ -40,31 +40,17 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
     });
 
     it("> verify assignment filters", () => {
-      studentAssignment.clickOnAllAssignments();
+      // All Assignment
+      studentAssignment.getAllAssignments().click();
       studentAssignment.getAssignmentButton().should("be.visible");
 
-      studentAssignment.clickOnNotStarted();
+      // Not Started
+      studentAssignment.getNotStarted().click();
       studentAssignment.getAssignmentButton().should("be.visible");
 
-      studentAssignment.clickOnInProgress();
+      // In Progress
+      studentAssignment.getInProgress().click();
       studentAssignment.getAssignmentButton().should("not.be.visible");
-
-      /*  // inprogress
-          studentAssignment.clickOnAllAssignments();
-          studentAssignment.getAssignmentButton().click({ force: true });
-          test.clickOnExitTest();
-          test.clickOnProceed();
-  
-          studentAssignment.validateAssignment(assignmentName, "IN PROGRESS", "RESUME", "A");
-  
-          studentAssignment.clickOnAllAssignments();
-          studentAssignment.getAssignmentButton().should("be.visible");
-  
-          studentAssignment.clickOnNotStarted();
-          studentAssignment.getAssignmentButton().should("not.be.visible");
-  
-          studentAssignment.clickOnInProgress();
-          studentAssignment.getAssignmentButton().should("be.visible"); */
     });
   });
 
@@ -258,7 +244,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
       it("> verify stats on report page", () => {
         const { score, perfValue } = lcb.getScoreAndPerformance(updatedAttempt, questionTypeMap);
         cy.login("student", email, password);
-        sidebarPage.clickOnAssignment();
+        sidebarPage.clickOnGrades();
         report.validateStats("1", "1/1", score, perfValue);
         report.clickOnReviewButtonButton();
         Object.keys(updatedAttempt).forEach(queNum => {

@@ -33,6 +33,7 @@ const create = {
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Dashboard`, () => {
   before(() => {
     cy.clearToken();
+    cy.deleteAllAssignments(student.email, teacher.email, teacher.password);
     cy.login("teacher", teacher.email, teacher.password);
   });
 

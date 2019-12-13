@@ -2,91 +2,33 @@ import AssignmentsPage from "./assignmentsPage";
 import ReportsPage from "./reportsPage";
 
 class SidebarPage {
-  onClickMenuItems() {
-    let menuItems = [
-      {
-        label: "Assignments",
-        path: "home/assignments"
-      },
-      {
-        label: "Reports",
-        path: "home/reports"
-      },
-      {
-        label: "Skill Report",
-        path: "home/skill-report"
-      },
-      {
-        label: "Manage Class",
-        path: "home/manage"
-      }
-    ];
-    menuItems.forEach(data => {
-      cy.contains(data.label).click();
-      cy.url().should("include", data.path);
-    });
-  }
-
-  onClickCollapse() {
-    // cy.get('.anticon-left').click();
-    // cy.get('.anticon-right').click();
-  }
-  isVisible() {
-    cy.contains("Help Center").should("be.visible");
-  }
-
-  onClickUserInfo() {
+  onClickMyProfile = () => {
     cy.get("[data-cy=userInfo]").click();
-    cy.contains("MY PROFILE").click();
-    cy.get("[data-cy=userInfo]").click();
-    cy.contains("SIGN OUT").click();
-  }
+    cy.contains("My Profile").click({ force: true });
+  };
 
-  // clickOnDashboard() {
-  //   cy.get('[data-cy="label0"]')
-  //     .should("be.visible")
-  //     .click();
-  // }
+  clickOnAssignment = () => {
+    cy.get('[data-cy="Assignments"]')
+      .click({ force: true })
+      .click({ force: true });
+  };
 
-  clickOnAssignment() {
-    cy.get('[data-cy="side-wrapper"]')
-      .parent()
-      .click()
-      .then(() => {
-        cy.get('[data-cy="label0"]')
-          .should("be.visible")
-          .click();
-      });
-    return new AssignmentsPage();
-  }
+  clickOnGrades = () => {
+    cy.get('[data-cy="Grades"]')
+      .click({ force: true })
+      .click({ force: true });
+  };
 
-  clickOnReport() {
-    cy.get('[data-cy="side-wrapper"]')
-      .parent()
-      .click()
-      .then(() => {
-        cy.get('[data-cy="label1"]')
-          .should("be.visible")
-          .click();
-      });
-    return new ReportsPage();
-  }
+  clickOnSkillMastery = () => {
+    cy.get('[data-cy="Skill Mastery"]')
+      .click({ force: true })
+      .click({ force: true });
+  };
 
-  clickOnskillReport() {
-    return cy
-      .get('[data-cy="label2"]')
-      .should("be.visible")
-      .click();
-  }
-
-  clickOnManageClass() {
-    return (
-      cy
-        .get('[data-cy="label3"]')
-        //.should("be.visible")
-        .click({ force: true })
-        .click({ force: true })
-    );
-  }
+  clickOnManageClass = () => {
+    cy.get('[data-cy="Manage Class"]')
+      .click({ force: true })
+      .click({ force: true });
+  };
 }
 export default SidebarPage;

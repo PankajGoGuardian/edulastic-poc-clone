@@ -15,31 +15,31 @@ import { attemptTypes } from "../../../../framework/constants/questionTypes";
 const students = {
   1: {
     email: "auto.lcb.student01@yopmail.com",
-    stuName: "Student01 1st"
+    stuName: "1st, Student01"
   },
   2: {
     email: "auto.lcb.student02@yopmail.com",
-    stuName: "Student02 2nd"
+    stuName: "2nd, Student02"
   },
   3: {
     email: "auto.lcb.student03@yopmail.com",
-    stuName: "Student03 3rd"
+    stuName: "3rd, Student03"
   },
   4: {
     email: "auto.lcb.student04@yopmail.com",
-    stuName: "Student04 4th"
+    stuName: "4th, Student04"
   },
   5: {
     email: "auto.lcb.student05@yopmail.com",
-    stuName: "Student05 5th"
+    stuName: "5th, Student05"
   },
   6: {
     email: "auto.lcb.student06@yopmail.com",
-    stuName: "Student06 6th"
+    stuName: "6th, Student06"
   },
   7: {
     email: "auto.lcb.student07@yopmail.com",
-    stuName: "Student07 7th"
+    stuName: "7th, Student07"
   }
 };
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {

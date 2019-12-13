@@ -246,7 +246,7 @@ class SideMenu extends Component {
                   {menuItems.map((menu, index) => {
                     const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                     return (
-                      <MenuItem key={index.toString()} data-cy={`label${index}`} onClick={this.toggleMenu}>
+                      <MenuItem key={index.toString()} data-cy={menu.label} onClick={this.toggleMenu}>
                         <MenuIcon />
                         {!isSidebarCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                       </MenuItem>

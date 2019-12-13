@@ -17,31 +17,31 @@ const teacherSidebar = new TeacherSideBar();
 const students = {
   1: {
     email: "student1.regression.automation@snapwiz.com",
-    stuName: "student1 1"
+    stuName: "1, student1"
   },
   2: {
     email: "student2.regression.automation@snapwiz.com",
-    stuName: "student2 regression"
+    stuName: "regression, student2"
   },
   3: {
     email: "student3.regression.automation@snapwiz.com",
-    stuName: "student3 regression"
+    stuName: "regression, student3"
   },
   4: {
     email: "student4.regression.automation@snapwiz.com",
-    stuName: "student4 regression"
+    stuName: "regression, student4"
   },
   5: {
     email: "student5.regression.automation@snapwiz.com",
-    stuName: "student5 regression"
+    stuName: "regression, student5"
   },
   6: {
     email: "student6.regression.automation@snapwiz.com",
-    stuName: "student6 regression"
+    stuName: "regression, student6"
   },
   7: {
     email: "student7.regression.automation@snapwiz.com",
-    stuName: "student7 regression"
+    stuName: "regression, student7"
   }
 };
 

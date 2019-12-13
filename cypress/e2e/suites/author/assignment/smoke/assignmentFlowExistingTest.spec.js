@@ -20,25 +20,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
       attemptsData: [
         {
           email: "student1.smoke.automation@snapwiz.com",
-          stuName: "student1 smoke",
+          stuName: "smoke, student1",
           attempt: { Q1: "right", Q2: "right" },
           status: "Submitted"
         },
         {
           email: "student2.smoke.automation@snapwiz.com",
-          stuName: "student2 smoke",
+          stuName: "smoke, student2",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         },
         {
           email: "student3.smoke.automation@snapwiz.com",
-          stuName: "student3 smoke",
+          stuName: "smoke, student3",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         },
         {
           email: "student4.smoke.automation@snapwiz.com",
-          stuName: "student4 smoke",
+          stuName: "smoke, student4",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         }

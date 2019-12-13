@@ -114,18 +114,27 @@ function* loadTest({ payload }) {
         payload: false
       });
       while (!passwordValidated) {
-        const { payload } = yield take(GET_ASSIGNMENT_PASSWORD);
-        const response = yield call(assignmentApi.validateAssignmentPassword, {
-          assignmentId: testActivity.testActivity.assignmentId,
-          password: payload,
-          groupId
-        });
-        if (response === "successful") {
-          passwordValidated = true;
-        } else if (response === "unsuccessful") {
-          yield put(setPasswordStatusAction("You have entered an invalid password"));
-        } else {
-          yield put(setPasswordStatusAction("validation failed"));
+        try {
+          const { payload } = yield take(GET_ASSIGNMENT_PASSWORD);
+          const response = yield call(assignmentApi.validateAssignmentPassword, {
+            assignmentId: testActivity.testActivity.assignmentId,
+            password: payload,
+            groupId
+          });
+          if (response === "successful") {
+            passwordValidated = true;
+          } else if (response === "unsuccessful") {
+            yield put(setPasswordStatusAction("You have entered an invalid password"));
+          } else {
+            yield put(setPasswordStatusAction("validation failed"));
+          }
+        } catch (err) {
+          if (err?.status === 403) {
+            yield put(setPasswordStatusAction(err.data.message));
+          } else {
+            yield put(setPasswordStatusAction("validation failed"));
+          }
+          console.log(err);
         }
       }
       yield put(setPasswordStatusAction(""));

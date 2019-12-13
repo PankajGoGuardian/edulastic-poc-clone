@@ -189,7 +189,7 @@ class SuccessPage extends React.Component {
                     Assignment <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{assignmentStatus}</b> &nbsp; status
                   </FlexTextWrapper>
                   {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
-                    <FlexText>
+                    <FlexText style={{ textAlign: "justify" }}>
                       Your students cannot work on this assignment yet. This assignment requires students to enter a
                       password before they can work on the assignment. The auto-generated password is time sensitive and
                       will be revealed to the teacher or the proctor when the assignment is opened. when students are

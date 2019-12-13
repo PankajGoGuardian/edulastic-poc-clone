@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Modal, Input, Button, message } from "antd";
+import { Input, Button, message } from "antd";
 import styled from "styled-components";
 import { red, green } from "@edulastic/colors";
 
 import { getAssigmentPasswordAction, setPasswordStatusAction } from "./actions/test";
+import { ConfirmationModal } from "../author/src/components/common/ConfirmationModal";
 
 const RequirePassword = ({
   isPasswordValidated,
@@ -35,14 +36,14 @@ const RequirePassword = ({
   };
 
   return (
-    <Modal
+    <ConfirmationModal
       title="Require Password"
       visible={!isPasswordValidated}
       onCancel={onCancel}
       maskClosable={false}
-      centered={true}
+      centered
       footer={[
-        <Button key="back" onClick={onCancel}>
+        <Button key="back" ghost onClick={onCancel}>
           Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={validatePassword} disabled={!assignmentPassword.length}>
@@ -50,23 +51,23 @@ const RequirePassword = ({
         </Button>
       ]}
     >
-      <p>Enter password to start the assessment</p>
-      <br />
-      <p>
-        <PasswordInput
-          placeholder="Enter assignment password"
-          value={assignmentPassword}
-          type={"text"}
-          onChange={e => handleSetPassword(e.target.value)}
-          message={passwordStatusMessage}
-        />
-        {passwordStatusMessage ? (
-          <MessageSpan message={passwordStatusMessage}>{passwordStatusMessage}</MessageSpan>
-        ) : (
-          ""
-        )}
-      </p>
-    </Modal>
+      <BodyStyled>
+        <p>Enter password to start the assessment</p>
+        <br />
+        <p>
+          <PasswordInput
+            placeholder="Enter assignment password"
+            value={assignmentPassword}
+            type={"text"}
+            onChange={e => handleSetPassword(e.target.value)}
+            message={passwordStatusMessage}
+          />
+          {!!passwordStatusMessage && (
+            <MessageSpan message={passwordStatusMessage}>{passwordStatusMessage}</MessageSpan>
+          )}
+        </p>
+      </BodyStyled>
+    </ConfirmationModal>
   );
 };
 
@@ -91,4 +92,9 @@ const MessageSpan = styled.span`
 
 const PasswordInput = styled(Input)`
   border-color: ${props => props.message && props.message !== "successful" && red};
+`;
+
+const BodyStyled = styled.div`
+  text-align: left;
+  width: 100%;
 `;

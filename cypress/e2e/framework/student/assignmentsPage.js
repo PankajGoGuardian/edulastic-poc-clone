@@ -37,11 +37,36 @@ class AssignmentsPage {
     return cy.get('[data-cy="percentage"]');
   }
 
-  clickOnAllAssignments = () => cy.get('[data-cy="ALL"]').click();
+  getclass(classname) {
+    cy.get(".ant-select").click();
+    cy.contains(classname)
+      .should("be.visible")
+      .click();
+  }
 
-  clickOnNotStarted = () => cy.get('[data-cy="NOT_STARTED"]').click();
+  verifyAssignmentCount(status) {
+    cy.get("body")
+      .find('[data-cy="assignmentButton"]')
+      .then(ele => {
+        const count = ele.length;
 
-  clickOnInProgress = () => cy.get('[data-cy="IN_PROGRESS"]').click();
+        if (status === "ALL") {
+          this.getAllAssignments().contains(count);
+        }
+        if (status === "NOT_STARTED") {
+          this.getNotStarted().contains(count);
+        }
+        if (status === "IN_PROGRESS") {
+          this.getInProgress().contains(count);
+        }
+      });
+  }
+
+  getAllAssignments = () => cy.get('[data-cy="ALL"]');
+
+  getNotStarted = () => cy.get('[data-cy="NOT_STARTED"]');
+
+  getInProgress = () => cy.get('[data-cy="IN_PROGRESS"]');
 
   // common actions on AssignmentPage
 

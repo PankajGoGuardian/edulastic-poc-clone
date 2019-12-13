@@ -25,7 +25,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
     itemRows = [passage.structure, ...itemRows];
     allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
   }
-  const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "clear";
+  const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "check";
   const closeModal = () => setModal(false);
   const hasCollapseButtons =
     itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");

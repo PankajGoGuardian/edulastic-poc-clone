@@ -113,6 +113,8 @@ const Sidebar = ({
           analytics={analytics}
           onChangeField={onChangeField}
           isEditable={isEditable}
+          backgroundColor={backgroundColor}
+          textColor={textColor}
         />
       </Col>
       <Row gutter={16}>

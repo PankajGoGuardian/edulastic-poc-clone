@@ -21,7 +21,8 @@ import {
   tabletWidth,
   desktopWidth,
   largeDesktopWidth,
-  extraDesktopWidth
+  extraDesktopWidth,
+  themeColor
 } from "@edulastic/colors";
 import {
   IconShare,
@@ -344,7 +345,9 @@ class CurriculumSequence extends Component {
       grades = [],
       customize = true,
       collectionName = "",
-      isAuthor = false
+      isAuthor = false,
+      bgColor = themeColor || "",
+      textColor = white || ""
     } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
@@ -540,25 +543,29 @@ class CurriculumSequence extends Component {
             </TopBar>
           )}
           <SubTopBar>
-            <SubTopBarContainer active={isContentExpanded} mode={mode}>
+            <SubTopBarContainer backgroundColor={bgColor} active={isContentExpanded} mode={mode}>
               <CurriculumSubHeaderRow marginBottom="36px">
                 <SubHeaderTitleContainer>
-                  <SubHeaderTitle>{title}</SubHeaderTitle>
-                  <SubHeaderDescription>{description}</SubHeaderDescription>
+                  <SubHeaderTitle textColor={textColor}>{title}</SubHeaderTitle>
+                  <SubHeaderDescription textColor={textColor}>{description}</SubHeaderDescription>
                 </SubHeaderTitleContainer>
                 <SunHeaderInfo>
                   {grades.length ? (
                     <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
-                      <GraduationCapIcon color="#848993" />
-                      <SunHeaderInfoCardText marginLeft="-3px">Grade {grades.join(", ")}</SunHeaderInfoCardText>
+                      <GraduationCapIcon color={textColor} />
+                      <SunHeaderInfoCardText textColor={textColor} marginLeft="-3px">
+                        Grade {grades.join(", ")}
+                      </SunHeaderInfoCardText>
                     </SunHeaderInfoCard>
                   ) : (
                     ""
                   )}
                   {subjects.length ? (
                     <SunHeaderInfoCard>
-                      <BookIcon color="#848993" />
-                      <SunHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SunHeaderInfoCardText>
+                      <BookIcon color={textColor} />
+                      <SunHeaderInfoCardText textColor={textColor}>
+                        {subjects.filter(item => !!item).join(", ")}
+                      </SunHeaderInfoCardText>
                     </SunHeaderInfoCard>
                   ) : (
                     ""
@@ -1077,7 +1084,7 @@ const SubTopBar = styled.div`
 `;
 
 const SubTopBarContainer = styled.div`
-  background: ${white};
+  background: ${({ backgroundColor }) => backgroundColor || themeColor};
   padding: 28px 43px 36px 45px;
   margin-bottom: 10px;
   margin-top: ${props => (props.mode ? "0px" : "-15px")};
@@ -1203,11 +1210,12 @@ const SubHeaderTitle = styled.h2`
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 7px;
-  color: ${titleColor};
+  color: ${({ textColor }) => textColor || white};
 `;
 const SubHeaderDescription = styled.p`
   color: #848993;
   font-size: 14px;
+  color: ${({ textColor }) => textColor || white};
 `;
 
 const SunHeaderInfo = styled.div`
@@ -1244,6 +1252,7 @@ const SunHeaderInfoCardText = styled.div`
   margin-left: ${props => props.marginLeft || "0px"};
   font-family: Open Sans, Bold;
   font-weight: 600;
+  color: ${({ textColor }) => textColor || white};
 `;
 
 const BreadCrumbWrapper = styled.div`

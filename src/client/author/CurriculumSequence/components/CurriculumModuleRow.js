@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Button, Menu, Dropdown, Icon, Modal, Tag } from "antd";
+import { Button, Menu, Dropdown, Icon, Modal, Tag, Col } from "antd";
 import {
   mobileWidth,
   white,
@@ -106,7 +106,7 @@ class ModuleRow extends Component {
       handleRemove,
       removeUnit
     } = this.props;
-    const { title, _id, data = [] } = module;
+    const { title, _id, data = [], description = "" } = module;
     const completed = moduleStatus;
     const { assignModule, assignTest } = this;
 
@@ -160,21 +160,23 @@ class ModuleRow extends Component {
                     )}
                   </CustomIcon>
                   <ModuleTitleAssignedWrapper>
-                    <ModuleTitleWrapper>
-                      <ModuleTitle>
-                        {`Module ${moduleIndex + 1}`}: {title}
-                      </ModuleTitle>
-                      <ModuleTitlePrefix>
-                        {!hideEditOptions && (
-                          <Icon
-                            type="close-circle"
-                            data-cy="removeUnit"
-                            style={{ visibility: "hidden" }}
-                            onClick={() => removeUnit(module.id)}
-                          />
-                        )}
-                      </ModuleTitlePrefix>
-                    </ModuleTitleWrapper>
+                    <Col span={16}>
+                      <ModuleHelperText fontSize="14px">{`Module ${moduleIndex + 1}`}</ModuleHelperText>
+                      <ModuleTitleWrapper>
+                        <ModuleTitle>{title}</ModuleTitle>
+                        <ModuleTitlePrefix>
+                          {!hideEditOptions && (
+                            <Icon
+                              type="close-circle"
+                              data-cy="removeUnit"
+                              style={{ visibility: "hidden" }}
+                              onClick={() => removeUnit(module.id)}
+                            />
+                          )}
+                        </ModuleTitlePrefix>
+                      </ModuleTitleWrapper>
+                      <ModuleHelperText fontSize="12px">{description}</ModuleHelperText>
+                    </Col>
 
                     {completed && !hideEditOptions && (
                       <React.Fragment>
@@ -386,11 +388,13 @@ export const CustomIcon = styled.span`
   cursor: pointer;
   margin-right: ${props => (props.marginRight ? props.marginRight : 25)}px;
   margin-left: ${({ marginLeft }) => marginLeft || 0}px;
+  font-size: 16px;
   @media only screen and (max-width: ${mobileWidth}) {
     margin-right: 5px;
     margin-left: 0px;
     padding: 5px;
   }
+  align-self: flex-start;
 `;
 
 export const AssignmentIconsHolder = styled.div`
@@ -793,6 +797,12 @@ const ModuleWrapper = styled.div`
     border: none;
     box-shadow: none;
   }
+`;
+
+const ModuleHelperText = styled.p`
+  font-size: ${({ fontSize }) => fontSize || "12px"};
+  color: ${textColor};
+  font-weight: normal;
 `;
 
 const enhance = compose(

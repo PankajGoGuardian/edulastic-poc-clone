@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 
-import { themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { Content } from "../../../TestPage/components/Container/styled";
 import { get } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
@@ -78,8 +78,8 @@ class Container extends PureComponent {
   state = {
     current: "summary",
     showModal: false,
-    textColor: "#ffffff",
-    backgroundColor: themeColor,
+    textColor: white || "",
+    backgroundColor: themeColor || "",
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
@@ -279,6 +279,9 @@ class Container extends PureComponent {
 
   handleSave = async () => {
     const { playlist, updatePlaylist, createPlayList } = this.props;
+    const { backgroundColor, textColor } = this.state;
+    playlist.bgColor = backgroundColor;
+    playlist.textColor = textColor;
 
     if (playlist._id) {
       updatePlaylist(playlist._id, playlist);

@@ -3,7 +3,14 @@ import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from 
 import PropTypes from "prop-types";
 import { isNaN } from "lodash";
 
-import { Stimulus, withWindowSizes, ScratchPadContext, QuestionNumberLabel, isMobileDevice } from "@edulastic/common";
+import {
+  Stimulus,
+  withWindowSizes,
+  ScratchPadContext,
+  QuestionNumberLabel,
+  isMobileDevice,
+  AnswerContext
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { canvasDimensions } from "@edulastic/constants";
 
@@ -42,6 +49,7 @@ const HighlightImagePreview = ({
   const file = image ? image.source : "";
 
   const { enableQuestionLevelScratchPad = true } = useContext(ScratchPadContext);
+  const { isAnswerModifiable } = useContext(AnswerContext);
 
   useEffect(() => {
     if (isMobile) {
@@ -170,13 +178,14 @@ const HighlightImagePreview = ({
     canvasContainerWidth = _w >= canvasContainerWidth ? _w : canvasContainerWidth;
   }
 
+  const disableDrawing = disableResponse || !isAnswerModifiable;
   return (
     <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <div
         ref={canvasContainerRef}
         style={{
           minHeight: `${canvasDimensions.maxHeight}px`,
-          width: disableResponse ? "auto" : `${canvasContainerWidth}px`
+          width: disableDrawing ? "auto" : `${canvasContainerWidth}px`
         }}
       >
         <CanvasContainer>
@@ -187,12 +196,12 @@ const HighlightImagePreview = ({
           {item.image && item.image.source && renderImage()}
           {enableQuestionLevelScratchPad && (
             <canvas
-              onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
-              onTouchStart={!disableResponse ? onCanvasMouseDown : () => {}}
-              onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
-              onTouchEnd={!disableResponse ? onCanvasMouseUp : () => {}}
-              onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
-              onTouchMove={!disableResponse ? onCanvasMouseMove : () => {}}
+              onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
+              onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
+              onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
+              onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
+              onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+              onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
               ref={canvas}
             />
           )}

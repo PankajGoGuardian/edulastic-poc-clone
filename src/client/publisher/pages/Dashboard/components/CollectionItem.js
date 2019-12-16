@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Icon } from "antd";
 
 import {
-  black,
-  fadedBlack,
-  darkGrey,
-  someGreyColor1,
-  mediumDesktopWidth,
-  mediumDesktopExactWidth
+  publisherFont1,
+  publisherFont2,
+  publisherCollectionBg,
+  publisherItemBankIcon,
+  publisherTestsIcon,
+  publisherPlaylistIcon,
+  publisherBorder1
 } from "@edulastic/colors";
 import { IconItemLibrary, IconTestBank, IconPlaylist, IconSettings } from "@edulastic/icons";
 import { StyledH4, ItemContent } from "./styled";
@@ -21,7 +21,7 @@ const CollectionItem = props => {
     <div className={className}>
       <div className="item-heading-section">
         <StyledH4>{data.name}</StyledH4>
-        <IconSettings className="collection-item-icon" />
+        <IconSettings className="collection-item-icon" style={{ fill: publisherFont2 }} />
       </div>
       <div className="item-content-section">
         <ItemContent className="item-content">
@@ -40,7 +40,7 @@ const CollectionItem = props => {
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconItemLibrary className="collection-item-icon" style={{ fill: "#D36DF6" }} />
+            <IconItemLibrary className="collection-item-icon" style={{ fill: publisherItemBankIcon }} />
             <p>Item Bank</p>
           </div>
           <div className="item-content-body">
@@ -60,7 +60,7 @@ const CollectionItem = props => {
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconTestBank className="collection-item-icon" style={{ fill: "#00FFEDD3" }} />
+            <IconTestBank className="collection-item-icon" style={{ fill: publisherTestsIcon }} />
             <p>Tests</p>
           </div>
           <div className="item-content-body">
@@ -80,7 +80,7 @@ const CollectionItem = props => {
         </ItemContent>
         <ItemContent className="item-content">
           <div className="content-type-heading">
-            <IconPlaylist className="collection-item-icon" style={{ fill: "#1487DB" }} />
+            <IconPlaylist className="collection-item-icon" style={{ fill: publisherPlaylistIcon }} />
             <p>Playlists</p>
           </div>
           <div className="item-content-body">
@@ -104,7 +104,7 @@ const CollectionItem = props => {
 };
 
 const StyledCollectionItem = styled(CollectionItem)`
-  background-color: #f3f3f8;
+  background-color: ${publisherCollectionBg};
   padding: 20px;
   border-radius: 10px;
   margin: 10px;
@@ -130,7 +130,7 @@ const StyledCollectionItem = styled(CollectionItem)`
       .content-type-heading {
         display: flex;
         p {
-          color: ${black};
+          color: ${publisherFont2};
         }
       }
       .item-content-body {
@@ -140,25 +140,30 @@ const StyledCollectionItem = styled(CollectionItem)`
           display: flex;
           padding: 2px 0;
           p {
-            color: ${fadedBlack};
+            color: ${publisherFont1};
             padding: 0;
             width: 66px;
           }
           h4 {
-            font-size: 25px;
+            font-size: 26px;
             flex: 1;
             margin: 0 0 0 20px;
             text-align: left;
+            color: ${publisherFont1};
           }
         }
       }
     }
 
     .item-content:nth-child(2) {
-      border-right: solid 1px ${someGreyColor1};
+      .item-content-body {
+        border-right: solid 1px ${publisherBorder1};
+      }
     }
     .item-content:nth-child(3) {
-      border-right: solid 1px ${someGreyColor1};
+      .item-content-body {
+        border-right: solid 1px ${publisherBorder1};
+      }
     }
   }
 `;

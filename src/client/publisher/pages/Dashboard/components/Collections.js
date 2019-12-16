@@ -26,7 +26,7 @@ const sampleData = [
     chartData: [
       { name: "itembank", value: 50, fill: "#009BFFCC" },
       { name: "tests", value: 25, fill: "#00FFED6C" },
-      { name: "playlist", value: 25, fill: "#AB2EFE80" }
+      { name: "playlist", value: 25, fill: "#AB2EFE9A" }
     ]
   }
 ];

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 
-import { black, fadedBlack } from "@edulastic/colors";
+import { publisherFont2, publisherFont3 } from "@edulastic/colors";
 
 const DonutChartWithText = props => {
   const {
@@ -59,14 +59,14 @@ const StyledDonutChartWithText = styled(DonutChartWithText)`
 
     .center-info-number {
       font-size: 30px;
-      color: ${black};
+      color: ${publisherFont2};
       padding: 0;
       font-weight: 900;
     }
     .center-info-unit {
       font-size: 12px;
       font-weight: 900;
-      color: ${fadedBlack};
+      color: ${publisherFont3};
       display: flex;
       align-items: center;
       padding: 0;

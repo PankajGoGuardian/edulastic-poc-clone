@@ -202,3 +202,12 @@ export const highlightColors = {
   yellow: "#ffff80",
   pink: "#ff99bb"
 };
+
+export const publisherFont1 = "#8080a7";
+export const publisherFont2 = "#434b5d";
+export const publisherFont3 = "#8888a4";
+export const publisherCollectionBg = "#f3f3f8";
+export const publisherItemBankIcon = "#AB2EFE9A";
+export const publisherTestsIcon = "#00FFEDD3";
+export const publisherPlaylistIcon = "#1487DB";
+export const publisherBorder1 = "#d4d4e5";

@@ -49,10 +49,11 @@ export const ItemContent = styled.div`
 export const StyledPrimaryGreenButton = styled(Button)`
   border: none;
   width: auto;
+  min-width: 120px;
   background: ${({ theme }) => theme.default.headerRightButtonIconColor};
   color: ${({ theme }) => theme.default.headerRightButtonBgColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   margin: 0 5px;
 
@@ -62,6 +63,7 @@ export const StyledPrimaryGreenButton = styled(Button)`
   align-items: center;
 
   svg {
+    font-size: 18px;
     height: ${props => props.theme.default.headerRightButtonFontIconHeight};
     fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
   }

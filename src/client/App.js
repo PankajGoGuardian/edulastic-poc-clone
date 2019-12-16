@@ -120,7 +120,11 @@ class App extends Component {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
           if (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus)) {
-            defaultRoute = "/author/dashboard";
+            if (features.isPublisherAuthor) {
+              defaultRoute = "author/items";
+            } else {
+              defaultRoute = "/author/dashboard";
+            }
           } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
             redirectRoute = `/district/${path[1]}/signup`;
           } else {

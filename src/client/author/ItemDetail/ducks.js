@@ -95,6 +95,7 @@ export const DELETE_ITEM_SUCCESS = "[itemDetail] delete item success";
 export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
 export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
+export const SET_COLLECTION_NAME = "[itemDetail] set collection name";
 // actions
 
 //
@@ -110,6 +111,7 @@ export const addWidgetToPassageAction = createAction(ADD_WIDGET_TO_PASSAGE);
 export const deleteItemAction = createAction(DELETE_ITEM);
 export const deleteItemSuccesAction = createAction(DELETE_ITEM_SUCCESS);
 export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
+export const setCollectionNameAction = createAction(SET_COLLECTION_NAME);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -246,6 +248,11 @@ export const getItemDetailSelector = createSelector(
 export const getItemSelector = createSelector(
   stateSelector,
   state => state.item
+);
+
+export const getCollectionNamesSelector = createSelector(
+  getItemDetailSelector,
+  state => state.collectionName || []
 );
 
 export const getPassageSelector = createSelector(
@@ -649,6 +656,15 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         passage: payload
+      };
+    }
+    case SET_COLLECTION_NAME: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          collectionName: payload
+        }
       };
     }
     default:

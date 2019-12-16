@@ -17,7 +17,11 @@ const SecondBlock = ({
   authorDifficulty = "",
   tags = [],
   allTagsData,
-  addNewTag
+  addNewTag,
+  handleCollectionNameSelect,
+  collectionName,
+  orgData,
+  userFeatures
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -151,6 +155,29 @@ const SecondBlock = ({
             )}
           </ItemBody>
         </Col>
+        {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
+          <Col md={8}>
+            <ItemBody>
+              <Label>Collections</Label>
+              <Select
+                mode="multiple"
+                className="tagsSelect"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                placeholder="Please select"
+                value={collectionName}
+                onChange={value => handleCollectionNameSelect(value)}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              >
+                {orgData?.itemBanks?.map(({ _id, name }) => (
+                  <Select.Option key={_id} value={_id} title={name}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Col>
+        )}
       </Row>
     </Container>
   );

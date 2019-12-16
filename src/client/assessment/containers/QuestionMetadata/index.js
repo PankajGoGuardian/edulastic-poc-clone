@@ -21,6 +21,8 @@ import {
   getQuestionDataSelector
 } from "../../../author/QuestionEditor/ducks";
 
+import { getCollectionNamesSelector, setCollectionNameAction } from "../../../author/ItemDetail/ducks";
+
 import {
   getCurriculumsListSelector,
   getStandardsListSelector,
@@ -32,7 +34,11 @@ import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
 import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
-import { getInterestedCurriculumsSelector } from "../../../author/src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getOrgDataSelector,
+  getUserFeatures
+} from "../../../author/src/selectors/user";
 import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
 import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
 
@@ -60,7 +66,11 @@ const QuestionMetadata = ({
   removeAlignment,
   interestedCurriculums,
   editAlignment,
-  curriculumStandardsLoading
+  curriculumStandardsLoading,
+  setCollectionName,
+  collectionName,
+  orgData,
+  userFeatures
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
   const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
@@ -93,6 +103,10 @@ const QuestionMetadata = ({
       delete newQuestionData[fieldName];
     }
     setQuestionData(newQuestionData);
+  };
+
+  const handleCollectionNameSelect = value => {
+    setCollectionName(value);
   };
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
@@ -158,6 +172,10 @@ const QuestionMetadata = ({
           addNewTag={addNewTag}
           onChangeTags={handleChangeTags}
           onQuestionDataSelect={handleQuestionDataSelect}
+          handleCollectionNameSelect={handleCollectionNameSelect}
+          collectionName={collectionName}
+          orgData={orgData}
+          userFeatures={userFeatures}
         />
       </div>
     </ThemeProvider>
@@ -215,7 +233,10 @@ const enhance = compose(
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, "testitem"),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
-      alignment: getDictionariesAlignmentsSelector(state)
+      alignment: getDictionariesAlignmentsSelector(state),
+      collectionName: getCollectionNamesSelector(state),
+      orgData: getOrgDataSelector(state),
+      userFeatures: getUserFeatures(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -227,7 +248,8 @@ const enhance = compose(
       removeAlignment: removeExistedAlignmentAction,
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
-      editAlignment: updateDictAlignmentAction
+      editAlignment: updateDictAlignmentAction,
+      setCollectionName: setCollectionNameAction
     }
   )
 );

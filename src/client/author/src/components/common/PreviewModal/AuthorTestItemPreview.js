@@ -140,10 +140,14 @@ class AuthorTestItemPreview extends Component {
       ...restProps
     } = this.props;
     const questionCount = get(item, ["data", "questions"], []).length;
+    const resourceCount = (item?.data?.resources || []).length;
     const isMultiPart = questionCount > 1;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const alphabets = "abcdefghijklmnopqrstuvwxyz";
-    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
+    // need to remove the resource count fromt the subCount
+    // because resources should not have labels
+    // hence, reduce that many from the question's subCount    (EV-10560)
+    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount - resourceCount);
     const question =
       questions[widget.reference] && questions[widget.reference].qLabel
         ? questions[widget.reference]

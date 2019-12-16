@@ -268,18 +268,32 @@ const TestPageHeader = ({
                 <IconDiskette color={themeColor} />
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton && (
-              <EduButton
-                title="Publish Test"
-                data-cy="publish"
-                style={{ width: 42, padding: 0 }}
-                size="large"
-                onClick={handlePublish}
-                disabled={isTestLoading}
-              >
-                <IconSend color={themeColor} stroke={themeColor} />
-              </EduButton>
-            )}
+            {showShareButton && owner && showPublishButton ? (
+              isPlaylist ? (
+                <EduButton
+                  title="Publish Playlist"
+                  data-cy="publish"
+                  style={{ width: "120px", padding: "0 11px" }}
+                  size="large"
+                  onClick={handlePublish}
+                  disabled={isTestLoading}
+                >
+                  Publish
+                </EduButton>
+              ) : (
+                <EduButton
+                  title="Publish Test"
+                  data-cy="publish"
+                  style={{ width: 42, padding: 0 }}
+                  size="large"
+                  onClick={handlePublish}
+                  disabled={isTestLoading}
+                >
+                  <IconSend color={themeColor} stroke={themeColor} />
+                </EduButton>
+              )
+            ) : null}
+
             {showEditButton && (
               <EduButton
                 title="Edit Test"
@@ -342,18 +356,32 @@ const TestPageHeader = ({
                   <IconDiskette color={themeColor} />
                 </EduButton>
               )}
-              {showShareButton && owner && showPublishButton && (
-                <EduButton
-                  title="Publish Test"
-                  data-cy="publish"
-                  style={{ width: 42, padding: 0 }}
-                  size="large"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
-                  <IconSend color={themeColor} stroke={themeColor} />
-                </EduButton>
-              )}
+              {showShareButton && owner && showPublishButton ? (
+                isPlaylist ? (
+                  <EduButton
+                    title="Publish Playlist"
+                    data-cy="publish"
+                    style={{ width: "auto", padding: "0 11px" }}
+                    size="large"
+                    onClick={handlePublish}
+                    disabled={isTestLoading}
+                  >
+                    Publish
+                  </EduButton>
+                ) : (
+                  <EduButton
+                    title="Publish Test"
+                    data-cy="publish"
+                    style={{ width: 42, padding: 0 }}
+                    size="large"
+                    onClick={handlePublish}
+                    disabled={isTestLoading}
+                  >
+                    <IconSend color={themeColor} stroke={themeColor} />
+                  </EduButton>
+                )
+              ) : null}
+
               {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
                 <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
                   Assign

@@ -12,7 +12,7 @@ import {
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ review }) => (review ? "315px" : "348px")};
+  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "315px" : "348px")};
   padding: 19px 6px 18px 13px;
   background: ${white};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};

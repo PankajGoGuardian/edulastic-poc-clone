@@ -292,7 +292,8 @@ class QuestionItem extends React.Component {
       previousFeedback,
       answer,
       testMode,
-      pdfPreview
+      pdfPreview,
+      annotations
     } = this.props;
 
     const check =
@@ -305,6 +306,7 @@ class QuestionItem extends React.Component {
         highlighted={highlighted}
         ref={this.itemRef}
         review={testMode || review}
+        annotations={annotations}
       >
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable
@@ -318,7 +320,8 @@ class QuestionItem extends React.Component {
               {qIndex || index + 1}
             </QuestionNumber>
           </Draggable>
-          <QuestionForm review={review}>{this.renderContent()}</QuestionForm>
+          {!annotations && <QuestionForm review={review}>{this.renderContent()}</QuestionForm>}
+
           {!review && this.renderEditButton()}
           {review &&
             (previewMode !== "clear" || check) &&

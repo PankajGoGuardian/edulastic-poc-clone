@@ -50,8 +50,8 @@ const TokenHighlightPreview = ({
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"), true);
 
-  const validArray =
-    (item && item.validation && item.validation.validResponse && item.validation.validResponse.value) || [];
+  const resp = item?.validation?.validResponse?.value || [];
+  const validArray = resp.length ? resp : initialArray;
 
   const altArray = (item && item.validation && item.validation.altResponses) || [];
 
@@ -155,9 +155,8 @@ const TokenHighlightPreview = ({
 
   const handleSelect = i => () => {
     const newAnswers = cloneDeep(answers);
-
     const foundedItem = newAnswers.find(elem => elem.index === i);
-    foundedItem.selected = !foundedItem.selected;
+    if (foundedItem) foundedItem.selected = !foundedItem.selected;
 
     const selectedItems = newAnswers.filter(answer => answer.selected);
 

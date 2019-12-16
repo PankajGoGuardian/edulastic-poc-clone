@@ -41,7 +41,10 @@ class CardWrapper extends Component {
       addTestToPlaylist,
       mode,
       owner,
-      standards = []
+      standards = [],
+      checked,
+      handleCheckboxAction,
+      moduleTitle
     } = this.props;
 
     const itemId = _id.substr(_id.length - 5);
@@ -80,6 +83,9 @@ class CardWrapper extends Component {
           isPlaylist={isPlaylist}
           testItemId={itemId}
           standards={standards}
+          moduleTitle={moduleTitle}
+          checked={checked}
+          handleCheckboxAction={handleCheckboxAction}
         />
       </Col>
     );

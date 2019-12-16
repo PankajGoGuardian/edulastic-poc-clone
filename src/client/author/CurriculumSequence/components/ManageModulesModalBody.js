@@ -35,6 +35,10 @@ const ModuleItem = SortableElement(props => {
     clearPreviousData
   } = props;
   const [editState, toggleEdit] = useState(false);
+  /*
+   * TODO: On SortElement Click Highlight Container
+   */
+  const [dragging, setDragging] = useState(false);
 
   const handleModuleEdit = () => {
     setCurrentData(title, description);
@@ -67,16 +71,15 @@ const ModuleItem = SortableElement(props => {
             style={{ background: lightGreySecondary, width: "685px" }}
           />
           <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={() => handleEdit(id)}>
-            <IconSave color={white} width={15} height={15} />
             <StyledSpan width={100} fSize={12}>
-              SAVE
+              UPDATE MODULE
             </StyledSpan>
           </ThemeButton>
         </div>
       </EditModuleContainer>
     </>
   ) : (
-    <ModuleContainer>
+    <ModuleContainer dragging={dragging}>
       <ModuleResequenceHandle />
       <ModuleContent>
         <ModuleTitle>
@@ -89,7 +92,7 @@ const ModuleItem = SortableElement(props => {
       </ModuleContent>
       <ModuleActions>
         <ThemeButton key="submit" type="primary" onClick={handleModuleEdit}>
-          <StyledSpan width={80} fSize={12}>
+          <StyledSpan width={70} fSize={12}>
             EDIT
           </StyledSpan>
         </ThemeButton>
@@ -121,6 +124,7 @@ const EditModuleContainer = styled.div`
   justify-content: flex-start;
   padding: 20px;
   box-shadow: 0 0 15px 0 ${fadedGrey};
+  border-radius: 4px;
 `;
 
 const ModuleContainer = styled.div`
@@ -134,6 +138,8 @@ const ModuleContainer = styled.div`
   margin: 6px;
   z-index: 1001;
   box-shadow: 0 0 10px 0 ${fadedGrey};
+  border-radius: 4px;
+  border: ${({ dragging }) => dragging && "1px solid " + themeColor};
 `;
 
 const DragHandle = styled.div`
@@ -276,21 +282,22 @@ const ManageModulesModalBody = props => {
             </AddNewModuleContainer>
             <br />
             <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={handleModuleSave}>
-              <IconSave color={white} width={15} height={15} />
               <StyledSpan width={100} fSize={12}>
-                SAVE
+                ADD MODULE
               </StyledSpan>
             </ThemeButton>
           </>
         )}
 
         {!addState && (
-          <ThemeButton key="submit" type="primary" onClick={() => toggleAddState(true)}>
-            <IconPlusCircle color={white} width={15} height={15} />
-            <StyledSpan width={140} fSize={12}>
-              ADD MODULE
-            </StyledSpan>
-          </ThemeButton>
+          <div style={{ marginLeft: "20px" }}>
+            <ThemeButton key="submit" type="primary" onClick={() => toggleAddState(true)}>
+              <IconPlusCircle color={white} width={15} height={15} />
+              <StyledSpan width={122} fSize={12} marginL={20}>
+                ADD MODULE
+              </StyledSpan>
+            </ThemeButton>
+          </div>
         )}
       </ModalContent>
       <ModalFooter>
@@ -298,7 +305,7 @@ const ManageModulesModalBody = props => {
           CANCEL
         </Button>
         <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={applyHandler}>
-          APPLY
+          SAVE
         </ThemeButton>
       </ModalFooter>
     </ModalContainer>
@@ -355,19 +362,20 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 760px;
-  padding-bottom: 10px;
-  background: ${lightGreySecondary};
+  background: ${greyish};
   .ant-input {
     margin-bottom: 10px;
   }
 `;
 
 const ModalHeader = styled.h3`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
 `;
 
-const ModalContent = styled.div``;
+const ModalContent = styled.div`
+  padding-bottom: 20px;
+`;
 
 const ModalFooter = styled.div`
   display: flex;

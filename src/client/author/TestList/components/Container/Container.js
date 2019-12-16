@@ -5,7 +5,7 @@ import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { Button, Row, Input, Spin, message } from "antd";
+import { Button, Row, Input, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile } from "@edulastic/icons";
@@ -59,6 +59,8 @@ import {
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
+import AddBulkTestModal from "../../../PlaylistPage/components/AddBulkTestModal/AddBulkTestModal";
+import DeleteBulkTestModal from "../../../PlaylistPage/components/DeleteBulkTestModal/DeleteBulkTestModal";
 import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
 import ManageModulesModalBody from "../../../CurriculumSequence/components/ManageModulesModalBody";
 import { StyledButton, BtnActionsContainer } from "../../../TestPage/components/AddItems/styled";
@@ -68,6 +70,8 @@ import {
   deleteModuleAction,
   resequenceModulesAction,
   createTestInModuleAction,
+  addTestToModuleInBulkAction,
+  deleteTestFromModuleInBulkAction,
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
@@ -129,8 +133,10 @@ class TestList extends Component {
     showManageModuleModal: false,
     showConfirmRemoveModal: false,
     showAddTestInModules: false,
+    showAddModules: false,
     selectedTests: [],
-    isShowFilter: false
+    isShowFilter: false,
+    markedTests: []
   };
 
   componentDidMount() {
@@ -448,12 +454,47 @@ class TestList extends Component {
     }
   };
 
+  handleBulkAddTests = item => {
+    const { markedTests } = this.state;
+    if (markedTests.length) {
+      this.setState({ showAddModules: true });
+    } else {
+      message.warning("Select one or more tests");
+    }
+  };
+
+  handleBulkRemoveTests = item => {
+    const { markedTests } = this.state;
+    if (markedTests.length) {
+      this.setState({ showRemoveModules: true });
+    } else {
+      message.warning("Select one or more tests");
+    }
+  };
+
+  handleCheckboxAction = (e, prop) => {
+    const { markedTests } = this.state;
+    if (e.target.checked) {
+      this.setState({ markedTests: [...markedTests, prop] });
+    } else {
+      this.setState({ markedTests: markedTests.filter(data => data._id !== prop._id) });
+    }
+  };
+
   onCloseCreateModule = () => {
     this.setState({ showCreateModuleModal: false });
   };
 
   onCloseAddTestModal = () => {
     this.setState({ showAddTestInModules: false });
+  };
+
+  onCloseBulkAddTestModal = () => {
+    this.setState({ showAddModules: false });
+  };
+
+  onCloseBulkDeleteTestModal = () => {
+    this.setState({ showRemoveModules: false });
   };
 
   removeTestFromPlaylist = () => {
@@ -479,6 +520,7 @@ class TestList extends Component {
   onCloseConfirmRemoveModal = () => {
     this.setState({ showConfirmRemoveModal: false });
   };
+
   handleTestAdded = index => {
     const { addTestToModule } = this.props;
     const { testAdded, selectedTests } = this.state;
@@ -486,11 +528,48 @@ class TestList extends Component {
     addTestToModule({ moduleIndex: index, testAdded });
   };
 
+  handleBulkTestAdded = index => {
+    const { addTestToModuleInBulk } = this.props;
+    const { markedTests, selectedTests } = this.state;
+    this.setState(prevState => ({
+      ...prevState,
+      selectedTests: [...selectedTests, ...markedTests.map(obj => obj._id)],
+      markedTests: []
+    }));
+    addTestToModuleInBulk({ moduleIndex: index, tests: markedTests });
+    message.success("Tests Added to playlist");
+  };
+
+  handleBulkTestDelete = () => {
+    const { deleteTestFromModuleInBulk } = this.props;
+    const { markedTests, selectedTests } = this.state;
+    const testIds = markedTests.map(test => test._id);
+    this.setState(prevState => ({
+      ...prevState,
+      selectedTests: [...selectedTests.filter(x => !testIds.includes(x))],
+      markedTests: []
+    }));
+    deleteTestFromModuleInBulk({ testIds });
+    message.success("Tests removed from playlist");
+  };
+
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId, mode, interestedCurriculums } = this.props;
-    const { blockStyle, selectedTests } = this.state;
+    const { loading, tests, windowWidth, history, match, userId, mode, interestedCurriculums, playlist } = this.props;
+    const { blockStyle, selectedTests, markedTests } = this.state;
+    const markedTestsList = markedTests.map(data => data._id);
+    const moduleTitleMap = {};
+    const modulesMap = playlist.modules.map(module => {
+      return { title: module.title, data: [...module.data.map(it => it.contentId)] };
+    });
+
+    const testIds = tests.map(test => test._id);
+    testIds.forEach(testId => {
+      for (let obj of modulesMap) {
+        if (obj.data.includes(testId)) moduleTitleMap[testId] = obj.title;
+      }
+    });
 
     if (loading) {
       return <Spin size="large" />;
@@ -505,7 +584,6 @@ class TestList extends Component {
     }
     const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
-
     if (blockStyle === "tile") {
       return (
         <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
@@ -542,6 +620,9 @@ class TestList extends Component {
             isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
             addTestToPlaylist={this.handleAddTests}
             standards={getInterestedStandards(item.summary, interestedCurriculums)}
+            moduleTitle={moduleTitleMap[item._id]}
+            checked={markedTestsList.includes(item._id)}
+            handleCheckboxAction={this.handleCheckboxAction}
           />
         ))}
       </Row>
@@ -612,7 +693,10 @@ class TestList extends Component {
       showManageModuleModal,
       showAddTestInModules,
       showCreateModuleModal,
-      showConfirmRemoveModal
+      showConfirmRemoveModal,
+      showAddModules,
+      showRemoveModules,
+      markedTests
     } = this.state;
 
     const search = {
@@ -624,6 +708,18 @@ class TestList extends Component {
       modulesList = playlist.modules;
     }
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
+
+    const menu = (
+      <Menu>
+        <Menu.Item key="0" onClick={this.handleBulkAddTests}>
+          Add to Module
+        </Menu.Item>
+        <Menu.Item key="1" onClick={this.handleBulkRemoveTests}>
+          Remove from Modules
+        </Menu.Item>
+      </Menu>
+    );
+
     return (
       <>
         <RemoveTestModal
@@ -684,22 +780,6 @@ class TestList extends Component {
             </SearchModalContainer>
           </Modal>
 
-          {showCreateModuleModal && (
-            <Modal
-              open={showCreateModuleModal}
-              title="Add Module"
-              onClose={this.onCloseCreateModule}
-              footer={null}
-              style={{ minWidth: "640px", padding: "20px" }}
-            >
-              <AddUnitModalBody
-                destinationCurriculumSequence={playlist}
-                addModuleToPlaylist={addModuleToPlaylist}
-                handleAddModule={this.onCloseCreateModule}
-                newModule={{ name: "New Module", afterModuleId: 0 }}
-              />
-            </Modal>
-          )}
           {showManageModuleModal && (
             <Modal
               open={showManageModuleModal}
@@ -729,6 +809,26 @@ class TestList extends Component {
               handleTestAdded={this.handleTestAdded}
             />
           )}
+
+          {showAddModules && (
+            <AddBulkTestModal
+              isVisible={showAddModules}
+              onClose={this.onCloseBulkAddTestModal}
+              modulesList={modulesList}
+              handleBulkTestAdded={this.handleBulkTestAdded}
+            />
+          )}
+
+          {showRemoveModules && (
+            <DeleteBulkTestModal
+              isVisible={showRemoveModules}
+              onClose={this.onCloseBulkDeleteTestModal}
+              markedTests={markedTests?.length}
+              moduleName="Module Name"
+              handleBulkTestDelete={this.handleBulkTestDelete}
+            />
+          )}
+
           <FlexContainer>
             <Filter>
               <AffixWrapper>
@@ -762,7 +862,11 @@ class TestList extends Component {
                 {mode === "embedded" && (
                   <BtnActionsContainer>
                     <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
-                      <span>Actions</span>
+                      <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
+                        <a className="ant-dropdown-link" href="#">
+                          Actions
+                        </a>
+                      </Dropdown>
                     </StyledButton>
                     <StyledButton
                       data-cy="ManageModules"
@@ -822,6 +926,8 @@ const enhance = compose(
       deleteModuleFromPlaylist: deleteModuleAction,
       resequenceModules: resequenceModulesAction,
       addTestToModule: createTestInModuleAction,
+      addTestToModuleInBulk: addTestToModuleInBulkAction,
+      deleteTestFromModuleInBulk: deleteTestFromModuleInBulkAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
       clearCreatedItems: clearCreatedItemsAction,

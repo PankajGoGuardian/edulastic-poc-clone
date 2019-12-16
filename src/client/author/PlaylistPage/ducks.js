@@ -47,6 +47,8 @@ export const UPDATE_MODULE = "[playlists] Update module data";
 export const DELETE_MODULE = "[playlists] Delete module";
 export const ORDER_MODULES = "[playlists] Resequence modules";
 export const ADD_TEST_IN_PLAYLIST = "[playlists] add test to module";
+export const ADD_TEST_IN_PLAYLIST_BULK = "[playlists] add tests to module in bulk";
+export const DELETE_TEST_FROM_PLAYLIST_BULK = "[playlists] remove test from module in Bulk";
 export const SET_USER_CUSTOMIZE = "[playlists] set user customize";
 export const REMOVE_TEST_FROM_MODULE = "[playlists] remove test from module";
 export const REMOVE_TEST_FROM_PLAYLIST = "[playlists] remove test from playlist";
@@ -128,6 +130,8 @@ export const updateModuleAction = createAction(UPDATE_MODULE);
 export const deleteModuleAction = createAction(DELETE_MODULE);
 export const resequenceModulesAction = createAction(ORDER_MODULES);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
+export const addTestToModuleInBulkAction = createAction(ADD_TEST_IN_PLAYLIST_BULK);
+export const deleteTestFromModuleInBulkAction = createAction(DELETE_TEST_FROM_PLAYLIST_BULK);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
 export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE);
 export const removeTestFromPlaylistAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
@@ -203,6 +207,16 @@ const removeTestFromPlaylist = (playlist, payload) => {
   return newPlaylist;
 };
 
+const removeTestFromPlaylistBulk = (playlist, payload) => {
+  const { testIds } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    draft.modules.forEach((obj, key) => {
+      draft.modules[key].data = draft.modules[key].data.filter(content => !testIds.includes(content.contentId));
+    });
+  });
+  return newPlaylist;
+};
+
 const moveContentInPlaylist = (playlist, payload) => {
   const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
   let newPlaylist;
@@ -254,6 +268,17 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: newEntity
       };
+    }
+    case ADD_TEST_IN_PLAYLIST_BULK: {
+      const newEntity = addTestToModuleInBulk(state.entity, payload);
+      return {
+        ...state,
+        entity: newEntity
+      };
+    }
+    case DELETE_TEST_FROM_PLAYLIST_BULK: {
+      const newEntity = removeTestFromPlaylistBulk(state.entity, payload);
+      return { ...state, entity: newEntity };
     }
     case REMOVE_TEST_FROM_MODULE: {
       const newEntity = removeTestFromPlaylist(state.entity, payload);
@@ -586,6 +611,15 @@ function addTestToModule(entity, payload) {
     return draft;
   });
   message.success("Test Added in playlist");
+  return entity;
+}
+
+function addTestToModuleInBulk(entity, payload) {
+  const { tests, moduleIndex } = payload;
+  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
+    tests.forEach(test => draft.data.push(createNewTestInModule(test)));
+    return draft;
+  });
   return entity;
 }
 

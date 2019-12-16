@@ -213,11 +213,19 @@ export const CardId = styled.span`
 
 export const ViewButtonWrapper = styled(Col)`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 125px;
-  padding-left: 45px !important;
-  padding-right: 0px !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 280px;
+`;
+
+export const StyledModuleName = styled.div`
+  background: ${fadedGrey};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 170px;
+  padding: 10px;
 `;
 
 export const ContentWrapper = styled(Row)`

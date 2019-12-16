@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { darkGrey, cardTitleColor } from "@edulastic/colors";
+import { darkGrey, cardTitleColor, themeColor, fadedBlack } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
-import { Col } from "antd";
+import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose } from "@edulastic/icons";
+import { Col, Checkbox } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import Tags from "../../../src/components/common/Tags";
 import {
@@ -26,7 +26,8 @@ import {
   CardIdWrapper,
   CardId,
   Footer,
-  TestStatus
+  TestStatus,
+  StyledModuleName
 } from "./styled";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -116,6 +117,9 @@ class ListItem extends Component {
       removeTestFromPlaylist,
       addTestToPlaylist,
       standards,
+      handleCheckboxAction,
+      checked,
+      moduleTitle,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
@@ -161,17 +165,35 @@ class ListItem extends Component {
 
                 {!isPlaylist && mode === "embedded" && (
                   <ViewButtonWrapper span={6}>
-                    <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
-                      PREVIEW
-                    </ViewButton>
                     {!isTestAdded && mode === "embedded" && (
                       <ViewButton onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}>ADD</ViewButton>
                     )}
-                    {isTestAdded && mode === "embedded" && (
-                      <ViewButton isTestAdded={isTestAdded} onClick={e => removeTestFromPlaylist(item._id)} remove>
-                        REMOVE
+
+                    {!isTestAdded && mode === "embedded" && (
+                      <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
+                        VIEW
                       </ViewButton>
                     )}
+
+                    {isTestAdded && mode === "embedded" && (
+                      <div style={{ cursor: "pointer" }} onClick={e => this.showPreviewModal(item._id)} title="Preview">
+                        <IconEye color={themeColor} width={60} />
+                      </div>
+                    )}
+
+                    {isTestAdded && mode === "embedded" && (
+                      <StyledModuleName>
+                        <span style={{ width: "100%", textAlign: "center" }}>{moduleTitle}</span>
+                        <div style={{ cursor: "pointer" }} onClick={e => removeTestFromPlaylist(item._id)}>
+                          <IconClose color={fadedBlack} width={10} />
+                        </div>
+                      </StyledModuleName>
+                    )}
+
+                    <Checkbox
+                      onChange={e => handleCheckboxAction(e, { _id: item._id, title: item.title })}
+                      checked={checked}
+                    />
                   </ViewButtonWrapper>
                 )}
               </Outer>

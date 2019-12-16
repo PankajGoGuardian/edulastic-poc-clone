@@ -344,6 +344,7 @@ class StudentTestPage {
       });
     return this;
   };
+
   checkAnsDropdown = attemptdata => {
     attemptdata.forEach((val, index) => {
       this.clickDropDownClozeByIndex(val, index);
@@ -652,9 +653,9 @@ class StudentTestPage {
         }
         break;
       }
-      case questionType.DROP_TEXT_CLOZE:
+      case questionType.CLOZE_DROP_DOWN:
         if (attemptType !== attemptTypes.SKIP) {
-          this.checkAnsDropdown(attemptData);
+          this.checkAnsDropdown(attempts);
         }
         break;
       default:

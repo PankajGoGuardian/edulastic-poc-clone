@@ -296,6 +296,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     cy.route("PUT", "**/response-entry-and-score").as("responseEntry");
     this.attemptQuestion(questionType, attemptType, attemptData);
     cy.contains("span", "NEXT QUESTION").click();
-    cy.wait("@responseEntry");
+    cy.wait("@responseEntry").then(xhr =>
+      expect(xhr.status, `verify api requests for updating response for the question type - ${questionType}`).to.eq(200)
+    );
   };
 }

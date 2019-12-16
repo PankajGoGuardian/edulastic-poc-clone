@@ -369,42 +369,50 @@
       ]
     }
   },
-  "TEXT_CLOZE": {
+  "CLOZE_TEXT": {
     "default": {
-      "quetext": ["This is Text Cloze defalt qusetin", "Next is input", "INPUT", "Thats It...!!!"],
+      "quetext": ["This is CLOZE_TEXT.default qusetion.Input is ", "INPUT"],
       "setAns": {
         "correct": ["abc"],
-        "point": 4
+        "points": 2
       },
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.A.1", "K.CC.A.2"],
+          "standard": ["K.CC.A.1"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
-      ]
+      ],
+      "attemptData": {
+        "right": ["abc"],
+        "wrong": ["xyz"]
+      }
     }
   },
-  "DROP_CLOZE": {
+  "CLOZE_DROPDOWN": {
     "default": {
-      "quetext": ["This is DROP_CLOZE.default", "INPUT", "something", "INPUT", "something again"],
+      "quetext": ["This is CLOZE_DROPDOWN.default question.1st dropdown - ", "INPUT", "2nd dropdown - ", "INPUT"],
       "setAns": {
         "choices": { "INPUT_0": ["1.Choice-1", "1.Choice-2"], "INPUT_1": ["2.Choice-1", "2.Choice-2"] },
         "correct": { "INPUT_0": "1.Choice-2", "INPUT_1": "2.Choice-1" },
-        "point": 4
+        "points": 2
+      },
+      "attemptData": {
+        "right": ["1.Choice-2", "2.Choice-1"],
+        "wrong": ["1.Choice-1", "2.Choice-2"]
       },
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.A.1", "K.CC.A.2"],
+          "standard": ["K.CC.A.2"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
       ]
     },
     "1": {
-      "quetext": ["This is DROP_CLOZE.1....", "INPUT", "something", "INPUT", "something again", "INPUT"],
+      "quetext": ["This is CLOZE_DROPDOWN.1 , 1st - ", "INPUT", " 2nd - ", "INPUT", " 3rd - ", "INPUT"],
       "setAns": {
         "choices": {
           "INPUT_0": ["1.Choice-1", "1.Choice-2", "1.Choice-3"],
@@ -412,7 +420,7 @@
           "INPUT_2": ["3.Choice-1", "3.Choice-2", "3.Choice-3"]
         },
         "correct": { "INPUT_0": "1.Choice-2", "INPUT_1": "2.Choice-1", "INPUT_2": "3.Choice-1" },
-        "point": 4
+        "points": 3
       },
       "attemptData": {
         "right": ["1.Choice-2", "2.Choice-1", "3.Choice-1"],

@@ -2,7 +2,7 @@ import EditToolBar from "../common/editToolBar";
 import TemplateMarkupBar from "../common/templateMarkUpBar";
 import Header from "../../itemDetail/header";
 import EditItemPage from "../../itemDetail/editPage";
-import { questionType, questionGroup } from "../../../../constants/questionTypes";
+import { questionType, questionGroup, questionTypeKey } from "../../../../constants/questionTypes";
 
 class ClozeDropDownPage {
   constructor() {
@@ -115,7 +115,7 @@ class ClozeDropDownPage {
     item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.CLOZE_DROP_DOWN);
     cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, setAns } = authoringData.DROP_CLOZE[queKey];
+      const { quetext, setAns } = authoringData[questionTypeKey.CLOZE_DROP_DOWN][queKey];
       const ans = setAns.correct;
       if (quetext) {
         this.getQuestionEditor().clear({ force: true });
@@ -141,10 +141,10 @@ class ClozeDropDownPage {
           this.setChoiceForResponseIndex(ansIndex, ans[answer]);
         });
       }
-      if (setAns.point) {
+      if (setAns.points) {
         this.getPoints()
           .type("{selectall}")
-          .type(setAns.point);
+          .type(setAns.points);
       }
     });
   };

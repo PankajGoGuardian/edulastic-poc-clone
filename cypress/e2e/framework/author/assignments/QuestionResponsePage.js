@@ -54,10 +54,20 @@ export default class QuestionResponsePage {
         }
         break;
 
+      case queTypes.CLOZE_DROP_DOWN:
+        if (attemptType === attemptTypes.RIGHT) score = points;
+        else if (attemptType === attemptTypes.PARTIAL_CORRECT) {
+          let correctChoices = 0;
+          Object.keys(partialCorrect).forEach(ch => {
+            if (partialCorrect[ch] === right[ch]) correctChoices++;
+          });
+          score = Cypress._.round((correctChoices / Object.keys(right).length) * points, 2);
+        }
+        break;
+
       default:
         break;
     }
-
     return score;
   };
 
@@ -201,10 +211,12 @@ export default class QuestionResponsePage {
   getMatrixTableRows = card =>
     card
       .find('[data-cy="matrixTable"]')
+      .eq(0)
       .children()
       .find("tr.ant-table-row");
 
-  verifyAnseredMatrix = (card, answer, steams) => {
+  verifyAnseredMatrix = (card, answer, steams, attemptType, right) => {
+    // TODO : optimise below
     this.getMatrixTableRows(card).then(ele => {
       Object.keys(answer).forEach(chKey => {
         cy.wrap(ele)
@@ -214,29 +226,107 @@ export default class QuestionResponsePage {
             cy.wrap(row)
               .find("input")
               .eq(steams.indexOf(answer[chKey]))
-              .should("be.checked");
+              .should("be.checked")
+              .closest("div")
+              .should(
+                "have.css",
+                "background-color",
+                attemptType === attemptTypes.RIGHT
+                  ? queColor.LIGHT_GREEN
+                  : attemptType === attemptTypes.WRONG
+                  ? queColor.LIGHT_RED
+                  : attemptType === attemptTypes.PARTIAL_CORRECT
+                  ? answer[chKey] === right[chKey]
+                    ? queColor.LIGHT_GREEN
+                    : queColor.LIGHT_RED
+                  : queColor.CLEAR_DAY
+              );
           });
       });
     });
   };
 
   verifyCorrectAnseredMatrix = (card, correct, steams) => {
-    this.getMatrixTableRows(card).then(ele => {
-      Object.keys(correct).forEach(chKey => {
-        cy.wrap(ele)
-          .contains(chKey)
-          .closest("tr")
-          .then(row => {
-            cy.wrap(row)
-              .find("input")
-              .eq(steams.indexOf(correct[chKey]))
-              .closest("div")
-              .should("have.css", "background-color", queColor.LIGHT_GREEN);
-          });
+    // TODO : optimise below logic
+    card
+      .contains("Correct Answer")
+      .next()
+      .find('[data-cy="matrixTable"]')
+      .children()
+      .find("tr.ant-table-row")
+      .then(ele => {
+        Object.keys(correct).forEach(chKey => {
+          cy.wrap(ele)
+            .contains(chKey)
+            .closest("tr")
+            .then(row => {
+              cy.wrap(row)
+                .find("input")
+                .eq(steams.indexOf(correct[chKey]))
+                .should("be.checked")
+                .closest("div")
+                .should("have.css", "background-color", queColor.LIGHT_GREEN);
+            });
+        });
       });
-    });
   };
 
+  // CLOZE_DROP_DOWN
+  verifyCorrectAnswerCloze = (card, right) => {
+    card
+      .contains("Correct Answer")
+      .next()
+      .find(".response-btn ")
+      .then(ele => {
+        right.forEach((choice, i) => {
+          cy.wrap(ele)
+            .eq(i)
+            .should("contain.text", choice)
+            .should("have.class", "check-answer")
+            .and("have.class", "showanswer");
+        });
+      });
+  };
+
+  verifyAnswerCloze = (card, attempt, attemptType, right) => {
+    card
+      .find(".jsx-parser")
+      .find(".response-btn ")
+      .each((response, i) => {
+        cy.wrap(response)
+          .as("responseBox")
+          .should("have.class", "show-answer");
+
+        if (attemptType !== attemptTypes.SKIP) {
+          cy.get("@responseBox")
+            .should("contain.text", attempt[i])
+            .and("have.class", "check-answer");
+
+          switch (attemptType) {
+            case attemptTypes.RIGHT:
+              cy.get("@responseBox").should("have.class", "right");
+              break;
+
+            case attemptTypes.WRONG:
+              cy.get("@responseBox").should("have.class", "wrong");
+              break;
+
+            case attemptTypes.PARTIAL_CORRECT:
+              cy.get("@responseBox").should("have.class", attempt[i] === right[i] ? "right" : "wrong");
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          cy.get("@responseBox")
+            .should("not.have.class", "check-answer")
+            .and("have.class", "wrong");
+        }
+      });
+  };
+
+  //
   verifyNoQuestionResponseCard = studentName => {
     cy.get('[data-cy="studentName"]')
       .contains(studentName)
@@ -249,6 +339,15 @@ export default class QuestionResponsePage {
       : this.getQuestionContainerByStudent(findKey).as("quecard");
 
     const { right, wrong, partialCorrect } = attemptData;
+    const attempt =
+      attemptType === attemptTypes.RIGHT
+        ? right
+        : attemptType === attemptTypes.WRONG
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
+
     const questionType = queTypeKey.split(".")[0];
 
     this.verifyScore(cy.get("@quecard"), points, attemptData, attemptType, questionType);
@@ -343,18 +442,18 @@ export default class QuestionResponsePage {
       case queTypes.CHOICE_MATRIX_INLINE:
       case queTypes.CHOICE_MATRIX_LABEL: {
         const { steams } = attemptData;
-        this.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams);
+        this.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams, attemptType);
         switch (attemptType) {
           case attemptTypes.RIGHT:
-            this.verifyAnseredMatrix(cy.get("@quecard"), right, steams);
+            this.verifyAnseredMatrix(cy.get("@quecard"), right, steams, attemptType);
             break;
 
           case attemptTypes.WRONG:
-            this.verifyAnseredMatrix(cy.get("@quecard"), wrong, steams);
+            this.verifyAnseredMatrix(cy.get("@quecard"), wrong, steams, attemptType);
             break;
 
           case attemptTypes.PARTIAL_CORRECT:
-            this.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams);
+            this.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams, attemptType, right);
             break;
 
           default:
@@ -362,6 +461,11 @@ export default class QuestionResponsePage {
         }
         break;
       }
+
+      case queTypes.CLOZE_DROP_DOWN:
+        this.verifyCorrectAnswerCloze(cy.get("@quecard"), right);
+        this.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
+        break;
 
       default:
         break;

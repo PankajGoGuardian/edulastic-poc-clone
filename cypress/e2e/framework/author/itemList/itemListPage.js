@@ -61,10 +61,10 @@ class ItemListPage {
           case queTypes.MULTIPLE_CHOICE_BLOCK:
             question = new MCQBlockLayoutPage();
             break;
-          case queTypes.FILL_TEXT_CLOZE:
+          case queTypes.CLOZE_TEXT:
             question = new ClozeWithTextPage();
             break;
-          case queTypes.DROP_TEXT_CLOZE:
+          case queTypes.CLOZE_DROP_DOWN:
             question = new ClozeDropDownPage();
             break;
           case queTypes.CHOICE_MATRIX_STANDARD:

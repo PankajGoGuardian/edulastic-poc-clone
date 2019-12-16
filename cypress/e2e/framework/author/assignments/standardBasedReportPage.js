@@ -117,6 +117,12 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
             .last()
             .find("span")
             .eq(0)
+            // TODO : below assertions if fails cypress doesn't come out of running loop
+            /*  .then(score => {
+              expect(score.text(), `verify stadard wise student score for student - ${student}`).to.eq(
+                `${obtain}/${max}`
+              );
+            }); */
             .should("have.text", `${obtain}/${max}`);
 
           cy.get("@studentrow")
@@ -124,6 +130,11 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
             .last()
             .find("span")
             .eq(1)
+            /* .then(stdPeformance => {
+              expect(stdPeformance.text(), `verify stadard wise student peformance for student - ${student}`).to.eq(
+                `(${Cypress._.round((obtain / max) * 100, 2)}%)`
+              );
+            }); */
             // .should("have.text", `(${Cypress._.round((perfSum / performanceAllQue.length) * 100, 2)}%)`);
             .should("have.text", `(${Cypress._.round((obtain / max) * 100, 2)}%)`);
         });
@@ -142,6 +153,9 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
       .find("div")
       .then(ele => {
         questions.forEach(que => cy.wrap(ele).should("contain", que));
+        /* questions.forEach(que =>
+          expect(ele.text(), `verify question list for standard ${standard} to contain ${que}`).to.contain(que)
+        ); */
       });
 
     cy.get("@row")
@@ -151,6 +165,9 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
         cy.wrap(ele)
           .find("div")
           .should("have.text", `${stdPerf}`);
+        /* .then(stdperf =>
+            expect(stdperf.text(), `verify standard performance for the standard ${standard}`).to.eq(`${stdPerf}`)
+          ); */
       });
 
     if (index > 0) {

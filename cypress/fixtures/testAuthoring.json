@@ -16,7 +16,8 @@
       "MCQ_BLOCK.1",
       "CHOICE_STD.1",
       "CHOICE_INLINE.1",
-      "CHOICE_LABEL.1"
+      "CHOICE_LABEL.1",
+      "CLOZE_DROPDOWN.default"
     ]
   },
   "LCB_2": {
@@ -72,7 +73,7 @@
     "name": "Search Assessment 02",
     "grade": ["Kindergarten"],
     "subject": ["Math"],
-    "itemKeys": ["DROP_CLOZE.default"],
+    "itemKeys": ["MCQ_TF.default"],
     "tags": ["xyz", "pqr"]
   },
   "search_3": {

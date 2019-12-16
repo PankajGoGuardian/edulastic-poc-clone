@@ -216,15 +216,15 @@ class ReportsPage {
         if (correcAns) this.qrp.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams);
         switch (attemptType) {
           case attemptTypes.RIGHT:
-            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), right, steams);
+            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), right, steams, attemptType);
             break;
 
           case attemptTypes.WRONG:
-            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), wrong, steams);
+            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), wrong, steams, attemptType);
             break;
 
           case attemptTypes.PARTIAL_CORRECT:
-            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams);
+            this.qrp.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams, attemptType);
             break;
 
           default:

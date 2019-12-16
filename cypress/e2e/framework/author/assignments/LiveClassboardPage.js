@@ -65,42 +65,34 @@ class LiveClassboardPage {
       .should("be.visible");
   }
 
-  clickOnCardViewTab() {
-    return cy
+  clickOnCardViewTab = () =>
+    cy
       .get("[data-cy=studentnQuestionTab]")
       .contains("a", "CARD VIEW")
       .click({ force: true });
-  }
 
-  clickOnStudentsTab() {
-    return cy
+  clickOnStudentsTab = () =>
+    cy
       .get("[data-cy=studentnQuestionTab]")
       .contains("a", "STUDENTS")
-      .click();
-  }
+      .click({ force: true });
 
-  clickonQuestionsTab() {
-    return cy
+  clickonQuestionsTab = () =>
+    cy
       .get("[data-cy=studentnQuestionTab]")
       .contains("a", "QUESTIONS")
-      .click();
-  }
+      .click({ force: true });
 
-  checkSelectAllCheckboxOfStudent() {
-    return cy.get("[data-cy=SelectAllCheckbox]").check({ force: true });
-  }
+  checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=SelectAllCheckbox]").check({ force: true });
 
-  uncheckSelectAllCheckboxOfStudent() {
-    return cy.get("[data-cy=SelectAllCheckbox]").uncheck({ force: true });
-  }
+  uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=SelectAllCheckbox]").uncheck({ force: true });
 
-  checkStudentResponseIsDisplayed() {
-    return cy
+  checkStudentResponseIsDisplayed = () =>
+    cy
       .get(".ant-card-body")
       .eq(1)
       .should("contain", "Student Response")
       .should("be.visible");
-  }
 
   getAvgScore = () => cy.get(".ant-progress-text");
 
@@ -204,9 +196,8 @@ class LiveClassboardPage {
 
   verifyStudentsOnRedirectPopUp = student =>
     this.getRedirecPopUp()
-      .find(".ant-select-selection__choice")
-      .contains(student.split(" ")[0])
-      .should("be.exist");
+      .find(".ant-select-selection__choice__content")
+      .should("contain.text", student);
 
   verifyQuestion = queCount =>
     cy.get('[data-cy="questions"]').each((ele, index, $all) => {

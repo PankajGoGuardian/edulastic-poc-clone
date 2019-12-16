@@ -51,11 +51,13 @@ class ClozeWithTextPage {
   getResponseOnPreview = () => cy.get(".response-btn").should("be.visible");
 
   getShowAnsBoxOnPreview = () => cy.get(".correctanswer-box").should("be.visible");
+
   getSetAns = () => cy.get(".jsx-parser").find(".ant-input");
+
   createQuestion = (queKey = "default", queIndex = 0, onlyItem = true) => {
     const item = new EditItemPage();
     item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.DROP_TEXT_CLOZE);
+    item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.CLOZE_TEXT);
     cy.fixture("questionAuthoring").then(authoringData => {
       const { quetext, setAns } = authoringData.TEXT_CLOZE[queKey];
       if (quetext) {
@@ -66,7 +68,7 @@ class ClozeWithTextPage {
         });
         this.getPoints()
           .type("{selectall}")
-          .type(setAns.point);
+          .type(setAns.points);
         if (setAns) {
           setAns.correct.forEach((element, key) => {
             cy.wait(2000);

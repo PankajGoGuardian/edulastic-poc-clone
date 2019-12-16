@@ -351,10 +351,11 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, playlist, testStatus, userId } = this.props;
+    const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {} } = this.props;
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId, status, authors, grades, subjects } = playlist || {};
-    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
+    const showPublishButton =
+      (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable || state?.editFlow;
     const showShareButton = !!testId;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const gradeSubject = { grades, subjects };

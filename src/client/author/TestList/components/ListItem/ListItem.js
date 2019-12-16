@@ -158,13 +158,14 @@ class ListItem extends Component {
                     </Description>
                   </Inner>
                 </div>
+
                 {!isPlaylist && mode === "embedded" && (
                   <ViewButtonWrapper span={6}>
                     <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
                       PREVIEW
                     </ViewButton>
                     {!isTestAdded && mode === "embedded" && (
-                      <ViewButton onClick={e => addTestToPlaylist(item)}>ADD</ViewButton>
+                      <ViewButton onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}>ADD</ViewButton>
                     )}
                     {isTestAdded && mode === "embedded" && (
                       <ViewButton isTestAdded={isTestAdded} onClick={e => removeTestFromPlaylist(item._id)} remove>

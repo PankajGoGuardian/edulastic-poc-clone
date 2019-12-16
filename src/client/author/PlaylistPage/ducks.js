@@ -178,7 +178,8 @@ const createNewModuleState = (title, description) => ({
 const createNewTestInModule = test => ({
   contentId: test._id,
   contentTitle: test.title,
-  contentType: "test"
+  contentType: "test",
+  standardIdentifiers: test.standardIdentifiers
 });
 
 const removeTestFromPlaylist = (playlist, payload) => {

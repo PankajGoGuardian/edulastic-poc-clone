@@ -210,9 +210,11 @@ class Item extends Component {
         }
       }
       setDataAndSave({ addToTest: true, item, current: this.props.current });
+      message.success("Item added to cart");
     } else {
       keys = keys.filter(item => item !== row._id);
       setDataAndSave({ addToTest: false, item: { _id: row._id }, current: this.props.current });
+      message.success("Item removed from cart");
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
@@ -236,6 +238,7 @@ class Item extends Component {
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
+      message.success("Item added to cart");
       return setAndSavePassageItems(passageItems);
     }
 

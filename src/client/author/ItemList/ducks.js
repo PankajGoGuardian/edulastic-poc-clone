@@ -39,11 +39,13 @@ export function* addItemToCartSaga({ payload }) {
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
+      message.success("Item removed from cart");
       return draft;
     });
   } else {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.push(item);
+      message.success("Item added to cart");
     });
   }
   const userRole = yield select(getUserRole);

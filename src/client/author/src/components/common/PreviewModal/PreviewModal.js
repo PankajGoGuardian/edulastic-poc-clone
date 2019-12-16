@@ -142,9 +142,11 @@ class PreviewModal extends React.Component {
     if (!keys.includes(item._id)) {
       keys[keys.length] = item._id;
       setDataAndSave({ addToTest: true, item });
+      message.success("Item added to cart");
     } else {
       keys = keys.filter(key => key !== item._id);
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
+      message.success("Item removed from cart");
     }
     setTestItems(keys);
   };

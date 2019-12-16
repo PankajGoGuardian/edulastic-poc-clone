@@ -1,11 +1,11 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
-import { helpers } from "@edulastic/common";
+import { helpers, AnswerContext } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
@@ -53,7 +53,7 @@ const ClozeMathPreview = ({
   disableResponse
 }) => {
   const [newHtml, setNewHtml] = useState("");
-
+  const { isAnswerModifiable } = useContext(AnswerContext);
   const _getMathAnswers = () => get(item, "validation.validResponse.value", []);
 
   const _getAltMathAnswers = () =>
@@ -72,6 +72,7 @@ const ClozeMathPreview = ({
     get(item, "validation.altResponses", []).map(alt => get(alt, "mathUnits.value", []));
 
   const handleAddAnswer = (answer, answerType, id) => {
+    if (!isAnswerModifiable) return;
     let newAnswers = cloneDeep(userAnswer);
     const answers = newAnswers[answerType] || {};
     answers[id] = answer;
@@ -172,7 +173,7 @@ const ClozeMathPreview = ({
             uiStyles,
             responseContainers: item.responseContainers,
             isV1Migrated,
-            disableResponse
+            disableResponse: disableResponse || !isAnswerModifiable
           }
         }}
         showWarnings

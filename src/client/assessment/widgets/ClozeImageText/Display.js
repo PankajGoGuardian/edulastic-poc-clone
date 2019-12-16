@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined, get, maxBy } from "lodash";
-import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { helpers, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
@@ -38,6 +38,8 @@ class Display extends Component {
     };
   }
 
+  static contextType = AnswerContext;
+
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       this.setState({
@@ -53,6 +55,9 @@ class Display extends Component {
   };
 
   selectChange = (value, index) => {
+    // TODO: stop using state and store fo answers
+    const { isAnswerModifiable } = this.context;
+    if (!isAnswerModifiable) return;
     const { userAnswers: newAnswers } = this.state;
     const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;

@@ -44,6 +44,7 @@ const AdminSignup = lazy(() =>
 );
 const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student/app"));
 const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
+const Publisher = lazy(() => import(/* webpackChunkName: "author" */ "./publisher/app"));
 const Admin = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/app"));
 const RedirectToTest = lazy(() => import(/* webpackChunkName: "RedirecToTest" */ "./author/RedirectToTest"));
 const DistrictRoutes = lazy(() => import("./districtRoutes/index"));
@@ -176,6 +177,7 @@ class App extends Component {
                 <Redirect exact to={redirectRoute} />
               ) : null}
               <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
+              <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
               <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />

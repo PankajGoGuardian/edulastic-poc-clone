@@ -556,15 +556,26 @@ class TestList extends Component {
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId, mode, interestedCurriculums, playlist } = this.props;
+    const {
+      loading,
+      tests,
+      windowWidth,
+      history,
+      match,
+      userId,
+      mode,
+      interestedCurriculums,
+      playlist = {}
+    } = this.props;
     const { blockStyle, selectedTests, markedTests } = this.state;
     const markedTestsList = markedTests.map(data => data._id);
     const moduleTitleMap = {};
-    const modulesMap = playlist.modules.map(module => {
-      return { title: module.title, data: [...module.data.map(it => it.contentId)] };
-    });
+    const modulesMap =
+      playlist?.modules?.map(module => {
+        return { title: module.title, data: [...module.data.map(it => it.contentId)] };
+      }) || [];
 
-    const testIds = tests.map(test => test._id);
+    const testIds = tests.map(test => test._id) || [];
     testIds.forEach(testId => {
       for (let obj of modulesMap) {
         if (obj.data.includes(testId)) moduleTitleMap[testId] = obj.title;

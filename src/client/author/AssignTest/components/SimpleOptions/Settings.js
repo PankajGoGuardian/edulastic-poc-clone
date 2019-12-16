@@ -17,7 +17,9 @@ import {
   SpaceDiv,
   CheckBoxWrapper,
   MessageSpan,
-  MaxAttemptIInput
+  MaxAttemptIInput,
+  DivBlock,
+  Label
 } from "./styled";
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
@@ -147,8 +149,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={8}>Mark as Done</Col>
-            <Col span={16}>
+            <Col span={12}>
+              <Label>MARK AS DONE</Label>
+            </Col>
+            <Col span={12}>
               <AlignRight
                 disabled={forClassLevel}
                 onChange={e => overRideSettings("markAsDone", e.target.value)}
@@ -156,7 +160,7 @@ const Settings = ({
               >
                 {completionTypeKeys.map(item => (
                   <Radio value={completionTypes[item]} key={item}>
-                    {completionTypes[item]}
+                    <Label>{completionTypes[item]}</Label>
                   </Radio>
                 ))}
               </AlignRight>
@@ -167,8 +171,10 @@ const Settings = ({
 
         {/* Release score */}
         <StyledRowSelect gutter={16}>
-          <Col span={10}>Release Scores {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Col>
-          <Col span={14}>
+          <Col span={12}>
+            <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
+          </Col>
+          <Col span={12}>
             <StyledSelect
               data-cy="selectRelaseScore"
               placeholder="Please select"
@@ -194,8 +200,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={8}>Maximum Attempts Allowed</Col>
-            <Col span={16}>
+            <Col span={12}>
+              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+            </Col>
+            <Col span={12}>
               <MaxAttemptIInput
                 type="number"
                 size="large"
@@ -218,8 +226,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={16}>Require Safe Exam Browser</Col>
-            <Col span={8}>
+            <Col span={12}>
+              <Label>REQUIRE SAFE EXAM BROWSER</Label>
+            </Col>
+            <Col span={12}>
               <AlignSwitchRight
                 disabled={forClassLevel}
                 defaultChecked={safeBrowser}
@@ -257,8 +267,10 @@ const Settings = ({
             gradeSubject={gradeSubject}
           >
             <StyledRowSettings gutter={16}>
-              <Col span={8}>Shuffle Questions</Col>
-              <Col span={16}>
+              <Col span={12}>
+                <Label>SHUFFLE QUESTIONS</Label>
+              </Col>
+              <Col span={12}>
                 <AlignSwitchRight
                   disabled={forClassLevel}
                   size="small"
@@ -281,8 +293,10 @@ const Settings = ({
             gradeSubject={gradeSubject}
           >
             <StyledRowSettings gutter={16}>
-              <Col span={8}>Shuffle Answer Choice</Col>
-              <Col span={16}>
+              <Col span={12}>
+                <Label>SHUFFLE ANSWER CHOICE</Label>
+              </Col>
+              <Col span={12}>
                 <AlignSwitchRight
                   disabled={forClassLevel}
                   size="small"
@@ -304,8 +318,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={8}>Show Calculator</Col>
-            <Col span={16}>
+            <Col span={12}>
+              <Label>SHOW CALCULATOR</Label>
+            </Col>
+            <Col span={12}>
               <AlignRight
                 disabled={forClassLevel}
                 value={calcType}
@@ -313,7 +329,7 @@ const Settings = ({
               >
                 {calculatorKeys.map(item => (
                   <Radio value={item} key={item}>
-                    {calculators[item]}
+                    <Label>{calculators[item]}</Label>
                   </Radio>
                 ))}
               </AlignRight>
@@ -330,8 +346,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={8}>Answer on Paper</Col>
-            <Col span={16}>
+            <Col span={12}>
+              <Label>ANSWER ON PAPER</Label>
+            </Col>
+            <Col span={12}>
               <AlignSwitchRight
                 disabled={forClassLevel}
                 size="small"
@@ -350,9 +368,11 @@ const Settings = ({
           key="assessmentSuperPowersRequirePassword"
           gradeSubject={gradeSubject}
         >
-          <StyledRowSettings gutter={16}>
-            <Col span={16}>Require Password</Col>
-            <Col span={8}>
+          <StyledRowSelect gutter={16}>
+            <Col span={12}>
+              <Label>REQUIRE PASSWORD</Label>
+            </Col>
+            <Col span={12}>
               <StyledSelect
                 disabled={forClassLevel}
                 placeholder="Please select"
@@ -388,12 +408,12 @@ const Settings = ({
                     type="number"
                     onChange={handleUpdatePasswordExpireIn}
                     value={passwordExpireIn / 60}
-                    style={{ width: "100px" }}
+                    style={{ width: "100px", marginLeft: "15px" }}
                     max={999}
                     min={1}
                     step={1}
                   />{" "}
-                  Minutes
+                  MINUTES
                 </>
               )}
             </Col>
@@ -411,7 +431,7 @@ const Settings = ({
                 }
               </Col>
             )}
-          </StyledRowSettings>
+          </StyledRowSelect>
         </FeaturesSwitch>
         {/* Require Password */}
 
@@ -424,8 +444,10 @@ const Settings = ({
             gradeSubject={gradeSubject}
           >
             <StyledRowSettings gutter={16}>
-              <Col span={16}>Check Answer Tries Per Question</Col>
-              <Col span={8}>
+              <Col span={12}>
+                <Label>CHECK ANSWER TRIES PER QUESTION</Label>
+              </Col>
+              <Col span={12}>
                 <Input
                   disabled={forClassLevel}
                   onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
@@ -450,8 +472,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={6}>Evaluation Method</Col>
-            <Col span={18}>
+            <Col span={12}>
+              <Label>EVALUATION METHOD</Label>
+            </Col>
+            <Col span={12}>
               <AlignRight
                 disabled={forClassLevel}
                 onChange={e => overRideSettings("scoringType", e.target.value)}
@@ -459,7 +483,7 @@ const Settings = ({
               >
                 {evalTypeKeys.map(item => (
                   <Radio value={item} key={item}>
-                    {evalTypes[item]}
+                    <Label>{evalTypes[item]}</Label>
                   </Radio>
                 ))}
               </AlignRight>
@@ -470,7 +494,7 @@ const Settings = ({
                     checked={penalty === false}
                     onChange={e => overRideSettings("penalty", !e.target.checked)}
                   >
-                    {"Don’t penalize for incorrect selection"}
+                    <Label>{"DON’T PENALIZE FOR INCORRECT SELECTION"}</Label>
                   </Checkbox>
                 </CheckBoxWrapper>
               )}
@@ -481,8 +505,10 @@ const Settings = ({
         {/* Test Content visibility */}
         {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
           <StyledRowSettings gutter={16}>
-            <Col span={6}>Item content visibility to Teachers</Col>
-            <Col span={18}>
+            <Col span={12}>
+              <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
+            </Col>
+            <Col span={12}>
               <AlignRight
                 disabled={forClassLevel}
                 onChange={e => overRideSettings("testContentVisibility", e.target.value)}
@@ -504,21 +530,21 @@ const Settings = ({
           key="performanceBands"
           gradeSubject={gradeSubject}
         >
-          <StyledDiv>
+          <DivBlock>
             <PeformanceBand
               disabled={forClassLevel}
               setSettingsData={val => overRideSettings("performanceBand", val)}
               performanceBand={performanceBand}
             />
-          </StyledDiv>
+          </DivBlock>
         </FeaturesSwitch>
-        <StyledDiv>
+        <DivBlock>
           <StandardProficiencyTable
             disabled={forClassLevel}
             standardGradingScale={standardGradingScale}
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />
-        </StyledDiv>
+        </DivBlock>
       </StyledDiv>
     </SettingsWrapper>
   );

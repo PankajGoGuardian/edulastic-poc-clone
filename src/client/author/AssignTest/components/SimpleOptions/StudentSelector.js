@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Col, Select, Radio } from "antd";
-import { StyledRowLabel, StyledRow, StyledSelect, StyledRadioGropRow } from "./styled";
+import { ColLabel, StyledRow, StyledSelect, StyledRadioGropRow, Label } from "./styled";
 
 const RadioGroup = Radio.Group;
 
@@ -20,24 +20,24 @@ const StudentsSelector = ({
   };
   return (
     <React.Fragment>
-      <StyledRadioGropRow gutter={16}>
+      <StyledRadioGropRow gutter={32}>
         <Col span={24}>
           <RadioGroup onChange={changeRadioGrop} value={specificStudents}>
             <Radio data-cy="radioEntireClass" value={false}>
-              Entire Class
+              <Label>ENTIRE CLASS</Label>
             </Radio>
             <Radio data-cy="radioSpecificStudent" value={true}>
-              Specific Student
+              <Label>SPECIFIC STUDENT</Label>
             </Radio>
           </RadioGroup>
         </Col>
       </StyledRadioGropRow>
       {specificStudents && (
         <React.Fragment>
-          <StyledRowLabel gutter={16}>
-            <Col span={12}>Student</Col>
-          </StyledRowLabel>
-          <StyledRow>
+          <StyledRow gutter={32}>
+            <ColLabel span={24}>
+              <Label>STUDENT</Label>
+            </ColLabel>
             <Col span={24}>
               <StyledSelect
                 data-cy="selectStudent"

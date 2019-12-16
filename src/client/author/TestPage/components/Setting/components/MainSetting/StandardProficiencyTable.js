@@ -21,6 +21,7 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
       dataIndex: "score",
       width: "25%",
       key: "score",
+      className: "score-column",
       render: (text, record) => {
         return (
           <NameColumn>
@@ -55,10 +56,10 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Standard based grading scale</span>
         <Select
-          disabled={disabled}
-          style={{ width: "150px" }}
+          style={{ width: "250px" }}
           value={selectedStandardData._id}
           onChange={val => handleProfileChange(val)}
+          disabled={disabled}
         >
           {standardsData.map(standardData => {
             return (
@@ -96,7 +97,7 @@ export const StyledTable = styled(Table)`
       text-align: center;
       font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
       padding: 8px;
-      &.mastery-level-column {
+      &.score-column {
         text-align: left;
       }
     }
@@ -108,7 +109,7 @@ export const StyledTable = styled(Table)`
       text-align: center;
       padding: 8px;
 
-      &.mastery-level-column {
+      &.score-column {
         text-align: left;
       }
     }
@@ -118,7 +119,7 @@ export const StyledTable = styled(Table)`
 const NameColumn = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const StyledBox = styled.span`

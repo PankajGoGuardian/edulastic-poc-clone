@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 // import PropTypes from "prop-types";
 import { test as testConst, assignmentStatusOptions } from "@edulastic/constants";
-import { Col } from "antd";
-import { StyledRow, StyledRowLabel, StyledDatePicker } from "./styled";
+import { Col, Row } from "antd";
+import { StyledRow, ColLabel, StyledDatePicker, Label } from "./styled";
 
 const DateSelector = ({ startDate, endDate, changeField, passwordPolicy, forClassLevel, status }) => {
   const disabledStartDate = startDate => {
@@ -22,44 +22,54 @@ const DateSelector = ({ startDate, endDate, changeField, passwordPolicy, forClas
 
   return (
     <React.Fragment>
-      <StyledRowLabel gutter={16} style={{ marginBottom: "10" }}>
-        <Col span={12}>Open Date</Col>
-        <Col span={12}>Close Date</Col>
-      </StyledRowLabel>
-      <StyledRow gutter={32}>
+      <StyledRow gutter={32} mb="20px">
         <Col span={12}>
-          <StyledDatePicker
-            allowClear={false}
-            data-cy="startDate"
-            style={{ width: "100%" }}
-            size="large"
-            disabledDate={disabledStartDate}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            value={startDate}
-            placeholder="Open Date"
-            onChange={changeField("startDate")}
-            disabled={
-              passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-              (forClassLevel && status !== assignmentStatusOptions.NOT_OPEN)
-            }
-          />
+          <Row>
+            <ColLabel span={24}>
+              <Label>OPEN DATE</Label>
+            </ColLabel>
+            <Col span={24}>
+              <StyledDatePicker
+                allowClear={false}
+                data-cy="startDate"
+                style={{ width: "100%" }}
+                size="large"
+                disabledDate={disabledStartDate}
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                value={startDate}
+                placeholder="Open Date"
+                onChange={changeField("startDate")}
+                disabled={
+                  passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                  (forClassLevel && status !== assignmentStatusOptions.NOT_OPEN)
+                }
+              />
+            </Col>
+          </Row>
         </Col>
         <Col span={12}>
-          <StyledDatePicker
-            allowClear={false}
-            data-cy="closeDate"
-            style={{ width: "100%" }}
-            size="large"
-            disabledDate={disabledEndDate}
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            value={endDate}
-            placeholder="Close Date"
-            showToday={false}
-            onChange={changeField("endDate")}
-            disabled={forClassLevel && status === assignmentStatusOptions.DONE}
-          />
+          <Row>
+            <ColLabel span={24}>
+              <Label>CLOSE DATE</Label>
+            </ColLabel>
+            <Col span={24}>
+              <StyledDatePicker
+                allowClear={false}
+                data-cy="closeDate"
+                style={{ width: "100%" }}
+                size="large"
+                disabledDate={disabledEndDate}
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                value={endDate}
+                placeholder="Close Date"
+                showToday={false}
+                onChange={changeField("endDate")}
+                disabled={forClassLevel && status === assignmentStatusOptions.DONE}
+              />
+            </Col>
+          </Row>
         </Col>
       </StyledRow>
     </React.Fragment>

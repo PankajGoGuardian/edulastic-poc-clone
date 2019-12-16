@@ -2,8 +2,7 @@ import React from "react";
 import { Select } from "antd";
 import { Col, Row } from "antd";
 import { test, roleuser } from "@edulastic/constants";
-import { StyledRowLabel } from "./styled";
-import { StyledSelect } from "./styled";
+import { ColLabel, Label, StyledSelect, StyledRow } from "./styled";
 const { type } = test;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
@@ -17,28 +16,32 @@ const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanc
   const valueProps = disabled ? { value: testType } : { defaultValue: testType };
   return (
     <React.Fragment>
-      {!isAdvanceView && (
-        <StyledRowLabel gutter={16}>
-          <Col span={12}>Test Type</Col>
-        </StyledRowLabel>
-      )}
-
-      <Row gutter={32}>
-        <Col span={!isAdvanceView ? 12 : 24}>
-          <StyledSelect disabled={disabled} data-cy="testType" {...valueProps} onChange={onAssignmentTypeChange}>
-            {isAdmin && (
-              <Option key={COMMON} value={COMMON}>
-                {"Common Assessment"}
-              </Option>
+      <StyledRow gutter={32}>
+        <Col span={12}>
+          <Row>
+            {!isAdvanceView && (
+              <ColLabel span={24}>
+                <Label>TEST TYPE</Label>
+              </ColLabel>
             )}
-            {Object.keys(testTypes).map(key => (
-              <Select.Option key={key} value={key}>
-                {testTypes[key]}
-              </Select.Option>
-            ))}
-          </StyledSelect>
+
+            <Col span={24}>
+              <StyledSelect data-cy="testType" defaultValue={testType} onChange={onAssignmentTypeChange}>
+                {isAdmin && (
+                  <Option key={COMMON} value={COMMON}>
+                    {"Common Assessment"}
+                  </Option>
+                )}
+                {Object.keys(testTypes).map(key => (
+                  <Select.Option key={key} value={key}>
+                    {testTypes[key]}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+            </Col>
+          </Row>
         </Col>
-      </Row>
+      </StyledRow>
     </React.Fragment>
   );
 };

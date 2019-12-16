@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Row, Radio, Switch, Input, Select, DatePicker, Table } from "antd";
-import { white, secondaryTextColor, themeColor, themeColorLight, red } from "@edulastic/colors";
+import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col } from "antd";
+import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -17,14 +17,20 @@ export const InitOptions = styled.div`
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 54px 50px;
-  width: 70vw;
+  width: 1000px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 100%;
+  }
 `;
 
 export const StyledRow = styled(Row)`
-  margin-bottom: 8px;
+  margin-bottom: ${props => props.mb || "8px"};
 `;
 
-export const StyledRowLabel = styled(Row)`
+export const StyledRowLabel = styled(Row)``;
+
+export const ColLabel = styled(Col)`
   color: ${secondaryTextColor};
   font-weight: 600;
   margin-bottom: 8px;
@@ -32,23 +38,23 @@ export const StyledRowLabel = styled(Row)`
 
 export const StyledRowButton = styled(Row)`
   font-weight: 600;
-  margin-bottom: 32px;
-  margin-top: 16px;
+  margin: 20px 0px;
 `;
 
 export const AlignRight = styled(RadioGroup)`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 
   .ant-radio-wrapper {
     white-space: normal;
-    margin-right: 32px;
+    margin-right: 25px;
     max-width: 200px;
     display: flex;
     align-items: center;
 
     span {
       display: inline-block;
+      vertical-align: middle;
     }
 
     &:last-child {
@@ -64,14 +70,13 @@ export const StyledRadioGropRow = styled(Row)`
 
 export const AlignSwitchRight = styled(Switch)`
   width: 35px;
-  float: right;
+  float: left;
 `;
 
 export const StyledRowSettings = styled(Row)`
   padding: ${({ noPadding }) => (noPadding ? "0px" : "15px")};
   background-color: #f8f8f8;
   border-radius: 4px;
-  /* margin-top: ${({ firstEm }) => (firstEm ? "32px" : "0px")}; */
   margin-left: 0px !important;
   margin-right: 0px !important;
   margin-bottom: 10px;
@@ -83,15 +88,29 @@ export const StyledRowSettings = styled(Row)`
 `;
 
 export const StyledRowSelect = styled(StyledRowSettings)`
-  padding: 4px 15px;
-  display: flex;
-  align-items: center;
-
-  .ant-select-selection {
-    border: 0px !important;
-
-    &:focus {
-      box-shadow: unset;
+  .ant-select {
+    width: auto;
+    .ant-select-selection {
+      border: none;
+      margin: 0px;
+      padding: 0;
+      min-height: auto;
+      .ant-select-selection-selected-value {
+        font-size: ${props => props.theme.smallFontSize};
+        margin: 0px;
+        text-transform: uppercase;
+      }
+      .ant-select-selection__rendered {
+        margin-left: 0px;
+      }
+      &:focus,
+      &:hover {
+        box-shadow: unset;
+        border: none;
+      }
+    }
+    .ant-select-arrow {
+      right: 0px;
     }
   }
 `;
@@ -103,11 +122,11 @@ export const SpaceDiv = styled.div`
 export const CheckBoxWrapper = styled.p`
   margin-top: 10px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 export const SettingsWrapper = styled.div`
-  margin-top: 48px;
+  margin-top: 35px;
   color: #434b5d;
   font-weight: 600;
   display: flex;
@@ -116,12 +135,12 @@ export const SettingsWrapper = styled.div`
 
 export const MaxAttemptIInput = styled(Input)`
   width: 20%;
-  float: right;
+  float: left;
 `;
 
 export const Password = styled(Input)`
   width: 100%;
-  float: right;
+  float: left;
   margin-top: 5px;
   border-color: ${props => (props.color ? props.color : themeColor)};
   &:hover,
@@ -139,8 +158,9 @@ export const SettingsBtn = styled.span`
   align-items: center;
   text-transform: uppercase;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
   color: #6a737f;
+  font-size: ${props => props.theme.linkFontSize};
 
   svg {
     margin-left: 16px;
@@ -186,7 +206,7 @@ export const StyledSelect = styled(Select)`
     }
 
     .ant-select-arrow-icon {
-      font-size: 14px;
+      font-size: ${props => props.theme.linkFontSize};
       svg {
         fill: ${themeColor};
       }
@@ -258,6 +278,15 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+`;
+
+export const DivBlock = styled.div`
+  padding-top: 30px;
+`;
+
+export const Label = styled.label`
+  font-size: ${props => props.theme.linkFontSize};
+  font-weight: 600;
 `;
 
 export const StyledDiv = styled.div`

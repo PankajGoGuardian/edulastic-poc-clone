@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Select, Col } from "antd";
-import { StyledRow, StyledRowLabel, StyledSelect } from "./styled";
+import { StyledRow, ColLabel, StyledSelect, Label } from "./styled";
 
 const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDeselect }) => (
   <React.Fragment>
-    <StyledRowLabel gutter={16}>
-      <Col span={12}>Class/Group Section</Col>
-    </StyledRowLabel>
-    <StyledRow>
+    <StyledRow gutter={32}>
+      <ColLabel span={24}>
+        <Label>CLASS/GROUP SECTION</Label>
+      </ColLabel>
       <Col span={24}>
         <StyledSelect
           showSearch

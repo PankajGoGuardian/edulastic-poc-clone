@@ -57,7 +57,7 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
         <Select
-          style={{ width: "150px" }}
+          style={{ width: "250px" }}
           value={selectedBandsData._id}
           onChange={val => handleProfileChange(val)}
           disabled={disabled}

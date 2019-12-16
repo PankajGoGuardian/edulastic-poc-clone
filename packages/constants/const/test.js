@@ -66,7 +66,7 @@ module.exports = {
     "Acknowledgements",
     "Table of Contents"
   ],
-  completionTypes: { AUTOMATICALLY: "automatically", MANUALLY: "manually" },
+  completionTypes: { AUTOMATICALLY: "AUTOMATICALLY", MANUALLY: "MANUALLY" },
   releaseGradeTypes: {
     DONT_RELEASE: "Do not release scores or responses",
     SCORE_ONLY: "Release scores only",
@@ -80,10 +80,10 @@ module.exports = {
     WITH_ANSWERS: "WITH_ANSWERS"
   },
   calculators: {
-    NONE: "None",
-    SCIENTIFIC: "Scientific",
-    BASIC: "Basic",
-    GRAPHING: "Graphing"
+    NONE: "NONE",
+    SCIENTIFIC: "SCIENTIFIC",
+    BASIC: "BASIC",
+    GRAPHING: "GRAPHING"
   },
   calculatorKeys: ["NONE", "SCIENTIFIC", "BASIC", "GRAPHING"],
   calculatorTypes: {
@@ -93,8 +93,8 @@ module.exports = {
     GRAPHING: "GRAPHING"
   },
   evalTypes: {
-    ALL_OR_NOTHING: "All or Nothing",
-    PARTIAL_CREDIT: "Partial Credit"
+    ALL_OR_NOTHING: "ALL OR NOTHING",
+    PARTIAL_CREDIT: "PARTIAL CREDIT"
   },
   evalTypeLabels: {
     ALL_OR_NOTHING: "ALL_OR_NOTHING",

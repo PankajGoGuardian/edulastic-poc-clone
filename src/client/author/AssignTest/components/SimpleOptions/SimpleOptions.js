@@ -9,7 +9,16 @@ import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
 import Settings from "./Settings";
-import { OptionConationer, InitOptions, StyledRowButton, SettingsBtn, StyledRowLabel, StyledSelect } from "./styled";
+import {
+  OptionConationer,
+  InitOptions,
+  StyledRowButton,
+  SettingsBtn,
+  ColLabel,
+  StyledSelect,
+  Label,
+  StyledRow
+} from "./styled";
 import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
@@ -253,44 +262,54 @@ class SimpleOptions extends React.Component {
             passwordPolicy={assignment.passwordPolicy}
           />
 
-          <StyledRowLabel gutter={16}>
-            <Col span={12}>Open Policy</Col>
-            <Col span={12}>Close Policy</Col>
-          </StyledRowLabel>
+          <StyledRow gutter={32}>
+            <Col span={12}>
+              <Row>
+                <ColLabel span={24}>
+                  <Label>OPEN POLICY</Label>
+                </ColLabel>
+                <Col span={24}>
+                  <StyledSelect
+                    data-cy="selectOpenPolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment.openPolicy}
+                    onChange={changeField("openPolicy")}
+                    disabled={assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
+                  >
+                    {openPolicy.map(({ value, text }, index) => (
+                      <Select.Option key={index} value={value} data-cy="open">
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={12}>
+              <Row>
+                <ColLabel span={24}>
+                  <Label>CLOSE POLICY</Label>
+                </ColLabel>
+                <Col span={24}>
+                  <StyledSelect
+                    data-cy="selectClosePolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment.closePolicy}
+                    onChange={changeField("closePolicy")}
+                  >
+                    {closePolicy.map(({ value, text }, index) => (
+                      <Select.Option data-cy="class" key={index} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </Col>
+              </Row>
+            </Col>
+          </StyledRow>
 
-          <Row gutter={32}>
-            <Col span={12}>
-              <StyledSelect
-                data-cy="selectOpenPolicy"
-                placeholder="Please select"
-                cache="false"
-                value={assignment.openPolicy}
-                onChange={changeField("openPolicy")}
-                disabled={assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
-              >
-                {openPolicy.map(({ value, text }, index) => (
-                  <Select.Option key={index} value={value} data-cy="open">
-                    {text}
-                  </Select.Option>
-                ))}
-              </StyledSelect>
-            </Col>
-            <Col span={12}>
-              <StyledSelect
-                data-cy="selectClosePolicy"
-                placeholder="Please select"
-                cache="false"
-                value={assignment.closePolicy}
-                onChange={changeField("closePolicy")}
-              >
-                {closePolicy.map(({ value, text }, index) => (
-                  <Select.Option data-cy="class" key={index} value={value}>
-                    {text}
-                  </Select.Option>
-                ))}
-              </StyledSelect>
-            </Col>
-          </Row>
           <FeaturesSwitch
             inputFeatures="selectTestType"
             actionOnInaccessible="hidden"
@@ -303,7 +322,7 @@ class SimpleOptions extends React.Component {
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>
-          <StyledRowButton gutter={16}>
+          <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>
                 OVERRIDE TEST SETTINGS

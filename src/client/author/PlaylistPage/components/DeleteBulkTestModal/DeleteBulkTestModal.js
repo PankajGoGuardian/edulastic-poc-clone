@@ -2,33 +2,39 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
-import { white, themeColor, lightGrey } from "@edulastic/colors";
+import { white, themeColor, lightGrey, grey } from "@edulastic/colors";
 
 const ModalStyles = {
-  maxWidth: 350,
+  minWidth: 450,
   borderRadius: "5px",
-  "background-color": white,
+  "background-color": lightGrey,
   padding: "30px"
 };
 
 const DeleteBulkTestModal = props => {
-  const { isVisible, markedTests, onClose, moduleName, handleBulkTestDelete } = props;
+  const { isVisible, markedTests, onClose, moduleName, handleBulkTestDelete, modulesNamesCountMap } = props;
 
   const onRemoveClick = () => {
-    handleBulkTestDelete();
+    handleBulkTestDelete(modulesNamesCountMap.length);
     onClose();
   };
 
   return (
-    <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={onClose} center>
+    <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={onClose} title="Remove" center>
+      <h2>Remove</h2>
       <ModuleWrapper>
-        <h3>
-          {markedTests} {markedTests > 1 ? "TESTS" : "TEST"} WILL BE REMOVED, ARE YOU SURE ?
-        </h3>
+        {modulesNamesCountMap.length
+          ? modulesNamesCountMap.map(({ count, mName }, i) => (
+              <h3>
+                <StyledSpan>{count}</StyledSpan> of the selected {count > 1 ? "tests" : "test"} will be removed from{" "}
+                <StyledSpan>{mName}</StyledSpan>
+              </h3>
+            ))
+          : "The selected tests are not associated with any modules yet."}
       </ModuleWrapper>
       <FooterWrapper>
-        <CancelBtn onClick={onClose}>Cancel</CancelBtn>
-        <RemoveBtn onClick={onRemoveClick}>Remove</RemoveBtn>
+        <CancelBtn onClick={onClose}>No, Cancel</CancelBtn>
+        <RemoveBtn onClick={onRemoveClick}>{modulesNamesCountMap.length ? "Yes, Remove" : "Clear Selected"}</RemoveBtn>
       </FooterWrapper>
     </Modal>
   );
@@ -43,23 +49,30 @@ DeleteBulkTestModal.propTypes = {
 
 export default DeleteBulkTestModal;
 
+const StyledSpan = styled.span`
+  font-weight: 600;
+`;
+
 const ModuleWrapper = styled.ul`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  flex-direction: column;
   background: ${white};
-  padding: 30px;
+  border-radius: 10px;
+  padding: 30px 30px;
   text-align: center;
+  box-shadow: ${grey} 2px 3px 10px 0px;
 `;
 
 const FooterWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
 `;
 
-const CancelBtn = styled.div`
+const RemoveBtn = styled.div`
   margin-top: 8px !important;
   width: 120px;
   font-size: 12px;
@@ -79,7 +92,7 @@ const CancelBtn = styled.div`
   }
 `;
 
-const RemoveBtn = styled.div`
+const CancelBtn = styled.div`
   margin-top: 8px !important;
   width: 120px;
   font-size: 12px;

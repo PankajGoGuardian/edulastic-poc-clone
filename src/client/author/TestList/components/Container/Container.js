@@ -24,7 +24,8 @@ import {
   PaginationWrapper,
   AffixWrapper,
   StyleChangeWrapper,
-  CardBox
+  CardBox,
+  StyledCountText
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -147,7 +148,7 @@ class TestList extends Component {
       page,
       limit,
       location,
-      playlist,
+      playlist = {},
       mode,
       match: params,
       getCurriculumStandards,
@@ -180,7 +181,7 @@ class TestList extends Component {
       const { modules } = playlist;
       const { state = {} } = location;
       const { editFlow } = state;
-      modules.forEach(mod => {
+      modules?.forEach(mod => {
         mod.data.forEach(test => {
           selectedTests.push(test.contentId);
         });
@@ -439,6 +440,14 @@ class TestList extends Component {
     this.setState({ showManageModuleModal: false });
   };
 
+  deleteModule = id => {
+    const { selectedTests } = this.state;
+    const { playlist, deleteModuleFromPlaylist } = this.props;
+    const moduleData = playlist?.modules?.[id]?.data?.map(x => x.contentId);
+    const newSelectedTests = selectedTests?.filter(testId => !moduleData.includes(testId));
+    this.setState({ selectedTests: newSelectedTests }, () => deleteModuleFromPlaylist(id));
+  };
+
   handleAddTests = item => {
     const {
       playlist: { modules }
@@ -456,19 +465,29 @@ class TestList extends Component {
 
   handleBulkAddTests = item => {
     const { markedTests } = this.state;
-    if (markedTests.length) {
-      this.setState({ showAddModules: true });
+    const { playlist: { modules } = {} } = this.props;
+    if (modules?.length) {
+      if (markedTests.length) {
+        this.setState({ showAddModules: true });
+      } else {
+        message.warning("Select one or more tests");
+      }
     } else {
-      message.warning("Select one or more tests");
+      message.warning("Create atleast 1 module");
     }
   };
 
   handleBulkRemoveTests = item => {
     const { markedTests } = this.state;
-    if (markedTests.length) {
-      this.setState({ showRemoveModules: true });
+    const { playlist: { modules } = {} } = this.props;
+    if (modules?.length) {
+      if (markedTests.length) {
+        this.setState({ showRemoveModules: true });
+      } else {
+        message.warning("Select one or more tests");
+      }
     } else {
-      message.warning("Select one or more tests");
+      message.warning("Create atleast 1 module");
     }
   };
 
@@ -540,7 +559,7 @@ class TestList extends Component {
     message.success("Tests Added to playlist");
   };
 
-  handleBulkTestDelete = () => {
+  handleBulkTestDelete = len => {
     const { deleteTestFromModuleInBulk } = this.props;
     const { markedTests, selectedTests } = this.state;
     const testIds = markedTests.map(test => test._id);
@@ -549,8 +568,12 @@ class TestList extends Component {
       selectedTests: [...selectedTests.filter(x => !testIds.includes(x))],
       markedTests: []
     }));
-    deleteTestFromModuleInBulk({ testIds });
-    message.success("Tests removed from playlist");
+    if (len) {
+      deleteTestFromModuleInBulk({ testIds });
+      message.success("Tests removed from playlist");
+    } else {
+      message.success("Selected tests are cleared");
+    }
   };
 
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -575,10 +598,10 @@ class TestList extends Component {
         return { title: module.title, data: [...module.data.map(it => it.contentId)] };
       }) || [];
 
-    const testIds = tests.map(test => test._id) || [];
+    const testIds = tests?.map(test => test._id) || [];
     testIds.forEach(testId => {
       for (let obj of modulesMap) {
-        if (obj.data.includes(testId)) moduleTitleMap[testId] = obj.title;
+        if (obj?.data?.includes(testId)) moduleTitleMap[testId] = obj.title;
       }
     });
 
@@ -689,10 +712,9 @@ class TestList extends Component {
       count,
       creating,
       mode,
-      playlist,
+      playlist = {},
       addModuleToPlaylist,
       updateModuleInPlaylist,
-      deleteModuleFromPlaylist,
       resequenceModules,
       testFilters,
       handleSave
@@ -730,6 +752,20 @@ class TestList extends Component {
         </Menu.Item>
       </Menu>
     );
+
+    const counts = [];
+    markedTests.forEach(({ _id }) => {
+      playlist?.modules?.forEach((module, i) => {
+        if (module?.data.map(x => x.contentId).includes(_id)) {
+          if (counts[i]) counts[i]++;
+          else counts[i] = 1;
+        }
+      });
+    });
+
+    const modulesNamesCountMap = counts.map((count, i) => {
+      return { count, mName: playlist?.modules[i]?.title };
+    });
 
     return (
       <>
@@ -803,7 +839,7 @@ class TestList extends Component {
                 destinationCurriculumSequence={playlist}
                 addModuleToPlaylist={addModuleToPlaylist}
                 updateModuleInPlaylist={updateModuleInPlaylist}
-                deleteModuleFromPlaylist={deleteModuleFromPlaylist}
+                deleteModuleFromPlaylist={this.deleteModule}
                 resequenceModules={resequenceModules}
                 handleAddModule={this.onCloseCreateModule}
                 handleApply={handleSave}
@@ -835,7 +871,7 @@ class TestList extends Component {
               isVisible={showRemoveModules}
               onClose={this.onCloseBulkDeleteTestModal}
               markedTests={markedTests?.length}
-              moduleName="Module Name"
+              modulesNamesCountMap={modulesNamesCountMap}
               handleBulkTestDelete={this.handleBulkTestDelete}
             />
           )}
@@ -872,6 +908,7 @@ class TestList extends Component {
                 </PaginationInfo>
                 {mode === "embedded" && (
                   <BtnActionsContainer>
+                    <StyledCountText>{markedTests.length} TESTS SELECTED</StyledCountText>
                     <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
                       <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
                         <a className="ant-dropdown-link" href="#">

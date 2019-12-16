@@ -18,8 +18,7 @@ class AddTestModal extends React.Component {
     super(props);
 
     this.state = {
-      flag: false,
-      moduleName: "New Module"
+      flag: false
     };
   }
 
@@ -54,10 +53,9 @@ class AddTestModal extends React.Component {
           {modulesList &&
             modulesList.map(({ title }, index) => (
               <ModuleList onClick={e => this.onModuleClick(index)}>
-                <SubTitleWrapper>Module {index + 1}:</SubTitleWrapper> <TitleWrapper>{title}</TitleWrapper>
+                <TitleWrapper>{title}</TitleWrapper>
               </ModuleList>
             ))}
-          <ModuleList>Create New Module</ModuleList>
         </ModuleWrapper>
       </Modal>
     );
@@ -95,7 +93,6 @@ const TitleWrapper = styled.span`
 `;
 
 const ModuleWrapper = styled.ul`
-  margin: 0;
   padding: 0px;
   list-style: none;
   border-radius: 5px;
@@ -109,14 +106,7 @@ const ModuleList = styled.li`
   cursor: pointer;
   background-color: ${white};
   border-bottom: 1px solid ${fadedGrey};
-  &:last-child {
-    color: ${lightBlue3};
-  }
   &:hover {
     background-color: ${fadedGrey};
   }
-`;
-
-const SubTitleWrapper = styled.span`
-  width: 20%;
 `;

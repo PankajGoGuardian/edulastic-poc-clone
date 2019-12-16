@@ -180,3 +180,12 @@ export const StyleChangeWrapper = styled.div`
     cursor: pointer;
   }
 `;
+
+export const StyledCountText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 10px;
+  font-size: 12px;
+  font-weight: 600;
+`;

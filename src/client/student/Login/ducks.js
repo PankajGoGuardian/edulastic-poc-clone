@@ -73,6 +73,8 @@ export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
 export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
 export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
 export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
+export const GET_CURRENT_DISTRICT_USERS_REQUEST = "[user] get current district users request";
+export const GET_CURRENT_DISTRICT_USERS_SUCCESS = "[user] get current district users success";
 
 export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
 
@@ -111,6 +113,8 @@ export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
 export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
 export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
+export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_USERS_REQUEST);
+export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
 
 const initialState = {
   isAuthenticated: false,
@@ -282,12 +286,20 @@ export default createReducer(initialState, {
       curriculum => curriculum._id !== payload
     );
     state.user.orgData.interestedCurriculums = updatedCurriculums;
+  },
+  [GET_CURRENT_DISTRICT_USERS_SUCCESS]: (state, { payload }) => {
+    state.user.currentDistrictUsers = payload;
   }
 });
 
 export const getUserDetails = createSelector(
   ["user.user"],
   user => user
+);
+
+export const getCurrentDistrictUsers = createSelector(
+  [getUserDetails],
+  state => state.currentDistrictUsers
 );
 
 export const getClasses = createSelector(
@@ -1031,6 +1043,16 @@ function* setInviteDetailsSaga({ payload }) {
   }
 }
 
+function* getCurrentDistrictUsersSaga({ payload }) {
+  try {
+    const users = yield call(userApi.fetchUsersFromDistrict, payload);
+    yield put(getCurrentDistrictUsersSuccessAction(users));
+  } catch (e) {
+    yield call(message.error, "Failed to get users from District.");
+    console.error(e);
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -1058,4 +1080,5 @@ export function* watcherSaga() {
   yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
   yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
   yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
+  yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
 }

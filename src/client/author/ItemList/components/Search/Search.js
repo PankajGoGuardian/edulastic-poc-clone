@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { connect } from "react-redux";
@@ -7,9 +7,10 @@ import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictiona
 import { Container, Item, ItemBody, ItemHeader, MainFilterItems, ItemRelative, IconWrapper } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import StandardsSearchModal from "./StandardsSearchModal";
-import { getCollectionsSelector } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
+import { getCurrentDistrictUsers, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
 const Search = ({
   search: {
     grades,
@@ -21,7 +22,8 @@ const Search = ({
     standardIds,
     questionType,
     depthOfKnowledge,
-    authorDifficulty
+    authorDifficulty,
+    authoredByIds
   },
   allTagsData,
   onSearchFieldChange,
@@ -29,9 +31,17 @@ const Search = ({
   showStatus = false,
   collections,
   formattedCuriculums,
-  defaultQuestionTypes = []
+  defaultQuestionTypes = [],
+  userFeatures,
+  districtId,
+  currentDistrictUsers,
+  getCurrentDistrictUsers
 }) => {
   const [showModal, setShowModalValue] = useState(false);
+
+  useEffect(() => {
+    if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);
+  }, [userFeatures, districtId, currentDistrictUsers]);
 
   const setShowModal = value => {
     if (value && !curriculumStandards.elo.length) {
@@ -258,10 +268,39 @@ const Search = ({
                     {el.text}
                   </Select.Option>
                 ))}
+                {(userFeatures.isPublisherAuthor || userFeatures.isCurator) &&
+                  selectsData.extraStatus.map(el => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
               </Select>
             </ItemBody>
           </Item>
         )}
+        {userFeatures.isCurator && (
+          <Item>
+            <ItemHeader>Authored By</ItemHeader>
+            <ItemBody>
+              <Select
+                mode="multiple"
+                size="large"
+                optionFilterProp={"children"}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                onChange={onSearchFieldChange("authoredByIds")}
+                value={authoredByIds}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {currentDistrictUsers?.map(el => (
+                  <Select.Option key={el._id} value={el._id}>
+                    {`${el.firstName} ${el.lastName}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Item>
+        )}
+
         <Item>
           <ItemHeader>Tags</ItemHeader>
           <ItemBody>
@@ -306,7 +345,10 @@ export default connect(
   (state, { search = {} }) => ({
     allTagsData: getAllTagsSelector(state, "testitem"),
     collections: getCollectionsSelector(state),
-    formattedCuriculums: getFormattedCurriculumsSelector(state, search)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, search),
+    userFeatures: getUserFeatures(state),
+    districtId: getUserOrgId(state),
+    currentDistrictUsers: getCurrentDistrictUsers(state)
   }),
-  {}
+  { getCurrentDistrictUsers: getCurrentDistrictUsersAction }
 )(Search);

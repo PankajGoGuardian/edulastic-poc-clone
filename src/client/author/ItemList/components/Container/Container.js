@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
-import { debounce } from "lodash";
+import { debounce, omit } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
@@ -56,7 +56,8 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getDefaultGradesSelector,
-  getDefaultSubjectSelector
+  getDefaultSubjectSelector,
+  getUserFeatures
 } from "../../../src/selectors/user";
 
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
@@ -76,6 +77,7 @@ export const getClearSearchState = () => ({
   status: "",
   grades: [],
   tags: [],
+  authoredByIds: [],
   filter: filterMenuItems[0].filter
 });
 
@@ -141,8 +143,9 @@ class Contaier extends Component {
   };
 
   handleSearch = searchState => {
-    const { limit, receiveItems } = this.props;
-    const search = searchState || this.props.search;
+    const { limit, receiveItems, userFeatures } = this.props;
+    let search = searchState || this.props.search;
+    if (!userFeatures.isCurator) search = omit(search, "authoredByIds");
     receiveItems(search, 1, limit);
   };
 
@@ -226,6 +229,7 @@ class Contaier extends Component {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
+
     this.updateFilterState(updatedKeys);
     this.handleSearch(updatedKeys);
   };
@@ -413,7 +417,8 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
-      passageItems: state.tests.passageItems || []
+      passageItems: state.tests.passageItems || [],
+      userFeatures: getUserFeatures(state)
     }),
     {
       receiveItems: receiveTestItemsAction,

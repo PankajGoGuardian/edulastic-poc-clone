@@ -92,6 +92,11 @@ export const getUserOrgId = createSelector(
   state => _get(state, "user.orgData.districtId")
 );
 
+export const getUserFeatures = createSelector(
+  stateSelector,
+  state => _get(state, "user.features")
+);
+
 export const getUserOrgData = createSelector(
   stateSelector,
   state => _get(state, "user.orgData")

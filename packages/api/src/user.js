@@ -227,6 +227,15 @@ const removeSchool = data =>
     data
   });
 
+const fetchUsersFromDistrict = districtId =>
+  api
+    .callApi({
+      url: `districts/${districtId}/users`,
+      data: {},
+      method: "POST"
+    })
+    .then(result => result.data.result);
+
 export default {
   getUser,
   fetchUsers,
@@ -253,5 +262,6 @@ export default {
   resetMyPassword,
   moveUsersToOtherClass,
   deleteAccount,
-  removeSchool
+  removeSchool,
+  fetchUsersFromDistrict
 };

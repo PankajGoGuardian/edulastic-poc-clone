@@ -90,6 +90,8 @@ const allStatus = [
   { value: "draft", text: "Draft" }
 ];
 
+const extraStatus = [{ value: "inreview", text: "In Review" }, { value: "rejected", text: "Rejected" }];
+
 const defaultStandards = {
   Mathematics: "Math - Common Core",
   ELA: "ELA - Common Core",
@@ -111,5 +113,6 @@ export default {
   allStatus,
   testTypes,
   defaultStandards,
-  AdminTestTypes
+  AdminTestTypes,
+  extraStatus
 };

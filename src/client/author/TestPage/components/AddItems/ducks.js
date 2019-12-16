@@ -111,6 +111,7 @@ export const initalSearchState = {
   status: "",
   grades: [],
   tags: [],
+  authoredByIds: [],
   filter: filterMenuItems[0].filter
 };
 

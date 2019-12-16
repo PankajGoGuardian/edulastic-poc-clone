@@ -6,7 +6,7 @@ import { white, themeColor } from "@edulastic/colors";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
 import { Title } from "./styled";
 
-const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {} }) => {
+const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {}, disabled = false }) => {
   const handleProfileChange = val => {
     const selectedBandsData = performanceBandsData.find(o => o._id === val);
     setSettingsData({ _id: selectedBandsData._id, name: selectedBandsData.name });
@@ -56,7 +56,12 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
-        <Select style={{ width: "150px" }} value={selectedBandsData._id} onChange={val => handleProfileChange(val)}>
+        <Select
+          style={{ width: "150px" }}
+          value={selectedBandsData._id}
+          onChange={val => handleProfileChange(val)}
+          disabled={disabled}
+        >
           {performanceBandsData.map(bandsData => {
             return (
               <Select.Option key={bandsData._id} value={bandsData._id}>

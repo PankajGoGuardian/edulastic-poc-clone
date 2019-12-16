@@ -49,7 +49,8 @@ const Settings = ({
   gradeSubject,
   _releaseGradeKeys,
   userRole,
-  isDocBased
+  isDocBased,
+  forClassLevel = false
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -134,6 +135,7 @@ const Settings = ({
     testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60
   } = assignmentSettings;
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -147,7 +149,11 @@ const Settings = ({
           <StyledRowSettings gutter={16}>
             <Col span={8}>Mark as Done</Col>
             <Col span={16}>
-              <AlignRight onChange={e => overRideSettings("markAsDone", e.target.value)} value={markAsDone}>
+              <AlignRight
+                disabled={forClassLevel}
+                onChange={e => overRideSettings("markAsDone", e.target.value)}
+                value={markAsDone}
+              >
                 {completionTypeKeys.map(item => (
                   <Radio value={completionTypes[item]} key={item}>
                     {completionTypes[item]}
@@ -193,6 +199,7 @@ const Settings = ({
               <MaxAttemptIInput
                 type="number"
                 size="large"
+                disabled={forClassLevel}
                 value={maxAttempts}
                 onChange={e => overRideSettings("maxAttempts", e.target.value)}
                 min={1}
@@ -214,12 +221,14 @@ const Settings = ({
             <Col span={16}>Require Safe Exam Browser</Col>
             <Col span={8}>
               <AlignSwitchRight
+                disabled={forClassLevel}
                 defaultChecked={safeBrowser}
                 size="small"
                 onChange={value => overRideSettings("safeBrowser", value)}
               />
               {safeBrowser && (
                 <Password
+                  disabled={forClassLevel}
                   suffix={
                     <Icon
                       type={showPassword ? "eye-invisible" : "eye"}
@@ -251,6 +260,7 @@ const Settings = ({
               <Col span={8}>Shuffle Questions</Col>
               <Col span={16}>
                 <AlignSwitchRight
+                  disabled={forClassLevel}
                   size="small"
                   defaultChecked={shuffleQuestions}
                   onChange={value => overRideSettings("shuffleQuestions", value)}
@@ -274,6 +284,7 @@ const Settings = ({
               <Col span={8}>Shuffle Answer Choice</Col>
               <Col span={16}>
                 <AlignSwitchRight
+                  disabled={forClassLevel}
                   size="small"
                   defaultChecked={shuffleAnswers}
                   onChange={value => overRideSettings("shuffleAnswers", value)}
@@ -295,7 +306,11 @@ const Settings = ({
           <StyledRowSettings gutter={16}>
             <Col span={8}>Show Calculator</Col>
             <Col span={16}>
-              <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
+              <AlignRight
+                disabled={forClassLevel}
+                value={calcType}
+                onChange={e => overRideSettings("calcType", e.target.value)}
+              >
                 {calculatorKeys.map(item => (
                   <Radio value={item} key={item}>
                     {calculators[item]}
@@ -318,6 +333,7 @@ const Settings = ({
             <Col span={8}>Answer on Paper</Col>
             <Col span={16}>
               <AlignSwitchRight
+                disabled={forClassLevel}
                 size="small"
                 defaultChecked={answerOnPaper}
                 onChange={value => overRideSettings("answerOnPaper", value)}
@@ -338,6 +354,7 @@ const Settings = ({
             <Col span={16}>Require Password</Col>
             <Col span={8}>
               <StyledSelect
+                disabled={forClassLevel}
                 placeholder="Please select"
                 cache="false"
                 value={passwordPolicy}
@@ -352,6 +369,7 @@ const Settings = ({
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
                 <>
                   <Password
+                    disabled={forClassLevel}
                     onChange={e => overRideSettings("assignmentPassword", e.target.value)}
                     size="large"
                     value={assignmentPassword}
@@ -365,6 +383,7 @@ const Settings = ({
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                 <>
                   <Input
+                    disabled={forClassLevel}
                     required
                     type="number"
                     onChange={handleUpdatePasswordExpireIn}
@@ -408,6 +427,7 @@ const Settings = ({
               <Col span={16}>Check Answer Tries Per Question</Col>
               <Col span={8}>
                 <Input
+                  disabled={forClassLevel}
                   onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
                   size="large"
                   value={maxAnswerChecks}
@@ -432,7 +452,11 @@ const Settings = ({
           <StyledRowSettings gutter={16}>
             <Col span={6}>Evaluation Method</Col>
             <Col span={18}>
-              <AlignRight onChange={e => overRideSettings("scoringType", e.target.value)} value={scoringType}>
+              <AlignRight
+                disabled={forClassLevel}
+                onChange={e => overRideSettings("scoringType", e.target.value)}
+                value={scoringType}
+              >
                 {evalTypeKeys.map(item => (
                   <Radio value={item} key={item}>
                     {evalTypes[item]}
@@ -441,7 +465,11 @@ const Settings = ({
               </AlignRight>
               {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                 <CheckBoxWrapper>
-                  <Checkbox checked={penalty === false} onChange={e => overRideSettings("penalty", !e.target.checked)}>
+                  <Checkbox
+                    disabled={forClassLevel}
+                    checked={penalty === false}
+                    onChange={e => overRideSettings("penalty", !e.target.checked)}
+                  >
                     {"Don’t penalize for incorrect selection"}
                   </Checkbox>
                 </CheckBoxWrapper>
@@ -456,6 +484,7 @@ const Settings = ({
             <Col span={6}>Item content visibility to Teachers</Col>
             <Col span={18}>
               <AlignRight
+                disabled={forClassLevel}
                 onChange={e => overRideSettings("testContentVisibility", e.target.value)}
                 value={testContentVisibility}
               >
@@ -477,6 +506,7 @@ const Settings = ({
         >
           <StyledDiv>
             <PeformanceBand
+              disabled={forClassLevel}
               setSettingsData={val => overRideSettings("performanceBand", val)}
               performanceBand={performanceBand}
             />
@@ -484,6 +514,7 @@ const Settings = ({
         </FeaturesSwitch>
         <StyledDiv>
           <StandardProficiencyTable
+            disabled={forClassLevel}
             standardGradingScale={standardGradingScale}
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />

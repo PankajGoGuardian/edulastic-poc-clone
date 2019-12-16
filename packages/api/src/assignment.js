@@ -126,6 +126,15 @@ const validateAssignmentPassword = ({ assignmentId, password, groupId }) =>
     })
     .then(result => result.data);
 
+const updateClassSettings = ({ assignmentId, classId, settings }) =>
+  api
+    .callApi({
+      url: `${prefix}/${assignmentId}/group/${classId}/settings`,
+      method: "put",
+      data: settings
+    })
+    .then(result => result.data);
+
 export default {
   create,
   update,
@@ -140,5 +149,6 @@ export default {
   fetchTestActivities,
   duplicateAssignment,
   redirect,
-  validateAssignmentPassword
+  validateAssignmentPassword,
+  updateClassSettings
 };

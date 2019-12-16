@@ -7,12 +7,14 @@ import { StyledSelect } from "./styled";
 const { type } = test;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
-const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanceView }) => {
+const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanceView, disabled = false }) => {
   const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
   const testTypes = {
     [ASSESSMENT]: "Class Assessment",
     [PRACTICE]: isAdmin ? "Practice" : "Practice Assessment"
   };
+
+  const valueProps = disabled ? { value: testType } : { defaultValue: testType };
   return (
     <React.Fragment>
       {!isAdvanceView && (
@@ -23,7 +25,7 @@ const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanc
 
       <Row gutter={32}>
         <Col span={!isAdvanceView ? 12 : 24}>
-          <StyledSelect data-cy="testType" defaultValue={testType} onChange={onAssignmentTypeChange}>
+          <StyledSelect disabled={disabled} data-cy="testType" {...valueProps} onChange={onAssignmentTypeChange}>
             {isAdmin && (
               <Option key={COMMON} value={COMMON}>
                 {"Common Assessment"}

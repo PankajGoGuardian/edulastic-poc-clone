@@ -33,6 +33,7 @@ const ClassResponses = lazy(() => import("../ClassResponses"));
 const PrintPreview = lazy(() => import("../PrintPreview"));
 const PrintAssessment = lazy(() => import("../PrintAssessment"));
 const ExpressGrader = lazy(() => import("../ExpressGrader"));
+const LCBSettings = lazy(() => import("../LCBAssignmentSettings"));
 const TestList = lazy(() => import("../TestList"));
 const TestPage = lazy(() => import("../TestPage"));
 const QuestionEditor = lazy(() => import("../QuestionEditor"));
@@ -156,6 +157,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route exact path={`${match.url}/manageClass/:classId/Edit`} component={ClassEdit} />
 
                     <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
+                    <Route exact path={`${match.url}/lcb/settings/:assignmentId/:classId`} component={LCBSettings} />
                     <Route
                       exact
                       path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}

@@ -26,6 +26,7 @@ const clozeImage = require("./const/clozeImage");
 const fonts = require("./const/fonts");
 const question = require("./const/question");
 const ChoiceDimensions = require("./const/ChoiceDimensions");
+const assignmentStatusOptions = require("./const/assignmentStatus");
 
 module.exports = {
   question,
@@ -55,5 +56,6 @@ module.exports = {
   ChoiceDimensions,
   canvasDimensions,
   clozeImage,
-  fonts
+  fonts,
+  assignmentStatusOptions
 };

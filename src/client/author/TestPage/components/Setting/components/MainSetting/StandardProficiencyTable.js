@@ -6,7 +6,7 @@ import { Title } from "./styled";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
-const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGradingScale = {} }) => {
+const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGradingScale = {}, disabled = false }) => {
   const handleProfileChange = val => {
     const selectedStandardData = standardsData.find(o => o._id === val) || standardsData[0] || { scale: [] };
     setSettingsData({ _id: selectedStandardData._id, name: selectedStandardData.name });
@@ -54,7 +54,12 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Standard based grading scale</span>
-        <Select style={{ width: "150px" }} value={selectedStandardData._id} onChange={val => handleProfileChange(val)}>
+        <Select
+          disabled={disabled}
+          style={{ width: "150px" }}
+          value={selectedStandardData._id}
+          onChange={val => handleProfileChange(val)}
+        >
           {standardsData.map(standardData => {
             return (
               <Select.Option key={standardData._id} value={standardData._id}>

@@ -2,7 +2,7 @@ import { questionType, question } from "@edulastic/constants";
 import { get, isString } from "lodash";
 import striptags from "striptags";
 
-const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT } = questionType;
+const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE } = questionType;
 
 /**
  * check for options in "expressionMultipart" type.
@@ -119,6 +119,25 @@ const textCheck = item => {
   return false;
 };
 
+const passageCheck = i => {
+  if (isRichTextFieldEmpty(i.heading)) {
+    return "Heading cannot be empty.";
+  }
+  if (isRichTextFieldEmpty(i.contentsTitle)) {
+    return "Title cannot be empty.";
+  }
+  if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
+    return "Passage cannot be empty.";
+  }
+  if (i.paginated_content) {
+    for (let o of i.pages) {
+      if (isRichTextFieldEmpty(o)) {
+        return "Passage cannot be empty.";
+      }
+    }
+  }
+};
+
 const hasEmptyOptions = item => {
   // options check for expression multipart type question.
   switch (item.type) {
@@ -139,6 +158,8 @@ const hasEmptyFields = item => {
       return videoCheck(item);
     case TEXT:
       return textCheck(item);
+    case PASSAGE:
+      return passageCheck(item);
     default:
       return false;
   }

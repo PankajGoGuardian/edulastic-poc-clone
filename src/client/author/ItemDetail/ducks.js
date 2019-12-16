@@ -1130,25 +1130,10 @@ function* savePassage({ payload }) {
 
     if (
       passageData.some(i => {
-        if (isRichTextFieldEmpty(i.heading)) {
-          message.error("Heading cannot be empty.");
+        const [hasEmptyFields, msg] = isIncompleteQuestion(i);
+        if (hasEmptyFields) {
+          message.error(msg);
           return true;
-        }
-        if (isRichTextFieldEmpty(i.contentsTitle)) {
-          message.error("Title cannot be empty.");
-          return true;
-        }
-        if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
-          message.error("Passage cannot be empty.");
-          return true;
-        }
-        if (i.paginated_content) {
-          for (let o of i.pages) {
-            if (isRichTextFieldEmpty(o)) {
-              message.error("Passage cannot be empty.");
-              return true;
-            }
-          }
         }
       })
     ) {

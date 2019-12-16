@@ -129,8 +129,10 @@ class SimpleOptions extends React.Component {
               value === testConst.type.ASSESSMENT && isReleaseScorePremium
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE;
+            state.maxAttempts = 1;
           } else {
             state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
+            state.maxAttempts = 3;
           }
           break;
         case "passwordPolicy":

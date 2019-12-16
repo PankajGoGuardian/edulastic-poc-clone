@@ -9,7 +9,7 @@ import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
 
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
-import SideMenu from "./Sidebar/SideMenu";
+import SideMenu from "../author/src/Sidebar/SideMenu";
 import { Dashboard } from "./pages/Dashboard/dashboard";
 import { getUserOrgId, getUserRole } from "../author/src/selectors/user";
 

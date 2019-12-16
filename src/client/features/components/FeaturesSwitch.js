@@ -1,13 +1,14 @@
 //@ts-check
 import React from "react";
 import { connect } from "react-redux";
+import { Switch, Redirect } from "react-router-dom";
 import { getUserFeatures } from "../../student/Login/ducks";
 import { getGroupList } from "../../author/src/selectors/user";
 import { isFeatureAccessibleToUser as isFeatureAccessible } from "../featuresUtils";
 
 /**
  *
- * @param {{features: {[feature:string]:boolean|Object[]} & {premiumGradeSubject:Object[]}, inputFeatures: string[] | string, operation: "AND" | "OR", gradeSubject: {grade: string[], subject: string[]}, children: JSX.Element, actionOnInaccessible: "disabled"|"hidden"}} props
+ * @param {{features: {[feature:string]:boolean|Object[]} & {premiumGradeSubject:Object[]}, inputFeatures: string[] | string, operation: "AND" | "OR", gradeSubject: {grade: string[], subject: string[]}, children: JSX.Element, actionOnInaccessible: "disabled"|"hidden", redirectRoute: string}} props
  *
  * gradeSubject is optional, if omitted only features will be taken into account
  *
@@ -15,11 +16,17 @@ import { isFeatureAccessibleToUser as isFeatureAccessible } from "../featuresUti
  *
  */
 const FeaturesSwitch = props => {
-  let { children, actionOnInaccessible = "hidden" } = props;
+  let { children, actionOnInaccessible = "hidden", redirectRoute = "" } = props;
 
   const isAccessible = isFeatureAccessible({
     ...props
   });
+
+  const redirect = (
+    <Switch>
+      <Redirect exact to={redirectRoute} />
+    </Switch>
+  );
 
   const _children = React.Children.map(children, (child, index) => {
     return React.cloneElement(child, {
@@ -30,7 +37,14 @@ const FeaturesSwitch = props => {
       isAccessible: isAccessible
     });
   });
-  return isAccessible ? _children : actionOnInaccessible === "disabled" ? _children : null;
+
+  return isAccessible
+    ? _children
+    : actionOnInaccessible === "disabled"
+    ? _children
+    : actionOnInaccessible === "redirect"
+    ? redirect
+    : null;
 };
 export { isFeatureAccessible };
 export default connect(state => ({

@@ -8,25 +8,28 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 import { StyledLeftSide } from "./components/leftSide";
 import { Usage } from "./components/Usage";
 import { Collections } from "./components/Collections";
+import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 
 const Dashboard = () => {
   return (
-    <DashboardContainer>
-      <CustomizedHeaderWrapper />
-      <DashboardContentContainer>
-        <div className="right-side">
-          <StyledCard>
-            <Usage />
-          </StyledCard>
-          <StyledCard>
-            <Collections />
-          </StyledCard>
-        </div>
-        <div className="left-side">
-          <StyledLeftSide />
-        </div>
-      </DashboardContentContainer>
-    </DashboardContainer>
+    <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="redirect">
+      <DashboardContainer>
+        <CustomizedHeaderWrapper />
+        <DashboardContentContainer>
+          <div className="right-side">
+            <StyledCard>
+              <Usage />
+            </StyledCard>
+            <StyledCard>
+              <Collections />
+            </StyledCard>
+          </div>
+          <div className="left-side">
+            <StyledLeftSide />
+          </div>
+        </DashboardContentContainer>
+      </DashboardContainer>
+    </FeaturesSwitch>
   );
 };
 

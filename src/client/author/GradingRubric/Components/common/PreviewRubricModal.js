@@ -5,10 +5,12 @@ import styled from "styled-components";
 import PreviewRubricTable from "./PreviewRubricTable";
 import { white, title, themeColorLighter } from "@edulastic/colors";
 import { sumBy, maxBy } from "lodash";
+import { message } from "antd";
 
 const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore, rubricFeedback }) => {
   const [obtained, setObtained] = useState(0);
-  const [rubricResponse, setRubricResponse] = useState(null);
+  const [rubricResponse, setRubricResponse] = useState({});
+  const [validateRubricResponse, setValidateRubricResponse] = useState(false);
 
   let localMaxScore = 0;
 
@@ -28,6 +30,17 @@ const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore,
   const handleChange = response => {
     setObtained(response.score);
     setRubricResponse(response);
+    setValidateRubricResponse(false);
+  };
+
+  const handleCloseRubric = () => {
+    if (Object.keys(rubricResponse.rubricFeedback || {}).length === currentRubricData.criteria.length) {
+      setValidateRubricResponse(false);
+      toggleModal(rubricResponse);
+    } else {
+      message.error("Please select a rating from each criteria.");
+      setValidateRubricResponse(true);
+    }
   };
 
   return (
@@ -37,11 +50,16 @@ const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore,
       textAlign="left"
       visible={visible}
       footer={null}
-      onCancel={() => toggleModal(rubricResponse)}
+      onCancel={() => handleCloseRubric()}
       width={"700px"}
     >
       <StyledModalBody>
-        <PreviewRubricTable data={currentRubricData} handleChange={handleChange} rubricFeedback={rubricFeedback} />
+        <PreviewRubricTable
+          data={currentRubricData}
+          handleChange={handleChange}
+          rubricFeedback={rubricFeedback}
+          validateRubricResponse={validateRubricResponse}
+        />
       </StyledModalBody>
     </StyledModal>
   );

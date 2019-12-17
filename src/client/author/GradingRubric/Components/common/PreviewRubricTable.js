@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { lightGreen3, themeColor, greyScoreCardTitleColor, boxShadowColor3 } from "@edulastic/colors";
+import { lightGreen3, themeColor, greyScoreCardTitleColor, boxShadowColor3, fadedRed, red } from "@edulastic/colors";
 import { sum } from "lodash";
 
-const PreviewRubricTable = ({ data, handleChange, rubricFeedback, isDisabled = false }) => {
+const PreviewRubricTable = ({
+  data,
+  handleChange,
+  rubricFeedback,
+  isDisabled = false,
+  validateRubricResponse = false
+}) => {
   const [selectedRatings, setSelectedRatings] = useState({});
 
   useEffect(() => {
@@ -44,7 +50,7 @@ const PreviewRubricTable = ({ data, handleChange, rubricFeedback, isDisabled = f
   const getContent = () => {
     return data.criteria.map(c => {
       return (
-        <CriteriaWrapper>
+        <CriteriaWrapper key={c.id} showError={!Object.keys(selectedRatings).includes(c.id) && validateRubricResponse}>
           {getCriteria(c)}
           {getRatings(c)}
         </CriteriaWrapper>
@@ -70,7 +76,12 @@ const PreviewRubricTable = ({ data, handleChange, rubricFeedback, isDisabled = f
   };
 
   return (
-    <PerfectScrollbar style={{ maxHeight: "500px", padding: "0px 16px", width: "100%" }}>
+    <PerfectScrollbar
+      option={{
+        suppressScrollX: true
+      }}
+      style={{ maxHeight: "600px", padding: "0px 16px", width: "100%" }}
+    >
       <Container>{getContent()}</Container>
     </PerfectScrollbar>
   );
@@ -119,11 +130,18 @@ const RatingSection = styled.div`
   }
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  padding: 5px 0px;
+`;
 
-const CriteriaWrapper = styled.div``;
+const CriteriaWrapper = styled.div`
+  box-shadow: ${({ showError }) => (showError ? `0px 0px 2px 2px ${fadedRed}` : "none")};
+  border: ${({ showError }) => (showError ? `1px solid ${red}` : "none")};
+  margin-bottom: 10px;
+  border-radius: 8px;
+`;
 
 const RatingScrollContainer = styled(PerfectScrollbar)`
-  padding: 2px 3px 23px 3px;
+  padding: 2px 3px 18px 3px;
   white-space: nowrap;
 `;

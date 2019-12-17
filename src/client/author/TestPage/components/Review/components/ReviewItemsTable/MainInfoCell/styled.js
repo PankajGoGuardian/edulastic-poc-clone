@@ -40,18 +40,6 @@ export const Stimulus = WithMathFormula(styled.div`
     padding: 0;
   }
 
-  img,
-  table,
-  br,
-  iframe,
-  mathinput,
-  mathunit,
-  textinput,
-  textdropdown,
-  response {
-    display: ${({ isCollapse }) => isCollapse && "none"};
-  }
-
   div:nth-of-type(1) {
     display: contents;
   }

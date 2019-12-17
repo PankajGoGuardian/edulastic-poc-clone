@@ -46,9 +46,10 @@ const ModuleItem = SortableElement(props => {
   };
 
   const handleEdit = id => {
-    updateModule(id);
-    clearPreviousData();
-    toggleEdit(false);
+    if (updateModule(id)) {
+      clearPreviousData();
+      toggleEdit(false);
+    }
   };
 
   return editState ? (
@@ -225,6 +226,13 @@ const ManageModulesModalBody = props => {
 
   const handleModuleSave = () => {
     if (title.trim()) {
+      const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
+        x => x.title.trim().toLowerCase() === title.trim().toLowerCase()
+      );
+      if (titleAlreadyExists) {
+        message.error(`Module with title '${title}' already exists. Please use another title`);
+        return;
+      }
       addModuleToPlaylist({ title, description });
       toggleAddState(false);
       clearPreviousData();
@@ -237,7 +245,17 @@ const ManageModulesModalBody = props => {
     label === "title" ? setTitle(e.target.value) : setDescription(e.target.value);
   };
 
-  const handleModuleUpdate = id => updateModuleInPlaylist({ id, title, description });
+  const handleModuleUpdate = id => {
+    const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
+      (x, ind) => x.title.trim().toLowerCase() === title.trim().toLowerCase() && ind !== id
+    );
+    if (titleAlreadyExists) {
+      message.error(`Module with title '${title}' already exists. Please use another title`);
+      return false;
+    }
+    updateModuleInPlaylist({ id, title, description });
+    return true;
+  };
 
   const modulesList = [...destinationCurriculumSequence.modules];
 

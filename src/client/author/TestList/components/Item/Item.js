@@ -23,7 +23,8 @@ import {
   TagsWrapper,
   PlaylistId,
   StatusRow,
-  Qcount
+  Qcount,
+  StyledDesc
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -167,7 +168,7 @@ class Item extends Component {
           onClick={isPlaylist ? this.moveToItem : this.openModal}
           title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
-              <Stars />
+              <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
                 {owner && status === "draft" && (
                   <Button onClick={this.moveToItem} type="primary">
@@ -197,25 +198,30 @@ class Item extends Component {
         >
           <TestInfo>
             <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-            <TagsWrapper>
-              <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
-              <Tags show={2} tags={tags} key="tags" />
-            </TagsWrapper>
+            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
+            {!isPlaylist && (
+              <TagsWrapper>
+                <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
+                <Tags show={2} tags={tags} key="tags" />
+              </TagsWrapper>
+            )}
           </TestInfo>
 
-          <Inner>
-            <StatusRow>
-              <Qcount>
-                <span>Total Item(s):</span>
-                <span>{summary.totalItems}</span>
-              </Qcount>
-              {!isPlaylist && (
-                <TestStatus status={status} view="tile">
-                  {status}
-                </TestStatus>
-              )}
-            </StatusRow>
-          </Inner>
+          {!isPlaylist && (
+            <Inner>
+              <StatusRow>
+                <>
+                  <Qcount>
+                    <span>Total Item(s):</span>
+                    <span>{summary.totalItems}</span>
+                  </Qcount>
+                  <TestStatus status={status} view="tile">
+                    {status}
+                  </TestStatus>
+                </>
+              </StatusRow>
+            </Inner>
+          )}
           <Footer>
             {authorName && (
               <Author>

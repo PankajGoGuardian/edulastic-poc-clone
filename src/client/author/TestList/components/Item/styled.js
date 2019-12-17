@@ -240,8 +240,10 @@ Header.displayName = "CardHeader";
 export const Stars = styled(Rate)`
   font-size: 13px;
   position: absolute;
-  top: 5px;
-  left: 10px;
+  top: ${props => (props.isPlaylist ? "auto" : "5px")};
+  left: ${props => (props.isPlaylist ? "auto" : "10px")};
+  right: ${props => (props.isPlaylist ? "10px" : "auto")};
+  bottom: ${props => (props.isPlaylist ? "10px" : "auto")};
   z-index: 1;
 `;
 
@@ -260,6 +262,14 @@ export const StyledLink = styled.a`
   :hover {
     color: ${themeColor};
   }
+`;
+
+export const StyledDesc = styled.p`
+  height: 75px;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 10px;
+  margin-bottom: 20px;
 `;
 
 export const TestInfo = styled.div`

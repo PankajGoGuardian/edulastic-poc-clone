@@ -25,7 +25,8 @@ import {
   CardContainer,
   PaginationWrapper,
   AffixWrapper,
-  StyleChangeWrapper
+  StyleChangeWrapper,
+  CardBox
 } from "../../../TestList/components/Container/styled";
 
 import CardWrapper from "../../../TestList/components/CardWrapper/CardWrapper";
@@ -61,7 +62,7 @@ import { filterMenuItems } from "../../../Playlist/ducks";
 
 class TestList extends Component {
   static propTypes = {
-    tests: PropTypes.array.isRequired,
+    playlists: PropTypes.array.isRequired,
     receivePlaylists: PropTypes.func.isRequired,
     receivePublishers: PropTypes.func.isRequired,
     creating: PropTypes.bool.isRequired,
@@ -292,13 +293,15 @@ class TestList extends Component {
         />
       );
     }
+
+    const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
+    const countModular = new Array(GridCountInARow - (playlists.length % GridCountInARow)).fill(1);
     return (
-      <Row gutter={24} type="flex">
+      <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
         {playlists.map((item, index) => (
           <CardWrapper
             item={item}
             key={0}
-            // owner={item.authors.find(x => x._id === userId)}
             blockStyle={blockStyle === "tile" ? blockStyle : ""}
             windowWidth={windowWidth}
             history={history}
@@ -306,6 +309,8 @@ class TestList extends Component {
             isPlaylist={true}
           />
         ))}
+
+        {windowWidth > 1024 && countModular.map(index => <CardBox key={index} />)}
       </Row>
     );
   };

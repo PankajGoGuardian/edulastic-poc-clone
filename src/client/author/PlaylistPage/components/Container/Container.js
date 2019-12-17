@@ -279,9 +279,18 @@ class Container extends PureComponent {
 
   handleSave = async () => {
     const { playlist, updatePlaylist, createPlayList } = this.props;
+    
     const { backgroundColor, textColor } = this.state;
     playlist.bgColor = backgroundColor;
     playlist.textColor = textColor;
+    
+    if (!playlist?.modules?.length) {
+      /**
+       * need to save only when at-least a module present
+       */
+      return;
+    }
+
 
     if (playlist._id) {
       updatePlaylist(playlist._id, playlist);

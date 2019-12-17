@@ -548,14 +548,26 @@ class TestList extends Component {
   };
 
   handleBulkTestAdded = index => {
-    const { addTestToModuleInBulk } = this.props;
+    const { addTestToModuleInBulk, playlist: { modules = [] } = {} } = this.props;
     const { markedTests, selectedTests } = this.state;
+    const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
+    const markedIds = markedTests.map(obj => obj._id);
+    const uniqueMarkedIds = markedIds.filter(x => !addedTestIds.includes(x));
+    const uniqueMarkedTests = markedTests.filter(x => uniqueMarkedIds.includes(x._id));
+    if (uniqueMarkedIds.length !== markedIds.length) {
+      if (uniqueMarkedIds.length === 0) {
+        message.warning("Selected tests already exists in this module");
+        return;
+      }
+      if (uniqueMarkedIds.length < markedIds.length && uniqueMarkedIds.length !== 0)
+        message.warning("Some of the selected tests already exists in this module");
+    }
     this.setState(prevState => ({
       ...prevState,
-      selectedTests: [...selectedTests, ...markedTests.map(obj => obj._id)],
+      selectedTests: [...selectedTests, ...uniqueMarkedIds],
       markedTests: []
     }));
-    addTestToModuleInBulk({ moduleIndex: index, tests: markedTests });
+    addTestToModuleInBulk({ moduleIndex: index, tests: uniqueMarkedTests });
     message.success("Tests Added to playlist");
   };
 
@@ -731,7 +743,6 @@ class TestList extends Component {
       showRemoveModules,
       markedTests
     } = this.state;
-
     const search = {
       ...testFilters
     };

@@ -287,6 +287,7 @@ export const DivBlock = styled.div`
 export const Label = styled.label`
   font-size: ${props => props.theme.linkFontSize};
   font-weight: 600;
+  text-transform: uppercase;
 `;
 
 export const StyledDiv = styled.div`

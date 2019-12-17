@@ -188,6 +188,13 @@ class Container extends Component {
       itemFromState
     } = this.props;
 
+    const questionTitle =
+      question.type !== constantsQuestionType.PASSAGE
+        ? question.title
+        : itemFromState?.isPassageWithQuestions
+        ? "Passage with Questions"
+        : "Passage With Multipart";
+
     if (location.pathname.includes("author/tests")) {
       const testPath = `/author/tests/${testId || "create"}`;
       let crumbs = [
@@ -207,7 +214,7 @@ class Container extends Component {
           onClick: navigateToPickupQuestionType
         },
         {
-          title: question.title,
+          title: questionTitle,
           to: ""
         }
       ];
@@ -229,7 +236,7 @@ class Container extends Component {
         to: `/author/items/${testItemId}/item-detail`
       },
       {
-        title: question.title,
+        title: questionTitle,
         to: ""
       }
     ];

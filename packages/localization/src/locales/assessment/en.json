@@ -46,7 +46,7 @@
       "variable": "Variable",
       "checkVariables": "Use dynamic parameters",
       "dynamicParameters": "Dynamic Parameters",
-      "dynamicParametersDescription": "Once you have entered your variables above, you should see them listed here. You can specify the range of possible values for each variable below.",
+      "dynamicParametersDescription": "To use dynamic variables in a question, use @ symbol ahead of the variable e.g. @x, @y etc. Once you have used the variables in the question text or correct answer, you should see them listed here. You can use a range, set or fomula to calculate these variables. Do not use @ prefix in this section alone.",
       "beforeCombinationCount": "Create",
       "afterCombinationCount": "possible value combinations (max 200)",
       "variableGenerate": "Generate",

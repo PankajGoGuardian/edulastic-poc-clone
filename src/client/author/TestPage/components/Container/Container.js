@@ -223,10 +223,6 @@ class Container extends PureComponent {
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-
-    if (isEditable && testItems.length > 0 && updated) {
-      this.handleSave(test);
-    }
   }
 
   handleNavChange = (value, firstFlow) => () => {

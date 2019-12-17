@@ -278,7 +278,7 @@ class AuthorTestItemPreview extends Component {
             />
           </PassageNavigation>
         )}
-        <ButtonsWrapper justifyContent="flex-end">
+        <ButtonsWrapper padding="15px 15px 0px 45px" mb="5px" justifyContent="flex-end">
           {page !== "itemAuthoring" && showHintsBtn && (
             <EvaluateButton
               onClick={handleShowHints}

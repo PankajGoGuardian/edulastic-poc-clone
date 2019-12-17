@@ -5,12 +5,9 @@ import {
   white,
   themeColor,
   linkColor,
-  smallDesktopWidth,
   red,
   mediumDesktopWidth,
-  mediumDesktopExactWidth,
-  extraDesktopWidth,
-  extraDesktopWidthMax
+  largeDesktopWidth
 } from "@edulastic/colors";
 import { Button, Icon, Typography } from "antd";
 
@@ -71,8 +68,14 @@ export const ButtonsContainer = styled(FlexContainer)`
 export const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: ${props => props.justifyContent};
-  margin-top: 20px;
   margin: 0;
+  padding: ${props => props.padding || "0px"};
+  .ant-btn {
+    margin-bottom: ${props => props.mb || "0px"};
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    flex-wrap: wrap;
   }
 `;
 

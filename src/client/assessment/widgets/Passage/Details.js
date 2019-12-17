@@ -4,11 +4,11 @@ import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
 import { Checkbox, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { EduButton } from "@edulastic/common";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
 import Question from "../../components/Question";
-import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
 
 import { StyledInput } from "./styled/StyledInput";
@@ -17,8 +17,6 @@ import { WidgetFRInput } from "../../styled/Widget";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
-
-const List = withAddButton(QuillSortableList);
 
 const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
   const handleChange = (prop, value) => {
@@ -134,18 +132,21 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
             />
           </div>
         )}
-        {item.paginated_content && item.pages && !!item.pages.length && (
+        {item.paginated_content && (
           <div>
             <Subtitle>{t("component.passage.contentPages")}</Subtitle>
-            <List
-              items={item.pages}
-              buttonText={t("component.passage.add")}
-              onAdd={handleAddPage}
-              onSortEnd={handleSortPagesEnd}
-              useDragHandle
-              onRemove={handleRemovePage}
-              onChange={handleChangePage}
-            />
+            {item?.pages?.length ? (
+              <QuillSortableList
+                items={item.pages}
+                onSortEnd={handleSortPagesEnd}
+                useDragHandle
+                onRemove={handleRemovePage}
+                onChange={handleChangePage}
+              />
+            ) : null}
+            <EduButton type="primary" onClick={handleAddPage}>
+              {t("component.passage.add")}
+            </EduButton>
           </div>
         )}
       </Question>

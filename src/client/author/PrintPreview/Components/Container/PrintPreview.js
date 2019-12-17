@@ -83,18 +83,6 @@ class PrintPreview extends Component {
             </b>
             lastic
           </StyledTitle>
-          <PagePrinterHeader>
-            <TestInfo>
-              <InfoItem>
-                <Color>Test Name : </Color>
-                {testName}
-              </InfoItem>
-              <InfoItem>
-                <Color>Due : </Color>
-                {dueDate}
-              </InfoItem>
-            </TestInfo>
-          </PagePrinterHeader>
           <QuestionContentArea>{renderClassStudentsResponse}</QuestionContentArea>
         </PrintPreviewContainer>
       </PrintPreviewBack>
@@ -134,8 +122,6 @@ PrintPreview.propTypes = {
 };
 
 const QuestionContentArea = styled.div`
-  border-top: 1px solid #59595a;
-
   .test-item-col {
     width: 100%;
     .question-container {

@@ -39,6 +39,8 @@ class StudentQuestionContainer extends Component {
     let groupId = testActivity ? testActivity.groupId : "";
     const userId = testActivity ? testActivity.userId : "";
     const classname = additionalData ? additionalData.className : "";
+    const testName = additionalData ? additionalData.testName : "";
+    const assignedBy = additionalData ? additionalData?.assignedBy?.name : "";
     const currentStudent = studentItems.find(({ studentId }) => studentId === userId);
     const studentName = currentStudent ? currentStudent.studentName : "";
     const { assignmentIdClassId } = this.props;
@@ -49,6 +51,14 @@ class StudentQuestionContainer extends Component {
       <StyledStudentQuestion>
         <StudentQuestionHeader>
           <StudentInformation>
+            <InfoItem>
+              <Color>Test Name: </Color>
+              {testName}
+            </InfoItem>
+            <InfoItem>
+              <Color>Created By: </Color>
+              {assignedBy}
+            </InfoItem>
             <InfoItem>
               <Color>Student Name: </Color>
               {studentName}

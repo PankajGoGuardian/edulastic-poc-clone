@@ -188,7 +188,8 @@ class Container extends Component {
         {
           title: testName,
           to: testPath,
-          onClick: toggleModalAction
+          onClick: toggleModalAction,
+          state: { persistStore: true }
         },
         {
           title: "SELECT A QUESTION TYPE",

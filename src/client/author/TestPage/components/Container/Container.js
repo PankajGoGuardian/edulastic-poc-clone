@@ -129,7 +129,8 @@ class Container extends PureComponent {
       getDefaultTestSettings,
       setData,
       userRole,
-      isReleaseScorePremium
+      isReleaseScorePremium,
+      location: _location
     } = this.props;
     const self = this;
 
@@ -145,6 +146,7 @@ class Container extends PureComponent {
         3
       );
     }
+
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
     } else if (createdItems.length > 0) {
@@ -155,7 +157,8 @@ class Container extends PureComponent {
 
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id, true, editAssigned);
-    } else {
+    } else if (!_location?.state?.persistStore) {
+      // currently creating test do nothing
       this.gotoTab("description");
       clearTestAssignments([]);
       clearSelectedItems();

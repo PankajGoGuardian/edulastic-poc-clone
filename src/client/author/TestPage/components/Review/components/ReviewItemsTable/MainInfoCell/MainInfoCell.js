@@ -9,7 +9,7 @@ import { PointsLabel, PointsInput, PreviewButton } from "../../List/styled";
 class MainInfoCell extends React.Component {
   render() {
     const { data, handlePreview, isEditable, owner, onChangePoints, index, setExpandedRows, isCollapse } = this.props;
-    const newHtml = data.stimulus?.replace(/&nbsp;/g, "");
+    const newHtml = helpers.sanitizeForReview(data.stimulus) || "";
 
     return (
       <FlexContainer style={{ justifyContent: "space-between" }}>

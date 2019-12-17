@@ -236,7 +236,7 @@ export const sanitizeForReview = stimulus => {
     }
   }
   if (splitJquery.includes("</p>")) {
-    splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} ...</p>`;
+    splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} </p>`;
   }
   return sanitizeSelfClosingTags(splitJquery);
 };

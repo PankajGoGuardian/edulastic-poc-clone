@@ -48,7 +48,13 @@ const PlayerHeader = ({
     zoomStyle.padding = 0;
   }
 
-  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} finishTest={onOpenExitPopup} onSubmit={onSubmit} />;
+  const rightButtons = (
+    <SaveAndExit
+      previewPlayer={previewPlayer}
+      finishTest={onOpenExitPopup}
+      onSubmit={!previewPlayer ? onSubmit : null}
+    />
+  );
 
   return (
     <Fragment>

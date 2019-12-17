@@ -133,6 +133,9 @@ const AssessmentContainer = ({
   };
 
   const gotoSummary = async () => {
+    if (preview && closeTestPreviewModal) {
+      return closeTestPreviewModal();
+    }
     if (!testletType) {
       const timeSpent = Date.now() - lastTime.current;
       await saveUserAnswer(currentItem, timeSpent, false, groupId);

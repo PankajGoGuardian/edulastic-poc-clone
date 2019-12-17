@@ -64,10 +64,9 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   openExitPopup = () => {
-    const { previewPlayer, closeTestPreviewModal } = this.props;
-    if (previewPlayer) {
-      closeTestPreviewModal();
-      return;
+    const { closeTestPreviewModal, previewPlayer } = this.props;
+    if (previewPlayer && closeTestPreviewModal) {
+      return closeTestPreviewModal();
     }
     this.setState({ showExitPopup: true });
   };

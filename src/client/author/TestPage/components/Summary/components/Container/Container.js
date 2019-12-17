@@ -48,7 +48,8 @@ const Summary = ({
   onChangeColor,
   addNewTag,
   onChangeSubjects,
-  isEditable = false
+  isEditable = true,
+  showCancelButton
 }) => {
   const handleChangeField = (field, value) => {
     if (field === "thumbnail") {
@@ -62,8 +63,8 @@ const Summary = ({
   }, []);
   const breadcrumbData = [
     {
-      title: "TESTS LIBRARY",
-      to: "/author/tests"
+      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+      to: showCancelButton ? "/author/assignments" : "/author/tests"
     },
     {
       title: current,

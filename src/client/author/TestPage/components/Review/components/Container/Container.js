@@ -312,7 +312,8 @@ class Review extends PureComponent {
       isEditable = false,
       itemsSubjectAndGrade,
       checkAnswer,
-      showAnswer
+      showAnswer,
+      showCancelButton
     } = this.props;
     const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId, hasStickyHeader } = this.state;
 
@@ -330,11 +331,10 @@ class Review extends PureComponent {
       }
       return acc;
     }, []);
-
     const breadcrumbData = [
       {
-        title: "TESTS LIBRARY",
-        to: "/author/tests"
+        title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+        to: showCancelButton ? "/author/assignments" : "/author/tests"
       },
       {
         title: current,

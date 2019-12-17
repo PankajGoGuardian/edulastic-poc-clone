@@ -13,11 +13,21 @@ import { Container, ButtonLink } from "../../../../../src/components/common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import MainSetting from "../MainSetting/MainSetting";
 
-const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEditable = false, sebPasswordRef }) => {
+const Setting = ({
+  t,
+  current,
+  history,
+  onShowSource,
+  windowWidth,
+  owner,
+  isEditable = false,
+  sebPasswordRef,
+  showCancelButton
+}) => {
   const breadcrumbData = [
     {
-      title: "TESTS LIBRARY",
-      to: "/author/tests"
+      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+      to: showCancelButton ? "/author/assignments" : "/author/tests"
     },
     {
       title: current,

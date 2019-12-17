@@ -110,8 +110,10 @@ class Container extends PureComponent {
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`;
     }
-
-    history.push(url);
+    history.push({
+      pathname: url,
+      state: history.location.state
+    });
   };
 
   componentDidMount() {
@@ -133,18 +135,25 @@ class Container extends PureComponent {
       location: _location
     } = this.props;
     const self = this;
-
-    if (this.props.location?.state?.showItemAddedMessage) {
-      message.success(
-        <span>
-          New item has been created and added to the current test. Click
-          <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
-            here
-          </span>{" "}
-          to see it.
-        </span>,
-        3
-      );
+    const { showCancelButton = false } = history.location.state || {};
+    if (location.hash === "#review") {
+      this.handleNavChange("review", true)();
+    } else if (createdItems.length > 0) {
+      this.setState({ editEnable: true }, () => {
+        this.gotoTab("addItems");
+      });
+      if (this.props.location?.state?.showItemAddedMessage) {
+        message.success(
+          <span>
+            New item has been created and added to the current test. Click
+            <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
+              here
+            </span>{" "}
+            to see it.
+          </span>,
+          3
+        );
+      }
     }
 
     if (location.hash === "#review") {
@@ -169,6 +178,9 @@ class Container extends PureComponent {
       if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
         setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE });
       }
+    }
+    if (showCancelButton) {
+      this.setState({ editEnable: true });
     }
 
     if (editAssigned) {
@@ -312,11 +324,23 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus, questions, questionsById } = this.props;
+    const {
+      test,
+      setData,
+      rows,
+      isTestLoading,
+      userId,
+      match = {},
+      testStatus,
+      questions,
+      questionsById,
+      history
+    } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { params = {} } = match;
+    const { showCancelButton = false } = history.location.state || {};
     const { editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
@@ -360,6 +384,7 @@ class Container extends PureComponent {
               isEditable={isEditable}
               onChangeGrade={this.handleChangeGrade}
               onChangeSubjects={this.handleChangeSubject}
+              showCancelButton={showCancelButton}
             />
           </Content>
         );
@@ -378,6 +403,7 @@ class Container extends PureComponent {
             owner={owner}
             isEditable={isEditable}
             current={current}
+            showCancelButton={showCancelButton}
           />
         );
       case "settings":
@@ -389,6 +415,7 @@ class Container extends PureComponent {
               onShowSource={this.handleNavChange("source")}
               sebPasswordRef={this.sebPasswordRef}
               owner={owner}
+              showCancelButton={showCancelButton}
             />
           </Content>
         );
@@ -591,17 +618,19 @@ class Container extends PureComponent {
       updated,
       showWarningModal,
       proceedPublish,
-      isTestLoading
+      isTestLoading,
+      history
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
+    const { showCancelButton = false } = history.location.state || {};
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
-    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner;
-    const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !owner && !editEnable;
-
+    const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner;
+    const showEditButton =
+      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
     const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
     const gradeSubject = { grades, subjects };
     return (
@@ -648,6 +677,7 @@ class Container extends PureComponent {
           isTestLoading={isTestLoading}
           showDuplicateButton={showDuplicateButton}
           handleDuplicateTest={this.handleDuplicateTest}
+          showCancelButton={showCancelButton}
         />
         {this.renderContent()}
       </>

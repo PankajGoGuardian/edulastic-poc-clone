@@ -42,6 +42,7 @@ import EditTestModal from "../../../src/components/common/EditTestModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
 import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
+import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 const { statusConstants } = test;
 
 export const navButtonsTest = [
@@ -145,13 +146,15 @@ const TestPageHeader = ({
   isTestLoading,
   match,
   showDuplicateButton,
-  handleDuplicateTest
+  handleDuplicateTest,
+  showCancelButton
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
 
   useEffect(() => {
     if (match?.params?.oldId) {
@@ -193,6 +196,18 @@ const TestPageHeader = ({
     onAssign();
   };
 
+  const setCancelState = val => {
+    setShowCancelPopup(val);
+  };
+
+  const handleCancelEdit = () => {
+    setCancelState(false);
+  };
+
+  const confirmCancel = () => {
+    history.push("/author/assignments");
+  };
+
   if (!owner) {
     navButtons = navButtons.slice(2);
   }
@@ -222,6 +237,12 @@ const TestPageHeader = ({
         onCancel={() => setShowRegradePopup(false)}
         onOk={onRegradeConfirm}
         onCancelRegrade={onCancelRegrade}
+      />
+      <ConfirmCancelTestEditModal
+        showCancelPopup={showCancelPopup}
+        onCancel={handleCancelEdit}
+        onOk={confirmCancel}
+        onClose={() => setCancelState(false)}
       />
       {windowWidth > 992 ? (
         <HeaderWrapper>
@@ -328,9 +349,14 @@ const TestPageHeader = ({
                 <IconCopy color={themeColor} />
               </EduButton>
             )}
-            {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
+            {showShareButton && (owner || testStatus === "published") && !isPlaylist && !showCancelButton && (
               <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
                 Assign
+              </AssignButton>
+            )}
+            {showCancelButton && (
+              <AssignButton data-cy="assign" size="large" onClick={() => setCancelState(true)}>
+                Cancel
               </AssignButton>
             )}
           </RightFlexContainer>

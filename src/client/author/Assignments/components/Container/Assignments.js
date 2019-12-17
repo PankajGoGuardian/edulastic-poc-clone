@@ -185,7 +185,10 @@ class Assignments extends Component {
   onEnableEdit = () => {
     const { history } = this.props;
     const { currentTestId } = this.state;
-    history.push(`/author/tests/${currentTestId}/editAssigned`);
+    history.push({
+      pathname: `/author/tests/${currentTestId}/editAssigned`,
+      state: { showCancelButton: true }
+    });
   };
 
   render() {

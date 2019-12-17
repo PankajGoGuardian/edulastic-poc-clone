@@ -113,7 +113,10 @@ class AssignmentAdvanced extends Component {
   onEnableEdit = () => {
     const { history, match } = this.props;
     const { testId } = match.params;
-    history.push(`/author/tests/${testId}/editAssigned`);
+    history.push({
+      pathname: `/author/tests/${testId}/editAssigned`,
+      state: { showCancelButton: true }
+    });
   };
 
   toggleEditModal = value => {

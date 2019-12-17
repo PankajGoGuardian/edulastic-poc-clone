@@ -60,7 +60,9 @@ const menuItems = [
       /author\/expressgrader/,
       /author\/standardsBasedReport/
     ],
-    path: "author/assignments"
+    path: "author/assignments",
+    customSelection: true,
+    condtition: "showCancelButton"
   },
   {
     label: "PlayList Library",
@@ -231,15 +233,19 @@ class SideMenu extends Component {
       lastName,
       userRole,
       className,
-      profileThumbnail
+      profileThumbnail,
+      locationState
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 769;
-    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem =>
-      menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false))
-    );
+    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => {
+      if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
+        return true;
+      }
+      return menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false));
+    });
 
     let _userRole = null;
     if (userRole === roleuser.TEACHER) {
@@ -437,7 +443,8 @@ const enhance = compose(
       userRole: get(state.user, "user.role", ""),
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),
-      profileThumbnail: get(state.user, "user.thumbnail")
+      profileThumbnail: get(state.user, "user.thumbnail"),
+      locationState: get(state, "router.location.state")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )

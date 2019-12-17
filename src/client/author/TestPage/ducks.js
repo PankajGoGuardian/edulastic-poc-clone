@@ -510,7 +510,12 @@ function* receiveTestByIdSaga({ payload }) {
     const createdItems = yield select(getTestCreatedItemsSelector);
     const entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
     if (entity._id !== payload.id) {
-      yield put(push(`/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`));
+      yield put(
+        push({
+          pathname: `/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`,
+          state: { showCancelButton: payload.editAssigned }
+        })
+      );
     }
     entity.testItems = entity.testItems.map(testItem =>
       createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
@@ -658,7 +663,13 @@ function* updateTestSaga({ payload }) {
         if (currentTab) {
           url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`;
         }
-        yield put(push(url));
+        const locationState = yield select(state => get(state, "router.location.state"), {});
+        yield put(
+          push({
+            pathname: url,
+            state: locationState
+          })
+        );
       }
     } else if (!payload.assignFlow) {
       yield call(message.success, "Test saved as Draft");

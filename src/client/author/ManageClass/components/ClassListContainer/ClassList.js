@@ -15,6 +15,7 @@ import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
 import Header from "./Header";
+import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -28,7 +29,8 @@ const ClassList = ({
   institutions,
   history,
   user,
-  fetchClassList
+  fetchClassList,
+  setAssignmentFilters
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -45,14 +47,27 @@ const ClassList = ({
   useEffect(() => {
     setClassGroups(groups);
   }, [groups]);
+
+  // get assignments related to class
+  const getAssignmentsByClass = classId => event => {
+    event.stopPropagation();
+    const filter = {
+      classId,
+      testType: "",
+      termId: ""
+    };
+    history.push("/author/assignments");
+    setAssignmentFilters(filter);
+  };
+
   const columns = [
     {
       title: "Class Name",
       dataIndex: "name",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.name.localeCompare(b.name),
-      render: _classname => (
-        <Tooltip title={_classname} placement="bottom">
+      render: (_classname, record) => (
+        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={_classname} placement="bottom">
           {_classname}
         </Tooltip>
       ),
@@ -143,8 +158,8 @@ const ClassList = ({
       dataIndex: "assignmentCount",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => Number(a.assignmentCount) - Number(b.assignmentCount),
-      render: (assignmentCount = 0) => (
-        <Tooltip title={assignmentCount} placement="bottom">
+      render: (assignmentCount = 0, record) => (
+        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={assignmentCount} placement="bottom">
           {assignmentCount}
         </Tooltip>
       )
@@ -219,7 +234,8 @@ const enhance = compose(
     }),
     {
       loadStudents: fetchStudentsByIdAction,
-      fetchClassList: fetchClassListAction
+      fetchClassList: fetchClassListAction,
+      setAssignmentFilters: setAssignmentFiltersAction
     }
   )
 );

@@ -7,7 +7,7 @@ import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/const
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
 
-const filterMenuItems = [
+export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
   { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
   { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },

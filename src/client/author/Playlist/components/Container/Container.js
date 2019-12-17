@@ -57,7 +57,7 @@ import {
 } from "../../../src/selectors/user";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
-import { filterMenuItems } from "../../../TestPage/components/AddItems/ducks";
+import { filterMenuItems } from "../../../Playlist/ducks";
 
 class TestList extends Component {
   static propTypes = {

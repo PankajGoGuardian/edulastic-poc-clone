@@ -190,6 +190,14 @@ export const WidgetMethods = styled.div`
 `;
 
 export const WidgetFRInput = styled.div`
+  div.mig {
+    /* 
+      in case of migrated question
+      there is an extra div for which we need to add width explicitly
+      it is generic so cannot apply style there directly
+     */
+    width: 100%;
+  }
   .fr {
     &-box {
       background: ${white};

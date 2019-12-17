@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-export const MigratedQuestion = styled.div`
+export const MigratedQuestion = styled.div.attrs({
+  className: "mig"
+})`
   display: inline-flex;
   /* width: 100%; */
   height: 100%;

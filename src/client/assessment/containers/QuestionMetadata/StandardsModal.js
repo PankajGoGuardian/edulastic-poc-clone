@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Button, Row, Col, Checkbox, Spin } from "antd";
-import { Paper, FlexContainer } from "@edulastic/common";
+import { Paper, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { Container } from "./styled/Container";
 import { TLOList, TLOListItem } from "./styled/TLOList";
 import { ELOList } from "./styled/ELOList";
@@ -124,7 +124,7 @@ const StandardsModal = ({
                       />
                       <div>
                         <b>{c.identifier}</b>
-                        <div>{c.description}</div>
+                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: c.description }} />
                       </div>
                     </FlexContainer>
                   ))}

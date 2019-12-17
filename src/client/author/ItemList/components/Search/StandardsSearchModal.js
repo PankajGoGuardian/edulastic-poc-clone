@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Row, Col, Select, Checkbox, Modal } from "antd";
 import styled from "styled-components";
-import { Paper, FlexContainer } from "@edulastic/common";
+import { Paper, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 
 import { getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { ELOList } from "../../../../assessment/containers/QuestionMetadata/styled/ELOList";
@@ -58,7 +58,7 @@ const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standard
                   <Checkbox onChange={() => handleCheckELO(c)} checked={eloStandards.some(item => item === c._id)} />
                   <div>
                     <b>{c.identifier}</b>
-                    <div dangerouslySetInnerHTML={{ __html: c.description }} />
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: c.description }} />
                   </div>
                 </FlexContainer>
               ))}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Col, Icon, Row, Select } from "antd";
+import { Col, Icon, Row, Select, message } from "antd";
 import moment from "moment";
 import {
   getSortedTestActivitySelector,
@@ -64,6 +64,11 @@ function LCBAssignmentSettings({
   const { startDate, endDate, status } = assignment?.["class"]?.[0] || {};
   const changeField = key => {
     return value => {
+      if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
+        message.info("Please select your prefered start date");
+      } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
+        message.info("Please select your prefered due date");
+      }
       changeAttrs({ key, value });
     };
   };

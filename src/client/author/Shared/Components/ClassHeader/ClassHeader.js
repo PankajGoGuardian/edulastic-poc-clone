@@ -435,6 +435,14 @@ class ClassHeader extends Component {
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
+          <DeleteAssignmentModal
+            testName={additionalData?.testName}
+            assignmentId={assignmentId}
+            classId={classId}
+            lcb
+          />
+          {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
+          {isViewPassword && <ViewPasswordModal />}
           <ConfirmationModal
             title="Pause"
             show={isPauseModalVisible}

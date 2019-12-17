@@ -26,7 +26,7 @@ const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole, isAdvanc
             )}
 
             <Col span={24}>
-              <StyledSelect data-cy="testType" defaultValue={testType} onChange={onAssignmentTypeChange}>
+              <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} {...valueProps} disabled={disabled}>
                 {isAdmin && (
                   <Option key={COMMON} value={COMMON}>
                     {"Common Assessment"}

@@ -2,7 +2,8 @@ import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
-import { omitBy, isUndefined, isEmpty } from "lodash";
+import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
+import { test as testConst, roleuser, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
 
 const slice = createSlice({
   initialState: {
@@ -43,6 +44,14 @@ const slice = createSlice({
       } else {
         state.assignment[key] = value;
         state.updateSettings[key] = value;
+        if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
+          set(state.assignment, "class[0].startDate", Date.now());
+          state.updateSettings.startDate = Date.now();
+        } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
+          const newDueDate = get(state.assignment, "class[0].startDate", Date.now()) + 1000 * 60 * 60 * 24 * 7;
+          set(state.assignment, "class[0].endDate", newDueDate);
+          state.updateSettings.endDate = newDueDate;
+        }
       }
     }
   }
@@ -50,6 +59,14 @@ const slice = createSlice({
 
 export { slice };
 
+const assignmentStatusArray = [
+  assignmentStatusOptions.NOT_OPEN,
+  assignmentStatusOptions.IN_PROGRESS,
+  assignmentStatusOptions.IN_GRADING,
+  assignmentStatusOptions.DONE,
+  assignmentStatusOptions.ARCHIVED
+];
+const assignmentStatusOptionsKeys = invert(assignmentStatusArray);
 function* loadAssignmentSaga({ payload }) {
   try {
     const { assignmentId, classId } = payload;
@@ -58,6 +75,21 @@ function* loadAssignmentSaga({ payload }) {
      * filtering out other classes
      */
     data["class"] = (data["class"] || []).filter(x => x._id === classId);
+    /**
+     * logic for picking correct status for a class considering redirect
+     */
+    const statusKeys = data["class"].map(x => parseInt(assignmentStatusOptionsKeys[x.status]));
+    const statusKey = Math.min(statusKeys);
+    if (data["class"][0]) {
+      data["class"][0].status = assignmentStatusArray[statusKey];
+      data["class"][0].endDate = Math.max(data["class"].map(x => x.endDate));
+      if (!data["class"][0].startDate) {
+        data["class"][0].startDate = Date.now();
+      }
+      if (!data["class"][0].endDate) {
+        data["class"][0].endDate = Date.now() + 1000 * 60 * 60 * 24 * 7;
+      }
+    }
     /**
      * if class level openPolicy and  closePolicy present,
      * override the top level with class level
@@ -80,7 +112,7 @@ function* loadAssignmentSaga({ payload }) {
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {};
   const { openPolicy, closePolicy, releaseScore, startDate, endDate } = assignment;
-  return omitBy({ openPolicy, closePolicy, releaseScore, openDate: startDate, endDate }, isUndefined);
+  return omitBy({ openPolicy, closePolicy, releaseScore, startDate, endDate }, isUndefined);
 }
 
 function* updateAssignmentClassSettingsSaga({ payload }) {

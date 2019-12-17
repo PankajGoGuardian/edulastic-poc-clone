@@ -247,7 +247,7 @@ class AssignTest extends React.Component {
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
-        <MultipleAssignConfirmation assignment={assignment} />
+        <MultipleAssignConfirmation assignment={assignment} isPlaylist={isPlaylist} />
         <ListHeader
           title={`Assign ${isPlaylist ? "PLAYLIST" : "TEST"}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"

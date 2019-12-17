@@ -1159,6 +1159,8 @@ export function* watcherSaga() {
 
 export const stateSelector = state => state.tests;
 
+export const playlistStateSelector = state => state.playlist;
+
 export const getPassageItemsCountSelector = createSelector(
   stateSelector,
   state => state.passageItems.length
@@ -1166,6 +1168,11 @@ export const getPassageItemsCountSelector = createSelector(
 
 export const getTestSelector = createSelector(
   stateSelector,
+  state => state.entity
+);
+
+export const getPlaylistSelector = createSelector(
+  playlistStateSelector,
   state => state.entity
 );
 

@@ -8,12 +8,12 @@ import {
 } from "../../../TestPage/components/Assign/ducks";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import { Paragraph } from "./styled";
-import { getTestSelector } from "../../../TestPage/ducks";
+import { getTestSelector, getPlaylistSelector } from "../../../TestPage/ducks";
 
 const MultipleAssignConfirmation = ({
   hasDuplicateAssignments,
   toggleHasDuplicateAssignmentPopup,
-  test,
+  entity,
   saveAssignment,
   assignment
 }) => {
@@ -54,7 +54,7 @@ const MultipleAssignConfirmation = ({
       onCancel={onCancel}
     >
       <Paragraph>
-        {test.title} is already assigned to some of the student(s) you have selected. Student(s) who were assigned
+        {entity.title} is already assigned to some of the student(s) you have selected. Student(s) who were assigned
         earlier will receive a duplicate copy of this assessment.
       </Paragraph>
       <Paragraph>Please select if the student(s) should receive a duplicate assessment.</Paragraph>
@@ -63,9 +63,9 @@ const MultipleAssignConfirmation = ({
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     hasDuplicateAssignments: getHasDuplicateAssignmentsSelector(state),
-    test: getTestSelector(state)
+    entity: ownProps.isPlaylist ? getPlaylistSelector(state) : getTestSelector(state)
   }),
   {
     saveAssignment: saveAssignmentAction,

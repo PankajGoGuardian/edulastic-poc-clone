@@ -90,7 +90,7 @@ export default class TestLibrary {
       testSummary.header.clickOnReview();
       // save
       cy.wait(2000);
-      testSummary.header.clickOnSaveButton(true);
+      // testSummary.header.clickOnSaveButton(true);
       // publish
       if (publish) testSummary.header.clickOnPublishButton();
 
@@ -118,6 +118,7 @@ export default class TestLibrary {
   };
 
   clickOnAssign = () => {
+    cy.server();
     cy.route("POST", "**/group/search").as("groups");
     cy.contains("ASSIGN").click({ force: true });
     cy.wait("@groups");

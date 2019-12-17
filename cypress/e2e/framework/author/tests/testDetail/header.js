@@ -42,19 +42,21 @@ export default class TestHeader {
     });
   };
 
-  clickOnPublishButton = () => {
+  clickOnPublishButton = (assigned = false, isRegrade) => {
     cy.wait(1000);
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");
     cy.route("PUT", "**/test/*").as("saveTest");
     cy.get('[data-cy="publish"]').click();
-    cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
-    return cy.wait("@published").then(xhr => {
-      expect(xhr.status).to.eq(200);
-      return JSON.stringify(xhr.request)
-        .split("/")
-        .reverse()[1];
-    });
+    if (!assigned) {
+      cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
+      return cy.wait("@published").then(xhr => {
+        expect(xhr.status).to.eq(200);
+        return JSON.stringify(xhr.request)
+          .split("/")
+          .reverse()[1];
+      });
+    }
   };
 
   clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });
@@ -85,4 +87,7 @@ export default class TestHeader {
       .eq(0)
       .find("span")
       .contains("draft");
+
+  getTestNameInTitle = () => cy.get('[data-cy="title"]');
+  verifyNameInTitle = name => this.getTestNameInTitle().should("contain", name);
 }

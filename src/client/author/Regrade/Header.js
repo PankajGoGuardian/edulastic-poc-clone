@@ -8,8 +8,12 @@ const Header = ({ onApplySettings, onCancelRegrade }) => {
     <HeaderWrapper>
       <Title>Regrade</Title>
       <FlexContainer>
-        <ApplyButton onClick={onCancelRegrade}>Cancel</ApplyButton>
-        <ApplyButton onClick={onApplySettings}>Apply</ApplyButton>
+        <ApplyButton data-cy="cancelRegrade" onClick={onCancelRegrade}>
+          Cancel
+        </ApplyButton>
+        <ApplyButton data-cy="applyRegrade" onClick={onApplySettings}>
+          Apply
+        </ApplyButton>
       </FlexContainer>
     </HeaderWrapper>
   );

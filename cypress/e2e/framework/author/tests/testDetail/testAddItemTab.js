@@ -1,4 +1,10 @@
+import TestHeader from "./header";
+import SearchFilters from "../../../author/searchFiltersPage";
 export default class TestAddItemTab {
+  constructor() {
+    this.header = new TestHeader();
+    this.searchFilters = new SearchFilters();
+  }
   clickOnCreateNewItem = () => {
     // cy.server();
     // cy.route("POST", "**/testitem**").as("saveItem");

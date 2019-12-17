@@ -82,5 +82,17 @@
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.2"],
     "tags": ["pqr", "abc", "tuv"]
+  },
+  "EDIT_ASSIGNED_TEST": {
+    "name": "Test Edit Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1", "MCQ_TF.1", "MCQ_TF.1"]
+  },
+  "EDIT_ASSIGNED_TEST_REGRADE": {
+    "name": "Test Edit Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1"]
   }
 }

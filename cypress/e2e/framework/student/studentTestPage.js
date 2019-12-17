@@ -43,8 +43,8 @@ class StudentTestPage {
   getNext = () => cy.get("[data-cy=next]");
 
   clickOnNext = () => {
-    // cy.server();
-    // cy.route("POST", "**/test-activity/**").as("saved");
+    cy.server();
+    cy.route("POST", "**/test-activity/**").as("saved");
     cy.wait(300);
     this.getNext()
       .should("be.visible")
@@ -661,6 +661,46 @@ class StudentTestPage {
       default:
         break;
     }
+  };
+
+  verifyNoOfQuestions = NoOfQues => {
+    this.getQueDropDown()
+      .click({ force: true })
+      .parent()
+      .next()
+      .find("li")
+      .should("have.length", NoOfQues);
+  };
+  getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');
+  verifyQuestionText = (index, text) => {
+    this.getQuestionByIndex(index);
+    this.getQuestionText().should("contain", text);
+  };
+  getQuestionByIndex = index => {
+    this.getQueDropDown()
+      .click({ force: true })
+      .parent()
+      .next()
+      .find("li")
+      .eq(index)
+      .click();
+  };
+  verifyMaxScoreOfQueByIndex = (index, maxscore) => {
+    cy.get('[data-cy="questionNumber"]').click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item")
+      .eq(index)
+      .click({ force: true });
+    cy.get('[data-cy="maxscore"]').should("contain", maxscore);
+  };
+  attemptQuestionsByQueType = (queType, attempt) => {
+    queType.forEach((type, index) => {
+      this.attemptQuestion(type, "right", attempt[index]);
+      this.clickOnNext();
+    });
+  };
+  verifyNoOfQuesInReview = len => {
+    cy.get('[data-cy="questionNumber"]').click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
 }
 export default StudentTestPage;

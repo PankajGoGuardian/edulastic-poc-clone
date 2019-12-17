@@ -53,7 +53,7 @@ const AssessmentDetails = ({
       <CardDetails>
         <CardTitle>
           <Tooltip title={title}>
-            <AssignmentTitle>{title}</AssignmentTitle>
+            <AssignmentTitle data-cy="testTitle">{title}</AssignmentTitle>
           </Tooltip>
           <TestType data-cy="testType" type={testType}>
             {testType === PRACTICE

@@ -1,6 +1,12 @@
 import StudentTestPage from "./studentTestPage";
+import SidebarPage from "../student/sidebarPage";
+
 class AssignmentsPage {
   // page element on AssignmentPage
+  constructor() {
+    this.sidebar = new SidebarPage();
+    //this.studentTest = new StudentTestPage();
+  }
   getAssignmentButton() {
     return cy.get('[data-cy="assignmentButton"]');
   }
@@ -93,6 +99,7 @@ class AssignmentsPage {
     cy.route("GET", "**/test/**").as("gettest");
     this.getAssignmentByTestId(testId)
       .should("be.visible")
+      .find('[data-cy="assignmentButton"]')
       .click({ force: true });
     return cy.wait("@gettest").then(() => new StudentTestPage());
   };
@@ -136,6 +143,24 @@ class AssignmentsPage {
 
     this.getPercentage().should("have.length", 0);
   }
+  verifyTestNameById = (testName, id) => this.getTestNameById(id).should("contain", testName);
+
+  getTestNameById = id => this.getAssignmentByTestId(id).find('[data-cy="testTitle"]');
+
+  verifyAssignedTestID = (oldtestid, newtestid) => {
+    this.sidebar.clickOnAssignment();
+    this.verifyAbsenceOfTest(newtestid);
+    this.verifyPresenceOfTest(oldtestid);
+  };
+  verifyAbsenceOfTest = id => cy.get("body").should("not.have.descendants", `[data-cy="test-${id}"]`);
+
+  verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
+
+  reviewSubmittedTestById = id => {
+    this.getAssignmentByTestId(id)
+      .find('[data-cy="reviewButton"]')
+      .click({ force: true });
+  };
 }
 
 export default AssignmentsPage;

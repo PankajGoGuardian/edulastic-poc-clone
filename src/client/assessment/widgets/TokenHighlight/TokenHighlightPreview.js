@@ -278,40 +278,43 @@ const TokenHighlightPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
+      <div>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+        </QuestionTitleWrapper>
 
-      {!isExpressGrader &&
-        tokenList.map((el, i) =>
-          el.active ? (
-            <MathSpan
-              onClick={!disableResponse ? handleSelect(i) : () => {}}
-              dangerouslySetInnerHTML={{ __html: el.value }}
-              style={preview || disableResponse ? getStyles(i, userAnswer) : {}}
-              key={i}
-              className={getClass(i)}
-            />
-          ) : (
-            <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-          )
-        )}
+        {!isExpressGrader &&
+          tokenList.map((el, i) =>
+            el.active ? (
+              <MathSpan
+                onClick={!disableResponse ? handleSelect(i) : () => {}}
+                dangerouslySetInnerHTML={{ __html: el.value }}
+                style={preview || disableResponse ? getStyles(i, userAnswer) : {}}
+                key={i}
+                className={getClass(i)}
+              />
+            ) : (
+              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+            )
+          )}
 
-      {isExpressGrader &&
-        tokenList.map((el, i) =>
-          el.active ? (
-            <MathSpan
-              onClick={isAnswerModifiable ? handleSelectForExpressGrader(i) : () => {}}
-              dangerouslySetInnerHTML={{ __html: el.value }}
-              style={getStylesForExpressGrader(i)}
-              key={i}
-              className={getClassNameForExpressGrader(i)}
-            />
-          ) : (
-            <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-          )
-        )}
+        {isExpressGrader &&
+          tokenList.map((el, i) =>
+            el.active ? (
+              <MathSpan
+                onClick={isAnswerModifiable ? handleSelectForExpressGrader(i) : () => {}}
+                dangerouslySetInnerHTML={{ __html: el.value }}
+                style={getStylesForExpressGrader(i)}
+                key={i}
+                className={getClassNameForExpressGrader(i)}
+              />
+            ) : (
+              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+            )
+          )}
+      </div>
+
       {previewTab === SHOW &&
         allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
           const title =
@@ -319,20 +322,22 @@ const TokenHighlightPreview = ({
               ? t("component.sortList.correctAnswers")
               : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
           return (
-            <CorrectAnswersContainer key={correctGroupIndex} title={title}>
-              {correctAnswers.map((el, i) =>
-                el.selected ? (
-                  <MathSpan
-                    onClick={() => {}}
-                    dangerouslySetInnerHTML={{ __html: el.value }}
-                    style={getStyles(i, correctAnswers)}
-                    key={i}
-                  />
-                ) : (
-                  <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-                )
-              )}
-            </CorrectAnswersContainer>
+            <div>
+              <CorrectAnswersContainer key={correctGroupIndex} title={title}>
+                {correctAnswers.map((el, i) =>
+                  el.selected ? (
+                    <MathSpan
+                      onClick={() => {}}
+                      dangerouslySetInnerHTML={{ __html: el.value }}
+                      style={getStyles(i, correctAnswers)}
+                      key={i}
+                    />
+                  ) : (
+                    <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+                  )
+                )}
+              </CorrectAnswersContainer>
+            </div>
           );
         })}
     </StyledPaperWrapper>

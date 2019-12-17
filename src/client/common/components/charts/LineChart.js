@@ -38,7 +38,7 @@ const CustomLineChart = props => {
   };
 
   return (
-    <ResponsiveContainer width={width} height={height}>
+    <ResponsiveContainer className={className} width={width} height={height}>
       <LineChart data={chartData} width={width} height={height} margin={margin}>
         <XAxis
           dataKey={xAxisDataKey}

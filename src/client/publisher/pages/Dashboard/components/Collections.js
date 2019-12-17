@@ -5,6 +5,45 @@ import { CollectionItem } from "./CollectionItem";
 import { StyledH3, StyledPrimaryGreenButton } from "./styled";
 
 // static collection data
+
+const defs = (
+  <defs>
+    <linearGradient
+      id="publisherDashboardItembankIconColor"
+      x1="0"
+      y1="0"
+      x2="100%"
+      y2="100%"
+      gradientTransform="rotate(135)"
+    >
+      <stop offset="0%" stopColor="#009BFFCC" stopOpacity={1} />
+      <stop offset="100%" stopColor="#009BFFA5" stopOpacity={1} />
+    </linearGradient>
+    <linearGradient
+      id="publisherDashboardTestsIconColor"
+      x1="0"
+      y1="0"
+      x2="100%"
+      y2="100%"
+      gradientTransform="rotate(174)"
+    >
+      <stop offset="0%" stopColor="#00FFED6C" stopOpacity={1} />
+      <stop offset="100%" stopColor="#00FFEDD3" stopOpacity={1} />
+    </linearGradient>
+    <linearGradient
+      id="publisherDashboardPlaylistIconColor"
+      x1="0"
+      y1="0"
+      x2="100%"
+      y2="100%"
+      gradientTransform="rotate(135)"
+    >
+      <stop offset="0%" stopColor="#AB2EFE9A" stopOpacity={1} />
+      <stop offset="100%" stopColor="#AB2EFE80" stopOpacity={1} />
+    </linearGradient>
+  </defs>
+);
+
 const sampleData = [
   {
     name: "Bank 1",
@@ -24,10 +63,11 @@ const sampleData = [
       issues: 34
     },
     chartData: [
-      { name: "itembank", value: 50, fill: "#009BFFCC" },
-      { name: "tests", value: 25, fill: "#00FFED6C" },
-      { name: "playlist", value: 25, fill: "#AB2EFE9A" }
-    ]
+      { name: "itembank", value: 50, fill: "url('#publisherDashboardItembankIconColor')" },
+      { name: "tests", value: 25, fill: "url('#publisherDashboardTestsIconColor')" },
+      { name: "playlist", value: 25, fill: "url('#publisherDashboardPlaylistIconColor')" }
+    ],
+    defs
   }
 ];
 

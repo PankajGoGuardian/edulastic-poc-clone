@@ -8,6 +8,7 @@ const DonutChartWithText = props => {
   const {
     className,
     chartData,
+    defs = null,
     dataKey,
     centerTextNumber = 0,
     centerTextUnit = "Units",
@@ -21,6 +22,7 @@ const DonutChartWithText = props => {
     <div className={className} style={{ width: `${width}px`, height: `${height}px` }}>
       <ResponsiveContainer width={width} height={height}>
         <PieChart width={width} height={height}>
+          {defs}
           <Pie
             name={"name"}
             data={chartData}

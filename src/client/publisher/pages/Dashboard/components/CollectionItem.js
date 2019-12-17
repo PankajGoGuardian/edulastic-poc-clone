@@ -28,6 +28,7 @@ const CollectionItem = props => {
           <div className="item-content-body">
             <DonutChartWithText
               chartData={data.chartData}
+              defs={data.defs}
               dataKey="value"
               centerTextNumber={13}
               centerTextUnit="ISSUES"

@@ -21,7 +21,7 @@ import {
   clearPreviewAction
 } from "./ducks";
 
-import { getCollectionsSelector } from "../../../selectors/user";
+import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
@@ -185,7 +185,8 @@ class PreviewModal extends React.Component {
       questions = keyBy(get(item, "data.questions", []), "id"),
       page,
       showAddPassageItemToTestButton = false, // show if add item to test button needs to shown.
-      windowWidth
+      windowWidth,
+      userFeatures
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField } = this.state;
@@ -263,7 +264,8 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  isEditable={isEditable && authorHasPermission}
+                  /*Giving edit test item functionality to the user who is a curator as curator can edit any test item.*/
+                  isEditable={(isEditable && authorHasPermission) || userFeatures.isCurator}
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
                   handleDuplicateTestItem={this.handleDuplicateTestItem}
@@ -330,7 +332,8 @@ const enhance = compose(
         currentAuthorId: get(state, ["user", "user", "_id"]),
         testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
         selectedRows: getSelectedItemSelector(state),
-        test: getTestSelector(state)
+        test: getTestSelector(state),
+        userFeatures: getUserFeatures(state)
       };
     },
     {

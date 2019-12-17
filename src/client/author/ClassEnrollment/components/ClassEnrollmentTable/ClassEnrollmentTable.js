@@ -116,7 +116,7 @@ class ClassEnrollmentTable extends React.Component {
         message.error("Select 1 or more Student to remove");
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          message.error("Only student can be removed");
+          message.error("Please select only students to remove");
         } else {
           this.setState({
             removeStudentsModalVisible: true

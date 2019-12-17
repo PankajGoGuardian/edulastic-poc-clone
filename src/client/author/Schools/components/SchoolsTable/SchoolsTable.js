@@ -605,27 +605,10 @@ class SchoolsTable extends React.Component {
         title: (
           <StyledHeaderColumn>
             <p>{t("school.teacher")}</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "desc"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "asc"}
-              />
-            </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "teachersCount",
         editable: true,
-        onHeaderCell: column => {
-          return {
-            onClick: () => {
-              this.onHeaderCell("teachersCount");
-            }
-          };
-        },
         render: (teachersCount, { name } = {}) => {
           return (
             <Link

@@ -12,6 +12,7 @@ const StyledButton = styled(Button)`
     let style = {
       fontWeight: 600,
       fontSize: "11px",
+      height: "28px",
       textTransform: "uppercase",
       color: themeColor,
       marginLeft: "5px"
@@ -52,8 +53,5 @@ const StyledButton = styled(Button)`
     border-color: ${themeColor};
     outline-color: ${themeColor};
     color: ${({ type }) => (type === "primary" ? white : themeColor)};
-  }
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    margin-left: 3px;
   }
 `;

@@ -1,6 +1,17 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { desktopWidth, white, themeColor, linkColor, smallDesktopWidth, red } from "@edulastic/colors";
+import {
+  desktopWidth,
+  white,
+  themeColor,
+  linkColor,
+  smallDesktopWidth,
+  red,
+  mediumDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import { Button, Icon, Typography } from "antd";
 
 const { Text } = Typography;
@@ -51,7 +62,7 @@ export const MobileRightSide = styled.div`
 
 export const ButtonsContainer = styled(FlexContainer)`
   background: ${white};
-  padding: 0px 15px;
+  padding: 15px;
   justify-content: space-between;
   flex-basis: 400px;
   border-radius: 10px 10px 0px 0px;
@@ -61,14 +72,7 @@ export const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: ${props => props.justifyContent};
   margin-top: 20px;
-  .ant-btn {
-    width: 120px;
-    margin: 0 5px;
-
-    @media (max-width: ${desktopWidth}) {
-      width: auto;
-      margin: 0 3px;
-    }
+  margin: 0;
   }
 `;
 
@@ -86,6 +90,7 @@ export const EvaluateButton = styled(Button)`
   height: 28px;
   color: ${themeColor};
   border-color: ${themeColor};
+  margin-right: 5px;
   &:hover,
   &:focus {
     background: ${themeColor};
@@ -252,17 +257,15 @@ export const StyledFlex = styled.div`
 export const StyledText = styled(Text)`
   display: block;
   color: ${({ danger }) => (danger ? red : themeColor)};
-  font-size: 15px;
+  font-size: 11px;
+  font-weight: normal;
   padding-right: 15px;
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     display: none;
   }
 `;
 
 export const SyledSpan = styled.span`
   line-height: 0;
-  padding-right: 15px;
-  @media (max-width: ${smallDesktopWidth}) {
-    padding-left: 15px;
-  }
+  padding: 0 11px;
 `;

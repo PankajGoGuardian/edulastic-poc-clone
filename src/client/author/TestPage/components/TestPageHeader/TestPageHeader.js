@@ -196,6 +196,16 @@ const TestPageHeader = ({
   if (!owner) {
     navButtons = navButtons.slice(2);
   }
+
+  const ButtonWithIconStyle = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "40px",
+    width: "45px",
+    padding: 0
+  };
+
   return (
     <>
       <EditTestModal
@@ -236,7 +246,7 @@ const TestPageHeader = ({
             {showShareButton && false && (
               <EduButton
                 data-cy="source"
-                style={{ width: 42, padding: 0 }}
+                style={ButtonWithIconStyle}
                 size="large"
                 onClick={onShowSource}
                 disabled={isTestLoading}
@@ -248,7 +258,7 @@ const TestPageHeader = ({
               <EduButton
                 title="Share"
                 data-cy="share"
-                style={{ width: 42, padding: 0 }}
+                style={ButtonWithIconStyle}
                 size="large"
                 onClick={onShare}
                 disabled={isTestLoading}
@@ -260,7 +270,7 @@ const TestPageHeader = ({
               <EduButton
                 title="Save as Draft"
                 data-cy="save"
-                style={{ width: 42, padding: 0 }}
+                style={ButtonWithIconStyle}
                 size="large"
                 onClick={onSave}
                 disabled={isTestLoading}
@@ -284,7 +294,7 @@ const TestPageHeader = ({
                 <EduButton
                   title="Publish Test"
                   data-cy="publish"
-                  style={{ width: 42, padding: 0 }}
+                  style={ButtonWithIconStyle}
                   size="large"
                   onClick={handlePublish}
                   disabled={isTestLoading}
@@ -299,7 +309,7 @@ const TestPageHeader = ({
                 title="Edit Test"
                 disabled={editEnable || isTestLoading}
                 data-cy="edit"
-                style={{ width: 42 }}
+                style={ButtonWithIconStyle}
                 size="large"
                 onClick={() => setOpenEditPopup(true)}
               >
@@ -339,7 +349,13 @@ const TestPageHeader = ({
                 </MobileHeaderFilterIcon>
               )}
               {owner && (
-                <EduButton data-cy="share" disabled={isTestLoading} size="large" onClick={onShare}>
+                <EduButton
+                  data-cy="share"
+                  style={ButtonWithIconStyle}
+                  disabled={isTestLoading}
+                  size="large"
+                  onClick={onShare}
+                >
                   <ShareIcon color={themeColor} />
                 </EduButton>
               )}
@@ -348,7 +364,7 @@ const TestPageHeader = ({
                 <EduButton
                   title="Save as Draft"
                   data-cy="save"
-                  style={{ width: 42, padding: 0 }}
+                  style={ButtonWithIconStyle}
                   size="large"
                   onClick={onSave}
                   disabled={isTestLoading}
@@ -372,7 +388,7 @@ const TestPageHeader = ({
                   <EduButton
                     title="Publish Test"
                     data-cy="publish"
-                    style={{ width: 42, padding: 0 }}
+                    style={ButtonWithIconStyle}
                     size="large"
                     onClick={handlePublish}
                     disabled={isTestLoading}

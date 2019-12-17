@@ -196,7 +196,7 @@ class AuthorTestItemPreview extends Component {
             {allowDuplicate && (
               <EduButton
                 title="COPY"
-                style={{ padding: 0, borderColor: themeColor }}
+                style={{ padding: 0, borderColor: themeColor, height: "28px" }}
                 size="large"
                 onClick={handleDuplicateTestItem}
               >
@@ -211,7 +211,7 @@ class AuthorTestItemPreview extends Component {
             {isEditable && (
               <EduButton
                 title="Edit item"
-                style={{ padding: 0, borderColor: themeColor }}
+                style={{ padding: 0, borderColor: themeColor, height: "28px" }}
                 size="large"
                 onClick={editTestItem}
               >
@@ -226,7 +226,7 @@ class AuthorTestItemPreview extends Component {
             {isOwner && (page === "addItems" || page === "itemList") && (
               <EduButton
                 title="Delete item"
-                style={{ padding: 0, borderColor: red, fontSize: "16px", color: red }}
+                style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
                 size="large"
                 onClick={this.handleDeleteItem}
                 disabled={this.props.deleting}

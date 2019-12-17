@@ -5,6 +5,7 @@ import { Draggable } from "react-drag-and-drop";
 import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject, get, round } from "lodash";
 import { MathSpan } from "@edulastic/common";
+import { releaseGradeLabels } from "@edulastic/constants/const/test";
 import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
@@ -293,11 +294,22 @@ class QuestionItem extends React.Component {
       answer,
       testMode,
       pdfPreview,
-      annotations
+      annotations,
+      reportActivity
     } = this.props;
 
     const check =
       viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
+
+    const canShowAnswer = () => {
+      if (reportActivity) {
+        if (reportActivity?.releaseScore === releaseGradeLabels.WITH_ANSWERS) {
+          return true;
+        }
+      } else if (!pdfPreview && review && (previewMode === "show" || viewMode === "report")) {
+        return true;
+      }
+    };
 
     return (
       <QuestionItemWrapper
@@ -328,7 +340,7 @@ class QuestionItem extends React.Component {
             typeof answer !== "undefined" &&
             this.renderAnswerIndicator(type)}
         </AnswerForm>
-        {!pdfPreview && review && (previewMode === "show" || viewMode === "report") && this.renderCorrectAnswer()}
+        {canShowAnswer() && this.renderCorrectAnswer()}
         {!pdfPreview && (check ? this.renderScore(id) : this.renderComments(id))}
       </QuestionItemWrapper>
     );
@@ -338,6 +350,7 @@ class QuestionItem extends React.Component {
 export default withAnswerSave(
   connect(state => ({
     previousFeedback: Object.values(state?.previousQuestionActivity || {})[0],
-    feedback: FeedbackByQIdSelector(state)
+    feedback: FeedbackByQIdSelector(state),
+    reportActivity: isEmpty(state.studentReport?.testActivity) ? false : state.studentReport?.testActivity
   }))(QuestionItem)
 );

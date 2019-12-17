@@ -388,6 +388,7 @@ class CurriculumSequence extends Component {
         to: ""
       }
     ];
+    const showUseThisButton = status !== "draft" && !urlHasUseThis;
     return (
       <>
         <RemoveTestModal
@@ -531,7 +532,7 @@ class CurriculumSequence extends Component {
                       </Button>
                     </SaveButtonStyle>
                   )}
-                  {!urlHasUseThis && (
+                  {showUseThisButton && (
                     <SaveButtonStyle windowWidth={windowWidth}>
                       <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>
                         <SaveButtonText>{"Use This"}</SaveButtonText>

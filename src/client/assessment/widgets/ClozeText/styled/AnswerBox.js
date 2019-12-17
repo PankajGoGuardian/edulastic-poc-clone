@@ -5,7 +5,6 @@ export const AnswerBox = styled.div`
   vertical-align: middle;
   cursor: pointer;
   margin: 0px 4px 4px;
-  min-width: 140px;
   border-radius: 4px;
   background: ${({ theme, checked, correct }) => {
     if (checked === undefined && correct === undefined) {

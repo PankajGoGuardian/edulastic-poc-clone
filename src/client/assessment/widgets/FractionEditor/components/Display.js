@@ -51,7 +51,7 @@ const Display = ({
   return (
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
       <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
-        <FlexContainer alignItems="baseline" width="100%">
+        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
           <Stimulus
             style={{ marginTop: "14px", marginRight: "20px", width: "100%" }}

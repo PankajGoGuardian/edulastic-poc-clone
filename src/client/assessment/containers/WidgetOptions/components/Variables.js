@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep, get, has, isEmpty } from "lodash";
-import { Button, Input, Checkbox, Select, Table } from "antd";
+import { cloneDeep, get, has, isEmpty, difference } from "lodash";
+import { Button, Input, Select, Table } from "antd";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -116,6 +116,29 @@ class Variables extends Component {
       setQuestionData(newData);
     };
 
+    const generateSequenceExamples = (variableName, variables, type) => {
+      const changedVariable = variables[variableName];
+      const param = type === "TEXT_SEQUENCE" ? "textSequence" : "numberSequence";
+
+      if (!changedVariable[param]) {
+        variables[variableName].exampleValue = "";
+        return variables;
+      }
+
+      const values = changedVariable[param].split(",").filter(val => !!val.trim());
+      const index = Math.floor(Math.random() * values.length);
+
+      Object.keys(variables).map(key => {
+        if (variables[key].type === type && variables[key][param]) {
+          const vars = variables[key][param].split(",").filter(val => !!val.trim());
+          variables[key].exampleValue = vars[index] ? vars[index] : vars[vars.length - 1];
+        }
+        return null;
+      });
+
+      return variables;
+    };
+
     const handleChangeVariableList = (variableName, param, value) => {
       const newData = cloneDeep(questionData);
 
@@ -123,11 +146,27 @@ class Variables extends Component {
         return;
       }
       newData.variable.variables[variableName][param] = value;
-      if (newData.variable.variables[variableName].type !== "FORMULA") {
+      if (
+        newData.variable.variables[variableName].type !== "FORMULA" &&
+        newData.variable.variables[variableName].type !== "NUMBER_SEQUENCE" &&
+        newData.variable.variables[variableName].type !== "TEXT_SEQUENCE"
+      ) {
         newData.variable.variables[variableName].exampleValue = generateExample(
           newData.variable.variables[variableName]
         );
       }
+
+      if (
+        newData.variable.variables[variableName].type === "NUMBER_SEQUENCE" ||
+        newData.variable.variables[variableName].type === "TEXT_SEQUENCE"
+      ) {
+        newData.variable.variables = generateSequenceExamples(
+          variableName,
+          newData.variable.variables,
+          newData.variable.variables[variableName].type
+        );
+      }
+
       setQuestionData(newData);
     };
 
@@ -144,19 +183,66 @@ class Variables extends Component {
         calculateFormula();
       }
     };
-    const generate = () => {
-      const values = [];
-      for (let i = 0; i < variableCombinationCount; i++) {
-        const row = {
-          key: `${i + 1}`
-        };
 
-        Object.keys(variables).forEach(variableName => {
-          row[variableName] = generateExample(variables[variableName]);
-        });
-
-        values.push(row);
+    const getCombinations = (available, combinations) => {
+      for (let i = 0; i < combinations.length; i++) {
+        const diff = difference(available, combinations);
+        if (diff.length > 0) {
+          const valueIndex = Math.floor(Math.random() * diff.length);
+          combinations[i] = diff[valueIndex];
+        } else {
+          return combinations;
+        }
       }
+      return combinations;
+    };
+
+    const generate = () => {
+      let values = Array.from(Array(variableCombinationCount)).map((_, i) => ({ key: `${i + 1}` }));
+
+      Object.keys(variables).forEach(variableName => {
+        let combinations = new Array(variableCombinationCount).fill("");
+        const variable = variables[variableName];
+
+        switch (variable.type) {
+          case "NUMBER_RANGE": {
+            combinations = getCombinations(
+              Array.from(Array(variable.max - variable.min + 1)).map((_, i) => variable.min + i),
+              combinations
+            );
+            break;
+          }
+          case "TEXT_SET":
+          case "NUMBER_SET": {
+            if (variable.set) {
+              combinations = getCombinations(variable.set.split(",").filter(val => !!val.trim()), combinations);
+            }
+            break;
+          }
+          case "NUMBER_SEQUENCE": {
+            if (variable.numberSequence) {
+              combinations = getCombinations(
+                variable.numberSequence.split(",").filter(val => !!val.trim()),
+                combinations
+              );
+            }
+            break;
+          }
+          case "TEXT_SEQUENCE": {
+            if (variable.textSequence) {
+              combinations = getCombinations(
+                variable.textSequence.split(",").filter(val => !!val.trim()),
+                combinations
+              );
+            }
+            break;
+          }
+          default:
+            break;
+        }
+        values = values.map((v, i) => ({ ...v, [variableName]: combinations[i] }));
+      });
+
       handleChangeVariable("examples", values);
       calculateFormula();
     };
@@ -209,6 +295,8 @@ class Variables extends Component {
               const isRange = variable.type.includes("RANGE");
               const isFormula = variable.type.includes("FORMULA");
               const isSet = variable.type.includes("SET");
+              const isNumberSquence = variable.type === "NUMBER_SEQUENCE";
+              const isTextSquence = variable.type === "TEXT_SEQUENCE";
               return (
                 <Row key={`variable${index}`} gutter={36}>
                   <Col md={3} style={{ paddingTop: 10 }}>
@@ -250,6 +338,30 @@ class Variables extends Component {
                         data-cy="variableSet"
                         value={variable.set}
                         onChange={e => handleChangeVariableList(variableName, "set", e.target.value)}
+                        onBlur={handleCalculateFormula}
+                        size="large"
+                        style={{ marginRight: 20 }}
+                      />
+                    </Col>
+                  )}
+                  {isNumberSquence && (
+                    <Col md={10}>
+                      <Input
+                        data-cy="variableNumberSequence"
+                        value={variable.numberSequence}
+                        onChange={e => handleChangeVariableList(variableName, "numberSequence", e.target.value)}
+                        onBlur={handleCalculateFormula}
+                        size="large"
+                        style={{ marginRight: 20 }}
+                      />
+                    </Col>
+                  )}
+                  {isTextSquence && (
+                    <Col md={10}>
+                      <Input
+                        data-cy="variableTextSequence"
+                        value={variable.textSequence}
+                        onChange={e => handleChangeVariableList(variableName, "textSequence", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -312,7 +424,7 @@ class Variables extends Component {
                   type="number"
                   data-cy="combinationCount"
                   value={variableCombinationCount}
-                  onChange={e => handleChangeVariable("combinationsCount", e.target.value)}
+                  onChange={e => handleChangeVariable("combinationsCount", +e.target.value)}
                   size="large"
                 />
                 <InlineLabel>{t("component.options.afterCombinationCount")}</InlineLabel>
@@ -328,7 +440,6 @@ class Variables extends Component {
                 <Table
                   columns={columns}
                   dataSource={examples}
-                  size="small"
                   pagination={{
                     pageSize: 10
                   }}

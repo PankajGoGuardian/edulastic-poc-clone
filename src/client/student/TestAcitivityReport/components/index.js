@@ -4,18 +4,19 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
-//components
+import { Spin } from "antd";
+// components
 import TestAcivityHeader from "../../sharedComponents/Header";
 import TestActivitySubHeader from "./SubHeader";
 import ReportListContent from "./Container";
 import MainContainer from "../../styled/mainContainer";
-//actions
+// actions
 import { loadTestActivityReportAction } from "../ducks";
 import { setCurrentItemAction } from "../../sharedDucks/TestItem";
 import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../author/sharedDucks/questions";
-import { Spin } from "antd";
+import { clearUserWorkAction } from "../../../assessment/actions/userWork";
 
 const ReportListContainer = ({
   flag,
@@ -27,7 +28,8 @@ const ReportListContainer = ({
   questions,
   questionsById,
   testTitle,
-  testFeedback
+  testFeedback,
+  clearUserWork
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
 
@@ -38,6 +40,9 @@ const ReportListContainer = ({
       groupId: match.params.classId
     });
     setCurrentItem(0);
+    return () => {
+      clearUserWork();
+    };
   }, []);
 
   const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
@@ -87,7 +92,8 @@ const enhance = compose(
     }),
     {
       setCurrentItem: setCurrentItemAction,
-      loadTestActivityReport: loadTestActivityReportAction
+      loadTestActivityReport: loadTestActivityReportAction,
+      clearUserWork: clearUserWorkAction
     }
   )
 );
@@ -98,5 +104,6 @@ ReportListContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
-  testFeedback: PropTypes.array.isRequired
+  testFeedback: PropTypes.array.isRequired,
+  clearUserWork: PropTypes.func.isRequired
 };

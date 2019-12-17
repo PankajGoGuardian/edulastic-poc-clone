@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Input } from "antd";
 import { getCurrentRubricDataSelector, updateRubricDataAction } from "../../ducks";
@@ -29,13 +28,19 @@ const TextInput = ({
       nextState = produce(currentRubricData, draftState => {
         draftState.criteria.find(c => c.id === id)[fieldMapping[textType]] = e.target.value;
       });
+      updateRubricData(nextState);
     } else if (componentFor === "Rating") {
-      nextState = produce(currentRubricData, draftState => {
-        draftState.criteria.find(c => c.id === parentId).ratings.find(r => r.id === id)[fieldMapping[textType]] =
-          e.target.value;
-      });
+      if (
+        (textType === "number" && !isNaN(parseFloat(e.target.value)) && e.target.value >= 0) ||
+        ["text", "textarea"].includes(textType)
+      ) {
+        nextState = produce(currentRubricData, draftState => {
+          draftState.criteria.find(c => c.id === parentId).ratings.find(r => r.id === id)[fieldMapping[textType]] =
+            e.target.value;
+        });
+        updateRubricData(nextState);
+      }
     }
-    updateRubricData(nextState);
   };
 
   let placeholder = "";
@@ -47,6 +52,12 @@ const TextInput = ({
       else placeholder = "Label";
     }
   }
+
+  let extraProps = {};
+  if (textType === "number")
+    extraProps = {
+      min: "0"
+    };
 
   if (textType === "textarea") {
     return (
@@ -62,6 +73,7 @@ const TextInput = ({
       <StyledInput
         placeholder={placeholder}
         type={textType}
+        {...extraProps}
         disabled={!isEditable || false}
         value={value}
         onChange={handleChange}

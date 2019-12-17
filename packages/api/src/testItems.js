@@ -91,10 +91,10 @@ const duplicateTestItem = id =>
     })
     .then(result => result.data.result);
 
-const publishTestItem = id =>
+const publishTestItem = data =>
   api
     .callApi({
-      url: `${prefix}/${id}/publish`,
+      url: `${prefix}/${data.itemId}/publish?status=${data.status}`,
       method: "put"
     })
     .then(result => result.data.result);

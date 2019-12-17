@@ -43,7 +43,8 @@ import { updateRecentStandardsAction } from "../src/actions/dictionaries";
 const testItemStatusConstants = {
   DRAFT: "draft",
   PUBLISHED: "published",
-  ARCHIVED: "archived"
+  ARCHIVED: "archived",
+  INREVIEW: "inreview"
 };
 
 export const RECEIVE_ITEM_DETAIL_REQUEST = "[itemDetail] receive request";
@@ -1016,19 +1017,32 @@ function* publishTestItemSaga({ payload }) {
     }
 
     yield saveTestItemSaga();
-    yield call(testItemsApi.publishTestItem, payload);
-    yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
-    const redirectTestId = yield select(getRedirectTestSelector);
 
-    if (redirectTestId) {
-      yield delay(1500);
-      yield put(push(`/author/tests/${redirectTestId}`));
-      yield put(clearRedirectTestAction());
-    } else {
-      // on publishing redirect to items bank.
-      yield put(push("/author/items"));
-    }
-    yield call(message.success, "Item created successfully");
+    if ((payload.status === "inreview" && testItem?.collectionName?.length > 0) || payload.status === "published") {
+      yield call(testItemsApi.publishTestItem, payload);
+
+      let successMessage, testItemStatus;
+      if (payload.status === "published") {
+        successMessage = "Item created successfully";
+        testItemStatus = testItemStatusConstants.PUBLISHED;
+      } else {
+        successMessage = "Review request is submitted successfully.";
+        testItemStatus = testItemStatusConstants.INREVIEW;
+      }
+      yield put(updateTestItemStatusAction(testItemStatus));
+      const redirectTestId = yield select(getRedirectTestSelector);
+
+      if (redirectTestId) {
+        yield delay(1500);
+        yield put(push(`/author/tests/${redirectTestId}`));
+        yield put(clearRedirectTestAction());
+      } else {
+        // on publishing redirect to items bank.
+        yield put(push("/author/items"));
+      }
+
+      yield call(message.success, successMessage);
+    } else yield call(message.error, "Please link it to a collection.");
   } catch (e) {
     console.warn("publish error", e);
     const errorMessage = "publish failed";

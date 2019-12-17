@@ -23,6 +23,7 @@ import {
 import WarningModal from "../WarningModal";
 import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
 import SettingsBar from "../SettingsBar";
+import { getUserFeatures } from "../../../src/selectors/user";
 
 const ItemDetailContainer = ({
   isSingleQuestionView = false,
@@ -42,6 +43,7 @@ const ItemDetailContainer = ({
   showWarningModal,
   saveTestItem,
   proceedPublish,
+  userFeatures,
   ...props
 }) => {
   const { modalItemId } = props;
@@ -65,7 +67,12 @@ const ItemDetailContainer = ({
   };
 
   const publishItem = () => {
-    publishTestItem(itemId);
+    const status = userFeatures.isPublisherAuthor ? "inreview" : "published";
+    const obj = {
+      itemId,
+      status
+    };
+    publishTestItem(obj);
     setEditable(false);
   };
 
@@ -134,7 +141,8 @@ const enhance = compose(
       isLoading: getItemDetailLoadingSelector(state),
       currentUserId: get(state, ["user", "user", "_id"]),
       currentQuestionId: getCurrentQuestionIdSelector(state),
-      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
+      userFeatures: getUserFeatures(state)
     }),
     {
       getItem: getItemDetailByIdAction,

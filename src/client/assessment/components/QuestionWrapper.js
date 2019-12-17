@@ -470,7 +470,7 @@ class QuestionWrapper extends Component {
                 {...presentationModeProps}
               />
             )}
-            {!isEmpty(prevQActivityForQuestion) && !isPrintPreview && (
+            {!isEmpty(prevQActivityForQuestion) && displayFeedback && !isPrintPreview && (
               <FeedBackContainer
                 correct={correct}
                 prevScore={prevScore}

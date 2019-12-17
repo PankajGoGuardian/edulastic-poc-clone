@@ -569,6 +569,7 @@ class Container extends Component {
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
     const { testId } = match.params;
+    const testPath = `/author/tests/${testId || "create"}`;
     const breadCrumb = [
       {
         title: "TEST LIBRARY",
@@ -576,12 +577,12 @@ class Container extends Component {
       },
       {
         title: "TEST",
-        to: `/author/tests/${testId}#review`
+        to: `${testPath}#review`
       }
     ];
 
     if (item.isPassageWithQuestions || item.multipartItem) {
-      breadCrumb.push({ title: "MULTIPART ITEM" });
+      breadCrumb.push({ title: "MULTIPART ITEM", to: `${testPath}/createItem/${item._id}` });
     }
 
     const isPassageQuestion = !!item.passageId;

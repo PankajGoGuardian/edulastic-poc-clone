@@ -54,10 +54,16 @@ const Search = ({
     setShowModalValue(false);
   };
 
+  const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
+
   const collectionData = [
     ...testsConstants.collectionDefaultFilter,
-    ...collections.map(o => ({ text: o.title, value: o._id }))
-  ];
+    ...collections.map(o => ({ text: o.name, value: o._id }))
+  ].filter(cd =>
+    // filter public, edulastic certified &
+    // engage ny (name same as Edulastic Certified) for publishers
+    isPublishers ? !["Public Library", "Edulastic Certified"].includes(cd.text) : 1
+  );
   const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0);
   const standardsPlaceholder = isStandardsDisabled ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
 
@@ -252,7 +258,7 @@ const Search = ({
           </ItemBody>
         </Item>
 
-        {showStatus && (
+        {(showStatus || isPublishers) && (
           <Item>
             <ItemHeader>Status</ItemHeader>
             <ItemBody>
@@ -268,7 +274,7 @@ const Search = ({
                     {el.text}
                   </Select.Option>
                 ))}
-                {(userFeatures.isPublisherAuthor || userFeatures.isCurator) &&
+                {isPublishers &&
                   selectsData.extraStatus.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}
@@ -285,6 +291,7 @@ const Search = ({
               <Select
                 mode="multiple"
                 size="large"
+                placeholder="All Authors"
                 optionFilterProp={"children"}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={onSearchFieldChange("authoredByIds")}

@@ -87,7 +87,7 @@ const isReport = (assignment, classIds) => {
       // IF POLICIES ARE MANUAL CLOSE UNTIL AUTHOR REDIRECT END DATE WILL BE undefined
       const currentClass =
         groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
-      return currentClass.closed;
+      if (currentClass.closed !== undefined) return currentClass.closed;
     }
   }
   const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date();

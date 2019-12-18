@@ -21,7 +21,8 @@ const SecondBlock = ({
   handleCollectionNameSelect,
   collectionName,
   orgData,
-  userFeatures
+  userFeatures,
+  highlightCollection
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -160,7 +161,6 @@ const SecondBlock = ({
             <ItemBody>
               <Label>Collections</Label>
               <Select
-                // mode="multiple"
                 className="tagsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
                 optionLabelProp="title"
@@ -168,6 +168,8 @@ const SecondBlock = ({
                 value={collectionName}
                 onChange={value => handleCollectionNameSelect(value)}
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                suffixIcon={<SelectSuffixIcon type="caret-down" />}
+                autoFocus={highlightCollection}
               >
                 {orgData?.itemBanks?.map(({ _id, name }) => (
                   <Select.Option key={_id} value={_id} title={name}>

@@ -98,6 +98,7 @@ export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
 export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
 export const SET_COLLECTION_NAME = "[itemDetail] set collection name";
+export const SET_HIGHLIGHT_COLLECTION = "[itemDetail] set highlight collection";
 // actions
 
 //
@@ -115,6 +116,7 @@ export const deleteItemSuccesAction = createAction(DELETE_ITEM_SUCCESS);
 export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
 export const setCollectionNameAction = createAction(SET_COLLECTION_NAME);
 export const setItemLevelScoreFromRubricAction = createAction(SET_ITEM_LEVEL_SCORING_FROM_RUBRIC);
+export const setHighlightCollectionAction = createAction(SET_HIGHLIGHT_COLLECTION);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -258,6 +260,11 @@ export const getCollectionNamesSelector = createSelector(
   state => state.collectionName || []
 );
 
+export const getHighlightCollectionSelector = createSelector(
+  stateSelector,
+  state => state.highlightCollection
+);
+
 export const getPassageSelector = createSelector(
   stateSelector,
   state => state.passage
@@ -390,7 +397,8 @@ const initialState = {
   dragging: false,
   redirectTestId: null,
   currentEditingTestId: null,
-  showWarningModal: false
+  showWarningModal: false,
+  highlightCollection: false
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -670,7 +678,14 @@ export function reducer(state = initialState, { type, payload }) {
         item: {
           ...state.item,
           collectionName: payload
-        }
+        },
+        highlightCollection: false
+      };
+    }
+    case SET_HIGHLIGHT_COLLECTION: {
+      return {
+        ...state,
+        highlightCollection: payload
       };
     }
     default:
@@ -1047,7 +1062,11 @@ function* publishTestItemSaga({ payload }) {
       }
 
       yield call(message.success, successMessage);
-    } else yield call(message.error, "Please link it to a collection.");
+    } else {
+      yield put(changeViewAction("metadata"));
+      yield put(setHighlightCollectionAction(true));
+      yield call(message.error, "Please link it to a collection.");
+    }
   } catch (e) {
     console.warn("publish error", e);
     const errorMessage = "publish failed";

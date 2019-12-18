@@ -21,7 +21,11 @@ import {
   getQuestionDataSelector
 } from "../../../author/QuestionEditor/ducks";
 
-import { getCollectionNamesSelector, setCollectionNameAction } from "../../../author/ItemDetail/ducks";
+import {
+  getCollectionNamesSelector,
+  setCollectionNameAction,
+  getHighlightCollectionSelector
+} from "../../../author/ItemDetail/ducks";
 
 import {
   getCurriculumsListSelector,
@@ -70,7 +74,8 @@ const QuestionMetadata = ({
   setCollectionName,
   collectionName,
   orgData,
-  userFeatures
+  userFeatures,
+  highlightCollection
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
   const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
@@ -176,6 +181,7 @@ const QuestionMetadata = ({
           collectionName={collectionName}
           orgData={orgData}
           userFeatures={userFeatures}
+          highlightCollection={highlightCollection}
         />
       </div>
     </ThemeProvider>
@@ -236,7 +242,8 @@ const enhance = compose(
       alignment: getDictionariesAlignmentsSelector(state),
       collectionName: getCollectionNamesSelector(state),
       orgData: getOrgDataSelector(state),
-      userFeatures: getUserFeatures(state)
+      userFeatures: getUserFeatures(state),
+      highlightCollection: getHighlightCollectionSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

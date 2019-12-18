@@ -541,14 +541,15 @@ class TestList extends Component {
   };
 
   handleTestAdded = index => {
-    const { addTestToModule } = this.props;
+    const { addTestToModule, handleSave } = this.props;
     const { testAdded, selectedTests } = this.state;
     this.setState(prevState => ({ ...prevState, selectedTests: [...selectedTests, testAdded._id] }));
     addTestToModule({ moduleIndex: index, testAdded });
+    if (selectedTests.length === 0) handleSave();
   };
 
   handleBulkTestAdded = index => {
-    const { addTestToModuleInBulk, playlist: { modules = [] } = {} } = this.props;
+    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {} } = this.props;
     const { markedTests, selectedTests } = this.state;
     const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
     const markedIds = markedTests.map(obj => obj._id);
@@ -568,6 +569,7 @@ class TestList extends Component {
       markedTests: []
     }));
     addTestToModuleInBulk({ moduleIndex: index, tests: uniqueMarkedTests });
+    if (selectedTests.length === 0) handleSave();
     message.success("Tests Added to playlist");
   };
 

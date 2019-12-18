@@ -26,7 +26,8 @@ const ItemsTable = ({
   owner,
   onChangePoints,
   isCollapse,
-  passagesKeyed = {}
+  passagesKeyed = {},
+  gradingRubricsFeature
 }) => {
   const [expandedRows, setExpandedRows] = useState(-1);
   const handleCheckboxChange = (index, checked) => {
@@ -62,6 +63,7 @@ const ItemsTable = ({
             questions={questions}
             mobile={mobile}
             passagesKeyed={passagesKeyed}
+            isScoringDisabled={data.main.isScoringDisabled}
           />
         ) : (
           <>
@@ -74,6 +76,7 @@ const ItemsTable = ({
               setExpandedRows={setExpandedRows}
               onChangePoints={onChangePoints}
               isCollapse={isCollapse}
+              isScoringDisabled={data.main.isScoringDisabled}
             />
             <MetaInfoCell data={data.meta} />
           </>
@@ -93,10 +96,12 @@ const ItemsTable = ({
   };
 
   const data = items.map((item, i) => {
+    const isScoringDisabled = !!item.data.questions.find(q => q.rubrics) && gradingRubricsFeature;
     const main = {
       id: item._id,
       points: scoring[item._id] || helpers.getPoints(item),
-      title: item._id
+      title: item._id,
+      isScoringDisabled
     };
 
     const meta = {
@@ -149,7 +154,8 @@ ItemsTable.propTypes = {
   types: PropTypes.object.isRequired,
   isEditable: PropTypes.bool,
   handlePreview: PropTypes.func,
-  standards: PropTypes.object.isRequired
+  standards: PropTypes.object.isRequired,
+  gradingRubricsFeature: PropTypes.bool
 };
 
 const enhance = compose(

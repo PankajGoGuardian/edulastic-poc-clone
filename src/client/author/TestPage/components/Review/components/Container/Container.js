@@ -28,6 +28,7 @@ import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
+import { getUserFeatures } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 import { Content } from "../../../Container/styled";
 
@@ -313,7 +314,8 @@ class Review extends PureComponent {
       itemsSubjectAndGrade,
       checkAnswer,
       showAnswer,
-      showCancelButton
+      showCancelButton,
+      userFeatures
     } = this.props;
     const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId, hasStickyHeader } = this.state;
 
@@ -390,6 +392,7 @@ class Review extends PureComponent {
                     handlePreview={this.handlePreviewTestItem}
                     isCollapse={isCollapse}
                     passagesKeyed={passagesKeyed}
+                    gradingRubricsFeature={userFeatures.gradingrubrics}
                   />
                 ) : (
                   <List
@@ -410,6 +413,7 @@ class Review extends PureComponent {
                     passagesKeyed={passagesKeyed}
                     useDragHandle
                     isCollapse={isCollapse}
+                    gradingRubricsFeature={userFeatures.gradingrubrics}
                   />
                 )}
               </Paper>
@@ -498,7 +502,8 @@ const enhance = compose(
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
       questions: getQuestionsSelectorForReview(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
-      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      userFeatures: getUserFeatures(state)
     }),
     {
       setData: setTestDataAction,

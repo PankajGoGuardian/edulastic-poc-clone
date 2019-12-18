@@ -36,6 +36,7 @@ import CreateNew from "./CreateNew";
 import ConfirmModal from "./common/ConfirmModal";
 import { getUserDetails } from "../../../student/Login/ducks";
 import { setRubricIdAction, getCurrentQuestionSelector, removeRubricIdAction } from "../../sharedDucks/questions";
+import { setItemLevelScoreFromRubricAction } from "../../ItemDetail/ducks";
 
 const UseExisting = ({
   updateRubricData,
@@ -54,7 +55,8 @@ const UseExisting = ({
   currentQuestion,
   deleteRubric,
   recentlyUsedRubrics,
-  addRubricToRecentlyUsed
+  addRubricToRecentlyUsed,
+  setItemLevelScoring
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
@@ -105,6 +107,7 @@ const UseExisting = ({
                           maxScore
                         });
                         addRubricToRecentlyUsed(currentRubricData);
+                        setItemLevelScoring(false);
                       }}
                     >
                       <Icon type="check" /> <span>Use</span>
@@ -392,7 +395,8 @@ const enhance = compose(
       associateRubricWithQuestion: setRubricIdAction,
       dissociateRubricFromQuestion: removeRubricIdAction,
       deleteRubric: deleteRubricAction,
-      addRubricToRecentlyUsed: addRubricToRecentlyUsedAction
+      addRubricToRecentlyUsed: addRubricToRecentlyUsedAction,
+      setItemLevelScoring: setItemLevelScoreFromRubricAction
     }
   )
 );

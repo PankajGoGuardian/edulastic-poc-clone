@@ -8,7 +8,17 @@ import { PointsLabel, PointsInput, PreviewButton } from "../../List/styled";
 
 class MainInfoCell extends React.Component {
   render() {
-    const { data, handlePreview, isEditable, owner, onChangePoints, index, setExpandedRows, isCollapse } = this.props;
+    const {
+      data,
+      handlePreview,
+      isEditable,
+      owner,
+      onChangePoints,
+      index,
+      setExpandedRows,
+      isCollapse,
+      isScoringDisabled = false
+    } = this.props;
     const newHtml = helpers.sanitizeForReview(data.stimulus) || "";
 
     return (
@@ -31,7 +41,7 @@ class MainInfoCell extends React.Component {
             <PointsInput
               size="large"
               type="number"
-              disabled={!owner || !isEditable}
+              disabled={!owner || !isEditable || isScoringDisabled}
               value={data.points}
               onChange={e => onChangePoints(data.id, +e.target.value)}
             />

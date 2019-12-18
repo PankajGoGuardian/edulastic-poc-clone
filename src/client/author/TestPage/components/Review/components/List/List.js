@@ -44,7 +44,8 @@ export const SortableItem = ({
   questions,
   passagesKeyed,
   mobile,
-  isCollapse
+  isCollapse,
+  isScoringDisabled = false
 }) => {
   const handleCheck = e => onCheck(indx, e.target.checked);
   /**
@@ -74,7 +75,7 @@ export const SortableItem = ({
                   data-cy="points"
                   size="large"
                   type="number"
-                  disabled={!owner || !isEditable}
+                  disabled={!owner || !isEditable || isScoringDisabled}
                   value={points}
                   onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                 />
@@ -139,7 +140,7 @@ export const SortableItem = ({
                 <PointsInput
                   size="large"
                   type="number"
-                  disabled={!owner || !isEditable}
+                  disabled={!owner || !isEditable || isScoringDisabled}
                   value={points}
                   onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                 />
@@ -170,7 +171,8 @@ const List = SortableContainer(
     owner,
     questions,
     passagesKeyed = {},
-    mobile
+    mobile,
+    gradingRubricsFeature
   }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
@@ -211,6 +213,7 @@ const List = SortableContainer(
                 testItems[i].data.questions &&
                 (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
+            isScoringDisabled={!!testItems[i].data.questions.find(q => q.rubrics) && gradingRubricsFeature}
             index={i}
             owner={owner}
             indx={i}
@@ -244,7 +247,8 @@ List.propTypes = {
   scoring: PropTypes.object.isRequired,
   owner: PropTypes.bool,
   questions: PropTypes.object.isRequired,
-  mobile: PropTypes.bool
+  mobile: PropTypes.bool,
+  gradingRubricsFeature: PropTypes.bool
 };
 
 List.defaultProps = {

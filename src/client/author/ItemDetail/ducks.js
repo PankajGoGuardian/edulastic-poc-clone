@@ -59,6 +59,7 @@ export const UPDATE_ITEM_DETAIL_ERROR = "[itemDetail] update by id error";
 export const CLEAR_ITEM_DETAIL = "[itemDetail] clear item detail";
 export const SET_ITEM_DETAIL_DATA = "[itemDetail] set data";
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING = "[itemDetail] set item level scoring";
+export const SET_ITEM_LEVEL_SCORING_FROM_RUBRIC = "[itemDetail] set item level scoring from rubric";
 export const SET_ITEM_DETAIL_SCORE = "[itemDetail] set item score";
 export const INC_ITEM_DETAIL_SCORE = "[itemDetail] increment item score";
 export const DEC_ITEM_DETAIL_SCORE = "[itemDetail] decrement item score";
@@ -113,6 +114,7 @@ export const deleteItemAction = createAction(DELETE_ITEM);
 export const deleteItemSuccesAction = createAction(DELETE_ITEM_SUCCESS);
 export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
 export const setCollectionNameAction = createAction(SET_COLLECTION_NAME);
+export const setItemLevelScoreFromRubricAction = createAction(SET_ITEM_LEVEL_SCORING_FROM_RUBRIC);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -525,6 +527,9 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: payload.item };
 
     case SET_ITEM_DETAIL_ITEM_LEVEL_SCORING:
+      return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
+
+    case SET_ITEM_LEVEL_SCORING_FROM_RUBRIC:
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
 
     case SET_DELETING_ITEM:

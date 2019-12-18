@@ -160,7 +160,7 @@ const SecondBlock = ({
             <ItemBody>
               <Label>Collections</Label>
               <Select
-                mode="multiple"
+                // mode="multiple"
                 className="tagsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
                 optionLabelProp="title"

@@ -141,7 +141,7 @@ export const moveContentInPlaylistAction = createAction(MOVE_CONTENT);
 // reducer
 
 const initialPlaylistState = {
-  title: "New Playlist",
+  title: undefined,
   description: "",
   status: "draft",
   createdBy: {
@@ -441,7 +441,11 @@ function* receivePlaylistByIdSaga({ payload }) {
 }
 
 function* createPlaylistSaga({ payload }) {
+  const { title } = payload.data;
   try {
+    if (title !== undefined && !title.trim().length) {
+      return yield call(message.error(" Name field cannot be empty "));
+    }
     const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate"]);
 
     const entity = yield call(curriculumSequencesApi.create, { data: dataToSend });

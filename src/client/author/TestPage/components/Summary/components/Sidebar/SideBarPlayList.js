@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
 import { Select, Row, Col, message } from "antd";
 import { uniqBy } from "lodash";
@@ -67,6 +67,12 @@ const Sidebar = ({
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
+  const playListTitleInput = createRef();
+  useEffect(() => {
+    if (playListTitleInput.current) {
+      playListTitleInput.current.input.focus();
+    }
+  }, []);
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
@@ -126,8 +132,9 @@ const Sidebar = ({
             onChange={e => onChangeField("title", e.target.value)}
             size="large"
             placeholder={`Enter a playlist name`}
+            ref={playListTitleInput}
           />
-          {!title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
+          {title !== undefined && !title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
           {windowWidth <= IPAD_LANDSCAPE_WIDTH && (
             <PlayListDescription onChangeField={onChangeField} description={description} />
           )}

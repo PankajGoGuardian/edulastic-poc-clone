@@ -196,7 +196,16 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
 };
 
 export const transformGradeBookResponse = (
-  { test, testItemsData, students: studentNames, testActivities, testQuestionActivities, passageData },
+  {
+    test,
+    testItemsData,
+    students: studentNames,
+    testActivities,
+    testQuestionActivities,
+    passageData,
+    status: assignmentStatus,
+    endDate
+  },
   studentResponse
 ) => {
   /**
@@ -265,6 +274,7 @@ export const transformGradeBookResponse = (
         const fullName = `${lastName ? `${lastName}, ` : ""}${studentName ? `${studentName}` : ""}`;
         const fakeName = `${fakeFirstName} ${fakeLastName}`;
         if (!studentTestActivities[studentId]) {
+          const isAbsent = assignmentStatus === "DONE" || endDate < Date.now();
           return {
             studentId,
             studentName: fullName,
@@ -273,8 +283,8 @@ export const transformGradeBookResponse = (
             fakeName,
             icon,
             color: fakeFirstName,
-            present: true,
-            status: "notStarted",
+            present: isAbsent ? false : true,
+            status: isAbsent ? "absent" : "notStarted",
             maxScore: testMaxScore,
             questionActivities: emptyQuestionActivities
           };

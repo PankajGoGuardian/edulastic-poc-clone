@@ -98,6 +98,7 @@ export function* receiveTestActivitySaga({ payload }) {
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.test = classResponse;
+    gradebookData.endDate = additionalData.endDate;
     markQuestionLabel(gradebookData.testItemsData);
     transformTestItems(gradebookData);
     // attach fake data to students for presentation mode.

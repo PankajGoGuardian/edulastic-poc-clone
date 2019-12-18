@@ -88,6 +88,15 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECALCULATE_ADDITIONAL_DATA:
       return {
         ...state,
+        entities: state.entities.map(x => {
+          if (x.status != "notStarted") {
+            return x;
+          } else if (state?.data?.status === "DONE" || state?.additionalData?.endDate < Date.now()) {
+            return { ...x, status: "absent", present: false };
+          } else {
+            return x;
+          }
+        }),
         /**
          * justified use of cloneDeep because,
          * I just want to rerender the components
@@ -138,6 +147,15 @@ const reducer = (state = initialState, { type, payload }) => {
           _state.data.status = status;
         }
         Object.assign(_state.additionalData, otherProps);
+        _state.entities = state.entities.map(x => {
+          if (x.status != "notStarted") {
+            return x;
+          } else if (_state?.data?.status === "DONE" || _state?.additionalData?.endDate < Date.now()) {
+            return { ...x, status: "absent", present: false };
+          } else {
+            return x;
+          }
+        });
       });
 
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT:

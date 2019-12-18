@@ -57,6 +57,12 @@ export const UPDATE_TAB_TITLE = "[itemDetail] update tab title";
 export const USE_TABS = "[itemDetail] is use tabs";
 export const MOVE_WIDGET = "[itemDetail] move widget";
 
+// item list
+export const APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST = "[item list] approve or reject single item request";
+export const APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS = "[item list] approve or reject single item success";
+export const APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST = "[item list] approve or reject multiple items request";
+export const APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS = "[item list] approve or reject multiple items success";
+
 // Test items
 export const RECEIVE_TEST_ITEMS_REQUEST = "[testItems] receive items request";
 export const RECEIVE_TEST_ITEMS_SUCCESS = "[testItems] receive items success";

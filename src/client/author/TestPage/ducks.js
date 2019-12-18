@@ -13,7 +13,8 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
   ADD_ITEM_EVALUATION,
-  CHANGE_PREVIEW
+  CHANGE_PREVIEW,
+  APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
 import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
@@ -485,6 +486,23 @@ export const reducer = (state = initialState, { type, payload }) => {
           _state.entity.subjects = _uniq([..._state.entity.subjects, ...newSubjects]);
         }
       });
+    case APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS:
+      const itemIdsMap = _keyBy(payload.itemIds);
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          testItems: state.entity.testItems.map(i => {
+            if (itemIdsMap[i._id]) {
+              return {
+                ...i,
+                status: payload.status
+              };
+            }
+            return i;
+          })
+        }
+      };
     default:
       return state;
   }

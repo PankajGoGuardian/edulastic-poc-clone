@@ -32,7 +32,9 @@ import {
   StyledText
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
+import { approveOrRejectSingleItem } from "../../../../ItemList/ducks";
 import { getUserId } from "../../../selectors/user";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
@@ -72,6 +74,13 @@ class AuthorTestItemPreview extends Component {
       return message.error("Don't have write permission to delete the item");
     }
     return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
+  };
+
+  handleSingleApproveOrReject = status => {
+    const { approveOrRejectSingleItem, item } = this.props;
+    if (item?._id) {
+      approveOrRejectSingleItem({ itemId: item._id, status });
+    }
   };
 
   getStyle = first => {
@@ -189,6 +198,7 @@ class AuthorTestItemPreview extends Component {
   renderLeftButtons = () => {
     const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols, item, userId, page } = this.props;
     const isOwner = item?.createdBy?._id === userId;
+
     return (
       <>
         <ButtonsContainer>
@@ -239,6 +249,40 @@ class AuthorTestItemPreview extends Component {
                 </StyledFlex>
               </EduButton>
             )}
+            <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+              <>
+                {item.status === "inreview" ? (
+                  <EduButton
+                    title="Reject"
+                    style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
+                    size="large"
+                    onClick={() => this.handleSingleApproveOrReject("rejected")}
+                  >
+                    <StyledFlex>
+                      <SyledSpan>
+                        <Icon type="stop" color={red} />
+                      </SyledSpan>
+                      <StyledText danger>Reject</StyledText>
+                    </StyledFlex>
+                  </EduButton>
+                ) : null}
+                {item.status === "inreview" || item.status === "rejected" ? (
+                  <EduButton
+                    title="Approve"
+                    style={{ padding: 0, borderColor: themeColor, height: "28px" }}
+                    size="large"
+                    onClick={() => this.handleSingleApproveOrReject("published")}
+                  >
+                    <StyledFlex>
+                      <SyledSpan>
+                        <Icon type="check" color={themeColor} />
+                      </SyledSpan>
+                      <StyledText>Approve</StyledText>
+                    </StyledFlex>
+                  </EduButton>
+                ) : null}
+              </>
+            </FeaturesSwitch>
           </ButtonsWrapper>
           {cols.length === 1 && this.renderRightButtons()}
         </ButtonsContainer>
@@ -444,7 +488,8 @@ const enhance = compose(
       userId: getUserId(state)
     }),
     {
-      deleteItem: deleteItemAction
+      deleteItem: deleteItemAction,
+      approveOrRejectSingleItem
     }
   )
 );

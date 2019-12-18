@@ -63,8 +63,9 @@ import {
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
-import { createTestFromCartAction } from "../../ducks";
+import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 export const getClearSearchState = () => ({
   subject: "",
@@ -291,13 +292,54 @@ class Contaier extends Component {
     });
   };
 
+  rejectNumberChecker = testItems => {
+    let count = 0;
+    for (let i of testItems) {
+      if (i.status === "inreview") {
+        count++;
+      }
+    }
+    return count;
+  };
+
+  approveNumberChecker = testItems => {
+    let count = 0;
+    for (let i of testItems) {
+      if (i.status === "inreview" || i.status === "rejected") {
+        count++;
+      }
+    }
+    return count;
+  };
+
   renderCartButton = () => (
-    <CartButton
-      onClick={() => {
-        const { createTestFromCart } = this.props;
-        createTestFromCart();
-      }}
-    />
+    <>
+      <CartButton
+        onClick={() => {
+          const { createTestFromCart } = this.props;
+          createTestFromCart();
+        }}
+        buttonText={"Author Test"}
+      />
+      <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+        <CartButton
+          onClick={() => {
+            const { approveOrRejectMultipleItem } = this.props;
+            approveOrRejectMultipleItem({ status: "rejected" });
+          }}
+          buttonText={"Reject"}
+          numberChecker={this.rejectNumberChecker}
+        />
+        <CartButton
+          onClick={() => {
+            const { approveOrRejectMultipleItem } = this.props;
+            approveOrRejectMultipleItem({ status: "published" });
+          }}
+          buttonText={"Approve"}
+          numberChecker={this.approveNumberChecker}
+        />
+      </FeaturesSwitch>
+    </>
   );
 
   renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
@@ -435,7 +477,8 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       createTestFromCart: createTestFromCartAction,
       updateSearchFilterState: updateSearchFilterStateAction,
-      clearFilterState: clearFilterStateAction
+      clearFilterState: clearFilterStateAction,
+      approveOrRejectMultipleItem
     }
   )
 );

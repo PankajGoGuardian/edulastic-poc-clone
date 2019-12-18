@@ -99,6 +99,15 @@ const publishTestItem = data =>
     })
     .then(result => result.data.result);
 
+const bulkPublishTestItems = data =>
+  api
+    .callApi({
+      url: `${prefix}/bulk`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 const getByV1Id = id =>
   api
     .callApi({
@@ -126,6 +135,7 @@ export default {
   evaluation,
   duplicateTestItem,
   publishTestItem,
+  bulkPublishTestItems,
   getByV1Id,
   deleteById,
   getPassageItems

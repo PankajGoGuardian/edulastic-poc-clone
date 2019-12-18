@@ -6,6 +6,10 @@ import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
 import { SET_USER } from "../../../../student/Login/ducks";
 import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
+import {
+  APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
+  APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
+} from "../../../src/constants/actions";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -195,6 +199,34 @@ export const reducer = (state = initialState, { type, payload }) => {
         archivedItems: [...state.archivedItems, payload]
       };
     }
+    case APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS:
+      return {
+        ...state,
+        items: state.items.map(i => {
+          if (i._id === payload.itemId) {
+            return {
+              ...i,
+              status: payload.status
+            };
+          }
+          return i;
+        })
+      };
+    case APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS:
+      const itemIdsMap = keyBy(payload.itemIds);
+      return {
+        ...state,
+        items: state.items.map(i => {
+          if (itemIdsMap[i._id]) {
+            return {
+              ...i,
+              status: payload.status
+            };
+          }
+          return i;
+        }),
+        selectedItems: [...state.selectedItems]
+      };
 
     default:
       return state;

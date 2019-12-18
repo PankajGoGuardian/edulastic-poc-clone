@@ -51,7 +51,7 @@ class ClozeMathWithUnit extends React.Component {
   getUserAnswerFromProps = props => {
     const { resprops = {}, id } = props;
     const { answers = {} } = resprops;
-    const { maths: userAnswers = {} } = answers;
+    const { mathUnits: userAnswers = {} } = answers;
     return userAnswers[id];
   };
 

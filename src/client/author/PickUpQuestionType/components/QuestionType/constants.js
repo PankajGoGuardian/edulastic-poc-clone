@@ -83,7 +83,7 @@ import TextResource from "../../../src/assets/video-and-passages/text.svg";
 import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
-  const { EMBED_RESPONSE } = math;
+  const { EMBED_RESPONSE, defaultNumberPad } = math;
   // use it for ids of MCQ
   const uuids = [uuid(), uuid(), uuid(), uuid()];
 
@@ -2098,7 +2098,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["basic", "units_us", "units_si"],
         template: EMBED_RESPONSE,
         templateDisplay: false,
@@ -2138,7 +2138,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2175,7 +2175,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2217,7 +2217,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2254,7 +2254,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["basic", "intermediate", "general"],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2295,7 +2295,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2352,7 +2352,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         isMath: true,
         responseContainers: [],
         symbols: ["basic", "qwerty"],
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
@@ -2385,7 +2385,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1
           }
         },
-        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        numberPad: defaultNumberPad,
         metadata: {},
         isMath: true,
         symbols: ["basic", "qwerty"],

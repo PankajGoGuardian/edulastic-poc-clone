@@ -17,8 +17,10 @@ import {
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
-import { methods } from "@edulastic/constants/const/math";
+import { methods, defaultNumberPad } from "@edulastic/constants/const/math";
 
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { FaBars } from "react-icons/fa";
 import { getPreviewSelector } from "../../../src/selectors/view";
 import { checkAnswerAction } from "../../../src/actions/testItem";
 import { changePreviewAction } from "../../../src/actions/view";
@@ -33,8 +35,6 @@ import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
 import { getRecentStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../../../src/actions/dictionaries";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { FaBars } from "react-icons/fa";
 
 const DragHandle = sortableHandle(() => (
   <StyledHandleSpan>
@@ -122,7 +122,7 @@ const mathData = {
   uiStyle: {
     type: "floating-keyboard"
   },
-  numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+  numberPad: defaultNumberPad,
   symbols: ["basic", "units_si", "units_us"],
   template: ""
 };
@@ -171,7 +171,7 @@ const createQuestion = (type, index, isDocBased = false) => ({
   qIndex: index,
   title: typeTitleHash[type],
   type,
-  isDocBased: isDocBased,
+  isDocBased,
   options: defaultQuestionOptions[type],
   validation: {
     scoringType: "exactMatch",

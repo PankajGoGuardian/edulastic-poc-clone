@@ -9,12 +9,13 @@ import { withNamespaces } from "@edulastic/localization";
 import { graphEvaluateApi } from "@edulastic/api";
 import { Button, MathModal, MathInput } from "@edulastic/common";
 import { IconTrash } from "@edulastic/icons";
+import { math } from "@edulastic/constants";
 import { backgrounds, red, themeColor, white } from "@edulastic/colors";
 
 import { CONSTANT } from "../../../Builder/config/index";
 import { IconKeyboard } from "../styled/IconKeyboard";
 
-const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
+const { defaultNumberPad } = math;
 
 const symbols = ["basic"];
 
@@ -182,7 +183,7 @@ class Equations extends Component {
               style={{ height: "40px", width: "160px", background: backgrounds.primary }}
               alwaysHideKeyboard
               symbols={symbols}
-              numberPad={numberPad}
+              numberPad={defaultNumberPad}
               value={eq}
               onInput={latex => this.handleInput(latex, index)}
             />
@@ -220,7 +221,7 @@ class Equations extends Component {
             style={{ height: "40px", width: "160px", background: backgrounds.primary }}
             alwaysHideKeyboard
             symbols={symbols}
-            numberPad={numberPad}
+            numberPad={defaultNumberPad}
             value={newEquation}
             onInput={latex => this.handleInput(latex)}
           />
@@ -243,7 +244,7 @@ class Equations extends Component {
         <MathModal
           show={showMathModal}
           symbols={symbols}
-          numberPad={numberPad}
+          numberPad={defaultNumberPad}
           showDropdown
           showResposnse={false}
           width="max-content"

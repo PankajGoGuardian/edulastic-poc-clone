@@ -9,7 +9,7 @@ import { message } from "antd";
 import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
-import { aws } from "@edulastic/constants";
+import { aws, math } from "@edulastic/constants";
 import { white, dashBorderColor } from "@edulastic/colors";
 import FroalaEditor from "froala-editor";
 import "froala-editor/js/plugins.pkgd.min.js";
@@ -70,7 +70,7 @@ FroalaEditor.DefineIconTemplate("mathunit", `<span class="custom-toolbar-btn">Ma
 FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-btn">PN</span>`);
 
 const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
-const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
+const { defaultNumberPad } = math;
 
 FroalaEditor.VIDEO_PROVIDERS.push({
   test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
@@ -791,7 +791,7 @@ const CustomEditor = ({
         isEditable={mathModalIsEditable}
         show={showMathModal}
         symbols={symbols}
-        numberPad={numberPad}
+        numberPad={defaultNumberPad}
         showDropdown
         showResposnse={false}
         value={currentLatex}

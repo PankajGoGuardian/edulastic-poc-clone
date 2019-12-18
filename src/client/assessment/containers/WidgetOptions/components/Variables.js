@@ -7,7 +7,7 @@ import { Button, Input, Select, Table } from "antd";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { variableTypes } from "@edulastic/constants";
+import { variableTypes, math } from "@edulastic/constants";
 import { MathInput } from "@edulastic/common";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
 import {
@@ -26,28 +26,7 @@ import Question from "../../../components/Question";
 import { StyledCheckbox } from "../../../components/Common/InputField";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
-const numberPad = [
-  "7",
-  "8",
-  "9",
-  "\\div",
-  "4",
-  "5",
-  "6",
-  "\\times",
-  "1",
-  "2",
-  "3",
-  "-",
-  "0",
-  ".",
-  ",",
-  "+",
-  "left_move",
-  "right_move",
-  "Backspace",
-  "="
-];
+const { defaultNumberPad } = math;
 
 const InlineLabel = styled(Label)`
   display: inline-block;
@@ -324,7 +303,8 @@ class Variables extends Component {
                         ref={mathFieldRef}
                         symbols={symbols}
                         fullWidth
-                        numberPad={numberPad}
+                        showDropdown
+                        numberPad={defaultNumberPad}
                         value={variable.formula}
                         showResponse={false}
                         onInput={latex => handleChangeVariableList(variableName, "formula", latex)}

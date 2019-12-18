@@ -209,6 +209,25 @@ const characterMapButtons = [
 
 const KeyboardSize = { width: 47, height: 47 };
 
+const defaultNumberPad = [
+  "1",
+  "2",
+  "3",
+  "+",
+  "4",
+  "5",
+  "6",
+  "-",
+  "7",
+  "8",
+  "9",
+  "\\times",
+  "0",
+  ".",
+  "divide",
+  "\\div"
+];
+
 module.exports = {
   methods,
   methodOptions,
@@ -224,5 +243,6 @@ module.exports = {
   templateFontScaleOption,
   EMBED_RESPONSE,
   KeyboardSize,
-  characterMapButtons
+  characterMapButtons,
+  defaultNumberPad
 };

@@ -17,11 +17,13 @@ import {
   textColor,
   themeColor
 } from "@edulastic/colors";
+import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
 import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
 import Tags from "../../src/components/common/Tags";
+import { FaBars } from "react-icons/fa";
 
 import AssessmentPlayer from "../../../assessment";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
@@ -46,6 +48,65 @@ import AssignmentDragItem from "./AssignmentDragItem";
 
 const IS_ASSIGNED = "ASSIGNED";
 const NOT_ASSIGNED = "ASSIGN";
+
+const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
+
+const SortableContainer = props =>
+  props.mode === "embedded" ? <SortableHOC {...props}>{props.children}</SortableHOC> : <div>{props.children}</div>;
+
+const SortableHandle = sortableHandle(() => (
+  <DragHandle>
+    <FaBars />
+  </DragHandle>
+));
+
+const SortableElement = sortableElement(props => {
+  const {
+    moduleData,
+    id,
+    isContentExpanded,
+    hideEditOptions,
+    assignTest,
+    mode,
+    assigned,
+    moreMenu,
+    menu,
+    standardTags,
+    status,
+    isAssigned,
+    viewTest,
+    deleteTest,
+    moduleIndex,
+    dropContent,
+    onBeginDrag
+  } = props;
+  return (
+    <AssignmentDragItemContainer>
+      <SortableHandle />
+      <AssignmentDragItem
+        key={`${id}-${moduleData.id}`}
+        moduleData={moduleData}
+        isContentExpanded={isContentExpanded}
+        hideEditOptions={hideEditOptions}
+        assignTest={assignTest}
+        mode={mode}
+        assigned={assigned}
+        moreMenu={moreMenu}
+        menu={menu}
+        standardTags={standardTags}
+        status={status}
+        contentIndex={id}
+        isAssigned={isAssigned}
+        viewTest={viewTest}
+        deleteTest={deleteTest}
+        moduleIndex={moduleIndex}
+        handleDrop={dropContent}
+        onBeginDrag={onBeginDrag}
+        onClick={e => e.stopPropagation()}
+      />
+    </AssignmentDragItemContainer>
+  );
+});
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
@@ -104,7 +165,8 @@ class ModuleRow extends Component {
       curriculum,
       moduleStatus,
       handleRemove,
-      removeUnit
+      removeUnit,
+      handleTestsSort
     } = this.props;
     const { title, _id, data = [], description = "" } = module;
     const completed = moduleStatus;
@@ -218,7 +280,14 @@ class ModuleRow extends Component {
               </ModuleHeader>
               {!collapsed && (
                 // eslint-disable-next-line
-                <div>
+                <SortableContainer
+                  mode={mode}
+                  lockAxis="y"
+                  lockOffset={["0%", "0%"]}
+                  onSortEnd={handleTestsSort}
+                  lockToContainerEdges
+                  useDragHandle
+                >
                   {data.map((moduleData, index) => {
                     const { standards, assignments = [] } = moduleData;
                     const standardTags = (standards && standards.map(stand => stand.name)) || [];
@@ -239,25 +308,20 @@ class ModuleRow extends Component {
                     const isAssigned = assignments.length > 0;
                     if (mode === "embedded") {
                       return (
-                        <AssignmentDragItem
-                          key={`${index}-${moduleData.id}`}
+                        <SortableElement
                           moduleData={moduleData}
-                          isContentExpanded={isContentExpanded}
-                          hideEditOptions={hideEditOptions}
-                          assignTest={this.assignTest}
-                          mode={mode}
-                          assigned={assigned}
-                          moreMenu={moreMenu}
+                          index={index}
+                          id={index}
                           menu={menu}
-                          standardTags={standardTags}
-                          status={status}
-                          contentIndex={index}
+                          dropContent={dropContent}
+                          moreMenu={moreMenu}
                           isAssigned={isAssigned}
+                          standardTags={standardTags}
+                          assignTest={this.assignTest}
                           viewTest={this.viewTest}
                           deleteTest={this.deleteTest}
-                          moduleIndex={moduleIndex}
-                          handleDrop={dropContent}
-                          onBeginDrag={onBeginDrag}
+                          onClick={e => e.stopPropagation()}
+                          {...this.props}
                         />
                       );
                     }
@@ -335,7 +399,7 @@ class ModuleRow extends Component {
                       </Assignment>
                     );
                   })}
-                </div>
+                </SortableContainer>
               )}
             </Module>
           </Container>
@@ -358,6 +422,27 @@ ModuleRow.propTypes = {
   status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
+
+const AssignmentDragItemContainer = styled.div`
+  display: flex;
+  width: 100;
+  justify-content: stretch;
+`;
+
+const DragHandle = styled.div`
+  color: ${themeColor};
+  background: ${white};
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+`;
 
 const ModalWrapper = styled(Modal)`
   top: 0px;
@@ -638,7 +723,7 @@ export const AssignmentIcon = styled.span`
 `;
 
 const Row = styled.div`
-  border-radius: 10px;
+  border-radius: 0 10px 10px 0;
   background: ${white};
   padding-top: 15px;
   padding-bottom: 15px;
@@ -696,7 +781,6 @@ const ModuleHeader = styled(Row)`
   box-shadow: none;
   display: flex;
   flex-direction: column;
-  border-bottom-left-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
   border-bottom-right-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
   overflow: hidden;
   position: relative;

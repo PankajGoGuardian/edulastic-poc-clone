@@ -46,6 +46,7 @@ export const ADD_MODULE = "[playlists] Add new module";
 export const UPDATE_MODULE = "[playlists] Update module data";
 export const DELETE_MODULE = "[playlists] Delete module";
 export const ORDER_MODULES = "[playlists] Resequence modules";
+export const ORDER_TESTS = "[playlists] Resequence tests in module";
 export const ADD_TEST_IN_PLAYLIST = "[playlists] add test to module";
 export const ADD_TEST_IN_PLAYLIST_BULK = "[playlists] add tests to module in bulk";
 export const DELETE_TEST_FROM_PLAYLIST_BULK = "[playlists] remove test from module in Bulk";
@@ -129,6 +130,7 @@ export const createNewModuleAction = createAction(ADD_MODULE);
 export const updateModuleAction = createAction(UPDATE_MODULE);
 export const deleteModuleAction = createAction(DELETE_MODULE);
 export const resequenceModulesAction = createAction(ORDER_MODULES);
+export const resequenceTestsAction = createAction(ORDER_TESTS);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const addTestToModuleInBulkAction = createAction(ADD_TEST_IN_PLAYLIST_BULK);
 export const deleteTestFromModuleInBulkAction = createAction(DELETE_TEST_FROM_PLAYLIST_BULK);
@@ -260,6 +262,10 @@ export const reducer = (state = initialState, { type, payload }) => {
     }
     case ORDER_MODULES: {
       const newEntity = resequenceModulesInPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case ORDER_TESTS: {
+      const newEntity = resequenceTestsInModule(state.entity, payload);
       return { ...state, entity: newEntity };
     }
     case ADD_TEST_IN_PLAYLIST: {
@@ -598,6 +604,16 @@ function resequenceModulesInPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
     const obj = draft.modules.splice(oldIndex, 1);
     draft.modules.splice(newIndex, 0, obj[0]);
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function resequenceTestsInModule(playlist, payload) {
+  const { oldIndex, newIndex, mIndex } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    const obj = draft.modules[mIndex].data.splice(oldIndex, 1);
+    draft.modules[mIndex].data.splice(newIndex, 0, obj[0]);
     return draft;
   });
   return newPlaylist;

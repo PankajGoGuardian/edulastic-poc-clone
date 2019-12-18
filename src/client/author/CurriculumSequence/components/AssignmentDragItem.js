@@ -61,15 +61,16 @@ class AssignmentDragItem extends Component {
       deleteTest,
       standardTags,
       isAssigned,
-      assigned
+      assigned,
+      isDragging
     } = this.props;
 
     return connectDragSource(
-      <div className="item">
+      <div className="item" style={{ width: "100%" }}>
         <Assignment
           key={moduleData.contentId}
           data-cy="moduleAssignment"
-          padding="14px 30px 14px 50px"
+          padding="14px 30px 14px 20px"
           borderRadius="unset"
           boxShadow="unset"
         >

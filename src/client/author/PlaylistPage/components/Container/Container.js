@@ -23,6 +23,8 @@ import {
   getTestsLoadingSelector,
   getTestStatusSelector,
   createNewModuleAction,
+  resequenceModulesAction,
+  resequenceTestsAction,
   setRegradeOldIdAction,
   moveContentInPlaylistAction,
   publishPlaylistAction
@@ -193,6 +195,16 @@ class Container extends PureComponent {
     moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
   };
 
+  onSortEnd = prop => {
+    const { resequenceModules } = this.props;
+    resequenceModules(prop);
+  };
+
+  handleTestsSort = prop => {
+    const { resequenceTests } = this.props;
+    resequenceTests(prop);
+  };
+
   renderContent = () => {
     const { playlist, setData, rows, isTestLoading, match, history, userId } = this.props;
     const { authors, _id } = playlist;
@@ -268,6 +280,8 @@ class Container extends PureComponent {
             history={history}
             onDrop={this.onDrop}
             current={current}
+            onSortEnd={this.onSortEnd}
+            handleTestsSort={this.handleTestsSort}
           />
         );
       case "settings":
@@ -431,6 +445,8 @@ const enhance = compose(
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
       addNewModuleToPlaylist: createNewModuleAction,
+      resequenceModules: resequenceModulesAction,
+      resequenceTests: resequenceTestsAction,
       moveContentInPlaylist: moveContentInPlaylistAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }

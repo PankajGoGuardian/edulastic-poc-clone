@@ -52,7 +52,8 @@ const DropContainer = ({
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
-        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
+        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border,
+        width: "100%"
       }}
     >
       {children}

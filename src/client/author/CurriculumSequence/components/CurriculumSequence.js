@@ -308,13 +308,16 @@ class CurriculumSequence extends Component {
       selectContent,
       onDrop,
       onBeginDrag,
+      onSortEnd,
+      current,
       curriculumGuides,
       guide,
       isContentExpanded,
       mode,
       recentPlaylists,
       onShareClick,
-      history
+      history,
+      handleTestsSort
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -631,6 +634,9 @@ class CurriculumSequence extends Component {
                 handleRemove={handleRemoveTest}
                 hideEditOptions={!urlHasUseThis}
                 onBeginDrag={onBeginDrag}
+                isReview={current === "review"}
+                onSortEnd={onSortEnd}
+                handleTestsSort={handleTestsSort}
               />
             )}
           </Wrapper>

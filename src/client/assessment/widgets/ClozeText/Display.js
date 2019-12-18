@@ -1,12 +1,11 @@
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import produce from "immer";
 import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
-
 import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
-
 import { EDIT } from "../../constants/constantsForQuestions";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";

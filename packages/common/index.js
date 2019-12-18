@@ -40,6 +40,7 @@ export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmMod
 export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 export { default as Hints } from "./src/components/Hints";
 export { default as ErrorHandler } from "./src/components/ErrorHandler";
+
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { default as withWindowScroll } from "./src/HOC/withWindowScroll";

@@ -373,17 +373,20 @@ class MathFormulaPreview extends Component {
         )}
 
         {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
-          <CorrectAnswerBox>
-            {item.isUnits && item.showDropdown
-              ? item.validation.validResponse.value[0].value.search("=") === -1
-                ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
-                : item.validation.validResponse.value[0].value.replace(/=/gm, `\\ ${correctUnit}=`)
-              : item.validation.validResponse.value[0].value}
-          </CorrectAnswerBox>
+          <CorrectAnswerBox
+            answer={
+              item.isUnits && item.showDropdown
+                ? item.validation.validResponse.value[0].value.search("=") === -1
+                  ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
+                  : item.validation.validResponse.value[0].value.replace(/=/gm, `\\ ${correctUnit}=`)
+                : item.validation.validResponse.value[0].value
+            }
+          />
         )}
         {hasAltAnswers && previewType === SHOW && (
-          <CorrectAnswerBox altAnswers>
-            {item.validation.altResponses
+          <CorrectAnswerBox
+            altAnswers
+            answer={item.validation.altResponses
               .map(ans => {
                 if (item.isUnits && item.showDropdown) {
                   let altUnit = get(ans, "value[0].options.unit", "");
@@ -397,7 +400,7 @@ class MathFormulaPreview extends Component {
                 return ans.value[0].value;
               })
               .join(", ")}
-          </CorrectAnswerBox>
+          />
         )}
       </div>
     );

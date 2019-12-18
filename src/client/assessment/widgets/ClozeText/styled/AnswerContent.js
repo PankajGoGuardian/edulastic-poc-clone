@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { MathFormulaDisplay } from "@edulastic/common";
 
-export const AnswerContent = styled.div`
+export const AnswerContent = styled(MathFormulaDisplay)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

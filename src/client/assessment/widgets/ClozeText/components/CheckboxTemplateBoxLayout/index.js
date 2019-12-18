@@ -50,9 +50,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           {stemNumeration}
         </IndexBox>
       )}
-      <AnswerContent style={{ whiteSpace: "normal" }} showIndex={!checkAnswer}>
-        {userAnswer}
-      </AnswerContent>
+      <AnswerContent
+        style={{ whiteSpace: "normal" }}
+        showIndex={!checkAnswer}
+        dangerouslySetInnerHTML={{ __html: userAnswer || "" }}
+      />
       {attempt && <CheckMark correct={evaluation[choiceId]} />}
     </AnswerBox>
   );
@@ -73,7 +75,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             {stemNumeration}
           </IndexBox>
         )}
-        <AnswerContent showIndex={!checkAnswer}>{userAnswer}</AnswerContent>
+        <AnswerContent showIndex={!checkAnswer} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
         {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>

@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { variableTypes, math } from "@edulastic/constants";
-import { MathInput } from "@edulastic/common";
+import { MathInput, MathFormulaDisplay } from "@edulastic/common";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
 import {
   getQuestionDataSelector,
@@ -226,11 +226,14 @@ class Variables extends Component {
       calculateFormula();
     };
 
+    const getMathFormulaTemplate = latex => `<span class="input__math" data-latex="${latex}"></span>`;
+
     const types = Object.keys(variableTypes);
     const columns = Object.keys(variables).map(variableName => ({
       title: variableName,
       dataIndex: variableName,
-      key: variables[variableName].id
+      key: variables[variableName].id,
+      render: latex => <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
     }));
 
     return (
@@ -388,7 +391,9 @@ class Variables extends Component {
                     </Col>
                   )}
                   <Col md={6} style={{ paddingTop: 10 }}>
-                    <Label>{variable.exampleValue}</Label>
+                    <MathFormulaDisplay
+                      dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(variable.exampleValue) }}
+                    />
                   </Col>
                 </Row>
               );

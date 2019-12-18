@@ -11,9 +11,9 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).filter(x => validations?.[x]?.validation).length;
   for (const id of questionIds) {
-    let answer = answers[id];
+    const answer = answers[id];
     if (validations && validations[id]) {
-      const validation = replaceVariables(validations[id]);
+      const validation = replaceVariables(validations[id], [], false);
       const { type } = validations[id];
       const evaluator = evaluators[validation.type];
       if (!evaluator) {

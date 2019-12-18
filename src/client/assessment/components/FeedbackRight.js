@@ -103,30 +103,25 @@ class FeedbackRight extends Component {
       user,
       updateQuestionActivityScore,
       widget: { id, activity = {} },
-      studentId,
-      rubricDetails
+      studentId
     } = this.props;
 
-    let _score;
-
-    if (!rubricDetails) {
-      if (!score || isNaN(score)) {
-        message.warn("Score should be a valid numerical");
-        return;
-      }
-      _score = toNumber(score);
-      if (_score > maxScore) {
-        message.warn("Score given should be less than or equal to maximum score");
-        return;
-      }
-    } else if (!rubricResponse) _score = toNumber(score);
+    if (!score || isNaN(score)) {
+      message.warn("Score should be a valid numerical");
+      return;
+    }
+    const _score = toNumber(score);
+    if (_score > maxScore) {
+      message.warn("Score given should be less than or equal to maximum score");
+      return;
+    }
 
     const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
 
-    if (!rubricResponse) this.props.setTeacherEditedScore({ [id]: _score });
+    this.props.setTeacherEditedScore({ [id]: _score });
 
     const payload = {
       score: rubricResponse ? rubricResponse : { score: _score },

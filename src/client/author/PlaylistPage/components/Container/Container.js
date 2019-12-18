@@ -123,11 +123,13 @@ class Container extends PureComponent {
   }
 
   handleNavChange = value => () => {
+    if (!this.props.playlist?.title?.trim()?.length) {
+      return message.warn("Please enter playlist name.");
+    }
     if (value === "source") {
-      this.setState({
+      return this.setState({
         showModal: true
       });
-      return;
     }
     this.handleSave();
     this.setState({
@@ -293,18 +295,17 @@ class Container extends PureComponent {
 
   handleSave = async () => {
     const { playlist, updatePlaylist, createPlayList } = this.props;
-    
+
     const { backgroundColor, textColor } = this.state;
     playlist.bgColor = backgroundColor;
     playlist.textColor = textColor;
-    
+
     if (!playlist?.modules?.length) {
       /**
        * need to save only when at-least a module present
        */
       return;
     }
-
 
     if (playlist._id) {
       updatePlaylist(playlist._id, playlist);

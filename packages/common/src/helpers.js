@@ -208,14 +208,19 @@ export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
-
   //remove br tag also
   // eslint-disable-next-line func-names
-  const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br"];
+  const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
-      $(this).replaceWith("...");
+      let shouldReplace = true;
+      const elem = $(this).context;
+      const latex = elem.getAttribute("data-latex");
+      if (elem.nodeName === "SPAN" && latex && !latex.includes("matrix")) {
+        shouldReplace = false;
+      }
+      if (shouldReplace) $(this).replaceWith("...");
       tagFound = true;
     });
   });

@@ -24,30 +24,28 @@ const ModuleResequenceHandle = SortableHandle(() => (
 ));
 
 const ModuleItem = SortableElement(props => {
-  const {
-    module: { title, mIndex, description } = {},
-    id,
-    updateModule,
-    deleteModule,
-    handleInputChange,
-    data,
-    setCurrentData,
-    clearPreviousData
-  } = props;
+  const { module: { title, mIndex, description } = {}, id, updateModule, deleteModule } = props;
+
   const [editState, toggleEdit] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   /*
    * TODO: On SortElement Click Highlight Container
    */
   const [dragging, setDragging] = useState(false);
 
+  const handleInputChange = (e, label) => {
+    label === "title" ? setEditTitle(e.target.value) : setEditDescription(e.target.value);
+  };
+
   const handleModuleEdit = () => {
-    setCurrentData(title, description);
+    setEditTitle(title);
+    setEditDescription(description);
     toggleEdit(true);
   };
 
   const handleEdit = id => {
-    if (updateModule(id)) {
-      clearPreviousData();
+    if (updateModule({ id, editTitle, editDescription })) {
       toggleEdit(false);
     }
   };
@@ -60,14 +58,14 @@ const ModuleItem = SortableElement(props => {
           <Title>Module Name</Title>
           <Input
             placeholder="Enter module name"
-            value={data.title || title}
+            value={editTitle}
             onChange={e => handleInputChange(e, "title")}
             style={{ background: lightGreySecondary, width: "685px" }}
           />
           <Title>Description</Title>
           <Input.TextArea
             placeholder="Enter module description"
-            value={data.description || description}
+            value={editDescription}
             onChange={e => handleInputChange(e, "description")}
             style={{ background: lightGreySecondary, width: "685px" }}
           />
@@ -119,11 +117,12 @@ const Label = styled.span`
 const EditModuleContainer = styled.div`
   background: ${white};
   width: 100%;
-  min-height: 60px;
+  min-height: 230px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   padding: 20px;
+  margin: 8px 0;
   box-shadow: 0 0 15px 0 ${fadedGrey};
   border-radius: 4px;
 `;
@@ -193,8 +192,9 @@ const SortableModules = SortableContainer(props => (
 
 const ManageModulesModalBody = props => {
   const [addState, toggleAddState] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+
+  const [addTitle, setAddTitle] = useState("");
+  const [addDescription, setAddDescription] = useState("");
 
   const {
     destinationCurriculumSequence,
@@ -207,16 +207,15 @@ const ManageModulesModalBody = props => {
     handleApply
   } = props;
 
-  const setCurrentData = (title, description) => {
-    setTitle(title);
-    setDescription(description);
+  const setEditModuleData = (title, description) => {
+    setEditTitle(title);
+    setEditDescription(description);
   };
 
-  const clearPreviousData = () => {
-    setTitle("");
-    setDescription("");
+  const clearPreviousAddData = () => {
+    setAddTitle("");
+    setAddDescription("");
   };
-
   const handleSort = prop => resequenceModules(prop);
 
   const applyHandler = () => {
@@ -225,35 +224,35 @@ const ManageModulesModalBody = props => {
   };
 
   const handleModuleSave = () => {
-    if (title.trim()) {
+    if (addTitle.trim()) {
       const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
-        x => x.title.trim().toLowerCase() === title.trim().toLowerCase()
+        x => x.title.trim().toLowerCase() === addTitle.trim().toLowerCase()
       );
       if (titleAlreadyExists) {
-        message.error(`Module with title '${title}' already exists. Please use another title`);
+        message.error(`Module with title '${addTitle}' already exists. Please use another title`);
         return;
       }
-      addModuleToPlaylist({ title, description });
+      addModuleToPlaylist({ title: addTitle, description: addDescription });
       toggleAddState(false);
-      clearPreviousData();
+      clearPreviousAddData();
     } else {
       message.warning("Module name cannot be empty");
     }
   };
 
   const handleInputChange = (e, label) => {
-    label === "title" ? setTitle(e.target.value) : setDescription(e.target.value);
+    label === "title" ? setAddTitle(e.target.value) : setAddDescription(e.target.value);
   };
 
-  const handleModuleUpdate = id => {
+  const handleModuleUpdate = ({ id, editTitle, editDescription }) => {
     const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
-      (x, ind) => x.title.trim().toLowerCase() === title.trim().toLowerCase() && ind !== id
+      (x, ind) => x.title.trim().toLowerCase() === editTitle.trim().toLowerCase() && ind !== id
     );
     if (titleAlreadyExists) {
-      message.error(`Module with title '${title}' already exists. Please use another title`);
+      message.error(`Module with title '${editTitle}' already exists. Please use another title`);
       return false;
     }
-    updateModuleInPlaylist({ id, title, description });
+    updateModuleInPlaylist({ id, title: editTitle, description: editDescription });
     return true;
   };
 
@@ -264,13 +263,11 @@ const ManageModulesModalBody = props => {
       <ModalHeader>Manage Modules</ModalHeader>
       <ModalContent>
         <SortableModules
-          setCurrentData={setCurrentData}
+          setEditModuleData={setEditModuleData}
           modulesList={modulesList}
           deleteModule={deleteModuleFromPlaylist}
           updateModule={handleModuleUpdate}
           handleInputChange={handleInputChange}
-          data={{ title, description }}
-          clearPreviousData={clearPreviousData}
           onSortEnd={handleSort}
           lockAxis="y"
           lockOffset={["0%", "0%"]}
@@ -286,13 +283,13 @@ const ManageModulesModalBody = props => {
                 <Input
                   placeholder="Enter module name"
                   style={{ background: lightGreySecondary, width: "685px" }}
-                  value={title}
+                  value={addTitle}
                   onChange={e => handleInputChange(e, "title")}
                 />
                 <Title>Description</Title>
                 <Input.TextArea
                   placeholder="Enter module description"
-                  value={description}
+                  value={addDescription}
                   style={{ background: lightGreySecondary, width: "685px" }}
                   onChange={e => handleInputChange(e, "description")}
                 />

@@ -14,7 +14,6 @@ import MathSpanWrapper from "../../components/MathSpanWrapper";
 import ClozeTextInput from "./ClozeTextInput";
 
 import { getFontSize, getStemNumeration } from "../../utils/helpers";
-import { MigratedQuestion } from "@edulastic/common/src/components/MigratedQuestion";
 
 class ClozeTextDisplay extends Component {
   state = {
@@ -158,8 +157,8 @@ class ClozeTextDisplay extends Component {
       // isExpressGrader
     };
 
-    const QuestionContent = !resProps.isV1Migrated ? (
-      <StyledParser view={view}>
+    const QuestionContent = (
+      <StyledParser view={view} className={resProps.isV1Migrated && "migrated-question"}>
         <JsxParser
           bindings={{ resProps }}
           showWarnings
@@ -170,20 +169,6 @@ class ClozeTextDisplay extends Component {
           jsx={parsedTemplate}
         />
       </StyledParser>
-    ) : (
-      <MigratedQuestion>
-        <StyledParser view={view}>
-          <JsxParser
-            bindings={{ resProps }}
-            showWarnings
-            components={{
-              textinput: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
-              mathspan: MathSpanWrapper
-            }}
-            jsx={parsedTemplate}
-          />
-        </StyledParser>
-      </MigratedQuestion>
     );
 
     const answerBox =

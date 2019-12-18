@@ -5,7 +5,6 @@ import { RefContext } from "@edulastic/common";
 
 import { WithResources } from "./withResources";
 import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
-import { MigratedQuestion } from "../components/MigratedQuestion";
 import AppConfig from "../../../../app-config";
 
 export const withMathFormula = WrappedComponent => {
@@ -40,31 +39,21 @@ export const withMathFormula = WrappedComponent => {
           setLoaded(true);
         }}
       >
-        {theme.isV1Migrated ? (
-          <MigratedQuestion>
-            <WrappedComponent
-              {...props}
-              ref={contextConfig?.forwardedRef}
-              data-cy="styled-wrapped-component"
-              dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-              style={{ ...style, fontSize: fontSize || theme.fontSize }}
-            />
-          </MigratedQuestion>
-        ) : (
-          <WrappedComponent
-            {...props}
-            ref={contextConfig?.forwardedRef}
-            data-cy="styled-wrapped-component"
-            dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-            style={{ ...style, fontSize: fontSize || theme.fontSize }}
-          />
-        )}
+        <WrappedComponent
+          {...props}
+          ref={contextConfig?.forwardedRef}
+          className={theme.isV1Migrated && "migrated-question"}
+          data-cy="styled-wrapped-component"
+          dangerouslySetInnerHTML={{ __html: newInnerHtml }}
+          style={{ ...style, fontSize: fontSize || theme.fontSize }}
+        />
       </WithResources>
     );
   };
 
   MathFormulaWrapped.propTypes = {
     dangerouslySetInnerHTML: PropTypes.object,
+    className: PropTypes.string,
     isCollapse: PropTypes.bool.isRequired,
     fontSize: PropTypes.number.isRequired,
     theme: PropTypes.object.isRequired,

@@ -269,6 +269,7 @@ const CustomEditor = ({
   imageDefaultWidth,
   placeholder,
   fontSize,
+  className,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -805,6 +806,7 @@ const CustomEditor = ({
         border={border}
         theme={theme}
         fontSize={fontSize}
+        className={className}
       >
         {toolbarId && (
           <ToolbarContainer

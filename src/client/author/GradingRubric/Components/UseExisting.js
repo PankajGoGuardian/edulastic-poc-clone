@@ -268,14 +268,14 @@ const UseExisting = ({
           const uniqueRatings = [];
           criteria.ratings.every(rating => {
             if (rating.name) {
-              if (!uniqueRatings.includes(rating.points)) uniqueRatings.push(rating.points);
+              if (!uniqueRatings.includes(rating.points)) uniqueRatings.push(parseFloat(rating.points));
             } else {
               isValid = false;
               message.error("Rating name cannot be empty.");
             }
             return isValid;
           });
-          if (isValid && !uniqueRatings.includes("0")) {
+          if (isValid && !uniqueRatings.includes(0)) {
             isValid = false;
             message.error("Rating point must be 0 for at least one rating within a criteria.");
           }

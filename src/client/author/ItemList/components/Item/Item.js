@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
@@ -44,6 +45,7 @@ import {
   getPassageItemsCountSelector,
   setPassageItemsAction
 } from "../../../TestPage/ducks";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
@@ -118,6 +120,11 @@ class Item extends Component {
 
   previewItem = () => {
     this.setState({ isShowPreviewModal: true });
+  };
+
+  redirectToEdit = () => {
+    const { item, history } = this.props;
+    history.push(`/author/items/${item._id}/item-detail`);
   };
 
   renderDetails = () => {
@@ -259,7 +266,8 @@ class Item extends Component {
       page,
       passageItemsCount,
       gotoSummary,
-      test
+      test,
+      features
     } = this.props;
     const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
@@ -295,7 +303,9 @@ class Item extends Component {
           <Question>
             <QuestionContent>
               <Stimulus
-                onClickHandler={this.previewItem}
+                onClickHandler={
+                  features.isCurator || features.isPublisherAuthor ? this.redirectToEdit : this.previewItem
+                }
                 stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
               />
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
@@ -379,11 +389,13 @@ class Item extends Component {
 }
 
 const enhance = compose(
+  withRouter,
   withNamespaces("author"),
   connect(
     state => ({
       passageItemsCount: getPassageItemsCountSelector(state),
-      passageItems: state.tests.passageItems
+      passageItems: state.tests.passageItems,
+      features: getUserFeatures(state)
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

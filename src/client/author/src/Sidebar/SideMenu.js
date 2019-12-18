@@ -15,7 +15,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { get, remove } from "lodash";
+import { get, remove, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
@@ -48,7 +48,7 @@ const menuItems = [
   {
     label: "Dashboard",
     icon: IconClockDashboard,
-    allowedPathPattern: [/author\/dashboard/],
+    allowedPathPattern: [/author\/dashboard/, /publisher\/dashboard/],
     path: "author/dashboard"
   },
   {
@@ -128,9 +128,22 @@ class SideMenu extends Component {
     this.sideMenuRef = React.createRef();
   }
   get MenuItems() {
-    const { lastPlayList, isSidebarCollapsed } = this.props;
-    if (!lastPlayList || !lastPlayList.value) return menuItems;
-    const [item1, item2, ...rest] = menuItems;
+    const { lastPlayList, isSidebarCollapsed, features } = this.props;
+
+    let _menuItems = cloneDeep(menuItems);
+    if (features.isCurator || features.isPublisherAuthor) {
+      _menuItems[0].path = "publisher/dashboard";
+      const [item1, item2, item3, item4, item5] = _menuItems;
+      _menuItems = [item1, item3, item4, item5];
+    }
+    if (features.isPublisherAuthor) {
+      const [item1, ...rest] = _menuItems;
+      _menuItems = [...rest];
+    }
+
+    if (!lastPlayList || !lastPlayList.value) return _menuItems;
+
+    const [item1, item2, ...rest] = _menuItems;
     const { title = "Eureka Math", _id = "" } = lastPlayList.value || {};
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
@@ -234,7 +247,8 @@ class SideMenu extends Component {
       userRole,
       className,
       profileThumbnail,
-      locationState
+      locationState,
+      features
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
@@ -258,6 +272,12 @@ class SideMenu extends Component {
       _userRole = "Student";
     } else {
       _userRole = "Unknown";
+    }
+
+    if (features.isCurator) {
+      _userRole = "Content Editor";
+    } else if (features.isPublisherAuthor) {
+      _userRole = "Author";
     }
 
     const footerDropdownMenu = (
@@ -335,7 +355,12 @@ class SideMenu extends Component {
               >
                 {this.MenuItems.map((menu, index) => {
                   // to hide Dashboard from side menu if a user is DA or SA.
-                  if (["district-admin", "school-admin"].includes(userRole) && menu.label === "Dashboard") return null;
+                  if (
+                    ["district-admin", "school-admin"].includes(userRole) &&
+                    menu.label === "Dashboard" &&
+                    !features.isCurator
+                  )
+                    return null;
                   else {
                     const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                     const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));

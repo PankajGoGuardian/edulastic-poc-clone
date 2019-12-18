@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty, get } from "lodash";
 import styled from "styled-components";
-import { MathKeyboard, StaticMath } from "@edulastic/common";
+import { MathKeyboard, StaticMath, AnswerContext } from "@edulastic/common";
 
 import CheckedBlock from "./CheckedBlock";
 
@@ -24,6 +24,8 @@ class ClozeMathInput extends React.Component {
     this.wrappedRef = React.createRef();
     this.mathKeyboardRef = React.createRef();
   }
+
+  static contextType = AnswerContext;
 
   componentDidMount() {
     const { resprops = {}, id } = this.props;
@@ -47,14 +49,29 @@ class ClozeMathInput extends React.Component {
     document.removeEventListener("mousedown", this.clickOutside);
   }
 
-  componentDidUpdate() {
-    const { currentMathQuill } = this.state;
-    const { resprops = {}, id } = this.props;
+  getUserAnswerFromProps = props => {
+    const { resprops = {}, id } = props;
     const { answers = {} } = resprops;
-    const { maths: userAnswers = [] } = answers;
+    const { maths: userAnswers = {} } = answers;
+    return userAnswers[id];
+  };
 
-    if (currentMathQuill && !userAnswers[id]) {
+  componentDidUpdate(prevProps) {
+    const { currentMathQuill } = this.state;
+    const { expressGrader = false } = this.context;
+
+    const userAnswer = this.getUserAnswerFromProps(this.props);
+    const prevAnswer = this.getUserAnswerFromProps(prevProps);
+    if (currentMathQuill && !userAnswer && !expressGrader) {
       currentMathQuill.latex("");
+    }
+
+    if (currentMathQuill && !prevAnswer && expressGrader) {
+      /**
+       * set the latex value received in network request in express Grader
+       * this should be called only in express Grader
+       */
+      currentMathQuill.latex(userAnswer?.value || "");
     }
   }
 

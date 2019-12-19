@@ -30,6 +30,11 @@ const EmptyWrapper = styled.div`
   width: auto;
 `;
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+  align-items: baseline;
+`;
+
 const MatrixChoice = ({
   view,
   testItem,
@@ -135,8 +140,10 @@ const MatrixChoice = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          </QuestionTitleWrapper>
           {previewTab === CLEAR ? (
             <Preview
               smallSize={smallSize}

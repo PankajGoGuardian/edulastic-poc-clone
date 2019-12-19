@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { test, roleuser, questionType } from "@edulastic/constants";
-import { call, put, all, takeEvery, select, actionChannel, take } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
@@ -93,6 +93,7 @@ export const PUBLISH_FOR_REGRADE = "[tests] publish test for regrade";
 export const DELETE_ANNOTATION = "[tests] delete annotations from test";
 export const SET_LOADING_TEST_PAGE = "[tests] set loading";
 export const DUPLICATE_TEST_REQUEST = "[tests] duplicate request";
+export const UPDATE_TEST_AND_NAVIGATE = "[tests] update test and navigate";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -107,6 +108,7 @@ export const getDefaultTestSettingsAction = createAction(RECEIVE_DEFAULT_TEST_SE
 export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 export const setTestsLoadingAction = createAction(SET_LOADING_TEST_PAGE);
 export const duplicateTestRequestAction = createAction(DUPLICATE_TEST_REQUEST);
+export const updateTestAndNavigateAction = createAction(UPDATE_TEST_AND_NAVIGATE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -621,7 +623,8 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
-    yield put(setTestsLoadingAction(true));
+    // dont set loading as true
+    if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true));
     const { scoring = {}, currentTab } = payload.data;
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
@@ -1157,6 +1160,23 @@ function* setAndSavePassageItems({ payload }) {
   }
 }
 
+/**
+ * this saga is used to update the test before navigation.
+ *  like, you want to move to edit/create item.. so save the test before navigating.
+ *
+ */
+function* updateTestAndNavigate({ payload }) {
+  try {
+    const data = yield select(getTestSelector);
+    const hasUnsavedChanges = yield select(state => state?.tests?.updated);
+    if (hasUnsavedChanges) yield updateTestSaga({ payload: { data, id: data._id, disableLoadingIndicator: true } });
+    yield put(push({ pathname: payload, state: { isTestFlow: true } }));
+  } catch (e) {
+    yield call(message.error("error updating test"));
+    console.error("err", e);
+  }
+}
+
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -1175,7 +1195,8 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
     yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
     yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
-    yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems)
+    yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
+    yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);

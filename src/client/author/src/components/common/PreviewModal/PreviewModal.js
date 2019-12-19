@@ -25,7 +25,7 @@ import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
-import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
+import { setTestDataAndUpdateAction, getTestSelector, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import { addItemToCartAction } from "../../../../ItemList/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
@@ -82,25 +82,25 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, history } = this.props;
+    const { data, testId, history, updateTestAndNavigate } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
     if (testId) {
-      history.push(`/author/items/${duplicatedItem._id}/item-detail/test/${testId}`);
+      updateTestAndNavigate(`/author/items/${duplicatedItem._id}/item-detail/test/${testId}`);
     } else {
       history.push(`/author/items/${duplicatedItem._id}/item-detail`);
     }
   };
 
   editTestItem = () => {
-    const { data, history, testId, clearItemStore } = this.props;
+    const { data, history, testId, clearItemStore, updateTestAndNavigate } = this.props;
     const itemId = data.id;
     // itemDetail store has leftovers from previous visit to the page,
     // clearing it before navigation.
     clearItemStore();
     if (testId) {
-      history.push(`/author/items/${itemId}/item-detail/test/${testId}`);
+      updateTestAndNavigate(`/author/items/${itemId}/item-detail/test/${testId}`);
     } else {
       history.push(`/author/items/${itemId}/item-detail`);
     }
@@ -346,7 +346,8 @@ const enhance = compose(
       clearPreview: clearPreviewAction,
       setDataAndSave: setTestDataAndUpdateAction,
       setTestItems: setTestItemsAction,
-      clearItemStore: clearItemDetailAction
+      clearItemStore: clearItemDetailAction,
+      updateTestAndNavigate: updateTestAndNavigateAction
     }
   )
 );

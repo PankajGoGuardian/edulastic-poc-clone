@@ -195,7 +195,8 @@ class Container extends Component {
         ? "Passage with Questions"
         : "Passage With Multipart";
 
-    if (location.pathname.includes("author/tests")) {
+    // TODO: remove dependency on using path for this!!
+    if (location.pathname.includes("author/tests") || location?.state?.isTestFlow) {
       const testPath = `/author/tests/${testId || "create"}`;
       let crumbs = [
         {

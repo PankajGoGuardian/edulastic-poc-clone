@@ -34,7 +34,7 @@ class MathInput extends React.PureComponent {
     }
     if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
       onFocus(false);
-      this.setState({ mathFieldFocus: false });
+      this.setState({ mathFieldFocus: false }, this.handleBlur);
     }
   };
 
@@ -76,7 +76,6 @@ class MathInput extends React.PureComponent {
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         textarea.addEventListener("keyup", this.handleChangeField);
         textarea.addEventListener("keypress", this.handleKeypress);
-        textarea.addEventListener("blur", this.handleBlur);
         document.addEventListener("click", this.handleClick, false);
       }
     );

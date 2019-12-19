@@ -163,6 +163,17 @@ const searchSchoolsById = data =>
     })
     .then(({ data: response }) => response);
 
+const saveOrgPermissionsApi = ({ permissions, districtId }) =>
+  api
+    .callApi({
+      url: `districts/${districtId}`,
+      method: "put",
+      data: {
+        permissions
+      }
+    })
+    .then(({ data }) => data);
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -180,5 +191,6 @@ export default {
   getUsersDataApi,
   manageSubscription,
   searchUsersByEmailIds,
-  searchSchoolsById
+  searchSchoolsById,
+  saveOrgPermissionsApi
 };

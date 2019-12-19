@@ -7,6 +7,7 @@ import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
 import { getDate, useUpdateEffect } from "../Common/Utils";
 import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
+import { PermissionSelect, PermissionSaveBtn } from "../Common/StyledComponents/upgradePlan";
 
 const { Option } = Select;
 const { Option: AutocompleteOption } = AutoComplete;
@@ -59,10 +60,12 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
   ({
     form: { getFieldDecorator, validateFields, setFieldsValue, getFieldsValue },
     selectedDistrict,
-    upgradeDistrictSubscriptionAction
+    upgradeDistrictSubscriptionAction,
+    saveOrgPermissions
   }) => {
     // here button state will change according to subType from the data received
     const [ctaSubscriptionState, setCtaSubscriptionState] = useState("Apply Changes");
+    const [orgPermission, setOrgPermission] = useState("");
 
     const { _source = {}, _id: districtId, subscription = {} } = selectedDistrict;
     const { location = {} } = _source;
@@ -151,6 +154,25 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
             <ValueSpan>{location.zip}</ValueSpan>
           </Col>
         </Row>
+        <Form.Item label={<HeadingSpan>Org Permission</HeadingSpan>} labelCol={{ span: 3 }}>
+          <PermissionSelect style={{ width: 140 }} onChange={value => setOrgPermission(value)} value={orgPermission}>
+            <Option value="school-district">School District</Option>
+            <Option value="publisher">Publisher</Option>
+            <Option value="both">Both</Option>
+          </PermissionSelect>
+          <PermissionSaveBtn
+            type="primary"
+            onClick={() =>
+              saveOrgPermissions({
+                permissions: orgPermission,
+                districtId
+              })
+            }
+            disabled={!orgPermission || !districtId}
+          >
+            Save
+          </PermissionSaveBtn>
+        </Form.Item>
         <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelCol={{ span: 3 }}>
           {getFieldDecorator("subType", {
             valuePropName: "value",
@@ -177,7 +199,8 @@ export default function ManageSubscriptionByDistrict({
   getDistrictDataAction,
   districtData: { loading, listOfDistricts, selectedDistrict },
   upgradeDistrictSubscriptionAction,
-  selectDistrictAction
+  selectDistrictAction,
+  saveOrgPermissions
 }) {
   return (
     <>
@@ -190,6 +213,7 @@ export default function ManageSubscriptionByDistrict({
       <ManageDistrictPrimaryForm
         selectedDistrict={selectedDistrict}
         upgradeDistrictSubscriptionAction={upgradeDistrictSubscriptionAction}
+        saveOrgPermissions={saveOrgPermissions}
       />
     </>
   );

@@ -14,6 +14,7 @@ const SEARCH_USERS_BY_EMAIL_IDS = "[admin-upgrade] SEARCH_USERS_BY_EMAIL_IDS";
 const SEARCH_SCHOOLS_BY_ID = "[admin-upgrade] SEARCH_SCHOOLS_BY_ID";
 const BULK_SCHOOLS_SUBSCRIBE = "[admin-upgrade] BULK_SCHOOLS_SUBSCRIBE";
 const UPGRADE_PARTIAL_PREMIUM_USER = "[admin-upgrade] UPGRADE_PARTIAL_PREMIUM_USER";
+const SAVE_ORG_PERMISSIONS = "[admin] save org permissions";
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA);
@@ -23,6 +24,7 @@ export const searchUsersByEmailIdAction = createAction(SEARCH_USERS_BY_EMAIL_IDS
 export const searchSchoolsByIdAction = createAction(SEARCH_SCHOOLS_BY_ID);
 export const bulkSchoolsSubscribeAction = createAction(BULK_SCHOOLS_SUBSCRIBE);
 export const upgradePartialPremiumUserAction = createAction(UPGRADE_PARTIAL_PREMIUM_USER);
+export const saveOrgPermissionsAction = createAction(SAVE_ORG_PERMISSIONS);
 
 // SLICE's
 export const manageSubscriptionsBydistrict = createSlice({
@@ -181,7 +183,8 @@ const {
   searchUpdateDistrict: searchUpdateDistrictApi,
   manageSubscription: manageSubscriptionApi,
   searchUsersByEmailIds: searchUsersByEmailIdsApi,
-  searchSchoolsById: searchSchoolsByIdApi
+  searchSchoolsById: searchSchoolsByIdApi,
+  saveOrgPermissionsApi
 } = adminApi;
 
 // SAGAS
@@ -276,6 +279,16 @@ function* upgradePartialPremiumUser({ payload }) {
   }
 }
 
+function* saveOrgPermissionsSaga({ payload }) {
+  try {
+    yield call(saveOrgPermissionsApi, payload);
+    yield call(message.success, "Permissions saved successfully.");
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to save permissions.");
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -284,7 +297,8 @@ function* watcherSaga() {
     yield takeEvery(SEARCH_USERS_BY_EMAIL_IDS, searchUsersByEmailIds),
     yield takeEvery(SEARCH_SCHOOLS_BY_ID, searchSchoolsById),
     yield takeEvery(BULK_SCHOOLS_SUBSCRIBE, bulkSchoolsSubscribe),
-    yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser)
+    yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
+    yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga)
   ]);
 }
 

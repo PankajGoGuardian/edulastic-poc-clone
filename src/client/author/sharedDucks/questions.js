@@ -28,7 +28,7 @@ export const REMOVE_ALIGNMENT = "[author questions] remove alignment";
 export const DELETE_QUESTION = "[author questions] delete question by id";
 export const SET_RUBRIC_ID = "[author questions] set rubric id";
 export const REMOVE_RUBRIC_ID = "[author questions] remove rubricId";
-
+export const CHANGE_UPDATE_FLAG = "[authorQuestions] update the updated flag";
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
 export const addItemsQuestionAction = createAction(ADD_ITEMS_QUESTION);
@@ -44,7 +44,7 @@ export const deleteQuestionAction = createAction(DELETE_QUESTION);
 export const updateQuestionNumberAction = createAction(UPDATE_QUESTION_NUMBER);
 export const setRubricIdAction = createAction(SET_RUBRIC_ID);
 export const removeRubricIdAction = createAction(REMOVE_RUBRIC_ID);
-
+export const changeUpdatedFlagAction = createAction(CHANGE_UPDATE_FLAG);
 // initialState
 const initialState = {
   byId: {},
@@ -213,6 +213,9 @@ export default createReducer(initialState, {
   [ADD_ALIGNMENT]: addAlignment,
   [REMOVE_ALIGNMENT]: removeAlignment,
   [DELETE_QUESTION]: deleteQuestion,
+  [CHANGE_UPDATE_FLAG]: (state, { payload }) => {
+    state.updated = payload;
+  },
   [UPDATE_TEST_DOC_BASED_REQUEST]: (state, { payload }) => {
     state.updated = false;
   },

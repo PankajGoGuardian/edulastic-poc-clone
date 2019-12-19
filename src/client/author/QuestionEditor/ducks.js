@@ -26,7 +26,8 @@ import {
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
   getQuestionsArraySelector,
-  changeCurrentQuestionAction
+  changeCurrentQuestionAction,
+  changeUpdatedFlagAction
 } from "../sharedDucks/questions";
 
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
@@ -423,6 +424,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
     }
+    yield put(changeUpdatedFlagAction(false));
 
     if (item.testId) {
       yield put(setRedirectTestAction(testId));

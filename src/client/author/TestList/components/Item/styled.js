@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor, red, cardTitleColor } from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor, red, cardTitleColor, titleColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
-  box-shadow: none;
+  box-shadow: ${props => (props.isPlaylist ? "none" : "0px 2px 5px #0000001a")};
   cursor: pointer;
   border-radius: ${props => (props.isPlaylist ? "4px" : "10px")};
-  border: ${props => (props.isPlaylist ? "0" : `1px solid #e1dede`)};
+  border: none;
   .ant-card-body {
     padding: 16px;
     box-shadow: ${props => (props.isPlaylist ? "0px 4px 8px 0px #0000005c" : "none")};
@@ -19,12 +19,12 @@ export const Container = styled(Card)`
   }
 
   .ant-card-head {
-    padding: 16px;
+    padding: ${props => (props.isPlaylist ? "16px" : "0px")};
     border: 0;
     overflow: hidden;
     position: relative;
     .ant-card-head-title {
-      border-radius: 5px;
+      border-radius: ${props => (props.isPlaylist ? "5px" : "5px 5px 0px 0px")};
       &:before {
         content: "";
         position: absolute;
@@ -47,6 +47,7 @@ export const Container = styled(Card)`
 
 export const Inner = styled.div`
   margin: 10px 0px;
+  display: flex;
 `;
 
 export const CardDescription = styled.div`
@@ -72,17 +73,20 @@ export const Footer = styled.div`
 `;
 
 export const Author = styled.div`
-  font-size: 11px;
+  font-size: ${props => (props.isPlaylist ? "11px" : "12px")};
   font-weight: 600;
   color: ${darkGrey};
-  display: inline-flex;
-  max-width: 110px;
-  flex-direction: column;
+  display: ${props => (props.isPlaylist ? "inline-flex" : "block")};
+  flex-direction: ${props => (props.isPlaylist ? "column" : "")};
+  flex-basis: ${props => (props.isPlaylist ? "" : "50%")};
+  max-width: ${props => (props.isPlaylist ? "110px" : "50%")};
   svg {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     fill: ${darkGrey};
     vertical-align: bottom;
+    margin-left: 0px;
+    margin-right: 5px;
     &:hover {
       fill: ${darkGrey};
     }
@@ -93,23 +97,21 @@ export const PlaylistId = styled(Author)`
   max-width: 50px;
   overflow: hidden;
   color: ${cardTitleColor};
+  display: flex;
+  align-items: center;
+  span:first-child {
+    font-size: 16px;
+    margin-right: 5px;
+  }
 `;
 
 export const StatusRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 30px;
+  height: 20px;
   overflow: hidden;
-`;
-
-export const Qcount = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: ${props => props.theme.smallFontSize};
-  font-weight: 600;
-  span:first-child {
-    margin-right: 5px;
+  flex-basis: 50%;
+  span {
+    height: 20px;
+    float: right;
   }
 `;
 
@@ -218,10 +220,24 @@ export const ButtonWrapper = styled.div`
   bottom: 0px;
   display: none;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+`;
+
+export const PremiumLabel = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 10px;
+  height: 20px;
+  background: #feb63a;
+  color: white;
+  font-weight: bold;
+  padding: 3px 15px;
+  border-radius: 5px;
 `;
 
 export const Header = styled.div`
-  min-height: 120px;
+  height: 100px;
   padding: 10px 15px;
   position: relative;
   background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
@@ -275,7 +291,32 @@ export const StyledDesc = styled.p`
 export const TestInfo = styled.div`
   padding: 0px;
   margin: 0px;
+  text-align: ${props => (props.isPlaylist ? "center" : "left")};
+`;
+
+export const MidRow = styled.div`
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 0px;
+  margin: 10px -16px 3px;
+  color: ${titleColor};
+  font-size: 13px;
+  display: flex;
   text-align: center;
+  font-weight: 600;
+  label {
+    color: #a5acb4;
+    font-size: 10px;
+  }
+`;
+export const Collection = styled.div`
+  flex-basis: 50%;
+  padding: 0px 15px;
+`;
+
+export const Qcount = styled.div`
+  flex-basis: 50%;
+  padding: 0px 15px;
 `;
 
 export const DraftIconWrapper = styled.div`

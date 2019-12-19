@@ -636,16 +636,18 @@ class TestList extends Component {
       return (
         <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
           {tests.map((item, index) => (
-            <CardWrapper
-              item={item}
-              key={index}
-              owner={item.authors && item.authors.some(x => x._id === userId)}
-              blockStyle="tile"
-              windowWidth={windowWidth}
-              history={history}
-              match={match}
-              standards={getInterestedStandards(item.summary, interestedCurriculums)}
-            />
+            <>
+              <CardWrapper
+                item={item}
+                key={index}
+                owner={item.authors && item.authors.some(x => x._id === userId)}
+                blockStyle="tile"
+                windowWidth={windowWidth}
+                history={history}
+                match={match}
+                standards={getInterestedStandards(item.summary, interestedCurriculums)}
+              />
+            </>
           ))}
 
           {windowWidth > 1024 && countModular.map(index => <CardBox key={index} />)}

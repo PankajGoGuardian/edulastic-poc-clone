@@ -69,7 +69,7 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableField
         <Form.Item label={deltaSyncConfig.studentMergeAttribute}>
           {getFieldDecorator("studentMergeAttribute", {})(
             <Select style={{ width: 120 }}>
-              <Option value="name">Name</Option>
+              <Option value="name">Username</Option>
               <Option value="email">E-Mail</Option>
               <Option value="both">Both</Option>
             </Select>
@@ -88,7 +88,7 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableField
         <Form.Item label={deltaSyncConfig.teacherMergeAttribute}>
           {getFieldDecorator("teacherMergeAttribute", {})(
             <Select style={{ width: 120 }}>
-              <Option value="name">Name</Option>
+              <Option value="name">Username</Option>
               <Option value="email">E-Mail</Option>
               <Option value="both">Both</Option>
             </Select>

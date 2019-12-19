@@ -22,7 +22,7 @@ import {
 } from "./ducks";
 
 import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
-import { changePreviewAction } from "../../../actions/view";
+import { changePreviewAction, changeViewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
@@ -74,10 +74,10 @@ class PreviewModal extends React.Component {
   }
 
   closeModal = () => {
-    const { onClose, changeView, clearPreview } = this.props;
+    const { onClose, changePreviewMode, clearPreview } = this.props;
     this.setState({ flag: false });
     clearPreview();
-    changeView("clear");
+    changePreviewMode("clear");
     onClose();
   };
 
@@ -93,9 +93,15 @@ class PreviewModal extends React.Component {
     }
   };
 
+  // this is the one need to be modified
   editTestItem = () => {
-    const { data, history, testId, clearItemStore, updateTestAndNavigate } = this.props;
+
+    const { data, history, testId, clearItemStore, changeView, updateTestAndNavigate } = this.props;
     const itemId = data.id;
+
+    // change the question editor view to "edit"
+    changeView("edit");
+
     // itemDetail store has leftovers from previous visit to the page,
     // clearing it before navigation.
     clearItemStore();
@@ -107,8 +113,8 @@ class PreviewModal extends React.Component {
   };
 
   clearView = () => {
-    const { changeView, clearAnswers } = this.props;
-    changeView("clear");
+    const { changePreviewMode, clearAnswers } = this.props;
+    changePreviewMode("clear");
     clearAnswers();
   };
 
@@ -337,7 +343,8 @@ const enhance = compose(
       };
     },
     {
-      changeView: changePreviewAction,
+      changeView: changeViewAction,
+      changePreviewMode: changePreviewAction,
       clearAnswers: clearAnswersAction,
       addPassage: addPassageAction,
       addItemToCart: addItemToCartAction,

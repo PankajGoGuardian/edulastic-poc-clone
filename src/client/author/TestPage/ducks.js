@@ -283,9 +283,10 @@ const getDefaultScales = (state, payload) => {
   const { performanceBandProfiles, standardsProficiencyProfiles, defaultTestTypeProfiles } = payload;
   const testType = testTypeAsProfileNameType[state.entity.testType];
   const bandId =
-    performanceBandProfiles.find(item => item._id === defaultTestTypeProfiles.performanceBand[testType]) || {};
+    performanceBandProfiles.find(item => item._id === defaultTestTypeProfiles?.performanceBand[testType]) || {};
   const standardId =
-    standardsProficiencyProfiles.find(item => item._id === defaultTestTypeProfiles.standardProficiency[testType]) || {};
+    standardsProficiencyProfiles.find(item => item._id === defaultTestTypeProfiles?.standardProficiency[testType]) ||
+    {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
         name: bandId.name,

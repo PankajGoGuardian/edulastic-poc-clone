@@ -21,8 +21,8 @@ import {
   InitOptions,
   StyledRowButton,
   SettingsBtn,
-  StyledRowLabel,
-  StyledSelect
+  StyledSelect,
+  StyledRow
 } from "../AssignTest/components/SimpleOptions/styled";
 import DateSelector from "../AssignTest/components/SimpleOptions/DateSelector";
 import TestTypeSelector from "../AssignTest/components/SimpleOptions/TestTypeSelector";
@@ -34,9 +34,12 @@ import selectsData from "../TestPage/components/common/selectsData";
  */
 import { getDefaultTestSettingsAction } from "../TestPage/ducks";
 import { getTestEntitySelector } from "../AssignTest/duck";
+import { InputLabel, InputLabelContainer, ClassHeading, ActionButton } from "./styled";
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
+
+const { releaseGradeTypes } = testConst;
 
 function LCBAssignmentSettings({
   additionalData,
@@ -62,6 +65,7 @@ function LCBAssignmentSettings({
   const [showSettings, setShowSettings] = useState(false);
 
   const { startDate, endDate, status } = assignment?.["class"]?.[0] || {};
+  console.log({ startDate, endDate });
   const changeField = key => {
     return value => {
       if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
@@ -73,6 +77,15 @@ function LCBAssignmentSettings({
     };
   };
   const gradeSubject = { grades: assignment?.grades, subjects: assignment?.subjects };
+
+  const resetToDefault = () => {
+    loadTestActivity(assignmentId, classId);
+    loadAssignment({ assignmentId, classId });
+    loadTestSettings();
+  };
+
+  const className = additionalData?.className;
+
   return (
     <div>
       <ClassHeader
@@ -84,17 +97,8 @@ function LCBAssignmentSettings({
       />
       <div>
         <OptionConationer>
-          <InitOptions>
-            <Row gutter={0}>
-              <Col offset={22} span={2}>
-                <ThemeButton
-                  style={{ color: "#fff" }}
-                  onClick={() => updateAssignmentSettings({ classId, assignmentId })}
-                >
-                  Save
-                </ThemeButton>
-              </Col>
-            </Row>
+          <InitOptions style={{ padding: "30px 50px" }}>
+            <ClassHeading>{className ? `Settings for ${className}` : "loading..."}</ClassHeading>
             <DateSelector
               startDate={moment(startDate)}
               endDate={moment(endDate)}
@@ -104,59 +108,76 @@ function LCBAssignmentSettings({
               passwordPolicy={assignment?.passwordPolicy}
             />
 
-            <StyledRowLabel gutter={16}>
-              <Col span={12}>Open Policy</Col>
-              <Col span={12}>Close Policy</Col>
-            </StyledRowLabel>
-
             <Row gutter={32}>
-              <Col span={12}>
-                <StyledSelect
-                  data-cy="selectOpenPolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignment?.openPolicy}
-                  onChange={changeField("openPolicy")}
-                  disabled={
-                    assignment?.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                    status !== assignmentStatusOptions.NOT_OPEN
-                  }
-                >
-                  {openPolicy.map(({ value, text }, index) => (
-                    <Select.Option key={index} value={value} data-cy="open">
-                      {text}
-                    </Select.Option>
-                  ))}
-                </StyledSelect>
-              </Col>
-              <Col span={12}>
-                <StyledSelect
-                  data-cy="selectClosePolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignment?.closePolicy}
-                  onChange={changeField("closePolicy")}
-                  disabled={status === assignmentStatusOptions.DONE}
-                >
-                  {closePolicy.map(({ value, text }, index) => (
-                    <Select.Option data-cy="class" key={index} value={value}>
-                      {text}
-                    </Select.Option>
-                  ))}
-                </StyledSelect>
-              </Col>
-            </Row>
+              <StyledRow>
+                <Col span={12} style={{ padding: "0px 16px" }}>
+                  <InputLabelContainer>
+                    <InputLabel>open policy</InputLabel>
+                  </InputLabelContainer>
+                  <StyledSelect
+                    data-cy="selectOpenPolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment?.openPolicy}
+                    onChange={changeField("openPolicy")}
+                    disabled={
+                      assignment?.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      status !== assignmentStatusOptions.NOT_OPEN
+                    }
+                  >
+                    {openPolicy.map(({ value, text }, index) => (
+                      <Select.Option key={index} value={value} data-cy="open">
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </Col>
+                <Col span={12} style={{ padding: "0px 16px" }}>
+                  <InputLabelContainer>
+                    <InputLabel>close policy</InputLabel>
+                  </InputLabelContainer>
+                  <StyledSelect
+                    data-cy="selectClosePolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment?.closePolicy}
+                    onChange={changeField("closePolicy")}
+                    disabled={status === assignmentStatusOptions.DONE}
+                  >
+                    {closePolicy.map(({ value, text }, index) => (
+                      <Select.Option data-cy="class" key={index} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </Col>
+              </StyledRow>
 
-            <TestTypeSelector
-              userRole={userRole}
-              testType={assignment?.testType}
-              disabled
-              onAssignmentTypeChange={changeField("testType")}
-            />
+              {/* Release score */}
+              <Col span={12}>
+                <InputLabelContainer>
+                  <InputLabel>RELEASE SCORES</InputLabel>
+                </InputLabelContainer>
+                <StyledSelect
+                  data-cy="selectRelaseScore"
+                  placeholder="Please select"
+                  cache="false"
+                  value={assignment?.releaseScore}
+                  onChange={changeField("releaseScore")}
+                >
+                  {releaseGradeKeys.map((item, index) => (
+                    <Select.Option data-cy="class" key={index} value={item}>
+                      {releaseGradeTypes[item]}
+                    </Select.Option>
+                  ))}
+                </StyledSelect>
+              </Col>
+              {/* Release score */}
+            </Row>
             <StyledRowButton gutter={16}>
               <Col>
                 <SettingsBtn onClick={() => setShowSettings(old => !old)}>
-                  OVERRIDE TEST SETTINGS
+                  TEST LEVEL SETTINGS
                   {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                 </SettingsBtn>
               </Col>
@@ -174,6 +195,23 @@ function LCBAssignmentSettings({
                 isDocBased={assignment?.isDocBased}
               />
             )}
+            <Row gutter={0}>
+              <Col offset={12}>
+                <Col span={12} style={{ paddingLeft: "16px" }}>
+                  <ActionButton secondary style={{ width: "100%" }} onClick={() => resetToDefault()}>
+                    CANCEL
+                  </ActionButton>
+                </Col>
+                <Col span={12} style={{ paddingLeft: "16px" }}>
+                  <ActionButton
+                    style={{ color: "#fff", width: "100%" }}
+                    onClick={() => updateAssignmentSettings({ classId, assignmentId })}
+                  >
+                    UPDATE
+                  </ActionButton>
+                </Col>
+              </Col>
+            </Row>
           </InitOptions>
         </OptionConationer>
       </div>

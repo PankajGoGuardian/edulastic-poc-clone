@@ -81,6 +81,10 @@ function* loadAssignmentSaga({ payload }) {
     const statusKeys = data["class"].map(x => parseInt(assignmentStatusOptionsKeys[x.status]));
     const statusKey = Math.min(statusKeys);
     if (data["class"][0]) {
+      const { releaseScore } = data["class"][0];
+      if (releaseScore) {
+        data.releaseScore = releaseScore;
+      }
       data["class"][0].status = assignmentStatusArray[statusKey];
       data["class"][0].endDate = Math.max(data["class"].map(x => x.endDate));
       if (!data["class"][0].startDate) {
@@ -125,6 +129,7 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
     }
     const data = yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
     yield put(slice.actions.updateAssignmentClassSettingsSucess());
+    yield call(message.success, "Settings updated successfully");
   } catch (e) {
     yield put(slice.actions.updateAssignmentClassSettingsError());
     yield call(message.error, e?.data?.message || "Updating assignment settings failed");

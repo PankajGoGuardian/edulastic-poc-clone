@@ -25,6 +25,7 @@ import StandardProficiencyTable from "../../../TestPage/components/Setting/compo
 import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
 
 import { getUserRole } from "../../../src/selectors/user";
+import TestTypeSelector from "./TestTypeSelector";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -52,7 +53,8 @@ const Settings = ({
   _releaseGradeKeys,
   userRole,
   isDocBased,
-  forClassLevel = false
+  forClassLevel = false,
+  showTestTypeOption = false
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -141,6 +143,17 @@ const Settings = ({
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
+        {forClassLevel ? (
+          <TestTypeSelector
+            userRole={userRole}
+            testType={assignmentSettings?.testType}
+            disabled
+            onAssignmentTypeChange={changeField("testType")}
+            fullwidth
+            showTestTypeOption
+          />
+        ) : null}
+
         {/* Mark as done */}
         <FeaturesSwitch
           inputFeatures="assessmentSuperPowersMarkAsDone"
@@ -170,26 +183,28 @@ const Settings = ({
         {/* Mark as done */}
 
         {/* Release score */}
-        <StyledRowSelect gutter={16}>
-          <Col span={12}>
-            <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
-          </Col>
-          <Col span={12}>
-            <StyledSelect
-              data-cy="selectRelaseScore"
-              placeholder="Please select"
-              cache="false"
-              value={releaseScore}
-              onChange={changeField("releaseScore")}
-            >
-              {_releaseGradeKeys.map((item, index) => (
-                <Select.Option data-cy="class" key={index} value={item}>
-                  {releaseGradeTypes[item]}
-                </Select.Option>
-              ))}
-            </StyledSelect>
-          </Col>
-        </StyledRowSelect>
+        {!forClassLevel ? (
+          <StyledRowSelect gutter={16}>
+            <Col span={12}>
+              <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
+            </Col>
+            <Col span={12}>
+              <StyledSelect
+                data-cy="selectRelaseScore"
+                placeholder="Please select"
+                cache="false"
+                value={releaseScore}
+                onChange={changeField("releaseScore")}
+              >
+                {_releaseGradeKeys.map((item, index) => (
+                  <Select.Option data-cy="class" key={index} value={item}>
+                    {releaseGradeTypes[item]}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+            </Col>
+          </StyledRowSelect>
+        ) : null}
         {/* Release score */}
 
         {/* Maximum attempt */}

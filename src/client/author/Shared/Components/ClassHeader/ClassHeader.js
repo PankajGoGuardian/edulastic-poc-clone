@@ -7,7 +7,7 @@ import { message, Dropdown } from "antd";
 import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { IconDeskTopMonitor, IconBookMarkButton, IconNotes } from "@edulastic/icons";
+import { IconDeskTopMonitor, IconBookMarkButton, IconNotes, IconSettings } from "@edulastic/icons";
 import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
 import { MenuIcon } from "@edulastic/common";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -404,7 +404,7 @@ class ClassHeader extends Component {
             </FeaturesSwitch>
             <StyledLink to={`/author/lcb/settings/${assignmentId}/${classId}`} data-cy="LCBAssignmentSettings">
               <StyledAnchor isActive={active === "settings"}>
-                <IconBookMarkButton color={active === "settings" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
+                <IconSettings color={active === "settings" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
                 <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
                   {t("common.settings")}
                 </LinkLabel>

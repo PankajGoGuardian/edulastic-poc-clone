@@ -33,7 +33,7 @@ import NoDataNotification from "../../../common/components/NoDataNotification";
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now();
-  if (diff > 0 && diff <= threshold) {
+  if (diff <= threshold) {
     return true;
   }
   return false;

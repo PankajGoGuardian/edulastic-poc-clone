@@ -93,7 +93,8 @@ class ViewModal extends React.Component {
       modal: {
         background: backgrounds.primary,
         padding: "20px 29px 28px",
-        maxWidth: windowWidth < 768 ? "100%" : windowWidth < 1200 ? "650px" : "920px",
+        width: windowWidth < 768 ? "100%" : windowWidth < 1200 ? "750px" : "920px",
+        maxWidth: "unset",
         borderRadius: "5px"
       }
     };

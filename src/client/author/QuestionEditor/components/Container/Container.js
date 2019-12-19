@@ -191,7 +191,7 @@ class Container extends Component {
     const questionTitle =
       question.type !== constantsQuestionType.PASSAGE
         ? question.title
-        : itemFromState?.isPassageWithQuestions
+        : itemFromState?.isPassageWithQuestions || location?.state?.canAddMultipleItems
         ? "Passage with Questions"
         : "Passage With Multipart";
 

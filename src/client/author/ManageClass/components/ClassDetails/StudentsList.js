@@ -69,9 +69,13 @@ const StudentsList = ({
       title: "Google User",
       dataIndex: "lastSigninSSO",
       defaultSortOrder: "descend",
-      render: lastSigninSSO => (
+      render: (lastSigninSSO, { openIdProvider }) => (
         <span>
-          {lastSigninSSO === "google" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}
+          {[lastSigninSSO, openIdProvider].includes("google") ? (
+            <IconCorrect />
+          ) : (
+            <IconClose color="#ff99bb" width="10px" height="10px" />
+          )}
         </span>
       ),
       width: 150

@@ -10,7 +10,7 @@ import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
 
-import { nonAutoGradableTypes } from "@edulastic/constants";
+import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
 
@@ -351,6 +351,9 @@ class AssessmentPlayerDefault extends React.Component {
       item.data.questions.forEach(question => {
         if (nonAutoGradableTypes.includes(question.type)) {
           isNonAutoGradable = true;
+          if (question.type === questionType.HIGHLIGHT_IMAGE) {
+            currentToolMode.push(5);
+          }
         }
       });
     }

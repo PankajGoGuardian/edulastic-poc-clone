@@ -19,6 +19,7 @@ import { PREVIEW } from "../../constants/constantsForQuestions";
 import { PreviewContainer } from "./styled/PreviewContainer";
 import { CanvasContainer } from "./styled/CanvasContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import DEFAULT_IMAGE from "../../assets/grid.png";
 
 const isMobile = isMobileDevice();
 
@@ -161,14 +162,11 @@ const HighlightImagePreview = ({
     }
   };
 
-  const renderImage = () =>
-    file ? (
-      <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
-        <img src={file} alt={altText} style={{ width, height }} />
-      </div>
-    ) : (
-      <div style={{ width, height }} />
-    );
+  const renderImage = () => (
+    <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
+      <img src={file || DEFAULT_IMAGE} alt={altText} style={{ width, height }} />
+    </div>
+  );
 
   let canvasContainerWidth = canvasDimensions.maxWidth;
 
@@ -193,7 +191,7 @@ const HighlightImagePreview = ({
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
-          {item.image && item.image.source && renderImage()}
+          {renderImage()}
           {enableQuestionLevelScratchPad && (
             <canvas
               onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}

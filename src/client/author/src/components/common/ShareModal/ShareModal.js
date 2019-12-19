@@ -31,6 +31,8 @@ import {
 } from "../../../../sharedDucks/userDetails";
 import { MAX_TAB_WIDTH } from "../../../constants/others";
 
+import { getOrgDataSelector } from "../../../selectors/user";
+
 const { Paragraph } = Typography;
 
 const permissions = {
@@ -52,12 +54,6 @@ const sharedKeysObj = {
   DISTRICT: "DISTRICT",
   SCHOOL: "SCHOOL",
   INDIVIDUAL: "INDIVIDUAL"
-};
-
-const shareTypeMessageObj = {
-  PUBLIC: "The entire Edulastic Community",
-  DISTRICT: "Anyone in the District",
-  SCHOOL: "Anyone in the School"
 };
 
 const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
@@ -211,8 +207,13 @@ class ShareModal extends React.Component {
   };
 
   getUserName(data) {
+    const {
+      userOrgData: { districtName }
+    } = this.props;
     if (data.sharedType === "PUBLIC") {
       return "EVERYONE";
+    } else if (data.sharedType === "DISTRICT") {
+      return districtName;
     } else {
       return `${data.userName && data.userName !== "null" ? data.userName : ""}${
         data.email && data.email !== "null" ? `, ${data.email}` : ""
@@ -232,7 +233,8 @@ class ShareModal extends React.Component {
       isPublished,
       testId,
       hasPremiumQuestion,
-      isPlaylist
+      isPlaylist,
+      userOrgData
     } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
@@ -242,6 +244,11 @@ class ShareModal extends React.Component {
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""
     }`;
+    const { districtName, schools } = userOrgData;
+
+    let sharedTypeMessage = "The entire Edulastic Community";
+    if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
+    else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
 
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
@@ -330,7 +337,7 @@ class ShareModal extends React.Component {
                   ))}
                 </Address>
               ) : (
-                <div style={{ textTransform: "uppercase" }}>{shareTypeMessageObj[sharedType]}</div>
+                <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
               )}
               <Select
                 style={
@@ -387,7 +394,8 @@ const enhance = compose(
       fetching: getFetchingSelector(state),
       sharedUsersList: getUserListSelector(state),
       currentUserId: _get(state, "user.user._id", ""),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      userOrgData: getOrgDataSelector(state)
     }),
     {
       getUsers: fetchUsersListAction,
@@ -435,6 +443,12 @@ const ShareTitle = styled.div`
   padding: 10px;
   border: 1px solid ${fadedGrey};
   width: 100%;
+`;
+
+const ShareMessageWrapper = styled.div`
+  text-transform: uppercase;
+  height: 35px;
+  line-height: 35px;
 `;
 
 const ShareList = styled.div`

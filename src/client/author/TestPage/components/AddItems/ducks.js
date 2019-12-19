@@ -144,6 +144,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
+        archivedItems: [],
         items: payload.items,
         count: payload.count,
         page: payload.page,

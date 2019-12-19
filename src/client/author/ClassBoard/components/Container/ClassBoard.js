@@ -810,6 +810,7 @@ class ClassBoard extends Component {
                 <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
                   <CheckContainer>
                     <StyledCheckbox
+                      data-cy="selectAllCheckbox"
                       checked={unselectedStudents.length === 0}
                       indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
                       onChange={this.onSelectAllChange}
@@ -1003,6 +1004,7 @@ class ClassBoard extends Component {
               <StudentGrapContainer>
                 <StyledCard bordered={false} paddingTop={15}>
                   <StudentSelect
+                    data-cy="studentSelect"
                     style={{ width: "200px" }}
                     students={testActivity}
                     selectedStudent={selectedStudentId}
@@ -1029,6 +1031,7 @@ class ClassBoard extends Component {
                     <InfoWrapper>
                       {allTestActivitiesForStudent.length > 1 && (
                         <Select
+                          data-cy="attemptSelect"
                           style={{ width: "200px" }}
                           value={
                             allTestActivitiesForStudent.some(
@@ -1063,9 +1066,9 @@ class ClassBoard extends Component {
                           style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
                         >
                           <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper>{round(score, 2) || 0}</ScoreWrapper>
+                          <ScoreWrapper data-cy="totalScore">{round(score, 2) || 0}</ScoreWrapper>
                           <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper>{round(maxScore, 2) || 0}</ScoreWrapper>
+                          <ScoreWrapper data-cy="totalMaxScore">{round(maxScore, 2) || 0}</ScoreWrapper>
                         </div>
                         {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
                           <div
@@ -1077,7 +1080,7 @@ class ClassBoard extends Component {
                             }}
                           >
                             <ScoreHeader>SCORE</ScoreHeader>
-                            <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
+                            <ScoreChangeWrapper data-cy="scoreChange" scoreChange={studentTestActivity.scoreChange}>
                               {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
                                 studentTestActivity.scoreChange,
                                 2

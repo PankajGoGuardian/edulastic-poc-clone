@@ -476,6 +476,7 @@ class QuestionWrapper extends Component {
             </PaperWrapper>
             {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && !isPrintPreview && (
               <FeedbackRight
+                data-cy="feedBackRight"
                 // eslint-disable-next-line
                 twoColLayout={this.props.theme?.twoColLayout}
                 showCollapseBtn={showCollapseBtn}
@@ -489,6 +490,7 @@ class QuestionWrapper extends Component {
             )}
             {!isEmpty(prevQActivityForQuestion) && displayFeedback && !isPrintPreview && (
               <FeedBackContainer
+                data-cy="feedBackContainer"
                 correct={correct}
                 prevScore={prevScore}
                 prevMaxScore={prevMaxScore}
@@ -502,7 +504,7 @@ class QuestionWrapper extends Component {
             )}
             {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
             {showFeedback && isPrintPreview && (
-              <div className="print-preview-feedback">
+              <div data-cy="teacherFeedBack" className="print-preview-feedback">
                 {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
               </div>
             )}

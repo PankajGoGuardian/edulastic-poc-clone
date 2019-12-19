@@ -277,7 +277,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         previousScore = ele.text();
         cy.wrap(ele).click({ force: true });
         this.waitForStudentData();
-        this.questionResponsePage.updateScoreForStudent(studentName, score);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score);
         this.clickOnExit(true);
       })
       .then(() => {
@@ -285,7 +285,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
           .should("have.text", score)
           .click({ force: true });
         console.log("previousScore ::", previousScore);
-        this.questionResponsePage.updateScoreForStudent(studentName, previousScore);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore);
         this.clickOnExit(true);
       });
   };

@@ -9,6 +9,7 @@ class StudentTestPage {
     this.mathEditor = new MathEditor();
     this.assignmentPage = new AssignmentsPage();
     this.attemptType = { RIGHT: "right", WRONG: "wrong" };
+    this.report = new ReportsPage();
   }
 
   checkAnsValidateAsWrong = () => {
@@ -702,5 +703,25 @@ class StudentTestPage {
     cy.get('[data-cy="questionNumber"]').click({ force: true });
     cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
+  // Feedback
+
+  verifyFeedback = feedback => cy.get('[data-cy="feedBack"]').should("contain.text", feedback);
+
+  verifyScore = (score, maxScore) => {
+    cy.get('[data-cy="score"]').should("have.text", `${score}`);
+    cy.get('[data-cy="maxscore"]').should("have.text", `${maxScore}`);
+  };
+
+  verifyResponseEvaluation = attemptType =>
+    cy
+      .get('[data-cy="answerType"]')
+      .should(
+        "contain.text",
+        attemptType === attemptTypes.RIGHT
+          ? "Thats Correct"
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+          ? "Thats Partially Correct"
+          : "Thats Incorrect"
+      );
 }
 export default StudentTestPage;

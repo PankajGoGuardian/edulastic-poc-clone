@@ -26,6 +26,12 @@
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.1"]
   },
+  "LCB_3": {
+    "name": "LCB Test Assessment 03",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1", "MCQ_TF.2", "MCQ_MULTI.1"]
+  },
   "EDIT_1": {
     "name": "Test Edit Flow",
     "grade": ["Grade 10"],

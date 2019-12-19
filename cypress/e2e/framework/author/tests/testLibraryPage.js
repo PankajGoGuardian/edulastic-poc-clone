@@ -355,11 +355,13 @@ export default class TestLibrary {
     this.searchFilters.clearAll();
     this.checkforNonExistanceOfTest(test_id);
   };
+
   assertUrl = testId => {
     cy.url()
       .then(url => url.split("/").reverse()[0])
       .should("be.eq", testId);
   };
+
   publishedToDraftAssigned = () => {
     cy.server();
     cy.route("PUT", "**/test/**").as("newVersion");

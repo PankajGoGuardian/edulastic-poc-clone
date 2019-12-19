@@ -18,7 +18,7 @@ const TeacherResponseContainer = ({
   prevMaxScore,
   prevFeedback
 }) => (
-  <TeacherResponse>
+  <TeacherResponse data-cy="teacherResponse">
     <FlexBox>
       <div>
         {correct !== undefined && (
@@ -29,18 +29,18 @@ const TeacherResponseContainer = ({
       </div>
       {isResponseVisible && (
         <div>
-          <IconRemove height={20} width={20} />
+          <IconRemove data-cy="remove" height={20} width={20} />
         </div>
       )}
     </FlexBox>
     {(prevScore || prevScore === 0) && (
       <FlexBox column>
-        <ScoreWrapper>{prevScore}</ScoreWrapper>
+        <ScoreWrapper data-cy="score">{prevScore}</ScoreWrapper>
         <ScoreDevider />
-        <ScoreWrapper>{prevMaxScore}</ScoreWrapper>
+        <ScoreWrapper data-cy="maxscore">{prevMaxScore}</ScoreWrapper>
       </FlexBox>
     )}
-    {!!prevFeedback?.text && <div>{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
+    {!!prevFeedback?.text && <div data-cy="feedBack">{`${prevFeedback.teacherName}: ${prevFeedback.text}`}</div>}
   </TeacherResponse>
 );
 const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, itemId, userAnswers, redirectPolicy }) => {
@@ -83,8 +83,10 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
     <Wrapper onClick={toggleFeedbackView} visible={true}>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: "100px" }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>{answerIcon}</div>
-          <div style={{ textAlign: "center" }}>{`Thats ${answer}`}</div>
+          <div data-cy="answerIcon" style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+            {answerIcon}
+          </div>
+          <div data-cy="answerType" style={{ textAlign: "center" }}>{`Thats ${answer}`}</div>
         </div>
       )}
       {feedbackView && <TeacherResponseContainer {...props} />}

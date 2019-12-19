@@ -161,9 +161,15 @@ const RedirectPopUp = ({
               setType(e.target.value);
             }}
           >
-            <Radio value="entire">Entire Class</Radio>
-            <Radio value="absentStudents">Absent Students</Radio>
-            <Radio value="specificStudents">Specific Students</Radio>
+            <Radio data-cy="entireClass" value="entire">
+              Entire Class
+            </Radio>
+            <Radio data-cy="absentStudents" value="absentStudents">
+              Absent Students
+            </Radio>
+            <Radio data-cy="specificStudents" value="specificStudents">
+              Specific Students
+            </Radio>
           </RadioGroup>
         </Row>
 
@@ -205,6 +211,7 @@ const RedirectPopUp = ({
             <h4>Questions delivery</h4>
             <Row>
               <Select
+                data-cy="questionDelivery"
                 defaultValue={qDeliveryState}
                 onChange={val => setQDeliveryState(val)}
                 style={{ width: "100%" }}
@@ -222,6 +229,7 @@ const RedirectPopUp = ({
             <h4>Close Date</h4>
             <Row>
               <DatePicker
+                data-cy="closeDate"
                 allowClear={false}
                 disabledDate={disabledEndDate}
                 style={{ width: "100%", cursor: "pointer" }}
@@ -244,6 +252,7 @@ const RedirectPopUp = ({
             <h4>Show Previous attempt</h4>
             <Row>
               <Select
+                data-cy="previousAttempt"
                 value={showPrevAttempt}
                 onChange={val => setshowPrevAttempt(val)}
                 style={{ width: "100%" }}

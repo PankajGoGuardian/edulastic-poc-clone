@@ -2,11 +2,13 @@ import LCBHeader from "./lcbHeader";
 import { studentSide as asgnStatus, studentSide, teacherSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
 import { attemptTypes, queColor } from "../../constants/questionTypes";
+import RediectPopup from "./redirectPopupPage";
 
 class LiveClassboardPage {
   constructor() {
     this.header = new LCBHeader();
     this.questionResponsePage = new QuestionResponsePage();
+    this.redirectPopup = new RediectPopup();
   }
 
   checkClassName(className) {
@@ -83,9 +85,9 @@ class LiveClassboardPage {
       .contains("a", "QUESTIONS")
       .click({ force: true });
 
-  checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=SelectAllCheckbox]").check({ force: true });
+  checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").check({ force: true });
 
-  uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=SelectAllCheckbox]").uncheck({ force: true });
+  uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").uncheck({ force: true });
 
   checkStudentResponseIsDisplayed = () =>
     cy
@@ -290,7 +292,7 @@ class LiveClassboardPage {
     perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
     perf = `${perfValue}%`;
     quePerformanceScore = `${Cypress._.round(sumAvgQuePerformance, 2)} / ${quePerformanceAllStudent.length}`;
-    return { score, perf, perfValue, quePerformanceScore };
+    return { score, perf, perfValue, quePerformanceScore, totalScore, maxScore };
     // return stats;
   };
 
@@ -365,7 +367,7 @@ class LiveClassboardPage {
   updateScore = (studentName, score, feedback) => {
     Object.keys(score).forEach(queNum => {
       this.questionResponsePage.selectQuestion(queNum);
-      this.questionResponsePage.updateScoreForStudent(studentName, score[queNum], feedback);
+      this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score[queNum], feedback);
     });
   };
 

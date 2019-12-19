@@ -56,3 +56,14 @@ export const releaseGradeTypes = {
   WITH_RESPONSE: "WITH_RESPONSE",
   WITH_ANSWERS: "WITH_ANSWERS"
 };
+
+export const redirectType = {
+  SCORE_AND_FEEDBACK: "Score & Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
+  FEEDBACK_ONLY: "Feedback only"
+};
+
+export const questionDeliveryType = {
+  All: "All",
+  SKIPPED_AND_WRONG: "Skipped and Wrong"
+};

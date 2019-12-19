@@ -205,7 +205,7 @@ class AuthorTestItemPreview extends Component {
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && (
               <EduButton
-                title="COPY"
+                title="CLONE"
                 style={{ padding: 0, borderColor: themeColor, height: "28px" }}
                 size="large"
                 onClick={handleDuplicateTestItem}
@@ -214,7 +214,7 @@ class AuthorTestItemPreview extends Component {
                   <SyledSpan>
                     <IconCopy color={themeColor} />
                   </SyledSpan>
-                  <StyledText>copy</StyledText>
+                  <StyledText>CLONE</StyledText>
                 </StyledFlex>
               </EduButton>
             )}

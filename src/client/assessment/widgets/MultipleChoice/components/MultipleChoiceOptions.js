@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import produce from "immer";
 import uuid from "uuid/v4";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
@@ -106,7 +107,9 @@ class MultipleChoiceOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.multiplechoice.multiplechoiceoptions")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.multiplechoice.multiplechoiceoptions")}`)}>
+          {t("component.multiplechoice.multiplechoiceoptions")}
+        </Subtitle>
         <QuillSortableList
           items={item.options.map(o => o.label)}
           onSortEnd={this.onSortEnd}

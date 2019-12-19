@@ -10,18 +10,20 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ outerStyle, advancedAreOpen, fillSections, cleanSections, responses }) => (
+const Options = ({ outerStyle, advancedAreOpen, fillSections, cleanSections, responses, item }) => (
   <WidgetOptions
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    item={item}
   >
     <Layout
       advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
       responses={responses}
+      item={item}
     />
     <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />

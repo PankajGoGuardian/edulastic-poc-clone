@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { updateVariables } from "../../utils/variables";
@@ -33,7 +34,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.composeQuestion")}`)}>
+          {t("component.math.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.math.enterQuestion")}

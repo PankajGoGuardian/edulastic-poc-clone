@@ -37,6 +37,7 @@ import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
 import { PointerSelect } from "./styled/PointerSelect";
 import { ImageFlexView } from "./styled/ImageFlexView";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { ImageContainer } from "./styled/ImageContainer";
 import { PreivewImage } from "./styled/PreviewImage";
 import { CheckContainer } from "./styled/CheckContainer";
@@ -560,7 +561,9 @@ class Authoring extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
           >
-            <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
+              {t("component.cloze.imageText.composequestion")}
+            </Subtitle>
 
             <QuestionTextArea
               toolbarId="stimulus"
@@ -792,7 +795,9 @@ class Authoring extends Component {
             <PaddingDiv>
               {isEditAriaLabels && (
                 <React.Fragment>
-                  <Subtitle>{t("component.cloze.imageText.editAriaLabels")}</Subtitle>
+                  <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
+                    {t("component.cloze.imageText.editAriaLabels")}
+                  </Subtitle>
 
                   <FieldLabel>{t("component.cloze.imageText.imagealtertext")}</FieldLabel>
                   <ImageAlterTextInput
@@ -817,7 +822,10 @@ class Authoring extends Component {
             </PaddingDiv>
             {item.options.map((option, index) => (
               <PaddingDiv key={`${option}_${index}`}>
-                <Subtitle style={{ paddingTop: index > 0 ? "30px" : "" }}>
+                <Subtitle
+                  id={getFormattedAttrId(`${item?.title}-${t()}`)}
+                  style={{ paddingTop: index > 0 ? "30px" : "" }}
+                >
                   {t("component.cloze.imageText.response")} {index + 1}
                 </Subtitle>
                 <SortableList

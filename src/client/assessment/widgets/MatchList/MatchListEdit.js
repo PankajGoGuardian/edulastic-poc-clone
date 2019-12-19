@@ -293,6 +293,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
             onRemove={item.groupPossibleResponses ? handleGroupRemove : handleRemoveResp}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            item={item}
           />
         </Question>
         <CorrectAnswers
@@ -304,11 +305,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
+          questionType={item?.title}
         />
 
         {advancedLink}
 
-        <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+        <Options
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          item={item}
+        />
       </Paper>
     </ContentArea>
   );

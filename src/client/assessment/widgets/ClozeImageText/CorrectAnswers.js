@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
@@ -134,12 +135,15 @@ class CorrectAnswers extends Component {
       uiStyle,
       maxRespCount,
       showDashedBorder,
-      imageOptions
+      imageOptions,
+      item
     } = this.props;
     const { value } = this.state;
     return (
       <div>
-        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+          {t("component.correctanswers.setcorrectanswers")}
+        </Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
             <Tab label={t("component.correctanswers.correct")} type="primary" IconPosition="right" />

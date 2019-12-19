@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Input, Select, Row, Col } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
@@ -8,10 +9,11 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Subtitle } from "../../../styled/Subtitle";
 
-const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme }) => (
+const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme, item }) => (
   <Row gutter={60}>
     <Col span={12}>
       <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.shortText.selectLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
         padding="0 0 16px 0"
@@ -34,6 +36,7 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
     </Col>
     <Col span={12}>
       <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.shortText.inputLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
         padding="20px 0 16px 0"

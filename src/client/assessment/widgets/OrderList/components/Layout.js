@@ -15,6 +15,7 @@ import {
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import Question from "../../../components/Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 
@@ -42,7 +43,7 @@ class LayoutWrapper extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={60}>
             <Col md={12}>
               <ListStyleOption

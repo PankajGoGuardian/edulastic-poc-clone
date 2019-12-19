@@ -290,6 +290,7 @@ class Display extends Component {
         onClickHandler={this.onClickCheckboxHandler}
         largestResponseWidth={largestResponseWidth}
         isExpressGrader={isExpressGrader}
+        item={item}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

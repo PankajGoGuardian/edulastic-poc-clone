@@ -17,13 +17,15 @@ const Options = ({
   cleanSections,
   fillSections,
   handleIndividualTypeChange,
-  handleGlobalTypeChange
+  handleGlobalTypeChange,
+  item = {}
 }) => (
   <WidgetOptions
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}
     cleanSections={cleanSections}
     fillSections={fillSections}
+    item={item}
   >
     <Layout
       onChange={onChange}
@@ -35,6 +37,7 @@ const Options = ({
       responseIds={responseIds}
       handleIndividualTypeChange={handleIndividualTypeChange}
       handleGlobalTypeChange={handleGlobalTypeChange}
+      item={item}
     />
     <Extras advancedAreOpen={advancedAreOpen} cleanSections={cleanSections} fillSections={fillSections}>
       <Extras.Distractors />

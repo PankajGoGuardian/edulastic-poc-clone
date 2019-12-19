@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -60,7 +61,9 @@ class LineColorOptionsSubtitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.highlightImage.lineColorOptionsSubtitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.highlightImage.lineColorOptionsSubtitle")}`)}>
+          {t("component.highlightImage.lineColorOptionsSubtitle")}
+        </Subtitle>
 
         <LineColors
           onRemove={line_color.length > 1 ? handleRemove : undefined}

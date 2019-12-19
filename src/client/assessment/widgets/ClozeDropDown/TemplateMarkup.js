@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { find, cloneDeep, last, isArray } from "lodash";
 import "react-quill/dist/quill.snow.css";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -134,7 +135,9 @@ class TemplateMarkup extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.dropDown.composequestion")}`)}>
+          {t("component.cloze.dropDown.composequestion")}
+        </Subtitle>
 
         <FroalaEditor
           data-cy="templateBox"

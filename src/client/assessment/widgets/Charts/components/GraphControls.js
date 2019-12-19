@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import Question from "../../../components/Question";
@@ -36,7 +37,9 @@ const GraphControls = ({ t, advancedAreOpen, fillSections, cleanSections, item, 
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.options.graphControls")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.graphControls")}`)}>
+        {t("component.options.graphControls")}
+      </Subtitle>
       <Tools setTool={setTool} tools={item.controls || []} controls={allControls} />
     </Question>
   );

@@ -10,13 +10,23 @@ import Layout from "./Layout";
 
 const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
 
-const Options = ({ onChange, uiStyle, outerStyle, fillSections, cleanSections, advancedAreOpen, responseIDs }) => (
+const Options = ({
+  onChange,
+  uiStyle,
+  outerStyle,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  responseIDs,
+  item = {}
+}) => (
   <WidgetOptions
     outerStyle={outerStyle}
     scoringTypes={scoringTypes}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    item={item}
   >
     <Layout
       onChange={onChange}
@@ -25,6 +35,7 @@ const Options = ({ onChange, uiStyle, outerStyle, fillSections, cleanSections, a
       fillSections={fillSections}
       cleanSections={cleanSections}
       responseIDs={responseIDs}
+      item={item}
     />
     <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
       <Extras.Distractors />

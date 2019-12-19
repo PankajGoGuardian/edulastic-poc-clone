@@ -18,6 +18,7 @@ import { Subtitle } from "../../../../styled/Subtitle";
 
 import { ScoreSettings } from "..";
 import Question from "../../../Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class AxisLabelsMoreOptions extends Component {
   constructor(props) {
@@ -230,7 +231,9 @@ class AxisLabelsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.display")}`)}>
+            {t("component.graphing.display")}
+          </Subtitle>
 
           <Row gutter={60}>
             <Col md={12}>
@@ -374,7 +377,9 @@ class AxisLabelsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.ticksoptionstitle")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.ticksoptionstitle")}`)}>
+            {t("component.graphing.ticksoptionstitle")}
+          </Subtitle>
           <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.ticksoptions.tickdistance")}</Label>
@@ -478,7 +483,9 @@ class AxisLabelsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.labelstitle")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.labelstitle")}`)}>
+            {t("component.graphing.labelstitle")}
+          </Subtitle>
 
           <Row gutter={60}>
             <Col md={12}>
@@ -526,7 +533,13 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </Question>
 
-        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+        <Extras
+          isSection={false}
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+          item={graphData}
+        >
           <Extras.Distractors />
           <Extras.Hints />
         </Extras>

@@ -4,6 +4,7 @@ import produce from "immer";
 import PropTypes from "prop-types";
 import { ChoiceDimensions } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import {
   Layout,
@@ -51,7 +52,7 @@ class LayoutWrapper extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={36}>
             <Col md={12}>
               <ResponseContainerPositionOption

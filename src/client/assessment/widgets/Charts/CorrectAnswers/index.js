@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import { Input, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Tabs, Tab, FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question";
@@ -24,7 +25,8 @@ const CorrectAnswers = ({
   currentTab,
   onAdd,
   onCloseTab,
-  points
+  points,
+  item
 }) => {
   const handleChangePoint = event => {
     if (event.target.value > 0) {
@@ -51,7 +53,9 @@ const CorrectAnswers = ({
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        {t("component.correctanswers.setcorrectanswers")}
+      </Subtitle>
 
       <Row gutter={60}>
         <Col md={12}>

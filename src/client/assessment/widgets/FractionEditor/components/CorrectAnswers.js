@@ -4,6 +4,7 @@ import get from "lodash/get";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { FlexContainer } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
@@ -68,7 +69,9 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("common.correctAnswers.setCorrectAnswers")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("common.correctAnswers.setCorrectAnswers")}`)}>
+        {t("common.correctAnswers.setCorrectAnswers")}
+      </Subtitle>
       <CorrectAnswerHeader>
         <CustomInput
           size="default"

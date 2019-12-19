@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Col } from "antd";
 import produce from "immer";
@@ -43,6 +44,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
+      item={item}
     >
       <Settings
         t={t}
@@ -61,7 +63,9 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle>{t("component.options.extras")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.extras")}`)}>
+          {t("component.options.extras")}
+        </Subtitle>
 
         <StyledRow gutter={32}>
           <Col span={12}>

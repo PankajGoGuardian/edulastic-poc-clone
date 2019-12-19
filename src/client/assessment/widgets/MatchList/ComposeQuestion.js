@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -31,7 +32,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.matchList.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.matchList.composeQuestion")}`)}>
+          {t("component.matchList.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.matchList.enterQuestion")}

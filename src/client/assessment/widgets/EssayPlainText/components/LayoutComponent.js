@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -67,7 +68,7 @@ class LayoutComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={36}>
             <Col md={12}>
               <SpecialCharactersOption

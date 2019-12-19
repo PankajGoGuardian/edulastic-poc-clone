@@ -152,6 +152,7 @@ class Answers extends Component {
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        questionType={item?.title}
       >
         <Fragment>
           {correctTab === 0 && (

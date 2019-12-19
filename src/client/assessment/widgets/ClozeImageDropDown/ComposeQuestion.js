@@ -13,6 +13,7 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
@@ -575,7 +576,9 @@ class ComposeQuestion extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
           >
-            <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDropDown.composequestion")}`)}>
+              {t("component.cloze.imageDropDown.composequestion")}
+            </Subtitle>
 
             <QuestionTextArea
               toolbarId="stimulus"
@@ -787,7 +790,9 @@ class ComposeQuestion extends Component {
             <PaddingDiv>
               {isEditAriaLabels && (
                 <React.Fragment>
-                  <Subtitle>{t("component.cloze.imageDropDown.editAriaLabels")}</Subtitle>
+                  <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
+                    {t("component.cloze.imageDropDown.editAriaLabels")}
+                  </Subtitle>
 
                   <FieldLabel>{t("component.cloze.imageDropDown.imagealtertext")}</FieldLabel>
                   <FieldWrapper>

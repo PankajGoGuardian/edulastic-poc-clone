@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -38,7 +39,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.classification.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.composeQuestion")}`)}>
+          {t("component.classification.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.classification.enterQuestion")}

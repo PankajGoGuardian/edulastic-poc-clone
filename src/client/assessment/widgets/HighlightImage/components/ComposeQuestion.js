@@ -12,6 +12,7 @@ import { withTheme } from "styled-components";
 import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../../utils/variables";
 
@@ -186,7 +187,9 @@ class ComposeQuestion extends Component {
         cleanSections={cleanSections}
         overflowHandlers={{ "max-width": "100%", overflow: "auto" }}
       >
-        <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.highlightImage.composeQuestion")}`)}>
+          {t("component.highlightImage.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.highlightImage.enterQuestion")}

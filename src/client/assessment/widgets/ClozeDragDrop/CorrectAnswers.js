@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import _, { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -145,12 +146,15 @@ class CorrectAnswers extends Component {
       hasGroupResponses,
       configureOptions,
       uiStyle,
-      responseIDs
+      responseIDs,
+      item
     } = this.props;
     const { value } = this.state;
     return (
       <div ref={this.wrapperRef}>
-        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+          {t("component.correctanswers.setcorrectanswers")}
+        </Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
             <Tab

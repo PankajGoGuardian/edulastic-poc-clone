@@ -12,7 +12,12 @@ import LayoutComponent from "./LayoutComponent";
 
 const Options = ({ item, fillSections, cleanSections, advancedAreOpen }) => {
   return (
-    <WidgetOptions fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+    <WidgetOptions
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      advancedAreOpen={advancedAreOpen}
+      item={item}
+    >
       <LayoutComponent
         item={item}
         fillSections={fillSections}

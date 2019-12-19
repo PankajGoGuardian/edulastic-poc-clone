@@ -29,6 +29,7 @@ const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen }) => {
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
+      item={item}
     >
       <LayoutComponent
         item={item}

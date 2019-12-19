@@ -176,7 +176,12 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
 
       {advancedLink}
 
-      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+      <Options
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        item={item}
+      />
     </ContentArea>
   );
 };

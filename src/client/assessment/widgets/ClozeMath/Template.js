@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
 import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last, isEmpty, get } from "lodash";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
@@ -400,7 +401,9 @@ class Template extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle data-cy="template">{t("component.math.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.composequestion")}`)} data-cy="template">
+          {t("component.math.composequestion")}
+        </Subtitle>
 
         <FroalaEditor
           data-cy="templateBox"

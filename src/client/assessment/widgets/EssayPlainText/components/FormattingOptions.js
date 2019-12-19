@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 
@@ -31,7 +32,9 @@ class FormattingOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.essayText.plain.formattingOptions")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.plain.formattingOptions")}`)}>
+          {t("component.essayText.plain.formattingOptions")}
+        </Subtitle>
         <FlexContainer childMarginRight={100}>
           <AdaptiveCheckbox
             defaultChecked={item.showCopy}

@@ -5,6 +5,7 @@ import ColorPicker from "rc-color-picker";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { greenDark, red } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Paper } from "@edulastic/common";
@@ -28,6 +29,7 @@ const ColorPikers = ({ onRemove, colors, changeHandler, t, theme }) => {
         <Col key={i} span={8} xs={24}>
           <Paper style={{ marginBottom: 20 }} padding="16px">
             <Subtitle
+              id={getFormattedAttrId(`${item?.title}-${t("component.highlightImage.lineColorLabel")}-${i + 1}`)}
               padding="0 0 16px 0"
               fontSize={theme.widgets.highlightImage.subtitleFontSize}
               color={theme.widgets.highlightImage.subtitleColor}

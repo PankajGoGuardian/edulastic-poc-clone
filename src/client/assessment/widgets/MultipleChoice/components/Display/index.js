@@ -20,6 +20,7 @@ const Display = ({
   flowLayout,
   qLabel,
   fontSize,
+  item = {},
   ...restProps
 }) => (
   <div>
@@ -40,6 +41,7 @@ const Display = ({
       styleType={styleType}
       multipleResponses={multipleResponses}
       fontSize={fontSize}
+      item={item}
       {...restProps}
     />
   </div>

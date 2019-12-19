@@ -7,13 +7,14 @@ import Extras from "../../../containers/Extras";
 
 import LayoutComponent from "./LayoutComponent";
 
-const Options = ({ t, advancedAreOpen, fillSections, cleanSections }) => {
+const Options = ({ t, advancedAreOpen, fillSections, cleanSections, item = {} }) => {
   return (
     <WidgetOptions
       title={t("common.options.title")}
       advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
+      item={item}
     >
       <LayoutComponent advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
 

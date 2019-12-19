@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { CorrectAnswersContainer, Subtitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { getStemNumeration } from "../../../../utils/helpers";
@@ -9,7 +10,7 @@ import { Item } from "./styled/Item";
 import { Index } from "./styled/Index";
 import { Content } from "./styled/Content";
 
-const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle }) => (
+const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle, item }) => (
   <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
     <FlexRow>
       {list.map((ele, i) => {
@@ -27,7 +28,10 @@ const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle
 
     {altResponses.map((ans, i) => (
       <Fragment key={i}>
-        <Subtitle style={{ marginTop: 40 }}>{`${t("component.sortList.alternateAnswer")} ${i + 1}`}</Subtitle>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.sortList.alternateAnswer")} ${i + 1}`)}
+          style={{ marginTop: 40 }}
+        >{`${t("component.sortList.alternateAnswer")} ${i + 1}`}</Subtitle>
         <FlexRow>
           {ans.value.map((answer, index) => {
             const content = <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />;

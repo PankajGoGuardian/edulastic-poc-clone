@@ -4,6 +4,7 @@ import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
 
 import { updateVariables } from "../../utils/variables";
@@ -31,7 +32,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.composequestion")}`)}>
+          {t("component.essayText.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.essayText.enterQuestion")}

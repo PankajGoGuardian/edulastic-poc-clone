@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -56,7 +57,9 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.chart.chartMainBlockTitle")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.chart.chartMainBlockTitle")}`)}>
+        {t("component.chart.chartMainBlockTitle")}
+      </Subtitle>
 
       <Row gutter={30}>
         <Col md={3} />

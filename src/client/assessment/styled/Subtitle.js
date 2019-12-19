@@ -1,7 +1,10 @@
+import React from "react";
 import styled from "styled-components";
-import { desktopWidth, mediumDesktopExactWidth, smallDesktopWidth } from "@edulastic/colors";
+import { desktopWidth, mediumDesktopExactWidth, smallDesktopWidth, white, themeColor } from "@edulastic/colors";
+import { IconQuestion } from "@edulastic/icons";
+import { FlexContainer } from "@edulastic/common";
 
-export const Subtitle = styled.div`
+export const SubtitleText = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
   font-weight: ${props => props.theme.common.subtitleFontWeight};
   font-style: ${props => props.theme.common.subtitleFontStyle};
@@ -23,3 +26,24 @@ export const Subtitle = styled.div`
     font-size: ${({ theme }) => theme?.common?.titleSectionFontSize || "16px"};
   }
 `;
+
+const IconStyle = {
+  fill: white,
+  width: "16px",
+  height: "16px",
+  background: themeColor,
+  borderRadius: "50%",
+  padding: "3px",
+  marginLeft: "16px"
+};
+
+export const Subtitle = ({ id, children }) => (
+  <FlexContainer justifyContent="flex-start" alignItems="baseline">
+    <SubtitleText>{children}</SubtitleText>
+    {id && !id.includes("undefined") ? (
+      <FlexContainer id={id}>
+        <IconQuestion style={IconStyle} />
+      </FlexContainer>
+    ) : null}
+  </FlexContainer>
+);

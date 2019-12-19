@@ -11,6 +11,7 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -119,7 +120,7 @@ class Response extends Component {
   };
 
   render() {
-    const { t, fillSections, cleanSections, options } = this.props;
+    const { t, fillSections, cleanSections, options, item } = this.props;
 
     return (
       <Question
@@ -131,7 +132,10 @@ class Response extends Component {
       >
         {options.map((option, index) => (
           <>
-            <Subtitle style={{ paddingTop: index > 0 ? "30px" : "0px" }}>
+            <Subtitle
+              id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDropDown.response")} ${index + 1}`)}
+              style={{ paddingTop: index > 0 ? "30px" : "0px" }}
+            >
               {t("component.cloze.imageDropDown.response")} {index + 1}
             </Subtitle>
             <SortableList

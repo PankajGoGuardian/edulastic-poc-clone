@@ -19,9 +19,11 @@ const Options = ({
   outerStyle,
   advancedAreOpen,
   fillSections,
-  cleanSections
+  cleanSections,
+  item
 }) => (
   <WidgetOptions
+    item={item}
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
@@ -35,6 +37,7 @@ const Options = ({
       fillSections={fillSections}
       cleanSections={cleanSections}
       responses={responses}
+      item={item}
     />
     <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />

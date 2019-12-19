@@ -21,7 +21,12 @@ const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedLink, a
         cleanSections={cleanSections}
       />
       {advancedLink}
-      <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+      <Options
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+        item={item}
+      />
     </ContentArea>
   );
 };

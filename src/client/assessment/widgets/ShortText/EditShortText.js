@@ -130,11 +130,17 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        questionType={item?.title}
       />
 
       {advancedLink}
 
-      <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+      <Options
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+        item={item}
+      />
     </ContentArea>
   );
 };

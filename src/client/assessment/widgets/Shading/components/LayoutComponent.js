@@ -20,6 +20,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import ShadesView from "./ShadesView";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import { changeItemAction, changeUIStyleAction } from "../../../../author/src/actions/question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class LayoutComponent extends Component {
   render() {
@@ -64,7 +65,7 @@ class LayoutComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={36}>
             <Col md={12}>
               <Label>{t("component.options.hideCells")}</Label>

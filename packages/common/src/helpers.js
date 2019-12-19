@@ -501,6 +501,16 @@ export const measureText = (text, style = {}) => {
   document.body.removeChild(fakeEm);
   return result;
 };
+export const getFormattedAttrId = inputString => {
+  if (!inputString) return "";
+
+  const matchBlankSpaces = /[\s]+/g;
+  const matchHiphens = /[-]+/g;
+  return inputString
+    .replace(matchBlankSpaces, "-") // replace space+ to hyphen
+    .replace(matchHiphens, "-") // replace hyphen+ single hyphen
+    .toLowerCase();
+};
 
 export default {
   sanitizeSelfClosingTags,
@@ -519,5 +529,6 @@ export default {
   calculateWordsCount,
   formatBytes,
   isMobileDevice,
-  measureText
+  measureText,
+  getFormattedAttrId
 };

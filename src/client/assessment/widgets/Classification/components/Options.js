@@ -16,6 +16,7 @@ const Options = ({ item, t, setQuestionData, advancedAreOpen, fillSections, clea
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    item={item}
   >
     <LayoutWrapper
       item={item}

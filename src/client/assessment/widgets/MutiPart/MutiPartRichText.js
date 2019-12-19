@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Paper } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { get } from "lodash";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -26,7 +27,9 @@ const MutiPartRichText = ({ col, item, t }) => {
   return (
     <Fragment>
       <Paper isV1Multipart={isV1Multipart} style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.multipart.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.multipart.composequestion")}`)}>
+          {t("component.multipart.composequestion")}
+        </Subtitle>
         <QuestionTextArea
           placeholder={t("component.multipart.enterQuestion")}
           onChange={handleStimulusChange}

@@ -42,7 +42,8 @@ class WidgetOptions extends Component {
       cleanSections,
       advancedAreOpen,
       showSelect,
-      renderExtra
+      renderExtra,
+      item
     } = this.props;
 
     return (
@@ -55,10 +56,16 @@ class WidgetOptions extends Component {
             cleanSections={cleanSections}
             advancedAreOpen={advancedAreOpen}
             showSelect={showSelect}
+            item={item}
           />
         )}
         {showVariables && (
-          <Variables fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+          <Variables
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            advancedAreOpen={advancedAreOpen}
+            item={item}
+          />
         )}
         {children}
       </Fragment>

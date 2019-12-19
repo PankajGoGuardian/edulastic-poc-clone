@@ -5,6 +5,7 @@ import { isEmpty } from "lodash";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../Question";
@@ -97,7 +98,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, onTabChange, children, correctTab, options, fillSections, cleanSections } = this.props;
+    const { t, onTabChange, children, correctTab, options, fillSections, cleanSections, questionType } = this.props;
     const { tabs } = this.state;
 
     return (
@@ -108,7 +109,12 @@ class CorrectAnswers extends Component {
         cleanSections={cleanSections}
       >
         <FlexContainer>
-          <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+          <Subtitle
+            margin="0 0 6px"
+            id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}
+          >
+            {t("component.correctanswers.setcorrectanswers")}
+          </Subtitle>
           {this.renderPlusButton()}
         </FlexContainer>
         <div>

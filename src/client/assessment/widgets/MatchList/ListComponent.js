@@ -5,6 +5,7 @@ import produce from "immer";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -79,7 +80,9 @@ class ListComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.matchList.list")}`)} data-cy="list-container">
+          {t("component.matchList.list")}
+        </Subtitle>
         <ListContainer>
           <List
             buttonText={t("component.matchList.addNew")}

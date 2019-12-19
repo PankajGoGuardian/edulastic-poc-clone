@@ -269,6 +269,7 @@ class ClozeText extends Component {
                   view={view}
                   isV1Migrated={item.isV1Migrated}
                   previewTab={previewTab}
+                  item={item}
                 />
                 <div style={{ marginTop: 40 }}>
                   <Checkbox
@@ -312,6 +313,7 @@ class ClozeText extends Component {
                 outerStyle={{
                   padding: "30px 0px"
                 }}
+                item={item}
               />
             </div>
           </ContentArea>

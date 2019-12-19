@@ -205,6 +205,7 @@ class GraphAnswers extends Component {
         options={this.renderOptions()}
         onTabChange={this.handleTabChange}
         onCloseTab={this.handleAltResponseClose}
+        questionType={graphData?.title}
       >
         <Fragment>
           {tab === 0 && (

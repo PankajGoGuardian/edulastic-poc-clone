@@ -12,6 +12,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import Question from "../../Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class AxisSegments extends Component {
   onChangeQuestion = stimulus => {
@@ -66,7 +67,9 @@ class AxisSegments extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.question.composequestion")}`)}>
+            {t("component.graphing.question.composequestion")}
+          </Subtitle>
 
           <QuestionTextArea
             placeholder={t("component.graphing.question.enteryourquestion")}
@@ -79,7 +82,9 @@ class AxisSegments extends Component {
         </Question>
 
         <Question section="main" label="Line" cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen>
-          <Subtitle>{t("component.graphing.graphline")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphline")}`)}>
+            {t("component.graphing.graphline")}
+          </Subtitle>
           <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.minVal")}</Label>
@@ -139,7 +144,9 @@ class AxisSegments extends Component {
           advancedAreOpen
         >
           <PaddingDiv>
-            <Subtitle>{t("component.graphing.title")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
+              {t("component.graphing.title")}
+            </Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
         </Question>

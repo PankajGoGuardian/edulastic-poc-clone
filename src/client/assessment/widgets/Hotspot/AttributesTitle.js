@@ -9,6 +9,7 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { Tabs, Tab, Button, FlexContainer } from "@edulastic/common";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
@@ -149,7 +150,9 @@ class AttributesTitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.hotspot.attributesTitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.attributesTitle")}`)}>
+          {t("component.hotspot.attributesTitle")}
+        </Subtitle>
 
         <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
           <Tab

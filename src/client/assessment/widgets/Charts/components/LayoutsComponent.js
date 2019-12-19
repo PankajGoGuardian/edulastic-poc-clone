@@ -8,6 +8,7 @@ import { withNamespaces } from "react-i18next";
 import { questionType } from "@edulastic/constants";
 import { Checkbox } from "@edulastic/common";
 import { Input } from "antd";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -166,7 +167,7 @@ class LayoutsComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           {settings.map((setting, index) => (
             <Fragment key={`fragment-${index}`}>
               {index % 2 === 0 && (

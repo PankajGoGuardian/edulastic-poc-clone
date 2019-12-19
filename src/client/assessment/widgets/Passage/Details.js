@@ -6,6 +6,7 @@ import { Checkbox, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton } from "@edulastic/common";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
 import Question from "../../components/Question";
@@ -87,7 +88,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.passage.heading")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.heading")}`)}>
+          {t("component.passage.heading")}
+        </Subtitle>
         <WidgetFRInput>
           <QuestionTextArea
             onChange={value => handleChange("heading", value)}
@@ -103,7 +106,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.passage.contentsTitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.contentsTitle")}`)}>
+          {t("component.passage.contentsTitle")}
+        </Subtitle>
         <WidgetFRInput>
           <QuestionTextArea
             onChange={value => handleChange("contentsTitle", value)}
@@ -121,7 +126,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
       >
         {!item.paginated_content && (
           <div>
-            <Subtitle>{t("component.passage.contents")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.contents")}`)}>
+              {t("component.passage.contents")}
+            </Subtitle>
             <QuestionTextArea
               placeholder={t("component.passage.enterPassageContentHere")}
               onChange={value => handleChange("content", value)}
@@ -134,7 +141,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         )}
         {item.paginated_content && (
           <div>
-            <Subtitle>{t("component.passage.contentPages")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.contentPages")}`)}>
+              {t("component.passage.contentPages")}
+            </Subtitle>
             {item?.pages?.length ? (
               <QuillSortableList
                 items={item.pages}
@@ -156,7 +165,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.passage.details")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.details")}`)}>
+          {t("component.passage.details")}
+        </Subtitle>
         <Row gutter={30}>
           <Col marginBottom="20px" span={12}>
             <Label>{t("component.passage.fleschKincaid")}</Label>
@@ -182,7 +193,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.passage.instructorStimulus")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.instructorStimulus")}`)}>
+          {t("component.passage.instructorStimulus")}
+        </Subtitle>
 
         <Row gutter={30}>
           <Col marginBottom="20px" span={24}>
@@ -214,7 +227,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <Subtitle>{t("component.passage.mathRenderer")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.mathRenderer")}`)}>
+            {t("component.passage.mathRenderer")}
+          </Subtitle>
           <Select
             size="large"
             value={item.math_renderer}

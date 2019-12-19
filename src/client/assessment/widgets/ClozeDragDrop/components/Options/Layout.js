@@ -6,6 +6,7 @@ import { Input, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { response as Dimensions, ChoiceDimensions } from "@edulastic/constants";
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -58,7 +59,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections, questionType } = this.props;
 
     const changeUiStyle = (prop, value) => {
       if (prop === "responseContainerWidth" && value < 1) {
@@ -159,7 +160,9 @@ class Layout extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${questionType}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
         <Row gutter={20}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerposition")}</Label>

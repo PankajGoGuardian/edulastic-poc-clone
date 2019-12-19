@@ -279,6 +279,7 @@ class ClozeImageDragDrop extends Component {
                 advancedAreOpen={advancedAreOpen}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
+                item={item}
               />
             </React.Fragment>
           </ContentArea>

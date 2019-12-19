@@ -10,6 +10,7 @@ import { response as responseDimensions } from "@edulastic/constants";
 
 import { Checkbox } from "antd";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Block } from "../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../styled/Subtitle";
 import { Row } from "../../styled/WidgetOptions/Row";
@@ -119,7 +120,8 @@ class Layout extends Component {
       fillSections,
       cleanSections,
       handleIndividualTypeChange,
-      handleGlobalTypeChange
+      handleGlobalTypeChange,
+      item
     } = this.props;
 
     const changeUiStyle = (prop, value) => {
@@ -201,7 +203,9 @@ class Layout extends Component {
         cleanSections={cleanSections}
       >
         <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+            {t("component.options.display")}
+          </Subtitle>
           <Row gutter={20}>
             <Col md={12}>
               <Label>{t("component.options.fontSize")}</Label>

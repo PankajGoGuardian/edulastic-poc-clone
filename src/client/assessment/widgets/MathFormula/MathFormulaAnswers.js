@@ -265,6 +265,7 @@ class MathFormulaAnswers extends React.Component {
         onCloseTab={this.handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        questionType={item?.title}
       >
         <CorrectAnswerContainer>
           {correctTab === 0 && (

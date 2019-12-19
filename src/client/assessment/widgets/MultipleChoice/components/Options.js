@@ -8,15 +8,21 @@ import Extras from "../../../containers/Extras";
 
 import Layout from "./Layout";
 
-function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen }) {
+function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, item = {} }) {
   return (
-    <WidgetOptions fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+    <WidgetOptions
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      advancedAreOpen={advancedAreOpen}
+      item={item}
+    >
       <Layout
         onChange={onChange}
         uiStyle={uiStyle}
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        item={item}
       />
       <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
         <Extras.Distractors />

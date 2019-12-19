@@ -9,6 +9,7 @@ import { ScoreSettings } from "..";
 import Tools from "../../common/Tools";
 import DisplayOptions from "./DisplayOption";
 import Question from "../../../Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class NumberLinePlotMoreOptions extends Component {
   allControls = ["undo", "redo", "clear", "trash"];
@@ -61,7 +62,9 @@ class NumberLinePlotMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.graphControls")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphControls")}`)}>
+            {t("component.graphing.graphControls")}
+          </Subtitle>
           <Tools
             toolsAreVisible={false}
             selected={controlbar.controls}
@@ -86,7 +89,9 @@ class NumberLinePlotMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.display")}`)}>
+            {t("component.graphing.display")}
+          </Subtitle>
           <DisplayOptions
             uiStyle={uiStyle}
             canvas={canvas}
@@ -98,7 +103,13 @@ class NumberLinePlotMoreOptions extends Component {
           />
         </Question>
 
-        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+        <Extras
+          isSection={false}
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+          item={graphData}
+        >
           <Extras.Distractors />
           <Extras.Hints />
         </Extras>

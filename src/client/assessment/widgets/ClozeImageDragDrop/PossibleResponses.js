@@ -10,6 +10,7 @@ import { withTheme } from "styled-components";
 
 import "react-quill/dist/quill.snow.css";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
@@ -124,7 +125,9 @@ class PossibleResponses extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDragDrop.possibleresponses")}`)}>
+          {t("component.cloze.imageDragDrop.possibleresponses")}
+        </Subtitle>
         <QuillSortableList
           items={item.options}
           onSortEnd={this.onSortEnd}

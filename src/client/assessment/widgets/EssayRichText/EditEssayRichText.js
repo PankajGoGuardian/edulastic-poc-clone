@@ -68,6 +68,7 @@ const EditEssayRichText = ({
         label={t("component.essayText.wordsLimitTitle")}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        item={item}
       >
         <WordLimitAndCount
           withOutTopMargin
@@ -95,6 +96,7 @@ const EditEssayRichText = ({
         scoringTypes={[]}
         questionData={item}
         advancedAreOpen={advancedAreOpen}
+        item={item}
       />
 
       {advancedLink}

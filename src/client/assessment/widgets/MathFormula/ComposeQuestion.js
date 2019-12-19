@@ -14,6 +14,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 
 import { latexKeys } from "./constants";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   render() {
@@ -35,7 +36,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.composeQuestion")}`)}>
+          {t("component.math.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.math.enterQuestion")}

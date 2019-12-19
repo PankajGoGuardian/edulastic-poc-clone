@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Select } from "@edulastic/common";
 import { response, ChoiceDimensions } from "@edulastic/constants";
 import { Input, message } from "antd";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Block } from "../../styled/WidgetOptions/Block";
@@ -77,7 +78,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
+    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses, item } = this.props;
     const changeUiStyle = (prop, value) => {
       if (prop === "responseContainerWidth" && value < 1) {
         message.error("Width cannot be less than 1");
@@ -110,7 +111,9 @@ class Layout extends Component {
         cleanSections={cleanSections}
       >
         <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+            {t("component.options.display")}
+          </Subtitle>
           <Row gutter={20}>
             <Col md={12}>
               <Label>{t("component.options.responsecontainerposition")}</Label>

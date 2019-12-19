@@ -173,6 +173,7 @@ const HotspotEdit = ({
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        questionType={item?.title}
       >
         <StyledCheckbox onChange={handleResponseMode} defaultChecked={multipleResponses} style={{ marginBottom: 30 }}>
           {t("component.hotspot.multipleResponses")}
@@ -181,7 +182,12 @@ const HotspotEdit = ({
 
       {advancedLink}
 
-      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+      <Options
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        item={item}
+      />
     </ContentArea>
   );
 };

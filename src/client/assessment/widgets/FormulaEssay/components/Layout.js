@@ -4,6 +4,7 @@ import { Select, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
@@ -54,7 +55,9 @@ class Layout extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
 
         <StyledRow gutter={36}>
           <Col span={12}>
@@ -80,7 +83,9 @@ class Layout extends Component {
 
         <KeyPadOptions onChange={onChange} item={item} />
 
-        <Subtitle>{t("component.options.textBlocks")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.textBlocks")}`)}>
+          {t("component.options.textBlocks")}
+        </Subtitle>
 
         <StyledRow gutter={36}>
           <Col span={24}>

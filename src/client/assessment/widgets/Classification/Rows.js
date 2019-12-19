@@ -10,6 +10,7 @@ import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import withAddButton from "../../components/HOC/withAddButton";
 import { Subtitle } from "../../styled/Subtitle";
@@ -155,7 +156,9 @@ class Rows extends Component {
       <Widget>
         <Row gutter={70}>
           <Col data-cy="row-container" span={12}>
-            <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.rowsSubtitle")}`)}>
+              {t("component.classification.rowsSubtitle")}
+            </Subtitle>
 
             <Label
               fontSize={theme.widgets.classification.subtitleFontSize}
@@ -202,7 +205,9 @@ class Rows extends Component {
             />
           </Col>
           <Col data-cy="column-container" span={12}>
-            <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.columnsSubtitle")}`)}>
+              {t("component.classification.columnsSubtitle")}
+            </Subtitle>
 
             <Label
               fontSize={theme.widgets.classification.subtitleFontSize}

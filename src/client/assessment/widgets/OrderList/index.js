@@ -253,11 +253,17 @@ const OrderList = ({
             onCloseTab={handleDeleteAltAnswers}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            questionType={item?.title}
           />
 
           {advancedLink}
 
-          <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+          <Options
+            advancedAreOpen={advancedAreOpen}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            item={item}
+          />
         </ContentArea>
       )}
       {view === PREVIEW && scrollContainer && (

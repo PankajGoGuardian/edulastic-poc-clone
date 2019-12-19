@@ -128,6 +128,7 @@ const MatrixChoice = ({
               fillSections={fillSections}
               cleanSections={cleanSections}
               advancedAreOpen={advancedAreOpen}
+              item={item}
             />
           </Fragment>
         </ContentArea>
@@ -166,7 +167,7 @@ const MatrixChoice = ({
 
           {(previewTab === SHOW || isReviewTab) && (
             <Fragment>
-              <CorrectAnswersContainer title={t("component.matrix.correctAnswer")}>
+              <CorrectAnswersContainer item={item} title={t("component.matrix.correctAnswer")}>
                 <Preview
                   saveAnswer={() => {}}
                   userAnswer={validResponse}

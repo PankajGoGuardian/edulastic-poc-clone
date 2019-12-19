@@ -31,7 +31,8 @@ const CheckboxTemplateBoxLayout = ({
   canvasWidth,
   checkAnswer,
   onClickHandler,
-  isExpressGrader
+  isExpressGrader,
+  item
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover
@@ -91,6 +92,7 @@ const CheckboxTemplateBoxLayout = ({
             indexStr={indexStr}
             dropTargetIndex={dropTargetIndex}
             isExpressGrader={isExpressGrader}
+            item={item}
           />
         );
       })}

@@ -24,6 +24,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
 import { StyledCheckbox } from "../../../components/Common/InputField";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const { defaultNumberPad } = math;
@@ -60,7 +61,8 @@ class Variables extends Component {
       questionData,
       fillSections,
       cleanSections,
-      advancedAreOpen
+      advancedAreOpen,
+      item = {}
     } = this.props;
     const mathFieldRef = React.createRef();
 
@@ -244,7 +246,9 @@ class Variables extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle>{t("component.options.dynamicParameters")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}>
+          {t("component.options.dynamicParameters")}
+        </Subtitle>
         <Row gutter={36}>
           <Col md={24}>
             <DynamicText>{t("component.options.dynamicParametersDescription")}</DynamicText>

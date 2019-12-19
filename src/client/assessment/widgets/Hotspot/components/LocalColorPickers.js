@@ -10,14 +10,17 @@ import { withNamespaces } from "@edulastic/localization";
 import { Subtitle } from "../../../styled/Subtitle";
 
 import { getAlpha } from "../helpers";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const { Option } = Select;
 
-const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, handleSelectChange, theme }) => (
+const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, handleSelectChange, theme, item }) => (
   <div>
     {areaIndexes.length > 0 && (
       <Fragment>
-        <Subtitle>{t("component.hotspot.areaSelectLabel")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areaSelectLabel")}`)}>
+          {t("component.hotspot.areaSelectLabel")}
+        </Subtitle>
         <Select
           value={attributes.area}
           onChange={handleSelectChange}

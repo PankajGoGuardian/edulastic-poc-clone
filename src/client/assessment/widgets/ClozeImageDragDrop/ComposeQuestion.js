@@ -18,6 +18,7 @@ import { Label } from "../../styled/WidgetOptions/Label";
 import { withNamespaces } from "@edulastic/localization";
 import { themeColor } from "@edulastic/colors";
 import { aws, clozeImage } from "@edulastic/constants";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
@@ -508,7 +509,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDragDrop.composequestion")}`)}>
+          {t("component.cloze.imageDragDrop.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           toolbarId="stimulus"
@@ -758,7 +761,9 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           {isEditAriaLabels && (
             <React.Fragment>
-              <Subtitle>{t("component.cloze.imageDragDrop.editAriaLabels")}</Subtitle>
+              <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
+                {t("component.cloze.imageDragDrop.editAriaLabels")}
+              </Subtitle>
 
               <FieldLabel>{t("component.cloze.imageDropDown.imagealtertext")}</FieldLabel>
               <div className="imagelabeldragdrop-droppable iseditablearialabel">

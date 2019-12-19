@@ -23,6 +23,7 @@ import {
   getCustomTokenTemplate,
   removeTokenFromHtml
 } from "./helpers";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const Template = ({
   item,
@@ -149,7 +150,9 @@ const Template = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.tokenHighlight.templateTitle")}`)}>
+          {t("component.tokenHighlight.templateTitle")}
+        </Subtitle>
         <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
           <Tab label={t("component.tokenHighlight.editTemplateTab")} />
           <Tab label={t("component.tokenHighlight.editTokenTab")} />

@@ -252,6 +252,7 @@ class MultipleChoice extends Component {
                 fillSections={fillSections}
                 cleanSections={cleanSections}
                 multipleResponses={multipleResponses}
+                item={item}
                 {...restProps}
               />
             </ContentArea>

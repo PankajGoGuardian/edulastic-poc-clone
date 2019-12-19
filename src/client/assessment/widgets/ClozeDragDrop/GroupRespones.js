@@ -9,6 +9,7 @@ import uuid from "uuid/v4";
 import { arrayMove } from "react-sortable-hoc";
 import { Button, Icon, Input, Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { PaddingDiv } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -252,7 +253,9 @@ class GroupResponses extends React.Component {
     const { t, item, theme } = this.props;
     return (
       <div ref={this.containerRef}>
-        <Subtitle>{t("component.cloze.dragDrop.choicesforresponse")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.dragDrop.choicesforresponse")}`)}>
+          {t("component.cloze.dragDrop.choicesforresponse")}
+        </Subtitle>
 
         {!item.hasGroupResponses && (
           <PaddingDiv>

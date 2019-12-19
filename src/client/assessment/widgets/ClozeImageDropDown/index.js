@@ -256,6 +256,7 @@ class ClozeImageDropDown extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                   responses={item.responses}
+                  item={item}
                 />
               </OptionsContainer>
             </React.Fragment>

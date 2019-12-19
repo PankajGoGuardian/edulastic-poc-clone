@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 
@@ -136,7 +137,9 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+          {t("component.correctanswers.setcorrectanswers")}
+        </Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
             <Tab

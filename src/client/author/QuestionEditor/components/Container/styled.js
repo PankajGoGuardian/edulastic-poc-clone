@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { themeColor, smallMobileWidth } from "@edulastic/colors";
+import { themeColor, smallMobileWidth, white, lightGreen } from "@edulastic/colors";
+import { Button } from "antd";
 
 export const BackLink = styled.span`
   background: #fff;
@@ -18,4 +19,15 @@ export const BackLink = styled.span`
   @media (max-width: ${smallMobileWidth}) {
     padding: 0 10px;
   }
+`;
+
+export const StyledButton = styled.div`
+  background: ${themeColor};
+  color: ${white};
+  padding: 6px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  display: inline-block;
+  float: right;
 `;

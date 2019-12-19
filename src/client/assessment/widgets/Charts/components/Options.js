@@ -11,7 +11,7 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../../auth
 import LayoutsComponent from "./LayoutsComponent";
 import GraphControls from "./GraphControls";
 
-const Options = ({ t, fillSections, cleanSections, advancedAreOpen }) => {
+const Options = ({ t, fillSections, cleanSections, advancedAreOpen, item }) => {
   const leftSideProp = {
     fillSections,
     cleanSections,
@@ -23,6 +23,7 @@ const Options = ({ t, fillSections, cleanSections, advancedAreOpen }) => {
       {...leftSideProp}
       title={t("common.options.title")}
       renderExtra={<GraphControls {...leftSideProp} />}
+      item={item}
     >
       <LayoutsComponent {...leftSideProp} />
 

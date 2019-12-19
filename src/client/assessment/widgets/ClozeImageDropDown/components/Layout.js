@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { differenceBy, findIndex } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { response } from "@edulastic/constants";
 import styled from "styled-components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
@@ -78,7 +79,17 @@ class Layout extends Component {
   };
 
   render() {
-    const { questionData, onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
+    const {
+      questionData,
+      onChange,
+      uiStyle,
+      advancedAreOpen,
+      t,
+      fillSections,
+      cleanSections,
+      responses,
+      item
+    } = this.props;
 
     const changeUiStyle = (prop, value) => {
       const { maxHeight, maxWidth } = response;
@@ -148,7 +159,9 @@ class Layout extends Component {
           cleanSections={cleanSections}
         >
           <Block style={{ paddingTop: 0 }}>
-            <Subtitle>{t("component.options.display")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+              {t("component.options.display")}
+            </Subtitle>
             <MarginRow gutter={20}>
               <Col md={12}>
                 <Label>{t("component.options.stemNumerationReviewOnly")}</Label>

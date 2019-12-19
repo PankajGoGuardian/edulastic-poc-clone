@@ -8,6 +8,7 @@ import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { TextField } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -43,7 +44,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, t, fillSections, cleanSections, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, fillSections, cleanSections, advancedAreOpen, item } = this.props;
 
     const changeUiStyle = (prop, value) => {
       const isNumberColumn = prop === "columns";
@@ -83,7 +84,9 @@ class Layout extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
 
         <Row gutter={60}>
           <Col md={12}>

@@ -13,6 +13,7 @@ import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -34,9 +35,10 @@ import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import { BackLink } from "./styled";
+import { BackLink, StyledButton } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+import { RightActionButton, LabelText } from "../../../src/components/common/ButtonAction/styled_components";
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, "data.questions", []);
@@ -424,6 +426,11 @@ class Container extends Component {
                 <BackLink onClick={history.goBack}>Back to Item List</BackLink>
               )}
             </Col>
+            {view !== "preview" && (
+              <Col span={12}>
+                <StyledButton id={getFormattedAttrId(`${question?.title}-how-to-author`)}>How to author</StyledButton>
+              </Col>
+            )}
             <RightActionButtons span={12}>
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>

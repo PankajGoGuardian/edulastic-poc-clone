@@ -171,6 +171,7 @@ class ClozeDragDrop extends Component {
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                     responseIDs={item.responseIds}
+                    item={item}
                   />
                   <CorrectAnswerOptions>
                     <CheckContainer>
@@ -220,6 +221,7 @@ class ClozeDragDrop extends Component {
                     padding: "30px 120px"
                   }}
                   responseIDs={responseIDs}
+                  item={item}
                 />
               </div>
             </React.Fragment>

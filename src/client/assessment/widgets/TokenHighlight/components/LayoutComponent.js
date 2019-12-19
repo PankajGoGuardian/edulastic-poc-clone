@@ -4,6 +4,7 @@ import { get } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Layout, FontSizeOption, MaxSelectionOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -24,7 +25,7 @@ class LayoutComponent extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={36}>
             <Col md={12}>
               <FontSizeOption

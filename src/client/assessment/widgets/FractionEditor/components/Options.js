@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 // import get from "lodash/get";
 import { Row, Col, Select, Modal, message } from "antd";
 import { FlexContainer } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import Question from "../../../components/Question/index";
 import Input from "./Input";
@@ -69,7 +70,9 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("common.options.mainTitle")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("common.options.mainTitle")}`)}>
+        {t("common.options.mainTitle")}
+      </Subtitle>
 
       <FlexContainer justifyContent="flex-start">
         <Col span={14}>

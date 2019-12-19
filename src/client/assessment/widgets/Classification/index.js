@@ -24,7 +24,7 @@ const Classification = props => {
     >
       {view === EDIT && (
         <ContentArea>
-          <EditClassification {...props} />
+          <EditClassification {...props} item={item} />
         </ContentArea>
       )}
       {view === PREVIEW && <ClassificationPreview {...props} item={itemForPreview} />}

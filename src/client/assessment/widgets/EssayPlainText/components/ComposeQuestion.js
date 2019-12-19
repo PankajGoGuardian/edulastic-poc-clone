@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -30,7 +31,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.composequestion")}`)}>
+          {t("component.essayText.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.essayText.enterQuestion")}

@@ -2,6 +2,7 @@ import React, { Component, memo } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -22,7 +23,9 @@ class VideoPlayer extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.video.videoPlayer")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.video.videoPlayer")}`)}>
+          {t("component.video.videoPlayer")}
+        </Subtitle>
         <Options setQuestionData={setQuestionData} item={item} t={t} />
       </Question>
     );

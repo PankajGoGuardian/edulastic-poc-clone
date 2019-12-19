@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { WORD_MODE, PARAGRAPH_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
@@ -63,7 +64,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.tokenHighlight.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.tokenHighlight.composeQuestion")}`)}>
+          {t("component.tokenHighlight.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.tokenHighlight.enterQuestion")}

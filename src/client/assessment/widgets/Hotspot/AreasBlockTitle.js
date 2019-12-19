@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
@@ -26,7 +27,9 @@ class AreasBlockTitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.hotspot.areasBlockTitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areasBlockTitle")}`)}>
+          {t("component.hotspot.areasBlockTitle")}
+        </Subtitle>
 
         <AreasContainer areas={areas} itemData={item} width={+width} height={+height} imageSrc={file} />
       </Question>

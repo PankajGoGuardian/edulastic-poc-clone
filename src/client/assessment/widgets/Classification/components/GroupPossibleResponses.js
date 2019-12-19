@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Checkbox, Row, Col } from "antd";
 import PropTypes from "prop-types";
 
@@ -30,10 +31,15 @@ class GroupPossibleResponses extends Component {
   };
 
   render() {
-    const { checkboxChange, checkboxVal, items, t, firstFocus, onAdd, ...restProps } = this.props;
+    const { item, checkboxChange, checkboxVal, items, t, firstFocus, onAdd, ...restProps } = this.props;
     return (
       <Fragment>
-        <Subtitle margin="0 0 15px">{t("component.classification.possibleRespTitle")}</Subtitle>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.classification.possibleRespTitle")}`)}
+          margin="0 0 15px"
+        >
+          {t("component.classification.possibleRespTitle")}
+        </Subtitle>
         {checkboxVal ? (
           <Fragment>
             <div style={{ marginBottom: 20 }}>

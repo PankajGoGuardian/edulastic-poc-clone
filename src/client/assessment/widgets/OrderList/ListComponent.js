@@ -7,6 +7,7 @@ import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep, get } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
 
@@ -87,7 +88,9 @@ class ListComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.orderlist.list")}`)} data-cy="list-container">
+          {t("component.orderlist.list")}
+        </Subtitle>
         <List
           fontSize={fontSize}
           onAdd={handleAddQuestion}

@@ -230,11 +230,17 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        item={item}
       />
 
       {advancedLink}
 
-      <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+      <Options
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+        item={item}
+      />
     </Fragment>
   );
 };

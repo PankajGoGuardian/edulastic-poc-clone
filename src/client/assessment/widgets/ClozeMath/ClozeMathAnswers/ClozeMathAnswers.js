@@ -377,6 +377,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       onCloseTab={handleCloseTab}
       fillSections={fillSections}
       cleanSections={cleanSections}
+      questionType={item?.title}
     >
       <CorrectAnswerContainer>
         {correctTab === 0 && (

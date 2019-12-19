@@ -12,6 +12,7 @@ import {
   CorrectAnswersContainer,
   QuestionNumberLabel
 } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -147,6 +148,7 @@ const ShadingPreview = ({
         {view === EDIT && (
           <Fragment>
             <Subtitle
+              id={getFormattedAttrId(`${item?.title}-${t("component.shading.methodSubtitle")}`)}
               fontSize={theme.widgets.shading.subtitleFontSize}
               color={theme.widgets.shading.subtitleColor}
               margin="0"

@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -47,7 +48,9 @@ class CanvasSubtitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.shading.canvasSubtitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.shading.canvasSubtitle")}`)}>
+          {t("component.shading.canvasSubtitle")}
+        </Subtitle>
 
         <Row gutter={70}>
           <Col span={12} style={{ marginBottom: 25 }}>

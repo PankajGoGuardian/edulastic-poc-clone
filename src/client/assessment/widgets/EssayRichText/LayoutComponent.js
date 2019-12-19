@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { Checkbox } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -57,7 +58,7 @@ class LayoutComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Layout>
+        <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           <Row gutter={36}>
             <Col md={12}>
               <SpecialCharactersOption

@@ -4,6 +4,7 @@ import produce from "immer";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 
 import { updateVariables } from "../../utils/variables";
@@ -33,7 +34,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.shading.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.shading.composeQuestion")}`)}>
+          {t("component.shading.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.shading.enterQuestion")}

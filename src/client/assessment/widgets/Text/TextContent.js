@@ -2,13 +2,16 @@ import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 import Options from "./components/Options";
 
 const TextContent = ({ item, setQuestionData, t, advancedLink, fillSections, cleanSections }) => (
   <Question section="main" label={t("component.text.text")} fillSections={fillSections} cleanSections={cleanSections}>
-    <Subtitle>{t("component.text.text")}</Subtitle>
+    <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.text.text")}`)}>
+      {t("component.text.text")}
+    </Subtitle>
     {advancedLink}
     <Options setQuestionData={setQuestionData} item={item} t={t} />
   </Question>

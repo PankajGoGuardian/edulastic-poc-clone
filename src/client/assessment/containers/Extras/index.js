@@ -23,6 +23,7 @@ import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { SectionHeading } from "../../styled/WidgetOptions/SectionHeading";
 import Question from "../../components/Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class Extras extends Component {
   render() {
@@ -48,8 +49,13 @@ class Extras extends Component {
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
         >
+          {console.log(isSection)}
           {isSection && <SectionHeading>{t("component.options.solution")}</SectionHeading>}
-          {!isSection && <Subtitle>{t("component.options.solution")}</Subtitle>}
+          {!isSection && (
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.solution")}`)}>
+              {t("component.options.solution")}
+            </Subtitle>
+          )}
 
           <Row gutter={60}>
             <Col md={17}>

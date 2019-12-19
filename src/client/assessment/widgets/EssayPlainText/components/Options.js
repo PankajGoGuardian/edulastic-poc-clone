@@ -20,6 +20,7 @@ class Options extends Component {
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        item={item}
       >
         <LayoutComponent
           item={item}

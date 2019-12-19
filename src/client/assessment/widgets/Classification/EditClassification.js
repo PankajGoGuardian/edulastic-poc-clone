@@ -560,6 +560,7 @@ const EditClassification = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
             t={t}
+            item={item}
           />
 
           <div style={{ marginTop: 20 }}>
@@ -605,12 +606,18 @@ const EditClassification = ({
           fillSections={fillSections}
           cleanSections={cleanSections}
           marginBottom="-50px"
+          questionType={item?.title}
         />
       </Paper>
 
       {advancedLink}
 
-      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+      <Options
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        item={item}
+      />
     </Fragment>
   );
 };

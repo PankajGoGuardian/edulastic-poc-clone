@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
 import { FroalaEditor } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -110,7 +111,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.multiplechoice.composequestion")}`)}>
+          {t("component.multiplechoice.composequestion")}
+        </Subtitle>
         <FroalaEditor
           tag="textarea"
           placeholder={t("component.multiplechoice.questionPlaceholder")}

@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 
 import { arrayMove } from "react-sortable-hoc";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -46,7 +47,9 @@ class FormattingOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.essayText.rich.formattingOptions")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.rich.formattingOptions")}`)}>
+          {t("component.essayText.rich.formattingOptions")}
+        </Subtitle>
         <QlToolbar id="toolbar">
           <SortableList
             axis="xy"

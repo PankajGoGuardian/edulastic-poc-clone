@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Checkbox } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
@@ -47,7 +48,8 @@ class PointsList extends Component {
       t,
       fillSections,
       cleanSections,
-      showFractionFormatSetting
+      showFractionFormatSetting,
+      item
     } = this.props;
     const isShowFractionField = showFractionFormatSetting;
 
@@ -58,7 +60,9 @@ class PointsList extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.chart.categories")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.chart.categories")}`)}>
+          {t("component.chart.categories")}
+        </Subtitle>
 
         <Row gutter={isShowFractionField ? 10 : 30}>
           <Col md={isShowFractionField ? 3 : 5} />

@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -34,7 +35,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.orderlist.composeQuestion")}`)}>
+          {t("component.orderlist.composeQuestion")}
+        </Subtitle>
 
         <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} border="border" />
       </Question>

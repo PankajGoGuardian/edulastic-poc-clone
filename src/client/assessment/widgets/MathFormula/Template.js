@@ -7,6 +7,7 @@ import { cloneDeep } from "lodash";
 
 import { MathInput } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { updateVariables } from "../../utils/variables";
@@ -50,7 +51,12 @@ class Template extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.math.template")}`)}
+          data-cy="template-container"
+        >
+          {t("component.math.template")}
+        </Subtitle>
         <MathInput
           showResponse
           showDropdown

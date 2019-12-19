@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { cloneDeep, findIndex, clamp } from "lodash";
 import { withTheme } from "styled-components";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { math, response } from "@edulastic/constants";
 
@@ -106,7 +107,8 @@ class Layout extends Component {
       fillSections,
       cleanSections,
       responseContainers,
-      showResponseBoxes
+      showResponseBoxes,
+      item
     } = this.props;
     const { widthpx, heightpx } = this.state;
     const { minHeight, maxHeight, minWidth, maxWidth } = response;
@@ -126,7 +128,9 @@ class Layout extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
 
         <Row gutter={60}>
           <Col md={8}>

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { cloneDeep } from "lodash";
 import { Row } from "../../styled/WidgetOptions/Row";

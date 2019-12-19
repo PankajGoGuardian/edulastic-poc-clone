@@ -6,6 +6,7 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { CustomQuillComponent } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import FontSizeSelect from "../../../components/FontSizeSelect";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -16,7 +17,7 @@ import Question from "../../../components/Question";
 
 class Layout extends Component {
   render() {
-    const { onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, t } = this.props;
+    const { onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, t, item } = this.props;
 
     const inputStyle = {
       minHeight: 35,
@@ -50,7 +51,9 @@ class Layout extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
 
         <Row gutter={60}>
           <Col md={12}>

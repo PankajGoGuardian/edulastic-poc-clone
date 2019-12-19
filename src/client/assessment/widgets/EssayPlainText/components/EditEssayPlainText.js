@@ -44,7 +44,14 @@ const EditEssayPlainText = ({
 
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-      <Scoring isSection t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen} noPaddingLeft>
+      <Scoring
+        isSection={false}
+        t={t}
+        scoringTypes={[]}
+        questionData={item}
+        advancedAreOpen={advancedAreOpen}
+        noPaddingLeft
+      >
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.showWordLimit}

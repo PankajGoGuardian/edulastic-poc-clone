@@ -11,6 +11,7 @@ import QuestionTextArea from "../../../QuestionTextArea";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class GraphQuadrants extends Component {
   isQuadrantsPlacement = () => {
@@ -100,7 +101,9 @@ class GraphQuadrants extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.question.composequestion")}`)}>
+            {t("component.graphing.question.composequestion")}
+          </Subtitle>
 
           <QuestionTextArea
             onChange={this.onChangeQuestion}
@@ -120,7 +123,9 @@ class GraphQuadrants extends Component {
             advancedAreOpen
           >
             <PaddingDiv>
-              <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>
+              <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
+                {t("component.graphing.possibleresponses")}
+              </Subtitle>
               <QuillSortableList
                 items={graphData.list.map(o => o.text)}
                 onSortEnd={this.onSortOrderListEnd}

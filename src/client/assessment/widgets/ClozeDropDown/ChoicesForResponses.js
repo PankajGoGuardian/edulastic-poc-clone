@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -121,7 +122,11 @@ class ChoicesForResponse extends Component {
       >
         {responses.map(response => (
           <ChoicesConatiner data-cy={`choice-response-${response.index}`}>
-            <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
+            <Subtitle
+              id={getFormattedAttrId(
+                `${item?.title}-${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`
+              )}
+            >{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
             <SortableList
               useDragHandle
               items={options[response.id] || []}

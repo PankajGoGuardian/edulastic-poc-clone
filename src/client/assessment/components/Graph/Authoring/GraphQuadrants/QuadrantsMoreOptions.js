@@ -20,6 +20,7 @@ import Question from "../../../Question";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import Tools from "../../common/Tools";
 import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../styled/Grid";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
@@ -235,7 +236,9 @@ class QuadrantsMoreOptions extends Component {
             advancedAreOpen
           >
             <PaddingDiv>
-              <Subtitle>{t("component.graphing.studentInteraction")}</Subtitle>
+              <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.studentInteraction")}`)}>
+                {t("component.graphing.studentInteraction")}
+              </Subtitle>
               <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} />
             </PaddingDiv>
           </Question>
@@ -263,7 +266,9 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.display")}`)}>
+            {t("component.graphing.display")}
+          </Subtitle>
           <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.width")}</Label>
@@ -369,7 +374,9 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.grid_options.grid")}`)}>
+            {t("component.graphing.grid_options.grid")}
+          </Subtitle>
           <Row gutter={4} type="flex" align="middle">
             <Col md={13} style={{ marginBottom: "0" }}>
               <Row type="flex" align="middle">
@@ -681,7 +688,9 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.graphControls")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphControls")}`)}>
+            {t("component.graphing.graphControls")}
+          </Subtitle>
           <Tools
             toolsAreVisible={false}
             controls={this.allControls}
@@ -814,7 +823,12 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </Question>
 
-        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+        <Extras
+          isSection={false}
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Extras.Distractors />
           <Extras.Hints />
         </Extras>

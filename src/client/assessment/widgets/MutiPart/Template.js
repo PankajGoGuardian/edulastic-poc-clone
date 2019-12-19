@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "react-i18next";
 import { Quill } from "react-quill";
 import { CustomQuillComponent } from "@edulastic/common";
@@ -79,7 +80,9 @@ class Template extends Component {
 
     return (
       <Widget>
-        <Subtitle data-cy="content">{t("component.multipart.content")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.multipart.content")}`)} data-cy="content">
+          {t("component.multipart.content")}
+        </Subtitle>
         <CustomQuillComponent
           inputId="contentInput"
           toolbarId="content"

@@ -7,6 +7,7 @@ import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { response as Dimensions } from "@edulastic/constants";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -59,7 +60,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections } = this.props;
+    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, item } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("uiStyle", {
@@ -153,7 +154,9 @@ class Layout extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.options.display")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+          {t("component.options.display")}
+        </Subtitle>
         <Row gutter={20}>
           <Col md={12}>
             <Label>{t("component.options.fontSize")}</Label>

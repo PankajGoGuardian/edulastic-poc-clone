@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
@@ -70,7 +71,9 @@ class ListComponent extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.sortList.list")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.sortList.list")}`)}>
+          {t("component.sortList.list")}
+        </Subtitle>
         <List
           items={item.source}
           onAdd={handleAdd}

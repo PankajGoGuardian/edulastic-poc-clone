@@ -14,6 +14,7 @@ const AdvancedOptions = ({ t, onUiChange, item, fillSections, cleanSections, adv
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    item={item}
   >
     <LayoutWrapper
       item={item}

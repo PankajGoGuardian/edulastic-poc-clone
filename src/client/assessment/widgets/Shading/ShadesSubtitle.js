@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -66,7 +67,9 @@ class ShadesSubtitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.shading.shadesSubtitle")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.shading.shadesSubtitle")}`)}>
+          {t("component.shading.shadesSubtitle")}
+        </Subtitle>
 
         <div>
           <ShadesView

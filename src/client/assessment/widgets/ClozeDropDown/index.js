@@ -193,6 +193,7 @@ class ClozeDropDown extends Component {
                   cleanSections={cleanSections}
                   advancedAreOpen={advancedAreOpen}
                   responseIDs={responseIds}
+                  item={item}
                 />
               </div>
             </React.Fragment>

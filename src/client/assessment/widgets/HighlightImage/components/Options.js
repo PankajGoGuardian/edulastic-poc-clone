@@ -6,13 +6,14 @@ import Extras from "../../../containers/Extras";
 
 import LayoutComponent from "./LayoutComponent";
 
-const Options = ({ fillSections, cleanSections, advancedAreOpen }) => (
+const Options = ({ fillSections, cleanSections, advancedAreOpen, item }) => (
   <WidgetOptions
     showScoring
     showSelect={false}
     fillSections={fillSections}
     cleanSections={cleanSections}
     advancedAreOpen={advancedAreOpen}
+    item={item}
   >
     <LayoutComponent fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
 

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton } from "@edulastic/common";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
@@ -16,11 +17,16 @@ const List = withAddButton(QuillSortableList);
 
 class GroupPossibleResponses extends Component {
   render() {
-    const { checkboxChange, checkboxVal, firstFocus, items, t, onAdd, ...restProps } = this.props;
+    const { checkboxChange, checkboxVal, firstFocus, items, t, item, onAdd, ...restProps } = this.props;
 
     return (
       <Fragment>
-        <Subtitle margin="0 0 15px">{t("component.matchList.possibleRespTitle")}</Subtitle>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.matchList.possibleRespTitle")}`)}
+          margin="0 0 15px"
+        >
+          {t("component.matchList.possibleRespTitle")}
+        </Subtitle>
         {checkboxVal ? (
           <Fragment>
             <div style={{ marginBottom: 20 }}>

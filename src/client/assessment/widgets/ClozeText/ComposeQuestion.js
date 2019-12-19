@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -67,7 +68,9 @@ class ComposeQuestion extends Component {
 
     return (
       <Widget>
-        <Subtitle>{t("component.cloze.text.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.text.composequestion")}`)}>
+          {t("component.cloze.text.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           inputId="stimulusInput"

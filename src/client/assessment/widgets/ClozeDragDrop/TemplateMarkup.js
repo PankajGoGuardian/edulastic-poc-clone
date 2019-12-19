@@ -6,6 +6,7 @@ import produce from "immer";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { cloneDeep, find, isUndefined, isArray } from "lodash";
 
 import { withTheme } from "styled-components";
@@ -101,7 +102,9 @@ class TemplateMarkup extends Component {
     const { t, item } = this.props;
     return (
       <>
-        <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.dragDrop.composequestion")}`)}>
+          {t("component.cloze.dragDrop.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.thisisstem")}

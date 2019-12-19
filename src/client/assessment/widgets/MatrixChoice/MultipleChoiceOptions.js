@@ -8,6 +8,7 @@ import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
 import Question from "../../components/Question";
@@ -74,7 +75,9 @@ class MultipleChoiceOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.matrix.multipleChoiceOptions")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.matrix.multipleChoiceOptions")}`)}>
+          {t("component.matrix.multipleChoiceOptions")}
+        </Subtitle>
         <List
           items={item.stems}
           onSortEnd={handleSortEndStems}

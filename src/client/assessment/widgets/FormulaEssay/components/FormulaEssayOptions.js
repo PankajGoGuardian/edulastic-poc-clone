@@ -13,6 +13,7 @@ const FormulaEssayOptions = ({ onChange, item, fillSections, cleanSections, adva
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    item={item}
   >
     <Layout
       onChange={onChange}

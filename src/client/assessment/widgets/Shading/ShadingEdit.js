@@ -153,6 +153,7 @@ const ShadingEdit = ({
         onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        questionType={item?.title}
       />
 
       {advancedLink}
@@ -162,6 +163,7 @@ const ShadingEdit = ({
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        item={item}
       />
     </ContentArea>
   );

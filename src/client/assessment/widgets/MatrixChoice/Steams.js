@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -86,7 +87,9 @@ class Steams extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.matrix.stems")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.matrix.stems")}`)}>
+          {t("component.matrix.stems")}
+        </Subtitle>
         <List
           items={item.options}
           onSortEnd={handleSortEndOptions}

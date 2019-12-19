@@ -15,6 +15,7 @@ import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
 import Question from "../../Question";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = stimulus => {
@@ -108,7 +109,9 @@ class GraphAxisLabels extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.question.composequestion")}`)}>
+            {t("component.graphing.question.composequestion")}
+          </Subtitle>
 
           <QuestionTextArea
             placeholder={t("component.graphing.question.enteryourquestion")}
@@ -121,7 +124,9 @@ class GraphAxisLabels extends Component {
         </Question>
 
         <Question section="main" label="Line" cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen>
-          <Subtitle>{t("component.graphing.graphline")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphline")}`)}>
+            {t("component.graphing.graphline")}
+          </Subtitle>
           <Row gutter={60}>
             <Col md={12}>
               <Label>Minimum value</Label>
@@ -164,7 +169,9 @@ class GraphAxisLabels extends Component {
           advancedAreOpen
         >
           <PaddingDiv>
-            <Subtitle>{t("component.graphing.title")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
+              {t("component.graphing.title")}
+            </Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
         </Question>
@@ -177,7 +184,9 @@ class GraphAxisLabels extends Component {
           advancedAreOpen
         >
           <PaddingDiv>
-            <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
+              {t("component.graphing.possibleresponses")}
+            </Subtitle>
             <QuillSortableList
               items={graphData.list.map(o => o.text)}
               onSortEnd={this.onSortOrderListEnd}

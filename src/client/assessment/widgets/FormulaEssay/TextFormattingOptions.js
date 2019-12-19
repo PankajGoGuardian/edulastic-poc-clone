@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { typedList as typedListTypes } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -72,7 +73,9 @@ class TextFormattingOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.math.textFormattingOptions")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.textFormattingOptions")}`)}>
+          {t("component.math.textFormattingOptions")}
+        </Subtitle>
         <TypedList
           columns={2}
           buttonText={t("component.math.add")}

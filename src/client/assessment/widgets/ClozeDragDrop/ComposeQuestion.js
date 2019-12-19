@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 
 import { withTheme } from "styled-components";
 import produce from "immer";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -88,7 +89,9 @@ class ComposeQuestion extends Component {
 
     return (
       <Widget>
-        <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.dragDrop.composequestion")}`)}>
+          {t("component.cloze.dragDrop.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.thisisstem")}

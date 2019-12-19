@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Input } from "antd";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
@@ -33,7 +34,10 @@ const Group = ({
   <Fragment>
     <div data-cy="group-choices" style={{ marginBottom: 30 }}>
       <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
-        <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${groupHeadText}${index + 1}`)}
+          margin="20px 0px 0px"
+        >{`${groupHeadText}${index + 1}`}</Subtitle>
         <IconTrash onClick={onRemove(index)} />
       </FlexContainer>
       <Subtitle

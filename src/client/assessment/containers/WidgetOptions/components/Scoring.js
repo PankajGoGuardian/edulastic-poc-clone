@@ -32,6 +32,7 @@ import { StyledSelect, StyledInput, StyledCheckbox } from "../../../components/C
 import GradingRubricModal from "./GradingRubricModal";
 import { updateRubricDataAction } from "../../../../author/GradingRubric/ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
@@ -80,7 +81,8 @@ class Scoring extends Component {
       isGradingCheckboxState,
       setIsGradingRubricAction,
       userFeatures,
-      dissociateRubricFromQuestion
+      dissociateRubricFromQuestion,
+      item = {}
     } = this.props;
     const { showGradingRubricModal, rubricActionType } = this.state;
     const handleChangeValidation = (param, value) => {
@@ -114,6 +116,9 @@ class Scoring extends Component {
       ) : (
         <Col md={12}>{props.children}</Col>
       );
+
+    const questionTitle = item?.title || questionData?.title;
+
     return (
       <Question
         section="advanced"
@@ -124,7 +129,12 @@ class Scoring extends Component {
       >
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
         {!isSection && (
-          <Subtitle margin={noPaddingLeft ? "0 0 29px -30px" : null}>{t("component.options.scoring")}</Subtitle>
+          <Subtitle
+            margin={noPaddingLeft ? "0 0 29px -30px" : null}
+            id={getFormattedAttrId(`${questionTitle}-${t("component.options.scoring")}`)}
+          >
+            {t("component.options.scoring")}
+          </Subtitle>
         )}
         {isAutoMarkBtnVisible && (
           <Row gutter={60}>

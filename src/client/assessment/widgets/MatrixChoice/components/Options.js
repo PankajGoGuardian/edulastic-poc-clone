@@ -13,13 +13,14 @@ import Layout from "./Layout";
 
 const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch];
 
-function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen }) {
+function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, item = {} }) {
   return (
     <WidgetOptions
       fillSections={fillSections}
       cleanSections={cleanSections}
       scoringTypes={scoringTypes}
       advancedAreOpen={advancedAreOpen}
+      item={item}
     >
       <Layout
         onChange={onChange}
@@ -27,6 +28,7 @@ function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOp
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        item={item}
       />
 
       <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>

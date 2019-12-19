@@ -1,5 +1,6 @@
 import React from "react";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
 import { FroalaEditor } from "@edulastic/common";
@@ -19,7 +20,9 @@ const ComposeQuestion = ({ fillSections, cleanSections, t, stimulus, setQuestion
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("common.question.composeQuestion")}</Subtitle>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("common.question.composeQuestion")}`)}>
+        {t("common.question.composeQuestion")}
+      </Subtitle>
       <FroalaEditor
         tag="textarea"
         placeholder={t("common.question.questionPlaceholder")}

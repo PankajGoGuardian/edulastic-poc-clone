@@ -72,6 +72,7 @@ const MathFormulaOptions = ({
       advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
+      item={item}
     >
       <Layout
         onChange={onChange}

@@ -1,6 +1,7 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
@@ -36,7 +37,9 @@ class ComposeQuestion extends Component {
 
     return (
       <Widget>
-        <Subtitle>{t("component.math.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.composequestion")}`)}>
+          {t("component.math.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           inputId="stimulusInput"

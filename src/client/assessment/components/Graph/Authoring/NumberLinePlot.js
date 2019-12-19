@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Select, Col, Row as AntdRow } from "antd";
 import styled from "styled-components";
 import { Checkbox, TextField } from "@edulastic/common";
@@ -87,7 +88,9 @@ class NumberLinePlot extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.question.composequestion")}`)}>
+            {t("component.graphing.question.composequestion")}
+          </Subtitle>
 
           <QuestionTextArea
             placeholder={t("component.graphing.question.enteryourquestion")}
@@ -106,7 +109,9 @@ class NumberLinePlot extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <Subtitle>{t("component.graphing.lineplotchart")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.lineplotchart")}`)}>
+            {t("component.graphing.lineplotchart")}
+          </Subtitle>
           <Row gutter={8}>
             <Col md={3} />
             <Col md={3}>

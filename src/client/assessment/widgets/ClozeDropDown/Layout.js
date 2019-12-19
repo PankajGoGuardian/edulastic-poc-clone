@@ -5,6 +5,7 @@ import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import styled from "styled-components";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Block } from "../../styled/WidgetOptions/Block";
 import { Row } from "../../styled/WidgetOptions/Row";
@@ -78,10 +79,13 @@ class Layout extends Component {
       maxWidth: 280
     };
 
+    const item = this.props;
     return (
       <Widget>
         <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.display")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+            {t("component.options.display")}
+          </Subtitle>
           <Row gutter={20}>
             <Col md={8}>
               <Label>{t("component.options.stemNumerationReviewOnly")}</Label>

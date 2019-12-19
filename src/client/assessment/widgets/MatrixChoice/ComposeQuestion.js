@@ -6,6 +6,7 @@ import produce from "immer";
 import { withRouter } from "react-router-dom";
 
 import { withNamespaces } from "@edulastic/localization";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
@@ -38,7 +39,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.multiplechoice.composequestion")}`)}>
+          {t("component.multiplechoice.composequestion")}
+        </Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.matrix.enterQuestion")}

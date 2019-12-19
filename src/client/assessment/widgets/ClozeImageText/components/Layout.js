@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import SpecialCharacters from "../../../containers/WidgetOptions/components/SpecialCharacters";
 import Container from "./Container";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -81,7 +82,9 @@ class Layout extends Component {
           cleanSections={cleanSections}
         >
           <Block style={{ paddingTop: 0 }}>
-            <Subtitle>{t("component.options.display")}</Subtitle>
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
+              {t("component.options.display")}
+            </Subtitle>
             <Row gutter={20}>
               <Col md={12}>
                 <MultipleLineOption

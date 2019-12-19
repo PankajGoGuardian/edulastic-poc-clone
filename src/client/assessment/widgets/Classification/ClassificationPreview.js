@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq, maxBy } from "lodash";
 import "core-js/features/array/flat";
 import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel, measureText, AnswerContext } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -369,7 +370,13 @@ const ClassificationPreview = ({
                         justifyContent="flex-start"
                         maxWidth="100%"
                       >
-                        <Subtitle>{get(item, `possibleResponseGroups[${index}].title`, "")}</Subtitle>
+                        <Subtitle
+                          id={getFormattedAttrId(
+                            `${item?.title}-${t(get(item, `possibleResponseGroups[${index}].title`, "undefined"))}`
+                          )}
+                        >
+                          {get(item, `possibleResponseGroups[${index}].title`, "")}
+                        </Subtitle>
                         <FlexContainer className="choice-items-wrapper">
                           {i.map((ite, ind) => (
                             <DragItem

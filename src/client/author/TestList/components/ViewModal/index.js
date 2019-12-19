@@ -42,7 +42,8 @@ import {
   SammaryMark,
   TestStatus,
   IconWrapper,
-  TestTitleWrapper
+  TestTitleWrapper,
+  ViewModalButton
 } from "./styled";
 import { getInterestedCurriculumsSelector, getUserIdSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
@@ -116,7 +117,7 @@ class ViewModal extends React.Component {
           </ModalColumn>
           <ModalColumn justify="center">
             <ButtonContainer>
-              <ButtonComponent
+              <ViewModalButton
                 data-cy="details-button"
                 onClick={() => {
                   onEdit();
@@ -126,8 +127,8 @@ class ViewModal extends React.Component {
                   <IconDescription color={themeColor} />
                 </IconWrapper>
                 <span>DETAILS</span>
-              </ButtonComponent>
-              <ButtonComponent
+              </ViewModalButton>
+              <ViewModalButton
                 data-cy="duplicate-button"
                 onClick={() => {
                   onDuplicate();
@@ -136,27 +137,27 @@ class ViewModal extends React.Component {
                 <IconWrapper>
                   <IconCopy color={themeColor} />
                 </IconWrapper>
-                <span>DUPLICATE</span>
-              </ButtonComponent>
+                <span>CLONE</span>
+              </ViewModalButton>
               {isDeleteAllowed ? (
-                <ButtonComponent data-cy="delete-button" onClick={() => onDelete()}>
+                <ViewModalButton data-cy="delete-button" onClick={() => onDelete()}>
                   <IconWrapper>
                     <IconTrashAlt color={themeColor} />
                   </IconWrapper>
                   <span>DELETE</span>
-                </ButtonComponent>
+                </ViewModalButton>
               ) : null}
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
-                <ButtonComponent
+                <ViewModalButton
                   data-cy="edit/assign-button"
                   size={"large"}
                   bgColor={themeColor}
                   onClick={status === "published" ? assign : onEdit}
                 >
                   {status === "published" ? "ASSIGN" : "EDIT"}
-                </ButtonComponent>
+                </ViewModalButton>
               </ButtonContainer>
             )}
           </ModalColumn>

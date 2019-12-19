@@ -282,3 +282,8 @@ export const TestTitleWrapper = styled.span`
   overflow: hidden;
   float: left;
 `;
+
+export const ViewModalButton = styled(ButtonComponent)`
+  height: 40px;
+  padding: 0px 11px;
+`;

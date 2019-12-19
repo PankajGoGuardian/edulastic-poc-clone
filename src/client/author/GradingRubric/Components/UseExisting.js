@@ -245,12 +245,17 @@ const UseExisting = ({
     const { __v, updatedAt, modifiedBy, ...data } = currentRubricData;
 
     if (isValid) {
-      if (currentRubricData._id)
+      if (currentRubricData._id) {
         updateRubric({
           ...data,
           status: type
         });
-      else
+        if (currentQuestion.rubrics?.id === currentRubricData._id)
+          associateRubricWithQuestion({
+            metadata: { id: currentRubricData._id, name: currentRubricData.name },
+            maxScore
+          });
+      } else
         saveRubric({
           ...currentRubricData,
           status: type

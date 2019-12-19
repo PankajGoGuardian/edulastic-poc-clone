@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { white, themeColor, secondaryTextColor, lightGrey4, smallDesktopWidth } from "@edulastic/colors";
-
+import { DatePicker } from "antd";
 export const Container = styled.div`
   padding: 0 0 20px;
 
@@ -152,5 +152,13 @@ export const ItemBody = styled.div`
     .ant-select-selection {
       min-height: 30px;
     }
+  }
+`;
+
+export const StyledDatePicker = styled(DatePicker)`
+  width: 100%;
+  input {
+    height: 40px;
+    border: none;
   }
 `;

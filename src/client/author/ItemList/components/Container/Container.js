@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
 import { debounce, omit } from "lodash";
-
+import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -79,7 +79,8 @@ export const getClearSearchState = () => ({
   grades: [],
   tags: [],
   authoredByIds: [],
-  filter: filterMenuItems[0].filter
+  filter: filterMenuItems[0].filter,
+  createdAt: ""
 });
 
 // container the main entry point to the component
@@ -192,7 +193,7 @@ class Contaier extends Component {
     getCurriculumStandards(value, search.grades, "");
   };
 
-  handleSearchFieldChange = fieldName => value => {
+  handleSearchFieldChange = fieldName => (value, dateString) => {
     const {
       updateDefaultGrades,
       udpateDefaultSubject,
@@ -219,6 +220,12 @@ class Contaier extends Component {
         [fieldName]: value,
         curriculumId: "",
         standardIds: []
+      };
+    }
+    if (fieldName === "createdAt") {
+      updatedKeys = {
+        ...search,
+        [fieldName]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
       };
     } else {
       updatedKeys = {

@@ -2,9 +2,19 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { connect } from "react-redux";
+import moment from "moment";
 import { questionType as questionTypes } from "@edulastic/constants";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { Container, Item, ItemBody, ItemHeader, MainFilterItems, ItemRelative, IconWrapper } from "./styled";
+import {
+  Container,
+  Item,
+  ItemBody,
+  ItemHeader,
+  MainFilterItems,
+  ItemRelative,
+  IconWrapper,
+  StyledDatePicker
+} from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import StandardsSearchModal from "./StandardsSearchModal";
 import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
@@ -23,7 +33,8 @@ const Search = ({
     questionType,
     depthOfKnowledge,
     authorDifficulty,
-    authoredByIds
+    authoredByIds,
+    createdAt
   },
   allTagsData,
   onSearchFieldChange,
@@ -284,6 +295,20 @@ const Search = ({
             </ItemBody>
           </Item>
         )}
+
+        {isPublishers && (
+          <Item>
+            <ItemHeader>Created On</ItemHeader>
+            <ItemBody>
+              <StyledDatePicker
+                format={"DD/MM/YYYY"}
+                onChange={onSearchFieldChange("createdAt")}
+                value={createdAt ? moment(createdAt) : ""}
+              />
+            </ItemBody>
+          </Item>
+        )}
+
         {userFeatures.isCurator && (
           <Item>
             <ItemHeader>Authored By</ItemHeader>

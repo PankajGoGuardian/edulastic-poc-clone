@@ -116,7 +116,8 @@ export const initalSearchState = {
   grades: [],
   tags: [],
   authoredByIds: [],
-  filter: filterMenuItems[0].filter
+  filter: filterMenuItems[0].filter,
+  createdAt: ""
 };
 
 const initialState = {

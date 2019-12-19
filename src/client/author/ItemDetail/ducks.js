@@ -981,7 +981,11 @@ export const hasStandards = question => {
 function* saveTestItemSaga() {
   const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
   const data = yield select(getItemDetailSelector);
-  const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+  const testItemWidgets = data.rows.flatMap(i => i.widgets).map(i => i.reference);
+
+  const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {}))).filter(i =>
+    testItemWidgets.includes(i.id)
+  );
   let questions = widgets.filter(item => !resourceTypes.includes(item.type));
   const resources = widgets.filter(item => resourceTypes.includes(item.type));
   questions = produce(questions, draft => {

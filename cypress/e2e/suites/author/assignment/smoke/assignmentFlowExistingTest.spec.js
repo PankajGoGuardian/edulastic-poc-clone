@@ -91,6 +91,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
           testLibrary.clickOnAssign();
           testLibrary.assignPage.selectClass(className);
           testLibrary.assignPage.selectTestType(testTypes[aType]);
+          testLibrary.assignPage.showOverRideSetting();
+          testLibrary.assignPage.setMaxAttempt(1);
           testLibrary.assignPage.clickOnAssign();
         });
 

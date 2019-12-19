@@ -63,4 +63,16 @@ export default class TestAssignPage {
       );
     });
   };
+
+  // OVER RIDE TEST SETTING
+
+  showOverRideSetting = () => {
+    if (Cypress.$('[inputfeatures="assessmentSuperPowersMarkAsDone"]').length === 0) {
+      cy.contains("OVERRIDE TEST SETTINGS").click({ force: true });
+    }
+  };
+
+  getMaxAttempt = () => cy.get('[inputfeatures="maxAttemptAllowed"]').find("input");
+
+  setMaxAttempt = attempt => this.getMaxAttempt().type(`{selectall}${attempt}`);
 }

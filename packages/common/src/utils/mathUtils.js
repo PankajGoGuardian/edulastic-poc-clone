@@ -2,11 +2,28 @@
 /* global katex */
 import Helpers from "../helpers";
 
+const addCustomClassToMath = mathHtml => {
+  if (!window.$ || !katex) return mathHtml;
+  const jqueryEl = $(mathHtml);
+  jqueryEl.addClass("edu");
+  // eslint-disable-next-line func-names
+  jqueryEl.find("*").each(function() {
+    $(this).addClass("edu");
+  });
+  const node = jqueryEl[0]; // returns the main parent node
+  return node.outerHTML; // get the complete HTML content
+};
+
 export const getMathHtml = latex => {
   if (!katex) return latex;
-  return katex.renderToString(latex, {
+  let katexString = katex.renderToString(latex, {
     throwOnError: false
   });
+  // styles are applied to stimulus in itemBank/testReview(collapsed view)
+  // it was affecting math content as well and EV-10152 was caused
+  // we can use this class to omit styles from being applied to math in itemBank/testReview(collapsed view)
+  katexString = addCustomClassToMath(katexString);
+  return katexString;
 };
 
 export const replaceLatexesWithMathHtml = val => {

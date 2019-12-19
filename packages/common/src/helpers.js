@@ -209,16 +209,20 @@ export const sanitizeForReview = stimulus => {
   if (!stimulus) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
   //remove br tag also
-  // eslint-disable-next-line func-names
+  // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
-      let shouldReplace = true;
       const elem = $(this).context;
+      // replace if tag is not span
+      // span comes when we use italic or bold
+      let shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
       const latex = elem.getAttribute("data-latex");
-      if (elem.nodeName === "SPAN" && latex && !latex.includes("matrix")) {
-        shouldReplace = false;
+      // sanitize span only if matrix is rendered using a span tag
+      // do no sanitize if span does not have latex (in case we use bold or italic)
+      if (elem.nodeName === "SPAN" && latex && latex.includes("matrix")) {
+        shouldReplace = true;
       }
       if (shouldReplace) $(this).replaceWith("...");
       tagFound = true;

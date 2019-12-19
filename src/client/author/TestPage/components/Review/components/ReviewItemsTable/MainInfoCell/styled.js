@@ -21,13 +21,8 @@ export const Stimulus = WithMathFormula(styled.div`
   text-overflow: ellipsis;
   padding-right: 15px;
   height: ${({ isCollapse }) => isCollapse && "25px"};
-  ${Style}
-  span,
-  p,
-  em,
-  u,
-  b,
-  strong {
+
+  & *:not(.edu) {
     ${Style}
   }
   p {

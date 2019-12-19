@@ -29,12 +29,7 @@ const Style = css`
 `;
 
 export const StimulusWrapper = styled.span`
-  span,
-  p,
-  em,
-  u,
-  b,
-  strong {
+  & *:not(.edu) {
     ${Style}
   }
 `;
@@ -60,10 +55,6 @@ export const Link = styled.a`
     font-size: 15px;
   }
 
-  span {
-    font-weight: 500;
-    font-size: ${props => props.theme.questionTextnormalFontSize} !important;
-  }
   img {
     display: block;
     width: 200px;

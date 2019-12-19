@@ -15,6 +15,7 @@ const Options = ({
   styleType,
   multipleResponses,
   fontSize,
+  item,
   ...restProps
 }) => {
   const noOfColumns = uiStyle.columns || 1;

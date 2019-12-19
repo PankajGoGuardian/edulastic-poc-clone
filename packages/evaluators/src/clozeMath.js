@@ -34,9 +34,11 @@ const mathEval = async ({ userResponse, validation }) => {
       if (unit) {
         value = combineUnitAndExpression(value, unit);
       }
+
+      // removing pattern `<space> after \\`
       const data = {
-        input: value.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
-        expected: ans ? ans.replace(/\s+/g, " ").replace(/[$]/g, "\\$") : "",
+        input: value.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
+        expected: ans ? ans.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$") : "",
         checks
       };
 
@@ -200,10 +202,11 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
       if (_userResponse[id].unit) {
         input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
       }
+      // removing pattern `<space> after \\`
       return evaluate({
         checks,
-        input: input.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
-        expected: expected.replace(/\s+/g, " ").replace(/[$]/g, "\\$")
+        input: input.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
+        expected: expected.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$")
       });
     });
 

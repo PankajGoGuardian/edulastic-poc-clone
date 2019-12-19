@@ -109,10 +109,10 @@ var mathEval = function mathEval(_ref) {
                       if (unit) {
                         value = combineUnitAndExpression(value, unit);
                       }
-
+                      // removing pattern `<space> after \\`
                       var data = {
-                        input: value.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
-                        expected: ans ? ans.replace(/\s+/g, " ").replace(/[$]/g, "\\$") : "",
+                        input: value.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
+                        expected: ans ? ans.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$") : "",
                         checks: checks
                       };
                       return (0, _math.evaluate)(data);
@@ -501,11 +501,11 @@ var mixAndMatchMathEvaluator = function mixAndMatchMathEvaluator(_ref3) {
                         if (_userResponse[id].unit) {
                           input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
                         }
-
+                        // removing pattern `<space> after \\`
                         return (0, _math.evaluate)({
                           checks: checks,
-                          input: input.replace(/\s+/g, " ").replace(/[$]/g, "\\$"),
-                          expected: expected.replace(/\s+/g, " ").replace(/[$]/g, "\\$")
+                          input: input.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
+                          expected: expected.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$")
                         });
                       });
                       _context4.next = 5;

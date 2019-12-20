@@ -71,7 +71,8 @@ const filterData = [
     size: "large",
     title: "Status",
     onChange: "status",
-    data: [{ value: "", text: "All" }, { value: "published", text: "Published" }, { value: "draft", text: "Draft" }]
+    data: [{ value: "", text: "All" }, { value: "published", text: "Published" }, { value: "draft", text: "Draft" }],
+    publisherOptions: [{ value: "inreview", text: "In Review" }, { value: "rejected", text: "Rejected" }]
   }
 ];
 

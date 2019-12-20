@@ -8,7 +8,7 @@ import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFeatures } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
@@ -26,15 +26,17 @@ const TestListFilters = ({
   allTagsData = [],
   allPlaylistsTagsData = [],
   searchFilterOption,
-  filterMenuItems
+  filterMenuItems,
+  userFeatures
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
   const getFilters = () => {
     let filterData1 = [];
     const { filter } = search;
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
-      if (filter !== filterMenuItems[0].filter) {
+      if (filter !== filterMenuItems[0].filter || isPublishers) {
         filterTitles.push("Status");
       }
       filterData1 = filterData.filter(o => filterTitles.includes(o.title));
@@ -67,7 +69,7 @@ const TestListFilters = ({
 
     const standardsPlaceholder = !curriculumId ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
-    if (filter === filterMenuItems[0].filter) {
+    if (filter === filterMenuItems[0].filter && !isPublishers) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     let curriculumsList = [];
@@ -175,6 +177,13 @@ const TestListFilters = ({
                 {text}
               </Select.Option>
             ))}
+            {isPublishers &&
+              filterItem.title === "Status" &&
+              filterItem.publisherOptions.map(({ value, text }) => (
+                <Select.Option value={value} key={value}>
+                  {text}
+                </Select.Option>
+              ))}
           </Select>
         </FilterItemWrapper>
       ))}
@@ -202,7 +211,8 @@ export default connect(
     collections: getCollectionsSelector(state),
     allTagsData: getAllTagsSelector(state, "test"),
     allPlaylistsTagsData: getAllTagsSelector(state, "playlist"),
-    formattedCuriculums: getFormattedCurriculumsSelector(state, search)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, search),
+    userFeatures: getUserFeatures(state)
   }),
   {}
 )(TestListFilters);

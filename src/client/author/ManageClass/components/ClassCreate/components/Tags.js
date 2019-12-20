@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Select } from "antd";
+import { Select, message } from "antd";
 import { tagsApi } from "@edulastic/api";
 import { FieldLabel } from "./index";
 import { uniq } from "lodash";
@@ -15,17 +15,18 @@ const Tags = props => {
       try {
         const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
         newTag = { _id, tagName };
+
+        const tagsSelected = getFieldValue("tags");
+        const newTags = uniq([...tagsSelected, newTag._id]);
+        setFieldsValue({ tags: newTags.filter(t => t !== tempSearchValue) });
+
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
+        const tagsSelected = getFieldValue("tags");
+        setFieldsValue({ tags: tagsSelected.filter(t => t !== tempSearchValue) });
         message.error("Saving tag failed");
       }
-    } else {
-      newTag = allTagsData.find(tag => tag._id === id);
     }
-    const tagsSelected = getFieldValue("tags");
-    const newTags = uniq([...tagsSelected, newTag._id]);
-    setFieldsValue({ tags: newTags.filter(t => t !== tempSearchValue) });
-    setSearchValue("");
   };
 
   const deselectTags = id => {

@@ -8,7 +8,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { Col } from "antd";
+import { Col, Row } from "antd";
 
 export const ReviewPageContainer = styled.div`
   padding: 20px 30px;
@@ -48,12 +48,27 @@ export const ReviewPageContainer = styled.div`
   }
 `;
 
+export const ReviewContentWrapper = styled(Row)`
+  @media (max-width: 1199px) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+`;
+
+export const ReviewLeftContainer = styled(Col)`
+  @media (max-width: 1199px) {
+    order: 2;
+  }
+`;
+
 export const ReviewSummaryWrapper = styled(Col)`
   padding-left: 20px;
 
-  @media (max-width: 991px) {
-    padding-left: 0px;
-    margin-top: 15px;
+  @media (max-width: 1199px) {
+    order: 1;
+    width: 100%;
+    padding: 0px;
+    margin-bottom: 10px;
   }
 `;
 

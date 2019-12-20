@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { Col, Row } from "antd";
+import { SummarySelect } from "../../../Summary/common/SummaryForm";
+import { MainTitle } from "../../../Summary/components/Sidebar/styled";
 
 import { Paper } from "@edulastic/common";
 import {
@@ -14,6 +16,69 @@ import {
 
 export const Container = styled(Paper)`
   padding: 16px;
+
+  @media (max-width: 1199px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+`;
+
+export const FlexBoxOne = styled.div`
+  @media (max-width: 1199px) {
+    flex-basis: calc(20% - 10px);
+  }
+`;
+export const FlexBoxTwo = styled.div`
+  @media (max-width: 1199px) {
+    flex-basis: calc(30% - 10px);
+    padding-top: 25px;
+  }
+`;
+export const FlexBoxThree = styled.div`
+  @media (max-width: 1199px) {
+    flex-basis: calc(20% - 10px);
+  }
+`;
+export const FlexBoxFour = styled.div`
+  @media (max-width: 1199px) {
+    flex-basis: calc(30% - 10px);
+  }
+`;
+
+export const InnerFlex = styled.div`
+  @media (max-width: 1199px) {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+`;
+
+export const MainLabel = styled(MainTitle)`
+  @media (max-width: 1199px) {
+    font-size: 11px;
+    margin-bottom: ${props => props.marginBottom || "8px"};
+    flex-basis: ${props => props.width || ""};
+  }
+`;
+
+export const SummarySelectBox = styled(SummarySelect)`
+  @media (max-width: 1199px) {
+    margin-bottom: ${props => props.marginBottom || ""};
+    &.ant-select-lg .ant-select-selection--multiple {
+      min-height: 30px;
+      .ant-select-selection__rendered {
+        line-height: 28px;
+        .ant-select-search {
+          height: 20px;
+          line-height: 20px;
+        }
+      }
+      .ant-select-selection__choice {
+        margin: 4px 5px 0px 3px !important;
+      }
+    }
+  }
 `;
 
 export const SummaryInfoContainer = styled.div`
@@ -25,6 +90,12 @@ export const SummaryInfoContainer = styled.div`
   line-height: 28px;
   text-align: center;
 
+  @media (max-width: 1199px) {
+    min-width: 100%;
+    margin-bottom: 5px;
+    height: 30px;
+    line-height: 20px;
+  }
   @media (max-width: ${smallDesktopWidth}) {
     padding: 5px;
   }
@@ -62,14 +133,20 @@ export const TableHeaderCol = styled(Col)`
   text-transform: uppercase;
   color: ${dropZoneTitleColor};
   padding: 22px 0;
+
+  @media (max-width: 1199px) {
+    padding: 2px 0px 7px;
+  }
 `;
 
 export const TableBodyRow = styled(Row)`
   background: ${lightGreySecondary};
   border-radius: 2px;
-
   &:not(:last-child) {
     margin-bottom: 7px;
+    @media (max-width: 1199px) {
+      margin-bottom: 5px;
+    }
   }
 `;
 
@@ -81,6 +158,10 @@ export const TableBodyCol = styled(Col)`
   padding: 7px 0;
   &:first-child {
     padding-left: 7px;
+  }
+
+  @media (max-width: 1199px) {
+    padding: 3px 0;
   }
 `;
 
@@ -94,4 +175,8 @@ export const Standard = styled.span`
   padding: 5px 20px;
   width: 100%;
   word-break: break-word;
+
+  @media (max-width: 1199px) {
+    padding: 4px 20px;
+  }
 `;

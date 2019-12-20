@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Checkbox, message, Button } from "antd";
 
-import { themeColor } from "@edulastic/colors";
-import { IconClose, IconMoveTo, IconCollapse, IconEye } from "@edulastic/icons";
+import { themeColor, white } from "@edulastic/colors";
+import { IconClose, IconMoveTo, IconCollapse, IconEye, IconDescription } from "@edulastic/icons";
 
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
@@ -13,6 +13,7 @@ const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
   onCollapse,
+  toggleSummary,
   owner,
   isEditable,
   itemTotal,
@@ -20,6 +21,7 @@ const HeaderBar = ({
   onMoveTo,
   windowWidth,
   setCollapse,
+  isShowSummary,
   onShowTestPreview,
   hasStickyHeader
 }) => {
@@ -106,6 +108,24 @@ const HeaderBar = ({
             {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
           </ButtonLink>
         </ActionButton>
+
+        {windowWidth < 1200 && (
+          <ActionButton>
+            <ButtonLink
+              style={{
+                background: !isShowSummary ? themeColor : "",
+                color: !isShowSummary ? white : "",
+                borderRadius: "4px",
+                maxHeight: "32px"
+              }}
+              onClick={toggleSummary}
+              color="primary"
+              icon={<IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />}
+            >
+              {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
+            </ButtonLink>
+          </ActionButton>
+        )}
       </MobileButtomContainer>
     </Container>
   );
@@ -121,7 +141,9 @@ HeaderBar.propTypes = {
   itemTotal: PropTypes.number.isRequired,
   selectedItems: PropTypes.array.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  setCollapse: PropTypes.bool.isRequired
+  setCollapse: PropTypes.bool.isRequired,
+  isShowSummary: PropTypes.bool.isRequired,
+  toggleSummary: PropTypes.func.isRequired
 };
 
 export default HeaderBar;

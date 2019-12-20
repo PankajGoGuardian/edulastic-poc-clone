@@ -25,7 +25,13 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./styled";
+import {
+  SecondHeader,
+  ReviewPageContainer,
+  ReviewSummaryWrapper,
+  ReviewContentWrapper,
+  ReviewLeftContainer
+} from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import { getUserFeatures } from "../../../../../src/selectors/user";
@@ -112,6 +118,7 @@ class Review extends PureComponent {
 
   state = {
     isCollapse: true,
+    isShowSummary: true,
     isModalVisible: false,
     item: [],
     isTestPreviewModalVisible: false,
@@ -181,6 +188,13 @@ class Review extends PureComponent {
     const { isCollapse } = this.state;
     this.setState({
       isCollapse: !isCollapse
+    });
+  };
+
+  toggleSummary = () => {
+    const { isShowSummary } = this.state;
+    this.setState({
+      isShowSummary: !isShowSummary
     });
   };
 
@@ -317,7 +331,15 @@ class Review extends PureComponent {
       showCancelButton,
       userFeatures
     } = this.props;
-    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId, hasStickyHeader } = this.state;
+    const {
+      isCollapse,
+      isShowSummary,
+      isModalVisible,
+      item,
+      isTestPreviewModalVisible,
+      currentTestId,
+      hasStickyHeader
+    } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -354,7 +376,7 @@ class Review extends PureComponent {
       <Content hideOverflow={isModalVisible || isTestPreviewModalVisible}>
         <ReviewPageContainer>
           <Row>
-            <Col span={owner && isEditable ? 24 : 18}>
+            <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
                   <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
@@ -369,13 +391,17 @@ class Review extends PureComponent {
                     isEditable={isEditable}
                     windowWidth={windowWidth}
                     setCollapse={isCollapse}
+                    toggleSummary={this.toggleSummary}
+                    isShowSummary={isShowSummary}
                     onShowTestPreview={this.showTestPreviewModal}
                     hasStickyHeader={hasStickyHeader}
                   />
                 </SecondHeader>
               </div>
             </Col>
-            <Col xs={24} lg={18}>
+          </Row>
+          <ReviewContentWrapper>
+            <ReviewLeftContainer lg={24} xl={18}>
               <Paper padding="15px" style={{ overflow: "hidden" }}>
                 {isCollapse ? (
                   <ItemsTable
@@ -417,24 +443,27 @@ class Review extends PureComponent {
                   />
                 )}
               </Paper>
-            </Col>
-            <ReviewSummaryWrapper xs={24} lg={6}>
-              <ReviewSummary
-                tableData={this.tableData}
-                questionsCount={questionsCount}
-                grades={grades}
-                subjects={subjects}
-                owner={owner}
-                isEditable={isEditable}
-                summary={test.summary || {}}
-                onChangeField={this.handleChangeField}
-                thumbnail={defaultThumbnail || test.thumbnail}
-                totalPoints={getTotalScore(test)}
-                onChangeGrade={onChangeGrade}
-                onChangeSubjects={onChangeSubjects}
-              />
-            </ReviewSummaryWrapper>
-          </Row>
+            </ReviewLeftContainer>
+            {isShowSummary && (
+              <ReviewSummaryWrapper lg={24} xl={6}>
+                <ReviewSummary
+                  tableData={this.tableData}
+                  questionsCount={questionsCount}
+                  grades={grades}
+                  subjects={subjects}
+                  owner={owner}
+                  isEditable={isEditable}
+                  summary={test.summary || {}}
+                  onChangeField={this.handleChangeField}
+                  thumbnail={defaultThumbnail || test.thumbnail}
+                  totalPoints={getTotalScore(test)}
+                  onChangeGrade={onChangeGrade}
+                  onChangeSubjects={onChangeSubjects}
+                  windowWidth={windowWidth}
+                />
+              </ReviewSummaryWrapper>
+            )}
+          </ReviewContentWrapper>
           {isModalVisible && (
             <PreviewModal
               testId={get(this.props, "match.params.id", false)}

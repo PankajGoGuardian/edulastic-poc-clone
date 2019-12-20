@@ -2,12 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Select, Row } from "antd";
-
 import { FlexContainer } from "@edulastic/common";
-
 import { Photo, selectsData } from "../../../common";
-import { SummarySelect } from "../../../Summary/common/SummaryForm";
-import { MainTitle } from "../../../Summary/components/Sidebar/styled";
+
 import {
   Container,
   SummaryInfoContainer,
@@ -16,7 +13,14 @@ import {
   TableHeaderCol,
   TableBodyRow,
   TableBodyCol,
-  Standard
+  Standard,
+  FlexBoxOne,
+  FlexBoxTwo,
+  FlexBoxThree,
+  FlexBoxFour,
+  InnerFlex,
+  SummarySelectBox,
+  MainLabel
 } from "./styled";
 import { getInterestedStandards } from "../../../../../dataUtils";
 import { getInterestedCurriculumsSelector } from "../../../../../src/selectors/user";
@@ -34,88 +38,106 @@ const ReviewSummary = ({
   onChangeSubjects,
   grades,
   subjects,
-  interestedCurriculums
+  interestedCurriculums,
+  windowWidth
 }) => {
   let subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
   return (
     <Container>
-      <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} isEditable={isEditable} height={120} />
+      <FlexBoxOne>
+        <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} isEditable={isEditable} height={120} />
+      </FlexBoxOne>
+      <FlexBoxTwo>
+        <InnerFlex>
+          <MainLabel marginBottom="0px" width="75px">
+            Grade
+          </MainLabel>
+          <SummarySelectBox
+            data-cy="gradeSelect"
+            mode="multiple"
+            size="large"
+            style={{ width: "100%" }}
+            disabled={!owner || !isEditable}
+            placeholder="Please select"
+            defaultValue={grades}
+            onChange={onChangeGrade}
+            marginBottom="0px"
+          >
+            {selectsData.allGrades.map(({ value, text }) => (
+              <Select.Option key={value} value={value}>
+                {text}
+              </Select.Option>
+            ))}
+          </SummarySelectBox>
+        </InnerFlex>
+        <InnerFlex>
+          <MainLabel marginBottom="0px" width="75px">
+            Subject
+          </MainLabel>
+          <SummarySelectBox
+            data-cy="subjectSelect"
+            mode="multiple"
+            size="large"
+            disabled={!owner || !isEditable}
+            style={{ width: "100%" }}
+            placeholder="Please select"
+            defaultValue={subjects}
+            onChange={onChangeSubjects}
+            marginBottom="0px"
+          >
+            {subjectsList.map(({ value, text }) => (
+              <Select.Option key={value} value={value}>
+                {text}
+              </Select.Option>
+            ))}
+          </SummarySelectBox>
+        </InnerFlex>
+      </FlexBoxTwo>
 
-      <MainTitle>Grade</MainTitle>
-      <SummarySelect
-        data-cy="gradeSelect"
-        mode="multiple"
-        size="large"
-        style={{ width: "100%" }}
-        disabled={!owner || !isEditable}
-        placeholder="Please select"
-        defaultValue={grades}
-        onChange={onChangeGrade}
-      >
-        {selectsData.allGrades.map(({ value, text }) => (
-          <Select.Option key={value} value={value}>
-            {text}
-          </Select.Option>
-        ))}
-      </SummarySelect>
+      <FlexBoxThree>
+        <MainLabel>Summary</MainLabel>
+        <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
+          <SummaryInfoContainer>
+            <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
+            <SummaryInfoTitle>Items</SummaryInfoTitle>
+          </SummaryInfoContainer>
+          <SummaryInfoContainer>
+            <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
+            <SummaryInfoTitle>Points</SummaryInfoTitle>
+          </SummaryInfoContainer>
+        </FlexContainer>
+      </FlexBoxThree>
 
-      <MainTitle>Subject</MainTitle>
-      <SummarySelect
-        data-cy="subjectSelect"
-        mode="multiple"
-        size="large"
-        disabled={!owner || !isEditable}
-        style={{ width: "100%" }}
-        placeholder="Please select"
-        defaultValue={subjects}
-        onChange={onChangeSubjects}
-      >
-        {subjectsList.map(({ value, text }) => (
-          <Select.Option key={value} value={value}>
-            {text}
-          </Select.Option>
-        ))}
-      </SummarySelect>
-
-      <MainTitle>Summary</MainTitle>
-      <FlexContainer justifyContent="space-between">
-        <SummaryInfoContainer>
-          <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
-          <SummaryInfoTitle>Items</SummaryInfoTitle>
-        </SummaryInfoContainer>
-        <SummaryInfoContainer>
-          <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
-          <SummaryInfoTitle>Points</SummaryInfoTitle>
-        </SummaryInfoContainer>
-      </FlexContainer>
-      <Row>
-        <TableHeaderCol span={8}>Summary</TableHeaderCol>
-        <TableHeaderCol span={8}>Q's</TableHeaderCol>
-        <TableHeaderCol span={8}>Points</TableHeaderCol>
-      </Row>
-      {summary &&
-        getInterestedStandards(summary, interestedCurriculums).map(
-          data =>
-            !data.isEquivalentStandard && (
-              <TableBodyRow key={data.key}>
-                <TableBodyCol span={8}>
-                  <Standard>{data.identifier}</Standard>
-                </TableBodyCol>
-                <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
-                <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
-              </TableBodyRow>
-            )
+      <FlexBoxFour>
+        <Row>
+          <TableHeaderCol span={12}>Summary</TableHeaderCol>
+          <TableHeaderCol span={6}>Q's</TableHeaderCol>
+          <TableHeaderCol span={6}>Points</TableHeaderCol>
+        </Row>
+        {summary &&
+          getInterestedStandards(summary, interestedCurriculums).map(
+            data =>
+              !data.isEquivalentStandard && (
+                <TableBodyRow key={data.key}>
+                  <TableBodyCol span={12}>
+                    <Standard>{data.identifier}</Standard>
+                  </TableBodyCol>
+                  <TableBodyCol span={6}>{data.totalQuestions}</TableBodyCol>
+                  <TableBodyCol span={6}>{data.totalPoints}</TableBodyCol>
+                </TableBodyRow>
+              )
+          )}
+        {summary?.noStandards?.totalQuestions > 0 && (
+          <TableBodyRow key={"noStandard"}>
+            <TableBodyCol span={12}>
+              <Standard>NO STANDARD</Standard>
+            </TableBodyCol>
+            <TableBodyCol span={6}>{summary.noStandards.totalQuestions}</TableBodyCol>
+            <TableBodyCol span={6}>{summary.noStandards.totalPoints}</TableBodyCol>
+          </TableBodyRow>
         )}
-      {summary?.noStandards?.totalQuestions > 0 && (
-        <TableBodyRow key={"noStandard"}>
-          <TableBodyCol span={8}>
-            <Standard>NO STANDARD</Standard>
-          </TableBodyCol>
-          <TableBodyCol span={8}>{summary.noStandards.totalQuestions}</TableBodyCol>
-          <TableBodyCol span={8}>{summary.noStandards.totalPoints}</TableBodyCol>
-        </TableBodyRow>
-      )}
+      </FlexBoxFour>
     </Container>
   );
 };

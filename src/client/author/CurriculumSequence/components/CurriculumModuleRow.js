@@ -670,7 +670,7 @@ const ModuleTitlePrefix = styled.div`
 
 export const ModuleDataName = styled.div`
   font-weight: 600;
-  color: ${textColor};
+  color: ${({ isDragging }) => (isDragging ? white : textColor)};
   font-size: 14px;
   font-family: Open Sans, SemiBold;
   @media only screen and (max-width: ${desktopWidth}) {

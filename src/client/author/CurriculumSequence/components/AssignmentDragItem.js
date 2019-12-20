@@ -73,6 +73,7 @@ class AssignmentDragItem extends Component {
           padding="14px 30px 14px 20px"
           borderRadius="unset"
           boxShadow="unset"
+          isDragging={isDragging}
         >
           {/* <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix> */}
           <AssignmentContent expanded={isContentExpanded}>
@@ -84,7 +85,7 @@ class AssignmentDragItem extends Component {
             <CustomIcon marginLeft={16}>
               <Icon type="right" style={{ color: "#707070" }} />
             </CustomIcon>
-            <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
+            <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
           </AssignmentContent>
           {!hideEditOptions && (
             <ModuleAssignedUnit>
@@ -209,4 +210,5 @@ const Assignment = styled(Row)`
   border-radius: 0;
   padding-top: 10px;
   padding-bottom: 10px;
+  background: ${({ isDragging }) => (isDragging ? themeColor : white)};
 `;

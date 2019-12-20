@@ -306,17 +306,19 @@ class Variables extends Component {
                   </Col>
                   {isFormula && (
                     <Col md={10}>
-                      <MathInput
-                        ref={mathFieldRef}
-                        symbols={symbols}
-                        fullWidth
-                        showDropdown
-                        numberPad={defaultNumberPad}
-                        value={variable.formula}
-                        showResponse={false}
-                        onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
-                        onBlur={handleCalculateFormula}
-                      />
+                      {advancedAreOpen && (
+                        <MathInput
+                          ref={mathFieldRef}
+                          symbols={symbols}
+                          fullWidth
+                          showDropdown
+                          numberPad={defaultNumberPad}
+                          value={variable.formula}
+                          showResponse={false}
+                          onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
+                          onBlur={handleCalculateFormula}
+                        />
+                      )}
                     </Col>
                   )}
                   {isSet && (

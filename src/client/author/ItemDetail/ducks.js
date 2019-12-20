@@ -843,11 +843,13 @@ export function* updateItemSaga({ payload }) {
     }
 
     if (addToTest) {
+      const testItem = yield select(state => get(state, ["itemDetail", "item"]));
+      const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
       const standardPresent = questions.some(hasStandards);
 
       // if alignment data is not present, set the flag to open the modal, and wait for
       // an action from the modal.!
-      if (!standardPresent) {
+      if (!(isMultipartOrPassageType || standardPresent)) {
         yield put(togglePublishWarningModalAction(true));
         // action dispatched by the modal.
         const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);

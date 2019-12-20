@@ -306,11 +306,13 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
   try {
     if (isTestFlow) {
       const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+      const testItem = yield select(state => get(state, ["itemDetail", "item"]));
+      const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
       const standardPresent = questions.some(hasStandards);
 
-      // if alignment data is not present, set the flag to open the modal, and wait for
+      // if alignment data is not present and question is not multipart or passage type , set the flag to open the modal, and wait for
       // an action from the modal.!
-      if (!standardPresent) {
+      if (!(isMultipartOrPassageType || standardPresent)) {
         yield put(togglePublishWarningModalAction(true));
         // action dispatched by the modal.
         const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);

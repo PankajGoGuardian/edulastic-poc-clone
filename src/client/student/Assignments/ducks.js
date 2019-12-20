@@ -6,7 +6,7 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { getCurrentSchool, fetchUser, getUserRole } from "../Login/ducks";
+import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
 // external actions
@@ -377,15 +377,25 @@ export const getAllAssignmentsSelector = createSelector(
 
   getCurrentGroup,
   getClassIds,
-  (assignmentsObj, reportsObj, currentGroup, classIds) => {
+  getUserId,
+  (assignmentsObj, reportsObj, currentGroup, classIds, currentUserId) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         //no redirected classes and no class filter or class ID match the filter and student belongs to the class
+        /**
+         * And also if assigned to specific students
+         * (or when students added later to assignment),
+         * then check for whether the current userId exists
+         * in the students array of the class
+         */
         const allClassess = assignment.class.filter(
           clazz =>
-            clazz.redirect !== true && (!currentGroup || currentGroup === clazz._id) && classIds.includes(clazz._id)
+            clazz.redirect !== true &&
+            (!currentGroup || currentGroup === clazz._id) &&
+            ((classIds.includes(clazz._id) && !clazz.specificStudents) ||
+              (clazz.specificStudents && clazz.students.includes(currentUserId)))
         );
         return allClassess.map(clazz => ({
           ...assignment,

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import {} from "@edulastic/colors";
+import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
 
 export const Column = styled.div`
   word-break: break-word;
@@ -13,11 +14,11 @@ export const Column = styled.div`
     rowTitles.length > 0 ? 100 / colCount - 100 / colCount / 5 / colCount : 100 / colCount}%;
 `;
 
-export const ColumnLabel = styled.div`
+export const ColumnLabel = withMathFormula(styled.div`
   background-color: ${({ transparent }) => (transparent ? "transparent" : "#ececec")};
   font-weight: 600;
   text-align: center;
   border: 1px solid #ddd;
   padding: 8px;
   min-height: 39px;
-`;
+`);

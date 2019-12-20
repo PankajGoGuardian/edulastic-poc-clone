@@ -20,7 +20,16 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeratio
         .sort((a, b) => a.index - b.index)
         .map(answer => {
           const content = (
-            <AnswerContent style={{ whiteSpace: "normal" }} dangerouslySetInnerHTML={{ __html: answer.value }} />
+            <AnswerContent
+              style={{
+                whiteSpace: "normal",
+                minWidth: 70,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+              dangerouslySetInnerHTML={{ __html: answer.value }}
+            />
           );
           return (
             <AnswerBox key={answer.id}>

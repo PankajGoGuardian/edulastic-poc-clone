@@ -280,6 +280,7 @@ const StyledParser = styled.div`
     props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
   border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
+  overflow: auto;
 
   .jsx-parser {
     p {

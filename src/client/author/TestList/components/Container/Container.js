@@ -518,24 +518,18 @@ class TestList extends Component {
 
   removeTestFromPlaylist = () => {
     const { selectedTests, removeItemId } = this.state;
-    const { removeTestFromPlaylistAction } = this.props;
     const newSelectedTests = selectedTests.filter(testId => testId !== removeItemId);
     removeTestFromPlaylistAction({ itemId: removeItemId });
     this.setState({ selectedTests: newSelectedTests, showConfirmRemoveModal: false });
   };
 
   handleRemoveTest = itemId => {
-    const { editFlow } = this.state;
     const { removeTestFromPlaylist } = this;
-    if (editFlow) {
-      this.setState({ removeItemId: itemId, showConfirmRemoveModal: true });
-    } else {
-      removeTestFromPlaylist;
-      this.setState({ removeItemId: itemId }, () => {
-        removeTestFromPlaylist();
-      });
-    }
+    this.setState({ removeItemId: itemId }, () => {
+      removeTestFromPlaylist();
+    });
   };
+
   onCloseConfirmRemoveModal = () => {
     this.setState({ showConfirmRemoveModal: false });
   };

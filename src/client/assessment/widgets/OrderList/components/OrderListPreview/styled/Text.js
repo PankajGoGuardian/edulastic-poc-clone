@@ -23,6 +23,7 @@ export const Text = styled.div`
     };
     border: ${styleType === "button" ? `1px solid` : "none"};
     padding: ${smallSize ? "2px 5px" : "2px 15px"};
+    padding-right:${correct === undefined ? "" : "30px"};
     border-color: ${
       correct !== undefined
         ? correct

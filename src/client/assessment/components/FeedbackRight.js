@@ -235,7 +235,7 @@ class FeedbackRight extends Component {
       }
     } = this.props;
     this.setState({ showPreviewRubric: false });
-    if ((res && !isEqual(res.rubricFeedback, rubricFeedback)) || score !== res.score)
+    if (res && (!isEqual(res.rubricFeedback, rubricFeedback) || score !== res.score))
       this.setState({ score: res.score }, () => {
         this.onScoreSubmit(res);
       });

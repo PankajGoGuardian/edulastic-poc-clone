@@ -223,6 +223,7 @@ const UseExisting = ({
             visible={showPreviewRubricModal}
             toggleModal={() => setShowPreviewRubricModal(false)}
             currentRubricData={currentRubricData}
+            shouldValidate={false}
           />
         )}
         <ConfirmModal visible={showConfirmModal} handleResponse={handleConfirmModalResponse} />

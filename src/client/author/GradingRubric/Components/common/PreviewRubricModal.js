@@ -7,7 +7,14 @@ import { white, title, themeColorLighter } from "@edulastic/colors";
 import { sumBy, maxBy } from "lodash";
 import { message } from "antd";
 
-const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore, rubricFeedback }) => {
+const PreviewRubricModal = ({
+  visible,
+  toggleModal,
+  currentRubricData,
+  maxScore,
+  rubricFeedback,
+  shouldValidate = true
+}) => {
   const [obtained, setObtained] = useState(0);
   const [rubricResponse, setRubricResponse] = useState({});
   const [validateRubricResponse, setValidateRubricResponse] = useState(false);
@@ -34,7 +41,11 @@ const PreviewRubricModal = ({ visible, toggleModal, currentRubricData, maxScore,
   };
 
   const handleCloseRubric = () => {
-    if (Object.keys(rubricResponse.rubricFeedback || {}).length === currentRubricData.criteria.length) {
+    const rubricFeedbackLength = Object.keys(rubricResponse.rubricFeedback || {}).length;
+    if (rubricFeedbackLength === 0 || !shouldValidate) {
+      setValidateRubricResponse(false);
+      toggleModal(null);
+    } else if (rubricFeedbackLength === currentRubricData.criteria.length) {
       setValidateRubricResponse(false);
       toggleModal(rubricResponse);
     } else {

@@ -106,7 +106,7 @@ class FeedbackRight extends Component {
       studentId
     } = this.props;
 
-    if (!score || isNaN(score)) {
+    if ((!score || isNaN(score)) && score != 0) {
       message.warn("Score should be a valid numerical");
       return;
     }
@@ -236,7 +236,9 @@ class FeedbackRight extends Component {
     } = this.props;
     this.setState({ showPreviewRubric: false });
     if ((res && !isEqual(res.rubricFeedback, rubricFeedback)) || score !== res.score)
-      this.setState({ score: res.score }, this.onScoreSubmit(res));
+      this.setState({ score: res.score }, () => {
+        this.onScoreSubmit(res);
+      });
   };
 
   render() {

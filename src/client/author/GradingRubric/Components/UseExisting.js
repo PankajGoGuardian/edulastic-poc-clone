@@ -284,6 +284,10 @@ const UseExisting = ({
             isValid = false;
             message.error("Rating point must be 0 for at least one rating within a criteria.");
           }
+          if (isValid && !uniqueRatings.find(p => p > 0)) {
+            isValid = false;
+            message.error("Rating point must be more than 0 for atleast one rating within a criteria");
+          }
         } else {
           isValid = false;
           message.error("Criteria name cannot be empty.");

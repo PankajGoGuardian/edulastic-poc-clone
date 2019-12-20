@@ -5,7 +5,12 @@ import { keyBy as _keyBy } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
-import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
+import {
+  ADD_ITEM_EVALUATION,
+  LOAD_ANSWERS,
+  LOAD_SCRATCH_PAD,
+  REMOVE_ANSWERS
+} from "../../assessment/constants/actions";
 import { receiveTestByIdSuccess, getQuestions } from "../../author/TestPage/ducks";
 import { markQuestionLabel } from "../../assessment/Transformer";
 import { loadQuestionsAction } from "../../author/sharedDucks/questions";
@@ -25,7 +30,9 @@ function* loadTestActivityReport({ payload }) {
     if (!testActivityId) {
       throw new Error("invalid data");
     }
-
+    yield put({
+      type: REMOVE_ANSWERS
+    });
     const [test, reports] = yield all([
       call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)

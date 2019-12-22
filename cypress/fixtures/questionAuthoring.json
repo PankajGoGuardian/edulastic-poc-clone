@@ -392,7 +392,7 @@
   },
   "CLOZE_DROPDOWN": {
     "default": {
-      "quetext": ["This is CLOZE_DROPDOWN.default question.1st dropdown - ", "INPUT", "2nd dropdown - ", "INPUT"],
+      "quetext": ["CLOZE_DROPDOWN.default.1st- ", "INPUT", "2nd - ", "INPUT"],
       "setAns": {
         "choices": { "INPUT_0": ["1.Choice-1", "1.Choice-2"], "INPUT_1": ["2.Choice-1", "2.Choice-2"] },
         "correct": { "INPUT_0": "1.Choice-2", "INPUT_1": "2.Choice-1" },

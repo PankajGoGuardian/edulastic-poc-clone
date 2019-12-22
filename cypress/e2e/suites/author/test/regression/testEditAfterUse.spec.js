@@ -183,7 +183,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
           testAddItemTab.addItemById(newItemId);
           testAddItemTab.header.clickOnReview();
           // verify review tab before publish
-          testReviewTab.getQueCardByItemId(newItemId).should("have.length", 1);
+          testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
           // Publish
           testReviewTab.testheader.clickOnPublishButton();
           //verify

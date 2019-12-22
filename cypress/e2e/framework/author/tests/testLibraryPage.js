@@ -150,7 +150,7 @@ export default class TestLibrary {
 
   clickOnTestCardById = testId => {
     this.getTestCardById(testId)
-      .contains("Total Item(s):")
+      .contains("TOTAL ITEMS")
       //.click({ force: true })
       .click({ force: true });
   };

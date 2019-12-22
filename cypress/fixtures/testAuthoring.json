@@ -86,19 +86,25 @@
     "name": "Search Assessment 03",
     "grade": ["Kindergarten"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_TF.2"],
+    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default"],
     "tags": ["pqr", "abc", "tuv"]
   },
   "EDIT_ASSIGNED_TEST": {
     "name": "Test Edit Flow",
     "grade": ["Grade 10"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1", "MCQ_TF.1", "MCQ_TF.1"]
+    "itemKeys": ["MCQ_TF.2"]
   },
   "EDIT_ASSIGNED_TEST_REGRADE": {
     "name": "Test Edit Flow",
     "grade": ["Grade 10"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1"]
+    "itemKeys": ["MCQ_TF.2", "MCQ_TF.2", "MCQ_TF.2"]
+  },
+  "TEST_PREVIEW": {
+    "name": "Test Edit Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default"]
   }
 }

@@ -102,7 +102,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testReviewTab.clickOnCheckBoxByItemId(item2);
     testReviewTab.clickOnRemoveSelected();
     // verify review tab before save
-    testReviewTab.getQueCardByItemId(item2).should("have.length", 0);
+    testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
     // save
     testReviewTab.header.clickOnSaveButton(true);
@@ -116,7 +116,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.clickOnTestCardById(testId);
     testLibraryPage.clickOnDetailsOfCard();
     //Verify In Review
-    testReviewTab.getQueCardByItemId(item2).should("have.length", 0);
+    testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
   });
 
@@ -140,7 +140,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testAddItemTab.header.clickOnReview();
 
       // verify review tab before publish
-      testReviewTab.getQueCardByItemId(newItemId).should("have.length", 1);
+      testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
       testReviewTab.verifySummary(question, point);
 
       // Publish
@@ -153,7 +153,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testLibraryPage.clickOnTestCardById(testId);
       testLibraryPage.clickOnDetailsOfCard();
       testSummayTab.header.clickOnReview();
-      testReviewTab.getQueCardByItemId(newItemId).should("have.length", 1);
+      testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
       testReviewTab.verifySummary(question, point);
     });
   });
@@ -181,7 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.clickOnDetailsOfCard();
     // verify review tab and Summary
     testSummayTab.header.clickOnReview();
-    testReviewTab.getQueCardByItemId(item1).should("have.length", 0);
+    testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
   });
 });

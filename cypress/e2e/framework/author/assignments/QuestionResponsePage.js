@@ -326,9 +326,8 @@ export default class QuestionResponsePage {
       .find(".jsx-parser")
       .find(".response-btn ")
       .each((response, i) => {
-        cy.wrap(response)
-          .as("responseBox")
-          .should("have.class", "show-answer");
+        cy.wrap(response).as("responseBox");
+        //.should("have.class", "show-answer");
 
         if (attemptType !== attemptTypes.SKIP) {
           cy.get("@responseBox")

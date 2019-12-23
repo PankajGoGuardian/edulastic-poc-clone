@@ -87,7 +87,8 @@ class ViewModal extends React.Component {
       sharing = [],
       permission,
       _source,
-      authors
+      authors,
+      sharedWith
     } = item;
 
     const modalStyles = {
@@ -99,7 +100,8 @@ class ViewModal extends React.Component {
         borderRadius: "5px"
       }
     };
-    const isDeleteAllowed = !!find(authors, o => o._id === userId);
+    const isDeleteAllowed =
+      !!find(authors, o => o._id === userId) || (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
 
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>

@@ -49,12 +49,15 @@ const StudentsSelector = ({
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 value={studentNames}
               >
-                {students.map(({ _id, firstName, lastName, groupId }) => (
-                  //group Id is being used to track student belongs to which class.
-                  <Select.Option key={_id} value={_id} groupId={groupId}>
-                    {`${firstName || "Anonymous"} ${lastName || ""}`}
-                  </Select.Option>
-                ))}
+                {students.map(({ _id, firstName, lastName, groupId }) => {
+                  const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
+                  return (
+                    //group Id is being used to track student belongs to which class.
+                    <Select.Option key={_id} value={_id} groupId={groupId}>
+                      {fullName}
+                    </Select.Option>
+                  );
+                })}
               </StyledSelect>
             </Col>
           </StyledRow>

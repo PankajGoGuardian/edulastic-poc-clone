@@ -207,6 +207,7 @@ export default class TestLibrary {
     this.getPermissionButton().click({ force: true });
     this.getShareButtonPop()
       .parent()
+      .parent()
       .contains(option)
       .click();
   };
@@ -217,6 +218,7 @@ export default class TestLibrary {
     } else {
       this.share(email, "Can View & Duplicate", validuser);
     }
+
     cy.wait(2000);
   };
 
@@ -228,9 +230,14 @@ export default class TestLibrary {
     this.clickOnDetailsOfCard();
     this.publishedToDraft(true);
     cy.wait(3000);
+    this.verifyNewTestIdInUrl(testId);
+  };
+
+  verifyNewTestIdInUrl = id => {
     cy.url()
       .then(url => url.split("/").reverse()[0])
-      .should("not.eq", testId);
+      .should("eq", id);
+    cy.saveTestDetailToDelete(id);
   };
 
   assertTestPublishedEdit = testId => {

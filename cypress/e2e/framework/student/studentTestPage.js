@@ -43,14 +43,14 @@ class StudentTestPage {
 
   getNext = () => cy.get("[data-cy=next]");
 
-  clickOnNext = () => {
+  clickOnNext = (onlyPreview = false) => {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
     cy.wait(300);
     this.getNext()
       .should("be.visible")
       .click();
-    cy.wait("@saved");
+    if (!onlyPreview) cy.wait("@saved");
   };
 
   getPrevious = () => cy.get("[data-cy=prev]");
@@ -62,13 +62,13 @@ class StudentTestPage {
   }
 
   //  click on finish test
-  clickOnExitTest = () => {
+  clickOnExitTest = (onlyPreview = false) => {
     cy.url().then(url => {
       if (Cypress.$('[data-cy="finishTest"]').length === 1) {
         cy.get("[data-cy=finishTest]")
           .should("be.visible")
           .click();
-        this.clickOnProceed();
+        if (!onlyPreview) this.clickOnProceed();
       }
     });
   };
@@ -686,7 +686,7 @@ class StudentTestPage {
       .next()
       .find("li")
       .eq(index)
-      .click();
+      .click({ force: true });
   };
 
   verifyMaxScoreOfQueByIndex = (index, maxscore) => {

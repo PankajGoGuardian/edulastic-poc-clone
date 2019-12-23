@@ -1,5 +1,10 @@
+import TestLibrary from "../testLibraryPage";
+
 export default class Regrade {
-  regradeSelection = regrade => {
+  constructor() {
+    this.testLibrary = new TestLibrary();
+  }
+  regradeSelection = (regrade, EditFromAssgntsPage = false) => {
     cy.server();
     cy.route("PUT", "**/api/test/**").as("published");
     cy.route("GET", "**/assignments").as("assignments");
@@ -10,7 +15,8 @@ export default class Regrade {
         .find("button")
         .eq(0)
         .click({ force: true });
-      cy.wait("@published");
+      if (EditFromAssgntsPage) cy.wait("@published").then(xhr => this.testLibrary.saveTestId(xhr));
+      else cy.wait("@published");
       cy.wait("@published");
     } else {
       cy.get("@regradeSelect")
@@ -18,16 +24,16 @@ export default class Regrade {
         .find("button")
         .eq(1)
         .click({ force: true });
+      cy.wait("@published");
       cy.wait("@assignments");
     }
   };
 
   applyRegrade = () => {
     cy.server();
-    cy.route("GET", "**/content-sharing/**").as("applyRegrade");
-    cy.route("GET", "**/api/test**").as("regraded");
+    cy.route("POST", "**/assignments/regrade").as("regrade");
     cy.get("[data-cy='applyRegrade']").click({ force: true });
-    cy.wait("@applyRegrade");
-    cy.wait("@testdrafted");
+    cy.wait("@regrade").then(xhr => expect(xhr.status).to.eq(200));
+    cy.contains("Success!");
   };
 }

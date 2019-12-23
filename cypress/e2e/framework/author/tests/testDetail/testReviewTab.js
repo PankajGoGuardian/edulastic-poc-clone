@@ -37,7 +37,9 @@ export default class TestReviewTab {
       .contains(subject);
   };
   getTestGradeSelect = () => cy.get('[data-cy="gradeSelect"]');
+
   getTestSubjectSelect = () => cy.get('[data-cy="subjectSelect"]');
+
   selectGrade = grade => {
     this.getTestGradeSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
@@ -146,7 +148,7 @@ export default class TestReviewTab {
 
   clickOnViewAsStudent = () => {
     cy.wait(3000);
-    cy.get('[data-cy="viewAsStudent"]').click({ force: true });
+    cy.get('[data-cy="viewAsStudent"]').click();
   };
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="ShowAnswer"]').click({ force: true });

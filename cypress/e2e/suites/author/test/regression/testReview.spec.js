@@ -21,13 +21,6 @@ describe("Reviewing Test In Test Review Tab", () => {
   const testReviewTab = new TestReviewTab();
   const testAddItemTab = new TestAddItemTab();
 
-  const TEST = "TEST_PREVIEW";
-  const EDTITED_TEXT = [
-    "Edited inside Preview---1",
-    "Edited inside Preview---2",
-    "Edited inside Preview---3",
-    "Edited inside Preview---4"
-  ];
   const EDITED_POINTS = [5, 6, 7, 8, 9];
 
   let OriginalTestId, itemIds;
@@ -40,12 +33,6 @@ describe("Reviewing Test In Test Review Tab", () => {
   let attemptData = [];
 
   before("Get Data Of test and its itemns", () => {
-    // cy.fixture("testAuthoring").then(testData => {
-    //   testName = testData[TEST]["name"];
-    //   itemsInTest = testData[TEST]["itemKeys"];
-    //   grades = testData[TEST]["grade"];
-    //   subjects = testData[TEST]["subject"];
-    // });
     cy.fixture("questionAuthoring").then(quesData => {
       ITEMS.forEach(element => {
         [qType, num] = element.split(".");
@@ -108,21 +95,22 @@ describe("Reviewing Test In Test Review Tab", () => {
       });
     });
     // TODO: Work On This As click on "View As Student" Starts working in cypress
-    it.skip("Verify Test In- View as Student", () => {
+    it("Verify Test In- View as Student", () => {
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.getAuthoredByMe();
       testLibraryPage.clickOnTestCardById(OriginalTestId);
       testLibraryPage.clickOnDetailsOfCard();
-      testReviewTab.clickOnExpandCollapseRow();
       testReviewTab.clickOnViewAsStudent();
-      studentTestPage.verifyNoOfQuestions([item1, item2].length);
+      studentTestPage.verifyNoOfQuestions(itemIds.length);
       studentTestPage.getQuestionByIndex(0);
       itemIds.forEach((val, index) => {
+        // studentTestPage.verifyQuestionText(index, questText[index]);
         studentTestPage.getQuestionByIndex(index);
-        studentTestPage.verifyQuestionText(questText[index]);
+        studentTestPage.attemptQuestion(itemsInTest[index], attemptTypes.RIGHT, attemptData[index]);
+        studentTestPage.clickOnNext(true);
       });
-      studentTestPage.clickOnExitTest();
+      studentTestPage.clickOnExitTest(true);
     });
     it("Verify Test-Items Order Using Move-To Option", () => {
       testLibraryPage.sidebar.clickOnTestLibrary();

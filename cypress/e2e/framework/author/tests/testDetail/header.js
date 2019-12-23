@@ -42,7 +42,7 @@ export default class TestHeader {
     });
   };
 
-  clickOnPublishButton = (assigned = false, isRegrade) => {
+  clickOnPublishButton = (assigned = false) => {
     cy.wait(1000);
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");

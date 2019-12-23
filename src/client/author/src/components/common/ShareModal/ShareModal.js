@@ -362,7 +362,7 @@ class ShareModal extends React.Component {
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
-            <DoneButton type="primary" data-cy="share-button-pop" onClick={onClose}>
+            <DoneButton type="primary" onClick={onClose}>
               Done
             </DoneButton>
           </DoneButtonContainer>

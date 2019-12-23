@@ -75,7 +75,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testSummayTab.header.clickOnReview();
 
       // verify review tab before save
-      testReviewTab.getQueCardByItemId(newItemId).should("have.length", 1);
+      testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
       testReviewTab.verifySummary(question, point);
 
       // save , publish and verify
@@ -90,7 +90,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
         testLibraryPage.clickOnEditTestById(newTestId);
         testSummayTab.header.clickOnReview();
 
-        testReviewTab.getQueCardByItemId(newItemId).should("have.length", 1);
+        testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
         testReviewTab.verifySummary(question, point);
 
         testId = newTestId;
@@ -132,7 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
 
     // verify review tab before save
     testSummayTab.header.clickOnReview();
-    testReviewTab.getQueCardByItemId(item1).should("have.length", 0);
+    testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
 
     // save , publish and verify
@@ -143,7 +143,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.clickOnEditTestById(newTestId);
       testSummayTab.header.clickOnReview();
-      testReviewTab.getQueCardByItemId(item1).should("have.length", 0);
+      testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);
       testReviewTab.verifySummary(question, point);
       testId = newTestId;
     });
@@ -162,7 +162,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testReviewTab.clickOnRemoveSelected();
 
     // verify review tab before save
-    testReviewTab.getQueCardByItemId(item2).should("have.length", 0);
+    testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
 
     // save , publish and verify
@@ -173,7 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.clickOnEditTestById(newTestId);
       testSummayTab.header.clickOnReview();
-      testReviewTab.getQueCardByItemId(item2).should("have.length", 0);
+      testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
       testReviewTab.verifySummary(question, point);
 
       testId = newTestId;

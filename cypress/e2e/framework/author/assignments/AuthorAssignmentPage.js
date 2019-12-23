@@ -1,3 +1,5 @@
+import TestAddItemTab from "../tests/testDetail/testAddItemTab";
+
 class AuthorAssignmentPage {
   clickOnEllipsis(index) {
     return cy
@@ -41,6 +43,86 @@ class AuthorAssignmentPage {
 
   clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
 
+  clickOnDuplicateAndWait = () => {
+    cy.server();
+
+    cy.route("POST", /\btest\b.*\bduplicate\b/g).as("duplicate");
+
+    this.clickOnActions();
+
+    cy.get('[data-cy="duplicate"]').click({ force: true });
+
+    return cy.wait("@duplicate").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      return xhr.response.body.result._id;
+    });
+  };
+
+  clickOnPreviewTestAndVerifyId = TestID => {
+    cy.server();
+    cy.route("GET", "**/api/test/**").as("viewAsStudent");
+
+    this.clickOnActions();
+    cy.get('[data-cy="preview"]').click({ force: true });
+    cy.wait("@viewAsStudent").then(xhr => expect(xhr.response.body.result._id).to.equal(TestID));
+  };
+
+  clickOnViewDetailsAndverifyId = item => {
+    cy.server();
+    cy.route("GET", "**/api/test/**").as("testLoad");
+
+    this.clickOnActions();
+    cy.get('[data-cy="view-details"]').click();
+    cy.wait("@testLoad");
+
+    cy.url()
+      .then(url => url.split("/").reverse()[0])
+      .should("be.eq", item);
+  };
+
+  clickOnEditTest = () => {
+    cy.server();
+    cy.route("PUT", "**/test/**").as("newVersion");
+    cy.route("GET", "**/api/test/**").as("testdrafted");
+
+    this.clickOnActions();
+    cy.get('[data-cy="edit-Assignment"]')
+      .click({ force: true })
+      .then(() => {
+        //pop up that comes up when we try to edit a assigned test
+        cy.contains("This test is already assigned to students.")
+          .parent()
+          .contains("span", "PROCEED")
+          .click({ force: true });
+        cy.wait("@testdrafted").then(xhr => {
+          assert(xhr.status === 200, "Test versioned");
+        });
+      });
+    cy.wait(2000);
+  };
+
+  clickOnUnassign = () => {
+    cy.server();
+    cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
+    this.clickOnActions();
+
+    cy.get('[data-cy="delete-Assignment"]').click({ force: true });
+    cy.get(".ant-modal-content")
+      .find("input")
+      .type("UNASSIGN", { force: true });
+    cy.get(".ant-modal-content")
+      .find('[ data-cy="submitConfirm"]')
+      .click({ force: true });
+    cy.wait("@deleteAssignments");
+  };
+
+  verifyEditTestURLUnAttempted = oldTestId =>
+    // URL during edit from Assignments page is having following pattern
+    cy.wait(5000).then(() =>
+      cy.url().then(newUrl => {
+        expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+      })
+    );
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });
 
   clickOnApply = () => cy.get('[data-cy="apply"]').click({ force: true });

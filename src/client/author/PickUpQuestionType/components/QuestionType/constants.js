@@ -2232,7 +2232,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         isMath: true,
         stimulus: "",
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
-        templateDisplay: true,
+        templateDisplay: false,
         type: questionType.MATH,
         validation: {
           scoringType: "exactMatch",

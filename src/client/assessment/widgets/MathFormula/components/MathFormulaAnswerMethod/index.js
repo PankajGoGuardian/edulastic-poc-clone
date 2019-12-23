@@ -44,6 +44,7 @@ const RuleContainer = styled.div`
   max-width: 420px;
   flex: 3;
 `;
+
 const MathFormulaAnswerMethod = ({
   onChange,
   onDelete,
@@ -476,13 +477,15 @@ const MathFormulaAnswerMethod = ({
           </FlexContainer>
           <WidgetMethods>
             {renderMethodsOptions()}
-            <CheckOption
-              dataCy="use-template"
-              optionKey="useTemplate"
-              options={{ useTemplate }}
-              onChange={onChangeAllowedOptions}
-              label="Use template"
-            />
+            {item?.templateDisplay ? (
+              <CheckOption
+                dataCy="use-template"
+                optionKey="useTemplate"
+                options={options}
+                onChange={changeOptions}
+                label="Use template"
+              />
+            ) : null}
           </WidgetMethods>
 
           {/* {index + 1 === answer.length && (

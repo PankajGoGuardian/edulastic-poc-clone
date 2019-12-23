@@ -1,4 +1,5 @@
 import evaluators from "../evaluators";
+import { replaceVariables } from "../../../../assessment/utils/variables";
 
 const createShowAnswerResult = async (questions, answers) => {
   const questionIds = Object.keys(questions);
@@ -19,7 +20,9 @@ const createShowAnswerResult = async (questions, answers) => {
           answer = expression.replace(/=/gm, `${unit}=`);
         }
       }
-      const { evaluation } = await evaluator({ userResponse: answer, validation: question.validation }, question.type);
+      const { validation } = replaceVariables(question, [], false);
+
+      const { evaluation } = await evaluator({ userResponse: answer, validation }, question.type);
       results[id] = evaluation;
     }
   }

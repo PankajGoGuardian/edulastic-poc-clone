@@ -127,7 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
       } else {
         // create new items
         itemListPage.createItem(itemKey, index, false);
-        cy.wait("@saveTest");
+        // cy.wait("@saveTest");
         testLibrary.searchFilters.waitForSearchResponse();
       }
       cy.wait(500);

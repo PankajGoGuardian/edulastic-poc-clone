@@ -128,7 +128,7 @@ export default class TestLibrary {
   clickOnDuplicate = () => {
     cy.route("POST", "**/test/**").as("duplicateTest");
     cy.route("GET", "**/test/**").as("getTest");
-    cy.contains("DUPLICATE").click({ force: true });
+    cy.contains("CLONE").click({ force: true });
     cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
     cy.wait("@getTest");
   };

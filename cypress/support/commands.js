@@ -200,17 +200,19 @@ Cypress.Commands.add(
 
 Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snapwiz") => {
   const asgnIds = [];
-
+  let authToken;
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: student ? { username: student, password } : DEFAULT_USERS.student
+    body: teacher ? { username: teacher, password } : DEFAULT_USERS.teacher
   }).then(({ body }) => {
+    authToken = body.result.token;
+
     cy.request({
       url: `${BASE_URL}/assignments`,
       method: "GET",
       headers: {
-        authorization: body.result.token,
+        authorization: authToken,
         "Content-Type": "application/json"
       }
     }).then(({ body }) => {
@@ -222,20 +224,13 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
         asgnIds.push(assignment);
       });
       console.log("All Assignments = ", asgnIds);
-    });
 
-    cy.request({
-      url: `${BASE_URL}/auth/login`,
-      method: "POST",
-      body: teacher ? { username: teacher, password } : DEFAULT_USERS.teacher
-    }).then(({ body }) => {
-      const auth = body.result.token;
       asgnIds.forEach(({ _id, groupId }) => {
         cy.request({
           url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
           method: "DELETE",
           headers: {
-            authorization: auth,
+            authorization: authToken,
             "Content-Type": "application/json"
           }
         }).then(({ body }) => {

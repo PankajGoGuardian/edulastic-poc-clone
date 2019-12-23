@@ -38,7 +38,7 @@ const DropContainer = ({
     !noBorder
       ? isOver
         ? `2px dashed ${theme.dropContainer.isOverBorderColor}`
-        : `2px dashed transparent`
+        : `2px dashed ${theme.dropContainer.isNotOverBorderColor}`
       : isOver
       ? `2px solid ${theme.dropContainer.isOverBorderColor}`
       : `2px solid ${theme.dropContainer.isNotOverBorderColor}`

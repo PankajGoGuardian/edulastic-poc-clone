@@ -383,7 +383,7 @@ class ClozeDragDropDisplay extends Component {
         ))}
       </>
     );
-    const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
@@ -395,7 +395,8 @@ class ClozeDragDropDisplay extends Component {
 
     const responseBoxStyle = {
       height: "100%",
-      width: horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+      width:
+        showAnswer || isReviewTab ? 0 : horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
       flexShrink: 0,
       borderRadius: smallSize ? 0 : 10,
       marginRight: responsecontainerposition === "left" ? 15 : null,

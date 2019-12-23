@@ -35,10 +35,7 @@ const CheckboxTemplateBoxLayout = ({
   item
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover
-      width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
-      height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
-    >
+    <TemplateCover height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}

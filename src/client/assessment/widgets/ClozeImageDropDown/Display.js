@@ -182,11 +182,7 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={containerHeight}>
-        <StyledPreviewContainer
-          smallSize={smallSize}
-          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
-          height={containerHeight}
-        >
+        <StyledPreviewContainer smallSize={smallSize} height={containerHeight}>
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}

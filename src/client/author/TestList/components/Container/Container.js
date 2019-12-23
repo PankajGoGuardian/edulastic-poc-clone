@@ -518,8 +518,9 @@ class TestList extends Component {
 
   removeTestFromPlaylist = () => {
     const { selectedTests, removeItemId } = this.state;
+    const { deleteTestFromPlaylist } = this.props;
     const newSelectedTests = selectedTests.filter(testId => testId !== removeItemId);
-    removeTestFromPlaylistAction({ itemId: removeItemId });
+    deleteTestFromPlaylist({ itemId: removeItemId });
     this.setState({ selectedTests: newSelectedTests, showConfirmRemoveModal: false });
   };
 
@@ -543,7 +544,7 @@ class TestList extends Component {
   };
 
   handleBulkTestAdded = index => {
-    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {} } = this.props;
+    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {}, tests = [] } = this.props;
     const { markedTests, selectedTests } = this.state;
     const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
     const markedIds = markedTests.map(obj => obj._id);
@@ -557,14 +558,28 @@ class TestList extends Component {
       if (uniqueMarkedIds.length < markedIds.length && uniqueMarkedIds.length !== 0)
         message.warning("Some of the selected tests already exists in this module");
     }
-    this.setState(prevState => ({
-      ...prevState,
-      selectedTests: [...selectedTests, ...uniqueMarkedIds],
-      markedTests: []
-    }));
-    addTestToModuleInBulk({ moduleIndex: index, tests: uniqueMarkedTests });
+
+    // Dont add draft type tests
+    const nonDraftTests = uniqueMarkedTests.filter(x => tests.find(y => y._id === x._id).status !== "draft");
+    if (nonDraftTests.length === uniqueMarkedTests.length) {
+      this.setState(prevState => ({
+        selectedTests: [...selectedTests, ...uniqueMarkedIds],
+        markedTests: []
+      }));
+      addTestToModuleInBulk({ moduleIndex: index, tests: uniqueMarkedTests });
+      message.success("Tests Added to playlist");
+    } else {
+      const nonDraftIds = nonDraftTests.map(x => x._id);
+      this.setState(prevState => ({
+        selectedTests: [...selectedTests, ...nonDraftIds],
+        markedTests: []
+      }));
+      addTestToModuleInBulk({ moduleIndex: index, tests: nonDraftTests });
+      nonDraftTests.length
+        ? message.warning(`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`)
+        : message.warning("Draft test(s) cannot be added");
+    }
     if (selectedTests.length === 0) handleSave();
-    message.success("Tests Added to playlist");
   };
 
   handleBulkTestDelete = len => {
@@ -990,7 +1005,7 @@ const enhance = compose(
       clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
-      removeTestFromPlaylistAction: removeTestFromPlaylistAction,
+      deleteTestFromPlaylist: removeTestFromPlaylistAction,
       getAllTags: getAllTagsAction,
       clearTestData: clearTestDataAction,
       updateTestFilters: updateTestSearchFilterAction,

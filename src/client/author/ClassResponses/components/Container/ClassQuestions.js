@@ -2,6 +2,7 @@
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import styled from "styled-components";
 import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
 import { AnswerContext } from "@edulastic/common";
@@ -14,6 +15,9 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 import { StyledFlexContainer } from "./styled";
 import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/ducks";
 import produce from "immer";
+import { Modal, Row, Col } from "antd";
+import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
   const rows = getRows(item);
@@ -63,7 +67,8 @@ Preview.defaultProps = {
 class ClassQuestions extends Component {
   state = {
     showPlayerModal: false,
-    selectedTestItem: []
+    selectedTestItem: [],
+    showDocBasedPlayer: false
   };
 
   static contextType = AnswerContext;
@@ -299,10 +304,16 @@ class ClassQuestions extends Component {
 
   render() {
     const { showPlayerModal, selectedTestItem } = this.state;
-    const { questionActivities, passages = [], showTestletPlayer, classResponse, testActivity } = this.props;
+    const {
+      questionActivities,
+      currentStudent: _currentStudent,
+      passages = [],
+      showTestletPlayer,
+      classResponse,
+      testActivity
+    } = this.props;
     const testItems = this.getTestItems();
     const userWork = {};
-
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
         acc[curr.qid] = "pending";
@@ -317,10 +328,13 @@ class ClassQuestions extends Component {
       return acc;
     }, {});
 
-    const { qIndex, currentStudent } = this.props;
+    const { qIndex, currentStudent, testData } = this.props;
 
     const testItemsPreview = testItems.map((item, index) => {
-      const showStudentWork = userWork[item._id] ? () => this.showStudentWork(item) : null;
+      let showStudentWork = userWork[item._id] ? () => this.showStudentWork(item) : null;
+      if (testData.isDocBased) {
+        showStudentWork = () => this.setState({ showDocBasedPlayer: true });
+      }
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
@@ -343,6 +357,35 @@ class ClassQuestions extends Component {
         }
       : { testItems: [selectedTestItem] };
 
+    let docBasedProps = {};
+    if (testData.isDocBased) {
+      const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = testData;
+      const questionActivitiesById = _keyBy(questionActivities, "qid");
+
+      const questions = (this.props.testItemsData?.[0]?.data?.questions || []).map(q => ({
+        ...q,
+        activity: questionActivitiesById[q.id]
+      }));
+      const questionsById = _keyBy(questions, "id");
+      const studentWorkAnswersById = questionActivities.reduce((acc, cur) => {
+        acc[cur.qid] = cur.userResponse;
+        return acc;
+      }, {});
+      docBasedProps = {
+        test: testData,
+        review: true,
+        viewMode: "report",
+        isDocBased,
+        docUrl,
+        annotations,
+        pageStructure,
+        freeFormNotes,
+        questionsById,
+        questions,
+        studentWorkAnswersById
+      };
+    }
+
     return (
       <>
         <AssessmentPlayerModal
@@ -353,6 +396,25 @@ class ClassQuestions extends Component {
           isStudentReport
           LCBPreviewModal
         />
+        {testData.isDocBased ? (
+          <StyledModal
+            visible={this.state.showDocBasedPlayer}
+            onCancel={() => this.setState({ showDocBasedPlayer: false })}
+            footer={null}
+          >
+            <Row>
+              <Col span={2} offset={21}>
+                <ThemeButton
+                  onClick={() => this.setState({ showDocBasedPlayer: false })}
+                  style={{ color: "#fff", width: "100%" }}
+                >
+                  Exit
+                </ThemeButton>
+              </Col>
+            </Row>
+            <Worksheet {...docBasedProps} studentWork />
+          </StyledModal>
+        ) : null}
         {testItemsPreview}
       </>
     );
@@ -362,6 +424,7 @@ class ClassQuestions extends Component {
 export default connect(
   (state, ownProps) => ({
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
+    testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId)
   }),
@@ -393,3 +456,29 @@ ClassQuestions.defaultProps = {
   showTestletPlayer: false,
   studentViewFilter: null
 };
+
+const StyledModal = styled(Modal)`
+  width: 98% !important;
+  height: 98% !important;
+
+  .ant-modal-close-x {
+    display: none;
+  }
+  .ant-modal-header {
+    display: none;
+  }
+  .ant-modal-content {
+    top: 10px;
+    padding-top: 20px;
+    bottom: auto;
+  }
+  .ant-modal-body {
+    padding: 0px;
+    position: relative;
+    & > div:not(.ant-spin) {
+      & > svg {
+        height: 100%;
+      }
+    }
+  }
+`;

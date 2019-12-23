@@ -540,6 +540,10 @@ class Worksheet extends React.Component {
       lineWidth,
       isToolBarVisible
     } = this.state;
+    let { answersById, studentWork } = this.props;
+    if (this.props.studentWorkAnswersById) {
+      answersById = this.props.studentWorkAnswersById;
+    }
     const {
       docUrl,
       annotations,
@@ -549,7 +553,6 @@ class Worksheet extends React.Component {
       noCheck,
       questions,
       questionsById,
-      answersById,
       percentageUploaded,
       fileInfo,
       pageStructure,
@@ -669,6 +672,7 @@ class Worksheet extends React.Component {
               minimized={minimized}
               pageChange={this.handleChangePage}
               testMode={testMode}
+              studentWork={studentWork}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools
@@ -710,6 +714,8 @@ class Worksheet extends React.Component {
     );
   }
 }
+
+export { Worksheet };
 
 const enhance = compose(
   withWindowSizes,

@@ -183,10 +183,13 @@ class QuestionItem extends React.Component {
   };
 
   renderContent = () => {
-    const { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
+    let { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
+    if (!evaluation) {
+      evaluation = data?.activity?.evaluation;
+    }
     const props = {
       saveAnswer,
-      answer: userAnswer,
+      answer: userAnswer || data?.activity?.userResponse,
       question: data,
       mode: viewMode,
       view: previewMode
@@ -224,8 +227,10 @@ class QuestionItem extends React.Component {
   };
 
   renderAnswerIndicator = type => {
-    const { evaluation } = this.props;
-
+    let { evaluation } = this.props;
+    if (!evaluation) {
+      evaluation = this.props?.data?.activity?.evaluation;
+    }
     if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null;
     }
@@ -259,7 +264,7 @@ class QuestionItem extends React.Component {
     const { feedback = {}, previousFeedback = [], data } = this.props;
     const maxScore = get(data, "validation.validResponse.score", 0);
     const { score, feedback: teacherComments, graded, skipped, ...rest } =
-      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || {};
+      previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
 
     return (
       <>

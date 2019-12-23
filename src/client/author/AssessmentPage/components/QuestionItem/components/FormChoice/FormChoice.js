@@ -95,6 +95,7 @@ export default class FormChoice extends React.Component {
       return false;
     };
     const optionChunks = chunk(options, 4);
+
     return optionChunks.map((items, chunkKey) => (
       <QuestionChunk key={`form-choice-chunk-${chunkKey}`}>
         {items.map(({ label, value }, key) => (

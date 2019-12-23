@@ -51,7 +51,8 @@ const PDFPreview = ({
   history,
   pageChange,
   removeAnswers,
-  testMode
+  testMode,
+  studentWork = false
 }) => {
   const [pdfScale, scalePDF] = useState(1);
 
@@ -140,10 +141,13 @@ const PDFPreview = ({
               />
             </div>
           ))}
-        <ZoomControlCotainer>
-          <PDFZoomControl onClick={() => PDFScaleUp(0.25)}> &#43; </PDFZoomControl>
-          <PDFZoomControl onClick={() => PDFScaleDown(0.25)}> &minus; </PDFZoomControl>
-        </ZoomControlCotainer>
+
+        {!studentWork ? (
+          <ZoomControlCotainer>
+            <PDFZoomControl onClick={() => PDFScaleUp(0.25)}> &#43; </PDFZoomControl>
+            <PDFZoomControl onClick={() => PDFScaleDown(0.25)}> &minus; </PDFZoomControl>
+          </ZoomControlCotainer>
+        ) : null}
       </PerfectScrollbar>
     </PDFPreviewWrapper>
   );

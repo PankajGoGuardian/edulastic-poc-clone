@@ -587,8 +587,9 @@ function* createTestSaga({ payload }) {
       "createdDate",
       "updatedDate",
       "testItems",
-      "passages",
-      "isUsed"
+      "passages", // not accepted by backend validator (testSchema)  EV-10685
+      "isUsed",
+      "currentTab" // not accepted by backend validator (testSchema) EV-10685
     ]);
     // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
     dataToSend.testItems = payload.data.testItems.map(o => ({
@@ -596,7 +597,6 @@ function* createTestSaga({ payload }) {
       maxScore: helpers.getPoints(o),
       questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
     }));
-
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -958,8 +958,8 @@ function* setTestDataAndUpdateSaga(payload) {
           draft.testContentVisibility = test.testContentVisibility.ALWAYS;
         }
       });
-
-      let entity = yield call(testsApi.create, newTest);
+      newTest = omit(newTest, ["passages"]); // not accepted by backend validator (testSchema) EV-10685
+      const entity = yield call(testsApi.create, newTest);
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {
@@ -1206,7 +1206,6 @@ export function* watcherSaga() {
   ]);
   while (true) {
     const { payload } = yield take(requestChan);
-
     yield call(setTestDataAndUpdateSaga, payload);
   }
 }

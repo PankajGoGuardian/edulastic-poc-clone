@@ -99,7 +99,8 @@ const AlignmentRow = ({
       "tloDescription",
       "eloId",
       "subEloId",
-      "description"
+      "description",
+      "curriculumId"
     ]);
 
     handleAddStandard(newStandard);

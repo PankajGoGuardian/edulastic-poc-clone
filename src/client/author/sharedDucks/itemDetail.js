@@ -12,37 +12,45 @@ export const getItemIdSelector = createSelector(
   item => item && item._id
 );
 
-export const getRows = item =>
+export const getRows = (item, returnDummy = true) =>
   item.rows.map(row => ({
     ...row,
-    widgets: row.widgets.map(widget => {
-      let referencePopulate = {
-        data: null
-      };
-      let activity = {
-        timespent: null,
-        qIndex: null
-      };
+    widgets: row.widgets
+      .map(widget => {
+        let referencePopulate = undefined;
+        let activity = {
+          timespent: null,
+          qIndex: null
+        };
 
-      if (item.data && item.data.questions && item.data.questions.length) {
-        referencePopulate = item.data.questions.find(q => q._id === widget.reference);
-      }
+        if (item.data && item.data.questions && item.data.questions.length) {
+          referencePopulate = item.data.questions.find(q => q.id === widget.reference);
+        }
 
-      if (widget && widget.entity && widget.entity.activity) {
-        const { timespent, qIndex } = widget.entity.activity;
-        activity = { timespent, qIndex };
-      }
+        if (widget && widget.entity && widget.entity.activity) {
+          const { timespent, qIndex } = widget.entity.activity;
+          activity = { timespent, qIndex };
+        }
 
-      if (!referencePopulate && item.data && item.data.resources && item.data.resources.length) {
-        referencePopulate = item.data.resources.find(r => r._id === widget.reference);
-      }
-
-      return {
-        ...widget,
-        activity,
-        referencePopulate
-      };
-    })
+        if (!referencePopulate && item.data && item.data.resources && item.data.resources.length) {
+          referencePopulate = item.data.resources.find(r => r.id === widget.reference);
+        }
+        if (referencePopulate || returnDummy) {
+          if (!referencePopulate) {
+            referencePopulate = {
+              data: null
+            };
+          }
+          return {
+            ...widget,
+            activity,
+            referencePopulate
+          };
+        } else {
+          return false;
+        }
+      })
+      .filter(o => o)
   }));
 
 export const getItemDetailRowsSelector = createSelector(

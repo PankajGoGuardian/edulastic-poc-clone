@@ -20,7 +20,7 @@ import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
-  const rows = getRows(item);
+  const rows = getRows(item, false);
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
   let questionsKeyed = { ..._keyBy(questions, "id"), ..._keyBy(resources, "id") };

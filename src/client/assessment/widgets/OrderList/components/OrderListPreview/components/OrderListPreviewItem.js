@@ -30,6 +30,7 @@ export const PreviewItem = ({
       smallSize={smallSize}
       correct={correct}
       showAnswer={showAnswer}
+      {...style}
     >
       <MathFormulaDisplay style={{ margin: "auto", style }} dangerouslySetInnerHTML={{ __html: question }} />
     </Text>

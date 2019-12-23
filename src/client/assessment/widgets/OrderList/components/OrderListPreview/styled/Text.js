@@ -9,6 +9,11 @@ export const Text = styled.div`
   justify-content: space-between;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  img {
+    max-height: ${({ maxHeight }) => maxHeight}px;
+    max-width: ${({ maxWidth }) => maxWidth}px;
+    width: auto;
+  }
   ${({ showDragHandle, smallSize, styleType, correct, theme, showAnswer }) => `
     width: ${
       showDragHandle

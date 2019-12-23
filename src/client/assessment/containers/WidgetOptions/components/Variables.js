@@ -145,7 +145,7 @@ class Variables extends Component {
       if (!has(newData, `variable.variables.${variableName}`)) {
         return;
       }
-      newData.variable.variables[variableName][param] = value;
+      newData.variable.variables[variableName][param] = value ? parseInt(value, 10) : "";
 
       if (
         newData.variable.variables[variableName].type !== "FORMULA" &&
@@ -467,7 +467,7 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableMin"
                         value={variable.min}
-                        onChange={e => handleChangeVariableList(variableName, "min", parseInt(e.target.value, 10))}
+                        onChange={e => handleChangeVariableList(variableName, "min", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -480,7 +480,7 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableMax"
                         value={variable.max}
-                        onChange={e => handleChangeVariableList(variableName, "max", parseInt(e.target.value, 10))}
+                        onChange={e => handleChangeVariableList(variableName, "max", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -493,7 +493,7 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableDecimal"
                         value={variable.decimal}
-                        onChange={e => handleChangeVariableList(variableName, "decimal", parseInt(e.target.value, 10))}
+                        onChange={e => handleChangeVariableList(variableName, "decimal", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}

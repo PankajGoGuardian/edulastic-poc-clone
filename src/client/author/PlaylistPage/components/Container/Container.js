@@ -80,8 +80,6 @@ class Container extends PureComponent {
   state = {
     current: "summary",
     showModal: false,
-    textColor: white || "",
-    backgroundColor: themeColor || "",
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
@@ -209,20 +207,12 @@ class Container extends PureComponent {
 
   renderContent = () => {
     const { playlist, setData, rows, isTestLoading, match, history, userId } = this.props;
-    const { authors, _id } = playlist;
+    const { authors, _id, bgColor = "", textColor = "" } = playlist;
     const owner = (authors && authors.some(x => x._id === userId)) || !_id;
-
     if (isTestLoading) {
       return <Spin />;
     }
-    const {
-      current,
-      backgroundColor,
-      textColor,
-      expandedModules,
-      isTextColorPickerVisible,
-      isBackgroundColorPickerVisible
-    } = this.state;
+    const { current, expandedModules, isTextColorPickerVisible, isBackgroundColorPickerVisible } = this.state;
     const { handleChangeColor } = this;
     // TODO: fix this shit!!
     let selectedTests = [];
@@ -263,10 +253,10 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             onChangeColor={handleChangeColor}
-            textColor={textColor}
+            textColor={textColor || white}
             isTextColorPickerVisible={isTextColorPickerVisible}
             isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
-            backgroundColor={backgroundColor}
+            backgroundColor={bgColor || themeColor}
           />
         );
       case "review":
@@ -295,11 +285,6 @@ class Container extends PureComponent {
 
   handleSave = async () => {
     const { playlist, updatePlaylist, createPlayList } = this.props;
-
-    const { backgroundColor, textColor } = this.state;
-    playlist.bgColor = backgroundColor;
-    playlist.textColor = textColor;
-
     if (!playlist?.modules?.length) {
       /**
        * need to save only when at-least a module present

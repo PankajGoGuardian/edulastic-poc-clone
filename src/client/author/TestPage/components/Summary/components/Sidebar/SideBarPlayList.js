@@ -20,6 +20,8 @@ import { ColorPickerContainer } from "../../../../../../assessment/widgets/Cloze
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
 import { IPAD_LANDSCAPE_WIDTH } from "../../../../../../assessment/constants/others";
+import connect from "react-redux/lib/connect/connect";
+import { changePlaylistThemeAction } from "../../../../../PlaylistPage/ducks";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -62,7 +64,8 @@ const Sidebar = ({
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   windowWidth,
-  isEditable
+  isEditable,
+  changePlayListTheme
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
@@ -217,7 +220,12 @@ const Sidebar = ({
                 {isTextColorPickerVisible && (
                   <ColorPickerContainer data-cy="image-text-box-color-panel">
                     <ColorPickerWrapper onClick={() => onChangeColor("isTextColorPickerVisible", false)} />
-                    <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("textColor", color.hex)} />
+                    <ChromePicker
+                      color={textColor}
+                      onChangeComplete={color =>
+                        changePlayListTheme({ textColor: color.hex, bgColor: backgroundColor || "" })
+                      }
+                    />
                   </ColorPickerContainer>
                 )}
               </SummaryDiv>
@@ -234,7 +242,9 @@ const Sidebar = ({
                     <ColorPickerWrapper onClick={() => onChangeColor("isBackgroundColorPickerVisible", false)} />
                     <ChromePicker
                       color={backgroundColor}
-                      onChangeComplete={color => onChangeColor("backgroundColor", color.hex)}
+                      onChangeComplete={color =>
+                        changePlayListTheme({ bgColor: color.hex, textColor: textColor || "" })
+                      }
                     />
                   </ColorPickerContainer>
                 )}
@@ -271,4 +281,7 @@ Sidebar.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired
 };
 
-export default Sidebar;
+export default connect(
+  null,
+  { changePlayListTheme: changePlaylistThemeAction }
+)(Sidebar);

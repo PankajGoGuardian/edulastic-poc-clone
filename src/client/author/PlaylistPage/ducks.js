@@ -7,6 +7,7 @@ import { keyBy as _keyBy, omit, get } from "lodash";
 import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
+import { white, themeColor } from "@edulastic/colors";
 
 // constants
 const playlistStatusConstants = {
@@ -54,6 +55,7 @@ export const SET_USER_CUSTOMIZE = "[playlists] set user customize";
 export const REMOVE_TEST_FROM_MODULE = "[playlists] remove test from module";
 export const REMOVE_TEST_FROM_PLAYLIST = "[playlists] remove test from playlist";
 export const MOVE_CONTENT = "[playlists] move content in playlist";
+export const CHANGE_PLAYLIST_THEME = "[playlists] change playlist theme";
 // actions
 
 export const receivePlaylistByIdAction = id => ({
@@ -117,6 +119,11 @@ export const setCreateSuccessAction = () => ({
   type: TEST_CREATE_SUCCESS
 });
 
+export const changePlaylistThemeAction = (payload = {}) => ({
+  type: CHANGE_PLAYLIST_THEME,
+  payload
+});
+
 export const setTestEditAssignedAction = createAction(SET_TEST_EDIT_ASSIGNED);
 
 export const sendTestShareAction = createAction(TEST_SHARE);
@@ -161,7 +168,9 @@ const initialPlaylistState = {
   version: 1,
   tags: [],
   active: 1,
-  customize: false
+  customize: false,
+  bgColor: themeColor,
+  textColor: white
 };
 
 const initialState = {
@@ -409,6 +418,18 @@ export const reducer = (state = initialState, { type, payload }) => {
           customize: payload
         }
       };
+    case CHANGE_PLAYLIST_THEME: {
+      const { bgColor = themeColor, textColor = white } = payload;
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          bgColor,
+          textColor
+        }
+      };
+    }
+
     default:
       return state;
   }

@@ -585,15 +585,16 @@ class CurriculumSequence extends Component {
                 <CurriculumSubHeaderRow>
                   <ModuleProgressWrapper>
                     <ModuleProgressLabel>
-                      <ModuleProgressText>Module Progress</ModuleProgressText>
+                      <ModuleProgressText style={{ color: textColor }}>Module Progress</ModuleProgressText>
                       <ModuleProgressValuesWrapper>
-                        <ModuleProgressValues>
+                        <ModuleProgressValues style={{ color: textColor }}>
                           {modulesCompleted}/{totalModules}
                         </ModuleProgressValues>
-                        <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
+                        <ModuleProgressValuesLabel style={{ color: textColor }}>Completed</ModuleProgressValuesLabel>
                       </ModuleProgressValuesWrapper>
                     </ModuleProgressLabel>
                     <ModuleProgress
+                      textColor={textColor}
                       modulesCompleted={modulesCompleted}
                       modules={destinationCurriculumSequence.modules}
                     />
@@ -689,9 +690,12 @@ CurriculumSequence.defaultProps = {
   curriculumGuides: []
 };
 
-const ModuleProgress = ({ modules, modulesCompleted }) => (
+const ModuleProgress = ({ modules, modulesCompleted, textColor = { white } }) => (
   <ModuleProgressBars>
-    {modules && modules.map((m, index) => <ModuleProgressBar completed={index < modulesCompleted} key={index} />)}
+    {modules &&
+      modules.map((m, index) => (
+        <ModuleProgressBar backgroundColor={textColor} completed={index < modulesCompleted} key={index} />
+      ))}
   </ModuleProgressBars>
 );
 ModuleProgress.propTypes = {
@@ -732,7 +736,8 @@ const ModuleProgressBar = styled.div`
   height: 7px;
   margin-right: 5px;
   margin-bottom: 5px;
-  background: ${props => (props.completed ? greenSecondary : "rgba(197, 197, 197, 0.49)")};
+  background: ${({ backgroundColor }) => backgroundColor || white};
+  opacity: ${({ completed }) => (completed ? 1 : 0.5)};
 `;
 
 const ModuleProgressLabel = styled.div`

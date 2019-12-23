@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
 import { MathFormulaDisplay, measureText } from "@edulastic/common";
@@ -13,7 +13,17 @@ import { IconCheck } from "./styled/IconCheck";
 import { IconClose } from "./styled/IconClose";
 
 export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, index, style, isReviewTab }) => {
-  const popoverContent = <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />;
+  const [show, toggleShow] = useState(true);
+
+  const hidePopover = () => {
+    toggleShow(false);
+  };
+
+  const openPopover = () => {
+    toggleShow(true);
+  };
+
+  const popoverContent = <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />;
   const { scrollWidth } = measureText(obj, style);
   /**
    * 10 will be ellipsis width at other parts,
@@ -25,7 +35,14 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
   const checkStyle = !active && showPreview && !isReviewTab;
 
   const content = (
-    <Container smallSize={smallSize} checkStyle={checkStyle} correct={correct} style={style}>
+    <Container
+      onMouseEnter={openPopover}
+      onMouseLeave={hidePopover}
+      smallSize={smallSize}
+      checkStyle={checkStyle}
+      correct={correct}
+      style={style}
+    >
       {!showPreview && (
         <StyledDragHandle smallSize={smallSize}>
           <DragHandle smallSize={smallSize} />
@@ -38,7 +55,7 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
             {index + 1}
           </WithIndex>
         )}
-        {popoverContent}
+        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />
         {showPreview && checkStyle && (
           <IconWrapper checkStyle={checkStyle} correct={correct}>
             {correct && <IconCheck />}
@@ -49,7 +66,13 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
     </Container>
   );
 
-  return showPopover ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return showPopover ? (
+    <Popover visible={show} content={popoverContent}>
+      {content}
+    </Popover>
+  ) : (
+    content
+  );
 };
 
 DragItemContent.propTypes = {
@@ -57,6 +80,7 @@ DragItemContent.propTypes = {
   active: PropTypes.bool.isRequired,
   smallSize: PropTypes.bool.isRequired,
   showPreview: PropTypes.bool.isRequired,
+  isReviewTab: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
   correct: PropTypes.bool

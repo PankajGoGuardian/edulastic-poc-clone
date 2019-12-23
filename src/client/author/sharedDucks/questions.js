@@ -229,8 +229,8 @@ export default createReducer(initialState, {
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
     if (!payload) {
       for (const key of Object.keys(state.byId)) {
-        const oldScore = get(state.byId, "validation.validResponse.score", 0);
-        if (oldScore === 0) {
+        const oldScore = get(state.byId[key], "validation.validResponse.score", 0);
+        if (parseFloat(oldScore) === 0) {
           set(state.byId[key], "validation.validResponse.score", 1);
         }
       }

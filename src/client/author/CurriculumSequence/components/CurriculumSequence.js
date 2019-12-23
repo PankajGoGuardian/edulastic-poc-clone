@@ -565,7 +565,7 @@ class CurriculumSequence extends Component {
                     ""
                   )}
                   {subjects.length ? (
-                    <SunHeaderInfoCard>
+                    <SunHeaderInfoCard marginBottom="13px">
                       <BookIcon color={textColor} />
                       <SunHeaderInfoCardText textColor={textColor}>
                         {subjects.filter(item => !!item).join(", ")}
@@ -574,6 +574,11 @@ class CurriculumSequence extends Component {
                   ) : (
                     ""
                   )}
+                  {status ? (
+                    <StatusTag style={{ width: "fit-content", color: bgColor || "", background: textColor || "" }}>
+                      {status}
+                    </StatusTag>
+                  ) : null}
                 </SunHeaderInfo>
               </CurriculumSubHeaderRow>
               {urlHasUseThis && (
@@ -1264,6 +1269,17 @@ const SunHeaderInfoCardText = styled.div`
 
 const BreadCrumbWrapper = styled.div`
   padding: 20px 40px;
+`;
+
+const StatusTag = styled.span`
+  background: #e8f2ff;
+  color: #798ca8;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 4px 19px;
+  border-radius: 5px;
+  line-height: 13px;
+  text-transform: uppercase;
 `;
 
 const enhance = compose(

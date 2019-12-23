@@ -48,6 +48,7 @@ export const Container = styled(Card)`
 export const Inner = styled.div`
   margin: 10px 0px;
   display: flex;
+  justify-content: space-between;
 `;
 
 export const CardDescription = styled.div`
@@ -78,7 +79,7 @@ export const Author = styled.div`
   color: ${darkGrey};
   display: ${props => (props.isPlaylist ? "inline-flex" : "block")};
   flex-direction: ${props => (props.isPlaylist ? "column" : "")};
-  flex-basis: ${props => (props.isPlaylist ? "" : "50%")};
+  flex-basis: 50%;
   max-width: ${props => (props.isPlaylist ? "110px" : "50%")};
   svg {
     width: 15px;
@@ -166,7 +167,7 @@ export const EllipsisWrapper = styled.div`
 `;
 
 export const IconText = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   color: ${cardTitleColor};
 `;
 export const CardIdWrapper = styled.div`
@@ -324,4 +325,8 @@ export const DraftIconWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   margin-left: 15px;
+`;
+
+export const ThinLine = styled.div`
+  border-top: 1px solid #f3f3f3;
 `;

@@ -27,7 +27,8 @@ import {
   StyledDesc,
   PremiumLabel,
   MidRow,
-  Collection
+  Collection,
+  ThinLine
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -213,53 +214,39 @@ class Item extends Component {
           </TestInfo>
 
           {!isPlaylist && (
-            <>
-              <MidRow>
-                <Collection>
-                  <label>COLLECTIONS</label>
-                  <div>-</div>
-                </Collection>
-                <Qcount>
-                  <label>TOTAL ITEMS</label>
-                  <div>{summary.totalItems}</div>
-                </Qcount>
-              </MidRow>
-
-              <Inner>
-                {authorName && (
-                  <Author isPlaylist={isPlaylist}>
-                    <AuthorWrapper>
-                      {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
-                        getAuthorCollectionMap(true, 30, 30)[collectionName].icon
-                      ) : (
-                        <IconUser color={cardTitleColor} />
-                      )}
-                      <AuthorName title={authorName}>{authorName}</AuthorName>
-                    </AuthorWrapper>
-                  </Author>
-                )}
-                <StatusRow>
-                  <TestStatus status={status} view="tile">
-                    {status}
-                  </TestStatus>
-                </StatusRow>
-              </Inner>
-            </>
+            <MidRow>
+              <Collection>
+                <label>COLLECTIONS</label>
+                <div>-</div>
+              </Collection>
+              <Qcount>
+                <label>TOTAL ITEMS</label>
+                <div>{summary.totalItems}</div>
+              </Qcount>
+            </MidRow>
           )}
-          <Footer>
-            {authorName &&
-              (isPlaylist && (
-                <Author isPlaylist={isPlaylist}>
-                  <AuthorWrapper>
-                    {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
-                      getAuthorCollectionMap(true, 30, 30)[collectionName].icon
-                    ) : (
-                      <IconUser color={cardTitleColor} />
-                    )}
-                    <AuthorName title={authorName}>{authorName}</AuthorName>
-                  </AuthorWrapper>
-                </Author>
-              ))}
+          {isPlaylist ? <ThinLine /> : null}
+          <Inner style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+            {authorName && (
+              <Author isPlaylist={isPlaylist}>
+                <AuthorWrapper>
+                  {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
+                    getAuthorCollectionMap(true, 30, 30)[collectionName].icon
+                  ) : (
+                    <IconUser color={cardTitleColor} />
+                  )}
+                  <AuthorName title={authorName}>{authorName}</AuthorName>
+                </AuthorWrapper>
+              </Author>
+            )}
+            <StatusRow>
+              <TestStatus status={status || _source?.status} view="tile">
+                {status || _source?.status}
+              </TestStatus>
+            </StatusRow>
+          </Inner>
+
+          <Footer style={{ paddingLeft: "10px", paddingRight: "10px" }}>
             {testItemId ? (
               <PlaylistId>
                 <span>#</span>

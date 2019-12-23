@@ -107,6 +107,10 @@ class Variables extends Component {
       }
 
       newData.variable[param] = value;
+      if (param === "enabled" && value === true && newData.variable.variables && !newData.variable.examples) {
+        const examples = generate();
+        newData.variable = { ...newData.variable, examples };
+      }
       setQuestionData(newData);
     };
 
@@ -329,8 +333,13 @@ class Variables extends Component {
         return isValid;
       });
 
-      handleChangeVariable("examples", values);
       calculateFormula();
+      return values;
+    };
+
+    const handleGenerate = () => {
+      const _examples = generate();
+      handleChangeVariable("examples", _examples);
     };
 
     return (
@@ -516,7 +525,7 @@ class Variables extends Component {
                 <InlineLabel>{t("component.options.afterCombinationCount")}</InlineLabel>
               </Col>
               <Col md={4}>
-                <Button onClick={() => generate()} type="button" style={{ float: "right" }}>
+                <Button onClick={() => handleGenerate()} type="button" style={{ float: "right" }}>
                   Generate
                 </Button>
               </Col>

@@ -222,3 +222,25 @@ export const isIncompleteQuestion = item => {
   // if not yet returned with an error, then it should be a fine question!
   return [false];
 };
+
+/**
+ * Checks if the question has improper dynamic parameter config
+ * - if there are no dynamic variables in the stimulus, but option is selected
+ * - if there are dynamic variables in the stimulus, but option is checked
+ *
+ * in that case show appropriate warning messages
+ *
+ * @param {Object} item the question item
+ * @returns {Array}
+ * basically a tuple, with first argument as bool indicating if question has improper config
+ * and second as string for warning message in case the question has improper config
+ */
+export const hasImproperDynamicParamsConfig = item => {
+  if (item.variable) {
+    const hasDyanmicVariables = Object.keys(item.variable?.variables || {}).length > 0;
+    const optionEnabled = item.variable?.enabled || false;
+    if (optionEnabled && !hasDyanmicVariables) return [true, "No dynamic variable used in authoring", true];
+    if (hasDyanmicVariables && !optionEnabled) return [true, "Dynamic variables option not selected", false];
+  }
+  return [false];
+};

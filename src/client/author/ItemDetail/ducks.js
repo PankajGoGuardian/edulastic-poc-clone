@@ -21,7 +21,7 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
-import { isIncompleteQuestion, isRichTextFieldEmpty } from "../questionUtils";
+import { isIncompleteQuestion, isRichTextFieldEmpty, hasImproperDynamicParamsConfig } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -823,6 +823,14 @@ export function* updateItemSaga({ payload }) {
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
     questions = produce(questions, draft => {
       draft.map((q, index) => {
+        const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
+        if (hasImproperConfig) {
+          message.warning(warningMsg);
+        }
+        if (shouldUncheck) {
+          q.variable.enabled = false;
+          delete q.variable.examples;
+        }
         if (index === 0) return q;
         else {
           q.scoringDisabled = itemLevelScoring ? true : false;
@@ -864,7 +872,6 @@ export function* updateItemSaga({ payload }) {
       }
     }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {};
-
     // return;
     const [{ testId, ...item }] = yield all([
       call(testItemsApi.updateById, payload.id, data, payload.testId),

@@ -40,7 +40,7 @@ import {
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
-import { isIncompleteQuestion } from "../questionUtils";
+import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
 import changeViewAction from "../src/actions/view";
 import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../src/actions/dictionaries";
@@ -342,8 +342,16 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const itemDetail = yield select(getItemDetailSelector);
 
     const [isIncomplete, errMsg] = isIncompleteQuestion(question);
-    if (isIncomplete) {
-      return message.error(errMsg);
+    if (isIncomplete) return message.error(errMsg);
+
+    const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
+    if (hasImproperConfig) {
+      message.warning(warningMsg);
+    }
+
+    if (shouldUncheck) {
+      question.variable.enabled = false;
+      delete question.variable.examples;
     }
 
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
@@ -360,7 +368,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       ...question,
       firstMount: false
     };
-
     if (itemDetail && itemDetail.rows) {
       const isNew = currentQuestionIds.filter(item => item === id).length === 0;
 
@@ -637,7 +644,6 @@ function* calculateFormulaSaga() {
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex, isPassageWidget = false } = payload;
-    console.log("data is", data);
     const pathname = yield select(state => state.router.location.pathname);
     yield put(changeCurrentQuestionAction(data.reference));
     if (pathname.includes("tests")) {

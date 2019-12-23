@@ -22,6 +22,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const { btnStyle: style, stemNumeration } = getUiStyles(id, index);
   const { disableAutoExpend, ...btnStyle } = style;
   const [boxWidth, updateBoxWidth] = useState(btnStyle.width);
+  const [boxHeight, updateBoxHeight] = useState(null);
   const [showPopover, togglePopover] = useState(false);
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
@@ -34,6 +35,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       if (boxWidth < width && !disableAutoExpend) {
         updateBoxWidth(width);
       }
+      updateBoxHeight(answerBoxRef.current.clientHeight);
     }
   }, [userAnswer]);
 
@@ -75,7 +77,17 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             {stemNumeration}
           </IndexBox>
         )}
-        <AnswerContent showIndex={!checkAnswer} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
+        <AnswerContent
+          style={{
+            textAlign: "center",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            lineHeight: `${boxHeight}px`
+          }}
+          showIndex={!checkAnswer}
+          dangerouslySetInnerHTML={{ __html: userAnswer || "" }}
+        />
         {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>

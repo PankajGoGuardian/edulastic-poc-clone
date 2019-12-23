@@ -306,6 +306,11 @@ class Container extends PureComponent {
     getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
+  handleChangeCollection = collectionName => {
+    const { setData, test } = this.props;
+    setData({ ...test, collectionName });
+  };
+
   handleChangeSubject = subjects => {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
     setData({ ...test, subjects });
@@ -400,6 +405,7 @@ class Container extends PureComponent {
             onSaveTestId={this.handleSaveTestId}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            onChangeCollection={this.handleChangeCollection}
             owner={owner}
             isEditable={isEditable}
             current={current}

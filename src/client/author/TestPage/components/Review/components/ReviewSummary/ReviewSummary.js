@@ -23,7 +23,11 @@ import {
   MainLabel
 } from "./styled";
 import { getInterestedStandards } from "../../../../../dataUtils";
-import { getInterestedCurriculumsSelector } from "../../../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getOrgDataSelector,
+  getUserFeatures
+} from "../../../../../src/selectors/user";
 
 const ReviewSummary = ({
   totalPoints,
@@ -36,13 +40,18 @@ const ReviewSummary = ({
   onChangeField,
   thumbnail,
   onChangeSubjects,
+  onChangeCollection,
   grades,
   subjects,
+  collectionName,
   interestedCurriculums,
-  windowWidth
+  windowWidth,
+  orgData,
+  userFeatures
 }) => {
   let subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
+  const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
   return (
     <Container>
       <FlexBoxOne>
@@ -93,6 +102,30 @@ const ReviewSummary = ({
             ))}
           </SummarySelectBox>
         </InnerFlex>
+        {isPublishers && (
+          <InnerFlex>
+            <MainLabel marginBottom="0px" width="75px">
+              Collections
+            </MainLabel>
+            <SummarySelectBox
+              data-cy="subjectSelect"
+              size="medium"
+              disabled={!owner || !isEditable}
+              style={{ width: "100%" }}
+              placeholder="Please select"
+              value={collectionName}
+              onChange={onChangeCollection}
+              filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              marginBottom="0px"
+            >
+              {orgData?.itemBanks?.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id} title={name}>
+                  {name}
+                </Select.Option>
+              ))}
+            </SummarySelectBox>
+          </InnerFlex>
+        )}
       </FlexBoxTwo>
 
       <FlexBoxThree>
@@ -159,7 +192,9 @@ ReviewSummary.propTypes = {
 
 export default connect(
   state => ({
-    interestedCurriculums: getInterestedCurriculumsSelector(state)
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
+    orgData: getOrgDataSelector(state),
+    userFeatures: getUserFeatures(state)
   }),
   null
 )(ReviewSummary);

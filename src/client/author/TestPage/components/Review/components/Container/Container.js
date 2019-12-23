@@ -321,6 +321,7 @@ class Review extends PureComponent {
       standards,
       onChangeGrade,
       onChangeSubjects,
+      onChangeCollection,
       questions,
       owner,
       defaultThumbnail,
@@ -369,6 +370,7 @@ class Review extends PureComponent {
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
+    const collectionName = get(test, "collectionName", "");
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
 
@@ -451,6 +453,7 @@ class Review extends PureComponent {
                   questionsCount={questionsCount}
                   grades={grades}
                   subjects={subjects}
+                  collectionName={collectionName}
                   owner={owner}
                   isEditable={isEditable}
                   summary={test.summary || {}}
@@ -459,6 +462,7 @@ class Review extends PureComponent {
                   totalPoints={getTotalScore(test)}
                   onChangeGrade={onChangeGrade}
                   onChangeSubjects={onChangeSubjects}
+                  onChangeCollection={onChangeCollection}
                   windowWidth={windowWidth}
                 />
               </ReviewSummaryWrapper>

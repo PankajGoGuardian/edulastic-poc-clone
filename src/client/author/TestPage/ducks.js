@@ -1245,6 +1245,11 @@ export const getTestEntitySelector = createSelector(
   state => state.entity
 );
 
+export const getCollectionNameSelector = createSelector(
+  getTestEntitySelector,
+  state => state.collectionName
+);
+
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,

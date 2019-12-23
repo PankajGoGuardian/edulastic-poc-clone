@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
-import { Dropdown } from "antd";
+import { Dropdown, Tag } from "antd";
 
 const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
   if (!tags.length) return null;
@@ -90,17 +90,14 @@ const PopupContainer = styled.div`
   overflow: auto;
 `;
 
-const Label = styled.span`
+const Label = styled(Tag)`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;
   padding: 4px 10px;
   font-size: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 3px;
-  margin-bottom: ${({ marginBottom }) => marginBottom || "3px"};
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
+  border: none;
+  margin-right: 3px;
 `;

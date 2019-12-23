@@ -4,12 +4,13 @@ import { Tag } from "antd";
 
 import { FlexContainer, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
-import { greenDark } from "@edulastic/colors";
+import { getAuthorCollectionMap } from "../../../../../../dataUtils";
 
 import Tags from "../../../../../../src/components/common/Tags";
 import Standards from "../../../../../../ItemList/components/Item/Standards";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
-import { MetaTag, ExtraInfo, DokStyled } from "./styled";
+import { MetaTag, ExtraInfo, DokStyled, HelperText } from "./styled";
+import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 
 const MetaInfoCell = ({
   data: { item, type, by, id, shared, likes, audio = {}, isPremium = false, points = 0, dok }
@@ -17,7 +18,6 @@ const MetaInfoCell = ({
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%", paddingTop: "15px" }}>
       <FlexContainer>
-        {isPremium && <PremiumTag />}
         {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage={true} />}
         {type && (
           <FlexContainer>
@@ -28,8 +28,10 @@ const MetaInfoCell = ({
                 </MetaTag>
               );
             })}
+            {isPremium ? <PremiumTag key="premium">Premium</PremiumTag> : null}
           </FlexContainer>
         )}
+        <CollectionTag collectionName={item?.collectionName} />
       </FlexContainer>
       <FlexContainer justifyContent="flex-end">
         {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Tag } from "antd";
 
-import { greenDark, greyDarken, lightGrey } from "@edulastic/colors";
+import { greenDark, greyDarken, lightGrey, textColor, themeLightGrayBgColor } from "@edulastic/colors";
 
 export const FirstText = styled.span`
   font-size: 13px;
@@ -26,13 +26,14 @@ export const TypeContainer = styled.div`
 `;
 
 export const MetaTag = styled(Tag)`
-  background: ${lightGrey};
+  background: ${themeLightGrayBgColor};
   border: none;
   color: ${greyDarken};
   text-transform: uppercase;
   font-weight: 700;
   font-size: 10px;
-
+  margin-right: 3px;
+  padding: 4px 10px;
   &:first-child {
     margin-left: ${props => (props.marginLeft ? props.marginLeft : "55px")};
   }

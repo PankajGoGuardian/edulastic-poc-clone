@@ -49,6 +49,7 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
+import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 
 // render single item
 class Item extends Component {
@@ -161,12 +162,10 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
-    if (item.collectionName) {
-      details.unshift({ name: <PremiumTag />, type: "premium" });
-    }
     return details.map(
       (detail, index) =>
-        (detail.text || detail.type === "premium") && (
+        (detail.text || detail.type === "premium") &&
+        detail.text !== "Edulastic Certified" && (
           <DetailCategory key={`DetailCategory_${index}`}>
             <CategoryName>{detail.name}</CategoryName>
             {detail.type !== "premium" && (
@@ -342,6 +341,8 @@ class Item extends Component {
                       <LabelText>{itemType}</LabelText>
                     </Label>
                   ))}
+                  {item.collectionName ? <PremiumTag /> : null}
+                  <CollectionTag collectionName={item?.collectionName} />
                 </CategoryContent>
               </TypeCategory>
               {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}

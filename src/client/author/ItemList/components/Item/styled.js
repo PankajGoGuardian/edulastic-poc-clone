@@ -15,7 +15,7 @@ import {
   lightGreySecondary
 } from "@edulastic/colors";
 import styled, { css } from "styled-components";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 const Style = css`
@@ -343,26 +343,12 @@ export const CategoryContent = styled.div`
   }
 `;
 
-export const Label = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  min-height: 23px;
-  padding: 4px 14px;
-  margin-right: 5px;
-  margin-bottom: 3px;
-  border-radius: 5px;
+export const Label = styled(Tag)`
+  padding: 4px 10px;
+  margin-right: 3px;
+  border: none;
+  font-weight: 700;
   background: ${themeLightGrayBgColor};
-
-  span {
-    font-size: 10px;
-    font-weight: 700;
-    font-weight: bold;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-    color: ${greyDarken};
-  }
 `;
 
 export const Count = styled.div`
@@ -385,7 +371,6 @@ export const LabelText = styled.span`
   text-align: center;
   color: ${textColor};
   text-transform: uppercase;
-
   @media (max-width: ${tabletWidth}) {
     letter-spacing: 0.2px;
     font-weight: bold;

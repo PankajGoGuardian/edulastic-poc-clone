@@ -348,6 +348,7 @@ class SideMenu extends Component {
             )}
             {!isMobile && <LogoDash />}
             <MenuWrapper>
+              {locationState?.fadeSidebar && <Overlay />}
               <Menu
                 selectedKeys={[defaultSelectedMenu.toString()]}
                 mode="inline"
@@ -477,6 +478,14 @@ const enhance = compose(
 
 export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
+const Overlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.2;
+  z-index: 1000;
+`;
 const TextIcon = styled.div`
   border-radius: 50%;
   margin-right: 1em;

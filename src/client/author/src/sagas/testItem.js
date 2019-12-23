@@ -67,7 +67,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
     if (!testFlow) {
       yield put(push(`/author/items/${item._id}/item-detail`));
     } else {
-      yield put(push(`/author/tests/${testId}/createItem/${item._id}`));
+      yield put(push({ pathname: `/author/tests/${testId}/createItem/${item._id}`, state: { fadeSidebar: true } }));
     }
   } catch (err) {
     console.error(err);

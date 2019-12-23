@@ -31,7 +31,7 @@ import {
   proceedPublishingItemAction,
   savePassageAction
 } from "../../../ItemDetail/ducks";
-import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
+import { getCurrentQuestionSelector, changeUpdatedFlagAction } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
@@ -111,6 +111,16 @@ class Container extends Component {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  cancelEdit = () => {
+    const { changeQuestionUpdateFlag, testId, history } = this.props;
+    changeQuestionUpdateFlag(false);
+    const testPath = `/author/tests/tab/review/id/${testId || "create"}`;
+    // above dispatched action needs to flip the flag, hence setTimeout to get around it
+    setTimeout(() => {
+      history.push(testPath);
+    }, 0);
   };
 
   handleSave = () => {
@@ -199,25 +209,16 @@ class Container extends Component {
 
     // TODO: remove dependency on using path for this!!
     if (location.pathname.includes("author/tests") || location?.state?.isTestFlow) {
-      const testPath = `/author/tests/${testId || "create"}`;
+      const testPath = `/author/tests/tab/review/id/${testId || "create"}`;
       let crumbs = [
         {
-          title: "TEST LIBRARY",
-          to: "/author/tests"
-        },
-        {
-          title: testName,
+          title: "Back to Create Test",
           to: testPath,
           onClick: toggleModalAction,
           state: { persistStore: true }
         },
         {
-          title: "SELECT A QUESTION TYPE",
-          to: testPath,
-          onClick: navigateToPickupQuestionType
-        },
-        {
-          title: questionTitle,
+          title: `Edit Item ( ${questionTitle} )`,
           to: ""
         }
       ];
@@ -352,6 +353,7 @@ class Container extends Component {
     return isItem ? (
       <ButtonBar
         onSave={saveItem}
+        onCancel={this.cancelEdit}
         {...commonProps}
         showPublishButton={showPublishButton}
         onPublishTestItem={publishTestItem}
@@ -365,6 +367,7 @@ class Container extends Component {
     ) : (
       <ButtonBar
         {...commonProps}
+        onCancel={this.cancelEdit}
         onSave={this.handleSave}
         renderRightSide={view === "edit" ? this.renderButtons : () => {}}
         withLabels
@@ -511,7 +514,8 @@ const enhance = compose(
       removeAnswers: removeUserAnswerAction,
       toggleModalAction: toggleCreateItemModalAction,
       onSaveScrollTop: saveScrollTop,
-      savePassage: savePassageAction
+      savePassage: savePassageAction,
+      changeQuestionUpdateFlag: changeUpdatedFlagAction
     }
   )
 );

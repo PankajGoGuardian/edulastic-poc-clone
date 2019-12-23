@@ -115,7 +115,8 @@ class Container extends Component {
         state: {
           ...history.location.state,
           backUrl: match.url,
-          backText: t("component.pickupcomponent.headertitle")
+          backText: t("component.pickupcomponent.headertitle"),
+          fadeSidebar: true
         }
       });
       return;

@@ -363,6 +363,11 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     />
                     <Route
                       exact
+                      path="/author/tests/:testId/editItem/:itemId"
+                      render={props => <ItemDetail isTestFlow isEditFlow {...props} />}
+                    />
+                    <Route
+                      exact
                       path="/author/tests/:id/editAssigned"
                       render={props => (
                         <Suspense fallback={<Progress />}>

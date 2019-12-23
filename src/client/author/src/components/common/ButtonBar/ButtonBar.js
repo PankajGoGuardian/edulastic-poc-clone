@@ -70,6 +70,7 @@ class ButtonBar extends Component {
     const {
       t,
       onSave,
+      onCancel,
       onPublishTestItem,
       onShowSource,
       onShowSettings,
@@ -149,18 +150,38 @@ class ButtonBar extends Component {
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === "draft" ? (
-                    <Tooltip title="Save">
-                      <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
-                        <IconSaveNew color={themeColor} width={20.4} height={20.4} />
-                      </CustomButton>
-                    </Tooltip>
+                    <>
+                      {isTestFlow && (
+                        <CustomButton data-cy="saveButton" onClick={onCancel}>
+                          <HeadIcon>
+                            <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                          </HeadIcon>
+                          Cancel
+                        </CustomButton>
+                      )}
+                      <Tooltip title="Save">
+                        <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
+                          <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                        </CustomButton>
+                      </Tooltip>
+                    </>
                   ) : (
-                    <CustomButton data-cy="saveButton" onClick={onSave}>
-                      <HeadIcon>
-                        <IconSaveNew color={themeColor} width={20.4} height={20.4} />
-                      </HeadIcon>
-                      Save
-                    </CustomButton>
+                    <>
+                      {isTestFlow && (
+                        <CustomButton data-cy="saveButton" onClick={onCancel}>
+                          <HeadIcon>
+                            <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                          </HeadIcon>
+                          Cancel
+                        </CustomButton>
+                      )}
+                      <CustomButton data-cy="saveButton" onClick={onSave}>
+                        <HeadIcon>
+                          <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                        </HeadIcon>
+                        Save
+                      </CustomButton>
+                    </>
                   ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && (
                   <Button data-cy="publishItem" onClick={onPublishTestItem}>

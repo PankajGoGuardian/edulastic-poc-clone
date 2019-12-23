@@ -22,6 +22,7 @@ import {
 import { setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
+  SET_RUBRIC_ID,
   UPDATE_QUESTION,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
@@ -227,6 +228,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         isGradingRubric: payload
       };
+    case SET_RUBRIC_ID:
+      return {
+        ...state,
+        isGradingRubric: false
+      };
     default:
       return state;
   }
@@ -332,6 +338,12 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const [isIncomplete, errMsg] = isIncompleteQuestion(question);
     if (isIncomplete) {
       return message.error(errMsg);
+    }
+
+    const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
+
+    if (isGradingCheckboxState && !question.rubrics) {
+      return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
     }
 
     const locationState = yield select(state => state.router.location.state);

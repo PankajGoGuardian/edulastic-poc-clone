@@ -178,7 +178,7 @@ class Scoring extends Component {
                       onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
                       size="large"
                       style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                      disabled={!!questionData.rubrics && userFeatures.gradingrubrics}
+                      disabled={(!!questionData.rubrics && userFeatures.gradingrubrics) || isGradingCheckboxState}
                     />
                   </FormGroup>
                 </ColWrapper>

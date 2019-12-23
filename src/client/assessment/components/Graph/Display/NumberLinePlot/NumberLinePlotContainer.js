@@ -405,7 +405,7 @@ class NumberLinePlotContainer extends PureComponent {
     }
 
     return (
-      <div data-cy="axis-labels-container" style={{ overflow: "auto" }} ref={this.numberLinePlotRef}>
+      <div data-cy="axis-labels-container" ref={this.numberLinePlotRef}>
         {!disableResponse && (
           <ControlTools control={selectedControl} controls={controls} setControls={this.onSelectControl} />
         )}

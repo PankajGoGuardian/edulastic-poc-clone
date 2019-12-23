@@ -14,6 +14,8 @@ export default class TeacherSideBar {
       .click({ force: true });
 
   clickOnAssignment = () => {
+    cy.server();
+    cy.route("GET", /assignments/).as("assignment");
     cy.get('[data-cy="Assignments"]')
       .click({ force: true })
       .click({ force: true });

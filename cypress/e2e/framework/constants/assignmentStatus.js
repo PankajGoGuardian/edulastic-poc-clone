@@ -5,7 +5,8 @@ export const teacherSide = {
   NOT_GRADED: "NOT GRADED",
   GRADES_HELD: "GRADES HELD",
   DONE: "DONE",
-  REDIRECTED: "Redirected"
+  REDIRECTED: "Redirected",
+  PAUSED: "PAUSED"
 };
 
 export const studentSide = {

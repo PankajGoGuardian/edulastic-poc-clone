@@ -270,18 +270,27 @@ class ClassHeader extends Component {
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
-          <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
+          <OpenCloseButton data-cy="openButton" onClick={this.handleOpenAssignment}>
+            OPEN
+          </OpenCloseButton>
         ) : (
           assignmentStatusForDisplay !== "DONE" &&
           canPause && (
             <OpenCloseButton
+              data-cy="openPauseButton"
               onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
             >
               {isPaused ? "OPEN" : "PAUSE"}
             </OpenCloseButton>
           )
         )}
-        {canClose ? <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton> : ""}
+        {canClose ? (
+          <OpenCloseButton data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
+            CLOSE
+          </OpenCloseButton>
+        ) : (
+          ""
+        )}
       </OpenCloseWrapper>
     );
 
@@ -290,6 +299,7 @@ class ClassHeader extends Component {
         <CaretUp className="fa fa-caret-up" />
         <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden" groupId={classId}>
           <MenuItems
+            data-cy="markAsDone"
             key="key1"
             onClick={this.handleMarkAsDone}
             disabled={!enableMarkAsDone || assignmentStatus.toLowerCase() === "done"}
@@ -297,11 +307,11 @@ class ClassHeader extends Component {
             Mark as Done
           </MenuItems>
         </FeaturesSwitch>
-        <MenuItems key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
+        <MenuItems data-cy="releaseScore" key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
           Release Score
         </MenuItems>
         {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
-        <MenuItems key="key4" onClick={() => toggleDeleteAssignmentModalAction(true)}>
+        <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModalAction(true)}>
           Unassign
         </MenuItems>
         {/* TODO temp hiding for UAT */}
@@ -415,7 +425,7 @@ class ClassHeader extends Component {
         <RightSideButtonWrapper>
           {window.innerWidth > desktopWidth && renderOpenClose}
           <Dropdown overlay={actionsMenu} placement={"bottomRight"}>
-            <HeaderMenuIcon>
+            <HeaderMenuIcon data-cy="headerDropDown">
               <i class="fa fa-ellipsis-v" />
             </HeaderMenuIcon>
           </Dropdown>

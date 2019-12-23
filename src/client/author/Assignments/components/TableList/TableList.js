@@ -110,7 +110,7 @@ const TableList = ({
         render: text => (
           <GreyFont className="class-column">
             <Tooltip placement="bottom" title={text}>
-              <span>{text}</span>
+              <span data-cy="class">{text}</span>
             </Tooltip>
           </GreyFont>
         )
@@ -120,11 +120,15 @@ const TableList = ({
         width: "10%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
-            <TypeIcon type="p">P</TypeIcon>
+            <TypeIcon data-cy="type" type="p">
+              P
+            </TypeIcon>
           ) : row.testType === test.type.ASSESSMENT ? (
-            <TypeIcon>A</TypeIcon>
+            <TypeIcon data-cy="type">A</TypeIcon>
           ) : (
-            <TypeIcon type="c">C</TypeIcon>
+            <TypeIcon data-cy="type" type="c">
+              C
+            </TypeIcon>
           )
       },
       {
@@ -132,24 +136,33 @@ const TableList = ({
         width: "11%",
         render: text => (
           <Tooltip title={text} placement="top">
-            <GreyFont showEllipsis={text.length > 15}>{text}</GreyFont>
+            <GreyFont data-cy="assigned" showEllipsis={text.length > 15}>
+              {text}
+            </GreyFont>
           </Tooltip>
         )
       },
       {
         dataIndex: "status",
         width: "14%",
-        render: text => (text ? <StatusLabel status={text}>{text}</StatusLabel> : "")
+        render: text =>
+          text ? (
+            <StatusLabel data-cy="status" status={text}>
+              {text}
+            </StatusLabel>
+          ) : (
+            ""
+          )
       },
       {
         dataIndex: "submitted",
         width: "10%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => <GreyFont data-cy="submitted">{text}</GreyFont>
       },
       {
         dataIndex: "graded",
         width: "10%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => <GreyFont data-cy="graded">{text}</GreyFont>
       },
       {
         dataIndex: "action",
@@ -157,20 +170,20 @@ const TableList = ({
         render: (_, row) => (
           <ActionsWrapper data-cy="PresentationIcon">
             <Tooltip placement="bottom" title="LCB">
-              <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
+              <Link data-cy="lcb" to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
                 <Icon src={presentationIcon} alt="Images" />
               </Link>
             </Tooltip>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
               <Tooltip placement="bottom" title="Express Grader">
-                <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
+                <Link data-cy="eg" to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
                   <Icon src={additemsIcon} alt="Images" />
                 </Link>
               </Tooltip>
             </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={row.classId}>
               <Tooltip placement="bottom" title="Reports">
-                <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+                <Link data-cy="sbr" to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
                   <Icon src={piechartIcon} alt="Images" />
                 </Link>
               </Tooltip>
@@ -218,7 +231,9 @@ const TableList = ({
             <div>
               <TestThumbnail src={row.thumbnail} />
             </div>
-            <AssignmentTD showFilter={showFilter}>{text}</AssignmentTD>
+            <AssignmentTD data-cy="assignmentName" showFilter={showFilter}>
+              {text}
+            </AssignmentTD>
           </FlexContainer>
         </Tooltip>
       )
@@ -250,28 +265,28 @@ const TableList = ({
         return a.testType.localeCompare(b.testType);
       },
       width: "10%",
-      render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
+      render: (text = test.type.ASSESSMENT) => <TitleCase data-cy="testType">{text}</TitleCase>
     },
     {
       title: "Assigned by",
       dataIndex: "assigned",
       sortDirections: ["descend", "ascend"],
       width: "11%",
-      render: text => <GreyFont> {text} </GreyFont>
+      render: text => <GreyFont data-cy="assignedBy"> {text} </GreyFont>
     },
     {
       title: "Status",
       dataIndex: "status",
       sortDirections: ["descend", "ascend"],
       width: "14%",
-      render: () => <GreyFont>{t("common.assigned")} </GreyFont>
+      render: () => <GreyFont data-cy="testStatus">{t("common.assigned")} </GreyFont>
     },
     {
       title: "Submitted",
       dataIndex: "submitted",
       sortDirections: ["descend", "ascend"],
       width: "10%",
-      render: text => <GreyFont> {text} </GreyFont>
+      render: text => <GreyFont data-cy="testSubmitted"> {text} </GreyFont>
     },
     {
       title: "Graded",
@@ -279,7 +294,7 @@ const TableList = ({
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.graded - b.graded,
       width: "10%",
-      render: text => <GreyFont> {text} </GreyFont>
+      render: text => <GreyFont data-cy="testGraded"> {text} </GreyFont>
     },
     {
       title: renderFilter(),
@@ -300,7 +315,7 @@ const TableList = ({
             trigger={["click"]}
             onClick={e => e.stopPropagation()}
           >
-            <BtnAction>ACTIONS</BtnAction>
+            <BtnAction data-cy="actions">ACTIONS</BtnAction>
           </Dropdown>
         </ActionDiv>
       ),

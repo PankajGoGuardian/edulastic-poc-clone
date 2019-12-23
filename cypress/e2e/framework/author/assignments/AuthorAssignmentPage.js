@@ -27,6 +27,18 @@ class AuthorAssignmentPage {
     cy.wait("@assignment");
   };
 
+  getStatus = () => cy.get('[data-cy="status"]');
+
+  verifyStatus = status => this.getStatus().should("have.text", status);
+
+  getSubmitted = () => cy.get('[data-cy="submitted"]');
+
+  verifySubmitted = submitted => this.getSubmitted().should("have.text", submitted);
+
+  getGraded = () => cy.get('[data-cy="graded"]');
+
+  verifyGraded = graded => this.getGraded().should("have.text", graded);
+
   clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
 
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });

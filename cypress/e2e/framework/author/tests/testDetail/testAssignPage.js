@@ -45,9 +45,24 @@ export default class TestAssignPage {
 
   // start , end => new Date() instance
   setStartAndCloseDate = (start, end) => {
-    cy.get('[data-cy="startDate"]').click({ force: true });
+    this.getStartDate().click({ force: true });
     CypressHelper.setDateInCalender(start);
     // cy.get('[data-cy="closeDate"]').click({ force: true });
+    CypressHelper.setDateInCalender(end);
+  };
+
+  getStartDate = () => cy.get('[data-cy="startDate"]');
+
+  getCloseDate = () => cy.get('[data-cy="closeDate"]');
+
+  // start - new Date() instance
+  setStartDate = start => {
+    this.getStartDate().click({ force: true });
+    CypressHelper.setDateInCalender(start);
+  };
+
+  setEndDate = end => {
+    this.getCloseDate().click({ force: true });
     CypressHelper.setDateInCalender(end);
   };
 
@@ -72,6 +87,20 @@ export default class TestAssignPage {
     }
   };
 
+  // MARK AS DONE
+  setMarkAsDoneToManual = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
+      .find('[value="manually"]')
+      .check();
+
+  setMarkAsDoneToAutomatic = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
+      .find('[value="automatically"]')
+      .check();
+
+  // MAXIMUM ATTEMPTS ALLOWED
   getMaxAttempt = () => cy.get('[inputfeatures="maxAttemptAllowed"]').find("input");
 
   setMaxAttempt = attempt => this.getMaxAttempt().type(`{selectall}${attempt}`);

@@ -53,6 +53,7 @@ const DeleteAssignmentModal = ({
           </StyledButton>
           ,
           <StyledButton
+            data-cy="submitConfirm"
             key="delete"
             type="primary"
             disabled={confirmText.toLocaleLowerCase() !== "unassign"}
@@ -76,6 +77,7 @@ const DeleteAssignmentModal = ({
         </div>
         <div className="delete-confirm-contaner">
           <StyledInput
+            data-cy="confirmationInput"
             className="delete-confirm-input"
             type="text"
             onChange={event => setConfirmText(event.currentTarget.value)}

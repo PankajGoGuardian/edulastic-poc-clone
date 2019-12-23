@@ -19,7 +19,13 @@ import {
   togglePublishWarningModalAction,
   getPassageSelector
 } from "../ItemDetail/ducks";
-import { setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
+import {
+  setTestDataAndUpdateAction,
+  setCreatedItemToTestAction,
+  updateTestAndNavigateAction,
+  getTestSelector,
+  SET_TEST_DATA
+} from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   UPDATE_QUESTION,
@@ -505,7 +511,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
   try {
     const { item, tId: testId, isEditFlow } = payload;
     const testItems = yield select(getSelectedItemSelector);
-
     //updated testItems should have the current authored item
     // if it is passage item there could be multiple testitems merge all into nextTestItems and add to test.
     let nextTestItems = testItems;
@@ -515,6 +520,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     } else {
       nextTestItems = [...nextTestItems, item._id];
     }
+
     yield put(setTestItemsAction(nextTestItems));
     yield put(setCreatedItemToTestAction(item));
 
@@ -522,7 +528,21 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     if (!testId || testId === "undefined") {
       yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
     } else {
-      yield put(push(!isEditFlow ? `/author/tests/${testId}` : `/author/tests/${testId}/createItem/${item._id}`));
+      const test = yield select(getTestSelector);
+
+      // update the test store with new test ITem
+      const updatedTest = produce(test, draft => {
+        let { testItems } = draft;
+        testItems.push(item);
+      });
+
+      yield put({
+        type: SET_TEST_DATA,
+        payload: { data: updatedTest }
+      });
+      // save the test and navigate to test page.
+      const path = !isEditFlow ? `/author/tests/${testId}` : `/author/tests/${testId}/createItem/${item._id}`;
+      yield put(updateTestAndNavigateAction(path));
     }
   } catch (e) {
     console.log(e, "error");

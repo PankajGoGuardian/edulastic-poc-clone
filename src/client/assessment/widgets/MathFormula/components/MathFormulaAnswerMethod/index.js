@@ -125,7 +125,6 @@ const MathFormulaAnswerMethod = ({
     newSetThousandsSeparator.splice(ind, 1);
     changeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
-
   const methodOptions = methodOptionsConst[method];
   const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
@@ -170,6 +169,16 @@ const MathFormulaAnswerMethod = ({
               options={options}
               onChange={changeOptions}
               label={t("component.math.isFactorised")}
+            />
+          );
+        case "isSimplified":
+          return (
+            <CheckOption
+              dataCy="answer-is-simplified"
+              optionKey="isSimplified"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isSimplified")}
             />
           );
         case "ignoreCoefficientOfOne":

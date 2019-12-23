@@ -98,7 +98,8 @@ const buttons = [
   "subscript",
   "superscript",
   "undo",
-  "redo"
+  "redo",
+  "specialCharacters"
 ];
 
 const DEFAULT_TOOLBAR_BUTTONS = {

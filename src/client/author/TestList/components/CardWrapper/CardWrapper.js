@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Col } from "antd";
 import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 import { CardBox } from "../Container/styled";
+import { getCollectionsSelector } from "../../../src/selectors/user";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -44,7 +46,8 @@ class CardWrapper extends Component {
       standards = [],
       checked,
       handleCheckboxAction,
-      moduleTitle
+      moduleTitle,
+      collections
     } = this.props;
 
     const itemId = _id.substr(_id.length - 5);
@@ -57,7 +60,7 @@ class CardWrapper extends Component {
             item={item}
             history={history}
             match={match}
-            authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
+            authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item, collections)}
             testItemId={itemId}
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
@@ -79,7 +82,7 @@ class CardWrapper extends Component {
           addTestToPlaylist={addTestToPlaylist}
           isTestAdded={isTestAdded}
           removeTestFromPlaylist={removeTestFromPlaylist}
-          authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
+          authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item, collections)}
           isPlaylist={isPlaylist}
           testItemId={itemId}
           standards={standards}
@@ -92,4 +95,7 @@ class CardWrapper extends Component {
   }
 }
 
-export default CardWrapper;
+export default connect(
+  state => ({ collections: getCollectionsSelector(state) }),
+  {}
+)(CardWrapper);

@@ -27,7 +27,7 @@ const Search = ({
     status,
     tags,
     subject,
-    collectionName = "",
+    collections: _collections = [],
     curriculumId,
     standardIds,
     questionType,
@@ -250,18 +250,15 @@ const Search = ({
           <ItemHeader>Collections</ItemHeader>
           <ItemBody>
             <Select
+              mode="multiple"
               data-cy="Collections"
               size="large"
-              onSelect={onSearchFieldChange("collectionName")}
-              value={collectionName}
+              onChange={onSearchFieldChange("collections")}
+              value={_collections}
               getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {collectionData.map(el => (
-                <Select.Option
-                  key={el.value}
-                  value={el.value}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
+                <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
               ))}

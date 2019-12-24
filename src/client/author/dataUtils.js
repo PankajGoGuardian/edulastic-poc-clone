@@ -1,10 +1,19 @@
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
 import { EdulasticVerified } from "./TestList/components/ListItem/styled";
 
 const { PASSAGE } = questionType;
+
+export const hasUserGotAccessToPremiumItem = (itemCollections = [], orgCollections = [], returnFlag = true) => {
+  const itemCollectionsMap = keyBy(itemCollections, o => o._id);
+  if (returnFlag) {
+    return !!orgCollections.find(o => itemCollectionsMap[o._id]);
+  } else {
+    return orgCollections.find(o => itemCollectionsMap[o._id]);
+  }
+};
 
 export const getAuthorCollectionMap = (isBottom, width, height) => {
   return {
@@ -16,16 +25,24 @@ export const getAuthorCollectionMap = (isBottom, width, height) => {
       icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
       displayName: "Edulastic Certified"
     },
+    "Edulastic Certified": {
+      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+      displayName: "Edulastic Certified"
+    },
     Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
     PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
   };
 };
 
-export const getTestAuthorName = item => {
-  const { createdBy = {}, collectionName = "", authors = [] } = item;
-  if (collectionName) {
-    const collectionMap = getAuthorCollectionMap(true, 15, 15);
-    return collectionMap[collectionName] ? collectionMap[collectionName].displayName : collectionName;
+export const getTestAuthorName = (item, orgCollections) => {
+  const { createdBy = {}, collections = [], authors = [] } = item;
+
+  if (collections.length) {
+    // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
+    const collectionItem = hasUserGotAccessToPremiumItem(collections, orgCollections, false);
+    if (collectionItem) {
+      return collectionItem.name;
+    }
   }
   if (createdBy._id) {
     const author = authors.find(item => item._id === createdBy._id) || {};
@@ -34,11 +51,15 @@ export const getTestAuthorName = item => {
   return authors.length && authors[0].name;
 };
 
-export const getTestItemAuthorName = item => {
-  const { owner = "", collectionName = "", authors = [] } = item;
-  if (collectionName) {
-    const collectionMap = getAuthorCollectionMap(true, 15, 15);
-    return collectionMap[collectionName] ? collectionMap[collectionName].displayName : collectionName;
+export const getTestItemAuthorName = (item, orgCollections) => {
+  const { owner = "", collections = [], authors = [] } = item;
+
+  if (collections.length) {
+    // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
+    const collectionItem = hasUserGotAccessToPremiumItem(collections, orgCollections, false);
+    if (collectionItem) {
+      return collectionItem.name;
+    }
   }
   if (owner) {
     const author = authors.find(item => item._id === owner) || {};
@@ -47,12 +68,18 @@ export const getTestItemAuthorName = item => {
   return (authors.length && authors?.[0]?.name) || "Anonymous";
 };
 
-export const getTestItemAuthorIcon = item => {
-  const { collectionName = "" } = item;
-  const collectionMap = getAuthorCollectionMap(true, 15, 15);
-  if (collectionName && collectionMap[collectionName]) {
-    return collectionMap[collectionName].icon;
+export const getTestItemAuthorIcon = (item, orgCollections) => {
+  let { collections = [] } = item;
+
+  if (collections.length) {
+    // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
+    const collectionItem = hasUserGotAccessToPremiumItem(collections, orgCollections, false);
+    const collectionMap = getAuthorCollectionMap(true, 15, 15);
+    if (collectionItem && collectionMap[collectionItem.name]) {
+      return collectionMap[collectionItem.name].icon;
+    }
   }
+
   return <UserIcon />;
 };
 

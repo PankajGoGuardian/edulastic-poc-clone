@@ -47,7 +47,7 @@ import {
   getItemDetailByIdAction,
   proceedPublishingItemAction
 } from "../../../ItemDetail/ducks";
-import { getUserSelector, getUserRole } from "../../../src/selectors/user";
+import { getUserSelector, getUserRole, getCollectionsSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
@@ -61,6 +61,7 @@ import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants, releaseGradeLabels, passwordPolicy: passwordPolicyValues } = testContants;
@@ -627,7 +628,8 @@ class Container extends PureComponent {
       showWarningModal,
       proceedPublish,
       isTestLoading,
-      history
+      history,
+      collections = []
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
@@ -639,7 +641,9 @@ class Container extends PureComponent {
     const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner;
     const showEditButton =
       testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
-    const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
+
+    const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
+
     const gradeSubject = { grades, subjects };
     return (
       <>
@@ -715,7 +719,8 @@ const enhance = compose(
       standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
       performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),
       userRole: getUserRole(state),
-      isReleaseScorePremium: getReleaseScorePremiumSelector(state)
+      isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+      collections: getCollectionsSelector(state)
     }),
     {
       createTest: createTestAction,

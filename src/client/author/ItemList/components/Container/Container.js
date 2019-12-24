@@ -67,22 +67,6 @@ import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../duc
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-export const getClearSearchState = () => ({
-  subject: "",
-  curriculumId: "",
-  standardIds: [],
-  questionType: "",
-  depthOfKnowledge: "",
-  authorDifficulty: "",
-  collectionName: "",
-  status: "",
-  grades: [],
-  tags: [],
-  authoredByIds: [],
-  filter: filterMenuItems[0].filter,
-  createdAt: ""
-});
-
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
@@ -233,6 +217,7 @@ class Contaier extends Component {
         [fieldName]: value
       };
     }
+
     if (fieldName === "grades") {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);

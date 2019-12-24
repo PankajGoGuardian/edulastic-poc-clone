@@ -19,8 +19,8 @@ const SecondBlock = ({
   tags = [],
   allTagsData,
   addNewTag,
-  handleCollectionNameSelect,
-  collectionName,
+  handleCollectionsSelect,
+  collections,
   orgData,
   userFeatures,
   highlightCollection,
@@ -60,6 +60,7 @@ const SecondBlock = ({
       setSearchValue(value);
     }
   };
+
   return (
     <Container padding="20px">
       <Row gutter={36}>
@@ -163,12 +164,13 @@ const SecondBlock = ({
             <ItemBody>
               <Label>Collections</Label>
               <Select
+                mode="multiple"
                 className="tagsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
                 optionLabelProp="title"
                 placeholder="Please select"
-                value={collectionName}
-                onChange={value => handleCollectionNameSelect(value)}
+                value={collections.map(i => i._id)}
+                onChange={(value, options) => handleCollectionsSelect(value, options)}
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
                 suffixIcon={<SelectSuffixIcon type="caret-down" />}
                 autoFocus={highlightCollection}

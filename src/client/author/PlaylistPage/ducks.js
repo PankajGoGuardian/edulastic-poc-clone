@@ -162,7 +162,7 @@ const initialPlaylistState = {
   // FIXME: define schema for modules
   modules: [],
   type: "content",
-  collectionName: "Private Library",
+  collections: [],
   grades: [],
   subjects: [],
   version: 1,

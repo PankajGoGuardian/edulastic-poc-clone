@@ -103,7 +103,7 @@ const ItemsTable = ({
       title: item._id,
       isScoringDisabled
     };
-
+    console.log("item", item);
     const meta = {
       id: item._id,
       by: get(item, ["createdBy", "name"], ""),
@@ -112,7 +112,7 @@ const ItemsTable = ({
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
       item,
-      isPremium: !!item.collectionName,
+      isPremium: item?.collections?.length,
       standards: standards[item._id],
       audio: audioStatus(item),
       dok:

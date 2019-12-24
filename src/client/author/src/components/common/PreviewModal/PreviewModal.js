@@ -100,7 +100,9 @@ class PreviewModal extends React.Component {
 
   // this is the one need to be modified
   editTestItem = () => {
+
     const { data, history, testId, clearItemStore, changeView, updateTestAndNavigate, test } = this.props;
+
     const itemId = data.id;
 
     // change the question editor view to "edit"
@@ -215,7 +217,11 @@ class PreviewModal extends React.Component {
 
     const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
-    const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
+
+    const { allowDuplicate } = collections.find(o => item?.collections?.find(_o => _o._id === o._id)) || {
+      allowDuplicate: true
+    };
+
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
     const isPassage = passage && passageTestItems.length;

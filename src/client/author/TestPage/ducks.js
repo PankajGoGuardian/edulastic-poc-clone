@@ -249,7 +249,7 @@ export const createBlankTest = () => ({
   grades: [],
   subjects: [],
   courses: [],
-  collectionName: "",
+  collections: [],
   analytics: {
     usage: "0",
     likes: "0"

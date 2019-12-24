@@ -22,8 +22,8 @@ import {
 } from "../../../author/QuestionEditor/ducks";
 
 import {
-  getCollectionNamesSelector,
-  setCollectionNameAction,
+  getCollectionsSelector,
+  setCollectionsAction,
   getHighlightCollectionSelector
 } from "../../../author/ItemDetail/ducks";
 
@@ -72,8 +72,8 @@ const QuestionMetadata = ({
   interestedCurriculums,
   editAlignment,
   curriculumStandardsLoading,
-  setCollectionName,
-  collectionName,
+  setCollections,
+  collections,
   orgData,
   userFeatures,
   highlightCollection,
@@ -112,8 +112,9 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const handleCollectionNameSelect = value => {
-    setCollectionName(value);
+  const handleCollectionsSelect = (value, options) => {
+    let _value = options.map(i => ({ _id: i.props.value, name: i.props.title }));
+    setCollections(_value);
   };
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
@@ -179,8 +180,8 @@ const QuestionMetadata = ({
           addNewTag={addNewTag}
           onChangeTags={handleChangeTags}
           onQuestionDataSelect={handleQuestionDataSelect}
-          handleCollectionNameSelect={handleCollectionNameSelect}
-          collectionName={collectionName}
+          handleCollectionsSelect={handleCollectionsSelect}
+          collections={collections}
           orgData={orgData}
           userFeatures={userFeatures}
           highlightCollection={highlightCollection}
@@ -243,7 +244,7 @@ const enhance = compose(
       allTagsData: getAllTagsSelector(state, "testitem"),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state),
-      collectionName: getCollectionNamesSelector(state),
+      collections: getCollectionsSelector(state),
       orgData: getOrgDataSelector(state),
       userFeatures: getUserFeatures(state),
       highlightCollection: getHighlightCollectionSelector(state),
@@ -260,7 +261,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       editAlignment: updateDictAlignmentAction,
-      setCollectionName: setCollectionNameAction
+      setCollections: setCollectionsAction
     }
   )
 );

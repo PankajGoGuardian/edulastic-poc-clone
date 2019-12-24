@@ -103,7 +103,7 @@ export const DELETE_ITEM_SUCCESS = "[itemDetail] delete item success";
 export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
 export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
-export const SET_COLLECTION_NAME = "[itemDetail] set collection name";
+export const SET_COLLECTIONS = "[itemDetail] set collections";
 export const SET_HIGHLIGHT_COLLECTION = "[itemDetail] set highlight collection";
 // actions
 
@@ -120,7 +120,7 @@ export const addWidgetToPassageAction = createAction(ADD_WIDGET_TO_PASSAGE);
 export const deleteItemAction = createAction(DELETE_ITEM);
 export const deleteItemSuccesAction = createAction(DELETE_ITEM_SUCCESS);
 export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
-export const setCollectionNameAction = createAction(SET_COLLECTION_NAME);
+export const setCollectionsAction = createAction(SET_COLLECTIONS);
 export const setItemLevelScoreFromRubricAction = createAction(SET_ITEM_LEVEL_SCORING_FROM_RUBRIC);
 export const setHighlightCollectionAction = createAction(SET_HIGHLIGHT_COLLECTION);
 
@@ -268,9 +268,9 @@ export const getItemSelector = createSelector(
   state => state.item
 );
 
-export const getCollectionNamesSelector = createSelector(
+export const getCollectionsSelector = createSelector(
   getItemDetailSelector,
-  state => state.collectionName
+  state => state.collections || []
 );
 
 export const getHighlightCollectionSelector = createSelector(
@@ -696,12 +696,12 @@ export function reducer(state = initialState, { type, payload }) {
         passage: payload
       };
     }
-    case SET_COLLECTION_NAME: {
+    case SET_COLLECTIONS: {
       return {
         ...state,
         item: {
           ...state.item,
-          collectionName: payload
+          collections: payload
         },
         highlightCollection: false
       };
@@ -1091,8 +1091,7 @@ function* publishTestItemSaga({ payload }) {
     }
 
     yield saveTestItemSaga();
-
-    if ((payload.status === "inreview" && testItem?.collectionName?.length > 0) || payload.status === "published") {
+    if ((payload.status === "inreview" && testItem?.collections?.length > 0) || payload.status === "published") {
       yield call(testItemsApi.publishTestItem, payload);
 
       let successMessage, testItemStatus;

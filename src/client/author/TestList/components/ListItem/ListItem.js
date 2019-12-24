@@ -104,7 +104,7 @@ class ListItem extends Component {
         status: testStatus,
         description,
         thumbnail,
-        collectionName
+        collections = []
       },
       item,
       authorName,
@@ -166,7 +166,11 @@ class ListItem extends Component {
                 {!isPlaylist && mode === "embedded" && (
                   <ViewButtonWrapper span={6}>
                     {!isTestAdded && mode === "embedded" && (
-                      <ViewButton onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}>ADD</ViewButton>
+                      <ViewButton
+                        onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}
+                      >
+                        ADD
+                      </ViewButton>
                     )}
 
                     {!isTestAdded && mode === "embedded" && (
@@ -216,16 +220,16 @@ class ListItem extends Component {
                     </TestStatus>
                   </>
                 )}
-                {(collectionName === "edulastic_certified" || collectionName === "engage_ny") &&
-                  getAuthorCollectionMap(true, 30, 30)[collectionName].icon}
+                {collections.find(o => o.name === "Edulastic Certified") &&
+                  getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon}
               </TagsWrapper>
 
               <ItemInformation span={12}>
                 <ContentWrapper>
                   {authorName && (
                     <Author>
-                      {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
-                        getAuthorCollectionMap(true, 30, 30)[collectionName].icon
+                      {collections.find(o => o.name === "Edulastic Certified") ? (
+                        getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon
                       ) : (
                         <IconUser color={cardTitleColor} />
                       )}{" "}

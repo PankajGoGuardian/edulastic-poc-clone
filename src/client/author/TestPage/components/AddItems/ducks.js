@@ -111,7 +111,7 @@ export const initalSearchState = {
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
-  collectionName: "",
+  collections: [],
   status: "",
   grades: [],
   tags: [],

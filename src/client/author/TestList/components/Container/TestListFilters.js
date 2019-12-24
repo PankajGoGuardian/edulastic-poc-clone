@@ -43,11 +43,12 @@ const TestListFilters = ({
       return [
         ...filterData1,
         {
+          mode: "multiple",
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
           data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
-          onChange: "collectionName"
+          onChange: "collections"
         },
         {
           mode: "multiple",
@@ -102,11 +103,12 @@ const TestListFilters = ({
           isStandardSelect: true
         },
         {
+          mode: "multiple",
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
           data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
-          onChange: "collectionName"
+          onChange: "collections"
         }
       ]
     );

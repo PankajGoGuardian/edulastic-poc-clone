@@ -54,6 +54,8 @@ import BreadCrumb from "../../src/components/Breadcrumb";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import { getCollectionsSelector } from "../../src/selectors/user";
+import { getTestAuthorName } from "../../dataUtils";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -317,7 +319,8 @@ class CurriculumSequence extends Component {
       recentPlaylists,
       onShareClick,
       history,
-      handleTestsSort
+      handleTestsSort,
+      collections
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -347,7 +350,6 @@ class CurriculumSequence extends Component {
       subjects = [],
       grades = [],
       customize = true,
-      collectionName = "",
       isAuthor = false,
       bgColor = themeColor || "",
       textColor = white || ""
@@ -392,6 +394,7 @@ class CurriculumSequence extends Component {
       }
     ];
     const showUseThisButton = status !== "draft" && !urlHasUseThis;
+
     return (
       <>
         <RemoveTestModal
@@ -502,7 +505,7 @@ class CurriculumSequence extends Component {
             <TopBar>
               <CurriculumHeader justifyContent="space-between">
                 <HeaderTitle>
-                  {collectionName}
+                  {getTestAuthorName(destinationCurriculumSequence, collections)}
                   <Icon
                     style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
                     type={curriculumGuide ? "up" : "down"}
@@ -1296,7 +1299,8 @@ const enhance = compose(
       isContentExpanded: state.curriculumSequence.isContentExpanded,
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
-      recentPlaylists: getRecentPlaylistSelector(state)
+      recentPlaylists: getRecentPlaylistSelector(state),
+      collections: getCollectionsSelector(state)
     }),
     {
       onGuideChange: changeGuideAction,

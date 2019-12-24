@@ -146,7 +146,7 @@ class Item extends Component {
         status,
         _id: testId,
         description,
-        collectionName = "",
+        collections = [],
         summary = {}
       },
       item,
@@ -216,10 +216,9 @@ class Item extends Component {
                   </Button>
                 )}
               </ButtonWrapper>
-              {(collectionName === "edulastic_certified" || collectionName === "engage_ny") &&
-                getAuthorCollectionMap(false, 30, 30)[collectionName].icon}
-
-              {!!collectionName && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
+              {collections.find(o => o.name === "Edulastic Certified") &&
+                getAuthorCollectionMap(false, 30, 30)["edulastic_certified"].icon}
+              {!!collections.length && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
           }
         >
@@ -251,8 +250,8 @@ class Item extends Component {
             {authorName && (
               <Author isPlaylist={isPlaylist}>
                 <AuthorWrapper>
-                  {collectionName === "edulastic_certified" || collectionName === "engage_ny" ? (
-                    getAuthorCollectionMap(true, 30, 30)[collectionName].icon
+                  {collections.find(o => o.name === "Edulastic Certified") ? (
+                    getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon
                   ) : (
                     <IconUser color={cardTitleColor} />
                   )}

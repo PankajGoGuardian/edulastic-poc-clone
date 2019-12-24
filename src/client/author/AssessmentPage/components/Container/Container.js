@@ -33,6 +33,8 @@ import ShareModal from "../../../src/components/common/ShareModal";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { proceedPublishingItemAction } from "../../../ItemDetail/ducks";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = test;
 
@@ -290,7 +292,8 @@ class Container extends React.Component {
       creating,
       showWarningModal,
       proceedPublish,
-      currentTab
+      currentTab,
+      collections
     } = this.props;
     const { editEnable, showShareModal } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
@@ -299,7 +302,8 @@ class Container extends React.Component {
     const showEditButton =
       authors && authors.some(x => x._id === userId) && status && status === statusConstants.PUBLISHED && !editEnable;
 
-    const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
+    const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
+
     const gradeSubject = { grades, subjects };
 
     if (loading) {
@@ -360,7 +364,8 @@ const enhance = compose(
       questions: getQuestionsArraySelector(state),
       creating: getTestsCreatingSelector(state),
       questionsById: getQuestionsSelector(state),
-      currentTab: getViewSelector(state)
+      currentTab: getViewSelector(state),
+      collections: getCollectionsSelector(state)
     }),
     {
       receiveTestById: receiveTestByIdAction,

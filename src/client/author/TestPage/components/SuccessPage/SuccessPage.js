@@ -43,6 +43,8 @@ import ShareModal from "../../../src/components/common/ShareModal";
 import { Divider } from "antd";
 import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
 import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 const { statusConstants, passwordPolicy } = test;
 
@@ -111,7 +113,16 @@ class SuccessPage extends React.Component {
   }
 
   render() {
-    const { test, isPlaylist, playlist, isAssignSuccess, isRegradeSuccess, assignment = {}, userId } = this.props;
+    const {
+      test,
+      isPlaylist,
+      playlist,
+      isAssignSuccess,
+      isRegradeSuccess,
+      assignment = {},
+      userId,
+      collections
+    } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [], summary = {} } = isPlaylist
       ? playlist
@@ -139,8 +150,9 @@ class SuccessPage extends React.Component {
     let hasPremiumQuestion = false;
     if (!isPlaylist) {
       const { testItems = [] } = test;
-      hasPremiumQuestion = testItems.some(x => !!x.collectionName);
+      hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
     }
+
     const breadCrumbData = [
       {
         title: "TEST LIBRARY",
@@ -273,7 +285,8 @@ const enhance = compose(
       userId: get(state, "user.user._id", ""),
       assignment: getCurrentAssignmentSelector(state),
       playListSharedUsersList: getPlayListSharedListSelector(state),
-      testSharedUsersList: getTestSharedListSelector(state)
+      testSharedUsersList: getTestSharedListSelector(state),
+      collections: getCollectionsSelector(state)
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,

@@ -118,7 +118,7 @@ export const emptyFilters = {
   type: "",
   status: "",
   tags: [],
-  collectionName: ""
+  collections: []
 };
 
 // reducer

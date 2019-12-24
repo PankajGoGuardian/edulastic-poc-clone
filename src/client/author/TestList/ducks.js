@@ -127,7 +127,7 @@ export const emptyFilters = {
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
-  collectionName: "",
+  collections: [],
   curriculumId: "",
   status: "",
   standardIds: [],

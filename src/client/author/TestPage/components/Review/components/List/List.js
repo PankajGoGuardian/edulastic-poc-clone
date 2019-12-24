@@ -205,7 +205,7 @@ const List = SortableContainer(
               shared: "0",
               likes: "0",
               type: getQuestionType(testItems[i]),
-              isPremium: !!testItems[i].collectionName,
+              isPremium: testItems[i]?.collections?.length,
               item: testItems[i],
               audio: audioStatus(testItems[i]),
               dok:

@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 
@@ -7,20 +9,23 @@ import { testsApi } from "@edulastic/api";
 import { AnswerContext } from "@edulastic/common";
 import { getOrderedQuestionsAndAnswers } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
+import { getTestAuthorName } from "../dataUtils";
+import { getCollectionsSelector } from "../src/selectors/user";
 
 function useTestFetch(testId) {
   const [testDetails, setTestDetails] = useState(null);
 
   useEffect(() => {
     testsApi.getById(testId).then(test => {
-      const { passages, testItems = [], title, authors = [], collectionName = "" } = test;
+      const { passages, testItems = [], title, authors = [], collections = [], createdBy = {} } = test;
       const { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages);
       setTestDetails({
         title,
-        collectionName,
-        author: authors[0]?.name,
+        collections,
+        authors,
         questions,
-        answers
+        answers,
+        createdBy
       });
       document.title = test.title;
     });
@@ -29,7 +34,7 @@ function useTestFetch(testId) {
   return testDetails;
 }
 
-const PrintAssessment = ({ match }) => {
+const PrintAssessment = ({ match, collections }) => {
   const { testId } = match.params;
   const test = useTestFetch(testId);
 
@@ -50,10 +55,10 @@ const PrintAssessment = ({ match }) => {
           <span> {test.title}</span>
         </Col>
         <Col>
-          <span> Collection: {test.collectionName} </span>
+          <span> Collection: {getTestAuthorName(test, collections)} </span>
         </Col>
       </Row>
-      <span> Created By {test.author} </span> <br />
+      <span> Created By {test?.createdBy?.name} </span> <br />
       <hr />
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         {test.questions.map((question, index) => (
@@ -86,7 +91,15 @@ const PrintAssessment = ({ match }) => {
   );
 };
 
-export default withRouter(PrintAssessment);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({ collections: getCollectionsSelector(state) }),
+    {}
+  )
+);
+
+export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
   background-color: white;

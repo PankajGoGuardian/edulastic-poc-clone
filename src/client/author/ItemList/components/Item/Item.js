@@ -49,7 +49,12 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
+
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
+
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
+
 
 // render single item
 class Item extends Component {
@@ -129,7 +134,7 @@ class Item extends Component {
   };
 
   renderDetails = () => {
-    const { item, windowWidth } = this.props;
+    const { item, windowWidth, collections } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const details = [
@@ -138,8 +143,8 @@ class Item extends Component {
         text: (questions.find(item => item.depthOfKnowledge) || {}).depthOfKnowledge
       },
       {
-        name: getTestItemAuthorIcon(item),
-        text: getTestItemAuthorName(item)
+        name: getTestItemAuthorIcon(item, collections),
+        text: getTestItemAuthorName(item, collections)
       },
       {
         name: <IdIcon />,
@@ -162,6 +167,11 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
+        
+    if (hasUserGotAccessToPremiumItem(item.collections, collections)) {
+      details.unshift({ name: <PremiumTag />, type: "premium" });
+    }
+    
     return details.map(
       (detail, index) =>
         (detail.text || detail.type === "premium") &&
@@ -396,7 +406,8 @@ const enhance = compose(
     state => ({
       passageItemsCount: getPassageItemsCountSelector(state),
       passageItems: state.tests.passageItems,
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      collections: getCollectionsSelector(state)
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

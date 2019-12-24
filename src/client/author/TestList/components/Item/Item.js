@@ -225,10 +225,10 @@ class Item extends Component {
           <TestInfo isPlaylist={isPlaylist}>
             <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
             {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
-            {!isPlaylist && (
+            {isPlaylist && (
               <TagsWrapper>
                 <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
-                <Tags show={2} tags={tags} key="tags" />
+                <Tags show={2} tags={_source.tags || tags} key="tags" />
               </TagsWrapper>
             )}
           </TestInfo>

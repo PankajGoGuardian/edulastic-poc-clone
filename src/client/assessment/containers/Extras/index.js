@@ -49,7 +49,6 @@ class Extras extends Component {
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
         >
-          {console.log(isSection)}
           {isSection && <SectionHeading>{t("component.options.solution")}</SectionHeading>}
           {!isSection && (
             <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.solution")}`)}>

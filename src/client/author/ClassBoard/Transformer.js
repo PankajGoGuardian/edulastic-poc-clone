@@ -143,6 +143,26 @@ export const getMaxScoreOfQid = (qid, testItemsData) => {
   return 0;
 };
 
+const getSkippedStatusOfQuestion = (testItemId, questionActivitiesMap, testItems, questionActivityId) => {
+  const questionActivities = Object.values(questionActivitiesMap);
+  const questions = questionActivities.filter(o => o.testItemId === testItemId);
+  const item = testItems.find(o => o._id === testItemId);
+
+  let skipCount = 0;
+  if (item && item.itemLevelScoring) {
+    for (let q of questions) {
+      if (q.skipped === true) {
+        skipCount++;
+      }
+    }
+    if (skipCount === questions.length) {
+      return true;
+    }
+    return false;
+  }
+  return questionActivitiesMap[questionActivityId].skipped;
+};
+
 /**
  * @returns {number}
  */
@@ -219,6 +239,7 @@ export const transformGradeBookResponse = (
     });
     return testItem;
   });
+
   const testItemIds = test.testItems.map(o => o._id);
   const testItemIdsSet = new Set(testItemIds);
   testQuestionActivities = testQuestionActivities.filter(x => testItemIdsSet.has(x.testItemId));
@@ -226,6 +247,7 @@ export const transformGradeBookResponse = (
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
+
   for (const itemId of Object.keys(questionActivitiesGrouped)) {
     const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(x => x.graded === false);
 
@@ -352,6 +374,8 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               ...remainingProps
             } = questionActivitiesIndexed[el];
+            skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
+
             if (score > 0 && skipped) {
               skipped = false;
             }

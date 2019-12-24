@@ -102,7 +102,7 @@ class Container extends PureComponent {
 
   gotoTab = tab => {
     const { history, match, location } = this.props;
-    const { regradeFlow = false, previousTestId = "" } = location?.state;
+    const { regradeFlow = false, previousTestId = "" } = location?.state || {};
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
     const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
     let url = `/author/tests/create/${tab}`;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled, { withTheme } from "styled-components";
 import { Select, Button } from "antd";
 import { connect } from "react-redux";
@@ -27,16 +27,17 @@ const SettingsModal = ({
     boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.07)"
   };
 
-  const [tempTheme, setTempTheme] = useState({ selectedTheme, zoomLevel });
-
-  useEffect(() => {
-    setTempTheme({ selectedTheme, zoomLevel });
-  }, []);
-
   const closeModal = () => setSettingsModalVisibility(false);
+
+  const handleApply = () => {
+    localStorage.setItem("selectedTheme", selectedTheme);
+    localStorage.setItem("zoomLevel", zoomLevel);
+    closeModal();
+  };
+
   const handleCancel = () => {
-    setSelectedTheme(tempTheme.selectedTheme);
-    setZoomLevel(tempTheme.zoomLevel);
+    setSelectedTheme(localStorage.getItem("selectedTheme") || "default");
+    setZoomLevel(localStorage.getItem("zoomLevel") || "1");
     closeModal();
   };
   return (
@@ -52,7 +53,7 @@ const SettingsModal = ({
         <StyledButton ghost key="cancel" onClick={handleCancel} cancel>
           CANCEL
         </StyledButton>,
-        <StyledButton key="submit" onClick={closeModal}>
+        <StyledButton key="submit" onClick={handleApply}>
           APPLY
         </StyledButton>
       ]}

@@ -21,14 +21,12 @@ export const setSelectedThemeAction = createAction(SET_THEME);
 
 const reducer = createReducer(initialState, {
   [SET_THEME]: (state, { payload }) => {
-    localStorage.setItem("selectedTheme", payload);
     state.selectedTheme = payload;
   },
   [SET_SETTINGS_MODAL_VISIBILITY]: (state, { payload }) => {
     state.settingsModalVisible = payload;
   },
   [SET_ZOOM_LEVEL]: (state, { payload }) => {
-    localStorage.setItem("zoomLevel", payload);
     state.zoomLevel = payload;
   },
   [TOGGLE_MENU]: state => {

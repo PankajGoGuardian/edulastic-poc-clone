@@ -99,11 +99,11 @@ const UseExisting = ({
               </span>
               {currentMode === "PREVIEW" && !isEditable && (
                 <>
-                  {currentQuestion.rubrics?.id !== currentRubricData._id && (
+                  {currentQuestion.rubrics?._id !== currentRubricData._id && (
                     <span
                       onClick={() => {
                         associateRubricWithQuestion({
-                          metadata: { id: currentRubricData._id, name: currentRubricData.name },
+                          metadata: { _id: currentRubricData._id, name: currentRubricData.name },
                           maxScore
                         });
                         addRubricToRecentlyUsed(currentRubricData);
@@ -113,7 +113,7 @@ const UseExisting = ({
                       <Icon type="check" /> <span>Use</span>
                     </span>
                   )}
-                  {currentQuestion.rubrics?.id === currentRubricData._id && (
+                  {currentQuestion.rubrics?._id === currentRubricData._id && (
                     <span onClick={() => dissociateRubricFromQuestion()}>
                       <i class="fa fa-minus" aria-hidden="true" /> Remove
                     </span>
@@ -251,9 +251,9 @@ const UseExisting = ({
           ...data,
           status: type
         });
-        if (currentQuestion.rubrics?.id === currentRubricData._id)
+        if (currentQuestion.rubrics?._id === currentRubricData._id)
           associateRubricWithQuestion({
-            metadata: { id: currentRubricData._id, name: currentRubricData.name },
+            metadata: { _id: currentRubricData._id, name: currentRubricData.name },
             maxScore
           });
       } else

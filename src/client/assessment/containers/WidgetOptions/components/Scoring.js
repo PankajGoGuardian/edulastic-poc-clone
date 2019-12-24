@@ -294,7 +294,7 @@ class Scoring extends Component {
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <StyledTag>
-            <span onClick={() => this.handleViewRubric(questionData.rubrics.id)}>{questionData.rubrics.name}</span>
+            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
             <span onClick={() => dissociateRubricFromQuestion()}>
               <Icon type="close" />
             </span>

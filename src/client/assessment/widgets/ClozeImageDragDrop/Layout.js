@@ -230,47 +230,6 @@ class Layout extends Component {
             </Col>
           </Row>
         </Block>
-        <Block>
-          {responses.map((_response, resIndex) => {
-            if (!_response.id) {
-              return null;
-            }
-            const resId = _response.id;
-            return (
-              <IndividualContainer key={resId}>
-                <Row gutter={20}>
-                  <Col md={12}>
-                    <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-                  </Col>
-                </Row>
-                <Row gutter={20}>
-                  <Col md={12}>
-                    <Label>{t("component.options.widthpx")}</Label>
-                    <Input
-                      type="number"
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
-                      value={parseInt(_response.width, 10)}
-                    />
-                  </Col>
-                  <Col md={12}>
-                    <Label>{t("component.options.heightpx")}</Label>
-                    <Input
-                      type="number"
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
-                      value={parseInt(_response.height, 10)}
-                    />
-                  </Col>
-                </Row>
-              </IndividualContainer>
-            );
-          })}
-        </Block>
       </Question>
     );
   }

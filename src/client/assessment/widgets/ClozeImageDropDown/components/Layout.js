@@ -142,13 +142,6 @@ class Layout extends Component {
       { value: "number", label: t("component.options.number") }
     ];
 
-    const pointerOptions = [
-      { value: "right", label: t("component.options.right") },
-      { value: "left", label: t("component.options.left") },
-      { value: "top", label: t("component.options.top") },
-      { value: "bottom", label: t("component.options.bottom") }
-    ];
-
     return (
       <React.Fragment>
         <Question
@@ -226,64 +219,6 @@ class Layout extends Component {
                 />
               </Col>
             </MarginRow>
-            <MarginRow gutter={20}>
-              <Col md={12}>
-                <Label>{t("component.options.pointers")}</Label>
-                <SelectWrapper>
-                  <OptionSelect
-                    size="large"
-                    onChange={inputtype => changeUiStyle("pointers", inputtype)}
-                    value={uiStyle.pointers}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                  >
-                    {pointerOptions.map(({ value: val, label }) => (
-                      <Select.Option key={val} value={val}>
-                        {label}
-                      </Select.Option>
-                    ))}
-                  </OptionSelect>
-                </SelectWrapper>
-              </Col>
-            </MarginRow>
-            {responses.map((response, resIndex) => {
-              if (!response.id) {
-                return null;
-              }
-              const resId = response.id;
-              return (
-                <Container key={resId}>
-                  <MarginRow gutter={20}>
-                    <Col md={12}>
-                      <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-                    </Col>
-                  </MarginRow>
-                  <MarginRow gutter={20}>
-                    <Col md={12}>
-                      <Label>{t("component.options.widthpx")}</Label>
-                      <Input
-                        type="number"
-                        size="large"
-                        disabled={false}
-                        containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
-                        value={parseInt(response.width, 10)}
-                      />
-                    </Col>
-                    <Col md={12}>
-                      <Label>{t("component.options.heightpx")}</Label>
-                      <Input
-                        type="number"
-                        size="large"
-                        disabled={false}
-                        containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
-                        value={parseInt(response.height, 10)}
-                      />
-                    </Col>
-                  </MarginRow>
-                </Container>
-              );
-            })}
           </Block>
         </Question>
       </React.Fragment>

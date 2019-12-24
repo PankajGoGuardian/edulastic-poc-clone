@@ -16,13 +16,6 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
     { value: "number", label: t("component.options.number") }
   ];
 
-  const pointerOptions = [
-    { value: "right", label: t("component.options.right") },
-    { value: "left", label: t("component.options.left") },
-    { value: "top", label: t("component.options.top") },
-    { value: "bottom", label: t("component.options.bottom") }
-  ];
-
   const changeIndividualUiStyle = (prop, value, id) => {
     changeStyle(
       "responses",
@@ -110,74 +103,6 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
           />
         </Col>
       </Row>
-      <Row gutter={20}>
-        <Col md={12}>
-          <Label>{t("component.options.pointers")}</Label>
-          <SelectWrapper>
-            <OptionSelect
-              size="large"
-              onChange={val => onChange("pointer", val)}
-              value={uiStyle.pointer}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {pointerOptions.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
-                  {label}
-                </Select.Option>
-              ))}
-            </OptionSelect>
-          </SelectWrapper>
-        </Col>
-      </Row>
-      {responses.map((response, resIndex) => {
-        if (!response.id) {
-          return null;
-        }
-        const resId = response.id;
-        return (
-          <IndividualContainer key={resId}>
-            <Row gutter={20}>
-              <Col md={12}>
-                <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
-              </Col>
-            </Row>
-            <Row gutter={20}>
-              <Col md={8}>
-                <Label>{t("component.options.widthpx")}</Label>
-                <Input
-                  type="number"
-                  size="large"
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  onChange={e => changeIndividualUiStyle("width", +e.target.value, resId)}
-                  value={parseInt(response.width)}
-                />
-              </Col>
-              <Col md={8}>
-                <Label>{t("component.options.heightpx")}</Label>
-                <Input
-                  type="number"
-                  size="large"
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  onChange={e => changeIndividualUiStyle("height", +e.target.value, resId)}
-                  value={parseInt(response.height, 10)}
-                />
-              </Col>
-              <Col md={8}>
-                <Label>{t("component.options.placeholder")}</Label>
-                <Input
-                  size="large"
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resId)}
-                  value={response.placeholder}
-                />
-              </Col>
-            </Row>
-          </IndividualContainer>
-        );
-      })}
     </Fragment>
   );
 };

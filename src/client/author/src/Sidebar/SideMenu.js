@@ -118,12 +118,6 @@ class SideMenu extends Component {
     this.state = {
       isVisible: false
     };
-    const { features } = props;
-    if (!features["playlist"]) {
-      remove(menuItems, item => {
-        if (item.label === "PlayList Library") return item;
-      });
-    }
 
     this.sideMenuRef = React.createRef();
   }
@@ -355,6 +349,12 @@ class SideMenu extends Component {
                 onClick={item => this.handleMenu(item)}
               >
                 {this.MenuItems.map((menu, index) => {
+                  /**
+                   * show playlist based on `features` list
+                   */
+                  if (menu.label === "PlayList Library" && !features["playlist"]) {
+                    return null;
+                  }
                   // to hide Dashboard from side menu if a user is DA or SA.
                   if (
                     ["district-admin", "school-admin"].includes(userRole) &&

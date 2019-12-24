@@ -7,7 +7,8 @@ export const getStandardWisePerformance = (testActivities, std) => {
   // const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
   // const questionActivities = submittedTestActivities.flatMap(({ studentId, questionActivities }) =>
 
-  const questionActivities = testActivities.flatMap(({ studentId, questionActivities }) =>
+  const interestedTestActivities = testActivities.filter(x => x.status === "submitted" || x.status === "inProgress");
+  const questionActivities = interestedTestActivities.flatMap(({ studentId, questionActivities }) =>
     questionActivities.map(x => ({ ...x, studentId }))
   );
 
@@ -42,8 +43,8 @@ export const getStandardWisePerformance = (testActivities, std) => {
 
 export const getStandardWisePerformanceDetail = (testActivities, std, isPresentationMode = false) => {
   // may be filter out absent const submittedTestActivities = testActivities.filter(x => x.status !== "absent");
-  const submittedTestActivities = testActivities.filter(x => x.status === "submitted");
-  const questionActivities = submittedTestActivities.flatMap(
+  const interestedTestActivities = testActivities.filter(x => x.status === "submitted" || x.status === "inProgress");
+  const questionActivities = interestedTestActivities.flatMap(
     ({ studentId, studentName, fakeName, questionActivities }) =>
       questionActivities.map(x => ({ ...x, studentId, studentName, fakeName }))
   );

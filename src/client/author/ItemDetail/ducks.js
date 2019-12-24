@@ -17,7 +17,8 @@ import {
   deleteQuestionAction,
   SET_QUESTION_SCORE,
   changeCurrentQuestionAction,
-  UPDATE_QUESTION
+  UPDATE_QUESTION,
+  changeUpdatedFlagAction
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
@@ -1064,7 +1065,7 @@ function* publishTestItemSaga({ payload }) {
       }
       yield put(updateTestItemStatusAction(testItemStatus));
       const redirectTestId = yield select(getRedirectTestSelector);
-
+      yield put(changeUpdatedFlagAction(false));
       if (redirectTestId) {
         yield delay(1500);
         yield put(push(`/author/tests/${redirectTestId}`));

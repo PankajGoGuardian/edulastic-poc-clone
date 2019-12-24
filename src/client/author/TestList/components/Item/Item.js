@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
@@ -36,6 +38,7 @@ import TestPreviewModal from "../../../Assignments/components/Container/TestPrev
 import { TestStatus, EdulasticVerified } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
+import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 
 class Item extends Component {
   static propTypes = {
@@ -116,6 +119,22 @@ class Item extends Component {
     this.setState({ isDeleteModalOpen: false });
   };
 
+  onApprove = () => {
+    const {
+      item: { _id: testId },
+      approveOrRejectSingleTestRequestAction
+    } = this.props;
+    approveOrRejectSingleTestRequestAction({ testId, status: "published" });
+  };
+
+  onReject = () => {
+    const {
+      item: { _id: testId },
+      approveOrRejectSingleTestRequestAction
+    } = this.props;
+    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
+  };
+
   render() {
     const {
       item: {
@@ -151,6 +170,8 @@ class Item extends Component {
           onDuplicate={this.duplicate}
           onEdit={this.moveToItem}
           onDelete={this.onDelete}
+          onReject={this.onReject}
+          onApprove={this.onApprove}
           item={item}
           status={status}
           owner={owner}
@@ -272,4 +293,12 @@ class Item extends Component {
   }
 }
 
-export default withNamespaces("author")(Item);
+const enhance = compose(
+  withNamespaces("author"),
+  connect(
+    state => ({}),
+    { approveOrRejectSingleTestRequestAction }
+  )
+);
+
+export default enhance(Item);

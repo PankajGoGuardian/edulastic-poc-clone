@@ -67,6 +67,14 @@ const publishTest = testId =>
     })
     .then(result => result.data.result);
 
+const updateTestStatus = data =>
+  api
+    .callApi({
+      url: `${prefix}/${data.testId}/publish?status=${data.status}`,
+      method: "put"
+    })
+    .then(result => result.data.result);
+
 const getPublicTest = testId =>
   api
     .callApi({
@@ -123,6 +131,7 @@ export default {
   update,
   getDefaultImage,
   publishTest,
+  updateTestStatus,
   getPublicTest,
   getByV1Id,
   getDefaultTestSettings,

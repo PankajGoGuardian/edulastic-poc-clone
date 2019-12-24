@@ -35,6 +35,7 @@ import { getCurrentItemSelector } from "../../student/sharedDucks/TestItem";
 // constants
 
 const testItemStatusConstants = {
+  INREVIEW: "inreview",
   DRAFT: "draft",
   PUBLISHED: "published",
   ARCHIVED: "archived"
@@ -813,8 +814,15 @@ function* publishTestSaga({ payload }) {
       payload: { id, data: test, assignFlow: true }
     });
 
-    yield call(testsApi.publishTest, id);
-    yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
+    const features = yield select(getUserFeatures);
+    if (features.isPublisherAuthor && !assignFlow) {
+      yield call(testsApi.updateTestStatus, { testId: id, status: testItemStatusConstants.INREVIEW });
+      yield put(updateTestStatusAction(testItemStatusConstants.INREVIEW));
+    } else {
+      yield call(testsApi.publishTest, id);
+      yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
+    }
+
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
     }

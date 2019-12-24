@@ -4,9 +4,17 @@ import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
 import { find } from "lodash";
 import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
-import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
+import {
+  IconHeart,
+  IconShare,
+  IconWorldWide,
+  IconCopy,
+  IconDescription,
+  IconTrashAlt,
+  IconStop
+} from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Tooltip } from "antd";
+import { Tooltip, Icon } from "antd";
 import {
   ModalTitle,
   ModalContainer,
@@ -47,6 +55,7 @@ import {
 } from "./styled";
 import { getInterestedCurriculumsSelector, getUserIdSelector } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -68,6 +77,8 @@ class ViewModal extends React.Component {
       onDuplicate,
       onDelete,
       onEdit,
+      onReject,
+      onApprove,
       status,
       interestedCurriculums,
       windowWidth,
@@ -141,6 +152,21 @@ class ViewModal extends React.Component {
                 </IconWrapper>
                 <span>CLONE</span>
               </ViewModalButton>
+              {status === "inreview" ? (
+                <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                  <ViewModalButton
+                    data-cy="reject-button"
+                    onClick={() => {
+                      onReject();
+                    }}
+                  >
+                    <IconWrapper>
+                      <Icon type="stop" color={themeColor} />
+                    </IconWrapper>
+                    <span>REJECT</span>
+                  </ViewModalButton>
+                </FeaturesSwitch>
+              ) : null}
               {isDeleteAllowed ? (
                 <ViewModalButton data-cy="delete-button" onClick={() => onDelete()}>
                   <IconWrapper>
@@ -148,6 +174,24 @@ class ViewModal extends React.Component {
                   </IconWrapper>
                   <span>DELETE</span>
                 </ViewModalButton>
+              ) : null}
+            </ButtonContainer>
+            <ButtonContainer>
+              {status === "inreview" || status === "rejected" ? (
+                <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                  <ViewModalButton
+                    data-cy="approve-button"
+                    bgColor={themeColor}
+                    onClick={() => {
+                      onApprove();
+                    }}
+                  >
+                    <IconWrapper>
+                      <Icon type="check" color={themeColor} />
+                    </IconWrapper>
+                    <span>Approve</span>
+                  </ViewModalButton>
+                </FeaturesSwitch>
               ) : null}
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (

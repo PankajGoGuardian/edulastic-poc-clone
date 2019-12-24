@@ -106,6 +106,7 @@ const Settings = ({
     }
     updateTempTestSettings(newTempTestSettingsState);
     updateAssignmentSettings(newSettingsState);
+    changeField(key)(value);
   };
 
   const handleUpdatePasswordExpireIn = e => {

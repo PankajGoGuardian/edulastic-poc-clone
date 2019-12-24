@@ -101,12 +101,14 @@ class Container extends PureComponent {
   };
 
   gotoTab = tab => {
-    const { history, match } = this.props;
+    const { history, match, location } = this.props;
+    const { regradeFlow = false, previousTestId = "" } = location?.state;
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
     const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
     let url = `/author/tests/create/${tab}`;
-    if (id && oldId) {
-      url = `/author/tests/tab/${tab}/id/${id}/old/${oldId}`;
+    if ((id && oldId) || regradeFlow) {
+      const newTab = previousTestId ? "review" : tab;
+      url = `/author/tests/tab/${newTab}/id/${id}/old/${oldId || previousTestId}`;
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`;
     }

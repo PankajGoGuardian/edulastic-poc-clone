@@ -44,6 +44,7 @@ const ItemDetailContainer = ({
   saveTestItem,
   proceedPublish,
   userFeatures,
+  location,
   ...props
 }) => {
   const { modalItemId } = props;
@@ -63,7 +64,7 @@ const ItemDetailContainer = ({
   }, [itemId]);
 
   const saveItem = () => {
-    updateItem(itemId, item, testId, isTestFlow);
+    updateItem(itemId, item, testId, isTestFlow, location.state);
   };
 
   const publishItem = () => {

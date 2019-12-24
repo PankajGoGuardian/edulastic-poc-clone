@@ -149,9 +149,16 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId, addToTest = false, redirect = true) => ({
+export const updateItemDetailByIdAction = (
+  id,
+  data,
+  testId,
+  addToTest = false,
+  locationState = false,
+  redirect = true
+) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId, addToTest, redirect }
+  payload: { id, data, testId, addToTest, redirect, locationState }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -944,7 +951,7 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}`));
+        yield put(push(`/author/tests/${payload.testId}`, payload.locationState));
       }
       yield put(changeViewAction("edit"));
       return;

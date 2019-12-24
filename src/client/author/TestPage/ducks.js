@@ -1186,11 +1186,11 @@ function* updateTestAndNavigate({ payload }) {
         pathname: payload
       };
     }
-    const { pathname, fadeSidebar = false } = payload;
+    const { pathname, fadeSidebar = false, regradeFlow, previousTestId } = payload;
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) yield updateTestSaga({ payload: { data, id: data._id, disableLoadingIndicator: true } });
-    yield put(push({ pathname, state: { isTestFlow: true, fadeSidebar } }));
+    yield put(push(pathname, { isTestFlow: true, fadeSidebar, regradeFlow, previousTestId }));
   } catch (e) {
     yield call(message.error("error updating test"));
     console.error("err", e);

@@ -312,7 +312,7 @@ class Item extends Component {
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (
                 <ViewButton>
-                  <ViewButtonStyled onClick={this.previewItem}>
+                  <ViewButtonStyled data_cy={item._id} onClick={this.previewItem}>
                     <IconEye /> {t("component.item.view")}
                   </ViewButtonStyled>
                   <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>

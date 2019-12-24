@@ -21,6 +21,7 @@ describe("Test Sharing", () => {
   const TEACHER1 = "Teacher1";
   const TEACHER2 = "Teacher2";
   const TEACHER3 = "Teacher3";
+  const DIST = "district";
   let DIST1_SCHOOL1, DIST2_SCHOOL1, DIST1_SCHOOL2;
   DIST1_SCHOOL1 = dist1[SCHOOL1];
   DIST1_SCHOOL2 = dist1[SCHOOL2];
@@ -250,7 +251,7 @@ describe("Test Sharing", () => {
         testLibrary.assertTestDraftEdit(test_id);
       });
     });
-    context("Multi-Share-published-Individual", () => {
+    context.skip("Multi-Share-published-Individual", () => {
       before("Creating Test  publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         techersidebar.clickOnTestLibrary();
@@ -285,6 +286,9 @@ describe("Test Sharing", () => {
   context("Sharing School,District and Public Levels", () => {
     before("Login As Author", () => {
       cy.login("teacher", Author[EMAIL], Author[PASS]);
+      testLibrary.createTest("default", false).then(id => {
+        test_id = id;
+      });
     });
     context("School- Allow Share", () => {
       it("Asserting Disabled State With Draft-state", () => {
@@ -293,7 +297,7 @@ describe("Test Sharing", () => {
         searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
-        testLibrary.publishedToDraft();
+        //testLibrary.publishedToDraft();
         testHeader.isDraft();
         testLibrary.header.clickOnShare();
         // In Draft state sharing is allowed only for individuals
@@ -305,7 +309,7 @@ describe("Test Sharing", () => {
         testLibrary.editsharing();
         testLibrary.getSchoolRadio().click({ force: true });
         // Enable sharing at School Level
-        testLibrary.clickSharePop();
+        testLibrary.clickSharePop(true, true);
       });
       it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School`, () => {
         //Verify sharing for techer from same school
@@ -345,7 +349,7 @@ describe("Test Sharing", () => {
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
         testLibrary.getDistrictRadio().click({ force: true });
-        testLibrary.clickSharePop();
+        testLibrary.clickSharePop(true, true);
       });
 
       it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]} From Other School`, () => {
@@ -366,7 +370,7 @@ describe("Test Sharing", () => {
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
-        testLibrary.removeShare("DISTRICT");
+        testLibrary.removeShare(Author[DIST]);
       });
       it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]} From Other School`, () => {
         testLibrary.verifyRemovedShareTest(DIST1_SCHOOL2[TEACHER1][EMAIL], test_id);
@@ -387,7 +391,7 @@ describe("Test Sharing", () => {
         testLibrary.header.clickOnShare();
         testLibrary.sharingEnabledPublic();
         testLibrary.getPublicRadio().click({ force: true });
-        testLibrary.clickSharePop();
+        testLibrary.clickSharePop(true, true);
       });
       it(`for ${DIST1_SCHOOL2[TEACHER2][NAME]} From Other District`, () => {
         testLibrary.verifySharedTestPublic(DIST2_SCHOOL1[TEACHER1][EMAIL], test_id);

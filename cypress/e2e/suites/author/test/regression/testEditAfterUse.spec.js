@@ -22,6 +22,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
   const regrade = new Regrade();
   const newItemKey = "MCQ_STD.default";
   const isAssigned = true;
+  const TEST = "EDIT_ASSIGNED_TEST";
 
   let OriginalTestId, newTestId;
   let newItemId, assignedTest, testName, itemsInTest, qType, num, quesData;
@@ -42,8 +43,9 @@ describe(`Test Edit After Use- Without Regrade`, () => {
   before("Get Data Of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
-      testName = testData["EDIT_ASSIGNED_TEST"]["name"];
-      itemsInTest = testData["EDIT_ASSIGNED_TEST"]["itemKeys"];
+      testName = testData[TEST]["name"];
+      itemsInTest = testData[TEST]["itemKeys"];
+      /* THIS TEST REQUIRES EXACTLY FOUR TEST ITEMS */
     });
     cy.fixture("questionAuthoring").then(quesData => {
       itemsInTest.forEach(element => {
@@ -58,7 +60,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
 
   before("login and create new items and test", () => {
     cy.login("teacher", Teacher.email, Teacher.pass);
-    testLibraryPage.createTest("EDIT_ASSIGNED_TEST").then(id => {
+    testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
       assignedTest = id;
     });

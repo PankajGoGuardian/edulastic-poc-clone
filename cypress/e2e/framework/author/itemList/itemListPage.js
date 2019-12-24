@@ -8,8 +8,14 @@ import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
 import MetadataPage from "./itemDetail/metadataPage";
 import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage";
+import SidebarPage from "../../student/sidebarPage";
+import SearchFilters from "../searchFiltersPage";
 
 class ItemListPage {
+  constructor() {
+    this.sidebarPage = new SidebarPage();
+    this.searchFilters = new SearchFilters();
+  }
   clickOnCreate = () => {
     // cy.server();
     // cy.route("POST", "**/testitem").as("saveItem");
@@ -36,6 +42,31 @@ class ItemListPage {
       cy.saveItemDetailToDelete(itemId);
     }); */
     // return itemId;
+  };
+  getViewItemById = id => cy.get(`[data_cy=${id}]`);
+
+  verifyPresenceOfItemById = id => {
+    this.getViewItemById(id).should("be.visible");
+  };
+
+  verifyAbsenceOfitemById = id => {
+    this.getViewItemById(id).should("not.be.visible");
+  };
+
+  getEditButtonOnPreview = () => cy.get('[title="Edit item"]');
+
+  getCloneButtonOnPreview = () => cy.get('[title="CLONE"]');
+
+  verifyEditOption = id => {
+    this.getViewItemById(id).click();
+    this.getEditButtonOnPreview().should("be.visible");
+    this.getCloneButtonOnPreview().should("be.visible");
+  };
+
+  verifyNoEditCloneOption = id => {
+    this.getViewItemById(id).click();
+    this.getEditButtonOnPreview().should("not.be.visible");
+    this.getCloneButtonOnPreview().should("be.visible");
   };
 
   createItem = (itemKey, queIndex = 0, publish = true) => {

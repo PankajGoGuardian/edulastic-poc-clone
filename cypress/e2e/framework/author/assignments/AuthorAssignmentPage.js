@@ -54,7 +54,7 @@ class AuthorAssignmentPage {
 
     return cy.wait("@duplicate").then(xhr => {
       expect(xhr.status).to.eq(200);
-      return xhr.response.body.result._id;
+      return cy.saveTestDetailToDelete(xhr.response.body.result._id).then(() => xhr.response.body.result._id);
     });
   };
 

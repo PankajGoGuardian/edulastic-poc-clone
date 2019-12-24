@@ -114,7 +114,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
     });
     it("Verifying At Student Side- Removed Question", () => {
       cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyAssignedTestID(newTest, assignedTest);
+      assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
       studentTestPage.verifyNoOfQuestions(itemsInTest.length);
       studentTestPage.clickOnExitTest();

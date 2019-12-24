@@ -53,10 +53,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.clickOnTestCardById(testId);
     testLibraryPage.clickOnDetailsOfCard();
     // Verify the test In Review
-    testReviewTab.header.verifyNameInTitle(testname);
+    testReviewTab.testheader.verifyNameInTitle(testname);
     testReviewTab.verifyGradeSubject(grade, subject);
     // Publish The test
-    testReviewTab.header.clickOnPublishButton();
+    testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);
   });
 
@@ -72,7 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.publishedToDraft();
     // update the test review and save
     testReviewTab.selectGrade(grade);
-    testReviewTab.header.clickOnSaveButton(true);
+    testReviewTab.testheader.clickOnSaveButton(true);
     // Get Test Card
     testLibraryPage.assertUrl(testId);
     testLibraryPage.sidebar.clickOnTestLibrary();
@@ -98,17 +98,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.clickOnDetailsOfCard();
     testLibraryPage.publishedToDraft();
     // Remove 1 item From Review Tab
-    testReviewTab.header.clickOnReview();
+    testReviewTab.testheader.clickOnReview();
     testReviewTab.clickOnCheckBoxByItemId(item2);
     testReviewTab.clickOnRemoveSelected();
     // verify review tab before save
     testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
     // save
-    testReviewTab.header.clickOnSaveButton(true);
+    testReviewTab.testheader.clickOnSaveButton(true);
     testLibraryPage.assertUrl(testId);
     // Publish
-    testReviewTab.header.clickOnPublishButton();
+    testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);
     testLibraryPage.sidebar.clickOnTestLibrary();
     testLibraryPage.searchFilters.clearAll();
@@ -133,7 +133,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testLibraryPage.clickOnDetailsOfCard();
       testLibraryPage.publishedToDraft();
       // Add created Item using add item tab
-      testReviewTab.header.clickOnAddItems();
+      testReviewTab.testheader.clickOnAddItems();
       testAddItemTab.searchFilters.clearAll();
       testAddItemTab.searchFilters.getAuthoredByMe();
       testAddItemTab.addItemById(newItemId);
@@ -168,11 +168,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.clickOnTestCardById(testId);
     testLibraryPage.clickOnDetailsOfCard();
     testLibraryPage.publishedToDraft();
-    testReviewTab.header.clickOnAddItems();
+    testReviewTab.testheader.clickOnAddItems();
     // remove 1 item
     testAddItemTab.removeItemById(item1);
     // Publish
-    testReviewTab.header.clickOnPublishButton();
+    testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);
     testLibraryPage.sidebar.clickOnTestLibrary();
     testLibraryPage.searchFilters.clearAll();

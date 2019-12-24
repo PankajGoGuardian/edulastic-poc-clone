@@ -224,20 +224,19 @@ export default class TestLibrary {
 
   getEditButton = () => cy.get('[data-cy="edit"]');
 
-  assertTestPublishedNoEdit = testId => {
+  assertTestPublishedNoEdit = oldTestId => {
     // Test_id should change after editing test
     this.getAssignEdit().should("contain", "ASSIGN");
     this.clickOnDetailsOfCard();
     this.publishedToDraft(true);
     cy.wait(3000);
-    this.verifyNewTestIdInUrl(testId);
+    this.verifyNewTestIdInUrl(oldTestId);
   };
 
   verifyNewTestIdInUrl = id => {
     cy.url()
       .then(url => url.split("/").reverse()[0])
-      .should("eq", id);
-    cy.saveTestDetailToDelete(id);
+      .should("not.eq", id);
   };
 
   assertTestPublishedEdit = testId => {

@@ -92,7 +92,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
         });
       });
       it("Verify Duplicate Test", () => {
-        testLibraryPage.verifyNewTestIdInUrl(newTestId);
+        testLibraryPage.verifyNewTestIdInUrl(OriginalTestId);
         testSummayTab.header.clickOnReview();
         itemIds.forEach(item => testReviewTab.verifyQustionById(item));
         testReviewTab.verifySummary(itemKeysInTest.length, points.reduce((a, b) => a + b, 0));
@@ -151,7 +151,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
           authorAssignmentPage.verifyEditTestURLUnAttempted(OriginalTestId);
         });
       });
-      it("Add Created Item To test", () => {
+      before("Add Created Item To test", () => {
         // Add created Item using add item tab
         testReviewTab.testheader.clickOnAddItems();
         testReviewTab.searchFilters.clearAll();

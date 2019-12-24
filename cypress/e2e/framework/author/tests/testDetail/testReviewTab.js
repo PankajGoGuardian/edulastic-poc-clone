@@ -207,7 +207,11 @@ export default class TestReviewTab {
     return cy.url().then(url => url.split("/").reverse()[3]);
   };
   // When we are edit/copy a item from test its url include test id
-  verifyItemUrl = (testId, ItemId) => {
+  verifyItemUrlWhileEdit = (testId, ItemId) => {
+    cy.url().should("contain", `/author/tests/${testId}/editItem/${ItemId}`);
+  };
+
+  verifyItemUrlWhileCopy = (testId, ItemId) => {
     cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
   };
 

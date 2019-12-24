@@ -202,7 +202,7 @@ describe("Reviewing Test In Test Review Tab", () => {
           it(`Verify Edit for "${item}-${index + 1} "`, () => {
             testReviewTab.previewQuestById(itemIds[index]);
             testReviewTab.clickOnEditItemOnPreview();
-            testReviewTab.verifyItemUrl(OriginalTestId, itemIds[index]);
+            testReviewTab.verifyItemUrlWhileEdit(OriginalTestId, itemIds[index]);
             testReviewTab.editItem(EDITED_POINTS[index % 5]);
             points[index] = EDITED_POINTS[index % 5];
             editItemPage.header.save(true);
@@ -235,7 +235,7 @@ describe("Reviewing Test In Test Review Tab", () => {
             points.push(EDITED_POINTS[index % 5]);
             testReviewTab.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(newItem => {
               itemIds.push(newItem);
-              testReviewTab.verifyItemUrl(OriginalTestId, newItem);
+              testReviewTab.verifyItemUrlWhileCopy(OriginalTestId, newItem);
               editItemPage.header.save(true);
               testAddItemTab.header.clickOnReview();
               testLibraryPage.header.clickOnSaveButton(true);

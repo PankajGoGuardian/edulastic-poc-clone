@@ -62,7 +62,7 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
             }
             tagsToTest[tag].push(id);
           });
-          testHeader.clickOnReview();
+          //testHeader.clickOnReview();
           testHeader.clickOnSaveButton(true);
         });
       });
@@ -207,9 +207,9 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
         });
       });
       it("Search By name in Published-State", () => {
+        searchFilters.clearAll();
+        searchFilters.getAuthoredByMe();
         test_ids.forEach((id, i) => {
-          searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.getTestCardById(id).should("be.visible");

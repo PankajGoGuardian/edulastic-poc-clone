@@ -6,7 +6,7 @@ export default class Regrade {
   }
   regradeSelection = (regrade, EditFromAssgntsPage = false) => {
     cy.server();
-    cy.route("PUT", "**/api/test/**").as("published");
+    cy.route("PUT", "**/api/test/*").as("published");
     cy.route("GET", "**/assignments").as("assignments");
     cy.contains("There are some ongoing assignments linked to the").as("regradeSelect");
     if (!regrade) {
@@ -24,7 +24,7 @@ export default class Regrade {
         .find("button")
         .eq(1)
         .click({ force: true });
-      cy.wait("@published");
+      if (EditFromAssgntsPage) cy.wait("@published").then(xhr => this.testLibrary.saveTestId(xhr));
       cy.wait("@assignments");
     }
   };

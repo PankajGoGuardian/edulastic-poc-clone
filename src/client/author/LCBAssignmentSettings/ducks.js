@@ -48,9 +48,11 @@ const slice = createSlice({
           set(state.assignment, "class[0].startDate", Date.now());
           state.updateSettings.startDate = Date.now();
         } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-          const newDueDate = get(state.assignment, "class[0].startDate", Date.now()) + 1000 * 60 * 60 * 24 * 7;
-          set(state.assignment, "class[0].endDate", newDueDate);
-          state.updateSettings.endDate = newDueDate;
+          const newDueDate = new Date(
+            get(state.assignment, "class[0].startDate", Date.now()) + 1000 * 60 * 60 * 24 * 7
+          );
+          set(state.assignment, "class[0].endDate", newDueDate.setHours(23, 59, 59));
+          state.updateSettings.endDate = newDueDate.setHours(23, 59, 59);
         }
       }
     }
@@ -91,7 +93,8 @@ function* loadAssignmentSaga({ payload }) {
         data["class"][0].startDate = Date.now();
       }
       if (!data["class"][0].endDate) {
-        data["class"][0].endDate = Date.now() + 1000 * 60 * 60 * 24 * 7;
+        const newEndDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+        data["class"][0].endDate = newEndDate.setHours(23, 59, 59);
       }
     }
     /**

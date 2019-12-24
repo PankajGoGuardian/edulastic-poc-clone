@@ -35,6 +35,7 @@ import selectsData from "../TestPage/components/common/selectsData";
 import { getDefaultTestSettingsAction } from "../TestPage/ducks";
 import { getTestEntitySelector } from "../AssignTest/duck";
 import { InputLabel, InputLabelContainer, ClassHeading, ActionButton } from "./styled";
+import { QuestionIcon } from "../../assessment/styled/Subtitle";
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -178,7 +179,18 @@ function LCBAssignmentSettings({
               <Col>
                 <SettingsBtn onClick={() => setShowSettings(old => !old)}>
                   TEST LEVEL SETTINGS
-                  {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                  <QuestionIcon
+                    customStyle={{ position: "relative", bottom: "8px", marginLeft: "6px" }}
+                    id="test-level-settings"
+                    onClick={event => {
+                      event.stopPropagation();
+                    }}
+                  />
+                  {showSettings ? (
+                    <Icon style={{ marginLeft: "-12px" }} type="caret-up" />
+                  ) : (
+                    <Icon type="caret-down" style={{ marginLeft: "-10px" }} />
+                  )}
                 </SettingsBtn>
               </Col>
             </StyledRowButton>

@@ -37,13 +37,16 @@ const IconStyle = {
   marginLeft: "16px"
 };
 
+export const QuestionIcon = ({ id = "", customStyle = {} }) =>
+  id && !id.includes("undefined") ? (
+    <FlexContainer id={id}>
+      <IconQuestion style={{ ...IconStyle, ...customStyle }} />
+    </FlexContainer>
+  ) : null;
+
 export const Subtitle = ({ id, children }) => (
   <FlexContainer justifyContent="flex-start" alignItems="baseline">
     <SubtitleText>{children}</SubtitleText>
-    {id && !id.includes("undefined") ? (
-      <FlexContainer id={id}>
-        <IconQuestion style={IconStyle} />
-      </FlexContainer>
-    ) : null}
+    <QuestionIcon id={id} />
   </FlexContainer>
 );

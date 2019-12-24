@@ -18,19 +18,22 @@
           "name": "teacher1",
           "email": "teacher1.school1.dist1@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist1"
+          "district": "dist1",
+          "school": "School-1"
         },
         "Teacher2": {
           "name": "teacher2",
           "email": "teacher2.school1.dist1@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist1"
+          "district": "dist1",
+          "school": "School-1"
         },
         "Teacher3": {
           "name": "teacher3",
           "email": "teacher3.school1.dist1@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist1"
+          "district": "dist1",
+          "school": "School-1"
         }
       },
       "school2": {
@@ -39,13 +42,15 @@
           "name": "teacher1",
           "email": "teacher1.school2.dist1@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist1"
+          "district": "dist1",
+          "school": "School-2"
         },
         "Teacher2": {
           "name": "teacher2",
           "email": "teacher2.school2.dist1@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist1"
+          "district": "dist1",
+          "school": "School-2"
         }
       }
     },
@@ -56,7 +61,8 @@
           "name": "Teacher1",
           "email": "teacher1.school1.dist2@snapwiz.com",
           "pass": "snapwiz",
-          "district": "dist2"
+          "district": "dist2",
+          "school": "School1"
         }
       }
     }

@@ -61,7 +61,6 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
       key={`input_${index}`}
       onClick={onInnerClick}
       style={{
-        height,
         width: isPopover ? null : width,
         minWidth: width
       }}
@@ -78,7 +77,13 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
         {isMath ? (
           <CheckBoxedMathBox
             value={showValue}
-            style={{ height, minWidth: "unset", display: "flex", alignItems: "center", textAlign: "left" }}
+            style={{
+              height: !isPopover && height,
+              minWidth: "unset",
+              display: "flex",
+              alignItems: "center",
+              textAlign: "left"
+            }}
           />
         ) : (
           showValue

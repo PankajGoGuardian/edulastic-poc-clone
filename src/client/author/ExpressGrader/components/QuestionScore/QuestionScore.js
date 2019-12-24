@@ -7,19 +7,19 @@ class QuestionScore extends Component {
   render() {
     const { question, tableData, showQuestionModal, isTest } = this.props;
     const isQuestion = question && question.score !== undefined && question.maxScore !== undefined;
-    let { score: studentScore, graded } = question; // score, maxScore,
+    let { score: studentScore, graded, skipped } = question; // score, maxScore,
     if (!isQuestion) {
       // score = 0;
       // maxScore = 1;
       studentScore = "-";
     }
-
+    if (skipped) studentScore = 0;
     return (
       <React.Fragment>
         {isTest ? (
           <StyledWrapper onClick={() => showQuestionModal(question, tableData)}>
             {/* color={getScoreColor(score, maxScore)} */}
-            <StyledText>{graded ? round(studentScore, 2) : "-"}</StyledText>
+            <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
           </StyledWrapper>
         ) : (
           <StyledWrapper>

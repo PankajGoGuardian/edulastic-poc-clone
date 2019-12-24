@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import { Icon } from "antd";
+import { Icon, Button } from "antd";
+
+import { themeColor, largeDesktopWidth } from "@edulastic/colors";
 
 export const StyledUploadContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: ${({ keyName }) => (keyName === "pageBackground" ? "100%" : "")};
 `;
 
 export const StyledUpload = styled.div`
@@ -12,7 +15,7 @@ export const StyledUpload = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: #fafafa;
-  width: ${props => props.width};
+  width: ${({ keyName, width }) => (keyName === "pageBackground" ? "100%" : width || "")};
   height: ${props => props.height};
   overflow: hidden;
   cursor: pointer;
@@ -37,11 +40,16 @@ export const StyledUpload = styled.div`
       display: block;
     }
   }
+  border-radius: ${({ keyName }) => (keyName === "logo" ? "50%" : "")}; // logo image
 `;
 
-export const StyledImg = styled.img`
+export const StyledImg = styled.div`
   width: 100%;
-  height: 100%;
+  height: ${({ height }) => (height ? "180px" : "100%")};
+  background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 `;
 
 export const StyledP = styled.p`
@@ -83,4 +91,28 @@ export const StyledIcon = styled(Icon)`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+`;
+
+export const Camera = styled.div`
+  background: ${themeColor};
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 20px;
+  bottom: -20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  cursor: pointer;
+  @media (max-width: ${largeDesktopWidth}) {
+    right: 5px;
+    bottom: -20px;
+  }
+`;
+
+export const ImageUploadButton = styled(Button)`
+  height: 36px;
+  text-transform: uppercase;
 `;

@@ -3,19 +3,16 @@ import { Form, Input } from "antd";
 
 export const EditableLabelDiv = styled.div`
   display: flex;
+  flex-direction: column;
   .not-editing-input {
-    border: none;
-    width: auto;
     box-shadow: none;
     caret-color: transparent;
   }
   .not-editing-input:focus {
-    box-shadow: none;
   }
 `;
 
 export const StyledFormItem = styled(Form.Item)`
-  width: 220px;
   .ant-input {
     width: 100%;
   }
@@ -37,14 +34,8 @@ export const StyledP = styled.p`
   padding-left: 12px;
 `;
 
-export const StyledLabel = styled.label`
-  margin-right: 20px;
-  text-align: right;
-  width: 200px;
-  line-height: 40px;
-`;
-
 export const StyledInput = styled(Input)`
+  height: 40px;
   ${props => {
     if (props.isItalic === "true")
       return `::placeholder {

@@ -1,27 +1,24 @@
 import styled from "styled-components";
-import { Layout, Spin } from "antd";
+import { Layout, Spin, Button, Typography } from "antd";
 
-const { Content } = Layout;
+import { white, largeDesktopWidth, mobileWidthMax, green } from "@edulastic/colors";
 
-export const DistrictProfileDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+const { Content, Header } = Layout;
 
-export const StyledContent = styled(Content)`
-  width: 95%;
-  margin: 90px 20px 20px 20px;
+const { Text } = Typography;
+
+export const DistrictProfileHeader = styled(Header)`
+  height: 76px;
+  @media (min-width: 1600px) {
+    height: 96px;
+  }
 `;
 
 export const StyledLayout = styled(Layout)`
-  position: relative;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  background: #fff;
-  padding: 20px;
   display: flex;
+  justify-content: space-between;
   flex-direction: row;
-  min-height: 665px;
+  padding: 0 30px 30px 30px;
 `;
 
 export const SpinContainer = styled.div`
@@ -40,4 +37,66 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
+`;
+
+export const ProfileImgWrapper = styled.div`
+  width: 350px;
+  height: 350px;
+  position: relative;
+  background-color: ${white};
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 250px;
+    height: 250px;
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
+  }
+`;
+
+export const RightContainer = styled.div`
+  width: calc(100% - 370px);
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: calc(100% - 270px);
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+  }
+`;
+
+export const FormContent = styled(Content)`
+  background-color: ${white};
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+`;
+
+export const TwoColumnFormContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const SubHeader = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 12px 30px;
+`;
+
+export const Spacer = styled.span`
+  flex-grow: 1;
+`;
+
+export const StyledButton = styled(Button)`
+  margin-left: 5px;
+`;
+
+export const ButtonText = styled(Text)`
+  color: ${green};
 `;

@@ -3,17 +3,11 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { aws } from "@edulastic/constants";
+import { IconPhotoCamera } from "@edulastic/icons";
+import { white } from "@edulastic/colors";
 import { setImageUploadingStatusAction } from "../../ducks";
 
-import {
-  StyledUploadContainer,
-  StyledUpload,
-  StyledImg,
-  StyledIcon,
-  StyledChangeLog,
-  StyledPRequired,
-  StyledHoverDiv
-} from "./styled";
+import { StyledUploadContainer, StyledUpload, StyledImg, Camera, ImageUploadButton } from "./styled";
 
 import { message } from "antd";
 
@@ -51,39 +45,50 @@ class ImageUpload extends Component {
   };
 
   render() {
-    const { visibleRequired } = this.state;
-    const { width, height, labelStr, imgSrc } = this.props;
+    const { width, height, labelStr, imgSrc, keyName, isInputEnabled } = this.props;
     const isImageEmpty = imgSrc == null || imgSrc.length == 0 ? true : false;
 
     return (
-      <StyledUploadContainer>
-        <StyledUpload isVisible={isImageEmpty} onClick={this.clickFileOpen} width={width} height={height}>
-          <input
-            ref={input => (this.inputElement = input)}
-            type="file"
-            onChange={this.handleChange}
-            onClick={e => {
-              e.target.value = null;
-            }}
-            accept=".jpg, .png"
-          />
-          <StyledImg src={imgSrc} />
-          <StyledHoverDiv />
-          <StyledIcon type="plus" />
-        </StyledUpload>
-        {visibleRequired ? (
-          <StyledPRequired>Please select {labelStr}</StyledPRequired>
-        ) : (
-          <StyledChangeLog onClick={this.clickFileOpen}>Change District {labelStr}</StyledChangeLog>
-        )}
-      </StyledUploadContainer>
+      <>
+        <StyledUploadContainer keyName={keyName}>
+          <StyledUpload
+            isVisible={isImageEmpty}
+            onClick={this.clickFileOpen}
+            width={width}
+            height={height}
+            keyName={keyName}
+          >
+            <input
+              ref={input => (this.inputElement = input)}
+              type="file"
+              disabled={!isInputEnabled} // edit state
+              onChange={this.handleChange}
+              onClick={e => {
+                e.target.value = null;
+              }}
+              accept=".jpg, .png"
+            />
+            <StyledImg src={imgSrc} />
+          </StyledUpload>
+        </StyledUploadContainer>
+        {keyName === "pageBackground" && isInputEnabled ? (
+          <Camera onClick={this.clickFileOpen}>
+            <IconPhotoCamera color={white} width="20px" />
+          </Camera>
+        ) : isInputEnabled ? (
+          <ImageUploadButton type="primary" onClick={this.clickFileOpen}>
+            {" "}
+            Change District {labelStr}{" "}
+          </ImageUploadButton>
+        ) : null}
+      </>
     );
   }
 }
 
 const enhance = compose(
   connect(
-    state => ({}),
+    null,
     {
       setUploadingStatus: setImageUploadingStatusAction
     },

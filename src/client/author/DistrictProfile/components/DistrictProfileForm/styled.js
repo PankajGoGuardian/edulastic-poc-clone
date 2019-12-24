@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Row, Input, Button } from "antd";
+import { Row, Input, Button, Form } from "antd";
+import { white, tabletWidth } from "@edulastic/colors";
 const { TextArea } = Input;
 
 export const StyledFormDiv = styled.div`
@@ -7,15 +8,9 @@ export const StyledFormDiv = styled.div`
   width: 100%;
   .ant-form {
     display: flex;
+    justify-content: space-between;
     width: 100%;
   }
-`;
-
-export const StyledLabel = styled.label`
-  margin-right: 20px;
-  text-align: right;
-  width: 200px;
-  line-height: 14px;
 `;
 
 export const StyledDivBg = styled.div`
@@ -25,6 +20,11 @@ export const StyledDivBg = styled.div`
 
 export const StyledDivMain = styled.div`
   width: 100%;
+  background-color: ${white};
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 30px;
+  overflow: hidden;
 `;
 
 export const StyledRow = styled(Row)`
@@ -50,7 +50,7 @@ export const DistrictUrl = styled.p`
 
 export const StyledTextArea = styled(TextArea)`
   width: 100%;
-  max-width: 500px !important;
+  height: 100%;
   border: 1px solid #d9d9d9;
 `;
 
@@ -82,4 +82,57 @@ export const PopoverCloseButton = styled(Button)`
 export const StyledDistrictUrl = styled.p`
   line-height: 32px;
   font-weight: 600;
+`;
+
+export const FormFlexContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @media only screen and (max-width: ${tabletWidth}) {
+    flex-direction: column;
+    justify-content: space-evently;
+  }
+`;
+
+export const FormColumnLeft = styled.div`
+  width: 100%;
+`;
+
+export const FormColumnRight = styled.div`
+  width: 100%;
+`;
+
+export const ColumnSpacer = styled.div`
+  display: block;
+  margin: 15px;
+  @media only screen and (max-width: ${tabletWidth}) {
+    display: none;
+  }
+`;
+
+export const StyledFormItem = styled(Form.Item)`
+  height: 209px;
+  .ant-input {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  .ant-form-item-control-wrapper {
+    height: 100%;
+    .ant-form-item-control {
+      height: 100%;
+    }
+  }
+`;
+
+export const EditableLabelDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  .not-editing-input {
+    box-shadow: none;
+    caret-color: transparent;
+  }
+  .not-editing-input:focus {
+    box-shadow: none;
+  }
 `;

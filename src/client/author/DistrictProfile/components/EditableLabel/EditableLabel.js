@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
-import { Icon } from "antd";
-import { EditableLabelDiv, StyledLabel, StyledFormItem, LabelContainer, StyledP, StyledInput } from "./styled";
+import { EditableLabelDiv, StyledFormItem, StyledInput } from "./styled";
 
 class EditableLabel extends React.Component {
   constructor(props) {
@@ -28,7 +27,7 @@ class EditableLabel extends React.Component {
     if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
         validateStatus: "error",
-        validateMsg: `Plasse input your ${valueName}`,
+        validateMsg: `Please input your ${valueName}`,
         editing: true
       });
     }
@@ -46,7 +45,7 @@ class EditableLabel extends React.Component {
     if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
         validateStatus: "error",
-        validateMsg: `Plasse input your ${valueName}`
+        validateMsg: `Please input your ${valueName}`
       });
       return;
     }
@@ -71,7 +70,7 @@ class EditableLabel extends React.Component {
 
     if (e.target.value.length == 0 && requiredStatus) {
       validateStatus = "error";
-      validateMsg = `Plasse input your ${valueName}`;
+      validateMsg = `Please input your ${valueName}`;
     }
 
     if (e.target.value.length > maxLength) {
@@ -115,14 +114,13 @@ class EditableLabel extends React.Component {
   };
 
   render() {
-    const { editing, value, validateStatus, validateMsg } = this.state;
-    const { valueName, requiredStatus } = this.props;
+    const { value, validateStatus, validateMsg } = this.state;
+    const { valueName, requiredStatus, isInputEnabled } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const italicStatus = valueName === "NCES Code" ? "true" : "false";
 
     return (
       <EditableLabelDiv>
-        <StyledLabel>{valueName}:</StyledLabel>
+        <label>{valueName}</label>
         <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal">
           {getFieldDecorator(valueName, {
             initialValue: value,
@@ -133,20 +131,16 @@ class EditableLabel extends React.Component {
             ]
           })(
             <StyledInput
-              onBlur={this.onInputBlur}
+              onBlur={isInputEnabled ? this.onInputBlur : null} // edit state
+              readOnly={!isInputEnabled} // edit state
+              className={!isInputEnabled ? "not-editing-input" : null} // edit state
+              disabled={!isInputEnabled} // edit state
               onChange={this.handleChange}
-              autoFocus
-              isItalic={italicStatus}
               placeholder={valueName}
-              readOnly={!editing}
-              className={!editing ? "not-editing-input" : null}
               ref={this.inputRef}
             />
           )}
         </StyledFormItem>
-        <LabelContainer onClick={this.onClickLabel}>
-          {!editing ? <Icon type="edit" theme="twoTone" /> : null}
-        </LabelContainer>
       </EditableLabelDiv>
     );
   }

@@ -5,18 +5,18 @@ import { white, mainBgColor, themeColor, sectionBorder } from "@edulastic/colors
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
-  width: 100%;
+  width: 320px;
   bottom: 0;
   padding: 15px 0;
   background: ${mainBgColor};
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 19px 18px 15px 18px;
+  padding: 15px;
   background: ${white};
   border-radius: 10px;
   box-sizing: border-box;
-  width: 365px;
+  width: 100%;
   border: 1px solid ${sectionBorder};
 `;
 

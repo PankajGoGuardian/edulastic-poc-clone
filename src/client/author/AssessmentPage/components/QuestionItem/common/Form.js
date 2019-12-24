@@ -24,13 +24,13 @@ export const QuestionChunk = styled.div`
 
 export const QuestionOption = styled.span`
   display: inline-block;
-  min-width: 36px;
-  height: 36px;
-  padding-top: 10px;
+  min-width: 32px;
+  height: 32px;
   border: 1px solid ${getBorder};
   font-size: 10px;
   margin-bottom: 2px;
   text-align: center;
+  line-height: 30px;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};
   cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
@@ -40,8 +40,10 @@ export const QuestionOption = styled.span`
   }
   font-weight: bold;
   @media (min-width: ${extraDesktopWidthMax}) {
-    padding-top: 5px;
+    min-width: 36px;
+    height: 36px;
     font-size: ${props => props.theme.questionTextextraFontSize};
+    line-height: 34px;
   }
 `;
 

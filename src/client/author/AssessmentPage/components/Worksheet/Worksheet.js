@@ -585,7 +585,7 @@ class Worksheet extends React.Component {
     const pdfWidth = minimized ? windowWidth - 450 : windowWidth - 450 - 220;
 
     return (
-      <WorksheetWrapper>
+      <WorksheetWrapper testMode={testMode}>
         <Modal
           visible={deleteConfirmation}
           title="Confirm Page Deletion"
@@ -640,6 +640,7 @@ class Worksheet extends React.Component {
             onRotate={this.handleRotate}
             viewMode={viewMode}
             review={review}
+            testMode={testMode}
             isToolBarVisible={isToolBarVisible}
             toggleToolBarVisiblity={this.toggleToolBarVisiblity}
             noCheck={noCheck}
@@ -655,7 +656,15 @@ class Worksheet extends React.Component {
         )}
 
         <Fragment>
-          <div style={{ position: "relative", display: "flex", width: `${pdfWidth}px`, overflowX: "auto" }}>
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              width: `${pdfWidth}px`,
+              overflowX: "auto",
+              paddingLeft: `${!minimized && (testMode || viewMode === "edit") ? "60px" : "20px"}`
+            }}
+          >
             <PDFPreview
               page={selectedPage}
               currentPage={currentPage + 1}
@@ -687,6 +696,7 @@ class Worksheet extends React.Component {
                 redo={this.handleRedo}
                 onColorChange={this.handleColorChange}
                 testMode={testMode}
+                review={review}
                 isDocBased={isDocBased}
               />
             )}

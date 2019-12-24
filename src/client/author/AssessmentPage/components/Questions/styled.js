@@ -1,21 +1,38 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white } from "@edulastic/colors";
+import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  width: 425px;
-  height: ${({ viewMode }) => viewMode && "calc(100% - 140px)"};
-  margin: ${({ viewMode }) => (viewMode ? "unset" : "30px 0 0 0")};
-  padding: ${({ viewMode, testMode }) => (viewMode ? "30px 0" : !testMode && "0 0 50px 0")};
+  width: 350px;
+  padding: ${props => (props.review && !props.testMode ? "30px 15px 50px" : "30px 15px")};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
+  height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
-  > div:first-of-type {
-    width: 360px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+  }
+`;
+
+export const QuestionWidgetWrapper = styled.div`
+  max-height: ${props =>
+    `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)}px)`};
+  overflow: auto;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    max-height: ${props =>
+      `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.md + (props.review ? 90 : 185)}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    max-height: ${props =>
+      `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)}px)`};
   }
 `;
 

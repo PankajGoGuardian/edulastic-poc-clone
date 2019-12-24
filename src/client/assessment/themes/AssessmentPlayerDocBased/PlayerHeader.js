@@ -19,7 +19,6 @@ const { calculatorTypes } = test;
 const PlayerHeader = ({
   title,
   onOpenExitPopup,
-  zoomLevel,
   windowWidth,
   onSubmit,
   previewPlayer,
@@ -27,26 +26,8 @@ const PlayerHeader = ({
   currentToolMode,
   onChangeTool
 }) => {
-  const isZoomApplied = zoomLevel > "1";
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const { calcType } = settings;
-
-  let headerZoom = 1;
-  if (isZoomApplied) {
-    headerZoom = zoomLevel >= "1.75" ? "1.35" : "1.25";
-  }
-
-  const zoomStyle = {
-    transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
-    transformOrigin: "0px 0px",
-    width: isZoomApplied ? `${zoomLevel >= "1.75" ? "75" : "80"}%` : "100%",
-    padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "10px 10px 40px" : "10px 5px 25px 5px") : "12px 0px"}`,
-    justifyContent: "space-between"
-  };
-
-  if (isMobile) {
-    zoomStyle.padding = 0;
-  }
 
   const rightButtons = (
     <SaveAndExit
@@ -61,7 +42,7 @@ const PlayerHeader = ({
       <Header>
         <HeaderMainMenu skinb="true">
           <FlexContainer>
-            <HeaderWrapper style={zoomStyle}>
+            <HeaderWrapper>
               <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
               <MainActionWrapper>
                 <Container>

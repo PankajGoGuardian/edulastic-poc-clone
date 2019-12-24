@@ -55,6 +55,7 @@ const PDFPreview = ({
   studentWork = false
 }) => {
   const [pdfScale, scalePDF] = useState(1);
+  const review = viewMode === "review";
 
   const PDFScaleUp = (scale = 0.25) => {
     scalePDF(prevState => (prevState < 3 ? prevState + scale : prevState));
@@ -101,7 +102,13 @@ const PDFPreview = ({
   };
 
   return (
-    <PDFPreviewWrapper viewMode={viewMode === "report"} isToolBarVisible={isToolBarVisible} minimized={minimized}>
+    <PDFPreviewWrapper
+      review={review}
+      testMode={testMode}
+      viewMode={viewMode === "report"}
+      isToolBarVisible={isToolBarVisible}
+      minimized={minimized}
+    >
       <PerfectScrollbar>
         <Droppable
           types={["question"]}

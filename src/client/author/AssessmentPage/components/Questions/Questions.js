@@ -30,7 +30,13 @@ import AddQuestion from "../AddQuestion/AddQuestion";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import QuestionEditModal from "../QuestionEditModal/QuestionEditModal";
 import Section from "../Section/Section";
-import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction, StyledHandleSpan } from "./styled";
+import {
+  QuestionsWrapper,
+  AnswerActionsWrapper,
+  AnswerAction,
+  StyledHandleSpan,
+  QuestionWidgetWrapper
+} from "./styled";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { deleteAnnotationAction } from "../../../TestPage/ducks";
 import { getRecentStandardsListSelector } from "../../../src/selectors/dictionaries";
@@ -63,7 +69,7 @@ const SortableQuestionItem = SortableElement(
   }) => (
     <div
       onClick={() => onHighlightQuestion(data.id)}
-      style={{ display: "flex", marginBottom: "6px", paddingLeft: (testMode || review) && "15px" }}
+      style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
     >
       {!testMode && !review && <DragHandle review={review} />}
       <QuestionItem
@@ -443,8 +449,8 @@ class Questions extends React.Component {
     }
     return (
       <Fragment>
-        <QuestionsWrapper viewMode={viewMode === "edit"} testMode={testMode} ref={this.containerRef}>
-          <div>
+        <QuestionsWrapper review={review} viewMode={viewMode === "edit"} testMode={testMode} ref={this.containerRef}>
+          <QuestionWidgetWrapper testMode={testMode} review={review}>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
                 <Section
@@ -473,7 +479,7 @@ class Questions extends React.Component {
                 />
               )
             )}
-          </div>
+          </QuestionWidgetWrapper>
           {!review && (
             <AddQuestion
               onAddQuestion={this.handleAddQuestion}

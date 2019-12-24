@@ -11,27 +11,30 @@ import {
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
-  padding: ${({ minimized }) => (minimized ? "30px 23px 58px 60px" : "30px 23px 58px 10px")};
+  padding-top: 30px;
+  padding-right: 0px;
+  padding-left: ${props => (props.minimized ? "54px" : "0px")};
+  padding-bottom: ${props => (props.testMode ? "15px" : props.review ? "60px" : "15px")};
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
   pointer-events: ${({ viewMode }) => viewMode && "none"};
+  height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xs}px)`};
+  .scrollbar-container {
+    border-radius: 5px;
+  }
+
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.md}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
-  }
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    padding: ${({ isToolBarVisible, minimized }) =>
-      isToolBarVisible && minimized ? "30px 0px 58px 54px" : "30px 0px 58px 0"};
+    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xl}px)`};
   }
 `;
 
 export const Preview = styled.div`
   min-height: 90vh;
-  width: 133%;
+  width: 100%;
   background: ${white};
   position: relative;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);

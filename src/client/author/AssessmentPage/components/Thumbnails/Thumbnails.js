@@ -37,6 +37,7 @@ const Thumbnails = ({
   onAddPdf,
   viewMode,
   review,
+  testMode,
   currentPage,
   isToolBarVisible,
   toggleToolBarVisiblity,
@@ -46,7 +47,7 @@ const Thumbnails = ({
 }) => {
   const onChangePage = page => () => onPageChange(page);
   return (
-    <ThumbnailsWrapper review={review}>
+    <ThumbnailsWrapper testMode={testMode} review={review}>
       <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
         <IconGraphRightArrow />
       </MinimizeButton>

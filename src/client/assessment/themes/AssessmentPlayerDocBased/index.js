@@ -143,7 +143,7 @@ class AssessmentPlayerDocBased extends React.Component {
 
     return (
       <ThemeProvider theme={themeToPass}>
-        <Container style={{ paddingTop: "80px" }}>
+        <Container style={{ paddingTop: "70px" }}>
           <PlayerHeader
             {...this.props}
             theme={themeToPass}

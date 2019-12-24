@@ -4,28 +4,32 @@ import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgr
 
 export const ThumbnailsWrapper = styled.div`
   position: relative;
-  width: 260px;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow-y: auto;
-  padding: 30px 28px;
-  padding-right: ${({ review }) => (review ? "28px" : "13px")};
-  padding-bottom: 0;
+  padding: ${props => (props.testMode ? "30px 25px" : "30px 25px 50px")};
   background: ${backgrounds.primary};
-  width: 335px;
-  left: -20px;
+  min-width: 200px;
+  max-width: 200px;
+  height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xs}px)`};
 
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    min-width: 180px;
+    max-width: 180px;
+  }
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.md}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xl}px)`};
   }
 `;
 
 export const ThumbnailsList = styled.div`
-  width: 175px;
-  margin-bottom: 70px;
-  padding-right: 15px;
+  width: 145px;
+  margin-bottom: 20px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 125px;
+  }
 `;
 
 export const ReuploadButtonWrapper = styled.div`
@@ -33,14 +37,18 @@ export const ReuploadButtonWrapper = styled.div`
   position: fixed;
   left: ${props => (props.noCheck ? 0 : "100px")};
   bottom: 0;
-  width: 220px;
-  padding: 15px 22px;
+  width: 200px;
+  padding: 15px 25px;
   background: ${backgrounds.primary};
   z-index: 1;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 180px;
+  }
 `;
 
 export const ReuploadButton = styled(Button)`
-  width: 158px;
+  width: 150px;
   height: 32px;
   font-size: 11px;
   font-weight: 600;
@@ -49,6 +57,11 @@ export const ReuploadButton = styled(Button)`
   background: ${borders.default};
   border: ${borders.default};
   color: ${tabGrey};
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 130px;
+    padding: 0px;
+  }
 `;
 
 export const ToolBarToggleBtn = styled(Button)`

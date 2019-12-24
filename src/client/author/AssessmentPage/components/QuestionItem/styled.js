@@ -12,8 +12,8 @@ import {
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "315px" : "348px")};
-  padding: 19px 6px 18px 13px;
+  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "100%" : "calc(100% - 30px)")};
+  padding: 10px;
   background: ${white};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
   border: 1px solid ${sectionBorder};
@@ -33,10 +33,10 @@ export const QuestionNumber = styled.span`
   background: ${({ dragging }) => (dragging ? "transparent" : "#aaafb8")};
   border: 2px ${({ dragging }) => (dragging ? "dashed" : "solid")} #aaafb8;
   border-radius: 4px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  line-height: 34px;
   text-align: center;
-  padding-top: 6px;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
 `;
@@ -44,7 +44,7 @@ export const QuestionNumber = styled.span`
 export const QuestionForm = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-left: 13px;
+  margin-left: 10px;
 
   .ant-select-selection {
     width: ${({ review }) => (review ? "220px" : "133px")};
@@ -63,17 +63,19 @@ export const EditButton = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 15px;
-  padding-left: 0;
-  margin-left: 10px;
+  padding: 8px 0px;
+  margin-left: 5px;
 `;
 
 export const ButtonWrapper = styled.span`
-  padding: 10px;
   background: #fff;
   box-shadow: 0px 2px 4px rgba(201, 208, 219, 0.5);
   margin-right: 5px;
   border-radius:4px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
   svg {
     fill: ${themeColor};
     width: 13px;

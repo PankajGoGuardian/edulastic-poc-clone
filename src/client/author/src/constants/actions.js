@@ -128,6 +128,7 @@ export const SET_ALIGNMENT_FROM_QUESTION = "[question alignment] set alignment f
 export const UPDATE_DICT_ALIGNMENT = "[dictionaries] update alignment";
 export const UPDATE_RECENT_STANDARDS = "[dictionaries] update recent standards";
 export const UPDATE_DEFAULT_CURRICULUM = "[dictionaries] update default curriculum";
+export const UPDATE_RECENT_COLLECTIONS = "[dictonaries] update recent collections";
 
 // ClassResponse
 export const RECEIVE_CLASS_RESPONSE_REQUEST = "[classresponses] receive list request";

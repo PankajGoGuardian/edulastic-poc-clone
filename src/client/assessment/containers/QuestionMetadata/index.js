@@ -31,7 +31,8 @@ import {
   getCurriculumsListSelector,
   getStandardsListSelector,
   standardsSelector,
-  getDictionariesAlignmentsSelector
+  getDictionariesAlignmentsSelector,
+  getRecentCollectionsListSelector
 } from "../../../author/src/selectors/dictionaries";
 
 import { Container } from "./styled/Container";
@@ -75,7 +76,8 @@ const QuestionMetadata = ({
   collectionName,
   orgData,
   userFeatures,
-  highlightCollection
+  highlightCollection,
+  recentCollectionsList
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
   const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
@@ -182,6 +184,7 @@ const QuestionMetadata = ({
           orgData={orgData}
           userFeatures={userFeatures}
           highlightCollection={highlightCollection}
+          recentCollectionsList={recentCollectionsList}
         />
       </div>
     </ThemeProvider>
@@ -243,7 +246,8 @@ const enhance = compose(
       collectionName: getCollectionNamesSelector(state),
       orgData: getOrgDataSelector(state),
       userFeatures: getUserFeatures(state),
-      highlightCollection: getHighlightCollectionSelector(state)
+      highlightCollection: getHighlightCollectionSelector(state),
+      recentCollectionsList: getRecentCollectionsListSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

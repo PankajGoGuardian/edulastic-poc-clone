@@ -42,8 +42,14 @@ import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
 import changeViewAction from "../src/actions/view";
-import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
-import { updateRecentStandardsAction } from "../src/actions/dictionaries";
+import {
+  getDictionariesAlignmentsSelector,
+  getRecentStandardsListSelector,
+  getRecentCollectionsListSelector
+} from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
+import { getOrgDataSelector } from "../src/selectors/user";
+import { generateRecentlyUsedCollectionsList } from "../ItemDetail/ducks";
 
 // constants
 export const resourceTypeQuestions = {
@@ -469,6 +475,14 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+
+    const { collectionName } = item;
+    if (collectionName) {
+      const { itemBanks } = yield select(getOrgDataSelector);
+      let recentCollectionsList = yield select(getRecentCollectionsListSelector);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
+    }
     if (isTestFlow) {
       // user should get redirected to item detail page when multipart or passgae questions are being created from test flow or else save and continue.
       const isFinalSave = yield select(state => state.router.location.isFinalSave);

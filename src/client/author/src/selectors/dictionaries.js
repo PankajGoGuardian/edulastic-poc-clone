@@ -109,3 +109,8 @@ export const getRecentStandardsListSelector = createSelector(
   stateSelector,
   state => state.recentStandardsList || []
 );
+
+export const getRecentCollectionsListSelector = createSelector(
+  stateSelector,
+  state => state.recentCollectionsList || []
+);

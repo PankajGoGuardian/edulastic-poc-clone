@@ -15,7 +15,8 @@ import {
   REMOVE_DICT_ALINMENT,
   UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT,
-  CLEAR_ALIGNMENT_STANDARDS
+  CLEAR_ALIGNMENT_STANDARDS,
+  UPDATE_RECENT_COLLECTIONS
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
@@ -42,7 +43,10 @@ const initialItemsState = {
   defaultCurriculumName: getFromLocalStorage("defaultCurriculumName"),
   defaultCurriculumId: parseInt(getFromLocalStorage("defaultCurriculumId")) || "",
   recentStandardsList: getFromLocalStorage("recentStandards") ? JSON.parse(getFromLocalStorage("recentStandards")) : [],
-  alignments: [getNewAlignmentState()]
+  alignments: [getNewAlignmentState()],
+  recentCollectionsList: getFromLocalStorage("recentCollections")
+    ? JSON.parse(getFromLocalStorage("recentCollections"))
+    : []
 };
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
@@ -161,6 +165,12 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
       return {
         ...state,
         recentStandardsList: recentStandards
+      };
+    case UPDATE_RECENT_COLLECTIONS:
+      const { recentCollections } = payload;
+      return {
+        ...state,
+        recentCollectionsList: recentCollections
       };
     default:
       return state;

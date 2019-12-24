@@ -255,6 +255,8 @@ class SideMenu extends Component {
       return menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false));
     });
 
+    const isPublisher = features.isCurator || features.isPublisherAuthor;
+
     let _userRole = null;
     if (userRole === roleuser.TEACHER) {
       _userRole = "Teacher";
@@ -282,11 +284,13 @@ class SideMenu extends Component {
               <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
             </Link>
           </Menu.Item>
-          <Menu.Item key="0" className="removeSelectedBorder">
-            <a>
-              <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
-            </a>
-          </Menu.Item>
+          {!isPublisher && (
+            <Menu.Item key="0" className="removeSelectedBorder">
+              <a>
+                <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
+              </a>
+            </Menu.Item>
+          )}
           <Menu.Item key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}

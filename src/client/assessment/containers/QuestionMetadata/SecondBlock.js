@@ -8,6 +8,7 @@ import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
 import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
+import RecentCollectionsList from "./RecentCollectionsList";
 
 const SecondBlock = ({
   t,
@@ -22,7 +23,8 @@ const SecondBlock = ({
   collectionName,
   orgData,
   userFeatures,
-  highlightCollection
+  highlightCollection,
+  recentCollectionsList
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -178,6 +180,13 @@ const SecondBlock = ({
                 ))}
               </Select>
             </ItemBody>
+            {recentCollectionsList?.length > 0 && (
+              <RecentCollectionsList
+                recentCollectionsList={recentCollectionsList}
+                collectionName={collectionName || []}
+                handleCollectionNameSelect={handleCollectionNameSelect}
+              />
+            )}
           </Col>
         )}
       </Row>

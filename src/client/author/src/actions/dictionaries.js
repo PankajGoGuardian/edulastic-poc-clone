@@ -8,7 +8,8 @@ import {
   CLEAR_DICT_ALIGNMENTS,
   UPDATE_DICT_ALIGNMENT,
   UPDATE_DEFAULT_CURRICULUM,
-  RESET_DICT_ALIGNMENTS
+  RESET_DICT_ALIGNMENTS,
+  UPDATE_RECENT_COLLECTIONS
 } from "../constants/actions";
 
 export const getDictCurriculumsAction = () => ({
@@ -57,5 +58,10 @@ export const updateDefaultCurriculumAction = payload => ({
 
 export const updateRecentStandardsAction = payload => ({
   type: UPDATE_RECENT_STANDARDS,
+  payload
+});
+
+export const updateRecentCollectionsAction = payload => ({
+  type: UPDATE_RECENT_COLLECTIONS,
   payload
 });

@@ -35,10 +35,15 @@ import changeViewAction from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { addQuestionAction, getCurrentQuestionSelector } from "../sharedDucks/questions";
+import { getOrgDataSelector } from "../src/selectors/user";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
-import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
-import { updateRecentStandardsAction } from "../src/actions/dictionaries";
+import {
+  getDictionariesAlignmentsSelector,
+  getRecentStandardsListSelector,
+  getRecentCollectionsListSelector
+} from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
 
 // constants
 const testItemStatusConstants = {
@@ -258,7 +263,7 @@ export const getItemSelector = createSelector(
 
 export const getCollectionNamesSelector = createSelector(
   getItemDetailSelector,
-  state => state.collectionName || []
+  state => state.collectionName
 );
 
 export const getHighlightCollectionSelector = createSelector(
@@ -385,6 +390,17 @@ export const getItemDetailValidationSelector = createSelector(
     return validations;
   }
 );
+
+export const generateRecentlyUsedCollectionsList = (collectionName, itemBanks, recentCollectionsList) => {
+  recentCollectionsList = [...recentCollectionsList, collectionName];
+  recentCollectionsList = recentCollectionsList.map(collection => {
+    if (typeof collection === "object") return collection;
+    return itemBanks.find(data => data._id === collection);
+  });
+  recentCollectionsList = uniqBy(recentCollectionsList, "_id");
+  storeInLocalStorage("recentCollections", JSON.stringify(recentCollectionsList));
+  return recentCollectionsList;
+};
 
 // reducer
 
@@ -907,6 +923,15 @@ export function* updateItemSaga({ payload }) {
     recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+
+    const { collectionName } = item;
+    if (collectionName) {
+      const { itemBanks } = yield select(getOrgDataSelector);
+      let recentCollectionsList = yield select(getRecentCollectionsListSelector);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
+    }
+
     yield call(message.success, "Item is saved as draft", 2);
     if (addToTest) {
       // add item to test entity
@@ -964,6 +989,14 @@ export function* updateItemDocBasedSaga({ payload }) {
     recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+
+    const { collectionName } = item;
+    if (collectionName) {
+      const { itemBanks } = yield select(getOrgDataSelector);
+      let recentCollectionsList = yield select(getRecentCollectionsListSelector);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
+    }
     yield call(message.success, "Item is saved as draft", 2);
     return { testId, ...item };
   } catch (err) {

@@ -143,6 +143,7 @@ class AssignmentsPage {
 
     this.getPercentage().should("have.length", 0);
   }
+
   verifyTestNameById = (testName, id) => this.getTestNameById(id).should("contain", testName);
 
   getTestNameById = id => this.getAssignmentByTestId(id).find('[data-cy="testTitle"]');
@@ -152,6 +153,7 @@ class AssignmentsPage {
     this.verifyAbsenceOfTest(newtestid);
     this.verifyPresenceOfTest(oldtestid);
   };
+
   verifyAbsenceOfTest = id => cy.get("body").should("not.have.descendants", `[data-cy="test-${id}"]`);
 
   verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);

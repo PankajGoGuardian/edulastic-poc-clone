@@ -101,7 +101,7 @@ class SignupPage {
   clickOnProceed = () => cy.contains("Proceed").click();
 
   clickOnGetStarted = () => {
-    cy.get('[data-cy="getStarted"]').click();
+    cy.get('[data-cy="getStarted"]').click({ force: true });
     cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
   };
 

@@ -1,6 +1,6 @@
-import FileHelper from "../../../framework/util/fileHelper";
-import SidebarPage from "../../../framework/student/sidebarPage";
-import ManagePage from "../../../framework/student/managePage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import SidebarPage from "../../../../framework/student/sidebarPage";
+import ManagePage from "../../../../framework/student/managePage";
 
 const sideBarPage = new SidebarPage();
 const student = { email: "student3@automation.com", password: "automation" };

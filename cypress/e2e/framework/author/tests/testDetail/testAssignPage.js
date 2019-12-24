@@ -12,7 +12,6 @@ export default class TestAssignPage {
       ).click({ force: true });
     });
   };
-
   selectClass = className => {
     cy.get('[data-cy="selectClass"]').click();
     this.clickOnDropDownOptionByText(className);

@@ -16,8 +16,17 @@ import { DonutChartWithText } from "../../../../common/components/charts/DonutCh
 
 const CollectionItem = props => {
   const { className, data } = props;
+  const defaultValue = {
+    draft: 0,
+    published: 0,
+    issues: 0
+  };
 
-  const { PlayLists: playlists, TestItems: itemBank, Tests: tests } = data.metrics;
+  const {
+    PlayLists: playlists = defaultValue,
+    TestItems: itemBank = defaultValue,
+    Tests: tests = defaultValue
+  } = data.metrics;
 
   return (
     <div className={className}>
@@ -49,15 +58,15 @@ const CollectionItem = props => {
           <div className="item-content-body">
             <div className="item-content-key-value">
               <p>{"draft"}</p>
-              <StyledH4>{itemBank.draft}</StyledH4>
+              <StyledH4>{itemBank?.draft}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"published"}</p>
-              <StyledH4>{itemBank.published}</StyledH4>
+              <StyledH4>{itemBank?.published}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"issues"}</p>
-              <StyledH4>{itemBank.issues}</StyledH4>
+              <StyledH4>{itemBank?.issues}</StyledH4>
             </div>
           </div>
         </ItemContent>
@@ -69,15 +78,15 @@ const CollectionItem = props => {
           <div className="item-content-body">
             <div className="item-content-key-value">
               <p>{"draft"}</p>
-              <StyledH4>{tests.draft}</StyledH4>
+              <StyledH4>{tests?.draft}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"published"}</p>
-              <StyledH4>{tests.published}</StyledH4>
+              <StyledH4>{tests?.published}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"issues"}</p>
-              <StyledH4>{tests.issues}</StyledH4>
+              <StyledH4>{tests?.issues}</StyledH4>
             </div>
           </div>
         </ItemContent>
@@ -89,15 +98,15 @@ const CollectionItem = props => {
           <div className="item-content-body">
             <div className="item-content-key-value">
               <p>{"draft"}</p>
-              <StyledH4>{playlists.draft}</StyledH4>
+              <StyledH4>{playlists?.draft}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"published"}</p>
-              <StyledH4>{playlists.published}</StyledH4>
+              <StyledH4>{playlists?.published}</StyledH4>
             </div>
             <div className="item-content-key-value">
               <p>{"issues"}</p>
-              <StyledH4>{playlists.issues}</StyledH4>
+              <StyledH4>{playlists?.issues}</StyledH4>
             </div>
           </div>
         </ItemContent>

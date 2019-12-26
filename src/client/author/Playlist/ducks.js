@@ -118,7 +118,8 @@ export const emptyFilters = {
   type: "",
   status: "",
   tags: [],
-  collections: []
+  collections: [],
+  createdAt: ""
 };
 
 // reducer

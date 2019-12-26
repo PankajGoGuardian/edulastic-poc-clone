@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { debounce, get, has, pickBy, pick, identity } from "lodash";
 import styled from "styled-components";
+import moment from "moment";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -167,7 +168,7 @@ class TestList extends Component {
     this.searchTest(newSearch);
   };
 
-  handleFiltersChange = (name, value) => {
+  handleFiltersChange = (name, value, dateString) => {
     const {
       receivePlaylists,
       history,
@@ -189,6 +190,11 @@ class TestList extends Component {
     } else if (name === "grades") {
       updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
+    } else if (name === "createdAt") {
+      updatedKeys = {
+        ...updatedKeys,
+        [name]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
+      };
     }
     this.updateFilterState(updatedKeys);
     receivePlaylists({ search: updatedKeys, page: 1, limit });

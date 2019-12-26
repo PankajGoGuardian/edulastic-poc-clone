@@ -5,6 +5,7 @@ import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDe
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
+import moment from "moment";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
@@ -13,6 +14,7 @@ import StandardsSearchModal from "../../../ItemList/components/Search/StandardsS
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
+import { StyledDatePicker } from "../../../ItemList/components/Search/styled";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
@@ -217,6 +219,16 @@ const TestListFilters = ({
           </Select>
         </FilterItemWrapper>
       ))}
+      {isPublishers && (
+        <FilterItemWrapper>
+          <SubTitle>Created On</SubTitle>
+          <StyledDatePicker
+            format={"DD/MM/YYYY"}
+            onChange={(value, dateString) => onChange("createdAt", value, dateString)}
+            value={search["createdAt"] ? moment(search["createdAt"]) : ""}
+          />
+        </FilterItemWrapper>
+      )}
     </Container>
   );
 };

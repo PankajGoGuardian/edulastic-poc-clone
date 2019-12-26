@@ -183,7 +183,8 @@ export const emptyFilters = {
   subject: "",
   tags: [],
   searchString: "",
-  filter: "ENTIRE_LIBRARY"
+  filter: "ENTIRE_LIBRARY",
+  createdAt: ""
 };
 
 // reducer

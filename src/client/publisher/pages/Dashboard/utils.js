@@ -39,11 +39,17 @@ const defs = (
 );
 
 export const getCollectionsList = collections => {
-  return collections.map(collection => {
-    const itemBankTotal = sum(Object.values(collection.metrics.TestItems));
-    const testTotal = sum(Object.values(collection.metrics.Tests));
-    const playlistTotal = sum(Object.values(collection.metrics.PlayLists));
-    const totalIssues = reduce(collection.metrics, (result, value) => result + value.issues, 0);
+  const defaultValue = {
+    draft: 0,
+    published: 0,
+    issues: 0
+  };
+  return collections?.map(collection => {
+    const { PlayLists = defaultValue, TestItems = defaultValue, Tests = defaultValue } = collection.metrics;
+    const itemBankTotal = sum(Object.values(TestItems));
+    const testTotal = sum(Object.values(Tests));
+    const playlistTotal = sum(Object.values(PlayLists));
+    const totalIssues = reduce(collection?.metrics, (result, value) => result + value?.issues, 0);
     const chartData = [
       { name: "itembank", value: itemBankTotal, fill: "url('#publisherDashboardItembankIconColor')" },
       { name: "tests", value: testTotal, fill: "url('#publisherDashboardTestsIconColor')" },

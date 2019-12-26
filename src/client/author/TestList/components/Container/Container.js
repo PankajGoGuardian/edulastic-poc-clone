@@ -5,6 +5,7 @@ import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import moment from "moment";
 import { Button, Row, Input, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
@@ -275,7 +276,7 @@ class TestList extends Component {
    * @params name {String} - name of the filt.er
    * @params value {Sring} - filter value
    */
-  handleFiltersChange = (name, value) => {
+  handleFiltersChange = (name, value, dateString) => {
     const {
       receiveTests,
       clearDictStandards,
@@ -319,6 +320,12 @@ class TestList extends Component {
       updateDefaultSubject(value);
       storeInLocalStorage("defaultSubject", value);
       clearDictStandards();
+    }
+    if (name === "createdAt") {
+      updatedKeys = {
+        ...updatedKeys,
+        [name]: value ? moment(dateString, "DD/MM/YYYY").valueOf() : ""
+      };
     } else {
       updatedKeys = {
         ...updatedKeys,
@@ -331,7 +338,7 @@ class TestList extends Component {
     }
     const searchFilters = {
       ...updatedKeys,
-      [name]: value
+      [name]: name === "createdAt" ? updatedKeys[name] : value
     };
     this.updateFilterState(searchFilters, true);
     // update the url to reflect the newly applied filter and get the new results.

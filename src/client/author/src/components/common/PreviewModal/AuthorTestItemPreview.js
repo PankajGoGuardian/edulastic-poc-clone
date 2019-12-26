@@ -133,7 +133,7 @@ class AuthorTestItemPreview extends Component {
     }
   };
 
-  renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount) => {
+  renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount, resourceCount) => {
     const {
       preview,
       LCBPreviewModal,
@@ -146,23 +146,27 @@ class AuthorTestItemPreview extends Component {
       handleCheckAnswer,
       handleShowAnswer,
       item,
+      cols,
       ...restProps
     } = this.props;
     const questionCount = get(item, ["data", "questions"], []).length;
-    const resourceCount = (item?.data?.resources || []).length;
+    // TODO
+    // make resources and questions consistent
+    // resources are not saving as a part of item.data.resources
     const isMultiPart = questionCount > 1;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const alphabets = "abcdefghijklmnopqrstuvwxyz";
-    // need to remove the resource count fromt the subCount
-    // because resources should not have labels
-    // hence, reduce that many from the question's subCount    (EV-10560)
-    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount - resourceCount);
+
+    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
     const question =
       questions[widget.reference] && questions[widget.reference].qLabel
         ? questions[widget.reference]
         : {
             ...questions[widget.reference],
-            qLabel: isMultiPart ? alphabets[subIndex] : "" // show subIndex if multipart, otherwise nothing
+            // need to remove the resource count fromt the subCount
+            // because resources should not have labels
+            // hence, reduce that many from the question's subCount    (EV-10560)
+            qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
           };
     if (!question) {
       return <div />;
@@ -355,7 +359,7 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderColumns(col, colIndex, sectionQue) {
+  renderColumns(col, colIndex, sectionQue, resourceCount) {
     const { style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
     let subCount = 0;
@@ -393,10 +397,10 @@ class AuthorTestItemPreview extends Component {
               {col.tabs &&
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++)}
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
               {col.tabs &&
                 !col.tabs.length &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++)}
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
             </React.Fragment>
           ))}
         </WidgetContainer>
@@ -446,19 +450,24 @@ class AuthorTestItemPreview extends Component {
     const { cols, page } = this.props;
     const { collapseDirection } = this.state;
     let questionCount = 0;
+    let resourceCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
       .forEach(({ widgets }) => {
         questionCount += widgets.length;
+        resourceCount += widgets.reduce((count, wid) => {
+          if (wid.widgetType === "resource") {
+            return count + 1;
+          }
+          return count;
+        }, 0);
       });
     if (questionCount === 0) {
       return null;
     }
-
     // send in an array of lengths to preserve the sub-question count
     // filter out the questions with different tab indices in each section
     const sectionQue = this.getSectionQue(cols);
-
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
@@ -476,7 +485,7 @@ class AuthorTestItemPreview extends Component {
                     hide={hideColumn}
                   >
                     {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                    {this.renderColumns(col, i, sectionQue)}
+                    {this.renderColumns(col, i, sectionQue, resourceCount)}
                   </ColumnContentArea>
                   {collapseDirection === "right" && this.renderCollapseButtons(i)}
                 </>

@@ -94,6 +94,7 @@ const Tools = ({
   redo,
   testMode,
   review,
+  isToolBarVisible,
   isDocBased = false
 }) => {
   const getAlpha = color => {
@@ -117,6 +118,7 @@ const Tools = ({
       justifyContent="center"
       review={review}
       testMode={testMode}
+      isToolBarVisible={isToolBarVisible}
     >
       {activeMode === "" && (
         <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
@@ -216,7 +218,7 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  margin-left: -60px;
+  margin-left: ${props => (props.isToolBarVisible ? "-60px" : "0px")};
   background: ${props => props.theme.default.sideToolbarBgColor};
   z-index: 500;
   border-radius: 4px;

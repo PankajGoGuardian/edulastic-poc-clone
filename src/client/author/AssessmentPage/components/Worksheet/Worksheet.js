@@ -700,6 +700,7 @@ class Worksheet extends React.Component {
                 onColorChange={this.handleColorChange}
                 testMode={testMode}
                 review={review}
+                isToolBarVisible={isToolBarVisible}
                 isDocBased={isDocBased}
               />
             )}

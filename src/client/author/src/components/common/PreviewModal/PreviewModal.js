@@ -115,6 +115,7 @@ class PreviewModal extends React.Component {
     } = this.props;
 
     const itemId = data.id;
+    const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
 
     // change the question editor view to "edit"
     changeView("edit");

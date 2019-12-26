@@ -149,10 +149,11 @@ class TestList extends Component {
 
   static getDerivedStateFromProps = (props, prevState) => {
     const { features, mode } = props;
-    if (features.isCurator && mode !== "embedded") {
+    if (features.isCurator && mode !== "embedded" && !prevState.blockStyleConfigured) {
       return {
         ...prevState,
-        blockStyle: "horizontal"
+        blockStyle: "horizontal",
+        blockStyleConfigured: true
       };
     }
     return prevState;

@@ -35,7 +35,11 @@ import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
-import { ViewButton as ViewButtonContainer, AddButtonStyled } from "../../../ItemList/components/Item/styled";
+import {
+  ViewButton as ViewButtonContainer,
+  AddButtonStyled,
+  ViewButtonStyled
+} from "../../../ItemList/components/Item/styled";
 import { getSelectedTestsSelector } from "../../ducks";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
@@ -129,7 +133,8 @@ class ListItem extends Component {
       usage = analytics ? analytics[0].usage : "0",
       selectedTests = [],
       onRemoveFromCart,
-      onAddToCart
+      onAddToCart,
+      t
     } = this.props;
     const standardsIdentifiers = standards.map(item => item.identifier);
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
@@ -212,6 +217,14 @@ class ListItem extends Component {
                 {!isPlaylist && mode !== "embedded" && (
                   <ViewButtonContainer>
                     <FeaturesSwitch inputFeatures="isCurator" actionOnInAccessible="hidden">
+                      <ViewButtonStyled
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.showPreviewModal(item._id);
+                        }}
+                      >
+                        <IconEye /> {t("component.item.view")}
+                      </ViewButtonStyled>
                       <AddButtonStyled
                         selectedToCart={isInCart}
                         onClick={e => {

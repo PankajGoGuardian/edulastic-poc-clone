@@ -47,6 +47,8 @@ class CardWrapper extends Component {
       checked,
       handleCheckboxAction,
       moduleTitle,
+      onRemoveFromCart,
+      onAddToCart,
       collections
     } = this.props;
 
@@ -89,6 +91,8 @@ class CardWrapper extends Component {
           moduleTitle={moduleTitle}
           checked={checked}
           handleCheckboxAction={handleCheckboxAction}
+          onRemoveFromCart={onRemoveFromCart}
+          onAddToCart={onAddToCart}
         />
       </Col>
     );

@@ -9,6 +9,7 @@ import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
+import { cloneDeep, keyBy } from "lodash";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -34,6 +35,8 @@ export const APPROVE_OR_REJECT_SINGLE_TEST_REQUEST = "[tests] approve or reject 
 export const APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS = "[tests] approve or reject single test success";
 export const APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST = "[tests] approve or reject multiple tests request";
 export const APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS = "[tests] approve or reject multiple tests success";
+export const ADD_TEST_TO_CART = "[tests] add test to cart";
+export const REMOVE_TEST_FROM_CART = "[tests] remove test from cart";
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST);
@@ -46,6 +49,10 @@ export const deleteTestRequestAction = createAction(DELETE_TEST_REQUEST);
 export const deleteTestRequestSuccessAction = createAction(DELETE_TEST_REQUEST_SUCCESS);
 export const approveOrRejectSingleTestRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST);
 export const approveOrRejectSingleTestSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS);
+export const approveOrRejectMultipleTestsRequestAction = createAction(APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST);
+export const approveOrRejectMultipleTestsSuccessAction = createAction(APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS);
+export const addTestToCartAction = createAction(ADD_TEST_TO_CART);
+export const removeTestFromCartAction = createAction(REMOVE_TEST_FROM_CART);
 
 function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
@@ -114,12 +121,53 @@ function* approveOrRejectSingleTestSaga({ payload }) {
   }
 }
 
+function* approveOrRejectMultipleTestsSaga({ payload }) {
+  const tests = yield select(getSelectedTestsSelector);
+  if (tests.length) {
+    try {
+      const data = {
+        status: payload.status,
+        testIds: tests
+          .filter(i => {
+            if (payload.status === "rejected") {
+              if (i.status === "inreview") {
+                return true;
+              }
+            } else if (payload.status === "published") {
+              if (i.status === "inreview" || i.status === "rejected") {
+                return true;
+              }
+            }
+            return false;
+          })
+          .map(i => i._id)
+      };
+
+      const result = yield call(testsApi.updateBulkTestsStatus, data);
+      if (result.nModified === data.testIds.length) {
+        yield put(approveOrRejectMultipleTestsSuccessAction(data));
+        yield call(message.success, `${data.testIds.length} tests(s) successfully ${payload.status}.`);
+      } else {
+        yield call(
+          message.success,
+          `${result.nModified} tests(s) successfully ${payload.status}, ${data.testIds.length -
+            result.nModified} tests(s) failed`
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(error?.data?.message || `Failed to update Status`);
+    }
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
     yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
-    yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga)
+    yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
+    yield takeEvery(APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST, approveOrRejectMultipleTestsSaga)
   ]);
 }
 
@@ -148,7 +196,8 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
-  loading: false
+  loading: false,
+  selectedTests: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -217,6 +266,31 @@ export const reducer = (state = initialState, { type, payload }) => {
           }
         })
       };
+    case ADD_TEST_TO_CART:
+      return {
+        ...state,
+        selectedTests: [...state.selectedTests, cloneDeep(payload)]
+      };
+    case REMOVE_TEST_FROM_CART:
+      return {
+        ...state,
+        selectedTests: state.selectedTests.filter(o => o._id !== payload._id)
+      };
+    case APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS:
+      const testIdsMap = keyBy(payload.testIds);
+      return {
+        ...state,
+        entities: state.entities.map(t => {
+          if (testIdsMap[t._id]) {
+            return {
+              ...t,
+              status: payload.status
+            };
+          }
+          return t;
+        }),
+        selectedTests: []
+      };
     default:
       return state;
   }
@@ -249,4 +323,9 @@ export const getTestsCountSelector = createSelector(
 export const getTestsFilterSelector = createSelector(
   stateSelector,
   state => state.filters
+);
+
+export const getSelectedTestsSelector = createSelector(
+  stateSelector,
+  state => state.selectedTests
 );

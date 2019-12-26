@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { darkGrey, cardTitleColor, themeColor, fadedBlack } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose, IconPlus } from "@edulastic/icons";
 import { Col, Checkbox } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import Tags from "../../../src/components/common/Tags";
@@ -33,6 +35,9 @@ import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
+import { ViewButton as ViewButtonContainer, AddButtonStyled } from "../../../ItemList/components/Item/styled";
+import { getSelectedTestsSelector } from "../../ducks";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 class ListItem extends Component {
   static propTypes = {
@@ -121,11 +126,15 @@ class ListItem extends Component {
       checked,
       moduleTitle,
       likes = analytics ? analytics[0].likes : "0",
-      usage = analytics ? analytics[0].usage : "0"
+      usage = analytics ? analytics[0].usage : "0",
+      selectedTests = [],
+      onRemoveFromCart,
+      onAddToCart
     } = this.props;
     const standardsIdentifiers = standards.map(item => item.identifier);
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
+    const isInCart = !!selectedTests.find(o => o._id === item._id);
     return (
       <>
         <ViewModal
@@ -200,6 +209,21 @@ class ListItem extends Component {
                     />
                   </ViewButtonWrapper>
                 )}
+                {!isPlaylist && mode !== "embedded" && (
+                  <ViewButtonContainer>
+                    <FeaturesSwitch inputFeatures="isCurator" actionOnInAccessible="hidden">
+                      <AddButtonStyled
+                        selectedToCart={isInCart}
+                        onClick={e => {
+                          e.stopPropagation();
+                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                        }}
+                      >
+                        {isInCart ? "Remove" : <IconPlus />}
+                      </AddButtonStyled>
+                    </FeaturesSwitch>
+                  </ViewButtonContainer>
+                )}
               </Outer>
             </Col>
 
@@ -259,4 +283,12 @@ class ListItem extends Component {
   }
 }
 
-export default withNamespaces("author")(ListItem);
+const enhance = compose(
+  withNamespaces("author"),
+  connect(
+    state => ({ selectedTests: getSelectedTestsSelector(state) }),
+    {}
+  )
+);
+
+export default enhance(ListItem);

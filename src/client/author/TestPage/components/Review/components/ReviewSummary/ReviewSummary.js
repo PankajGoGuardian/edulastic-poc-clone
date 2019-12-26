@@ -43,7 +43,7 @@ const ReviewSummary = ({
   onChangeCollection,
   grades,
   subjects,
-  collectionName,
+  collections = [],
   interestedCurriculums,
   windowWidth,
   orgData,
@@ -108,12 +108,13 @@ const ReviewSummary = ({
               Collections
             </MainLabel>
             <SummarySelectBox
+              mode="multiple"
               data-cy="subjectSelect"
               size="medium"
               disabled={!owner || !isEditable}
               style={{ width: "100%" }}
               placeholder="Please select"
-              value={collectionName}
+              value={collections.map(o => o._id)}
               onChange={onChangeCollection}
               filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
               marginBottom="0px"

@@ -370,7 +370,7 @@ class Review extends PureComponent {
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
-    const collectionName = get(test, "collectionName", "");
+    const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
 
@@ -453,7 +453,7 @@ class Review extends PureComponent {
                   questionsCount={questionsCount}
                   grades={grades}
                   subjects={subjects}
-                  collectionName={collectionName}
+                  collections={collections}
                   owner={owner}
                   isEditable={isEditable}
                   summary={test.summary || {}}

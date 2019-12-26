@@ -75,6 +75,15 @@ const updateTestStatus = data =>
     })
     .then(result => result.data.result);
 
+const updateBulkTestsStatus = data =>
+  api
+    .callApi({
+      url: `${prefix}/bulk`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 const getPublicTest = testId =>
   api
     .callApi({
@@ -132,6 +141,7 @@ export default {
   getDefaultImage,
   publishTest,
   updateTestStatus,
+  updateBulkTestsStatus,
   getPublicTest,
   getByV1Id,
   getDefaultTestSettings,

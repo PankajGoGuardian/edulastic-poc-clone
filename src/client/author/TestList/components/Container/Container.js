@@ -41,7 +41,10 @@ import {
   getTestsFilterSelector,
   clearTestFiltersAction,
   filterMenuItems,
-  emptyFilters
+  emptyFilters,
+  addTestToCartAction,
+  removeTestFromCartAction,
+  approveOrRejectMultipleTestsRequestAction
 } from "../../ducks";
 import {
   getTestsCreatingSelector,
@@ -87,6 +90,9 @@ import {
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getInterestedStandards } from "../../../dataUtils";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import CartButton from "../CartButton/cartButton";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../../src/selectors/user";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -138,6 +144,17 @@ class TestList extends Component {
     selectedTests: [],
     isShowFilter: false,
     markedTests: []
+  };
+
+  static getDerivedStateFromProps = (props, prevState) => {
+    const { features, mode } = props;
+    if (features.isCurator && mode !== "embedded") {
+      return {
+        ...prevState,
+        blockStyle: "horizontal"
+      };
+    }
+    return prevState;
   };
 
   componentDidMount() {
@@ -601,6 +618,16 @@ class TestList extends Component {
 
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
+  onAddToCart = item => {
+    const { addTestToCartAction } = this.props;
+    addTestToCartAction(item);
+  };
+
+  onRemoveFromCart = item => {
+    const { removeTestFromCartAction } = this.props;
+    removeTestFromCartAction(item);
+  };
+
   renderCardContent = () => {
     const {
       loading,
@@ -641,6 +668,7 @@ class TestList extends Component {
     }
     const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
+
     if (blockStyle === "tile") {
       return (
         <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
@@ -682,6 +710,8 @@ class TestList extends Component {
             moduleTitle={moduleTitleMap[item._id]}
             checked={markedTestsList.includes(item._id)}
             handleCheckboxAction={this.handleCheckboxAction}
+            onRemoveFromCart={this.onRemoveFromCart}
+            onAddToCart={this.onAddToCart}
           />
         ))}
       </Row>
@@ -724,6 +754,51 @@ class TestList extends Component {
       limit,
       search: updatedKeys
     });
+  };
+
+  rejectNumberChecker = tests => {
+    let num = 0;
+    for (let o of tests) {
+      if (o.status === "inreview") {
+        num++;
+      }
+    }
+    return num;
+  };
+
+  approveNumberChecker = tests => {
+    let num = 0;
+    for (let o of tests) {
+      if (o.status === "inreview" || o.status === "rejected") {
+        num++;
+      }
+    }
+    return num;
+  };
+
+  renderExtra = () => {
+    return (
+      <>
+        <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+          <CartButton
+            onClick={() => {
+              const { approveOrRejectMultipleTestsRequestAction } = this.props;
+              approveOrRejectMultipleTestsRequestAction({ status: "rejected" });
+            }}
+            buttonText={"Reject"}
+            numberChecker={this.rejectNumberChecker}
+          />
+          <CartButton
+            onClick={() => {
+              const { approveOrRejectMultipleTestsRequestAction } = this.props;
+              approveOrRejectMultipleTestsRequestAction({ status: "published" });
+            }}
+            buttonText={"Approve"}
+            numberChecker={this.approveNumberChecker}
+          />
+        </FeaturesSwitch>
+      </>
+    );
   };
 
   render() {
@@ -822,6 +897,7 @@ class TestList extends Component {
                 />
               </StyleChangeWrapper>
             )}
+            renderExtra={this.renderExtra}
           />
         )}
         <Container>
@@ -987,7 +1063,8 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, "user.user._id", false),
-      testFilters: getTestsFilterSelector(state)
+      testFilters: getTestsFilterSelector(state),
+      features: getUserFeatures(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1010,7 +1087,10 @@ const enhance = compose(
       clearTestData: clearTestDataAction,
       updateTestFilters: updateTestSearchFilterAction,
       updateAllTestFilters: updateAllTestSearchFilterAction,
-      clearAllFilters: clearTestFiltersAction
+      clearAllFilters: clearTestFiltersAction,
+      addTestToCartAction,
+      removeTestFromCartAction,
+      approveOrRejectMultipleTestsRequestAction
     }
   )
 );

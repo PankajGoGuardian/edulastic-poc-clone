@@ -303,9 +303,10 @@ class Container extends PureComponent {
     getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
-  handleChangeCollection = collectionName => {
+  handleChangeCollection = (value, options) => {
     const { setData, test } = this.props;
-    setData({ ...test, collectionName });
+    let _value = options.map(o => ({ name: o.props.title, _id: o.props.value }));
+    setData({ ...test, collections: _value });
   };
 
   handleChangeSubject = subjects => {

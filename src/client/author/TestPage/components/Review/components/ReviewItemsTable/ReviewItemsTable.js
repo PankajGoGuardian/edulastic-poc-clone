@@ -103,7 +103,7 @@ const ItemsTable = ({
       title: item._id,
       isScoringDisabled
     };
-    console.log("item", item);
+
     const meta = {
       id: item._id,
       by: get(item, ["createdBy", "name"], ""),

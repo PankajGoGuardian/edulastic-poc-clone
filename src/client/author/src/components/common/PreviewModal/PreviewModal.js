@@ -82,7 +82,7 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, history, updateTestAndNavigate, test, match, isTest } = this.props;
+    const { data, testId, history, updateTestAndNavigate, test, match, isTest = !!testId } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
@@ -90,7 +90,7 @@ class PreviewModal extends React.Component {
 
     if (isTest) {
       updateTestAndNavigate({
-        pathname: `/author/items/${duplicatedItem._id}/item-detail/test/${testId}`,
+        pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}/`,
         fadeSidebar: true,
         regradeFlow,
         previousTestId: test.previousTestId
@@ -110,7 +110,7 @@ class PreviewModal extends React.Component {
       changeView,
       updateTestAndNavigate,
       test,
-      isTest,
+      isTest = !!testId,
       match
     } = this.props;
 
@@ -121,6 +121,7 @@ class PreviewModal extends React.Component {
     changeView("edit");
     // itemDetail store has leftovers from previous visit to the page,
     // clearing it before navigation.
+
     clearItemStore();
     if (isTest) {
       updateTestAndNavigate({

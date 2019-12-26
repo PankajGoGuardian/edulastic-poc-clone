@@ -471,6 +471,7 @@ class Review extends PureComponent {
           {isModalVisible && (
             <PreviewModal
               testId={get(this.props, "match.params.id", false)}
+              isTest={!!test}
               isVisible={isModalVisible}
               onClose={this.closeModal}
               showModal

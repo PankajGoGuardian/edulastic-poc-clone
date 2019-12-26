@@ -954,6 +954,7 @@ export function* updateItemSaga({ payload }) {
     }
 
     yield call(message.success, "Item is saved as draft", 2);
+    yield put(changeUpdatedFlagAction(false));
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
@@ -965,7 +966,7 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}`, payload.locationState));
+        yield put(push(`/author/tests/tab/review/id/${payload.testId}`));
       }
       yield put(changeViewAction("edit"));
       return;

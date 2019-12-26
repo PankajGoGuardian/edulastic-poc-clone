@@ -141,10 +141,9 @@ class Container extends PureComponent {
     const { showCancelButton = false } = history.location.state || {};
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
-    } else if (createdItems.length > 0) {
-      this.setState({ editEnable: true }, () => {
-        this.gotoTab("addItems");
-      });
+    }
+    if (createdItems.length > 0) {
+      this.setState({ editEnable: true });
       if (this.props.location?.state?.showItemAddedMessage) {
         message.success(
           <span>
@@ -157,14 +156,6 @@ class Container extends PureComponent {
           3
         );
       }
-    }
-
-    if (location.hash === "#review") {
-      this.handleNavChange("review", true)();
-    } else if (createdItems.length > 0) {
-      this.setState({ editEnable: true }, () => {
-        this.gotoTab("addItems");
-      });
     }
 
     if (match.params.id && match.params.id != "undefined") {

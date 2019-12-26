@@ -574,7 +574,9 @@ function* addAuthoredItemsToTestSaga({ payload }) {
         payload: { data: updatedTest }
       });
       // save the test and navigate to test page.
-      const path = !isEditFlow ? `/author/tests/${testId}` : `/author/tests/${testId}/createItem/${item._id}`;
+      const path = !isEditFlow
+        ? `/author/tests/tab/review/id/${testId}`
+        : `/author/tests/${testId}/createItem/${item._id}`;
       yield put(updateTestAndNavigateAction(path));
     }
   } catch (e) {

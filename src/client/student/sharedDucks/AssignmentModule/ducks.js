@@ -33,7 +33,7 @@ export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT);
 // initial State
 const initialState = {
   isLoading: false,
-  byId: [],
+  byId: {},
   allIds: [],
   error: {},
   isStale: false,

@@ -62,7 +62,7 @@ const PreviewRubricModal = ({
       visible={visible}
       footer={null}
       onCancel={() => handleCloseRubric()}
-      width={"700px"}
+      width={"800px"}
     >
       <StyledModalBody>
         <PreviewRubricTable
@@ -110,6 +110,9 @@ const HeaderWrapper = styled.div`
     color: ${title};
     font-size: 25px;
     font-weight: ${props => props.theme.bold};
+    width: 80%;
+    display: inline-block;
+    line-height: 30px;
   }
 
   > span:last-child {

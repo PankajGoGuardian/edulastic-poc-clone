@@ -20,7 +20,7 @@ import StandardsSearchModal from "./StandardsSearchModal";
 import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
-import { getCurrentDistrictUsers, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
+import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
 const Search = ({
   search: {
     grades,
@@ -377,7 +377,7 @@ export default connect(
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),
-    currentDistrictUsers: getCurrentDistrictUsers(state)
+    currentDistrictUsers: getCurrentDistrictUsersSelector(state)
   }),
   { getCurrentDistrictUsers: getCurrentDistrictUsersAction }
 )(Search);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
@@ -8,10 +8,11 @@ import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector, getUserFeatures } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
+import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
@@ -27,10 +28,35 @@ const TestListFilters = ({
   allPlaylistsTagsData = [],
   searchFilterOption,
   filterMenuItems,
-  userFeatures
+  userFeatures,
+  districtId,
+  currentDistrictUsers,
+  getCurrentDistrictUsers
 }) => {
   const [showModal, setShowModal] = useState(false);
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
+
+  useEffect(() => {
+    if (userFeatures.isCurator && !currentDistrictUsers?.length) getCurrentDistrictUsers(districtId);
+  }, []);
+
+  const getAuthoredByFilterData = () => {
+    if (!userFeatures.isCurator) return [];
+    else {
+      return [
+        {
+          mode: "multiple",
+          title: "Authored By",
+          placeholder: "All Authors",
+          size: "large",
+          filterOption: searchFilterOption,
+          data: [...(currentDistrictUsers || []).map(o => ({ value: o._id, text: `${o.firstName} ${o.lastName}` }))],
+          onChange: "authoredByIds"
+        }
+      ];
+    }
+  };
+
   const getFilters = () => {
     let filterData1 = [];
     const { filter } = search;
@@ -58,7 +84,8 @@ const TestListFilters = ({
           onChange: "tags",
           filterOption: searchFilterOption,
           data: allPlaylistsTagsData.map(o => ({ value: o._id, text: o.tagName }))
-        }
+        },
+        ...getAuthoredByFilterData()
       ];
     }
 
@@ -109,7 +136,8 @@ const TestListFilters = ({
           size: "large",
           data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collections"
-        }
+        },
+        ...getAuthoredByFilterData()
       ]
     );
     filterData1.push({
@@ -214,9 +242,13 @@ export default connect(
     allTagsData: getAllTagsSelector(state, "test"),
     allPlaylistsTagsData: getAllTagsSelector(state, "playlist"),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
-    userFeatures: getUserFeatures(state)
+    userFeatures: getUserFeatures(state),
+    districtId: getUserOrgId(state),
+    currentDistrictUsers: getCurrentDistrictUsersSelector(state)
   }),
-  {}
+  {
+    getCurrentDistrictUsers: getCurrentDistrictUsersAction
+  }
 )(TestListFilters);
 
 const Container = styled.div`

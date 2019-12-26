@@ -297,7 +297,7 @@ export const getUserDetails = createSelector(
   user => user
 );
 
-export const getCurrentDistrictUsers = createSelector(
+export const getCurrentDistrictUsersSelector = createSelector(
   [getUserDetails],
   state => state.currentDistrictUsers
 );

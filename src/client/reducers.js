@@ -6,6 +6,7 @@ import studentReducers from "./student/reducers";
 import curriculumSequenceReducers from "./author/CurriculumSequence/ducks";
 import tutorial from "./tutorials/tutorialReducer";
 import adminReducers from "./admin/reducers";
+import publisherReducer from "./publisher/reducers";
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   ...studentReducers,
   ...adminReducers,
   tutorial,
-  curriculumSequence: curriculumSequenceReducers
+  curriculumSequence: curriculumSequenceReducers,
+  ...publisherReducer
 });
 
 export default rootReducer;

@@ -13,6 +13,7 @@ import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
 import { CurriculumSequenceSaga } from "./author/CurriculumSequence";
 import { default as adminSagas } from "./admin/sagas";
+import publisherSagas from "./publisher/sagas";
 
 export default function*() {
   yield all([
@@ -26,6 +27,7 @@ export default function*() {
     ...assessmentSagas,
     ...adminSagas,
     CurriculumSequenceSaga(),
-    signupSaga()
+    signupSaga(),
+    ...publisherSagas
   ]);
 }

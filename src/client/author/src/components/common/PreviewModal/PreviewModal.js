@@ -82,15 +82,17 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, history, updateTestAndNavigate, test } = this.props;
+    const { data, testId, history, updateTestAndNavigate, test, match, isTest } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
-    if (testId) {
+    const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
+
+    if (isTest) {
       updateTestAndNavigate({
         pathname: `/author/items/${duplicatedItem._id}/item-detail/test/${testId}`,
         fadeSidebar: true,
-        regradeFlow: true,
+        regradeFlow,
         previousTestId: test.previousTestId
       });
     } else {
@@ -100,22 +102,30 @@ class PreviewModal extends React.Component {
 
   // this is the one need to be modified
   editTestItem = () => {
-
-    const { data, history, testId, clearItemStore, changeView, updateTestAndNavigate, test } = this.props;
+    const {
+      data,
+      history,
+      testId,
+      clearItemStore,
+      changeView,
+      updateTestAndNavigate,
+      test,
+      isTest,
+      match
+    } = this.props;
 
     const itemId = data.id;
 
     // change the question editor view to "edit"
     changeView("edit");
-
     // itemDetail store has leftovers from previous visit to the page,
     // clearing it before navigation.
     clearItemStore();
-    if (testId) {
+    if (isTest) {
       updateTestAndNavigate({
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
         fadeSidebar: "false",
-        regradeFlow: true,
+        regradeFlow,
         previousTestId: test.previousTestId
       });
     } else {

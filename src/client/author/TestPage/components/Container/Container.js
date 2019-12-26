@@ -105,14 +105,17 @@ class Container extends PureComponent {
     const { history, match, location } = this.props;
     const { regradeFlow = false, previousTestId = "" } = location?.state || {};
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
+    console.log("mathc params are", match.params);
     const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
     let url = `/author/tests/create/${tab}`;
+    console.log("this is the one called");
     if ((id && oldId) || regradeFlow) {
       const newTab = previousTestId ? "review" : tab;
       url = `/author/tests/tab/${newTab}/id/${id}/old/${oldId || previousTestId}`;
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`;
     }
+    console.log("url here is", url);
     history.push({
       pathname: url,
       state: history.location.state

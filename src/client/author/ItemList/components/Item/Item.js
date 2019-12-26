@@ -55,7 +55,6 @@ import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 
-
 // render single item
 class Item extends Component {
   static propTypes = {
@@ -167,11 +166,11 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
-        
+
     if (hasUserGotAccessToPremiumItem(item.collections, collections)) {
       details.unshift({ name: <PremiumTag />, type: "premium" });
     }
-    
+
     return details.map(
       (detail, index) =>
         (detail.text || detail.type === "premium") &&
@@ -282,6 +281,7 @@ class Item extends Component {
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
     const itemTypes = getQuestionType(item);
+
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
         <Container className="fr-view">
@@ -296,6 +296,7 @@ class Item extends Component {
               isEditable={isEditable}
               owner={owner}
               testId={test?._id}
+              isTest={!!test}
               checkAnswer={() => checkAnswer({ ...item, isItem: true })}
               showAnswer={() => showAnswer(item)}
               gotoSummary={gotoSummary}

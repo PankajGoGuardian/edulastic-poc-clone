@@ -569,44 +569,51 @@ function* receiveTestByIdSaga({ payload }) {
   }
 }
 
+function* createTest(data) {
+  const { _id: oldId, versioned: regrade = false, title, passwordPolicy } = data;
+
+  if (title !== undefined && !title.trim().length) {
+    return yield call(message.error(" Name field cannot be empty "));
+  }
+  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+    delete data.assignmentPassword;
+  }
+
+  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+    delete data.passwordExpireIn;
+  }
+
+  console.log("Tsi here");
+  const dataToSend = omit(data, [
+    "assignments",
+    "createdDate",
+    "updatedDate",
+    "testItems",
+    "passages", // not accepted by backend validator (testSchema)  EV-10685
+    "isUsed",
+    "currentTab" // not accepted by backend validator (testSchema) EV-10685
+  ]);
+  // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
+  dataToSend.testItems = data.testItems.map(o => ({
+    itemId: o._id,
+    maxScore: helpers.getPoints(o),
+    questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
+  }));
+  console.log("here also");
+  let entity = yield call(testsApi.create, data);
+  entity = { ...entity, ...data };
+  yield put({
+    type: UPDATE_ENTITY_DATA,
+    payload: {
+      entity
+    }
+  });
+  return entity;
+}
+
 function* createTestSaga({ payload }) {
-  const { _id: oldId, versioned: regrade = false, title, passwordPolicy } = payload.data;
   try {
-    if (title !== undefined && !title.trim().length) {
-      return yield call(message.error(" Name field cannot be empty "));
-    }
-    if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
-      delete payload.data.assignmentPassword;
-    }
-
-    if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
-      delete payload.data.passwordExpireIn;
-    }
-
-    const dataToSend = omit(payload.data, [
-      "assignments",
-      "createdDate",
-      "updatedDate",
-      "testItems",
-      "passages", // not accepted by backend validator (testSchema)  EV-10685
-      "isUsed",
-      "currentTab" // not accepted by backend validator (testSchema) EV-10685
-    ]);
-    // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
-    dataToSend.testItems = payload.data.testItems.map(o => ({
-      itemId: o._id,
-      maxScore: helpers.getPoints(o),
-      questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
-    }));
-    let entity = yield call(testsApi.create, dataToSend);
-    entity = { ...entity, ...payload.data };
-    yield put({
-      type: UPDATE_ENTITY_DATA,
-      payload: {
-        entity
-      }
-    });
-
+    let entity = createTest(payload.data);
     const hash = payload.toReview ? "#review" : "";
     yield put(createTestSuccessAction(entity));
     if (payload.currentTab) {
@@ -679,6 +686,7 @@ function* updateTestSaga({ payload }) {
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
+    console.log("old ID and newID", oldId, newId);
     if (oldId != newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");
@@ -1186,10 +1194,19 @@ function* updateTestAndNavigate({ payload }) {
         pathname: payload
       };
     }
-    const { pathname, fadeSidebar = false, regradeFlow, previousTestId } = payload;
+    let { pathname, fadeSidebar = false, regradeFlow, previousTestId } = payload;
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
-    if (hasUnsavedChanges) yield updateTestSaga({ payload: { data, id: data._id, disableLoadingIndicator: true } });
+    if (hasUnsavedChanges) {
+      let test = data._id
+        ? yield updateTestSaga({ payload: { data, id: data._id, disableLoadingIndicator: true } })
+        : yield createTest(data);
+
+      if (!data._id) {
+        pathname = pathname.replace("undefined", test._id);
+      }
+    }
+
     yield put(push(pathname, { isTestFlow: true, fadeSidebar, regradeFlow, previousTestId }));
   } catch (e) {
     yield call(message.error("error updating test"));

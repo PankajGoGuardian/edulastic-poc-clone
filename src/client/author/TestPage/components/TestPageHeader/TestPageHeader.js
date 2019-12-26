@@ -43,6 +43,7 @@ import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeMo
 import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 const { statusConstants } = test;
 
 export const navButtonsTest = [
@@ -147,7 +148,8 @@ const TestPageHeader = ({
   match,
   showDuplicateButton,
   handleDuplicateTest,
-  showCancelButton
+  showCancelButton,
+  features
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -155,6 +157,8 @@ const TestPageHeader = ({
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
   const [showCancelPopup, setShowCancelPopup] = useState(false);
+
+  const isPublishers = !!(features.isCurator || features.isPublisherAuthor);
 
   useEffect(() => {
     if (match?.params?.oldId) {
@@ -275,7 +279,7 @@ const TestPageHeader = ({
                 <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
               </EduButton>
             )}
-            {showShareButton && owner && (
+            {showShareButton && (owner || features.isCurator) && (
               <EduButton
                 title="Share"
                 data-cy="share"
@@ -349,11 +353,15 @@ const TestPageHeader = ({
                 <IconCopy color={themeColor} />
               </EduButton>
             )}
-            {showShareButton && (owner || testStatus === "published") && !isPlaylist && !showCancelButton && (
-              <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
-                Assign
-              </AssignButton>
-            )}
+            {showShareButton &&
+              (owner || testStatus === "published") &&
+              !isPlaylist &&
+              !showCancelButton &&
+              !isPublishers && (
+                <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
+                  Assign
+                </AssignButton>
+              )}
             {showCancelButton && (
               <AssignButton data-cy="assign" size="large" onClick={() => setCancelState(true)}>
                 Cancel
@@ -374,7 +382,7 @@ const TestPageHeader = ({
                   <FilterToggleBtn header="true" isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
                 </MobileHeaderFilterIcon>
               )}
-              {owner && (
+              {(owner || features.isCurator) && (
                 <EduButton
                   data-cy="share"
                   style={ButtonWithIconStyle}
@@ -424,7 +432,7 @@ const TestPageHeader = ({
                 )
               ) : null}
 
-              {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
+              {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
                 <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
                   Assign
                 </AssignButton>
@@ -460,7 +468,8 @@ const enhance = compose(
   connect(
     state => ({
       test: state.tests.entity,
-      testAssignments: getAssignmentsSelector(state)
+      testAssignments: getAssignmentsSelector(state),
+      features: getUserFeatures(state)
     }),
     {
       toggleSideBar: toggleSideBarAction,

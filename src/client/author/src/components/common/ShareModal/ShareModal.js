@@ -234,7 +234,8 @@ class ShareModal extends React.Component {
       testId,
       hasPremiumQuestion,
       isPlaylist,
-      userOrgData
+      userOrgData,
+      features
     } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
@@ -299,7 +300,9 @@ class ShareModal extends React.Component {
                     value={item}
                     key={item}
                     disabled={
-                      (!isPublished && item !== shareTypeKeys[3]) || (item === shareTypeKeys[0] && hasPremiumQuestion)
+                      (!isPublished && item !== shareTypeKeys[3]) ||
+                      (item === shareTypeKeys[0] && hasPremiumQuestion) ||
+                      ((features.isCurator || features.isPublisherAuthor) && item === "PUBLIC")
                     }
                   >
                     {shareTypes[item]}

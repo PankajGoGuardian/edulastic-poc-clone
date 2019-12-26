@@ -56,6 +56,7 @@ import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 import { getCollectionsSelector } from "../../src/selectors/user";
 import { getTestAuthorName } from "../../dataUtils";
+import { getUserFeatures } from "../../../student/Login/ducks";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -320,7 +321,8 @@ class CurriculumSequence extends Component {
       onShareClick,
       history,
       handleTestsSort,
-      collections
+      collections,
+      features
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -513,7 +515,7 @@ class CurriculumSequence extends Component {
                   />
                 </HeaderTitle>
                 <CurriculumHeaderButtons>
-                  {urlHasUseThis && (
+                  {(urlHasUseThis || features.isCurator) && (
                     <ShareButtonStyle>
                       <Button type="default" onClick={onShareClick}>
                         <ShareButtonIcon color={greenThird} width={20} height={20} />
@@ -1300,7 +1302,8 @@ const enhance = compose(
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
       recentPlaylists: getRecentPlaylistSelector(state),
-      collections: getCollectionsSelector(state)
+      collections: getCollectionsSelector(state),
+      features: getUserFeatures(state)
     }),
     {
       onGuideChange: changeGuideAction,

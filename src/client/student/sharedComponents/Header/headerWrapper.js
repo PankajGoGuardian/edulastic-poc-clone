@@ -15,11 +15,11 @@ import {
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const HeaderWrapper = ({ children, toggleSideBar }) => (
-  <HeaderContainer>
+const HeaderWrapper = ({ children, toggleSideBar, isDocBased }) => (
+  <HeaderContainer isDocBased={isDocBased}>
     <FixedHeader>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-      <AssignmentsHeader>
+      <AssignmentsHeader isDocBased={isDocBased}>
         <HeaderRow>
           <StyledCol span={24}>
             <Wrapper>{children}</Wrapper>
@@ -42,7 +42,7 @@ export default connect(
 
 const HeaderContainer = styled.div`
   height: ${props => props.theme.HeaderHeight.xs}px;
-  margin-bottom: 16px;
+  margin-bottom: ${props => (props.isDocBased ? "0px" : "16px")};
   background: ${props => props.theme.header.headerBgColor || themeColor};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
@@ -78,7 +78,7 @@ const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
   height: ${props => props.theme.HeaderHeight.xs}px;
-  padding: 0px 40px;
+  padding: ${props => (props.isDocBased ? "0px 25px" : "0px 40px")};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.theme.HeaderHeight.md}px;

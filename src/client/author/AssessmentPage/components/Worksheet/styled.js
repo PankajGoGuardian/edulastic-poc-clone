@@ -4,15 +4,24 @@ import { white, green, mediumDesktopExactWidth, extraDesktopWidthMax, largeDeskt
 export const WorksheetWrapper = styled.div`
   position: relative;
   display: flex;
-  height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xs}px)`};
   justify-content: space-between;
   overflow: auto;
+  height: ${props =>
+    `calc(100vh - ${
+      props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
+    }px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.md}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
+      }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xl}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
+      }px)`};
   }
 `;
 

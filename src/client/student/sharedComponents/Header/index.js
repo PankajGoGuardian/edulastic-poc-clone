@@ -17,9 +17,10 @@ const Header = ({
   showActiveClass,
   setClassList,
   setShowClass,
+  isDocBased,
   showAllClassesOption = true
 }) => (
-  <HeaderWrapper>
+  <HeaderWrapper isDocBased={isDocBased}>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
       {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}

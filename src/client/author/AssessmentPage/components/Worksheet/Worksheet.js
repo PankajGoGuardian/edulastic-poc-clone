@@ -583,9 +583,10 @@ class Worksheet extends React.Component {
 
     //450 IS THE TOTAL WIDTH OF RIGHT QUESTION AREA AND LEFT THUMBNAILS AREA 220 IS THE THUMBNAILS AREA WIDTH WHEN MINIMIZED REDUCE 220 AND USE that space for PDF AREA
     const pdfWidth = minimized ? windowWidth - 450 : windowWidth - 450 - 220;
+    const reportMode = viewMode && viewMode === "report";
 
     return (
-      <WorksheetWrapper testMode={testMode}>
+      <WorksheetWrapper reportMode={reportMode} testMode={testMode}>
         <Modal
           visible={deleteConfirmation}
           title="Confirm Page Deletion"
@@ -641,6 +642,7 @@ class Worksheet extends React.Component {
             viewMode={viewMode}
             review={review}
             testMode={testMode}
+            reportMode={reportMode}
             isToolBarVisible={isToolBarVisible}
             toggleToolBarVisiblity={this.toggleToolBarVisiblity}
             noCheck={noCheck}
@@ -676,6 +678,7 @@ class Worksheet extends React.Component {
               answersById={answersById}
               renderExtra={svgContainer}
               viewMode={viewMode}
+              reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}
               minimized={minimized}
@@ -719,6 +722,7 @@ class Worksheet extends React.Component {
           onSortEnd={this.onSortEnd}
           testMode={testMode}
           isDocBased={isDocBased}
+          reportMode={reportMode}
         />
       </WorksheetWrapper>
     );

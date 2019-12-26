@@ -38,6 +38,7 @@ const Thumbnails = ({
   viewMode,
   review,
   testMode,
+  reportMode,
   currentPage,
   isToolBarVisible,
   toggleToolBarVisiblity,
@@ -47,7 +48,7 @@ const Thumbnails = ({
 }) => {
   const onChangePage = page => () => onPageChange(page);
   return (
-    <ThumbnailsWrapper testMode={testMode} review={review}>
+    <ThumbnailsWrapper reportMode={reportMode} testMode={testMode} review={review}>
       <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
         <IconGraphRightArrow />
       </MinimizeButton>

@@ -5,21 +5,30 @@ import { mediumDesktopExactWidth, extraDesktopWidthMax, borders, tabGrey, backgr
 export const ThumbnailsWrapper = styled.div`
   position: relative;
   overflow-y: auto;
-  padding: ${props => (props.testMode ? "30px 25px" : "30px 25px 50px")};
+  padding: ${props => (props.testMode || props.reportMode ? "30px 25px" : "30px 25px 50px")};
   background: ${backgrounds.primary};
   min-width: 200px;
   max-width: 200px;
-  height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xs}px)`};
+  height: ${props =>
+    `calc(100vh - ${
+      props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
+    }px)`};
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     min-width: 180px;
     max-width: 180px;
   }
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.md}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
+      }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xl}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
+      }px)`};
   }
 `;
 

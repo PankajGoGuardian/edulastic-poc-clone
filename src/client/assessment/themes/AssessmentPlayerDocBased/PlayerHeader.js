@@ -37,12 +37,18 @@ const PlayerHeader = ({
     />
   );
 
+  const headerStyle = {
+    height: "70px",
+    justifyContent: "space-between",
+    alignItems: "center"
+  };
+
   return (
     <Fragment>
       <Header>
         <HeaderMainMenu skinb="true">
           <FlexContainer>
-            <HeaderWrapper>
+            <HeaderWrapper headerStyle={headerStyle}>
               <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
               <MainActionWrapper>
                 <Container>

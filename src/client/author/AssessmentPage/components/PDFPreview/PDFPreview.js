@@ -52,6 +52,7 @@ const PDFPreview = ({
   pageChange,
   removeAnswers,
   testMode,
+  reportMode,
   studentWork = false
 }) => {
   const [pdfScale, scalePDF] = useState(1);
@@ -105,6 +106,7 @@ const PDFPreview = ({
     <PDFPreviewWrapper
       review={review}
       testMode={testMode}
+      reportMode={reportMode}
       viewMode={viewMode === "report"}
       isToolBarVisible={isToolBarVisible}
       minimized={minimized}

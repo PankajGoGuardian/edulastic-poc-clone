@@ -1,34 +1,35 @@
 import styled from "styled-components";
 
-import {
-  white,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  largeDesktopWidth,
-  themeColor,
-  extraDesktopWidth
-} from "@edulastic/colors";
+import { white, mediumDesktopExactWidth, extraDesktopWidthMax, themeColor } from "@edulastic/colors";
 
 export const PDFPreviewWrapper = styled.div`
   position: relative;
-  padding-top: 30px;
+  padding-top: ${props => (props.reportMode ? "0px" : "30px")};
   padding-right: 0px;
   padding-left: ${props => (props.minimized ? "54px" : "0px")};
   padding-bottom: ${props => (props.testMode ? "15px" : props.review ? "60px" : "15px")};
   overflow-y: auto;
   width: 100%;
   transition: padding 0.2s ease-in;
-  pointer-events: ${({ viewMode }) => viewMode && "none"};
-  height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xs}px)`};
+  height: ${props =>
+    `calc(100vh - ${
+      props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
+    }px)`};
   .scrollbar-container {
     border-radius: 5px;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.md}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
+      }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.testMode ? "70" : props.theme.HeaderHeight.xl}px)`};
+    height: ${props =>
+      `calc(100vh - ${
+        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
+      }px)`};
   }
 `;
 

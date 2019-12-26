@@ -6,7 +6,8 @@ import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax } from
 export const QuestionsWrapper = styled.div`
   position: relative;
   width: 350px;
-  padding: ${props => (props.review && !props.testMode ? "30px 15px 50px" : "30px 15px")};
+  padding: ${props =>
+    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 15px"};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -23,16 +24,34 @@ export const QuestionsWrapper = styled.div`
 
 export const QuestionWidgetWrapper = styled.div`
   max-height: ${props =>
-    `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)}px)`};
+    `calc(100vh - ${
+      props.testMode
+        ? "130"
+        : props.reportMode
+        ? props.theme.HeaderHeight.xs + 60
+        : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
+    }px)`};
   overflow: auto;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     max-height: ${props =>
-      `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.md + (props.review ? 90 : 185)}px)`};
+      `calc(100vh - ${
+        props.testMode
+          ? "130"
+          : props.reportMode
+          ? props.theme.HeaderHeight.md + 60
+          : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
+      }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     max-height: ${props =>
-      `calc(100vh - ${props.testMode ? "130" : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)}px)`};
+      `calc(100vh - ${
+        props.testMode
+          ? "130"
+          : props.reportMode
+          ? props.theme.HeaderHeight.xl + 60
+          : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)
+      }px)`};
   }
 `;
 

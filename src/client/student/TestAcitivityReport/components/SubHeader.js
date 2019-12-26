@@ -9,7 +9,7 @@ import QuestionSelect from "./QuestionSelect.js";
 const TestActivitySubHeader = ({ title, isDocBased }) => {
   const breadcrumbData = [{ title: "GRADES", to: "/home/grades" }, { title: title }];
   return (
-    <Container>
+    <Container isDocBased={isDocBased}>
       <BreadcrumbContainer>
         <Breadcrumb data={breadcrumbData} />
       </BreadcrumbContainer>
@@ -33,7 +33,7 @@ TestActivitySubHeader.defaultProps = {
 };
 
 const Container = styled.div`
-  padding: 0px 40px 0px 45px;
+  padding: ${props => (props.isDocBased ? "10px 25px" : "0px 40px")};
   display: flex;
 `;
 

@@ -47,7 +47,7 @@ export const QuestionForm = styled.div`
   margin-left: 10px;
 
   .ant-select-selection {
-    width: ${({ review }) => (review ? "220px" : "133px")};
+    width: ${({ review }) => (review ? "200px" : "133px")};
   }
 
   .input__math {
@@ -55,7 +55,7 @@ export const QuestionForm = styled.div`
   }
 
   .ant-input {
-    width: ${({ review }) => (review ? "220px" : "133px")};
+    width: ${({ review }) => (review ? "200px" : "133px")};
   }
 `;
 

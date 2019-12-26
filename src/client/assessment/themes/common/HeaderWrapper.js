@@ -4,9 +4,7 @@ import { MAX_MOBILE_WIDTH } from "../../constants/others";
 
 const HeaderWrapper = styled(FlexContainer)`
   width: 100%;
-  height: 70px;
-  justify-content: space-between;
-  align-items: center;
+  ${props => props.headerStyle};
 
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     flex-direction: column;

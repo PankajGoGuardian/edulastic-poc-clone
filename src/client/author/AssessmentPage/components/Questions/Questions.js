@@ -439,9 +439,9 @@ class Questions extends React.Component {
       review,
       testMode,
       isDocBased,
+      reportMode,
       onHighlightQuestion
     } = this.props;
-    const report = viewMode === "report";
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
     if (list.length > 0 && list[currentEditQuestionIndex]) {
@@ -449,8 +449,14 @@ class Questions extends React.Component {
     }
     return (
       <Fragment>
-        <QuestionsWrapper review={review} viewMode={viewMode === "edit"} testMode={testMode} ref={this.containerRef}>
-          <QuestionWidgetWrapper testMode={testMode} review={review}>
+        <QuestionsWrapper
+          reportMode={reportMode}
+          review={review}
+          viewMode={viewMode === "edit"}
+          testMode={testMode}
+          ref={this.containerRef}
+        >
+          <QuestionWidgetWrapper reportMode={reportMode} testMode={testMode} review={review}>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
                 <Section
@@ -488,7 +494,7 @@ class Questions extends React.Component {
               scrollToBottom={this.scrollToBottom}
             />
           )}
-          {review && !noCheck && !report && (
+          {review && !noCheck && !reportMode && (
             <AnswerActionsWrapper>
               <AnswerAction active={previewMode === "check"} onClick={this.handleCheckAnswer}>
                 Check Answer

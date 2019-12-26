@@ -47,7 +47,7 @@ import {
   getItemDetailByIdAction,
   proceedPublishingItemAction
 } from "../../../ItemDetail/ducks";
-import { getUserSelector, getUserRole, getCollectionsSelector } from "../../../src/selectors/user";
+import { getUserSelector, getUserRole, getCollectionsSelector, getUserFeatures } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
@@ -506,6 +506,7 @@ class Container extends PureComponent {
       safeBrowser,
       sebPassword
     } = test;
+    const { userFeatures } = this.props;
     if (!title) {
       message.error("Name field cannot be empty");
       return false;
@@ -529,6 +530,10 @@ class Container extends PureComponent {
         this.sebPasswordRef.current.input.focus();
       }
       message.error("Please add a valid password.");
+      return false;
+    }
+    if ((userFeatures.isPublisherAuthor || userFeatures.isCurator) && test.collections?.length === 0) {
+      message.error("Test is not associated with any collection.");
       return false;
     }
 
@@ -715,7 +720,8 @@ const enhance = compose(
       performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], []),
       userRole: getUserRole(state),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
-      collections: getCollectionsSelector(state)
+      collections: getCollectionsSelector(state),
+      userFeatures: getUserFeatures(state)
     }),
     {
       createTest: createTestAction,

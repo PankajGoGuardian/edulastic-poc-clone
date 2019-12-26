@@ -57,18 +57,19 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
           testNames.push(test.name);
           testSummaryTab.addTags(tags[i]);
           tags[i].forEach(tag => {
+            // eslint-disable-next-line no-prototype-builtins
             if (!tagsToTest.hasOwnProperty(tag)) {
               tagsToTest[tag] = [];
             }
             tagsToTest[tag].push(id);
           });
-          //testHeader.clickOnReview();
+          // testHeader.clickOnReview();
           testHeader.clickOnSaveButton(true);
         });
       });
     });
     context("Searching In Authored By Me", () => {
-      //Searched Draft Tests should Be visible in Authored By Me
+      // Searched Draft Tests should Be visible in Authored By Me
       it("Search By standards in Draft-State", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -101,9 +102,18 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
+      it("Search By id in Draft-State", () => {
+        test_ids.forEach((id, i) => {
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
+          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.typeInSearchBox(id);
+          testLibrary.getTestCardById(id).should("be.visible");
+        });
+      });
     });
     context("Searching In Entire Library", () => {
-      //Searched Draft Tests should Not Be visible in Entire Library
+      // Searched Draft Tests should Not Be visible in Entire Library
       it("Search By standards in Draft-State", () => {
         searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
@@ -132,13 +142,21 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.checkforNonExistanceOfTest(id);
         });
+      });
+      it("Search By id in Draft-State", () => {
+        test_ids.forEach((id, i) => {
+          searchFilters.clearAll();
+          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.typeInSearchBox(id);
+          testLibrary.checkforNonExistanceOfTest(id);
+        });
         techersidebar.clickOnPlayList();
       });
     });
   });
   context("Searching In Published State", () => {
     context("Searching In Entire Library", () => {
-      //Searched Published Tests should be visible in Entire Library
+      // Searched Published Tests should be visible in Entire Library
       before("Publish all the tests", () => {
         searchFilters.clearAll();
         test_ids.forEach(id => {
@@ -175,15 +193,23 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
       it("Search By name-Published", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
+      it("Search By id-Published", () => {
+        test_ids.forEach((id, i) => {
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
+          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.typeInSearchBox(id);
+          testLibrary.getTestCardById(id).should("be.visible");
+        });
+      });
     });
     context("Searching In Authored By Me", () => {
-      //Searched Draft Tests should Be visible in Authored By Me
+      // Searched Draft Tests should Be visible in Authored By Me
       it("Search By standards in Published-State", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -212,6 +238,15 @@ describe("Searching Tests Using Tags,Tittle and Standards", () => {
         test_ids.forEach((id, i) => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
+          testLibrary.getTestCardById(id).should("be.visible");
+        });
+      });
+      it("Search By id in Published-State", () => {
+        searchFilters.clearAll();
+        searchFilters.getAuthoredByMe();
+        test_ids.forEach((id, i) => {
+          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });

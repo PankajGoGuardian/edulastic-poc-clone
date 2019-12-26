@@ -286,7 +286,7 @@ export const RatingContaner = styled.div`
   background: ${white};
   position: relative;
 
-  div:first-child {
+  > div:first-child {
     display: flex;
     position: relative;
     padding: 26px 14px 10px;
@@ -327,6 +327,18 @@ export const RatingContaner = styled.div`
   > div:last-child {
     padding: 0px 14px 11px;
     position: relative;
+    > div:first-child {
+      background: ${backgroundGrey};
+      > .fr-box {
+        width: 242px;
+        height: 92px;
+        overflow-y: auto;
+        .fr-view {
+          padding: 7px;
+          white-space: normal;
+        }
+      }
+    }
   }
 `;
 

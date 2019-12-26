@@ -41,7 +41,7 @@ const PreviewRubricTable = ({
         >
           <div>{rating.name}</div>
           <div className="points">{`${rating.points} pts`}</div>
-          <div>{rating.desc}</div>
+          <div dangerouslySetInnerHTML={{ __html: rating.desc }} />
         </RatingSection>
       ))}
     </RatingScrollContainer>
@@ -103,8 +103,7 @@ const CriteriaSection = styled.div`
 `;
 
 const RatingSection = styled.div`
-  max-width: 190px;
-  min-width: 130px;
+  min-width: 175px;
   min-height: 100px;
   margin-right: 10px;
   display: inline-block;
@@ -144,4 +143,5 @@ const CriteriaWrapper = styled.div`
 const RatingScrollContainer = styled(PerfectScrollbar)`
   padding: 2px 3px 18px 3px;
   white-space: nowrap;
+  display: flex;
 `;

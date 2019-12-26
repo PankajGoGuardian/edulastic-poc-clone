@@ -236,7 +236,7 @@ const getFixedPostion = el => {
   };
 };
 
-const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons) => {
   const sizeMap = {
     STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
     MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
@@ -246,7 +246,7 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
   const cSize = sizeMap[toolbarSize][size];
 
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
-  toolbarButtons.moreText.buttons = [...toolbarButtons.moreText.buttons];
+  toolbarButtons.moreText.buttons = buttons ? [...buttons] : [...toolbarButtons.moreText.buttons];
   toolbarButtons.moreMisc = {
     buttons: additionalToolbarOptions,
     buttonsVisible: 3
@@ -270,6 +270,7 @@ const CustomEditor = ({
   placeholder,
   fontSize,
   className,
+  buttons,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -286,10 +287,10 @@ const CustomEditor = ({
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions);
-  const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions);
-  const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions);
-  const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
+  const toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions, buttons);
+  const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons);
+  const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons);
+  const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons);
   const config = Object.assign(
     {
       key: process.env.POI_APP_FROALA_KEY,

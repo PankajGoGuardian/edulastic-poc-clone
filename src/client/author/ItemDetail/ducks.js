@@ -36,7 +36,11 @@ import changeViewAction from "../src/actions/view";
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { addQuestionAction, getCurrentQuestionSelector } from "../sharedDucks/questions";
 import { getOrgDataSelector } from "../src/selectors/user";
-import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
+import {
+  getAlignmentFromQuestionSelector,
+  setDictAlignmentFromQuestion,
+  getIsGradingCheckboxState
+} from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import {
   getDictionariesAlignmentsSelector,
@@ -844,6 +848,15 @@ export function* updateItemSaga({ payload }) {
       testItemWidgetIds.includes(item.id)
     );
     let questions = widgets.filter(item => !resourceTypes.includes(item.type));
+
+    const isGradingCheckBox = yield select(getIsGradingCheckboxState);
+    if (isGradingCheckBox) {
+      const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
+      const currentQuestion = questions.find(q => q.id === currentQuestionId);
+      if (!currentQuestion.rubrics)
+        return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+    }
+
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
     questions = produce(questions, draft => {
       draft.map((q, index) => {
@@ -862,6 +875,7 @@ export function* updateItemSaga({ payload }) {
         }
       });
     });
+
     data.data = {
       questions,
       resources
@@ -1070,6 +1084,15 @@ function* saveTestItemSaga() {
 function* publishTestItemSaga({ payload }) {
   try {
     const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+
+    const isGradingCheckBox = yield select(getIsGradingCheckboxState);
+    if (isGradingCheckBox) {
+      const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
+      const currentQuestion = questions.find(q => q.id === currentQuestionId);
+      if (!currentQuestion.rubrics)
+        return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+    }
+
     const testItem = yield select(state => get(state, ["itemDetail", "item"]));
     const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
     const standardPresent = questions.some(hasStandards);

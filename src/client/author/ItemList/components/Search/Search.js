@@ -68,7 +68,7 @@ const Search = ({
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
   const collectionData = [
-    ...testsConstants.collectionDefaultFilter,
+    ...testsConstants.collectionDefaultFilter.filter(c => c.value),
     ...collections.map(o => ({ text: o.name, value: o._id }))
   ].filter(cd =>
     // filter public, edulastic certified &
@@ -253,6 +253,7 @@ const Search = ({
               mode="multiple"
               data-cy="Collections"
               size="large"
+              placeholder="All Collections"
               onChange={onSearchFieldChange("collections")}
               value={_collections}
               getPopupContainer={triggerNode => triggerNode.parentNode}

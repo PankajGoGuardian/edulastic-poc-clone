@@ -73,9 +73,12 @@ const TestListFilters = ({
         {
           mode: "multiple",
           title: "Collections",
-          placeholder: "Select Collection",
+          placeholder: "All Collections",
           size: "large",
-          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
+          data: [
+            ...testsConstants.collectionDefaultFilter.filter(c => c.value),
+            ...collections.map(o => ({ value: o._id, text: o.name }))
+          ],
           onChange: "collections"
         },
         {
@@ -134,9 +137,12 @@ const TestListFilters = ({
         {
           mode: "multiple",
           title: "Collections",
-          placeholder: "Select Collection",
+          placeholder: "All Collections",
           size: "large",
-          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
+          data: [
+            ...testsConstants.collectionDefaultFilter.filter(c => c.value),
+            ...collections.map(o => ({ value: o._id, text: o.name }))
+          ],
           onChange: "collections"
         },
         ...getAuthoredByFilterData()

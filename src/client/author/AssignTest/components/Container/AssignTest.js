@@ -151,7 +151,10 @@ class AssignTest extends React.Component {
     if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
       delete assignment.passwordExpireIn;
     }
-    if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+    if (
+      assignment.passwordPolicy &&
+      assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
       delete assignment.assignmentPassword;
     } else if (
       assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
@@ -188,7 +191,9 @@ class AssignTest extends React.Component {
     </AssignButton>
   );
 
-  updateAssignment = assignment => this.setState({ assignment });
+  updateAssignment = assignment => {
+    this.setState({ assignment });
+  };
 
   onClassFieldChange = (value, group) => {
     const { assignment, specificStudents } = this.state;

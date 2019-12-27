@@ -114,8 +114,8 @@ export const StyledButton = styled.div`
 `;
 
 export const HeadIcon = styled.div`
-  margin-top: 4px;
-  margin-right: 10px;
+  margin-top: ${props => props.mt || "4px"};
+  margin-right: ${props => props.mr || "10px"};
 `;
 
 export const RightSide = styled.div`
@@ -127,9 +127,6 @@ export const RightSide = styled.div`
     height: 45px;
     background: #fff;
     margin-left: 5px;
-    &.save-btn {
-      padding: 0px 10px;
-    }
 
     span {
       color: #00ad50;
@@ -141,15 +138,6 @@ export const RightSide = styled.div`
       height: 36px;
       width: auto;
       padding: 0px 20px;
-      div {
-        display: none;
-      }
-    }
-  }
-  .save-btn {
-    width: 45px;
-    > div {
-      margin-right: 0px;
     }
   }
 

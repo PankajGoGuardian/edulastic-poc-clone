@@ -12,7 +12,7 @@ import {
   IconCheck,
   IconEraseText,
   IconMetadata,
-  IconMoreVertical
+  IconClose
 } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
@@ -152,16 +152,19 @@ class ButtonBar extends Component {
                   (itemStatus === "draft" ? (
                     <>
                       {isTestFlow && (
-                        <CustomButton data-cy="cancelButton" onClick={onCancel}>
-                          <HeadIcon>
-                            <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                        <CustomButton data-cy="saveButton" onClick={onCancel}>
+                          <HeadIcon mt="0px">
+                            <IconClose color={themeColor} width="12" height="12" />
                           </HeadIcon>
                           Cancel
                         </CustomButton>
                       )}
                       <Tooltip title="Save">
-                        <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
-                          <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                        <CustomButton data-cy="saveButton" regrade className="save-btn" onClick={onSave}>
+                          <HeadIcon>
+                            <IconSaveNew color={themeColor} width={16} height={16} />
+                          </HeadIcon>
+                          Save
                         </CustomButton>
                       </Tooltip>
                     </>
@@ -170,7 +173,7 @@ class ButtonBar extends Component {
                       {isTestFlow && (
                         <CustomButton onClick={onCancel}>
                           <HeadIcon>
-                            <IconSaveNew color={themeColor} width={20.4} height={20.4} />
+                            <IconClose color={themeColor} width="12" height="12" />
                           </HeadIcon>
                           Cancel
                         </CustomButton>

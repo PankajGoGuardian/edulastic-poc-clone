@@ -23,7 +23,6 @@ const classBoardTheme = themes.default.classboard;
 export const RightSideButtonWrapper = styled.div`
   height: 45px;
   display: flex;
-  margin-left: auto;
 
   @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
@@ -163,6 +162,7 @@ export const StyledDiv = styled.div`
 export const StyledTabContainer = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     order: 3;
+    flex-basis: 100%;
   }
 `;
 

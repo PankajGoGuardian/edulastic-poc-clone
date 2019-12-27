@@ -429,71 +429,75 @@ class ClassHeader extends Component {
               <i class="fa fa-ellipsis-v" />
             </HeaderMenuIcon>
           </Dropdown>
-        </RightSideButtonWrapper>
-        <StyledDiv>
-          <StyledPopconfirm
-            visible={visible}
-            onVisibleChange={this.handleVisibleChange}
-            onConfirm={this.confirm}
-            onCancel={this.cancel}
-            okText="Yes"
-            cancelText="No"
-          />
-          <ReleaseScoreSettingsModal
-            showReleaseGradeSettings={isShowReleaseSettingsPopup}
-            onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
-            updateReleaseScoreSettings={this.handleReleaseScore}
-            releaseScore={releaseScore}
-          />
-          <DeleteAssignmentModal
-            testName={additionalData?.testName}
-            assignmentId={assignmentId}
-            classId={classId}
-            lcb
-          />
-          {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
-          {isViewPassword && <ViewPasswordModal />}
-          <ConfirmationModal
-            title="Pause"
-            show={isPauseModalVisible}
-            onOk={() => this.handlePauseAssignment(!isPaused)}
-            onCancel={() => this.togglePauseModal(false)}
-            inputVal={modalInputVal}
-            onInputChange={this.handleValidateInput}
-            expectedVal="PAUSE"
-            canUndone={true}
-            bodyText={`Are you sure you want to pause? Once paused, no student would be able to answer the test unless you
+          <StyledDiv>
+            <StyledPopconfirm
+              visible={visible}
+              onVisibleChange={this.handleVisibleChange}
+              onConfirm={this.confirm}
+              onCancel={this.cancel}
+              okText="Yes"
+              cancelText="No"
+            />
+            <ReleaseScoreSettingsModal
+              showReleaseGradeSettings={isShowReleaseSettingsPopup}
+              onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
+              updateReleaseScoreSettings={this.handleReleaseScore}
+              releaseScore={releaseScore}
+            />
+            <DeleteAssignmentModal
+              testName={additionalData?.testName}
+              assignmentId={assignmentId}
+              classId={classId}
+              lcb
+            />
+            {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
+            {isViewPassword && <ViewPasswordModal />}
+            <ConfirmationModal
+              title="Pause"
+              show={isPauseModalVisible}
+              onOk={() => this.handlePauseAssignment(!isPaused)}
+              onCancel={() => this.togglePauseModal(false)}
+              inputVal={modalInputVal}
+              onInputChange={this.handleValidateInput}
+              expectedVal="PAUSE"
+              canUndone={true}
+              bodyText={`Are you sure you want to pause? Once paused, no student would be able to answer the test unless you
                 resume it.`}
-            okText="Yes, Pause"
-            cancelText="No, Cancel"
-          />
-          <ConfirmationModal
-            title="Close"
-            show={isCloseModalVisible}
-            onOk={this.handleCloseAssignment}
-            onCancel={() => this.toggleCloseModal(false)}
-            inputVal={modalInputVal}
-            onInputChange={this.handleValidateInput}
-            expectedVal="CLOSE"
-            bodyStyle={{ padding: "60px 20px" }}
-            bodyText={
-              <div>
-                <StudentStatusDetails>
-                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not yet started</p> : ""}
-                  {inProgressStudents.length ? (
-                    <p>{inProgressStudents.length} student(s) have not yet submitted</p>
-                  ) : (
-                    ""
-                  )}
-                </StudentStatusDetails>
-                <p>Are you sure you want to close ?</p>
-                <p>Once closed, no student would be able to answer the assessment</p>
-              </div>
-            }
-            okText="Yes, Close"
-            canUndone
-          />
-        </StyledDiv>
+              okText="Yes, Pause"
+              cancelText="No, Cancel"
+            />
+            <ConfirmationModal
+              title="Close"
+              show={isCloseModalVisible}
+              onOk={this.handleCloseAssignment}
+              onCancel={() => this.toggleCloseModal(false)}
+              inputVal={modalInputVal}
+              onInputChange={this.handleValidateInput}
+              expectedVal="CLOSE"
+              bodyStyle={{ padding: "60px 20px" }}
+              bodyText={
+                <div>
+                  <StudentStatusDetails>
+                    {notStartedStudents.length ? (
+                      <p>{notStartedStudents.length} student(s) have not yet started</p>
+                    ) : (
+                      ""
+                    )}
+                    {inProgressStudents.length ? (
+                      <p>{inProgressStudents.length} student(s) have not yet submitted</p>
+                    ) : (
+                      ""
+                    )}
+                  </StudentStatusDetails>
+                  <p>Are you sure you want to close ?</p>
+                  <p>Once closed, no student would be able to answer the assessment</p>
+                </div>
+              }
+              okText="Yes, Close"
+              canUndone
+            />
+          </StyledDiv>
+        </RightSideButtonWrapper>
       </Container>
     );
   }

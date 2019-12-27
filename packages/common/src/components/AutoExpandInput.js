@@ -18,7 +18,9 @@ const AutoExpandInput = ({ onChange, onBlur, multipleLine, value, style = {}, in
 
   const MInput = multipleLine ? TextArea : Input;
   const changeInputWidth = (em, val) => {
-    if (disableAutoExpend) {
+    // during initialization ref is not attached
+    // em is undefined and hence getComputedStyle does not work (EV-10802)
+    if (disableAutoExpend || !em) {
       return;
     }
     const { width } = measureText(val, getComputedStyle(em));

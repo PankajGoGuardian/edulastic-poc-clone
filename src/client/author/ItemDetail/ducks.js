@@ -1146,7 +1146,7 @@ function* publishTestItemSaga({ payload }) {
     }
   } catch (e) {
     console.warn("publish error", e);
-    const errorMessage = "publish failed";
+    const { message: errorMessage = "Failed to publish item" } = e.data;
     yield call(message.error, errorMessage);
   }
 }

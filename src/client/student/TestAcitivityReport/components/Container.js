@@ -23,7 +23,13 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
   if (item.passageId && passages.length) {
     const passage = passages.find(p => p._id === item.passageId) || {};
     itemRows = [passage.structure, ...itemRows];
-    allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
+    const passageData = keyBy(passage.data, "id");
+    // we store userWork based on testItemId
+    // so need to pass testItemId to the passage to show proper highlights (EV-10361)
+    Object.keys(passageData).forEach(key => {
+      passageData[key].testItemId = item._id;
+    });
+    allWidgets = { ...allWidgets, ...passageData };
   }
   const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "check";
   const closeModal = () => setModal(false);

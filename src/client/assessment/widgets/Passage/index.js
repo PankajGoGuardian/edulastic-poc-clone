@@ -96,11 +96,12 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     (state, ownProps) => {
-      // passageTestItemID passed from LCB, otherwise use itemId while authoring
-      const { passageTestItemID = ownProps.item.id } = ownProps;
+      // testItemId passed from testActivityReport (EV-10361), otherwise use itemId while authoring
+      const passageId = ownProps.item.testItemId || ownProps.item.id;
+      const { passageTestItemID = passageId } = ownProps;
       return {
         userWork: get(state, `userWork.present[${passageTestItemID}].resourceId`, []),
-        passageTestItemID
+        passageTestItemID: passageId
       };
     },
     {

@@ -36,9 +36,8 @@ const TextInput = ({
         ["text", "textarea"].includes(textType)
       ) {
         nextState = produce(currentRubricData, draftState => {
-          draftState.criteria.find(c => c.id === parentId).ratings.find(r => r.id === id)[
-            fieldMapping[textType]
-          ] = value;
+          draftState.criteria.find(c => c.id === parentId).ratings.find(r => r.id === id)[fieldMapping[textType]] =
+            textType === "number" ? +value : value;
         });
         updateRubricData(nextState);
       }
@@ -58,7 +57,7 @@ const TextInput = ({
   let extraProps = {};
   if (textType === "number")
     extraProps = {
-      min: "0"
+      min: 0
     };
 
   if (textType === "textarea") {

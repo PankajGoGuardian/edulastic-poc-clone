@@ -44,7 +44,7 @@ import {
   Nav
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
-import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
+import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
@@ -408,7 +408,15 @@ class AssessmentPlayerDefault extends React.Component {
       transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
       transformOrigin: "0px 0px",
       width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
-      padding: `${isZoomApplied ? (zoomLevel >= "1.75" ? "11px" : "11px 5px") : "11px 0px"}`,
+      padding: `${
+        isZoomApplied
+          ? zoomLevel >= "1.75"
+            ? "11px"
+            : "11px 5px"
+          : windowWidth >= LARGE_DESKTOP_WIDTH
+          ? "9px 0px"
+          : "11px 0px"
+      }`,
       justifyContent: "space-between"
     };
 

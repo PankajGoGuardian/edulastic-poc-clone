@@ -68,7 +68,8 @@ export const GradeTag = styled.div`
 `;
 
 export const DomainTag = styled(GradeTag)`
-  max-width: fit-content;
+  max-width: none;
+  width: max-content;
   float: left;
   margin-right: 15px;
   padding: 0px 15px;

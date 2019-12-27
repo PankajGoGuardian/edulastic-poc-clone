@@ -34,8 +34,9 @@ const Response = ({
   const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
 
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
-  const isOverContent = btnStyle.width < contentWidth + 35; // 35 is will be ellipsis width
-
+  const textPadding = lessMinWidth ? 2 : 20;
+  const indexBoxWidth = showAnswer ? 40 : 0;
+  const isOverContent = btnStyle.width < contentWidth + textPadding + indexBoxWidth;
   const popoverContent = (
     <PopoverContent
       index={dropTargetIndex}
@@ -72,7 +73,7 @@ const Response = ({
       </div>
     </div>
   );
-  return isOverContent || lessMinWidth ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return answered && (isOverContent || lessMinWidth) ? <Popover content={popoverContent}>{content}</Popover> : content;
 };
 
 Response.propTypes = {

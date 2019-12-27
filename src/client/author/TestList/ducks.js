@@ -112,6 +112,13 @@ function* deleteTestSaga({ payload }) {
 
 function* approveOrRejectSingleTestSaga({ payload }) {
   try {
+    if (
+      payload.status === "published" &&
+      (!payload.collections || (payload.collections && !payload.collections.length))
+    ) {
+      message.error("Test is not associated with any collection.");
+      return;
+    }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
     message.success("Test Updated Successfully.");
@@ -263,6 +270,9 @@ export const reducer = (state = initialState, { type, payload }) => {
             return item;
           } else {
             item.status = payload.status;
+            if (payload.collections) {
+              item.collections = payload.collections;
+            }
             return item;
           }
         })

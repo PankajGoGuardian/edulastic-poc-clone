@@ -14,7 +14,7 @@ import {
   IconStop
 } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Tooltip, Icon } from "antd";
+import { Tooltip, Icon, Select } from "antd";
 import {
   ModalTitle,
   ModalContainer,
@@ -53,9 +53,14 @@ import {
   TestTitleWrapper,
   ViewModalButton
 } from "./styled";
-import { getInterestedCurriculumsSelector, getUserIdSelector } from "../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getUserIdSelector,
+  getCollectionsSelector
+} from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { StyledSelect } from "../../../../common/styled";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -65,6 +70,17 @@ class ViewModal extends React.Component {
     onEdit: PropTypes.func.isRequired,
     onDuplicate: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired
+  };
+
+  state = {
+    editedCollections: null
+  };
+
+  modalRef = React.createRef();
+
+  onCollectionsChange = (value, options) => {
+    const newCollections = options.map(o => ({ _id: o.props.value, name: o.props.title }));
+    this.setState({ editedCollections: newCollections });
   };
 
   render() {
@@ -82,7 +98,8 @@ class ViewModal extends React.Component {
       status,
       interestedCurriculums,
       windowWidth,
-      userId
+      userId,
+      collections
     } = this.props;
     const {
       title = "",
@@ -99,8 +116,11 @@ class ViewModal extends React.Component {
       permission,
       _source,
       authors,
-      sharedWith
+      sharedWith,
+      collections: _collections = []
     } = item;
+
+    const { editedCollections } = this.state;
 
     const modalStyles = {
       modal: {
@@ -128,7 +148,7 @@ class ViewModal extends React.Component {
           <ModalColumn>
             <Image src={thumbnail} />
           </ModalColumn>
-          <ModalColumn justify="center">
+          <ModalColumn justify="center" ref={this.modalRef}>
             <ButtonContainer>
               <ViewModalButton
                 data-cy="details-button"
@@ -183,7 +203,7 @@ class ViewModal extends React.Component {
                     data-cy="approve-button"
                     bgColor={themeColor}
                     onClick={() => {
-                      onApprove();
+                      onApprove(editedCollections !== null ? editedCollections : _collections);
                     }}
                   >
                     <IconWrapper>
@@ -206,6 +226,29 @@ class ViewModal extends React.Component {
                 </ViewModalButton>
               </ButtonContainer>
             )}
+            {status === "inreview" || status === "rejected" ? (
+              <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                <ButtonContainer>
+                  <StyledSelect
+                    mode="multiple"
+                    size="medium"
+                    style={{ width: "100%" }}
+                    value={
+                      editedCollections !== null ? editedCollections.map(o => o._id) : _collections.map(o => o._id)
+                    }
+                    filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                    getPopupContainer={() => this.modalRef.current}
+                    onChange={this.onCollectionsChange}
+                  >
+                    {collections.map(({ _id, name }) => (
+                      <Select.Option key={_id} value={_id} title={name}>
+                        {name}
+                      </Select.Option>
+                    ))}
+                  </StyledSelect>
+                </ButtonContainer>
+              </FeaturesSwitch>
+            ) : null}
           </ModalColumn>
           <ModalColumn>
             <AssessmentNameLabel>Test Name</AssessmentNameLabel>
@@ -301,7 +344,8 @@ class ViewModal extends React.Component {
 export default connect(
   state => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
-    userId: getUserIdSelector(state)
+    userId: getUserIdSelector(state),
+    collections: getCollectionsSelector(state)
   }),
   {}
 )(ViewModal);

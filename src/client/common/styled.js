@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
-import { Table, Button, Pagination, Input, Row, Modal, Form } from "antd";
+import { Table, Button, Pagination, Input, Row, Modal, Form, Select } from "antd";
 import {
   cardTitleColor,
   white,
@@ -9,7 +9,11 @@ import {
   boxShadowDefault,
   themeColor,
   lightGrey,
+  fadedGrey,
   title,
+  themeColorTagsBg,
+  themeColorLighter,
+  smallDesktopWidth,
   mobileWidthMax
 } from "@edulastic/colors";
 
@@ -317,5 +321,72 @@ export const RightFilterDiv = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     width: 90%;
     justify-content: space-between;
+  }
+`;
+
+export const StyledSelect = styled(Select)`
+  .ant-select-selection {
+    background: ${white};
+    border: none;
+    border-radius: 0px;
+    padding: 2px 3px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px 1px ${fadedGrey};
+  }
+  .ant-select,
+  .ant-input,
+  .ant-input-number {
+    min-width: 100px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .ant-select-lg {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: ${title};
+    .ant-select-selection--multiple {
+      .ant-select-selection__rendered {
+        li.ant-select-selection__choice {
+          height: 24px;
+          line-height: 24px;
+          margin-top: 7px;
+
+          @media (max-width: ${smallDesktopWidth}) {
+            height: 20px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .ant-select-selection__choice {
+    border-radius: 4px;
+    border: solid 1px ${themeColorLighter}22;
+    background-color: ${themeColor}20;
+    height: 24px;
+  }
+
+  .ant-select-selection__choice__content {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: ${themeColor};
+    opacity: 1;
+    text-transform: uppercase;
+  }
+
+  .ant-select-remove-icon {
+    svg {
+      fill: ${themeColor};
+    }
+  }
+
+  .ant-select-arrow-icon {
+    font-size: 14px;
+    svg {
+      fill: ${themeColor};
+    }
   }
 `;

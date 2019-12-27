@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { darkGrey, cardTitleColor, themeColor, fadedBlack } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose, IconPlus } from "@edulastic/icons";
-import { Col, Checkbox } from "antd";
+import { Col, Checkbox, message } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import Tags from "../../../src/components/common/Tags";
 import {
@@ -42,6 +42,7 @@ import {
 } from "../../../ItemList/components/Item/styled";
 import { getSelectedTestsSelector } from "../../ducks";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 
 class ListItem extends Component {
   static propTypes = {
@@ -102,6 +103,22 @@ class ListItem extends Component {
     this.setState({ isPreviewModalVisible: true, currentTestId: testId });
   };
 
+  onApprove = (newCollections = []) => {
+    const {
+      item: { _id: testId },
+      approveOrRejectSingleTestRequestAction
+    } = this.props;
+    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: newCollections });
+  };
+
+  onReject = () => {
+    const {
+      item: { _id: testId },
+      approveOrRejectSingleTestRequestAction
+    } = this.props;
+    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
+  };
+
   render() {
     const {
       item: {
@@ -149,6 +166,8 @@ class ListItem extends Component {
           status={testStatus}
           onEdit={this.moveToItem}
           onDuplicate={this.duplicate}
+          onReject={this.onReject}
+          onApprove={this.onApprove}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
         />
@@ -300,7 +319,7 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({ selectedTests: getSelectedTestsSelector(state) }),
-    {}
+    { approveOrRejectSingleTestRequestAction }
   )
 );
 

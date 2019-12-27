@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor } from "@edulastic/colors";
 import {
@@ -119,12 +119,12 @@ class Item extends Component {
     this.setState({ isDeleteModalOpen: false });
   };
 
-  onApprove = () => {
+  onApprove = (newCollections = []) => {
     const {
       item: { _id: testId },
       approveOrRejectSingleTestRequestAction
     } = this.props;
-    approveOrRejectSingleTestRequestAction({ testId, status: "published" });
+    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: newCollections });
   };
 
   onReject = () => {

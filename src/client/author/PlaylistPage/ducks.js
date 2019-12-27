@@ -8,9 +8,11 @@ import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { white, themeColor } from "@edulastic/colors";
+import { getUserFeatures } from "../src/selectors/user";
 
 // constants
 const playlistStatusConstants = {
+  INREVIEW: "inreview",
   DRAFT: "draft",
   PUBLISHED: "published",
   ARCHIVED: "archived"
@@ -542,8 +544,19 @@ function* publishPlaylistSaga({ payload }) {
     yield call(curriculumSequencesApi.update, { id, data: dataToSend });
     yield call(message.success, "Update Successful");
 
-    yield call(curriculumSequencesApi.publishPlaylist, id);
-    yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
+    const features = yield select(getUserFeatures);
+
+    if (features.isPublisherAuthor) {
+      yield call(curriculumSequencesApi.updatePlaylistStatus, {
+        playlistId: id,
+        status: playlistStatusConstants.INREVIEW
+      });
+      yield put(updatePlaylistStatusAction(playlistStatusConstants.INREVIEW));
+    } else {
+      yield call(curriculumSequencesApi.publishPlaylist, id);
+      yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
+    }
+
     yield call(message.success, "Successfully published");
     yield put(push(`/author/playlists/${id}`));
   } catch (e) {

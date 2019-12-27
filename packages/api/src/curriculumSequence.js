@@ -76,6 +76,15 @@ const publishPlaylist = id =>
     })
     .then(res => res);
 
+const updatePlaylistStatus = data =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${data.playlistId}/publish?status=${data.status}`,
+      data: data.collections
+    })
+    .then(result => result.data.result);
+
 const duplicatePlayList = ({ _id, title }) =>
   api
     .callApi({
@@ -91,6 +100,7 @@ export default {
   searchCurriculumSequences,
   create,
   publishPlaylist,
+  updatePlaylistStatus,
   update,
   duplicatePlayList
 };

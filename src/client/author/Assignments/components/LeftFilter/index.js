@@ -271,11 +271,11 @@ class LeftFilter extends React.Component {
     const menu = id => (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
-        <MenuItems key="1" onClick={() => this.showRenameModal(id)}>
+        <MenuItems data-cy="rename" key="1" onClick={() => this.showRenameModal(id)}>
           <IconPencilEdit width={12} height={12} />
           <span>Rename</span>
         </MenuItems>
-        <MenuItems key="2" onClick={() => this.showDeleteConfirm(id)}>
+        <MenuItems data-cy="delete" key="2" onClick={() => this.showDeleteConfirm(id)}>
           <Icon type="close" /> <span>Delete</span>
         </MenuItems>
       </DropMenu>
@@ -285,6 +285,7 @@ class LeftFilter extends React.Component {
       <>
         {!visibleModal.moveFolder && (
           <FolderButton
+            data-cy="allAssignment"
             onClick={() => this.handleSelectFolder(null)}
             active={!folderId}
             shadow="none"
@@ -297,7 +298,7 @@ class LeftFilter extends React.Component {
         {orderBy(folders, ["updatedAt"], ["desc"]).map((folder, index) => {
           const isActive = visibleModal.moveFolder ? folder._id === moveFolderId : folder._id === folderId;
           return (
-            <FolderListItem key={index} active={isActive}>
+            <FolderListItem data-cy={folder.folderName} key={index} active={isActive}>
               <FolderListItemTitle
                 ellipsis={ellipsis}
                 title={folder.folderName}
@@ -308,7 +309,7 @@ class LeftFilter extends React.Component {
               </FolderListItemTitle>
               {!visibleModal.moveFolder && (
                 <Dropdown overlay={menu(folder._id)} trigger={["click"]} placement="bottomRight">
-                  <MoreButton active={isActive}>
+                  <MoreButton data-cy="moreButton" active={isActive}>
                     <IconMoreVertical />
                   </MoreButton>
                 </Dropdown>
@@ -337,10 +338,16 @@ class LeftFilter extends React.Component {
           visible={visibleModal.newFolder}
           onCancel={() => this.hideModal("newFolder")}
           footer={[
-            <FooterCancelButton key="back" variant="create" onClick={() => this.hideModal("newFolder")}>
+            <FooterCancelButton
+              data-cy="cancel"
+              key="back"
+              variant="create"
+              onClick={() => this.hideModal("newFolder")}
+            >
               Cancel
             </FooterCancelButton>,
             <ModalFooterButton
+              data-cy="submit"
               key="submit"
               color="primary"
               variant="create"
@@ -364,10 +371,10 @@ class LeftFilter extends React.Component {
           visible={visibleModal.delFolder}
           onCancel={() => this.hideModal("delFolder")}
           footer={[
-            <Button ghost key="back" onClick={() => this.hideModal("delFolder")}>
+            <Button data-cy="cancel" ghost key="back" onClick={() => this.hideModal("delFolder")}>
               CANCEL
             </Button>,
-            <Button key="submit" color="primary" onClick={this.deleteSelectedFolder}>
+            <Button data-cy="submit" key="submit" color="primary" onClick={this.deleteSelectedFolder}>
               PROCEED
             </Button>
           ]}
@@ -383,10 +390,15 @@ class LeftFilter extends React.Component {
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
           footer={[
-            <FooterCancelButton key="back" variant="create" onClick={() => this.hideModal("moveFolder")}>
+            <FooterCancelButton
+              data-cy="cancel"
+              key="back"
+              variant="create"
+              onClick={() => this.hideModal("moveFolder")}
+            >
               Cancel
             </FooterCancelButton>,
-            <ModalFooterButton key="submit" color="primary" variant="create" onClick={this.moveFolder}>
+            <ModalFooterButton data-cy="submit" key="submit" color="primary" variant="create" onClick={this.moveFolder}>
               Move
             </ModalFooterButton>
           ]}
@@ -408,6 +420,7 @@ class LeftFilter extends React.Component {
           <>
             <StyledBoldText>Grade</StyledBoldText>
             <Select
+              data-cy="grades"
               mode="multiple"
               placeholder="All grades"
               value={grades}
@@ -425,6 +438,7 @@ class LeftFilter extends React.Component {
             </Select>
             <StyledBoldText>Subject</StyledBoldText>
             <Select
+              data-cy="subjects"
               mode="default"
               placeholder="All subjects"
               value={subject}
@@ -439,6 +453,7 @@ class LeftFilter extends React.Component {
             </Select>
             <StyledBoldText>Year</StyledBoldText>
             <Select
+              data-cy="schoolYear"
               mode="default"
               placeholder="All years"
               value={termId}
@@ -456,6 +471,7 @@ class LeftFilter extends React.Component {
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
             <Select
+              data-cy="filter-testType"
               mode="default"
               placeholder="All"
               value={testType}
@@ -472,6 +488,7 @@ class LeftFilter extends React.Component {
               <>
                 <StyledBoldText>Class</StyledBoldText>
                 <Select
+                  data-cy="filter-class"
                   showSearch
                   optionFilterProp="children"
                   mode="default"
@@ -499,6 +516,7 @@ class LeftFilter extends React.Component {
             )}
 
             <NewFolderButton
+              data-cy="newFolder"
               onClick={() => this.showModal("newFolder")}
               color="secondary"
               variant="create"

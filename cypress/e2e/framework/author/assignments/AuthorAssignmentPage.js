@@ -1,6 +1,27 @@
 import TestAddItemTab from "../tests/testDetail/testAddItemTab";
+import SmartFilters from "./smartFilters";
 
 class AuthorAssignmentPage {
+  constructor() {
+    this.smartFilter = new SmartFilters();
+  }
+
+  selectCheckBoxByTestName = testName => {
+    cy.get('[data-cy="assignmentName"]')
+      .contains(testName)
+      .closest("tr")
+      .find('input[type="checkbox"]')
+      .check({ force: true });
+  };
+
+  deSelectCheckBoxByTestName = testName => {
+    cy.get('[data-cy="assignmentName"]')
+      .contains(testName)
+      .closest("tr")
+      .find(".ant-checkbox-input")
+      .uncheck();
+  };
+
   clickOnEllipsis(index) {
     return cy
       .get(".ant-pagination-item-ellipsis")
@@ -40,6 +61,8 @@ class AuthorAssignmentPage {
   getGraded = () => cy.get('[data-cy="graded"]');
 
   verifyGraded = graded => this.getGraded().should("have.text", graded);
+
+  getClass = () => cy.get('[data-cy="class"]');
 
   clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
 

@@ -1,20 +1,31 @@
 export default class CypressHelper {
   static selectDropDownByAttribute = (dataCYAttributeValue, textToSelect) => {
     cy.get(`[data-cy="${dataCYAttributeValue}"]`).click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(textToSelect)
-      .click({ force: true });
-
-    cy.focused().blur();
+    // this.clickOnDropDownOptionByText(textToSelect);
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function() {
+            return Cypress.$(this).text() === textToSelect;
+          })
+      ).click({ force: true });
+    });
   };
 
   static selectMultipleSelectionDropDown = (attribute, option) => {
     cy.get(`[data-cy=${attribute}]`).click();
     cy.wait(300); // allow list to expand
 
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(option)
-      .click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function() {
+            return Cypress.$(this).text() === option;
+          })
+      ).click({ force: true });
+    });
 
     cy.get(`[data-cy=${attribute}]`)
       .find(".ant-select-arrow")

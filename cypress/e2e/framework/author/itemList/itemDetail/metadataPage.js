@@ -61,7 +61,7 @@ class MetadataPage {
       });
     this.getDropDownMenu()
       .contains(option)
-      .click();
+      .click({ force: true });
     cy.focused().blur();
   };
 

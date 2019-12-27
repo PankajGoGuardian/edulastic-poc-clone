@@ -204,7 +204,7 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: teacher ? { username: teacher, password } : DEFAULT_USERS.teacher
+    body: { username: teacher, password }
   }).then(({ body }) => {
     authToken = body.result.token;
 

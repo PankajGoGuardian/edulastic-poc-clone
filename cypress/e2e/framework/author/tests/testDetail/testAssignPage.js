@@ -12,6 +12,7 @@ export default class TestAssignPage {
       ).click({ force: true });
     });
   };
+
   selectClass = className => {
     cy.get('[data-cy="selectClass"]').click();
     this.clickOnDropDownOptionByText(className);
@@ -76,6 +77,7 @@ export default class TestAssignPage {
         `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
       );
     });
+    cy.contains("Success!");
   };
 
   // OVER RIDE TEST SETTING

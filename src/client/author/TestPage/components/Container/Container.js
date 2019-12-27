@@ -629,13 +629,14 @@ class Container extends PureComponent {
       proceedPublish,
       isTestLoading,
       history,
-      collections = []
+      collections = [],
+      userFeatures
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
     const { showCancelButton = false } = history.location.state || {};
     const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
     const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner;
@@ -645,6 +646,7 @@ class Container extends PureComponent {
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
     const gradeSubject = { grades, subjects };
+
     return (
       <>
         <Prompt

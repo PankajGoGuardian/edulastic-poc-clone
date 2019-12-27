@@ -43,7 +43,9 @@ import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeMo
 import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
-import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getUserFeatures, getUserId } from "../../../../student/Login/ducks";
+import { approveOrRejectSingleTestRequestAction } from "../../ducks";
+
 const { statusConstants } = test;
 
 export const navButtonsTest = [
@@ -149,7 +151,9 @@ const TestPageHeader = ({
   showDuplicateButton,
   handleDuplicateTest,
   showCancelButton,
-  features
+  features,
+  approveOrRejectSingleTestRequestAction,
+  userId
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -216,6 +220,12 @@ const TestPageHeader = ({
     navButtons = navButtons.slice(2);
   }
 
+  let isDirectOwner = owner;
+  const { authors } = test;
+  if (features.isCurator && authors && !authors.find(o => o._id === userId)) {
+    isDirectOwner = false;
+  }
+
   const ButtonWithIconStyle = {
     display: "flex",
     justifyContent: "center",
@@ -223,6 +233,16 @@ const TestPageHeader = ({
     height: "40px",
     width: "45px",
     padding: 0
+  };
+
+  const onClickCuratorApprove = () => {
+    const { collections = [], _id: testId } = test;
+    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: collections });
+  };
+
+  const onClickCuratorReject = () => {
+    const { _id: testId } = test;
+    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
   };
 
   return (
@@ -303,7 +323,7 @@ const TestPageHeader = ({
                 <IconDiskette color={themeColor} />
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton ? (
+            {showShareButton && owner && showPublishButton && isDirectOwner ? (
               isPlaylist ? (
                 <EduButton
                   title="Publish Playlist"
@@ -328,7 +348,31 @@ const TestPageHeader = ({
                 </EduButton>
               )
             ) : null}
+            {features.isCurator && testStatus === "inreview" && (
+              <EduButton
+                title={isPlaylist ? "Reject Playlist" : "Reject Test"}
+                data-cy="publish"
+                style={{ width: "auto", padding: "0 11px" }}
+                size="large"
+                onClick={onClickCuratorReject}
+                disabled={isTestLoading}
+              >
+                Reject
+              </EduButton>
+            )}
 
+            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+              <EduButton
+                title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
+                data-cy="approve"
+                style={{ width: "auto", padding: "0 11px" }}
+                size="large"
+                onClick={onClickCuratorApprove}
+                disabled={isTestLoading}
+              >
+                Approve
+              </EduButton>
+            )}
             {showEditButton && (
               <EduButton
                 title="Edit Test"
@@ -406,7 +450,7 @@ const TestPageHeader = ({
                   <IconDiskette color={themeColor} />
                 </EduButton>
               )}
-              {showShareButton && owner && showPublishButton ? (
+              {showShareButton && owner && showPublishButton && isDirectOwner ? (
                 isPlaylist ? (
                   <EduButton
                     title="Publish Playlist"
@@ -431,7 +475,30 @@ const TestPageHeader = ({
                   </EduButton>
                 )
               ) : null}
-
+              {features.isCurator && testStatus === "inreview" && (
+                <EduButton
+                  title={isPlaylist ? "Reject Playlist" : "Reject Test"}
+                  data-cy="publish"
+                  style={{ width: "auto", padding: "0 11px" }}
+                  size="large"
+                  onClick={onClickCuratorReject}
+                  disabled={isTestLoading}
+                >
+                  Reject
+                </EduButton>
+              )}
+              {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+                <EduButton
+                  title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
+                  data-cy="approve"
+                  style={{ width: "auto", padding: "0 11px" }}
+                  size="large"
+                  onClick={onClickCuratorApprove}
+                  disabled={isTestLoading}
+                >
+                  Approve
+                </EduButton>
+              )}
               {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
                 <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
                   Assign
@@ -469,12 +536,14 @@ const enhance = compose(
     state => ({
       test: state.tests.entity,
       testAssignments: getAssignmentsSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      userId: getUserId(state)
     }),
     {
       toggleSideBar: toggleSideBarAction,
       publishForRegrade: publishForRegradeAction,
-      fetchAssignments: fetchAssignmentsAction
+      fetchAssignments: fetchAssignmentsAction,
+      approveOrRejectSingleTestRequestAction
     }
   )
 );

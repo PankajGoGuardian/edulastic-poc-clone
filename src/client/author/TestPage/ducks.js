@@ -95,6 +95,8 @@ export const DELETE_ANNOTATION = "[tests] delete annotations from test";
 export const SET_LOADING_TEST_PAGE = "[tests] set loading";
 export const DUPLICATE_TEST_REQUEST = "[tests] duplicate request";
 export const UPDATE_TEST_AND_NAVIGATE = "[tests] update test and navigate";
+export const APPROVE_OR_REJECT_SINGLE_TEST_REQUEST = "[test page] approve or reject single test request";
+export const APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS = "[test page] approve or reject single test success";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -110,6 +112,8 @@ export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 export const setTestsLoadingAction = createAction(SET_LOADING_TEST_PAGE);
 export const duplicateTestRequestAction = createAction(DUPLICATE_TEST_REQUEST);
 export const updateTestAndNavigateAction = createAction(UPDATE_TEST_AND_NAVIGATE);
+export const approveOrRejectSingleTestRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST);
+export const approveOrRejectSingleTestSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -505,6 +509,15 @@ export const reducer = (state = initialState, { type, payload }) => {
             }
             return i;
           })
+        }
+      };
+    case APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          status: payload.status,
+          collections: payload.collection ? payload.collection : state.entity.collections
         }
       };
     default:
@@ -1213,6 +1226,24 @@ function* updateTestAndNavigate({ payload }) {
   }
 }
 
+function* approveOrRejectSingleTestSaga({ payload }) {
+  try {
+    if (
+      payload.status === "published" &&
+      (!payload.collections || (payload.collections && !payload.collections.length))
+    ) {
+      message.error("Test is not associated with any collection.");
+      return;
+    }
+    yield call(testsApi.updateTestStatus, payload);
+    yield put(approveOrRejectSingleTestSuccessAction(payload));
+    message.success("Test Updated Successfully.");
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Test Update Failed.");
+  }
+}
+
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -1232,7 +1263,8 @@ export function* watcherSaga() {
     yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
     yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
     yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
-    yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate)
+    yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
+    yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);

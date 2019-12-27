@@ -583,7 +583,6 @@ function* createTest(data) {
     delete data.passwordExpireIn;
   }
 
-  console.log("Tsi here");
   const dataToSend = omit(data, [
     "assignments",
     "createdDate",
@@ -599,8 +598,8 @@ function* createTest(data) {
     maxScore: helpers.getPoints(o),
     questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
   }));
-  console.log("here also");
-  let entity = yield call(testsApi.create, data);
+
+  let entity = yield call(testsApi.create, dataToSend);
   entity = { ...entity, ...data };
   yield put({
     type: UPDATE_ENTITY_DATA,
@@ -613,7 +612,7 @@ function* createTest(data) {
 
 function* createTestSaga({ payload }) {
   try {
-    let entity = createTest(payload.data);
+    let entity = yield createTest(payload.data);
     const hash = payload.toReview ? "#review" : "";
     yield put(createTestSuccessAction(entity));
     if (payload.currentTab) {
@@ -686,7 +685,7 @@ function* updateTestSaga({ payload }) {
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
-    console.log("old ID and newID", oldId, newId);
+
     if (oldId != newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");

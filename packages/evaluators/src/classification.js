@@ -1,15 +1,14 @@
 import { isEqual, flatten, identity } from "lodash";
 import { ScoringType } from "./const/scoring";
 
-const rowEvaluation = (answer = [], userResponse = []) => {
+const rowEvaluation = (answer = [], userResponse = [], prevEvaluation = []) => {
   let mainRow = answer.slice();
-  let evaluation = userResponse.map(i => {
+  let evaluation = userResponse.map((i, index) => {
     if (mainRow.includes(i)) {
       mainRow.splice(mainRow.indexOf(i), 1);
       return true;
     }
-
-    return false;
+    return prevEvaluation[index] || false;
   });
 
   return evaluation;
@@ -75,12 +74,13 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
   let evaluation = [];
   let score = 0;
   let maxScore = 0;
+  let prevEvaluation = [];
   for (const answer of answers) {
     const { value: currentAnswer, score: possibleMaxScore } = answer;
     maxScore = Math.max(maxScore, possibleMaxScore || 0);
     const currentEvalution = userResponse.map((row, i) => {
       const answerRow = currentAnswer[i] || [];
-      return rowEvaluation(answerRow, row);
+      return rowEvaluation(answerRow, row, prevEvaluation[i]);
     });
 
     const answersCount = flatten(currentAnswer).length;
@@ -94,6 +94,7 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
     } else {
       evaluation = currentEvalution;
     }
+    prevEvaluation = evaluation;
   }
 
   return {

@@ -17,7 +17,7 @@ export const MainDiv = styled.div`
   padding-right: 35px;
 
   .navigator {
-    z-index: 1000;
+    z-index: 10;
   }
 
   .navigator-left {

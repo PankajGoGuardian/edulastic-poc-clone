@@ -20,14 +20,15 @@ var _scoring = require("./const/scoring");
 var rowEvaluation = function rowEvaluation() {
   var answer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var prevEvaluation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
   var mainRow = answer.slice();
-  var evaluation = userResponse.map(function(i) {
+  var evaluation = userResponse.map(function(i, index) {
     if (mainRow.includes(i)) {
       mainRow.splice(mainRow.indexOf(i), 1);
       return true;
     }
 
-    return false;
+    return prevEvaluation[index] || false;
   });
   return evaluation;
 };
@@ -119,6 +120,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var evaluation = [];
   var score = 0;
   var maxScore = 0;
+  var prevEvaluation = [];
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
@@ -131,7 +133,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       maxScore = Math.max(maxScore, possibleMaxScore || 0);
       var currentEvalution = userResponse.map(function(row, i) {
         var answerRow = currentAnswer[i] || [];
-        return rowEvaluation(answerRow, row);
+        return rowEvaluation(answerRow, row, prevEvaluation[i]);
       });
       var answersCount = (0, _flatten2["default"])(currentAnswer).length;
       var correctCount = currentEvalution.reduce(function(correct, item) {
@@ -146,6 +148,8 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       } else {
         evaluation = currentEvalution;
       }
+
+      prevEvaluation = evaluation;
     };
 
     for (

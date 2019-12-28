@@ -3,6 +3,12 @@ import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class MCQTrueFalsePage extends MCQStandardPage {
+  setCorrectAnswer = answerChoice => {
+    this.getAllAnsChoicesLabel()
+      .contains(answerChoice)
+      .click();
+  };
+
   // default question
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
@@ -48,9 +54,7 @@ class MCQTrueFalsePage extends MCQStandardPage {
           .find("input:checked")
           .click({ force: true });
 
-        this.getAllAnsChoicesLabel()
-          .contains(correct)
-          .click();
+        this.setCorrectAnswer(correct);
 
         // this.header.save();
         // item.updateItemLevelScore(points);

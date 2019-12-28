@@ -78,6 +78,7 @@ export default class TestHeader {
       .last()
       .find("svg")
       .click({ force: true });
+
   isDraft = () =>
     cy
       .get('[data-cy="description"]')
@@ -89,5 +90,6 @@ export default class TestHeader {
       .contains("draft");
 
   getTestNameInTitle = () => cy.get('[data-cy="title"]');
+
   verifyNameInTitle = name => this.getTestNameInTitle().should("contain", name);
 }

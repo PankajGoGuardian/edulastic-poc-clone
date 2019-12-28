@@ -174,6 +174,13 @@ class EditItemPage {
       .clear({ force: true })
       .type(score, { force: true });
   };
+
+  verifyItemIdsToBeNotEqual = (newid, oldid) => {
+    expect(newid).not.eq(oldid);
+    cy.saveItemDetailToDelete(newid);
+  };
+
+  verifyItemIdsToBeEqual = (newid, oldid) => expect(newid).eq(oldid);
 }
 
 export default EditItemPage;

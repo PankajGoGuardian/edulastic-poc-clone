@@ -51,7 +51,6 @@ export default class TestLibrary {
         // .then(_id => {
         // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
         this.items.push(_id);
-
         // });
       });
 
@@ -176,6 +175,7 @@ export default class TestLibrary {
       .then(ele => {
         cy.wait("@users");
         cy.wrap(ele).type("{downarrow}{enter}");
+        // TODO: Verify Search results
       });
     this.clickSharePop(name, validuser);
   };

@@ -265,6 +265,11 @@ class MCQStandardPage {
 
   getCancel = () => cy.contains("Cancel").should("be.visible");
 
+  updatePoints = newPoints =>
+    this.getPoints()
+      .type("{selectall}")
+      .type(newPoints);
+
   // default question
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();

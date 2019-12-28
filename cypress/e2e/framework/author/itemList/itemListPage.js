@@ -10,12 +10,15 @@ import MetadataPage from "./itemDetail/metadataPage";
 import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage";
 import SidebarPage from "../../student/sidebarPage";
 import SearchFilters from "../searchFiltersPage";
+import TestReviewTab from "../tests/testDetail/testReviewTab";
 
 class ItemListPage {
   constructor() {
     this.sidebarPage = new SidebarPage();
     this.searchFilters = new SearchFilters();
+    this.testReviewTab = new TestReviewTab();
   }
+
   clickOnCreate = () => {
     // cy.server();
     // cy.route("POST", "**/testitem").as("saveItem");
@@ -43,7 +46,22 @@ class ItemListPage {
     }); */
     // return itemId;
   };
-  getViewItemById = id => cy.get(`[data_cy=${id}]`);
+
+  getViewItemById = (id, text) => {
+    /* cy.get(`[data_cy=${id}]`); */
+    cy.wait(2000);
+    return cy
+      .get("body")
+      .find('[data-cy="styled-wrapped-component"]')
+      .contains(text)
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .next()
+      .find("span", " View")
+      .eq(0);
+  };
 
   verifyPresenceOfItemById = id => {
     this.getViewItemById(id).should("be.visible");
@@ -53,9 +71,9 @@ class ItemListPage {
     this.getViewItemById(id).should("not.be.visible");
   };
 
-  getEditButtonOnPreview = () => cy.get('[title="Edit item"]');
+  getEditButtonOnPreview = () => this.testReviewTab.getEditOnPreview();
 
-  getCloneButtonOnPreview = () => cy.get('[title="CLONE"]');
+  getCloneButtonOnPreview = () => this.testReviewTab.getCopyOnPreview();
 
   verifyEditOption = id => {
     this.getViewItemById(id).click();
@@ -68,6 +86,23 @@ class ItemListPage {
     this.getEditButtonOnPreview().should("not.be.visible");
     this.getCloneButtonOnPreview().should("be.visible");
   };
+
+  clickOnViewItemById = (id, text) => this.getViewItemById(id, text).click({ force: true });
+
+  clickOnItemText = () =>
+    cy
+      .get(".fr-view")
+      .find("a")
+      .click({ force: true });
+
+  clickOnEditOnViewItem = () => {
+    this.testReviewTab.clickOnEditItemOnPreview();
+  };
+
+  verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
+    this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);
+
+  closePreiview = () => cy.get(".ant-modal-close-icon").click({ force: true });
 
   createItem = (itemKey, queIndex = 0, publish = true) => {
     const editItem = new EditItemPage();

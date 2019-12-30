@@ -4,13 +4,16 @@ import TestReviewTab from "../../../../framework/author/tests/testDetail/testRev
 import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAddItemTab";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
+import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
-let testName = testData[TEST]["name"];
-let ITEMS = testData[TEST]["itemKeys"];
-let grades = testData[TEST]["grade"];
-let subjects = testData[TEST]["subject"];
-let itemsInTest = [];
+
+const testName = testData[TEST].name;
+const ITEMS = testData[TEST].itemKeys;
+const grades = testData[TEST].grade;
+const subjects = testData[TEST].subject;
+const itemsInTest = [];
 ITEMS.forEach(ele => {
   itemsInTest.push(ele.split(".")[0]);
 });
@@ -20,30 +23,33 @@ describe("Reviewing Test In Test Review Tab", () => {
   const studentTestPage = new StudentTestPage();
   const testReviewTab = new TestReviewTab();
   const testAddItemTab = new TestAddItemTab();
+  const itemPreview = new PreviewItem();
 
   const EDITED_POINTS = [5, 6, 7, 8, 9];
 
-  let OriginalTestId, itemIds;
-  let qType, num;
-  let questText = [];
-  let points = [];
-  let ans = [];
-  let wrongAns = [];
-  let questionType = [];
-  let attemptData = [];
+  let OriginalTestId;
+  let itemIds;
+  let qType;
+  let num;
+  const questText = [];
+  const points = [];
+  const ans = [];
+  const wrongAns = [];
+  const questionType = [];
+  const attemptData = [];
 
   before("Get Data Of test and its itemns", () => {
     cy.fixture("questionAuthoring").then(quesData => {
       ITEMS.forEach(element => {
         [qType, num] = element.split(".");
-        if (Array.isArray(quesData[qType][num]["quetext"])) {
-          questText.push(quesData[qType][num]["quetext"][0]);
-        } else questText.push(quesData[qType][num]["quetext"][0]);
+        if (Array.isArray(quesData[qType][num].quetext)) {
+          questText.push(quesData[qType][num].quetext[0]);
+        } else questText.push(quesData[qType][num].quetext[0]);
         questionType.push(qType);
-        points.push(quesData[qType][num]["setAns"]["points"]);
-        ans.push(quesData[qType][num]["setAns"]["correct"]);
-        wrongAns.push(quesData[qType][num]["attemptData"]["wrong"]);
-        attemptData.push(quesData[qType][num]["attemptData"]);
+        points.push(quesData[qType][num].setAns.points);
+        ans.push(quesData[qType][num].setAns.correct);
+        wrongAns.push(quesData[qType][num].attemptData.wrong);
+        attemptData.push(quesData[qType][num].attemptData);
       });
     });
   });
@@ -75,8 +81,8 @@ describe("Reviewing Test In Test Review Tab", () => {
           testReviewTab.clickOnExpandCollapseRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
-          attemptData[index]["item"] = itemIds[index];
-          testReviewTab.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
+          attemptData[index].item = itemIds[index];
+          itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
           testReviewTab.clickOnExpandCollapseRow();
         });
@@ -94,7 +100,7 @@ describe("Reviewing Test In Test Review Tab", () => {
         testReviewTab.verifyGradeSubject(grades[index], sub);
       });
     });
-    // TODO: Work On This As click on "View As Student" Starts working in cypress
+
     it("Verify Test In- View as Student", () => {
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
@@ -121,9 +127,9 @@ describe("Reviewing Test In Test Review Tab", () => {
       testLibraryPage.publishedToDraft();
       itemIds.forEach((item, index, totalItems) => {
         testReviewTab.clickOnCheckBoxByItemId(item);
-        //Move question at last-- totalItems.length
+        // Move question at last-- totalItems.length
         testReviewTab.moveQuestionByIndex(totalItems.length);
-        //Item should be at last-- totalItems.length
+        // Item should be at last-- totalItems.length
         testReviewTab.verifyMovedQuestionById(item, totalItems.length);
         testReviewTab.clickOnCheckBoxByItemId(item);
       });
@@ -141,9 +147,9 @@ describe("Reviewing Test In Test Review Tab", () => {
         itemsInTest.forEach((item, index) => {
           it(`Verify Show Ans for "${item}-${index + 1} "`, () => {
             testReviewTab.previewQuestById(itemIds[index]);
-            testReviewTab.clickOnShowAnsOnPreview();
-            testReviewTab.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
-            testReviewTab.closePreiview();
+            itemPreview.clickOnShowAnsOnPreview();
+            itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
+            itemPreview.closePreiview();
           });
         });
       });
@@ -161,30 +167,30 @@ describe("Reviewing Test In Test Review Tab", () => {
             testReviewTab.previewQuestById(itemIds[index]);
             // testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
             studentTestPage.attemptQuestion(itemsInTest[index].split(".")[0], attemptTypes.RIGHT, attemptData[index]);
-            testReviewTab.clickOnCheckAnsOnPreview();
-            testReviewTab.verifyEvaluationScoreOnPreview(
+            itemPreview.clickOnCheckAnsOnPreview();
+            itemPreview.verifyEvaluationScoreOnPreview(
               attemptData[index],
               points[index],
               itemsInTest[index],
               attemptTypes.RIGHT
             );
-            testReviewTab.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
-            testReviewTab.closePreiview();
+            itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
+            itemPreview.closePreiview();
           });
           it(`Verify Wrong Ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
             testReviewTab.previewQuestById(itemIds[index]);
-            //testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
+            // testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
             studentTestPage.attemptQuestion(itemsInTest[index].split(".")[0], attemptTypes.WRONG, attemptData[index]);
-            testReviewTab.clickOnCheckAnsOnPreview();
-            testReviewTab.verifyEvaluationScoreOnPreview(
+            itemPreview.clickOnCheckAnsOnPreview();
+            itemPreview.verifyEvaluationScoreOnPreview(
               attemptData[index],
               points[index],
               itemsInTest[index],
               attemptTypes.WRONG
             );
-            testReviewTab.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
-            testReviewTab.closePreiview();
+            itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
+            itemPreview.closePreiview();
           });
         });
       });
@@ -201,15 +207,18 @@ describe("Reviewing Test In Test Review Tab", () => {
         itemsInTest.forEach((item, index) => {
           it(`Verify Edit for "${item}-${index + 1} "`, () => {
             testReviewTab.previewQuestById(itemIds[index]);
-            testReviewTab.clickOnEditItemOnPreview();
-            testReviewTab.verifyItemUrlWhileEdit(OriginalTestId, itemIds[index]);
-            testReviewTab.editItem(EDITED_POINTS[index % 5]);
-            points[index] = EDITED_POINTS[index % 5];
-            editItemPage.header.save(true);
-            testAddItemTab.header.clickOnReview();
-            testLibraryPage.header.clickOnSaveButton(true);
-            testReviewTab.verifyQustionById(itemIds[index]);
-            testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
+            itemPreview.clickOnEditItemOnPreview();
+            itemPreview.verifyItemUrlWhileEdit(OriginalTestId, itemIds[index]);
+            itemPreview.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(itemId => {
+              points[index] = EDITED_POINTS[index % 5];
+              // editItemPage.verifyItemIdsToBeEqual(itemId, itemIds[index]);
+              expect(itemId).eq(itemIds[index]);
+              editItemPage.header.save(true);
+              testAddItemTab.header.clickOnReview();
+              testLibraryPage.header.clickOnSaveButton(true);
+              testReviewTab.verifyQustionById(itemIds[index]);
+              testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
+            });
           });
         });
         it("Verify Summary After Edit", () => {
@@ -230,12 +239,15 @@ describe("Reviewing Test In Test Review Tab", () => {
         itemsInTest.forEach((item, index) => {
           it(`Verify Copy for "${item}-${index + 1} "`, () => {
             testReviewTab.previewQuestById(itemIds[index]);
-            testReviewTab.clickOnCopyItemOnPreview();
+            itemPreview.clickOnCopyItemOnPreview();
             // Copy automatically include new item in test
             points.push(EDITED_POINTS[index % 5]);
-            testReviewTab.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(newItem => {
+            itemPreview.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(newItem => {
+              // editItemPage.verifyItemIdsToBeNotEqual(newItem, itemIds[index]);
+              expect(newItem).not.eq(itemIds[index]);
+              cy.saveItemDetailToDelete(newItem);
               itemIds.push(newItem);
-              testReviewTab.verifyItemUrlWhileCopy(OriginalTestId, newItem);
+              itemPreview.verifyItemUrlWhileCopy(OriginalTestId, newItem);
               editItemPage.header.save(true);
               testAddItemTab.header.clickOnReview();
               testLibraryPage.header.clickOnSaveButton(true);
@@ -245,7 +257,7 @@ describe("Reviewing Test In Test Review Tab", () => {
             });
           });
         });
-        //Verify summary again as more items are added....
+        // Verify summary again as more items are added....
         it("Verify Summary After Copy", () => {
           testReviewTab.verifySummary(points.length, points.reduce((a, b) => a + b, 0));
           testReviewTab.testheader.clickOnPublishButton();

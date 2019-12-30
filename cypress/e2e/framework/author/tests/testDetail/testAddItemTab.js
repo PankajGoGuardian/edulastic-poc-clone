@@ -1,9 +1,13 @@
+/* eslint-disable lines-between-class-members */
 import TestHeader from "./header";
-import SearchFilters from "../../../author/searchFiltersPage";
+import SearchFilters from "../../searchFiltersPage";
+import ItemListPage from "../../itemList/itemListPage";
+
 export default class TestAddItemTab {
   constructor() {
     this.header = new TestHeader();
     this.searchFilters = new SearchFilters();
+    this.itemListPage = new ItemListPage();
   }
   clickOnCreateNewItem = () => {
     // cy.server();

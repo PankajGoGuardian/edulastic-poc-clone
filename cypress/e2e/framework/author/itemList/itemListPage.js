@@ -8,15 +8,16 @@ import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
 import MetadataPage from "./itemDetail/metadataPage";
 import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage";
-import SidebarPage from "../../student/sidebarPage";
+
 import SearchFilters from "../searchFiltersPage";
-import TestReviewTab from "../tests/testDetail/testReviewTab";
+import TeacherSideBar from "../SideBarPage";
+import PreviewItem from "./itemPreview";
 
 class ItemListPage {
   constructor() {
-    this.sidebarPage = new SidebarPage();
+    this.sidebar = new TeacherSideBar();
     this.searchFilters = new SearchFilters();
-    this.testReviewTab = new TestReviewTab();
+    this.itemPreview = new PreviewItem();
   }
 
   clickOnCreate = () => {
@@ -48,8 +49,8 @@ class ItemListPage {
   };
 
   getViewItemById = (id, text) => {
-    /* cy.get(`[data_cy=${id}]`); */
-    cy.wait(2000);
+    return cy.get(`[data_cy=${id}]`);
+    /* cy.wait(2000);
     return cy
       .get("body")
       .find('[data-cy="styled-wrapped-component"]')
@@ -60,7 +61,7 @@ class ItemListPage {
       .parent()
       .next()
       .find("span", " View")
-      .eq(0);
+      .eq(0); */
   };
 
   verifyPresenceOfItemById = id => {
@@ -71,33 +72,17 @@ class ItemListPage {
     this.getViewItemById(id).should("not.be.visible");
   };
 
-  getEditButtonOnPreview = () => this.testReviewTab.getEditOnPreview();
+  getEditButtonOnPreview = () => this.itemPreview.getEditOnPreview();
 
-  getCloneButtonOnPreview = () => this.testReviewTab.getCopyOnPreview();
+  getCloneButtonOnPreview = () => this.itemPreview.getCopyOnPreview();
 
-  verifyEditOption = id => {
-    this.getViewItemById(id).click();
-    this.getEditButtonOnPreview().should("be.visible");
-    this.getCloneButtonOnPreview().should("be.visible");
-  };
-
-  verifyNoEditCloneOption = id => {
-    this.getViewItemById(id).click();
-    this.getEditButtonOnPreview().should("not.be.visible");
-    this.getCloneButtonOnPreview().should("be.visible");
-  };
-
-  clickOnViewItemById = (id, text) => this.getViewItemById(id, text).click({ force: true });
+  clickOnViewItemById = (id, text) => this.getViewItemById(id, text).click();
 
   clickOnItemText = () =>
     cy
       .get(".fr-view")
       .find("a")
-      .click({ force: true });
-
-  clickOnEditOnViewItem = () => {
-    this.testReviewTab.clickOnEditItemOnPreview();
-  };
+      .click();
 
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
     this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);

@@ -349,7 +349,11 @@ class AuthorTestItemPreview extends Component {
               </EvaluateButton>
             </>
           )}
-          {page !== "itemAuthoring" && <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>}
+          {page !== "itemAuthoring" && (
+            <EvaluateButton data-cy="clear" onClick={clearView}>
+              CLEAR
+            </EvaluateButton>
+          )}
 
           <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
             <i className="fa fa-exclamation-triangle" aria-hidden="true" />

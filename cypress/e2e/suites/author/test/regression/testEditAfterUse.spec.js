@@ -24,13 +24,23 @@ describe(`Test Edit After Use- Without Regrade`, () => {
   const isAssigned = true;
   const TEST = "EDIT_ASSIGNED_TEST";
 
-  let OriginalTestId, newTestId;
-  let newItemId, assignedTest, testName, itemsInTest, qType, num, quesData;
-  let questText = [];
-  let points = [];
-  let questionType = [];
-  let attempt = [];
-
+  let OriginalTestId;
+  let newTestId;
+  let newItemId;
+  let assignedTest;
+  let testName;
+  let itemsInTest;
+  let qType;
+  let num;
+  let quesData;
+  const questText = [];
+  const points = [];
+  const questionType = [];
+  const attempt = [];
+  let item1;
+  let item2;
+  let item3;
+  let item4;
   const Teacher = {
     email: "300@abc.com",
     pass: "snapwiz"
@@ -43,17 +53,17 @@ describe(`Test Edit After Use- Without Regrade`, () => {
   before("Get Data Of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
-      testName = testData[TEST]["name"];
-      itemsInTest = testData[TEST]["itemKeys"];
+      testName = testData[TEST].name;
+      itemsInTest = testData[TEST].itemKeys;
       /* THIS TEST REQUIRES EXACTLY FOUR TEST ITEMS */
     });
     cy.fixture("questionAuthoring").then(quesData => {
       itemsInTest.forEach(element => {
         [qType, num] = element.split(".");
-        questText.push(quesData[qType][num]["quetext"]);
+        questText.push(quesData[qType][num].quetext);
         questionType.push(qType);
-        points.push(quesData[qType][num]["setAns"]["points"]);
-        attempt.push(quesData[qType][num]["attemptData"]);
+        points.push(quesData[qType][num].setAns.points);
+        attempt.push(quesData[qType][num].attemptData);
       });
     });
   });
@@ -63,6 +73,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
       assignedTest = id;
+      [item1, item2, item3, item4] = testLibraryPage.items;
     });
   });
   context("Edit assigned Tests without Regrading", () => {
@@ -109,10 +120,8 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     });
 
     it("Edit question text from Review tab", () => {
-      const [item1, item2, item3, item4] = testLibraryPage.items;
-
       cy.login("teacher", "300@abc.com", "snapwiz");
-      //Get Test Card and Draft It
+      // Get Test Card and Draft It
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.getAuthoredByMe();
@@ -138,7 +147,6 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     });
 
     it("Remove one question from review tab and verify test", () => {
-      const [item1, item2, item3, item4] = testLibraryPage.items;
       cy.login("teacher", "300@abc.com", "snapwiz");
       // Get and Convert To Draft
       testLibraryPage.sidebar.clickOnTestLibrary();
@@ -166,10 +174,10 @@ describe(`Test Edit After Use- Without Regrade`, () => {
 
     it("Add a precreated item and verify test", () => {
       cy.login("teacher", "300@abc.com", "snapwiz");
-      //Create A New Item
+      // Create A New Item
       item.createItem(newItemKey).then(id => {
         newItemId = id;
-        //Get Test and Draft It
+        // Get Test and Draft It
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.searchFilters.clearAll();
         testLibraryPage.searchFilters.getAuthoredByMe();
@@ -188,7 +196,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
           testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
           // Publish
           testReviewTab.testheader.clickOnPublishButton();
-          //verify
+          // verify
           cy.login("student", Student1.email, Student1.pass);
           assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
           assignmentsPage.clickOnAssigmentByTestId(assignedTest);
@@ -200,8 +208,6 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     });
 
     it("Remove one question from add item tab and verify test", () => {
-      const [item1, item2, item3, item4] = testLibraryPage.items;
-
       cy.login("teacher", "300@abc.com", "snapwiz");
 
       testLibraryPage.sidebar.clickOnTestLibrary();
@@ -226,9 +232,8 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     });
 
     it("Update points from review tab and verify test", () => {
-      const [item1, item2, item3, item4] = testLibraryPage.items;
-
       cy.login("teacher", "300@abc.com", "snapwiz");
+
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.getAuthoredByMe();

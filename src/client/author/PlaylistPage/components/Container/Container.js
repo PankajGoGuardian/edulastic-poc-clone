@@ -44,6 +44,7 @@ import CurriculumSequence from "../../../CurriculumSequence/components/Curriculu
 import Summary from "../../../TestPage/components/Summary";
 import Setting from "../Settings";
 import TestList from "../../../TestList";
+import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -84,7 +85,8 @@ class Container extends PureComponent {
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
     expandedModules: [],
-    showShareModal: false
+    showShareModal: false,
+    showSelectCollectionsModal: false
   };
 
   componentDidMount() {
@@ -343,6 +345,24 @@ class Container extends PureComponent {
     this.setState({ editEnable: false });
   };
 
+  onPublishClick = status => {
+    this.setState({ showSelectCollectionsModal: true });
+  };
+
+  onOkCollectionsSelectModal = (status, selectedCollections) => {
+    this.setState({ showSelectCollectionsModal: false });
+    this.handlePublishPlaylist(selectedCollections);
+  };
+
+  onCancelCollectionsSelectModal = () => {
+    this.setState({ showSelectCollectionsModal: false });
+  };
+
+  onCollectionsSelectChange = selectedCollections => {
+    const { playlist, setData } = this.props;
+    setData({ ...playlist, collections: selectedCollections });
+  };
+
   onEnableEdit = () => {
     this.setState({ editEnable: true });
   };
@@ -361,8 +381,8 @@ class Container extends PureComponent {
 
   render() {
     const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {} } = this.props;
-    const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors, grades, subjects } = playlist || {};
+    const { showShareModal, current, editEnable, showSelectCollectionsModal } = this.state;
+    const { _id: testId, status, authors, grades, subjects, collections } = playlist || {};
     const showPublishButton =
       (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable || state?.editFlow;
     const showShareButton = !!testId;
@@ -372,6 +392,15 @@ class Container extends PureComponent {
     return (
       <>
         {this.renderModal()}
+        <CollectionsSelectModal
+          isVisible={showSelectCollectionsModal}
+          onOk={this.onOkCollectionsSelectModal}
+          onCancel={this.onCancelCollectionsSelectModal}
+          title={"Collections"}
+          onChange={this.onCollectionsSelectChange}
+          selectedCollections={collections}
+          okText="PUBLISH"
+        />
         <ShareModal
           isVisible={showShareModal}
           testId={testId}
@@ -385,7 +414,7 @@ class Container extends PureComponent {
           current={current}
           onSave={this.handleSave}
           onShare={this.onShareModalChange}
-          onPublish={this.handlePublishPlaylist}
+          onPublish={this.onPublishClick}
           title={playlist.title}
           creating={creating}
           windowWidth={windowWidth}

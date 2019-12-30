@@ -16,9 +16,11 @@ import {
   toggleAddContentAction,
   useThisPlayListAction,
   addContentToCurriculumSequenceAction,
-  approveOrRejectSinglePlaylistRequestAction
+  approveOrRejectSinglePlaylistRequestAction,
+  setPlaylistDataAction
 } from "../ducks";
 import ShareModal from "../../src/components/common/ShareModal";
+import { CollectionsSelectModal } from "../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal";
 
 /**
  * @typedef {object} ModuleData
@@ -80,7 +82,8 @@ const { statusConstants } = test;
 class CurriculumContainer extends Component {
   state = {
     expandedModules: [],
-    showShareModal: false
+    showShareModal: false,
+    showSelectCollectionsModal: false
     /**
      * state for handling drag and drop
      */
@@ -187,12 +190,32 @@ class CurriculumContainer extends Component {
 
   onCuratorApproveOrReject = payload => {
     const { approveOrRejectSinglePlaylistRequest } = this.props;
-    approveOrRejectSinglePlaylistRequest(payload);
+    if (payload.status === "published") {
+      this.setState({ showSelectCollectionsModal: true });
+    } else if (payload.status === "rejected") {
+      approveOrRejectSinglePlaylistRequest(payload);
+    }
+  };
+
+  onOkCollectionsSelectModal = () => {
+    const { destinationCurriculumSequence, approveOrRejectSinglePlaylistRequest } = this.props;
+    const { _id, collections } = destinationCurriculumSequence;
+    approveOrRejectSinglePlaylistRequest({ playlistId: _id, status: "published", collections });
+    this.setState({ showSelectCollectionsModal: false });
+  };
+
+  onCancelCollectionsSelectModal = () => {
+    this.setState({ showSelectCollectionsModal: false });
+  };
+
+  onCollectionsSelectChange = selectedCollections => {
+    const { setPlaylistData } = this.props;
+    setPlaylistData({ collections: selectedCollections });
   };
 
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded, match } = this.props;
-    const { expandedModules, showShareModal } = this.state;
+    const { expandedModules, showShareModal, showSelectCollectionsModal } = this.state;
     const {
       handleSelectContent,
       setSourceCurriculumSequence,
@@ -208,6 +231,7 @@ class CurriculumContainer extends Component {
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum();
 
     const { destinationCurriculumSequence = {} } = this.props;
+    const { collections: selectedCollections } = destinationCurriculumSequence;
 
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
     const gradeSubject = {
@@ -224,6 +248,15 @@ class CurriculumContainer extends Component {
           isPlaylist={true}
           onClose={onShareModalChange}
           gradeSubject={gradeSubject}
+        />
+        <CollectionsSelectModal
+          isVisible={showSelectCollectionsModal}
+          onOk={this.onOkCollectionsSelectModal}
+          onCancel={this.onCancelCollectionsSelectModal}
+          title={"Collections"}
+          onChange={this.onCollectionsSelectChange}
+          selectedCollections={selectedCollections}
+          okText="APPROVE"
         />
         <CurriculumSequence
           onPublisherSave={savePublisher}
@@ -300,6 +333,9 @@ const mapDispatchToProps = dispatch => ({
   },
   approveOrRejectSinglePlaylistRequest(payload) {
     dispatch(approveOrRejectSinglePlaylistRequestAction(payload));
+  },
+  setPlaylistData(payload) {
+    dispatch(setPlaylistDataAction(payload));
   }
 });
 

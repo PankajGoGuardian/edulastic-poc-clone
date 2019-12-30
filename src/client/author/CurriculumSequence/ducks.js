@@ -69,8 +69,11 @@ export const BATCH_ASSIGN_RESULT = "[curriculum-sequence] batch assign result";
 export const FETCH_ASSIGNED_REQUEST = "[curriculum-sequence] fetch assigned request";
 export const FETCH_ASSIGNED_RESULT = "[curriculum-sequence] fetch assigned result";
 export const USE_THIS_PLAYLIST = "[playlist] use this play list";
-export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST = "[playlists] approve or reject single playlist request";
-export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS = "[playlists] approve or reject single playlist success";
+export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
+  "[curriculum-sequence] approve or reject single playlist request";
+export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
+  "[curriculum-sequence] approve or reject single playlist success";
+export const SET_PLAYLIST_DATA = "[curriculum-sequence] set playlist data";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -113,6 +116,7 @@ export const getAllCurriculumSequencesAction = ids => {
 };
 export const approveOrRejectSinglePlaylistRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST);
 export const approveOrRejectSinglePlaylistSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS);
+export const setPlaylistDataAction = createAction(SET_PLAYLIST_DATA);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -1074,6 +1078,16 @@ function approveOrRejectSinglePlaylistReducer(state, { payload }) {
   };
 }
 
+function setPlaylistDataReducer(state, { payload }) {
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...state.destinationCurriculumSequence,
+      ...payload
+    }
+  };
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1092,5 +1106,6 @@ export default createReducer(initialState, {
   [REMOVE_UNIT]: removeUnitReducer,
   [UPDATE_ASSIGNMENT]: updateAssignmentReducer,
   [FETCH_ASSIGNED_RESULT]: loadAssignedReducer,
-  [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer
+  [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer,
+  [SET_PLAYLIST_DATA]: setPlaylistDataReducer
 });

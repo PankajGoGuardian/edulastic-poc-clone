@@ -311,7 +311,7 @@ export const MidRow = styled.div`
   }
 `;
 export const Collection = styled.div`
-  flex-basis: 50%;
+  width: 55%;
   padding: 0px 15px;
 `;
 
@@ -329,4 +329,10 @@ export const DraftIconWrapper = styled.div`
 
 export const ThinLine = styled.div`
   border-top: 1px solid #f3f3f3;
+`;
+
+export const CollectionNameWrapper = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;

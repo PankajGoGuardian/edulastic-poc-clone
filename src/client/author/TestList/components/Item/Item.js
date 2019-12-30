@@ -30,8 +30,10 @@ import {
   PremiumLabel,
   MidRow,
   Collection,
+  CollectionNameWrapper,
   ThinLine
 } from "./styled";
+import { getOrgDataSelector } from "../../../src/selectors/user";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -147,7 +149,8 @@ class Item extends Component {
         _id: testId,
         description,
         collections = [],
-        summary = {}
+        summary = {},
+        sharedType
       },
       item,
       authorName,
@@ -155,13 +158,19 @@ class Item extends Component {
       isPlaylist,
       testItemId,
       windowWidth,
-      standards
+      standards,
+      orgData: { itemBanks }
     } = this.props;
     const standardsIdentifiers = standards.map(item => item.identifier);
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
 
+    let collectionName = "-";
+    if (collections?.length > 0 && itemBanks.length > 0) {
+      const filteredCollections = collections.filter(c => itemBanks.find(i => i._id === c._id));
+      if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
+    }
     return (
       <>
         <ViewModal
@@ -237,7 +246,7 @@ class Item extends Component {
             <MidRow>
               <Collection>
                 <label>COLLECTIONS</label>
-                <div>-</div>
+                <CollectionNameWrapper title={collectionName}>{collectionName}</CollectionNameWrapper>
               </Collection>
               <Qcount>
                 <label>TOTAL ITEMS</label>
@@ -295,7 +304,9 @@ class Item extends Component {
 const enhance = compose(
   withNamespaces("author"),
   connect(
-    state => ({}),
+    state => ({
+      orgData: getOrgDataSelector(state)
+    }),
     { approveOrRejectSingleTestRequestAction }
   )
 );

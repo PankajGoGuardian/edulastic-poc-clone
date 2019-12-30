@@ -2127,7 +2127,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "\\frac{x}{x}"
+                value: ""
               }
             ]
           }
@@ -2165,7 +2165,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "x+y=z"
+                value: ""
               }
             ]
           }
@@ -2207,7 +2207,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "\\text{s}\\text{q ft}"
+                value: ""
               }
             ]
           }
@@ -2283,7 +2283,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "100m"
+                value: ""
               }
             ]
           }

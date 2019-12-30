@@ -12,6 +12,7 @@ export const SET_GROUP_MEMBERS = "[author groups] add students to groups";
 export const SET_MULTIPLE_GROUP_MEMBERS = "[author groups] set multiple group members";
 export const SET_LOADED_GROUPS = "[author groups] set loaded groups";
 export const ADD_GROUP = "[author groups] add group";
+export const RESET_STUDENTS = "[author groups] reset students list";
 
 // actions
 export const fetchGroupsAction = createAction(FETCH_GROUPS);
@@ -23,6 +24,7 @@ export const setGroupMemebersAction = createAction(SET_GROUP_MEMBERS);
 export const fetchMultipleGroupMembersAction = createAction(SET_MULTIPLE_GROUP_MEMBERS);
 export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS);
 export const addGroupAction = createAction(ADD_GROUP);
+export const resetStudentAction = createAction(RESET_STUDENTS);
 
 // initial state
 const initialState = {
@@ -50,8 +52,30 @@ const setLoading = state => {
 };
 
 // populate groups
-const populateGroups = (state, { payload }) => {
-  state.students = [...state.students, ...payload];
+const populateGroups = (state, { payload = [] }) => {
+  const { students = [] } = state;
+
+  const studentsMap = {};
+  for (const student of students) {
+    studentsMap[student._id] = student;
+  }
+
+  // updating student list
+  // checking if student exist with same _id
+  // if exists then update the studentsMap with student object
+  // and filter that element from payload
+  const newPayload = payload
+    .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
+    .filter(student => {
+      if (studentsMap[student._id]) {
+        studentsMap[student._id] = student;
+        return false;
+      }
+      return true;
+    });
+
+  // append remaining students(payload) to the students array
+  state.students = [...Object.values(studentsMap), ...newPayload];
 };
 
 const setLoadedGroups = (state, { payload }) => {
@@ -62,6 +86,10 @@ const addGroup = (state, { payload }) => {
   state.groups = [...state.groups, payload];
 };
 
+const resetStudents = state => {
+  state.students = [];
+};
+
 // default reducer
 export default createReducer(initialState, {
   [FETCH_GROUPS]: setLoading,
@@ -69,7 +97,8 @@ export default createReducer(initialState, {
   [SET_ARCHIVE_GROUPS]: setArchiveGroups,
   [SET_GROUP_MEMBERS]: populateGroups,
   [SET_LOADED_GROUPS]: setLoadedGroups,
-  [ADD_GROUP]: addGroup
+  [ADD_GROUP]: addGroup,
+  [RESET_STUDENTS]: resetStudents
 });
 
 // selectors

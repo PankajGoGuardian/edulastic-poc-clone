@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { isEmpty, get, keyBy } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
-import { fetchGroupMembersAction, getStudentsSelector } from "../../../sharedDucks/groups";
+import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
 
 import { receiveTestByIdAction, getTestSelector, getDefaultTestSettingsAction } from "../../../TestPage/ducks";
 
@@ -77,8 +77,12 @@ class AssignTest extends React.Component {
       isPlaylist,
       fetchPlaylistById,
       userRole,
-      getDefaultTestSettings
+      getDefaultTestSettings,
+      resetStudents
     } = this.props;
+
+    resetStudents();
+
     const { testId } = match.params;
     getDefaultTestSettings();
     loadClassList({
@@ -322,7 +326,8 @@ export default connect(
     saveAssignment: saveAssignmentAction,
     fetchPlaylistById: receivePlaylistByIdAction,
     fetchTestByID: receiveTestByIdAction,
-    getDefaultTestSettings: getDefaultTestSettingsAction
+    getDefaultTestSettings: getDefaultTestSettingsAction,
+    resetStudents: resetStudentAction
   }
 )(AssignTest);
 

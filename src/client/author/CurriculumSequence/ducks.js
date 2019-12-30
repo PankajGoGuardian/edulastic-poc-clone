@@ -69,6 +69,8 @@ export const BATCH_ASSIGN_RESULT = "[curriculum-sequence] batch assign result";
 export const FETCH_ASSIGNED_REQUEST = "[curriculum-sequence] fetch assigned request";
 export const FETCH_ASSIGNED_RESULT = "[curriculum-sequence] fetch assigned result";
 export const USE_THIS_PLAYLIST = "[playlist] use this play list";
+export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST = "[playlists] approve or reject single playlist request";
+export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS = "[playlists] approve or reject single playlist success";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -109,6 +111,8 @@ export const getAllCurriculumSequencesAction = ids => {
     payload: ids
   };
 };
+export const approveOrRejectSinglePlaylistRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST);
+export const approveOrRejectSinglePlaylistSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -552,6 +556,24 @@ function* useThisPlayListSaga({ payload }) {
   }
 }
 
+function* approveOrRejectSinglePlaylistSaga({ payload }) {
+  try {
+    if (
+      payload.status === "published" &&
+      (!payload.collections || (payload.collections && !payload.collections.length))
+    ) {
+      message.error("Playlist is not associated with any collection.");
+      return;
+    }
+    yield call(curriculumSequencesApi.updatePlaylistStatus, payload);
+    yield put(approveOrRejectSinglePlaylistSuccessAction(payload));
+    message.success("Playlist Updated Successfully.");
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "Playlist Update Failed.");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -572,7 +594,8 @@ export function* watcherSaga() {
     yield takeLatest(REMOVE_UNIT_INIT, removeUnit),
     yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned),
     yield takeLatest(ADD_CONTENT_TO_CURRICULUM_RESULT, moveContentToPlaylistSaga),
-    yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga)
+    yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga),
+    yield takeLatest(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST, approveOrRejectSinglePlaylistSaga)
   ]);
 }
 
@@ -1040,6 +1063,17 @@ function getCurriculumAsssignmentMatch(unitItem, curriculumSequence) {
   return { ...matchingUnitItem };
 }
 
+function approveOrRejectSinglePlaylistReducer(state, { payload }) {
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...state.destinationCurriculumSequence,
+      status: payload.status,
+      collections: payload.collections ? payload.collections : state.destinationCurriculumSequence.collections
+    }
+  };
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1057,5 +1091,6 @@ export default createReducer(initialState, {
   [ADD_NEW_UNIT]: addNewUnitReducer,
   [REMOVE_UNIT]: removeUnitReducer,
   [UPDATE_ASSIGNMENT]: updateAssignmentReducer,
-  [FETCH_ASSIGNED_RESULT]: loadAssignedReducer
+  [FETCH_ASSIGNED_RESULT]: loadAssignedReducer,
+  [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer
 });

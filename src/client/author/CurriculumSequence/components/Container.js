@@ -15,7 +15,8 @@ import {
   searchGuidesAction,
   toggleAddContentAction,
   useThisPlayListAction,
-  addContentToCurriculumSequenceAction
+  addContentToCurriculumSequenceAction,
+  approveOrRejectSinglePlaylistRequestAction
 } from "../ducks";
 import ShareModal from "../../src/components/common/ShareModal";
 
@@ -184,6 +185,11 @@ class CurriculumContainer extends Component {
     });
   };
 
+  onCuratorApproveOrReject = payload => {
+    const { approveOrRejectSinglePlaylistRequest } = this.props;
+    approveOrRejectSinglePlaylistRequest(payload);
+  };
+
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded, match } = this.props;
     const { expandedModules, showShareModal } = this.state;
@@ -235,6 +241,7 @@ class CurriculumContainer extends Component {
           onDrop={onDrop}
           match={match}
           onBeginDrag={onBeginDrag}
+          onCuratorApproveOrReject={this.onCuratorApproveOrReject}
         />
       </>
     );
@@ -290,6 +297,9 @@ const mapDispatchToProps = dispatch => ({
   },
   useThisPlayList(_id, title) {
     dispatch(useThisPlayListAction({ _id, title }));
+  },
+  approveOrRejectSinglePlaylistRequest(payload) {
+    dispatch(approveOrRejectSinglePlaylistRequestAction(payload));
   }
 });
 

@@ -292,6 +292,18 @@ class CurriculumSequence extends Component {
     this.setState({ showConfirmRemoveModal: false });
   };
 
+  onApproveClick = () => {
+    const { onCuratorApproveOrReject, destinationCurriculumSequence } = this.props;
+    const { _id, collections = [] } = destinationCurriculumSequence;
+    onCuratorApproveOrReject({ playlistId: _id, status: "published", collections });
+  };
+
+  onRejectClick = () => {
+    const { onCuratorApproveOrReject, destinationCurriculumSequence } = this.props;
+    const { _id } = destinationCurriculumSequence;
+    onCuratorApproveOrReject({ playlistId: _id, status: "rejected" });
+  };
+
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
@@ -546,6 +558,20 @@ class CurriculumSequence extends Component {
                         <SaveButtonText>{"Use This"}</SaveButtonText>
                       </Button>
                     </SaveButtonStyle>
+                  )}
+                  {features.isCurator && (status === "inreview" || status === "rejected") && (
+                    <ApproveButtonStyle>
+                      <Button type="default" onClick={this.onApproveClick}>
+                        <ShareButtonText>APPROVE</ShareButtonText>
+                      </Button>
+                    </ApproveButtonStyle>
+                  )}
+                  {features.isCurator && status === "inreview" && (
+                    <RejectButtonStyle>
+                      <Button type="default" onClick={this.onRejectClick}>
+                        <ShareButtonText>REJECT</ShareButtonText>
+                      </Button>
+                    </RejectButtonStyle>
                   )}
                 </CurriculumHeaderButtons>
               </CurriculumHeader>
@@ -993,6 +1019,14 @@ const SaveButtonStyle = styled.div`
       }
     }
   }
+`;
+
+const RejectButtonStyle = styled(SaveButtonStyle)`
+  margin-left: 20px;
+`;
+
+const ApproveButtonStyle = styled(SaveButtonStyle)`
+  margin-left: 20px;
 `;
 
 const ModalInputWrapper = styled.div`

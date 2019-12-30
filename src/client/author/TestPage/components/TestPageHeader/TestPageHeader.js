@@ -44,7 +44,6 @@ import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import { getUserFeatures, getUserId } from "../../../../student/Login/ducks";
-import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 
 const { statusConstants } = test;
 
@@ -152,8 +151,8 @@ const TestPageHeader = ({
   handleDuplicateTest,
   showCancelButton,
   features,
-  approveOrRejectSingleTestRequestAction,
-  userId
+  userId,
+  onCuratorApproveOrReject
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -237,12 +236,12 @@ const TestPageHeader = ({
 
   const onClickCuratorApprove = () => {
     const { collections = [], _id: testId } = test;
-    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: collections });
+    onCuratorApproveOrReject({ testId, status: "published", collections: collections });
   };
 
   const onClickCuratorReject = () => {
     const { _id: testId } = test;
-    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
+    onCuratorApproveOrReject({ testId, status: "rejected" });
   };
 
   return (
@@ -542,8 +541,7 @@ const enhance = compose(
     {
       toggleSideBar: toggleSideBarAction,
       publishForRegrade: publishForRegradeAction,
-      fetchAssignments: fetchAssignmentsAction,
-      approveOrRejectSingleTestRequestAction
+      fetchAssignments: fetchAssignmentsAction
     }
   )
 );

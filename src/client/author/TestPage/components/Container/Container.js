@@ -33,7 +33,8 @@ import {
   getDefaultTestSettingsAction,
   updateDocBasedTestAction,
   duplicateTestRequestAction,
-  getReleaseScorePremiumSelector
+  getReleaseScorePremiumSelector,
+  approveOrRejectSingleTestRequestAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -617,6 +618,11 @@ class Container extends PureComponent {
     });
   };
 
+  onCuratorApproveOrReject = payload => {
+    const { approveOrRejectSingleTestRequestAction } = this.props;
+    approveOrRejectSingleTestRequestAction(payload);
+  };
+
   render() {
     const {
       creating,
@@ -692,6 +698,7 @@ class Container extends PureComponent {
           showDuplicateButton={showDuplicateButton}
           handleDuplicateTest={this.handleDuplicateTest}
           showCancelButton={showCancelButton}
+          onCuratorApproveOrReject={this.onCuratorApproveOrReject}
         />
         {this.renderContent()}
       </>
@@ -743,7 +750,8 @@ const enhance = compose(
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
-      duplicateTest: duplicateTestRequestAction
+      duplicateTest: duplicateTestRequestAction,
+      approveOrRejectSingleTestRequestAction
     }
   )
 );

@@ -66,8 +66,8 @@ const ClassList = ({
       dataIndex: "name",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.name.localeCompare(b.name),
-      render: (_classname, record) => (
-        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={_classname} placement="bottom">
+      render: _classname => (
+        <Tooltip title={_classname} placement="bottom">
           {_classname}
         </Tooltip>
       ),

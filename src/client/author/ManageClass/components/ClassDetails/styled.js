@@ -260,6 +260,14 @@ export const AnchorLink = styled(Link)`
   margin-right: 15px;
 `;
 
+export const ClassLink = styled.span`
+  font-size: 14px;
+  font-weight: 700;
+  color: ${themeColor};
+  margin-right: 15px;
+  cursor: pointer;
+`;
+
 export const ClassCode = styled.div`
   font-size: 12px;
   font-weight: 700;

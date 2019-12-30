@@ -4,8 +4,12 @@ import { message, Tooltip } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import { TypeToConfirmModal } from "@edulastic/common";
-import { ContainerHeader, RightContent, AnchorLink, ClassCode, IconArchiveClass } from "./styled";
+import { ContainerHeader, RightContent, AnchorLink, ClassCode, IconArchiveClass, ClassLink } from "./styled";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
+import connect from "react-redux/lib/connect/connect";
+import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import withRouter from "react-router-dom/withRouter";
+import { compose } from "redux";
 
 const SubHeader = ({
   name,
@@ -20,7 +24,9 @@ const SubHeader = ({
   fetchClassList,
   isUserGoogleLoggedIn,
   archiveClass,
-  cleverId
+  cleverId,
+  setAssignmentFilters,
+  history
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalInputVal, setModalInputVal] = useState("");
@@ -45,10 +51,22 @@ const SubHeader = ({
     setModalInputVal(e.target.value);
   };
 
+  // get assignments related to class
+  const getAssignmentsByClass = (classId = "") => event => {
+    event.stopPropagation();
+    const filter = {
+      classId,
+      testType: "",
+      termId: ""
+    };
+    history.push("/author/assignments");
+    setAssignmentFilters(filter);
+  };
+
   return (
     <ContainerHeader>
       <RightContent>
-        <AnchorLink to="/author/assignments">VIEW TEST</AnchorLink>
+        <ClassLink onClick={getAssignmentsByClass(_id)}>VIEW TEST</ClassLink>
         {allowGoogleLogin !== false &&
           active === 1 &&
           (isUserGoogleLoggedIn ? (
@@ -121,4 +139,14 @@ SubHeader.defaultProps = {
   code: ""
 };
 
-export default SubHeader;
+const enhance = compose(
+  withRouter,
+  connect(
+    null,
+    {
+      setAssignmentFilters: setAssignmentFiltersAction
+    }
+  )
+);
+
+export default enhance(SubHeader);

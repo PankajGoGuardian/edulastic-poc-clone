@@ -63,7 +63,7 @@ export const RightFlexContainer = styled(FlexContainer)`
 `;
 
 export const AssignButton = styled(EduButton)`
-  width: 120px;
+  width: 110px;
 
   @media (max-width: ${desktopWidth}) {
     width: auto;

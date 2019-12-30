@@ -39,7 +39,10 @@ let config = {
         .add(/node_modules\/react-modal/)
         .add(/node_modules\/dot-prop/)
         .add(/node_modules\/split-on-first/)
-        .add(/node_modules\/strict-uri-encode/);
+        .add(/node_modules\/acorn-jsx/)
+        .add(/node_modules\/strict-uri-encode/)
+        .add(/node_modules\/react-jsx-parser/)
+        .add(/node_modules\/espree/);
       chain.module
         .rule("js")
         .use("babel-loader")

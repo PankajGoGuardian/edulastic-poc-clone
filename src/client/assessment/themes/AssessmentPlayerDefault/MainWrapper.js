@@ -7,6 +7,8 @@ const MainWrapper = styled.section`
   border-radius: 4px;
   max-width: 100%;
   height: 100%;
+  overflow: auto;
+  display: flex;
 
   & * {
     -webkit-touch-callout: none;

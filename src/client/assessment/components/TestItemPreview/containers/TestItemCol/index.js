@@ -57,7 +57,7 @@ class TestItemCol extends Component {
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
-    const qLabel = questions[widget.reference]?.activity?.qLabel; // student side test activity report has qlabel inside activity
+    const qLabel = questions[widget.reference]?.qLabel;
     // question label for preview mode
     const question =
       questions[widget.reference]?.qLabel && (!isDocBased || this.context.expressGrader)

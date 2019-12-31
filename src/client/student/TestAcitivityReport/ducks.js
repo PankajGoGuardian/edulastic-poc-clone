@@ -37,6 +37,7 @@ function* loadTestActivityReport({ payload }) {
       call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
+    markQuestionLabel(test.testItems);
     const questions = getQuestions(test.testItems);
     const questionsWithActivities = questions.map(question => {
       if (!question.activity) {
@@ -51,7 +52,6 @@ function* loadTestActivityReport({ payload }) {
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
-    markQuestionLabel(test.testItems);
     yield put(setTestItemsAction(test.testItems));
     yield put(setPassagesDataAction(test.passages || []));
 

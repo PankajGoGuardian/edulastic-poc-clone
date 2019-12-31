@@ -109,7 +109,7 @@ const ReviewSummary = ({
             </MainLabel>
             <SummarySelectBox
               mode="multiple"
-              data-cy="subjectSelect"
+              data-cy="collectionsSelect"
               size="medium"
               disabled={!owner || !isEditable}
               style={{ width: "100%" }}

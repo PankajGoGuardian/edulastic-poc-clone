@@ -166,6 +166,7 @@ const SecondBlock = ({
               <Select
                 mode="multiple"
                 className="tagsSelect"
+                data-cy="collectionsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
                 optionLabelProp="title"
                 placeholder="Please select"

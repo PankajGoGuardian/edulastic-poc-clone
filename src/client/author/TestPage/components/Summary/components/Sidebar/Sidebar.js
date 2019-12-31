@@ -4,13 +4,13 @@ import { Select, message } from "antd";
 import { uniqBy } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
+import { tagsApi } from "@edulastic/api";
 
 import { selectsData } from "../../../common";
 import { SummaryInput, SummarySelect, SummaryTextArea } from "../../common/SummaryForm";
 import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
 
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
-import { tagsApi } from "@edulastic/api";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -32,6 +32,7 @@ const Sidebar = ({
   collections = [],
   orgCollections = [],
   onChangeCollection,
+  features = {},
   description,
   createdBy,
   thumbnail,
@@ -44,6 +45,7 @@ const Sidebar = ({
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
   const testTitleInput = createRef();
+  const isPublishers = !!(features.isPublisherAuthor || features.isCurator);
   useEffect(() => {
     if (testTitleInput.current) {
       testTitleInput.current.input.focus();
@@ -153,24 +155,28 @@ const Sidebar = ({
           ))}
         </SummarySelect>
 
-        <MainTitle>Collections</MainTitle>
-        <SummarySelect
-          data-cy="collectionsSelect"
-          mode="multiple"
-          size="large"
-          style={{ width: "100%" }}
-          placeholder="Please select"
-          value={collections.map(o => o._id)}
-          onChange={onChangeCollection}
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {orgCollections.map(o => (
-            <Select.Option key={o._id} value={o._id} title={o.name}>
-              {o.name}
-            </Select.Option>
-          ))}
-        </SummarySelect>
+        {isPublishers && (
+          <>
+            <MainTitle>Collections</MainTitle>
+            <SummarySelect
+              data-cy="collectionsSelect"
+              mode="multiple"
+              size="large"
+              style={{ width: "100%" }}
+              placeholder="Please select"
+              value={collections.map(o => o._id)}
+              onChange={onChangeCollection}
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {orgCollections.map(o => (
+                <Select.Option key={o._id} value={o._id} title={o.name}>
+                  {o.name}
+                </Select.Option>
+              ))}
+            </SummarySelect>
+          </>
+        )}
 
         <MainTitle>Tags</MainTitle>
         <SummarySelect

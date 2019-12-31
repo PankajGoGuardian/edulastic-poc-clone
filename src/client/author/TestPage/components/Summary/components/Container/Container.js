@@ -15,6 +15,7 @@ import SummaryCard from "../Sidebar/SideBarSwitch";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
+import { getUserFeatures } from "../../../../../../student/Login/ducks";
 import { getUser, getCollectionsSelector } from "../../../../../src/selectors/user";
 import {
   getDefaultThumbnailSelector,
@@ -38,6 +39,7 @@ const Summary = ({
   isPlaylist,
   onChangeGrade,
   onChangeCollection,
+  features,
   backgroundColor,
   textColor,
   getAllTags,
@@ -119,6 +121,7 @@ const Summary = ({
         isPlaylist={isPlaylist}
         subjects={subjects}
         onChangeGrade={onChangeGrade}
+        features={features}
         onChangeCollection={onChangeCollection}
         onChangeSubjects={onChangeSubjects}
         textColor={textColor}
@@ -172,6 +175,7 @@ const enhance = compose(
       allTagsData: getAllTagsSelector(state, "test"),
       allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      features: getUserFeatures(state),
       orgCollections: getCollectionsSelector(state)
     }),
     {

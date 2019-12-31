@@ -15,7 +15,7 @@ import SummaryCard from "../Sidebar/SideBarSwitch";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
-import { getUser } from "../../../../../src/selectors/user";
+import { getUser, getCollectionsSelector } from "../../../../../src/selectors/user";
 import {
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
@@ -37,11 +37,13 @@ const Summary = ({
   itemsSubjectAndGrade,
   isPlaylist,
   onChangeGrade,
+  onChangeCollection,
   backgroundColor,
   textColor,
   getAllTags,
   allTagsData,
   allPlaylistTagsData,
+  orgCollections,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
@@ -83,6 +85,7 @@ const Summary = ({
   ];
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
+
   return (
     <Container>
       <SecondHeader>
@@ -104,7 +107,8 @@ const Summary = ({
         description={test.description}
         tags={test.tags}
         analytics={test.analytics}
-        collection={test.collection}
+        collections={test.collections}
+        orgCollections={orgCollections}
         onChangeField={handleChangeField}
         windowWidth={windowWidth}
         grades={grades}
@@ -115,6 +119,7 @@ const Summary = ({
         isPlaylist={isPlaylist}
         subjects={subjects}
         onChangeGrade={onChangeGrade}
+        onChangeCollection={onChangeCollection}
         onChangeSubjects={onChangeSubjects}
         textColor={textColor}
         createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
@@ -144,6 +149,7 @@ Summary.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   itemsSubjectAndGrade: PropTypes.object.isRequired,
   onChangeGrade: PropTypes.func.isRequired,
+  onChangeCollection: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
   onChangeSubjects: PropTypes.func.isRequired,
   textColor: PropTypes.string.isRequired,
@@ -165,7 +171,8 @@ const enhance = compose(
       defaultThumbnail: getDefaultThumbnailSelector(state),
       allTagsData: getAllTagsSelector(state, "test"),
       allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
-      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      orgCollections: getCollectionsSelector(state)
     }),
     {
       getAllTags: getAllTagsAction,

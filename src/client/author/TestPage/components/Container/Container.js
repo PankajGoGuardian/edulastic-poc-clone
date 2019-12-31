@@ -387,6 +387,7 @@ class Container extends PureComponent {
               current={current}
               isEditable={isEditable}
               onChangeGrade={this.handleChangeGrade}
+              onChangeCollection={this.handleChangeCollection}
               onChangeSubjects={this.handleChangeSubject}
               showCancelButton={showCancelButton}
             />

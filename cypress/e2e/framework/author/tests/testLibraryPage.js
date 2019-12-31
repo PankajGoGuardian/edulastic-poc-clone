@@ -150,7 +150,7 @@ export default class TestLibrary {
   clickOnTestCardById = testId => {
     this.getTestCardById(testId)
       .contains("TOTAL ITEMS")
-      //.click({ force: true })
+      // .click({ force: true })
       .click({ force: true });
   };
 
@@ -211,6 +211,7 @@ export default class TestLibrary {
       .contains(option)
       .click();
   };
+
   selectPeopletoshare = (email, edit = false, validuser = true) => {
     // Valid User: Teacher from the same district
     if (edit) {
@@ -266,7 +267,7 @@ export default class TestLibrary {
         if (duplicate) {
           cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
         } else {
-          //pop up that comes up when we try to edit a published test
+          // pop up that comes up when we try to edit a published test
           cy.contains("You are about to edit a test that has already been published")
             .parent()
             .contains("span", "PROCEED")
@@ -300,7 +301,8 @@ export default class TestLibrary {
 
     cy.contains(name)
       .parent()
-      .find("a")
+      .parent()
+      .find('[data-cy="share-button-close"]')
       .click({ force: true });
     cy.wait("@removeshare");
     cy.wait("@removeshare1");
@@ -319,6 +321,7 @@ export default class TestLibrary {
     this.getDistrictRadio().should("be.enabled");
     this.getPublicRadio().should("be.enabled");
   };
+
   sharingEnabledPublic = () => this.getPublicRadio().should("be.enabled");
 
   closeSharing = () => {
@@ -328,8 +331,11 @@ export default class TestLibrary {
       .find("path")
       .click({ force: true });
   };
+
   getSchoolRadio = () => cy.get('[value="SCHOOL"]');
+
   getDistrictRadio = () => cy.get('[value="DISTRICT"]');
+
   getPublicRadio = () => cy.get('[value="PUBLIC"]');
 
   verifySharedTest = (email, test_id) => {
@@ -340,6 +346,7 @@ export default class TestLibrary {
     this.clickOnTestCardById(test_id);
     this.assertTestPublishedNoEdit(test_id);
   };
+
   verifyRemovedShareTest = (email, test_id) => {
     cy.login("teacher", email, "snapwiz");
     this.sidebar.clickOnTestLibrary();
@@ -347,6 +354,7 @@ export default class TestLibrary {
     this.searchFilters.sharedWithMe();
     this.checkforNonExistanceOfTest(test_id);
   };
+
   verifySharedTestPublic = (email, test_id) => {
     cy.login("teacher", email, "snapwiz");
     this.sidebar.clickOnTestLibrary();
@@ -376,7 +384,7 @@ export default class TestLibrary {
       .should("exist")
       .click()
       .then(() => {
-        //pop up that comes up when we try to edit a published test
+        // pop up that comes up when we try to edit a published test
         cy.contains("This test is already assigned to students.")
           .parent()
           .contains("span", "PROCEED")
@@ -387,7 +395,7 @@ export default class TestLibrary {
         });
       });
     cy.wait(5000);
-    //return cy.url().then(url => url.split("/").reverse()[2]);
+    // return cy.url().then(url => url.split("/").reverse()[2]);
   };
 
   getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);

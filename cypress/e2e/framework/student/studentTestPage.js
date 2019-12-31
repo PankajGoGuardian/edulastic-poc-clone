@@ -689,15 +689,19 @@ class StudentTestPage {
       .click({ force: true });
   };
 
+  clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
+
   verifyMaxScoreOfQueByIndex = (index, maxscore) => {
-    cy.get('[data-cy="questionNumber"]').click({ force: true });
+    this.clickOnQuestionNo();
     cy.get(".ant-select-dropdown-menu-item")
       .eq(index)
       .click({ force: true });
-    cy.get('[data-cy="maxscore"]').should("contain", maxscore);
+    this.getMaxScore().should("contain", maxscore);
   };
 
   attemptQuestionsByQueType = (queType, attempt) => {
+    /* This function will attempt question with correct
+    answers by defualt */
     queType.forEach((type, index) => {
       this.attemptQuestion(type, "right", attempt[index]);
       this.clickOnNext();
@@ -705,7 +709,7 @@ class StudentTestPage {
   };
 
   verifyNoOfQuesInReview = len => {
-    cy.get('[data-cy="questionNumber"]').click({ force: true });
+    this.clickOnQuestionNo();
     cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
   // Feedback
@@ -713,9 +717,13 @@ class StudentTestPage {
   verifyFeedback = feedback => cy.get('[data-cy="feedBack"]').should("contain.text", feedback);
 
   verifyScore = (score, maxScore) => {
-    cy.get('[data-cy="score"]').should("have.text", `${score}`);
-    cy.get('[data-cy="maxscore"]').should("have.text", `${maxScore}`);
+    this.getAchievedScore().should("have.text", `${score}`);
+    this.getMaxScore().should("have.text", `${maxScore}`);
   };
+
+  getAchievedScore = () => cy.get('[data-cy="score"]');
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]');
 
   verifyResponseEvaluation = attemptType =>
     cy

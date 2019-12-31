@@ -282,7 +282,7 @@ describe("Test Sharing", () => {
         testLibrary.clickOnDetailsOfCard();
         testHeader.isDraft();
         testLibrary.header.clickOnShare();
-        testLibrary.selectPeopletoshare(DIST2_SCHOOL1[TEACHER1][EMAIL], true, false);
+        testLibrary.selectPeopletoshare(DIST2_SCHOOL1[TEACHER1][EMAIL], true, true);
       });
     });
   });

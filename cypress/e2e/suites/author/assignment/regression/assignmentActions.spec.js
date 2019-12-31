@@ -9,14 +9,16 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import PreviewItem from "../../../../framework/author/itemList/itemPreview";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
-let ITEMS = testData[TEST]["itemKeys"];
-let grades = testData[TEST]["grade"];
-let subjects = testData[TEST]["subject"];
+
+const ITEMS = testData[TEST].itemKeys;
+const grades = testData[TEST].grade;
+const subjects = testData[TEST].subject;
 let newItemId;
-let itemKeysInTest = [];
+const itemKeysInTest = [];
 ITEMS.forEach(ele => {
   itemKeysInTest.push(ele.split(".")[0]);
 });
@@ -30,6 +32,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
   const testSummayTab = new TestSummayTab();
   const regrade = new Regrade();
   const item = new ItemListPage();
+  const itemPreview = new PreviewItem();
 
   const authorAssignmentPage = new AuthorAssignmentPage();
   const newItemKey = "MCQ_STD.default";
@@ -48,22 +51,25 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
     pass: "snapwiz"
   };
 
-  let OriginalTestId, newTestId;
-  let qType, num, itemIds;
-  let questText = [];
-  let points = [];
-  let questionType = [];
-  let attempt = [];
+  let OriginalTestId;
+  let newTestId;
+  let qType;
+  let num;
+  let itemIds;
+  const questText = [];
+  const points = [];
+  const questionType = [];
+  const attempt = [];
 
   before("Get Data Of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("questionAuthoring").then(quesData => {
       ITEMS.forEach(element => {
         [qType, num] = element.split(".");
-        questText.push(quesData[qType][num]["quetext"]);
+        questText.push(quesData[qType][num].quetext);
         questionType.push(qType);
-        points.push(quesData[qType][num]["setAns"]["points"]);
-        attempt.push(quesData[qType][num]["attemptData"]);
+        points.push(quesData[qType][num].setAns.points);
+        attempt.push(quesData[qType][num].attemptData);
       });
     });
   });
@@ -134,8 +140,8 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
           testReviewTab.clickOnExpandCollapseRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
-          attempt[index]["item"] = itemIds[index];
-          testReviewTab.verifyQuestionResponseCard(itemKeysInTest[index], attempt[index], attemptTypes.RIGHT, true);
+          attempt[index].item = itemIds[index];
+          itemPreview.verifyQuestionResponseCard(itemKeysInTest[index], attempt[index], attemptTypes.RIGHT, true);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
           testReviewTab.clickOnExpandCollapseRow();
         });
@@ -144,7 +150,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
     context("Edit Test", () => {
       before("Create An Item", () => {
         item.createItem(newItemKey).then(id => {
-          //New Item Details
+          // New Item Details
           newItemId = id;
           testLibraryPage.sidebar.clickOnAssignment();
           authorAssignmentPage.clickOnEditTest();
@@ -177,7 +183,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnEditTest();
-        //Remove Last item
+        // Remove Last item
         testReviewTab.clickOnCheckBoxByItemId(itemIds[itemIds.length - 1]);
         itemIds.pop();
         testReviewTab.clickOnRemoveSelected();

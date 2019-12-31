@@ -16,7 +16,7 @@ export default class PreviewItem {
     cy.wait("@editItem");
   };
 
-  closePreiview = () => cy.get(".ant-modal-close-icon").click({ force: true });
+  closePreiview = () => cy.get(".ant-modal-close-icon").click();
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="ShowAnswer"]').click({ force: true });
 

@@ -65,11 +65,11 @@ class ItemListPage {
   };
 
   verifyPresenceOfItemById = id => {
-    this.getViewItemById(id).should("be.visible");
+    this.getViewItemById(id).should("exist");
   };
 
   verifyAbsenceOfitemById = id => {
-    this.getViewItemById(id).should("not.be.visible");
+    this.getViewItemById(id).should("not.exist");
   };
 
   getEditButtonOnPreview = () => this.itemPreview.getEditOnPreview();

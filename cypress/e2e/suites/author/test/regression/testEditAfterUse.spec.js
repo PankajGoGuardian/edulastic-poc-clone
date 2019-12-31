@@ -219,6 +219,8 @@ describe(`Test Edit After Use- Without Regrade`, () => {
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
         testReviewTab.testheader.clickOnAddItems();
+        item.searchFilters.getAuthoredByMe();
+        item.searchFilters.typeInSearchBox(item2);
         testAddItemTab.removeItemById(item2);
         testAddItemTab.header.clickOnPublishButton();
         testLibraryPage.assertUrl(OriginalTestId);

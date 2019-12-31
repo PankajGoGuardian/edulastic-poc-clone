@@ -136,6 +136,7 @@ const EssayPlainTextPreview = ({
       : {};
 
   const minHeight = get(item, "uiStyle.minHeight", "inherit");
+  const numberOfRows = get(item, "uiStyle.numberOfRows", 10);
   const maxHeight = get(item, "uiStyle.max_height", "inherit");
   const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
@@ -173,8 +174,6 @@ const EssayPlainTextPreview = ({
         }}
         style={{
           borderRadius: 0,
-          minHeight,
-          maxHeight: answerContext.isAnswerModifiable ? maxHeight : minHeight,
           fontSize,
           color: theme.widgets.essayPlainText.textInputColor,
           borderColor: theme.widgets.essayPlainText.textInputBorderColor,
@@ -183,7 +182,7 @@ const EssayPlainTextPreview = ({
               ? theme.widgets.essayPlainText.textInputLimitedBgColor
               : theme.widgets.essayPlainText.textInputBgColor
         }}
-        rows={4}
+        rows={numberOfRows} // textarea number of rows
         onSelect={handleSelect}
         value={smallSize ? t("component.essayText.plain.templateText") : text}
         onChange={handleTextChange}

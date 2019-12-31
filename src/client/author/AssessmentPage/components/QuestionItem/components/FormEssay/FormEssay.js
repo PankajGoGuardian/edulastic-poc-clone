@@ -31,16 +31,17 @@ export default class FormEssay extends React.Component {
     const {
       answer,
       question: {
-        uiStyle: { minHeight }
+        uiStyle: { numberOfRows = 10 }
       },
       mode
     } = this.props;
     return (
       <Input.TextArea
-        style={{ minHeight: `${minHeight * 22}px`, padding: "2px 11px" }}
+        style={{ padding: "2px 11px" }}
         value={answer}
         onChange={this.handleChange}
         disabled={mode === "report"}
+        rows={numberOfRows} // textarea number of rows
       />
     );
   };

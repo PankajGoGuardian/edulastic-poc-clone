@@ -10,11 +10,11 @@ const getDefaultState = question => {
   const {
     validResponse: { score }
   } = validation;
-  const { minHeight } = uiStyle;
+  const { numberOfRows = 10 } = uiStyle;
   return {
     qId,
     score,
-    minHeight
+    numberOfRows
   };
 };
 export default class QuestionEssay extends React.Component {
@@ -26,7 +26,7 @@ export default class QuestionEssay extends React.Component {
   state = {
     qId: "",
     score: 1,
-    minHeight: 1
+    numberOfRows: 1
   };
 
   componentDidMount() {
@@ -44,7 +44,7 @@ export default class QuestionEssay extends React.Component {
   }
 
   handleScoreChange = score => {
-    let { minHeight } = this.state;
+    let { numberOfRows } = this.state;
     const { onUpdate } = this.props;
     this.setState({ score }, () => {
       const data = {
@@ -55,18 +55,18 @@ export default class QuestionEssay extends React.Component {
           }
         },
         uiStyle: {
-          minHeight
+          numberOfRows
         }
       };
       onUpdate(data);
     });
   };
 
-  handleMinHeightChange = minHeight => {
+  changeNumberOfRows = numberOfRows => {
     let { score } = this.state;
     const { onUpdate } = this.props;
 
-    this.setState({ minHeight }, () => {
+    this.setState({ numberOfRows }, () => {
       const data = {
         validation: {
           scoringType: EXACT_MATCH,
@@ -75,7 +75,7 @@ export default class QuestionEssay extends React.Component {
           }
         },
         uiStyle: {
-          minHeight
+          numberOfRows
         }
       };
       onUpdate(data);
@@ -83,11 +83,11 @@ export default class QuestionEssay extends React.Component {
   };
 
   render() {
-    const { score, minHeight = 1 } = this.state;
+    const { score, numberOfRows = 1 } = this.state;
     return (
       <QuestionFormWrapper>
         <FormGroup>
-          <InputNumber min={1} value={minHeight} onChange={this.handleMinHeightChange} />
+          <InputNumber min={1} value={numberOfRows} onChange={this.changeNumberOfRows} />
           <Points>Minimum Line height</Points>
         </FormGroup>
         <FormGroup>

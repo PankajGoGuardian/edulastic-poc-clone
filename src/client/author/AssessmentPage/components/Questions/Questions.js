@@ -144,7 +144,7 @@ const clozeDropDownData = {
 
 const essayData = {
   uiStyle: {
-    minHeight: 5
+    numberOfRows: 10 // textarea number of rows
   },
   showWordCount: true
 };

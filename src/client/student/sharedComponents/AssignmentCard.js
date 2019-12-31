@@ -213,7 +213,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
       )
     );
 
-  const isValidAttempt = attempted && !absent;
+  const isValidAttempt = attempted;
 
   const getColSize = type => {
     let colsCount = 1;

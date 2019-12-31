@@ -32,6 +32,7 @@ import {
 import { MAX_TAB_WIDTH } from "../../../constants/others";
 
 import { getOrgDataSelector } from "../../../selectors/user";
+import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
 
 const { Paragraph } = Typography;
 
@@ -183,8 +184,8 @@ class ShareModal extends React.Component {
       } else if (isExisting) {
         return message.error("This user has permission");
       } else {
-        const { _userId, userName } = currentUser;
-        person = { sharedWith: [{ _id: _userId, name: userName }] };
+        const { _userId, userName, email } = currentUser;
+        person = { sharedWith: [{ _id: _userId, name: userName, email }] };
       }
     } else {
       const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
@@ -215,9 +216,17 @@ class ShareModal extends React.Component {
     } else if (data.sharedType === "DISTRICT") {
       return districtName;
     } else {
-      return `${data.userName && data.userName !== "null" ? data.userName : ""}${
-        data.email && data.email !== "null" ? `, ${data.email}` : ""
-      }`;
+      return `${data.userName && data.userName !== "null" ? data.userName : ""}`;
+    }
+  }
+
+  getEmail(data) {
+    if (data.sharedType === "PUBLIC") {
+      return "";
+    } else if (data.sharedType === "DISTRICT") {
+      return "";
+    } else {
+      return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
     }
   }
 
@@ -250,7 +259,6 @@ class ShareModal extends React.Component {
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
-
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>
@@ -275,7 +283,10 @@ class ShareModal extends React.Component {
                         alignItems: "center"
                       }}
                     >
-                      <Col span={12}>{this.getUserName(data)}</Col>
+                      <Col span={12}>
+                        {this.getUserName(data)}
+                        <span>{this.getEmail(data)}</span>
+                      </Col>
                       <Col span={11}>
                         <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
                         <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
@@ -331,7 +342,7 @@ class ShareModal extends React.Component {
                 >
                   {filteredUserList.map(item => (
                     <Select.Option
-                      value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
+                      value={`${getFullNameFromAsString(item._source)}${"||"}${item._source.email}${"||"}${item._id}`}
                       key={item._id}
                     >
                       {item._source.firstName} {item._source.lastName ? `${item._source.lastName} ` : ""}
@@ -465,6 +476,11 @@ const ShareList = styled.div`
   width: 90%;
   margin-top: 10px;
   background: ${backgroundGrey2};
+
+  span {
+    text-transform: none;
+    font-weight: normal;
+  }
 `;
 
 const ShareListTitle = styled.div`

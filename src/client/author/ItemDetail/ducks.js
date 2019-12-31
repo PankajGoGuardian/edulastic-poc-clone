@@ -402,8 +402,8 @@ export const getItemDetailValidationSelector = createSelector(
   }
 );
 
-export const generateRecentlyUsedCollectionsList = (collectionName, itemBanks, recentCollectionsList) => {
-  recentCollectionsList = [...recentCollectionsList, collectionName];
+export const generateRecentlyUsedCollectionsList = (collections, itemBanks, recentCollectionsList) => {
+  recentCollectionsList = [...recentCollectionsList, ...collections];
   recentCollectionsList = recentCollectionsList.map(collection => {
     if (typeof collection === "object") return collection;
     return itemBanks.find(data => data._id === collection);
@@ -945,11 +945,11 @@ export function* updateItemSaga({ payload }) {
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
 
-    const { collectionName } = item;
-    if (collectionName) {
+    const { collections } = item;
+    if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector);
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
-      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
 
@@ -1012,11 +1012,11 @@ export function* updateItemDocBasedSaga({ payload }) {
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
 
-    const { collectionName } = item;
-    if (collectionName) {
+    const { collections } = item;
+    if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector);
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
-      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
     yield call(message.success, "Item is saved as draft", 2);

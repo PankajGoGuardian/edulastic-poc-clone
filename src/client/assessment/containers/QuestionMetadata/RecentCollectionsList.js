@@ -3,16 +3,18 @@ import StandardTags from "./styled/StandardTags";
 import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
 import { themeColor, grey } from "@edulastic/colors";
 
-const RecentStandardsList = ({ recentCollectionsList, collectionName, handleCollectionNameSelect, isDocBased }) => {
+const RecentCollectionsList = ({ recentCollectionsList, collections, handleCollectionsSelect, isDocBased }) => {
   return (
     <StandardsWrapper isDocBased={isDocBased}>
       <div>RECENTLY USED:</div>
       <RecentStandards>
         {recentCollectionsList.map(recentCollection => (
           <StandardTags
-            color={collectionName.includes(recentCollection._id) ? grey : themeColor}
+            color={collections.find(o => o._id === recentCollection._id) ? grey : themeColor}
             onClick={() => {
-              handleCollectionNameSelect(recentCollection._id);
+              if (!collections.find(o => o._id === recentCollection._id)) {
+                handleCollectionsSelect(recentCollection);
+              }
             }}
           >
             {recentCollection.name}
@@ -23,4 +25,4 @@ const RecentStandardsList = ({ recentCollectionsList, collectionName, handleColl
   );
 };
 
-export default RecentStandardsList;
+export default RecentCollectionsList;

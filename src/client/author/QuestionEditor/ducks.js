@@ -476,11 +476,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
 
-    const { collectionName } = item;
-    if (collectionName) {
+    const { collections } = item;
+    if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector);
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
-      recentCollectionsList = generateRecentlyUsedCollectionsList(collectionName, itemBanks, recentCollectionsList);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
     if (isTestFlow) {

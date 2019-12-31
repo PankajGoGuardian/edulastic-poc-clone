@@ -20,6 +20,7 @@ const SecondBlock = ({
   allTagsData,
   addNewTag,
   handleCollectionsSelect,
+  handleRecentCollectionsSelect,
   collections,
   orgData,
   userFeatures,
@@ -186,8 +187,8 @@ const SecondBlock = ({
             {recentCollectionsList?.length > 0 && (
               <RecentCollectionsList
                 recentCollectionsList={recentCollectionsList}
-                collectionName={collectionName || []}
-                handleCollectionNameSelect={handleCollectionNameSelect}
+                collections={collections || []}
+                handleCollectionsSelect={handleRecentCollectionsSelect}
               />
             )}
           </Col>

@@ -117,6 +117,12 @@ const QuestionMetadata = ({
     setCollections(_value);
   };
 
+  const handleRecentCollectionsSelect = collectionItem => {
+    let _collections = collections.map(o => ({ ...o }));
+    _collections = [..._collections, collectionItem];
+    setCollections(_collections);
+  };
+
   const handleUpdateQuestionAlignment = (index, alignment) => {
     const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
     if (!newAlignments.length) {
@@ -181,6 +187,7 @@ const QuestionMetadata = ({
           onChangeTags={handleChangeTags}
           onQuestionDataSelect={handleQuestionDataSelect}
           handleCollectionsSelect={handleCollectionsSelect}
+          handleRecentCollectionsSelect={handleRecentCollectionsSelect}
           collections={collections}
           orgData={orgData}
           userFeatures={userFeatures}

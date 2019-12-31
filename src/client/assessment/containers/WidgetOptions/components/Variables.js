@@ -145,7 +145,7 @@ class Variables extends Component {
       if (!has(newData, `variable.variables.${variableName}`)) {
         return;
       }
-      newData.variable.variables[variableName][param] = value ? parseInt(value, 10) : "";
+      newData.variable.variables[variableName][param] = value;
 
       if (
         newData.variable.variables[variableName].type !== "FORMULA" &&
@@ -176,7 +176,8 @@ class Variables extends Component {
       let newVariable = {
         id: newData.variable.variables[variableName].id,
         name: newData.variable.variables[variableName].name,
-        type: value
+        type: value,
+        exampleValue: ""
       };
 
       switch (newVariable.type) {
@@ -467,7 +468,13 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableMin"
                         value={variable.min}
-                        onChange={e => handleChangeVariableList(variableName, "min", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(
+                            variableName,
+                            "min",
+                            e.target.value ? parseInt(e.target.value, 10) : ""
+                          )
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -480,7 +487,13 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableMax"
                         value={variable.max}
-                        onChange={e => handleChangeVariableList(variableName, "max", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(
+                            variableName,
+                            "max",
+                            e.target.value ? parseInt(e.target.value, 10) : ""
+                          )
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -493,7 +506,13 @@ class Variables extends Component {
                         type="number"
                         data-cy="variableDecimal"
                         value={variable.decimal}
-                        onChange={e => handleChangeVariableList(variableName, "decimal", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(
+                            variableName,
+                            "decimal",
+                            e.target.value ? parseInt(e.target.value, 10) : ""
+                          )
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}

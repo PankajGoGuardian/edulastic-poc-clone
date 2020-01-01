@@ -195,12 +195,15 @@ export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
  * Convert Mongo alignment domains to UI alignment row standards
  *
  * @param {Array} alignmentDomains - alignment domains from Mongo
- * @returns {Array} - alignment row standards for UI
+ * @returns {Object} - alignment row standards and grades for UI
  */
 export const alignmentStandardsFromMongoToUI = alignmentDomains => {
   const alignmentRowStandards = [];
+  const grades = [];
   alignmentDomains.forEach(alignmentDomain => {
     alignmentDomain.standards.forEach(standard => {
+      const standardGrades = standard.grades.filter(grade => grades.indexOf(grade) === -1);
+      grades.push(...standardGrades);
       alignmentRowStandards.push({
         description: standard.description,
         grades: standard.grades,
@@ -213,7 +216,7 @@ export const alignmentStandardsFromMongoToUI = alignmentDomains => {
       });
     });
   });
-  return alignmentRowStandards;
+  return { standards: alignmentRowStandards, grades };
 };
 
 export const getSpellCheckAttributes = (isSpellCheck = false) => ({

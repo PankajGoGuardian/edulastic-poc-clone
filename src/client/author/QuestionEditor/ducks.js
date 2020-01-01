@@ -276,7 +276,7 @@ export const getAlignmentFromQuestionSelector = createSelector(
   alignments => {
     const modifyAlignment = alignments.map(item => ({
       ...item,
-      standards: transformDomainsToStandard(item.domains)
+      ...transformDomainsToStandard(item.domains)
     }));
     delete modifyAlignment.domains;
     return modifyAlignment;

@@ -14,8 +14,6 @@ import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
 
-const dropContainerDimensionsList = [];
-
 const TableRow = ({
   startIndex,
   colCount,
@@ -68,10 +66,9 @@ const TableRow = ({
   const getChangedContainerHeight = h => Math.max(h, imageOptions.height + imageOptions.y);
   const getChangedContainerWidth = w => Math.max(w, imageOptions.width + imageOptions.x);
 
-  const changeWrapperStyle = () => {
+  const changeWrapperStyle = dropContainerDimensionsList => {
     const { height: maxHeight } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.height) || {};
     const { width: maxWidth } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.width) || {};
-
     /**
      * +40 is padding of element
      */
@@ -153,7 +150,7 @@ const TableRow = ({
                   alignItems: "center",
                   wordWrap: "break-word",
                   width: get(item, "uiStyle.row_titles_width", "max-content"),
-                  height: get(item, "uiStyle.row_min_height", "85px")
+                  height: get(item, "uiStyle.row_min_height", "50px")
                 }}
                 dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
               />
@@ -212,6 +209,8 @@ const TableRow = ({
   useLayoutEffect(() => {
     if (window.$ && !observeRef.current) {
       const jQuery = window.$;
+      const dropContainerDimensionsList = [];
+
       // eslint-disable-next-line
       jQuery(".answer-draggable-wrapper").each(function(index) {
         const wraperElem = this;
@@ -225,35 +224,13 @@ const TableRow = ({
           width: wraperElem.clientWidth + position.left + 2,
           height: wraperElem.clientHeight + position.top + 2
         };
-
-        // eslint-disable-next-line
-        observeRef.current = new MutationObserver(function() {
-          setTimeout(() => {
-            /**
-             * +2 is border width
-             */
-            const _position = jQuery(wraperElem).position();
-            dropContainerDimensionsList[index] = {
-              width: wraperElem.clientWidth + _position.left + 2,
-              height: wraperElem.clientHeight + _position.top + 2
-            };
-            if (wrapperRef.current) {
-              changeWrapperStyle();
-            }
-          });
-        });
-        const config = { attributes: true, childList: true, subtree: true };
-        observeRef.current.observe(this, config);
+        changeWrapperStyle(dropContainerDimensionsList);
       });
     }
-  });
-
-  useEffect(() => {
-    changeWrapperStyle();
   }, [item.responseOptions, item.imageOptions]);
 
   return (
-    <div ref={wrapperRef} style={{ position: "relative", padding: 20, minHeight: 140 }}>
+    <div ref={wrapperRef} style={{ position: "relative", minHeight: 140 }}>
       {cols}
     </div>
   );

@@ -64,7 +64,6 @@ const ResponseRnd = props => {
   const rndX = get(question, `responseOptions[${index}].x`, hasRowTitle ? index * offsetX + 100 : index * offsetX);
   const rndY = get(question, `responseOptions[${index}].y`, 0);
   const rndWidth = get(question, `responseOptions[${index}].width`, maxWidth);
-
   return (
     <RndWrapper isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
       <Rnd

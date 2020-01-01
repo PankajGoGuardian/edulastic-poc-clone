@@ -5,6 +5,10 @@ import { mobileWidth } from "@edulastic/colors";
 export const StyledRow = styled(Row)`
   margin: 0 0 27px 0;
 
+  .ant-select-dropdown-menu {
+    padding-bottom: 1rem;
+  }
+
   @media (max-width: ${mobileWidth}) {
     margin: 0 0 15px 0;
     display: flex;

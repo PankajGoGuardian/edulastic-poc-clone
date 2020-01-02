@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
@@ -14,6 +14,9 @@ export const QuestionsWrapper = styled.div`
   overflow-y: auto;
   height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 280px;
+  }
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }

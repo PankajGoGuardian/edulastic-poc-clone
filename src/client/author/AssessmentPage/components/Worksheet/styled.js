@@ -41,10 +41,6 @@ export const MinimizeButton = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${largeDesktopWidth}) {
-    left: ${({ minimized }) => (minimized ? "15px" : "256px")};
-  }
-
   svg {
     fill: ${green};
     transform: rotate(${({ minimized }) => (minimized ? 0 : "-180deg")});

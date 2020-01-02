@@ -8,7 +8,8 @@ import {
   red,
   themeColor,
   sectionBorder,
-  greyScoreCardTitleColor
+  greyScoreCardTitleColor,
+  smallDesktopWidth
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
@@ -49,13 +50,24 @@ export const QuestionForm = styled.div`
   .ant-select-selection {
     width: ${({ review }) => (review ? "200px" : "133px")};
   }
-
   .input__math {
     width: 220px;
+    & + .input__absolute__keyboard {
+      position: absolute;
+      overflow: auto;
+      right: -15px;
+    }
   }
-
   .ant-input {
     width: ${({ review }) => (review ? "200px" : "133px")};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    .ant-select-selection,
+    .input__math,
+    .ant-input {
+      width: ${({ review }) => (review ? "170px" : "133px")};
+    }
   }
 `;
 

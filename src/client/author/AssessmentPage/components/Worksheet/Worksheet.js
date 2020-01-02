@@ -581,8 +581,11 @@ class Worksheet extends React.Component {
       />
     );
 
-    //450 IS THE TOTAL WIDTH OF RIGHT QUESTION AREA AND LEFT THUMBNAILS AREA 220 IS THE THUMBNAILS AREA WIDTH WHEN MINIMIZED REDUCE 220 AND USE that space for PDF AREA
-    const pdfWidth = minimized ? windowWidth - 450 : windowWidth - 450 - 220;
+    // LEFT THUMBNAILS AREA 200+(15 extra space) IS THE THUMBNAILS AREA WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
+    const leftColumnWidth = minimized ? 0 : windowWidth > 1024 ? 215 : 195;
+    // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
+    const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
+    const pdfWidth = windowWidth - rightColumnWidth - leftColumnWidth;
     const reportMode = viewMode && viewMode === "report";
 
     return (

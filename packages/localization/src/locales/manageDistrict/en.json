@@ -123,13 +123,18 @@
         "enterlastname": "Enter last name",
         "enteremail": "Enter email",
         "selectschool": "Select Schools",
+        "password": "Password",
+        "confirmpassword": "Confirm Password",
         "nocancel": "No, Cancel",
         "yesupdate": "Yes, Update",
+        "enterpassword": "Enter password",
+        "enterconfirmpassword": "Enter Confirm Password",
         "validations": {
           "firstname": "Please input first name",
           "lastname": "Please input last name",
           "email": "Please input email",
-          "school": "Please select schools"
+          "school": "Please select schools",
+          "invalidpassword": "Password does not match"
         }
       },
       "deactivatesa": {
@@ -182,16 +187,21 @@
         "firstname": "First Name",
         "lastname": "Last Name",
         "email": "Email",
+        "password": "Password",
+        "confirmpassword": "Confirm Password",
         "nocancel": "No, Cancel",
         "yesupdate": "Yes, Update",
         "enterfirstname": "Enter first name",
         "enterlastname": "Enter last name",
         "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "enterconfirmpassword": "Enter Confirm Password",
         "validations": {
           "firstname": "Please input first name",
           "lastname": "Please input last name",
           "email": "Please input email",
-          "invalidemail": "Please input valid email"
+          "invalidemail": "Please input valid email",
+          "invalidpassword": "Password does not match"
         }
       }
     },

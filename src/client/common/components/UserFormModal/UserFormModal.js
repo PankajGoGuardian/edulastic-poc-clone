@@ -122,6 +122,12 @@ class UserForm extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     );
+
+    const iconSize = {
+      width: "12px",
+      height: "12px"
+    };
+
     return (
       <StyledModal title={title} footer={footer} visible={showModal} onCancel={() => closeModal()}>
         <Form>
@@ -135,7 +141,7 @@ class UserForm extends React.Component {
                       initialValue: get(_source, "username", get(_source, "username", ""))
                     })(
                       <Input
-                        prefix={<img src={mailIcon} alt="" />}
+                        prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
                         disabled={true}
                       />
@@ -152,7 +158,7 @@ class UserForm extends React.Component {
                       initialValue: get(_source, "username", get(_source, "email", ""))
                     })(
                       <Input
-                        prefix={<img src={mailIcon} alt="" />}
+                        prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
                         disabled={true}
                       />
@@ -169,14 +175,22 @@ class UserForm extends React.Component {
                       { max: 128, message: "Must less than 128 characters!" }
                     ],
                     initialValue: get(_source, "firstName", "")
-                  })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the first name of the user" />)}
+                  })(
+                    <Input
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the first name of the user"
+                    />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="lastName">
                 <legend>Last name</legend>
                 <Form.Item>
                   {getFieldDecorator("lastName", { initialValue: get(_source, "lastName", "") })(
-                    <Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the last name of the user" />
+                    <Input
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the last name of the user"
+                    />
                   )}
                 </Form.Item>
               </Field>
@@ -188,7 +202,7 @@ class UserForm extends React.Component {
                       validateTrigger: ["onBlur"],
                       rules: [{ validator: this.validateEmailValue }],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter email" />)}
+                    })(<Input prefix={<img style={iconSize} src={mailIcon} alt="" />} placeholder="Enter email" />)}
                   </Form.Item>
                 </Field>
               )}
@@ -196,7 +210,11 @@ class UserForm extends React.Component {
                 <legend>Password</legend>
                 <Form.Item>
                   {getFieldDecorator("password")(
-                    <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+                    <Input
+                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                      type="password"
+                      placeholder="Enter Password"
+                    />
                   )}
                 </Form.Item>
               </Field>
@@ -205,7 +223,13 @@ class UserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
-                  })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
+                  })(
+                    <Input
+                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                      type="password"
+                      placeholder="Confirm Password"
+                    />
+                  )}
                 </Form.Item>
               </Field>
             </Panel>

@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button } from "antd";
+import { omit } from "lodash";
+
 const Option = Select.Option;
 
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 class EditSchoolAdminModal extends Component {
   onSaveSchoolAdmin = () => {
-    this.props.form.validateFields((err, row) => {
+    this.props.form.validateFields((err, row = {}) => {
       if (!err) {
         const { schoolAdminData, updateSchoolAdmin, userOrgId } = this.props;
+        if (!row.password) row = omit(row, ["password"]);
+        row = omit(row, ["confirmPassword"]);
         updateSchoolAdmin({
           userId: schoolAdminData._id,
           data: Object.assign(row, {
@@ -18,6 +22,17 @@ class EditSchoolAdminModal extends Component {
         this.onCloseModal();
       }
     });
+  };
+
+  handleConfirmPassword = (rule, value, callback) => {
+    const { form = {} } = this.props;
+    const { getFieldValue } = form;
+    const password = getFieldValue("password");
+    const confirmPassword = getFieldValue("confirmPassword");
+
+    if (password !== confirmPassword) return callback("Password does not match");
+
+    callback(); // no error
   };
 
   onCloseModal = () => {
@@ -100,6 +115,29 @@ class EditSchoolAdminModal extends Component {
                 ],
                 initialValue: _source.email
               })(<Input placeholder={t("users.schooladmin.editsa.enteremail")} />)}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label={t("users.schooladmin.editsa.password")}>
+              {getFieldDecorator("password", {})(
+                <Input type="password" placeholder={t("users.schooladmin.editsa.enterpassword")} />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label={t("users.schooladmin.editsa.confirmpassword")}>
+              {getFieldDecorator("confirmPassword", {
+                rules: [
+                  {
+                    validator: this.handleConfirmPassword,
+                    message: t("users.schooladmin.editsa.validations.invalidpassword")
+                  }
+                ]
+              })(<Input type="password" placeholder={t("users.schooladmin.editsa.enterconfirmpassword")} />)}
             </ModalFormItem>
           </Col>
         </Row>

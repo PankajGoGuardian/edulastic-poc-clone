@@ -111,7 +111,9 @@ class SchoolAdminTable extends Component {
   }
 
   componentDidMount() {
+    const { loadSchoolsData, userOrgId } = this.props;
     this.loadFilteredList();
+    loadSchoolsData({ districtId: userOrgId });
   }
 
   static getDerivedStateFromProps(nextProps, state) {

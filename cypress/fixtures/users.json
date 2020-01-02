@@ -58,7 +58,7 @@
       "school1": {
         "Teachers": ["Teacher1"],
         "Teacher1": {
-          "name": "Teacher1",
+          "name": "teacher1",
           "email": "teacher1.school1.dist2@snapwiz.com",
           "pass": "snapwiz",
           "district": "dist2",

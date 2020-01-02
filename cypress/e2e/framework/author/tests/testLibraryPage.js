@@ -151,7 +151,7 @@ export default class TestLibrary {
     this.getTestCardById(testId)
       .contains("TOTAL ITEMS")
       // .click({ force: true })
-      .click({ force: true });
+      .click();
   };
 
   clickOnDetailsOfCard = () => {
@@ -173,11 +173,19 @@ export default class TestLibrary {
     this.getNameList()
       .type(name)
       .then(ele => {
-        cy.wait("@users");
-        cy.wrap(ele).type("{downarrow}{enter}");
+        cy.wait("@users").then(() => {
+          if (validuser) {
+            cy.get(".ant-select-dropdown-menu-item")
+              .contains(name)
+              .click();
+          } else {
+            cy.wrap(ele).type("{downarrow}{enter}");
+          }
+        });
+
         // TODO: Verify Search results
       });
-    this.clickSharePop(name, validuser);
+    this.clickSharePop();
   };
 
   getNameList = () => cy.get('[data-cy="name-button-pop"]');
@@ -186,19 +194,19 @@ export default class TestLibrary {
 
   getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]');
 
-  clickSharePop = (name, validuser) => {
+  clickSharePop = (validEmail = true, email) => {
     cy.server();
     cy.route("POST", "**/content-sharing/**").as("testload");
     cy.route("GET", "**/content-sharing/**").as("testload1");
     this.getShareButtonPop()
       .click({ force: true })
       .then(() => {
-        if (validuser) {
+        if (validEmail) {
           cy.wait("@testload").then(xhr => expect(xhr.status === 200, "verify share request"));
           cy.wait("@testload1");
         } else {
           cy.wait("@testload").then(xhr => expect(xhr.status === 404, "Cancel share request"));
-          cy.contains(`Invalid mails found (${name})`);
+          cy.contains(`Invalid mails found (${email})`);
         }
       });
   };
@@ -298,8 +306,9 @@ export default class TestLibrary {
     cy.server();
     cy.route("DELETE", "**/content-sharing/**").as("removeshare");
     cy.route("GET", "**/content-sharing/**").as("removeshare1");
-
-    cy.contains(name)
+    cy.contains("Share with others")
+      .parent()
+      .contains(name)
       .parent()
       .parent()
       .find('[data-cy="share-button-close"]')

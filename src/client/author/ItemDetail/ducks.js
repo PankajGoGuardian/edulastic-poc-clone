@@ -1115,7 +1115,10 @@ function* publishTestItemSaga({ payload }) {
     }
 
     yield saveTestItemSaga();
-    if ((payload.status === "inreview" && testItem?.collections?.length > 0) || payload.status === "published") {
+    if (
+      (payload.status === "published" && !payload.isCurator) ||
+      ((payload.isPublisherAuthor || payload.isCurator) && testItem?.collections?.length)
+    ) {
       yield call(testItemsApi.publishTestItem, payload);
 
       let successMessage, testItemStatus;
@@ -1142,7 +1145,7 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      yield call(message.error, "Please link it to a collection.");
+      yield call(message.error, "Item is not associated with any collection.");
     }
   } catch (e) {
     console.warn("publish error", e);

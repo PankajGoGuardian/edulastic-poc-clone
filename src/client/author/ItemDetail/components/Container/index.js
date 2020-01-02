@@ -70,6 +70,8 @@ const ItemDetailContainer = ({
   const publishItem = () => {
     const status = userFeatures.isPublisherAuthor ? "inreview" : "published";
     const obj = {
+      isCurator: userFeatures.isCurator,
+      isPublisherAuthor: userFeatures.isPublisherAuthor,
       itemId,
       status
     };

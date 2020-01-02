@@ -76,6 +76,7 @@ const getLabelStyle = type => {
 const Labels = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin: 4px 0;
 `;
 
 const PopupContainer = styled.div`

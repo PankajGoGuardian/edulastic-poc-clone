@@ -162,6 +162,14 @@ class Item extends Component {
       orgData: { itemBanks }
     } = this.props;
     const standardsIdentifiers = standards.map(item => item.identifier);
+
+    if (isPlaylist) {
+      const standards = _source?.modules?.map(m =>
+        m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)
+      );
+      standards.forEach(x => x.forEach(y => y.forEach(z => standardsIdentifiers.push([z]))));
+    }
+
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;

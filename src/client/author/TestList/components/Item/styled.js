@@ -58,7 +58,7 @@ export const CardDescription = styled.div`
 `;
 
 export const TagsWrapper = styled.div`
-  height: 60px;
+  height: 70px;
   overflow: hidden;
   text-align: left;
 `;

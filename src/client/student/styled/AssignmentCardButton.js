@@ -22,7 +22,6 @@ const StartAssignButton = styled(Button)`
   cursor: pointer;
   height: 40px;
   margin-left: auto;
-  margin-top: 5px;
   &:hover {
     background-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
     border-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};

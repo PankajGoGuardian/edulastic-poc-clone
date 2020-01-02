@@ -41,7 +41,6 @@ export default ReviewButton;
 const ReviewButtonLink = styled(Link)`
   display: inline-block;
   margin-left: auto;
-  margin-top: 5px;
   button {
     max-width: 100%;
   }

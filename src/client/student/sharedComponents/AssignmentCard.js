@@ -371,6 +371,7 @@ const CardWrapper = styled(Row)`
 const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 62%;
 
   @media screen and (min-width: 1025px) {
@@ -390,18 +391,17 @@ const ButtonAndDetail = styled(Col)`
 
 const AttemptDetails = styled(Row)`
   width: 65%;
+  display: flex;
 
   ${({ isValidAttempt }) =>
     !isValidAttempt &&
     `
-    display: flex;
     justify-content: flex-end
   `}
 
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
     justify-content: center;
-    display: flex;
     margin-top: 10px;
   }
   @media only screen and (min-width: ${largeDesktopWidth}) {
@@ -436,6 +436,7 @@ const StyledActionButton = styled(AnswerAndScore)`
   }
 
   align-items: ${({ isValidAttempt, isAssignment }) => (!isValidAttempt || isAssignment ? "flex-end" : "center")};
+  justify-content: center;
 `;
 
 const Attempts = AnswerAndScore;

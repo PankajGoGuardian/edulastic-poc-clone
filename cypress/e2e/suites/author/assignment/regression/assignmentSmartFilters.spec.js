@@ -52,7 +52,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
     testLibrary.createTest().then(id => {
       testId = id;
       //  assign as class assessment
-      testLibrary.header.clickOnAssign();
+      cy.contains("Share With Others");
+      testLibrary.clickOnAssign();
       testLibrary.assignPage.selectClass(classes[1].className);
       testLibrary.assignPage.clickOnAssign();
       teacherSidebar.clickOnAssignment();

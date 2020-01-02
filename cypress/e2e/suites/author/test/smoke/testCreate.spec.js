@@ -79,11 +79,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testData.itemKeys.forEach(async (itemKey, index) => {
       itemListPage.createItem(itemKey, index, false);
       if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
-      testLibrary.searchFilters.waitForSearchResponse();
+      if (index !== testData.itemKeys.length - 1) {
+        cy.contains("View as Student").should("be.visible");
+        testLibrary.header.clickOnAddItems(); // clicking back to add item since app redirect to review tab
+      }
+      // testLibrary.searchFilters.waitForSearchResponse();
     });
 
     // verify newly created added items on review tab
-    testLibrary.header.clickOnReview();
+    // testLibrary.header.clickOnReview();
+    cy.contains("View as Student");
     testData.itemKeys.forEach(itemKey => {
       testLibrary.review.verifyItemByContent(itemKey);
     });
@@ -127,14 +132,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
       } else {
         // create new items
         itemListPage.createItem(itemKey, index, false);
+        if (index !== testData.itemKeys.length - 1) {
+          cy.contains("View as Student").should("be.visible");
+          testLibrary.header.clickOnAddItems();
+        } // clicking back to add item since app redirect to review tab
+
         // cy.wait("@saveTest");
-        testLibrary.searchFilters.waitForSearchResponse();
+        // testLibrary.searchFilters.waitForSearchResponse();
       }
       cy.wait(500);
     });
 
     // verify newly created added items on review tab
-    testLibrary.header.clickOnReview();
+    cy.contains("View as Student");
+    // testLibrary.header.clickOnReview();
     testData.itemKeys.forEach(itemKey => {
       testLibrary.review.verifyItemByContent(itemKey);
     });

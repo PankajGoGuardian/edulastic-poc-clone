@@ -2,6 +2,7 @@ import CypressHelper from "../../../util/cypressHelpers";
 
 export default class TestAssignPage {
   clickOnDropDownOptionByText = option => {
+    cy.wait(500);
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
         $ele

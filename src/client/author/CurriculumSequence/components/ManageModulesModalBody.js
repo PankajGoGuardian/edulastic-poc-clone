@@ -293,18 +293,17 @@ const ManageModulesModalBody = props => {
                   style={{ background: lightGreySecondary, width: "685px" }}
                   onChange={e => handleInputChange(e, "description")}
                 />
+                <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={handleModuleSave}>
+                  <StyledSpan width={100} fSize={12}>
+                    SAVE
+                  </StyledSpan>
+                </ThemeButton>
               </div>
             </AddNewModuleContainer>
-            <br />
-            <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={handleModuleSave}>
-              <StyledSpan width={100} fSize={12}>
-                ADD MODULE
-              </StyledSpan>
-            </ThemeButton>
           </>
         )}
 
-        {!addState && (
+        {
           <div style={{ marginLeft: "20px" }}>
             <ThemeButton key="submit" type="primary" onClick={() => toggleAddState(true)}>
               <IconPlusCircle color={white} width={15} height={15} />
@@ -313,14 +312,14 @@ const ManageModulesModalBody = props => {
               </StyledSpan>
             </ThemeButton>
           </div>
-        )}
+        }
       </ModalContent>
       <ModalFooter>
         <Button data-cy="manageModuleCancel" type="primary" ghost key="back" onClick={onCloseManageModule}>
           CANCEL
         </Button>
         <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={applyHandler}>
-          SAVE
+          DONE
         </ThemeButton>
       </ModalFooter>
     </ModalContainer>
@@ -356,6 +355,7 @@ const AddNewModuleContainer = styled.div`
   justify-content: flex-start;
   padding: 20px;
   box-shadow: 0 0 15px 0 ${fadedGrey};
+  margin-bottom: 20px;
 `;
 
 const StyledModuleList = styled.div`

@@ -358,6 +358,7 @@ class ClozeDragDropDisplay extends Component {
         getHeading={t}
       />
     );
+
     const correctAnswerBoxLayout = (
       <>
         <CorrectAnswerBoxLayout
@@ -366,7 +367,7 @@ class ClozeDragDropDisplay extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
-          btnStyle={btnStyle}
+          btnStyle={{ ...btnStyle, whiteSpace: "normal", maxWidth: dragItemMaxWidth }}
           stemNumeration={stemNumeration}
         />
         {((item.validation && item.validation.altResponses) || []).map((ele, ind) => (
@@ -377,7 +378,7 @@ class ClozeDragDropDisplay extends Component {
             groupResponses={options}
             userAnswers={ele.value}
             altAnsIndex={ind + 1}
-            btnStyle={btnStyle}
+            btnStyle={{ ...btnStyle, whiteSpace: "normal", maxWidth: dragItemMaxWidth }}
             stemNumeration={stemNumeration}
           />
         ))}

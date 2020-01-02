@@ -1,5 +1,4 @@
 /* global $ */
-/* global katex */
 import Helpers from "../helpers";
 
 const addCustomClassToMath = mathHtml => {
@@ -15,8 +14,8 @@ const addCustomClassToMath = mathHtml => {
 };
 
 export const getMathHtml = latex => {
-  if (!katex) return latex;
-  let katexString = katex.renderToString(latex, {
+  if (!window.katex) return latex;
+  let katexString = window.katex.renderToString(latex, {
     throwOnError: false
   });
   // styles are applied to stimulus in itemBank/testReview(collapsed view)

@@ -105,21 +105,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
                 // create new items
                 if (index === 2) {
                   itemListPage.createItem(itemKey, index, false);
-                  testLibrary.searchFilters.waitForSearchResponse();
+                  // testLibrary.searchFilters.waitForSearchResponse();
                   cy.wait(1000);
                 }
               });
-              /* 
-            testLibrary.searchFilters.clearAll();
-            testLibrary.testAddItem.authoredByMe().then(() => {
-              testLibrary.searchFilters.setGrades(grade);
-              itemKeys.forEach(itemKey => {
-                testLibrary.testAddItem.verifyAddedItemByQuestionContent(itemKey);
-              });
-            }); */
 
-              testLibrary.header.clickOnReview();
-              cy.wait(2000);
+              cy.wait(1000);
+              cy.contains("View as Student");
               itemKeys.forEach(itemKey => {
                 testLibrary.review.verifyItemByContent(itemKey);
               });

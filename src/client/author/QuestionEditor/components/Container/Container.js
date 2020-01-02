@@ -199,7 +199,6 @@ class Container extends Component {
       isItem,
       itemFromState
     } = this.props;
-
     const questionTitle =
       question.type !== constantsQuestionType.PASSAGE
         ? question.title
@@ -224,9 +223,10 @@ class Container extends Component {
       ];
       if (itemFromState?.isPassageWithQuestions || itemFromState?.multipartItem) {
         const title = "MULTIPART ITEM";
-        crumbs = [...crumbs.slice(0, 3), { title, to: `${testPath}/createItem/${itemFromState._id}` }, crumbs[3]];
+        // crumbs[3] not required?
+        // links have changed maybe  (EV-10862)
+        crumbs = [...crumbs.slice(0, 3), { title, to: `${testPath}/createItem/${itemFromState._id}` }];
       }
-
       return crumbs;
     }
 
@@ -244,7 +244,6 @@ class Container extends Component {
         to: ""
       }
     ];
-
     if (isItem) crumbs.splice(1, 1);
     return crumbs;
   }

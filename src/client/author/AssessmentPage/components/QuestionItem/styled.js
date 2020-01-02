@@ -14,10 +14,10 @@ import {
 
 export const QuestionItemWrapper = styled.div`
   width: ${({ review, annotations }) => (annotations ? "70px" : review ? "100%" : "calc(100% - 30px)")};
-  padding: 10px;
+  padding: ${({ pdfPreview }) => !pdfPreview && "10px"};
   background: ${white};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
-  border: 1px solid ${sectionBorder};
+  border: ${({ pdfPreview }) => !pdfPreview && "1px solid " + sectionBorder};
   box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
 `;
 

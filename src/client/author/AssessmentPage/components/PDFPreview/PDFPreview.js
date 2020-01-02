@@ -19,8 +19,8 @@ const handleDrop = (page, cb) => ({ question }, e) => {
   const data = JSON.parse(question);
 
   cb({
-    x: offsetX,
-    y: offsetY,
+    x: offsetX - 16,
+    y: offsetY - 16,
     page,
     questionId: data.id,
     qIndex: data.index

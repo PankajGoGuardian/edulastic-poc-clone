@@ -324,6 +324,7 @@ class QuestionItem extends React.Component {
         ref={this.itemRef}
         review={testMode || review}
         annotations={annotations}
+        pdfPreview={pdfPreview}
       >
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable

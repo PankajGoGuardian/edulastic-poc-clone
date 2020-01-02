@@ -22,8 +22,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     edit4: { point: "1", question: "1" },
     edit5: { point: "1", question: "1" }
   };
+  const Teacher = {
+    email: "300@abc.com",
+    pass: "snapwiz"
+  };
+  const Student1 = {
+    email: "300@xyz.com",
+    pass: "snapwiz"
+  };
 
   before("login and create new items and test", () => {
+    cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.login();
     testLibraryPage.createTest("EDIT_1").then(id => {
       testId = id;
@@ -170,6 +179,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testLibraryPage.publishedToDraft();
     testReviewTab.testheader.clickOnAddItems();
     // remove 1 item
+    item.searchFilters.clearAll();
+    item.searchFilters.getAuthoredByMe();
+    item.searchFilters.getSearchTextBox(item1);
     testAddItemTab.removeItemById(item1);
     // Publish
     testReviewTab.testheader.clickOnPublishButton();

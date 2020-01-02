@@ -152,7 +152,7 @@ class ButtonBar extends Component {
                   (itemStatus === "draft" ? (
                     <>
                       {isTestFlow && (
-                        <CustomButton data-cy="saveButton" onClick={onCancel}>
+                        <CustomButton data-cy="saveCancel" onClick={onCancel}>
                           <HeadIcon mt="0px">
                             <IconClose color={themeColor} width="12" height="12" />
                           </HeadIcon>

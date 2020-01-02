@@ -76,13 +76,17 @@ class ItemListPage {
 
   getCloneButtonOnPreview = () => this.itemPreview.getCopyOnPreview();
 
-  clickOnViewItemById = (id, text) => this.getViewItemById(id, text).click();
+  clickOnViewItemById = (id, text) => {
+    cy.wait(1000);
+    this.getViewItemById(id, text).click();
+  };
 
-  clickOnItemText = () =>
-    cy
-      .get(".fr-view")
+  clickOnItemText = () => {
+    cy.wait(1000);
+    cy.get(".fr-view")
       .find("a")
       .click();
+  };
 
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
     this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);

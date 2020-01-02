@@ -60,6 +60,15 @@ class Header {
   };
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
+
+  saveAndgetId = () => {
+    cy.server();
+    cy.route("PUT", "**/api/testitem/*").as("saveItem");
+    cy.get('[data-cy="saveButton"]')
+      .should("be.visible")
+      .click();
+    return cy.wait("@saveItem").then(xhr => xhr.response.body.result._id);
+  };
 }
 
 export default Header;

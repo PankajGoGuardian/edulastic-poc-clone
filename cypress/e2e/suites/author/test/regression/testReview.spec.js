@@ -5,6 +5,8 @@ import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAd
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -17,13 +19,14 @@ const itemsInTest = [];
 ITEMS.forEach(ele => {
   itemsInTest.push(ele.split(".")[0]);
 });
-describe("Reviewing Test In Test Review Tab", () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test Review Tab`, () => {
   const testLibraryPage = new TestLibrary();
   const editItemPage = new EditItemPage();
   const studentTestPage = new StudentTestPage();
   const testReviewTab = new TestReviewTab();
   const testAddItemTab = new TestAddItemTab();
   const itemPreview = new PreviewItem();
+  const mcqTrueFalsePage = new MCQTrueFalsePage();
 
   const EDITED_POINTS = [5, 6, 7, 8, 9];
 
@@ -204,21 +207,17 @@ describe("Reviewing Test In Test Review Tab", () => {
           testLibraryPage.clickOnDetailsOfCard();
           testLibraryPage.publishedToDraft();
         });
-        itemsInTest.forEach((item, index) => {
-          it(`Verify Edit for "${item}-${index + 1} "`, () => {
-            testReviewTab.previewQuestById(itemIds[index]);
-            itemPreview.clickOnEditItemOnPreview();
-            itemPreview.verifyItemUrlWhileEdit(OriginalTestId, itemIds[index]);
-            itemPreview.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(itemId => {
-              points[index] = EDITED_POINTS[index % 5];
-              // editItemPage.verifyItemIdsToBeEqual(itemId, itemIds[index]);
-              expect(itemId).eq(itemIds[index]);
-              editItemPage.header.save(true);
-              testAddItemTab.header.clickOnReview();
-              testLibraryPage.header.clickOnSaveButton(true);
-              testReviewTab.verifyQustionById(itemIds[index]);
-              testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
-            });
+
+        it(`Verify Edit`, () => {
+          testReviewTab.previewQuestById(itemIds[0]);
+          itemPreview.clickEditOnPreview();
+          mcqTrueFalsePage.updatePoints(EDITED_POINTS[3]);
+          points[0] = EDITED_POINTS[3];
+          editItemPage.header.saveAndgetId(true).then(itemId => {
+            expect(itemId).eq(itemIds[0]);
+            testAddItemTab.header.clickOnReview();
+            testReviewTab.verifyQustionById(itemIds[0]);
+            testReviewTab.asesrtPointsByid(itemIds[0], points[0]);
           });
         });
         it("Verify Summary After Edit", () => {
@@ -236,25 +235,21 @@ describe("Reviewing Test In Test Review Tab", () => {
           testLibraryPage.clickOnDetailsOfCard();
           testLibraryPage.publishedToDraft();
         });
-        itemsInTest.forEach((item, index) => {
-          it(`Verify Copy for "${item}-${index + 1} "`, () => {
-            testReviewTab.previewQuestById(itemIds[index]);
-            itemPreview.clickOnCopyItemOnPreview();
-            // Copy automatically include new item in test
-            points.push(EDITED_POINTS[index % 5]);
-            itemPreview.editAndGetNewItemId(EDITED_POINTS[index % 5]).then(newItem => {
-              // editItemPage.verifyItemIdsToBeNotEqual(newItem, itemIds[index]);
-              expect(newItem).not.eq(itemIds[index]);
-              cy.saveItemDetailToDelete(newItem);
-              itemIds.push(newItem);
-              itemPreview.verifyItemUrlWhileCopy(OriginalTestId, newItem);
-              editItemPage.header.save(true);
-              testAddItemTab.header.clickOnReview();
-              testLibraryPage.header.clickOnSaveButton(true);
-              testReviewTab.verifyQustionById(newItem);
-              testReviewTab.verifyQustionById(itemIds[index]);
-              testReviewTab.testheader.clickOnSaveButton(true);
-            });
+
+        it(`Verify Copy for"`, () => {
+          testReviewTab.previewQuestById(itemIds[1]);
+          itemPreview.clickOnCopyItemOnPreview();
+          // Copy automatically include new item in test
+          points.push(EDITED_POINTS[1]);
+          mcqTrueFalsePage.updatePoints(EDITED_POINTS[1]);
+          editItemPage.header.saveAndgetId(true).then(newItem => {
+            expect(newItem).not.eq(itemIds[1]);
+            cy.saveItemDetailToDelete(newItem);
+            itemIds.push(newItem);
+            testAddItemTab.header.clickOnReview();
+            testLibraryPage.header.clickOnSaveButton(true);
+            testReviewTab.verifyQustionById(newItem);
+            testReviewTab.verifyQustionById(itemIds[1]);
           });
         });
         // Verify summary again as more items are added....

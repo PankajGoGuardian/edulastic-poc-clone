@@ -487,6 +487,7 @@ class MainSetting extends Component {
                   <Switch
                     disabled={!owner || !isEditable}
                     defaultChecked={shuffleQuestions}
+                    data-cy="shuffleQuestions"
                     onChange={this.updateTestData("shuffleQuestions")}
                   />
                   <Description>
@@ -506,6 +507,7 @@ class MainSetting extends Component {
                   <Switch
                     disabled={!owner || !isEditable}
                     defaultChecked={shuffleAnswers}
+                    data-cy="shuffleChoices"
                     onChange={this.updateTestData("shuffleAnswers")}
                   />
                   <Description>
@@ -532,7 +534,7 @@ class MainSetting extends Component {
                     value={calcType}
                   >
                     {calculatorKeys.map(item => (
-                      <Radio value={item} key={item}>
+                      <Radio data-cy={item} value={item} key={item}>
                         {calculators[item]}
                       </Radio>
                     ))}

@@ -7,6 +7,7 @@ import TestReviewTab from "../../../../framework/author/tests/testDetail/testRev
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import PreviewItem from "../../../../framework/author/itemList/itemPreview";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const TEST = "LCB_2";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -20,7 +21,7 @@ const userData = require("../../../../../fixtures/users");
 
 const { dist1, dist2 } = userData.Sharing;
 
-describe("Test Sharing", () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
@@ -50,15 +51,15 @@ describe("Test Sharing", () => {
   DIST2_SCHOOL1 = dist2[SCHOOL1];
   Author = DIST1_SCHOOL1[TEACHER1];
 
-  before("Login As Author And Creat Test without publishing", () => {
-    cy.login("teacher", Author[EMAIL], Author[PASS]);
-    testLibrary.createTest(TEST, true).then(id => {
-      test_id = id;
-      itemIds = testLibrary.items;
-    });
-  });
   // Permissions given to Tests are applied to items too
   context("Item Sharing with Edit and Viewonly-Individually", () => {
+    before("Login As Author And Creat Test without publishing", () => {
+      cy.login("teacher", Author[EMAIL], Author[PASS]);
+      testLibrary.createTest(TEST, true).then(id => {
+        test_id = id;
+        itemIds = testLibrary.items;
+      });
+    });
     context("With giving edit permission-Individual", () => {
       it("Publish and Share the published test", () => {
         techersidebar.clickOnTestLibrary();
@@ -80,10 +81,9 @@ describe("Test Sharing", () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.verifyEditOption(itemIds[index]);
-          previewItem.clickOnEditItemOnPreview();
+          previewItem.clickEditOnPreview();
           mcqTrueFalsePage.updatePoints("10");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).eq(itemIds[index]);
             mcqTrueFalsePage.header.clickOnPublishItem();
           });
@@ -149,8 +149,7 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
             clonedItem.push(id);
             cy.saveItemDetailToDelete(id);
@@ -225,8 +224,7 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("5");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
             cy.saveItemDetailToDelete(id);
             clonedItem[index] = id;
@@ -254,8 +252,7 @@ describe("Test Sharing", () => {
           previewItem.verifyEditOption(itemIds[index]);
           previewItem.clickEditOnPreview();
           mcqTrueFalsePage.updatePoints("20");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).eq(itemIds[index]);
             mcqTrueFalsePage.header.clickOnPublishItem();
           });
@@ -288,6 +285,13 @@ describe("Test Sharing", () => {
     });
   });
   context("Sharing School,District and Public Levels", () => {
+    before("Login As Author And Creat Test without publishing", () => {
+      cy.login("teacher", Author[EMAIL], Author[PASS]);
+      testLibrary.createTest(TEST, true).then(id => {
+        test_id = id;
+        itemIds = testLibrary.items;
+      });
+    });
     context("School- Allow Share", () => {
       before("Login As Author And Creat Test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
@@ -314,8 +318,7 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
             clonedItem[index] = id;
             cy.saveItemDetailToDelete(id);
@@ -345,7 +348,7 @@ describe("Test Sharing", () => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("have.value", "20");
+          mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
@@ -400,8 +403,7 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
             cy.saveItemDetailToDelete(id);
             clonedItem[index] = id;
@@ -431,7 +433,7 @@ describe("Test Sharing", () => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("have.value", "20");
+          mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
@@ -484,8 +486,7 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
             cy.saveItemDetailToDelete(id);
             mcqTrueFalsePage.header.clickOnPublishItem();
@@ -512,8 +513,8 @@ describe("Test Sharing", () => {
           previewItem.verifyNoEditCloneOption(itemIds[index]);
           previewItem.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
-          mcqTrueFalsePage.header.save(true);
-          itemListPage.getItemIdByURL().then(id => {
+          mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
+            itemListPage.getItemIdByURL();
             expect(id).not.eq(itemIds[index]);
             cy.saveItemDetailToDelete(id);
             mcqTrueFalsePage.header.clickOnPublishItem();
@@ -542,7 +543,7 @@ describe("Test Sharing", () => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("have.value", "20");
+          mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });

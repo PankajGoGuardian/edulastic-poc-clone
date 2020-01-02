@@ -4,12 +4,13 @@ import SearchFilters from "../../../../framework/author/searchFiltersPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import TestHeader from "../../../../framework/author/tests/testDetail/header";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const userData = require("../../../../../fixtures/users");
 
 const { dist1, dist2 } = userData.Sharing;
 
-describe("Test Sharing", () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();

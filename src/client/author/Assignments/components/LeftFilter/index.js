@@ -133,7 +133,10 @@ class LeftFilter extends React.Component {
       isAdvancedView
     } = this.props;
     const { moveFolderId } = this.state;
-
+    if (!moveFolderId) {
+      message.info(`Please select a folder`);
+      return;
+    }
     const { folderName, content } = folders.find(folder => folder._id === moveFolderId) || {};
 
     const itemsExistInFolder = [];
@@ -199,16 +202,21 @@ class LeftFilter extends React.Component {
     });
   };
 
-  hideModal = name => {
+  hideModal = (name, callback) => {
     const { visibleModal } = this.state;
-    this.setState({
-      visibleModal: {
-        ...visibleModal,
-        [name]: false
-      },
-      folderName: "",
-      selectedFolder: null
-    });
+    this.setState(
+      () => ({
+        visibleModal: {
+          ...visibleModal,
+          [name]: false
+        },
+        folderName: "",
+        selectedFolder: null
+      }),
+      () => {
+        if (callback) callback();
+      }
+    );
   };
 
   handleChange = key => value => {
@@ -334,15 +342,17 @@ class LeftFilter extends React.Component {
       <FilterContainer>
         <FolderActionModal
           centered
-          title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
-          visible={visibleModal.newFolder}
-          onCancel={() => this.hideModal("newFolder")}
+          title={
+            !visibleModal.createFolder && <ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>
+          }
+          visible={visibleModal.newFolder || visibleModal.createFolder}
+          onCancel={() => this.hideModal(visibleModal.createFolder ? "createFolder" : "newFolder")}
           footer={[
             <FooterCancelButton
               data-cy="cancel"
               key="back"
               variant="create"
-              onClick={() => this.hideModal("newFolder")}
+              onClick={() => this.hideModal(visibleModal.createFolder ? "createFolder" : "newFolder")}
             >
               Cancel
             </FooterCancelButton>,
@@ -351,19 +361,27 @@ class LeftFilter extends React.Component {
               key="submit"
               color="primary"
               variant="create"
-              disabled={!folderName}
-              onClick={this.createUpdateFolder}
+              disabled={!visibleModal.createFolder ? !folderName : ""}
+              onClick={
+                !visibleModal.createFolder
+                  ? this.createUpdateFolder
+                  : () => this.hideModal("createFolder", () => this.showModal("newFolder"))
+              }
             >
-              {selectedFolder ? "Update" : "Create"}
+              {visibleModal.createFolder ? "Create New Folder" : selectedFolder ? "Update" : "Create"}
             </ModalFooterButton>
           ]}
         >
-          <ExtendedInput
-            value={folderName || oldFolderName}
-            onChange={this.handleChangeNewFolderName}
-            visible={visibleModal.newFolder}
-            onKeyUp={this.handleCreateOnKeyPress}
-          />
+          {visibleModal.createFolder ? (
+            <h4>No folders have been created.</h4>
+          ) : (
+            <ExtendedInput
+              value={folderName || oldFolderName}
+              onChange={this.handleChangeNewFolderName}
+              visible={visibleModal.newFolder}
+              onKeyUp={this.handleCreateOnKeyPress}
+            />
+          )}
         </FolderActionModal>
 
         <ConfirmationModal
@@ -409,7 +427,11 @@ class LeftFilter extends React.Component {
         {selectedRows.length ? (
           <>
             <StyledBoldText>{`${selectedRows.length} item(s) selected`}</StyledBoldText>
-            <FolderActionButton onClick={() => this.showModal("moveFolder")} color="primary" icon={<IconFolderMove />}>
+            <FolderActionButton
+              onClick={() => this.showModal(folders && folders.length === 0 ? "createFolder" : "moveFolder")}
+              color="primary"
+              icon={<IconFolderMove />}
+            >
               Move
             </FolderActionButton>
             {/* <FolderActionButton color="secondary" icon={<IconDuplicate />} onClick={() => {}}>

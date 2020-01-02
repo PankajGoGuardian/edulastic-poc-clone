@@ -33,7 +33,7 @@ import {
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import { approveOrRejectSingleItem } from "../../../../ItemList/ducks";
-import { getUserId } from "../../../selectors/user";
+import { getUserId, getUserFeatures } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 
 class AuthorTestItemPreview extends Component {
@@ -200,7 +200,17 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderLeftButtons = () => {
-    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols, item, userId, page } = this.props;
+    const {
+      allowDuplicate,
+      handleDuplicateTestItem,
+      isEditable,
+      editTestItem,
+      cols,
+      item,
+      userId,
+      page,
+      userFeatures
+    } = this.props;
     const isOwner = item?.createdBy?._id === userId;
 
     return (
@@ -237,22 +247,24 @@ class AuthorTestItemPreview extends Component {
                 </StyledFlex>
               </EduButton>
             )}
-            {isOwner && (page === "addItems" || page === "itemList") && (
-              <EduButton
-                title="Delete item"
-                style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
-                size="large"
-                onClick={this.handleDeleteItem}
-                disabled={this.props.deleting}
-              >
-                <StyledFlex>
-                  <SyledSpan>
-                    <Icon type="delete" color={red} />
-                  </SyledSpan>
-                  <StyledText danger>delete</StyledText>
-                </StyledFlex>
-              </EduButton>
-            )}
+            {isOwner &&
+              !(userFeatures?.isPublisherAuthor && item.status === "published") &&
+              (page === "addItems" || page === "itemList") && (
+                <EduButton
+                  title="Delete item"
+                  style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
+                  size="large"
+                  onClick={this.handleDeleteItem}
+                  disabled={this.props.deleting}
+                >
+                  <StyledFlex>
+                    <SyledSpan>
+                      <Icon type="delete" color={red} />
+                    </SyledSpan>
+                    <StyledText danger>delete</StyledText>
+                  </StyledFlex>
+                </EduButton>
+              )}
             <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
               <>
                 {item.status === "inreview" ? (
@@ -506,6 +518,7 @@ const enhance = compose(
   connect(
     state => ({
       deleting: getItemDeletingSelector(state),
+      userFeatures: getUserFeatures(state),
       userId: getUserId(state)
     }),
     {

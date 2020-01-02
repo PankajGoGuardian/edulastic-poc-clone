@@ -9,13 +9,6 @@ export default class PreviewItem {
 
   getQueContainer = () => cy.get('[data-cy="question-container"]');
 
-  clickEditOnPreview = () => {
-    cy.server();
-    cy.route("GET", "**/api/testitem/**").as("editItem");
-    this.getEditOnPreview().click({ force: true });
-    cy.wait("@editItem");
-  };
-
   closePreiview = () => cy.get(".ant-modal-close-icon").click();
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="ShowAnswer"]').click({ force: true });
@@ -29,9 +22,16 @@ export default class PreviewItem {
 
   clickOnCopyItemOnPreview = () => {
     cy.server();
-    cy.route("GET", "**/api/testitem/**").as("editItem");
+    cy.route("GET", "**/api/testitem/*").as("editItem");
     this.getCopyOnPreview().click({ force: true });
-    cy.wait("@editItem");
+    return cy.wait("@editItem").then(xhr => xhr.response.body.result._id);
+  };
+
+  clickEditOnPreview = () => {
+    cy.server();
+    cy.route("GET", "**/api/testitem/*").as("editItem");
+    this.getEditOnPreview().click({ force: true });
+    return cy.wait("@editItem").then(xhr => xhr.response.body.result._id);
   };
 
   // text in edit item page
@@ -42,32 +42,22 @@ export default class PreviewItem {
       .find("input")
       .eq(0);
 
-  // Edit and Get new Item id while copying/duplicate item in test edit flow
-  editAndGetNewItemId = points => {
-    this.editItem(points);
-    return cy.url().then(url => url.split("/").reverse()[3]);
-  };
-
   // When we are edit/copy a item from test its url include test id
   verifyItemUrlWhileEdit = (testId, ItemId) => {
-    cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
   };
 
   verifyItemUrlWhileCopy = (testId, ItemId) => {
-    cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
   };
 
   clickOnEditItemOnPreview = () => {
     cy.server();
-    cy.route("GET", "**/api/testitem/**").as("editItem");
+    cy.route("GET", "**/api/testitem/*").as("editItem");
     this.getEditOnPreview().click({ force: true });
     cy.wait("@editItem");
-  };
-
-  editItem = points => {
-    this.getTextInEditItem()
-      .type("{selectall}", { force: true })
-      .type(points, { force: true });
   };
 
   getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');

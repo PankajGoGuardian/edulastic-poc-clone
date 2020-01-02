@@ -7,6 +7,7 @@ import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -16,7 +17,7 @@ const itemsInTest = [];
 itemKeys.forEach(ele => {
   itemsInTest.push(ele.split(".")[0]);
 });
-describe("Reviewing Test In Test Review Tab", () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () => {
   const testLibraryPage = new TestLibrary();
   const editItemPage = new EditItemPage();
   const studentTestPage = new StudentTestPage();
@@ -132,13 +133,12 @@ describe("Reviewing Test In Test Review Tab", () => {
       it(`Verify Edit for Item`, () => {
         itemListPage.searchFilters.typeInSearchBox(itemIds[0]);
         itemListPage.clickOnViewItemById(itemIds[0], questText[0]);
-        itemPreview.clickOnEditItemOnPreview();
+        itemPreview.clickEditOnPreview();
         mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
-        itemListPage.getItemIdByURL().then(id => {
+        // eslint-disable-next-line prefer-destructuring
+        points[0] = EDITED_POINTS[0];
+        editItemPage.header.saveAndgetId(true).then(id => {
           expect(id).eq(itemIds[0]);
-          // eslint-disable-next-line prefer-destructuring
-          points[0] = EDITED_POINTS[0];
-          editItemPage.header.save(true);
           editItemPage.header.clickOnPublishItem();
         });
       });
@@ -170,15 +170,14 @@ describe("Reviewing Test In Test Review Tab", () => {
       it(`Verify Copy for Item`, () => {
         itemListPage.searchFilters.typeInSearchBox(itemIds[0]);
         itemListPage.clickOnViewItemById(itemIds[0], questText[0]);
+        points.push(EDITED_POINTS[0]);
         itemPreview.clickOnCopyItemOnPreview();
         // Copy automatically include new item in test
-        points.push(EDITED_POINTS[0]);
         mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
-        itemListPage.getItemIdByURL().then(newItem => {
+        editItemPage.header.saveAndgetId(true).then(newItem => {
           itemIds.push(newItem);
           expect(newItem).not.eq(itemIds[0]);
           cy.saveItemDetailToDelete(newItem);
-          editItemPage.header.save(true);
           editItemPage.header.clickOnPublishItem();
         });
       });
@@ -286,12 +285,13 @@ describe("Reviewing Test In Test Review Tab", () => {
         testAddItemTab.searchFilters.getAuthoredByMe();
         testAddItemTab.searchFilters.typeInSearchBox(itemIds[0]);
         testAddItemTab.itemListPage.clickOnItemText();
-        itemPreview.clickOnEditItemOnPreview();
-        itemPreview.verifyItemUrlWhileEdit(testId, itemIds[0]);
-        itemPreview.editAndGetNewItemId(EDITED_POINTS[0]).then(itemId => {
-          points[0] = EDITED_POINTS[0];
+        itemPreview.clickEditOnPreview();
+        // itemPreview.verifyItemUrlWhileEdit(testId, itemIds[0]);
+        mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
+        points[0] = EDITED_POINTS[0];
+
+        editItemPage.header.saveAndgetId(true).then(itemId => {
           expect(itemId).eq(itemIds[0]);
-          editItemPage.header.save(true);
           testAddItemTab.header.clickOnReview();
           // testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(itemIds[0]);
@@ -312,13 +312,14 @@ describe("Reviewing Test In Test Review Tab", () => {
         itemPreview.clickOnCopyItemOnPreview();
         // Copy automatically include new item in test
         points.push(EDITED_POINTS[0]);
-        itemPreview.editAndGetNewItemId(EDITED_POINTS[0]).then(newItem => {
-          // editItemPage.verifyItemIdsToBeNotEqual(newItem, itemIds[index]);
+        mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
+
+        // editItemPage.verifyItemIdsToBeNotEqual(newItem, itemIds[index]);
+
+        editItemPage.header.saveAndgetId(true).then(newItem => {
           expect(newItem).not.eq(itemIds[0]);
           cy.saveItemDetailToDelete(newItem);
           itemIds.push(newItem);
-          itemPreview.verifyItemUrlWhileCopy(testId, newItem);
-          editItemPage.header.save(true);
           testAddItemTab.header.clickOnReview();
           // testLibraryPage.header.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(newItem);

@@ -8,8 +8,9 @@ import SidebarPage from "../../../../framework/student/sidebarPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import Regrade from "../../../../framework/author/tests/testDetail/regrade";
+import FileHelper from "../../../../framework/util/fileHelper";
 
-describe(`Test Edit After Use- Without Regrade`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Without Regrade`, () => {
   const testLibraryPage = new TestLibrary();
   const assignmentsPage = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();
@@ -77,7 +78,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
     });
   });
   context("Edit assigned Tests without Regrading", () => {
-    it("Assign the test", () => {
+    before("Assign the test", () => {
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
@@ -85,7 +86,7 @@ describe(`Test Edit After Use- Without Regrade`, () => {
       testAssignPage.clickOnAssign();
     });
 
-    it("Attempt the test from student side", () => {
+    before("Attempt the test from student side", () => {
       cy.login("student", "300@xyz.com", "snapwiz");
       sidebarPage.clickOnAssignment();
       assignmentsPage.clickOnAssigmentByTestId(assignedTest);
@@ -133,7 +134,10 @@ describe(`Test Edit After Use- Without Regrade`, () => {
         // Edit Question Text From Review Tab
         testReviewTab.previewAndEditById(item3);
         testReviewTab.editQuestionText("Edited Text");
-        testReviewTab.itemHeader.save();
+        testReviewTab.itemHeader.saveAndgetId().then(item => {
+          expect(item).not.eq(item3);
+          cy.saveItemDetailToDelete(item);
+        });
         // Publish
         testAddItemTab.header.clickOnPublishButton();
         // testLibraryPage.assertUrl(OriginalTestId);
@@ -219,6 +223,8 @@ describe(`Test Edit After Use- Without Regrade`, () => {
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
         testReviewTab.testheader.clickOnAddItems();
+        item.searchFilters.clearAll();
+        // This will verify that test versioning does not create item versions
         item.searchFilters.getAuthoredByMe();
         item.searchFilters.typeInSearchBox(item2);
         testAddItemTab.removeItemById(item2);

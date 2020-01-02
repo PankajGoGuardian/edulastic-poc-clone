@@ -8,8 +8,9 @@ import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import FileHelper from "../../../../framework/util/fileHelper";
 
-describe(`Test Edit-Items after and Before use`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after and Before use`, () => {
   /* Here All Items are edited from Item bank */
   const testLibraryPage = new TestLibrary();
   const testReviewTab = new TestReviewTab();
@@ -87,6 +88,7 @@ describe(`Test Edit-Items after and Before use`, () => {
     });
     it("Edit Points of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
+      itemListPage.searchFilters.getAuthoredByMe();
       itemListPage.searchFilters.clearAll();
       itemIds.forEach((ele, i) => {
         itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
@@ -94,8 +96,7 @@ describe(`Test Edit-Items after and Before use`, () => {
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
         mcqTrueFalsePage.updatePoints(UPDATED_POINTS[i]);
-        editItemPage.header.save(true);
-        itemListPage.getItemIdByURL().then(id => {
+        editItemPage.header.saveAndgetId(true).then(id => {
           /* Id of item wont change in case of Before attempt */
           expect(id).eq(ele);
         });
@@ -159,8 +160,7 @@ describe(`Test Edit-Items after and Before use`, () => {
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
         mcqTrueFalsePage.setQuestionEditorText(UPDATED_TEXT);
-        editItemPage.header.save(true);
-        itemListPage.getItemIdByURL().then(id => {
+        editItemPage.header.saveAndgetId(true).then(id => {
           expect(id).eq(ele);
         });
         editItemPage.header.clickOnPublishItem();
@@ -231,8 +231,7 @@ describe(`Test Edit-Items after and Before use`, () => {
         mcqTrueFalsePage.setCorrectAnswer(choices[i][1]);
         // eslint-disable-next-line prefer-destructuring
         attempt[i].right = choices[i][1];
-        editItemPage.header.save(true);
-        itemListPage.getItemIdByURL().then(id => {
+        editItemPage.header.saveAndgetId(true).then(id => {
           expect(id).eq(ele);
         });
         editItemPage.header.clickOnPublishItem();
@@ -283,8 +282,7 @@ describe(`Test Edit-Items after and Before use`, () => {
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
         mcqTrueFalsePage.setQuestionEditorText(UPDATED_TEXT);
-        editItemPage.header.save(true);
-        itemListPage.getItemIdByURL().then(id => {
+        editItemPage.header.saveAndgetId().then(id => {
           expect(id).not.eq(ele);
           cy.saveItemDetailToDelete(id);
         });

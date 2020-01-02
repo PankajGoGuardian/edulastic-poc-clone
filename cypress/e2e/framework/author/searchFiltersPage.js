@@ -11,8 +11,8 @@ export default class SearchFilters {
   getAuthoredByMe = () => {
     this.routeSearch();
     cy.xpath("//li[text()='Authored by me']").click();
-    this.waitForSearchResponse();
     cy.wait(1000);
+    this.waitForSearchResponse();
   };
 
   clearAll = () => {
@@ -68,6 +68,7 @@ export default class SearchFilters {
     this.getSearchTextBox()
       .clear({ force: true })
       .type(key, { force: true });
+    cy.wait(1000);
     this.waitForSearchResponse();
   };
 

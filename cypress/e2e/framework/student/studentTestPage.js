@@ -154,6 +154,15 @@ class StudentTestPage {
     return this;
   };
 
+  getLabels = qcard => qcard.find("label");
+
+  verifyLabelChecked = (quecard, choice) =>
+    this.getLabels(quecard)
+      .contains(choice)
+      .closest("label")
+      .find("input")
+      .should("be.checked");
+
   // CHOICE MATRIX
 
   checkAnsMatrix = (answer, steams) => {
@@ -170,6 +179,27 @@ class StudentTestPage {
             .click({ force: true });
         });
     });
+  };
+
+  verifyAnseredMatrix = (card, attempt, steams) => {
+    card
+      .find('[data-cy="matrixTable"]')
+      .eq(0)
+      .children()
+      .find("tr.ant-table-row")
+      .then(ele => {
+        Object.keys(attempt).forEach(chKey => {
+          cy.wrap(ele)
+            .contains(chKey)
+            .closest("tr")
+            .then(row => {
+              cy.wrap(row)
+                .find("input")
+                .eq(steams.indexOf(attempt[chKey]))
+                .should("be.checked");
+            });
+        });
+      });
   };
 
   clickFirstRadioByTitle = title =>
@@ -223,6 +253,20 @@ class StudentTestPage {
   getQuestionBox = () => cy.get(".template_box ");
 
   getQuestionBoxByIndex = index => cy.get(`#response-container-${index}`);
+
+  // CLOZE DROP DOWN
+
+  verifyAnswerCloze = (card, attempt, attemptType) => {
+    card
+      .find(".jsx-parser")
+      .find('[data-cy="drop_down_select"]')
+      .each((box, i) => {
+        cy.wrap(box).as("responseBox");
+        if (attemptType !== attemptTypes.SKIP) {
+          cy.get("@responseBox").should("contain.text", attempt[i]);
+        }
+      });
+  };
 
   dragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
@@ -712,6 +756,7 @@ class StudentTestPage {
     this.clickOnQuestionNo();
     cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
+
   // Feedback
 
   verifyFeedback = feedback => cy.get('[data-cy="feedBack"]').should("contain.text", feedback);
@@ -736,5 +781,77 @@ class StudentTestPage {
           ? "Thats Partially Correct"
           : "Thats Incorrect"
       );
+
+  // Review
+
+  clickOnAll = () => cy.get('[ data-cy="all"]').click();
+
+  clickOnBookmarked = () => cy.get('[ data-cy="bookmarked"]').click();
+
+  clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click();
+
+  // @questionNumber = "Q1" ; "Q2"
+  clickOnReviewQuestion = questionNumber => cy.get(`[data-cy="${questionNumber}"]`).click();
+
+  //
+  verifyQuestionResponseRetained = (queTypeKey, attemptType, attemptData) => {
+    cy.get('[data-cy="question-container"]').as("quecard");
+    const { right, wrong, partialCorrect } = attemptData;
+    const attempt =
+      attemptType === attemptTypes.RIGHT
+        ? right
+        : attemptType === attemptTypes.WRONG
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
+
+    const currentQuestionType = queTypeKey;
+    switch (currentQuestionType) {
+      case questionType.MULTIPLE_CHOICE_STANDARD:
+      case questionType.MULTIPLE_CHOICE_MULTIPLE:
+      case questionType.TRUE_FALSE:
+      case questionType.MULTIPLE_CHOICE_BLOCK:
+        switch (attemptType) {
+          case attemptTypes.RIGHT:
+          case attemptTypes.WRONG:
+          case attemptTypes.PARTIAL_CORRECT:
+            if (Cypress._.isArray(attempt))
+              attempt.forEach(choice => this.verifyLabelChecked(cy.get("@quecard"), choice));
+            else {
+              this.verifyLabelChecked(cy.get("@quecard"), attempt);
+            }
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      case questionType.CHOICE_MATRIX_STANDARD:
+      case questionType.CHOICE_MATRIX_INLINE:
+      case questionType.CHOICE_MATRIX_LABEL: {
+        const { steams } = attemptData;
+        switch (attemptType) {
+          case attemptTypes.RIGHT:
+          case attemptTypes.WRONG:
+          case attemptTypes.PARTIAL_CORRECT:
+            this.verifyAnseredMatrix(cy.get("@quecard"), right, steams, attemptType);
+            break;
+
+          default:
+            break;
+        }
+        break;
+      }
+
+      case questionType.CLOZE_DROP_DOWN:
+        this.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType);
+        break;
+
+      default:
+        break;
+    }
+  };
 }
 export default StudentTestPage;

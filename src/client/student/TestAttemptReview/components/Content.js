@@ -128,15 +128,19 @@ class SummaryTest extends Component {
                   </QuestionText>
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
-                      <StyledButton onClick={() => this.handlerButton(null)} enabled={buttonIdx === null}>
+                      <StyledButton data-cy="all" onClick={() => this.handlerButton(null)} enabled={buttonIdx === null}>
                         {t("default:all")}
                       </StyledButton>
                       {!isDocBasedFlag && (
-                        <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
+                        <StyledButton
+                          data-cy="bookmarked"
+                          onClick={() => this.handlerButton(2)}
+                          enabled={buttonIdx === 2}
+                        >
                           {t("default:bookmarked")}
                         </StyledButton>
                       )}
-                      <StyledButton onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
+                      <StyledButton data-cy="skipped" onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
                         {t("default:skipped")}
                       </StyledButton>
                     </AnsweredTypeButtonContainer>
@@ -154,6 +158,7 @@ class SummaryTest extends Component {
                           }`;
                       return (
                         <QuestionColorBlock
+                          data-cy={`Q${qInd}`}
                           key={index * 100 + qIndex}
                           type={questionList[q]}
                           isVisible={buttonIdx === null || buttonIdx === questionList[q]}

@@ -8,7 +8,7 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.A.1", "K.CC.A.2"],
+          "standard": ["K.CC.A.1"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
@@ -62,7 +62,15 @@
       "quetext": "This is MCQ_MULTI.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
       "setAns": { "correct": ["right-1", "right-2"], "points": 1 },
-      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" }
+      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is MCQ_MULTI.1 question",
@@ -142,7 +150,15 @@
       "quetext": "This is MCQ_BLOCK.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": ["right-1"], "points": 1 },
-      "attemptData": { "right": ["right-1"], "wrong": "wrong-1" }
+      "attemptData": { "right": ["right-1"], "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is MCQ_BLOCK.1 question",
@@ -187,7 +203,15 @@
           "wrong-2": "true",
           "right-2": "false"
         }
-      }
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is CHOICE_STD.1 question",
@@ -261,7 +285,15 @@
           "wrong-2": "true",
           "right-2": "false"
         }
-      }
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is CHOICE_INLINE.1 question",
@@ -329,7 +361,15 @@
           "wrong-2": "true",
           "right-2": "false"
         }
-      }
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "1": {
       "quetext": "This is CHOICE_LABEL.1 question",

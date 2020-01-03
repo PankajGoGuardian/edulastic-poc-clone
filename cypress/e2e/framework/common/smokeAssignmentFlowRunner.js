@@ -122,7 +122,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
     it("> review assignment", () => {
       report.clickOnReviewButtonButton();
-      report.verifyQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_RESPONSE);
+      report.verifyAllQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_RESPONSE);
     });
   });
 
@@ -151,7 +151,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
     it("> review assignment", () => {
       report.clickOnReviewButtonButton();
-      report.verifyQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_ANSWERS);
+      report.verifyAllQuetionCard(stuName, attempt, questionTypeMap, releaseGradeTypes.WITH_ANSWERS);
     });
   });
 

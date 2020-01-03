@@ -88,7 +88,7 @@ class ReportsPage {
     this.getDate();
   }
 
-  verifyQuetionCard = (studentName, studentAttempts, questionTypeMap, releasePolicy) => {
+  verifyAllQuetionCard = (studentName, studentAttempts, questionTypeMap, releasePolicy) => {
     const correctAns = releasePolicy === releaseGradeTypes.WITH_ANSWERS;
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
@@ -118,8 +118,17 @@ class ReportsPage {
   verifyQuestionResponseCard = (points, queTypeKey, attemptType, attemptData, correcAns) => {
     cy.get('[data-cy="question-container"]').as("quecard");
     const { right, wrong, partialCorrect } = attemptData;
+    const attempt =
+      attemptType === attemptTypes.RIGHT
+        ? right
+        : attemptType === attemptTypes.WRONG
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
+
     const questionType = queTypeKey.split(".")[0];
-    this.verifyScore(points, attemptData, attemptType, questionType);
+    if (points) this.verifyScore(points, attemptData, attemptType, questionType);
     switch (questionType) {
       case queTypes.MULTIPLE_CHOICE_STANDARD:
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
@@ -232,6 +241,10 @@ class ReportsPage {
         }
         break;
       }
+
+      case queTypes.CLOZE_DROP_DOWN:
+        this.qrp.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
+        break;
 
       default:
         break;

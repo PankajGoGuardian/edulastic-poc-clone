@@ -106,5 +106,20 @@
     "grade": ["Grade 10"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default"]
+  },
+  "STUDENT_ATTEMPT": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": [
+      "MCQ_STD.default",
+      "MCQ_MULTI.default",
+      "MCQ_TF.default",
+      "MCQ_BLOCK.default",
+      "CHOICE_STD.default",
+      "CHOICE_INLINE.default",
+      "CHOICE_LABEL.default",
+      "CLOZE_DROPDOWN.default"
+    ]
   }
 }

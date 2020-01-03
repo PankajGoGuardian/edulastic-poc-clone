@@ -72,7 +72,7 @@ const updateTestStatus = data =>
     .callApi({
       url: `${prefix}/${data.testId}/publish?status=${data.status}`,
       method: "put",
-      data: data.collections
+      data: { collections: data.collections }
     })
     .then(result => result.data.result);
 

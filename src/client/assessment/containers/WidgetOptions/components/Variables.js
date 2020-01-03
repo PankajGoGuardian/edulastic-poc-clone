@@ -222,7 +222,7 @@ class Variables extends Component {
         variableName => variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
       );
       if (hasFormula) {
-        calculateFormula();
+        calculateFormula({ variables, examples });
       }
     };
 
@@ -334,13 +334,8 @@ class Variables extends Component {
         return isValid;
       });
 
-      calculateFormula();
+      calculateFormula({ examples: values, variables });
       return values;
-    };
-
-    const handleGenerate = () => {
-      const _examples = generate();
-      handleChangeVariable("examples", _examples);
     };
 
     return (
@@ -544,7 +539,7 @@ class Variables extends Component {
                 <InlineLabel>{t("component.options.afterCombinationCount")}</InlineLabel>
               </Col>
               <Col md={4}>
-                <Button onClick={() => handleGenerate()} type="button" style={{ float: "right" }}>
+                <Button onClick={generate} type="button" style={{ float: "right" }}>
                   Generate
                 </Button>
               </Col>

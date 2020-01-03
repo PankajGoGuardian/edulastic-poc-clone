@@ -838,11 +838,15 @@ function* publishTestSaga({ payload }) {
     if (features.isPublisherAuthor && !assignFlow) {
       yield call(testsApi.updateTestStatus, { testId: id, status: testItemStatusConstants.INREVIEW });
       yield put(updateTestStatusAction(testItemStatusConstants.INREVIEW));
+      yield call(message.success, "Review request is submitted successfully.");
     } else {
       yield call(testsApi.publishTest, id);
       yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     }
-
+    if (features.isCurator || features.isPublisherAuthor) {
+      yield put(push(`/author/tests`));
+      return;
+    }
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
     }
@@ -851,10 +855,9 @@ function* publishTestSaga({ payload }) {
     } else {
       yield put(push(`/author/tests/${id}/publish`));
     }
-  } catch (e) {
-    console.log(e);
-    const errorMessage = "publish failed";
-    yield call(message.error, errorMessage);
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "publish failed.");
   }
 }
 
@@ -871,8 +874,9 @@ function* publishForRegrade({ payload }) {
     const newTestId = yield select(getTestIdSelector);
     yield call(testsApi.publishTest, newTestId);
     yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${test.previousTestId}`));
-  } catch (e) {
-    yield call(message.error, "publish failed");
+  } catch (error) {
+    console.error(error);
+    message.error(error?.data?.message || "publish failed.");
   }
 }
 
@@ -1238,10 +1242,11 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
-    message.success("Test Updated Successfully.");
+    message.success(`Test ${payload.status === "published" ? "Approved" : "Rejected"} Successfully.`);
+    yield put(push("/author/tests"));
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || "Test Update Failed.");
+    message.error(error?.data?.message || `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`);
   }
 }
 

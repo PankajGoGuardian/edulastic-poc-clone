@@ -81,7 +81,7 @@ const updatePlaylistStatus = data =>
     .callApi({
       method: "put",
       url: `${prefix}/${data.playlistId}/publish?status=${data.status}`,
-      data: data.collections
+      data: { collections: data.collections }
     })
     .then(result => result.data.result);
 

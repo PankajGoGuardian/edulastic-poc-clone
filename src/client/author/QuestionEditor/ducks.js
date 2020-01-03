@@ -587,7 +587,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 }
 // actions
 
-function* calculateFormulaSaga() {
+function* calculateFormulaSaga({ payload }) {
   try {
     const getLatexValuePairs = (id, variables, example) => ({
       id,
@@ -620,21 +620,20 @@ function* calculateFormulaSaga() {
     if (!question.variable || !question.variable.enabled) {
       return [];
     }
-    const variables = question.variable.variables || {};
-
+    const variables = payload.data.variables || question.variable.variables || {};
+    const examples = payload.data.examples || question.variable.examples || {};
     const latexValuePairs = [getLatexValuePairs("definition", variables)];
-    if (question.variable.examples) {
-      for (const example of question.variable.examples) {
+    if (examples) {
+      for (const example of examples) {
         const pair = getLatexValuePairs(`example${example.key}`, variables, example);
         if (pair.latexes.length > 0) {
           latexValuePairs.push(pair);
         }
       }
     }
-
+    const variable = { ...question.variable, examples, variables };
     const results = yield call(evaluateApi.calculate, latexValuePairs);
-    const newQuestion = cloneDeep(question);
-
+    const newQuestion = { ...cloneDeep(question), variable };
     for (const result of results) {
       if (result.id === "definition") {
         Object.keys(result.values).forEach(key => {

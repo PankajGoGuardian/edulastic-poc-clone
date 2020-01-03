@@ -458,8 +458,8 @@ const ModalWrapper = styled(Modal)`
       min-height: 100px;
       text-align: center;
       main {
-        padding: 60px 0px 0px;
-        height: calc(100vh - 40px);
+        padding: 20px 40px;
+        height: calc(100vh - 62px);
         & > section {
           padding: 0px;
           min-height: calc(100vh - 100px);

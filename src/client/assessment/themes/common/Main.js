@@ -4,7 +4,7 @@ const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
   padding: ${({ zoomed, zoomLevel, skin }) => {
     if (!zoomed) {
-      return skin ? "20px 48px" : "110px 0 0 140px";
+      return skin ? "20px 40px" : "110px 0 0 140px";
     }
     if (zoomed) {
       if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
@@ -16,7 +16,7 @@ const Main = styled.main`
       if (zoomLevel >= 2.5) {
         return "35px 50px 20px";
       }
-      return "20px 48px";
+      return "20px 40px";
     }
   }};
   display: ${props => (props.skin ? "block" : "flex")};

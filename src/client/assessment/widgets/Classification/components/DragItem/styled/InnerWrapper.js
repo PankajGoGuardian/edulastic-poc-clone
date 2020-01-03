@@ -9,7 +9,20 @@ export const InnerWrapper = styled.div`
   border-style: dotted;
   overflow: hidden;
 
-  ${({ theme, valid, preview, transparent, dragging, maxWidth, minWidth, minHeight, maxHeight, noBorder, width }) => {
+  ${({
+    theme,
+    valid,
+    preview,
+    transparent,
+    dragging,
+    maxWidth,
+    minWidth,
+    minHeight,
+    maxHeight,
+    noBorder,
+    width,
+    padding
+  }) => {
     let bgColor = theme.widgets.classification.dragItemBgColor;
     let borderColor = theme.widgets.classification.dragItemBorderColor;
     let borderWidth = noBorder ? 0 : 2;
@@ -41,6 +54,7 @@ export const InnerWrapper = styled.div`
       max-width: ${maxWidth}px;
       min-height: ${minHeight}px;
       max-height: ${maxHeight}px;
+      padding: ${padding};
     `;
   }}
 `;

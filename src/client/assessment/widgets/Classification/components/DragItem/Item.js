@@ -20,7 +20,8 @@ const Item = ({
   maxWidth,
   minWidth,
   minHeight,
-  maxHeight
+  maxHeight,
+  padding
 }) => (
   <InnerWrapper
     dragging={isDragging}
@@ -33,6 +34,7 @@ const Item = ({
     minHeight={minHeight}
     maxHeight={maxHeight}
     noBorder={showIndex}
+    padding={padding}
   >
     {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
     {((preview && valid !== undefined) || showIndex) && (
@@ -60,12 +62,14 @@ Item.propTypes = {
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
   showIndex: PropTypes.bool,
-  width: PropTypes.number
+  width: PropTypes.number,
+  padding: PropTypes.string
 };
 
 Item.defaultProps = {
   showIndex: false,
-  width: null
+  width: null,
+  padding: ""
 };
 
 export default Item;

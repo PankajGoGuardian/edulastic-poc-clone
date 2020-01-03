@@ -320,8 +320,12 @@ const ClassificationPreview = ({
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
-
-  const widthArr = posResp.map(op => measureText(op?.value || ""));
+  let minResponseWidth = Infinity;
+  const widthArr = posResp.map(op => {
+    const respWidth = measureText(op?.value || "");
+    minResponseWidth = Math.min(respWidth, minResponseWidth);
+  });
+  dragItemProps.padding = minResponseWidth < 35 ? "0px 0px 0px 5px" : "0px 0px 0px 10px";
 
   return (
     <StyledPaperWrapper

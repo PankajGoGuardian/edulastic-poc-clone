@@ -551,12 +551,12 @@ function* publishPlaylistSaga({ payload }) {
         status: playlistStatusConstants.INREVIEW
       });
       yield put(updatePlaylistStatusAction(playlistStatusConstants.INREVIEW));
+      yield call(message.success, "Review request is submitted successfully.");
     } else {
       yield call(curriculumSequencesApi.publishPlaylist, id);
       yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
+      yield call(message.success, "Successfully published");
     }
-
-    yield call(message.success, "Successfully published");
     yield put(push(`/author/playlists/${id}`));
   } catch (e) {
     const errorMessage = "publish failed";

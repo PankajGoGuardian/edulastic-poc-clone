@@ -1,12 +1,33 @@
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import FileHelper from "../../../../framework/util/fileHelper";
-import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
+import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import Regrade from "../../../../framework/author/tests/testDetail/regrade";
 import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAddItemTab";
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
-import SidebarPage from "../../../../framework/student/sidebarPage";
+import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import SidebarPage from "../../../../framework/student/sidebarPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import Regrade from "../../../../framework/author/tests/testDetail/regrade";
+
+const students = {
+  Student1: {
+    name: "300",
+    email: "300@xyz.com",
+    pass: "snapwiz"
+  },
+  Student2: {
+    name: 301,
+    email: "301@xyz.com",
+    pass: "snapwiz"
+  },
+  Student3: {
+    name: 302,
+    email: "302@xyz.com",
+    pass: "snapwiz"
+  }
+};
 
 describe(`With Applying Regrading-Test Editing`, () => {
   const testLibraryPage = new TestLibrary();
@@ -17,6 +38,10 @@ describe(`With Applying Regrading-Test Editing`, () => {
   const testAssignPage = new TestAssignPage();
   const sidebarPage = new SidebarPage();
   const regrade = new Regrade();
+  const lcb = new LiveClassboardPage();
+  const teacherSidebar = new TeacherSideBar();
+  const authorAssignmentPage = new AuthorAssignmentPage();
+  const expressGrader = new ExpressGraderPage();
 
   const updatedPoints = "6";
   const isAssigned = true;
@@ -24,14 +49,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
     email: "300@abc.com",
     pass: "snapwiz"
   };
-  const Student1 = {
-    email: "300@xyz.com",
-    pass: "snapwiz"
-  };
-  const Student2 = {
-    email: "301@xyz.com",
-    pass: "snapwiz"
-  };
+  const { Student1, Student2 } = students;
 
   let OriginalTestId, newTestId;
   let assignedTest, qType, num, quesData, testName, itemsInTest;
@@ -86,8 +104,8 @@ describe(`With Applying Regrading-Test Editing`, () => {
 
   context("Remove One Question From Review Tab and Verify Test", () => {
     it("Remove One Question From Review Tab", () => {
-      const [item1, item2] = testLibraryPage.items;
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      const [item1, item2, item3] = testLibraryPage.items;
+      cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
@@ -99,7 +117,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
         newTestId = newTest;
         // Remove 1 item From Review Tab
         testReviewTab.testheader.clickOnReview();
-        testReviewTab.clickOnCheckBoxByItemId(item2);
+        testReviewTab.clickOnCheckBoxByItemId(item3);
         testReviewTab.clickOnRemoveSelected();
         questionType.pop();
         attempt.pop();
@@ -112,6 +130,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
         OriginalTestId = newTestId;
       });
     });
+
     it("Verifying At Student Side- Removed Question", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
@@ -123,13 +142,60 @@ describe(`With Applying Regrading-Test Editing`, () => {
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
       studentTestPage.verifyNoOfQuesInReview(itemsInTest.length);
     });
+
+    context("verify teacher side LCB", () => {
+      before("login as teacher", () => {
+        cy.login("teacher", Teacher.email, Teacher.pass);
+        teacherSidebar.clickOnAssignment();
+        authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      });
+      it("verif lcb card view", () => {
+        Object.keys(students).forEach((student, i) => {
+          // verify total score of all students ;
+          lcb.getStudentScoreByIndex(i).should("contain.text", "/ 4");
+          // verify question cards shows 2 questions
+          lcb
+            .getQuestionsByIndex(i)
+            .find("div")
+            .should("have.length", itemsInTest.length);
+        });
+      });
+
+      it("verify student centric view", () => {
+        lcb.clickOnStudentsTab();
+        // verify total scoresc
+        // student1
+        lcb.questionResponsePage.selectStudent(Student1.name);
+        lcb.questionResponsePage.getTotalScore().should("have.text", "0");
+        lcb.questionResponsePage.getMaxScore().should("have.text", "4");
+
+        //  student2
+        lcb.questionResponsePage.selectStudent(Student2.name);
+        lcb.questionResponsePage.getTotalScore().should("have.text", "4");
+        lcb.questionResponsePage.getMaxScore().should("have.text", "4");
+      });
+
+      it("verify express grader view", () => {
+        lcb.header.clickOnExpressGraderTab();
+        // verify total scores
+        // student1
+        expressGrader.getGridRowByStudent(Student2.name);
+        expressGrader.verifyScoreAndPerformance("4/4", "100");
+
+        // verify que count
+        cy.get(".ant-table-thead > tr")
+          .eq(0)
+          .find(".ant-table-column-has-actions")
+          .should("have.length", itemsInTest.length);
+      });
+    });
   });
 
   context("Update Points Of An Item and Verify Test", () => {
     it("Update Points Of An Item", () => {
       const [item1, item2] = testLibraryPage.items;
-      cy.login("teacher", "300@abc.com", "snapwiz");
-      //Get Test Card and Draft It
+      cy.login("teacher", Teacher.email, Teacher.pass);
+      // Get Test Card and Draft It
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.getAuthoredByMe();
@@ -139,7 +205,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
       testLibraryPage.getVersionedTestID().then(newTest => {
         newTestId = newTest;
         //Update Points
-        testReviewTab.updatePointsByID(item1, "6");
+        testReviewTab.updatePointsByID(item1, updatedPoints);
         // Publish
         testAddItemTab.header.clickOnPublishButton(isAssigned, true);
         regrade.regradeSelection(true);
@@ -160,6 +226,57 @@ describe(`With Applying Regrading-Test Editing`, () => {
       assignmentsPage.sidebar.clickOnGrades();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
       studentTestPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
+    });
+
+    context("verify teacher side LCB", () => {
+      before("login as teacher", () => {
+        cy.login("teacher", Teacher.email, Teacher.pass);
+        teacherSidebar.clickOnAssignment();
+        authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      });
+      it("verif lcb card view", () => {
+        Object.keys(students).forEach((student, i) => {
+          // verify total score of all students ;
+          lcb.getStudentScoreByIndex(i).should("contain.text", "/ 8");
+          // verify question cards shows 2 questions
+          lcb
+            .getQuestionsByIndex(i)
+            .find("div")
+            .should("have.length", itemsInTest.length);
+        });
+      });
+
+      it("verify student centric view", () => {
+        lcb.clickOnStudentsTab();
+        // verify total scores
+        // student1
+        lcb.questionResponsePage.selectStudent(Student1.name);
+        lcb.questionResponsePage.getTotalScore().should("have.text", "8");
+        lcb.questionResponsePage.getMaxScore().should("have.text", "8");
+
+        //  student2
+        lcb.questionResponsePage.selectStudent(Student2.name);
+        lcb.questionResponsePage.getTotalScore().should("have.text", "8");
+        lcb.questionResponsePage.getMaxScore().should("have.text", "8");
+      });
+
+      it("verify express grader view", () => {
+        lcb.header.clickOnExpressGraderTab();
+        // verify total scores
+        // student1
+        expressGrader.getGridRowByStudent(Student1.name);
+        expressGrader.verifyScoreAndPerformance("8/8", "100");
+
+        // student2
+        expressGrader.getGridRowByStudent(Student2.name);
+        expressGrader.verifyScoreAndPerformance("8/8", "100");
+
+        // verify que count
+        cy.get(".ant-table-thead > tr")
+          .eq(0)
+          .find(".ant-table-column-has-actions")
+          .should("have.length", itemsInTest.length);
+      });
     });
   });
 });

@@ -124,6 +124,8 @@ class LiveClassboardPage {
 
   getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
 
+  getQuestionsByIndex = index => cy.get('[data-cy="questions"]').eq(index);
+
   getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
 
   getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
@@ -209,58 +211,56 @@ class LiveClassboardPage {
     });
 
   verifyQuestionCards = (index, queCards) => {
-    cy.get('[data-cy="questions"]')
-      .eq(index)
-      .then(ele => {
-        queCards.forEach((que, qindex) => {
-          switch (que) {
-            case attemptTypes.RIGHT:
-              expect(
-                ele
-                  .find("div")
-                  .eq(qindex)
-                  .css("background-color")
-              ).to.eq(queColor.RIGHT);
-              break;
+    this.getQuestionsByIndex().then(ele => {
+      queCards.forEach((que, qindex) => {
+        switch (que) {
+          case attemptTypes.RIGHT:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.RIGHT);
+            break;
 
-            case attemptTypes.WRONG:
-              expect(
-                ele
-                  .find("div")
-                  .eq(qindex)
-                  .css("background-color")
-              ).to.eq(queColor.WRONG);
-              break;
+          case attemptTypes.WRONG:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.WRONG);
+            break;
 
-            case attemptTypes.PARTIAL_CORRECT:
-              expect(
-                ele
-                  .find("div")
-                  .eq(qindex)
-                  .css("background-color")
-              ).to.eq(queColor.YELLOW);
-              break;
+          case attemptTypes.PARTIAL_CORRECT:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.YELLOW);
+            break;
 
-            case attemptTypes.SKIP:
-              expect(
-                ele
-                  .find("div")
-                  .eq(qindex)
-                  .css("background-color")
-              ).to.eq(queColor.SKIP);
-              break;
+          case attemptTypes.SKIP:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.SKIP);
+            break;
 
-            default:
-              expect(
-                ele
-                  .find("div")
-                  .eq(qindex)
-                  .css("background-color")
-              ).to.eq(queColor.NO_ATTEMPT);
-              break;
-          }
-        });
+          default:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.NO_ATTEMPT);
+            break;
+        }
       });
+    });
   };
 
   getScoreAndPerformance = (attempt, queTypeMap, queNum, queCentric = false) => {

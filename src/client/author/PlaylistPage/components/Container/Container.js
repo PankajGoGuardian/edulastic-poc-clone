@@ -38,6 +38,7 @@ import {
 import { loadAssignmentsAction } from "../../../TestPage/components/Assign/ducks";
 import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
@@ -380,7 +381,15 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {} } = this.props;
+    const {
+      creating,
+      windowWidth,
+      playlist,
+      testStatus,
+      userId,
+      location: { state } = {},
+      userFeatures = {}
+    } = this.props;
     const { showShareModal, current, editEnable, showSelectCollectionsModal } = this.state;
     const { _id: testId, status, authors, grades, subjects, collections } = playlist || {};
     const showPublishButton =
@@ -388,6 +397,7 @@ class Container extends PureComponent {
     const showShareButton = !!testId;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const gradeSubject = { grades, subjects };
+    const isPublisher = !!(userFeatures.isCurator || userFeatures.isPublisherAuthor);
 
     return (
       <>
@@ -414,7 +424,7 @@ class Container extends PureComponent {
           current={current}
           onSave={this.handleSave}
           onShare={this.onShareModalChange}
-          onPublish={this.onPublishClick}
+          onPublish={isPublisher ? this.onPublishClick : this.handlePublishPlaylist}
           title={playlist.title}
           creating={creating}
           windowWidth={windowWidth}
@@ -445,6 +455,7 @@ const enhance = compose(
       user: getUserSelector(state),
       userId: get(state, "user.user._id", ""),
       isTestLoading: getTestsLoadingSelector(state),
+      userFeatures: getUserFeatures(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),

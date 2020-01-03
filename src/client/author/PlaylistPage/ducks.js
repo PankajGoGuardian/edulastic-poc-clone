@@ -534,6 +534,11 @@ function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
     const data = yield select(getPlaylistSelector);
+    const features = yield select(getUserFeatures);
+    if ((features.isCurator || features.isPublisherAuthor) && !get(data, "collections", []).length) {
+      yield call(message.error, "Playlist is not associated with any collection.");
+      return;
+    }
     const dataToSend = omit(data, ["updatedDate", "createdDate", "sharedWith", "authors", "sharedType", "_id", "__v"]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
@@ -542,8 +547,6 @@ function* publishPlaylistSaga({ payload }) {
 
     yield call(curriculumSequencesApi.update, { id, data: dataToSend });
     yield call(message.success, "Update Successful");
-
-    const features = yield select(getUserFeatures);
 
     if (features.isPublisherAuthor) {
       yield call(curriculumSequencesApi.updatePlaylistStatus, {

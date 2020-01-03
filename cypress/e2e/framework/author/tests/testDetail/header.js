@@ -22,7 +22,13 @@ export default class TestHeader {
 
   clickOnSettings = () => cy.get('[data-cy="settings"]').click();
 
-  clickOnEditButton = () => cy.get('[data-cy="edit"]').click();
+  clickOnEditButton = (confirmation = false) => {
+    cy.get('[data-cy="edit"]').click();
+    if (confirmation) {
+      cy.contains("PROCEED").click();
+      cy.wait("@saveTest");
+    }
+  };
 
   clickOnSaveButton = (edited = false) => {
     cy.wait(2000);

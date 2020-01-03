@@ -104,7 +104,7 @@ class AssignmentsPage {
     return cy.wait("@gettest").then(() => new StudentTestPage());
   };
 
-  validateAssignment(name, status, assignmentButtonValue, assessmentType) {
+  validateAssignment(name, status, assignmentButtonValue, assessmentType = "A") {
     cy.contains("div", name).should("be.visible");
     cy.get('[data-cy="testType"]').should("have.text", assessmentType);
     this.getStatus().should("contain.text", status);

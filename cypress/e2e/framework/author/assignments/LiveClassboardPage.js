@@ -211,7 +211,7 @@ class LiveClassboardPage {
     });
 
   verifyQuestionCards = (index, queCards) => {
-    this.getQuestionsByIndex().then(ele => {
+    this.getQuestionsByIndex(index).then(ele => {
       queCards.forEach((que, qindex) => {
         switch (que) {
           case attemptTypes.RIGHT:

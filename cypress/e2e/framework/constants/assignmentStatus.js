@@ -19,6 +19,13 @@ export const studentSide = {
   ABSENT: "Absent"
 };
 
+export const assignmentButtonsText = {
+  start: "START ASSIGNMENT",
+  retake: "RETAKE",
+  resume: "RESUME",
+  review: "REVIEW"
+};
+
 export const testTypes = {
   PRACTICE_ASSESSMENT: "Practice Assessment",
   COMMON_ASSESSMENT: "Common Assessment",

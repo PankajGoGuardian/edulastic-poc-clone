@@ -42,7 +42,7 @@ class ReportsPage {
     else this.getReviewButton().should("not.be.visible");
   }
 
-  validateStats(attemptNum, attempt, score, percent) {
+  validateStats(attemptNum, attempt, score, percent, totalAttempt) {
     this.getAttemptCount().should("have.text", attempt);
     if (score) {
       console.log("score here", score);
@@ -56,7 +56,7 @@ class ReportsPage {
     } else this.getScore().should("not.be.visible");
     if (percent) this.getPercent().should("have.text", `${Math.round(percent)}%`);
     else this.getPercent().should("not.be.visible");
-    this.validateAttemptLinkStats(attemptNum, attemptNum, score, percent);
+    this.validateAttemptLinkStats(totalAttempt || attemptNum, attemptNum, score, percent);
   }
 
   validateAttemptLinkStats(totalAttempt, attemptNum, score, percent) {
@@ -66,7 +66,7 @@ class ReportsPage {
     if (percent) this.getPercentage().should("have.length", totalAttempt);
     if (score)
       this.getPercentage()
-        .eq(attemptNum - 1)
+        .eq(totalAttempt - attemptNum)
         .parent()
         .parent()
         .find('[data-cy="score"]')
@@ -79,7 +79,7 @@ class ReportsPage {
         );
     if (percent)
       this.getPercentage()
-        .eq(attemptNum - 1)
+        .eq(totalAttempt - attemptNum)
         .should("have.text", `${Math.round(percent)}%`);
     this.getAttempts()
       .should("be.visible")

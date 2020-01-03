@@ -158,16 +158,15 @@ class Item extends Component {
       isPlaylist,
       testItemId,
       windowWidth,
-      standards,
+      standards = [],
       orgData: { itemBanks }
     } = this.props;
     const standardsIdentifiers = standards.map(item => item.identifier);
 
     if (isPlaylist) {
-      const standards = _source?.modules?.map(m =>
-        m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)
-      );
-      standards.forEach(x => x.forEach(y => y.forEach(z => standardsIdentifiers.push([z]))));
+      const standardz =
+        _source?.modules?.map(m => m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)) || [];
+      standardz?.forEach(x => x?.forEach(y => y?.forEach(z => standardsIdentifiers?.push([z]))));
     }
 
     const likes = analytics?.[0]?.likes || "0";

@@ -87,7 +87,13 @@ class ClozeTextDisplay extends Component {
     const { onChange: changeAnswers, userSelections, responseIds } = this.props;
     changeAnswers(
       produce(userSelections, draft => {
-        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        /**
+         * if there are three responses
+         * if user does not answer the first two and answers the third
+         * the first two are stored as null thus findIndex needs optionalChaining;
+         * EV-10907
+         */
+        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
         if (changedIndex !== -1) {
           draft[changedIndex].value = value;
         } else {

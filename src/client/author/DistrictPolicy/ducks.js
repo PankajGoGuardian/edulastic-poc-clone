@@ -3,6 +3,8 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
 import { get } from "lodash";
+import { createSelector } from "reselect";
+import { getUserRole } from "../src/selectors/user";
 
 // action types
 const RECEIVE_DISTRICT_POLICY_REQUEST = "[district policy] receive data request";
@@ -41,7 +43,26 @@ const initialState = {
   update: null,
   updateError: null,
   creating: false,
-  createError: null
+  createError: null,
+  userNameAndPassword: true,
+  googleSignOn: true,
+  office365SignOn: true,
+  cleverSignOn: true,
+
+  teacherSignUp: true,
+  studentSignUp: true,
+
+  searchAndAddStudents: false,
+
+  googleUsernames: true,
+  office365Usernames: true,
+  firstNameAndLastName: true,
+
+  allowedDomainForStudents: "",
+  allowedDomainForTeachers: "",
+  allowedDomainsForDistrict: "",
+
+  canvas: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -144,3 +165,13 @@ export function* watcherSaga() {
   yield all([yield takeEvery(UPDATE_DISTRICT_POLICY_REQUEST, updateDictrictPolicySaga)]);
   yield all([yield takeEvery(CREATE_DISTRICT_POLICY_REQUEST, createDictrictPolicySaga)]);
 }
+
+export const getSchoolPolicy = state => get(state, "districtPolicyReducer.getSchoolPolicy");
+export const getDistrictPolicy = state => get(state, ["districtPolicyReducer", "data"], []);
+
+export const getPolicies = createSelector(
+  getUserRole,
+  getSchoolPolicy,
+  getDistrictPolicy,
+  (role, schoolPolicy = {}, districtPolicy = {}) => (role === "school-admin" ? schoolPolicy : districtPolicy)
+);

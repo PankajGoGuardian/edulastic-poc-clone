@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Button, Form } from "antd";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, textColor } from "@edulastic/colors";
 
 export const StyledFormDiv = styled.div`
   display: flex;
@@ -51,4 +51,10 @@ export const StyledElementDiv = styled.div`
 
 export const StyledFormItem = styled(Form.Item)`
   width: 500px;
+`;
+
+export const HelperText = styled.p`
+  line-height: 20px;
+  font-size: 13px;
+  color: ${textColor};
 `;

@@ -57,6 +57,7 @@ export const updateVariables = (item, latexKeys = []) => {
   const { variables: itemVars } = item.variable;
   const newVariableNames = detectVariablesFromObj(item, null, latexKeys);
   const newVariables = {};
+  let newExamples = [...(item.variable.examples || [])];
   newVariableNames.forEach(variableName => {
     newVariables[variableName] = itemVars[variableName] || {
       id: uuid.v4(),
@@ -67,7 +68,9 @@ export const updateVariables = (item, latexKeys = []) => {
       decimal: 0,
       exampleValue: Math.round(Math.random() * 100)
     };
+    newExamples = newExamples.map(example => ({ [variableName]: "", ...example }));
   });
+  item.variable.examples = newExamples;
   item.variable.variables = newVariables;
 };
 

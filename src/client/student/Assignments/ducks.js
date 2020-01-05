@@ -18,6 +18,7 @@ import {
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
+import { message } from "antd";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
@@ -174,8 +175,12 @@ function* startAssignment({ payload }) {
     }
 
     // TODO:load previous responses if resume!!
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    const { status, data = {} } = err;
+    console.error(err);
+    if (status === 403 && data.message) {
+      yield call(message.error, data.message, 3);
+    }
   }
 }
 

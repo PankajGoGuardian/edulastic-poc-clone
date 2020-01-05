@@ -15,7 +15,14 @@ function getColorParams(color) {
 }
 
 function create(board, object, settings = {}) {
-  const { labelIsVisible = true, pointIsVisible = true, fixed = false, snapToGrid = true } = settings;
+  const {
+    labelIsVisible = true,
+    pointIsVisible = true,
+    fixed = false,
+    snapToGrid = true,
+    latex = false,
+    result = false
+  } = settings;
 
   const { x, y, id = null, label, baseColor, priorityColor } = object;
 
@@ -63,6 +70,12 @@ function create(board, object, settings = {}) {
 
   if (labelIsVisible) {
     setLabel(point, label);
+  }
+
+  if (latex != false && result != false) {
+    point.type = 98;
+    point.latex = latex;
+    point.apiLatex = result;
   }
 
   return point;

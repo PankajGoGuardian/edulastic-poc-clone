@@ -24,7 +24,7 @@ function getColorParams(color) {
 }
 
 function create(board, object, hypPoints, settings = {}) {
-  const { labelIsVisible = true, fixed = false } = settings;
+  const { labelIsVisible = true, fixed = false, latex = false, result = false, pointsLabel = false } = settings;
 
   const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
@@ -43,6 +43,13 @@ function create(board, object, hypPoints, settings = {}) {
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
   newLine.dashed = object.dashed;
+
+  if (latex && result) {
+    newLine.type = 98;
+    newLine.latex = latex;
+    newLine.apiLatex = result;
+    newLine.pointsLabel = pointsLabel;
+  }
 
   if (!fixed) {
     handleSnap(newLine, Object.values(newLine.ancestors), board);

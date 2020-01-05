@@ -22,7 +22,8 @@ const symbols = ["basic"];
 const emptyEquation = {
   _type: 98,
   type: CONSTANT.TOOLS.EQUATION,
-  label: false
+  label: false,
+  pointsLabel: false
 };
 
 class Equations extends Component {
@@ -93,12 +94,17 @@ class Equations extends Component {
   handleAddEquation = () => {
     const { eqs, changedEqs, newEquation } = this.state;
 
+    console.log("newEquation");
+    console.log(newEquation);
+
     if (!newEquation) {
       return;
     }
 
     eqs.push(newEquation);
     changedEqs.push(false);
+    console.log("eqs: ");
+    console.log(eqs);
     this.setState({ eqs, changedEqs, newEquation: "" });
     this.setApiLatex(eqs[eqs.length - 1]);
   };

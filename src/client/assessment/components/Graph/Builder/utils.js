@@ -723,6 +723,22 @@ export function isInPolygon(testPoint, vertices) {
   return result;
 }
 
+export const getLabel = elements => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  for (var i = 0; i < alphabet.length; i++) {
+    var match = false;
+    for (var k = 0; k < elements.length; k++) {
+      if (elements[k] == alphabet[i]) {
+        match = true;
+      }
+    }
+    if (!match) return alphabet[i];
+  }
+
+  return alphabet[elements.length];
+};
+
 export const nameGen = elements => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -732,6 +748,7 @@ export const nameGen = elements => {
         element =>
           element &&
           (element.labelHTML === alphabet[i] ||
+            // || element.name === alphabet[i]
             Object.values(element.ancestors).some(ancestor => ancestor && ancestor.labelHTML === alphabet[i]))
       )
     ) {

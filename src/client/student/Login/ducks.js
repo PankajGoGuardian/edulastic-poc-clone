@@ -399,8 +399,12 @@ function* login({ payload }) {
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
+    const { status, data = {} } = err;
     console.error(err);
-    const errorMessage = "You have entered an invalid email/username or password.";
+    let errorMessage = "You have entered an invalid email/username or password.";
+    if (status === 403 && data.message) {
+      errorMessage = data.message;
+    }
     yield call(message.error, errorMessage);
   }
 }

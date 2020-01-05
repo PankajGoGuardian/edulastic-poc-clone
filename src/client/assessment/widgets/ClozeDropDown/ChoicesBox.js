@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
+import { MathSpan } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -87,7 +88,7 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
           options[id] &&
           options[id].map((response, respID) => (
             <Option title={response} value={response} key={respID}>
-              {response}
+              <MathSpan dangerouslySetInnerHTML={{ __html: response }} />
             </Option>
           ))}
       </Select>

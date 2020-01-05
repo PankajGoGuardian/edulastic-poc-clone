@@ -78,7 +78,8 @@ const getMathTemplate = exampleValue => `<span class="input__math" data-latex="$
 
 const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   if (!variables) return str;
-  let result = str;
+  let result = str.replace(mathRegex, "{math-latex}");
+  let mathContent = str.match(mathRegex);
   Object.keys(variables).forEach(variableName => {
     if (isLatex) {
       result = result.replace(
@@ -91,7 +92,18 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
         useMathTemplate ? getMathTemplate(variables[variableName].exampleValue) : variables[variableName].exampleValue
       );
     }
+    if (mathContent) {
+      mathContent = mathContent.map(content =>
+        content.replace(new RegExp(`@${variableName}`, "g"), variables[variableName].exampleValue)
+      );
+    }
   });
+  if (mathContent) {
+    result = result
+      .split("{math-latex}")
+      .map((content, index) => `${content}${mathContent[index] || ""}`)
+      .join("");
+  }
   return result;
 };
 

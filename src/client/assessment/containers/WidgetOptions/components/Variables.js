@@ -80,9 +80,10 @@ class Variables extends Component {
     }));
 
     const generateExample = variable => {
+      const factor = Math.pow(10, variable.decimal);
       switch (variable.type) {
         case "NUMBER_RANGE": {
-          return Math.round(Math.random() * (variable.max - variable.min) + variable.min);
+          return Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor;
         }
         case "NUMBER_SET":
         case "TEXT_SET":
@@ -296,8 +297,11 @@ class Variables extends Component {
 
         switch (variable.type) {
           case "NUMBER_RANGE": {
+            const factor = Math.pow(10, variable.decimal);
             combinations = getCombinations(
-              Array.from(Array(variable.max - variable.min + 1)).map((_, i) => variable.min + i),
+              Array.from(Array(variable.max - variable.min + 1)).map(
+                (_, i) => Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor
+              ),
               combinations
             );
             values = values.map((v, i) => ({ ...v, [variableName]: combinations[i] }));

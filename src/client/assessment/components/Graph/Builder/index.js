@@ -48,7 +48,8 @@ import {
   canAddElementToBoard,
   getEventName,
   isTouchDevice,
-  getAllObjectsUnderMouse
+  getAllObjectsUnderMouse,
+  getLabel
 } from "./utils";
 import _events from "./events";
 
@@ -68,6 +69,8 @@ class Board {
      * Elements on the board
      */
     this.elements = [];
+
+    this.labelForEq = [];
     /**
      * Bg elements on the board
      */
@@ -607,8 +610,11 @@ class Board {
 
   reset() {
     this.abortTool();
+    //Fix remove
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
+    this.labelForEq.map(this.removeObject.bind(this));
+    this.labelForEq = [];
   }
 
   resetAnswers() {
@@ -679,10 +685,12 @@ class Board {
    */
   getConfig() {
     this.abortTool();
+
     const config = this.elements
       .filter(e => e)
       .map(e => {
         switch (e.type) {
+          case 14:
           case JXG.OBJECT_TYPE_POINT:
             return Point.getConfig(e);
           case JXG.OBJECT_TYPE_LINE:
@@ -927,9 +935,12 @@ class Board {
   }
 
   loadObject(object, settings = {}) {
+    const prevLabel = object.label;
     const { showPoints = true, checkLabelVisibility = false, checkPointVisibility = false, fixed = false } = settings;
     switch (object._type) {
+      case 14:
       case JXG.OBJECT_TYPE_POINT:
+        this.labelForEq.push(object.label);
         return Point.create(this, object, {
           pointIsVisible: !checkPointVisibility || object.pointIsVisible,
           labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
@@ -937,6 +948,7 @@ class Board {
         });
 
       case JXG.OBJECT_TYPE_LINE:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Line.create(
           this,
           object,
@@ -955,6 +967,7 @@ class Board {
         );
 
       case JXG.OBJECT_TYPE_CIRCLE:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Circle.create(
           this,
           object,
@@ -972,6 +985,7 @@ class Board {
         );
 
       case JXG.OBJECT_TYPE_CONIC:
+        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
         return Ellipse.create(
           this,
           object,
@@ -989,6 +1003,9 @@ class Board {
         );
 
       case JXG.OBJECT_TYPE_POLYGON:
+        object.points.map(point => {
+          this.labelForEq.push(point);
+        });
         return Polygon.create(
           this,
           object,
@@ -1006,6 +1023,7 @@ class Board {
         );
 
       case Hyperbola.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
         return Hyperbola.create(
           this,
           object,
@@ -1023,6 +1041,7 @@ class Board {
         );
 
       case Tangent.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Tangent.create(
           this,
           object,
@@ -1040,6 +1059,7 @@ class Board {
         );
 
       case Secant.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Secant.create(
           this,
           object,
@@ -1057,6 +1077,7 @@ class Board {
         );
 
       case Exponent.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Exponent.create(
           this,
           object,
@@ -1074,6 +1095,7 @@ class Board {
         );
 
       case Logarithm.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Logarithm.create(
           this,
           object,
@@ -1091,6 +1113,9 @@ class Board {
         );
 
       case Polynom.jxgType:
+        object.points.map(point => {
+          this.labelForEq.push(point);
+        });
         return Polynom.create(
           this,
           object,
@@ -1108,6 +1133,7 @@ class Board {
         );
 
       case Sin.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Sin.create(
           this,
           object,
@@ -1125,6 +1151,7 @@ class Board {
         );
 
       case Parabola.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label);
         return Parabola.create(
           this,
           object,
@@ -1142,6 +1169,7 @@ class Board {
         );
 
       case Parabola2.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label, object.points[2].label);
         return Parabola2.create(
           this,
           object,
@@ -1159,7 +1187,283 @@ class Board {
         );
 
       case Equation.jxgType:
-        return Equation.create(this, object);
+        function getPoints(type, res) {
+          res = res.replace("['" + type + "',[", "").replace("]]", "");
+          res = res.substring(1, res.length - 1);
+          res = res.split("),(");
+          for (var i = 0; i < res.length; i++) {
+            res[i] = res[i].split(",");
+          }
+          return res;
+        }
+
+        var obj = {
+          label: false,
+          labelIsVisible: false,
+          baseColor: "#595e98"
+        };
+
+        var result = object.apiLatex;
+        var latex = object.latex;
+
+        if (latex.substring(1, 6) == "left(" && latex.substr(latex.length - 6) == "right)" && latex.indexOf(",") > -1) {
+          const latexForEqPoint = latex;
+          latex = latex.replace("left(", "").replace("right)", "");
+          latex = latex.replace(/\\/g, "");
+          latex = latex.split(",");
+
+          var labelPoint1 = getLabel(this.labelForEq);
+
+          var point = {
+            x: latex[0],
+            y: latex[1],
+            label: object.label || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label || getLabel(this.labelForEq));
+
+          if (!object.label) {
+            object.label = labelPoint1;
+          }
+
+          return Point.create(this, point, { latex: latexForEqPoint, result });
+        } else if (result.includes("line")) {
+          var coords = getPoints("line", result);
+
+          const labelPoint1 = getLabel(this.labelForEq);
+
+          var point1 = {
+            x: coords[0][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.pointsLabel[0] || getLabel(this.labelForEq));
+          const labelPoint2 = getLabel(this.labelForEq);
+
+          var point2 = {
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.pointsLabel[1] || getLabel(this.labelForEq));
+          var points = [Point.create(this, point1), Point.create(this, point2)];
+          var type = "line";
+
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2];
+          }
+
+          return Line.create(this, obj, points, type, { latex, result, pointsLabel: [labelPoint1, labelPoint2] });
+        } else if (result.includes("circle")) {
+          var coords = getPoints("circle", result);
+
+          const labelPoint1 = getLabel(this.labelForEq);
+
+          //point1 - center
+          var point1 = {
+            x: coords[1][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.pointsLabel[0] || getLabel(this.labelForEq));
+          const labelPoint2 = getLabel(this.labelForEq);
+
+          //highest point of circle (top Y)
+          var point2 = {
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.pointsLabel[1] || getLabel(this.labelForEq));
+          var points = [Point.create(this, point1), Point.create(this, point2)];
+
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2];
+          }
+
+          return Circle.create(this, obj, points, { latex, result, labelHTML: [labelPoint1, labelPoint2] });
+        } else if (result.includes("ellipse")) {
+          var coords = getPoints("ellipse", result);
+
+          const labelPoint1 = getLabel(this.labelForEq);
+
+          var point1 = {
+            x: coords[2][0] - coords[1][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
+          const labelPoint2 = getLabel(this.labelForEq);
+
+          var point2 = {
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
+          const labelPoint3 = getLabel(this.labelForEq);
+
+          var point3 = {
+            x: coords[2][0],
+            y: coords[2][1],
+            label: object.pointsLabel[2] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
+          var points = [Point.create(this, point1), Point.create(this, point2), Point.create(this, point3)];
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+          }
+
+          return Ellipse.create(this, obj, points, {
+            latex,
+            result,
+            labelHTML: [labelPoint1, labelPoint2, labelPoint3]
+          });
+        } else if (result.includes("hyperbola")) {
+          var coords = getPoints("hyperbola", result);
+
+          const labelPoint1 = getLabel(this.labelForEq);
+
+          var point1 = {
+            x: coords[0][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
+          const labelPoint2 = getLabel(this.labelForEq);
+
+          var point2 = {
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
+          const labelPoint3 = getLabel(this.labelForEq);
+
+          var point3 = {
+            x: coords[2][0],
+            y: coords[2][1],
+            label: object.pointsLabel[2] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
+          var points = [Point.create(this, point1), Point.create(this, point2), Point.create(this, point3)];
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+          }
+
+          return Hyperbola.create(this, obj, points, {
+            latex,
+            result,
+            labelHTML: [labelPoint1, labelPoint2, labelPoint3]
+          });
+        } else if (result.includes("parabola2")) {
+          var coords = getPoints("parabola2", result);
+
+          const labelPoint1 = getLabel(this.labelForEq);
+
+          var point1 = {
+            x: coords[0][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[0] || getLabel(this.labelForEq));
+          const labelPoint2 = getLabel(this.labelForEq);
+
+          var point2 = {
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[1] || getLabel(this.labelForEq));
+          const labelPoint3 = getLabel(this.labelForEq);
+
+          var point3 = {
+            x: coords[2][0],
+            y: coords[2][1],
+            label: object.pointsLabel[2] || getLabel(this.labelForEq),
+            labelIsVisible: true,
+            pointIsVisible: true,
+            baseColor: "#595e98",
+            id: null
+          };
+
+          this.labelForEq.push(object.label[2] || getLabel(this.labelForEq));
+          var points = [Point.create(this, point3), Point.create(this, point2), Point.create(this, point1)];
+          if (!object.pointsLabel) {
+            object.pointsLabel = [labelPoint1, labelPoint2, labelPoint3];
+          }
+
+          return Parabola2.create(this, obj, points, {
+            latex,
+            result,
+            labelHTML: [labelPoint3, labelPoint2, labelPoint1]
+          });
+        } else {
+          return Equation.create(this, object);
+        }
 
       case Area.jxgType:
         return Area.create(this, object, { fixed });

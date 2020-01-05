@@ -309,7 +309,13 @@ class Implicit {
 
     switch (zer) {
       case 0:
-        if (neg === pos && !this.oppSign(tl, br)) return T0101;
+        //if (neg === pos && !this.oppSign(tl, br)) return T0101;
+
+        if (neg === pos && tl > 10) return T0101;
+        if (neg === pos && tr > 10) return T0101;
+        if (neg === pos && br > 10) return T0101;
+        if (neg === pos && bl > 10) return T0101;
+
         if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0);
         if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0);
         if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0);
@@ -410,8 +416,20 @@ class Implicit {
       this.sw = 8;
       this.sh = 8;
     } else {
-      this.sw = Math.min(MAX_SPLIT, Math.floor(px / RES_COARSE));
-      this.sh = Math.min(MAX_SPLIT, Math.floor(py / RES_COARSE));
+      let valW = Math.max(Math.abs(Math.round(x1)), Math.abs(Math.round(x2)));
+      let valH = Math.max(Math.abs(Math.round(y1)), Math.abs(Math.round(y2)));
+
+      let valW2 = Math.ceil(valW / 5);
+      let valH2 = Math.ceil(valH / 5);
+
+      let valW3 = Math.pow(2, 4 + valW2);
+      let valH3 = Math.pow(2, 4 + valH2);
+
+      valW3 = valW3 > 1000 ? 1000 : valW3;
+      valH3 = valH3 > 1000 ? 1000 : valH3;
+
+      this.sw = valH3;
+      this.sh = valW3;
     }
     if (this.sw === 0 || this.sh === 0) {
       return;
@@ -645,7 +663,9 @@ function getConfig(equation) {
     id: equation.id,
     latex: equation.latex,
     label: equation.labelHTML || false,
+    pointsLabel: equation.pointsLabel || false,
     apiLatex: equation.apiLatex
+    //testPoints: equation.testPoints
   };
 }
 

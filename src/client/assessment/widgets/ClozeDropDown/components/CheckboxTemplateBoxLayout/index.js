@@ -8,7 +8,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
-import { measureText } from "@edulastic/common";
+import { measureText, MathSpan } from "@edulastic/common";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -72,9 +72,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         </span>
       )}
       <span className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
-        <span className="clipText" style={{ ...textStyle, fontWeight: "normal" }}>
-          {userSelection?.value}
-        </span>
+        <MathSpan
+          className="clipText"
+          style={{ ...textStyle, fontWeight: "normal" }}
+          dangerouslySetInnerHTML={{ __html: userSelection?.value }}
+        />
       </span>
       <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
         {userAttempted && status === "right" && <RightIcon />}

@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { getStemNumeration } from "../../../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
+import { MathSpan } from "@edulastic/common";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds = [], t, stemNumeration }) => {
   const getLabel = id => {
@@ -32,7 +33,9 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseI
         {responseIds.map(response => (
           <div key={response.index} className="response-btn check-answer showanswer">
             <span className="index">{getStemNumeration(stemNumeration, response.index)}</span>
-            <span className="text">{getLabel(response.id)}</span>
+            <span className="text">
+              <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(response.id) }} />
+            </span>
           </div>
         ))}
       </div>

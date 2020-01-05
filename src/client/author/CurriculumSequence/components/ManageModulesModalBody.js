@@ -184,8 +184,8 @@ const ModuleActions = styled.div`
 
 const SortableModules = SortableContainer(props => (
   <StyledModuleList>
-    {props.modulesList.map((module, i) => (
-      <ModuleItem id={i} module={module} index={i} {...props} />
+    {props.modulesList.map((mod, i) => (
+      <ModuleItem id={i} key={`module-${mod.title}-${mod.description}`} module={mod} index={i} {...props} />
     ))}
   </StyledModuleList>
 ));

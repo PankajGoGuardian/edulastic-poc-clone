@@ -42,6 +42,13 @@ import { getAuthorCollectionMap } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 
+const sharedTypeMap = {
+  0: "PUBLIC",
+  1: "DISTRICT",
+  2: "SCHOOL",
+  3: "INDIVIDUAL" // can be shown as "ME" / "YOU"
+};
+
 class Item extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
@@ -166,10 +173,19 @@ class Item extends Component {
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
 
-    let collectionName = "-";
+    let collectionName = "PRIVATE";
     if (collections?.length > 0 && itemBanks.length > 0) {
       const filteredCollections = collections.filter(c => itemBanks.find(i => i._id === c._id));
       if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
+    } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
+      collectionName = "Edulastic Certified";
+    } else if (!!sharedType) {
+      // sharedType comes as number when "Shared with me" filter is selected
+      if (!isNaN(+sharedType)) {
+        collectionName = sharedTypeMap[+sharedType];
+      } else {
+        collectionName = sharedType;
+      }
     }
     return (
       <>

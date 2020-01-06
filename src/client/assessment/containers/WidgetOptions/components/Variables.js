@@ -53,6 +53,130 @@ const VariableLabel = styled(Label)`
 `;
 
 class Variables extends Component {
+  componentDidMount() {
+    this.generate();
+  }
+
+  generate = () => {
+    const { calculateFormula, questionData } = this.props;
+    const variables = get(questionData, "variable.variables", {});
+    if (Object.keys(variables).length === 0) return;
+
+    let values = [];
+
+    Object.keys(variables).forEach(variableName => {
+      const variable = variables[variableName];
+      switch (variable.type) {
+        case "NUMBER_RANGE": {
+          const rangeValues = this.generateCombinationsForRange(variable);
+          values.push(rangeValues);
+          break;
+        }
+        case "TEXT_SET":
+        case "NUMBER_SET": {
+          if (variable.set) {
+            if (variable.type === "NUMBER_SET")
+              values.push(
+                variable.set
+                  .split(",")
+                  .filter(val => !!val.trim())
+                  .map(item => parseFloat(item))
+              );
+            else values.push(variable.set.split(",").filter(val => !!val.trim()));
+          } else values.push([]);
+          break;
+        }
+        case "NUMBER_SEQUENCE":
+        case "TEXT_SEQUENCE": {
+          if (variable.sequence) {
+            const sequenceValues = this.generateCombinationsForSequence(variable);
+            values.push(sequenceValues);
+          } else values.push([]);
+          break;
+        }
+        case "FORMULA": {
+          if (variable.formula) values.push([variable.formula]);
+        }
+        default:
+          break;
+      }
+    });
+
+    let combinationValues = [];
+    let keyNames = Object.keys(variables);
+
+    // build combinations for possible values
+    values = values.reduce((a, b) => a.reduce((r, v) => r.concat(b.map(w => [].concat(v, w))), []));
+    combinationValues = values.map((item, nIndex) => {
+      let temp = { key: nIndex };
+      for (let i = 0; i < item.length; i++) temp[keyNames[i]] = item[i];
+      return temp;
+    });
+
+    calculateFormula({ examples: this.reArrangeCombinations(combinationValues), variables });
+    return values;
+  };
+
+  generateCombinationsForRange = variable => {
+    if (!variable) return [];
+
+    let valueArray = [];
+    // get available integer from ranges
+    for (let i = variable.min; i <= variable.max; i++) valueArray.push(i);
+
+    // get available decimal if it has.
+    if (variable.decimal > 0) {
+      let stepValue = 1 / Math.pow(10, variable.decimal);
+      let decimalValueArray = [];
+      valueArray.forEach((item, nIndex) => {
+        if (nIndex < valueArray.length - 1) {
+          for (let j = 1; j < Math.pow(10, variable.decimal); j++) {
+            decimalValueArray.push(parseFloat((item + stepValue * j).toFixed(variable.decimal)));
+          }
+        }
+      });
+      valueArray = [...valueArray, ...decimalValueArray];
+    }
+
+    return valueArray;
+  };
+
+  generateCombinationsForSequence = variable => {
+    if (!variable) return [];
+
+    let valueArray = [];
+    const { sequence } = variable;
+    if (sequence) {
+      if (valueArray.length > sequence.split(",").filter(em => !!em.trim()).length || valueArray.length === 0) {
+        valueArray = sequence
+          .split(",")
+          .filter(em => !!em.trim())
+          .map((_, i) => i);
+      }
+    }
+
+    return valueArray;
+  };
+
+  reArrangeCombinations = combinations => {
+    let intArray = [],
+      floatAray = [];
+
+    // Re-Arrange combinations - First integers, then decimals.
+    combinations.forEach(item => {
+      let isInt = true;
+      Object.keys(item).forEach(itemOne => {
+        if (!isNaN(item[itemOne])) {
+          if (item[itemOne] === parseInt(item[itemOne], 10)) isInt = true;
+          else isInt = false;
+        }
+      });
+      if (isInt) intArray.push(item);
+      else floatAray.push(item);
+    });
+    return [...intArray, ...floatAray];
+  };
+
   render() {
     const {
       setQuestionData,
@@ -225,121 +349,6 @@ class Variables extends Component {
       if (hasFormula) {
         calculateFormula({ variables, examples });
       }
-    };
-
-    const getCombinations = (available, combinations) => {
-      for (let i = 0; i < combinations.length; i++) {
-        const diff = difference(available, combinations);
-        if (diff.length > 0) {
-          const valueIndex = Math.floor(Math.random() * diff.length);
-          combinations[i] = diff[valueIndex];
-        } else {
-          return combinations;
-        }
-      }
-      return combinations;
-    };
-
-    const getCombinationsForSequence = combinations => {
-      // get available indexes from smallest sequence of variables
-      let availableIndexs = [];
-      Object.keys(variables).forEach(variableName => {
-        const variable = variables[variableName];
-        if (variable.type === "NUMBER_SEQUENCE" || variable.type === "TEXT_SEQUENCE") {
-          const { sequence } = variable;
-          if (sequence) {
-            if (
-              availableIndexs.length > sequence.split(",").filter(em => !!em.trim()).length ||
-              availableIndexs.length === 0
-            ) {
-              availableIndexs = sequence
-                .split(",")
-                .filter(em => !!em.trim())
-                .map((_, i) => i);
-            }
-          }
-        }
-      });
-      // to get unique index from availableIndexs
-      const usedIndex = [];
-      return combinations.map(combination => {
-        // get a unique value index from difference between availableIndexs and usedIndex
-        const diff = difference(availableIndexs, usedIndex);
-        const randomIndex = Math.floor(Math.random() * diff.length);
-        const valueIndex = diff[randomIndex];
-        usedIndex.push(valueIndex);
-
-        // generate a combination based on valueIndex
-        Object.keys(variables).forEach(variableName => {
-          const variable = variables[variableName];
-          if (variable.type === "NUMBER_SEQUENCE" || variable.type === "TEXT_SEQUENCE") {
-            const { sequence } = variable;
-            if (sequence) {
-              const vars = sequence.split(",").filter(em => !!em.trim());
-              combination = {
-                ...combination,
-                [variableName]: vars[valueIndex] ? vars[valueIndex] : ""
-              };
-            }
-          }
-        });
-        return combination;
-      });
-    };
-
-    const generate = () => {
-      let values = Array.from(Array(variableCombinationCount)).map((_, i) => ({ key: `${i + 1}` }));
-      let sequenceCombinationsGenerated = false;
-
-      Object.keys(variables).forEach(variableName => {
-        let combinations = new Array(variableCombinationCount).fill("");
-        const variable = variables[variableName];
-
-        switch (variable.type) {
-          case "NUMBER_RANGE": {
-            const factor = Math.pow(10, variable.decimal);
-            combinations = getCombinations(
-              Array.from(Array(variable.max - variable.min + 1)).map(
-                (_, i) => Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor
-              ),
-              combinations
-            );
-            values = values.map((v, i) => ({ ...v, [variableName]: combinations[i] }));
-            break;
-          }
-          case "TEXT_SET":
-          case "NUMBER_SET": {
-            if (variable.set) {
-              combinations = getCombinations(variable.set.split(",").filter(val => !!val.trim()), combinations);
-            }
-            values = values.map((v, i) => ({ ...v, [variableName]: combinations[i] }));
-            break;
-          }
-          case "NUMBER_SEQUENCE":
-          case "TEXT_SEQUENCE": {
-            if (variable.sequence && !sequenceCombinationsGenerated) {
-              values = getCombinationsForSequence(values);
-              sequenceCombinationsGenerated = true;
-            }
-            break;
-          }
-          default:
-            break;
-        }
-      });
-
-      values = values.filter(value => {
-        const tempValue = { ...value, key: "" };
-        let isValid = true;
-        Object.keys(tempValue).map(variableName => {
-          isValid = !!tempValue[variableName];
-          return null;
-        });
-        return isValid;
-      });
-
-      calculateFormula({ examples: values, variables });
-      return values;
     };
 
     return (
@@ -543,7 +552,7 @@ class Variables extends Component {
                 <InlineLabel>{t("component.options.afterCombinationCount")}</InlineLabel>
               </Col>
               <Col md={4}>
-                <Button onClick={generate} type="button" style={{ float: "right" }}>
+                <Button onClick={this.generate} type="button" style={{ float: "right" }}>
                   Generate
                 </Button>
               </Col>
@@ -554,7 +563,7 @@ class Variables extends Component {
                   columns={columns}
                   dataSource={examples}
                   pagination={{
-                    pageSize: 10
+                    pageSize: variableCombinationCount
                   }}
                 />
               </Col>

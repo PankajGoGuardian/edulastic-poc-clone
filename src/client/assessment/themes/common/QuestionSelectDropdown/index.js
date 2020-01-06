@@ -32,7 +32,7 @@ const QuestionSelectDropdown = ({
       >
         {options.map((item, index) => (
           <Select.Option key={index} value={item}>
-            {`${t("common.layout.selectbox.question")} ${index + 1}/ ${options.length}`}
+            {`${t("common.layout.selectbox.question")} ${index + 1}/${options.length}`}
             {bookmarks[index] ? (
               <IconBookmark color="#f8c165" height={16} />
             ) : skipped[index] ? (

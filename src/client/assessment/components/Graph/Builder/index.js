@@ -613,8 +613,17 @@ class Board {
     //Fix remove
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
-    this.labelForEq.map(this.removeObject.bind(this));
     this.labelForEq = [];
+
+    this.bgElements.map(el => {
+      if (el.type == 12) {
+        this.labelForEq.push(el.labelHTML);
+      } else {
+        el.inherits.map(ancestorsEl => {
+          this.labelForEq.push(ancestorsEl.labelHTML);
+        });
+      }
+    });
   }
 
   resetAnswers() {
@@ -935,8 +944,23 @@ class Board {
   }
 
   loadObject(object, settings = {}) {
-    const prevLabel = object.label;
-    const { showPoints = true, checkLabelVisibility = false, checkPointVisibility = false, fixed = false } = settings;
+    this.bgElements.map(el => {
+      if (el.type == 12) {
+        this.labelForEq.push(el.labelHTML);
+      } else {
+        el.inherits.map(ancestorsEl => {
+          this.labelForEq.push(ancestorsEl.labelHTML);
+        });
+      }
+    });
+
+    const {
+      showPoints = true,
+      checkLabelVisibility = false,
+      checkPointVisibility = false,
+      fixed = false,
+      bg = false
+    } = settings;
     switch (object._type) {
       case 14:
       case JXG.OBJECT_TYPE_POINT:

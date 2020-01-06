@@ -103,8 +103,6 @@ class Equations extends Component {
 
     eqs.push(newEquation);
     changedEqs.push(false);
-    console.log("eqs: ");
-    console.log(eqs);
     this.setState({ eqs, changedEqs, newEquation: "" });
     this.setApiLatex(eqs[eqs.length - 1]);
   };

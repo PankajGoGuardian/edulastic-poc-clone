@@ -64,7 +64,7 @@ export const SegmentsToolBtn = styled.li`
   transition: background-color 0.1s ease-in;
   user-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
-  margin-right: ${({ zoomLevel }) => zoomLevel > "1" && `1rem`};
+  margin-right: ${({ zoomLevel }) => (zoomLevel > "1" ? `1rem` : "0.2rem")};
 
   @media screen and (min-width: ${extraDesktopWidth}) {
     margin-right: ${({ zoomLevel }) => zoomLevel > "1" && `0.5rem`};

@@ -70,6 +70,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
   context(` > max attempt set to - ${maxAttempt}`, () => {
     before("login as student", () => cy.login("student", student, password));
 
+    beforeEach(() => studentTest.clickOnExitTest());
+
     it(" > 1st attempt", () => {
       assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, start);
       assignmentPage.clickOnAssignmentButton();

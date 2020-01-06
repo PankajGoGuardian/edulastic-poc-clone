@@ -9,4 +9,9 @@ export default class TestSettings {
 
   // Shuffle Choice
   getShuffleChoiceButton = () => cy.get('[data-cy="shuffleChoices"]');
+
+  // Check Answer Tries Per Question
+  getCheckAnswer = () => cy.get("#check-answer-tries-per-question").find("input");
+
+  setCheckAnswer = checkAns => this.getCheckAnswer().type(`{selectall}${checkAns}`);
 }

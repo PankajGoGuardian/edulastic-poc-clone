@@ -14,32 +14,34 @@ class StudentTestPage {
 
   getQuestionText = () => cy.get('[class^="QuestionNumberLabel"]').next();
 
-  checkAnsValidateAsWrong = () => {
-    cy.get("[data-cy=checkAnswer]")
-      .should("be.visible")
-      .click();
-    cy.get("body")
-      .contains("score: 0 / 1")
-      .should("be.visible");
+  getCheckAns = () => cy.get("[data-cy=checkAnswer]");
+
+  getEvaluationMessage = () => cy.get(".ant-message-custom-content");
+
+  clickOnCheckAns = (isExhausted = false) => {
+    cy.server();
+    cy.route("POST", "**/evaluation").as("evaluation");
+
+    this.getCheckAns().click();
+
+    if (isExhausted) this.getEvaluationMessage().should("contain.text", "Check answer limit exceeded for the item");
+    else cy.wait("@evaluation");
+  };
+
+  checkAnsValidateAsWrong = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
     return this;
   };
 
-  checkAnsValidateAsRight = () => {
-    cy.get("[data-cy=checkAnswer]")
-      .should("be.visible")
-      .click();
-    cy.get("body")
-      .contains("score: 1 / 1")
-      .should("be.visible");
+  checkAnsValidateAsRight = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: ${maxPoints}/${maxPoints}`);
   };
 
-  checkAnsValidateAsNoPoint = () => {
-    cy.get("[data-cy=checkAnswer]")
-      .should("be.visible")
-      .click();
-    cy.get("body")
-      .contains("score: 0 / 0")
-      .should("be.visible");
+  checkAnsValidateAsNoPoint = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
     return this;
   };
 

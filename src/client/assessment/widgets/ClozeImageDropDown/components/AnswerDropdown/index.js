@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { Select } from "antd";
 
 import { SelectContainer } from "./styled/SelectContainer";
+import { MathSpan } from "@edulastic/common";
 
 const AnswerDropdown = ({
   responseIndex,
@@ -43,7 +44,7 @@ const AnswerDropdown = ({
       >
         {options.map((item, index) => (
           <Select.Option data-cy={`dropdown-res-item-${responseIndex}-${index}`} key={index} value={item.value}>
-            {item.label}
+            <MathSpan dangerouslySetInnerHTML={{ __html: item.label }} />
           </Select.Option>
         ))}
       </Select>

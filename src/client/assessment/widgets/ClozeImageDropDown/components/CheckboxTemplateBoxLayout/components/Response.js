@@ -1,7 +1,7 @@
 import React from "react";
 import Proptypes from "prop-types";
 import { Popover } from "antd";
-import { measureText } from "@edulastic/common";
+import { measureText, MathSpan } from "@edulastic/common";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -55,7 +55,9 @@ const Response = ({
         {indexStr}
       </span>
       <div className="text container" style={textContainerStyle}>
-        <div className="clipText">{userSelections[dropTargetIndex]}</div>
+        <div className="clipText">
+          <MathSpan dangerouslySetInnerHTML={{ __html: userSelections[dropTargetIndex] }} />
+        </div>
         <div
           style={{
             display: checkAnswer || (showAnswer && !lessMinWidth) ? "flex" : "none"

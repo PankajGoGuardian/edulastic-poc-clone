@@ -64,7 +64,7 @@ class Container extends Component {
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
                   <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
-                  <Link disabled to={toLinkForPlaylist}>
+                  <Link to={toLinkForPlaylist}>
                     <ButtonComponent type="primary">Play List</ButtonComponent>
                   </Link>
                   <Divider />

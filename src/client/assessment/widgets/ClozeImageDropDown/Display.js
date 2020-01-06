@@ -173,15 +173,24 @@ class Display extends Component {
     let containerHeight = 0;
     // calculate the dropdown menu height, its top relative to container, for each responseContainer
     let tops = [];
+    let maxResponseOffsetX = 0;
     responseContainers.map((responseContainer, i) => {
       const delta = parseFloat(responseContainer?.height) + (newOptions?.[i]?.length * 32 || 110);
       tops.push(topAndLeftRatio(responseContainer?.top, imagescale, fontsize, smallSize) + delta);
+      const respOffset = responseContainer.left || 0 + responseContainer.width || 0;
+      maxResponseOffsetX = Math.max(respOffset, maxResponseOffsetX);
     });
 
     containerHeight = Math.max(canvasHeight, maxHeight, Math.max(...tops));
+    const containerWidth = Math.max(maxResponseOffsetX, canvasWidth);
 
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={containerHeight}>
+      <StyledPreviewTemplateBox
+        smallSize={smallSize}
+        width={containerWidth}
+        fontSize={fontSize}
+        height={containerHeight}
+      >
         <StyledPreviewContainer smallSize={smallSize} height={containerHeight}>
           <StyledPreviewImage
             imageSrc={imageUrl || ""}

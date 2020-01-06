@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { get, debounce } from "lodash";
+import { get, debounce, uniq } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import selectsData from "../../../../TestPage/components/common/selectsData";
@@ -132,8 +132,8 @@ class AddClassModal extends Component {
     const { searchValue } = this.state;
     const { allTagsData, addNewTag } = this.props;
     let newTag = {};
+    const tempSearchValue = searchValue;
     if (id === searchValue) {
-      const tempSearchValue = searchValue;
       this.setState({ searchValue: "" });
       try {
         const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
@@ -145,9 +145,9 @@ class AddClassModal extends Component {
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
-    const tagsSelected = getFieldValue("tags");
-    const newTags = [...tagsSelected, newTag._id];
-    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
+    const tagsSelected = getFieldValue("tags") || [];
+    const newTags = uniq([...tagsSelected, newTag._id]);
+    setFieldsValue({ tags: newTags.filter(tag => tag !== tempSearchValue) });
     this.setState({ searchValue: "" });
   };
 

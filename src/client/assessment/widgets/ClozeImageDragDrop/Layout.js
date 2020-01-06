@@ -116,32 +116,6 @@ class Layout extends Component {
           </Subtitle>
           <Row gutter={20}>
             <Col md={12}>
-              <Label>{t("component.options.responsecontainerposition")}</Label>
-              <SelectWrapper>
-                <Select
-                  onChange={val => changeUiStyle("responsecontainerposition", val)}
-                  options={[
-                    { value: "top", label: t("component.options.top") },
-                    { value: "bottom", label: t("component.options.bottom") },
-                    { value: "right", label: t("component.options.right") },
-                    { value: "left", label: t("component.options.left") }
-                  ]}
-                  value={uiStyle.responsecontainerposition}
-                />
-              </SelectWrapper>
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.options.responseContainerWidth")}</Label>
-              <Input
-                type="number"
-                min="1"
-                defaultValue={uiStyle.responseContainerWidth || null}
-                onBlur={event => changeUiStyle("responseContainerWidth", +event.target.value)}
-              />
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col md={12}>
               <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
               <SelectWrapper>
                 <Select
@@ -177,9 +151,21 @@ class Layout extends Component {
                 />
               </SelectWrapper>
             </Col>
-          </Row>
-
-          <Row gutter={20}>
+            <Col md={12}>
+              <Label>{t("component.options.responsecontainerposition")}</Label>
+              <SelectWrapper>
+                <Select
+                  onChange={val => changeUiStyle("responsecontainerposition", val)}
+                  options={[
+                    { value: "top", label: t("component.options.top") },
+                    { value: "bottom", label: t("component.options.bottom") },
+                    { value: "right", label: t("component.options.right") },
+                    { value: "left", label: t("component.options.left") }
+                  ]}
+                  value={uiStyle.responsecontainerposition}
+                />
+              </SelectWrapper>
+            </Col>
             <Col md={12}>
               <Label>{t("component.options.choiceMinWidth")}</Label>
               <Input
@@ -199,9 +185,7 @@ class Layout extends Component {
                 defaultValue={uiStyle.choiceMaxWidth || choiceMaxW}
               />
             </Col>
-          </Row>
 
-          <Row gutter={20}>
             <Col md={12}>
               <Label>{t("component.options.widthpx")}</Label>
               <Input

@@ -6,6 +6,7 @@ import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
+import { ThemeProvider } from "styled-components";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import {
@@ -315,18 +316,22 @@ class QuestionViewContainer extends Component {
               return null;
             }
             return (
-              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-                <ClassQuestions
-                  key={index}
-                  isQuestionView={isQuestionView}
-                  qIndex={qIndex}
-                  currentStudent={student}
-                  classResponse={{ testItems: filteredItems, ...others }}
-                  questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
-                  isPresentationMode={isPresentationMode}
-                  labels={this.props.labels}
-                />
-              </AnswerContext.Provider>
+              <ThemeProvider
+                theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
+              >
+                <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                  <ClassQuestions
+                    key={index}
+                    isQuestionView={isQuestionView}
+                    qIndex={qIndex}
+                    currentStudent={student}
+                    classResponse={{ testItems: filteredItems, ...others }}
+                    questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
+                    isPresentationMode={isPresentationMode}
+                    labels={this.props.labels}
+                  />
+                </AnswerContext.Provider>
+              </ThemeProvider>
             );
           })}
       </React.Fragment>

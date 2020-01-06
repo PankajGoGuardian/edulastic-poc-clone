@@ -12,7 +12,7 @@ import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
-import { isMobileDevice } from "@edulastic/common";
+import { isMobileDevice, OfflineNotifier } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
@@ -172,6 +172,7 @@ class App extends Component {
     // signup routes hidden till org reference is not done
     return (
       <div>
+        <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
           <DndProvider

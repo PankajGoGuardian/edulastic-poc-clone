@@ -12,6 +12,8 @@ class StudentTestPage {
     this.report = new ReportsPage();
   }
 
+  getQuestionText = () => cy.get('[class^="QuestionNumberLabel"]').next();
+
   checkAnsValidateAsWrong = () => {
     cy.get("[data-cy=checkAnswer]")
       .should("be.visible")
@@ -100,8 +102,7 @@ class StudentTestPage {
       .click();
 
     cy.wait("@testactivity");
-    cy.url().should("include", "/home/grades");
-    return new ReportsPage();
+    return cy.url().should("include", "/home/grades");
   };
 
   getQueDropDown = () => cy.get("[data-cy=options]").should("be.visible");
@@ -153,6 +154,8 @@ class StudentTestPage {
       });
     return this;
   };
+
+  getAllChoices = () => cy.get('[class^="MultiChoiceContent"]');
 
   getLabels = qcard => qcard.find("label");
 
@@ -716,7 +719,8 @@ class StudentTestPage {
       .find("li")
       .should("have.length", NoOfQues);
   };
-  getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');
+
+  // getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');
 
   verifyQuestionText = (index, text) => {
     this.getQuestionByIndex(index);

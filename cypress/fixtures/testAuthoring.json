@@ -127,5 +127,11 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_STD.default", "MCQ_MULTI.default", "MCQ_TF.default"]
+  },
+  "TEST_SETTING_1": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_MULTI.default"]
   }
 }

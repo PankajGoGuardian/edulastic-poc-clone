@@ -38,7 +38,7 @@ const Container = styled.div`
     if (direction === "row") {
       return `
         margin-left: 16px;
-        width: ${choiceWidth}px;
+        max-width: ${choiceWidth}px;
         border-radius: 0px 10px 10px 0px;
         & .choice-items-wrapper {
           flex-direction: column;
@@ -49,7 +49,7 @@ const Container = styled.div`
     if (direction === "row-reverse") {
       return `
         margin-right: 16px;
-        width: ${choiceWidth}px;
+        max-width: ${choiceWidth}px;
         border-radius: 10px 0px 0px 10px;
         & .choice-items-wrapper {
           flex-direction: column;

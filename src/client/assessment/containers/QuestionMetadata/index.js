@@ -143,8 +143,8 @@ const QuestionMetadata = ({
   };
 
   const createUniqGradeAndSubjects = (grades, subject) => {
-    const uniqGrades = _.uniq([...grades, ...selectedGrades]).filter(item => !!item);
-    const uniqSubjects = _.uniq([subject, ...selectedSubjects]).filter(item => !!item);
+    const uniqGrades = _.uniq([...grades]).filter(item => !!item);
+    const uniqSubjects = [subject].filter(item => !!item);
     setQuestionData({ ...questionData, grades: uniqGrades, subjects: uniqSubjects });
   };
 

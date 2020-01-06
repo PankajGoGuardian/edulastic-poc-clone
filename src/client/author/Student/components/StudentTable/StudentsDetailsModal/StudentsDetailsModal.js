@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 
+import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Modal, Table } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { StyledStatusIcon, StatusDiv } from "./styled";
@@ -11,6 +12,7 @@ import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 class StudentsDetailsModal extends React.Component {
   constructor(props) {
     super(props);
+    const { t } = props;
     this.columns = [
       {
         title: t("users.student.studentdetail.name"),
@@ -109,6 +111,7 @@ class StudentsDetailsModal extends React.Component {
 }
 
 const enhance = compose(
+  withNamespaces("manageDistrict"),
   connect(state => ({
     dataSource: get(state, ["studentReducer", "multiStudents"], []),
     teacherDataSource: get(state, ["schoolAdminReducer", "bulkTeacherData"], []),

@@ -640,7 +640,7 @@ function* calculateFormulaSaga({ payload }) {
           newQuestion.variable.variables[key].exampleValue = result.values[key];
         });
       } else {
-        const idx = question.variable.examples.findIndex(example => `example${example.key}` === result.id);
+        const idx = newQuestion.variable.examples.findIndex(example => `example${example.key}` === result.id);
         Object.keys(result.values).forEach(key => {
           newQuestion.variable.examples[idx][key] = result.values[key];
         });

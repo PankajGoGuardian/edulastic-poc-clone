@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { Affix, message } from "antd";
+import { message } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
@@ -41,7 +41,8 @@ import {
   ToolTipContainer,
   MainActionWrapper,
   LogoCompact,
-  Nav
+  Nav,
+  CustomAffix
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
@@ -490,7 +491,7 @@ class AssessmentPlayerDefault extends React.Component {
               finishTest={this.finishTest}
             />
           )}
-          <Affix>
+          <CustomAffix>
             <Header LCBPreviewModal={LCBPreviewModal}>
               <HeaderMainMenu skin style={{ height: headerHeight }}>
                 <FlexContainer style={headerStyleWidthZoom}>
@@ -590,7 +591,7 @@ class AssessmentPlayerDefault extends React.Component {
                 </FlexContainer>
               </HeaderMainMenu>
             </Header>
-          </Affix>
+          </CustomAffix>
           <Main
             skin
             zoomed={isZoomApplied}

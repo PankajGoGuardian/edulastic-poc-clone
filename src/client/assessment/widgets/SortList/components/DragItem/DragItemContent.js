@@ -31,7 +31,7 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
    * but in this type, drag item is not using ellipsis.
    * so need to reduce 10px
    */
-  const showPopover = scrollWidth - 10 > style.maxWidth;
+  const showPopover = scrollWidth - 10 > style?.maxWidth;
   const checkStyle = !active && showPreview && !isReviewTab;
 
   const content = (

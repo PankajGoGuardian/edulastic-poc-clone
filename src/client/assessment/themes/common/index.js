@@ -22,3 +22,4 @@ export { default as ToolButton } from "./ToolButton";
 export { default as CalculatorContainer } from "./CalculatorContainer";
 export { default as ToolTipContainer } from "./ToolTipContainer";
 export { default as MainActionWrapper } from "./MainActionWrapper";
+export { default as CustomAffix } from "./CustomAffix";

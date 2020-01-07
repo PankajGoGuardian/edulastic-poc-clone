@@ -305,6 +305,7 @@ class AddClassModal extends Component {
                 ]
               })(
                 <Select
+                  showSearch
                   labelInValue
                   placeholder={t("class.components.addclass.placeholder.teacher")}
                   notFoundContent={fetchingTeacher ? <Spin size="small" /> : null}

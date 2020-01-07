@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, smallDesktopWidth } from "@edulastic/colors";
 
 const sharedBtnStyle = css`
   background-color: transparent;
@@ -14,6 +14,7 @@ const sharedBtnStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
+
   @media (min-width: 1025px) {
     width: 40px;
     height: 40px;
@@ -21,6 +22,10 @@ const sharedBtnStyle = css`
       background-color: ${themeColor};
       color: #fff;
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 35px;
   }
 `;
 const BackArrow = styled.nav`

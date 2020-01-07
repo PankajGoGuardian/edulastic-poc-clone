@@ -610,7 +610,6 @@ class Board {
 
   reset() {
     this.abortTool();
-    //Fix remove
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
     this.labelForEq = [];
@@ -1212,8 +1211,9 @@ class Board {
 
       case Equation.jxgType:
         function getPoints(type, res) {
+          res = res.split("],")[1];
           res = res.replace("['" + type + "',[", "").replace("]]", "");
-          res = res.substring(1, res.length - 1);
+          res = res.substring(2, res.length - 2);
           res = res.split("),(");
           for (var i = 0; i < res.length; i++) {
             res[i] = res[i].split(",");
@@ -1336,7 +1336,7 @@ class Board {
           const labelPoint1 = getLabel(this.labelForEq);
 
           var point1 = {
-            x: coords[2][0] - coords[1][0],
+            x: `${coords[2][0]} - ${coords[1][0]}`,
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
@@ -1486,6 +1486,7 @@ class Board {
             labelHTML: [labelPoint3, labelPoint2, labelPoint1]
           });
         } else {
+          object.apiLatex = object.apiLatex.split("],[")[0].replace("[", "");
           return Equation.create(this, object);
         }
 

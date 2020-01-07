@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { message, Tooltip } from "antd";
+import { message } from "antd";
+import { Tooltip } from "../../../../common/utils/helpers";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import { TypeToConfirmModal } from "@edulastic/common";

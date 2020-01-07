@@ -14,12 +14,16 @@ import "./index.css";
 import App from "./App";
 import configureStore, { history } from "./configureStore";
 import AppConfig from "../../app-config";
+import { isMobileDevice, isIOS } from "./platform";
 
 if (process.env.POI_APP_SENTRY_URI) {
   window.Raven.config(process.env.POI_APP_SENTRY_URI, {
     whitelistUrls: [AppConfig.sentryWhiteListURLRegex]
   }).install();
 }
+
+window.isMobileDevice = isMobileDevice();
+window.isIOS = isIOS();
 
 smoothscroll.polyfill();
 

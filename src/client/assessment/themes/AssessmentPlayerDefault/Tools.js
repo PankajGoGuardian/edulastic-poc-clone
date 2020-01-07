@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Tooltip } from "antd";
+import { Button } from "antd";
+import { Tooltip } from "../../../common/utils/helpers";
 import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";

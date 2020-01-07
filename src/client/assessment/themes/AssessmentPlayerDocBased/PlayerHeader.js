@@ -10,7 +10,7 @@ import {
   SaveAndExit,
   MainActionWrapper
 } from "../common";
-import { Tooltip } from "antd";
+import { Tooltip } from "../../../common/utils/helpers";
 import { Container, StyledButton, CaculatorIcon } from "../common/ToolBar";
 import { MAX_MOBILE_WIDTH } from "../../constants/others";
 

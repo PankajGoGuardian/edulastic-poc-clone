@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Tooltip } from "antd";
+import { Tooltip } from "../../../common/utils/helpers";
 import styled from "styled-components";
 
 import { nonAutoGradableTypes } from "@edulastic/constants";

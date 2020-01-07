@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { Affix, Tooltip, message } from "antd";
+import { Affix, message } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
@@ -24,7 +24,7 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import ReportIssuePopover from "../common/ReportIssuePopover";
-
+import { Tooltip } from "../../../common/utils/helpers";
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import {
   ControlBtn,

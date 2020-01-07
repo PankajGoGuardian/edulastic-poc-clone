@@ -1,7 +1,7 @@
 import { signUpState } from "@edulastic/constants";
 import { isUndefined, last, get, isEmpty } from "lodash";
 import { Partners } from "./static/partnerData";
-import { message } from "antd";
+import { message, Tooltip as AntDTooltip } from "antd";
 import styled from "styled-components";
 import { smallestZoomLevel } from "./static/zoom";
 import { breakpoints } from "../../student/zoomTheme";
@@ -233,3 +233,10 @@ export const addThemeBackgroundColor = elem => styled(elem)`
 export const ifZoomed = zoomLevel => zoomLevel && zoomLevel !== smallestZoomLevel;
 
 export const isZoomGreator = (zoomLevel, levelToCheck) => breakpoints[levelToCheck] > breakpoints[zoomLevel];
+
+export const Tooltip = props =>
+  window.isMobileDevice || window.isIOS ? (
+    <>{props.children}</>
+  ) : (
+    <AntDTooltip {...props}>{props.children}</AntDTooltip>
+  );

@@ -3,7 +3,7 @@ import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Tooltip } from "antd";
+import { Tooltip } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import { smallDesktopWidth } from "@edulastic/colors";

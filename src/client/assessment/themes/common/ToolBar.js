@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, Tooltip } from "antd";
-
+import { Button } from "antd";
+import { Tooltip } from "../../../common/utils/helpers";
 import { test, questionType } from "@edulastic/constants";
 import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";

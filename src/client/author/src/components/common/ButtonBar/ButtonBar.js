@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Menu, Button, Tooltip } from "antd";
+import { Menu, Button } from "antd";
+import { Tooltip } from "../../../../../common/utils/helpers";
 import {
   IconSaveNew,
   IconSource,

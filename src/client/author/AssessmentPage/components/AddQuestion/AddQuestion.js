@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Tooltip } from "antd";
-
+import { Tooltip } from "../../../../common/utils/helpers";
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,

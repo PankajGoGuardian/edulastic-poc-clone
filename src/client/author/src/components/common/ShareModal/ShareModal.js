@@ -11,6 +11,7 @@ import { withRouter } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
 import { themeColor, whiteSmoke, greenDark, fadedGrey, white, backgroundGrey2 } from "@edulastic/colors";
 import { IconClose, IconShare } from "@edulastic/icons";
+import { roleuser } from "@edulastic/constants";
 import { getUserFeatures } from "../../../../../student/Login/ducks";
 import { RadioInputWrapper } from "../RadioInput";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
@@ -31,7 +32,7 @@ import {
 } from "../../../../sharedDucks/userDetails";
 import { MAX_TAB_WIDTH } from "../../../constants/others";
 
-import { getOrgDataSelector } from "../../../selectors/user";
+import { getOrgDataSelector, getUserRole } from "../../../selectors/user";
 import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
 
 const { Paragraph } = Typography;
@@ -58,6 +59,7 @@ const sharedKeysObj = {
 };
 
 const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
+const shareTypeKeyForDa = ["DISTRICT"];
 class ShareModal extends React.Component {
   constructor(props) {
     super(props);
@@ -97,8 +99,12 @@ class ShareModal extends React.Component {
   }
 
   componentDidMount() {
-    const { getSharedUsers, match, isPlaylist } = this.props;
+    const { getSharedUsers, match, isPlaylist, userRole } = this.props;
     const testId = match.params.id;
+    const isDA = userRole === roleuser.DISTRICT_ADMIN;
+    if (isDA) {
+      this.setState({ sharedType: sharedKeysObj.DISTRICT, permission: "VIEW" });
+    }
     if (testId && testId !== "undefined")
       getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
   }
@@ -244,7 +250,8 @@ class ShareModal extends React.Component {
       hasPremiumQuestion,
       isPlaylist,
       userOrgData,
-      features
+      features,
+      userRole
     } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
@@ -255,7 +262,7 @@ class ShareModal extends React.Component {
       currentUser.email ? currentUser.email : ""
     }`;
     const { districtName, schools } = userOrgData;
-
+    const isDA = userRole === roleuser.DISTRICT_ADMIN;
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
@@ -306,7 +313,7 @@ class ShareModal extends React.Component {
             <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
               <Radio.Group value={sharedType} onChange={e => this.radioHandler(e)}>
-                {shareTypeKeys.map(item => (
+                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map(item => (
                   <Radio
                     value={item}
                     key={item}
@@ -409,7 +416,8 @@ const enhance = compose(
       sharedUsersList: getUserListSelector(state),
       currentUserId: _get(state, "user.user._id", ""),
       features: getUserFeatures(state),
-      userOrgData: getOrgDataSelector(state)
+      userOrgData: getOrgDataSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       getUsers: fetchUsersListAction,

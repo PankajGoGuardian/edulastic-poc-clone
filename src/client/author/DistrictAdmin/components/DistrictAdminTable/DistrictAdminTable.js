@@ -535,7 +535,7 @@ class DistrictAdminTable extends Component {
                       onBlur={e => this.onBlurFilterText(e, i)}
                       value={filterStr ? filterStr : undefined}
                       disabled={isFilterTextDisable}
-                      innerRef={this.filterTextInputRef[i]}
+                      ref={this.filterTextInputRef[i]}
                     />
                   ) : (
                     <StyledFilterSelect

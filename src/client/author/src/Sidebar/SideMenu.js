@@ -523,14 +523,9 @@ const FixedSidebar = styled.div`
   z-index: 1002;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
   .scrollbar-container {
-    max-height: 100vh;
     > * {
       pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
     }
-  }
-
-  .ant-layout-sider-children {
-    height: 100vh !important;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -543,7 +538,7 @@ const FixedSidebar = styled.div`
   }
 `;
 const SideBar = styled(Layout.Sider)`
-  min-height: 100vh;
+  height: 100%;
   width: 245px;
   max-width: 245px;
   min-width: 245px;

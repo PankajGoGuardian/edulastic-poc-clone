@@ -367,15 +367,9 @@ const FixedSidebar = styled.div`
   cursor: ${props => (props.isSidebarCollapsed ? "pointer" : "initial")};
 
   .scrollbar-container {
-    max-height: 100vh;
-
     > * {
       pointer-events: ${props => (props.isSidebarCollapsed ? "none" : "all")};
     }
-  }
-
-  .ant-layout-sider-children {
-    height: 100vh !important;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -386,7 +380,7 @@ const FixedSidebar = styled.div`
 `;
 
 const SideBar = styled(Layout.Sider)`
-  min-height: 100vh;
+  height: 100%;
   width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: ${props => props.theme.sideMenu.sidebarBgColor};

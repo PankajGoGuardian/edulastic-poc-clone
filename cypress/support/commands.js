@@ -6,6 +6,7 @@ import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
 import FileHelper from "../e2e/framework/util/fileHelper";
+import "cypress-file-upload";
 
 const screenResolutions = Cypress.config("SCREEN_SIZES");
 
@@ -392,24 +393,49 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("uploadFile", (fileName, selector) =>
-  cy.get(selector).then(subject =>
-    cy
-      .fixture(fileName, "base64")
-      .then(Cypress.Blob.base64StringToBlob)
-      .then(blob => {
-        cy.server();
-        cy.route("POST", "**/file/**").as("fileUpload");
-        const el = subject[0];
-        const testFile = new File([blob], fileName, {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        });
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(testFile);
-        el.files = dataTransfer.files;
-        return cy.wait("@fileUpload").then(() => subject);
-      })
-  )
+function getMimetype(filename) {
+  let mimeType = "image/png";
+  const fileExtention = filename.split(".").reverse()[0];
+  switch (fileExtention) {
+    case "png":
+      mimeType = "image/png";
+      break;
+
+    case "jpeg":
+    case "jpg":
+      mimeType = "image/jpeg";
+      break;
+
+    case "gif":
+      mimeType = "image/gif";
+      break;
+
+    case "pdf":
+      mimeType = "application/pdf";
+      break;
+
+    default:
+      break;
+  }
+
+  return mimeType;
+}
+
+/* 
+@param fileName : 'testImages/sample.jpg'
+@param selector : valid element selector eg: 'input[type=file]'
+@param subjectType : 'input' / 'drag-n-drop'
+*/
+Cypress.Commands.add("uploadFile", (fileName, selector, subjectType = "input") =>
+  cy.get(selector).then(subject => {
+    cy.fixture(fileName, "base64").then(fileContent => {
+      cy.server();
+      cy.route("POST", /edureact/g).as("fileUpload");
+      cy.wrap(subject)
+        .upload({ fileContent, fileName, mimeType: getMimetype(fileName) }, { subjectType })
+        .then(() => cy.wait("@fileUpload").then(() => subject));
+    });
+  })
 );
 
 Cypress.Commands.add(

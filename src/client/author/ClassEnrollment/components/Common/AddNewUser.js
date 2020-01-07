@@ -109,6 +109,10 @@ class AddNewUserForm extends React.Component {
   };
 
   render() {
+    const iconSize = {
+      width: "12px",
+      height: "12px"
+    };
     const {
       form: { getFieldDecorator },
       closeModal,
@@ -172,7 +176,7 @@ class AddNewUserForm extends React.Component {
                     rules: [{ required: true, message: "Please enter valid class code" }]
                   })(
                     <Input
-                      prefix={<img src={hashIcon} alt="" />}
+                      prefix={<img style={iconSize} src={hashIcon} alt="" />}
                       onBlur={evt => {
                         const classCodeValue = evt.target.value.trim();
                         if (classCodeValue.length) fetchClassDetailsUsingCode(classCodeValue);
@@ -196,7 +200,7 @@ class AddNewUserForm extends React.Component {
                   })(
                     <Input
                       data-cy="username"
-                      prefix={<img src={mailIcon} alt="" />}
+                      prefix={<img style={iconSize} src={mailIcon} alt="" />}
                       placeholder="Enter Username/email"
                       onChange={e => this.setUsername(e.target.value)}
                     />
@@ -229,14 +233,23 @@ class AddNewUserForm extends React.Component {
                       { required: true, message: "Please provide user full name" },
                       { max: 128, message: "Must less than 128 characters!" }
                     ]
-                  })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the name of user" />)}
+                  })(
+                    <Input
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the name of user"
+                    />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="password">
                 <legend>Password</legend>
                 <Form.Item>
                   {getFieldDecorator("password")(
-                    <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+                    <Input
+                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                      type="password"
+                      placeholder="Enter Password"
+                    />
                   )}
                 </Form.Item>
               </Field>
@@ -245,7 +258,13 @@ class AddNewUserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
-                  })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
+                  })(
+                    <Input
+                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                      type="password"
+                      placeholder="Confirm Password"
+                    />
+                  )}
                 </Form.Item>
               </Field>
               {role === "teacher" && (

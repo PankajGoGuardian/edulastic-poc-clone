@@ -37,8 +37,9 @@ function* loadTestActivityReport({ payload }) {
       call(testsApi.getByIdMinimal, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
-    markQuestionLabel(test.testItems);
-    const questions = getQuestions(test.testItems);
+    const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+    markQuestionLabel(testItems);
+    const questions = getQuestions(test.itemGroups);
     const questionsWithActivities = questions.map(question => {
       if (!question.activity) {
         const activity = reports.questionActivities.find(qActivity => qActivity.qid === question.id);
@@ -52,7 +53,7 @@ function* loadTestActivityReport({ payload }) {
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
-    yield put(setTestItemsAction(test.testItems));
+    yield put(setTestItemsAction(testItems));
     yield put(setPassagesDataAction(test.passages || []));
 
     const { questionActivities = [] } = reports || {};

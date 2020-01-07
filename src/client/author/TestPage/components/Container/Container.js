@@ -195,7 +195,7 @@ class Container extends PureComponent {
   componentDidUpdate(prevProps) {
     const { receiveItemDetailById, test } = this.props;
     if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
-      const [testItem] = test.testItems;
+      const testItem = test.itemGroups?.[0].items?.[0] || {};
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
     }
@@ -210,12 +210,16 @@ class Container extends PureComponent {
       questionsUpdated,
       updated
     } = this.props;
-    const { authors, testItems, isDocBased } = test;
+    const { authors, itemGroups, isDocBased } = test;
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    if (isEditable && testItems.length > 0 && (updated || (questionsUpdated && isDocBased))) {
+    if (
+      isEditable &&
+      itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
+      (updated || (questionsUpdated && isDocBased))
+    ) {
       return "";
     }
     return;
@@ -229,7 +233,7 @@ class Container extends PureComponent {
       testStatus,
       updated
     } = this.props;
-    const { authors, testItems } = test;
+    const { authors } = test;
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
@@ -243,7 +247,7 @@ class Container extends PureComponent {
       testStatus,
       updated
     } = this.props;
-    const { authors, testItems = [] } = test;
+    const { authors, itemGroups = [] } = test;
     const { editEnable } = this.state;
     if (!this.props.test?.title?.trim()?.length) {
       message.warn("Please enter test name.");
@@ -259,7 +263,7 @@ class Container extends PureComponent {
     this.gotoTab(value);
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-    if (isEditable && testItems.length > 0 && updated && !firstFlow) {
+    if (isEditable && itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 && updated && !firstFlow) {
       this.handleSave(test);
     }
   };
@@ -277,25 +281,6 @@ class Container extends PureComponent {
         }
       }
     }
-  };
-
-  handleAddItems = testItems => {
-    const { test, setData } = this.props;
-    const newTest = cloneDeep(test);
-
-    newTest.testItems = testItems;
-
-    newTest.scoring.testItems = testItems.map(item => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
-      if (!foundItem) {
-        return {
-          id: item ? item._id : uuidv4(),
-          points: 0
-        };
-      }
-      return foundItem;
-    });
-    setData(newTest);
   };
 
   handleChangeGrade = grades => {
@@ -365,7 +350,6 @@ class Container extends PureComponent {
         return (
           <Content>
             <AddItems
-              onAddItems={this.handleAddItems}
               current={current}
               isEditable={isEditable}
               onSaveTestId={this.handleSaveTestId}
@@ -444,7 +428,7 @@ class Container extends PureComponent {
 
   modifyTest = () => {
     const { user, test, itemsSubjectAndGrade } = this.props;
-    const { testItems } = test;
+    const { itemGroups } = test;
     const newTest = cloneDeep(test);
 
     newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
@@ -455,8 +439,7 @@ class Container extends PureComponent {
       name
     };
 
-    newTest.testItems = testItems || [];
-    newTest.scoring.testItems = (testItems || []).map(item => {
+    newTest.scoring.testItems = (itemGroups.flatMap(itemGroup => itemGroup.items || []) || []).map(item => {
       const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {
@@ -642,7 +625,7 @@ class Container extends PureComponent {
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = this.props.currentTab;
     const { showCancelButton = false } = history.location.state || {};
-    const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
+    const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
@@ -650,6 +633,7 @@ class Container extends PureComponent {
     const showEditButton =
       testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
 
+    const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
     const gradeSubject = { grades, subjects };

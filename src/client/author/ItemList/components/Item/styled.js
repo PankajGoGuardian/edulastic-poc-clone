@@ -12,7 +12,10 @@ import {
   themeColorTagsBg,
   themeColor,
   red,
-  lightGreySecondary
+  lightGreySecondary,
+  backgroundGrey,
+  labelGrey2,
+  title
 } from "@edulastic/colors";
 import styled, { css } from "styled-components";
 import { Button, Tag } from "antd";
@@ -187,6 +190,30 @@ export const AddRemoveBtn = styled(ButtonStyle)`
       &:active {
         border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)} !important;
         color: ${props => (props.isAddOrRemove ? themeColor : red)};
+      }
+    }
+  }
+`;
+
+export const AddRemoveBtnPublisher = styled(AddRemoveBtn)`
+  &.ant-btn {
+    background: ${({ isAddOrRemove }) => (isAddOrRemove ? "inherit" : backgroundGrey)};
+    border: ${({ isAddOrRemove }) => `1px solid ${isAddOrRemove ? themeColor : backgroundGrey}`} !important;
+    color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : labelGrey2)};
+    i {
+      svg {
+        width: 12px;
+        height: 12px;
+        fill: ${title};
+      }
+    }
+
+    @media (max-width: ${tabletWidth}) {
+      &:hover,
+      &:focus,
+      &:active {
+        border: 1px solid ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : backgroundGrey)} !important;
+        color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : labelGrey2)};
       }
     }
   }

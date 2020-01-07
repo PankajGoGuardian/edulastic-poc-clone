@@ -226,7 +226,7 @@ function* createAssessmentSaga({ payload }) {
           name
         },
         isDocBased: true,
-        testItems: [item],
+        itemGroups: [{ ...initialTestState.itemGroups[0], items: [item] }],
         docUrl: fileURI,
         releaseScore,
         assignments: undefined,

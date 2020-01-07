@@ -95,6 +95,7 @@ export function* receiveTestActivitySaga({ payload }) {
 
     const students = get(gradebookData, "students", []);
     // the below methods mutates the gradebookData
+    classResponse.testItems = classResponse.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.test = classResponse;

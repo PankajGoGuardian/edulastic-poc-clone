@@ -44,7 +44,7 @@ export const approveOrRejectMultipleItem = createAction(APPROVE_OR_REJECT_MULTIP
 export function* addItemToCartSaga({ payload }) {
   const { item } = payload;
   const test = yield select(getTestEntitySelector);
-  const testItems = [...test.testItems];
+  const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
   let updatedTestItems = [];
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
@@ -68,7 +68,12 @@ export function* addItemToCartSaga({ payload }) {
   const updatedTest = {
     ...test,
     releaseScore,
-    testItems: updatedTestItems
+    itemGroups: [
+      {
+        ...test.itemGroups[0],
+        items: updatedTestItems
+      }
+    ]
   };
 
   yield put(setTestItemsAction(updatedTestItems.map(o => o._id)));
@@ -77,14 +82,15 @@ export function* addItemToCartSaga({ payload }) {
 
 export function* createTestFromCart({ payload: { testName } }) {
   const test = yield select(getTestEntitySelector);
-  const questionGrades = test.testItems
+  const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  const questionGrades = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.grades || []);
-  const questionSubjects = test.testItems
+  const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
-  const grades = test.testItems.flatMap(item => item.grades);
-  const subjects = test.testItems.flatMap(item => item.subjects);
+  const grades = testItems.flatMap(item => item.grades);
+  const subjects = testItems.flatMap(item => item.subjects);
   const updatedTest = {
     ...test,
     title: testName,

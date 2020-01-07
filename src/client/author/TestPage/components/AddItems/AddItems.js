@@ -41,7 +41,8 @@ import {
   previewCheckAnswerAction,
   previewShowAnswerAction,
   setTestDataAndUpdateAction,
-  getAllTagsAction
+  getAllTagsAction,
+  setCurrentGroupIndexAction
 } from "../../ducks";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import {
@@ -55,16 +56,16 @@ import {
   MobileFilterIcon
 } from "../../../ItemList/components/Container/styled";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import { getInterestedCurriculumsSelector, getUserId } from "../../../src/selectors/user";
+import { getInterestedCurriculumsSelector, getUserId, getUserFeatures } from "../../../src/selectors/user";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
+import GroupItems from "../GroupItems/index";
 
 class AddItems extends PureComponent {
   static propTypes = {
     items: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     receiveTestItems: PropTypes.func.isRequired,
-    onAddItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isEditable: PropTypes.bool,
     windowWidth: PropTypes.number.isRequired,
@@ -94,7 +95,8 @@ class AddItems extends PureComponent {
   };
 
   state = {
-    questionCreateType: "Duplicate"
+    questionCreateType: "Duplicate",
+    showAddItemsPage: true
   };
 
   componentDidMount() {
@@ -288,7 +290,8 @@ class AddItems extends PureComponent {
       setTestItems,
       selectedRows,
       gotoSummary,
-      search
+      search,
+      setCurrentGroupIndex
     } = this.props;
     if (items.length < 1) {
       return (
@@ -321,6 +324,7 @@ class AddItems extends PureComponent {
         selectedRows={selectedRows}
         gotoSummary={gotoSummary}
         page={"addItems"}
+        setCurrentGroupIndex={setCurrentGroupIndex}
       />
     ));
   };
@@ -337,63 +341,89 @@ class AddItems extends PureComponent {
       test,
       toggleFilter,
       isShowFilter,
-      search
+      search,
+      features
     } = this.props;
 
     return (
       <>
-        <Container>
-          {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
-            <ItemFilter
-              onSearchFieldChange={this.handleSearchFieldChange}
-              onSearchInputChange={this.handleSearchInputChange}
-              onSearch={this.handleSearch}
-              onClearSearch={this.handleClearSearch}
-              onLabelSearch={this.handleLabelSearch}
-              windowWidth={windowWidth}
-              search={search}
-              curriculums={curriculums}
-              getCurriculumStandards={getCurriculumStandards}
-              curriculumStandards={curriculumStandards}
-              items={filterMenuItems}
-              toggleFilter={toggleFilter}
-              isShowFilter={isShowFilter}
-              t={t}
-            />
-          )}
-          <ListItems isShowFilter={isShowFilter}>
-            <Element>
-              <MobileFilterIcon>
-                <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
-              </MobileFilterIcon>
-              <ContentWrapper borderRadius="0px" padding="0px">
-                {loading && <Spin size="large" />}
-                <ItemsMenu>
-                  <QuestionsFound>{count} questions found</QuestionsFound>
-                  <FlexContainer alignItems="center" justifyContent="space-between">
-                    <span style={{ fontSize: "12px" }}>{test.testItems.length} SELECTED</span>
-                    <StyledButton
-                      data-cy="createNewItem"
-                      type="secondary"
-                      size="large"
-                      onClick={this.handleCreateNewItem}
-                    >
-                      <IconPlusCircle color={themeColor} width={15} height={15} />
-                      <span>Create new Item</span>
-                    </StyledButton>
-                  </FlexContainer>
-                </ItemsMenu>
+        {this.state.showAddItemsPage ? (
+          <Container>
+            {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
+              <ItemFilter
+                onSearchFieldChange={this.handleSearchFieldChange}
+                onSearchInputChange={this.handleSearchInputChange}
+                onSearch={this.handleSearch}
+                onClearSearch={this.handleClearSearch}
+                onLabelSearch={this.handleLabelSearch}
+                windowWidth={windowWidth}
+                search={search}
+                curriculums={curriculums}
+                getCurriculumStandards={getCurriculumStandards}
+                curriculumStandards={curriculumStandards}
+                items={filterMenuItems}
+                toggleFilter={toggleFilter}
+                isShowFilter={isShowFilter}
+                t={t}
+              />
+            )}
+            <ListItems isShowFilter={isShowFilter}>
+              <Element>
+                <MobileFilterIcon>
+                  <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
+                </MobileFilterIcon>
+                <ContentWrapper borderRadius="0px" padding="0px">
+                  {loading && <Spin size="large" />}
+                  <ItemsMenu>
+                    <QuestionsFound>{count} questions found</QuestionsFound>
+                    <FlexContainer alignItems="center" justifyContent="space-between">
+                      <span style={{ fontSize: "12px" }}>
+                        {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
+                      </span>
+                      <StyledButton
+                        data-cy="createNewItem"
+                        type="secondary"
+                        size="large"
+                        onClick={this.handleCreateNewItem}
+                      >
+                        <IconPlusCircle color={themeColor} width={15} height={15} />
+                        <span>Create new Item</span>
+                      </StyledButton>
+                      {(features.isCurator || features.isPublisherAuthor) && (
+                        <StyledButton
+                          data-cy="createNewItem"
+                          type="secondary"
+                          size="large"
+                          onClick={() => {
+                            this.setState({ showAddItemsPage: false });
+                          }}
+                        >
+                          <IconPlusCircle color={themeColor} width={15} height={15} />
+                          <span>Group Items</span>
+                        </StyledButton>
+                      )}
+                    </FlexContainer>
+                  </ItemsMenu>
 
-                {!loading && (
-                  <ScrollbarContainer>
-                    {this.renderItems()}
-                    {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
-                  </ScrollbarContainer>
-                )}
-              </ContentWrapper>
-            </Element>
-          </ListItems>
-        </Container>
+                  {!loading && (
+                    <ScrollbarContainer>
+                      {this.renderItems()}
+                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                    </ScrollbarContainer>
+                  )}
+                </ContentWrapper>
+              </Element>
+            </ListItems>
+          </Container>
+        ) : (
+          <GroupItems
+            groupIndex={test.itemGroups?.length + 1}
+            test={test}
+            switchToAddItems={() => {
+              this.setState({ showAddItemsPage: true });
+            }}
+          />
+        )}
       </>
     );
   }
@@ -417,7 +447,8 @@ const enhance = compose(
       userId: getUserId(state),
       testItemsList: getTestItemsSelector(state),
       selectedRows: getSelectedItemSelector(state),
-      search: getSearchFilterStateSelector(state)
+      search: getSearchFilterStateSelector(state),
+      features: getUserFeatures(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,
@@ -433,7 +464,8 @@ const enhance = compose(
       setDataAndSave: setTestDataAndUpdateAction,
       setTestItems: setTestItemsAction,
       updateSearchFilterState: updateSearchFilterStateAction,
-      clearFilterState: clearFilterStateAction
+      clearFilterState: clearFilterStateAction,
+      setCurrentGroupIndex: setCurrentGroupIndexAction
     }
   )
 );

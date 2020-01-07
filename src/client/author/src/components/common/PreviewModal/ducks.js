@@ -27,7 +27,7 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   if (page === "addItems" || page === "itemList") {
     testItems = get(state, "testsAddItems.items", []);
   } else if (page === "review") {
-    testItems = get(state, "tests.entity.testItems", []);
+    testItems = state.tests.entity.itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
   } else {
     console.warn("unknown page type ", page);
   }

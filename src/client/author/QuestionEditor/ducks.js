@@ -24,7 +24,8 @@ import {
   setCreatedItemToTestAction,
   updateTestAndNavigateAction,
   getTestSelector,
-  SET_TEST_DATA
+  SET_TEST_DATA,
+  getCurrentGroupIndexSelector
 } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
@@ -544,6 +545,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
   try {
     const { item, tId: testId, isEditFlow } = payload;
     const testItems = yield select(getSelectedItemSelector);
+    const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     //updated testItems should have the current authored item
     // if it is passage item there could be multiple testitems merge all into nextTestItems and add to test.
     let nextTestItems = testItems;
@@ -565,8 +567,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
       // update the test store with new test ITem
       const updatedTest = produce(test, draft => {
-        let { testItems } = draft;
-        testItems.push(item);
+        draft.itemGroups[currentGroupIndex].items.push(item);
       });
 
       yield put({

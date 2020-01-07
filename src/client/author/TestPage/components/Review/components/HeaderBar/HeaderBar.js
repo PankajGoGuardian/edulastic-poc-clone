@@ -23,9 +23,11 @@ const HeaderBar = ({
   setCollapse,
   isShowSummary,
   onShowTestPreview,
-  hasStickyHeader
+  hasStickyHeader,
+  itemGroups
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
+  const disableRMbtns = itemGroups.length > 1 && itemGroups.some(group => group.type === "AUTOSELECT");
 
   const handleSuccess = position => {
     const post = position - 1;
@@ -40,6 +42,7 @@ const HeaderBar = ({
   };
 
   const handleMoveTo = () => {
+    if (disableRMbtns) return;
     if (selectedItems.length === 1) {
       setShowPrompt(!showPrompt);
     } else {
@@ -71,9 +74,9 @@ const HeaderBar = ({
           </ButtonLink>
         </ActionButton>
         {owner && isEditable && (
-          <ActionButton data-cy="removeSelected">
+          <ActionButton data-cy="removeSelected" disabled={disableRMbtns}>
             <ButtonLink
-              onClick={onRemoveSelected}
+              onClick={!disableRMbtns ? onRemoveSelected : () => null}
               color="primary"
               icon={<IconClose color={themeColor} width={12} height={12} />}
             >
@@ -82,9 +85,9 @@ const HeaderBar = ({
           </ActionButton>
         )}
         {owner && isEditable && (
-          <ActionButton data-cy="moveto">
+          <ActionButton data-cy="moveto" disabled={disableRMbtns}>
             <ButtonLink
-              onClick={handleMoveTo}
+              onClick={!disableRMbtns ? handleMoveTo : () => null}
               color="primary"
               icon={<IconMoveTo color={themeColor} width={12} height={12} />}
             >

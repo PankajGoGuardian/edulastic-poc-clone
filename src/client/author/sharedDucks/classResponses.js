@@ -40,6 +40,7 @@ export const updateStudentQuestionActivityScoreAction = createAction(UPDATE_STUD
 function* receiveClassResponseSaga({ payload }) {
   try {
     const classResponse = yield call(classResponseApi.classResponse, payload);
+    classResponse.testItems = classResponse.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     markQuestionLabel(classResponse.testItems);
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,

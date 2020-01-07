@@ -2,7 +2,7 @@ import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy, groupBy, get, flatten } from "lodash";
+import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -140,7 +140,8 @@ function* loadTest({ payload }) {
       yield put(setPasswordStatusAction(""));
     }
     const isAuthorReview = Object.keys(testData).length > 0;
-    const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
+    const [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
+    test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     if (
       testActivity?.assignmentSettings?.questionsDelivery ===
         testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&

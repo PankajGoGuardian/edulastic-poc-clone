@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
-import { message, Row } from "antd";
+import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources } from "@edulastic/common";
@@ -37,7 +37,8 @@ import {
   IdIcon,
   MoreInfo,
   Details,
-  AddRemoveBtn
+  AddRemoveBtn,
+  AddRemoveBtnPublisher
 } from "./styled";
 import PreviewModal from "../../../src/components/common/PreviewModal";
 import {
@@ -49,7 +50,7 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
-
+import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
@@ -224,6 +225,7 @@ class Item extends Component {
           return this.setState({ selectedId: "", passageConfirmModalVisible: true });
         }
       }
+
       setDataAndSave({ addToTest: true, item, current: this.props.current });
       message.success("Item added to cart");
     } else {
@@ -233,6 +235,30 @@ class Item extends Component {
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
+  };
+
+  handleAddRemove = (item, isAddOrRemove) => {
+    const {
+      test: { itemGroups },
+      setCurrentGroupIndex
+    } = this.props;
+    if (isAddOrRemove) {
+      if (itemGroups.length === 1) {
+        setCurrentGroupIndex(0);
+        this.handleSelection(item);
+      } else {
+        this.setState({ showSelectGroupModal: true });
+      }
+    } else {
+      this.handleSelection(item);
+    }
+  };
+
+  handleSelectGroupModalResponse = index => {
+    const { item, setCurrentGroupIndex } = this.props;
+    if (index || index === 0) setCurrentGroupIndex(index);
+    this.setState({ showSelectGroupModal: false });
+    this.handleSelection(item);
   };
 
   get isAddOrRemove() {
@@ -277,10 +303,18 @@ class Item extends Component {
       test,
       features
     } = this.props;
-    const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
+    const {
+      isOpenedDetails,
+      isShowPreviewModal = false,
+      selectedId,
+      passageConfirmModalVisible,
+      showSelectGroupModal
+    } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
     const itemTypes = getQuestionType(item);
+    const isPublisher = features.isCurator || features.isPublisherAuthor;
+    const groupName = test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
@@ -310,12 +344,17 @@ class Item extends Component {
               handleResponse={this.handleResponse}
             />
           )}
+          {showSelectGroupModal && (
+            <SelectGroupModal
+              visible={showSelectGroupModal}
+              test={test}
+              handleResponse={this.handleSelectGroupModalResponse}
+            />
+          )}
           <Question>
             <QuestionContent>
               <Stimulus
-                onClickHandler={
-                  features.isCurator || features.isPublisherAuthor ? this.redirectToEdit : this.previewItem
-                }
+                onClickHandler={isPublisher ? this.redirectToEdit : this.previewItem}
                 stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
               />
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
@@ -330,11 +369,21 @@ class Item extends Component {
                     {selectedToCart ? "Remove" : <IconPlus />}
                   </AddButtonStyled>
                 </ViewButton>
+              ) : isPublisher ? (
+                <AddRemoveBtnPublisher
+                  data-cy={item._id}
+                  loading={selectedId === item._id}
+                  onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                  isAddOrRemove={this.isAddOrRemove}
+                >
+                  {this.isAddOrRemove ? "ADD" : `${groupName}`}
+                  {this.isAddOrRemove ? "" : <Icon type="close" />}
+                </AddRemoveBtnPublisher>
               ) : (
                 <AddRemoveBtn
                   data-cy={item._id}
                   loading={selectedId === item._id}
-                  onClick={() => this.handleSelection(item)}
+                  onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                   isAddOrRemove={this.isAddOrRemove}
                 >
                   {this.isAddOrRemove ? "ADD" : "REMOVE"}
@@ -377,13 +426,25 @@ class Item extends Component {
                   <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
                     <IconDown />
                   </MoreInfo>
-                  <AddRemoveBtn
-                    loading={selectedId === item._id}
-                    onClick={() => this.handleSelection(item)}
-                    isAddOrRemove={this.isAddOrRemove}
-                  >
-                    {this.isAddOrRemove ? "ADD" : "REMOVE"}
-                  </AddRemoveBtn>
+                  {isPublisher ? (
+                    <AddRemoveBtnPublisher
+                      data-cy={item._id}
+                      loading={selectedId === item._id}
+                      onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                      isAddOrRemove={this.isAddOrRemove}
+                    >
+                      {this.isAddOrRemove ? "ADD" : `${groupName}`}
+                      {this.isAddOrRemove ? "" : <Icon type="close" />}
+                    </AddRemoveBtnPublisher>
+                  ) : (
+                    <AddRemoveBtn
+                      loading={selectedId === item._id}
+                      onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                      isAddOrRemove={this.isAddOrRemove}
+                    >
+                      {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                    </AddRemoveBtn>
+                  )}
                 </ViewButton>
               ))}
           </Row>

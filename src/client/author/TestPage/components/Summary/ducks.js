@@ -41,7 +41,7 @@ export const getSummarySelector = createSelector(
       }))
     ];
 
-    const testItems = state.testItems.reduce(reduceTestItems, []);
+    const testItems = state.itemGroups.flatMap(itemGroup => itemGroup.items || []).reduce(reduceTestItems, []);
     const questions = testItems.reduce(toQuestions, []);
 
     const groupedResult = groupBy(questions.reduce(toResult, []), item => item.standard.name);

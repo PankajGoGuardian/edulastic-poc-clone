@@ -263,32 +263,41 @@ export default createReducer(initialState, {
 
 export const getCurrentQuestionIdSelector = state => state[module].current;
 export const getQuestionsSelector = state => state[module].byId;
+export const getTestStateSelector = state => state.tests;
 
-export const getQuestionsSelectorForReview = state => {
-  const testItems = get(state, "tests.entity.testItems", []);
-  const testItemsLabeled = produce(testItems, draft => {
-    markQuestionLabel(draft);
-  });
-  const passages = get(state, "tests.entity.passages", []);
-  const questionsKeyed = testItemsLabeled.reduce((acc, item) => {
-    const questions = get(item, "data.questions", []);
-    const resources = get(item, "data.resources", []);
-    for (const question of questions) {
-      acc[question.id] = question;
-    }
-    for (const resource of resources) {
-      acc[resource.id] = resource;
-    }
-    return acc;
-  }, {});
-  const passagesKeyed = passages.reduce((acc, passage) => {
-    for (const data of passage.data) {
-      acc[data.id] = { ...data, isPassage: true };
-    }
-    return acc;
-  }, {});
-  return { ...questionsKeyed, ...passagesKeyed };
-};
+export const getTestSelector = createSelector(
+  getTestStateSelector,
+  state => state.entity
+);
+
+export const getQuestionsSelectorForReview = createSelector(
+  getTestSelector,
+  state => {
+    const testItems = state.itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
+    const testItemsLabeled = produce(testItems, draft => {
+      markQuestionLabel(draft);
+    });
+    const passages = get(state, "tests.entity.passages", []);
+    const questionsKeyed = testItemsLabeled.reduce((acc, item) => {
+      const questions = get(item, "data.questions", []);
+      const resources = get(item, "data.resources", []);
+      for (const question of questions) {
+        acc[question.id] = question;
+      }
+      for (const resource of resources) {
+        acc[resource.id] = resource;
+      }
+      return acc;
+    }, {});
+    const passagesKeyed = passages.reduce((acc, passage) => {
+      for (const data of passage.data) {
+        acc[data.id] = { ...data, isPassage: true };
+      }
+      return acc;
+    }, {});
+    return { ...questionsKeyed, ...passagesKeyed };
+  }
+);
 
 // get current Question
 export const getCurrentQuestionSelector = createSelector(

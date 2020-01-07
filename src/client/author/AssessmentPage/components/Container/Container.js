@@ -113,12 +113,12 @@ class Container extends React.Component {
       questionsUpdated,
       updated
     } = this.props;
-    const { authors, testItems, status } = test;
+    const { authors, itemGroups, status } = test;
     const { editEnable = true } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
 
-    if (isEditable && testItems.length > 0 && (updated || questionsUpdated)) {
+    if (isEditable && itemGroups[0].items.length > 0 && (updated || questionsUpdated)) {
       return "";
     }
     return;
@@ -127,7 +127,7 @@ class Container extends React.Component {
   componentDidUpdate(prevProps) {
     const { receiveItemDetailById, assessment } = this.props;
     if (assessment._id && !prevProps.assessment._id && assessment._id !== prevProps.assessment._id) {
-      const [testItem] = assessment.testItems;
+      const [testItem] = assessment.itemGroups[0].items;
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
     }
@@ -285,7 +285,7 @@ class Container extends React.Component {
   render() {
     const {
       loading,
-      assessment: { _id: testId, authors, grades, subjects, testItems, title, status, isUsed },
+      assessment: { _id: testId, authors, grades, subjects, itemGroups, title, status, isUsed },
       userId,
       windowWidth,
       updated,
@@ -302,7 +302,9 @@ class Container extends React.Component {
     const showEditButton =
       authors && authors.some(x => x._id === userId) && status && status === statusConstants.PUBLISHED && !editEnable;
 
-    const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
+    const hasPremiumQuestion = !!itemGroups[0].items.find(i =>
+      hasUserGotAccessToPremiumItem(i.collections, collections)
+    );
 
     const gradeSubject = { grades, subjects };
 

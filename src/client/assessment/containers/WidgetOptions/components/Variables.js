@@ -59,6 +59,7 @@ class Variables extends Component {
 
   generate = () => {
     const { calculateFormula, questionData } = this.props;
+    const variableCombinationCount = get(questionData, "variable.combinationsCount", 5);
     const variables = get(questionData, "variable.variables", {});
     if (Object.keys(variables).length === 0) return;
 
@@ -113,7 +114,8 @@ class Variables extends Component {
       return temp;
     });
 
-    calculateFormula({ examples: this.reArrangeCombinations(combinationValues), variables });
+    calculateFormula({ examples: this.reArrangeCombinations(combinationValues, variableCombinationCount), variables });
+
     return values;
   };
 
@@ -148,17 +150,19 @@ class Variables extends Component {
     const { sequence } = variable;
     if (sequence) {
       if (valueArray.length > sequence.split(",").filter(em => !!em.trim()).length || valueArray.length === 0) {
-        valueArray = sequence
-          .split(",")
-          .filter(em => !!em.trim())
-          .map((_, i) => i);
+        if (variable.type === "NUMBER_SEQUENCE")
+          valueArray = sequence
+            .split(",")
+            .filter(val => !!val.trim())
+            .map(item => parseFloat(item));
+        else valueArray = sequence.split(",").filter(val => !!val.trim());
       }
     }
 
     return valueArray;
   };
 
-  reArrangeCombinations = combinations => {
+  reArrangeCombinations = (combinations, count) => {
     let intArray = [],
       floatAray = [];
 
@@ -174,7 +178,10 @@ class Variables extends Component {
       if (isInt) intArray.push(item);
       else floatAray.push(item);
     });
-    return [...intArray, ...floatAray];
+
+    const combinationsArray = [...intArray, ...floatAray].slice(0, count);
+
+    return combinationsArray;
   };
 
   render() {
@@ -563,7 +570,7 @@ class Variables extends Component {
                   columns={columns}
                   dataSource={examples}
                   pagination={{
-                    pageSize: variableCombinationCount
+                    pageSize: 10
                   }}
                 />
               </Col>

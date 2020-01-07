@@ -96,7 +96,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "GRAPHING_DESMOS"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Graphing Calculator</StyledTitle>
+            <StyledTitle data-cy="GRAPHING">Graphing Calculator</StyledTitle>
             <DesmosGraphingCalculator
               id="demos-graphiccalculator"
               ref={ref => {
@@ -109,7 +109,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "BASIC_DESMOS"}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Basic Calculator</StyledTitle>
+            <StyledTitle data-cy="BASIC">Basic Calculator</StyledTitle>
             <DesmosBasicCalculator
               ref={ref => {
                 this.desmosBasicRef = ref;
@@ -123,7 +123,7 @@ class CalculatorContainer extends Component {
         <StyledDraggable>
           <StyledDiv visible={["SCIENTIFIC_DESMOS", "SCIENTIFIC_EDULASTIC"].includes(calculateMode)}>
             <CloseIcon color="#fff" onClick={this.handleCloseCalculator} />
-            <StyledTitle>Scientific Calculator</StyledTitle>
+            <StyledTitle data-cy="SCIENTIFIC">Scientific Calculator</StyledTitle>
             <DesmosScientificCalculator
               ref={ref => {
                 this.desmosScientificRef = ref;

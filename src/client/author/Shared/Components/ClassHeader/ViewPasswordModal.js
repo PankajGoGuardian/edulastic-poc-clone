@@ -87,7 +87,7 @@ const ViewPasswordModal = ({
               Student must enter the password shown below to start the assignment. This password will expire in{" "}
               <span style={{ color: themeColorSecondaryLighter }}>{formatTime(timer)}</span> seconds
             </Content>
-            <AssignmentPassword>{assignmentPassword}</AssignmentPassword>
+            <AssignmentPassword data-cy="password">{assignmentPassword}</AssignmentPassword>
             <TitleCopy copyable={{ text: assignmentPassword }} />
           </>
         )}

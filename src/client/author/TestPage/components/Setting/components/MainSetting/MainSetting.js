@@ -575,6 +575,7 @@ class MainSetting extends Component {
                   <Body smallSize={isSmallSize}>
                     <StyledSelect
                       value={passwordPolicy}
+                      data-cy={passwordPolicy}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("passwordPolicy")}
                     >

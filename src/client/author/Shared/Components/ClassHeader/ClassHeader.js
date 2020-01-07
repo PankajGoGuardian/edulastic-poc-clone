@@ -319,7 +319,7 @@ class ClassHeader extends Component {
           Generate Bubble Sheet
         </MenuItems> */}
         {showPasswordButton && (
-          <MenuItems key="key5" onClick={this.handleTogglePasswordModal}>
+          <MenuItems data-cy="viewPassword" key="key5" onClick={this.handleTogglePasswordModal}>
             View Password
           </MenuItems>
         )}

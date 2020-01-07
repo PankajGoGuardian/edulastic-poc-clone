@@ -72,6 +72,12 @@ export const questionGroup = {
   OTHER: "Other"
 };
 
+export const CALCULATOR = {
+  BASIC: "BASIC",
+  SCIENTIFIC: "SCIENTIFIC",
+  GRAPH: "GRAPHING"
+};
+
 export const questionTypeMap = {
   "Multiple Choice": [
     "Multiple choice - standard",

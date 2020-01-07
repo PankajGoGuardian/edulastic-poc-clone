@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import LCBHeader from "./lcbHeader";
 import { studentSide as asgnStatus, studentSide, teacherSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
@@ -497,6 +498,8 @@ class LiveClassboardPage {
         }
       });
   };
+
+  copyPassword = () => cy.get('[data-cy="password"]').invoke("text");
 }
 
 export default LiveClassboardPage;

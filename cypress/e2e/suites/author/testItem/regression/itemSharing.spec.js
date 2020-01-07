@@ -572,7 +572,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         cy.login("teacher", DIST2_SCHOOL1[TEACHER1][EMAIL], DIST2_SCHOOL1[TEACHER1][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.sharedWithMe();
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
@@ -600,7 +599,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         cy.login("teacher", DIST1_SCHOOL2[TEACHER2][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.sharedWithMe();
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);

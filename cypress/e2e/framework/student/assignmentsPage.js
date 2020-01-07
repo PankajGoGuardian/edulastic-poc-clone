@@ -1,12 +1,14 @@
+/* eslint-disable class-methods-use-this */
 import StudentTestPage from "./studentTestPage";
-import SidebarPage from "../student/sidebarPage";
+import SidebarPage from "./sidebarPage";
 
 class AssignmentsPage {
   // page element on AssignmentPage
   constructor() {
     this.sidebar = new SidebarPage();
-    //this.studentTest = new StudentTestPage();
+    // this.studentTest = new StudentTestPage();
   }
+
   getAssignmentButton() {
     return cy.get('[data-cy="assignmentButton"]');
   }
@@ -89,18 +91,23 @@ class AssignmentsPage {
     // cy.wait("@startTest");
     // cy.wait("@gettest");
     // return cy.wait("@saved").then(() => new StudentTestPage());
-    return cy.wait("@gettest").then(() => {
-      return new StudentTestPage();
-    });
+    return cy.wait("@gettest").then(() => new StudentTestPage());
   }
 
-  clickOnAssigmentByTestId = testId => {
+  clickOnAssigmentByTestId = (testId, pass) => {
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
+    cy.route("GET", "**/test-activity/*").as("saved");
+
     this.getAssignmentByTestId(testId)
       .should("be.visible")
       .find('[data-cy="assignmentButton"]')
       .click({ force: true });
+    if (pass) {
+      cy.wait("@saved");
+      this.enterPassword(pass);
+      this.clickOnStartAfterPassword();
+    }
     return cy.wait("@gettest").then(() => new StudentTestPage());
   };
 
@@ -167,6 +174,10 @@ class AssignmentsPage {
   // PAUSED
 
   verufyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
+
+  enterPassword = pass => cy.get('[placeholder="Enter assignment password"]').type(pass);
+
+  clickOnStartAfterPassword = () => cy.get('[data-cy="start"]').click();
 }
 
 export default AssignmentsPage;

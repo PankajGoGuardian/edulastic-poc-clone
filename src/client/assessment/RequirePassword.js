@@ -46,7 +46,13 @@ const RequirePassword = ({
         <Button key="back" ghost onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={validatePassword} disabled={!assignmentPassword.length}>
+        <Button
+          data-cy="start"
+          key="submit"
+          type="primary"
+          onClick={validatePassword}
+          disabled={!assignmentPassword.length}
+        >
           Start
         </Button>
       ]}

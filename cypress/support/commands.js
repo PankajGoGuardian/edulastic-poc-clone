@@ -154,6 +154,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   const login = new LoginPage();
   cy.visit("/login");
   cy.server();
+  cy.route("GET", "**/test-activity/**").as("testActivity");
   cy.route("GET", "**curriculum**").as("apiLoad");
   cy.route("GET", "**assignments**").as("assignment");
   cy.route("POST", "**/auth/**").as("auth");
@@ -165,7 +166,10 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   if (role === "teacher") {
     cy.wait("@teacherDashboard");
     cy.wait("@searchCourse");
-  } else cy.wait("@assignment");
+  } else {
+    cy.wait("@assignment");
+    cy.wait("@testActivity");
+  }
 });
 
 Cypress.Commands.add(

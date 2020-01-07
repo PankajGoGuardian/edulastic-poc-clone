@@ -66,4 +66,9 @@ export default class LCBHeader {
     cy.get('[data-cy="markAsDone"]').click({ force: true });
     cy.wait("@markDone").then(xhr => assert(xhr.status === 200, `verify mark as done request ${xhr.status}`));
   };
+
+  clickOnViewPassword = () => {
+    this.getDropDown().click({ force: true });
+    cy.get('[data-cy="viewPassword"]').click();
+  };
 }

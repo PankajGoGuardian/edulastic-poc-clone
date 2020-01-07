@@ -1,6 +1,6 @@
 import ReportsPage from "./reportsPage";
 import MathEditor from "./mathEditor";
-import { attemptTypes, questionTypeKey as questionType, queColor } from "../constants/questionTypes";
+import { attemptTypes, questionTypeKey as questionType, queColor, CALCULATOR } from "../constants/questionTypes";
 import AssignmentsPage from "./assignmentsPage";
 import { studentSide } from "../constants/assignmentStatus";
 
@@ -787,6 +787,32 @@ class StudentTestPage {
           ? "Thats Partially Correct"
           : "Thats Incorrect"
       );
+
+  getCalculatorButton = () => cy.get('[data-cy="calculator"]');
+
+  clickOnCalcuator = () => this.getCalculatorButton().click();
+
+  assertCalcType = type => {
+    switch (type) {
+      case CALCULATOR.SCIENTIFC:
+        this.getScientificCalc().should("exist");
+        break;
+      case CALCULATOR.BASIC:
+        this.getBasicCalc().should("exist");
+        break;
+      case CALCULATOR.GRAPH:
+        this.getGraphCalc().should("exist");
+        break;
+      default:
+        this.getCalculatorButton().should("not.exist");
+    }
+  };
+
+  getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]');
+
+  getBasicCalc = () => cy.get('[data-cy="BASIC"]');
+
+  getGraphCalc = () => cy.get('[data-cy="GRAPHING"]');
 
   // Review
 

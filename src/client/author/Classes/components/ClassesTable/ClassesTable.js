@@ -48,7 +48,7 @@ import {
   bulkUpdateClassesAction
 } from "../../ducks";
 
-import { getUserOrgId, getUser } from "../../../src/selectors/user";
+import { getUserOrgId, getUser, getUserFeatures } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
@@ -521,7 +521,7 @@ class ClassesTable extends Component {
       t
     } = this.props;
 
-    const columnsData = [
+    let columnsData = [
       {
         title: t("class.name"),
         dataIndex: "_source.name",
@@ -532,15 +532,35 @@ class ClassesTable extends Component {
         width: 300
       },
       {
+        title: t("grades"),
+        dataIndex: "_source.grades",
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.grades.join(", ").localeCompare(b._source.grades.join(", ")),
+        render: grades => <span>{grades.join(", ")}</span>,
+        width: 150
+      },
+      {
+        title: t("class.subject"),
+        dataIndex: "_source.subject",
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.subject.localeCompare(b._source.subject),
+        render: subject => <span>{subject}</span>,
+        width: 250
+      },
+      {
         title: t("class.code"),
         dataIndex: "_source.code",
         editable: true,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.code.localeCompare(b._source.code),
         render: code => <span>{code}</span>,
-        width: 150
-      },
-      {
+        width: 200
+      }
+    ];
+    if (this.props.features.selecteCourse) {
+      columnsData.push({
         title: t("class.course"),
         dataIndex: "_source.course",
         editable: true,
@@ -552,7 +572,10 @@ class ClassesTable extends Component {
           return next.localeCompare(prev);
         },
         width: 200
-      },
+      });
+    }
+    columnsData = [
+      ...columnsData,
       {
         title: t("class.teacher"),
         dataIndex: "_source.owners",
@@ -571,7 +594,7 @@ class ClassesTable extends Component {
         dataIndex: "_source.studentCount",
         editable: true,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.studentCount - b._source.studentCount,
+        sorter: (a, b) => (a._source.studentCount || 0) - (b._source.studentCount || 0),
         render: (_, record) => {
           const studentCount = get(record, "_source.studentCount", 0);
           const classCode = get(record, "_source.code", "");
@@ -591,6 +614,15 @@ class ClassesTable extends Component {
             </Link>
           );
         }
+      },
+      {
+        title: t("Status"),
+        dataIndex: "_source.active",
+        editable: true,
+        render: active => <span>{active ? "Active" : "Archived"}</span>,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.active - b._source.active,
+        width: 200
       },
       {
         dataIndex: "_id",
@@ -852,7 +884,8 @@ const enhance = compose(
       teacherList: getTeachersListSelector(state),
       schoolsData: getSchoolsSelector(state),
       bulkEditData: getBulkEditSelector(state),
-      allTagsData: getAllTagsSelector(state, "group")
+      allTagsData: getAllTagsSelector(state, "group"),
+      features: getUserFeatures(state)
     }),
     {
       createClass: createClassAction,

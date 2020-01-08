@@ -14,14 +14,12 @@ import { Button, Icon, Typography } from "antd";
 const { Text } = Typography;
 
 export const Container = styled.div`
-  width: 100%;
   display: flex;
   justify-content: space-between;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
 `;
 export const WidgetContainer = styled.div`
-  display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   > div {

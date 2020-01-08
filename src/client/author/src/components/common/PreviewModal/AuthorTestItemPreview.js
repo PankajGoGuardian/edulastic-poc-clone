@@ -407,7 +407,7 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer flowLayout={col.flowLayout}>
+        <WidgetContainer>
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&

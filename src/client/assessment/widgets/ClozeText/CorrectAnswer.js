@@ -66,7 +66,8 @@ class CorrectAnswer extends Component {
       view,
       isV1Migrated,
       previewTab,
-      max
+      max,
+      item
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -103,6 +104,7 @@ class CorrectAnswer extends Component {
           showIndex
           view={view}
           previewTab={previewTab}
+          item={item}
         />
       </div>
     );

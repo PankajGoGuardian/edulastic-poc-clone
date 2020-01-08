@@ -104,6 +104,8 @@ const methodOptions = {
     "inverseResult",
     "allowedVariables",
     "interpretAsSet",
+    "interpretAsInterval",
+    "interpretAsNumber",
     "isRationalized",
     "setListTypeResponse",
     "compareSides",
@@ -131,6 +133,8 @@ const methodOptions = {
     "allowNumericOnly",
     "allowedVariables",
     "interpretAsSet",
+    "interpretAsInterval",
+    "interpretAsNumber",
     "compareSides",
     "setListTypeResponse",
     "setThousandsSeparator"

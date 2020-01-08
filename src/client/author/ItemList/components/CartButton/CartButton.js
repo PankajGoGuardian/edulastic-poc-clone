@@ -9,7 +9,7 @@ import { Container, CartButtonWrapper, ItemsAmount } from "./styled";
 const CartButton = ({ selectedItems, onClick, buttonText, numberChecker, tests }) => {
   let numberOfSelectedItems = selectedItems && selectedItems.length;
   if (numberOfSelectedItems && numberChecker) {
-    numberOfSelectedItems = numberChecker(tests.testItems);
+    numberOfSelectedItems = numberChecker(tests.itemGroups.flatMap(itemGroup => itemGroup.items || []));
   }
   return (
     <Container onClick={onClick} disabled={!numberOfSelectedItems}>

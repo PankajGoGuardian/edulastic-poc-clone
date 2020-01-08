@@ -70,16 +70,33 @@ class EditToolBar {
 
   linkButton = () => this.frToolbar().find('[data-cmd="insertLink"]');
 
+  // Response boxes
+
+  clickonResponseBox = () =>
+    this.frToolbar()
+      .find(".custom-toolbar-btn")
+      .click({ force: true });
+
+  // mathinpit
+
+  clickOnMathInput = () => {
+    this.clickonResponseBox();
+    cy.get('[data-param1="mathinput"]').click({ force: true });
+  };
+
   linkURL = () =>
     this.frToolbar()
       .first()
       .find(".fr-link-attr")
       .eq(0);
+
   linkText = () =>
     this.frToolbar()
       .find(".fr-link-attr")
       .eq(1);
   insertLinkButton = () => this.frToolbar().find('[data-cmd="linkInsert"]');
+
+  //
 }
 
 export default EditToolBar;

@@ -1,0 +1,31 @@
+{
+  "equivSymbolic": [
+    {
+      "name": "thousands separator",
+      "input": "1000",
+      "options": {
+        "setThousandsSeparator": ","
+      },
+      "attempt": "1,000",
+      "evaluation": true
+    },
+    {
+      "name": "thousands separator",
+      "input": "1000",
+      "options": {
+        "setThousandsSeparator": "."
+      },
+      "attempt": "1.000",
+      "evaluation": true
+    },
+    {
+      "name": "EV-2434",
+      "input": "3x^2{downarrow}+6x+4x+8",
+      "options": {
+        "isFactorised": true
+      },
+      "attempt": "3x^2{downarrow}+6x+4x+8",
+      "evaluation": true
+    }
+  ]
+}

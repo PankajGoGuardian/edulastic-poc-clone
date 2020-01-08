@@ -21,7 +21,8 @@ export const questionType = {
   ESSAY_SHORT: "Short text",
   PASSAGE_MULTIPART: "Passage with Multiple parts",
   PASSAGE_QUE: "Passage with Questions",
-  COMBINATION_MULTIPART: "Combination Multipart"
+  COMBINATION_MULTIPART: "Combination Multipart",
+  MATH: "Math, Text & Dropdown"
 };
 
 export const questionTypeKey = {

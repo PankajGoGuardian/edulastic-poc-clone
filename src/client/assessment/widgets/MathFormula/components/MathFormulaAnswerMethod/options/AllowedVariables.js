@@ -34,7 +34,7 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
         {t("component.math.allowedVariables")}
       </Checkbox>
       <Input
-        data-cy="answer-allowed-variables"
+        data-cy="allowed-variables"
         style={{ marginTop: 15, width: "30%" }}
         size="large"
         value={allowedVariables}

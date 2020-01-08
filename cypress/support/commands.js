@@ -29,7 +29,7 @@ Cypress.LocalStorage.clear = () => {};
 const BASE_URL = Cypress.config("API_URL");
 const DEFAULT_USERS = {
   teacher: {
-    username: "ashishsnap@snawpiz.com",
+    username: "auto.teacher1@snapwiz.com",
     password: "snapwiz"
   },
   student: {

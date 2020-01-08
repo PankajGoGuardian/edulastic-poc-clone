@@ -1,9 +1,11 @@
 /* eslint-disable default-case */
 import QuestionResponsePage from "../assignments/QuestionResponsePage";
 import { questionType, attemptTypes, queColor } from "../../constants/questionTypes";
+import Header from "./itemDetail/header";
 
 export default class PreviewItem {
   constructor() {
+    this.header = new Header();
     this.qrp = new QuestionResponsePage();
   }
 
@@ -11,9 +13,9 @@ export default class PreviewItem {
 
   closePreiview = () => cy.get(".ant-modal-close-icon").click();
 
-  clickOnShowAnsOnPreview = () => cy.get('[data-cy="ShowAnswer"]').click({ force: true });
+  clickOnShowAnsOnPreview = () => cy.get('[data-cy="show-answers-btn"]').click({ force: true });
 
-  clickOnCheckAnsOnPreview = () => cy.get('[data-cy="CheckAnswer"]').click({ force: true });
+  clickOnCheckAnsOnPreview = () => cy.get('[data-cy="check-answer-btn"]').click({ force: true });
 
   // Edit and Copy buuton on preview
   getEditOnPreview = () => cy.get('[title="Edit item"]');
@@ -68,9 +70,11 @@ export default class PreviewItem {
       .eq(0)
       .click({ force: true });
 
+  getEvaluationMessage = () => cy.get(".ant-message-custom-content");
+
   verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {
     const score = this.qrp.getScoreByAttempt(attemptData, points, questionType.split(".")[0], attemptType);
-    cy.get(".ant-message-custom-content").should("contain", `${score}/${points}`);
+    this.getEvaluationMessage().should("contain", `${score}/${points}`);
   };
 
   clickOnDeleteOnPreview = (used = false) => {
@@ -80,10 +84,10 @@ export default class PreviewItem {
 
     if (used) {
       cy.wait("@deleteItem").then(xhr => expect(xhr.status).eq(403));
-      cy.get(".ant-message-custom-content").should("contain", `The item is used in the test`);
+      this.getEvaluationMessage().should("contain", `The item is used in the test`);
     } else {
       cy.wait("@deleteItem").then(xhr => expect(xhr.status).eq(200));
-      cy.get(".ant-message-custom-content").should("contain", `item deleted successfully`);
+      this.getEvaluationMessage().should("contain", `item deleted successfully`);
     }
   };
 
@@ -97,7 +101,7 @@ export default class PreviewItem {
     this.getCopyOnPreview().should("be.visible");
   };
 
-  clickOnClear = () => cy.get('[data-cy="clear"]').click();
+  clickOnClear = () => cy.get('[data-cy="clear-btn"]').click({ force: true });
 
   verifyQuestionResponseCard = (queTypeKey, attemptData, attemptType, isShowAnswer = false) => {
     const { right, wrong, partialCorrect, item } = attemptData;

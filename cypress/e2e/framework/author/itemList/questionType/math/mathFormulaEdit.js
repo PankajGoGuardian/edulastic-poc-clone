@@ -415,7 +415,7 @@ class MathFormulaEdit {
           const { length } = elements[newOrder].innerText;
           cy.wrap(element)
             [inputOrder]()
-            .type("{del}".repeat(length === 0 ? 1 : length), { force: true })
+            .type("{del}".repeat(length === 0 ? 1 : length + 1), { force: true })
             .typeWithDelay(input, { force: true });
         });
       });

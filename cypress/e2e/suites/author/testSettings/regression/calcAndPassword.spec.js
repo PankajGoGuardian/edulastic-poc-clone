@@ -1,13 +1,13 @@
-import TestLibrary from "../../../framework/author/tests/testLibraryPage";
-import TestReviewTab from "../../../framework/author/tests/testDetail/testReviewTab";
-import TestAssignPage from "../../../framework/author/tests/testDetail/testAssignPage";
-import AssignmentsPage from "../../../framework/student/assignmentsPage";
-import StudentTestPage from "../../../framework/student/studentTestPage";
-import TestSettings from "../../../framework/author/tests/testDetail/testSetting";
-import { CALCULATOR } from "../../../framework/constants/questionTypes";
-import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
-import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
-import FileHelper from "../../../framework/util/fileHelper";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
+import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import StudentTestPage from "../../../../framework/student/studentTestPage";
+import TestSettings from "../../../../framework/author/tests/testDetail/testSetting";
+import { CALCULATOR } from "../../../../framework/constants/questionTypes";
+import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator And Password`, () => {
   const testLibraryPage = new TestLibrary();

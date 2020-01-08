@@ -34,4 +34,8 @@ export default class TestSettings {
       .get(".ant-select-dropdown-menu-item")
       .contains("Dynamic Password")
       .click();
+
+  clickOnEvalByType = type => {
+    cy.get(`[ data-cy=${type}]`).click({ force: true });
+  };
 }

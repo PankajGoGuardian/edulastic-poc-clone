@@ -663,7 +663,7 @@ class MainSetting extends Component {
                     value={scoringType}
                   >
                     {Object.keys(evalTypes).map(item => (
-                      <Radio value={item} key={item}>
+                      <Radio value={item} data-cy={item} key={item}>
                         {evalTypes[item]}
                       </Radio>
                     ))}
@@ -673,6 +673,7 @@ class MainSetting extends Component {
                       <Checkbox
                         disabled={!owner || !isEditable}
                         checked={penalty === false}
+                        data-cy="PENALIZE"
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
                         {"Don’t penalize for incorrect selection"}

@@ -794,7 +794,7 @@ class StudentTestPage {
 
   assertCalcType = type => {
     switch (type) {
-      case CALCULATOR.SCIENTIFC:
+      case CALCULATOR.SCIENTIFIC:
         this.getScientificCalc().should("exist");
         break;
       case CALCULATOR.BASIC:

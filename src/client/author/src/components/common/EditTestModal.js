@@ -9,10 +9,10 @@ const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
     onCancel={onCancel}
     title="Edit Test"
     footer={[
-      <Button ghost onClick={onCancel}>
+      <Button ghost data-cy="CANCEL" onClick={onCancel}>
         CANCEL
       </Button>,
-      <Button color="primary" onClick={onOk}>
+      <Button color="primary" data-cy="PROCEED" onClick={onOk}>
         PROCEED
       </Button>
     ]}

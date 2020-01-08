@@ -278,10 +278,7 @@ export default class TestLibrary {
           cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
         } else {
           // pop up that comes up when we try to edit a published test
-          cy.contains("You are about to edit a test that has already been published")
-            .parent()
-            .contains("span", "PROCEED")
-            .click({ force: true });
+          cy.get('[data-cy="PROCEED"]').click();
           cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
         }
       });
@@ -396,10 +393,7 @@ export default class TestLibrary {
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        cy.contains("This test is already assigned to students.")
-          .parent()
-          .contains("span", "PROCEED")
-          .click({ force: true });
+        cy.get('[data-cy="PROCEED"]').click();
         cy.wait("@newVersion").then(xhr => cy.saveTestDetailToDelete(xhr.response.body.result._id));
         cy.wait("@testdrafted").then(xhr => {
           assert(xhr.status === 200, "Test versioned");

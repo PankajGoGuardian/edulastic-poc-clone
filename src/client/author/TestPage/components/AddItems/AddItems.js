@@ -208,11 +208,13 @@ class AddItems extends PureComponent {
   handleSearchFieldChangeCurriculumId = value => {
     const { clearDictStandards, getCurriculumStandards, search } = this.props;
     clearDictStandards();
-    this.updateFilterState({
+    const updatedSearchValue = {
       ...search,
       curriculumId: value,
       standardIds: []
-    });
+    };
+    this.updateFilterState(updatedSearchValue);
+    this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };
 

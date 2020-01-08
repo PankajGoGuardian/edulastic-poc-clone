@@ -818,10 +818,12 @@
       "additionalOptions": "Additional Options",
       "setThousandsSeparator": "Set Thousands Separator",
       "setEvaluation": "Set Evaluation",
-      "interpretAsSet": "Interpret Response as Set",
+      "interpretAsSet": "Interpret Response as a Set",
       "isRationalized": "Check if rationalized",
-      "setListTypeResponse": "Interpret Response as List",
-      "setDecimalSeparator": "Set Decimal Separator"
+      "setListTypeResponse": "Interpret Response as an Ordered List",
+      "setDecimalSeparator": "Set Decimal Separator",
+      "interpretAsInterval": "Interpret as an Interval",
+      "interpretAsNumber": "Interpret as a Number"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

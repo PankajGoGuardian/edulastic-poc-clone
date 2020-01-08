@@ -311,6 +311,26 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.interpretAsSet")}
             />
           );
+        case "interpretAsInterval":
+          return (
+            <CheckOption
+              dataCy="answer-set-evaluation"
+              optionKey="interpretAsInterval"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.interpretAsInterval")}
+            />
+          );
+        case "interpretAsNumber":
+          return (
+            <CheckOption
+              dataCy="answer-set-evaluation"
+              optionKey="interpretAsNumber"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.interpretAsNumber")}
+            />
+          );
         case "setListTypeResponse":
           return (
             <CheckOption

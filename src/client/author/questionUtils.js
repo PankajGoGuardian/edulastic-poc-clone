@@ -215,14 +215,24 @@ export const isIncompleteQuestion = item => {
     return [true, "Question text should not be empty"];
   }
 
-  // if item doesnt have options just return at this point.
-  if (!item.options) return [false];
+  if (hasEmptyAnswers(item)) return [true, "Correct Answers should be set"];
+
   // if  empty options are present
-  if (hasEmptyOptions(item)) return [true, "Answer choices should not be empty"];
+  if (item.options && hasEmptyOptions(item)) return [true, "Answer choices should not be empty"];
   // if not yet returned with an error, then it should be a fine question!
+
+  // check for empty correct answers
   return [false];
 };
 
+const hasEmptyAnswers = item => {
+  if (item.type === questionType.GRAPH) {
+    const correctAnswers = [item?.validation?.validResponse, ...item?.validation?.altResponses];
+    return !correctAnswers.every(answer => answer?.value?.length);
+  }
+
+  return false;
+};
 /**
  * Checks if the question has improper dynamic parameter config
  * - if there are no dynamic variables in the stimulus, but option is selected

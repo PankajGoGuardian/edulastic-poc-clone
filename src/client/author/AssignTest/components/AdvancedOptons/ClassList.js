@@ -18,9 +18,13 @@ import { getTestSelector } from "../../../TestPage/ducks";
 const { allGrades, allSubjects } = selectsData;
 
 const findTeacherName = row => {
-  const { owners, primaryTeacherId } = row;
-  const teacher = find(owners, owner => owner.id === primaryTeacherId);
-  return teacher ? teacher.name : "";
+  const {
+    owners = [],
+    primaryTeacherId,
+    parent: { id: teacherId }
+  } = row;
+  const teacher = find(owners, owner => owner.id === (primaryTeacherId || teacherId));
+  return teacher ? teacher.name : owners.length ? owners[0].name : "";
 };
 
 const convertTableData = row => ({

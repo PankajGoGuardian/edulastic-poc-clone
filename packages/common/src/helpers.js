@@ -95,6 +95,8 @@ export const uploadToS3 = async (file, folder) => {
 
 function addProps() {
   $(this).attr("resprops", "{{resProps}}");
+  const id = $(this).attr("id");
+  $(this).attr("key", id);
   const text = $("<div>")
     .append($(this).clone())
     .html();
@@ -149,7 +151,6 @@ const parseTemplate = tmpl => {
   if (!window.$) {
     return "";
   }
-
   const parsedHTML = $("<div />").html(temp);
 
   $(parsedHTML)

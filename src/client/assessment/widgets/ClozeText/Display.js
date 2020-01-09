@@ -165,6 +165,7 @@ class ClozeTextDisplay extends Component {
     const QuestionContent = (
       <StyledParser view={view} className={resProps.isV1Migrated && "migrated-question"}>
         <JsxParser
+          disableKeyGeneration
           bindings={{ resProps }}
           showWarnings
           components={{

@@ -57,7 +57,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
     });
   });
   before("Login And Create Test", () => {
-    cy.login();
+    cy.login("teacher", "300@abc.com", "snapwiz");
     testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
       itemIds = testLibraryPage.items;

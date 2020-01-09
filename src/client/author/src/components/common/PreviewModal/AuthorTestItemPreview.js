@@ -353,16 +353,16 @@ class AuthorTestItemPreview extends Component {
           )}
           {isAnswerBtnVisible && (
             <>
-              <EvaluateButton data-cy="CheckAnswer" onClick={handleCheckAnswer}>
+              <EvaluateButton data-cy="check-answer-btn" onClick={handleCheckAnswer}>
                 CHECK ANSWER
               </EvaluateButton>
-              <EvaluateButton data-cy="ShowAnswer" onClick={handleShowAnswer}>
+              <EvaluateButton data-cy="show-answers-btn" onClick={handleShowAnswer}>
                 SHOW ANSWER
               </EvaluateButton>
             </>
           )}
           {page !== "itemAuthoring" && (
-            <EvaluateButton data-cy="clear" onClick={clearView}>
+            <EvaluateButton data-cy="clear-btn" onClick={clearView}>
               CLEAR
             </EvaluateButton>
           )}

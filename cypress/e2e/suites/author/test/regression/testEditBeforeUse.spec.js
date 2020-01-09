@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
 
   before("login and create new items and test", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
-    cy.login();
+    cy.login("teacher", Teacher.email, Teacher.pass);
     testLibraryPage.createTest("EDIT_1").then(id => {
       testId = id;
     });
@@ -72,7 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
   it(" > verify logout , login and edit test", () => {
     const { grade } = testData.edit2;
     // Login Again and Edit the Test
-    cy.login();
+    cy.login("teacher", Teacher.email, Teacher.pass);
     testLibraryPage.sidebar.clickOnTestLibrary();
     testLibraryPage.searchFilters.clearAll();
     testLibraryPage.searchFilters.getAuthoredByMe();

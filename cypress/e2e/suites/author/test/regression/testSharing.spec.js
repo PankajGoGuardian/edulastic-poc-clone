@@ -62,6 +62,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftEdit(test_id);
         });
@@ -108,6 +109,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedEdit(test_id);
         });
@@ -151,6 +153,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedNoEdit(test_id);
         });
@@ -192,6 +195,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftNoEdit();
         });
@@ -236,6 +240,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftNoEdit();
         });
@@ -278,6 +283,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
           searchFilters.sharedWithMe();
+          searchFilters.typeInSearchBox(test_id);
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedNoEdit(test_id);
         });
@@ -318,6 +324,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.sharedWithMe();
+        searchFilters.typeInSearchBox(test_id);
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestDraftNoEdit();
       });
@@ -326,6 +333,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.sharedWithMe();
+        searchFilters.typeInSearchBox(test_id);
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestDraftEdit(test_id);
       });
@@ -349,6 +357,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.sharedWithMe();
+        searchFilters.typeInSearchBox(test_id);
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
@@ -357,6 +366,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.sharedWithMe();
+        searchFilters.typeInSearchBox(test_id);
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestPublishedEdit(test_id);
       });

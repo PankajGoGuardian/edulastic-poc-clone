@@ -62,12 +62,6 @@ export default class PreviewItemPopup {
 
   getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');
 
-  closePreiview = () =>
-    cy
-      .get(".ant-modal-close")
-      .eq(0)
-      .click({ force: true });
-
   getEvaluationMessage = () => cy.get(".ant-message-custom-content");
 
   verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {

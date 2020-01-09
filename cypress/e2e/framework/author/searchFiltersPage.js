@@ -68,7 +68,7 @@ export default class SearchFilters {
   typeInSearchBox = key => {
     this.routeSearch();
     this.getSearchTextBox()
-      .clear({ force: true })
+      .type("{selectall}")
       .type(key, { force: true });
     cy.wait(1000);
     this.waitForSearchResponse();

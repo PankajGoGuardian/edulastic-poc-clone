@@ -351,6 +351,7 @@ export default class TestLibrary {
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
     this.searchFilters.sharedWithMe();
+    this.searchFilters.typeInSearchBox(test_id);
     this.clickOnTestCardById(test_id);
     this.assertTestPublishedNoEdit(test_id);
   };
@@ -360,6 +361,7 @@ export default class TestLibrary {
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
     this.searchFilters.sharedWithMe();
+    this.searchFilters.typeInSearchBox(test_id);
     this.checkforNonExistanceOfTest(test_id);
   };
 
@@ -367,6 +369,7 @@ export default class TestLibrary {
     cy.login("teacher", email, "snapwiz");
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
+    this.searchFilters.typeInSearchBox(test_id);
     this.clickOnTestCardById(test_id);
     this.assertTestPublishedNoEdit(test_id);
   };
@@ -375,6 +378,7 @@ export default class TestLibrary {
     cy.login("teacher", email, "snapwiz");
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
+    this.searchFilters.typeInSearchBox(test_id);
     this.checkforNonExistanceOfTest(test_id);
   };
 

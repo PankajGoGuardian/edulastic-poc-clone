@@ -40,6 +40,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
   const wrongAns = [];
   const questionType = [];
   const attemptData = [];
+  const Teacher = {
+    email: "300@abc.com",
+    pass: "snapwiz"
+  };
 
   before("Get Data Of test and its itemns", () => {
     cy.fixture("questionAuthoring").then(quesData => {
@@ -55,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     });
   });
   before("Login And Create Test", () => {
-    cy.login();
+    cy.login("teacher", Teacher.email, Teacher.pass);
     itemKeys.forEach((item, i) => {
       itemListPage.createItem(item, 0, true).then(id => {
         itemIds[i] = id;

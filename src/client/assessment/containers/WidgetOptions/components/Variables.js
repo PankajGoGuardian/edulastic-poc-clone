@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep, get, has, isEmpty, difference } from "lodash";
+import { cloneDeep, get, has, isEmpty, difference, shuffle } from "lodash";
 import { Button, Input, Select, Table } from "antd";
 import styled from "styled-components";
 
@@ -228,15 +228,9 @@ class Variables extends Component {
     };
 
     const getCombinations = (available, combinations) => {
-      console.log("available..", available);
+      available = [...new Set(available)];
       for (let i = 0; i < combinations.length; i++) {
-        const diff = difference(available, combinations);
-        if (diff.length > 0) {
-          const valueIndex = Math.floor(Math.random() * diff.length);
-          combinations[i] = diff[valueIndex];
-        } else {
-          return combinations;
-        }
+        combinations[i] = available[i % available.length];
       }
       return combinations;
     };
@@ -263,7 +257,7 @@ class Variables extends Component {
       });
       // to get unique index from availableIndexs
       const usedIndex = [];
-      return combinations.map(combination => {
+      return combinations.map((combination, index) => {
         // get a unique value index from difference between availableIndexs and usedIndex
         const diff = difference(availableIndexs, usedIndex);
         const randomIndex = Math.floor(Math.random() * diff.length);
@@ -276,10 +270,13 @@ class Variables extends Component {
           if (variable.type === "NUMBER_SEQUENCE" || variable.type === "TEXT_SEQUENCE") {
             const { sequence } = variable;
             if (sequence) {
-              const vars = sequence.split(",").filter(em => !!em.trim());
+              const varSeq = sequence.split(",").filter(em => !!em.trim());
+              const vars = Array(combinations.length)
+                .fill("")
+                .map((_, index) => varSeq[index % varSeq.length]);
               combination = {
                 ...combination,
-                [variableName]: vars[valueIndex] ? vars[valueIndex] : ""
+                [variableName]: vars[index % varSeq.length]
               };
             }
           }
@@ -289,10 +286,8 @@ class Variables extends Component {
     };
 
     const generate = () => {
-      let values = Array.from(Array(variableCombinationCount)).map((_, i) => ({ key: `${i + 1}` }));
+      let values = Array.from(Array(variableCombinationCount)).map((_, i) => ({}));
       let sequenceCombinationsGenerated = false;
-      const exampleValues = [];
-      const valueData = {};
 
       Object.keys(variables).forEach(variableName => {
         let combinations = new Array(variableCombinationCount).fill("");
@@ -307,19 +302,21 @@ class Variables extends Component {
               ),
               combinations
             );
+            values = values.map((val, i) => ({ ...val, [variableName]: combinations[i] }));
             break;
           }
           case "TEXT_SET":
           case "NUMBER_SET": {
             if (variable.set) {
               combinations = getCombinations(variable.set.split(",").filter(val => !!val.trim()), combinations);
+              values = values.map((val, i) => ({ ...val, [variableName]: combinations[i] }));
             }
             break;
           }
           case "NUMBER_SEQUENCE":
           case "TEXT_SEQUENCE": {
             if (variable.sequence && !sequenceCombinationsGenerated) {
-              combinations = getCombinationsForSequence(values).map(val => val[variableName]);
+              values = shuffle(getCombinationsForSequence(values));
               sequenceCombinationsGenerated = true;
             }
             break;
@@ -327,18 +324,26 @@ class Variables extends Component {
           default:
             break;
         }
-        valueData[variableName] = combinations.filter(val => !!val);
       });
-      for (let key = 0; key < variableCombinationCount; key++) {
-        let exampleValue = {};
-        Object.keys(valueData).forEach(variable => {
-          const varLength = valueData[variable].length;
-          exampleValue[variable] = valueData[variable][Math.floor(Math.random() * varLength)];
-        });
-        exampleValues.push({ ...exampleValue, key });
-      }
-      calculateFormula({ examples: exampleValues, variables });
-      return exampleValues;
+      let key = 1;
+      let exampleValues = [];
+      values = values
+        .map(val => {
+          let isValid = true;
+          let tempVals = exampleValues;
+          Object.keys(val).forEach(variable => {
+            tempVals = tempVals.filter(value => value[variable] === val[variable]);
+            if (!val[variable]) {
+              isValid = false;
+            }
+          });
+          isValid = isValid && tempVals.length === 0;
+          exampleValues.push(val);
+          return isValid && { key: key++, ...val };
+        })
+        .filter(el => !!el);
+      calculateFormula({ examples: values, variables });
+      return values;
     };
 
     return (

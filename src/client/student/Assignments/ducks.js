@@ -261,7 +261,7 @@ function* launchAssignment({ payload }) {
         }
 
         if (maxAttempt > testActivities.length) {
-          yield put(startAssignmentAction({ testId, assignmentId, testType }));
+          yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));
         } else {
           yield put(push(`/home/grades`));
         }

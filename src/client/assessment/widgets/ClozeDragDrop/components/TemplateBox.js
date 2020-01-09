@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-import { MathSpan, measureText, AnswerContext } from "@edulastic/common";
+import { MathSpan, measureText, DragDrop } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
 import { Popover } from "antd";
-import Droppable from "./Droppable";
-import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
+
+const { DropContainer, DragItem } = DragDrop;
 
 const TemplateBox = ({ resprops, id }) => {
   if (!id) {
@@ -16,7 +16,6 @@ const TemplateBox = ({ resprops, id }) => {
     hasGroupResponses,
     responsecontainerindividuals = [],
     responseBtnStyle,
-    smallSize,
     options,
     userAnswers,
     onDrop,
@@ -35,8 +34,6 @@ const TemplateBox = ({ resprops, id }) => {
     minWidth: response ? width : "auto",
     maxWidth: maxWidth || "auto"
   };
-
-  const { isAnswerModifiable } = useContext(AnswerContext);
 
   const getData = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
@@ -69,41 +66,28 @@ const TemplateBox = ({ resprops, id }) => {
   const content = <MathSpan dangerouslySetInnerHTML={{ __html: label }} />;
   const showPopover = contentWidth > style.maxWidth && label;
 
+  const itemData = !hasGroupResponses
+    ? `${getData("value")}_${dropTargetIndex}_fromResp`
+    : `${getDataForGroup("value")}_${userAnswers[dropTargetIndex] &&
+        userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`;
+
+  const containerStyle = {
+    display: "inline-flex",
+    verticalAlign: "middle",
+    borderRadius: 10,
+    border: "2px dashed #E6E6E6",
+    margin: "2px"
+  };
+
   return (
-    <Droppable drop={() => ({ dropTargetIndex })}>
-      {!hasGroupResponses && (
-        <ResponseContainer id={`response-container-${dropTargetIndex}`} style={style} smallSize={smallSize}>
-          <Draggable
-            className="content"
-            onDrop={onDrop}
-            isAnswerModifiable={isAnswerModifiable}
-            data={`${getData("value")}_${dropTargetIndex}_fromResp`}
-            smallSize={smallSize}
-            style={{ display: "flex", justifyContent: "flext-start", alignItems: "center", height: "100%" }}
-          >
-            {showPopover && <Popover content={content}>{content}</Popover>}
-            {!showPopover && content}
-          </Draggable>
-          &nbsp;
+    <DropContainer style={containerStyle} index={dropTargetIndex} drop={onDrop}>
+      <DragItem data={itemData}>
+        <ResponseContainer style={style}>
+          {showPopover && <Popover content={content}>{content}</Popover>}
+          {!showPopover && content}
         </ResponseContainer>
-      )}
-      {hasGroupResponses && (
-        <ResponseContainer style={style} smallSize={smallSize}>
-          <Draggable
-            className="content"
-            onDrop={onDrop}
-            isAnswerModifiable={isAnswerModifiable}
-            data={`${getDataForGroup("value")}_${userAnswers[dropTargetIndex] &&
-              userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-            smallSize={smallSize}
-          >
-            {showPopover && <Popover content={content}>{content}</Popover>}
-            {!showPopover && content}
-          </Draggable>
-          &nbsp;
-        </ResponseContainer>
-      )}
-    </Droppable>
+      </DragItem>
+    </DropContainer>
   );
 };
 

@@ -662,7 +662,7 @@ input[type="checkbox"] {
 .draggable_box {
   background: white;
   display: inline-flex;
-
+  justify-content: center;
   align-items: center;
   margin: 3px 8px;
   border-radius: 5px;

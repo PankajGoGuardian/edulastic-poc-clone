@@ -1,12 +1,12 @@
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 
-import { MathSpan, FlexContainer, AnswerContext } from "@edulastic/common";
+import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
+import { StyledResponseDiv } from "../styled/ResponseBox";
+import { ChoiceItem } from "../styled/ChoiceItem";
 
-import Draggable from "./Draggable";
-import Droppable from "./Droppable";
-import { StyledResponseDiv, StyledResponseOption } from "../styled/ResponseBox";
+const { DragItem, DropContainer } = DragDrop;
 
 const ResponseBoxLayout = ({
   smallSize,
@@ -20,23 +20,6 @@ const ResponseBoxLayout = ({
   dragItemStyle,
   getHeading
 }) => {
-  const { isAnswerModifiable } = useContext(AnswerContext);
-
-  const handleMove = e => {
-    if (e.clientY < 100) {
-      window.scrollTo(window.pageXOffset, window.pageYOffset - 10);
-    } else if (e.clientY > window.innerHeight - 100) {
-      window.scrollTo(window.pageXOffset, window.pageYOffset + 10);
-    }
-  };
-
-  useEffect(() => {
-    document.body.addEventListener("dragover", handleMove);
-    return () => {
-      document.body.removeEventListener("dragover", handleMove);
-    };
-  }, []);
-
   const horizontallyAligned = containerPosition === "left" || containerPosition === "right";
 
   const itemStyle = {
@@ -51,10 +34,7 @@ const ResponseBoxLayout = ({
   };
 
   return (
-    <Droppable
-      style={{ display: "block", border: `1px solid ${theme.widgets.clozeDragDrop.correctAnswerBoxBorderColor}` }}
-      drop={e => e}
-    >
+    <DropContainer drop={onDrop}>
       <StyledResponseDiv
         className="responses_box"
         style={{
@@ -92,43 +72,15 @@ const ResponseBoxLayout = ({
                       <div key={index} className="group">
                         <h3>{groupResponse.title}</h3>
                         {groupResponse.options &&
-                          groupResponse.options.map((option, itemIndex) => {
+                          groupResponse.options.map(option => {
                             const { value, label = "" } = option;
                             return (
-                              <div
-                                key={itemIndex}
-                                className="draggable_box"
-                                style={{ transform: "translate3d(0px, 0px, 0px)" }}
-                              >
-                                {!dragHandler && (
-                                  <Draggable
-                                    onDrop={onDrop}
-                                    data={`${value}_${index}`}
-                                    isAnswerModifiable={isAnswerModifiable}
-                                    style={itemStyle}
-                                  >
-                                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                  </Draggable>
-                                )}
-                                {dragHandler && (
-                                  <React.Fragment>
-                                    <Draggable
-                                      onDrop={onDrop}
-                                      data={`${value}_${index}`}
-                                      style={itemStyle}
-                                      isAnswerModifiable={isAnswerModifiable}
-                                    >
-                                      <i
-                                        className="fa fa-arrows-alt"
-                                        style={{
-                                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                        }}
-                                      />
-                                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                    </Draggable>
-                                  </React.Fragment>
-                                )}
-                              </div>
+                              <DragItem id={`response-item-${index}`} key={value} data={`${value}_${index}`}>
+                                <ChoiceItem style={itemStyle}>
+                                  {dragHandler && <DragHandler />}
+                                  <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                                </ChoiceItem>
+                              </DragItem>
                             );
                           })}
                       </div>
@@ -143,42 +95,18 @@ const ResponseBoxLayout = ({
               responses.map((option, index) => {
                 const { label, value } = option;
                 return (
-                  <StyledResponseOption
-                    id={`response-item-${index}`}
-                    key={value}
-                    className="draggable_box"
-                    style={{ transform: "translate3d(0px, 0px, 0px)" }}
-                  >
-                    {!dragHandler && (
-                      <Draggable style={itemStyle} onDrop={onDrop} data={value} isAnswerModifiable={isAnswerModifiable}>
-                        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                      </Draggable>
-                    )}
-                    {dragHandler && (
-                      <React.Fragment>
-                        <Draggable
-                          style={itemStyle}
-                          onDrop={onDrop}
-                          data={value}
-                          isAnswerModifiable={isAnswerModifiable}
-                        >
-                          <i
-                            className="fa fa-arrows-alt"
-                            style={{
-                              fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                            }}
-                          />
-                          <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                        </Draggable>
-                      </React.Fragment>
-                    )}
-                  </StyledResponseOption>
+                  <DragItem id={`response-item-${index}`} key={value} data={value}>
+                    <ChoiceItem style={itemStyle}>
+                      {dragHandler && <DragHandler />}
+                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                    </ChoiceItem>
+                  </DragItem>
                 );
               })}
           </FlexContainer>
         </FlexContainer>
       </StyledResponseDiv>
-    </Droppable>
+    </DropContainer>
   );
 };
 
@@ -203,6 +131,12 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false,
   containerPosition: "bottom"
 };
+
+const DragHandler = styled.i.attrs(() => ({
+  className: "fa fa-arrows-alt"
+}))`
+  font-size: ${({ theme }) => theme.widgets.clozeDragDrop.draggableIconFontSize};
+`;
 
 const GroupWrapper = styled.div`
   display: flex;

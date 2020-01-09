@@ -5,7 +5,7 @@ import { cloneDeep, get } from "lodash";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
-import { PreWrapper, helpers, QuestionNumberLabel } from "@edulastic/common";
+import { PreWrapper, helpers, QuestionNumberLabel, HorizontalScrollContext, DragDrop } from "@edulastic/common";
 import { ChoiceDimensions } from "@edulastic/constants";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
@@ -18,6 +18,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
+const { DragPreview } = DragDrop;
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
@@ -443,12 +444,15 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <TextWrappedDiv style={{ fontSize }} ref={this.previewWrapperRef}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
-          {!question && questionContent}
-        </QuestionTitleWrapper>
-        {question && questionContent}
-        {answerBox}
+        <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.previewWrapperRef.current }}>
+          <QuestionTitleWrapper>
+            {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+            {!question && questionContent}
+          </QuestionTitleWrapper>
+          {question && questionContent}
+          {answerBox}
+          <DragPreview />
+        </HorizontalScrollContext.Provider>
       </TextWrappedDiv>
     );
   }

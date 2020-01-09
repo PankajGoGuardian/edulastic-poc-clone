@@ -66,6 +66,7 @@ export {
 export { default as AnswerContext } from "./src/contexts/AnswerContext";
 export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 export { default as ScrollContext } from "./src/contexts/ScrollContext";
+export { default as HorizontalScrollContext } from "./src/contexts/HorizontalScrollContext";
 export { default as RefContext } from "./src/contexts/RefContext";
 // realtime hook
 export { default as useRealtimeV2 } from "./src/useRealtimeV2";
@@ -78,3 +79,6 @@ export { getInnerValuesForStatic } from "./src/utils/mathUtils";
 
 export { default as ItemDetailContext, COMPACT, DEFAULT } from "./src/contexts/ItemDetailContext";
 export { default as questionTheme } from "./src/themes/questionTheme";
+
+// DragDrop includes DragItem, DropContainer, and DragPreview
+export { default as DragDrop } from "./src/components/DragDrop";

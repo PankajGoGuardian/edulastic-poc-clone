@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { MathSpan, measureText } from "@edulastic/common";
+import { MathSpan, measureText, DragDrop } from "@edulastic/common";
 import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
-import Draggable from "../Draggable";
-import Droppable from "../Droppable";
+
 import { getStemNumeration } from "../../../../utils/helpers";
 import { CheckboxContainer } from "./styled/CheckboxContainer";
 import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
@@ -12,6 +11,8 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import PopoverContent from "./components/PopoverContent";
+
+const { DropContainer, DragItem } = DragDrop;
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
@@ -22,6 +23,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responsecontainerindividuals = [],
     responseBtnStyle = {},
     userSelections = [],
+    cAnswers,
+    isReviewTab,
     stemNumeration = "numerical",
     evaluation = [],
     onDropHandler = () => {},
@@ -149,15 +152,40 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     />
   );
 
+  const getData = attr => {
+    const answers = isReviewTab ? cAnswers : userSelections;
+    if (answers[dropTargetIndex]) {
+      const foundedItem = options.find(option => option.value === answers[dropTargetIndex]);
+      if (foundedItem) {
+        return attr === "value" ? foundedItem.value : foundedItem.label;
+      }
+    }
+  };
+
+  const getDataForGroup = attr => {
+    const answers = isReviewTab ? cAnswers : userSelections;
+    if (answers[dropTargetIndex] && answers[dropTargetIndex].data) {
+      const foundedGroup = options.find(option =>
+        option.options.find(inOption => inOption.value === answers[dropTargetIndex].data)
+      );
+      if (foundedGroup) {
+        const foundItem = foundedGroup.options.find(inOption => inOption.value === answers[dropTargetIndex].data);
+        if (foundItem) {
+          return attr === "value" ? foundItem.value : foundItem.label;
+        }
+      }
+    }
+  };
+
+  const itemData = !hasGroupResponses
+    ? `${getData("value")}_${dropTargetIndex}_fromResp`
+    : `${getDataForGroup("value")}_${userSelections[dropTargetIndex] &&
+        userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`;
+
   return (
     <CheckBoxTemplateBox>
-      <Droppable style={{ border: "none" }} drop={() => ({ dropTargetIndex })}>
-        <Draggable
-          onDrop={onDropHandler}
-          disableResponse={disableResponse}
-          data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
-            userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-        >
+      <DropContainer drop={onDropHandler} index={dropTargetIndex}>
+        <DragItem disableResponse={disableResponse} data={itemData}>
           {choiceAttempted && showPopover ? (
             <Popover overlayClassName="customTooltip" content={popoverContent}>
               {content}
@@ -165,8 +193,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           ) : (
             content
           )}
-        </Draggable>
-      </Droppable>
+        </DragItem>
+      </DropContainer>
     </CheckBoxTemplateBox>
   );
 };

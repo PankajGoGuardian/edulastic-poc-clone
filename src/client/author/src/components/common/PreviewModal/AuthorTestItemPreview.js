@@ -487,7 +487,7 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-          <Container ref={this.scrollContainer}>
+          <Container ref={this.scrollContainer} data-cy="scroll-conteianer">
             {cols.map((col, i) => {
               const hideColumn =
                 (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);

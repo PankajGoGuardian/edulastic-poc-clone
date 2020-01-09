@@ -9,7 +9,7 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -32,7 +32,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
   const testSummayTab = new TestSummayTab();
   const regrade = new Regrade();
   const item = new ItemListPage();
-  const itemPreview = new PreviewItem();
+  const itemPreview = new PreviewItemPopup();
 
   const authorAssignmentPage = new AuthorAssignmentPage();
   const newItemKey = "MCQ_STD.default";

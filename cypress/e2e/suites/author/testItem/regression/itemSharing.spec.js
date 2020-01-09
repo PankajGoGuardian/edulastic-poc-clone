@@ -5,7 +5,7 @@ import SearchFilters from "../../../../framework/author/searchFiltersPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 import FileHelper from "../../../../framework/util/fileHelper";
 
@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   const testLibrary = new TestLibrary();
   const testReviewTab = new TestReviewTab();
   const itemListPage = new ItemListPage();
-  const previewItem = new PreviewItem();
+  const previewItem = new PreviewItemPopup();
   const mcqTrueFalsePage = new MCQTrueFalsePage();
   let Author;
   let itemIds;

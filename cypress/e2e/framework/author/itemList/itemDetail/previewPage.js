@@ -11,7 +11,11 @@ class PreviewItemPage {
 
   getClear = () => cy.get('[data-cy="clear-btn"]');
 
-  getAntMsg = () => cy.get(".ant-message-notice-content");
+  getAntMsg = () => cy.get(".ant-message-custom-content");
+
+  clickOnClear = () => this.getClear().click({ force: true });
+
+  checkOnCheckAnswer = () => this.getCheckAnswer().click({ force: true });
 
   checkScore = expectedScore => {
     this.getCheckAnswer()

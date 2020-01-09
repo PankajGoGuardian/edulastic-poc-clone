@@ -28,6 +28,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Signup`, () =>
 
     // logout then login and verify
     cy.login("student", `${random}.${email}`, password);
-    cy.wait("@testActivity").then(() => cy.url().should("contain", "home/assignments"));
+    cy.url().should("contain", "home/assignments");
   });
 });

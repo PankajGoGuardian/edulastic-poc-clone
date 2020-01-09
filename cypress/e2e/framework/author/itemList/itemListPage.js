@@ -11,13 +11,13 @@ import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage"
 
 import SearchFilters from "../searchFiltersPage";
 import TeacherSideBar from "../SideBarPage";
-import PreviewItem from "./itemPreview";
+import PreviewItemPopup from "./itemPreview";
 
 class ItemListPage {
   constructor() {
     this.sidebar = new TeacherSideBar();
     this.searchFilters = new SearchFilters();
-    this.itemPreview = new PreviewItem();
+    this.itemPreview = new PreviewItemPopup();
   }
 
   clickOnCreate = () => {

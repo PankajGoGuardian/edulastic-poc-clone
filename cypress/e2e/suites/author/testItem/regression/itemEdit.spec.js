@@ -7,7 +7,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import FileHelper from "../../../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after and Before use`, () => {
@@ -20,7 +20,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
   const studentTestPage = new StudentTestPage();
   const testAssignPage = new TestAssignPage();
   const mcqTrueFalsePage = new MCQTrueFalsePage();
-  const itemPreview = new PreviewItem();
+  const itemPreview = new PreviewItemPopup();
 
   let itemIds;
   const TEST = "EDIT_ASSIGNED_TEST_REGRADE";

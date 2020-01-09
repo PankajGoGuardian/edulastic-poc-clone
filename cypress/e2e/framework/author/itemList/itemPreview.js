@@ -1,11 +1,9 @@
 /* eslint-disable default-case */
 import QuestionResponsePage from "../assignments/QuestionResponsePage";
 import { questionType, attemptTypes, queColor } from "../../constants/questionTypes";
-import Header from "./itemDetail/header";
 
-export default class PreviewItem {
+export default class PreviewItemPopup {
   constructor() {
-    this.header = new Header();
     this.qrp = new QuestionResponsePage();
   }
 

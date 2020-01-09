@@ -6,7 +6,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import FileHelper from "../../../../framework/util/fileHelper";
 
 const TEST = "TEST_PREVIEW";
@@ -25,7 +25,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
   const testAddItemTab = new TestAddItemTab();
   const itemListPage = new ItemListPage();
   const mcqTrueFalsePage = new MCQTrueFalsePage();
-  const itemPreview = new PreviewItem();
+  const itemPreview = new PreviewItemPopup();
 
   const EDITED_POINTS = [5, 6, 7, 8, 9];
 

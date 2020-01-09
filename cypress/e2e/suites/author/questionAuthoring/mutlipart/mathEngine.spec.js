@@ -1,5 +1,5 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
 import MathTextDropDown from "../../../../framework/author/itemList/questionType/multipart/mathTextDropDown";
 import { methodName, optionsAttribute } from "../../../../framework/constants/math";
@@ -12,7 +12,7 @@ const question = new MathTextDropDown();
 const queGroup = "Multipart";
 const queType = "Math, Text & Dropdown";
 const editToolBar = new EditToolBar();
-const preview = new PreviewItem();
+const preview = new PreviewItemPage();
 
 let resetInput = true;
 let resetOptions = true;
@@ -122,7 +122,7 @@ describe("math engine testcase ", () => {
           // checkAns
           cy.server();
           cy.route("POST", "**/math/evaluate").as("evaluate");
-          preview.clickOnCheckAnsOnPreview().then(() => {
+          preview.checkOnCheckAnswer().then(() => {
             cy.wait("@evaluate").then(xhr => {
               // verify evaluation request
               expect(
@@ -131,7 +131,7 @@ describe("math engine testcase ", () => {
               ).to.eq(200);
 
               // verify score
-              preview.getEvaluationMessage().then($ele => {
+              preview.getAntMsg().then($ele => {
                 const message = $ele.text();
                 expect(
                   message,

@@ -2,7 +2,7 @@ import SearchFilters from "../../../../framework/author/searchFiltersPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
-import PreviewItem from "../../../../framework/author/itemList/itemPreview";
+import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import FileHelper from "../../../../framework/util/fileHelper";
 
 const quesData = require("../../../../../fixtures/questionAuthoring");
@@ -12,7 +12,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
   const testLibrary = new TestLibrary();
   const itemListPage = new ItemListPage();
   const editItemPage = new EditItemPage();
-  const itemPreview = new PreviewItem();
+  const itemPreview = new PreviewItemPopup();
 
   const EMAIL = "email";
   const PASS = "pass";

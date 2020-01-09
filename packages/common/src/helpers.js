@@ -517,6 +517,38 @@ export const getFormattedAttrId = inputString => {
     .toLowerCase();
 };
 
+export const templateHasImage = template => {
+  let hasImage = false;
+  if (window.$) {
+    const jqueryEl = window.$(template);
+    jqueryEl.each(function() {
+      hasImage = $(this).find("img").length > 0;
+    });
+  }
+  return hasImage;
+};
+
+export const getImageUrl = template => {
+  let url = "";
+  if (window.$) {
+    const jqueryEl = window.$(template);
+    jqueryEl.find("img").each(function() {
+      url = this.getAttribute("src");
+    });
+  }
+  return url;
+};
+
+export const getImageDimensions = url => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = function() {
+      resolve({ height: this.naturalHeight, width: this.naturalWidth });
+    };
+    image.src = url;
+  });
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,

@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathSpan, measureText } from "@edulastic/common";
-import { Popover } from "antd";
+import { MathSpan } from "@edulastic/common";
 
 import DragItem from "../DragItem";
 import Container from "./styled/Container";
 import PopoverContent from "../PopoverContent";
+import AnswerContent from "./TextContent";
 
 const TextContainer = ({
   dropTargetIndex,
@@ -42,9 +42,6 @@ const TextContainer = ({
             isExpressGrader={isExpressGrader}
           />
         );
-        const { width: contentWidth } = measureText(answer);
-        const isOverText = contWidth < contentWidth;
-
         return (
           <div style={{ ...style, width: "100%" }}>
             <DragItem
@@ -57,16 +54,16 @@ const TextContainer = ({
               disable={!isSnapFitValues}
               disableResponse={disableResponse}
             >
-              <Container width="100%">
-                <Container width="100%" height="100%">
-                  {lessMinWidth || isOverText ? (
-                    <Popover overlayClassName="customTooltip" content={popoverContent} isChecked={isChecked}>
-                      <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-                    </Popover>
-                  ) : (
-                    <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-                  )}
-                </Container>
+              <Container width="100%" height="100%">
+                <AnswerContent
+                  popoverContent={popoverContent}
+                  userAnswer={userAnswer}
+                  answer={answer}
+                  lessMinWidth={lessMinWidth}
+                  height={style.height}
+                  width={style.width}
+                  isChecked={isChecked}
+                />
               </Container>
             </DragItem>
           </div>
@@ -74,7 +71,6 @@ const TextContainer = ({
       })}
   </div>
 );
-
 TextContainer.propTypes = {
   dropTargetIndex: PropTypes.number.isRequired,
   userSelections: PropTypes.array.isRequired,

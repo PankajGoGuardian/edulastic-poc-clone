@@ -5,6 +5,7 @@ import { MathSpan, measureText, DragDrop } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
 import { Popover } from "antd";
 import { ResponseContainer } from "../styled/ResponseContainer";
+import getImageDimensionsHook from "../../../hooks/imageDimensions";
 
 const { DropContainer, DragItem } = DragDrop;
 
@@ -61,10 +62,21 @@ const TemplateBox = ({ resprops, id }) => {
   };
 
   const label = getData("label" || "");
+  const imageDimensions = getImageDimensionsHook(label);
 
+  const draggableContainerStyle = {
+    display: "flex",
+    justifyContent: "flext-start",
+    alignItems: "center",
+    height: "100%"
+  };
+
+  const boxHeight = response ? height : responseBtnStyle.heightpx;
   const { scrollWidth: contentWidth } = measureText(label, style);
-  const content = <MathSpan dangerouslySetInnerHTML={{ __html: label }} />;
-  const showPopover = contentWidth > style.maxWidth && label;
+  const getContent = (inPopover = false) => (
+    <MathSpan style={inPopover ? draggableContainerStyle : {}} dangerouslySetInnerHTML={{ __html: label }} />
+  );
+  const showPopover = label && (contentWidth > style.maxWidth || imageDimensions.height > boxHeight);
 
   const itemData = !hasGroupResponses
     ? `${getData("value")}_${dropTargetIndex}_fromResp`
@@ -83,8 +95,12 @@ const TemplateBox = ({ resprops, id }) => {
     <DropContainer style={containerStyle} index={dropTargetIndex} drop={onDrop}>
       <DragItem data={itemData}>
         <ResponseContainer style={style}>
-          {showPopover && <Popover content={content}>{content}</Popover>}
-          {!showPopover && content}
+          {showPopover && (
+            <Popover placement="bottomLeft" content={getContent(true)}>
+              {getContent(true)}
+            </Popover>
+          )}
+          {!showPopover && getContent()}
         </ResponseContainer>
       </DragItem>
     </DropContainer>

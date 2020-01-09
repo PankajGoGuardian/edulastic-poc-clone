@@ -11,6 +11,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import PopoverContent from "./components/PopoverContent";
+import getImageDimensionsHook from "../../../../hooks/imageDimensions";
 
 const { DropContainer, DragItem } = DragDrop;
 
@@ -79,12 +80,17 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const lessMinWidth = parseInt(btnStyle.maxWidth, 10) < dimensions.minWidthShowAnswer;
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
 
-  const { scrollWidth } = measureText(getFormulaLabel(), { ...btnStyle, maxWidth: btnStyle.maxWidth });
+  const label = getFormulaLabel();
+  const imageDimensions = getImageDimensionsHook(label);
+
+  const { scrollWidth } = measureText(label, { ...btnStyle, maxWidth: btnStyle.maxWidth });
   /**
    * +60 is ellipsis width on clicking showAnswer
    * +30 is ellipsis width on clicking checkAnswer
    */
-  const showPopover = scrollWidth + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
+  const widthOverflow = scrollWidth + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
+  const heightOverflow = imageDimensions.height > (response?.heightpx || responseBtnStyle.heightpx);
+  const showPopover = widthOverflow || heightOverflow;
 
   const indexStyle = {};
   if (lessMinWidth) {
@@ -187,7 +193,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       <DropContainer drop={onDropHandler} index={dropTargetIndex}>
         <DragItem disableResponse={disableResponse} data={itemData}>
           {choiceAttempted && showPopover ? (
-            <Popover overlayClassName="customTooltip" content={popoverContent}>
+            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={popoverContent}>
               {content}
             </Popover>
           ) : (

@@ -59,7 +59,10 @@ export {
   hexToRGB,
   rgbToHexc,
   formatBytes,
-  measureText
+  measureText,
+  templateHasImage,
+  getImageDimensions,
+  getImageUrl
 } from "./src/helpers";
 
 // contexts

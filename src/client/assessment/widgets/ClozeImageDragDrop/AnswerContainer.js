@@ -68,8 +68,7 @@ const AnswerContainer = ({ answer, height, width, isWrapText, fontSize }) => {
     imageHeight = Math.round((imageOriginalSize.height * imageWidth) / imageOriginalSize.width);
   }
   const { width: contentWidth } = measureText(answer, { fontSize });
-  const isOverText = width < contentWidth;
-
+  const isOverText = width < contentWidth || height < imageOriginalSize.height;
   const content = (
     <div style={{ overflow: "hidden" }}>
       <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />

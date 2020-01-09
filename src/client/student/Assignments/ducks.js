@@ -255,7 +255,9 @@ function* launchAssignment({ payload }) {
       const { testId, testType = "assessment" } = assignment;
 
       if (lastActivity && lastActivity.status === 0) {
-        yield put(resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id }));
+        yield put(
+          resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id, classId: groupId })
+        );
       } else {
         let maxAttempt;
         if (assignment.maxAttempts) {

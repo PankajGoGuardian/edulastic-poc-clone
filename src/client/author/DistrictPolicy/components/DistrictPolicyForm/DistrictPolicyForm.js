@@ -250,7 +250,7 @@ class DistrictPolicyForm extends Component {
       cleverSignOn: districtPolicyData.cleverSignOn,
       teacherSignUp: districtPolicyData.teacherSignUp,
       studentSignUp: districtPolicyData.studentSignUp,
-      searchAndAddStudents: districtPolicyData.searchAndAddStudents,
+      searchAndAddStudents: districtPolicyData.searchAndAddStudents || false,
       googleUsernames: districtPolicyData.googleUsernames,
       schoolAdminSettingsAccess: districtPolicyData.schoolAdminSettingsAccess,
       office365Usernames: districtPolicyData.office365Usernames,
@@ -266,7 +266,7 @@ class DistrictPolicyForm extends Component {
         : [],
       googleClassroom: districtPolicyData.googleClassroom,
       canvas: districtPolicyData.canvas,
-      allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || "",
+      allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
       disableStudentLogin: districtPolicyData.disableStudentLogin || false
     };
     if (districtPolicyData.hasOwnProperty("_id")) {

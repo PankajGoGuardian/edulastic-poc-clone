@@ -84,6 +84,7 @@ export const ColumnContentArea = styled.div`
   border-radius: 10px;
   height: ${props => (props.isAuthoring ? "auto" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "initial")};
+  overflow: auto;
 `;
 
 export const EvaluateButton = styled(Button)`

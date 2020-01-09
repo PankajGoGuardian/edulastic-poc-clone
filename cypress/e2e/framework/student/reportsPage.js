@@ -1,10 +1,12 @@
 import { questionTypeKey as queTypes, attemptTypes, queColor } from "../constants/questionTypes";
 import { releaseGradeTypes } from "../constants/assignmentStatus";
 import QuestionResponsePage from "../author/assignments/QuestionResponsePage";
+import SidebarPage from "./sidebarPage";
 
 class ReportsPage {
   constructor() {
     this.qrp = new QuestionResponsePage();
+    this.sidebar = new SidebarPage();
   }
   // elements on ReportPage
 

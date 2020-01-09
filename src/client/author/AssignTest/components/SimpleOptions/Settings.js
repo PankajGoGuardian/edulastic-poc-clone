@@ -344,7 +344,7 @@ const Settings = ({
                 onChange={e => overRideSettings("calcType", e.target.value)}
               >
                 {calculatorKeys.map(item => (
-                  <Radio value={item} key={item}>
+                  <Radio data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
                   </Radio>
                 ))}
@@ -498,7 +498,7 @@ const Settings = ({
                 value={scoringType}
               >
                 {evalTypeKeys.map(item => (
-                  <Radio value={item} key={item}>
+                  <Radio value={item} data-cy={item} key={item}>
                     <Label>{evalTypes[item]}</Label>
                   </Radio>
                 ))}

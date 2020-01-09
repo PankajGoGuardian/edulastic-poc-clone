@@ -89,6 +89,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
         <Col span={16}>
           <MaxAttemptIInput
             type="number"
+            data-cy="maxAttempt"
             size="large"
             value={maxAttempts}
             onChange={e => onUpdateMaxAttempts(e.target.value)}

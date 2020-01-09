@@ -1,5 +1,5 @@
 import TestHeader from "./header";
-import { CALCULATOR } from "../../../constants/questionTypes";
+import { CALCULATOR, attemptTypes } from "../../../constants/questionTypes";
 
 export default class TestSettings {
   constructor() {
@@ -38,4 +38,16 @@ export default class TestSettings {
   clickOnEvalByType = type => {
     cy.get(`[ data-cy=${type}]`).click({ force: true });
   };
+
+  selectDontReleaseScoreResponse = () => cy.get('[value="DONT_RELEASE"]').click();
+
+  setMaxAttempt = attempts =>
+    cy
+      .get('[id="maximum-attempts-allowed"]')
+      .find("input")
+      .type(attempts);
+
+  getCheckAnswer = () => cy.get("#check-answer-tries-per-question").find("input");
+
+  setCheckAnswer = checkAns => this.getCheckAnswer().type(`{selectall}${checkAns}`);
 }

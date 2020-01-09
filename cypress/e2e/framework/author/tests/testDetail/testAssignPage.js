@@ -106,4 +106,72 @@ export default class TestAssignPage {
   getMaxAttempt = () => cy.get('[inputfeatures="maxAttemptAllowed"]').find("input");
 
   setMaxAttempt = attempt => this.getMaxAttempt().type(`{selectall}${attempt}`);
+
+  clickOnTypesOfReleaseScores = () => cy.get('[data-cy="selectRelaseScore"]').click();
+
+  setReleaseScoreAndResponse = () => {
+    this.clickOnTypesOfReleaseScores();
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains("Release scores and student responses")
+      .click();
+  };
+
+  getShuffleQue = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
+
+  getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
+
+  deselectShuffleQuestions = () =>
+    this.getShuffleQue().then($swich => {
+      if ($swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
+  selectShuffleQuestions = () =>
+    this.getShuffleQue().then($swich => {
+      if (!$swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
+  deselectShuffleChoices = () =>
+    this.getShuffleChoices().then($swich => {
+      if ($swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
+  selectShuffleChoices = () =>
+    this.getShuffleChoices().then($swich => {
+      if (!$swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
+  clickOnCalculatorByType = type => {
+    cy.get(`[ data-cy=${type}]`).click();
+  };
+
+  clickOnPassTypeDropDown = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersRequirePassword"]')
+      .find(".ant-select-arrow")
+      .click();
+
+  clickOnStaticPassword = () => {
+    this.clickOnPassTypeDropDown();
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains("Static Password")
+      .click();
+  };
+
+  enterStaticPassword = pass => {
+    cy.get('[placeholder="Enter Password"]').type(pass);
+  };
+
+  setCheckAnsTries = tries => cy.get('[placeholder="Number of tries"]').type(`{selectall}${tries}`);
+
+  clickOnEvalByType = type => {
+    cy.get(`[ data-cy=${type}]`).click({ force: true });
+  };
 }

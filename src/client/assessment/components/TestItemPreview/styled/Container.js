@@ -6,6 +6,7 @@ export const Container = styled.div`
   display: ${props => (props.width > SMALL_DESKTOP_WIDTH ? "flex" : "block")};
   position: relative;
   justify-content: ${props => (props.isCollapsed ? "space-between" : "initial")};
+  overflow: auto;
 `;
 
 export const Divider = styled.div`

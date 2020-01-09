@@ -142,7 +142,7 @@ class TestItemCol extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer flowLayout={col.flowLayout}>
+        <WidgetContainer>
           {col.widgets
             .filter(widget => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i) => (

@@ -132,8 +132,10 @@ const MainContent = styled.div`
   border-radius: 10px;
   font-size: 18px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin: 40px;
+  margin: 40px 40px 0 40px;
   border-radius: 10px;
+  display: flex;
+  overflow: hidden;
   & * {
     -webkit-touch-callout: none;
     user-select: none;
@@ -151,9 +153,10 @@ const MainContent = styled.div`
 const MainWrapper = styled.div`
   position: relative;
   width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 220px)" : "calc(100% - 65px)")};
-  overflow: auto;
   margin-top: 60px;
   height: calc(100vh - 150px);
+  display: flex;
+  overflow: hidden;
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     width: 100%;
     margin-top: 65px;

@@ -652,6 +652,7 @@ class Container extends Component {
               changePreview={changePreview}
               changePreviewTab={this.handleChangePreviewTab}
               onSave={saveItem}
+              disableSave={item._id === "new"}
               onPublishTestItem={this.handlePublishTestItem}
               saving={updating}
               view={view}

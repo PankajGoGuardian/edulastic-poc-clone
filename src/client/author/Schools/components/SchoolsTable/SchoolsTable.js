@@ -632,27 +632,10 @@ class SchoolsTable extends React.Component {
         title: (
           <StyledHeaderColumn>
             <p>{t("school.student")}</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "desc"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "asc"}
-              />
-            </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "studentsCount",
         editable: true,
-        onHeaderCell: column => {
-          return {
-            onClick: () => {
-              this.onHeaderCell("studentsCount");
-            }
-          };
-        },
         render: (studentsCount, { name } = {}) => {
           return (
             <Link
@@ -676,27 +659,10 @@ class SchoolsTable extends React.Component {
         title: (
           <StyledHeaderColumn>
             <p>{t("school.section")}</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "desc"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "asc"}
-              />
-            </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "sectionsCount",
         editable: true,
-        onHeaderCell: column => {
-          return {
-            onClick: () => {
-              this.onHeaderCell("sectionsCount");
-            }
-          };
-        },
         render: (sectionsCount, { name } = {}) => {
           return (
             <Link

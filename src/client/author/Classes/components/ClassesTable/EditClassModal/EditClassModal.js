@@ -22,7 +22,7 @@ class EditClassModal extends Component {
         const saveClassData = {
           name: row.name,
           type: "class",
-          owners: [row.teacher],
+          owners: row.teacher,
           parent,
           districtId,
           institutionId: row.institutionId,

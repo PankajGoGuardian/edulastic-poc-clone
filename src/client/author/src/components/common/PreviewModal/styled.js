@@ -79,12 +79,12 @@ export const ButtonsWrapper = styled.div`
 
 export const ColumnContentArea = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  width: ${props => props.width};
   background: #fff;
   border-radius: 10px;
   height: ${props => (props.isAuthoring ? "auto" : "70vh")};
-  display: ${props => (props.hideColumn ? "none" : "initial")};
-  overflow: auto;
+  display: ${props => (props.hideColumn ? "none" : "flex")};
+  flex-direction: column;
+  flex-basis: 100%;
 `;
 
 export const EvaluateButton = styled(Button)`

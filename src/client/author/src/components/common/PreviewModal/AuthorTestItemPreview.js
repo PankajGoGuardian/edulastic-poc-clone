@@ -495,11 +495,7 @@ class AuthorTestItemPreview extends Component {
               return (
                 <>
                   {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                  <ColumnContentArea
-                    isAuthoring={page === "itemAuthoring"}
-                    width={collapseDirection ? "90%" : col.dimension || "auto"}
-                    hide={hideColumn}
-                  >
+                  <ColumnContentArea isAuthoring={page === "itemAuthoring"} hide={hideColumn}>
                     {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                     {this.renderColumns(col, i, sectionQue, resourceCount)}
                   </ColumnContentArea>

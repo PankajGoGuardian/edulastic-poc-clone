@@ -104,7 +104,7 @@ const JoinSchool = ({
         page: 1,
         type: "SIGNUP",
         search: {
-          role: "teacher"
+          role: ["teacher"]
         },
         districtId: _school.districtId,
         institutionIds: [_school.schoolId]
@@ -139,7 +139,7 @@ const JoinSchool = ({
         page: 1,
         type: "SIGNUP",
         search: {
-          role: "teacher"
+          role: ["teacher"]
         },
         districtId: tempSelected.districtId,
         institutionIds: [tempSelected.schoolId]

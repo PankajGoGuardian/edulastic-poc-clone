@@ -43,7 +43,7 @@ const StudentAutoComplete = ({
       limit: 20,
       search: {
         searchString: searchTerm,
-        role: "student"
+        role: ["student"]
       },
       type: "DISTRICT",
       districtId,

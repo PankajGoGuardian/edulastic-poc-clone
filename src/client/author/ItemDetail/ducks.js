@@ -1167,9 +1167,6 @@ function* convertToMultipartSaga({ payload }) {
   try {
     const { isTestFlow = false, testId } = payload;
 
-    yield saveTestItemSaga();
-    // here item id could be "new", hence get it from the store
-    // which is updated after saving the item.
     const item = yield select(getItemDetailSelector);
     const nextPageUrl = isTestFlow
       ? `/author/tests/${testId}/createItem/${item._id}`

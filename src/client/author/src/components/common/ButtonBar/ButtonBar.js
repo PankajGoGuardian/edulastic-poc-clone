@@ -86,6 +86,7 @@ class ButtonBar extends Component {
       renderExtra,
       renderRightSide,
       withLabels,
+      disableSave = false,
       showMetaData = false
     } = this.props;
     const MobileDropMenu = (
@@ -161,7 +162,13 @@ class ButtonBar extends Component {
                         </CustomButton>
                       )}
                       <Tooltip title="Save">
-                        <CustomButton data-cy="saveButton" regrade className="save-btn" onClick={onSave}>
+                        <CustomButton
+                          disabled={disableSave}
+                          data-cy="saveButton"
+                          regrade
+                          className="save-btn"
+                          onClick={onSave}
+                        >
                           <HeadIcon>
                             <IconSaveNew color={themeColor} width={16} height={16} />
                           </HeadIcon>
@@ -179,7 +186,7 @@ class ButtonBar extends Component {
                           Cancel
                         </CustomButton>
                       )}
-                      <CustomButton data-cy="saveButton" onClick={onSave}>
+                      <CustomButton disabled={disableSave} data-cy="saveButton" onClick={onSave}>
                         <HeadIcon>
                           <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                         </HeadIcon>
@@ -188,7 +195,7 @@ class ButtonBar extends Component {
                     </>
                   ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && (
-                  <Button data-cy="publishItem" onClick={onPublishTestItem}>
+                  <Button disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
                     Publish
                   </Button>
                 )}
@@ -205,7 +212,7 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileTopRight>
-              <CustomButton data-cy="saveButton" onClick={onSave} className="btn-save">
+              <CustomButton disabled={disableSave} data-cy="saveButton" onClick={onSave} className="btn-save">
                 <IconSaveNew color={white} width={18} height={16} />
               </CustomButton>
             </MobileTopRight>
@@ -317,7 +324,8 @@ ButtonBar.propTypes = {
   renderExtra: PropTypes.func,
   renderRightSide: PropTypes.func,
   withLabels: PropTypes.bool,
-  onSaveScrollTop: PropTypes.func.isRequired
+  onSaveScrollTop: PropTypes.func.isRequired,
+  disableSave: PropTypes.func.isRequired // to disable/enable save and publish button
 };
 
 ButtonBar.defaultProps = {

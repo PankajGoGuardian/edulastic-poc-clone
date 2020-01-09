@@ -615,7 +615,7 @@ class ComposeQuestion extends Component {
             style={{
               flexDirection: "column",
               alignItems: "flex-start",
-              overflow: "auto",
+              overflow: "hidden",
               padding: "5px"
             }}
           >

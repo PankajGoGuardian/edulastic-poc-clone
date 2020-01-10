@@ -1280,9 +1280,7 @@ function* updateTestAndNavigate({ payload }) {
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) {
-      let test = data._id
-        ? yield updateTestSaga({ payload: { data, id: data._id, disableLoadingIndicator: true } })
-        : yield createTest(data);
+      let test = data._id ? yield updateTestSaga({ payload: { data, id: data._id } }) : yield createTest(data);
 
       if (!data._id) {
         pathname = pathname.replace("undefined", test._id);

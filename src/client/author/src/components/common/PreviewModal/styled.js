@@ -59,7 +59,6 @@ export const ButtonsContainer = styled(FlexContainer)`
   background: ${white};
   padding: 15px;
   justify-content: space-between;
-  flex-basis: 400px;
   border-radius: 10px 10px 0px 0px;
 `;
 

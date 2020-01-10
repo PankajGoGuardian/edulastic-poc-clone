@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { find, isEmpty, get } from "lodash";
 import { Dropdown } from "antd";
+import * as qs from "query-string";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { authorAssignment } from "@edulastic/colors";
@@ -49,13 +50,14 @@ class AssignmentAdvanced extends Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, location } = this.props;
     const { districtId, testId } = match.params;
     const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary } = this.props;
+    const { testType = "" } = qs.parse(location.search);
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId });
     }
-    loadAssignmentsClassList({ districtId, testId });
+    loadAssignmentsClassList({ districtId, testId, testType });
   }
 
   handleCreate = () => {};

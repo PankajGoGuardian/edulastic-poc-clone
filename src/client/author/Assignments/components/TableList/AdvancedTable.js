@@ -26,7 +26,7 @@ class AdvancedTable extends Component {
     sort: {},
     columns: [
       {
-        title: "ASSESSMENT NAME",
+        title: "ASSIGNMENT NAME",
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
         sorter: true,
@@ -177,7 +177,7 @@ class AdvancedTable extends Component {
     const { history, districtId } = this.props;
     const { enableRowClick } = this.state;
     if (enableRowClick) {
-      history.push(`/author/assignments/${districtId}/${row.testId}`);
+      history.push(`/author/assignments/${districtId}/${row.testId}?testType=${row.testType}`);
     }
   };
 

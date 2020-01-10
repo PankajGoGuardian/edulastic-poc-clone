@@ -152,6 +152,7 @@ class TeacherTable extends Component {
       {
         title: t("users.teacher.classes"),
         dataIndex: "classCount",
+        align: "center",
         render: (classCount, record) => {
           const username = get(record, "_source.username", "");
           return (

@@ -594,6 +594,7 @@ class ClassesTable extends Component {
         dataIndex: "_source.studentCount",
         editable: true,
         sortDirections: ["descend", "ascend"],
+        align: "center",
         sorter: (a, b) => (a._source.studentCount || 0) - (b._source.studentCount || 0),
         render: (_, record) => {
           const studentCount = get(record, "_source.studentCount", 0);

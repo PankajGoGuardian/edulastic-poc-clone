@@ -539,6 +539,7 @@ class CoursesTable extends React.Component {
         dataIndex: "classCount",
         editable: true,
         width: 100,
+        align: "center",
         render: (classCount, record) => {
           const courseName = get(record, "name", "");
           return (

@@ -609,6 +609,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "teachersCount",
         editable: true,
+        align: "center",
         render: (teachersCount, { name, _id } = {}) => {
           return (
             <Link
@@ -637,6 +638,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "studentsCount",
         editable: true,
+        align: "center",
         render: (studentsCount, { name, _id } = {}) => {
           return (
             <Link
@@ -657,6 +659,7 @@ class SchoolsTable extends React.Component {
           </StyledHeaderColumn>
         ),
         dataIndex: "sectionsCount",
+        align: "center",
         editable: true,
         render: (sectionsCount, { name } = {}) => {
           return (

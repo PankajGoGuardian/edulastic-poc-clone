@@ -83,6 +83,7 @@ import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSu
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import { withRouter } from "react-router-dom";
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
 const { Option } = Select;
@@ -522,7 +523,7 @@ class StudentTable extends Component {
   };
 
   getSearchQuery = () => {
-    const { userOrgId } = this.props;
+    const { userOrgId, location = {} } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
 
@@ -550,7 +551,8 @@ class StudentTable extends Component {
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: currentPage
+      page: currentPage,
+      institutionId: location.institutionId || ""
       // uncomment after elastic search is fixed
       // sortField,
       // order
@@ -909,4 +911,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(StudentTable);
+export default enhance(withRouter(StudentTable));

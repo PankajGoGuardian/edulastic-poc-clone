@@ -609,11 +609,12 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "teachersCount",
         editable: true,
-        render: (teachersCount, { name } = {}) => {
+        render: (teachersCount, { name, _id } = {}) => {
           return (
             <Link
               to={{
-                pathname: "/author/users/teacher"
+                pathname: "/author/users/teacher",
+                institutionId: _id
                 // uncomment after school filter is implemented in backend
                 // state: {
                 //   filtersColumn: "institutionNames",
@@ -636,18 +637,12 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "studentsCount",
         editable: true,
-        render: (studentsCount, { name } = {}) => {
+        render: (studentsCount, { name, _id } = {}) => {
           return (
             <Link
               to={{
-                pathname: "/author/users/student"
-                // uncomment after school filter is implemented in backend
-                // state: {
-                //   filtersColumn: "institutionNames",
-                //   filtersValue: "eq",
-                //   filterStr: name,
-                //   filterAdded: true
-                // }
+                pathname: "/author/users/student",
+                institutionId: _id
               }}
             >
               {studentsCount}

@@ -13,10 +13,13 @@ export const withMathFormula = WrappedComponent => {
      * this whole component needs rethinking.
      */
     const contextConfig = useContext(RefContext);
-    const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {} } = props;
+    const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {}, className } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
-
+    let elemClassName = className;
+    if (theme.isV1Migrated) {
+      elemClassName += " migrated-question";
+    }
     useEffect(() => {
       if (!loaded) {
         setNewInnerHtml(dangerouslySetInnerHTML.__html);
@@ -42,7 +45,7 @@ export const withMathFormula = WrappedComponent => {
         <WrappedComponent
           {...props}
           ref={contextConfig?.forwardedRef}
-          className={theme.isV1Migrated && "migrated-question"}
+          className={elemClassName}
           data-cy="styled-wrapped-component"
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
           style={{ ...style, fontSize: fontSize || theme.fontSize }}

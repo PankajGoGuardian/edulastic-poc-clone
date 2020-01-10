@@ -60,7 +60,7 @@
       "zip": "Please input zip code",
       "editSchool": "Please select school to edit.",
       "editsingleschool": "Please select single school to edit.",
-      "deleteschool": "Please select schools to delete."
+      "deleteschool": "Please select at least one school to deactivate."
     }
   },
   "users": {

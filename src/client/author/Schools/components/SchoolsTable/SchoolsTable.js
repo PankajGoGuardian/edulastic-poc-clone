@@ -164,13 +164,13 @@ class SchoolsTable extends React.Component {
       } else if (selectedRowKeys.length == 1) {
         this.onEditSchool(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error(t("school.validations.editsingleschool."));
+        message.error(t("school.validations.editsingleschool"));
       }
     } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
         this.onDeactivateSchool();
       } else {
-        message.error(t("school.validations.deleteschool."));
+        message.error(t("school.validations.deleteschool"));
       }
     }
   };

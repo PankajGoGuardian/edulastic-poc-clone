@@ -25,7 +25,13 @@ class StudentTestPage {
     this.getCheckAns().click();
 
     if (isExhausted) this.getEvaluationMessage().should("contain.text", "Check answer limit exceeded for the item");
-    else cy.wait("@evaluation");
+    else
+      cy.wait("@evaluation").then(xhr =>
+        expect(
+          xhr.status,
+          `verify evaluation request - ${xhr.status === 200 || JSON.stringify(xhr.responseBody)}`
+        ).to.eq(200)
+      );
   };
 
   checkAnsValidateAsWrong = (maxPoints = 1) => {

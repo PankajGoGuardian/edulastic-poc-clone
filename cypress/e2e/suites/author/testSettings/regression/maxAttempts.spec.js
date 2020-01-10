@@ -84,6 +84,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       });
       studentTest.submitTest();
 
+      sideBarPage.clickOnAssignment();
       // validate stats
       assignmentPage.validateAssignment(assignmentName, asgnstatus.inprogress, retake);
       gradesPage.validateStats(1, "1/3", undefined, undefined);
@@ -119,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       studentTest.submitTest();
 
       // grades page
-      sideBarPage.clickOnGrades();
+      // sideBarPage.clickOnGrades();
 
       // validate stats
       gradesPage.validateAssignment(assignmentName, asgnstatus.graded, review);

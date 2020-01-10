@@ -30,7 +30,7 @@ class AdvancedTable extends Component {
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
         sorter: true,
-        width: "22%",
+        width: "20%",
         sortOrder: false,
         onHeaderCell: col => {
           return { onClick: () => this.handleSort(col, 0) };
@@ -38,7 +38,7 @@ class AdvancedTable extends Component {
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0 }}>
+            <FlexContainer style={{ marginLeft: 0, justifyContent: "unset" }}>
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
@@ -53,7 +53,9 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        width: "11%",
+        width: "10%",
+        align: "left",
+        className: "assignment-name",
         onHeaderCell: col => {
           return { onClick: () => this.handleSort(col, 1) };
         },
@@ -80,7 +82,7 @@ class AdvancedTable extends Component {
         onHeaderCell: col => {
           return { onClick: () => this.handleSort(col, 3) };
         },
-        width: "15%",
+        width: "11%",
         render: text => <div> {text} </div>
       },
       {
@@ -92,7 +94,7 @@ class AdvancedTable extends Component {
         onHeaderCell: col => {
           return { onClick: () => this.handleSort(col, 4) };
         },
-        width: "12%",
+        width: "11%",
         render: text => <div>{text} </div>
       },
       {
@@ -104,7 +106,7 @@ class AdvancedTable extends Component {
         onHeaderCell: col => {
           return { onClick: () => this.handleSort(col, 5) };
         },
-        width: "16%",
+        width: "11%",
         render: text => <div> {text} </div>
       },
       {
@@ -117,13 +119,13 @@ class AdvancedTable extends Component {
           return { onClick: () => this.handleSort(col, 6) };
         },
 
-        width: "14%",
+        width: "10%",
         render: text => <div> {text} </div>
       },
       {
         title: "",
         dataIndex: "action",
-        width: "14%",
+        width: "10%",
         render: (_, row) => (
           <ActionDiv data-cy="testActions">
             <Dropdown

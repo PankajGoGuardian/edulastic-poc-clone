@@ -21,10 +21,12 @@ import {
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
   redirectToAssignmentsAction,
-  updatePasswordDetailsAction
+  updatePasswordDetailsAction,
+  getAllTestActivitiesForStudentAction
 } from "../src/actions/classBoard";
 
-import { createFakeData } from "./utils";
+import { createFakeData, hasRandomQuestions } from "./utils";
+
 import { markQuestionLabel, getQuestionLabels, transformTestItems } from "./Transformer";
 
 import {
@@ -113,6 +115,25 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData }
     });
+
+    const hasRandomQuestions = yield select(getHasRandomQuestionselector);
+    if (hasRandomQuestions) {
+      const testActivity = yield select(getSortedTestActivitySelector);
+      const firstStudent = get(testActivity.filter(x => !!x.testActivityId), [0], false);
+      if (!Object.keys(firstStudent).length) return;
+      yield put(
+        getAllTestActivitiesForStudentAction({
+          studentId: firstStudent.studentId,
+          assignmentId: payload.assignmentId,
+          groupId: payload.classId
+        })
+      );
+      yield put(
+        push(
+          `/author/classboard/${payload.assignmentId}/${payload.classId}/test-activity/${firstStudent.testActivityId}`
+        )
+      );
+    }
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
@@ -781,6 +802,11 @@ export const getStudentQuestionSelector = createSelector(
       return [];
     }
   }
+);
+
+export const getHasRandomQuestionselector = createSelector(
+  getClassResponseSelector,
+  test => hasRandomQuestions(test?.itemGroups || [])
 );
 
 export const getClassQuestionSelector = createSelector(

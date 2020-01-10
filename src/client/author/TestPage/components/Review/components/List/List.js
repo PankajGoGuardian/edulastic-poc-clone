@@ -213,7 +213,10 @@ const List = SortableContainer(
                 testItems[i].data.questions &&
                 (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
-            isScoringDisabled={!!testItems[i].data.questions.find(q => q.rubrics) && gradingRubricsFeature}
+            isScoringDisabled={
+              (!!testItems[i].data.questions.find(q => q.rubrics) && gradingRubricsFeature) ||
+              testItems[i].autoselectedItem
+            }
             index={i}
             owner={owner}
             indx={i}

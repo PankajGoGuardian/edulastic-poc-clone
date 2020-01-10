@@ -18,7 +18,9 @@ import {
   SET_ALL_TESTACTIVITIES_FOR_STUDENT,
   UPDATE_SUBMITTED_STUDENTS,
   TOGGLE_VIEW_PASSWORD_MODAL,
-  UPDATE_PASSWORD_DETAILS
+  UPDATE_PASSWORD_DETAILS,
+  UPDATE_STUDENTS_DATA,
+  RECEIVE_STUDENT_RESPONSE_SUCCESS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -424,6 +426,19 @@ const reducer = (state = initialState, { type, payload }) => {
           students: [...activeStudents, ...studentsData]
         },
         entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId")
+      };
+    case RECEIVE_STUDENT_RESPONSE_SUCCESS:
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (payload.testActivity.userId === entity.studentId) {
+            return {
+              ...entity,
+              questionActivities: payload.questionActivities
+            };
+          }
+          return entity;
+        })
       };
     default:
       return state;

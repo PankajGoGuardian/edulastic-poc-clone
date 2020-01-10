@@ -3,7 +3,6 @@ import { takeEvery, call, put, all, takeLatest, select } from "redux-saga/effect
 import { classResponseApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
-import { keyBy, identity } from "lodash";
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
@@ -23,14 +22,15 @@ import {
   RECEIVE_CLASS_QUESTION_REQUEST,
   RECEIVE_CLASS_QUESTION_SUCCESS,
   RECEIVE_CLASS_QUESTION_ERROR,
-  RESPONSE_ENTRY_SCORE_SUCCESS
+  RESPONSE_ENTRY_SCORE_SUCCESS,
+  UPDATE_STUDENT_TEST_ITEMS
 } from "../src/constants/actions";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 
 import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Transformer";
 import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
-
+import { hasRandomQuestions } from "../ClassBoard/utils";
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
 
@@ -60,6 +60,24 @@ function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
+    console.log({ studentResponse, originalData });
+    if (hasRandomQuestions(originalData.test.itemGroups)) {
+      console.log("has random questions");
+      const itemGroups = originalData.test.itemGroups.map(group => ({
+        ...group,
+        items: studentResponse.itemGroups[group._id] || []
+      }));
+      const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
+      markQuestionLabel(testItems);
+      originalData.test.itemGroups = itemGroups;
+      originalData.test.testItems = testItems;
+      originalData.testItemsData = testItems;
+      yield put({
+        type: UPDATE_STUDENT_TEST_ITEMS,
+        payload: { testItems, itemGroups }
+      });
+    }
+    // console.log({ originalData });
     yield put(setCurrentTestActivityIdAction(payload.testActivityId));
     /**
      * transforming questionActivities to support chart/question labels, etc.,

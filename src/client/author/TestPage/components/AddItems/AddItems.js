@@ -8,7 +8,7 @@ import { Pagination, Spin, message } from "antd";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconPlusCircle } from "@edulastic/icons";
+import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { StyledButton, ItemsMenu, QuestionsFound, ItemsPagination } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
@@ -400,7 +400,7 @@ class AddItems extends PureComponent {
                             this.setState({ showAddItemsPage: false });
                           }}
                         >
-                          <IconPlusCircle color={themeColor} width={15} height={15} />
+                          <IconItemGroup color={themeColor} width={15} height={15} />
                           <span>Group Items</span>
                         </StyledButton>
                       )}

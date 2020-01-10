@@ -5,7 +5,7 @@ import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } fr
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
-import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi } from "@edulastic/api";
+import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
 import {
@@ -34,6 +34,7 @@ import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
 import { getCurrentItemSelector } from "../../student/sharedDucks/TestItem";
 // constants
 
+const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test;
 const testItemStatusConstants = {
   INREVIEW: "inreview",
   DRAFT: "draft",
@@ -42,11 +43,10 @@ const testItemStatusConstants = {
 };
 
 const NewGroup = {
-  type: "STATIC" /* Default : static */,
+  type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: "Group 1" /* For now, auto-generated. */,
   items: [],
-  deliveryType: "ALL",
-  deliverItemsCount: 1
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
 };
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === "sectionLabel" ? "resource" : "question",
@@ -55,6 +55,28 @@ export const createWidget = ({ id, type, title }) => ({
   reference: id,
   tabIndex: 0
 });
+
+const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
+  return produce(itemGroups, itemGroups => {
+    for (const itemGroup of itemGroups) {
+      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC)
+        itemGroup.items = itemGroup.items.map(o => ({
+          itemId: o._id,
+          maxScore: scoring[o._id] || helpers.getPoints(o),
+          questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
+        }));
+      else itemGroup.items = [];
+    }
+  });
+};
+
+const transformItemGroupsFromMongoToUI = (itemGroups, oldItemGroups) => {
+  return produce(itemGroups, itemGroups => {
+    for (const [index, itemGroup] of itemGroups.entries()) {
+      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT) itemGroup.items = oldItemGroups[index].items;
+    }
+  });
+};
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
@@ -108,6 +130,9 @@ export const APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS = "[test page] approve or rej
 export const UPDATE_GROUP_DATA = "[tests] update group data";
 export const ADD_NEW_GROUP = "[tests] add new group";
 export const SET_CURRENT_GROUP_INDEX = "[tests] set current group index";
+export const DELETE_ITEMS_GROUP = "[tests] delete items group";
+export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST = "[test] add items to autoselect groups request";
+export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect group";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -128,6 +153,9 @@ export const approveOrRejectSingleTestSuccessAction = createAction(APPROVE_OR_RE
 export const updateGroupDataAction = createAction(UPDATE_GROUP_DATA);
 export const addNewGroupAction = createAction(ADD_NEW_GROUP);
 export const setCurrentGroupIndexAction = createAction(SET_CURRENT_GROUP_INDEX);
+export const deleteItemsGroupAction = createAction(DELETE_ITEMS_GROUP);
+export const addItemsToAutoselectGroupsRequestAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST);
+export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUP);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -568,6 +596,29 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         currentGroupIndex: payload
       };
+    case DELETE_ITEMS_GROUP:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          itemGroups: state.entity.itemGroups.filter(g => g.groupName !== payload)
+        }
+      };
+    case ADD_ITEMS_TO_AUTOSELECT_GROUP:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          itemGroups: produce(state.entity.itemGroups, itemGroups => {
+            for (const itemGroup of itemGroups) {
+              if (itemGroup.groupName === payload.groupName) {
+                itemGroup.items = payload.items;
+                break;
+              }
+            }
+          })
+        }
+      };
     default:
       return state;
   }
@@ -662,17 +713,9 @@ function* createTest(data) {
     "currentTab" // not accepted by backend validator (testSchema) EV-10685
   ]);
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
-  dataToSend.itemGroups = produce(data.itemGroups, itemGroups => {
-    for (const itemGroup of itemGroups) {
-      itemGroup.items = itemGroup.items.map(o => ({
-        itemId: o._id,
-        maxScore: helpers.getPoints(o),
-        questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
-      }));
-    }
-  });
-
+  dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
   let entity = yield call(testsApi.create, dataToSend);
+  data.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, data.itemGroups);
   entity = { ...entity, ...data };
   yield put({
     type: UPDATE_ENTITY_DATA,
@@ -743,19 +786,10 @@ function* updateTestSaga({ payload }) {
       return yield put(setTestsLoadingAction(false));
     }
 
-    payload.data.itemGroups = produce(payload.data.itemGroups, itemGroups => {
-      for (const itemGroup of itemGroups) {
-        itemGroup.items = itemGroup.items.map(o => ({
-          itemId: o._id,
-          maxScore: scoring[o._id] || helpers.getPoints(o),
-          questions: o.data
-            ? helpers.getQuestionLevelScore(o, o.data.questions, scoring[o._id] || helpers.getPoints(o))
-            : {}
-        }));
-      }
-    });
+    payload.data.itemGroups = transformItemGroupsUIToMongo(payload.data.itemGroups, scoring);
 
     const entity = yield call(testsApi.update, payload);
+    entity.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, payload.data.itemGroups);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
 
@@ -1040,20 +1074,17 @@ function* setTestDataAndUpdateSaga(payload) {
         return;
       }
 
-      newTest = produce(newTest, draft => {
-        for (const itemGroup of draft.itemGroups) {
-          itemGroup.items = itemGroup.items.map(o => ({
-            itemId: o._id,
-            maxScore: helpers.getPoints(o),
-            questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
-          }));
-        }
+      let testObj = produce(newTest, draft => {
+        draft.itemGroups = transformItemGroupsUIToMongo(draft.itemGroups);
         if (!testContentVisibility && (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)) {
           draft.testContentVisibility = test.testContentVisibility.ALWAYS;
         }
       });
-      newTest = omit(newTest, ["passages"]); // not accepted by backend validator (testSchema) EV-10685
-      const entity = yield call(testsApi.create, newTest);
+      testObj = omit(testObj, ["passages"]); // not accepted by backend validator (testSchema) EV-10685
+      const entity = yield call(testsApi.create, testObj);
+
+      entity.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, newTest.itemGroups);
+
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {
@@ -1313,6 +1344,46 @@ function* approveOrRejectSingleTestSaga({ payload }) {
   }
 }
 
+function* addItemsToAutoselectGroupsSaga({ payload: test }) {
+  try {
+    for (const itemGroup of test.itemGroups) {
+      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && itemGroup.items.length === 0) {
+        const optionalFields = {
+          depthOfKnowledge: itemGroup.dok,
+          authorDifficulty: itemGroup.difficulty,
+          tags: itemGroup.tags
+        };
+        Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
+        const data = {
+          limit: itemGroup.deliverItemsCount,
+          search: {
+            collectionId: itemGroup.collectionDetails._id,
+            standardId: itemGroup.standardDetails.standardId,
+            ...optionalFields
+          }
+        };
+        const response = yield fetchAutoselectGroupItemsSaga(data);
+        if (response) {
+          yield put(addItemsToAutoselectGroupAction({ items: response, groupName: itemGroup.groupName }));
+        }
+      }
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* fetchAutoselectGroupItemsSaga(payload) {
+  try {
+    const response = yield call(testItemsApi.getAutoSelectedItems, payload);
+    return response.items.map(i => ({ ...i, autoselectedItem: true }));
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to fetch autoselect items.");
+    return null;
+  }
+}
+
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -1333,7 +1404,8 @@ export function* watcherSaga() {
     yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
     yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
     yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
-    yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga)
+    yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
+    yield takeLatest(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST, addItemsToAutoselectGroupsSaga)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);

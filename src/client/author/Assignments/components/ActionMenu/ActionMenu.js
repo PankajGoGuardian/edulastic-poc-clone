@@ -21,7 +21,8 @@ const ActionMenu = (
   history,
   showPreviewModal,
   toggleEditPopup,
-  toggleDeleteModal
+  toggleDeleteModal,
+  row = {}
 ) => {
   const currentTestId = currentAssignment.testId;
   const currentAssignmentId = currentAssignment._id;
@@ -42,13 +43,16 @@ const ActionMenu = (
             Assign
           </Link>
         </Menu.Item>
-        <Menu.Item data-cy="duplicate" key="duplicate" onClick={createDuplicateAssignment}>
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <img alt="icon" src={copyItem} />
-            <SpaceElement />
-            Duplicate
-          </StyledLink>
-        </Menu.Item>
+        {!row.hasAutoSelectGroups && (
+          <Menu.Item data-cy="duplicate" key="duplicate" onClick={createDuplicateAssignment}>
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <img alt="icon" src={copyItem} />
+              <SpaceElement />
+              Duplicate
+            </StyledLink>
+          </Menu.Item>
+        )}
+
         <Menu.Item data-cy="preview" key="preview" onClick={() => showPreviewModal(currentTestId)}>
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={viewIcon} />

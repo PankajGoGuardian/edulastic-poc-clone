@@ -60,7 +60,8 @@ import {
   getCanOpenAssignmentSelector,
   getViewPasswordSelector,
   getPasswordPolicySelector,
-  showPasswordButonSelector
+  showPasswordButonSelector,
+  getHasRandomQuestionselector
 } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
@@ -69,6 +70,7 @@ import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
 import ViewPasswordModal from "./ViewPasswordModal";
+import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -251,7 +253,8 @@ class ClassHeader extends Component {
       classesList,
       match,
       showPasswordButton,
-      isViewPassword
+      isViewPassword,
+      hasRandomQuestions
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -380,21 +383,26 @@ class ClassHeader extends Component {
               </StyledAnchor>
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
-              <StyledLink
-                to={`/author/expressgrader/${assignmentId}/${classId}`}
-                disabled={!isItemsVisible}
-                data-cy="Expressgrader"
+              <WithDisableMessage
+                disabled={hasRandomQuestions}
+                errMessage="This assignment has random items for every student."
               >
-                <StyledAnchor isActive={active === "expressgrader"}>
-                  <IconBookMarkButton
-                    color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
-                    left={0}
-                  />
-                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
-                    {t("common.expressGrader")}
-                  </LinkLabel>
-                </StyledAnchor>
-              </StyledLink>
+                <StyledLink
+                  to={`/author/expressgrader/${assignmentId}/${classId}`}
+                  disabled={!isItemsVisible || hasRandomQuestions}
+                  data-cy="Expressgrader"
+                >
+                  <StyledAnchor isActive={active === "expressgrader"}>
+                    <IconBookMarkButton
+                      color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                      left={0}
+                    />
+                    <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                      {t("common.expressGrader")}
+                    </LinkLabel>
+                  </StyledAnchor>
+                </StyledLink>
+              </WithDisableMessage>
             </FeaturesSwitch>
 
             <FeaturesSwitch
@@ -534,7 +542,8 @@ const enhance = compose(
       classesList: classListSelector(state),
       passwordPolicy: getPasswordPolicySelector(state),
       showPasswordButton: showPasswordButonSelector(state),
-      isViewPassword: getViewPasswordSelector(state)
+      isViewPassword: getViewPasswordSelector(state),
+      hasRandomQuestions: getHasRandomQuestionselector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

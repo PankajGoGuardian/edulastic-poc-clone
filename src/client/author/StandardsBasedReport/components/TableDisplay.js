@@ -8,7 +8,11 @@ import PropTypes from "prop-types";
 import DetailedDisplay from "./DetailedDisplay";
 import { getStandardWisePerformanceMemoized } from "../Transformer";
 
-import { getAdditionalDataSelector, getTestActivitySelector } from "../../ClassBoard/ducks";
+import {
+  getAdditionalDataSelector,
+  getTestActivitySelector,
+  getHasRandomQuestionselector
+} from "../../ClassBoard/ducks";
 import styled from "styled-components";
 import { smallDesktopWidth } from "@edulastic/colors";
 
@@ -127,7 +131,19 @@ class TableDisplay extends Component {
 
   render() {
     const { stdId, perfomancePercentage } = this.state;
-    const { additionalData: { standards = [], assignmentMastery = [] } = {} } = this.props;
+    const { additionalData: { standards = [], assignmentMastery = [] } = {}, hasRandomQuestions } = this.props;
+    const questionsColumn = hasRandomQuestions
+      ? []
+      : [
+          {
+            title: "Question",
+            dataIndex: "question",
+            key: "question",
+            sorter: (a, b) => sortAlphaNum(a.question, b.question),
+            width: 200,
+            render: text => <CustomQuestionCell>{text}</CustomQuestionCell>
+          }
+        ];
     const columns = [
       {
         title: "Standards",
@@ -136,14 +152,8 @@ class TableDisplay extends Component {
         sorter: (a, b) => sortAlphaNum(a.standard.props.children, b.standard.props.children),
         render: text => <CustomStandardCell>{text}</CustomStandardCell>
       },
-      {
-        title: "Question",
-        dataIndex: "question",
-        key: "question",
-        sorter: (a, b) => sortAlphaNum(a.question, b.question),
-        width: 200,
-        render: text => <CustomQuestionCell>{text}</CustomQuestionCell>
-      },
+      ...questionsColumn,
+
       {
         title: "Mastery Summary",
         dataIndex: "masterySummary",
@@ -270,7 +280,12 @@ class TableDisplay extends Component {
   }
 }
 
-export default TableDisplay;
+export default connect(
+  state => ({
+    hasRandomQuestions: getHasRandomQuestionselector(state)
+  }),
+  null
+)(TableDisplay);
 
 const CustomStandardCell = styled(StandardCell)`
   max-width: 120px;

@@ -7,7 +7,7 @@ import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulas
 import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { question } from "@edulastic/constants";
+import { question, test as testContants } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
@@ -55,6 +55,8 @@ import { getCollectionsSelector } from "../../../src/selectors/user";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
+
+const { ITEM_GROUP_TYPES } = testContants;
 
 // render single item
 class Item extends Component {
@@ -200,7 +202,7 @@ class Item extends Component {
 
   handleSelection = async row => {
     const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
-    if (!test.title.trim().length && page !== "itemList") {
+    if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
@@ -242,12 +244,16 @@ class Item extends Component {
       test: { itemGroups },
       setCurrentGroupIndex
     } = this.props;
+    const staticGroups = itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC);
     if (isAddOrRemove) {
-      if (itemGroups.length === 1) {
-        setCurrentGroupIndex(0);
+      if (staticGroups.length === 1) {
+        const index = itemGroups.findIndex(g => g.groupName === staticGroups[0].groupName);
+        setCurrentGroupIndex(index);
         this.handleSelection(item);
-      } else {
+      } else if (staticGroups.length > 1) {
         this.setState({ showSelectGroupModal: true });
+      } else {
+        return message.warning("No Static group found.");
       }
     } else {
       this.handleSelection(item);
@@ -256,9 +262,11 @@ class Item extends Component {
 
   handleSelectGroupModalResponse = index => {
     const { item, setCurrentGroupIndex } = this.props;
-    if (index || index === 0) setCurrentGroupIndex(index);
+    if (index || index === 0) {
+      setCurrentGroupIndex(index);
+      this.handleSelection(item);
+    }
     this.setState({ showSelectGroupModal: false });
-    this.handleSelection(item);
   };
 
   get isAddOrRemove() {
@@ -314,7 +322,11 @@ class Item extends Component {
     const isEditable = owner;
     const itemTypes = getQuestionType(item);
     const isPublisher = features.isCurator || features.isPublisherAuthor;
-    const groupName = test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
+    const staticGroups = test?.itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC) || 0;
+    const groupName =
+      staticGroups.length === 1
+        ? "Selected"
+        : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>

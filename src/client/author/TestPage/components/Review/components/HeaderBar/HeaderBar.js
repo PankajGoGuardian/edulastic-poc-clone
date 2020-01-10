@@ -4,11 +4,13 @@ import { Checkbox, message, Button } from "antd";
 
 import { themeColor, white } from "@edulastic/colors";
 import { IconClose, IconMoveTo, IconCollapse, IconEye, IconDescription } from "@edulastic/icons";
+import { test as testContatns } from "@edulastic/constants";
 
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
 import { Item, Container, SelectAllCheckbox, ActionButton, MobileButtomContainer } from "./styled";
 
+const { ITEM_GROUP_TYPES } = testContatns;
 const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
@@ -27,7 +29,7 @@ const HeaderBar = ({
   itemGroups
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
-  const disableRMbtns = itemGroups.length > 1 && itemGroups.some(group => group.type === "AUTOSELECT");
+  const disableRMbtns = itemGroups.length > 1 && itemGroups.some(group => group.type === ITEM_GROUP_TYPES.AUTOSELECT);
 
   const handleSuccess = position => {
     const post = position - 1;

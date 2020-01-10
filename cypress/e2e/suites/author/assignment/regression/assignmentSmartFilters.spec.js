@@ -2,10 +2,9 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import { teacherSide, testTypes } from "../../../../framework/constants/assignmentStatus";
+import { testTypes } from "../../../../framework/constants/assignmentStatus";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import { before } from "mocha";
 
 const teacherSidebar = new TeacherSideBar();
 const studentAssignment = new AssignmentsPage();
@@ -157,6 +156,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
 
   context(`assignment folders`, () => {
     before("reset all filters", () => {
+      cy.login("teacher", teacher, password);
       teacherSidebar.clickOnDashboard();
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.smartFilter.clickOnFilter();
@@ -190,9 +190,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
     });
 
     it(`move assignment to folder`, () => {
+      // select folder 2 before move
+      authorAssignmentPage.smartFilter.clickOnFolderByName(folders[2]);
+      authorAssignmentPage.getClass().should("have.length", 0);
+
+      authorAssignmentPage.smartFilter.clickOnAllAssignment();
       authorAssignmentPage.selectCheckBoxByTestName(testName);
       authorAssignmentPage.smartFilter.moveToFolder(folders[2]);
-      authorAssignmentPage.selectCheckBoxByTestName(testName);
+      // authorAssignmentPage.selectCheckBoxByTestName(testName);
 
       // select all folder
       authorAssignmentPage.smartFilter.clickOnAllAssignment();
@@ -201,10 +206,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
         .should("contain.text", classes[1].className)
         .and("contain.text", classes[2].className)
         .and("have.length", 2);
-
-      // select folder 1
-      authorAssignmentPage.smartFilter.clickOnFolderByName(folders[1]);
-      authorAssignmentPage.getClass().should("have.length", 1);
 
       // select folder 2
       authorAssignmentPage.smartFilter.clickOnFolderByName(folders[2]);

@@ -2,6 +2,7 @@ export default class CypressHelper {
   static selectDropDownByAttribute = (dataCYAttributeValue, textToSelect) => {
     cy.get(`[data-cy="${dataCYAttributeValue}"]`).click({ force: true });
     // this.clickOnDropDownOptionByText(textToSelect);
+    cy.wait(300); // allow list to expand
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
         $ele

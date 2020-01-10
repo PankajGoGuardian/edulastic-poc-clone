@@ -49,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
         it(` > Attempt ${que} - ${itemKeys[i]} `, () => {
           const queNum = que;
           // navigate to que
-          CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/ ${itemKeys.length}`);
+          CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/${itemKeys.length}`);
           cy.contains(queNum).should("be.visible");
           const [queType] = questionTypeMap[queNum].queKey.split(".");
           const { attemptData } = questionTypeMap[queNum];
@@ -61,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
 
           // verify response retained after exit
           assignmentPage.clickOnAssignmentButton();
-          CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/ ${itemKeys.length}`);
+          CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/${itemKeys.length}`);
           studentTestPage.verifyQuestionResponseRetained(queType, RIGHT, attemptData);
 
           // navigate to question from review

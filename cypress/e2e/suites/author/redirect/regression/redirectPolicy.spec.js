@@ -301,7 +301,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
 
       // verify previous attempt 1
       lcb.questionResponsePage.selectAttempt(1);
-      lcb.verifyStudentCentricCard(stuName, allWrong, questionTypeMap, true);
+      lcb.verifyStudentCentricCard(stuName, allRight, questionTypeMap, true);
       // verify scores and improvement of previous attempt 1
       lcb.questionResponsePage.verifyTotalScoreAndImprovement(totalScore, maxScore, false);
 

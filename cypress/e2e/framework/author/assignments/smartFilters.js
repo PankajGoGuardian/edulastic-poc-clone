@@ -61,7 +61,11 @@ export default class SmartFilters {
 
   clickOnAllAssignment = () => cy.contains("span", "ALL ASSIGNMENTS").click();
 
-  clickOnFolderByName = folderName => cy.get(`[title="${folderName}"]`).click();
+  clickOnFolderByName = folderName =>
+    cy
+      .get(`[title="${folderName}"]`)
+      .first()
+      .click({ force: true });
 
   verifyFolderVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("be.visible");
 
@@ -74,7 +78,7 @@ export default class SmartFilters {
       .find('[data-cy="moreButton"]')
       .click();
     cy.get('[data-cy="rename"]')
-      .eq(0)
+      .last()
       .click({ force: true });
     cy.get('[placeholder="Name this folder"]').type(newName);
     cy.contains("span", "Update").click();
@@ -91,19 +95,23 @@ export default class SmartFilters {
   deleteFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("DELETE", "**/user-folder/**").as("deleteFolder");
+
     cy.get(`[data-cy="${folderName}"]`)
       .find('[data-cy="moreButton"]')
-      .click();
+      .first()
+      .click({ force: true });
+
     cy.get('[data-cy="delete"]')
-      .eq(0)
-      .click();
+      .first()
+      .click({ force: true });
+
     if (isValid) {
       cy.get('[data-cy="submit"]').click();
       cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
       this.verifyFolderNotVisible(folderName);
     } else {
       cy.contains("Only empty folders can be deleted").should("be.visible");
-      cy.contains("span", "Cancel").click();
+      // cy.contains("span", "Cancel").click();
     }
   };
 
@@ -113,6 +121,7 @@ export default class SmartFilters {
     cy.contains("span", "NEW FOLDER").click();
     cy.get('[placeholder="Name this folder"]').type(folderName);
     cy.contains("span", "Create").click({ force: true });
+
     if (isValid) {
       cy.wait("@createFolder").then(xhr => expect(xhr.status).to.eq(200));
       this.verifyFolderVisible(folderName);
@@ -126,11 +135,18 @@ export default class SmartFilters {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
     cy.contains("span", "Move").click();
+
     cy.get(".ant-modal-body")
       .find(`[title="${folderName}"]`)
       .click({ force: true });
-    cy.contains("span", "Move").click({ force: true });
-    if (isValid) cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
-    else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
+
+    cy.get(".ant-modal")
+      .contains("span", "Move")
+      .click({ force: true });
+
+    if (isValid) {
+      cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
+      cy.contains(`successfully moved to ${folderName} folder`).should("be.visible");
+    } else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
   };
 }

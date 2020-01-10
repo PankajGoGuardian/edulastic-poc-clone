@@ -119,7 +119,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     cy.route("POST", "**api/test").as("createTest");
     testLibrary.searchFilters.clearAll();
     testLibrary.testAddItem.authoredByMe();
-    testLibrary.searchFilters.setGrades(testData.grade);
+    // testLibrary.searchFilters.setGrades(testData.grade);
     testData.itemKeys.forEach((itemKey, index) => {
       // add items existing
       if (index < 2) {

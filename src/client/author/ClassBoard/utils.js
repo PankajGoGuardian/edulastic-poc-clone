@@ -1,7 +1,3 @@
-import { test } from "@edulastic/constants";
-
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test;
-
 let colors = ["red", "grey", "green", "yellow", "pink", "blue", "violet", "orange", "black", "magenta"];
 const items = [
   {
@@ -91,20 +87,4 @@ export const getUserName = student => {
     return student.username;
   }
   return "Anonymous";
-};
-
-/**
- * @param {Object} itemGroups
- * no itemGroups return false
- * for itemGroups exists - atleast one group with AUTOSELECT or STATIC with limited random can have random items, hence return true
- *
- */
-export const hasRandomQuestions = (itemGroups = []) => {
-  if (!itemGroups || !itemGroups.length) {
-    return false;
-  }
-  return itemGroups.some(
-    group =>
-      group.type === ITEM_GROUP_TYPES.AUTOSELECT || group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-  );
 };

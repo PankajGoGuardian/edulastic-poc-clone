@@ -134,7 +134,6 @@ export const UPDATE_RECENT_COLLECTIONS = "[dictonaries] update recent collection
 export const RECEIVE_CLASS_RESPONSE_REQUEST = "[classresponses] receive list request";
 export const RECEIVE_CLASS_RESPONSE_SUCCESS = "[classresponses] receive list success";
 export const RECEIVE_CLASS_RESPONSE_ERROR = "[classresponses] receive list error";
-export const UPDATE_STUDENT_TEST_ITEMS = "[classresponses] update student test items";
 export const RECEIVE_STUDENT_RESPONSE_REQUEST = "[studentResponse] receive list request";
 export const RECEIVE_STUDENT_RESPONSE_SUCCESS = "[studentResponse] receive list success";
 export const RECEIVE_STUDENT_RESPONSE_ERROR = "[studentResponse] receive list error";

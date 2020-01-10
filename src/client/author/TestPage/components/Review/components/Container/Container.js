@@ -20,8 +20,7 @@ import {
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
   getCurrentGroupIndexSelector,
-  getTestItemsSelector,
-  addItemsToAutoselectGroupsRequestAction
+  getTestItemsSelector
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { clearEvaluationAction } from "../../../../../../assessment/actions/evaluation";
@@ -139,11 +138,6 @@ class Review extends PureComponent {
 
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
-    const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const isEmptyItems = !!test.itemGroups.find(g => g.type === "AUTOSELECT" && g.items.length === 0);
-    if (isEmptyItems) {
-      addItemsToAutoselectGroupsRequest(test);
-    }
   }
 
   setSelected = values => {
@@ -577,8 +571,7 @@ const enhance = compose(
       showAnswer: previewShowAnswerAction,
       clearAnswer: clearAnswersAction,
       clearEvaluation: clearEvaluationAction,
-      setTestItems: setTestItemsAction,
-      addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction
+      setTestItems: setTestItemsAction
     }
   )
 );

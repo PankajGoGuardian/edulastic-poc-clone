@@ -36,7 +36,6 @@ import {
   TitleCase
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
-import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 
 const convertTableData = (data, assignments, index) => ({
   name: data.title,
@@ -53,8 +52,7 @@ const convertTableData = (data, assignments, index) => ({
   action: "",
   classId: assignments[0].classId,
   currentAssignment: assignments[0],
-  testType: data.testType,
-  hasAutoSelectGroups: data.hasAutoSelectGroups
+  testType: data.testType
 });
 
 const convertExpandTableData = (data, testItem, index) => ({
@@ -71,8 +69,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   graded: data.gradedCount,
   action: "",
   classId: data.classId,
-  testType: data.testType,
-  hasAutoSelectGroups: testItem.hasAutoSelectGroups
+  testType: data.testType
 });
 
 const TableList = ({
@@ -178,20 +175,11 @@ const TableList = ({
               </Link>
             </Tooltip>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
-              <WithDisableMessage
-                disabled={row.hasAutoSelectGroups}
-                errMessage={"This assignment has random items for every student."}
-              >
-                <Tooltip placement="bottom" title="Express Grader">
-                  <Link
-                    data-cy="eg"
-                    to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}
-                    disabled={row.hasAutoSelectGroups}
-                  >
-                    <Icon src={additemsIcon} alt="Images" />
-                  </Link>
-                </Tooltip>
-              </WithDisableMessage>
+              <Tooltip placement="bottom" title="Express Grader">
+                <Link data-cy="eg" to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
+                  <Icon src={additemsIcon} alt="Images" />
+                </Link>
+              </Tooltip>
             </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={row.classId}>
               <Tooltip placement="bottom" title="Reports">
@@ -321,8 +309,7 @@ const TableList = ({
               history,
               showPreviewModal,
               toggleEditModal,
-              toggleDeleteModal,
-              row
+              toggleDeleteModal
             )}
             placement="bottomRight"
             trigger={["click"]}

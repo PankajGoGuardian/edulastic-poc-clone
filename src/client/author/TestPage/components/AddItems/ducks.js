@@ -27,7 +27,6 @@ export const RECEIVE_TEST_ITEMS_REQUEST = "[addItems] receive items request";
 export const RECEIVE_TEST_ITEMS_SUCCESS = "[addItems] receive items success";
 export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
 export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
-export const REMOVE_TEST_ITEMS_REQUEST = "[addItems] remove items request";
 export const SET_TEST_ITEM_REQUEST = "[addItems] set passage item request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
@@ -66,11 +65,6 @@ export const receiveTestItemsAction = (search, page, limit) => ({
 
 export const setTestItemsAction = data => ({
   type: SET_TEST_ITEMS_REQUEST,
-  payload: data
-});
-
-export const removeTestItemsAction = data => ({
-  type: REMOVE_TEST_ITEMS_REQUEST,
   payload: data
 });
 
@@ -167,11 +161,6 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         selectedItems: [...state.selectedItems, payload]
-      };
-    case REMOVE_TEST_ITEMS_REQUEST:
-      return {
-        ...state,
-        selectedItems: state.selectedItems.filter(i => !payload.includes(i))
       };
     case CLEAR_SELECTED_ITEMS:
       return {

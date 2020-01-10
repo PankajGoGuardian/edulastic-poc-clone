@@ -1,12 +1,9 @@
 import React, { useState, useMemo } from "react";
-import styled from "styled-components";
-
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { borderGrey } from "@edulastic/colors";
-import { test as testContants } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import styled from "styled-components";
+import { borderGrey } from "@edulastic/colors";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-const { ITEM_GROUP_TYPES } = testContants;
 const SelectGroupModal = ({ visible, test, handleResponse }) => {
   return (
     <StyledModal
@@ -15,20 +12,16 @@ const SelectGroupModal = ({ visible, test, handleResponse }) => {
       textAlign="left"
       visible={visible}
       footer={null}
-      onCancel={() => handleResponse(undefined)}
+      onCancel={handleResponse}
       width="400px"
     >
       <PerfectScrollbar style={{ maxHeight: "500px", marginRight: "-14px" }}>
         <ModalBody>
-          {test.itemGroups.map(({ groupName, type }, index) => {
-            if (type === ITEM_GROUP_TYPES.STATIC)
-              return (
-                <GroupWrapper key={index} onClick={() => handleResponse(index)}>
-                  {groupName}
-                </GroupWrapper>
-              );
-            else return null;
-          })}
+          {test.itemGroups.map(({ groupName }, index) => (
+            <GroupWrapper key={index} onClick={() => handleResponse(index)}>
+              {groupName}
+            </GroupWrapper>
+          ))}
         </ModalBody>
       </PerfectScrollbar>
     </StyledModal>

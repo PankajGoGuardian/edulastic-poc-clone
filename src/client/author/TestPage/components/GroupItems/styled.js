@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Radio, Button } from "antd";
+import { Row, Radio } from "antd";
 import {
   boxShadowDefault,
   white,
@@ -33,17 +33,12 @@ export const Heading = styled.div`
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 30px;
-  i {
-    color: ${themeColor};
-    font-size: 18px;
-    line-height: 16px;
-  }
 `;
 
 export const ContentBody = styled.div``;
 
 export const GroupField = styled.div`
-  margin-bottom: ${({ marginBottom }) => marginBottom || "30px"};
+  margin-bottom: 30px;
   input {
     height: 40px;
   }
@@ -62,7 +57,7 @@ export const Label = styled.label`
   margin-bottom: ${({ fontWeight }) => (fontWeight ? "0px" : "5px")};
   font-size: ${({ fontWeight, theme }) => (fontWeight ? theme.standardFont : theme.smallFontSize)};
   text-transform: uppercase;
-  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : "600")};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : "500")};
   cursor: ${({ fontWeight }) => (fontWeight ? "pointer" : "default")};
 `;
 
@@ -132,13 +127,6 @@ export const SelectItemsButton = styled(AddGroupButton)`
   }
 `;
 
-export const BrowseButton = styled(SelectItemsButton)`
-  box-shadow: unset;
-  display: flex;
-  width: auto;
-  border-radius: 2px;
-`;
-
 export const QuestionTagsWrapper = styled.div`
   display: flex;
 `;
@@ -157,16 +145,12 @@ export const SelectWrapper = styled.div`
   width: ${({ width }) => width};
   display: inline-block;
   margin-right: 10px;
-  margin-bottom: 10px;
   .ant-select {
     width: 100%;
-    min-height: 40px;
+    height: 40px;
     .ant-select-selection {
       background: ${lightGreySecondary};
       border-radius: 2px;
-      .ant-select-selection__rendered {
-        line-height: 38px;
-      }
     }
   }
   input {
@@ -201,51 +185,4 @@ export const ItemTag = styled.span`
   display: inline-block;
   margin: 5px 0px 0px 5px;
   font-weight: ${props => props.theme.semiBold};
-`;
-
-export const StandardNameSection = styled.div`
-  height: 40px;
-  border: 1px solid ${themeColor};
-  border-radius: 2px;
-  padding: 8px;
-  color: ${themeColor};
-  background: ${themeColorTagsBg};
-  > span:first-child {
-    display: inline-block;
-    width: 90%;
-    text-align: center;
-  }
-  > span:last-child {
-    cursor: pointer;
-  }
-`;
-
-export const PanelHeading = styled.div`
-  display: flex;
-  justify-content: space-between;
-  > div:last-child {
-    display: flex;
-    > div {
-      margin-left: 10px;
-      font-size: 18px;
-      color: ${themeColor};
-      svg {
-        fill: ${themeColor};
-      }
-    }
-  }
-`;
-
-export const SaveButton = styled(Button)`
-  width: 130px;
-  height: 35px;
-  text-transform: uppercase;
-  font-size: 12px;
-  color: ${white};
-  background: ${themeColor};
-  margin-right: 10px;
-  &:hover,
-  &:focus {
-    color: ${themeColor};
-  }
 `;

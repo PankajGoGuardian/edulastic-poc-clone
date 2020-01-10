@@ -126,9 +126,6 @@ const getPassageItems = id =>
     })
     .then(result => result.data.result);
 
-const getAutoSelectedItems = data =>
-  api.callApi({ url: `${prefix}/auto-select/search`, method: "post", data }).then(result => result.data.result);
-
 export default {
   getAll,
   getById,
@@ -141,6 +138,5 @@ export default {
   bulkPublishTestItems,
   getByV1Id,
   deleteById,
-  getPassageItems,
-  getAutoSelectedItems
+  getPassageItems
 };

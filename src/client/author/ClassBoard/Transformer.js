@@ -84,7 +84,7 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
  * @param {{itemId:string}[]} testItems
  * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
  */
-export const getQuestionLabels = (testItemsData = []) => {
+export const getQuestionLabels = testItemsData => {
   /**
    * @type {{[qid:string]:{qLabel:string, barLabel: string }  }}
    */

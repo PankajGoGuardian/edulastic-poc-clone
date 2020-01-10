@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Button, Row, Col, Checkbox, Spin, message } from "antd";
+import { Button, Row, Col, Checkbox, Spin } from "antd";
 import { Paper, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { Container } from "./styled/Container";
 import { TLOList, TLOListItem } from "./styled/TLOList";
@@ -20,8 +20,7 @@ const StandardsModal = ({
   curriculumStandardsELO,
   curriculumStandardsTLO,
   getCurriculumStandards,
-  curriculumStandardsLoading,
-  singleSelect = false
+  curriculumStandardsLoading
 }) => {
   const [state, setState] = useState({
     standard,
@@ -68,9 +67,6 @@ const StandardsModal = ({
   };
 
   const handleCheckELO = c => {
-    if (singleSelect && state.eloStandards.length) {
-      return message.warning("Cannot select more than 1 standard");
-    }
     if (!state.eloStandards.some(item => item._id === c._id))
       setState({ ...state, eloStandards: [...state.eloStandards, c] });
     else setState({ ...state, eloStandards: [...state.eloStandards].filter(elo => elo._id !== c._id) });

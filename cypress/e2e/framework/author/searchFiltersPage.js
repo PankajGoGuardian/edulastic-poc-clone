@@ -18,7 +18,6 @@ export default class SearchFilters {
   clearAll = () => {
     this.routeSearch();
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    cy.wait(1000);
     return cy.wait("@search");
   };
 

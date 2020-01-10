@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 import QuestionResponsePage from "../assignments/QuestionResponsePage";
-import { questionType, attemptTypes, queColor } from "../../constants/questionTypes";
+import { questionType, attemptTypes, queColor, questionTypeKey } from "../../constants/questionTypes";
 
 export default class PreviewItemPopup {
   constructor() {
@@ -9,7 +9,20 @@ export default class PreviewItemPopup {
 
   getQueContainer = () => cy.get('[data-cy="question-container"]');
 
-  closePreiview = () => cy.get(".ant-modal-close-icon").click();
+  closePreiview = () => {
+    let eleCount;
+    this.getCloseIconLength().then(length => {
+      eleCount = length;
+      console.log(eleCount, "SANJAY");
+      if (eleCount > 1) {
+        cy.get(".ant-modal-close-icon")
+          .eq(1)
+          .click();
+      } else cy.get(".ant-modal-close-icon").click();
+    });
+  };
+
+  getCloseIconLength = () => cy.get(".ant-modal-close-icon").then(ele => Cypress.$(ele).length);
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="show-answers-btn"]').click({ force: true });
 
@@ -113,10 +126,10 @@ export default class PreviewItemPopup {
     if (attemptData.hasOwnProperty("item")) delete attemptData.item;
 
     switch (quest) {
-      case questionType.MULTIPLE_CHOICE_STANDARD:
-      case questionType.MULTIPLE_CHOICE_MULTIPLE:
-      case questionType.TRUE_FALSE:
-      case questionType.MULTIPLE_CHOICE_BLOCK:
+      case questionTypeKey.MULTIPLE_CHOICE_STANDARD:
+      case questionTypeKey.MULTIPLE_CHOICE_MULTIPLE:
+      case questionTypeKey.TRUE_FALSE:
+      case questionTypeKey.MULTIPLE_CHOICE_BLOCK:
         if (isShowAnswer) {
           if (Cypress._.isArray(right)) {
             right.forEach(choice => {
@@ -159,9 +172,9 @@ export default class PreviewItemPopup {
         }
         break;
 
-      case questionType.CHOICE_MATRIX_STANDARD:
-      case questionType.CHOICE_MATRIX_INLINE:
-      case questionType.CHOICE_MATRIX_LABEL: {
+      case questionTypeKey.CHOICE_MATRIX_STANDARD:
+      case questionTypeKey.CHOICE_MATRIX_INLINE:
+      case questionTypeKey.CHOICE_MATRIX_LABEL: {
         const { steams } = attemptData;
         if (isShowAnswer) {
           this.qrp.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams);
@@ -185,7 +198,7 @@ export default class PreviewItemPopup {
         }
         break;
       }
-      case questionType.CLOZE_DROP_DOWN:
+      case questionTypeKey.CLOZE_DROP_DOWN:
         if (isShowAnswer) this.qrp.verifyCorrectAnswerCloze(cy.get("@quecard"), right);
         else this.qrp.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
         break;

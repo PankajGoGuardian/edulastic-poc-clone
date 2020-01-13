@@ -552,12 +552,16 @@ class StudentTable extends Component {
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: currentPage,
-      institutionId: location.institutionId || ""
+      page: currentPage
       // uncomment after elastic search is fixed
       // sortField,
       // order
     };
+
+    if (location.institutionId) {
+      queryObj.institutionId = location.institutionId;
+    }
+
     if (showActive) {
       queryObj["status"] = 1;
     }

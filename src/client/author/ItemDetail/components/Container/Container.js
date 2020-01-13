@@ -597,6 +597,10 @@ class Container extends Component {
       .flatMap(row => row.widgets.map(widget => widget.type))
       .some(widgetType => widgetType === questionType.PASSAGE);
 
+    // disable saving item has no questions
+    // TODO: if required for passage, will have to handle it differently, since passage doesnt keep it in item rows.
+    const disableSave = !item.passageId && item.rows.every(row => row?.widgets?.length === 0);
+
     const layoutType = isPassage ? COMPACT : DEFAULT;
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -652,7 +656,7 @@ class Container extends Component {
               changePreview={changePreview}
               changePreviewTab={this.handleChangePreviewTab}
               onSave={saveItem}
-              disableSave={item._id === "new"}
+              disableSave={disableSave}
               onPublishTestItem={this.handlePublishTestItem}
               saving={updating}
               view={view}

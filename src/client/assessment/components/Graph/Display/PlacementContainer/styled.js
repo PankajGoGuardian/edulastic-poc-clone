@@ -135,7 +135,7 @@ export const GraphWrapper = styled.div`
   .jxgbox {
     .fr-box {
       min-width: 50px;
-      min-height: 20px;
+      min-height: 13px;
       border: dotted 1px black;
     }
   }
@@ -163,6 +163,11 @@ export const JSXBox = styled.div`
   }
 
   .drag-drop-content {
+    p {
+      font-size: 10px;
+      line-height: 1;
+    }
+
     .drag-drop-icon {
       height: 18px;
       width: 18px;

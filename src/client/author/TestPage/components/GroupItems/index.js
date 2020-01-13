@@ -121,7 +121,7 @@ const GroupItems = ({
     type: ITEM_GROUP_TYPES.STATIC,
     groupName: `Group ${groupIndex}`,
     items: [],
-    deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+    deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL
   };
 
   const breadcrumbData = [
@@ -145,12 +145,12 @@ const GroupItems = ({
     if (fieldName === "type") {
       updatedGroupData = {
         ...updatedGroupData,
-        items: updatedGroupData.type === ITEM_GROUP_TYPES.STATIC ? [] : updatedGroupData.items,
+        items: [],
         type: updatedGroupData.type === ITEM_GROUP_TYPES.STATIC ? ITEM_GROUP_TYPES.AUTOSELECT : ITEM_GROUP_TYPES.STATIC,
         deliveryType:
           updatedGroupData.type === ITEM_GROUP_TYPES.STATIC
-            ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-            : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+            ? ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+            : ITEM_GROUP_DELIVERY_TYPES.ALL
       };
     } else {
       updatedGroupData = {
@@ -161,15 +161,20 @@ const GroupItems = ({
 
     if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC) {
       let extraPick = [];
-      if (updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM) extraPick = ["deliverItemsCount"];
+      if (
+        [ITEM_GROUP_DELIVERY_TYPES.LIMITED, ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM].includes(
+          updatedGroupData.deliveryType
+        )
+      )
+        extraPick = ["deliverItemsCount"];
       updatedGroupData = _.pick(updatedGroupData, ["type", "groupName", "items", "deliveryType", ...extraPick]);
     }
     setEditGroupDetails(updatedGroupData);
   };
 
-  const handleTypeSelect = (itemGroup, groupIndex) => {
+  const handleTypeSelect = groupIndex => {
     let showModal = false;
-    const { type, items, collectionDetails, standardDetails, dok, tags, difficulty } = itemGroup;
+    const { type, items, collectionDetails, standardDetails, dok, tags, difficulty } = editGroupDetail;
 
     if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
       showModal = true;
@@ -291,7 +296,7 @@ const GroupItems = ({
         isValid = false;
         break;
       }
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
+      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && !deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
         break;
@@ -299,13 +304,13 @@ const GroupItems = ({
     }
 
     for (let i = 0; i < autoSelectGroups.length; i++) {
-      const { collectionDetails, standardDetails, deliveryType, deliverItemsCount } = autoSelectGroups[i];
+      const { collectionDetails, standardDetails, deliverItemsCount } = autoSelectGroups[i];
       if (!collectionDetails || !standardDetails) {
         message.error("Each Autoselect group should have a standard and a collection.");
         isValid = false;
         break;
       }
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
+      if (!deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
         break;
@@ -326,22 +331,18 @@ const GroupItems = ({
   const validateGroup = () => {
     let isValid = true;
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
-      const { items, deliveryType, deliverItemsCount } = editGroupDetail;
-      if (isValid && items.length === 0) {
-        message.error("Each Static group should contain at least 1 test item.");
-        isValid = false;
-      }
-      if (isValid && deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
+      const { deliveryType, deliverItemsCount } = editGroupDetail;
+      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && !deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
       }
     } else {
-      const { collectionDetails, standardDetails, deliveryType, deliverItemsCount } = editGroupDetail;
+      const { collectionDetails, standardDetails, deliverItemsCount } = editGroupDetail;
       if (!collectionDetails || !standardDetails) {
         message.error("Each Autoselect group should have a standard and a collection.");
         isValid = false;
       }
-      if (isValid && deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
+      if (isValid && !deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
       }
@@ -479,7 +480,7 @@ const GroupItems = ({
                         : itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT
                     }
                     disabled={currentGroupIndex !== index}
-                    onChange={e => handleTypeSelect(itemGroup, index)}
+                    onChange={e => handleTypeSelect(index)}
                   >
                     AUTO SELECT ITEMS BASED ON STANDARDS
                   </Checkbox>
@@ -490,7 +491,7 @@ const GroupItems = ({
                     <Label>Items</Label>
                     <QuestionTagsWrapper>
                       <QuestionTagsContainer>
-                        {itemGroup.items
+                        {(currentGroupIndex === index ? editGroupDetail.items : itemGroup.items)
                           .map(({ _id }) => _id.substring(_id.length, _id.length - 6))
                           .map(id => (
                             <ItemTag>{id}</ItemTag>
@@ -622,7 +623,7 @@ const GroupItems = ({
                     {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                       (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
                       <>
-                        <Radio defaultChecked value={ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM}>
+                        <Radio defaultChecked value={ITEM_GROUP_DELIVERY_TYPES.ALL}>
                           Deliver all Items in this Group
                         </Radio>
 
@@ -631,14 +632,21 @@ const GroupItems = ({
                         </RadioMessage>
                       </>
                     )}
-                    <Radio defaultChecked={false} value={ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM}>
+                    <Radio
+                      defaultChecked={false}
+                      value={
+                        editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
+                          ? ITEM_GROUP_DELIVERY_TYPES.LIMITED
+                          : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+                      }
+                    >
                       <ItemCountWrapper>
                         <span>Deliver a total of </span>
                         <Input
                           type="number"
                           disabled={
-                            (itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM &&
-                              currentGroupIndex !== index) ||
+                            (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+                              currentGroupIndex === index) ||
                             currentGroupIndex !== index
                           }
                           min={0}

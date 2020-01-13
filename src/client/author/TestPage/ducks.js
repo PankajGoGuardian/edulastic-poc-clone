@@ -46,7 +46,7 @@ const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: "Group 1" /* For now, auto-generated. */,
   items: [],
-  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL
 };
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === "sectionLabel" ? "resource" : "question",

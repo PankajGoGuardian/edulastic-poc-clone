@@ -7,6 +7,14 @@ import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
 import { Input } from "antd";
 
+const normalizeTouchEvent = e => {
+  if (e?.nativeEvent?.changedTouches?.length) {
+    e.preventDefault();
+    e.clientX = e.nativeEvent.changedTouches[0].clientX;
+    e.clientY = e.nativeEvent.changedTouches[0].clientY;
+  }
+};
+
 const SvgDraw = ({
   lineColor,
   lineWidth,
@@ -33,6 +41,7 @@ const SvgDraw = ({
   const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
   const [inputValue, setInputValue] = useState("");
   const [texts, setTexts] = useState([]);
+  const boundedRef = useRef();
 
   useEffect(() => {
     if (history && history.points && history.pathes && history.figures && history.texts) {
@@ -59,10 +68,9 @@ const SvgDraw = ({
 
   const handleMove = e => {
     if (mouseClicked) {
-      const newPoints = cloneDeep(points);
-      const bounded = svg.current.getBoundingClientRect();
-
-      newPoints.push({
+      normalizeTouchEvent(e);
+      const bounded = boundedRef.current;
+      const newPoints = points.concat({
         lineWidth,
         color: lineColor,
         x: e.clientX - bounded.left,
@@ -74,10 +82,10 @@ const SvgDraw = ({
 
   const handleMouseDown = e => {
     setMouseClicked(true);
-    const newPoints = cloneDeep(points);
-    const bounded = svg.current.getBoundingClientRect();
-
-    newPoints.push({
+    normalizeTouchEvent(e);
+    boundedRef.current = svg.current.getBoundingClientRect();
+    const bounded = boundedRef.current;
+    const newPoints = points.concat({
       lineWidth,
       color: lineColor,
       x: e.clientX - bounded.left,
@@ -99,6 +107,7 @@ const SvgDraw = ({
   };
 
   const handlePoint = (modifier = "") => e => {
+    normalizeTouchEvent(e);
     const newPoints = cloneDeep(points);
     const bounded = svg.current.getBoundingClientRect();
     if (newPoints.length === 0) {
@@ -124,6 +133,7 @@ const SvgDraw = ({
 
   const handleLineSecondPoint = e => {
     if (mouseClicked) {
+      normalizeTouchEvent(e);
       const newPoints = cloneDeep(points);
       const bounded = svg.current.getBoundingClientRect();
 
@@ -159,6 +169,7 @@ const SvgDraw = ({
 
   const drawSquare = e => {
     if (active === null) {
+      normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
       newFigures.push({
@@ -179,6 +190,7 @@ const SvgDraw = ({
 
   const drawСircle = e => {
     if (active === null) {
+      normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
       newFigures.push({
@@ -199,6 +211,7 @@ const SvgDraw = ({
 
   const drawTriangle = e => {
     if (active === null) {
+      normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
       const point = { x: e.clientX - bounded.left, y: e.clientY - bounded.top };
@@ -217,6 +230,7 @@ const SvgDraw = ({
 
   const drawText = e => {
     if (currentPosition.index === undefined) {
+      normalizeTouchEvent(e);
       const newTexts = cloneDeep(texts);
       const bounded = svg.current.getBoundingClientRect();
       const point = { x: e.clientX - bounded.left, y: e.clientY - bounded.top };
@@ -242,6 +256,7 @@ const SvgDraw = ({
   };
 
   const handleCurveMove = e => {
+    normalizeTouchEvent(e);
     const newPoints = cloneDeep(points);
     if (newPoints.length > 1) {
       const bounded = svg.current.getBoundingClientRect();
@@ -259,6 +274,7 @@ const SvgDraw = ({
 
   const handleResizeRect = e => {
     if (mouseClicked && activeIndex !== null) {
+      normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
       if (activeIndex === 1 || activeIndex === 2) {
         if (e.clientX < cursor.x) {
@@ -313,6 +329,7 @@ const SvgDraw = ({
   };
 
   const handleResizeCircle = e => {
+    normalizeTouchEvent(e);
     if (mouseClicked && activeIndex !== null) {
       const newFigures = cloneDeep(figures);
       if (activeIndex === 1 || activeIndex === 2) {
@@ -366,6 +383,7 @@ const SvgDraw = ({
   };
 
   const handleResizeTriangle = e => {
+    normalizeTouchEvent(e);
     if (mouseClicked && activeIndex !== null) {
       const newFigures = cloneDeep(figures);
       const currentPoints = newFigures[active].points.split(" ").map(item => {
@@ -431,6 +449,7 @@ const SvgDraw = ({
   };
 
   const handleDragStart = i => e => {
+    normalizeTouchEvent(e);
     e.preventDefault();
     e.stopPropagation();
     setActive(i);
@@ -439,6 +458,7 @@ const SvgDraw = ({
   };
 
   const handleDragEnd = i => e => {
+    normalizeTouchEvent(e);
     e.preventDefault();
     e.stopPropagation();
     setActive(i);
@@ -475,6 +495,7 @@ const SvgDraw = ({
 
   const handleTextMove = e => {
     if (dragStart) {
+      normalizeTouchEvent(e);
       const newTexts = cloneDeep(texts);
       const xPoint = newTexts[active].x - (cursor.x - e.clientX);
       const yPoint = newTexts[active].y - (cursor.y - e.clientY);
@@ -493,45 +514,70 @@ const SvgDraw = ({
         case drawTools.FREE_DRAW:
           return {
             onMouseUp: handleSavePath,
+            onTouchEnd: handleSavePath,
+
             onMouseDown: handleMouseDown,
-            onMouseMove: handleMove
+            onTouchStart: handleMouseDown,
+
+            onMouseMove: handleMove,
+            onTouchMove: handleMove
           };
         case drawTools.DRAW_BREAKING_LINE:
           return {
             onDoubleClick: handleSavePath,
+
             onClick: handlePoint("L"),
-            onMouseMove: handleCurveMove
+
+            onMouseMove: handleCurveMove,
+            onTouchMove: handleCurveMove
           };
 
         case drawTools.DRAW_SIMPLE_LINE:
           return {
             onMouseUp: handleSavePath,
+            onTouchEnd: handleSavePath,
+
             onMouseDown: handleMouseDown,
-            onMouseMove: handleLineSecondPoint
+            onTouchStart: handleMouseDown,
+
+            onMouseMove: handleLineSecondPoint,
+            onTouchMove: handleLineSecondPoint
           };
 
         case drawTools.DRAW_SQUARE:
           return {
             onMouseUp: drawSquare,
-            onMouseMove: handleResizeRect
+            onTouchEnd: drawSquare,
+
+            onMouseMove: handleResizeRect,
+            onTouchMove: handleResizeRect
           };
 
         case drawTools.DRAW_CIRCLE:
           return {
             onMouseUp: drawСircle,
-            onMouseMove: handleResizeCircle
+            onTouchEnd: drawСircle,
+
+            onMouseMove: handleResizeCircle,
+            onTouchMove: handleResizeCircle
           };
 
         case drawTools.DRAW_TRIANGLE:
           return {
             onMouseUp: drawTriangle,
-            onMouseMove: handleResizeTriangle
+            onTouchEnd: drawTriangle,
+
+            onMouseMove: handleResizeTriangle,
+            onTouchMove: handleResizeTriangle
           };
 
         case drawTools.DRAW_TEXT:
           return {
             onMouseUp: drawText,
-            onMouseMove: handleTextMove
+            onTouchEnd: drawText,
+
+            onMouseMove: handleTextMove,
+            onTouchMove: handleTextMove
           };
 
         default:
@@ -564,7 +610,9 @@ const SvgDraw = ({
       <Rect
         key={i}
         onMouseDown={getMouseDownHandler(drawTools.DRAW_SQUARE, i)}
+        onTouchStart={getMouseDownHandler(drawTools.DRAW_SQUARE, i)}
         onMouseUp={getMouseUpHandler(drawTools.DRAW_SQUARE, i)}
+        onTouchEnd={getMouseUpHandler(drawTools.DRAW_SQUARE, i)}
         onClick={getOnClickHandler(drawTools.DRAW_SQUARE, i)}
         {...path}
       />
@@ -572,7 +620,9 @@ const SvgDraw = ({
       <Polygon
         key={i}
         onMouseDown={getMouseDownHandler(drawTools.DRAW_TRIANGLE, i)}
+        onTouchStart={getMouseDownHandler(drawTools.DRAW_TRIANGLE, i)}
         onMouseUp={getMouseUpHandler(drawTools.DRAW_TRIANGLE, i)}
+        onTouchEnd={getMouseUpHandler(drawTools.DRAW_TRIANGLE, i)}
         onClick={getOnClickHandler(drawTools.DRAW_TRIANGLE, i)}
         {...path}
       />
@@ -580,7 +630,9 @@ const SvgDraw = ({
       <Ellipse
         key={i}
         onMouseDown={getMouseDownHandler(drawTools.DRAW_CIRCLE, i)}
+        onTouchStart={getMouseDownHandler(drawTools.DRAW_CIRCLE, i)}
         onMouseUp={getMouseUpHandler(drawTools.DRAW_CIRCLE, i)}
+        onTouchEnd={getMouseUpHandler(drawTools.DRAW_CIRCLE, i)}
         onClick={getOnClickHandler(drawTools.DRAW_CIRCLE, i)}
         {...path}
       />
@@ -642,7 +694,9 @@ const SvgDraw = ({
           <Rect
             key={i}
             onMouseDown={mouseUpAndDownControl(true, i)}
+            onTouchStart={mouseUpAndDownControl(true, i)}
             onMouseUp={mouseUpAndDownControl(false)}
+            onTouchEnd={mouseUpAndDownControl(false)}
             fill="blue"
             {...point}
             height={20}
@@ -692,7 +746,9 @@ const SvgDraw = ({
                 // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
                 <Text
                   onMouseDown={getMouseDownHandler(drawTools.DRAW_TEXT, i)}
+                  onTouchStart={getMouseDownHandler(drawTools.DRAW_TEXT, i)}
                   onMouseUp={getMouseUpHandler(drawTools.DRAW_TEXT, i)}
+                  onTouchEnd={getMouseUpHandler(drawTools.DRAW_TEXT, i)}
                   onClick={getDeleteTextHandler(i)}
                   onDoubleClick={activeMode === drawTools.DRAW_TEXT ? editText(i) : undefined}
                   key={i}

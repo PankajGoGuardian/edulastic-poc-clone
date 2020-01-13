@@ -135,7 +135,6 @@ class DisneyCardContainer extends Component {
         }
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
         let correctAnswers = 0;
-        updateDisabledList(student.studentId, status.status);
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {

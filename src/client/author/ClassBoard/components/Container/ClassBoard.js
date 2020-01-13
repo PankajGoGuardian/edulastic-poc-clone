@@ -139,8 +139,6 @@ class ClassBoard extends Component {
       selectedStudentId: "",
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-      disabledList: [],
-      absentList: [],
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
@@ -552,30 +550,6 @@ class ClassBoard extends Component {
     this.setState({ modalInputVal: e.target.value });
   };
 
-  updateDisabledList = (studId, status) => {
-    const { disabledList, absentList } = this.state;
-    if (status === "Not Started" || status === "In Progress" || status === "Redirected") {
-      if (!disabledList.includes(studId)) {
-        this.setState({ disabledList: [...disabledList, studId] });
-      }
-    } else {
-      const index = disabledList.indexOf(studId);
-      if (index >= 0) {
-        this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
-      }
-    }
-    if (status === "Absent") {
-      if (!absentList.includes(studId)) {
-        this.setState({ absentList: [...absentList, studId] });
-      }
-    } else {
-      const index = absentList.indexOf(studId);
-      if (index >= 0) {
-        this.setState({ absentList: [...absentList.slice(0, index), ...absentList.slice(index + 1)] });
-      }
-    }
-  };
-
   handleDownloadGrades = isResponseRequired => {
     const { downloadGradesResponse, match, selectedStudents } = this.props;
     const { assignmentId, classId } = match.params;
@@ -659,8 +633,6 @@ class ClassBoard extends Component {
       studentReportCardModalColumnsFlags,
       itemId,
       selectedQid,
-      disabledList,
-      absentList,
       selectAll,
       nCountTrue,
       modalInputVal,
@@ -694,6 +666,29 @@ class ClassBoard extends Component {
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
+    const disabledList = testActivity
+      .filter(student => {
+        const endDate = additionalData.closedDate || additionalData.endDate;
+        if (student.status === "notStarted" && (endDate < Date.now() || additionalData.closed)) {
+          return false;
+        } else if (student.status === "notStarted") {
+          return true;
+        }
+        return ["inProgress", "redirected"].includes(student.status);
+      })
+      .map(x => x.studentId);
+
+    const absentList = testActivity
+      .filter(student => {
+        const endDate = additionalData.closedDate || additionalData.endDate;
+        if (
+          student.status === "absent" ||
+          (student.status === "notStarted" && (endDate < Date.now() || additionalData.closed))
+        ) {
+          return true;
+        }
+      })
+      .map(x => x.studentId);
     const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
     const { showScoreImporvement } = this.state;
@@ -964,7 +959,6 @@ class ClassBoard extends Component {
                 <DisneyCardContainer
                   selectedStudents={selectedStudents}
                   testActivity={testActivity}
-                  updateDisabledList={this.updateDisabledList}
                   assignmentId={assignmentId}
                   classId={classId}
                   studentSelect={this.onSelectCardOne}

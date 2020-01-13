@@ -102,7 +102,7 @@ class QuestionItem extends React.Component {
 
   renderMathAnswer = value => (
     <MathSpan
-      dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${value[0].value}"></span>` }}
+      dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${value?.[0]?.value}"></span>` }}
     />
   );
 

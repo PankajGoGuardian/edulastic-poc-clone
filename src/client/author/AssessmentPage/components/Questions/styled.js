@@ -26,6 +26,7 @@ export const QuestionsWrapper = styled.div`
 `;
 
 export const QuestionWidgetWrapper = styled.div`
+  height: 100%;
   max-height: ${props =>
     `calc(100vh - ${
       props.testMode
@@ -34,7 +35,8 @@ export const QuestionWidgetWrapper = styled.div`
         ? props.theme.HeaderHeight.xs + 60
         : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
     }px)`};
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: ${({ review, testMode }) => (review || testMode) && "hidden"};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     max-height: ${props =>

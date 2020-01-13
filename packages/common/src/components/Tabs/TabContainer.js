@@ -22,5 +22,6 @@ TabContainer.defaultProps = {
 export default TabContainer;
 
 const Container = styled.div`
+  width: 100%;
   padding: ${props => (props.padding ? props.padding : "10px 0px")};
 `;

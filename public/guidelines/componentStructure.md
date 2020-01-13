@@ -1,5 +1,7 @@
 # Components Guidelines
 
+All new components have to be Functional Components.
+
 While writing components we try to follow the [Container/Presentational components pattern](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
 
 Presentational Components

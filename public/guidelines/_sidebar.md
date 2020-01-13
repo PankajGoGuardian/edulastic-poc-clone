@@ -8,5 +8,6 @@
 - [Application FileStructure](ApplicationFileStructure.md)
 - [Routes](routes.md)
 - [Components](componentStructure.md)
+- [State](state.md)
 - [Cypress Tests](cypress.md)
 - [External Modules](modules.md)

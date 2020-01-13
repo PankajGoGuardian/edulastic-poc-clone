@@ -37,16 +37,6 @@ import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 import { IPAD_LANDSCAPE_WIDTH } from "../../assessment/constants/others";
 
-const getIndex = (page, items) => {
-  let index;
-  items.forEach((item, i) => {
-    if (item.path && item.path.includes(page)) {
-      index = i;
-    }
-  });
-  return index || 0;
-};
-
 const menuItems = [
   {
     label: "Assignments",
@@ -69,6 +59,17 @@ const menuItems = [
     path: "home/manage"
   }
 ];
+
+const getIndex = (page, items, isReports = false) => {
+  let index;
+  if (isReports) return 1;
+  items.forEach((item, i) => {
+    if (item.path && item.path.includes(page)) {
+      index = i;
+    }
+  });
+  return index || 0;
+};
 
 class SideMenu extends Component {
   constructor(props) {
@@ -163,7 +164,8 @@ class SideMenu extends Component {
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
-    const menuIndex = getIndex(page, menuItems);
+    const isReports = currentPath.split("/").includes("testActivityReport");
+    const menuIndex = getIndex(page, menuItems, isReports);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap" isSidebarCollapsed={isSidebarCollapsed}>

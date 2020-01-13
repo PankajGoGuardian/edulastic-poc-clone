@@ -113,6 +113,25 @@ class ReportsPage {
     cy.get('[data-cy="maxscore"]').should("have.text", points.toString());
   };
 
+  clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
+
+  verifyMaxScoreOfQueByIndex = (index, maxscore) => {
+    this.clickOnQuestionNo();
+    cy.get(".ant-select-dropdown-menu-item")
+      .eq(index)
+      .click({ force: true });
+    this.getMaxScore().should("contain", maxscore);
+  };
+
+  verifyNoOfQuesInReview = len => {
+    this.clickOnQuestionNo();
+    cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
+  };
+
+  getAchievedScore = () => cy.get('[data-cy="score"]');
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]');
+
   verifyFeedBackComment = feedback => {
     cy.get('[data-cy="feedback"]').should("contain", feedback);
   };

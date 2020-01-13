@@ -97,6 +97,7 @@ class StudentTestPage {
 
   submitTest = () => {
     cy.server();
+    // cy.route("GET", "**/test-activity/*").as("saved");
     cy.route("PUT", "**/test-activity/**").as("testactivity");
     cy.contains("SUBMIT")
       .as("submit")
@@ -108,12 +109,12 @@ class StudentTestPage {
     cy.get("[data-cy=submit]")
       .should("be.visible")
       .click();
-
+    // cy.wait("@saved");
     cy.wait("@testactivity");
     return cy.url().should("include", "/home/grades");
   };
 
-  getQueDropDown = () => cy.get("[data-cy=options]").should("be.visible");
+  getQueDropDown = () => cy.get('[data-cy="options"]').should("be.visible");
 
   clickOnMenuCheckAns = () => {
     cy.get("[data-cy=setting]")
@@ -745,16 +746,6 @@ class StudentTestPage {
       .click({ force: true });
   };
 
-  clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
-
-  verifyMaxScoreOfQueByIndex = (index, maxscore) => {
-    this.clickOnQuestionNo();
-    cy.get(".ant-select-dropdown-menu-item")
-      .eq(index)
-      .click({ force: true });
-    this.getMaxScore().should("contain", maxscore);
-  };
-
   attemptQuestionsByQueType = (queType, attempt) => {
     /* This function will attempt question with correct
     answers by defualt */
@@ -762,11 +753,6 @@ class StudentTestPage {
       this.attemptQuestion(type, "right", attempt[index]);
       this.clickOnNext();
     });
-  };
-
-  verifyNoOfQuesInReview = len => {
-    this.clickOnQuestionNo();
-    cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
 
   // Feedback

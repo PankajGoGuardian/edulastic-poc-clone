@@ -10,6 +10,7 @@ import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import SidebarPage from "../../../../framework/student/sidebarPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
+import ReportsPage from "../../../../framework/student/reportsPage";
 
 const students = {
   Student1: {
@@ -42,7 +43,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
   const teacherSidebar = new TeacherSideBar();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const expressGrader = new ExpressGraderPage();
-
+  const reportsPage = new ReportsPage();
   const updatedPoints = "6";
   const isAssigned = true;
   const Teacher = {
@@ -140,7 +141,7 @@ describe(`With Applying Regrading-Test Editing`, () => {
       cy.login("student", Student2.email, Student2.pass);
       assignmentsPage.sidebar.clickOnGrades();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      studentTestPage.verifyNoOfQuesInReview(itemsInTest.length);
+      reportsPage.verifyNoOfQuesInReview(itemsInTest.length);
     });
 
     context("verify teacher side LCB", () => {
@@ -221,11 +222,11 @@ describe(`With Applying Regrading-Test Editing`, () => {
       studentTestPage.attemptQuestionsByQueType(questionType, attempt);
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      studentTestPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
+      reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
       cy.login("student", Student2.email, Student2.pass);
       assignmentsPage.sidebar.clickOnGrades();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      studentTestPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
+      reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
     });
 
     context("verify teacher side LCB", () => {

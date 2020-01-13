@@ -97,18 +97,16 @@ class AssignmentsPage {
   clickOnAssigmentByTestId = (testId, pass) => {
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
-    cy.route("GET", "**/test-activity/*").as("saved");
 
     this.getAssignmentByTestId(testId)
       .should("be.visible")
       .find('[data-cy="assignmentButton"]')
       .click({ force: true });
     if (pass) {
-      cy.wait("@saved");
       this.enterPassword(pass);
       this.clickOnStartAfterPassword();
     }
-    return cy.wait("@gettest").then(() => new StudentTestPage());
+    cy.wait("@gettest");
   };
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType = "A") {

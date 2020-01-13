@@ -296,7 +296,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
 
         editItemPage.header.saveAndgetId(true).then(itemId => {
           expect(itemId).eq(itemIds[0]);
-          testAddItemTab.header.clickOnReview();
+          // testAddItemTab.header.clickOnReview();
           // testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(itemIds[0]);
           testReviewTab.asesrtPointsByid(itemIds[0], points[0]);
@@ -324,7 +324,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
           expect(newItem).not.eq(itemIds[0]);
           cy.saveItemDetailToDelete(newItem);
           itemIds.push(newItem);
-          testAddItemTab.header.clickOnReview();
+          // testAddItemTab.header.clickOnReview();
           // testLibraryPage.header.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(newItem);
           testReviewTab.verifyQustionById(itemIds[0]);

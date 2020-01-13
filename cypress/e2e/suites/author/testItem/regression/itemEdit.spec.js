@@ -9,6 +9,7 @@ import TestAssignPage from "../../../../framework/author/tests/testDetail/testAs
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ReportsPage from "../../../../framework/student/reportsPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after and Before use`, () => {
   /* Here All Items are edited from Item bank */
@@ -21,6 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
   const testAssignPage = new TestAssignPage();
   const mcqTrueFalsePage = new MCQTrueFalsePage();
   const itemPreview = new PreviewItemPopup();
+  const reportsPage = new ReportsPage();
 
   let itemIds;
   const TEST = "EDIT_ASSIGNED_TEST_REGRADE";
@@ -125,7 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(testId);
       itemsInTest.forEach((item, index) => {
-        studentTestPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
+        reportsPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
       });
     });
   });
@@ -194,7 +196,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(testId);
       itemsInTest.forEach((item, index) => {
-        studentTestPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
+        reportsPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
       });
     });
   });
@@ -262,9 +264,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(testId);
       itemsInTest.forEach((item, index) => {
-        studentTestPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
+        reportsPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
         /* After updating correct ans */
-        studentTestPage.verifyScore(points[index], points[index]);
+        reportsPage.verifyScore(points[index], points[index]);
       });
     });
   });

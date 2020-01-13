@@ -8,10 +8,11 @@ export default class TestHeader {
     return new TestSummayTab();
   };
 
-  clickOnAddItems = () => {
+  clickOnAddItems = (assignmentActions = false) => {
     cy.server();
     cy.route("POST", "**/search/**").as("search");
     cy.get('[data-cy="addItems"]').click({ force: true });
+    if (assignmentActions) cy.wait("@search");
     return cy.wait("@search").then(() => new TestAddItemTab());
   };
 

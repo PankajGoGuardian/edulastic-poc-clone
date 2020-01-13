@@ -9,6 +9,7 @@ import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import Regrade from "../../../../framework/author/tests/testDetail/regrade";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ReportsPage from "../../../../framework/student/reportsPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Without Regrade`, () => {
   const testLibraryPage = new TestLibrary();
@@ -21,6 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
   const testAssignPage = new TestAssignPage();
   const sidebarPage = new SidebarPage();
   const regrade = new Regrade();
+  const reportsPage = new ReportsPage();
   const newItemKey = "MCQ_STD.default";
   const isAssigned = true;
   const TEST = "EDIT_ASSIGNED_TEST";
@@ -260,7 +262,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         studentTestPage.attemptQuestionsByQueType(questionType, attempt);
         studentTestPage.submitTest();
         assignmentsPage.reviewSubmittedTestById(assignedTest);
-        studentTestPage.verifyMaxScoreOfQueByIndex(3, points[3]);
+        reportsPage.verifyMaxScoreOfQueByIndex(3, points[3]);
         OriginalTestId = newTestId;
       });
     });

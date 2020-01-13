@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 import TestLibrary from "../testLibraryPage";
 
 export default class Regrade {

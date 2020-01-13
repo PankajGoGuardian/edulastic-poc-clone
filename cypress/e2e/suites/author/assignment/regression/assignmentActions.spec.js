@@ -10,6 +10,7 @@ import TestSummayTab from "../../../../framework/author/tests/testDetail/testSum
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
+import ReportsPage from "../../../../framework/student/reportsPage";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -33,6 +34,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
   const regrade = new Regrade();
   const item = new ItemListPage();
   const itemPreview = new PreviewItemPopup();
+  const reportsPage = new ReportsPage();
 
   const authorAssignmentPage = new AuthorAssignmentPage();
   const newItemKey = "MCQ_STD.default";
@@ -159,7 +161,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
       });
       before("Add Created Item To test", () => {
         // Add created Item using add item tab
-        testReviewTab.testheader.clickOnAddItems();
+        testReviewTab.testheader.clickOnAddItems(true);
         testReviewTab.searchFilters.clearAll();
         testReviewTab.searchFilters.getAuthoredByMe();
         testAddItemTab.addItemById(newItemId);
@@ -169,7 +171,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
         // verify review tab before publish
         testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
         // Publish
-        testReviewTab.testheader.clickOnPublishButton(isAssigned);
+        testReviewTab.testheader.clickOnPublishButton();
       });
 
       it("Verify and attempt assignment", () => {
@@ -193,8 +195,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
       });
       it("Verify After Edit-Regrade", () => {
         cy.login("student", Student1.email, Student1.pass);
-        assignmentsPage.verifyPresenceOfTest(OriginalTestId);
-        assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
+        assignmentsPage.clickOnAssignmentButton();
         studentTestPage.verifyNoOfQuestions(itemIds.length);
         studentTestPage.clickOnExitTest();
       });
@@ -208,8 +209,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
       });
       it("Verify After Edit-Without Regrade", () => {
         cy.login("student", Student1.email, Student1.pass);
-        assignmentsPage.verifyPresenceOfTest(OriginalTestId);
-        assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
+        assignmentsPage.clickOnAssignmentButton();
         studentTestPage.getQuestionByIndex(0);
         itemIds.forEach((item, index) => {
           studentTestPage.attemptQuestion(itemKeysInTest[index], attemptTypes.RIGHT, attempt[index]);
@@ -218,9 +218,9 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
 
         studentTestPage.submitTest();
         assignmentsPage.sidebar.clickOnGrades();
-        assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-        studentTestPage.verifyNoOfQuesInReview(itemIds.length);
-        studentTestPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
+        assignmentsPage.getReviewButton().click();
+        reportsPage.verifyNoOfQuesInReview(itemIds.length);
+        reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
       });
     });
     context("Unassign", () => {

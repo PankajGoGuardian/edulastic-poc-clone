@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { withMathFormula } from "../../HOC/withMathFormula";
-import MathSpan from "../MathSpan";
+import MathSpanWrapper from "../../../../../src/client/assessment/components/MathSpanWrapper";
 
 const MathDisplayWrapper = styled.span`
   .input__math {
@@ -32,9 +32,7 @@ const MathDisplay = ({ template, innerValues, styles }) => {
   workTemplate = workTemplate.replace(/\\MathQuillMathField{}/g, "");
   return (
     <MathDisplayWrapper styles={styles}>
-      <MathSpan
-        dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${workTemplate}"></span>` }}
-      />
+      <MathSpanWrapper latex={workTemplate} />
     </MathDisplayWrapper>
   );
 };

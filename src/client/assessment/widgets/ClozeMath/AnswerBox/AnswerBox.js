@@ -68,7 +68,7 @@ const AnswerBox = ({
 
     return validAnswers.push({
       index,
-      value: ans.value.search("=") === -1 ? `${ans.value}\\ ${unit}` : ans.value.replace(/=/gm, `\\ ${unit}=`),
+      value: `${ans.value} ${unit}`,
       isMath: true
     });
   });
@@ -149,7 +149,6 @@ const AnswerBox = ({
       }
     });
   });
-
   return (
     <Wrapper>
       <Title>Correct answers</Title>

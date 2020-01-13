@@ -23,9 +23,7 @@ const ClozeMathAnswerDisplay = ({ resprops, id }) => {
         alignItems: "center",
         minHeight: !uiStyles.height && "35px"
       }}
-      innerValues={[
-        unit ? (value.search("=") === -1 ? `${value}\\ ${unit}` : value.replace(/=/gm, `\\ ${unit}=`)) : value
-      ]}
+      innerValues={[unit ? `${value} ${unit}` : value]}
     />
   );
 };

@@ -266,7 +266,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       itemsInTest.forEach((item, index) => {
         reportsPage.verifyMaxScoreOfQueByIndex(index, points[index].toString());
         /* After updating correct ans */
-        reportsPage.verifyScore(points[index], points[index]);
+        reportsPage.getAchievedScore().should("have.text", points[index].toString());
       });
     });
   });

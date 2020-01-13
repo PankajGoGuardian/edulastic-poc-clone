@@ -109,8 +109,8 @@ class ReportsPage {
 
   verifyScore = (points, attemptData, attemptType, questionType) => {
     const score = this.qrp.getScoreByAttempt(attemptData, points, questionType, attemptType);
-    cy.get('[data-cy="score"]').should("have.text", score.toString());
-    cy.get('[data-cy="maxscore"]').should("have.text", points.toString());
+    this.getAchievedScore().should("have.text", score.toString());
+    this.getMaxScore().should("have.text", points.toString());
   };
 
   clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });

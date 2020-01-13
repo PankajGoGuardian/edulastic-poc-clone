@@ -97,6 +97,7 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
                 name="xAxisLabel"
                 value={uiStyle.xAxisLabel}
                 onChange={handleUiInputChange}
+                onBlur={handleUiInputBlur}
                 disabled={false}
               />
             </Col>

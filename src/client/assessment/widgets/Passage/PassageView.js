@@ -75,7 +75,7 @@ const PassageView = ({
   };
 
   const addEventToSelectedText = () => {
-    if (window.$) {
+    if (!disableResponse && window.$) {
       const jQuery = window.$;
       jQuery(highlightTag).each(everyHeighlight);
     }
@@ -194,7 +194,7 @@ const PassageView = ({
           />
         </div>
       )}
-      {selected && (
+      {!disableResponse && selected && (
         <>
           <ColorPickerContainer style={{ ...selected }}>
             <ColorPicker selectColor={clickHighligter} bg={selected.bg} />

@@ -53,7 +53,7 @@ const ItemFilter = ({
           <FixedFilters>
             {renderFullTextSearch()}
             <MainFilter>
-              <AffixContainer>
+              <div>
                 <MainFilterHeader>
                   <Title>{t("component.itemlist.filter.filters")}</Title>
                   <Clear data-cy="clearAll" onClick={onClearSearch}>
@@ -68,7 +68,7 @@ const ItemFilter = ({
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
                 />
-              </AffixContainer>
+              </div>
             </MainFilter>
           </FixedFilters>
         </PerfectScrollbar>

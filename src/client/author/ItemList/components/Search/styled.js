@@ -110,7 +110,7 @@ export const ItemHeader = styled.span`
 
 export const ItemBody = styled.div`
   margin-top: 11px;
-  height: 40px;
+  min-height: 40px;
 
   .ant-select-selection {
     min-height: 40px;

@@ -248,23 +248,22 @@ const Search = ({
         </Item>
         <Item>
           <ItemHeader>Collections</ItemHeader>
-          <ItemBody>
-            <Select
-              mode="multiple"
-              data-cy="Collections"
-              size="large"
-              placeholder="All Collections"
-              onChange={onSearchFieldChange("collections")}
-              value={_collections}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {collectionData.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </Select>
-          </ItemBody>
+
+          <Select
+            mode="multiple"
+            data-cy="Collections"
+            size="large"
+            placeholder="All Collections"
+            onChange={onSearchFieldChange("collections")}
+            value={_collections}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
+            {collectionData.map(el => (
+              <Select.Option key={el.value} value={el.value}>
+                {el.text}
+              </Select.Option>
+            ))}
+          </Select>
         </Item>
 
         {(showStatus || isPublishers) && (

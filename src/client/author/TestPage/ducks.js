@@ -1173,7 +1173,7 @@ function* checkAnswerSaga({ payload }) {
 
 function* showAnswerSaga({ payload }) {
   try {
-    const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
+    const testItems = yield select(getTestItemsSelector);
     const testItem = testItems.find(x => x._id === payload.id) || {};
     const answers = yield select(state => get(state, "answers", {}));
     let questions = _keyBy(testItem.data && testItem.data.questions, "id");

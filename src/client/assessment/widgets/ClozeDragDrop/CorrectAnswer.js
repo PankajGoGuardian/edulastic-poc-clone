@@ -20,7 +20,8 @@ class CorrectAnswer extends Component {
     template: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIDs: PropTypes.array.isRequired,
-    uiStyle: PropTypes.object.isRequired
+    uiStyle: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired
   };
 
   static contextType = ItemLevelContext;
@@ -51,7 +52,17 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus, response, hasGroupResponses, configureOptions, uiStyle, responseIDs } = this.props;
+    const {
+      t,
+      options,
+      stimulus,
+      response,
+      hasGroupResponses,
+      configureOptions,
+      uiStyle,
+      responseIDs,
+      item
+    } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -87,6 +98,7 @@ class CorrectAnswer extends Component {
           hasGroupResponses={hasGroupResponses}
           responseIDs={responseIDs}
           t={t}
+          item={item}
         />
       </div>
     );

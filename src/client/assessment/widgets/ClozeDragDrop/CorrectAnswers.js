@@ -177,6 +177,7 @@ class CorrectAnswers extends Component {
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 responseIDs={responseIDs}
+                item={item}
               />
             </TabContainer>
           )}
@@ -197,6 +198,7 @@ class CorrectAnswers extends Component {
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       responseIDs={responseIDs}
+                      item={item}
                     />
                   </TabContainer>
                 );
@@ -223,7 +225,8 @@ CorrectAnswers.propTypes = {
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  responseIDs: PropTypes.array
+  responseIDs: PropTypes.array,
+  item: PropTypes.object.isRequired
 };
 
 CorrectAnswers.defaultProps = {

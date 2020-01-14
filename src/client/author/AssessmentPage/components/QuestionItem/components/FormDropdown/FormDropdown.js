@@ -63,6 +63,7 @@ export default class FormDropdown extends React.Component {
         check={["check", "show"].includes(view)}
         value={(answer[0] && answer[0].value) || ""}
         onChange={this.handleChange}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
       >
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>

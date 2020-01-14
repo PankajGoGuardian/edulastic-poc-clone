@@ -34,6 +34,8 @@ const BasicFields = ({
     var { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds[0];
   }
 
+  const [userExistsInClass, setUserExistsInClass] = useState(false);
+
   const [enroll, setEnroll] = useState(false);
   const confirmPwdCheck = (rule, value, callback) => {
     const pwd = getFieldValue("password");
@@ -54,6 +56,7 @@ const BasicFields = ({
   ];
 
   const checkUser = async (rule, value, callback) => {
+    const { code = "" } = get(validatedClassDetails, "groupInfo", {});
     if (isUpdate) setIsUpdate(!isUpdate);
     if (enroll) {
       setFields({
@@ -63,14 +66,39 @@ const BasicFields = ({
       });
       setEnroll(false);
     }
-    const result = await userApi.checkUser({
-      username: value,
-      districtId
-    });
 
+    let result = [];
+
+    try {
+      result = await userApi.checkUser({
+        username: value,
+        districtId,
+        classCode: code
+      });
+    } catch (error) {
+      callback("Invalid input");
+      console.log(error);
+      if (error) return null;
+    }
+
+    const user = result[0] || {};
+
+    if (user.existInClass) {
+      setUserExistsInClass(true);
+      setFields({
+        email: {
+          value,
+          errors: [new Error("User already part of this class")]
+        }
+      });
+      callback("User already part of this class");
+      return null;
+    }
+
+    setUserExistsInClass(false);
     let errorMsg = "";
     if (result.length > 0) {
-      let foundUser = result[0];
+      let foundUser = user;
       const isExistingStudent = students.find(
         student => student._id == foundUser._id && student.enrollmentStatus === "1"
       );
@@ -112,6 +140,10 @@ const BasicFields = ({
     }
   };
 
+  useEffect(() => {
+    resetClassDetails();
+  }, []);
+
   return (
     <FormBody>
       {showClassCodeField && (
@@ -119,6 +151,7 @@ const BasicFields = ({
           <legend>Class Code</legend>
           <Form.Item>
             {getFieldDecorator("code", {
+              validateTrigger: ["onBlur"],
               rules: [{ required: true, message: "Please input the destination class" }]
             })(
               <Input
@@ -142,12 +175,12 @@ const BasicFields = ({
       {!isEdit ? (
         <Field name="email">
           <legend>Username</legend>
-          {enroll && "user exists and will be enrolled"}
           <Form.Item>
             {getFieldDecorator("email", {
               validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
             })(<Input data-cy="username" prefix={<IconMail color={themeColor} />} placeholder="Enter Username" />)}
+            {enroll && "user exists and will be enrolled"}
           </Form.Item>
         </Field>
       ) : (
@@ -186,7 +219,7 @@ const BasicFields = ({
                 data-cy="fullName"
                 prefix={<IconUser color={themeColor} />}
                 placeholder="Enter the name of the user"
-                disabled={enroll}
+                disabled={enroll || userExistsInClass}
               />
             )}
           </Form.Item>
@@ -243,7 +276,8 @@ const BasicFields = ({
                   prefix={<IconLock color={themeColor} />}
                   type="password"
                   placeholder="Enter Password"
-                  disabled={enroll}
+                  autoComplete="new-password"
+                  disabled={enroll || userExistsInClass}
                 />
               )}
             </Form.Item>
@@ -259,7 +293,8 @@ const BasicFields = ({
                   prefix={<IconLock color={themeColor} />}
                   type="password"
                   placeholder="Confirm Password"
-                  disabled={enroll}
+                  autoComplete="new-password"
+                  disabled={enroll || userExistsInClass}
                 />
               )}
             </Form.Item>
@@ -271,7 +306,12 @@ const BasicFields = ({
             <legend>Password</legend>
             <Form.Item>
               {getFieldDecorator("password", {})(
-                <Input prefix={<IconLock color={themeColor} />} type="password" placeholder="Enter Password" />
+                <Input
+                  prefix={<IconLock color={themeColor} />}
+                  type="password"
+                  placeholder="Enter Password"
+                  autoComplete="new-password"
+                />
               )}
             </Form.Item>
           </Field>
@@ -280,7 +320,14 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-              })(<Input prefix={<IconLock color={themeColor} />} type="password" placeholder="Confirm Password" />)}
+              })(
+                <Input
+                  prefix={<IconLock color={themeColor} />}
+                  type="password"
+                  placeholder="Confirm Password"
+                  autoComplete="new-password"
+                />
+              )}
             </Form.Item>
           </Field>
         </>

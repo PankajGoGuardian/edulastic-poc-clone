@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Form, Icon, Collapse, Spin } from "antd";
+import { Form, Icon, Collapse, Spin, message } from "antd";
 import { IconUser } from "@edulastic/icons";
 
 import { enrollmentApi } from "@edulastic/api";
@@ -10,6 +10,8 @@ import BasicFields from "./BasicFields";
 import AdditionalFields from "./AdditionalFields";
 import { StyledModal, Title, ActionButton, PanelHeader, AddForm } from "./styled";
 import { getUserOrgData } from "../../../../src/selectors/user";
+import { fetchStudentsByIdAction } from "../../../ducks";
+import { getValidatedClassDetails } from "../../../../Student/ducks";
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -33,9 +35,14 @@ class AddStudentModal extends React.Component {
   };
 
   enrollStudent = async () => {
-    const { selectedClass, orgData, loadStudents, handleCancel } = this.props;
-    const { _id: classId } = selectedClass;
-    const { code: classCode } = selectedClass;
+    const {
+      selectedClass: { groupInfo = {} },
+      orgData,
+      loadStudents,
+      handleCancel
+    } = this.props;
+    const { _id: classId } = groupInfo;
+    const { code: classCode } = groupInfo;
     const { districtId } = orgData;
     const userId = this.state.foundUserId;
     const data = {
@@ -45,11 +52,12 @@ class AddStudentModal extends React.Component {
     };
     const res = await enrollmentApi.SearchAddEnrolMultiStudents(data);
     if (res.status == 200) {
+      message.success("User added to class successfully");
       handleCancel();
       loadStudents({ classId });
-    } else {
-      console.log("error updating student");
+      return null;
     }
+    message.error("Create User is failing");
   };
 
   render() {
@@ -177,7 +185,10 @@ AddStudentModal.defaultProps = {
 
 const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal);
 
-export default connect(state => ({
-  orgData: getUserOrgData(state),
-  selectedClass: get(state, "manageClass.entity")
-}))(AddStudentForm);
+export default connect(
+  state => ({
+    orgData: getUserOrgData(state),
+    selectedClass: getValidatedClassDetails(state) || {}
+  }),
+  { loadStudents: fetchStudentsByIdAction }
+)(AddStudentForm);

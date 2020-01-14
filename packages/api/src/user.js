@@ -122,7 +122,8 @@ const checkUser = payload => {
       url: `${prefix}/username-email/`,
       params: {
         username: `${payload.username}`,
-        districtId: `${payload.districtId}`
+        districtId: `${payload.districtId}`,
+        classCode: `${payload.classCode}`
       },
       method: "get"
     })

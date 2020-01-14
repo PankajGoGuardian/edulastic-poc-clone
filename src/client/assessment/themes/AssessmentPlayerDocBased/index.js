@@ -131,7 +131,8 @@ class AssessmentPlayerDocBased extends React.Component {
       settings
     } = this.props;
 
-    const dropdownOptions = items[0].data.questions
+    const item = items[0];
+    const dropdownOptions = item.data.questions
       .filter(q => q.type !== questionType.SECTION_LABEL)
       .map((item, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
@@ -163,6 +164,8 @@ class AssessmentPlayerDocBased extends React.Component {
           {!loading && (
             <Worksheet
               docUrl={docUrl}
+              isAssessmentPlayer
+              item={item}
               annotations={annotations}
               questions={questions}
               freeFormNotes={freeFormNotes}
@@ -170,7 +173,6 @@ class AssessmentPlayerDocBased extends React.Component {
               pageStructure={pageStructure}
               answersById={answersById}
               viewMode="review"
-              review
               noCheck
               testMode
             />

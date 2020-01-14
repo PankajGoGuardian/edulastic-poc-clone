@@ -111,8 +111,8 @@ class Worksheet extends React.Component {
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props;
-    if (itemDetail?.item?._id) {
-      saveUserWork({ [itemDetail.item._id]: { scratchpad: freeFormNotes || {} } });
+    if (itemDetail?._id) {
+      saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } });
     }
   }
 
@@ -265,7 +265,7 @@ class Worksheet extends React.Component {
       freeFormNotes: newFreeFormNotes,
       annotations: updatedAnnotations
     };
-    const id = itemDetail?.item?._id;
+    const id = itemDetail?._id;
     if (id) {
       this.setState(({ history }) => ({ history: history + 1 }));
       saveUserWork({
@@ -308,7 +308,7 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
-    const id = itemDetail?.item?._id;
+    const id = itemDetail?._id;
     if (id) {
       saveUserWork({
         [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
@@ -352,7 +352,7 @@ class Worksheet extends React.Component {
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
-    const id = itemDetail?.item?._id;
+    const id = itemDetail?._id;
     if (id) {
       saveUserWork({
         [id]: { ...userWork, scratchpad: { ...newFreeFormNotes } }
@@ -431,7 +431,8 @@ class Worksheet extends React.Component {
   saveHistory = data => {
     const { currentPage } = this.state;
     const { saveUserWork, itemDetail, scratchPad = {}, userWork, setTestData } = this.props;
-    const id = itemDetail?.item?._id;
+    const id = itemDetail?._id;
+
     if (id) {
       this.setState(({ history }) => ({ history: history + 1 }));
 
@@ -739,15 +740,21 @@ const enhance = compose(
   withWindowSizes,
   withRouter,
   connect(
-    state => ({
+    (state, ownProps) => ({
       scratchPad: get(
         state,
-        `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}].scratchpad`,
+        `userWork.present[${
+          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+        }].scratchpad`,
         null
       ),
       test: getTestEntitySelector(state),
-      userWork: get(state, `userWork.present[${state.itemDetail.item && state.itemDetail.item._id}]`, {}),
-      itemDetail: state.itemDetail,
+      userWork: get(
+        state,
+        `userWork.present[${ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id}]`,
+        {}
+      ),
+      itemDetail: ownProps.isAssessmentPlayer ? ownProps.item : state.itemDetail.item,
       creating: getAssessmentCreatingSelector(state),
       percentageUploaded: percentageUploadedSelector(state),
       fileInfo: fileInfoSelector(state),

@@ -8,6 +8,7 @@ import { Switch, Route, withRouter } from "react-router-dom";
 // themes
 import ThemeContainer from "./themes/index";
 import { loadTestAction } from "./actions/test";
+import { startAssessmentAction } from "./actions/assessment";
 import { testActivityLoadingSelector } from "./selectors/test";
 import RequirePassword from "./RequirePassword";
 
@@ -24,12 +25,14 @@ const AssessmentPlayer = ({
   LCBPreviewModal,
   closeTestPreviewModal,
   isShowStudentWork = false,
-  showTools
+  showTools,
+  startAssessment
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
     const { utaId: testActivityId, groupId } = match.params;
-
+    // if its from a modal that maybe showing the answer, then dont reset the answer.
+    if (!LCBPreviewModal) startAssessment();
     // if showing student work dont genrate question labels again
     loadTest({ testId, testActivityId, preview, demo, test, groupId, isShowStudentWork });
   }, [testId]);
@@ -111,7 +114,8 @@ const enhance = compose(
       testActivityLoading: testActivityLoadingSelector(state)
     }),
     {
-      loadTest: loadTestAction
+      loadTest: loadTestAction,
+      startAssessment: startAssessmentAction
     }
   )
 );

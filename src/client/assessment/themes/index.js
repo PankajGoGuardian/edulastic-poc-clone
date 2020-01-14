@@ -16,7 +16,6 @@ import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
 import { testLoadingSelector } from "../selectors/test";
-import { startAssessmentAction } from "../actions/assessment";
 import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/answers";
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
@@ -87,8 +86,6 @@ const AssessmentContainer = ({
   // start assessment
   useEffect(() => {
     window.localStorage.assessmentLastTime = Date.now();
-    // if its from a modal that maybe showing the answer, then dont reset the answer.
-    if (!LCBPreviewModal) startAssessment();
   }, []);
 
   useEffect(() => {
@@ -276,7 +273,6 @@ const enhance = compose(
       saveUserResponse,
       evaluateAnswer,
       changePreview: changePreviewAction,
-      startAssessment: startAssessmentAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction
     }

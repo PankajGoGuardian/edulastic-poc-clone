@@ -80,7 +80,13 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, 
   });
 
   const _getValue = val => {
-    const newStr = value.split("");
+    /**
+     * When display is called from set correct answer section
+     * Initially, valid response and alt response is []
+     * so value:= userAnswers[dropTargetIndex] will be undefined
+     * hence, split will faill (EV-10804)
+     */
+    const newStr = value?.split("") || [];
     newStr.splice(selection.start, selection.end - selection.start, val);
     return newStr.join("");
   };

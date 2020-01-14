@@ -144,6 +144,9 @@ export const replaceVariables = (item, latexKeys = [], useMathTemplate = true) =
   return produce(item, draft => {
     Object.keys(item).forEach(key => {
       if (key === "id" || key === "variable") return;
+      if (key === "validation") {
+        useMathTemplate = false;
+      }
       draft[key] = replaceValues(draft[key], item.variable, key, latexKeys, useMathTemplate);
     });
   });

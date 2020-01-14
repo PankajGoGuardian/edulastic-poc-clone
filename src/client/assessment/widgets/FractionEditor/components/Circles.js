@@ -56,7 +56,12 @@ const Circles = ({
           return (
             <Cell
               {...hoverProps}
-              onClick={() => sectorClick(sector.index)}
+              onClick={() => {
+                sectorClick(sector.index);
+                if (_selected) {
+                  handleSectorBlur(sector.index);
+                }
+              }}
               key={`cell-${sector.index}`}
               fill={fillColor}
             />

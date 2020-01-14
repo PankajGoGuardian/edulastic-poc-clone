@@ -146,7 +146,8 @@ function* evaluateAnswers({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
+    const errorMessage =
+      err.message || "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
     yield call(message.error, errorMessage);
   }
 }

@@ -27,6 +27,18 @@ import {
 
 const mathEvaluate = async (data, type) => {
   // getting evaluation from backend (EV-7432)
+  if (type === questionType.GRAPH) {
+    const validationObj = data?.validation;
+    const correctAnswers = [
+      validationObj?.validResponse?.value,
+      ...validationObj?.altResponses?.map(i => i.value)
+    ].filter(i => i.length);
+    if (correctAnswers.length === 0) {
+      const error = new Error();
+      error.message = "Questions should have answers set";
+      throw error;
+    }
+  }
   return await evaluateApi.evaluate(data, type);
 };
 

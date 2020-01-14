@@ -21,23 +21,24 @@ describe("math engine testcase ", () => {
   before("visit items page and select question type", () => {
     cy.login("teacher", "ashishsnap@snawpiz.com");
     editItem.createNewItem();
-    // create new que and select type
-    editItem.chooseQuestion(queGroup, queType);
-    question
-      .getComposeQuestionQuillComponent()
-      .clear()
-      .type("this is math test question");
-
-    editToolBar.clickOnMathInput();
   });
 
   Object.keys(testCase).forEach(method => {
     context(`method-${method}`, () => {
       before("setting method type", () => {
+        cy.contains("select the type of widget").click();
+        editItem.chooseQuestion(queGroup, queType);
+        question
+          .getComposeQuestionQuillComponent()
+          .clear()
+          .type("this is math test question");
+
+        editToolBar.clickOnMathInput();
         preview.header.edit();
         cy.get(".ant-collapse").click();
         question.clickOnAdditionalToggle();
         question.selectEvaluationMethod(methodName[method]);
+        question.uncheckAllOptions();
       });
 
       testCase[method].forEach((testcase, i) => {
@@ -56,7 +57,7 @@ describe("math engine testcase ", () => {
             if (options)
               _.keys(options).forEach(option => {
                 // check option
-                question.checkOption(optionsAttribute[option]);
+                if (!(option === "rule" || option === "field")) question.checkOption(optionsAttribute[option]);
                 const optionValue = options[option];
 
                 switch (option) {
@@ -81,17 +82,24 @@ describe("math engine testcase ", () => {
                     break;
 
                   case "rule":
-                    question.setRule(optionValue);
+                    // eslint-disable-next-line no-case-declarations
+
                     if (_.isObject(optionValue)) {
-                      if (_(optionValue).keys[0] === "isDecimal")
+                      const ruleToSet = _.keys(optionValue)[0];
+
+                      question.setRule(ruleToSet);
+                      cy.wait(500);
+
+                      if (ruleToSet === "isDecimal")
                         question
                           .getAnswerRuleArgumentInput()
                           .clear({ force: true })
                           .type(`{selectall}${optionValue.isDecimal}`, { force: true });
 
-                      if (_(optionValue).keys[0] === "isStandardForm")
+                      if (ruleToSet === "isStandardForm")
                         question.setAnswerArgumentDropdownValue(optionValue.isStandardForm);
-                    }
+                    } else question.setRule(optionValue);
+
                     break;
 
                   case "field":
@@ -124,11 +132,14 @@ describe("math engine testcase ", () => {
           cy.route("POST", "**/math/evaluate").as("evaluate");
           preview.checkOnCheckAnswer().then(() => {
             cy.wait("@evaluate").then(xhr => {
+              xhr.responseBody.testCase = testCase;
               // verify evaluation request
               expect(
                 xhr.status,
                 `verify evaluation status - ${xhr.status} - ${xhr.status === 200 || JSON.stringify(xhr.responseBody)}`
               ).to.eq(200);
+
+              expect(xhr.response.body.correct, `${xhr.responseBody}`).eq(evaluation);
 
               // verify score
               preview.getAntMsg().then($ele => {
@@ -138,6 +149,7 @@ describe("math engine testcase ", () => {
                   `verify score message - ${message} - ${message === `score: ${evaluation ? 1 : 0}` ||
                     JSON.stringify(testcase)}`
                 ).to.include(`score: ${evaluation ? 1 : 0}/1`);
+                Cypress.$(".ant-message-custom-content").detach();
               });
             });
           });

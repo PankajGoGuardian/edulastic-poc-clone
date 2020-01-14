@@ -1,31 +1,1716 @@
 {
+  "setEvaluation": [
+    {
+      "name": "setEvaluation: any order",
+      "input": "3,-3",
+      "attempt": "-3,3",
+      "evaluation": true
+    },
+    {
+      "name": "setEvaluation: any order",
+      "input": "3,-3",
+      "attempt": "-6,-3,3",
+      "evaluation": false
+    },
+    {
+      "name": "setEvaluation: any order",
+      "input": "3,6,-3",
+      "attempt": "-6,-3,3",
+      "evaluation": false
+    }
+  ],
+  "equivSyntax": [
+    {
+      "name": "syntax:isDecimal with argument 3 and 3 decimal digits",
+      "input": "",
+      "options": {
+        "rule": {
+          "isDecimal": 3
+        }
+      },
+      "attempt": "2.165",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isDecimal with argument 3 but 2 decimal digits",
+      "input": "",
+      "options": {
+        "rule": {
+          "isDecimal": 3
+        }
+      },
+      "attempt": "2.16",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isDecimal with argument 3 but integer input",
+      "input": "",
+      "options": {
+        "rule": {
+          "isDecimal": 3
+        }
+      },
+      "attempt": "1",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isSimpleFraction with -1/2",
+      "input": "",
+      "options": {
+        "rule": "isSimpleFraction"
+      },
+      "attempt": "-1/2",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isSimpleFraction with -\frac",
+      "input": "",
+      "options": {
+        "rule": "isSimpleFraction"
+      },
+      "attempt": "-\\frac{enter}1{downarrow}2",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isSimpleFraction with mixed fraction",
+      "input": "",
+      "options": {
+        "rule": "isSimpleFraction"
+      },
+      "attempt": "1\\frac{enter}1{downarrow}2",
+      "evaluation": false
+    },
+
+    {
+      "name": "syntax:isExponent ",
+      "input": "",
+      "options": {
+        "rule": "isExponent"
+      },
+      "attempt": "3.5^x",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isExponent ",
+      "input": "",
+      "options": {
+        "rule": "isExponent"
+      },
+      "attempt": "e^x",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isExponent ",
+      "input": "",
+      "options": {
+        "rule": "isExponent"
+      },
+      "attempt": "x^5",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isExponent ",
+      "input": "",
+      "options": {
+        "rule": "isExponent"
+      },
+      "attempt": "x^x",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isStandardForm=linear",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "linear"
+        }
+      },
+      "attempt": "Ax+By=C",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isStandardForm=linear ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "linear"
+        }
+      },
+      "attempt": "5x + 3y = 4",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isStandardForm=linear ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "linear"
+        }
+      },
+      "attempt": "-x + y = 1",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isStandardForm=linear ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "linear"
+        }
+      },
+      "attempt": "1\\frac{enter}1{downarrow}2{rightarrow}x+\\frac{enter}3{downarrow}5{rightarrow}y=1",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isStandardForm=quadratic ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "quadratic"
+        }
+      },
+      "attempt": "Ax^2{downarrow}+Bx+C=0",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isStandardForm=quadratic ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "quadratic"
+        }
+      },
+      "attempt": "5x^2{downarrow} + 3x = 4",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isStandardForm=quadratic ",
+      "input": "",
+      "options": {
+        "rule": {
+          "isStandardForm": "quadratic"
+        }
+      },
+      "attempt": "1.1x^2{downarrow} + 3.3x + 4 = 0",
+      "evaluation": true
+    },
+
+    {
+      "name": "syntax:isSlopeInterceptForm",
+      "input": "",
+      "options": {
+        "rule": "isSlopeInterceptForm"
+      },
+      "attempt": "y=ax+b",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isSlopeInterceptForm",
+      "input": "",
+      "options": {
+        "rule": "isSlopeInterceptForm"
+      },
+      "attempt": "y = -x + 1",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isSlopeInterceptForm",
+      "input": "",
+      "options": {
+        "rule": "isSlopeInterceptForm"
+      },
+      "attempt": "x+y=0",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isSlopeInterceptForm",
+      "input": "",
+      "options": { "rule": "isSlopeInterceptForm" },
+      "attempt": "x=y",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isPointSlopeForm",
+      "input": "",
+      "options": {
+        "rule": "isPointSlopeForm"
+      },
+      "attempt": "(y-1)=2(x+3)",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isPointSlopeForm",
+      "input": "",
+      "options": {
+        "rule": "isPointSlopeForm"
+      },
+      "attempt": "y = -x + 1",
+      "evaluation": false
+    },
+
+    {
+      "name": "syntax:isPointSlopeForm",
+      "input": "",
+      "options": {
+        "rule": "isPointSlopeForm"
+      },
+      "attempt": "x+y=0",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isPointSlopeForm",
+      "input": "",
+      "options": {
+        "rule": "isPointSlopeForm"
+      },
+      "attempt": "3y-1=x",
+      "evaluation": false
+    },
+    {
+      "name": "value:isMixedFraction with 1 1/2 ",
+      "input": "",
+      "options": {
+        "rule": "isMixedFraction"
+      },
+      "attempt": "1 1/2",
+      "evaluation": true
+    },
+    {
+      "name": "value:isMixedFraction with ",
+      "input": "",
+      "options": {
+        "rule": "isMixedFraction"
+      },
+      "attempt": "1\\frac{enter}-1{downarrow}2",
+      "evaluation": false
+    },
+    {
+      "name": "value:isSimpleFraction with -1/2",
+      "input": "",
+      "options": {
+        "rule": "isSimpleFraction"
+      },
+      "attempt": "-1/2",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5206",
+      "input": "",
+      "options": {
+        "rule": "numberType"
+      },
+      "attempt": "5",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5206",
+      "input": "",
+      "options": {
+        "rule": "integerType"
+      },
+      "attempt": "5",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5206 ",
+      "input": "",
+      "options": {
+        "rule": "variableType"
+      },
+      "attempt": "6",
+      "evaluation": false
+    },
+    {
+      "name": "EV-5206 ",
+      "input": "",
+      "options": {
+        "rule": "scientificType"
+      },
+      "attempt": "1.3 \\times{enter} 10^-2",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5206 ",
+      "input": "",
+      "options": {
+        "rule": "scientificType"
+      },
+      "attempt": "10 \\times{enter} 10^2",
+      "evaluation": false
+    }
+  ],
+  "equivLiteral": [
+    {
+      "name": "literal: decimal fraction vs. simple fraction",
+      "attempt": "0.5",
+      "options": {},
+      "input": "\\frac{enter}1{downarrow}2",
+      "evaluation": false
+    },
+    {
+      "name": "literal: fraction with minus",
+      "attempt": "-\\frac{enter}1{downarrow}2",
+      "options": {},
+      "input": "-\\frac{enter}1{downarrow}2",
+      "evaluation": true
+    },
+    {
+      "name": "literal: fraction with minus",
+      "attempt": "-\\frac{enter}1{downarrow}2",
+      "options": {},
+      "input": "\\frac{enter}-1{downarrow}2",
+      "evaluation": false
+    },
+    {
+      "name": "literal: coefficient of 1",
+      "attempt": "1x+2",
+      "options": {},
+      "input": "x+2",
+      "evaluation": false
+    },
+    {
+      "name": "literal: decimal fractions",
+      "attempt": ".5",
+      "options": {},
+      "input": "0.5",
+      "evaluation": true
+    },
+    {
+      "name": "literal: simple case with brackets",
+      "attempt": "(2)",
+      "options": {},
+      "input": "2",
+      "evaluation": true
+    },
+    {
+      "name": "literal:inverseResult: decimal fractions",
+      "attempt": "0.5",
+      "options": { "inverseResult": true },
+      "input": "0.5",
+      "evaluation": false
+    },
+    {
+      "name": "literal:inverseResult: simple fraction vs. decimal",
+      "attempt": "\\frac1{enter}1{downarrow}2",
+      "options": { "inverseResult": true },
+      "input": "0.5",
+      "evaluation": true
+    },
+    {
+      "name": "literal:inverseResult: fraction instead of number",
+      "attempt": "\\frac1{enter}4{downarrow}2",
+      "options": { "inverseResult": true },
+      "input": "2",
+      "evaluation": true
+    },
+    {
+      "name": "literal:ignoreTrailingZeros",
+      "attempt": "0.5",
+      "options": { "ignoreTrailingZeros": true },
+      "input": "0.50000",
+      "evaluation": true
+    },
+    {
+      "name": "literal:ignoreTrailingZeros",
+      "attempt": "0.500001",
+      "options": { "ignoreTrailingZeros": true },
+      "input": "0.50000",
+      "evaluation": false
+    },
+    {
+      "name": "literal:setDecimalSeparator=','",
+      "attempt": "2,1",
+      "options": { "setDecimalSeparator": "," },
+      "input": "1.1+1",
+      "evaluation": false
+    },
+    {
+      "name": "literal:setDecimalSeparator=','",
+      "attempt": "2,1",
+      "options": { "setDecimalSeparator": "," },
+      "input": "1.1+1",
+      "evaluation": false
+    },
+    {
+      "name": "literal:setThousandsSeparator=[' ']",
+      "attempt": "1 000 000",
+      "options": { "setThousandsSeparator": " " },
+      "input": "1000000",
+      "evaluation": true
+    },
+    {
+      "name": "literal:setThousandsSeparator=[',']",
+      "attempt": "1 000 + x",
+      "options": { "setThousandsSeparator": "," },
+      "input": "1000 + x",
+      "evaluation": false
+    },
+    {
+      "name": "literal",
+      "attempt": "[1.0, 2.0)",
+      "options": {},
+      "input": "[1, 2)",
+      "evaluation": false
+    },
+    {
+      "name": "literal ignoring coefficient of 1",
+      "attempt": "x+12",
+      "options": { "ignoreCoefficientOfOne": true },
+      "input": "x+2",
+      "evaluation": false
+    },
+    {
+      "name": "literal ignoring coefficient of 1",
+      "attempt": "1\\times{enter} x+2",
+      "options": { "ignoreCoefficientOfOne": true },
+      "input": "x+2",
+      "evaluation": true
+    },
+    {
+      "name": "literal ignoring order",
+      "attempt": "1+x+x+x^2",
+      "options": { "ignoreOrder": true },
+      "input": "x^2{downarrow}+2x+1",
+      "evaluation": false
+    },
+    {
+      "name": "EV-1097, handling trailing zeroe",
+      "attempt": "1000.000",
+      "options": { "ignoreTrailingZeros": true },
+      "input": "1000",
+      "evaluation": true
+    },
+    {
+      "name": "parentheses, EV1150",
+      "attempt": "(2)",
+      "options": {},
+      "input": "2",
+      "evaluation": true
+    },
+
+    {
+      "name": "parentheses, EV1150",
+      "attempt": "(2)",
+      "options": {},
+      "input": "3",
+      "evaluation": false
+    },
+    {
+      "name": "literal",
+      "attempt": "{{}x | x<2{}}",
+      "options": {},
+      "input": "(-\\infty{enter},2)",
+      "evaluation": false
+    },
+
+    {
+      "name": "scientific-notation",
+      "attempt": "1e-2",
+      "options": {},
+      "input": "0.01",
+      "evaluation": false
+    },
+
+    {
+      "name": "literal:allowInterval  ",
+      "attempt": "[1.1, 2.2)",
+      "options": {},
+      "input": "[1.1, 2.2)",
+      "evaluation": true
+    },
+    {
+      "name": "literal:allowInterval  ",
+      "attempt": "2\\pi{enter}\\theta{enter}",
+      "options": {},
+      "input": "2\\pi{enter}\\theta{enter}",
+      "evaluation": true
+    },
+    {
+      "name": "NONE  ",
+      "attempt": "none",
+      "options": {},
+      "input": "none",
+      "evaluation": true
+    }
+  ],
   "equivSymbolic": [
     {
-      "name": "thousands separator",
-      "input": "1000",
+      "name": "symbolic: addition and multiplication non-associativity",
+      "attempt": "x+y*z",
+      "options": {},
+      "input": "(x+y) \\times{enter} z",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic: fraction with missing closing '}'",
+      "attempt": "\\frac{enter}{{}1{}}{downarrow}{{}10",
+      "options": {},
+      "input": "0.1",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic: simple fraction vs. decimal",
+      "attempt": "\\frac{enter}1{downarrow}10",
+      "options": {},
+      "input": "0.1",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:setDecimalSeparator=',': percent conversion",
+      "attempt": "10,1%",
+      "options": { "setDecimalSeparator": "," },
+      "input": "0,101",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:setDecimalSeparator=',': enumeration",
+      "attempt": "1, 2, 3",
+      "options": { "setDecimalSeparator": "," },
+      "input": "1, 2, 3",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic:setThousandsSeparator=[',']': simple fraction vs. decimal",
+      "attempt": "\\frac{enter}1{downarrow}1,000",
+      "options": { "setThousandsSeparator": "," },
+      "input": "0.001",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:compareSides: percent conversion",
+      "attempt": "30%+4.2=4.5",
+      "options": { "compareSides": true },
+      "input": "0.3 + 4.2 = 4.5",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:compareSides: wrong expression",
+      "attempt": "3+3=7",
+      "options": { "compareSides": true },
+      "input": "4 + 3 = 7",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isMixedFraction with \frac and space",
+      "attempt": "1 \\frac{enter}1{downarrow}2",
+      "options": { "isMixedFraction": true },
+      "input": "1 \\frac{enter}1{downarrow}2",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isMixedFraction with decimal",
+      "attempt": "1.0\\frac{enter}1{enter}2",
+      "options": { "isMixedFraction": true },
+      "input": "1.0\\frac{enter}1{downarrow}2",
+      "evaluation": false
+    },
+
+    {
+      "name": "Eulers Number, EV-1087",
+      "attempt": "\\ln{enter}e^x",
+      "options": { "allowEulersNumber": true },
+      "input": "x",
+      "evaluation": true
+    },
+    {
+      "name": "Eulers Number, EV-1087",
+      "attempt": "\\log{enter}10 + \\ln{enter} e^x {downarrow}= 0",
+      "options": { "allowEulersNumber": true },
+      "input": "1 = -x",
+      "evaluation": true
+    },
+    {
+      "name": "Eulers Number, EV-1087",
+      "attempt": "\\ln{enter} e^x = 1",
+      "options": { "allowEulersNumber": true, "compareSides": true },
+      "input": "x-1 = 0",
+      "evaluation": false
+    },
+    {
+      "name": "differentiation",
+      "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}e^-x^2",
+      "options": { "allowEulersNumber": true },
+      "input": "e^-x^2{downarrow}{downarrow}(-2x)",
+      "evaluation": true
+    },
+    {
+      "name": "thousands handling as an interval-Error",
+      "attempt": "234,1",
+      "options": { "interpretAsSet": true },
+      "input": "(1,234)",
+      "evaluation": false
+    },
+    {
+      "name": "set with variables interpretAsSet---Error",
+      "attempt": "2,x + 1,3",
+      "options": { "interpretAsSet": true },
+      "input": "(x + 1,2,3)",
+      "evaluation": true
+    },
+    {
+      "name": "set with hierarchy",
+      "attempt": "(x,y),(w,z)",
+      "options": {},
+      "input": "{{}(x,y),(w,z){}}",
+      "evaluation": true
+    },
+
+    {
+      "name": "thousands handling--Error",
+      "attempt": "234,1,567",
+      "options": { "setListTypeResponse": true },
+      "input": "{{}1,234,567{}}",
+      "evaluation": false
+    },
+
+    {
+      "name": "thousands handling--Error",
+      "attempt": "234,567,0",
+      "options": { "setListTypeResponse": true },
+      "input": "0,234,567",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic:allowInterval",
+      "attempt": "[1, 2)",
+      "options": {},
+      "input": "[1, 2)",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:allowInterval",
+      "attempt": "[1.1, 2.2)",
+      "options": {},
+      "input": "[1.1, 2.2)",
+      "evaluation": true
+    },
+    {
+      "name": "support dollar as in mathquill",
+      "attempt": "$128",
+      "options": {},
+      "input": "$128",
+      "evaluation": true
+    },
+
+    {
+      "name": "[] default to intervals",
+      "attempt": "(5,4]",
+      "options": {},
+      "input": "[5,4)",
+      "evaluation": false
+    },
+    {
+      "name": "() and two elements -> default to intervals",
+      "attempt": "{{}2,3{}}",
+      "options": {},
+      "input": "(2, 3)",
+      "evaluation": false
+    },
+    {
+      "name": "() and two elements -> default to intervals",
+      "attempt": "(2 , 3 )",
+      "options": {},
+      "input": "(  2  ,  3  )",
+      "evaluation": true
+    },
+    {
+      "name": "three intervals set",
+      "attempt": "(3,4),(2,3)",
+      "options": {},
+      "input": "{{}(2,3),(3,4),(-1,0){}}",
+      "evaluation": false
+    },
+    {
+      "name": "three intervals set",
+      "attempt": "(-1,0),(3,4),(2,3)",
+      "options": {},
+      "input": "{{}(2,3),(3,4),(-1,0){}}",
+      "evaluation": true
+    },
+    {
+      "name": "three intervals set",
+      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "options": {},
+      "input": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
+      "evaluation": true
+    },
+    {
+      "name": "three intervals set",
+      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "options": {},
+      "input": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic isExpanded: simple polynomial==Error",
+      "attempt": "x^2{downarrow}+3x",
+      "options": { "isExpanded": true },
+      "input": "x^2{downarrow}+3x",
+      "evaluation": true
+    },
+    {
+      "name": "not to automatically multiple a pair of numbers separated by space",
+      "attempt": "3 2 1",
+      "options": {},
+      "input": "6",
+      "evaluation": false
+    },
+    {
+      "name": "default",
+      "attempt": "4\\cdot{enter}(94/100{rightarrow})^x",
+      "options": { "isSimplified": true },
+      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "evaluation": false
+    },
+    {
+      "name": "default",
+      "attempt": "4\\cdot{enter}(47/50{rightarrow})^x",
+      "options": { "isSimplified": true },
+      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "evaluation": true
+    },
+    {
+      "name": "Simplification with paranthesis",
+      "attempt": "x(x+3/12)",
+      "options": { "isSimplified": true },
+      "input": "x^2{downarrow} + x/4",
+      "evaluation": false
+    },
+    {
+      "name": "Mixed fraction simplification",
+      "attempt": "7/4",
+      "options": { "isSimplified": true, "isMixedFraction": true },
+      "input": "1\\frac{enter}3{downarrow}/4",
+      "evaluation": false
+    },
+    {
+      "name": "support of le and ge",
+      "attempt": "y > x",
+      "options": {},
+      "input": "y > x",
+      "evaluation": true
+    },
+
+    {
+      "name": "symbolic;isSimplified==Error",
+      "attempt": "3x+y",
+      "options": { "isSimplified": true },
+      "input": "x+x+x+y",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 15'",
+      "attempt": "2/\\sqrt{enter}9",
+      "options": { "isRationalized": true },
+      "input": "2/3",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 21b'",
+      "attempt": "2/5",
+      "options": { "isRationalized": true, "inverseResult": true },
+      "input": "2/5",
+      "evaluation": false
+    },
+    {
+      "name": "''isRational in symbolic 31'",
+      "attempt": "1/2",
+      "options": { "isRationalized": true },
+      "input": "1/2",
+      "evaluation": true
+    },
+    {
+      "name": "Mixed fraction simplification different notations",
+      "attempt": "-2\\frac{enter}1{downarrow}2",
+      "options": {},
+      "input": "-5/2",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic",
+      "attempt": "2\\frac{enter}1{downarrow}2",
+      "options": { "isMixedFraction": true },
+      "input": "\\frac{enter}5{downarrow}2",
+      "evaluation": true
+    },
+    {
+      "name": "syntax:isMixedFraction with minus in enumerator",
+      "attempt": "1\\frac{enter}-1{downarrow}2",
+      "options": { "isMixedFraction": true },
+      "input": "1\\frac{enter}-1{downarrow}2",
+      "evaluation": false
+    },
+    {
+      "name": "syntax:isMixedFraction with 1 1/2",
+      "attempt": "1 1/2",
+      "options": { "isMixedFraction": true },
+      "input": "1 1/2",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic without compareSides but with equalities: wrong equality that evaluates to True",
+      "attempt": "3+3=6",
+      "options": {},
+      "input": "4 + 3 = 7",
+      "evaluation": true
+    },
+    {
+      "name": "case 2.4",
+      "attempt": "x+1 < y",
+      "options": { "compareSides": true },
+      "input": "x+1>y",
+      "evaluation": false
+    },
+    {
+      "name": "case 1.2 *BUG*",
+      "attempt": "x+1 < y",
+      "options": {},
+      "input": "x-y+1<0",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic without compareSides but with equalities: wrong expression and answer",
+      "attempt": "10+1/2",
+      "options": {},
+      "input": "10.5",
+      "evaluation": true
+    }
+  ],
+  "equivValue": [
+    {
+      "name": "value with tolerance",
+      "input": "10",
+      "options": {
+        "tolerance": 1.6
+      },
+      "attempt": "10",
+      "evaluation": true
+    },
+    {
+      "name": "value with tolerance",
+      "input": "10",
+      "options": {
+        "tolerance": 1.6
+      },
+      "attempt": "11.6",
+      "evaluation": true
+    },
+    {
+      "name": "value with tolerance",
+      "input": "10",
+      "options": {
+        "tolerance": 1.6
+      },
+      "attempt": "11.7",
+      "evaluation": false
+    },
+    {
+      "name": "value with tolerance",
+      "input": "10",
+      "options": {
+        "tolerance": 1.6,
+        "inverseResult": true
+      },
+      "attempt": "11.7",
+      "evaluation": true
+    },
+    {
+      "name": "value with tolerance",
+      "input": "10",
+
+      "options": {
+        "tolerance": 1.6,
+        "inverseResult": true
+      },
+      "attempt": "8.4",
+      "evaluation": false
+    },
+    {
+      "name": "value with significantDecimalPlaces",
+      "input": "10",
+      "options": {
+        "significantDecimalPlaces": 3
+      },
+      "attempt": "10",
+      "evaluation": true
+    },
+
+    {
+      "name": "value with significantDecimalPlaces",
+      "input": "10",
+      "options": {
+        "significantDecimalPlaces": 3
+      },
+      "attempt": "9.9995",
+      "evaluation": true
+    },
+    {
+      "name": "value with significantDecimalPlaces",
+      "input": "10",
+      "options": {
+        "significantDecimalPlaces": 3
+      },
+      "attempt": "10.001",
+      "evaluation": false
+    },
+    {
+      "name": "value with significantDecimalPlaces ",
+      "input": "10",
+      "options": {
+        "significantDecimalPlaces": 3
+      },
+      "attempt": "9.9994",
+      "evaluation": false
+    },
+    {
+      "name": "value thousands space ",
+      "input": "1 000",
+      "options": {
+        "setThousandsSeparator": " "
+      },
+      "attempt": "1000",
+      "evaluation": true
+    },
+    {
+      "name": "value thousands comma",
+      "input": "1,000",
       "options": {
         "setThousandsSeparator": ","
       },
-      "attempt": "1,000",
+      "attempt": "1000",
+      "evaluation": true
+    },
+
+    {
+      "name": "EV-5574 symbol conversion to latex ",
+      "input": "90\\degree{enter}",
+      "options": {},
+      "attempt": "90\\degree{enter}",
       "evaluation": true
     },
     {
-      "name": "thousands separator",
-      "input": "1000",
-      "options": {
-        "setThousandsSeparator": "."
-      },
-      "attempt": "1.000",
+      "name": "textitsupport EV-5722",
+      "input": "24  \\textit{enter}square \\textit{enter}centimeters",
+      "options": {},
+      "attempt": "24 square centimeters",
+      "evaluation": true
+    },
+
+    {
+      "name": "space handling",
+      "input": "3x",
+      "options": {},
+      "attempt": "3 x",
+      "evaluation": true
+    },
+
+    {
+      "name": "space handling",
+      "input": "1",
+      "options": {},
+      "attempt": "1,1 1",
+      "evaluation": false
+    },
+    {
+      "name": "space handling",
+      "input": "6",
+      "options": {},
+      "attempt": "2*3",
       "evaluation": true
     },
     {
-      "name": "EV-2434",
-      "input": "3x^2{downarrow}+6x+4x+8",
-      "options": {
-        "isFactorised": true
-      },
-      "attempt": "3x^2{downarrow}+6x+4x+8",
+      "name": "basic list order violation ",
+      "input": "(1,2,3)",
+      "options": {},
+      "attempt": "2,1,3",
+      "evaluation": false
+    },
+    {
+      "name": "basic list missing element ",
+      "input": "(1,2,3)",
+      "options": {},
+      "attempt": "1",
+      "evaluation": false
+    },
+    {
+      "name": "basic list extra white space on expected",
+      "input": "(1 ,2,3 )",
+      "options": {},
+      "attempt": "1,2,3",
       "evaluation": true
+    },
+
+    {
+      "name": "basic list extra white space on expected ",
+      "input": "( 1 ,2,3 )",
+      "options": {},
+      "attempt": "1,2,3",
+      "evaluation": true
+    },
+    {
+      "name": "basic list extra white space on input",
+      "input": "(1,2,3)",
+      "options": {},
+      "attempt": "1 ,  2,3",
+      "evaluation": true
+    },
+
+    {
+      "name": "basic list with interpretAsList",
+      "input": "1,2",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,2",
+      "evaluation": true
+    },
+    {
+      "name": "basic list with interpretAsList over-ride parenthesis",
+      "input": "{{}1,2{}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,2",
+      "evaluation": true
+    },
+    {
+      "name": "basic list with interpretAsList over-ride parenthesis",
+      "input": "{{}1,2{}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "2,1",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling as an interval",
+      "input": "(1,234)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,234",
+      "evaluation": true
+    },
+    {
+      "name": "thousands handling as an interval",
+      "input": "(1,234)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "234,1",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling as an interval",
+      "input": "(1,234)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "234,1",
+      "evaluation": true
+    },
+    {
+      "name": "thousands handling",
+      "input": "1,234,567",
+      "options": { "setListTypeResponse": true },
+      "attempt": "234,1,567",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling",
+      "input": "0,234,567",
+      "options": { "setListTypeResponse": true },
+      "attempt": "0,234,567",
+      "evaluation": true
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2{}}",
+      "options": {},
+      "attempt": "0,1,2",
+      "evaluation": true
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2{}}",
+      "options": {},
+      "attempt": "0 1,2",
+      "evaluation": false
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2{}}",
+      "options": {},
+      "attempt": "0,2,1",
+      "evaluation": true
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2",
+      "options": {},
+      "attempt": "0,2,1",
+      "evaluation": false
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2{}}",
+
+      "options": {},
+      "attempt": "{{}0,2,1",
+      "evaluation": false
+    },
+    {
+      "name": "basic set",
+      "input": "{{}0,1,2{}}",
+      "options": {},
+      "attempt": "0 2 1",
+      "evaluation": false
+    },
+
+    {
+      "name": "basic set",
+      "input": "{{}-1{}}",
+      "options": {},
+      "attempt": "-1",
+      "evaluation": true
+    },
+    {
+      "name": "basic set",
+      "input": "{{}-1,1{}}",
+      "options": {},
+      "attempt": "-1,2",
+      "evaluation": false
+    },
+
+    {
+      "name": "basic set with interpretAsSet ",
+      "input": "(-1,2)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "-1,2",
+      "evaluation": true
+    },
+    {
+      "name": "basic set with interpretAsSet ",
+      "input": "(1,2,1)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,2,1",
+      "evaluation": true
+    },
+    {
+      "name": "basic set with interpretAsSet",
+      "input": "(1,2,1)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,1,2,1",
+      "evaluation": false
+    },
+
+    {
+      "name": "basic set with interpretAsList ",
+      "input": "(1,1,2,1)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "1,1,2,1",
+      "evaluation": true
+    },
+    {
+      "name": "set with variables interpretAsSet",
+      "input": "(x,2)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "x,2",
+      "evaluation": true
+    },
+
+    {
+      "name": "set with variables interpretAsSet",
+      "input": "(x+1,2)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "x+1,2",
+      "evaluation": true
+    },
+    {
+      "name": "set with variables interpretAsSet",
+      "input": "(x+1,2)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "2,x + 1",
+      "evaluation": true
+    },
+    {
+      "name": "set with variables interpretAsSet",
+      "input": "(x + 1,2,3)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "2,x + 1,3",
+      "evaluation": true
+    },
+    {
+      "name": "list with variables interpretAsList",
+      "input": "{{}x + 1,3,2{}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "x + 1,2,3",
+      "evaluation": false
+    },
+    {
+      "name": "list with variables interpretAsList",
+      "input": "{{}x + 1,3,2{}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "x + 1,2 3",
+      "evaluation": false
+    },
+    {
+      "name": "list with hierarchy",
+      "input": "{{}(x,y),(w,z){}}",
+      "options": {},
+      "attempt": "(x,y),(w,z)",
+      "evaluation": true
+    },
+    {
+      "name": "list with hierarchy with space",
+      "input": "{{}(x,y), (w ,z){}}",
+      "options": {},
+      "attempt": "(x,y), (w,z)  ",
+      "evaluation": true
+    },
+    {
+      "name": "list with hierarchy with space",
+      "input": "{{}(x,y), (w ,z){}}",
+      "options": {},
+      "attempt": "(x,y) (w,z) ",
+      "evaluation": false
+    },
+    {
+      "name": "list with hierarchy",
+      "input": "((x,y),(w,z))",
+      "options": {},
+      "attempt": "(w,z),(x,y)",
+      "evaluation": false
+    },
+
+    {
+      "name": "set with variables interpretAsSet",
+      "input": "{{}(x,y),(w,z){}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "+-(x,y),(w,z)",
+      "evaluation": true
+    },
+    {
+      "name": "[] default to intervals",
+      "input": "[4,5)",
+      "options": {},
+      "attempt": "[4,5)",
+      "evaluation": true
+    },
+    {
+      "name": "[] default to intervals",
+      "input": "[5,4]",
+      "options": { "setListTypeResponse": true },
+      "attempt": "2,5",
+      "evaluation": false
+    },
+    {
+      "name": "() and more than two elements -> default to list",
+      "input": "(5,4,3)",
+      "options": {},
+      "attempt": "(5,4,3)",
+      "evaluation": true
+    },
+    {
+      "name": "() and more than two elements -> default to list",
+      "input": "(5,4,3)",
+      "options": {},
+      "attempt": "(5,4,3)",
+      "evaluation": true
+    },
+    {
+      "name": "{} -> default to sets",
+      "input": "{{}2, 3, 4{}}",
+      "options": { "setListTypeResponse": true },
+      "attempt": "(3, 2, 4)",
+      "evaluation": true
+    },
+
+    {
+      "name": "extra white space",
+      "input": "( 1 ,  2,3 )",
+      "options": {},
+      "attempt": "1,2,3",
+      "evaluation": true
+    },
+    {
+      "name": "() conflict with interpretAsSet",
+      "input": "(1,2)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "(1,2)",
+      "evaluation": true
+    },
+    {
+      "name": "() conflict with interpretAsList",
+      "input": "(2,1)",
+      "options": { "setListTypeResponse": true },
+      "attempt": "(1,2)",
+      "evaluation": false
+    },
+    {
+      "name": "() and more than two elements -> default to list",
+      "input": "(1,1+x,3)",
+      "options": {},
+      "attempt": "(1,1+x,3)",
+      "evaluation": true
+    },
+    {
+      "name": "{} -> default to sets",
+      "input": "{{}{{}1,2{}}, {{}3,4{}}{}}",
+      "options": {},
+      "attempt": "{{}{{}1,2{}}, {{}3,4{}}{}}",
+      "evaluation": true
+    },
+    {
+      "name": "thousands handling",
+      "input": "1,234,000",
+      "options": {},
+      "attempt": "1,23,000",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling",
+      "input": ",234,000",
+      "options": {},
+      "attempt": ",234,000",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling",
+      "input": ",234,000,",
+      "options": {},
+      "attempt": ",234,000,",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling",
+      "input": "234,110",
+      "options": { "setListTypeResponse": true },
+      "attempt": "110,234",
+      "evaluation": true
+    },
+    {
+      "name": "thousands handling",
+      "input": "234,00",
+      "options": {},
+      "attempt": "234,00",
+      "evaluation": false
+    },
+    {
+      "name": "thousands handling",
+      "input": "234,1 ",
+      "options": { "setListTypeResponse": true },
+      "attempt": "234,1",
+      "evaluation": true
+    },
+    {
+      "name": "() and two elements -> default to intervals",
+      "input": "( 2 ,  3  )",
+      "options": {},
+      "attempt": "{{}2,3{}}",
+      "evaluation": false
+    },
+    {
+      "name": "() and two elements -> default to intervals",
+      "input": "(  2  ,  3  )",
+      "options": {},
+      "attempt": "{{}2,3{}}",
+      "evaluation": false
+    },
+    {
+      "name": "() and two elements -> default to intervals",
+      "input": "(  2  ,  3  )",
+      "options": {},
+      "attempt": "(2 , 3)",
+      "evaluation": true
+    }
+  ],
+  "isSimplified": [
+    {
+      "name": "isSimplified: 4x+1",
+      "input": "",
+      "options": {},
+      "attempt": "4x+1",
+      "evaluation": true
+    },
+    {
+      "name": "isSimplified:setDecimalSeparator=',': 4x+2,1+1,1",
+      "input": "",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "4x+2,1+1,1",
+      "evaluation": false
+    },
+    {
+      "name": "isSimplified:setThousandsSeparator=[',']: 4x+2+1,000",
+      "input": "",
+      "options": { "setThousandsSeparator": "," },
+      "attempt": "4x+2+1,000",
+      "evaluation": false
+    },
+    {
+      "name": "isSimplified:inverseResult: x(x)",
+      "input": "",
+      "options": { "rule": "" },
+      "attempt": "x(x)",
+      "evaluation": true
+    }
+  ],
+  "isFactorised": [
+    {
+      "name": "isFactorised: factorised",
+      "input": "",
+      "options": {},
+      "attempt": "(x+3)(x+y)",
+      "evaluation": true
+    },
+    {
+      "name": "isFactorised: factorised + constant",
+      "input": "",
+      "options": {},
+      "attempt": "x(x-3)+2",
+      "evaluation": false
+    },
+    {
+      "name": "isFactorised:simple polynomial",
+      "input": "",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "x^2{downarrow}+3,3x",
+      "evaluation": false
+    },
+    {
+      "name": "isFactorised:setDecimalSeparator=',': factorised",
+      "input": "",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "(x+y)(x+3)",
+      "evaluation": true
+    },
+    {
+      "name": "isFactorised: factorised + constant",
+      "input": "",
+      "options": { "setThousandsSeparator": "," },
+      "attempt": "x(x-3)+2,000",
+      "evaluation": true
+    },
+    {
+      "name": "isFactorised:inverseResult:simple polynomial",
+      "input": "",
+      "options": { "inverseResult": true },
+      "attempt": "x^2{downarrow}+3x",
+      "evaluation": true
+    },
+    {
+      "name": "isFactorised:inverseResult: factorised",
+      "input": "",
+      "options": { "inverseResult": true },
+      "attempt": "(x+3)(x+y)",
+      "evaluation": false
+    },
+    {
+      "name": "isFactorised: integer factorisedd",
+      "input": "",
+      "options": { "field": "integerType" },
+      "attempt": "(x+y)(x+3)",
+      "evaluation": false
+    },
+    {
+      "name": "isFactorised: real factorised",
+      "input": "",
+      "options": {},
+      "attempt": "x^2{downarrow}+1.5x+4.4",
+      "evaluation": false
+    }
+  ],
+  "isExpanded": [
+    {
+      "name": "isExpanded: simple polynomial with two variables",
+      "input": "",
+      "options": {},
+      "attempt": "x^2{downarrow}+xy+3x+3y",
+      "evaluation": true
+    },
+    {
+      "name": "isExpanded: product of two sums",
+      "input": "",
+      "options": {},
+      "attempt": "(x+3)(x+y)",
+      "evaluation": false
+    },
+    {
+      "name": "isExpanded: simple polynomial with two variables",
+      "input": "",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "x^2{downarrow}+xy+3,0x+3,0y",
+      "evaluation": true
+    },
+    {
+      "name": "isExpanded: product of two sums",
+      "input": "",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "(x+3,0)(x+y)",
+      "evaluation": false
+    },
+    {
+      "name": "isExpanded: simple polynomial",
+      "input": "",
+      "options": { "setThousandsSeparator": "," },
+      "attempt": "x^2{downarrow}+3,000x",
+      "evaluation": true
+    },
+    {
+      "name": "isExpanded: simple polynomial with two variables",
+      "input": "",
+      "options": { "setThousandsSeparator": " " },
+      "attempt": "3 000y+3 000x+xy+x^2",
+      "evaluation": true
+    },
+
+    {
+      "name": "isExpanded with parenthesis EV-1154",
+      "input": "",
+      "options": {},
+      "attempt": "x\\left{enter}(x+3\\right{enter})",
+      "evaluation": false
+    }
+  ],
+  "isRationalized": [
+    {
+      "name": "''isRationalized 1'",
+      "input": "",
+      "options": {},
+      "attempt": "1.2",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 5'",
+      "input": "",
+      "options": {},
+      "attempt": "1/-2",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 9'",
+      "input": "",
+      "options": {},
+      "attempt": "2/1^0.5",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 11'",
+      "input": "",
+      "options": {},
+      "attempt": "2^0.7{downarrow}/2",
+      "evaluation": true
+    },
+    {
+      "name": "''isRationalized 13'",
+      "input": "",
+      "options": {},
+      "attempt": "2/\\sqrt{enter}2",
+      "evaluation": false
+    },
+    {
+      "name": "''isRationalized 6'",
+      "input": "",
+      "options": {},
+      "attempt": "-1/-2",
+      "evaluation": false
+    },
+
+    {
+      "name": "''isRationalized 8'",
+      "input": "",
+      "options": {},
+      "attempt": "5",
+      "evaluation": true
+    }
+  ],
+
+  "isTrue": [
+    {
+      "name": "isTrue: 1",
+      "input": "",
+      "attempt": "1",
+      "evaluation": true
+    },
+    {
+      "name": "isTrue: 5>1",
+      "input": "",
+      "attempt": "5>1",
+      "evaluation": true
+    },
+    {
+      "name": "isTrue: x",
+      "input": "",
+      "attempt": "x",
+      "evaluation": true
+    },
+    {
+      "name": "isTrue: 1=2",
+      "input": "",
+      "attempt": "1=2",
+      "evaluation": false
+    },
+    {
+      "name": "isTrue: 5<1",
+      "input": "",
+
+      "attempt": "5<1",
+      "evaluation": false
+    }
+  ],
+  "stringMatch": [
+    {
+      "name": "stringMatch:ignoreLeadingAndTrailingSpaces: numbers",
+      "input": "1, 2, 3",
+      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "attempt": "1, 2, 3 ",
+      "evaluation": true
+    },
+    {
+      "name": "stringMatch:ignoreLeadingAndTrailingSpaces:times vs. cdot",
+      "input": "\\cdot{enter}",
+      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "attempt": "\\times{enter}",
+      "evaluation": false
+    },
+    {
+      "name": "stringMatch: numbers",
+      "input": "1, 2, 3",
+      "options": {},
+      "attempt": "1, 2, 3",
+      "evaluation": true
+    },
+
+    {
+      "name": "stringMatch:treatMultipleSpacesAsOne",
+      "input": "1, 2,  3",
+      "options": { "treatMultipleSpacesAsOne": true },
+      "attempt": "1, 2,  3",
+      "evaluation": true
+    },
+    {
+      "name": "stringMatch:treatMultipleSpacesAsOne",
+      "input": "*",
+      "options": { "treatMultipleSpacesAsOne": true },
+      "attempt": "*",
+      "evaluation": true
+    },
+
+    {
+      "name": "spaces ",
+      "input": "1, 2, 3",
+      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "attempt": "1, 2, 3 ",
+      "evaluation": true
+    },
+    {
+      "name": "stringMatch:treatMultipleSpacesAsOne ",
+      "input": "*",
+      "options": { "treatMultipleSpacesAsOne": true },
+      "attempt": "*",
+      "evaluation": true
+    },
+    {
+      "name": "stringMatch:treatMultipleSpacesAsOne ",
+      "input": "\\dot{enter}",
+      "options": { "treatMultipleSpacesAsOne": true },
+      "attempt": "\\cdot{enter}",
+      "evaluation": false
+    },
+    {
+      "name": "stringMatch:treatMultipleSpacesAsOne ",
+      "input": "a",
+      "options": { "treatMultipleSpacesAsOne": true },
+      "attempt": "a",
+      "evaluation": false
     }
   ]
 }

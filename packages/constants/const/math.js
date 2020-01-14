@@ -102,6 +102,7 @@ const methodOptions = {
     "isMixedFraction",
     "ignoreAlphabeticCharacter",
     "inverseResult",
+    "allowNumericOnly",
     "allowedVariables",
     "interpretAsSet",
     "interpretAsInterval",

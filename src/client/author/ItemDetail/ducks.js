@@ -1086,6 +1086,14 @@ function* publishTestItemSaga({ payload }) {
   try {
     const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
 
+    // if there is only question, then its individual question editing screen.
+    // in that case test if question is incomplete
+    if (questions.length === 1) {
+      const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
+      if (isIncomplete) {
+        return message.error(errMsg);
+      }
+    }
     const isGradingCheckBox = yield select(getIsGradingCheckboxState);
     if (isGradingCheckBox) {
       const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));

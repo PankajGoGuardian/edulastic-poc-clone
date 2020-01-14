@@ -92,6 +92,11 @@ export const TableData = styled(Table)`
   }
 
   .ant-table-body {
+    tr {
+      &:hover {
+        cursor: pointer;
+      }
+    }
     .ant-table-thead > tr {
       & > th {
         background: ${white};

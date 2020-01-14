@@ -17,7 +17,8 @@ const SelectUnit = ({
   height,
   width,
   dropdownStyle,
-  disabled
+  disabled,
+  forwardedRef
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
@@ -49,6 +50,7 @@ const SelectUnit = ({
         getPopupContainer={trigger => trigger.parentNode}
         onDropdownVisibleChange={onDropdownVisibleChange}
         dropdownStyle={dropdownStyle}
+        ref={forwardedRef}
       >
         {allBtns.map((btn, i) => (
           <Option value={btn.handler} key={i}>

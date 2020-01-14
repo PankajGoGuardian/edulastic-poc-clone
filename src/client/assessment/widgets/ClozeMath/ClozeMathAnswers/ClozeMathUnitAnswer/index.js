@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
 import { get } from "lodash";
@@ -22,16 +22,16 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
     onChange({ answerId, prop, value: val });
   };
 
+  const unitDropdownRef = useRef(null);
+
   const dropdownVisibleChange = opened => {
     if (!opened) {
       setCollapseHeight("auto");
+      return;
     }
-    if (window.$ && opened) {
-      // eslint-disable-next-line no-undef
-      let popupHeight = $(".ant-select-dropdown").height() || 250;
-      popupHeight += 60;
-
-      setCollapseHeight(popupHeight < 204 ? 204 : popupHeight);
+    if (opened && unitDropdownRef.current) {
+      const popupHeight = (unitDropdownRef.current?.props?.children?.length || 0) * 32;
+      setCollapseHeight(Math.max(310, popupHeight));
     }
   };
   const dropdownUnit = (
@@ -44,6 +44,7 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
         unit={get(answer, "options.unit", "")}
         keypadMode={answer.keypadMode}
         onDropdownVisibleChange={dropdownVisibleChange}
+        forwardedRef={unitDropdownRef}
       />
     </div>
   );

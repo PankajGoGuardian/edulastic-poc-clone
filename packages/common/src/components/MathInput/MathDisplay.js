@@ -5,8 +5,6 @@ import styled from "styled-components";
 import { withMathFormula } from "../../HOC/withMathFormula";
 
 import MathSpan from "../MathSpan";
-const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
-
 
 const MathDisplayWrapper = styled.span`
   .input__math {
@@ -37,9 +35,7 @@ const MathDisplay = ({ template, innerValues, styles }) => {
     <MathDisplayWrapper styles={styles}>
       <MathSpan
         dangerouslySetInnerHTML={{
-          __html: !workTemplate.match(mathRegex)
-            ? `<span class="input__math" data-latex="${workTemplate}"></span>`
-            : workTemplate
+          __html: `<span class="input__math" data-latex="${workTemplate}"></span>`
         }}
       />
     </MathDisplayWrapper>

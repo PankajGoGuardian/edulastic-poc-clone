@@ -38,6 +38,7 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
     <Container
       onMouseEnter={openPopover}
       onMouseLeave={hidePopover}
+      onDragEnter={hidePopover}
       smallSize={smallSize}
       checkStyle={checkStyle}
       correct={correct}

@@ -17,6 +17,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   overflow: auto;
+  width: 100%;
 `;
 export const WidgetContainer = styled.div`
   display: flex;

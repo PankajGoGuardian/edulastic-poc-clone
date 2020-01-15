@@ -146,7 +146,7 @@ class TeacherTable extends Component {
       {
         title: t("users.teacher.school"),
         dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name),
+        render: (schools = []) => schools.map(school => school.name).join(", "),
         width: 200
       },
       {

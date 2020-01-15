@@ -305,10 +305,27 @@ const InnerWrapper = styled.div`
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+  }
+  .mq-editable-field:focus,
+  .mq-editable-field:hover,
+  .mq-editable-field.mq-focused,
+  .mq-math-mode .mq-editable-field.mq-focused {
+    border: 1px solid ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    cursor: pointer;
   }
 `;
 
@@ -316,6 +333,15 @@ const OuterWrapper = styled.div`
   display: inline-block;
   position: relative;
   vertical-align: middle;
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ClozeMathInputField = styled.span`
@@ -329,6 +355,12 @@ const ClozeMathInputField = styled.span`
   display: flex !important;
   border-bottom-right-radius: 0 !important;
   font-weight: 600 !important;
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {

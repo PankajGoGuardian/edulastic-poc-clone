@@ -237,7 +237,8 @@ class ClozeMathInput extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <div
+      <Wrapper
+        disableResponse={disableResponse}
         key="mathWrapper"
         ref={this.wrappedRef}
         style={{
@@ -249,7 +250,7 @@ class ClozeMathInput extends React.Component {
           alignSelf: "flex-start"
         }}
       >
-        <Wrapper disableResponse={disableResponse}>
+        <div>
           <span
             ref={this.mathRef}
             className="mathRef"
@@ -274,8 +275,8 @@ class ClozeMathInput extends React.Component {
               />
             </KeyboardWrapper>
           )}
-        </Wrapper>
-      </div>
+        </div>
+      </Wrapper>
     );
   }
 }
@@ -359,12 +360,27 @@ const KeyboardWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
+  &:active,
+  &:focus {
+    border-color: ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
   }
   .mq-cursor {
     ${({ disableResponse }) => disableResponse && `display: none;`}
+  }
+  .mq-editable-field:focus,
+  .mq-editable-field:hover,
+  .mq-editable-field.mq-focused,
+  .mq-math-mode .mq-editable-field.mq-focused {
+    border-color: ${({ theme }) => theme.themeColor} !important;
+    box-shadow: none !important;
+    outline: none !important;
+    cursor: pointer;
   }
   span {
     font-weight: 600;

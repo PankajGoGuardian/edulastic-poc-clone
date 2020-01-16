@@ -22,14 +22,13 @@ class EditClassModal extends Component {
         const saveClassData = {
           name: row.name,
           type: "class",
-          owners: row.teacher,
+          owners: [row.teacher],
           parent,
           districtId,
           institutionId: row.institutionId,
           subject: row.subject,
           grades: row.grades,
           tags: row.tags.map(t => allTagsData.find(e => e._id === t)),
-          courseId: row.courseId,
           // not implemented in add model so sending empty if not present i.e. created in da settings
           standardSets: standardSets || [],
           courseId: row.courseId
@@ -111,7 +110,7 @@ class EditClassModal extends Component {
     const {
       _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate, course } = {}
     } = selClassData;
-    const ownersData = owners.map(row => row.id);
+    const ownersData = owners?.[0]?.id || "";
     const schoolsOptions = [];
     if (schoolsData.length !== undefined) {
       schoolsData.map((row, index) => {

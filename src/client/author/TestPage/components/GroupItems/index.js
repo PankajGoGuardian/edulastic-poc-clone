@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
-import { isEqual, pick, maxBy } from "lodash";
+import { isEqual, pick, maxBy, keyBy } from "lodash";
 import { withRouter } from "react-router-dom";
 import {
   Container,
@@ -366,10 +366,12 @@ const GroupItems = ({
 
     setFetchingItems(true);
     if (editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+      const allTagsKeyById = keyBy(allTagsData, "_id");
+      const searchTags = editGroupDetail.tags?.map(tag => allTagsKeyById[tag].tagName || "") || [];
       const optionalFields = {
         depthOfKnowledge: editGroupDetail.dok,
         authorDifficulty: editGroupDetail.difficulty,
-        tags: editGroupDetail.tags
+        tags: searchTags
       };
       Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
       const data = {
